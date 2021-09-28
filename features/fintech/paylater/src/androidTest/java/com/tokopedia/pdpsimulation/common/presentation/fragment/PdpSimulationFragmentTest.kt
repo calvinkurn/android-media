@@ -47,7 +47,7 @@ class PdpSimulationFragmentTest {
             addMockResponse(
                 SIMULATION_V2_KEY,
                 InstrumentationMockHelper.getRawString(context, R.raw.simulationv2response),
-                MockModelConfig.FIND_BY_QUERY_NAME
+                MockModelConfig.FIND_BY_CONTAINS
             )
 
         }
@@ -72,25 +72,50 @@ class PdpSimulationFragmentTest {
     }
 
 
-//@Test
-//fun check_sortFilter()
-//{
-//    actionTest {
-//        testSortFilterClicked()
-//    }assertTest {
-//        validate(gtmLogDBSource,context,PAY_LATER_IMPRESSION_ANALYTICS)
-//    }
-//}
+    @Test
+    fun check_pay_later_partner_button_click() {
+        actionTest {
+            clickPartnerButton()
+        } assertTest {
+            validate(gtmLogDBSource, context, PAY_LATER_PARTNER_BUTTON_CLICK)
+            clearData()
+        }
+    }
 
-//    @Test
-//    fun check_product_info_impression() {
-//        actionTest {
-//            testPayLaterProductActionImpressions()
-//        } assertTest {
-//            validate(gtmLogDBSource, context, PAY_LATER_IMPRESSION_ANALYTICS)
-//            clearData()
-//        }
-//    }
+
+    @Test
+    fun check_pay_later_bottomsheet_button_click()
+    {
+        actionTest {
+            clickPartnerButtonBottomSheet()
+        } assertTest {
+            validate(gtmLogDBSource, context, PAY_LATER_BOTTOM_SHEET_BUTTON_CLICK)
+            clearData()
+        }
+    }
+
+
+    @Test
+    fun check_pay_later_faq_click()
+    {
+        actionTest {
+            clickPartnerFaq()
+        } assertTest {
+            validate(gtmLogDBSource, context, PAY_LATER_FAQ_CLICK)
+            clearData()
+        }
+    }
+
+    @Test
+    fun check_pay_later_faq_bottom_sheet_button_click()
+    {
+        actionTest {
+            clickPartnerFaqBottomSheet()
+        } assertTest {
+            validate(gtmLogDBSource, context, PAY_LATER_FAQ_BOTTOMSHEET_BUTTON_CLICK)
+            clearData()
+        }
+    }
 
     private fun clearData() {
         gtmLogDBSource.deleteAll().toBlocking()
@@ -122,5 +147,16 @@ class PdpSimulationFragmentTest {
         const val SIMULATION_V2_KEY = "paylater_getSimulationV2"
         const val PAY_LATER_IMPRESSION_ANALYTICS =
             "tracker/fintech/pdpsimulation/pay_later_open.json"
+        const val PAY_LATER_PARTNER_BUTTON_CLICK =
+            "tracker/fintech/pdpsimulation/partner_button_click.json"
+
+        const val PAY_LATER_BOTTOM_SHEET_BUTTON_CLICK =
+            "tracker/fintech/pdpsimulation/parter_button_bottomsheet_button_click.json"
+
+
+        const val PAY_LATER_FAQ_CLICK = "tracker/fintech/pdpsimulation/patner_faq_click.json"
+
+        const val PAY_LATER_FAQ_BOTTOMSHEET_BUTTON_CLICK =
+            "tracker/fintech/pdpsimulation/parter_faq_bottomsheet_button_click.json"
     }
 }
