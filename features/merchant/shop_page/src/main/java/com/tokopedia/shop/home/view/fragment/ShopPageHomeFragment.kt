@@ -516,6 +516,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         stopMonitoringPltCustomMetric(SHOP_TRACE_HOME_PREPARE)
         startMonitoringPltCustomMetric(SHOP_TRACE_HOME_MIDDLE)
         shopPageHomeLayoutUiModel?.let{
+            shopHomeAdapter.hideLoading()
             setShopHomeWidgetLayoutData(it)
         }
     }
@@ -906,7 +907,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             totalProductData: Int
     ) {
         addChangeProductGridSection(totalProductData)
-        shopHomeAdapter.setProductListData(productList, isInitialData)
+        shopHomeAdapter.setProductListData(productList)
         updateScrollListenerState(hasNextPage)
     }
 

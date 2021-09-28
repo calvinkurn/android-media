@@ -142,7 +142,6 @@ object ShopUtil {
                 AB_TEST_SHOP_NEW_HOME_TAB,
                 ""
         ).orEmpty()
-//        return newShopHomeTabAbTestKey.isNotEmpty()
-        return true
+        return newShopHomeTabAbTestKey.isNotEmpty()
     }
 }

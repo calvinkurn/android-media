@@ -740,14 +740,16 @@ class ShopHomeViewModelTest {
                 )
             )
         )
-        coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } returns ShopLayoutWidget(
-            listWidget = listOf(ShopLayoutWidget.Widget(type = "dynamic"))
-        )
         coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
-        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetMediumUiModelMockData
-        viewModel.getPlayWidget(mockShopId)
+        viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
+                "",
+                0,
+                "",
+                "",
+                BaseShopHomeWidgetUiModel.Header()
+        ))
         coVerify { playWidgetTools.getWidgetFromNetwork(any(), any()) }
         every {
             playWidgetTools.updateActionReminder(playWidgetMediumUiModelMockData, mockChannelId, mockReminderType)
