@@ -185,6 +185,7 @@ public class ShipmentDataRequestConverter {
         productDataCheckoutRequest.setProductId(cartItem.getProductId());
         productDataCheckoutRequest.setBundleId(cartItem.getBundleId());
         productDataCheckoutRequest.setBundleGroupId(cartItem.getBundleGroupId());
+        productDataCheckoutRequest.setBundleType(cartItem.getBundleType());
         productDataCheckoutRequest.setPurchaseProtection(cartItem.isProtectionOptIn());
         productDataCheckoutRequest.setProductName(cartItem.getAnalyticsProductCheckoutData().getProductName());
         productDataCheckoutRequest.setProductPrice(cartItem.getAnalyticsProductCheckoutData().getProductPrice());

@@ -53,6 +53,7 @@ data class Product(
         var bundlingItemPosition: Int = 0,
         var bundleId: String = "",
         var bundleGroupId: String = "",
+        var bundleType: String = "",
         var bundleTitle: String = "",
         var bundlePrice: Long = 0L,
         var bundleSlashPriceLabel: String = "",

@@ -245,6 +245,7 @@ class ShipmentMapper @Inject constructor() {
                         }
                         bundleId = cartDetail.bundleDetail.bundleId
                         bundleGroupId = cartDetail.bundleDetail.bundleGroupId
+                        bundleType = cartDetail.bundleDetail.bundleType
                         bundleTitle = cartDetail.bundleDetail.bundleName
                         bundlePrice = cartDetail.bundleDetail.bundlePrice
                         bundleSlashPriceLabel = cartDetail.bundleDetail.slashPriceLabel

@@ -1072,6 +1072,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         enhancedECommerceProductCartMapData.setDimension83(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
                                     }
                                     enhancedECommerceProductCartMapData.setCampaignId(String.valueOf(productDataCheckoutRequest.getCampaignId()));
+                                    enhancedECommerceProductCartMapData.setDimension117(productDataCheckoutRequest.getBundleType());
+                                    enhancedECommerceProductCartMapData.setDimension118(productDataCheckoutRequest.getBundleId());
 
                                     enhancedECommerceCheckout.addProduct(enhancedECommerceProductCartMapData.getProduct());
                                 }

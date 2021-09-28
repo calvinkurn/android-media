@@ -19,6 +19,7 @@ data class ProductDataCheckoutRequest(
         // Additional data
         var bundleId: String = "",
         var bundleGroupId: String = "",
+        var bundleType: String = "",
         var productName: String? = null,
         var productPrice: String? = null,
         var productBrand: String? = null,
