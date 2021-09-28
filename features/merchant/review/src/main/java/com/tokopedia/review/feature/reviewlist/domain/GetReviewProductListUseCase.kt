@@ -48,7 +48,7 @@ class GetReviewProductListUseCase @Inject constructor(
     @GqlQuery(PRODUCT_REVIEW_LIST_CLASS_NAME, PRODUCT_REVIEW_LIST)
     override suspend fun executeOnBackground(): ProductReviewListResponse.ProductShopRatingAggregate {
         val gqlRequest = GraphqlRequest(ProductReviewList.GQL_QUERY, ProductReviewListResponse::class.java, params)
-        val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = graphQlRepository.response(listOf(gqlRequest))
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error == null || error.isEmpty()) {
             return gqlResponse.getData<ProductReviewListResponse>(ProductReviewListResponse::class.java).productShopRatingAggregate

@@ -26,24 +26,23 @@ object ImageUploadMapper {
     }
 
     fun mapToImageUploadViewModel(imageUploadServiceModel: ImageUploadServiceModel): ImageUploadViewModel {
-        return ImageUploadViewModel(
-            messageId = imageUploadServiceModel.messageId,
-            fromUid = imageUploadServiceModel.fromUid,
-            from = imageUploadServiceModel.from,
-            fromRole = imageUploadServiceModel.fromRole,
-            attachmentId = imageUploadServiceModel.attachmentId,
-            attachmentType = imageUploadServiceModel.attachmentType,
-            replyTime = imageUploadServiceModel.replyTime,
-            startTime = imageUploadServiceModel.startTime,
-            isRead = imageUploadServiceModel.isRead,
-            isDummy = imageUploadServiceModel.isDummy,
-            isSender = imageUploadServiceModel.isSender,
-            message = imageUploadServiceModel.message,
-            source = imageUploadServiceModel.source,
-        ).apply {
-            this.imageUrl = imageUploadServiceModel.imageUrl
-            this.imageUrlThumbnail = imageUploadServiceModel.imageUrlThumbnail
-            this.isRetry = imageUploadServiceModel.isRetry
-        }
+        return ImageUploadViewModel.Builder()
+            .withMsgId(imageUploadServiceModel.messageId)
+            .withFromUid(imageUploadServiceModel.fromUid)
+            .withFrom(imageUploadServiceModel.from)
+            .withFromRole(imageUploadServiceModel.fromRole)
+            .withAttachmentId(imageUploadServiceModel.attachmentId)
+            .withAttachmentType(imageUploadServiceModel.attachmentType)
+            .withReplyTime(imageUploadServiceModel.replyTime)
+            .withStartTime(imageUploadServiceModel.startTime)
+            .withIsRead(imageUploadServiceModel.isRead)
+            .withIsDummy(imageUploadServiceModel.isDummy)
+            .withIsSender(imageUploadServiceModel.isSender)
+            .withMsg(imageUploadServiceModel.message)
+            .withSource(imageUploadServiceModel.source)
+            .withImageUrl(imageUploadServiceModel.imageUrl)
+            .withImageUrlThumbnail(imageUploadServiceModel.imageUrlThumbnail)
+            .withIsRetry(imageUploadServiceModel.isRetry)
+            .build()
     }
 }

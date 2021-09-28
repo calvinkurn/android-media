@@ -22,11 +22,11 @@ class ProductItemViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokopedianow_search_category_product
+        val LAYOUT = R.layout.item_tokopedianow_product_grid_card
     }
 
     private val productCard: ProductCardGridView? =
-            itemView.findViewById(R.id.tokoNowSearchCategoryProductCard)
+            itemView.findViewById(R.id.tokoNowGridProductCard)
 
     override fun bind(element: ProductItemDataView?) {
         element ?: return

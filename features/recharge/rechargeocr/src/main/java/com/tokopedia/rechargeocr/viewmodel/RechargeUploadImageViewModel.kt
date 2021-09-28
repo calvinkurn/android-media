@@ -42,7 +42,7 @@ class RechargeUploadImageViewModel @Inject constructor(private val rechargeUploa
                 val mapParam = mutableMapOf<String, Any>()
                 mapParam[PARAM_IMAGE_OCR] = url
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeOcrResponse::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<RechargeOcrResponse>()
 
             _resultDataOcr.postValue(Success(dataOcr.rechargeOcr.result))

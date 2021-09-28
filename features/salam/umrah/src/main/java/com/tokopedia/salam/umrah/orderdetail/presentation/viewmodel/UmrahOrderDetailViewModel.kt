@@ -38,7 +38,7 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
         launchCatchError(block = {
             val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, UmrahOrderDetailsEntity.Response::class.java, params)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<UmrahOrderDetailsEntity.Response>()
             orderDetailData.value = Success(data.orderDetails)
         }) {
@@ -52,7 +52,7 @@ class UmrahOrderDetailViewModel @Inject constructor(private val graphqlRepositor
         launchCatchError(block = {
             val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, MyUmrahEntity.Response::class.java, params)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<MyUmrahEntity.Response>()
 
             myWidgetData.value = Success(transformToMyUmrahWidgetModel(data.umrahWidgetSaya))

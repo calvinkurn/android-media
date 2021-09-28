@@ -153,6 +153,9 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             if (payment.creditCard.selectedTerm?.isError == true) {
                 currentState = disableButtonState(currentState)
             }
+            if (payment.creditCard.isAfpb && payment.creditCard.selectedTerm == null) {
+                currentState = disableButtonState(currentState)
+            }
             return@withContext payment.copy(isCalculationError = false) to orderTotal.copy(orderCost = orderCost, buttonType = OccButtonType.PAY, buttonState = currentState)
         }
         total.emit(result)

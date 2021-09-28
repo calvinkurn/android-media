@@ -1,0 +1,845 @@
+[
+  {
+    "data": {
+      "rechargeCatalogPrefixSelect": {
+        "componentID": 5,
+        "name": "client_number",
+        "paramName": "operator",
+        "text": "Masukkan Nomor HP",
+        "help": "Input Nomor Telepon Anda",
+        "placeholder": "Nomor Telepon",
+        "enquiryInfo": null,
+        "validations": [
+          {
+            "id": 4,
+            "title": "Max 14 Digit",
+            "message": "Nomor terlalu panjang, maksimum 14 karakter",
+            "rule": "^\\d{0,14}$"
+          },
+          {
+            "id": 5,
+            "title": "Min 10 Digit",
+            "message": "Nomor terlalu pendek, minimal 10 karakter",
+            "rule": "^\\d{10,}$"
+          }
+        ],
+        "prefixes": [
+          {
+            "key": "17",
+            "value": "0858",
+            "operator": {
+              "type": "",
+              "id": 17,
+              "attributes": {
+                "name": "Indosat - Mentari"
+              }
+            }
+          },
+          {
+            "key": "5",
+            "value": "0879",
+            "operator": {
+              "type": "",
+              "id": 5,
+              "attributes": {
+                "name": "XL"
+              }
+            }
+          },
+          {
+            "key": "1",
+            "value": "0831",
+            "operator": {
+              "type": "",
+              "id": 1,
+              "attributes": {
+                "name": "Axis"
+              }
+            }
+          },
+          {
+            "key": "1",
+            "value": "0836",
+            "operator": {
+              "type": "",
+              "id": 1,
+              "attributes": {
+                "name": "Axis"
+              }
+            }
+          },
+          {
+            "key": "5",
+            "value": "0817",
+            "operator": {
+              "type": "",
+              "id": 5,
+              "attributes": {
+                "name": "XL"
+              }
+            }
+          },
+          {
+            "key": "5",
+            "value": "0818",
+            "operator": {
+              "type": "",
+              "id": 5,
+              "attributes": {
+                "name": "XL"
+              }
+            }
+          },
+          {
+            "key": "5",
+            "value": "0819",
+            "operator": {
+              "type": "",
+              "id": 5,
+              "attributes": {
+                "name": "XL"
+              }
+            }
+          },
+          {
+            "key": "1",
+            "value": "0832",
+            "operator": {
+              "type": "",
+              "id": 1,
+              "attributes": {
+                "name": "Axis"
+              }
+            }
+          },
+          {
+            "key": "1",
+            "value": "0838",
+            "operator": {
+              "type": "",
+              "id": 1,
+              "attributes": {
+                "name": "Axis"
+              }
+            }
+          },
+          {
+            "key": "2",
+            "value": "0856",
+            "operator": {
+              "type": "",
+              "id": 2,
+              "attributes": {
+                "name": "Indosat - IM3"
+              }
+            }
+          },
+          {
+            "key": "2",
+            "value": "0857",
+            "operator": {
+              "type": "",
+              "id": 2,
+              "attributes": {
+                "name": "Indosat - IM3"
+              }
+            }
+          },
+          {
+            "key": "5",
+            "value": "0877",
+            "operator": {
+              "type": "",
+              "id": 5,
+              "attributes": {
+                "name": "XL"
+              }
+            }
+          },
+          {
+            "key": "5",
+            "value": "0878",
+            "operator": {
+              "type": "",
+              "id": 5,
+              "attributes": {
+                "name": "XL"
+              }
+            }
+          },
+          {
+            "key": "7",
+            "value": "0881",
+            "operator": {
+              "type": "",
+              "id": 7,
+              "attributes": {
+                "name": "Smartfren"
+              }
+            }
+          },
+          {
+            "key": "7",
+            "value": "0882",
+            "operator": {
+              "type": "",
+              "id": 7,
+              "attributes": {
+                "name": "Smartfren"
+              }
+            }
+          },
+          {
+            "key": "7",
+            "value": "0883",
+            "operator": {
+              "type": "",
+              "id": 7,
+              "attributes": {
+                "name": "Smartfren"
+              }
+            }
+          },
+          {
+            "key": "7",
+            "value": "0884",
+            "operator": {
+              "type": "",
+              "id": 7,
+              "attributes": {
+                "name": "Smartfren"
+              }
+            }
+          },
+          {
+            "key": "7",
+            "value": "0885",
+            "operator": {
+              "type": "",
+              "id": 7,
+              "attributes": {
+                "name": "Smartfren"
+              }
+            }
+          },
+          {
+            "key": "7",
+            "value": "0886",
+            "operator": {
+              "type": "",
+              "id": 7,
+              "attributes": {
+                "name": "Smartfren"
+              }
+            }
+          },
+          {
+            "key": "7",
+            "value": "0887",
+            "operator": {
+              "type": "",
+              "id": 7,
+              "attributes": {
+                "name": "Smartfren"
+              }
+            }
+          },
+          {
+            "key": "7",
+            "value": "0888",
+            "operator": {
+              "type": "",
+              "id": 7,
+              "attributes": {
+                "name": "Smartfren"
+              }
+            }
+          },
+          {
+            "key": "7",
+            "value": "0889",
+            "operator": {
+              "type": "",
+              "id": 7,
+              "attributes": {
+                "name": "Smartfren"
+              }
+            }
+          },
+          {
+            "key": "4",
+            "value": "0895",
+            "operator": {
+              "type": "",
+              "id": 4,
+              "attributes": {
+                "name": "Tri"
+              }
+            }
+          },
+          {
+            "key": "4",
+            "value": "0896",
+            "operator": {
+              "type": "",
+              "id": 4,
+              "attributes": {
+                "name": "Tri"
+              }
+            }
+          },
+          {
+            "key": "4",
+            "value": "0897",
+            "operator": {
+              "type": "",
+              "id": 4,
+              "attributes": {
+                "name": "Tri"
+              }
+            }
+          },
+          {
+            "key": "4",
+            "value": "0898",
+            "operator": {
+              "type": "",
+              "id": 4,
+              "attributes": {
+                "name": "Tri"
+              }
+            }
+          },
+          {
+            "key": "4",
+            "value": "0899",
+            "operator": {
+              "type": "",
+              "id": 4,
+              "attributes": {
+                "name": "Tri"
+              }
+            }
+          },
+          {
+            "key": "12",
+            "value": "0821",
+            "operator": {
+              "type": "",
+              "id": 12,
+              "attributes": {
+                "name": "Telkomsel - Simpati"
+              }
+            }
+          },
+          {
+            "key": "12",
+            "value": "0822",
+            "operator": {
+              "type": "",
+              "id": 12,
+              "attributes": {
+                "name": "Telkomsel - Simpati"
+              }
+            }
+          },
+          {
+            "key": "12",
+            "value": "0812",
+            "operator": {
+              "type": "",
+              "id": 12,
+              "attributes": {
+                "name": "Telkomsel - Simpati"
+              }
+            }
+          },
+          {
+            "key": "12",
+            "value": "0813",
+            "operator": {
+              "type": "",
+              "id": 12,
+              "attributes": {
+                "name": "Telkomsel - Simpati"
+              }
+            }
+          },
+          {
+            "key": "15",
+            "value": "0852",
+            "operator": {
+              "type": "",
+              "id": 15,
+              "attributes": {
+                "name": "Telkomsel - As"
+              }
+            }
+          },
+          {
+            "key": "17",
+            "value": "0815",
+            "operator": {
+              "type": "",
+              "id": 17,
+              "attributes": {
+                "name": "Indosat - Mentari"
+              }
+            }
+          },
+          {
+            "key": "17",
+            "value": "0814",
+            "operator": {
+              "type": "",
+              "id": 17,
+              "attributes": {
+                "name": "Indosat - Mentari"
+              }
+            }
+          },
+          {
+            "key": "17",
+            "value": "0816",
+            "operator": {
+              "type": "",
+              "id": 17,
+              "attributes": {
+                "name": "Indosat - Mentari"
+              }
+            }
+          },
+          {
+            "key": "15",
+            "value": "0823",
+            "operator": {
+              "type": "",
+              "id": 15,
+              "attributes": {
+                "name": "Telkomsel - As"
+              }
+            }
+          },
+          {
+            "key": "15",
+            "value": "0853",
+            "operator": {
+              "type": "",
+              "id": 15,
+              "attributes": {
+                "name": "Telkomsel - As"
+              }
+            }
+          },
+          {
+            "key": "15",
+            "value": "0851",
+            "operator": {
+              "type": "",
+              "id": 15,
+              "attributes": {
+                "name": "Telkomsel - As"
+              }
+            }
+          },
+          {
+            "key": "4",
+            "value": "0894",
+            "operator": {
+              "type": "",
+              "id": 4,
+              "attributes": {
+                "name": "Tri"
+              }
+            }
+          },
+          {
+            "key": "1",
+            "value": "0833",
+            "operator": {
+              "type": "",
+              "id": 1,
+              "attributes": {
+                "name": "Axis"
+              }
+            }
+          },
+          {
+            "key": "3",
+            "value": "998",
+            "operator": {
+              "type": "",
+              "id": 3,
+              "attributes": {
+                "name": "Bolt"
+              }
+            }
+          },
+          {
+            "key": "3",
+            "value": "999",
+            "operator": {
+              "type": "",
+              "id": 3,
+              "attributes": {
+                "name": "Bolt"
+              }
+            }
+          },
+          {
+            "key": "12",
+            "value": "0811",
+            "operator": {
+              "type": "",
+              "id": 12,
+              "attributes": {
+                "name": "Telkomsel - Simpati"
+              }
+            }
+          },
+          {
+            "key": "17",
+            "value": "0855",
+            "operator": {
+              "type": "",
+              "id": 17,
+              "attributes": {
+                "name": "Indosat - Mentari"
+              }
+            }
+          },
+          {
+            "key": "5",
+            "value": "08599",
+            "operator": {
+              "type": "",
+              "id": 5,
+              "attributes": {
+                "name": "XL"
+              }
+            }
+          },
+          {
+            "key": "584",
+            "value": "88",
+            "operator": {
+              "type": "",
+              "id": 584,
+              "attributes": {
+                "name": "Hinet"
+              }
+            }
+          },
+          {
+            "key": "584",
+            "value": "87",
+            "operator": {
+              "type": "",
+              "id": 584,
+              "attributes": {
+                "name": "Hinet"
+              }
+            }
+          },
+          {
+            "key": "584",
+            "value": "82",
+            "operator": {
+              "type": "",
+              "id": 584,
+              "attributes": {
+                "name": "Hinet"
+              }
+            }
+          },
+          {
+            "key": "1",
+            "value": "08598",
+            "operator": {
+              "type": "",
+              "id": 1,
+              "attributes": {
+                "name": "Axis"
+              }
+            }
+          },
+          {
+            "key": "5",
+            "value": "08590",
+            "operator": {
+              "type": "",
+              "id": 5,
+              "attributes": {
+                "name": "XL"
+              }
+            }
+          },
+          {
+            "key": "5",
+            "value": "08592",
+            "operator": {
+              "type": "",
+              "id": 5,
+              "attributes": {
+                "name": "XL"
+              }
+            }
+          },
+          {
+            "key": "5",
+            "value": "08593",
+            "operator": {
+              "type": "",
+              "id": 5,
+              "attributes": {
+                "name": "XL"
+              }
+            }
+          },
+          {
+            "key": "5",
+            "value": "08594",
+            "operator": {
+              "type": "",
+              "id": 5,
+              "attributes": {
+                "name": "XL"
+              }
+            }
+          },
+          {
+            "key": "5",
+            "value": "08595",
+            "operator": {
+              "type": "",
+              "id": 5,
+              "attributes": {
+                "name": "XL"
+              }
+            }
+          },
+          {
+            "key": "5",
+            "value": "08596",
+            "operator": {
+              "type": "",
+              "id": 5,
+              "attributes": {
+                "name": "XL"
+              }
+            }
+          },
+          {
+            "key": "5",
+            "value": "08597",
+            "operator": {
+              "type": "",
+              "id": 5,
+              "attributes": {
+                "name": "XL"
+              }
+            }
+          },
+          {
+            "key": "2706",
+            "value": "0859106",
+            "operator": {
+              "type": "",
+              "id": 2706,
+              "attributes": {
+                "name": "Live.On"
+              }
+            }
+          },
+          {
+            "key": "1",
+            "value": "0859101",
+            "operator": {
+              "type": "",
+              "id": 1,
+              "attributes": {
+                "name": "Axis"
+              }
+            }
+          },
+          {
+            "key": "2706",
+            "value": "0859103",
+            "operator": {
+              "type": "",
+              "id": 2706,
+              "attributes": {
+                "name": "Live.On"
+              }
+            }
+          },
+          {
+            "key": "2706",
+            "value": "0859104",
+            "operator": {
+              "type": "",
+              "id": 2706,
+              "attributes": {
+                "name": "Live.On"
+              }
+            }
+          },
+          {
+            "key": "2706",
+            "value": "0859105",
+            "operator": {
+              "type": "",
+              "id": 2706,
+              "attributes": {
+                "name": "Live.On"
+              }
+            }
+          },
+          {
+            "key": "1",
+            "value": "0859102",
+            "operator": {
+              "type": "",
+              "id": 1,
+              "attributes": {
+                "name": "Axis"
+              }
+            }
+          },
+          {
+            "key": "1",
+            "value": "0859107",
+            "operator": {
+              "type": "",
+              "id": 1,
+              "attributes": {
+                "name": "Axis"
+              }
+            }
+          },
+          {
+            "key": "1",
+            "value": "0859108",
+            "operator": {
+              "type": "",
+              "id": 1,
+              "attributes": {
+                "name": "Axis"
+              }
+            }
+          },
+          {
+            "key": "1",
+            "value": "0859109",
+            "operator": {
+              "type": "",
+              "id": 1,
+              "attributes": {
+                "name": "Axis"
+              }
+            }
+          },
+          {
+            "key": "1",
+            "value": "085911",
+            "operator": {
+              "type": "",
+              "id": 1,
+              "attributes": {
+                "name": "Axis"
+              }
+            }
+          },
+          {
+            "key": "1",
+            "value": "085912",
+            "operator": {
+              "type": "",
+              "id": 1,
+              "attributes": {
+                "name": "Axis"
+              }
+            }
+          },
+          {
+            "key": "1",
+            "value": "085913",
+            "operator": {
+              "type": "",
+              "id": 1,
+              "attributes": {
+                "name": "Axis"
+              }
+            }
+          },
+          {
+            "key": "1",
+            "value": "085914",
+            "operator": {
+              "type": "",
+              "id": 1,
+              "attributes": {
+                "name": "Axis"
+              }
+            }
+          },
+          {
+            "key": "1",
+            "value": "085915",
+            "operator": {
+              "type": "",
+              "id": 1,
+              "attributes": {
+                "name": "Axis"
+              }
+            }
+          },
+          {
+            "key": "1",
+            "value": "085916",
+            "operator": {
+              "type": "",
+              "id": 1,
+              "attributes": {
+                "name": "Axis"
+              }
+            }
+          },
+          {
+            "key": "1",
+            "value": "085917",
+            "operator": {
+              "type": "",
+              "id": 1,
+              "attributes": {
+                "name": "Axis"
+              }
+            }
+          },
+          {
+            "key": "1",
+            "value": "085918",
+            "operator": {
+              "type": "",
+              "id": 1,
+              "attributes": {
+                "name": "Axis"
+              }
+            }
+          },
+          {
+            "key": "1",
+            "value": "085919",
+            "operator": {
+              "type": "",
+              "id": 1,
+              "attributes": {
+                "name": "Axis"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+]

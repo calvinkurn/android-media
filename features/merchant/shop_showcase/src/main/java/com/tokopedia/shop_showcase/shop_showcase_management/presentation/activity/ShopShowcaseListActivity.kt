@@ -1,6 +1,8 @@
 package com.tokopedia.shop_showcase.shop_showcase_management.presentation.activity
 
 import android.os.Bundle
+import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.etalase.DeepLinkMapperEtalase
@@ -23,7 +25,10 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
     companion object {
         const val REQUEST_CODE_ADD_ETALASE = 289
 
+        @LayoutRes
         val ACTIVITY_LAYOUT = R.layout.activity_shop_showcase_list_container
+
+        @IdRes
         val PARENT_VIEW_ACTIVITY = R.id.parent_view
     }
 
