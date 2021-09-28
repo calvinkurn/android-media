@@ -17,6 +17,7 @@ import com.tokopedia.sellerhomecommon.presentation.view.adapter.WidgetRecommenda
 import com.tokopedia.sellerhomecommon.presentation.view.customview.ShopScorePMWidget
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
+import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
@@ -30,8 +31,8 @@ import kotlinx.android.synthetic.main.shc_recommendation_widget_success.view.*
  */
 
 class RecommendationViewHolder(
-        itemView: View,
-        private val listener: Listener
+    itemView: View,
+    private val listener: Listener
 ) : AbstractViewHolder<RecommendationWidgetUiModel>(itemView) {
 
     companion object {
@@ -57,15 +58,18 @@ class RecommendationViewHolder(
         containerShcRecommendationError.visible()
 
         tvShcRecommendationErrorStateTitle.text = element.title
-        ImageHandler.loadImageWithId(imgWidgetOnError, com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
+        ImageHandler.loadImageWithId(
+            imgWidgetOnError,
+            com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
+        )
 
         setupTooltip(tvShcRecommendationErrorStateTitle, element)
     }
 
-    private fun showLoadingState() = with(onLoadingView) {
+    private fun showLoadingState() {
         onSuccessView.containerShcRecommendationSuccess.gone()
         onErrorView.containerShcRecommendationError.gone()
-        containerShcRecommendationLoading.visible()
+        onLoadingView.containerShcRecommendationLoading.visible()
     }
 
     private fun setOnSuccess(element: RecommendationWidgetUiModel) {
@@ -88,9 +92,17 @@ class RecommendationViewHolder(
             val currentProgressValue = progressBar?.bar?.value.orZero()
             val setMaxProgressValue = progressBar?.bar?.maxValue.orZero()
             val progressState = getProgressState(currentProgressValue, setMaxProgressValue)
-            setupProgressBar(progressTitle, currentProgressText, setMaxProgressText, currentProgressValue, setMaxProgressValue, progressState)
+            setupProgressBar(
+                progressTitle,
+                currentProgressText,
+                setMaxProgressText,
+                currentProgressValue,
+                setMaxProgressValue,
+                progressState
+            )
 
             setupCta(element)
+            setTagNotification(element.tag)
             setupTooltip(tvShcRecommendationTitle, element)
 
             itemView.addOnImpressionListener(element.impressHolder) {
@@ -100,13 +112,29 @@ class RecommendationViewHolder(
         }
     }
 
+    private fun setTagNotification(tag: String) {
+        val isTagVisible = tag.isNotBlank()
+        with(itemView) {
+            notifTagRecommendation.showWithCondition(isTagVisible)
+            if (isTagVisible) {
+                notifTagRecommendation.setNotification(
+                    tag,
+                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COLOR_TEXT_TYPE
+                )
+            }
+        }
+    }
+
     private fun setupTicker(ticker: RecommendationTickerUiModel?) {
         with(onSuccessView) {
             if (ticker?.text.isNullOrBlank()) {
                 tickerShcRecommendation.gone()
 
-                val marginLeft = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
-                val marginTop = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+                val marginLeft =
+                    context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
+                val marginTop =
+                    context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
                 slvShcShopLevel.setMargin(marginLeft, marginTop, 0, 0)
                 return
             }
@@ -130,8 +158,10 @@ class RecommendationViewHolder(
                     }
                 })
 
-                val marginLeft = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
-                val marginTop = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
+                val marginLeft =
+                    context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_12)
+                val marginTop =
+                    context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
                 slvShcShopLevel.setMargin(marginLeft, marginTop, 0, 0)
             }
         }
@@ -148,10 +178,18 @@ class RecommendationViewHolder(
                 tvShcRecommendationCta.setOnClickListener {
                     openApplink(element)
                 }
-                val iconColor = context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)
-                val iconWidth = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
-                val iconHeight = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
-                tvShcRecommendationCta.setUnifyDrawableEnd(IconUnify.CHEVRON_RIGHT, iconColor, iconWidth, iconHeight)
+                val iconColor =
+                    context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)
+                val iconWidth =
+                    context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+                val iconHeight =
+                    context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+                tvShcRecommendationCta.setUnifyDrawableEnd(
+                    IconUnify.CHEVRON_RIGHT,
+                    iconColor,
+                    iconWidth,
+                    iconHeight
+                )
             }
         }
     }
@@ -162,30 +200,41 @@ class RecommendationViewHolder(
         }
     }
 
-    private fun setupTooltip(titleTextView: TextView, element: RecommendationWidgetUiModel) = with(itemView) {
-        val tooltip = element.tooltip
-        val shouldShowTooltip = (tooltip?.shouldShow == true) && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
-        if (shouldShowTooltip) {
-            titleTextView.setUnifyDrawableEnd(IconUnify.INFORMATION)
-            titleTextView.setOnClickListener {
-                listener.onTooltipClicked(tooltip ?: return@setOnClickListener)
+    private fun setupTooltip(titleTextView: TextView, element: RecommendationWidgetUiModel) =
+        with(itemView) {
+            val tooltip = element.tooltip
+            val shouldShowTooltip =
+                (tooltip?.shouldShow == true) && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
+            if (shouldShowTooltip) {
+                titleTextView.setUnifyDrawableEnd(IconUnify.INFORMATION)
+                titleTextView.setOnClickListener {
+                    listener.onTooltipClicked(tooltip ?: return@setOnClickListener)
+                }
+            } else {
+                titleTextView.clearUnifyDrawableEnd()
             }
-        } else {
-            titleTextView.clearUnifyDrawableEnd()
         }
-    }
 
     private fun setupRecommendations(element: RecommendationWidgetUiModel) = with(onSuccessView) {
         val recommendation = element.data?.recommendation
         recommendation?.let { data ->
-            val dp24 = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
-            tvShcRecommendationHeaderItem.setUnifyDrawableEnd(IconUnify.CHEVRON_UP, width = dp24, height = dp24)
+            val dp24 =
+                context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+            tvShcRecommendationHeaderItem.setUnifyDrawableEnd(
+                IconUnify.CHEVRON_UP,
+                width = dp24,
+                height = dp24
+            )
             tvShcRecommendationHeaderItem.text = data.title
 
             tvShcRecommendationHeaderItem.setOnClickListener {
                 if (rvShcRecommendationList.isVisible) {
                     rvShcRecommendationList.gone()
-                    tvShcRecommendationHeaderItem.setUnifyDrawableEnd(IconUnify.CHEVRON_DOWN, width = dp24, height = dp24)
+                    tvShcRecommendationHeaderItem.setUnifyDrawableEnd(
+                        IconUnify.CHEVRON_DOWN,
+                        width = dp24,
+                        height = dp24
+                    )
 
                     if (element.ctaText.isBlank()) {
                         horLineShcShopScore2.gone()
@@ -193,15 +242,22 @@ class RecommendationViewHolder(
                         horLineShcShopScore2.visible()
                     }
 
-                    val margin = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
+                    val margin =
+                        context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
                     tvShcRecommendationCta.setMargin(0, margin, 0, margin)
                 } else {
                     rvShcRecommendationList.visible()
-                    tvShcRecommendationHeaderItem.setUnifyDrawableEnd(IconUnify.CHEVRON_UP, width = dp24, height = dp24)
+                    tvShcRecommendationHeaderItem.setUnifyDrawableEnd(
+                        IconUnify.CHEVRON_UP,
+                        width = dp24,
+                        height = dp24
+                    )
                     horLineShcShopScore2.visible()
 
-                    val marginTop = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
-                    val marginBottom = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
+                    val marginTop =
+                        context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
+                    val marginBottom =
+                        context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
                     tvShcRecommendationCta.setMargin(0, marginTop, 0, marginBottom)
                 }
             }
@@ -228,12 +284,12 @@ class RecommendationViewHolder(
     }
 
     private fun setupProgressBar(
-            progressTitle: String,
-            currentProgressText: String,
-            maxProgressText: String,
-            currentProgress: Int,
-            maxProgress: Int,
-            state: ShopScorePMWidget.State
+        progressTitle: String,
+        currentProgressText: String,
+        maxProgressText: String,
+        currentProgress: Int,
+        maxProgress: Int,
+        state: ShopScorePMWidget.State
     ) = with(onSuccessView.sspShcShopScoreProgress) {
         setProgressTitle(progressTitle)
         setCurrentProgressText(currentProgressText)
@@ -257,6 +313,10 @@ class RecommendationViewHolder(
 
         fun sendRecommendationCtaClickEvent(element: RecommendationWidgetUiModel) {}
 
-        fun sendRecommendationItemClickEvent(element: RecommendationWidgetUiModel, item: RecommendationItemUiModel) {}
+        fun sendRecommendationItemClickEvent(
+            element: RecommendationWidgetUiModel,
+            item: RecommendationItemUiModel
+        ) {
+        }
     }
 }

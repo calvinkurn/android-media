@@ -3,6 +3,7 @@ package com.tokopedia.applink.merchant
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.inbox.DeeplinkMapperInbox
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
@@ -245,7 +246,7 @@ object DeeplinkMapperMerchant {
                 if (GlobalConfig.isSellerApp()) {
                     ApplinkConst.SELLER_INFO
                 } else {
-                    ApplinkConstInternalMarketplace.NOTIFICATION_BUYER_INFO
+                    DeeplinkMapperInbox.getRegisteredNavigationNotifcenter()
                 }
             } else {
                 UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, url)
@@ -379,15 +380,18 @@ object DeeplinkMapperMerchant {
                     RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
             ) == RollenceKey.VARIANT_NEW_INBOX
             val useNewNav = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                    RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
-            ) == RollenceKey.NAVIGATION_VARIANT_REVAMP
+                RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
+            ) == RollenceKey.NAVIGATION_VARIANT_REVAMP ||
+                    RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                        RollenceKey.NAVIGATION_EXP_TOP_NAV2, RollenceKey.NAVIGATION_VARIANT_OLD
+                    ) == RollenceKey.NAVIGATION_VARIANT_REVAMP2
             useNewInbox && useNewNav
         } catch (e: Exception) {
             false
         }
     }
 
-    fun goToNewReadProductReview(): Boolean {
+    private fun goToNewReadProductReview(): Boolean {
         return try {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(
                 RollenceKey.EXPERIMENT_NAME_REVIEW_PRODUCT_READING, RollenceKey.VARIANT_OLD_REVIEW_PRODUCT_READING

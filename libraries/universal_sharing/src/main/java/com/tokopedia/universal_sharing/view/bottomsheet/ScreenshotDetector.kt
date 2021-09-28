@@ -5,6 +5,7 @@ package com.tokopedia.universal_sharing.view.bottomsheet
 import android.Manifest
 import android.content.ContentResolver
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.ContentObserver
 import android.net.Uri
@@ -12,6 +13,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
+import android.provider.Settings
 import android.text.TextUtils
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -19,6 +21,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
@@ -30,11 +33,11 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
 
     private var contentObserver: ContentObserver? = null
     private val pendingRegex = ".pending"
-    private val screenShotRegex = "screenshot"
     private val actionPermissionDialog = "click - access photo media and files"
     private val labelAllow = "allow"
     private val labelDeny = "deny"
     private val readingDelayTime = 1100L
+    private val screenShotDelayTime = 500L;
     private var ssUriPath = ""
 
     fun start() {
@@ -76,9 +79,7 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
                         if (!ssUriPath.equals(path)) {
                             ssUriPath = path
                             if (!path.contains(pendingRegex)) {
-                                UniversalShareBottomSheet.setImageOnlySharingOption(true)
-                                UniversalShareBottomSheet.setScreenShotImagePath(path)
-                                screenShotListener?.screenShotTaken()
+                                notifyScreenShotTaken(path)
                             }
                         }
                     }
@@ -116,9 +117,7 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
                         if (!ssUriPath.equals(relativePath)) {
                             ssUriPath = relativePath
                             if (!relativePath.contains(pendingRegex)) {
-                                UniversalShareBottomSheet.setImageOnlySharingOption(true)
-                                UniversalShareBottomSheet.setScreenShotImagePath(relativePath)
-                                screenShotListener?.screenShotTaken()
+                                notifyScreenShotTaken(relativePath)
                             }
                         }
                     }
@@ -127,6 +126,14 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
         }catch (exception:Exception){
             logError(exception.localizedMessage)
         }
+    }
+
+    private fun notifyScreenShotTaken(path:String){
+        Handler(Looper.getMainLooper()).postDelayed({
+            UniversalShareBottomSheet.setImageOnlySharingOption(true)
+            UniversalShareBottomSheet.setScreenShotImagePath(path)
+            screenShotListener?.screenShotTaken()
+        }, screenShotDelayTime)
     }
 
     private fun ContentResolver.registerObserver(): ContentObserver {
@@ -166,7 +173,13 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
             display?.invoke()
         } else {
             if(requestPermission) {
-                showCustomPermissionDialog(fragment, toastView, display)
+                fragment.context?.let {
+                    if(isValidPermissionAskingAttempt(it)){
+                        showCustomPermissionDialog(fragment, toastView, display)
+                    }else{
+                        display?.invoke()
+                    }
+                }
             }
         }
     }
@@ -176,6 +189,7 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
             DialogUnify.WITH_ILLUSTRATION).apply {
             setPrimaryCTAText(fragment.getString(R.string.permission_dialog_primary_cta))
             setPrimaryCTAClickListener {
+                this.setOnDismissListener {  }
                 display?.invoke()
                 requestPermission(fragment)
                 dismiss()
@@ -183,9 +197,18 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
             }
             setSecondaryCTAText(fragment.getString(R.string.permission_dialog_secondary_cta))
             setSecondaryCTAClickListener {
+                this.setOnDismissListener {  }
                 dismiss()
                 toastView?.let { Toaster.build(it, text = fragment.getString(R.string.permission_denied_toast)).show() }
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
+                    display?.invoke()
+                }, readingDelayTime)
+                permissionListener?.permissionAction(actionPermissionDialog, fragment.getString(R.string.permission_dialog_secondary_cta))
+            }
+            setOnDismissListener {
+                dismiss()
+                toastView?.let { Toaster.build(it, text = fragment.getString(R.string.permission_denied_toast)).show() }
+                Handler(Looper.getMainLooper()).postDelayed({
                     display?.invoke()
                 }, readingDelayTime)
                 permissionListener?.permissionAction(actionPermissionDialog, fragment.getString(R.string.permission_dialog_secondary_cta))
@@ -199,7 +222,8 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
 
     fun onRequestPermissionsResult(
         requestCode: Int,
-        grantResults: IntArray
+        grantResults: IntArray,
+        fragment: Fragment
     ) {
         when (requestCode) {
             READ_EXTERNAL_STORAGE_REQUEST -> {
@@ -208,6 +232,9 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
                     permissionListener?.permissionAction(actionPermissionDialog, labelAllow)
                 }else{
                     permissionListener?.permissionAction(actionPermissionDialog, labelDeny)
+                    if(!fragment.shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)){
+                        goToDeviceSetting(fragment)
+                    }
                 }
                 return
             }
@@ -227,12 +254,42 @@ class ScreenshotDetector(internal val context: Context, internal var screenShotL
         }
     }
 
+    private fun goToDeviceSetting(fragment: Fragment) {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        val uri: Uri = Uri.fromParts(LABEL_PACKAGE, context.packageName, null)
+        intent.data = uri
+        fragment.activity?.startActivityForResult(intent, READ_EXTERNAL_STORAGE_REQUEST)
+    }
+
+    private fun isValidPermissionAskingAttempt(context: Context):Boolean{
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val mSharedPrefs = context.getSharedPreferences(
+            SCREENSHOT_PREFERENCE,
+            Context.MODE_PRIVATE
+        )
+        val attemptCounter = remoteConfig.getLong(PERMISSION_ATTEMPT_COUNTER_FLAG)
+        return if(remoteConfig.getBoolean(PERMISSION_ATTEMPT_RESET_FLAG)){
+            mSharedPrefs.edit().putLong(SCREENSHOT_PERMISSION_ATTEMPT_COUNTER, attemptCounter-1).apply()
+            attemptCounter > 0
+        }else{
+            val remainingAttempts = mSharedPrefs.getLong(SCREENSHOT_PERMISSION_ATTEMPT_COUNTER, attemptCounter)
+            mSharedPrefs.edit().putLong(SCREENSHOT_PERMISSION_ATTEMPT_COUNTER, remainingAttempts-1).apply()
+            remainingAttempts > 0
+        }
+    }
+
     companion object {
         //permission request code
+        const val screenShotRegex = "screenshot"
         const val READ_EXTERNAL_STORAGE_REQUEST = 500
         const val TAG_SS_ERR = "SCREENSHOT_ERROR"
         const val LABEL_TYPE = "type"
         const val LABEL_ERROR = "error"
         const val LABEL_REASON = "reason"
+        const val LABEL_PACKAGE = "package"
+        const val SCREENSHOT_PREFERENCE = "screenshot_preference"
+        const val SCREENSHOT_PERMISSION_ATTEMPT_COUNTER = "screenshot_permission_attempt_counter"
+        const val PERMISSION_ATTEMPT_RESET_FLAG = "android_ss_permission_attempt_reset"
+        const val PERMISSION_ATTEMPT_COUNTER_FLAG = "android_ss_permission_attempt_counter"
     }
 }

@@ -247,7 +247,7 @@ class StatisticViewModelTest {
 
     @Test
     fun `should success when get user role`() = runBlocking {
-        val userId = 123456
+        val userId = "123456"
         val userRoles = listOf("a", "b", "c")
         getUserRoleUseCase.params = GetUserRoleUseCase.createParam(userId)
 
@@ -276,7 +276,7 @@ class StatisticViewModelTest {
 
     @Test
     fun `when failed to get user role then throws exception`() = runBlocking {
-        val userId = 123456
+        val userId = "123456"
         val throwable = RuntimeException("error message")
         getUserRoleUseCase.params = GetUserRoleUseCase.createParam(userId)
 

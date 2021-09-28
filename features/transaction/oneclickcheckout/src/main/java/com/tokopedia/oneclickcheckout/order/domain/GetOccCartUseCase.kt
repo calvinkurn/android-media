@@ -30,7 +30,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
     suspend fun executeSuspend(params: RequestParams): OrderData {
         val graphqlRequest = GET_OCC_CART_PAGE_QUERY
         val request = GraphqlRequest(graphqlRequest, GetOccCartGqlResponse::class.java, params.parameters)
-        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<GetOccCartGqlResponse>()
+        val response = graphqlRepository.response(listOf(request)).getSuccessData<GetOccCartGqlResponse>()
         if (response.response.status.equals(STATUS_OK, true)) {
             val errorMessage = response.response.data.errors.firstOrNull()
             val cart = response.response.data.groupShop.firstOrNull()
@@ -310,6 +310,10 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             card_type
             is_expired
             tnc_info
+            unix_timestamp
+            token_id
+            tenor_signature
+            is_afpb
           }
           error_message {
             message
@@ -576,6 +580,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
           color
         }
       }
+      total_product_price
     }
   }
 }"""

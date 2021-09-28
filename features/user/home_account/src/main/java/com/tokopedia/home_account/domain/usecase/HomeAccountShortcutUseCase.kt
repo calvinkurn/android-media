@@ -17,7 +17,7 @@ import javax.inject.Inject
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class HomeAccountShortcutUseCase @Inject constructor(
+open class HomeAccountShortcutUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val rawQueries: Map<String, String>
 ): GraphqlUseCase<ShortcutResponse>(graphqlRepository) {
@@ -36,7 +36,7 @@ class HomeAccountShortcutUseCase @Inject constructor(
         val rawQuery = rawQueries[AccountConstants.Query.QUERY_USER_REWARDSHORCUT]
         val gqlRequest = GraphqlRequest(rawQuery,
                 ShortcutResponse::class.java, mapOf<String, Any>())
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val errors = gqlResponse.getError(ShortcutResponse::class.java)
         if (!errors.isNullOrEmpty()) {
