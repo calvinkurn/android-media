@@ -222,7 +222,6 @@ class ShopHomeAdapterTypeFactory(
                     showcaseWidgetLayoutType,
                     showcaseWidgetGridColumnSize
             )
-            ShopHomeShimmeringGeneralViewHolder.LAYOUT -> ShopHomeShimmeringGeneralViewHolder(parent)
             ProductGridListPlaceholderViewHolder.LAYOUT -> ProductGridListPlaceholderViewHolder(parent)
             ShopHomeNplCampaignPlaceholderViewHolder.LAYOUT -> ShopHomeNplCampaignPlaceholderViewHolder(parent)
             ShopHomeCarousellProductPlaceholderViewHolder.LAYOUT -> ShopHomeCarousellProductPlaceholderViewHolder(parent)
