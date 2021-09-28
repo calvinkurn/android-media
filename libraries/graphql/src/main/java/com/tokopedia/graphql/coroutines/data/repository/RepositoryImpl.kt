@@ -99,11 +99,7 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                 }
                 LoggingUtils.logGqlParseSuccess("kt", requests.toString())
             } catch (jse: JsonSyntaxException) {
-                ServerLogger.log(Priority.P1, "GQL_PARSE_ERROR",
-                        mapOf("type" to "json",
-                                "err" to Log.getStackTraceString(jse).take(Const.GQL_ERROR_MAX_LENGTH).trim(),
-                                "req" to requests.toString().take(Const.GQL_ERROR_MAX_LENGTH).trim()
-                        ))
+                LoggingUtils.logGqlParseError("json", Log.getStackTraceString(jse), requests.toString())
                 jse.printStackTrace()
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -159,11 +155,7 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
             }
             LoggingUtils.logGqlParseSuccess("kt", requests.toString())
         } catch (jse: JsonSyntaxException) {
-            ServerLogger.log(Priority.P1, "GQL_PARSE_ERROR",
-                    mapOf("type" to "json",
-                            "err" to Log.getStackTraceString(jse).take(Const.GQL_ERROR_MAX_LENGTH).trim(),
-                            "req" to requests.toString().take(Const.GQL_ERROR_MAX_LENGTH).trim()
-                    ))
+            LoggingUtils.logGqlParseError("json", Log.getStackTraceString(jse), requests.toString())
             jse.printStackTrace()
         } catch (e: Exception) {
             e.printStackTrace()

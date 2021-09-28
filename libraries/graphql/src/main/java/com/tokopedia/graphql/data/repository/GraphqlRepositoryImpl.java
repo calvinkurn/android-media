@@ -19,11 +19,8 @@ import com.tokopedia.graphql.data.source.cloud.GraphqlCloudDataStore;
 import com.tokopedia.graphql.domain.GraphqlRepository;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.graphql.util.CacheHelper;
-import com.tokopedia.graphql.util.Const;
 import com.tokopedia.graphql.util.LoggingUtils;
 import com.tokopedia.graphql.util.NullCheckerKt;
-import com.tokopedia.logger.ServerLogger;
-import com.tokopedia.logger.utils.Priority;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -105,13 +102,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                         LoggingUtils.logGqlParseSuccess("java", String.valueOf(requests));
                     } catch (JsonSyntaxException jse) {
                         jse.printStackTrace();
-                        Map<String, String> messageMap = new HashMap<>();
-                        String errorLimit = getMessageLimit(Log.getStackTraceString(jse));
-                        String reqLimit = getMessageLimit(String.valueOf(requests));
-                        messageMap.put("type", "json");
-                        messageMap.put("err", errorLimit);
-                        messageMap.put("req", reqLimit);
-                        ServerLogger.log(Priority.P1, "GQL_PARSE_ERROR", messageMap);
+                        LoggingUtils.logGqlParseError("json", Log.getStackTraceString(jse), String.valueOf(requests));
                     } catch (Exception e) {
                         e.printStackTrace();
                         //Just to avoid any accidental data loss
@@ -166,28 +157,12 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
             }
             LoggingUtils.logGqlParseSuccess("java", String.valueOf(requests));
         } catch (JsonSyntaxException jse) {
-            Map<String, String> messageMap = new HashMap<>();
-            String errorLimit = getMessageLimit(Log.getStackTraceString(jse));
-            String reqLimit = getMessageLimit(String.valueOf(requests));
-            messageMap.put("type", "json");
-            messageMap.put("err", errorLimit);
-            messageMap.put("req", reqLimit);
-            ServerLogger.log(Priority.P1, "GQL_PARSE_ERROR", messageMap);
+            LoggingUtils.logGqlParseError("json", Log.getStackTraceString(jse), String.valueOf(requests));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return mGraphqlCloudDataStore.getResponse(requests, cacheStrategy);
-    }
-
-    private String getMessageLimit(String message) {
-        String messageLimit;
-        if (message.length() > Const.GQL_ERROR_MAX_LENGTH) {
-            messageLimit = message.substring(0, Const.GQL_ERROR_MAX_LENGTH).trim();
-        } else {
-            messageLimit = message;
-        }
-        return messageLimit;
     }
 
     private Observable<GraphqlResponseInternal> getCachedResponse(List<GraphqlRequest> requests, GraphqlCacheStrategy cacheStrategy) {
