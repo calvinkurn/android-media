@@ -5,9 +5,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.databinding.DetailProductCardItemBinding
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
 import com.tokopedia.sellerorder.detail.presentation.model.NonProductBundleUiModel
-import kotlinx.android.synthetic.main.detail_product_card_item.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created By @ilhamsuaib on 05/07/21
@@ -22,23 +23,25 @@ class SomDetailNonProductBundleCardViewHolder(
         val RES_LAYOUT = R.layout.detail_product_card_item
     }
 
+    private val binding by viewBinding<DetailProductCardItemBinding>()
+
     override fun bind(element: NonProductBundleUiModel) {
         val product = element.product
-        with(itemView) {
-            setOnClickListener {
+        binding?.run {
+            root.setOnClickListener {
                 actionListener?.onClickProduct(product.orderDetailId.toIntOrZero())
             }
-            iv_product.loadImage(product.thumbnail)
-            tv_product_name.text = product.name
-            tv_product_desc.text = StringBuilder("${product.quantity} x ${product.priceText}")
+            ivProduct.loadImage(product.thumbnail)
+            tvProductName.text = product.name
+            tvProductDesc.text = StringBuilder("${product.quantity} x ${product.priceText}")
             if (product.note.isNotEmpty()) {
-                divider_product.visibility = View.VISIBLE
-                tv_product_notes.visibility = View.VISIBLE
-                tv_product_notes.text = product.note.replace("\\n", System.getProperty("line.separator")
+                dividerProduct.visibility = View.VISIBLE
+                tvProductNotes.visibility = View.VISIBLE
+                tvProductNotes.text = product.note.replace("\\n", System.getProperty("line.separator")
                         ?: "")
             } else {
-                divider_product.visibility = View.GONE
-                tv_product_notes.visibility = View.GONE
+                dividerProduct.visibility = View.GONE
+                tvProductNotes.visibility = View.GONE
             }
         }
     }

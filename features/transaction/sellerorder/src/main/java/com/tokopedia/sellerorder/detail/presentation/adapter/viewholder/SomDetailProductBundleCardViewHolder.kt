@@ -6,11 +6,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.RecyclerViewItemDivider
+import com.tokopedia.sellerorder.databinding.ItemSomProductBundlingBinding
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailProductBundlingAdapter
 import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
-import kotlinx.android.synthetic.main.item_som_product_bundling.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created By @ilhamsuaib on 05/07/21
@@ -25,12 +26,14 @@ class SomDetailProductBundleCardViewHolder(
         val RES_LAYOUT = R.layout.item_som_product_bundling
     }
 
+    private val binding by viewBinding<ItemSomProductBundlingBinding>()
+
     private val productAdapter by lazy {
         SomDetailProductBundlingAdapter(actionListener)
     }
 
     override fun bind(element: ProductBundleUiModel) {
-        with(itemView) {
+        binding?.run {
             tvSomBundleName.text = element.bundleName
             tvSomTotalPrice.text = element.bundleSubTotal
 
@@ -39,7 +42,7 @@ class SomDetailProductBundleCardViewHolder(
     }
 
     private fun setupProductList(products: List<SomDetailOrder.Data.GetSomDetail.Products>) {
-        with(itemView.rvSomProductBundling) {
+        binding?.rvSomProductBundling?.run {
             layoutManager = object : LinearLayoutManager(context) {
                 override fun canScrollVertically(): Boolean = false
             }

@@ -9,8 +9,9 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.databinding.ItemSomProductBundlingProductBinding
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
-import kotlinx.android.synthetic.main.item_som_product_bundling_product.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created By @ilhamsuaib on 05/07/21
@@ -36,9 +37,11 @@ class SomDetailProductBundlingAdapter(
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+        private val binding by viewBinding<ItemSomProductBundlingProductBinding>()
+
         fun bind(product: SomDetailOrder.Data.GetSomDetail.Products) {
-            with(itemView) {
-                setOnClickListener {
+            binding?.run {
+                root.setOnClickListener {
                     actionListener?.onClickProduct(product.orderDetailId.toIntOrZero())
                 }
                 imgSomBundleProduct.loadImage(product.thumbnail)
