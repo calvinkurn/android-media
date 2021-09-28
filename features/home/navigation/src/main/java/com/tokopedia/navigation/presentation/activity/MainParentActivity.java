@@ -166,6 +166,7 @@ public class MainParentActivity extends BaseActivity implements
     private static final String HOME_PERFORMANCE_MONITORING_PREPARE_METRICS = "home_plt_start_page_metrics";
     private static final String HOME_PERFORMANCE_MONITORING_NETWORK_METRICS = "home_plt_network_request_page_metrics";
     private static final String HOME_PERFORMANCE_MONITORING_RENDER_METRICS = "home_plt_render_page_metrics";
+    private static final String MAIN_PARENT_ON_CREATE_METRICS = "main_parent_oncreate_metrics";
 
     private static final String HOME_PERFORMANCE_MONITORING_CACHE_ATTRIBUTION = "dataSource";
     private static final String HOME_PERFORMANCE_MONITORING_CACHE_VALUE = "Cache";
@@ -230,6 +231,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private PageLoadTimePerformanceCallback pageLoadTimePerformanceCallback;
     private PageLoadTimePerformanceCallback officialStorePageLoadTimePerformanceCallback;
+    private PageLoadTimePerformanceCallback mainParentPageLoadTimePerformanceCallback;
 
     private boolean isNewNavigation;
 
@@ -256,6 +258,7 @@ public class MainParentActivity extends BaseActivity implements
         //changes for triggering unittest checker
         startSelectedPagePerformanceMonitoring();
         startMainParentPerformanceMonitoring();
+        pageLoadTimePerformanceCallback.startCustomMetric(MAIN_PARENT_ON_CREATE_METRICS);
 
         super.onCreate(savedInstanceState);
         initInjector();
@@ -277,6 +280,8 @@ public class MainParentActivity extends BaseActivity implements
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeEventsWeave, RemoteConfigKey.ENABLE_ASYNC_OPENHOME_EVENT, getContext());
         installDFonBackground();
         runRiskWorker();
+
+        pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_CREATE_METRICS);
     }
 
     private void runRiskWorker() {
