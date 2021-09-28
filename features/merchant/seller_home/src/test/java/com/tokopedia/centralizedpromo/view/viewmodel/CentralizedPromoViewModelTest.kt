@@ -169,10 +169,10 @@ class CentralizedPromoViewModelTest {
 
         coEvery {
             voucherCashbackEligibleUseCase.execute(any())
-        } returns true
+        } returns false
 
-        every {
-            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED)
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
         } returns true
 
         every {
@@ -199,6 +199,10 @@ class CentralizedPromoViewModelTest {
         coEvery {
             getChatBlastSellerMetadataUseCase.executeOnBackground()
         } returns ChatBlastSellerMetadataUiModel(0, 0)
+
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
 
         coEvery {
             voucherCashbackEligibleUseCase.execute(any())
