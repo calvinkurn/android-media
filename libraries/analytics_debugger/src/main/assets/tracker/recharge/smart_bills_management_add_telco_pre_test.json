@@ -1,0 +1,92 @@
+{
+  "readme": "Smart bills management Add Telco Pre",
+  "mode": "exact",
+  "query": [
+    {
+      "businessUnit": "top up and tagihan",
+      "eventCategory": "digital - smart bill management - add bills",
+      "currentSite": "tokopediaDigitalRecharge",
+      "event": "clickSmartBill",
+      "eventAction": "click input field",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "businessUnit": "top up and tagihan",
+      "eventCategory": "digital - smart bill management - add bills",
+      "currentSite": "tokopediaDigitalRecharge",
+      "event": "clickSmartBill",
+      "eventAction": "click x - top information box",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "businessUnit": "top up and tagihan",
+      "eventCategory": "digital - smart bill management - add bills",
+      "currentSite": "tokopediaDigitalRecharge",
+      "event": "clickSmartBill",
+      "eventAction": "click drop down list  1",
+      "sessionIris": ".*",
+      "eventLabel": ".* - .*"
+    },
+    {
+      "businessUnit": "top up and tagihan",
+      "eventCategory": "digital - smart bill management - add bills",
+      "currentSite": "tokopediaDigitalRecharge",
+      "event": "clickSmartBill",
+      "eventAction": "click x - drop down list product",
+      "sessionIris": ".*",
+      "eventLabel": ".* - .*"
+    },
+    {
+      "businessUnit": "top up and tagihan",
+      "clientId": ".*",
+      "eventCategory": "digital - smart bill management - add bills",
+      "currentSite": "tokopediaDigitalRecharge",
+      "item_list": "",
+      "event": "select_content",
+      "userId": ".*",
+      "eventAction": "click product",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "price": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": "",
+          "item_category": ".*"
+        }
+      ],
+      "eventLabel": ".* - .*"
+    },
+    {
+      "businessUnit": "top up and tagihan",
+      "eventCategory": "digital - smart bill management - add bills",
+      "currentSite": "tokopediaDigitalRecharge",
+      "event": "clickSmartBill",
+      "eventAction": "click tambah tagihan / lanjut",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "businessUnit": "top up and tagihan",
+      "eventCategory": "digital - smart bill management - add bills",
+      "currentSite": "tokopediaDigitalRecharge",
+      "event": "viewSmartBillIris",
+      "eventAction": "view error - toaster box",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "businessUnit": "top up and tagihan",
+      "eventCategory": "digital - smart bill management",
+      "currentSite": "tokopediaDigitalRecharge",
+      "event": "clickSmartBill",
+      "eventAction": "click back",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    }
+  ]
+}

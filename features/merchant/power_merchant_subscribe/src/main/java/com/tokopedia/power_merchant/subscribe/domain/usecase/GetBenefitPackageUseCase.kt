@@ -18,7 +18,7 @@ class GetBenefitPackageUseCase @Inject constructor(
     override suspend fun executeOnBackground(): List<BaseBenefitPackageUiModel> {
         val gqlRequest = GraphqlRequest(BENEFIT_PACKAGE_QUERY,
             BenefitPackageResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest))
 
         val gqlError = gqlResponse.getError(BenefitPackageResponse::class.java)
         if (gqlError.isNullOrEmpty()) {
