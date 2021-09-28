@@ -16,21 +16,31 @@ import com.tokopedia.digital_deals.view.activity.DealDetailsActivity
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks
 import com.tokopedia.digital_deals.view.utils.Utils
+import com.tokopedia.digital_deals.view.viewmodel.DealsVerifyViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.deal_item_card.iv_brand
 import kotlinx.android.synthetic.main.deal_item_card.tv_brand_name
 import kotlinx.android.synthetic.main.fragment_brand_detail.toolbar
 import kotlinx.android.synthetic.main.fragment_checkout_deal.tv_deal_details
 import kotlinx.android.synthetic.main.fragment_checkout_deal.tv_total_amount
 import kotlinx.android.synthetic.main.fragment_deal_quantity.*
+import javax.inject.Inject
 
 class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
 
     private lateinit var dealsDetail: DealsDetailsResponse
 
     private lateinit var dealFragmentCallback : DealFragmentCallbacks
+
+    @Inject
+    lateinit var viewModel: DealsVerifyViewModel
 
     private var currentQuantity = 1
     private var minQuantity = 1
@@ -113,6 +123,27 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
             setButtons()
         }
 
+        tv_continue.setOnClickListener {
+            verify()
+        }
+
+    }
+
+    private fun observeVerify(){
+        observe(viewModel.dealsVerify){
+            when (it){
+                is Success -> {
+                    // do success action
+                }
+
+                is Fail -> {
+                    val error = ErrorHandler.getErrorMessage(context, it.throwable)
+                    view?.let {
+                        Toaster.build(it, error, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                    }
+                }
+            }
+        }
     }
 
     private fun setButtons(){
@@ -136,6 +167,10 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
 
     private fun setTotalAmount(){
         tv_total_amount.text = Utils.convertToCurrencyString((dealsDetail.salesPrice * currentQuantity).toLong())
+    }
+
+    private fun verify(){
+        viewModel.verify(viewModel.mapVerifyRequest(currentQuantity, dealsDetail))
     }
 
     companion object{

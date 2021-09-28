@@ -16,7 +16,8 @@ import com.tokopedia.oms.di.OmsModule;
 import dagger.Component;
 
 @DealsScope
-@Component(modules = {OmsModule.class, DealsModule.class}, dependencies = BaseAppComponent.class)
+@Component(modules = {OmsModule.class, DealsModule.class, DealsVerifyViewModelModule.class},
+        dependencies = BaseAppComponent.class)
 
 public interface DealsComponent {
 
