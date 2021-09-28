@@ -6,7 +6,7 @@
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.TrackingPageRefactorFragment">
+    tools:context=".view.TrackingPageFragment">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -132,38 +132,6 @@
                 tools:text="Bandung" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/lbl_eta"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
-                android:paddingTop="@dimen/dp_16"
-                android:text="@string/tracking_label_eta"
-                android:textColor="@color/Unify_N200"
-                app:layout_constraintEnd_toEndOf="@id/center"
-                app:layout_constraintLeft_toRightOf="@id/left_padding"
-                app:layout_constraintRight_toLeftOf="@id/center"
-                app:layout_constraintStart_toEndOf="@id/left_padding"
-                app:layout_constraintTop_toBottomOf="@+id/store_address"
-                app:typographyType="body_2" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/eta"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_8"
-                android:drawablePadding="@dimen/dp_4"
-                android:textColor="@color/Unify_N700_68"
-                app:layout_constraintEnd_toEndOf="@id/center"
-                app:layout_constraintLeft_toRightOf="@id/left_padding"
-                app:layout_constraintRight_toLeftOf="@id/center"
-                app:layout_constraintStart_toEndOf="@id/left_padding"
-                app:layout_constraintTop_toBottomOf="@+id/lbl_eta"
-                app:typographyType="body_2"
-                tools:text="17 - 19 April 2021" />
-
-            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/lbl_service_code"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -248,7 +216,7 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/Unify_N100"
-                app:layout_constraintTop_toBottomOf="@id/eta" />
+                app:layout_constraintTop_toBottomOf="@id/description_barrier" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/lbl_tracking_status"
@@ -444,7 +412,7 @@
                 android:id="@+id/description_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:constraint_referenced_ids="lbl_delivery_date,delivery_date,lbl_seller_courier_tracking,store_name,store_address,lbl_eta,eta,lbl_service_code,service_code,lbl_buyer,buyer_name,buyer_location" />
+                app:constraint_referenced_ids="lbl_delivery_date,delivery_date,lbl_seller_courier_tracking,store_name,store_address,lbl_service_code,service_code,lbl_buyer,buyer_name,buyer_location" />
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/ticker_info_layout"
@@ -459,6 +427,14 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone"
                 app:constraint_referenced_ids="img_info,notification_text,notification_help_step" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/description_barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="buyer_location,store_address"
+                />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
