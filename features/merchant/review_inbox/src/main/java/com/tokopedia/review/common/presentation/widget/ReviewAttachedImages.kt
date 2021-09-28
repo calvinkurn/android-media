@@ -9,8 +9,8 @@ import com.tokopedia.review.common.presentation.adapter.ReviewAttachedImagesAdap
 import com.tokopedia.review.common.util.ReviewAttachedImagesClickListener
 import com.tokopedia.review.feature.inbox.history.presentation.util.ReviewHistoryItemListener
 import com.tokopedia.review.inbox.R
+import com.tokopedia.review.inbox.databinding.WidgetReviewAttachedImagesBinding
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.widget_review_attached_images.view.*
 
 class ReviewAttachedImages : BaseCustomView {
 
@@ -25,6 +25,8 @@ class ReviewAttachedImages : BaseCustomView {
         init()
     }
 
+    private var binding = WidgetReviewAttachedImagesBinding.bind(this)
+
     private fun init() {
         View.inflate(context, R.layout.widget_review_attached_images, this)
     }
@@ -36,7 +38,7 @@ class ReviewAttachedImages : BaseCustomView {
                   productId: String? = null,
                   feedbackId: String? = null) {
         val attachedImageAdapter = ReviewAttachedImagesAdapter(reviewAttachedImagesClickListener, productName, reviewHistoryItemListener, productId, feedbackId)
-        this.reviewAttachedImages.apply {
+        binding.reviewAttachedImages.apply {
             adapter = attachedImageAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             attachedImageAdapter.setData(attachedImages)
