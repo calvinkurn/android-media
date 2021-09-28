@@ -609,13 +609,6 @@ open class TopChatRoomPresenter @Inject constructor(
         )
     }
 
-    override fun sendMessageWithWebsocket(
-        messageId: String, sendMessage: String,
-        startTime: String, opponentId: String
-    ) {
-        topchatSendMessageWithWebsocket(sendMessage)
-    }
-
     /**
      * send with websocket but with param [intention]
      */
@@ -899,8 +892,6 @@ open class TopChatRoomPresenter @Inject constructor(
         removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
     }
 
-    override fun clearText() {}
-
     override fun getOrderProgress(messageId: String) {
         orderProgressUseCase.getOrderProgress(
             messageId,
@@ -1079,6 +1070,13 @@ open class TopChatRoomPresenter @Inject constructor(
     private fun isProblematicDevice(): Boolean {
         return PROBLEMATIC_DEVICE.contains(DeviceInfo.getModelName().toLowerCase())
     }
+
+    override fun clearText() {}
+
+    override fun sendMessageWithWebsocket(
+        messageId: String, sendMessage: String,
+        startTime: String, opponentId: String
+    ) { }
 
     companion object {
         const val ENABLE_UPLOAD_IMAGE_SERVICE = "android_enable_topchat_upload_image_service"
