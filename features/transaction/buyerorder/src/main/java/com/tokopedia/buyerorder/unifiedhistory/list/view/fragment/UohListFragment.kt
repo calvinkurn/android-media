@@ -266,7 +266,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         private var CATEGORIES_HALAL_CORNER = "zakat_mal,donasi,umrah,zakat_fitrah,wakaf"
         private var CATEGORIES_LANGSUNG_LAKU = "money_in"
         private var CATEGORIES_LS_PRINT = "ls_print"
-        private var CATEGORIES_TOKONOW = "mp_pym_tokonow,tokonow"
 
         private val LABEL_MP = "Belanja"
         private val LABEL_DIGITAL = "Top-up & Tagihan"
@@ -275,7 +274,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         private val LABEL_HALAL = "Halal Corner"
         private val LABEL_LANGSUNG_LAKU = "Langsung Laku"
         private val LABEL_LS_PRINT = "Tokopedia Print"
-        private val LABEL_TOKONOW = "Tokopedia NOW!"
 
         @JvmStatic
         fun newInstance(bundle: Bundle): UohListFragment {
@@ -987,9 +985,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 }
                 category.label.equals(LABEL_LS_PRINT, true) -> {
                     CATEGORIES_LS_PRINT = category.value
-                }
-                category.label.equals(LABEL_TOKONOW, true) -> {
-                    CATEGORIES_TOKONOW = category.value
                 }
             }
         }
