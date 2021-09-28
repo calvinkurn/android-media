@@ -330,7 +330,7 @@ class VoucherListFragment :
                             }
                     startActivityForResult(intent, CreateMerchantVoucherStepsActivity.REQUEST_CODE)
                 } else {
-                    RouteManager.getIntent(context, ApplinkConstInternalSellerapp.ADMIN_RESTRICTION)
+                    RouteManager.route(context, ApplinkConstInternalSellerapp.ADMIN_RESTRICTION)
                 }
             }
         }

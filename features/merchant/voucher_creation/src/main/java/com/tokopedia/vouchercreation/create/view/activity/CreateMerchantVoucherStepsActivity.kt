@@ -20,6 +20,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
@@ -413,6 +415,9 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
                                             bannerCashbackLabelUrl,
                                             bannerCashbackUntilLabelUrl
                                     )
+                        }
+                        if (!isCreateVoucherEligible) {
+                            RouteManager.route(this@CreateMerchantVoucherStepsActivity, ApplinkConstInternalSellerapp.ADMIN_RESTRICTION)
                         }
                         this@CreateMerchantVoucherStepsActivity.token = token
                         promoCodePrefix = voucherCodePrefix
