@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
@@ -397,7 +398,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             override fun onGlobalLayout() {
                 shopScorePerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
                 shopScorePerformanceMonitoringListener?.stopPerformanceMonitoring()
-                binding?.rvShopPerformance.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                binding?.rvShopPerformance?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
         })
     }
@@ -750,7 +751,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     impressMenuShopPerformance()
                 }
                 is Fail -> {
-                    shopPerformanceAdapter.hideLoading()
+                    shopPerformanceAdapter.removeShopPerformanceLoading()
                     shopPerformanceAdapter.setShopPerformanceError(
                         ItemShopPerformanceErrorUiModel(
                             it.throwable
@@ -771,7 +772,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun observeShopPerformancePage() {
         observe(viewModel.shopPerformancePage) {
-            hideLoading()
+            shopPerformanceAdapter.removeShopPerformanceLoading()
             when (it) {
                 is Success -> {
                     stopNetworkRequestPerformanceMonitoring()
@@ -822,13 +823,16 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun loadData(isFirstLoad: Boolean) {
-        shopPerformanceAdapter.clearAllElements()
         showLoading()
         viewModel.getShopInfoPeriod(isFirstLoad)
     }
 
     private fun showLoading() {
-        shopPerformanceAdapter.showLoading()
+        shopPerformanceAdapter.run {
+            removeShopPerformanceData()
+            removeShopPerformanceError()
+            setShopPerformanceLoading(LoadingModel())
+        }
         binding?.shopPerformanceSwipeRefresh?.isRefreshing = false
     }
 
