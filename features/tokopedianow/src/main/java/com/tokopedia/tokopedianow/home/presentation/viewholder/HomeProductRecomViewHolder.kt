@@ -79,7 +79,7 @@ class HomeProductRecomViewHolder(
     override fun onRecomChannelImpressed(data: RecommendationCarouselData) { /* nothing to do */
     }
 
-    override fun onWidgetFail(pageName: String, e: Exception) {
+    override fun onWidgetFail(pageName: String, e: Throwable) {
         //should remove widget
     }
 

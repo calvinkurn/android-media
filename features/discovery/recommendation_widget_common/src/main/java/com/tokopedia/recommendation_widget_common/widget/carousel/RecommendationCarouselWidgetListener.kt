@@ -1,6 +1,5 @@
 package com.tokopedia.recommendation_widget_common.widget.carousel
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 /**
@@ -18,5 +17,5 @@ interface RecommendationCarouselWidgetListener {
     fun onRecomBannerImpressed(data: RecommendationCarouselData, adapterPosition: Int)
     fun onRecomBannerClicked(data: RecommendationCarouselData, applink: String, adapterPosition: Int)
     fun onChannelWidgetEmpty()
-    fun onWidgetFail(pageName: String, e: Exception)
+    fun onWidgetFail(pageName: String, e: Throwable)
 }

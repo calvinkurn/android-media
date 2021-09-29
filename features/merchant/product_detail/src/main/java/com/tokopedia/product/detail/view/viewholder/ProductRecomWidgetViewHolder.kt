@@ -138,7 +138,7 @@ class ProductRecomWidgetViewHolder (
         listener.onChannelRecommendationEmpty(adapterPosition, productRecom?.recomWidgetData)
     }
 
-    override fun onWidgetFail(pageName: String, e: Exception) {
+    override fun onWidgetFail(pageName: String, e: Throwable) {
         listener.onRecomWidgetFailedToLoad(pageName)
     }
 

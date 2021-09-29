@@ -188,7 +188,19 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             itemView.loadingRecom.visible()
             viewModel?.loadRecommendationCarousel(
                 pageName = pageName,
-                productIds = listOf(parentProductId)
+                productIds = listOf(parentProductId),
+                onSuccess = {
+                    bindWidgetWithData(
+                        RecommendationCarouselData(
+                            recommendationData = it,
+                            state = STATE_READY,
+                            isUsingWidgetViewModel = true
+                        )
+                    )
+                },
+                onError = {
+                    widgetListener?.onWidgetFail(pageName = pageName, Exception(it))
+                }
             )
         } else {
             itemView.loadingRecom.gone()

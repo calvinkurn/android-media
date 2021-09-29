@@ -41,7 +41,9 @@ class RecommendationViewModel @Inject constructor(
         xSource: String = "",
         xDevice: String = "",
         isTokonow: Boolean = false,
-        keywords: List<String> = listOf()
+        keywords: List<String> = listOf(),
+        onSuccess: (recomWidget: RecommendationWidget) -> Unit,
+        onError: (throwable: Throwable) -> Unit
     ) {
         if (isJobAvailable(getRecommendationJob)) {
             getRecommendationJob = viewModelScope.launchCatchError(coroutineContext, {
@@ -59,10 +61,12 @@ class RecommendationViewModel @Inject constructor(
                         ))
                 if (result.isNotEmpty()) {
                     val recomWidget = result[0]
-                    _getRecommendationLiveData.postValue(recomWidget.asSuccess())
+//                    _getRecommendationLiveData.postValue(recomWidget.asSuccess())
+                    onSuccess.invoke(recomWidget)
                 }
             }) {
-                _getRecommendationLiveData.postValue(it.asFail())
+//                _getRecommendationLiveData.postValue(it.asFail())
+                onError.invoke(it)
             }
         }
     }
