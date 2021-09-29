@@ -70,7 +70,7 @@ open class CatalogPurchaseRedeemptionRepository @Inject constructor(private val 
             val developerMessage = error[0].extensions.developerMessage
             throw CatalogGqlError(MessageErrorException(error.mapNotNull {
                 it.message
-            }.joinToString(separator = ", ")),developerMessage)
+            }.joinToString(separator = ", ")),developerMessage = developerMessage)
         }
     }
 

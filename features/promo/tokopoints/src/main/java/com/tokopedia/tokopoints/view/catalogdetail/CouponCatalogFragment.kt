@@ -252,54 +252,12 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
 
     private fun showErrorDialog( message: String, resCode: Int) {
         val dialogUnify: DialogUnify?
-        var dialogUnifyType = DialogUnify.SINGLE_ACTION
-        val labelPositive: String
-        var labelNegative: String? = null
-        when (resCode) {
-            CommonConstant.CouponRedemptionCode.LOW_POINT -> labelPositive = getString(R.string.tp_label_ok)
-            CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
-                dialogUnifyType = DialogUnify.HORIZONTAL_ACTION
-                labelPositive = getString(R.string.tp_label_complete_profile)
-                labelNegative = getString(R.string.tp_label_later)
-            }
-            CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED -> labelPositive = getString(R.string.tp_label_ok)
-            else -> labelPositive = getString(R.string.tp_label_ok)
-        }
+        val dialogUnifyType = DialogUnify.SINGLE_ACTION
+        val labelPositive: String = getString(R.string.tp_label_ok)
         dialogUnify = context?.let { DialogUnify(it, dialogUnifyType, DialogUnify.NO_IMAGE) }
         dialogUnify?.setTitle(getString(R.string.tp_label_exchange_failed))
-
         dialogUnify?.setDescription(MethodChecker.fromHtml(message))
-        if (labelNegative != null && labelNegative.isNotEmpty()) {
-            dialogUnify?.setSecondaryCTAText(labelNegative)
-            dialogUnify?.setSecondaryCTAClickListener {
-                when (resCode) {
-                    CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
-                        dialogUnify.dismiss()
-                        AnalyticsTrackerUtil.sendEvent(
-                            context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
-                            ""
-                        )
-                    }
-                    CommonConstant.CouponRedemptionCode.SUCCESS -> {
-                        dialogUnify.dismiss()
-                        AnalyticsTrackerUtil.sendEvent(
-                            context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_BATAL,
-                            ""
-                        )
-                    }
-                    else -> {
-                        dialogUnify.dismiss()
-                    }
-                }
-            }
-        }
-        if (!labelPositive?.isNullOrEmpty()) {
+        if (labelPositive.isNotEmpty()) {
             dialogUnify?.setPrimaryCTAText(labelPositive)
             dialogUnify?.setPrimaryCTAClickListener {
                 when (resCode) {
@@ -320,20 +278,6 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                             AnalyticsTrackerUtil.CategoryKeys.POPUP_KUOTA_HABIS,
                             AnalyticsTrackerUtil.ActionKeys.CLICK_OK,
-                            ""
-                        )
-                    }
-                    CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
-                        val intent = RouteManager.getIntent(
-                            context,
-                            ApplinkConstInternalGlobal.PROFILE_COMPLETION
-                        )
-                        startActivity(intent)
-                        AnalyticsTrackerUtil.sendEvent(
-                            context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_INCOMPLETE_PROFILE,
                             ""
                         )
                     }
