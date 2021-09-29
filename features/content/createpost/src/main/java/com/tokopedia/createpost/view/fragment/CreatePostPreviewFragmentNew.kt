@@ -444,6 +444,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     override fun updateTaggingInfoInViewModel(feedXMediaTagging: FeedXMediaTagging, index: Int) {
         createPostModel.completeImageList[createPostModel.currentCorouselIndex].tags[index] =
             feedXMediaTagging
+        updateResultIntent()
     }
 
 
@@ -545,6 +546,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
         imageItem?.run {
             val lihatProductTagView = findViewById<CardView>(R.id.product_tagging_button_parent)
+            val postImage = findViewById<ImageUnify>(R.id.content_creation_post_image)
+
             lihatProductTagView.showWithCondition(products.isNotEmpty())
 
             lihatProductTagView.setOnClickListener {
@@ -566,7 +569,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                     listener,
                     feedXMediaTagging)
                 if (view != null) {
-                    tagViewProvider.addViewToParent(view, layout, feedXMediaTagging, index)
+                    val bitmap = postImage.drawable.toBitmap()
+                    tagViewProvider.addViewToParent(view, layout, feedXMediaTagging, index, bitmap)
 
                 }
 

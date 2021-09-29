@@ -211,6 +211,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private var isUserEventTrackerDoneOnResume = false
     private var isFeedPageShown = false
+    private var isRefreshForPostCOntentCreation = false
 
     private lateinit var shareData: LinkerData
     private lateinit var reportBottomSheet: ReportBottomSheet
@@ -756,6 +757,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedViewModel.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS)
         afterRefresh = true
         TopAdsHeadlineActivityCounter.page = 1
+    }
+
+    fun onRefreshForNewPostUpdated() {
+        feedViewModel.getFeedFirstPage()
+        isRefreshForPostCOntentCreation = true
     }
 
     override fun onDestroyView() {
@@ -2373,6 +2379,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun onSuccessGetFirstFeed(firstPageDomainModel: DynamicFeedFirstPageDomainModel) {
         if (!firstPageDomainModel.shouldOverwrite) {
             adapter.updateList(firstPageDomainModel.dynamicFeedDomainModel.postList)
+            return
+        }
+        if (isRefreshForPostCOntentCreation) {
+            isRefreshForPostCOntentCreation = false
+            adapter.addListItemAtTop(firstPageDomainModel.dynamicFeedDomainModel.postList[1])
             return
         }
 

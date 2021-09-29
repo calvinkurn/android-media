@@ -117,7 +117,7 @@
         app:layout_constraintStart_toEndOf="@+id/bubble_text_layout"
         app:layout_constraintTop_toTopOf="@+id/dot"
         app:unify_image_type="circle"
-        tools:visibility="visible"/>
+        tools:visibility="gone"/>
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/product_tag_clear_right"
@@ -129,7 +129,6 @@
         app:icon_name="CLEAR"
         app:layout_constraintBottom_toBottomOf="@+id/dot"
         app:layout_constraintStart_toStartOf="@+id/dot"
-        app:layout_constraintEnd_toStartOf="@+id/bubble_text_layout"
         app:layout_constraintTop_toTopOf="@+id/dot"
         app:unify_image_type="circle"
         tools:visibility="visible"/>

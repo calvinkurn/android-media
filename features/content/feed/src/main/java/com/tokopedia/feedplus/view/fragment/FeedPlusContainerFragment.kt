@@ -693,7 +693,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         try {
             val fragment = pagerAdapter.getRegisteredFragment(view_pager.currentItem)
             if (fragment is FeedPlusFragment) {
-                fragment.onRefresh()
+                fragment.onRefreshForNewPostUpdated()
             }
         } catch (e: IllegalStateException) {
             //no op

@@ -235,7 +235,7 @@ class ImageAdapter(
             holder.setChecked(selectedPositionMap.size, mainFragmentContract.isMultiSelectEnable())
             itemSelectCallback?.invoke(dataList[position], true)
         } else {
-            mainFragmentContract.showToast("Max selection limit reached", Toaster.TYPE_ERROR)
+            mainFragmentContract.showToast("Oops, maksimal upload 5 media, Hapus salah satu media jika ingin menggantinya.", Toaster.TYPE_ERROR)
         }
     }
 
