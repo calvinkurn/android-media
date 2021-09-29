@@ -13,6 +13,7 @@ import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.glide.FPM_CATEGORY_WIDGET_ITEM
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.CategoryWidgetV2SpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
 import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -49,6 +50,15 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
                 2,
                 GridLayoutManager.HORIZONTAL,
                 false)
+
+        if (recyclerView.itemDecorationCount == 0) {
+            recyclerView.addItemDecoration(
+                CategoryWidgetV2SpacingItemDecoration(
+                    2,
+                    itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_8)
+                )
+            )
+        }
         setChannelDivider(channel)
     }
 

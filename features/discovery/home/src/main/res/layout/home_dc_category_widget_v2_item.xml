@@ -1,42 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:foreground="?attr/selectableItemBackground"
-    app:card_type="border">
+    app:cardCornerRadius="@dimen/dp_9"
+    app:cardElevation="@dimen/dp_0"
+    android:foreground="@drawable/bg_category_widget_v2"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/card_container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
+        android:layout_height="wrap_content"
+        android:foreground="?attr/selectableItemBackground"
+        android:id="@+id/card_container">
         <ImageView
             android:id="@+id/category_image"
             android:layout_width="@dimen/dp_120"
             android:layout_height="@dimen/dp_80"
-            android:contentDescription="@string/content_desc_home_category_widget"
             android:scaleType="centerCrop"
-            app:layout_constraintEnd_toEndOf="parent"
+            tools:background="@color/Unify_R200"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:background="@color/Unify_R200" />
+            android:contentDescription="@string/content_desc_home_category_widget"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/category_item_name"
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_40"
-            android:background="@color/Unify_N0"
-            android:ellipsize="end"
             android:gravity="center"
             android:maxLines="2"
-            android:paddingHorizontal="@dimen/dp_8"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/category_image"
+            android:ellipsize="end"
             app:typographyType="heading_6"
-            tools:text="Two Line Category Name" />
+            android:paddingHorizontal="@dimen/dp_8"
+            android:background="@color/Unify_N0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/category_image"
+            android:paddingBottom="@dimen/dp_3"
+            tools:text="Two Line Category"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</com.tokopedia.unifycomponents.CardUnify>
+</androidx.cardview.widget.CardView>
