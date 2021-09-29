@@ -3,6 +3,7 @@ package com.tokopedia.createpost.view.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.*
 import android.widget.LinearLayout
@@ -187,8 +188,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                     imageItem.layoutParams = param
                     feedMedia.imageView = imageItem
                     imageItem.run {
-                        findViewById<ImageUnify>(R.id.content_creation_post_image).setImageUrl(
-                            imageList[index])
+                        val postImage = findViewById<ImageUnify>(R.id.content_creation_post_image)
+                        postImage.setImageUrl(imageList[index])
                         findViewById<CardView>(R.id.product_tagging_button_parent).showWithCondition(
                             products.isNotEmpty()
                         )
@@ -200,6 +201,12 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                             context,
                             object : GestureDetector.SimpleOnGestureListener() {
                                 override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+                                        val bitmap = postImage.drawable.toBitmap()
+                                        val greyX = calculateGreyAreaY(layout, bitmap)
+                                        val greyY = calculateGreyAreaX(layout, bitmap)
+
+                                    if (e?.x!! < greyX || e?.x > (layout.width - greyX) || e?.y!! < greyY || e?.y > (layout.height - greyY))
+                                        return false
 
                                     createPostAnalytics.eventClickOnImageToTag(feedMedia.type)
                                     removeExtraTagListElement(feedMedia)
@@ -616,6 +623,21 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             videoPlayer?.destroy()
             videoPlayer = null
         }
+    }
+    private fun calculateGreyAreaX(parent: ConstraintLayout, bitmap: Bitmap): Int {
+        return if (bitmap.width > bitmap.height) {
+            val newBitmapHeight = (parent.height * bitmap.height) / bitmap.width
+            (parent.height - newBitmapHeight) / 2
+        } else
+            0
+    }
+
+    private fun calculateGreyAreaY(parent: ConstraintLayout, bitmap: Bitmap): Int {
+        return if (bitmap.height > bitmap.width) {
+            val newBitmapHeight = (parent.width * bitmap.width) / bitmap.height
+            (parent.width - newBitmapHeight) / 2
+        } else
+            0
     }
 
 }
