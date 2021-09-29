@@ -3,6 +3,7 @@ package com.tokopedia.play.cast
 import android.content.Context
 import com.google.android.gms.cast.framework.*
 import com.google.android.gms.cast.framework.media.*
+import com.tokopedia.keys.Keys
 
 /**
  * Created by jegul on 08/06/21
@@ -20,7 +21,7 @@ class PlayCastOptionsProvider : OptionsProvider {
 
         return CastOptions.Builder()
                 .setCastMediaOptions(mediaOptions)
-                .setReceiverApplicationId("B607CC94")
+                .setReceiverApplicationId(Keys.CHROMECAST_APPLICATION_ID)
                 .setStopReceiverApplicationWhenEndingSession(true)
                 .build()
     }
