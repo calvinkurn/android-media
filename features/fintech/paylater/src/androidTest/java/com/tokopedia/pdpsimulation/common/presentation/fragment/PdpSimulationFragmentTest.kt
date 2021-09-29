@@ -84,8 +84,7 @@ class PdpSimulationFragmentTest {
 
 
     @Test
-    fun check_pay_later_bottomsheet_button_click()
-    {
+    fun check_pay_later_bottomsheet_button_click() {
         actionTest {
             clickPartnerButton()
             clickPartnerButtonBottomSheet()
@@ -97,8 +96,7 @@ class PdpSimulationFragmentTest {
 
 
     @Test
-    fun check_pay_later_faq_click()
-    {
+    fun check_pay_later_faq_click() {
         actionTest {
             clickPartnerFaq()
         } assertTest {
@@ -108,8 +106,7 @@ class PdpSimulationFragmentTest {
     }
 
     @Test
-    fun check_pay_later_faq_bottom_sheet_button_click()
-    {
+    fun check_pay_later_faq_bottom_sheet_button_click() {
         actionTest {
             clickPartnerFaq()
             clickPartnerFaqBottomSheet()
