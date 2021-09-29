@@ -130,19 +130,19 @@ class DiscoveryDataMapper {
         return list
     }
 
-    fun mapDataItemToMerchantVoucherComponent(itemList: List<DataItem>, subComponentName: String = "", parentComponentName:String?, position: Int): ArrayList<ComponentsItem>{
+    fun mapDataItemToMerchantVoucherComponent(itemList: List<DataItem>?, subComponentName: String = "", properties: Properties?, creativeName: String? = ""): ArrayList<ComponentsItem>{
         val list = ArrayList<ComponentsItem>()
-        itemList.forEachIndexed { index, it ->
+        itemList?.forEachIndexed { index, it ->
             val componentsItem = ComponentsItem()
             componentsItem.position = index
             componentsItem.name = subComponentName
-            it.parentComponentName = parentComponentName
-            it.positionForParentItem = position
+            componentsItem.properties = properties
+            componentsItem.creativeName = creativeName
             val dataItem = mutableListOf<DataItem>()
             dataItem.add(it)
             componentsItem.data = dataItem
             componentsItem.design = if(itemList.size>1) CAROUSEL_ITEM_DESIGN else SINGLE_ITEM_DESIGN
-                list.add(componentsItem)
+            list.add(componentsItem)
         }
         return list
     }

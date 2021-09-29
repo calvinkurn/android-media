@@ -5,138 +5,138 @@ import com.tokopedia.library.baseadapter.BaseItem
 
 data class MerchantCouponResponse(
 
-        @field:SerializedName("productlist")
+        @SerializedName("productlist")
         val productlist: Productlist? = null
 )
 
 data class CatalogMVCWithProductsListItem(
 
-        @field:SerializedName("shopInfo")
-        val shopInfo: ShopInfo? = null,
+        @SerializedName("shopInfo")
+        var shopInfo: ShopInfo? = null,
 
-        @field:SerializedName("subtitle")
-        val subtitle: String? = null,
+        @SerializedName("subtitle")
+        var subtitle: String? = null,
 
-        @field:SerializedName("title")
-        val title: String? = null,
+        @SerializedName("title")
+        var title: String? = null,
 
-        @field:SerializedName("maximumBenefitAmountStr")
-        val maximumBenefitAmountStr: String? = null,
+        @SerializedName("maximumBenefitAmountStr")
+        var maximumBenefitAmountStr: String? = null,
 
-        @field:SerializedName("adInfo")
-        val AdInfo: AdInfo? = null,
+        @SerializedName("adInfo")
+        var AdInfo: AdInfo? = null,
 
-        @field:SerializedName("products")
-        val products: List<ProductsItem?>? = null
+        @SerializedName("products")
+        var products: List<ProductsItem?>? = null
 ) : BaseItem()
 
 data class ShopInfo(
 
-        @field:SerializedName("appLink")
+        @SerializedName("appLink")
         val appLink: String? = null,
 
-        @field:SerializedName("shopStatusIconURL")
+        @SerializedName("shopStatusIconURL")
         val shopStatusIconURL: String? = null,
 
-        @field:SerializedName("name")
+        @SerializedName("name")
         val name: String? = null,
 
-        @field:SerializedName("id")
+        @SerializedName("id")
         val id: String? = null,
 
-        @field:SerializedName("iconUrl")
+        @SerializedName("iconUrl")
         val iconUrl: String? = null,
 
-        @field:SerializedName("url")
+        @SerializedName("url")
         val url: String? = null
 )
 
 data class ProductCategoriesFilterItem(
 
-        @field:SerializedName("rootID")
+        @SerializedName("rootID")
         val rootID: String? = null,
 
-        @field:SerializedName("rootName")
+        @SerializedName("rootName")
         val rootName: String? = null
 )
 
 data class Category(
 
-        @field:SerializedName("rootID")
+        @SerializedName("rootID")
         val rootID: String? = null,
 
-        @field:SerializedName("rootName")
+        @SerializedName("rootName")
         val rootName: String? = null,
 
-        @field:SerializedName("id")
+        @SerializedName("id")
         val id: String? = null,
 
-        @field:SerializedName("name")
+        @SerializedName("name")
         val name: String? = null
 )
 
 data class Productlist(
 
-        @field:SerializedName("resultStatus")
+        @SerializedName("resultStatus")
         val resultStatus: ResultStatus? = null,
 
-        @field:SerializedName("productCategoriesFilter")
+        @SerializedName("productCategoriesFilter")
         val productCategoriesFilter: List<ProductCategoriesFilterItem?>? = null,
 
-        @field:SerializedName("catalogMVCWithProductsList")
+        @SerializedName("catalogMVCWithProductsList")
         val catalogMVCWithProductsList: List<CatalogMVCWithProductsListItem?>? = null,
 
-        @field:SerializedName("tokopointsPaging")
+        @SerializedName("tokopointsPaging")
         val tokopointsPaging: TokopointsPaging? = null
 )
 
 data class ProductsItem(
 
-        @field:SerializedName("benefitLabel")
+        @SerializedName("benefitLabel")
         val benefitLabel: String? = null,
 
-        @field:SerializedName("redirectURL")
+        @SerializedName("redirectURL")
         val redirectURL: String? = null,
 
-        @field:SerializedName("imageURL")
+        @SerializedName("imageURL")
         val imageURL: String? = null,
 
-        @field:SerializedName("name")
+        @SerializedName("name")
         val name: String? = null,
 
-        @field:SerializedName("id")
+        @SerializedName("id")
         val id: String? = null,
 
-        @field:SerializedName("redirectAppLink")
+        @SerializedName("redirectAppLink")
         val redirectAppLink: String? = null,
 
-        @field:SerializedName("category")
+        @SerializedName("category")
         val category: Category? = null
 )
 
 data class ResultStatus(
 
-        @field:SerializedName("code")
+        @SerializedName("code")
         val code: String? = null,
 
-        @field:SerializedName("status")
+        @SerializedName("status")
         val status: String? = null
 )
 
 data class TokopointsPaging(
 
-        @field:SerializedName("hasNext")
+        @SerializedName("hasNext")
         val hasNext: Boolean? = null
 )
 
 data class AdInfo(
 
-        @field:SerializedName("AdID")
+        @SerializedName("AdID")
         val AdID: String? = null,
 
-        @field:SerializedName("AdViewUrl")
+        @SerializedName("AdViewUrl")
         val AdViewUrl: String? = null,
 
-        @field:SerializedName("AdClickUrl")
+        @SerializedName("AdClickUrl")
         val AdClickUrl: String? = null,
 )

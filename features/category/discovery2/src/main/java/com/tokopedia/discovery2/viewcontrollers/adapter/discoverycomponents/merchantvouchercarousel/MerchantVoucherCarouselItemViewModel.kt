@@ -20,38 +20,12 @@ class MerchantVoucherCarouselItemViewModel(application: Application, val compone
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         components.data?.firstOrNull()?.let {
-//           Todo:: Try to call this
-//            mapToCatalogMVCWithProductsListItem()
             _multiShopData.value = mapToShopModel(it)
         }
     }
 
-
-    private fun mapToCatalogMVCWithProductsListItem(dataItem: DataItem):CatalogMVCWithProductsListItem?{
-//        Todo:: Find a better way to map
-        return try {
-            Gson().fromJson(Gson().toJson(dataItem), CatalogMVCWithProductsListItem::class.java)
-        }catch (e:Exception){
-            null
-        }
-    }
-
-    private fun mapToShopModel(item: DataItem):MultiShopModel{
-        val catalogItem  = mapToCatalogMVCWithProductsListItem(item)
-        return if(catalogItem != null){
-            map(catalogItem)
-        }else
-            MultiShopModel(
-    //            Todo: confirm do we need to pick icon from icon url or shopStatusIconUrl ??
-                shopIcon = item.shopInfo?.shopStatusIconURL?:"",
-                shopName = item.shopInfo?.name?:"",
-                products = item.products,
-                cashBackTitle = item.title ?:"",
-                cashBackValue = item.maximumBenefitAmountStr ?:"",
-                couponCount = item.subtitle ?:"",
-                id = item.shopInfo?.id?:"",
-                applink = item.shopInfo?.appLink?:"",
-                AdInfo = null,
-            )
+    private fun mapToShopModel(dataItem: DataItem):MultiShopModel{
+        val catalogItem  = CatalogMVCWithProductsListItem(dataItem.shopInfo,dataItem.subtitle,dataItem.title,dataItem.maximumBenefitAmountStr,null,dataItem.products)
+        return  map(catalogItem)
     }
 }
