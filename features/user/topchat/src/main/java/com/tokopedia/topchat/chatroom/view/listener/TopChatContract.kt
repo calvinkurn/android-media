@@ -83,6 +83,7 @@ interface TopChatContract {
         fun removeSrwBubble(productId: String)
         fun expandSrwBubble()
         fun showPreviewMsg(previewMsg: SendableViewModel)
+        fun clearReferredMsg()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {

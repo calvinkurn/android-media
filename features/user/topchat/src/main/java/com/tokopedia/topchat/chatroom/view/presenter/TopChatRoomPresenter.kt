@@ -560,6 +560,7 @@ open class TopChatRoomPresenter @Inject constructor(
                 referredMsg = referredMsg
             )
             view?.clearAttachmentPreviews()
+            view?.clearReferredMsg()
         }
     }
 

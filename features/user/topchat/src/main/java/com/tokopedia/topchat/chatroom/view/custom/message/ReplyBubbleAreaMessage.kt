@@ -79,6 +79,11 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         show()
     }
 
+    fun clearReferredComposedMsg() {
+        referTo(null)
+        hide()
+    }
+
     private fun updateCloseButtonState(enableCloseButton: Boolean) {
         if (enableCloseButton) {
             closeBtn?.show()

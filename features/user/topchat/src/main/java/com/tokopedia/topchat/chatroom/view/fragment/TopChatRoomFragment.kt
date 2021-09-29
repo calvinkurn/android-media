@@ -351,6 +351,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         topchatViewState?.scrollToBottom()
     }
 
+    override fun clearReferredMsg() {
+        replyCompose?.clearReferredComposedMsg()
+    }
+
     override fun removeSrwBubble() {
         adapter.removeSrwBubble()
     }
