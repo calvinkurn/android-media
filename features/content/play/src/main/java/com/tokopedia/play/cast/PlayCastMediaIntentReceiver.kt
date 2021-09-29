@@ -19,10 +19,10 @@ class PlayCastMediaIntentReceiver: MediaIntentReceiver() {
                     .remoteMediaClient
                     ?.mediaInfo
                     ?.metadata
-                    ?.getString("channel_id").orEmpty()
+                    ?.getString(CHANNEL_ID).orEmpty()
 
                 try {
-                    val intent = RouteManager.getIntent(it, ApplinkConst.PLAY_DETAIL.replace("{channel_id}", channelId))
+                    val intent = RouteManager.getIntent(it, ApplinkConst.PLAY_DETAIL.replace("{$CHANNEL_ID}", channelId))
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     it.startActivity(intent)
                 }
@@ -31,5 +31,9 @@ class PlayCastMediaIntentReceiver: MediaIntentReceiver() {
                 }
             }
         }
+    }
+
+    companion object {
+        private const val CHANNEL_ID = "channel_id"
     }
 }
