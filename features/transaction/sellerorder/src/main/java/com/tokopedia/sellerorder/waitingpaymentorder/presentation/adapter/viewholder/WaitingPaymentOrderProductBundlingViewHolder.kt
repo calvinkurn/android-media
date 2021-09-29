@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.viewh
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.RecyclerViewItemDivider
@@ -35,8 +36,8 @@ class WaitingPaymentOrderProductBundlingViewHolder(
                         isNestedScrollingEnabled = false
                         adapter = this@WaitingPaymentOrderProductBundlingViewHolder.adapter
                     }
-                    if (itemDecorationCount == 0) {
-                        val margins = getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+                    if (itemDecorationCount == Int.ZERO) {
+                        val margins = getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
                         addItemDecoration(
                             RecyclerViewItemDivider(
                                 divider = MethodChecker.getDrawable(
