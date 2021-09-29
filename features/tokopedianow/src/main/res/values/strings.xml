@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="tokopedianow_home_title">TokoMart</string>
+
     <string name="tokopedianow_common_empty_state_title">Yaah, saat ini Tokopedia NOW! belum bisa antar ke tempatmu</string>
     <string name="tokopedianow_common_empty_state_desc_1">Melayani kebutuhan harianmu hanya dalam 2 jam pengiriman agar produk tetap fresh.</string>
     <string name="tokopedianow_common_empty_state_desc_2">Saat ini, kami baru ada di daerah tertentu. Tunggu Tokopedia NOW! di kotamu, ya!</string>
@@ -23,7 +25,7 @@
     <string name="tokopedianow_home_choose_address_widget_coachmark_description">Biar pengalaman belanja lebih asyik &amp; dapatkan rekomendasi barang terdekat dari alamatmu.</string>
     <string name="tokopedianow_home_share_thumbnail_title">TokoMart</string>
     <string name="tokopedianow_home_share_thumbnail_title_ss">Screenshot dan link tersimpan</string>
-    <string name="tokopedianow_home_share_title">Supermarket Online - Grocery Online Terlengkap | TokoMart</string>
+    <string name="tokopedianow_home_share_title">Supermarket Online Pilihan Terlengkap | TokoMart</string>
     <string name="tokopedianow_home_share_desc">Nikmati Pengalaman Belanja Kebutuhan Sehari-hari Online Selama 24 Jam Terlengkap . Dapatkan Promo Khusus &amp; Pengiriman 2 Jam Tiba Hanya di TokoMart</string>
     <string name="tokopedianow_home_share_main_text">Belanja di TokoMart sampai dalam 2 jam. Produknya pasti tersedia, lho! </string>
 
