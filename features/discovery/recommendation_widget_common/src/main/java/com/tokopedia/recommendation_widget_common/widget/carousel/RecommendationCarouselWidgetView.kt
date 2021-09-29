@@ -157,11 +157,10 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
 
     //get data with network call
     private fun bindWidgetWithPageName(pageName: String, isForceRefresh: Boolean) {
-        viewModel?.set
         if (carouselData == null || isForceRefresh) {
             adapter?.clearAllElements()
             itemView.loadingRecom.visible()
-            viewModel?.loadRecommendation(pageName = pageName)
+            viewModel?.loadRecommendationCarousel(pageName = pageName)
         } else {
             itemView.loadingRecom.gone()
         }
@@ -188,21 +187,61 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         )
     }
 
-
     fun bindTemporaryHeader(tempHeaderName: String) {
-        itemView.recommendation_header_view.bindData(RecommendationWidget(title = tempHeaderName), null)
+        itemView.recommendation_header_view.bindData(
+            RecommendationWidget(title = tempHeaderName),
+            null
+        )
         itemView.loadingRecom.visible()
     }
 
-    override fun onProductCardImpressed(data: RecommendationWidget, recomItem: RecommendationItem, position: Int) {
-        carouselData?.let {
-            widgetListener?.onRecomProductCardImpressed(data = it, recomItem = recomItem, itemPosition = position, adapterPosition = adapterPosition)
+    fun getCurrentPosition(): Int {
+        return if (::layoutManager.isInitialized)
+            layoutManager.findFirstCompletelyVisibleItemPosition()
+        else 0
+    }
+
+    fun restoreScrollState(scrollState: Parcelable?) {
+        if (!::layoutManager.isInitialized) return
+
+        itemView.post {
+            layoutManager.onRestoreInstanceState(scrollState)
         }
     }
 
-    override fun onProductCardClicked(data: RecommendationWidget, recomItem: RecommendationItem, position: Int, applink: String) {
+    fun setScrollListener(scrollListener: ((Parcelable?) -> Unit)?) {
+        this.scrollListener = scrollListener
+    }
+
+    override fun onProductCardImpressed(
+        data: RecommendationWidget,
+        recomItem: RecommendationItem,
+        position: Int
+    ) {
         carouselData?.let {
-            widgetListener?.onRecomProductCardClicked(data = it, recomItem = recomItem, applink = applink, itemPosition = position, adapterPosition = adapterPosition)
+            widgetListener?.onRecomProductCardImpressed(
+                data = it,
+                recomItem = recomItem,
+                itemPosition = position,
+                adapterPosition = adapterPosition
+            )
+        }
+    }
+
+    override fun onProductCardClicked(
+        data: RecommendationWidget,
+        recomItem: RecommendationItem,
+        position: Int,
+        applink: String
+    ) {
+        carouselData?.let {
+            widgetListener?.onRecomProductCardClicked(
+                data = it,
+                recomItem = recomItem,
+                applink = applink,
+                itemPosition = position,
+                adapterPosition = adapterPosition
+            )
         }
     }
 
@@ -408,23 +447,5 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 })
             })
         }
-    }
-
-    fun getCurrentPosition(): Int {
-        return if (::layoutManager.isInitialized)
-            layoutManager.findFirstCompletelyVisibleItemPosition()
-        else 0
-    }
-
-    fun restoreScrollState(scrollState: Parcelable?) {
-        if (!::layoutManager.isInitialized) return
-
-        itemView.post {
-            layoutManager.onRestoreInstanceState(scrollState)
-        }
-    }
-
-    fun setScrollListener(scrollListener: ((Parcelable?) -> Unit)?) {
-        this.scrollListener = scrollListener
     }
 }

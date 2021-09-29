@@ -32,16 +32,17 @@ class RecommendationViewModel @Inject constructor(
     val getRecommendationLiveData: LiveData<Result<RecommendationWidget>>
         get() = _getRecommendationLiveData
 
-    fun loadRecommendation(
-            pageNumber: Int = 1,
-            productIds: List<String> = listOf(),
-            queryParam: String = "",
-            pageName: String = "",
-            categoryIds: List<String> = listOf(),
-            xSource: String = "",
-            xDevice: String = "",
-            isTokonow: Boolean = false,
-            keywords: List<String> = listOf()) {
+    fun loadRecommendationCarousel(
+        pageNumber: Int = 1,
+        productIds: List<String> = listOf(),
+        queryParam: String = "",
+        pageName: String = "",
+        categoryIds: List<String> = listOf(),
+        xSource: String = "",
+        xDevice: String = "",
+        isTokonow: Boolean = false,
+        keywords: List<String> = listOf()
+    ) {
         if (isJobAvailable(getRecommendationJob)) {
             getRecommendationJob = viewModelScope.launchCatchError(coroutineContext, {
                 val result = getRecommendationUseCase.getData(
