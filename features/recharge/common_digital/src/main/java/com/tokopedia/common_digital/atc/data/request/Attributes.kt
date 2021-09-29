@@ -9,19 +9,19 @@ data class Attributes(
 
         @SerializedName("user_id")
         @Expose
-        var userId: Int = 0,
+        var userId: String = "",
 
         @SerializedName("product_id")
         @Expose
-        var productId: Int = 0,
+        var productId: String = "",
 
         @SerializedName("order_id")
         @Expose
-        var orderId: Long = 0,
+        var orderId: String = "",
 
         @SerializedName("device_id")
         @Expose
-        var deviceId: Int = 0,
+        var deviceId: String = "",
 
         @SerializedName("instant_checkout")
         @Expose

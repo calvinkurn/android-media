@@ -1,5 +1,6 @@
 package com.tokopedia.common.topupbills.data.product
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -38,6 +39,7 @@ class CatalogProductInput (
 
 ) {
         class Validation(
+                @SuppressLint("Invalid Data Type")
                 @SerializedName("id")
                 @Expose
                 var id: Int = 0,

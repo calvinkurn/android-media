@@ -1,5 +1,6 @@
 package com.tokopedia.emoney.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -42,6 +43,7 @@ class AttributesTapcash(
 )
 
 class TapcashError(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("id")
         @Expose
         val id: Int = 0,

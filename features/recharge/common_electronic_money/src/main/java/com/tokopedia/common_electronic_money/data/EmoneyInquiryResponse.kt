@@ -1,5 +1,6 @@
 package com.tokopedia.common_electronic_money.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -52,6 +53,7 @@ class AttributesEmoneyInquiry(
 )
 
 class EmoneyInquiryError(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("id")
         @Expose
         val id: Int = 0,

@@ -1,5 +1,6 @@
 package com.tokopedia.common.topupbills.data.product
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -8,6 +9,7 @@ import com.google.gson.annotations.SerializedName
  */
 open class CatalogOperator(
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("id")
         @Expose
         val id: Int = 0,
