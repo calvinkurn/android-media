@@ -87,12 +87,10 @@ internal class PriceFilterViewHolder(
 
     private fun bindMinMaxPriceValue(priceFilterViewModel: PriceFilterViewModel) {
         itemView.priceFilterMinValue?.bindPriceFilterValue(
-            priceFilterViewModel.minPriceFilterTitle,
             priceFilterViewModel.minPriceFilterValue,
         )
 
         itemView.priceFilterMaxValue?.bindPriceFilterValue(
-            priceFilterViewModel.maxPriceFilterTitle,
             priceFilterViewModel.maxPriceFilterValue,
         )
     }
@@ -103,9 +101,7 @@ internal class PriceFilterViewHolder(
                 .toIntOrZero()
     }
 
-    private fun TextFieldUnify2.bindPriceFilterValue(title: String, value: String) {
-        setLabel(title)
-
+    private fun TextFieldUnify2.bindPriceFilterValue(value: String) {
         editText.run {
             if (value != this.text.toString()) setText(value)
 
