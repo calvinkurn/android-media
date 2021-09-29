@@ -136,12 +136,20 @@ class TokoNowRecommendationCarouselViewHolder(
 
     }
 
-    override fun onRecomBannerClicked(data: RecommendationCarouselData, applink: String, adapterPosition: Int) {
+    override fun onRecomBannerClicked(
+        data: RecommendationCarouselData,
+        applink: String,
+        adapterPosition: Int
+    ) {
 
     }
 
     override fun onChannelWidgetEmpty() {
 
+    }
+
+    override fun onWidgetFail(pageName: String, e: Exception) {
+        //should implement remove widget to fragment
     }
 
     override fun onViewRecycled() {
