@@ -6,8 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.BaseTalkInboxUiModel
-import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxOldUiModel
-import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxUiModel
 import com.tokopedia.talk.feature.inbox.presentation.adapter.viewholder.TalkInboxLoadingViewHolder
 import com.tokopedia.talk.feature.inbox.presentation.adapter.viewholder.TalkInboxOldViewHolder
 import com.tokopedia.talk.feature.inbox.presentation.adapter.viewholder.TalkInboxUnifiedLoadingViewHolder
