@@ -2,7 +2,6 @@ package com.tokopedia.topupbills.telco.prepaid.widget
 
 import android.content.Context
 import android.text.Editable
-import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
@@ -163,7 +162,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             val sortFilterItem = SortFilterItem(chipText, type = ChipsUnify.TYPE_ALTERNATE)
             sortFilterItem.listener = {
                 if (number.clientName.isEmpty()) {
-                    setContactName(context.getString(R.string.digital_client_label))
+                    setContactName("")
                     listener.onClickFilterChip(false)
                 } else {
                     setContactName(number.clientName)
@@ -294,19 +293,15 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     private fun validateContactName(contactName: String): String {
-        val label = if (contactName.matches(REGEX_IS_ALPHABET_AND_SPACE_ONLY.toRegex()) && contactName.isNotEmpty()) {
-            contactName
+        return if (contactName.matches(REGEX_IS_ALPHABET_AND_SPACE_ONLY.toRegex()) && contactName.isNotEmpty()) {
+            if (contactName.length > LABEL_MAX_CHAR) {
+                contactName.substring(0, LABEL_MAX_CHAR).plus(ELLIPSIZE)
+            } else {
+                contactName
+            }
         } else {
             context.getString(R.string.digital_client_label)
         }
-
-        val validatedName = if (label.length > LABEL_MAX_CHAR) {
-            label.substring(0, LABEL_MAX_CHAR).plus(ELLIPSIZE)
-        } else {
-            label
-        }
-
-        return validatedName
     }
 
     private fun validatePrefixClientNumber(phoneNumber: String): String {
