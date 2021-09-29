@@ -84,7 +84,7 @@ internal fun Date.toCalendar(): Calendar {
     return calendar
 }
 
-const val DATE_FORMAT_RFC3339 = "yyyy-MM-dd'T'HH:mm:ss"
+const val DATE_FORMAT_RFC3339 = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
 const val DATE_FORMAT_BROADCAST_SCHEDULE = "EEEE, d MMMM y - HH:mm"
 
 internal fun String.toDateWithFormat(format: String): Date {
