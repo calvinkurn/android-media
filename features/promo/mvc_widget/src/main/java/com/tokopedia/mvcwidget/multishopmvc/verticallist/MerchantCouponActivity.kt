@@ -14,7 +14,7 @@ import com.tokopedia.mvcwidget.di.components.MvcComponent
 
 class MerchantCouponActivity : BaseSimpleActivity() , HasComponent<MvcComponent> {
 
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         return MerchantCouponFragment.newInstance(intent.extras)
     }
 

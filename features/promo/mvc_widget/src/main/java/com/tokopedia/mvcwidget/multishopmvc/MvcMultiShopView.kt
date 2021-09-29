@@ -13,7 +13,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mvcwidget.R
 import com.tokopedia.mvcwidget.multishopmvc.data.AdInfo
@@ -35,20 +35,19 @@ class MvcMultiShopView @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr) {
     var view: View? = null
 
-    var ivShopIcon: AppCompatImageView? = null
-    var ivShopChevron: AppCompatImageView? = null
-    var ivCouponOne: ImageUnify? = null
-    var ivCouponTwo: ImageUnify? = null
-    var productParentOne: ConstraintLayout? = null
-    var productParentTwo: ConstraintLayout? = null
-    var parentContainer: ConstraintLayout? = null
-    var tvShopName: Typography? = null
-    var tvCashBackTitle: Typography? = null
-    var tvCashBackValue: Typography? = null
-    var tvCouponCount: Typography? = null
-    var tvDealsCouponOne: Typography? = null
-    var tvDealsCouponTwo: Typography? = null
-
+    private var ivShopIcon: AppCompatImageView? = null
+    private var ivShopChevron: AppCompatImageView? = null
+    private var ivCouponOne: ImageUnify? = null
+    private var ivCouponTwo: ImageUnify? = null
+    private var productParentOne: ConstraintLayout? = null
+    private var productParentTwo: ConstraintLayout? = null
+    private var parentContainer: ConstraintLayout? = null
+    private var tvShopName: Typography? = null
+    private var tvCashBackTitle: Typography? = null
+    private var tvCashBackValue: Typography? = null
+    private var tvCouponCount: Typography? = null
+    private var tvDealsCouponOne: Typography? = null
+    private var tvDealsCouponTwo: Typography? = null
 
     init {
         view = View.inflate(context, R.layout.mvc_layout_mulitshop_item, this)
@@ -151,7 +150,7 @@ class MvcMultiShopView @JvmOverloads constructor(
         }
 
         ivCouponOne?.setOnClickListener {
-            RouteManager.route(this.context, item?.products?.get(0)?.redirectAppLink)
+            RouteManager.route(this.context, item.products?.get(0)?.redirectAppLink)
             sendCouponClickEvent(
                 item.shopName,
                 CLICK_PRODUCT_CARD,
@@ -161,7 +160,7 @@ class MvcMultiShopView @JvmOverloads constructor(
         }
 
         ivCouponTwo?.setOnClickListener {
-            RouteManager.route(this.context, item?.products?.get(1)?.redirectAppLink)
+            RouteManager.route(this.context, item.products?.get(1)?.redirectAppLink)
             sendCouponClickEvent(
                 item.shopName,
                 CLICK_PRODUCT_CARD,
@@ -172,8 +171,8 @@ class MvcMultiShopView @JvmOverloads constructor(
 
         this.setOnClickListener {
             val shopName = item.shopName
-            val shopApplink = item?.applink
-            val shopId = item?.id
+            val shopApplink = item.applink
+            val shopId = item.id
             it.context.startActivity(
                 TransParentActivity.getIntent(
                     it.context,
@@ -224,7 +223,8 @@ class MvcMultiShopView @JvmOverloads constructor(
             shopName,
             eventAction,
             mvcSource,
-            UserSession(context).userId
+            UserSession(context).userId,
+            "mvc section - $shopName"
         )
     }
 
