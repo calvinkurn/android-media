@@ -926,7 +926,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
                 override fun onShareOptionClicked(shareModel: ShareModel) {
                     val shareDataModel = ShopShareHelper.DataModel(
-                        shareModel, shopShareData?.shopUrl.orEmpty(), shopImageFilePath
+                        shareModel = shareModel,
+                        shopImageFilePath = shopImageFilePath,
+                        shopCoreUrl = shopShareData?.shopUrl.orEmpty()
                     )
                     activity?.let {
                         shopShareHelper.onShareOptionClicked(
