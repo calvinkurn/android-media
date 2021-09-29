@@ -1,18 +1,28 @@
 package com.tokopedia.affiliate.ui.bottomsheet
 
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.affiliate.AFFILIATE_LIHAT_KATEGORI
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 
+
 class AffiliateHowToPromoteBottomSheet : BottomSheetUnify() {
     private var contentView: View? = null
-    private val steps: ArrayList<String> = arrayListOf()
+    private val steps: ArrayList<Pair<String,Boolean>> = arrayListOf()
     private var state = STATE_HOW_TO_PROMOTE
 
     companion object {
@@ -46,22 +56,22 @@ class AffiliateHowToPromoteBottomSheet : BottomSheetUnify() {
         when (state) {
             STATE_HOW_TO_PROMOTE -> {
                 setTitle(getString(R.string.affiliate_how_to_promote))
-                steps.add(getString(R.string.affiliate_how_to_get_link))
-                steps.add(getString(R.string.affiliate_how_to_get_link_1))
-                steps.add(getString(R.string.affiliate_how_to_get_link_2))
-                steps.add(getString(R.string.affiliate_how_to_get_link_3))
-                steps.add(getString(R.string.affiliate_how_to_get_link_4))
+                steps.add(Pair(getString(R.string.affiliate_how_to_get_link),false))
+                steps.add(Pair(getString(R.string.affiliate_how_to_get_link_1),true))
+                steps.add(Pair(getString(R.string.affiliate_how_to_get_link_2),false))
+                steps.add(Pair(getString(R.string.affiliate_how_to_get_link_3),false))
+                steps.add(Pair(getString(R.string.affiliate_how_to_get_link_4),false))
             }
             STATE_PRODUCT_INACTIVE -> {
                 setTitle(getString(R.string.affiliate_product_inactive))
-                steps.add(getString(R.string.affiliate_product_inactive_text))
+                steps.add(Pair(getString(R.string.affiliate_product_inactive_text),false))
             }
             else -> {
                 setTitle(getString(R.string.affiliate_beta_info))
-                steps.add(getString(R.string.affiliate_beta_info_text))
+                steps.add(Pair(getString(R.string.affiliate_beta_info_text),false))
             }
         }
-        steps.add("")
+        steps.add(Pair("",false))
         contentView?.findViewById<LinearLayout>(R.id.affiliate_parent_linear)?.let { linearLayout ->
             linearLayout.removeAllViews()
             for (step in steps) {
@@ -75,10 +85,33 @@ class AffiliateHowToPromoteBottomSheet : BottomSheetUnify() {
                             0,
                             0)
                 }
-                typography.text = step
+                if (step.second){
+                    getSpannableString(step.first,typography)
+                }else
+                    typography.text = step.first
                 linearLayout.addView(typography)
             }
         }
         setChild(contentView)
+    }
+
+    private fun getSpannableString(string : String, typography: Typography) {
+        val spannableString = SpannableString(string)
+        val clickableSpan: ClickableSpan = object : ClickableSpan() {
+            override fun onClick(textView: View) {
+                RouteManager.routeNoFallbackCheck(context, AFFILIATE_LIHAT_KATEGORI, AFFILIATE_LIHAT_KATEGORI)
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.color = MethodChecker.getColor(requireContext(),com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                ds.isUnderlineText = false
+            }
+        }
+        val boldSpan = StyleSpan(Typeface.BOLD)
+        spannableString.setSpan(boldSpan, 137, 151, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(clickableSpan, 137, 151, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        typography.text = spannableString
+        typography.movementMethod = LinkMovementMethod.getInstance()
     }
 }
