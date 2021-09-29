@@ -1155,7 +1155,20 @@ abstract class BaseSearchCategoryViewModel(
                 getRecommendationUseCase.getData(getRecommendationRequestParam)
 
         updateRecommendationList(recommendationListData)
-        updateVisitableListWithRecommendationCarousel(adapterPosition, element)
+
+        val recommendationData = recommendationList.firstOrNull() ?: RecommendationWidget()
+
+        if (recommendationData.recommendationItemList.isEmpty()) {
+            visitableList.removeAt(adapterPosition)
+            updateVisitableListLiveData()
+        } else {
+            element.carouselData = RecommendationCarouselData(
+                state = RecommendationCarouselData.STATE_READY,
+                recommendationData = recommendationData
+            )
+
+            updateVisitableWithIndex(listOf(adapterPosition))
+        }
     }
 
     protected open fun createRecommendationRequestParam(
@@ -1195,26 +1208,6 @@ abstract class BaseSearchCategoryViewModel(
         val quantity = cartService.getProductQuantity(productId, parentProductId)
 
         recommendationItem.quantity = quantity
-    }
-
-    protected open suspend fun updateVisitableListWithRecommendationCarousel(
-        adapterPosition: Int,
-        element: TokoNowRecommendationCarouselUiModel
-    ) {
-        val recommendationData = recommendationList.firstOrNull() ?: RecommendationWidget()
-
-        if (recommendationData.recommendationItemList.isEmpty()) {
-            visitableList.removeAt(adapterPosition)
-            updateVisitableListLiveData()
-        }
-        else {
-            element.carouselData = RecommendationCarouselData(
-                state = RecommendationCarouselData.STATE_READY,
-                recommendationData = recommendationData
-            )
-
-            updateVisitableWithIndex(listOf(adapterPosition))
-        }
     }
 
     protected open suspend fun getRecommendationCarouselError(
