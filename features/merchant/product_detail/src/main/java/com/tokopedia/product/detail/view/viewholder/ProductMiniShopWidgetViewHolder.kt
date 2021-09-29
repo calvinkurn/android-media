@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
+import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -43,6 +44,7 @@ class ProductMiniShopWidgetViewHolder(
 
         val shopBadgeUrl = element.shopBadge
         shopBadge?.shouldShowWithAction(shopBadgeUrl.isNotBlank()) {
+            shopBadge.scaleType = ImageView.ScaleType.FIT_XY
             shopBadge.loadImageCircle(shopBadgeUrl)
         }
 
