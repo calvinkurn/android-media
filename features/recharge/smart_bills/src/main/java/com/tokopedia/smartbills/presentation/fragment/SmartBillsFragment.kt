@@ -434,7 +434,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
     private fun initAccordion(){
         rv_smart_bills_accordion.apply {
-            hide()
+            resertAccordion()
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = adapterAccordion
             addItemDecoration(DividerSBMItemDecoration(context))
@@ -444,14 +444,23 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     private fun renderAccordionList(listSection: List<Section>){
         rv_smart_bills_accordion.apply {
             show()
+            adapterAccordion.clearAllElements()
             adapterAccordion.addElement(listSection)
             adapterAccordion.notifyDataSetChanged()
+        }
+    }
+
+    private fun resertAccordion(){
+        rv_smart_bills_accordion.apply {
+            hide()
+            adapterAccordion.clearAllElements()
         }
     }
 
     private fun resetInitialState(){
         tv_smart_bills_title.show()
         containerCheckBox?.hide()
+        resertAccordion()
         view_smart_bills_shimmering.show()
         smart_bills_checkout_view.setVisibilityLayout(true)
         toggleAllItems(false)
