@@ -1,49 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/home_component_divider_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        tools:visibility="visible"
-        tools:background="@color/Unify_Static_Black"/>
-    <androidx.constraintlayout.widget.ConstraintLayout
+        tools:background="@color/Unify_Static_Black"
+        tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/content_container_v2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/channel_title"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+        app:layout_constraintTop_toBottomOf="@+id/channel_title">
 
         <include
             layout="@layout/home_master_dynamic_channel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycleList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_4"
-            android:paddingBottom="@dimen/dp_4"
-            android:paddingHorizontal="@dimen/dp_9"
             android:clipToPadding="false"
+            android:paddingHorizontal="@dimen/dp_9"
+            android:paddingBottom="@dimen/dp_4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/channel_title_container" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/home_component_divider_footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        tools:visibility="visible"
-        tools:background="@color/Unify_B500"/>
+        tools:background="@color/Unify_B500"
+        tools:visibility="visible" />
 </LinearLayout>

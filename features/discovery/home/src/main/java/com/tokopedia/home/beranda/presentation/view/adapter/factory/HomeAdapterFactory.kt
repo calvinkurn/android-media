@@ -296,8 +296,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> CategoryWidgetViewHolder.LAYOUT
 
             /**
-             * refer to 1 grid item layout {@link com.tokopedia.home.R.layout#home_dc_category_widget}
-             * used by category widget
+             * refer to 1 grid item layout {@link com.tokopedia.home.R.layout#home_dc_category_widget_v2}
+             * used by category widget v2
              */
             DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET_V2 -> CategoryWidgetV2ViewHolder.LAYOUT
 
