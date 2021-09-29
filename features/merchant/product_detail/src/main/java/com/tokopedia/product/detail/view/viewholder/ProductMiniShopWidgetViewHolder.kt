@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.product.detail.R
@@ -28,6 +29,7 @@ class ProductMiniShopWidgetViewHolder(
     }
 
     private val shopAva: ImageUnify? = view.findViewById(R.id.shop_ava)
+    private val shopBadge: ImageUnify? = view.findViewById(R.id.shop_badge)
     private val shopName: Typography? = view.findViewById(R.id.shop_name)
     private val shopLocation: Typography? = view.findViewById(R.id.shop_location_online)
     private val container: View? = view.findViewById(R.id.mini_shop_widget_container)
@@ -38,6 +40,11 @@ class ProductMiniShopWidgetViewHolder(
         if (element.shopName.isEmpty()) return
 
         val componentTracker = getComponentTrackData(element)
+
+        val shopBadgeUrl = element.shopBadge
+        shopBadge?.shouldShowWithAction(shopBadgeUrl.isNotBlank()) {
+            shopBadge.loadImageCircle(shopBadgeUrl)
+        }
 
         shopAva?.apply {
             loadImageCircle(element.shopAva)
