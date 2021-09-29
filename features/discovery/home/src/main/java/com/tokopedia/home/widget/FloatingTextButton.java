@@ -200,17 +200,6 @@ public class FloatingTextButton extends FrameLayout {
         setBackgroundColor(background);
     }
 
-
-    @SuppressWarnings("SameParameterValue")
-    private int getVerticalPaddingValue(int dp) {
-        return DimensionUtils.convertDpToPixel(dp, getContext());
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private int getHorizontalPaddingValue(int dp) {
-        return DimensionUtils.convertDpToPixel(dp, getContext());
-    }
-
     public void show() {
         show(-1);
     }

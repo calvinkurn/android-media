@@ -202,7 +202,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         FragmentListener,
         HomeEggListener,
         HomeTabFeedListener,
-        HomeInspirationListener,
         HomeFeedsListener,
         HomeReviewListener,
         PopularKeywordListener,
@@ -2942,10 +2941,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     override fun onFeedContentScrolled(dy: Int, totalScrollY: Int) {}
 
     override fun onFeedContentScrollStateChanged(newState: Int) {}
-
-    override fun onGoToProductDetailFromInspiration(productId: String, imageSource: String, name: String, price: String) {
-        goToProductDetail(productId)
-    }
 
     private fun goToProductDetail(productId: String) {
         activity?.startActivity(getProductIntent(productId))
