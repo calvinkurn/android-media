@@ -94,6 +94,9 @@ object RouteManagerKt {
                 return RouteManager.route(activity, ApplinkConst.THANKYOU_PAGE_NATIVE,
                         paymentId, merchantCode)
             }
+            DeepLinkChecker.SALDO_DEPOSIT -> {
+                return RouteManager.route(activity, ApplinkConst.SALDO)
+            }
         }
         return false
     }
