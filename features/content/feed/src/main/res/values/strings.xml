@@ -123,4 +123,8 @@ dari Feed.</string>
     <string name="feed_header_mask">searchbar feed header mask</string>
     <string name="feed_fab_shop">Feed Fab Shop</string>
 
+    <!--Floating Action Button-->
+    <string name="feed_fab_create_post">Buat Post</string>
+    <string name="feed_fab_create_live">Buat Live</string>
+
 </resources>

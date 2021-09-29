@@ -29,6 +29,7 @@ import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -45,6 +46,8 @@ import com.tokopedia.feedplus.view.analytics.FeedToolBarAnalytics
 import com.tokopedia.feedplus.view.customview.FeedMainToolbar
 import com.tokopedia.feedplus.view.di.DaggerFeedContainerComponent
 import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.imagepicker_insta.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -62,6 +65,8 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -139,7 +144,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private var badgeNumberNotification: Int = 0
     private var badgeNumberInbox: Int = 0
     private var badgeNumberCart: Int = 0
-    private var isFabExpanded = false
     private var toolbarType = TOOLBAR_GRADIENT
     private var startToTransitionOffset = 0
     private var searchBarTransitionRange = 0
@@ -189,7 +193,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         initToolbar()
         initView()
         requestFeedTab()
-        showFeedFab()
+//        showFeedFab()
+        initFab()
     }
 
     private fun initNavRevampAbTest() {
@@ -286,9 +291,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     override fun onResume() {
         super.onResume()
         if (!userSession.isLoggedIn || !isSeller)
-            fab_feed.hide()
+            fab_feed.visibility = View.GONE
         else
-            fab_feed.show()
+            fab_feed.visibility = View.VISIBLE
 
         if (activity?.intent?.getBooleanExtra(PARAM_SHOW_PROGRESS_BAR, false) == true) {
             if (!mInProgress) {
@@ -409,6 +414,59 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             badgeNumberInbox,
             badgeNumberCart
         ) // notify badge after toolbar created
+    }
+
+    private fun initFab() {
+        fab_feed.type = FloatingButtonUnify.BASIC
+        fab_feed.color = FloatingButtonUnify.COLOR_GREEN
+
+        val items = arrayListOf<FloatingButtonItem>()
+
+        if (userSession.hasShop() && userSession.isLoggedIn) {
+            items.add(
+                FloatingButtonItem(
+                    iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
+                    title = getString(R.string.feed_fab_create_live),
+                    listener = { RouteManager.route(requireContext(), ApplinkConst.PLAY_BROADCASTER) }
+                )
+            )
+        }
+
+        if (isSeller && userSession.isLoggedIn) {
+            items.add(
+                FloatingButtonItem(
+                    iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.IMAGE),
+                    title = getString(R.string.feed_fab_create_post),
+                    listener = {
+                        toolBarAnalytics.sendClickBuatFeedPostEvent(userSession.userId, userSession.shopId)
+                        val authors = viewModel.feedContentForm.authors
+                        val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
+                        intent.putExtra(APPLINK_AFTER_CAMERA_CAPTURE,
+                            ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                        intent.putExtra(MAX_MULTI_SELECT_ALLOWED,
+                            MAX_MULTI_SELECT_ALLOWED_VALUE)
+                        intent.putExtra(TITLE,
+                            getString(com.tokopedia.createpost.createpost.R.string.feed_content_post_sebagai))
+                        val name: String = MethodChecker.fromHtml(authors.first().name).toString()
+                        intent.putExtra(SUB_TITLE, name)
+                        intent.putExtra(TOOLBAR_ICON_URL,
+                            authors.first().thumbnail
+                        )
+                        intent.putExtra(APPLINK_FOR_GALLERY_PROCEED,
+                            ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                        startActivity(intent)
+                        TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
+                    }
+                )
+            )
+        }
+
+        if (items.isNotEmpty()) {
+            fab_feed.addItem(items)
+            fab_feed.show()
+        } else {
+            fab_feed.hide()
+        }
     }
 
     private fun setViewPager() {
@@ -553,35 +611,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         return pagerAdapter.isContextExploreExist
     }
 
-    private fun showFeedFab() {
-        val isLoggedIn = userSession.isLoggedIn
-        if (isSeller && isLoggedIn)
-            fab_feed.show()
-        else
-            fab_feed.hide()
-        isFabExpanded = true
-        fab_feed.setOnClickListener {
-            toolBarAnalytics.sendClickBuatFeedPostEvent(userSession.userId, userSession.shopId)
-            val authors = viewModel.feedContentForm.authors
-            val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
-            intent.putExtra(APPLINK_AFTER_CAMERA_CAPTURE,
-                ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
-            intent.putExtra(MAX_MULTI_SELECT_ALLOWED,
-                MAX_MULTI_SELECT_ALLOWED_VALUE)
-            intent.putExtra(TITLE,
-                getString(com.tokopedia.createpost.createpost.R.string.feed_content_post_sebagai))
-            val name: String = MethodChecker.fromHtml(authors.first().name).toString()
-            intent.putExtra(SUB_TITLE, name)
-            intent.putExtra(TOOLBAR_ICON_URL,
-                authors.first().thumbnail
-            )
-            intent.putExtra(APPLINK_FOR_GALLERY_PROCEED,
-                ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
-            startActivity(intent)
-            TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
-        }
-    }
-
     private fun goToCreateAffiliate() {
         if (context != null) {
             if (affiliatePreference.isFirstTimeEducation(userSession.userId)) {
@@ -605,15 +634,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             return
         }
 
-        if (!isInitial) {
-            fab_feed.animation = AnimationUtils.loadAnimation(activity, com.tokopedia.feedcomponent.R.anim.rotate_backward)
-        }
-        fab_feed_byme.hide()
-        fab_feed_shop.hide()
-        text_fab_byme.visibility = View.GONE
-        text_fab_shop.visibility = View.GONE
+        fab_feed.menuOpen = false
         layout_grey_popup.visibility = View.GONE
-        isFabExpanded = false
     }
 
     private fun onGoToLink(link: String) {
@@ -647,7 +669,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun showFabCoachMark() {
-        if (::coachMarkItem.isInitialized && !affiliatePreference.isCreatePostEntryOnBoardingShown(userSession.userId) && !fab_feed.isOrWillBeHidden) {
+        if (::coachMarkItem.isInitialized && !affiliatePreference.isCreatePostEntryOnBoardingShown(userSession.userId) && fab_feed.isVisible) {
             coachMark.show(activity = activity, tag = null, tutorList = arrayListOf(coachMarkItem))
             affiliatePreference.setCreatePostEntryOnBoardingShown(userSession.userId)
         }
