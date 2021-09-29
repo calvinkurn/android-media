@@ -27,11 +27,10 @@ object SomErrorHandler {
     }
 
     fun getErrorMessage(throwable: Throwable, context: Context): String {
-        return throwable.message
-            ?: if (throwable is UnknownHostException || throwable is SocketTimeoutException) {
-                context.getString(R.string.som_error_message_no_internet_connection)
-            } else {
-                context.getString(R.string.som_error_message_server_fault)
-            }
+        return if (throwable is UnknownHostException || throwable is SocketTimeoutException) {
+            context.getString(R.string.som_error_message_no_internet_connection)
+        } else {
+            throwable.message ?: context.getString(R.string.som_error_message_server_fault)
+        }
     }
 }
