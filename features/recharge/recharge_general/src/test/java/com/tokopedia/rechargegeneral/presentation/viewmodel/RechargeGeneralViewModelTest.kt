@@ -57,7 +57,7 @@ class RechargeGeneralViewModelTest {
     fun getOperatorCluster_Success() {
         val operatorCluster = RechargeGeneralOperatorCluster.Response(RechargeGeneralOperatorCluster(
                 operatorGroups = listOf(RechargeGeneralOperatorCluster.CatalogOperatorGroup(
-                        operators = listOf(CatalogOperator(1))
+                        operators = listOf(CatalogOperator("1"))
                 ))
         ))
         val result = HashMap<Type, Any>()
@@ -175,7 +175,7 @@ class RechargeGeneralViewModelTest {
     @Test
     fun createProductListParams() {
         val menuId = 1
-        val operatorId = 1
+        val operatorId = "1"
 
         val actual = rechargeGeneralViewModel.createProductListParams(menuId, operatorId)
         assertEquals(actual, mapOf(

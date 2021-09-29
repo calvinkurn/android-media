@@ -1,6 +1,5 @@
 package com.tokopedia.common.topupbills.data
 
-import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -11,10 +10,9 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 class TopupBillsBanner(
-        @SuppressLint("Invalid Data Type")
         @SerializedName("id")
         @Expose
-        val id: Int = 0,
+        val id: String = "",
         @SerializedName("img_url")
         @Expose
         val imageUrl: String = "",
