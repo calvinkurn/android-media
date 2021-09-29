@@ -1159,7 +1159,7 @@ abstract class BaseSearchCategoryViewModel(
         val recommendationData = recommendationList.firstOrNull() ?: RecommendationWidget()
 
         if (recommendationData.recommendationItemList.isEmpty()) {
-            visitableList.removeAt(adapterPosition)
+            visitableList.remove(element)
             updateVisitableListLiveData()
         } else {
             element.carouselData = RecommendationCarouselData(
