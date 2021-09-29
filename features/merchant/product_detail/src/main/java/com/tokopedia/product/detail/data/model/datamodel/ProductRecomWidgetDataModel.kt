@@ -9,16 +9,17 @@ import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationC
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 
 data class ProductRecomWidgetDataModel(
-        val type: String = "",
-        val name: String = "",
-        var recomWidgetData: RecommendationWidget? = null,
+    val type: String = "",
+    val name: String = "",
+    var recomWidgetData: RecommendationWidget? = null,
 
-        //UI Data
-        var filterData: List<AnnotationChip>? = null,
-        var cardModel: List<ProductCardModel>? = null,
-        var position: Int = -1,
-        var pageName: String = "",
-        var forceRefresh: Boolean = false
+    //UI Data
+    var filterData: List<AnnotationChip>? = null,
+    var cardModel: List<ProductCardModel>? = null,
+    var position: Int = -1,
+    var pageName: String = "",
+    var forceRefresh: Boolean = false,
+    var productId: String = ""
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()

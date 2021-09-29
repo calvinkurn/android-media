@@ -27,8 +27,6 @@ class ProductRecomWidgetViewHolder (
         val LAYOUT = R.layout.item_dynamic_widget_recom
     }
 
-
-
     private var productRecom: ProductRecomWidgetDataModel? = null
 
     private val recomWidget : RecommendationCarouselWidgetView = itemView.findViewById(R.id.widget_recom)
@@ -42,12 +40,14 @@ class ProductRecomWidgetViewHolder (
         } else if (element.pageName.isNotEmpty()) {
             if (element.forceRefresh) {
                 //
-                recomWidget.bind(
-                        pageName = element.name,
-                        tempHeaderName = itemView.context.getString(R.string.title_other_product),
-                        adapterPosition = adapterPosition,
-                        widgetListener = this,
-                        isForceRefresh = true)
+                recomWidget.bindPdpRecom(
+                    pageName = element.name,
+                    tempHeaderName = itemView.context.getString(R.string.title_other_product),
+                    adapterPosition = adapterPosition,
+                    widgetListener = this,
+                    isForceRefresh = true,
+                    parentProductId = element.productId
+                )
                 listener.onRecomWidgetAlreadyInit(element.pageName)
             }
         } else {

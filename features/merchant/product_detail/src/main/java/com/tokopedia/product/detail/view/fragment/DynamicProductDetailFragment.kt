@@ -1014,7 +1014,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun onRecomWidgetAlreadyInit(pageName: String) {
-        pdpUiUpdater?.updateRecommendationDataPageName(pageName, false)
+        pdpUiUpdater?.updateRecommendationDataPageName(
+            pageName = pageName,
+            isForceRefresh = false,
+            productId = viewModel.getDynamicProductInfoP1?.parentProductId ?: ""
+        )
         updateUi()
     }
 
@@ -1057,7 +1061,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun loadTopads(pageName: String) {
-        pdpUiUpdater?.updateRecommendationDataPageName(pageName)
+        pdpUiUpdater?.updateRecommendationDataPageName(
+            pageName = pageName,
+            productId = viewModel.getDynamicProductInfoP1?.parentProductId ?: ""
+        )
         updateUi()
     }
 

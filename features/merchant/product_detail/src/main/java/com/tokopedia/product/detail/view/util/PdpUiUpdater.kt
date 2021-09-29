@@ -538,7 +538,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateRecommendationDataPageName(pageName: String, isForceRefresh: Boolean = true) {
+    fun updateRecommendationDataPageName(
+        pageName: String,
+        isForceRefresh: Boolean = true,
+        productId: String
+    ) {
         updateData(pageName) {
             (mapOfData[pageName] as? ProductRecomWidgetDataModel)?.run {
                 this.pageName = pageName

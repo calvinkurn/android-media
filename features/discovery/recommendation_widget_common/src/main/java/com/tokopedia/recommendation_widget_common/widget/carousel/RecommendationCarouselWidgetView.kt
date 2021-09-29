@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -132,24 +133,41 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     //step 3. define force refresh
 
     fun bind(
-            carouselData: RecommendationCarouselData = RecommendationCarouselData(),
-            adapterPosition: Int = 0,
-            widgetListener: RecommendationCarouselWidgetListener?,
-            scrollToPosition: Int = 0,
-            pageName: String = "",
-            tempHeaderName: String = "",
-            isForceRefresh: Boolean = false
+        carouselData: RecommendationCarouselData = RecommendationCarouselData(),
+        adapterPosition: Int = 0,
+        widgetListener: RecommendationCarouselWidgetListener?,
+        scrollToPosition: Int = 0
     ) {
         try {
             this.adapterPosition = adapterPosition
             this.widgetListener = widgetListener
             this.scrollToPosition = scrollToPosition
             this.pageName = pageName
-            if (pageName.isEmpty()) bindWidgetWithData(carouselData)
-            else {
-                bindTemporaryHeader(tempHeaderName)
-                bindWidgetWithPageName(pageName, isForceRefresh)
-            }
+            if (!carouselData.recommendationData.recommendationItemList.isEmpty()) {
+                bindWidgetWithData(carouselData)
+            } else this.widgetListener?.onWidgetFail(pageName, MessageErrorException(""))
+        } catch (e: Exception) {
+            this.widgetListener?.onWidgetFail(pageName, e)
+        }
+    }
+
+    fun bindPdpRecom(
+        adapterPosition: Int = 0,
+        widgetListener: RecommendationCarouselWidgetListener?,
+        scrollToPosition: Int = 0,
+        pageName: String = "",
+        tempHeaderName: String = "",
+        isForceRefresh: Boolean = false,
+        parentProductId: String
+    ) {
+        try {
+            this.adapterPosition = adapterPosition
+            this.widgetListener = widgetListener
+            this.scrollToPosition = scrollToPosition
+            this.pageName = pageName
+
+            bindTemporaryHeader(tempHeaderName)
+            bindWidgetWithPageName(pageName, isForceRefresh)
         } catch (e: Exception) {
             this.widgetListener?.onWidgetFail(pageName, e)
         }
