@@ -18,7 +18,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.network.utils.URLGenerator
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.databinding.FragmentPaymentWebViewBinding
@@ -128,18 +127,10 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
     private fun loadWebView(url: String) {
         binding?.apply {
             val newUrl = Uri.parse(url).buildUpon().appendQueryParameter(QUERY_IS_HIDE_DIGITAL, isHideDigital()).build().toString()
-            webView.loadAuthUrl(generateUrl(newUrl, userSession), userSession)
+            webView.loadAuthUrl(newUrl, userSession)
             webView.visible()
             globalError.gone()
         }
-    }
-
-    private fun generateUrl(url: String, userSession: UserSessionInterface): String {
-        // Uri should automatically encode
-        return URLGenerator.generateURLSessionLogin(
-                url,
-                userSession.deviceId,
-                userSession.userId)
     }
 
     private fun handleError(throwable: Throwable?) {
