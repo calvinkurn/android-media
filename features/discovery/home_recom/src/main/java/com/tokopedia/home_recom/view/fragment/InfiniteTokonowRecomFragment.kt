@@ -139,6 +139,7 @@ class InfiniteTokonowRecomFragment :
             enableLoadMore()
             resetLoadMore()
         }
+        getMiniCartData()
         viewModel.getRecommendationFirstPage(pageName, productId, queryParam, forceRefresh)
     }
 
@@ -364,8 +365,10 @@ class InfiniteTokonowRecomFragment :
 
     private fun getMiniCartData() {
         context?.let {
-            val localAddress = ChooseAddressUtils.getLocalizingAddressData(it)
-            viewModel.getMiniCart(localAddress?.shop_id ?: "")
+            if (getUserSession().isLoggedIn) {
+                val localAddress = ChooseAddressUtils.getLocalizingAddressData(it)
+                viewModel.getMiniCart(localAddress?.shop_id ?: "")
+            }
         }
     }
 }
