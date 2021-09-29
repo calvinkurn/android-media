@@ -89,7 +89,7 @@ class SectionMerchantCouponAdapter(val arrayList: ArrayList<CatalogMVCWithProduc
     }
 
     companion object {
-        const val className = "com.tokopedia.tokopoints.view.adapter"
+        const val className = "com.tokopedia.tokopoints.view.adapter.SectionMerchantCouponAdapter"
     }
 
     override fun getAdInfo(): HashSet<String?> {

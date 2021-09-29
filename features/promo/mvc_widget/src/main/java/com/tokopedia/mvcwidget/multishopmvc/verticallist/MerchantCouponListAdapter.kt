@@ -99,6 +99,6 @@ class MerchantCouponListAdapter(
     }
 
     companion object {
-        const val className = "com.tokopedia.mvcwidget.multishopmvc.verticallist"
+        const val className = "com.tokopedia.mvcwidget.multishopmvc.verticallist.MerchantCouponListAdapter"
     }
 }

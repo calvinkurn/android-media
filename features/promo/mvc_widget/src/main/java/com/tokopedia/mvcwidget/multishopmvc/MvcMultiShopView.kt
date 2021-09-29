@@ -221,7 +221,7 @@ class MvcMultiShopView @JvmOverloads constructor(
 
     private fun sendTopadsClick(context: Context, adInfo: AdInfo?) {
         TopAdsUrlHitter(context).hitClickUrl(
-            this::class.java.simpleName,
+            className,
             adInfo?.AdClickUrl,
             adInfo?.AdID,
             "",
@@ -262,5 +262,9 @@ class MvcMultiShopView @JvmOverloads constructor(
                 com.tokopedia.unifyprinciples.R.color.Unify_Static_White
             )
         )
+    }
+
+    companion object {
+        const val className = "com.tokopedia.mvcwidget.multishopmvc.MvcMultiShopView"
     }
 }
