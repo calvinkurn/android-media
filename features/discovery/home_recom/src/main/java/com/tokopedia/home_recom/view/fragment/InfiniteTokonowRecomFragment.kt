@@ -191,9 +191,11 @@ class InfiniteTokonowRecomFragment :
     }
 
     override fun onRefreshRecommendation() {
+        loadInitData(false)
     }
 
     override fun onCloseRecommendation() {
+        activity?.finish()
     }
 
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
