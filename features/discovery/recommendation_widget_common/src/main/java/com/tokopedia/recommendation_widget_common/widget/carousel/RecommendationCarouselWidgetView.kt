@@ -198,11 +198,12 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                                 isUsingWidgetViewModel = true
                             )
                         )
-                    },
-                    onError = {
-                        widgetListener?.onWidgetFail(pageName = pageName, Exception(it))
                     }
-                    )
+                },
+                onError = {
+                    widgetListener?.onWidgetFail(pageName = pageName, Exception(it))
+                }
+            )
         } else {
             itemView.loadingRecom.gone()
         }
