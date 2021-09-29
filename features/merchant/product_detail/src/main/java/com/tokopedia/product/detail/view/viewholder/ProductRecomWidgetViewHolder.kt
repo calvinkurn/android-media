@@ -52,10 +52,14 @@ class ProductRecomWidgetViewHolder (
             }
         } else {
             element.recomWidgetData?.let {
-                recomWidget.bind(
-                        carouselData = RecommendationCarouselData(it, RecommendationCarouselData.STATE_READY),
-                        adapterPosition = adapterPosition,
-                        widgetListener = this)
+                recomWidget.bindRecomWithData(
+                    carouselData = RecommendationCarouselData(
+                        it,
+                        RecommendationCarouselData.STATE_READY
+                    ),
+                    adapterPosition = adapterPosition,
+                    widgetListener = this
+                )
             }
         }
     }

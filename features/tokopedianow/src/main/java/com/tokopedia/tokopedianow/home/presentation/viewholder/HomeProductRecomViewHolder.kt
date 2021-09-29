@@ -36,7 +36,7 @@ class HomeProductRecomViewHolder(
     override fun bind(element: HomeProductRecomUiModel) {
         channelId = element.id
         isOoc = element.id == PRODUCT_RECOM_OOC
-        productRecom.bind(
+        productRecom.bindRecomWithData(
             carouselData = RecommendationCarouselData(
                 recommendationData = element.recomWidget,
                 state = RecommendationCarouselData.STATE_READY,

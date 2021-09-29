@@ -132,7 +132,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     //step 2. define viewmodel service (load recom & minicart) bedasarkan step 1
     //step 3. define force refresh
 
-    fun bind(
+    fun bindRecomWithData(
         carouselData: RecommendationCarouselData = RecommendationCarouselData(),
         adapterPosition: Int = 0,
         widgetListener: RecommendationCarouselWidgetListener?,
@@ -167,18 +167,29 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             this.pageName = pageName
 
             bindTemporaryHeader(tempHeaderName)
-            bindWidgetWithPageName(pageName, isForceRefresh)
+            bindWidgetWithPageName(
+                pageName = pageName,
+                isForceRefresh = isForceRefresh,
+                parentProductId = parentProductId
+            )
         } catch (e: Exception) {
             this.widgetListener?.onWidgetFail(pageName, e)
         }
     }
 
     //get data with network call
-    private fun bindWidgetWithPageName(pageName: String, isForceRefresh: Boolean) {
+    private fun bindWidgetWithPageName(
+        pageName: String,
+        isForceRefresh: Boolean,
+        parentProductId: String = ""
+    ) {
         if (carouselData == null || isForceRefresh) {
             adapter?.clearAllElements()
             itemView.loadingRecom.visible()
-            viewModel?.loadRecommendationCarousel(pageName = pageName)
+            viewModel?.loadRecommendationCarousel(
+                pageName = pageName,
+                productIds = listOf(parentProductId)
+            )
         } else {
             itemView.loadingRecom.gone()
         }

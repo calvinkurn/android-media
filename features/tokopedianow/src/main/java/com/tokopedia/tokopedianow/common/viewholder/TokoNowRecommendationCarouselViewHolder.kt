@@ -36,7 +36,7 @@ class TokoNowRecommendationCarouselViewHolder(
         val scrollToPosition =
             recommendationCarouselListener?.onGetCarouselScrollPosition(adapterPosition)
 
-        recomWidget.bind(
+        recomWidget.bindRecomWithData(
             carouselData = element.carouselData,
             adapterPosition = adapterPosition,
             widgetListener = this,
