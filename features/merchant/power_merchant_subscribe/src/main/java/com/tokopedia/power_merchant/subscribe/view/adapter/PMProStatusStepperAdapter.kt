@@ -1,15 +1,14 @@
 package com.tokopedia.power_merchant.subscribe.view.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.databinding.ItemPmProStatusStepperBinding
 import com.tokopedia.power_merchant.subscribe.view.model.PMProStatusStepperUiModel
-import kotlinx.android.synthetic.main.item_pm_pro_status_stepper.view.*
 
 class PMProStatusStepperAdapter :
     RecyclerView.Adapter<PMProStatusStepperAdapter.PMProStatusViewHolder>() {
@@ -25,11 +24,12 @@ class PMProStatusStepperAdapter :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PMProStatusViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(
-            R.layout.item_pm_pro_status_stepper,
-            parent, false
+        val binding = ItemPmProStatusStepperBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
         )
-        return PMProStatusViewHolder(view)
+        return PMProStatusViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: PMProStatusViewHolder, position: Int) {
@@ -39,49 +39,50 @@ class PMProStatusStepperAdapter :
 
     override fun getItemCount(): Int = pmProStatusStepperList.size
 
-    inner class PMProStatusViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class PMProStatusViewHolder(private val binding: ItemPmProStatusStepperBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(data: PMProStatusStepperUiModel) {
-            with(itemView) {
-                setBackgroundColor(
+            with(binding) {
+                root.setBackgroundColor(
                     ContextCompat.getColor(
-                        context,
+                        root.context,
                         com.tokopedia.unifyprinciples.R.color.Unify_Background
                     )
                 )
-                tv_title_status_stepper?.text = data.titleStepper
+                tvTitleStatusStepper.text = data.titleStepper
 
                 data.colorStatusTitle?.let {
-                    tv_title_status_stepper?.setTextColor(
+                    tvTitleStatusStepper.setTextColor(
                         ContextCompat.getColor(
-                            context,
+                            root.context,
                             it
                         )
                     )
                 }
 
                 if (data.isStepperShow) {
-                    divider_stepper_pm_pro_status?.show()
+                    dividerStepperPmProStatus.show()
                     data.colorDivider?.let {
-                        divider_stepper_pm_pro_status?.setBackgroundColor(
+                        dividerStepperPmProStatus.setBackgroundColor(
                             ContextCompat.getColor(
-                                context, it
+                                root.context, it
                             )
                         )
                     }
                 } else {
-                    divider_stepper_pm_pro_status?.hide()
+                    dividerStepperPmProStatus.hide()
                 }
 
                 when {
                     data.isCurrentActive -> {
-                        ic_dot_stepper?.setImageResource(R.drawable.ic_current_active_pm_pro_status)
+                        icDotStepper.setImageResource(R.drawable.ic_current_active_pm_pro_status)
                     }
                     data.isPassedActive -> {
-                        ic_dot_stepper?.setImageResource(R.drawable.ic_pass_active_pm_pro_status)
+                        icDotStepper.setImageResource(R.drawable.ic_pass_active_pm_pro_status)
                     }
                     else -> {
-                        ic_dot_stepper?.setImageResource(R.drawable.ic_current_inactive_pm_pro_status)
+                        icDotStepper.setImageResource(R.drawable.ic_current_inactive_pm_pro_status)
                     }
                 }
             }
