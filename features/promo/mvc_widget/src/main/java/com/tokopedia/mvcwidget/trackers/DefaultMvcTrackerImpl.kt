@@ -356,7 +356,9 @@ open class DefaultMvcTrackerImpl:MvcTrackerImpl {
         map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.VIEW_MVC_COUPON
         map[Tracker.Constants.ECOMMERCE] = DataLayer.mapOf("promoView", mapData)
 
-        Tracker.fillCommonItems(map, "", "")
+        if (source == MvcSource.REWARDS) {
+            Tracker.fillCommonItems(map, "", Tracker.Constants.TOKOPOINT_BUSINESSUNIT)
+        }
         Tracker.getTracker().sendEnhanceEcommerceEvent(map)
     }
 
@@ -373,7 +375,9 @@ open class DefaultMvcTrackerImpl:MvcTrackerImpl {
         map[Tracker.Constants.EVENT_ACTION] = eventAction
         map[Tracker.Constants.EVENT_LABEL] = label
 
-        Tracker.fillCommonItems(map, userId, "")
+        if (source == MvcSource.REWARDS) {
+            Tracker.fillCommonItems(map, userId, Tracker.Constants.TOKOPOINT_BUSINESSUNIT)
+        }
         Tracker.getTracker().sendGeneralEvent(map)
     }
 

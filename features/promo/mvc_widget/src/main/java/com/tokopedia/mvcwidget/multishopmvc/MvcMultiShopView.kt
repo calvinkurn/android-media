@@ -169,26 +169,44 @@ class MvcMultiShopView @JvmOverloads constructor(
             )
         }
 
-        this.setOnClickListener {
-            val shopName = item.shopName
-            val shopApplink = item.applink
-            val shopId = item.id
-            it.context.startActivity(
-                TransParentActivity.getIntent(
-                    it.context,
-                    shopId,
-                    0,
-                    shopApplink,
-                    shopName
-                )
-            )
-            sendCouponClickEvent(
-                item.shopName,
-                CLICK_COUPON_TITLE,
-                item.AdInfo ?: AdInfo(),
-                source
-            )
+        tvCashBackTitle?.setOnClickListener {
+            cardClickEvent(it.context, item, CLICK_COUPON_TITLE,source)
         }
+        tvCashBackValue?.setOnClickListener {
+            cardClickEvent(it.context, item, CLICK_COUPON_TITLE,source)
+        }
+        tvCouponCount?.setOnClickListener {
+            cardClickEvent(it.context, item, CLICK_COUPON_TITLE,source)
+        }
+        this.setOnClickListener {
+            cardClickEvent(it.context,item,CLICK_PRODUCT_CARD,source)
+        }
+    }
+
+    private fun cardClickEvent(
+        context: Context,
+        item: MultiShopModel,
+        eventAction: String,
+        source: Int
+    ) {
+        val shopName = item.shopName
+        val shopApplink = item.applink
+        val shopId = item.id
+        context.startActivity(
+            TransParentActivity.getIntent(
+                context,
+                shopId,
+                0,
+                shopApplink,
+                shopName
+            )
+        )
+        sendCouponClickEvent(
+            item.shopName,
+            eventAction,
+            item.AdInfo ?: AdInfo(),
+            source
+        )
     }
 
     private fun shopClickListener(item: MultiShopModel, @MvcSource source: Int) {

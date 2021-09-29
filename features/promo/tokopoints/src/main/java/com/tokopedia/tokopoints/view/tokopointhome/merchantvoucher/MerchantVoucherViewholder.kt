@@ -1,6 +1,5 @@
 package com.tokopedia.tokopoints.view.tokopointhome.merchantvoucher
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -9,11 +8,8 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.mvcwidget.MVC_ADINFO
 import com.tokopedia.mvcwidget.MVC_SOURCE_KEY
-import com.tokopedia.mvcwidget.multishopmvc.data.AdInfo
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.adapter.NonCarouselItemDecoration
 import com.tokopedia.tokopoints.view.adapter.SectionMerchantCouponAdapter
@@ -82,30 +78,20 @@ class MerchantVoucherViewholder(val view: View)
                 bundle.putSerializable(MVC_ADINFO,adapter.getAdInfo())
                 bundle.putInt(MVC_SOURCE_KEY, REWARDS)
                 view.context.startActivity(MerchantCouponActivity.getMerchantCoupon(this.view.context,bundle))
+                seeAllAnalytics()
             }
         }
     }
 
-    fun handledClick(appLink: String?, webLink: String?, action: String?) {
-        try {
-            if (view.context == null) {
-                return
-            }
-            if (TextUtils.isEmpty(appLink)) {
-                RouteManager.getIntent(view.context, ApplinkConstInternalGlobal.WEBVIEW, webLink)
-            } else {
-                RouteManager.route(view.context, appLink)
-            }
-            AnalyticsTrackerUtil.sendEvent(
-                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_LIHAT_SEMUA,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_MVC_SECTION,
-                    AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
-                    AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+    private fun seeAllAnalytics() {
+        AnalyticsTrackerUtil.sendEvent(
+            AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+            AnalyticsTrackerUtil.ActionKeys.CLICK_LIHAT_SEMUA,
+            AnalyticsTrackerUtil.EventKeys.EVENT_MVC_SECTION,
+            AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
+            AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
+        )
     }
 
     private fun sendCouponImpression(bannerName: String) {
