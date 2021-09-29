@@ -67,8 +67,8 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
                 context, ApplinkConst.TOPCHAT_ASKSELLER,
                 exShopId, "", source, shopName, ""
             )
+            it.data = intent.data
             it.putExtras(intent)
-            it.putExtra(ApplinkConst.Chat.PARAM_HEADER, model)
         }
 
         // Then
