@@ -163,7 +163,9 @@ class OtherMenuViewModel @Inject constructor(
             val successCount = map?.count { it.value }.orZero()
             if (successCount == map?.count().orZero()) {
                 launch(coroutineContext) {
-                    swipeSecondaryInfoGentlyWithDelay()
+                    withContext(dispatcher.main) {
+                        swipeSecondaryInfoGentlyWithDelay()
+                    }
                 }
             } else {
                 value = false
@@ -281,7 +283,7 @@ class OtherMenuViewModel @Inject constructor(
     }
 
     fun startToggleTopadsCredit() {
-        if (topadsTopupToggleJob == null || topadsTopupToggleJob?.isCompleted == true) {
+        if (topadsTopupToggleJob?.isCompleted != false) {
             topadsTopupToggleJob =
                 launchCatchError(block = {
                     toggleTopadsTopupWithDelay()
@@ -480,11 +482,9 @@ class OtherMenuViewModel @Inject constructor(
     }
 
     private suspend fun swipeSecondaryInfoGentlyWithDelay() {
-        withContext(dispatcher.main) {
-            delay(GENTLY_SWIPE_DELAY)
-            if (_shouldSwipeSecondaryInfoGently.value == false) {
-                _shouldSwipeSecondaryInfoGently.postValue(true)
-            }
+        delay(GENTLY_SWIPE_DELAY)
+        if (_shouldSwipeSecondaryInfoGently.value == false) {
+            _shouldSwipeSecondaryInfoGently.postValue(true)
         }
     }
 
