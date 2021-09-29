@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.orZero
 
 class RecyclerViewItemDivider(
-    private val divider: Drawable,
+    private val divider: Drawable?,
     private val topMargin: Int,
     private val bottomMargin: Int,
     private val applyMarginAfterLastItem: Boolean = false,
@@ -24,7 +24,7 @@ class RecyclerViewItemDivider(
         val isLastItem: Boolean =
             parent.getChildAdapterPosition(view) == parent.adapter?.itemCount.orZero() - 1
         val layoutParams = view.layoutParams as RecyclerView.LayoutParams
-        layoutParams.topMargin = topMargin + divider.intrinsicHeight
+        layoutParams.topMargin = topMargin + divider?.intrinsicHeight.orZero()
         if (!isLastItem || applyMarginAfterLastItem) {
             layoutParams.bottomMargin = bottomMargin
         }
@@ -32,17 +32,19 @@ class RecyclerViewItemDivider(
     }
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-        val left = parent.paddingLeft
-        val right = parent.width - parent.paddingRight
-        val childCount = parent.childCount
-        val lastItem = if (drawDividerAfterLastItem) childCount else childCount.minus(1)
-        for (i in 0 until lastItem) {
-            val child = parent.getChildAt(i)
-            val layoutParams = child.layoutParams as RecyclerView.LayoutParams
-            val top = child.bottom + layoutParams.bottomMargin
-            val bottom = top + divider.intrinsicHeight
-            divider.setBounds(left, top, right, bottom)
-            divider.draw(c)
+        divider?.let { divider ->
+            val left = parent.paddingLeft
+            val right = parent.width - parent.paddingRight
+            val childCount = parent.childCount
+            val lastItem = if (drawDividerAfterLastItem) childCount else childCount.minus(1)
+            for (i in 0 until lastItem) {
+                val child = parent.getChildAt(i)
+                val layoutParams = child.layoutParams as RecyclerView.LayoutParams
+                val top = child.bottom + layoutParams.bottomMargin
+                val bottom = top + divider.intrinsicHeight
+                divider.setBounds(left, top, right, bottom)
+                divider.draw(c)
+            }
         }
     }
 }
