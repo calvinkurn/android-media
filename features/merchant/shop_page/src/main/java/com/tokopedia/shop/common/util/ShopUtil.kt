@@ -144,4 +144,10 @@ object ShopUtil {
         ).orEmpty()
         return newShopHomeTabAbTestKey.isNotEmpty()
     }
+
+    fun <E> MutableList<E>.setElement(index: Int, element: E){
+        if(index in 0 until size){
+            set(index, element)
+        }
+    }
 }

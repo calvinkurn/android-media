@@ -993,7 +993,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 val lastVisibleItemPosition = layoutManager?.findLastVisibleItemPositions(
                         null
                 )?.getOrNull(0).orZero()
-                checkLoadNextShopHomeWidgetContentData(lastCompletelyVisibleItemPosition)
+                val firstVisibleItemPosition = layoutManager?.findFirstVisibleItemPositions(
+                        null
+                )?.getOrNull(0).orZero()
+                checkLoadNextShopHomeWidgetContentData(lastCompletelyVisibleItemPosition, firstVisibleItemPosition)
                 checkLoadProductGridListData(lastVisibleItemPosition)
             }
 
@@ -1027,10 +1030,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    private fun checkLoadNextShopHomeWidgetContentData(lastCompletelyVisibleItemPosition: Int) {
-        val isLoadNextHomeWidgetData = shopHomeAdapter.isLoadNextHomeWidgetData(lastCompletelyVisibleItemPosition)
-        if (isLoadNextHomeWidgetData) {
-            val listWidgetLayoutToLoad = getListWidgetLayoutToLoad(lastCompletelyVisibleItemPosition)
+    private fun checkLoadNextShopHomeWidgetContentData(
+            lastVisibleItemPosition: Int,
+            firstVisibleItemPosition: Int
+    ) {
+        val shouldLoadLastVisibleItem = shopHomeAdapter.isLoadNextHomeWidgetData(lastVisibleItemPosition)
+        val shouldLoadFirstVisibleItem = shopHomeAdapter.isLoadNextHomeWidgetData(firstVisibleItemPosition)
+        if (shouldLoadLastVisibleItem || shouldLoadFirstVisibleItem) {
+            val position = if (shouldLoadLastVisibleItem)
+                lastVisibleItemPosition
+            else
+                firstVisibleItemPosition
+            val listWidgetLayoutToLoad = getListWidgetLayoutToLoad(position)
             shopHomeAdapter.updateShopHomeWidgetStateToLoading(listWidgetLayoutToLoad)
             val widgetPlayLayout = listWidgetLayoutToLoad.firstOrNull { isWidgetPlay(it) }?.apply {
                 listWidgetLayoutToLoad.remove(this)
@@ -2242,8 +2253,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun onTimerFinished(model: ShopHomeNewProductLaunchCampaignUiModel) {
         shopHomeAdapter.removeShopHomeCampaignNplWidget(model)
+        endlessRecyclerViewScrollListener.resetState()
+        shopHomeAdapter.removeProductList()
         shopHomeAdapter.showLoading()
         viewModel?.getShopPageHomeWidgetLayoutData(shopId)
+        scrollToTop()
     }
 
     private fun setNplRemindMeClickedCampaignId(campaignId: String) {

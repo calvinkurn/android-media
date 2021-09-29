@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHo
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopProductViewGridType
+import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemBigGridViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemListViewHolder
@@ -149,7 +150,7 @@ class ShopHomeAdapter(
                 } else {
                     shopHomeVoucherUiModel.widgetState = WidgetState.FINISH
                     shopHomeVoucherUiModel.isNewData = true
-                    newList[index] = shopHomeVoucherUiModel
+                    newList.setElement(index, shopHomeVoucherUiModel)
                 }
             }
         }
@@ -194,7 +195,7 @@ class ShopHomeAdapter(
         val newList = getNewVisitableItems()
         val position = newList.indexOf(shopHomeCarousellProductUiModel)
         shopHomeCarousellProductUiModel.isNewData = true
-        newList[position] = shopHomeCarousellProductUiModel
+        newList.setElement(position, shopHomeCarousellProductUiModel)
         submitList(newList)
     }
 
@@ -420,9 +421,11 @@ class ShopHomeAdapter(
             if (widgetUiModel == null || widgetUiModel is PlayWidgetUiModel.Placeholder || isPlayWidgetEmpty(widgetUiModel)) {
                 newList.removeAt(position)
             } else {
-                newList[position] = (newList[position] as CarouselPlayWidgetUiModel).copy(widgetUiModel = widgetUiModel).apply {
+                (newList.getOrNull(position) as? CarouselPlayWidgetUiModel)?.copy(widgetUiModel = widgetUiModel)?.apply {
                     widgetState = WidgetState.FINISH
                     isNewData = true
+                }?.also {
+                    newList.setElement(position, it)
                 }
             }
         }
@@ -444,7 +447,7 @@ class ShopHomeAdapter(
                     if(widgetContentData.value != null){
                         widgetContentData.value?.widgetState = WidgetState.FINISH
                         widgetContentData.value?.isNewData = true
-                        newList[position] = widgetContentData.value
+                        newList.setElement(position, widgetContentData.value)
                     } else {
                         newList.removeAt(position)
                     }
