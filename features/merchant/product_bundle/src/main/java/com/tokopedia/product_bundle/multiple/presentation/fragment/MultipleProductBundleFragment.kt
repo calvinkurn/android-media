@@ -332,7 +332,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             setPrimaryCTAText(getString(R.string.action_select_another_bundle))
             setSecondaryCTAText(getString(R.string.action_back))
             dialogSecondaryCTA.buttonVariant = UnifyButton.Variant.TEXT_ONLY
-            setSecondaryCTAClickListener { dismiss() }
+            setSecondaryCTAClickListener { activity?.finish() }
             setPrimaryCTAClickListener {
                 refreshPage()
                 dismiss()
