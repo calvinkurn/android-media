@@ -72,8 +72,8 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
 
     private fun setBasicInfo() {
         basicInfoWidget?.apply {
-            setRating(rating,  this@ReviewImagePreviewExpandedReviewBottomSheet, userId, isProductReview)
-            setCreateTime(timeStamp, this@ReviewImagePreviewExpandedReviewBottomSheet, userId, isProductReview)
+            setRating(rating,  this@ReviewImagePreviewExpandedReviewBottomSheet, userId, isProductReview, isAnonymous)
+            setCreateTime(timeStamp, this@ReviewImagePreviewExpandedReviewBottomSheet, userId, isProductReview, isAnonymous)
             setReviewerName(reviewerName, userId, this@ReviewImagePreviewExpandedReviewBottomSheet, isAnonymous, isProductReview)
             setVariantName(variantName)
             setStats(userStats, userId, this@ReviewImagePreviewExpandedReviewBottomSheet, isAnonymous)

@@ -10,10 +10,12 @@ import com.tokopedia.review.feature.credibility.domain.GetReviewerCredibilityUse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class ReviewCredibilityViewModel @Inject constructor(
     private val getReviewerCredibilityUseCase: GetReviewerCredibilityUseCase,
+    private val userSession: UserSessionInterface,
     coroutineDispatchers: CoroutineDispatchers
 ) : BaseViewModel(coroutineDispatchers.io) {
 
@@ -29,5 +31,9 @@ class ReviewCredibilityViewModel @Inject constructor(
         }) {
             _reviewerCredibility.postValue(Fail(it))
         }
+    }
+
+    fun isLoggedIn(): Boolean {
+        return userSession.isLoggedIn
     }
 }

@@ -1,5 +1,7 @@
 package com.tokopedia.review.feature.credibility.presentation.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.Spannable
 import android.text.method.LinkMovementMethod
@@ -25,6 +27,7 @@ import com.tokopedia.review.feature.credibility.di.DaggerReviewCredibilityCompon
 import com.tokopedia.review.feature.credibility.di.ReviewCredibilityComponent
 import com.tokopedia.review.feature.credibility.presentation.viewmodel.ReviewCredibilityViewModel
 import com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityStatisticBoxWidget
+import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
@@ -37,6 +40,8 @@ import javax.inject.Inject
 class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCredibilityComponent> {
 
     companion object {
+        const val LOGIN_REQUEST_CODE = 200
+
         fun newInstance(userId: String, source: String) = ReviewCredibilityBottomSheet().apply {
             this.userId = userId
             this.source = source
@@ -57,6 +62,8 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
     private var coordinatorLayout: CoordinatorLayout? = null
     private var loadingView: View? = null
     private var loadingBox: ConstraintLayout? = null
+
+    private var applink = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         component?.inject(this)
@@ -89,6 +96,13 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
                 .reviewInboxComponent(ReviewInboxInstance.getComponent(application))
                 .build()
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            RouteManager.route(context, applink)
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun bindViews(view: View) {
@@ -163,8 +177,7 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
         mainButton?.apply {
             text = buttonText
             setOnClickListener {
-                dismiss()
-                RouteManager.route(context, applink)
+                handleRouting(applink)
             }
         }
     }
@@ -230,6 +243,18 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
                 Toaster.TYPE_ERROR,
                 getString(R.string.review_refresh)
             ) { action.invoke() }.show()
+        }
+    }
+
+    private fun handleRouting(applink: String) {
+        if (source == ReadReviewFragment.READING_SOURCE) {
+            if (viewModel.isLoggedIn()) {
+                dismiss()
+                RouteManager.route(context, applink)
+            } else {
+                this.applink = applink
+                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), LOGIN_REQUEST_CODE)
+            }
         }
     }
 

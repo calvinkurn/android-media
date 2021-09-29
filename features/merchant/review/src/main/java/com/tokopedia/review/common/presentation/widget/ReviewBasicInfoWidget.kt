@@ -54,10 +54,10 @@ class ReviewBasicInfoWidget : BaseCustomView {
         profilePicture = findViewById(R.id.review_item_reviewer_image)
     }
 
-    fun setRating(rating: Int, reviewBasicInfoListener: ReviewBasicInfoListener, userId: String, isProductReview: Boolean) {
+    fun setRating(rating: Int, reviewBasicInfoListener: ReviewBasicInfoListener, userId: String, isProductReview: Boolean, isAnonymous: Boolean) {
         ratingStars?.apply {
             loadImage(getReviewStar(rating))
-            if (reviewBasicInfoListener.shouldShowCredibilityComponent() && isProductReview) {
+            if (reviewBasicInfoListener.shouldShowCredibilityComponent() && isProductReview && !isAnonymous) {
                 setOnClickListener {
                     reviewBasicInfoListener.onUserNameClicked(context, userId)
                 }
@@ -71,11 +71,12 @@ class ReviewBasicInfoWidget : BaseCustomView {
         createTime: String,
         reviewBasicInfoListener: ReviewBasicInfoListener,
         userId: String,
-        isProductReview: Boolean
+        isProductReview: Boolean,
+        isAnonymous: Boolean
     ) {
         timeStamp?.apply {
             text = createTime
-            if (reviewBasicInfoListener.shouldShowCredibilityComponent() && isProductReview) {
+            if (reviewBasicInfoListener.shouldShowCredibilityComponent() && isProductReview && !isAnonymous) {
                 setOnClickListener {
                     reviewBasicInfoListener.onUserNameClicked(
                         context, userId
@@ -96,7 +97,7 @@ class ReviewBasicInfoWidget : BaseCustomView {
     ) {
         reviewerName?.apply {
             text = name
-            if (!isAnonymous && isProductReview) {
+            if (!isAnonymous && isProductReview && listener.shouldShowCredibilityComponent()) {
                 setOnClickListener {
                     listener.onUserNameClicked(context, userId)
                 }
@@ -171,10 +172,23 @@ class ReviewBasicInfoWidget : BaseCustomView {
         )
     }
 
-    fun setReviewerImage(imageUrl: String) {
+    fun setReviewerImage(
+        imageUrl: String,
+        userId: String,
+        listener: ReviewBasicInfoListener,
+        isAnonymous: Boolean,
+        isProductReview: Boolean
+    ) {
         profilePicture?.apply {
             loadImage(imageUrl)
             show()
+            if (!isAnonymous && isProductReview && listener.shouldShowCredibilityComponent()) {
+                setOnClickListener {
+                    listener.onUserNameClicked(context, userId)
+                }
+            } else {
+                setOnClickListener {}
+            }
         }
     }
 

@@ -57,12 +57,12 @@ class ReviewImagePreviewDetailWidget : BaseCustomView {
         photoCount?.text = context.getString(R.string.review_gallery_image_count, index, total)
     }
 
-    fun setRating(rating: Int, reviewBasicInfoListener: ReviewBasicInfoListener, userId: String, isProductReview: Boolean) {
-        basicInfo?.setRating(rating, reviewBasicInfoListener, userId, isProductReview)
+    fun setRating(rating: Int, reviewBasicInfoListener: ReviewBasicInfoListener, userId: String, isProductReview: Boolean, isAnonymous: Boolean) {
+        basicInfo?.setRating(rating, reviewBasicInfoListener, userId, isProductReview, isAnonymous)
     }
 
-    fun setTimeStamp(timeStamp: String, reviewBasicInfoListener: ReviewBasicInfoListener, userId: String, isProductReview: Boolean) {
-        basicInfo?.setCreateTime(timeStamp, reviewBasicInfoListener, userId, isProductReview)
+    fun setTimeStamp(timeStamp: String, reviewBasicInfoListener: ReviewBasicInfoListener, userId: String, isProductReview: Boolean, isAnonymous: Boolean) {
+        basicInfo?.setCreateTime(timeStamp, reviewBasicInfoListener, userId, isProductReview, isAnonymous)
     }
 
     fun setReviewerName(reviewerName: String, userId: String, basicInfoListener: ReviewBasicInfoListener, isAnonymous: Boolean, isProductReview: Boolean) {

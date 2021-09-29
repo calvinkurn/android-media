@@ -70,11 +70,11 @@ class ReadReviewViewHolder(view: View,
             itemView.addOnImpressionListener(element.impressHolder) {
                 readReviewItemListener.onItemImpressed(feedbackID, adapterPosition, message.length, imageAttachments.size)
             }
-            setRating(productRating, user.userID)
-            setCreateTime(reviewCreateTimestamp, user.userID)
+            setRating(productRating, user.userID, isAnonymous)
+            setCreateTime(reviewCreateTimestamp, user.userID, isAnonymous)
             setReviewerName(user.fullName, user.userID, isAnonymous)
             setReviewerStats(userReviewStats, user.userID, isAnonymous)
-            setProfilePicture(user.image)
+            setProfilePicture(user.image, user.userID, isAnonymous)
             setVariantName(variantName)
             showReportOptionWithCondition(isReportable && !element.isShopViewHolder, feedbackID, element.shopId)
             setReview(message, feedbackID, element.productId)
@@ -128,12 +128,12 @@ class ReadReviewViewHolder(view: View,
         }
     }
 
-    private fun setRating(rating: Int, userId: String) {
-        basicInfo?.setRating(rating, reviewBasicInfoListener, userId, isProductReview)
+    private fun setRating(rating: Int, userId: String, isAnonymous: Boolean) {
+        basicInfo?.setRating(rating, reviewBasicInfoListener, userId, isProductReview, isAnonymous)
     }
 
-    private fun setCreateTime(createTime: String, userId: String) {
-        basicInfo?.setCreateTime(createTime, reviewBasicInfoListener, userId, isProductReview)
+    private fun setCreateTime(createTime: String, userId: String, isAnonymous: Boolean) {
+        basicInfo?.setCreateTime(createTime, reviewBasicInfoListener, userId, isProductReview, isAnonymous)
     }
 
     private fun showReportOptionWithCondition(isReportable: Boolean, reviewId: String, shopId: String) {
@@ -297,16 +297,16 @@ class ReadReviewViewHolder(view: View,
     }
 
     private fun setReviewerStats(userStats: List<UserReviewStats>, userId: String, isAnonymous: Boolean) {
-        if (reviewBasicInfoListener.shouldShowCredibilityComponent() && isProductReview) {
+        if (reviewBasicInfoListener.shouldShowCredibilityComponent() && isProductReview && !isAnonymous) {
             basicInfo?.setStats(userStats, userId, reviewBasicInfoListener, isAnonymous)
             return
         }
         basicInfo?.hideStats()
     }
 
-    private fun setProfilePicture(imageUrl: String) {
-        if (reviewBasicInfoListener.shouldShowCredibilityComponent() && isProductReview) {
-            basicInfo?.setReviewerImage(imageUrl)
+    private fun setProfilePicture(imageUrl: String, userId: String, isAnonymous: Boolean) {
+        if (reviewBasicInfoListener.shouldShowCredibilityComponent() && isProductReview && !isAnonymous) {
+            basicInfo?.setReviewerImage(imageUrl, userId, reviewBasicInfoListener, isAnonymous, isProductReview)
             return
         }
         basicInfo?.hideReviewerImage()

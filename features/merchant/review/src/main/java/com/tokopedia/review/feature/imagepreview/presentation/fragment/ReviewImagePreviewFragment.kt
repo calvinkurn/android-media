@@ -357,9 +357,9 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         with(productReview) {
             reviewImagePreviewDetail?.apply {
                 setPhotoCount(index, imageAttachments.size.toLong())
-                setRating(productRating, this@ReviewImagePreviewFragment, user.userID, isProductReview)
+                setRating(productRating, this@ReviewImagePreviewFragment, user.userID, isProductReview, isAnonymous)
                 setReviewerName(user.fullName, user.userID, this@ReviewImagePreviewFragment, isAnonymous, isProductReview)
-                setTimeStamp(reviewCreateTimestamp, this@ReviewImagePreviewFragment, user.userID, isProductReview)
+                setTimeStamp(reviewCreateTimestamp, this@ReviewImagePreviewFragment, user.userID, isProductReview, isAnonymous)
                 setReviewMessage(message) { openExpandedReviewBottomSheet() }
                 setLikeCount(likeDislike.totalLike.toString())
                 setLikeButtonClickListener {
@@ -626,9 +626,9 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                 with(selectedReview) {
                     reviewImagePreviewDetail?.apply {
                         if (isFirstTimeUpdate) setPhotoCount(currentPosition, totalImageCount)
-                        setRating(rating, this@ReviewImagePreviewFragment, userId, isProductReview)
+                        setRating(rating, this@ReviewImagePreviewFragment, userId, isProductReview, isAnonymous)
                         setReviewerName(reviewerName, userId, this@ReviewImagePreviewFragment, isAnonymous, isProductReview)
-                        setTimeStamp(reviewTime, this@ReviewImagePreviewFragment, userId, isProductReview)
+                        setTimeStamp(reviewTime, this@ReviewImagePreviewFragment, userId, isProductReview, isAnonymous)
                         setReviewMessage(review) { openExpandedReviewBottomSheet() }
                         setStats(userStats, userId, this@ReviewImagePreviewFragment, isAnonymous)
                         setLikeCount(totalLiked.toString())
