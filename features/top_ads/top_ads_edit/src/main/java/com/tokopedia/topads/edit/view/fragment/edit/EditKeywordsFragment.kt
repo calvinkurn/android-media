@@ -78,7 +78,7 @@ import javax.inject.Inject
 
 
 private const val CLICK_TAMBAH_KATA_KUNCI = "click - tambah kata kunci"
-private const val CLICK_DAILY_BUDGET_BOX = "click - box anggaran harian manual"
+private const val CLICK_DAILY_BUDGET_BOX = "click - box biaya iklan pencarian"
 private const val CLICK_DAILY_BUDGET_REKOMENDASI_BOX = "click - box biaya iklan manual di rekomendasi"
 private const val CLICK_EDIT_KEYWORD_TYPE = "click - button edit luas pencarian"
 private const val CLICK_EDIT_KEYWORD_BID = "click - edit kata kunci"
