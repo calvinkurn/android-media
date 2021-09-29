@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_4"
-            android:paddingBottom="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_12"
             android:paddingHorizontal="@dimen/dp_9"
             android:clipToPadding="false"
             app:layout_constraintEnd_toEndOf="parent"
