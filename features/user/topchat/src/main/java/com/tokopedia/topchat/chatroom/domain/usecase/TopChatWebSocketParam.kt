@@ -37,9 +37,7 @@ object TopChatWebSocketParam {
         userLocationInfo: LocalCacheModel? = null,
         referredMsg: BaseChatViewModel? = null
     ): String {
-        val referredMsgRequest = generateParentReplyRequestPayload(
-            roomeMetaData, referredMsg
-        )
+        val referredMsgRequest = generateParentReplyRequestPayload(referredMsg)
         val json = JsonObject().apply {
             addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
         }
@@ -64,14 +62,13 @@ object TopChatWebSocketParam {
     }
 
     fun generateParentReplyRequestPayload(
-        roomMetaData: RoomMetaData,
         referredMsg: BaseChatViewModel?
     ): JsonElement? {
         if (referredMsg == null) return null
         val requestContract = ParentReplyWsRequest(
             attachment_id = referredMsg.attachmentId.toLongOrZero(),
             attachment_type = referredMsg.attachmentType.toLongOrZero(),
-            sender_id = roomMetaData.sender.uid.toLongOrZero(),
+            sender_id = referredMsg.fromUid.toLongOrZero() ,
             reply_time = referredMsg.replyTime?.toLongOrZero() ?: 0,
             main_text = referredMsg.from,
             sub_text = referredMsg.message,

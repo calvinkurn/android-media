@@ -622,7 +622,11 @@ open class TopChatRoomPresenter @Inject constructor(
         referredMsg: BaseChatViewModel? = null
     ) {
         val startTime = SendableViewModel.generateStartTime()
-        val previewMsg = generatePreviewMessage(thisMessageId, sendMessage, startTime)
+        val previewMsg = generatePreviewMessage(
+            messageText = sendMessage,
+            startTime = startTime,
+            referredMsg = referredMsg
+        )
         val requestParams = TopChatWebSocketParam.generateParamSendMessage(
             roomeMetaData = roomMetaData,
             messageText = sendMessage,
@@ -655,17 +659,20 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun generatePreviewMessage(
-        messageId: String, messageText: String, startTime: String
+        messageText: String,
+        startTime: String,
+        referredMsg: BaseChatViewModel?
     ): SendableViewModel {
         val localId = IdentifierUtil.generateLocalId()
         return MessageViewModel.Builder()
-            .withMsgId(messageId)
+            .withMsgId(roomMetaData.msgId)
             .withFromUid(userSession.userId)
             .withFrom(userSession.name)
             .withReplyTime(generateCurrentReplyTime())
             .withStartTime(startTime)
             .withMsg(messageText)
             .withLocalId(localId)
+            .withReferredMsg(referredMsg)
             .withIsDummy(true)
             .withIsSender(true)
             .withIsRead(false)

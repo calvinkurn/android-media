@@ -6,7 +6,6 @@ import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.chat_common.util.IdentifierUtil
-import com.tokopedia.utils.time.TimeHelper
 import java.util.*
 
 open class BaseChatViewModel constructor(
@@ -133,6 +132,7 @@ open class BaseChatViewModel constructor(
             withSource(reply.source)
             withLabel(reply.label)
             withOrGenerateLocalId(reply.localId)
+            withParentReply(reply.parentReply)
             return self()
         }
 
@@ -243,6 +243,22 @@ open class BaseChatViewModel constructor(
         fun withParentReply(parentReply: ParentReply?): B {
             this.parentReply = parentReply
             return self()
+        }
+
+        fun withReferredMsg(referredMsg: BaseChatViewModel?): B {
+            if (referredMsg == null) return self()
+            val parentReply = ParentReply(
+                attachmentId = referredMsg.attachmentId,
+                attachmentType = referredMsg.attachmentType,
+                senderId = referredMsg.fromUid ?: "",
+                replyTime = referredMsg.replyTime ?: "",
+                mainText = referredMsg.from,
+                subText = referredMsg.message,
+                imageUrl = referredMsg.getReferredImageUrl(),
+                localId = referredMsg.localId,
+                source = "chat"
+            )
+            return withParentReply(parentReply)
         }
 
         @Suppress("UNCHECKED_CAST")
