@@ -1,5 +1,7 @@
 package com.tokopedia.affiliate.ui.activity
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -7,6 +9,7 @@ import androidx.fragment.app.FragmentTransaction
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentSelected
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentUnSelected
 import com.tokopedia.affiliate.AFFILIATE_HELP_URL
+import com.tokopedia.affiliate.PAGE_SEGMENT_HELP
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavbar
 import com.tokopedia.affiliate.ui.custom.IBottomClickListener
@@ -35,6 +38,15 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomC
 
     override fun getViewModelType(): Class<AffiliateViewModel> {
         return AffiliateViewModel::class.java
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        Uri.parse(intent?.data?.path ?: "").pathSegments.firstOrNull()?.let {
+            if(it.contains(PAGE_SEGMENT_HELP)){
+                selectItem(HELP_MENU,R.id.menu_promo_affiliate)
+            }
+        }
     }
 
     override fun setViewModel(viewModel: BaseViewModel) {

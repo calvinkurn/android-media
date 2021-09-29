@@ -99,6 +99,7 @@ class AffiliateHowToPromoteBottomSheet : BottomSheetUnify() {
         val spannableString = SpannableString(string)
         val clickableSpan: ClickableSpan = object : ClickableSpan() {
             override fun onClick(textView: View) {
+                dismiss()
                 RouteManager.routeNoFallbackCheck(context, AFFILIATE_LIHAT_KATEGORI, AFFILIATE_LIHAT_KATEGORI)
             }
 
