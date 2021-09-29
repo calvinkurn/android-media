@@ -293,6 +293,10 @@ class PlayActivity : BaseActivity(),
             val packageName = baseIntent.`package`
             val categories = baseIntent.categories
 
+            Log.d("<INTENT>", "baseActivity packageName: ${task.taskInfo.baseActivity?.packageName}")
+            Log.d("<INTENT>", "baseActivity className: ${task.taskInfo.baseActivity?.className}")
+            Log.d("<INTENT>", "baseActivity shortClassName: ${task.taskInfo.baseActivity?.shortClassName}")
+
             Log.d("<INTENT>", "packageName : $packageName")
             Log.d("<INTENT>", "categories : $categories")
             Log.d("<INTENT>", "action : ${baseIntent.action}")
@@ -312,9 +316,8 @@ class PlayActivity : BaseActivity(),
         for(task in appTasks) {
             val baseIntent = task.taskInfo.baseIntent
             val packageName = baseIntent.`package`
-            val categories = baseIntent.categories
+            val categories = baseIntent.categories ?: return true
 
-            if(categories == null) return true
             return !categories.contains(Intent.CATEGORY_LAUNCHER)
         }
         return true
