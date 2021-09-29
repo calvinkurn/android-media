@@ -298,7 +298,9 @@ class PlayActivity : BaseActivity(),
             Log.d("<INTENT>", "action : ${baseIntent.action}")
             Log.d("<INTENT>", "scheme : ${baseIntent.scheme}")
             Log.d("<INTENT>", "isTrue : ${categories != null && categories.contains(Intent.CATEGORY_LAUNCHER)}")
-            return categories != null && categories.contains(Intent.CATEGORY_LAUNCHER)
+
+            if(categories == null) return true
+            return !categories.contains(Intent.CATEGORY_LAUNCHER)
         }
         return isTaskRoot
     }
