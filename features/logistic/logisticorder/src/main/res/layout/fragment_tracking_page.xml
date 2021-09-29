@@ -49,10 +49,15 @@
 
             <View
                 android:id="@+id/ref_layout_separator"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:background="@color/Unify_N100"
-                app:layout_constraintTop_toBottomOf="@id/reference_number" />
+                app:layout_constraintTop_toBottomOf="@id/reference_number"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/lbl_delivery_date"
@@ -212,11 +217,16 @@
 
             <View
                 android:id="@+id/detail_layout_separator"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/Unify_N100"
-                app:layout_constraintTop_toBottomOf="@id/description_barrier" />
+                app:layout_constraintTop_toBottomOf="@id/description_barrier"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/lbl_tracking_status"
@@ -268,12 +278,14 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/tracking_history"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
                 android:paddingBottom="@dimen/dp_16"
                 app:layout_constraintLeft_toRightOf="@id/left_padding"
                 app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintRight_toLeftOf="@id/right_padding"
+                app:layout_constraintEnd_toStartOf="@id/right_padding"
                 app:layout_constraintTop_toBottomOf="@id/ticker_layout_separator"
                 tools:visibility="gone" />
 
