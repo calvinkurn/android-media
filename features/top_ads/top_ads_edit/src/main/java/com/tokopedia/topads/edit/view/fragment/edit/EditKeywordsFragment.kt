@@ -356,7 +356,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 setMessageErrorField(getString(R.string.min_bid_error_new), minBid, true, true)
                 actionEnable(false)
             }
-            (result >= minBid.toDouble() && result < suggestBidPerClick.toDouble()) -> {
+            (result >= minBid.toDouble() && result < suggestBidPerClick.toDouble() && budgetInputRekomendasi.visibility == View.VISIBLE) -> {
                 minSuggestedBidRekomendasi.visibility = View.VISIBLE
                 setMessageErrorField("", "", false, true)
                 actionEnable(true)
