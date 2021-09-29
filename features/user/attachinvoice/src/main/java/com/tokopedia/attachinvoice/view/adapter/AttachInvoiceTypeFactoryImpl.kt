@@ -3,6 +3,7 @@ package com.tokopedia.attachinvoice.view.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.viewbinding.ViewBinding
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
@@ -26,32 +27,23 @@ class AttachInvoiceTypeFactoryImpl(
     }
 
     override fun createViewHolder(
-        parent: ViewGroup,
+        view: View,
         type: Int,
         invoiceViewHolder: AttachInvoiceViewHolder.Listener
     ): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             AttachInvoiceViewHolder.LAYOUT -> {
-                val binding = ItemAttachinvoiceBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-
+                val binding = ItemAttachinvoiceBinding.bind(view)
                 AttachInvoiceViewHolder(binding, invoiceViewHolder)
             }
             EmptyAttachInvoiceViewHolder.LAYOUT -> {
-                val binding = ItemAttachinvoiceEmptyViewBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
+                val binding = ItemAttachinvoiceEmptyViewBinding.bind(view)
                 EmptyAttachInvoiceViewHolder(
                     binding,
                     emptyListener
                 )
             }
-            else -> createViewHolder(parent, type)
+            else -> createViewHolder(view, type)
         }
     }
 }

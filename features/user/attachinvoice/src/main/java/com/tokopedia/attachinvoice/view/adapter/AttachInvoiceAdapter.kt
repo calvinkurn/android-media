@@ -15,15 +15,19 @@ import com.tokopedia.attachinvoice.view.adapter.viewholder.AttachInvoiceViewHold
 import com.tokopedia.attachinvoice.view.adapter.viewholder.EmptyAttachInvoiceViewHolder
 import java.lang.IllegalArgumentException
 
-class AttachInvoiceAdapter(private val baseListAdapterTypeFactory: AttachInvoiceTypeFactory)
-    : BaseListAdapter<Visitable<*>, AttachInvoiceTypeFactory>(baseListAdapterTypeFactory),
-        AttachInvoiceViewHolder.Listener {
+class AttachInvoiceAdapter(private val baseListAdapterTypeFactory: AttachInvoiceTypeFactory) :
+    BaseListAdapter<Visitable<*>, AttachInvoiceTypeFactory>(baseListAdapterTypeFactory),
+    AttachInvoiceViewHolder.Listener {
 
     val selectedInvoice: MutableLiveData<Invoice?> = MutableLiveData()
     private var selectedInvoicePosition: Int = RecyclerView.NO_POSITION
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<out Visitable<*>> {
-        return baseListAdapterTypeFactory.createViewHolder(parent, viewType, this)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): AbstractViewHolder<out Visitable<*>> {
+        val view = onCreateViewItem(parent, viewType)
+        return baseListAdapterTypeFactory.createViewHolder(view, viewType, this)
     }
 
     override fun checkCurrentItem(element: Invoice, position: Int) {
@@ -40,5 +44,26 @@ class AttachInvoiceAdapter(private val baseListAdapterTypeFactory: AttachInvoice
 
     override fun isChecked(element: Invoice): Boolean {
         return selectedInvoice.value == element
+    }
+
+    override fun onCreateViewItem(parent: ViewGroup?, viewType: Int): View {
+        return when (viewType) {
+            AttachInvoiceViewHolder.LAYOUT -> {
+                ItemAttachinvoiceBinding.inflate(
+                    LayoutInflater.from(parent!!.context),
+                    parent,
+                    false
+                ).root
+            }
+            EmptyAttachInvoiceViewHolder.LAYOUT -> {
+                ItemAttachinvoiceEmptyViewBinding.inflate(
+                    LayoutInflater.from(parent!!.context),
+                    parent,
+                    false
+                ).root
+            }
+            else -> {
+                LayoutInflater.from(parent!!.getContext()).inflate(viewType, parent, false); }
+        }
     }
 }

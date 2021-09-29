@@ -11,7 +11,7 @@ import com.tokopedia.attachinvoice.view.adapter.viewholder.AttachInvoiceViewHold
 interface AttachInvoiceTypeFactory : AdapterTypeFactory {
     fun type(invoice: Invoice): Int
     fun createViewHolder(
-            parent: ViewGroup,
+            view: View,
             type: Int,
             invoiceViewHolder: AttachInvoiceViewHolder.Listener
     ): AbstractViewHolder<out Visitable<*>>
