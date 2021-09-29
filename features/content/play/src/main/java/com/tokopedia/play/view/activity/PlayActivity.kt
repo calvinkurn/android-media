@@ -302,7 +302,7 @@ class PlayActivity : BaseActivity(),
             if(categories == null) return true
             return !categories.contains(Intent.CATEGORY_LAUNCHER)
         }
-        return isTaskRoot
+        return true
     }
 
     override fun requestEnableNavigation() {
