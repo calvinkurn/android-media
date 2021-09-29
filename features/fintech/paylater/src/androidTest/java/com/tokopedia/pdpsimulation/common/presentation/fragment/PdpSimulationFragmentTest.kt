@@ -13,7 +13,6 @@ import com.tokopedia.pdpsimulation.TkpdIdlingResourceProvider
 import com.tokopedia.pdpsimulation.analytics.actionTest
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_URL
-import com.tokopedia.pdpsimulation.common.constants.PRODUCT_PRICE
 import com.tokopedia.pdpsimulation.common.presentation.activity.PdpSimulationActivity
 import com.tokopedia.pdpsimulation.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
@@ -25,6 +24,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
@@ -122,7 +122,7 @@ class PdpSimulationFragmentTest {
 
     private fun launchActivity() {
         val bundle = Bundle()
-        bundle.putInt(PRODUCT_PRICE, 1000000)
+        bundle.putString("price", "1000000")
         bundle.putString(PARAM_PRODUCT_URL, "https://dummyurl.com")
         bundle.putString(PARAM_PRODUCT_ID, "2147828387")
         val intent = Intent(context, PdpSimulationActivity::class.java)
