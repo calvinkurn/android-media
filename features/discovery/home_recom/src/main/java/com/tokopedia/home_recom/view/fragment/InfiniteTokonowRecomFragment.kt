@@ -355,7 +355,7 @@ class InfiniteTokonowRecomFragment :
             getMiniCartData()
         })
         viewModel.minicartError.observe(viewLifecycleOwner, Observer {
-            showErrorSnackbar(it)
+            RecomServerLogger.logWarning(RecomServerLogger.TYPE_ERROR_GET_MINICART, it)
         })
     }
 
