@@ -1,8 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
 import android.content.Context
-import android.graphics.drawable.Drawable
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,14 +13,10 @@ import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.glide.FPM_CATEGORY_WIDGET_ITEM
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.CategoryWidgetSpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
-import com.tokopedia.home.util.ViewUtils
-import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.home_dc_category_widget.view.*
 import java.util.HashMap
 
 /**
@@ -37,7 +31,7 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
     }
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
-        val recyclerView = itemView.recycleList
+        val recyclerView = itemView.findViewById<RecyclerView>(R.id.recycleList)
         if (!channel.isCache) {
             itemView.addOnImpressionListener(channel) {
                 categoryListener.putEEToIris(
@@ -55,20 +49,11 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
                 2,
                 GridLayoutManager.HORIZONTAL,
                 false)
-
-        if (recyclerView.itemDecorationCount == 0) {
-            recyclerView.addItemDecoration(
-                CategoryWidgetSpacingItemDecoration(
-                    2,
-                    itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_8)
-                )
-            )
-        }
         setChannelDivider(channel)
     }
 
     override fun getViewHolderClassName(): String {
-        return CategoryWidgetViewHolder::class.java.toString()
+        return CategoryWidgetV2ViewHolder::class.java.toString()
     }
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
@@ -78,8 +63,8 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
     private fun setChannelDivider(channel: DynamicHomeChannel.Channels) {
         HomeChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = channel,
-            dividerTop = itemView.home_component_divider_header,
-            dividerBottom = itemView.home_component_divider_footer
+            dividerTop = itemView.findViewById(R.id.home_component_divider_header),
+            dividerBottom = itemView.findViewById(R.id.home_component_divider_footer)
         )
     }
 
@@ -115,10 +100,6 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
                 )
                 listener?.onSectionItemClicked(grid.applink)
             }
-        }
-
-        private fun getCardShadow(view: View): Drawable {
-            return ViewUtils.generateBackgroundWithShadow(view, R.color.Unify_N0, R.dimen.dp_8, com.tokopedia.unifyprinciples.R.color.Unify_N400_32, R.dimen.dp_2, Gravity.CENTER)
         }
     }
 
