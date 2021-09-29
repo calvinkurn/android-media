@@ -239,8 +239,9 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
                                     oldItem is WaitingPaymentOrderUiModel && newItem.orderId == oldItem.orderId
                                 }
 
-                                newItem.isExpanded = (oldItem as? WaitingPaymentOrderUiModel)?.isExpanded
-                                        ?: false
+                                newItem.isExpanded = (oldItem as? WaitingPaymentOrderUiModel)?.isExpanded ?: false
+                                newItem.collapsedHeight = (oldItem as? WaitingPaymentOrderUiModel)?.collapsedHeight.orZero()
+                                newItem.expandedHeight = (oldItem as? WaitingPaymentOrderUiModel)?.expandedHeight.orZero()
                                 newItem
                             }
                     )
