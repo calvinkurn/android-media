@@ -29,6 +29,7 @@ class GetReviewerCredibilityUseCase @Inject constructor(gqlRepository: GraphqlRe
                       subtitle
                       footer
                       ctaText
+                      ctaApplink
                       infoText
                     }
                     stats {

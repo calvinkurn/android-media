@@ -137,7 +137,7 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
             setReviewerName(userName)
             setJoinDate(joinDate)
             setFooterText(footer)
-            setButtonText(ctaText)
+            setButton(ctaText, applink)
             setLearnMoreClickListener(infoText)
         }
     }
@@ -159,11 +159,12 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
         this.footer?.text = footer
     }
 
-    private fun setButtonText(buttonText: String) {
+    private fun setButton(buttonText: String, applink: String) {
         mainButton?.apply {
             text = buttonText
             setOnClickListener {
                 dismiss()
+                RouteManager.route(context, applink)
             }
         }
     }

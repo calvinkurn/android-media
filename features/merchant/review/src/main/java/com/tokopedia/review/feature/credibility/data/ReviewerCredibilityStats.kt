@@ -34,6 +34,9 @@ data class ReviewerCredibilityLabel(
     @SerializedName("ctaText")
     @Expose
     val ctaText: String = "",
+    @SerializedName("ctaApplink")
+    @Expose
+    val applink: String = "",
     @SerializedName("infoText")
     @Expose
     val infoText: String = ""
