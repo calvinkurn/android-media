@@ -820,7 +820,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     private fun loadData(isFirstLoad: Boolean) {
         shopPerformanceAdapter.clearAllElements()
         showLoading()
-        viewModel.getShopInfoPeriod()
+        viewModel.getShopInfoPeriod(isFirstLoad)
     }
 
     private fun showLoading() {
