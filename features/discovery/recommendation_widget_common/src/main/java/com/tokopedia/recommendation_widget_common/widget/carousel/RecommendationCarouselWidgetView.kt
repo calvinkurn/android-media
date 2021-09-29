@@ -190,18 +190,19 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 pageName = pageName,
                 productIds = listOf(parentProductId),
                 onSuccess = {
-                    bindWidgetWithData(
-                        RecommendationCarouselData(
-                            recommendationData = it,
-                            state = STATE_READY,
-                            isUsingWidgetViewModel = true
+                    if (it.recommendationItemList.isNotEmpty()) {
+                        bindWidgetWithData(
+                            RecommendationCarouselData(
+                                recommendationData = it,
+                                state = STATE_READY,
+                                isUsingWidgetViewModel = true
+                            )
                         )
+                    },
+                    onError = {
+                        widgetListener?.onWidgetFail(pageName = pageName, Exception(it))
+                    }
                     )
-                },
-                onError = {
-                    widgetListener?.onWidgetFail(pageName = pageName, Exception(it))
-                }
-            )
         } else {
             itemView.loadingRecom.gone()
         }

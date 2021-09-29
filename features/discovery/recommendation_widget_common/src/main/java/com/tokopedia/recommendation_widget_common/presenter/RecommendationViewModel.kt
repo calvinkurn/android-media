@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -62,7 +63,11 @@ class RecommendationViewModel @Inject constructor(
                 if (result.isNotEmpty()) {
                     val recomWidget = result[0]
 //                    _getRecommendationLiveData.postValue(recomWidget.asSuccess())
-                    onSuccess.invoke(recomWidget)
+                    if (recomWidget.recommendationItemList.isNotEmpty()) {
+                        onSuccess.invoke(recomWidget)
+                    } else {
+                        onError.invoke(MessageErrorException("empty list"))
+                    }
                 }
             }) {
 //                _getRecommendationLiveData.postValue(it.asFail())
