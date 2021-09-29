@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
-import android.util.Log
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
@@ -57,7 +56,7 @@ object TopChatWebSocketParam {
                 add("extras", extras)
             }
             if (referredMsg != null) {
-                add("parentReply", referredMsgRequest)
+                add("parent_reply", referredMsgRequest)
             }
         }
         json.add("data", data)
