@@ -1057,11 +1057,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun loadTopads(pageName: String) {
-        if (pageName == PDP_7) {
-            pdpUiUpdater?.updateRecommendationDataPageName(pageName)
-            updateUi()
-        } else
-            viewModel.loadRecommendation(pageName)
+        pdpUiUpdater?.updateRecommendationDataPageName(pageName)
     }
 
     /**

@@ -530,34 +530,19 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     fun updateRecommendationData(data: RecommendationWidget) {
         updateData(data.pageName) {
-            when (data.pageName) {
-                PDP_7 -> {
-                    (mapOfData[data.pageName] as? ProductRecomWidgetDataModel)?.run {
-                        recomWidgetData = data
-                        cardModel = data.recommendationItemList.toProductCardModels(hasThreeDots = true)
-                        filterData = mapToAnnotateChip(data)
-                    }
-                }
-                else -> {
-                    (mapOfData[data.pageName] as? ProductRecommendationDataModel)?.run {
-                        recomWidgetData = data
-                        cardModel = data.recommendationItemList.toProductCardModels(hasThreeDots = true)
-                        filterData = mapToAnnotateChip(data)
-                    }
-                }
+            (mapOfData[data.pageName] as? ProductRecomWidgetDataModel)?.run {
+                recomWidgetData = data
+                cardModel = data.recommendationItemList.toProductCardModels(hasThreeDots = true)
+                filterData = mapToAnnotateChip(data)
             }
         }
     }
 
     fun updateRecommendationDataPageName(pageName: String, isForceRefresh: Boolean = true) {
         updateData(pageName) {
-            when (pageName) {
-                PDP_7 -> {
-                    (mapOfData[pageName] as? ProductRecomWidgetDataModel)?.run {
-                        this.pageName = pageName
-                        forceRefresh = isForceRefresh
-                    }
-                }
+            (mapOfData[pageName] as? ProductRecomWidgetDataModel)?.run {
+                this.pageName = pageName
+                forceRefresh = isForceRefresh
             }
         }
     }
