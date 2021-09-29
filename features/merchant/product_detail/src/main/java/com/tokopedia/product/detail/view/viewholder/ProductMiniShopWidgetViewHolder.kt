@@ -44,7 +44,6 @@ class ProductMiniShopWidgetViewHolder(
 
         val shopBadgeUrl = element.shopBadge
         shopBadge?.shouldShowWithAction(shopBadgeUrl.isNotBlank()) {
-            shopBadge.scaleType = ImageView.ScaleType.FIT_XY
             shopBadge.loadImageCircle(shopBadgeUrl)
         }
 

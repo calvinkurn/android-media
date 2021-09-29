@@ -7,10 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
-import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.product.detail.common.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -19,7 +19,7 @@ import com.tokopedia.unifyprinciples.Typography
 class TokoMartEducationalInformationBottomSheet : BottomSheetUnify() {
 
     companion object {
-        private const val BACKGROUND_URL =
+        const val BACKGROUND_URL =
             "https://images.tokopedia.net/img/android/others/bg_bottomsheet_tokomart_educational_information.png"
     }
 
@@ -33,7 +33,7 @@ class TokoMartEducationalInformationBottomSheet : BottomSheetUnify() {
         isDragable = false
         isHideable = false
         setTitle(getString(R.string.pdp_usp_tokomart_static_title))
-        setChild(generateView(inflater,container))
+        setChild(generateView(inflater, container))
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -49,16 +49,30 @@ class TokoMartEducationalInformationBottomSheet : BottomSheetUnify() {
             val background = findViewById<AppCompatImageView>(R.id.pdp_tokomart_background)
 
             val boldColor = resources.getColor(R.color.Unify_NN950).toString()
-            text1.text = MethodChecker.fromHtml(getString(R.string.pdp_usp_tokomart_static_text_1, boldColor))
-            text2.text = MethodChecker.fromHtml(getString(R.string.pdp_usp_tokomart_static_text_2, boldColor))
-            text3.text = MethodChecker.fromHtml(getString(R.string.pdp_usp_tokomart_static_text_3, boldColor))
+            text1.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.pdp_usp_tokomart_static_text_1,
+                    boldColor
+                )
+            )
+            text2.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.pdp_usp_tokomart_static_text_2,
+                    boldColor
+                )
+            )
+            text3.text = MethodChecker.fromHtml(
+                getString(
+                    R.string.pdp_usp_tokomart_static_text_3,
+                    boldColor
+                )
+            )
 
             convertStringToLink(text4, context, R.string.pdp_usp_tokomart_static_text_4)
             convertStringToLink(text5, context, R.string.pdp_usp_tokomart_static_text_5)
 
-            Glide.with(this).load(BACKGROUND_URL).into(background)
+            background.loadImageWithoutPlaceholder(BACKGROUND_URL)
         }
-
     }
 
     private fun convertStringToLink(typography: Typography, context: Context, stringRes: Int) {
