@@ -460,7 +460,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 && headlineData.getData() != null
                 && headlineData.getData().get(0) != null
                 && headlineData.getData().get(0).getCpm() != null) {
-            headlineData.getData().get(0).getCpm().setPosition(adapter.getList().size() + headlineData.getData().get(0).getCpm().getPosition());
+            headlineData.getData().get(0).getCpm().setPosition(adapter.getList().size() + 12);
         }
 
         adapter.addElement(list);
