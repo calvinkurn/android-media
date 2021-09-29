@@ -62,7 +62,7 @@ class PlayBroadcastSummaryViewModelTest {
 
         viewModel.fetchLiveTraffic()
 
-        val result = viewModel.observableTrafficMetrics.getOrAwaitValue()
+        val result = viewModel.observableLiveSummary.getOrAwaitValue()
 
         Assertions
                 .assertThat(result)
@@ -79,7 +79,7 @@ class PlayBroadcastSummaryViewModelTest {
 
         viewModel.fetchLiveTraffic()
 
-        val result = viewModel.observableTrafficMetrics.getOrAwaitValue()
+        val result = viewModel.observableLiveSummary.getOrAwaitValue()
 
         Assertions
                 .assertThat(result)

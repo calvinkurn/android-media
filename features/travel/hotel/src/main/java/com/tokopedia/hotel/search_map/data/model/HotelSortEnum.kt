@@ -9,5 +9,6 @@ enum class HotelSortEnum(val value: String, val order: String) {
     PRICE("price", "asc"),
     RANKING("ranking", "desc"),
     STAR("star", "desc"),
-    REVIEWSCORE("reviewscore", "desc")
+    REVIEWSCORE("reviewscore", "desc"),
+    DISTANCE("distance","asc")
 }

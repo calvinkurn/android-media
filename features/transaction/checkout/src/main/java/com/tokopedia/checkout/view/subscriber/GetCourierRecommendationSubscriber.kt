@@ -33,10 +33,9 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
 
     override fun onNext(shippingRecommendationData: ShippingRecommendationData?) {
         if (isInitialLoad || isForceReloadRates) {
-            if (shippingRecommendationData?.shippingDurationViewModels != null && shippingRecommendationData.shippingDurationViewModels.size > 0) {
-                for (shippingDurationUiModel in shippingRecommendationData.shippingDurationViewModels) {
-                    if (shippingDurationUiModel.shippingCourierViewModelList != null &&
-                            shippingDurationUiModel.shippingCourierViewModelList.size > 0) {
+            if (shippingRecommendationData?.shippingDurationUiModels != null && shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
+                for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
+                    if (shippingDurationUiModel.shippingCourierViewModelList.isNotEmpty()) {
                         for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                             shippingCourierUiModel.isSelected = false
                         }
@@ -61,7 +60,7 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
 
                 // corner case auto selection if BE default duration failed
                 if (shipmentCartItemModel.isAutoCourierSelection) {
-                    val shippingDuration = shippingRecommendationData.shippingDurationViewModels.firstOrNull { it.serviceData.error?.errorId.isNullOrEmpty() && it.serviceData.error?.errorMessage.isNullOrEmpty() }
+                    val shippingDuration = shippingRecommendationData.shippingDurationUiModels.firstOrNull { it.serviceData.error?.errorId.isNullOrEmpty() && it.serviceData.error?.errorMessage.isNullOrEmpty() }
                     if (shippingDuration != null) {
                         val shippingCourier = shippingDuration.shippingCourierViewModelList.firstOrNull {
                             it.productData.error?.errorMessage.isNullOrEmpty()
@@ -78,8 +77,8 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
             view.renderCourierStateFailed(itemPosition, isTradeInDropOff)
             view.logOnErrorLoadCourier(MessageErrorException("rates empty data"), itemPosition)
         } else {
-            if (shippingRecommendationData?.shippingDurationViewModels != null && shippingRecommendationData.shippingDurationViewModels.size > 0) {
-                for (shippingDurationUiModel in shippingRecommendationData.shippingDurationViewModels) {
+            if (shippingRecommendationData?.shippingDurationUiModels != null && shippingRecommendationData.shippingDurationUiModels.size > 0) {
+                for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
                     for (productData in shippingDurationUiModel.serviceData.products) {
                         if (productData.shipperId == shipperId && productData.shipperProductId == spId) {
                             view.updateCourierBottomssheetHasData(

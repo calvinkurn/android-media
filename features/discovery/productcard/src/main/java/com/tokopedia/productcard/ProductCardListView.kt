@@ -8,10 +8,19 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.utils.*
+import com.tokopedia.productcard.utils.expandTouchArea
+import com.tokopedia.productcard.utils.getDimensionPixelSize
+import com.tokopedia.productcard.utils.glideClear
+import com.tokopedia.productcard.utils.initLabelGroup
+import com.tokopedia.productcard.utils.loadImageRounded
+import com.tokopedia.productcard.utils.renderLabelBestSeller
+import com.tokopedia.productcard.utils.renderLabelBestSellerCategoryBottom
+import com.tokopedia.productcard.utils.renderLabelBestSellerCategorySide
+import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
+import kotlinx.android.synthetic.main.product_card_footer_layout.view.*
 import kotlinx.android.synthetic.main.product_card_list_layout.view.*
 
 class ProductCardListView: BaseCustomView, IProductCardView {
@@ -47,9 +56,23 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
         val isShowBestSeller = productCardModel.isShowLabelBestSeller()
         renderLabelBestSeller(
-                isShowBestSeller,
-                labelBestSeller,
-                productCardModel
+            isShowBestSeller,
+            labelBestSeller,
+            productCardModel
+        )
+
+        val isShowCategorySide = productCardModel.isShowLabelCategorySide()
+        renderLabelBestSellerCategorySide(
+            isShowCategorySide,
+            textCategorySide,
+            productCardModel
+        )
+
+        val isShowCategoryBottom = productCardModel.isShowLabelCategoryBottom()
+        renderLabelBestSellerCategoryBottom(
+            isShowCategoryBottom,
+            textCategoryBottom,
+            productCardModel
         )
 
         val isShowCampaignOrBestSeller = isShowCampaign || isShowBestSeller
@@ -61,17 +84,11 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
         renderProductCardContent(productCardModel, isWideContent = true)
 
-        renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
+        renderProductCardFooter(productCardModel, isProductCardList = true)
 
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
         cartExtension.setProductModel(productCardModel)
-
-        buttonDeleteProduct?.showWithCondition(productCardModel.hasDeleteProductButton)
-
-        buttonRemoveFromWishlist?.showWithCondition(productCardModel.hasRemoveFromWishlistButton)
-
-        buttonNotify?.showWithCondition(productCardModel.hasNotifyMeButton)
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(

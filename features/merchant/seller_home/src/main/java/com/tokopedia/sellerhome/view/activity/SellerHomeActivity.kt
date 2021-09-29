@@ -26,8 +26,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
-import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
@@ -48,6 +48,7 @@ import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
 import com.tokopedia.sellerhome.view.navigator.SellerHomeNavigator
+import com.tokopedia.sellerhome.view.viewhelper.SellerHomeOnApplyInsetsListener
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.BottomMenu
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.IBottomClickListener
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
@@ -59,7 +60,6 @@ import kotlinx.android.synthetic.main.activity_sah_seller_home.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.math.abs
 
 class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomClickListener, SomListLoadTimeMonitoringActivity {
 
@@ -68,6 +68,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         fun createIntent(context: Context) = Intent(context, SellerHomeActivity::class.java)
 
         private const val DOUBLE_TAB_EXIT_DELAY = 2000L
+        private const val BOTTOM_NAV_ENTER_ANIM_DURATION = 4f
+        private const val BOTTOM_NAV_EXIT_ANIM_DURATION = 1f
 
         private const val LAST_FRAGMENT_TYPE_KEY = "last_fragment"
         private const val ACTION_GET_ALL_APP_WIDGET_DATA = "com.tokopedia.sellerappwidget.GET_ALL_APP_WIDGET_DATA"
@@ -119,6 +121,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
         setupBackground()
         setupToolbar()
+        setupStatusBar()
         setupBottomNav()
         setupNavigator()
         setupShadow()
@@ -133,6 +136,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         observeShopInfoLiveData()
         observeIsRoleEligible()
         fetchSellerAppWidget()
+        setupSellerHomeInsetListener()
     }
 
     override fun onResume() {
@@ -371,7 +375,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private fun onBottomNavSelected(page: PageFragment, trackingAction: String) {
         val pageType = page.type
 
-        setupStatusBar(pageType)
+        setupStatusBar()
         showToolbar(pageType)
         setCurrentFragmentType(pageType)
         resetPages(page)
@@ -488,19 +492,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         sahBottomNav.setBadge(notificationCount, FragmentType.ORDER, badgeVisibility)
     }
 
-    private fun setupStatusBar(@FragmentType pageType: Int) {
-        if (pageType == FragmentType.OTHER) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (isDarkMode()) {
-                    requestStatusBarLight()
-                } else {
-                    requestStatusBarDark()
-                }
-                statusBarBackground?.show()
+    private fun setupStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (isDarkMode()) {
+                requestStatusBarLight()
+            } else {
+                requestStatusBarDark()
             }
-        } else {
-            resetSellerHomeSystemUiVisibility()
-            statusBarBackground?.gone()
+            statusBarBackground?.show()
         }
     }
 
@@ -515,18 +514,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private fun setupBottomNav() {
         sahBottomNav.setBackgroundColor(this.getResColor(android.R.color.transparent))
 
-        val animEnterDuration = 4f
-        val animExitDuration = 1f
-
-        menu.add(BottomMenu(R.id.menu_home, resources.getString(R.string.sah_home), R.raw.anim_bottom_nav_home, R.raw.anim_bottom_nav_home_to_enabled, R.drawable.ic_sah_bottom_nav_home_active, R.drawable.ic_sah_bottom_nav_home_inactive, com.tokopedia.unifyprinciples.R.color.Unify_G600, false, animExitDuration, animEnterDuration))
-        menu.add(BottomMenu(R.id.menu_product, resources.getString(R.string.sah_product), R.raw.anim_bottom_nav_product, R.raw.anim_bottom_nav_product_to_enabled, R.drawable.ic_sah_bottom_nav_product_active, R.drawable.ic_sah_bottom_nav_product_inactive, com.tokopedia.unifyprinciples.R.color.Unify_G600, false, animExitDuration, animEnterDuration))
-        menu.add(BottomMenu(R.id.menu_chat, resources.getString(R.string.sah_chat), R.raw.anim_bottom_nav_chat, R.raw.anim_bottom_nav_chat_to_enabled, R.drawable.ic_sah_bottom_nav_chat_active, R.drawable.ic_sah_bottom_nav_chat_inactive, com.tokopedia.unifyprinciples.R.color.Unify_G600, true, animExitDuration, animEnterDuration))
-        menu.add(BottomMenu(R.id.menu_order, resources.getString(R.string.sah_sale), R.raw.anim_bottom_nav_order, R.raw.anim_bottom_nav_order_to_enabled, R.drawable.ic_sah_bottom_nav_order_active, R.drawable.ic_sah_bottom_nav_order_inactive, com.tokopedia.unifyprinciples.R.color.Unify_G600, true, animExitDuration, animEnterDuration))
-        menu.add(BottomMenu(R.id.menu_other, resources.getString(R.string.sah_others), R.raw.anim_bottom_nav_other, R.raw.anim_bottom_nav_other_to_enabled, R.drawable.ic_sah_bottom_nav_other_active, R.drawable.ic_sah_bottom_nav_other_inactive, com.tokopedia.unifyprinciples.R.color.Unify_G600, false, animExitDuration, animEnterDuration))
+        menu.add(BottomMenu(R.id.menu_home, resources.getString(R.string.sah_home), R.raw.anim_bottom_nav_home, R.raw.anim_bottom_nav_home_to_enabled, R.drawable.ic_sah_bottom_nav_home_active, R.drawable.ic_sah_bottom_nav_home_inactive, com.tokopedia.unifyprinciples.R.color.Unify_G600, false, BOTTOM_NAV_EXIT_ANIM_DURATION, BOTTOM_NAV_ENTER_ANIM_DURATION))
+        menu.add(BottomMenu(R.id.menu_product, resources.getString(R.string.sah_product), R.raw.anim_bottom_nav_product, R.raw.anim_bottom_nav_product_to_enabled, R.drawable.ic_sah_bottom_nav_product_active, R.drawable.ic_sah_bottom_nav_product_inactive, com.tokopedia.unifyprinciples.R.color.Unify_G600, false, BOTTOM_NAV_EXIT_ANIM_DURATION, BOTTOM_NAV_ENTER_ANIM_DURATION))
+        menu.add(BottomMenu(R.id.menu_chat, resources.getString(R.string.sah_chat), R.raw.anim_bottom_nav_chat, R.raw.anim_bottom_nav_chat_to_enabled, R.drawable.ic_sah_bottom_nav_chat_active, R.drawable.ic_sah_bottom_nav_chat_inactive, com.tokopedia.unifyprinciples.R.color.Unify_G600, true, BOTTOM_NAV_EXIT_ANIM_DURATION, BOTTOM_NAV_ENTER_ANIM_DURATION))
+        menu.add(BottomMenu(R.id.menu_order, resources.getString(R.string.sah_sale), R.raw.anim_bottom_nav_order, R.raw.anim_bottom_nav_order_to_enabled, R.drawable.ic_sah_bottom_nav_order_active, R.drawable.ic_sah_bottom_nav_order_inactive, com.tokopedia.unifyprinciples.R.color.Unify_G600, true, BOTTOM_NAV_EXIT_ANIM_DURATION, BOTTOM_NAV_ENTER_ANIM_DURATION))
+        menu.add(BottomMenu(R.id.menu_other, resources.getString(R.string.sah_others), R.raw.anim_bottom_nav_other, R.raw.anim_bottom_nav_other_to_enabled, R.drawable.ic_sah_bottom_nav_other_active, R.drawable.ic_sah_bottom_nav_other_inactive, com.tokopedia.unifyprinciples.R.color.Unify_G600, false, BOTTOM_NAV_EXIT_ANIM_DURATION, BOTTOM_NAV_ENTER_ANIM_DURATION))
         sahBottomNav.setMenu(menu)
 
         sahBottomNav.setMenuClickListener(this)
-        createSahBottomNavVisibilityHandler()
     }
 
     private fun initSellerHomePlt() {
@@ -581,44 +576,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         }
     }
 
-    private fun resetSellerHomeSystemUiVisibility() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window?.run {
-                if (isDarkMode()) {
-                    decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
-                } else {
-                    decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                }
-            }
-        }
+    private fun setupSellerHomeInsetListener() {
+        sahRootLayout?.setOnApplyWindowInsetsListener(createSellerHomeInsetsListener())
     }
 
-    private fun createSahBottomNavVisibilityHandler() {
-        sahRootLayout?.viewTreeObserver?.addOnPreDrawListener {
-            val heightDiffThreshold = 100
-            val screenHeight = getScreenHeight()
-            val sahRootLayoutHeight = sahRootLayout.measuredHeight
-            val showNavBar = abs(screenHeight - sahRootLayoutHeight) <= heightDiffThreshold
-            if (showNavBar) {
-                // Postpone the show logic so that the bottom nav will show after root layout become
-                // full screen to prevent glitch then continue the drawing process
-                sahRootLayout?.post {
-                    navBarShadow?.show()
-                    sahBottomNav?.show()
-                }
-                true
-            } else {
-                if (navBarShadow?.isVisible != true && sahBottomNav?.isVisible != true) {
-                    // Continue the drawing process because bottom nav is already hidden
-                    true
-                } else {
-                    // To prevent glitch showing keyboard, cancel current drawing process and hide
-                    // the bottom nav first
-                    navBarShadow?.gone()
-                    sahBottomNav?.gone()
-                    false
-                }
-            }
-        }
+    private fun createSellerHomeInsetsListener(): View.OnApplyWindowInsetsListener {
+        return SellerHomeOnApplyInsetsListener(sahContainer, sahBottomNav)
     }
 }

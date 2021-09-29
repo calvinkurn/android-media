@@ -12,13 +12,13 @@ import com.tokopedia.localizationchooseaddress.domain.response.Tokonow
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
-import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
+import com.tokopedia.tokopedianow.common.model.*
+import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.model.*
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
@@ -81,7 +81,7 @@ fun createHomeLayoutItemUiModelList(): List<HomeLayoutItemUiModel> {
                     HomeLayoutItemState.LOADING
             ),
             HomeLayoutItemUiModel(
-                    HomeChooseAddressWidgetUiModel(
+                    TokoNowChooseAddressWidgetUiModel(
                             id = HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID,
                     ),
                     HomeLayoutItemState.NOT_LOADED
@@ -118,7 +118,7 @@ fun createLoadingState(): HomeLayoutListUiModel {
     val loadingStateUiModel = HomeLoadingStateUiModel(id = HomeStaticLayoutId.LOADING_STATE)
     mutableList.add(HomeLayoutItemUiModel(loadingStateUiModel, HomeLayoutItemState.LOADED))
     return HomeLayoutListUiModel(
-            result = mutableList,
+            items = mutableList,
             state = TokoNowLayoutState.LOADING,
             isInitialLoad = true
     )
@@ -126,8 +126,8 @@ fun createLoadingState(): HomeLayoutListUiModel {
 
 fun createEmptyState(id: String): HomeLayoutListUiModel {
     val mutableList = mutableListOf<HomeLayoutItemUiModel>()
-    val chooseAddressUiModel = HomeChooseAddressWidgetUiModel(id = HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID)
-    val emptyStateUiModel = HomeEmptyStateUiModel(id = id)
+    val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID)
+    val emptyStateUiModel = TokoNowEmptyStateOocUiModel(id = id)
     mutableList.add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
     mutableList.add(HomeLayoutItemUiModel(emptyStateUiModel, HomeLayoutItemState.LOADED))
     return HomeLayoutListUiModel(
@@ -144,7 +144,8 @@ fun createTicker(): TickerResponse {
                                     id = "10",
                                     title = "Welcome to Tokonow",
                                     message = "Tokonow is one of the best feature",
-                                    color = "#FFF"
+                                    color = "#FFF",
+                                    layout = "default"
                             )
 
                     )
@@ -268,7 +269,7 @@ fun createCategoryGridDataModel(
     categoryList: List<TokoNowCategoryItemUiModel>,
     @TokoNowLayoutState state: Int
 ): TokoNowCategoryGridUiModel {
-    return TokoNowCategoryGridUiModel(id, title, categoryList, state)
+    return TokoNowCategoryGridUiModel(id = id, title =  title, categoryList = categoryList, state = state)
 }
 
 fun createHomeTickerDataModel(tickers: List<TickerData> = listOf(createTickerData())): HomeTickerUiModel {
@@ -281,4 +282,15 @@ fun createTickerData(
     type: Int = TYPE_ANNOUNCEMENT
 ): TickerData {
     return TickerData(title = title, description = description, type = type)
+}
+
+fun createHomeProductCardUiModel(
+    productId: String = "",
+    shopId: String = "",
+    quantity: Int = 0,
+    parentId: String = "",
+    product: ProductCardModel = ProductCardModel(),
+    @TokoNowLayoutType type: String = TokoNowLayoutType.RECENT_PURCHASE
+): TokoNowProductCardUiModel {
+    return TokoNowProductCardUiModel(productId, shopId, quantity, parentId, product, type)
 }

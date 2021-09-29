@@ -119,6 +119,8 @@ public class RemoteConfigKey {
 
     public static final String REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP = "app_show_search_bar_pdp";
 
+    public static final String REMOTE_CONFIG_APP_WORDING_TOKONOW_USP_PDP = "app_wording_tokonow_usp_pdp";
+
     public static final String RC_ENABLE_REVAMP_SOM = "android_enable_revamp_som";
 
     public static final String ENABLE_GTM_REFRESH = "android_enable_gtm_refresh";
@@ -166,7 +168,6 @@ public class RemoteConfigKey {
     public static final String MAINAPP_SALAM_UMRAH = "android_main_app_enabled_umrah";
 
     public static final String ENABLE_NEW_SHOP_PAGE = "android_main_app_enable_new_shop_page";
-    public static final String ENABLE_SHOP_PAGE_CHANGE_PRODUCT_GRID_LAYOUT_FEATURE = "android_shop_page_enable_product_change_grid_layout";
 
     public static final String MAINAPP_RECHARGE_OCR = "android_mainapp_enable_ocr_emoney";
     public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";
@@ -200,8 +201,8 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_REVAMP_EVENT = "android_mainapp_enable_event_revamp";
     public static final String ENABLE_REVAMP_PDP_EVENT = "android_mainapp_enable_pdp_event";
+    public static final String ENABLE_REVAMP_DEALS_EVENT = "android_main_app_enable_deals_revamp_phase_2";
 
-    public static final String ENABLE_SLICE_ACTION_RECHARGE = "android_mainapp_enable_slice_recharge";
     public static final String APP_ENABLE_BRANCH_INIT_DEEPLINKHANDLER = "app_enable_branch_init_deplinkhandler";
     public static final String APP_ENABLE_BRANCH_INIT_DEEPLINK_ACTIVITY = "app_enable_branch_init_deeplinkActivity";
 
@@ -228,6 +229,8 @@ public class RemoteConfigKey {
 
     public static final String HOME_ENABLE_PAGINATION = "android_customer_home_enable_pagination";
     public static final String HOME_ENABLE_SHARED_PREF_CACHE = "android_customer_home_enable_shared_pref_cache";
+    public static final String HOME_ENABLE_AUTO_REFRESH_WISHLIST = "android_customer_home_auto_refresh_wishlist";
+    public static final String HOME_ENABLE_AUTO_REFRESH_UOH = "android_customer_home_auto_refresh_uoh";
 
     public static final String NAVIGATION_ENABLE_NOTIF = "android_customer_navigation_enable_notif";
 
@@ -247,8 +250,13 @@ public class RemoteConfigKey {
     public static final String PM_SWITCH_TO_WEB_VIEW = "android_pm_switch_to_web_view";
 
     public static final String SETTING_SHOW_DARK_MODE_TOGGLE = "android_show_dark_mode_toggle";
-    public static final String SETTING_SHOW_SCREEN_RECORDER = "android_show_screen_recorder";
+    public static final String SETTING_SHOW_SCREEN_RECORDER = "android_enable_screen_recorder";
 
     public static final String ENABLE_TOKOPEDIA_NOW = "android_main_app_enable_tokopedia_now";
 
+    public static final String ENABLE_PEDULI_LINDUNGI_SCANQR = "android_customer_enable_peduli_lindungi_scanqr";
+
+    public static final String FORCE_LIGHT_MODE = "android_force_light_mode";
+  
+    public static final String ENABLE_ADD_BILLS_SBM = "android_main_app_enable_add_bills_sbm";
 }

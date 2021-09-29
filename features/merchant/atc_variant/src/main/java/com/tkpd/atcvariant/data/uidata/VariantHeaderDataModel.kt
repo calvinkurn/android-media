@@ -12,6 +12,11 @@ import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
 data class VariantHeaderDataModel(
         val position: Long = 0,
         val productImage: String = "",
+        val productId: String = "",
+        val listOfVariantTitle: List<String> = listOf(),
+        val isTokoCabang: Boolean = false,
+        val uspImageUrl: String = "",
+        val cashBackPercentage: Int = 0,
         val headerData: ProductHeaderData = ProductHeaderData()
 ) : AtcVariantVisitable {
     override fun uniqueId(): Long = position
@@ -19,7 +24,10 @@ data class VariantHeaderDataModel(
     override fun isEqual(newData: AtcVariantVisitable): Boolean {
         return if (newData is VariantHeaderDataModel) {
             productImage == newData.productImage &&
-                    headerData == newData.headerData
+                    headerData == newData.headerData &&
+                    listOfVariantTitle.hashCode() == newData.listOfVariantTitle.hashCode() &&
+                    isTokoCabang == newData.isTokoCabang &&
+                    cashBackPercentage == newData.cashBackPercentage
         } else {
             false
         }
@@ -52,12 +60,9 @@ data class VariantHeaderDataModel(
 }
 
 data class ProductHeaderData(
-        val productId: String = "",
         val productMainPrice: String = "",
         val productDiscountedPercentage: Int = 0,
         val isCampaignActive: Boolean = false,
         val productSlashPrice: String = "",
-        val productStock: String = "",
-        val productName:String = "",
-        val finalPriceDouble: Double = 0.0
+        val productStockFmt: String = ""
 )

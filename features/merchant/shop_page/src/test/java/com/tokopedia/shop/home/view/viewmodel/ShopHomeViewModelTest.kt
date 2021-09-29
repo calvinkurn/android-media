@@ -5,13 +5,15 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.mvcwidget.ResultStatus
+import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
 import com.tokopedia.play.widget.data.*
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.*
@@ -79,7 +81,7 @@ class ShopHomeViewModelTest {
     @RelaxedMockK
     lateinit var addToCartUseCase: AddToCartUseCase
     @RelaxedMockK
-    lateinit var addToCartOccUseCase: AddToCartOccUseCase
+    lateinit var addToCartOccUseCase: AddToCartOccMultiUseCase
     @RelaxedMockK
     lateinit var getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase
     @RelaxedMockK
@@ -134,6 +136,24 @@ class ShopHomeViewModelTest {
             ),
             true,
             listOf()
+    )
+
+    private val playWidgetMediumUiModelMockData = PlayWidgetUiModel.Medium(
+        "title",
+        "action title",
+        "applink",
+        true,
+        PlayWidgetConfigUiModel(
+            true,
+            1000,
+            true,
+            1,
+            1,
+            2,
+            1
+        ),
+        PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+        listOf()
     )
 
 
@@ -269,7 +289,7 @@ class ShopHomeViewModelTest {
 
         coEvery {
             mvcSummaryUseCase.getResponse(any())
-        } returns TokopointsCatalogMVCSummaryResponse(null)
+        } returns TokopointsCatalogMVCSummaryResponse(TokopointsCatalogMVCSummary(resultStatus = ResultStatus(code = ShopHomeViewModel.CODE_STATUS_SUCCESS, null, null, null), null, null, null))
         viewModel.getMerchantVoucherCoupon(mockShopId, context)
         coVerify { mvcSummaryUseCase.getResponse(any()) }
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Success)
@@ -379,9 +399,10 @@ class ShopHomeViewModelTest {
         val mockProductName = "product mock"
         val mockDisplayedPrice = "Rp. 1000"
         val onSuccessAddToCart: (DataModel) -> Unit = mockk(relaxed = true)
-        every { addToCartOccUseCase.createObservable(any()) } returns Observable.just(AddToCartDataModel(
+        coEvery { addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel() } returns AddToCartDataModel(
+                status = AddToCartDataModel.STATUS_OK,
                 data = DataModel(success = 1)
-        ))
+        )
         viewModel.addProductToCartOcc(
                 ShopHomeProductUiModel().apply {
                     id = mockProductId
@@ -398,7 +419,7 @@ class ShopHomeViewModelTest {
     @Test
     fun `check whether onErrorAddToCart is called when call addProductToCartOcc error`() {
         val onErrorAddToCart: (Throwable) -> Unit = mockk(relaxed = true)
-        every { addToCartOccUseCase.createObservable(any()) } throws Throwable()
+        coEvery { addToCartOccUseCase.setParams(any()).executeOnBackground() } throws Throwable()
         viewModel.addProductToCartOcc(
                 ShopHomeProductUiModel(),
                 mockShopId,
@@ -753,7 +774,9 @@ class ShopHomeViewModelTest {
                                 true,
                                 PlayWidgetPromoType.Default(""),
                                 PlayWidgetVideoUiModel("", false, "", ""),
-                                PlayWidgetChannelType.Upcoming
+                                PlayWidgetChannelType.Upcoming,
+                                false,
+                                ""
                         )
                 )
         )
@@ -798,5 +821,76 @@ class ShopHomeViewModelTest {
         assert(viewModel.playWidgetObservable.value == null)
     }
 
+    @Test
+    fun `check if playWidgetObservableplay value is updated when isReminder is changes`() {
+        val playWidgetMock = PlayWidget()
+        val mockChannelId = "123"
+        val mockTotalView = "50"
+        val mockReminderType = PlayWidgetReminderType.Reminded
+        val playWidgetUiModelMockDataWithReminder = PlayWidgetUiModel.Medium(
+            "title",
+            "action title",
+            "applink",
+            true,
+            PlayWidgetConfigUiModel(
+                true,
+                1000,
+                true,
+                1,
+                1,
+                2,
+                1
+            ),
+            PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+            listOf(
+                PlayWidgetMediumChannelUiModel(
+                    mockChannelId,
+                    "",
+                    "",
+                    "",
+                    "",
+                    mockTotalView,
+                    true,
+                    PlayWidgetPromoType.Default(""),
+                    mockReminderType,
+                    PlayWidgetPartnerUiModel("", ""),
+                    PlayWidgetVideoUiModel("", false, "", ""),
+                    PlayWidgetChannelType.Upcoming,
+                    false,
+                    PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Upcoming, PlayWidgetChannelType.Upcoming),
+                    PlayWidgetShareUiModel("", false),
+                    "",
+                    false,
+                    ""
+                )
+            )
+        )
+        coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } returns ShopLayoutWidget(
+            listWidget = listOf(ShopLayoutWidget.Widget(type = "dynamic"))
+        )
+        coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
+        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
+        coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
+        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetMediumUiModelMockData
+        viewModel.getPlayWidget(mockShopId)
+        coVerify { playWidgetTools.getWidgetFromNetwork(any(), any()) }
+        every {
+            playWidgetTools.updateActionReminder(playWidgetMediumUiModelMockData, mockChannelId, mockReminderType)
+        } returns playWidgetUiModelMockDataWithReminder
+        viewModel.updatePlayWidgetReminder(
+            mockChannelId,
+            true
+        )
+        val playWidgetUiModel = (viewModel.playWidgetObservable.value?.widgetUiModel as? PlayWidgetUiModel.Medium)
+        assert((playWidgetUiModel?.items?.first() as? PlayWidgetMediumChannelUiModel)?.reminderType == mockReminderType)
+    }
 
+    @Test
+    fun `calling updatePlayWidgetReminder(), check if playWidgetObservableplay value is null when channelId is null`() {
+        viewModel.updatePlayWidgetReminder(
+            null,
+            false
+        )
+        assert(viewModel.playWidgetObservable.value == null)
+    }
 }

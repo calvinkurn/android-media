@@ -339,7 +339,7 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
     }
 
     private fun handleResultFromDetailPage(data: Intent) {
-        val optionList: List<Option> = data.getParcelableArrayListExtra(AbstractDynamicFilterDetailActivity.EXTRA_RESULT)
+        val optionList: List<Option> = data.getParcelableArrayListExtra<Option>(AbstractDynamicFilterDetailActivity.EXTRA_RESULT)?.toList() ?: emptyList()
 
         filterController.setFilter(optionList)
         applyFilterFromDetailPage()
@@ -361,7 +361,7 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
     }
 
     private fun handleResultFromCategoryPage(data: Intent) {
-        val selectedCategoryId = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ID)
+        val selectedCategoryId = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ID) ?: ""
 
         val category = filterMainAdapter?.filterList?.let { FilterHelper.getSelectedCategoryDetailsFromFilterList(it, selectedCategoryId) }
 

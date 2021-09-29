@@ -8,10 +8,13 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class DataKeyModel(
-        @Expose
-        @SerializedName("key")
-        val key: String,
-        @Expose
-        @SerializedName("parameters")
-        val jsonParams: String
+    @Expose
+    @SerializedName("key")
+    val key: String,
+    @Expose
+    @SerializedName("parameters")
+    val jsonParams: String = "{}",
+
+    @Transient
+    val maxDisplay: Int = 0
 )

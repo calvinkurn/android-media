@@ -1,10 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.saldodetails">
 
-
     <application>
         <activity
-            android:name="com.tokopedia.saldodetails.view.activity.SaldoDepositActivity"
+            android:name=".saldoDetail.SaldoDepositActivity"
             android:label="@string/saldo_detail_title_activity_people_deposit"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -25,13 +24,13 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.saldodetails.view.activity.SaldoWebViewActivity"
+            android:name=".commom.design.SaldoWebViewActivity"
             android:label="@string/saldo_detail_title_activity_people_deposit"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"/>
 
         <activity
-            android:name="com.tokopedia.saldodetails.view.activity.SaldoIntroActivity"
+            android:name=".intro.SaldoIntroActivity"
             android:label="@string/saldo_detail_title_header_saldo_intro"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify">
@@ -50,9 +49,23 @@
 
         </activity>
 
-        <activity android:name=".view.activity.SaldoHoldInfoActivity"
+        <activity android:name=".saldoHoldInfo.SaldoHoldInfoActivity"
             android:screenOrientation="portrait"
             android:label="@string/saldo_info_toolbar_title"
+            android:theme="@style/Theme.WhiteUnify"/>
+
+        <activity android:name=".transactionDetailPages.withdrawal.SaldoWithdrawalDetailActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/saldo_withdrawal_detail_title"
+            android:theme="@style/Theme.WhiteUnify"/>
+
+        <activity android:name=".transactionDetailPages.penjualan.SaldoSalesDetailActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/saldo_sales_detail_title"
+            android:theme="@style/Theme.WhiteUnify"/>
+
+        <activity android:name=".transactionDetailPages.invoice.InvoiceDetailActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"/>
     </application>
 </manifest>

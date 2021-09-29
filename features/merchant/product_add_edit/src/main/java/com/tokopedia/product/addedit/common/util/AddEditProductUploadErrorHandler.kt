@@ -1,5 +1,7 @@
 package com.tokopedia.product.addedit.common.util
 
+import com.tokopedia.mediauploader.data.mapper.UploaderErrorCodeMapper.state as uploaderErrorState
+import com.tokopedia.mediauploader.data.mapper.UploaderErrorCodeMapper.CommonErrorState
 import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.network.constant.ResponseStatus
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException
@@ -22,6 +24,7 @@ object AddEditProductUploadErrorHandler {
     private const val ERROR_UPLOADER_NETWORK_ERROR = "networkError"
 
     private const val MULTIPLE_DATA_SEPARATOR = "; "
+    private const val MAX_LENGTH_ERROR_MESSAGE = 3
 
     fun getErrorName(e: Throwable?): String {
         return if (e is ResponseV4ErrorException) {
@@ -31,7 +34,7 @@ object AddEditProductUploadErrorHandler {
         } else if (e is UnknownHostException || e is SocketTimeoutException || e is ConnectException) {
             ERROR_NO_INTERNET
         } else if (e is RuntimeException && e.getLocalizedMessage() != null &&
-                e.getLocalizedMessage() != "" && e.getLocalizedMessage().length <= 3) {
+                e.getLocalizedMessage() != "" && e.getLocalizedMessage().length <= MAX_LENGTH_ERROR_MESSAGE) {
             try {
                 val code = e.getLocalizedMessage() ?: "0"
                 when (code.toInt()) {
@@ -60,7 +63,7 @@ object AddEditProductUploadErrorHandler {
 
     fun isServerTimeout(e: Throwable?): Boolean {
         return if (e is RuntimeException && e.getLocalizedMessage() != null &&
-                e.getLocalizedMessage() != "" && e.getLocalizedMessage().length <= 3) {
+                e.getLocalizedMessage() != "" && e.getLocalizedMessage().length <= MAX_LENGTH_ERROR_MESSAGE) {
             try {
                 val code = e.getLocalizedMessage() ?: "0"
                 when (code.toInt()) {
@@ -78,12 +81,11 @@ object AddEditProductUploadErrorHandler {
     }
 
     fun getUploadImageErrorName(messageFromUploader: String): String {
-        return when (messageFromUploader) {
-            UploaderUseCase.FILE_NOT_FOUND -> ERROR_UPLOADER_FILE_UNAVAILABLE
-            UploaderUseCase.TIMEOUT_ERROR -> ERROR_UPLOADER_TIMEOUT
-            UploaderUseCase.NETWORK_ERROR -> ERROR_UPLOADER_NETWORK_ERROR
-            UploaderUseCase.SOURCE_NOT_FOUND -> ERROR_UPLOADER_SOURCE_UNAVAILABLE
-            UploaderUseCase.UNKNOWN_ERROR -> ERROR_UPLOADER_UPLOAD_FAILED
+        return when (uploaderErrorState(messageFromUploader)) {
+            is CommonErrorState.FileNotFound -> ERROR_UPLOADER_FILE_UNAVAILABLE
+            is CommonErrorState.TimeOut -> ERROR_UPLOADER_TIMEOUT
+            is CommonErrorState.NetworkError -> ERROR_UPLOADER_NETWORK_ERROR
+            is CommonErrorState.InvalidSourceId -> ERROR_UPLOADER_SOURCE_UNAVAILABLE
             else -> {
                 if (messageFromUploader.isEmpty()) {
                     ERROR_UPLOADER_UPLOAD_FAILED

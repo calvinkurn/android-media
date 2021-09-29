@@ -196,6 +196,6 @@ abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
     }
 
     companion object {
-        const val DELAY_REQUEST_PICK_UP = 500L
+        const val DELAY_REQUEST_PICK_UP = 800L
     }
 }

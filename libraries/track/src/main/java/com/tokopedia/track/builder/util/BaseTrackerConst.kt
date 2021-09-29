@@ -121,7 +121,10 @@ abstract class BaseTrackerConst {
             val isCarousel: Boolean? = null,
             val recommendationType: String = "",
             val shopId:String = "",
-            val pageName: String = "")
+            val shopName: String = "",
+            val shopType: String = "",
+            val pageName: String = ""
+    )
 
     object Ecommerce {
         const val KEY = "ecommerce"
@@ -154,10 +157,14 @@ abstract class BaseTrackerConst {
         private const val KEY_BRAND = "brand"
         private const val KEY_VARIANT = "variant"
         private const val KEY_CATEGORY = "category"
+        private const val KEY_CATEGORY_ID = "category_id"
         private const val KEY_POSITION = "position"
         private const val KEY_LIST = "list"
         private const val KEY_ATTRIBUTION = "attribution"
         private const val KEY_QUANTITY = "quantity"
+        private const val KEY_SHOP_ID = "shopId"
+        private const val KEY_SHOP_NAME = "shopName"
+        private const val KEY_SHOP_TYPE = "shopType"
         private const val KEY_DIMENSION_11 = "dimension11"
         private const val KEY_DIMENSION_40 = "dimension40"
         private const val KEY_DIMENSION_45 = "dimension45"
@@ -217,14 +224,14 @@ abstract class BaseTrackerConst {
             return bundle
         }
 
-        fun getEcommerceProductAddToCart(products: List<Product>, list: String): Map<String, Any> {
+        fun getEcommerceProductAddToCart(products: List<Product>, list: String, buildCustomList: ((Product) -> String)?): Map<String, Any> {
             return DataLayer.mapOf(
                     CURRENCY_CODE, IDR,
                     ADD, DataLayer.mapOf(
                     ACTION_FIELD, DataLayer.mapOf(
                     LIST, setNewList(products.firstOrNull(), list)
             ),
-                    PRODUCTS, getProductsClick(products, list)
+                    PRODUCTS, getProductsClick(products, if (list.isEmpty()) setNewList(products.firstOrNull(), list) else list, buildCustomList)
             )
             )
         }
@@ -286,6 +293,10 @@ abstract class BaseTrackerConst {
             map[KEY_VARIANT] = if(product.variant.isNotBlank()) product.variant else NONE
             map[KEY_PRICE] = product.productPrice
             map[KEY_CATEGORY] = if(product.category.isNotBlank()) product.category else NONE
+            map[KEY_CATEGORY_ID] = if(product.categoryId.isNotBlank()) product.categoryId else NONE
+            map[KEY_SHOP_ID] = if(product.shopId.isNotBlank()) product.shopId else NONE
+            map[KEY_SHOP_NAME] = if(product.shopName.isNotBlank()) product.shopId else NONE
+            map[KEY_SHOP_TYPE] = if(product.shopType.isNotBlank()) product.shopType else NONE
             map[KEY_POSITION] = product.productPosition
             map[KEY_DIMENSION_83] = checkBebasOngkir(product)
             map[KEY_DIMENSION_40] = buildCustomList?.invoke(product) ?: if(list.isEmpty()) setNewList(product, list) else list
@@ -310,6 +321,10 @@ abstract class BaseTrackerConst {
             bundle.putString(KEY_VARIANT, if(product.variant.isNotBlank()) product.variant else NONE)
             bundle.putString(KEY_PRICE, product.productPrice)
             bundle.putString(KEY_CATEGORY, if(product.category.isNotBlank()) product.category else NONE)
+            bundle.putString(KEY_CATEGORY_ID, if(product.categoryId.isNotBlank()) product.categoryId else NONE)
+            bundle.putString(KEY_SHOP_ID, if(product.shopId.isNotBlank()) product.shopId else NONE)
+            bundle.putString(KEY_SHOP_NAME, if(product.shopName.isNotBlank()) product.shopName else NONE)
+            bundle.putString(KEY_SHOP_TYPE, if(product.shopType.isNotBlank()) product.shopType else NONE)
             bundle.putString(KEY_POSITION, product.productPosition)
             bundle.putString(KEY_DIMENSION_83, checkBebasOngkir(product))
             bundle.putString(KEY_DIMENSION_40, buildCustomList?.invoke(product) ?: if(list.isEmpty()) setNewList(product, list) else list)

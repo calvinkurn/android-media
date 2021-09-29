@@ -5,12 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 
 const val AUTO_BID = "Otomatis"
 const val MANUAL_BID = "Manual"
+private const val CLICK_BID_TYPE_SELECT = "click - mode pengaturan"
 class AutoBidSelectionSheet : BottomSheetUnify() {
 
     private lateinit var nextBtn: UnifyButton
@@ -48,6 +50,7 @@ class AutoBidSelectionSheet : BottomSheetUnify() {
 
     private fun handleClick() {
         manualLayout?.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(CLICK_BID_TYPE_SELECT, "mode pengaturan atur manual")
             manualRadioBtn?.isChecked = true
             otomatisRadioBtn?.isChecked = false
             onItemClick?.invoke("")
@@ -55,19 +58,7 @@ class AutoBidSelectionSheet : BottomSheetUnify() {
         }
 
         otomatisLayout?.setOnClickListener {
-            otomatisRadioBtn?.isChecked = true
-            manualRadioBtn?.isChecked = false
-            onItemClick?.invoke("auto_bid")
-            dismiss()
-        }
-
-        manualRadioBtn?.setOnCheckedChangeListener { _, isChecked ->
-            manualRadioBtn?.isChecked = true
-            otomatisRadioBtn?.isChecked = false
-            onItemClick?.invoke("")
-            dismiss()
-        }
-        otomatisRadioBtn?.setOnCheckedChangeListener { _, isChecked ->
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(CLICK_BID_TYPE_SELECT, "mode pengaturan atur otomatis")
             otomatisRadioBtn?.isChecked = true
             manualRadioBtn?.isChecked = false
             onItemClick?.invoke("auto_bid")

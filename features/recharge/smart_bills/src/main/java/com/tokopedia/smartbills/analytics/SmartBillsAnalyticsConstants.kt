@@ -9,9 +9,11 @@ interface SmartBillsAnalyticConstants {
     interface Event {
         companion object {
             const val CLICK_SMART_BILLS = "clickSmartBill"
+            const val VIEW_SMART_BILLS_IRIS = "viewSmartBillIris"
             const val PRODUCT_VIEW = "productView"
             const val PRODUCT_CLICK = "productClick"
             const val CHECKOUT = "checkout"
+            const val EVENT_VALUE_CHECKOUT_PROGRESS = "checkout_progress"
         }
     }
 
@@ -52,6 +54,8 @@ interface SmartBillsAnalyticConstants {
             const val CURRENT_SITE = "currentSite"
             const val BUSINESS_UNIT = "businessUnit"
             const val IS_LOGIN_STATUS = "isLoggedInStatus"
+            const val PRODUCT_STATUS = "productStatus"
+            const val ITEMS = "items"
         }
     }
 
@@ -62,8 +66,8 @@ interface SmartBillsAnalyticConstants {
             const val CHECKOUT = "checkout"
             const val ACTION_FIELD = "actionField"
             const val LIST = "list"
-            const val STEP = "step"
-            const val OPTION = "option"
+            const val CHECKOUT_STEP = "checkout_step"
+            const val CHECKOUT_OPTION = "checkout_option"
             const val PRODUCTS = "products"
             const val CURRENCY_CODE = "currencyCode"
             const val IMPRESSIONS = "impressions"
@@ -76,6 +80,14 @@ interface SmartBillsAnalyticConstants {
             const val POSITION = "position"
             const val QUANTITY = "quantity"
             const val NONE = "none/other"
+            const val ITEM_NAME = "item_name"
+            const val ITEM_ID = "item_id"
+            const val ITEM_BRAND = "item_brand"
+            const val ITEM_CATEGORY = "item_category"
+            const val ITEM_VARIANT = "item_variant"
+            const val SHOP_ID = "shop_id"
+            const val SHOP_NAME = "shop_name"
+            const val SHOP_TYPE = "shop_type"
         }
     }
 }

@@ -22,7 +22,7 @@ class SomListGetFilterListUseCase @Inject constructor(
     override suspend fun executeOnBackground(useCache: Boolean): SomListFilterUiModel {
         val cacheStrategy = getCacheStrategy(useCache)
         val gqlRequest = GraphqlRequest(QUERY, SomListFilterResponse.Data::class.java)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val errors = gqlResponse.getError(SomListFilterResponse.Data::class.java)
         if (errors.isNullOrEmpty()) {

@@ -2,15 +2,20 @@ package com.tokopedia.unifyorderhistory.analytics
 
 import android.app.Activity
 import android.os.Bundle
+import com.google.gson.JsonArray
+import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.unifyorderhistory.util.UohConsts.BUSINESS_UNIT_REPLACEE
 import com.tokopedia.unifyorderhistory.util.UohConsts.RECOMMENDATION_LIST_TOPADS_TRACK
 import com.tokopedia.unifyorderhistory.util.UohConsts.RECOMMENDATION_LIST_TRACK
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAdd
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAddRecommendation
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceClick
-import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceImpressions
+import com.tokopedia.unifyorderhistory.data.model.UohListOrder
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
 
 /**
@@ -37,7 +42,7 @@ object UohAnalytics {
     private const val NAME = "name"
     private const val ITEM_NAME = "item_name"
     private const val ID = "id"
-    private const val ITEM_ID = "id"
+    private const val ITEM_ID = "item_id"
     private const val PRICE = "price"
     private const val BRAND = "brand"
     private const val ITEM_BRAND = "item_brand"
@@ -116,15 +121,16 @@ object UohAnalytics {
                 event, eventCategory, eventAction, eventLabel))
     }
 
-    fun viewOrderListPage(isLoggedInStatus: Boolean, userId: String) {
-        val event = TrackAppUtils.gtmData(OPEN_SCREEN, "", "", "")
-        event[SCREEN_NAME] = ORDER_LIST_SCREEN_NAME
-        event[IS_LOGGED_IN_STATUS] = isLoggedInStatus
-        event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
-        event[BUSINESS_UNIT] = ORDER_MANAGEMENT
-        event[USER_ID] = userId
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    fun viewOrderListPage(trackingQueue: TrackingQueue, isLoggedInStatus: Boolean, userId: String) {
+        val map = DataLayer.mapOf(
+            EVENT, OPEN_SCREEN,
+            SCREEN_NAME, ORDER_LIST_SCREEN_NAME,
+            IS_LOGGED_IN_STATUS, isLoggedInStatus,
+            CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+            BUSINESS_UNIT, ORDER_MANAGEMENT,
+            USER_ID, userId
+        )
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
     fun submitSearch(keyword: String, userId: String) {
@@ -216,33 +222,46 @@ object UohAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }
 
-    fun viewOrderCard(verticalLabel: String, userId: String, arrayImpressions: ArrayList<ECommerceImpressions.Impressions>) {
-        val arrayListBundleItems = arrayListOf<Bundle>()
-        arrayImpressions.forEach { impression ->
-            val bundleImpressions = Bundle().apply {
-                putString(ITEM_NAME, impression.name)
-                putString(ITEM_ID, impression.id)
-                putString(PRICE, impression.price)
-                putString(ITEM_BRAND, "")
-                putString(ITEM_CATEGORY, "")
-                putString(ITEM_VARIANT, "")
-                putString(INDEX, impression.position)
-            }
-            arrayListBundleItems.add(bundleImpressions)
-        }
+    fun viewOrderCard(trackingQueue: TrackingQueue, order: UohListOrder.Data.UohOrders.Order, userId: String, listProduct: JsonArray, position: String) {
+        val map = DataLayer.mapOf(
+            EVENT, PRODUCT_VIEW,
+            EVENT_CATEGORY, ORDER_LIST_EVENT_CATEGORY,
+            EVENT_ACTION, VIEW_ORDER_CARD.replace(BUSINESS_UNIT_REPLACEE, order.verticalCategory),
+            EVENT_LABEL, "",
+            CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+            USER_ID, userId,
+            BUSINESS_UNIT, ORDER_MANAGEMENT,
+            ECOMMERCE, DataLayer.mapOf(
+                CURRENCY_CODE, IDR,
+                IMPRESSIONS, convertOrderItemToDataImpressionObject(order, listProduct, position)
+            )
+        )
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
 
-        val bundle = Bundle().apply {
-            putString(EVENT, VIEW_ITEM_LIST)
-            putString(EVENT_CATEGORY, ORDER_LIST_EVENT_CATEGORY)
-            putString(EVENT_ACTION, VIEW_ORDER_CARD.replace(BUSINESS_UNIT_REPLACEE, verticalLabel))
-            putString(EVENT_LABEL, "")
-            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
-            putString(USER_ID, userId)
-            putString(BUSINESS_UNIT, ORDER_MANAGEMENT)
-            putString(ITEM_LIST, ACTION_FIELD_CLICK_ECOMMERCE.replace(BUSINESS_UNIT_REPLACEE, verticalLabel))
-            putParcelableArrayList(ITEMS, arrayListBundleItems)
-        }
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, bundle)
+    fun convertOrderItemToDataImpressionObject(order: UohListOrder.Data.UohOrders.Order, listProduct: JsonArray, position: String): List<Any>  {
+        var eeProductId = ""
+        var eeProductPrice = ""
+        return DataLayer.listOf(
+            order.metadata.products.forEachIndexed { index, product ->
+                val itemName = product.title
+                if (order.metadata.listProducts.isNotEmpty()) {
+                    val objProduct = listProduct.get(index)?.asJsonObject
+                    eeProductId = objProduct?.get(UohConsts.EE_PRODUCT_ID).toString()
+                    eeProductPrice = objProduct?.get(UohConsts.EE_PRODUCT_PRICE).toString()
+                }
+
+                DataLayer.mapOf(
+                    ITEM_NAME, itemName,
+                    ITEM_ID, eeProductId,
+                    PRICE, eeProductPrice,
+                    ITEM_BRAND, "",
+                    ITEM_VARIANT, "",
+                    ITEM_CATEGORY, "",
+                    INDEX, position
+                )
+            }
+        )
     }
 
     fun clickOrderCard(verticalLabel: String, userId: String, arrayListProducts: ArrayList<ECommerceClick.Products>) {
@@ -340,7 +359,9 @@ object UohAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }
 
-    fun clickBeliLagiOnOrderCardMP(screenName: String, userId: String, arrayListProducts: ArrayList<ECommerceAdd.Add.Products>, verticalLabel: String) {
+    fun clickBeliLagiOnOrderCardMP(screenName: String, userId: String,
+                                   arrayListProducts: ArrayList<ECommerceAdd.Add.Products>,
+                                   verticalLabel: String, cartId: String) {
         val arrayListBundleItems = arrayListOf<Bundle>()
         arrayListProducts.forEach { product ->
             val bundleProduct = Bundle().apply {
@@ -354,7 +375,7 @@ object UohAnalytics {
                 putString(DIMENSION79, product.dimension79)
                 putString(DIMENSION81, "")
                 putString(DIMENSION80, "")
-                putString(DIMENSION45, "")
+                putString(DIMENSION45, cartId)
                 putString(DIMENSION40, ACTION_FIELD_CLICK_ECOMMERCE.replace(BUSINESS_UNIT_REPLACEE, verticalLabel))
             }
             arrayListBundleItems.add(bundleProduct)
@@ -407,36 +428,39 @@ object UohAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }
 
-    fun productViewRecommendation(userId: String, impressions: ECommerceImpressions.Impressions, isTopads: Boolean) {
-        val arrayListBundleItems = arrayListOf<Bundle>()
-        val bundleImpression = Bundle().apply {
-            putString(ITEM_NAME, impressions.name)
-            putString(ITEM_ID, impressions.id)
-            putString(PRICE, impressions.price)
-            putString(ITEM_BRAND, "")
-            putString(ITEM_CATEGORY, impressions.category)
-            putString(ITEM_VARIANT, "")
-            putString(INDEX, impressions.position)
-            putString(DIMENSION87, "")
-            putString(DIMENSION88, "")
-        }
-        arrayListBundleItems.add(bundleImpression)
-
+    fun productViewRecommendation(trackingQueue: TrackingQueue, userId: String, recommendationItem: RecommendationItem, isTopads: Boolean, position: String) {
         var list = RECOMMENDATION_LIST_TRACK
         if (isTopads) list += RECOMMENDATION_LIST_TOPADS_TRACK
 
-        val bundle = Bundle().apply {
-            putString(EVENT, VIEW_ITEM_LIST)
-            putString(EVENT_CATEGORY, PURCHASE_LIST_EVENT_CATEGORY)
-            putString(EVENT_ACTION, VIEW_RECOMMENDATION)
-            putString(EVENT_LABEL, EVENT_LABEL_RECOMMENDATION)
-            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
-            putString(USER_ID, userId)
-            putString(BUSINESS_UNIT, ORDER_MANAGEMENT)
-            putString(ITEM_LIST, list)
-            putParcelableArrayList(ITEMS, arrayListBundleItems)
-        }
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, bundle)
+        val map = DataLayer.mapOf(
+            EVENT, PRODUCT_VIEW,
+            EVENT_CATEGORY, PURCHASE_LIST_EVENT_CATEGORY,
+            EVENT_ACTION, VIEW_RECOMMENDATION,
+            EVENT_LABEL, EVENT_LABEL_RECOMMENDATION,
+            CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+            USER_ID, userId,
+            BUSINESS_UNIT, ORDER_MANAGEMENT,
+            ITEM_LIST, list,
+            ECOMMERCE, DataLayer.mapOf(
+                CURRENCY_CODE, IDR,
+                IMPRESSIONS, DataLayer.listOf(convertRecommendationItemToDataImpressionObject(recommendationItem, position))
+            )
+        )
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
+    fun convertRecommendationItemToDataImpressionObject(recommendationItem: RecommendationItem, position: String): Any  {
+        return DataLayer.mapOf(
+            ITEM_NAME, recommendationItem.name,
+            ITEM_ID, recommendationItem.productId.toString(),
+            PRICE, recommendationItem.price,
+            ITEM_BRAND, "",
+            ITEM_CATEGORY, recommendationItem.categoryBreadcrumbs,
+            ITEM_VARIANT, "",
+            INDEX, position,
+            DIMENSION87, "",
+            DIMENSION88, ""
+        )
     }
 
     fun productClickRecommendation(click: ECommerceClick.Products, isTopads: Boolean, userId: String) {

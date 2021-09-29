@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    android:descendantFocusability="blocksDescendants">
+    android:animateLayoutChanges="true">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/view_background_image"
@@ -24,7 +23,7 @@
         tools:visibility="visible">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvHome"
+            android:id="@+id/rv_home"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
@@ -59,12 +58,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.minicart.common.widget.MiniCartWidget
-        android:id="@+id/miniCartWidget"
+        android:id="@+id/mini_cart_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_height="100dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         tools:visibility="visible" />
 
     <com.tokopedia.stickylogin.view.StickyLoginView

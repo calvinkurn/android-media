@@ -12,6 +12,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregator
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorResponse
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
+import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
@@ -26,6 +27,9 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
         val QUERY = """
         query pdpGetVariantComponent(${'$'}productID : String, ${'$'}source : String, ${'$'}shopID : String, ${'$'}whID : String, ${'$'}pdpSession : String , ${'$'}userLocation: pdpUserLocation, ${'$'}isTokoNow: Boolean) {
             pdpGetVariantComponent(productID: ${'$'}productID, source: ${'$'}source, shopID: ${'$'}shopID, whID: ${'$'}whID, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation, isTokoNow: ${'$'}isTokoNow) {
+                    isCashback{
+                        percentage
+                    }
                     basicInfo {
                           shopID
                           shopName
@@ -44,14 +48,38 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                             }
                           }
                     }
+                    uniqueSellingPoint{
+                       bebasOngkirExtra{
+                          icon
+                       }
+                    }
                     bebasOngkir {
-                      products {
-                        productID
-                        boType
-                      }
+                          products{
+                            productID
+                            boType
+                          }
+                          images{
+                            boType
+                            imageURL
+                            tokoCabangImageURL
+                          }
                     }
                     shopInfo {
                         shopType
+                    }
+                    restrictionInfo {
+                      message
+                      restrictionData {
+                        productID
+                        isEligible
+                        action {
+                          actionType
+                          title
+                          description
+                          attributeName
+                          badgeURL
+                        }
+                      }
                     }
                     variantData { 
                       errorCode
@@ -80,6 +108,7 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                         priceFmt
                         sku
                         optionID
+                        optionName
                         productName
                         productURL
                         picture {
@@ -94,6 +123,8 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                           stockWordingHTML
                           minimumOrder
                           maximumOrder
+                          stockFmt
+                          stockCopy
                         }
                         isCOD
                         isWishlist
@@ -156,6 +187,32 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                     geolocation
                   }
                 }
+                ratesEstimate {
+                  warehouseID
+                  products
+                  data {
+                    totalService
+                    isSupportInstantCourier
+                    destination
+                    icon
+                    title
+                    subtitle
+                    eTAText
+                    errors {
+                      Code
+                      Message
+                      DevMessage
+                    }
+                    courierLabel
+                    cheapestShippingPrice
+                  }
+                  bottomsheet {
+                    title
+                    iconURL
+                    subtitle
+                    buttonCopy
+                  }
+               }
                 callsError{
                   cartRedirection{
                     Code
@@ -179,7 +236,13 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
             ProductDetailCommonConstant.PARAM_TEASER_SOURCE to source,
             ProductDetailCommonConstant.PARAM_TOKO_NOW to isTokoNow,
             ProductDetailCommonConstant.PARAM_SHOP_ID to shopId,
-            ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
+            ProductDetailCommonConstant.PARAM_USER_LOCATION to UserLocationRequest(
+                    chosenAddressRequestHelper.getChosenAddress()?.districtId ?: "",
+                    chosenAddressRequestHelper.getChosenAddress()?.addressId ?: "",
+                    chosenAddressRequestHelper.getChosenAddress()?.postalCode ?: "",
+                    chosenAddressRequestHelper.getChosenAddress()?.geolocation ?: ""
+            )
+
     )
 
     private var requestParams: Map<String, Any?> = mapOf()
@@ -194,7 +257,7 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
                 .build()
 
-        val response = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+        val response = graphqlRepository.response(listOf(request), cacheStrategy)
         val error: List<GraphqlError>? = response.getError(ProductVariantAggregatorResponse::class.java)
         val data = response.getSuccessData<ProductVariantAggregatorResponse>()
 
@@ -217,7 +280,11 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                 alternateCopy = data.cardRedirection.alternateCopy,
                 simpleBasicInfo = data.basicInfo,
                 shopType = data.shopInfo.shopType,
-                boData = data.bebasOngkir.boProduct
+                boData = data.bebasOngkir,
+                rates = data.ratesEstimate,
+                reData = data.restrictionInfo,
+                uspImageUrl = data.uniqueSellingPoint.uspBoe.uspIcon,
+                cashBackPercentage = data.isCashback.percentage
         )
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.smartbills.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.gson.Gson
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.common.topupbills.data.RechargeField
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
@@ -8,9 +9,9 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.smartbills.data.*
 import com.tokopedia.smartbills.usecase.SmartBillsMultiCheckoutUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -18,10 +19,10 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import junit.framework.Assert.*
-import org.junit.Test
-
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
 import java.lang.reflect.Type
 
 class SmartBillsViewModelTest {
@@ -32,6 +33,7 @@ class SmartBillsViewModelTest {
     private val mapParams = mapOf<String, String>()
     private lateinit var gqlResponseFail: GraphqlResponse
     private var checkoutField = RechargeField("client_number", "0123456789")
+    private val userID = "123"
 
     @MockK
     lateinit var graphqlRepository: GraphqlRepository
@@ -74,7 +76,7 @@ class SmartBillsViewModelTest {
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
         //when
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         //then
         smartBillsViewModel.getStatementMonths(mapParams)
@@ -96,7 +98,7 @@ class SmartBillsViewModelTest {
         result[objectType] = statementMonthsResponse
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         //when
         smartBillsViewModel.getStatementMonths(mapParams)
@@ -109,7 +111,7 @@ class SmartBillsViewModelTest {
     @Test
     fun getStatementMonths_Fail_ErrorResponse() {
         //given
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
 
         //when
         smartBillsViewModel.getStatementMonths(mapParams)
@@ -135,7 +137,7 @@ class SmartBillsViewModelTest {
         result[objectType] = statementBillsResponse
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         //when
         smartBillsViewModel.getStatementBills(mapParams)
@@ -171,7 +173,7 @@ class SmartBillsViewModelTest {
         result[objectType] = statementBillsResponse
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         //when
         smartBillsViewModel.getStatementBills(mapParams)
@@ -190,7 +192,7 @@ class SmartBillsViewModelTest {
     @Test
     fun getStatementBills_Fail() {
         //given
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
 
         //when
         smartBillsViewModel.getStatementMonths(mapParams)
@@ -198,6 +200,43 @@ class SmartBillsViewModelTest {
         //then
         val actualData = smartBillsViewModel.statementMonths.value
         assert(actualData is Fail)
+    }
+
+    @Test
+    fun getStatementBills_Fail_Error_Default() {
+        //given
+        val result = HashMap<Type, Any?>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeListSmartBills.Response::class.java
+        val error =
+        """
+                {
+                    "message": "Mohon Maaf telah terjadi kesalahan",
+                    "path": [
+                    "rechargeSBMList"
+                    ],
+                    "extensions": {
+                    "code": 500,
+                    "developerMessage": "error get base data: [favorite] empty favorite data",
+                    "timestamp": "2021-07-01 13:52:46.163173013 +0700 WIB m=+3204.614657061"
+                }
+                }
+        """.trimIndent()
+
+        result[objectType] = null
+        val graphqlError = Gson().fromJson(error, GraphqlError::class.java)
+        errors[objectType] = listOf(graphqlError)
+        val gqlResponseFailDefault = GraphqlResponse(result, errors, false)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFailDefault
+
+        //when
+        smartBillsViewModel.getStatementBills(mapParams)
+
+        //then
+        val actualData = smartBillsViewModel.statementBills.value
+        assert(actualData is Success)
+        assertEquals((actualData as Success).data, RechargeListSmartBills())
     }
 
     @Test
@@ -220,7 +259,7 @@ class SmartBillsViewModelTest {
         coEvery { smartBillsMultiCheckoutUseCase.executeOnBackground()} returns dataCheckoutMap
 
         //when
-        smartBillsViewModel.runMultiCheckout(MultiCheckoutRequest())
+        smartBillsViewModel.runMultiCheckout(MultiCheckoutRequest(), userID)
 
         //then
         val actualData = smartBillsViewModel.multiCheckout.value
@@ -254,7 +293,7 @@ class SmartBillsViewModelTest {
         coEvery { smartBillsMultiCheckoutUseCase.executeOnBackground()} returns dataCheckoutMap
 
         //when
-        smartBillsViewModel.runMultiCheckout(MultiCheckoutRequest())
+        smartBillsViewModel.runMultiCheckout(MultiCheckoutRequest(), userID)
 
         //then
         val actualData = smartBillsViewModel.multiCheckout.value
@@ -280,7 +319,7 @@ class SmartBillsViewModelTest {
         coEvery { smartBillsMultiCheckoutUseCase.executeOnBackground()} throws MessageErrorException("error")
 
         //when
-        smartBillsViewModel.runMultiCheckout(MultiCheckoutRequest())
+        smartBillsViewModel.runMultiCheckout(MultiCheckoutRequest(), userID)
 
         //then
         val actualData = smartBillsViewModel.multiCheckout.value
@@ -297,9 +336,7 @@ class SmartBillsViewModelTest {
 
         //when
         smartBillsViewModel.runMultiCheckout(MultiCheckoutRequest(attributes = MultiCheckoutRequest.
-        MultiCheckoutRequestAttributes(identifier = RequestBodyIdentifier().apply {
-            userId = "12345"
-        })))
+        MultiCheckoutRequestAttributes(identifier = RequestBodyIdentifier())),  userId = userID)
 
         //then
         val actualData = smartBillsViewModel.multiCheckout.value
@@ -320,7 +357,7 @@ class SmartBillsViewModelTest {
         coEvery { smartBillsMultiCheckoutUseCase.executeOnBackground()} throws MessageErrorException("error")
 
         //when
-        smartBillsViewModel.runMultiCheckout(request)
+        smartBillsViewModel.runMultiCheckout(request, userID)
 
         //then
         val actualData = smartBillsViewModel.multiCheckout.value
@@ -345,7 +382,7 @@ class SmartBillsViewModelTest {
         coEvery { smartBillsMultiCheckoutUseCase.executeOnBackground()} returns dataCheckoutMap
 
         //when
-        smartBillsViewModel.runMultiCheckout(request)
+        smartBillsViewModel.runMultiCheckout(request, userID)
 
         //then
         val actualData = smartBillsViewModel.multiCheckout.value
@@ -355,7 +392,7 @@ class SmartBillsViewModelTest {
     @Test
     fun runMultiCheckout_Fail_NullRequest() {
         //when
-        smartBillsViewModel.runMultiCheckout(null)
+        smartBillsViewModel.runMultiCheckout(null, userID)
 
         //then
         val actualData = smartBillsViewModel.multiCheckout.value
@@ -495,7 +532,7 @@ class SmartBillsViewModelTest {
         result[objectType] = getSBMActionResponse
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         //when
         smartBillsViewModel.getSBMWithAction(mapParams, statementBillsResponse.response!!)
@@ -534,7 +571,7 @@ class SmartBillsViewModelTest {
                 title = "Section 2", type = 2, bills = listOf(
                 RechargeBills(uuid = "122_123",flag = false, index = 0, productID =  1, productName = "test", checkoutFields = listOf(checkoutField))
         )))))
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
 
         //when
         smartBillsViewModel.getSBMWithAction(mapParams, statementBillsResponse.response!!)
@@ -543,4 +580,101 @@ class SmartBillsViewModelTest {
         val actualData = smartBillsViewModel.statementBills.value
         assert(actualData is Fail)
     }
+
+    @Test
+    fun createCatalogIDParam(){
+        //given
+        val platform = 48
+
+        //when
+        val actual = smartBillsViewModel.createCatalogIDParam(platform)
+
+        //then
+        assertEquals(actual, mapOf(
+                SmartBillsViewModel.PARAM_PLATFORM_ID to platform
+        ))
+    }
+
+    @Test
+    fun createParamDeleteSBM(){
+        //given
+        val request = RechargeSBMDeleteBillRequest()
+
+        //when
+        val actual = smartBillsViewModel.createParamDeleteSBM(request)
+
+        //then
+        assertEquals(actual, mapOf(
+                SmartBillsViewModel.PARAM_DELETE_SBM to request
+        ))
+    }
+
+    @Test
+    fun getCatalogAddBills_Success() {
+        //given
+        val catalogs = RechargeCatalogMenuAddBills(listOf(SmartBillsCatalogMenu(id = "1")))
+
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeCatalogMenuAddBills::class.java
+        result[objectType] = catalogs
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
+
+        //when
+        smartBillsViewModel.getCatalogAddBills(mapParams)
+
+        //then
+        val actualData = smartBillsViewModel.catalogList.value
+        assert(actualData is Success)
+        val actual = (actualData as Success).data
+        Assert.assertNotNull(actual)
+        Assert.assertEquals(catalogs.response, actual)
+    }
+
+    @Test
+    fun getCatalogAddBills_Fail() {
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
+
+        smartBillsViewModel.getCatalogAddBills(mapParams)
+
+        val actualData = smartBillsViewModel.catalogList.value
+        assert(actualData is Fail)
+    }
+
+    @Test
+    fun deleteProductSBM_Success() {
+        //given
+        val deleteSBM = RechargeDeleteSBM(RechargeSBMDeleteBill(message = "Berhasil delete"))
+
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeDeleteSBM::class.java
+        result[objectType] = deleteSBM
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
+
+        //when
+        smartBillsViewModel.deleteProductSBM(mapParams)
+
+        //then
+        val actualData = smartBillsViewModel.deleteSBM.value
+        assert(actualData is Success)
+        val actual = (actualData as Success).data
+        Assert.assertNotNull(actual)
+        Assert.assertEquals(deleteSBM, actual)
+    }
+
+    @Test
+    fun deleteProductSBM_Fail() {
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
+
+        smartBillsViewModel.deleteProductSBM(mapParams)
+
+        val actualData = smartBillsViewModel.deleteSBM.value
+        assert(actualData is Fail)
+    }
+
 }

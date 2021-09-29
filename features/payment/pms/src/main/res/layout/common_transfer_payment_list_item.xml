@@ -53,6 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_12"
             android:textColor="@color/Unify_N700_68"
+            app:layout_goneMarginRight="@dimen/unify_space_12"
             app:layout_constraintBottom_toTopOf="@+id/tvTransactionExpireTime"
             app:layout_constraintEnd_toStartOf="@+id/cardMenu"
             app:layout_constraintTop_toTopOf="parent"

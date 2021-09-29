@@ -1,12 +1,13 @@
 package com.tokopedia.dynamicbanner.entity
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class PlayCard(
-        @Expose @SerializedName("card_id") var cardId: Int = 0,
+        @SuppressLint("Invalid Data Type") @Expose @SerializedName("card_id") var cardId: Int = 0,
         @Expose @SerializedName("broadcaster_type") var broadcasterType: String = "",
-        @Expose @SerializedName("broadcaster_id") var broadcasterId: Int = 0,
+        @SuppressLint("Invalid Data Type") @Expose @SerializedName("broadcaster_id") var broadcasterId: Int = 0,
         @Expose @SerializedName("broadcaster_name") var broadcasterName: String = "",
         @Expose @SerializedName("broadcaster_image") var broadcasterImage: String = "",
         @Expose @SerializedName("broadcaster_badge_type") var broadcasterBadgeType: String = "",

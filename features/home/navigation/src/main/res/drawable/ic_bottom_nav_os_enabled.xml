@@ -8,11 +8,20 @@
       android:scaleY="0.85"
       android:pivotX="12"
       android:pivotY="12">
-    <path
-        android:pathData="M20,2L17,2a7.54,7.54 0,0 0,-5 1.8A7.54,7.54 0,0 0,7 2L4,2A2,2 0,0 0,2 4L2,20a2,2 0,0 0,2 2L14,22a8,8 0,0 0,8 -8L22,4A2,2 0,0 0,20 2ZM20,14a6,6 0,0 1,-6 6L4,20L4,4L7,4A5.23,5.23 0,0 1,11.2 5.87l0.8,1 0.8,-1A5.22,5.22 0,0 1,17 4h3Z"
-        android:fillColor="#525a67"/>
-    <path
-        android:pathData="M16.29,8.29 L11,13.59l-2.29,-2.3a1,1 0,1 0,-1.42 1.42l3,3a1,1 0,0 0,1.42 0l6,-6a1,1 0,0 0,-1.42 -1.42Z"
-        android:fillColor="#525a67"/>
+  <path
+      android:pathData="M21.2,3.8001C21.2,3.2001 20.7,2.8001 20.2,2.8001H17.1001C15.1001,2.8001 13.1,3.6 12,5.1C10.8,3.5001 8.8,2.8001 6.9,2.8001H3.8001C3.2001,2.8001 2.8001,3.3001 2.8001,3.8001V20.2001C2.8001,20.8001 3.3001,21.2001 3.8001,21.2001H14.1001C18.1001,21.2001 21.3,18 21.3,14V3.8001H21.2Z"
+      android:strokeLineJoin="round"
+      android:strokeWidth="1.5"
+      android:fillColor="#00000000"
+      android:fillType="evenOdd"
+      android:strokeColor="@color/Unify_NN900"
+      android:strokeLineCap="round"/>
+  <path
+      android:pathData="M8,12L11,15L17,9"
+      android:strokeLineJoin="round"
+      android:strokeWidth="1.5"
+      android:fillColor="#00000000"
+      android:strokeColor="@color/Unify_NN900"
+      android:strokeLineCap="round"/>
   </group>
 </vector>

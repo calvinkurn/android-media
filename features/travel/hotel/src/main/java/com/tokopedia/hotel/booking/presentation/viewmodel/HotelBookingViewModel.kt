@@ -17,6 +17,7 @@ import com.tokopedia.hotel.roomlist.util.HotelUtil
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
 import com.tokopedia.promocheckout.common.view.model.PromoData
+import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
 import com.tokopedia.travel.passenger.domain.GetContactListUseCase
@@ -24,7 +25,6 @@ import com.tokopedia.travel.passenger.domain.UpsertContactListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -88,7 +88,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
         launchCatchError(block = {
             val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_HOTEL_CART, params)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<HotelCart.Response>()
             hotelCartResult.postValue(Success(data))
             mutablePromoData.postValue(HotelMapper.mapToPromoData(data))
@@ -104,7 +104,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
         launchCatchError(block = {
             val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_HOTEL_CHECKOUT, params)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<HotelCheckoutResponse.Response>()
 
             hotelCheckoutResult.postValue(Success(data.response))
@@ -117,7 +117,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
         launchCatchError(block = {
             val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TokopointsSumCoupon.Response::class.java)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<TokopointsSumCoupon.Response>()
             tokopointSumCouponResult.postValue(data.response.sumCouponUnitOpt)
         }) {
@@ -127,11 +127,17 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
 
     fun onCancelAppliedVoucher(rawQuery: String) {
         launchCatchError(block = {
-            withContext(Dispatchers.Default) {
+            val data = withContext(dispatcher.io) {
                 val graphqlRequest = GraphqlRequest(rawQuery, FlightCancelVoucher.Response::class.java)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<FlightCancelVoucher>()
+                graphqlRepository.response(listOf(graphqlRequest))
+            }.getSuccessData<FlightCancelVoucher.Response>()
+            if(data.response.attributes.success){
+                mutablePromoData.postValue(PromoData(state = TickerCheckoutView.State.ACTIVE))
+            }else{
+                mutablePromoData.postValue(promoData.value?.copy(state = TickerCheckoutView.State.FAILED))
+            }
         }) {
+            mutablePromoData.postValue(promoData.value?.copy(state = TickerCheckoutView.State.FAILED))
             it.printStackTrace()
         }
     }

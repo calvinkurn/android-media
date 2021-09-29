@@ -12,7 +12,6 @@ import androidx.core.app.TaskStackBuilder;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
-import com.appsflyer.AppsFlyerLib;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
@@ -51,8 +50,6 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.utils.uri.DeeplinkUtils;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
-import com.tokopedia.webview.WebViewApplinkModule;
-import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -64,18 +61,17 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
         ExploreApplinkModule.class,
-        HomeCreditAppLinkModule.class,
-        WebViewApplinkModule.class,
+        HomeCreditAppLinkModule.class
 })
 
-public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
+public class
+DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
 
     private static final String ENABLE_ASYNC_APPLINK_DELEGATE_CREATION = "android_async_applink_delegate_creation";
     private static final String TOKOPEDIA_DOMAIN = "tokopedia";
@@ -90,8 +86,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new OvoUpgradeDeeplinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
-                    new HomeCreditAppLinkModuleLoader(),
-                    new WebViewApplinkModuleLoader()
+                    new HomeCreditAppLinkModuleLoader()
             );
         }
 
@@ -142,10 +137,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         GratificationSubscriber.addActivityNameToExclude(getClass().getCanonicalName());
         super.onCreate(savedInstanceState);
         ApplinkDelegate deepLinkDelegate = getApplinkDelegateInstance();
-
-        if (!GlobalConfig.isSellerApp()) {
-            AppsFlyerLib.getInstance().sendDeepLinkData(this);
-        }
 
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null && getIntent().getData()!= null) {

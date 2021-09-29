@@ -33,7 +33,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
         }
 
         val request = GraphqlRequest(QUERY, MiniCartGqlResponse::class.java, params)
-        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<MiniCartGqlResponse>()
+        val response = graphqlRepository.response(listOf(request)).getSuccessData<MiniCartGqlResponse>()
 
         if (response.miniCart.status == "OK") {
             return response.miniCart
@@ -73,6 +73,10 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                   }
                   max_char_note
                   header_title
+                  beli_button_config {
+                    button_type
+                    button_wording
+                  }
                   shopping_summary {
                     total_wording
                     total_value

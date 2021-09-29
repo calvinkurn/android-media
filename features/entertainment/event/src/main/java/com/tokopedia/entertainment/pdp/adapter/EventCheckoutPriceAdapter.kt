@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.item_event_checkout_price.view.*
 
 class EventCheckoutPriceAdapter : RecyclerView.Adapter<EventCheckoutPriceAdapter.EventCheckoutPriceViewHolder>() {
 
+    private val zeroPrice = 0
     private var listItemMap = emptyList<ItemMapResponse>()
 
     inner class EventCheckoutPriceViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -19,7 +20,9 @@ class EventCheckoutPriceAdapter : RecyclerView.Adapter<EventCheckoutPriceAdapter
             with(itemView) {
                 tg_event_checkout_summary_packet.text = item.name
                 tg_event_checkout_summary_amount.text = resources.getString(R.string.ent_checkout_summary_amount,item.quantity)
-                tg_event_checkout_summary_price.text = getRupiahFormat(item.price*item.quantity)
+
+                val result = item.price*item.quantity
+                tg_event_checkout_summary_price.text = if(result != zeroPrice) getRupiahFormat(result) else resources.getString(R.string.ent_free_price)
             }
         }
     }

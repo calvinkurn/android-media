@@ -5,9 +5,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
+import com.tokopedia.recommendation_widget_common.listener.RecommendationTokonowListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 /**
@@ -16,7 +18,9 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
  * A class for holder view Recommendation Item
  */
 class RecommendationItemViewHolder(
-       private val view: View, val listener: RecommendationListener
+        private val view: View,
+        val listener: RecommendationListener,
+        val tokonowListener: RecommendationTokonowListener? = null
 ) : AbstractViewHolder<RecommendationItemDataModel>(view){
 
     companion object{
@@ -69,6 +73,24 @@ class RecommendationItemViewHolder(
 
             setThreeDotsOnClickListener {
                 listener.onThreeDotsClick(element.productItem, adapterPosition)
+            }
+
+            setAddToCartNonVariantClickListener(object : ATCNonVariantListener {
+                override fun onQuantityChanged(quantity: Int) {
+                    element.productItem.onCardQuantityChanged(quantity)
+                    tokonowListener?.onProductTokonowNonVariantQuantityChanged(
+                            recomItem = element.productItem,
+                            adapterPosition = adapterPosition,
+                            quantity = quantity
+                    )
+                }
+            })
+
+            setAddVariantClickListener {
+                tokonowListener?.onProductTokonowVariantClicked(
+                        recomItem = element.productItem,
+                        adapterPosition = adapterPosition
+                )
             }
         }
     }

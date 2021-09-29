@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.customview.ShopScorePMWidget
+import com.tokopedia.unifycomponents.NotificationUnify
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_partial_progress_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_progress_widget_error.view.*
@@ -16,7 +17,8 @@ import kotlinx.android.synthetic.main.shc_partial_shimmering_progress_widget.vie
  * Created By @ilhamsuaib on 20/05/20
  */
 
-class ProgressViewHolder(view: View?, private val listener: Listener) : AbstractViewHolder<ProgressWidgetUiModel>(view) {
+class ProgressViewHolder(view: View?, private val listener: Listener) :
+    AbstractViewHolder<ProgressWidgetUiModel>(view) {
 
     companion object {
         val RES_LAYOUT = R.layout.shc_progress_card_widget
@@ -62,6 +64,7 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
 
         element.data?.run {
             with(element) {
+                setTagNotification(element.tag)
                 itemView.tvProgressTitle.text = title
                 itemView.tvProgressDescription.text = data?.subtitle?.parseAsHtml()
                 setupProgressBar(subtitle, valueTxt, maxValueTxt, value, maxValue, colorState)
@@ -73,10 +76,28 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
         showProgressLayout()
     }
 
+    private fun setTagNotification(tag: String) {
+        val isTagVisible = tag.isNotBlank()
+        with(itemView) {
+            notifTagProgress.showWithCondition(isTagVisible)
+            if (isTagVisible) {
+                notifTagProgress.setNotification(
+                    tag,
+                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COLOR_TEXT_TYPE
+                )
+            }
+        }
+    }
+
     private fun addImpressionTracker(progressWidgetUiModel: ProgressWidgetUiModel) {
         with(progressWidgetUiModel) {
             itemView.addOnImpressionListener(impressHolder) {
-                listener.sendProgressImpressionEvent(dataKey, data?.colorState.toString(), data?.value.orZero())
+                listener.sendProgressImpressionEvent(
+                    dataKey,
+                    data?.colorState?.name.orEmpty(),
+                    data?.value.orZero()
+                )
             }
         }
     }
@@ -84,7 +105,11 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
     private fun goToDetails(element: ProgressWidgetUiModel) {
         with(element) {
             if (RouteManager.route(itemView.context, appLink)) {
-                listener.sendProgressCtaClickEvent(dataKey, data?.colorState.toString(), data?.value.orZero())
+                listener.sendProgressCtaClickEvent(
+                    dataKey,
+                    data?.colorState?.name.orEmpty(),
+                    data?.value.orZero()
+                )
             }
         }
     }
@@ -98,12 +123,12 @@ class ProgressViewHolder(view: View?, private val listener: Listener) : Abstract
     }
 
     private fun setupProgressBar(
-            progressTitle: String,
-            currentProgressText: String,
-            maxProgressText: String,
-            currentProgress: Int,
-            maxProgress: Int,
-            state: ShopScorePMWidget.State
+        progressTitle: String,
+        currentProgressText: String,
+        maxProgressText: String,
+        currentProgress: Int,
+        maxProgress: Int,
+        state: ShopScorePMWidget.State
     ) = with(itemView.shopScoreProgress) {
         setProgressTitle(progressTitle)
         setCurrentProgressText(currentProgressText)

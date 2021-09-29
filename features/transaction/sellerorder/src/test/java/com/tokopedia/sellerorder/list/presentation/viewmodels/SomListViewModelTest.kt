@@ -643,8 +643,6 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
 
         delay(DELAY_REQUEST_PICK_UP)
 
-        viewModel.bulkRequestPickupResult.observeAwaitValue()
-
         coVerify {
             bulkRequestPickupUseCase.executeOnBackground()
             multiShippingStatusUseCase.executeOnBackground()

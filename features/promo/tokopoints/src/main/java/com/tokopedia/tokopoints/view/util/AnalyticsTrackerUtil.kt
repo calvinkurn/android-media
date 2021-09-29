@@ -232,7 +232,8 @@ object AnalyticsTrackerUtil {
             const val EVENT_LABEL = "eventLabel"
             const val ECOMMERCE = "ecommerce"
             const val EVENT_TOKOPOINT = "eventTokopoint"
-            const val EVENT_TOKOPOINT_IRIS = "viewTokopointIris"
+            const val VIEW_TOKOPOINT_IRIS = "viewTokopointIris"
+            const val EVENT_TOKOPOINT_IRIS = "eventTokopointIris"
             const val EVENT_VIEW_TOKOPOINT = "eventViewTokopoint"
             const val EVENT_CLICK_COUPON = "clickCoupon"
             const val EVENT_VIEW_COUPON = "viewCoupon"
@@ -318,10 +319,10 @@ object AnalyticsTrackerUtil {
             const val CLICK_SHOP_NAME = "click shop name"
             const val CLICK_PRODUCT_CARD = "click product card"
             const val VIEW_HOMEPAGE = "view homepage"
-
             const val IMPRESSION_RECOM_ACTION = "impression - products"
             const val CLICK_RECOM_ACTION = "click - products"
-
+            const val VIEW_STATUSMATCHING_ON_REWARDS = "view status matching ticker"
+            const val CLICK_STATUSMATCHING_ON_REWARDS = "click status matching ticker"
         }
     }
 
@@ -332,7 +333,8 @@ object AnalyticsTrackerUtil {
             const val CREATIVE = "creative"
             const val USERID = "userId"
             const val PROMOTIONS = "promotions"
-            const val BUSINESSUNIT = " buyer growth platform"
+            const val TOKOPOINT_BUSINESSUNIT = "tokopoints"
+            const val BUSINESSUNIT = "tokopoints"
             const val CURRENTSITE = " tokopediamarketplace"
             const val ITEM_LIST = "item_list"
             const val ITEMS = "impressions"
@@ -355,6 +357,7 @@ object AnalyticsTrackerUtil {
             const val ITEM_VARIANT="item_variant"
             const val PRICE = "price"
             const val FREEONGKIR = "bebas ongkir"
+            const val KUPON_ITEMNAME = "tokopoints/kupon-saya - p%s - promo list"
         }
     }
 

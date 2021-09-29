@@ -963,7 +963,7 @@
         "title": "Pencarian lebih spesifik",
         "position": 4,
         "layout": "product_list",
-        "type": "dynamic_product_type",
+        "type": "dynamic",
         "options": [
           {
             "title": "Mungkin kamu juga suka",

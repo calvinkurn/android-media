@@ -18,6 +18,7 @@ query productRecommendation($userID: Int!, $pageName: String!, $pageNumber: Int!
       campaign{
         appLandingPageLink
         landingPageLink
+        thematicID
         assets {
           banner{
             apps
@@ -47,6 +48,7 @@ query productRecommendation($userID: Int!, $pageName: String!, $pageNumber: Int!
         slashedPriceInt
         isWishlist
         minOrder
+        maxOrder
         shop {
           id
           name

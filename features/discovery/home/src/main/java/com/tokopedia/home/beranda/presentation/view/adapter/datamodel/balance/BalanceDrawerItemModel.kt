@@ -8,7 +8,7 @@ data class BalanceDrawerItemModel(
         val applinkContainer: String = "",
         val applinkActionText: String = "",
         val redirectUrl: String = "",
-        val iconImageUrl: String = "",
+        val iconImageUrl: String? = null,
         val defaultIconRes: Int? = null,
         var balanceTitleTextAttribute: BalanceTextAttribute? = null,
         var balanceSubTitleTextAttribute: BalanceTextAttribute? = null,
@@ -17,7 +17,9 @@ data class BalanceDrawerItemModel(
         val drawerItemType: Int = TYPE_TOKOPOINT,
         val mainPageTitle: String = "",
         var state: Int = STATE_LOADING,
-        val trackingAttribute: String = ""
+        val trackingAttribute: String = "",
+        var alternateBalanceDrawerItem: List<BalanceDrawerItemModel>? = null,
+        var balanceCoachmark: BalanceCoachmark? = null
 ) {
     companion object {
         const val TYPE_UNKNOWN = 0

@@ -1,6 +1,7 @@
 package com.tokopedia.shop.score.penalty.presentation.adapter
 
 import android.os.Handler
+import android.os.Looper
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -12,9 +13,9 @@ import com.tokopedia.shop.score.penalty.presentation.model.*
 import com.tokopedia.shop.score.penalty.presentation.widget.OnStickySingleHeaderListener
 import com.tokopedia.shop.score.penalty.presentation.widget.StickySingleHeaderView
 
-class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapterFactory):
-        BaseListAdapter<Visitable<*>, PenaltyPageAdapterFactory>(penaltyPageAdapterFactory),
-        StickySingleHeaderView.OnStickySingleHeaderAdapter {
+class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapterFactory) :
+    BaseListAdapter<Visitable<*>, PenaltyPageAdapterFactory>(penaltyPageAdapterFactory),
+    StickySingleHeaderView.OnStickySingleHeaderAdapter {
 
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
     private var recyclerView: RecyclerView? = null
@@ -41,9 +42,10 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
         notifyItemRangeInserted(visitables.size, penaltyListUiModel.size)
     }
 
-    fun updateChipsSelected(chipsList: List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>,) {
+    fun updateChipsSelected(chipsList: List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>) {
         val updateIndex = visitables.indexOfFirst { it is ItemSortFilterPenaltyUiModel }
-        visitables.filterIsInstance<ItemSortFilterPenaltyUiModel>().firstOrNull()?.itemSortFilterWrapperList = chipsList
+        visitables.filterIsInstance<ItemSortFilterPenaltyUiModel>()
+            .firstOrNull()?.itemSortFilterWrapperList = chipsList
         if (updateIndex != -1) {
             notifyItemChanged(updateIndex)
         }
@@ -109,9 +111,10 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
 
     override fun bindSticky(viewHolder: RecyclerView.ViewHolder?) {
         if (viewHolder is ItemSortFilterPenaltyViewHolder) {
-            visitables.filterIsInstance(ItemSortFilterPenaltyUiModel::class.java).firstOrNull()?.let {
-                viewHolder.bind(it)
-            }
+            visitables.filterIsInstance(ItemSortFilterPenaltyUiModel::class.java).firstOrNull()
+                ?.let {
+                    viewHolder.bind(it)
+                }
         }
     }
 
@@ -120,7 +123,7 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
     }
 
     override fun onStickyHide() {
-        Handler().post {
+        Handler(Looper.getMainLooper()).post {
             penaltySortFilterPosition?.let { notifyItemChanged(it) }
         }
     }

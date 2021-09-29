@@ -8,8 +8,19 @@
       android:scaleY="0.85"
       android:pivotX="12"
       android:pivotY="12">
-    <path
-        android:pathData="M15.23,10.94a5.5,5.5 0,1 0,-6.46 0A7.8,7.8 0,0 0,3 18v2a1.93,1.93 0,0 0,2 2L19,22a1.93,1.93 0,0 0,2 -2L21,18A7.8,7.8 0,0 0,15.23 10.94ZM12,3A3.5,3.5 0,1 1,8.5 6.5,3.5 3.5,0 0,1 12,3ZM19,20L5,20L5,18c0,-0.05 0.3,-5.5 7,-5.5S19,18 19,18Z"
-        android:fillColor="#525a67"/>
+  <path
+      android:pathData="M12,6.34m-4.64,0a4.64,4.64 0,1 1,9.28 0a4.64,4.64 0,1 1,-9.28 0"
+      android:strokeLineJoin="round"
+      android:strokeWidth="1.5"
+      android:fillColor="#00000000"
+      android:strokeColor="@color/Unify_NN900"
+      android:strokeLineCap="round"/>
+  <path
+      android:pathData="M3.75,18.2v2.07a1,1 0,0 0,1 1H19.22a1,1 0,0 0,1 -1V18.2c0,-1 -1,-6.7 -8.25,-6.7S3.75,17.17 3.75,18.2Z"
+      android:strokeLineJoin="round"
+      android:strokeWidth="1.5"
+      android:fillColor="#00000000"
+      android:strokeColor="@color/Unify_NN900"
+      android:strokeLineCap="round"/>
   </group>
 </vector>

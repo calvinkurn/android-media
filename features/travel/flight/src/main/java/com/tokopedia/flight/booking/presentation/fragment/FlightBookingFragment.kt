@@ -51,6 +51,7 @@ import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
+import com.tokopedia.flight.databinding.FragmentFlightBookingV3Binding
 import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.detail.view.widget.FlightDetailBottomSheet
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity
@@ -60,6 +61,7 @@ import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.data.PromoCheckoutCommonQueryConst
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.view.model.PromoData
@@ -81,9 +83,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.date.toString
-import kotlinx.android.synthetic.main.fragment_flight_booking_v3.*
-import kotlinx.android.synthetic.main.layout_flight_booking_v3_error.view.*
-import kotlinx.android.synthetic.main.layout_flight_booking_v3_loading.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -128,6 +128,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private var orderDueTimeStampString: String = ""
     private var isFirstTime: Boolean = true
 
+    private var binding by autoClearedNullable<FragmentFlightBookingV3Binding>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -165,11 +167,12 @@ class FlightBookingFragment : BaseDaggerFragment() {
         outState.putString(EXTRA_CART_ID, bookingViewModel.getCartId())
         outState.putParcelable(EXTRA_FLIGHT_BOOKING_PARAM, bookingViewModel.getFlightBookingParam())
         outState.putString(EXTRA_ORDER_DUE, orderDueTimeStampString)
-        outState.putParcelable(EXTRA_CONTACT_DATA, FlightContactData(widget_traveller_info.getContactName(),
-                widget_traveller_info.getContactEmail(),
-                widget_traveller_info.getContactPhoneNum(),
-                widget_traveller_info.getContactPhoneCountry(),
-                widget_traveller_info.getContactPhoneCode()))
+        outState.putParcelable(EXTRA_CONTACT_DATA, FlightContactData(
+            binding?.widgetTravellerInfo?.getContactName() ?: "",
+                binding?.widgetTravellerInfo?.getContactEmail() ?: "",
+                binding?.widgetTravellerInfo?.getContactPhoneNum() ?: "",
+                binding?.widgetTravellerInfo?.getContactPhoneCountry() ?: "",
+                binding?.widgetTravellerInfo?.getContactPhoneCode() ?: 0))
         if (bookingViewModel.getPassengerModels().isNotEmpty()) outState.putParcelableArrayList(EXTRA_PASSENGER_MODELS, bookingViewModel.getPassengerModels() as ArrayList<out Parcelable>)
         if (bookingViewModel.getPriceData().isNotEmpty()) outState.putParcelableArrayList(EXTRA_PRICE_DATA, bookingViewModel.getPriceData() as ArrayList<out Parcelable>)
         if (bookingViewModel.getOtherPriceData().isNotEmpty()) outState.putParcelableArrayList(EXTRA_OTHER_PRICE_DATA, bookingViewModel.getOtherPriceData() as ArrayList<out Parcelable>)
@@ -182,7 +185,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         bookingViewModel.flightCartResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    if (layout_loading.isVisible) launchLoadingPageJob.cancel()
+                    if (binding?.layoutLoading?.root?.isVisible == true) launchLoadingPageJob.cancel()
                     if (!it.data.isRefreshCart || savedInstanceState != null) {
                         renderData(it.data)
                         sendAddToCartTracking()
@@ -275,31 +278,39 @@ class FlightBookingFragment : BaseDaggerFragment() {
             }
         })
 
+        bookingViewModel.errorCancelVoucher.observe(viewLifecycleOwner,{
+            if(it == EMPTY_VOUCHER_STATE){
+                bookingViewModel.updatePromoData(PromoData(state = TickerCheckoutView.State.EMPTY, title = "", description = "", promoCode = ""))
+            }else{
+                renderErrorToast(it)
+            }
+        })
+
     }
 
     private fun setUpView() {
         hidePriceDetail()
 
-        widget_traveller_info.setListener(object : TravellerInfoWidget.TravellerInfoWidgetListener {
+        binding?.widgetTravellerInfo?.setListener(object : TravellerInfoWidget.TravellerInfoWidgetListener {
             override fun onClickEdit() {
                 context?.let {
                     startActivityForResult(TravelContactDataActivity.getCallingIntent(it,
-                            TravelContactData(widget_traveller_info.getContactName(),
-                                    widget_traveller_info.getContactEmail(),
-                                    widget_traveller_info.getContactPhoneNum(),
-                                    widget_traveller_info.getContactPhoneCode(),
-                                    widget_traveller_info.getContactPhoneCountry()),
+                            TravelContactData(binding?.widgetTravellerInfo?.getContactName() ?: "",
+                                    binding?.widgetTravellerInfo?.getContactEmail() ?: "",
+                                    binding?.widgetTravellerInfo?.getContactPhoneNum() ?: "",
+                                    binding?.widgetTravellerInfo?.getContactPhoneCode() ?: 0,
+                                    binding?.widgetTravellerInfo?.getContactPhoneCountry() ?: ""),
                             TravelContactDataActivity.FLIGHT),
                             REQUEST_CODE_CONTACT_FORM)
                 }
             }
         })
 
-        layout_see_detail_price.setOnClickListener { if (rv_flight_price_detail.isVisible) hidePriceDetail() else showPriceDetail() }
-        switch_traveller_as_passenger.setOnCheckedChangeListener { _, on ->
+        binding?.layoutSeeDetailPrice?.setOnClickListener { if (binding?.rvFlightPriceDetail?.isVisible == true) hidePriceDetail() else showPriceDetail() }
+        binding?.switchTravellerAsPassenger?.setOnCheckedChangeListener { _, on ->
             if (needToDoChangesOnFirstPassenger) {
                 if (on) {
-                    val firstPassenger = bookingViewModel.onTravellerAsPassenger(widget_traveller_info.getContactName())
+                    val firstPassenger = bookingViewModel.onTravellerAsPassenger(binding?.widgetTravellerInfo?.getContactName() ?: "")
                     passengerAsTraveller = false
                     if (isFirstTime) navigateToPassengerInfoDetail(firstPassenger, getRequestId(), firstPassenger.passengerFirstName)
                     isFirstTime = true
@@ -310,7 +321,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             needToDoChangesOnFirstPassenger = true
 
         }
-        button_submit.setOnClickListener { verifyCart() }
+        binding?.buttonSubmit?.setOnClickListener { verifyCart() }
     }
 
     private fun mapThrowableToFlightError(message: String): FlightError {
@@ -441,16 +452,16 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun setUpTimer(timeStamp: Date) {
         orderDueTimeStampString = timeStamp.toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
-        countdown_timeout.setListener(object : CountdownTimeView.OnActionListener {
+        binding?.countdownTimeout?.setListener(object : CountdownTimeView.OnActionListener {
             override fun onFinished() {
                 if (context != null) {
                     refreshCart()
                 } else needRefreshCart = true
             }
         })
-        countdown_timeout.cancel()
-        countdown_timeout.setExpiredDate(timeStamp)
-        countdown_timeout.start()
+        binding?.countdownTimeout?.cancel()
+        binding?.countdownTimeout?.setExpiredDate(timeStamp)
+        binding?.countdownTimeout?.start()
     }
 
     private fun refreshCart() {
@@ -461,9 +472,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun renderData(cart: FlightCartViewEntity) {
         if (!::flightRouteAdapter.isInitialized) flightRouteAdapter = FlightJourneyAdapter()
         val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
-        rv_flight_booking_route_summary.layoutManager = layoutManager
-        rv_flight_booking_route_summary.setHasFixedSize(true)
-        rv_flight_booking_route_summary.adapter = flightRouteAdapter
+        binding?.rvFlightBookingRouteSummary?.layoutManager = layoutManager
+        binding?.rvFlightBookingRouteSummary?.setHasFixedSize(true)
+        binding?.rvFlightBookingRouteSummary?.adapter = flightRouteAdapter
         flightRouteAdapter.listener = object : FlightJourneyAdapter.ViewHolder.ActionListener {
             override fun onClickRouteDetail(id: String, position: Int) {
                 val route = if (position == 0) bookingViewModel.getDepartureJourney() else bookingViewModel.getReturnJourney()
@@ -487,9 +498,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
         if (!::flightInsuranceAdapter.isInitialized) {
             flightInsuranceAdapter = FlightInsuranceAdapter()
             val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
-            rv_insurance_list.layoutManager = layoutManager
-            rv_insurance_list.setHasFixedSize(true)
-            rv_insurance_list.adapter = flightInsuranceAdapter
+            binding?.rvInsuranceList?.layoutManager = layoutManager
+            binding?.rvInsuranceList?.setHasFixedSize(true)
+            binding?.rvInsuranceList?.adapter = flightInsuranceAdapter
             flightInsuranceAdapter.listener = object : FlightInsuranceAdapter.ViewHolder.ActionListener {
                 override fun onClickInsuranceTnc(tncUrl: String, tncTitle: String) {
                     RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW_TITLE, tncTitle, tncUrl)
@@ -507,12 +518,12 @@ class FlightBookingFragment : BaseDaggerFragment() {
         if (!::flightPriceAdapter.isInitialized) {
             flightPriceAdapter = FlightBookingPriceAdapter()
             val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
-            rv_flight_price_detail.layoutManager = layoutManager
-            rv_flight_price_detail.setHasFixedSize(true)
-            rv_flight_price_detail.adapter = flightPriceAdapter
+            binding?.rvFlightPriceDetail?.layoutManager = layoutManager
+            binding?.rvFlightPriceDetail?.setHasFixedSize(true)
+            binding?.rvFlightPriceDetail?.adapter = flightPriceAdapter
             flightPriceAdapter.listener = object : FlightBookingPriceAdapter.PriceListener {
                 override fun onPriceChangeListener(totalPrice: String, totalPriceNumeric: Int) {
-                    tv_total_payment_amount.text = totalPrice
+                    binding?.tvTotalPaymentAmount?.text = totalPrice
                     totalCartPrice = totalPriceNumeric
                 }
             }
@@ -536,24 +547,24 @@ class FlightBookingFragment : BaseDaggerFragment() {
         if (!::flightPassengerAdapter.isInitialized) {
             flightPassengerAdapter = FlightBookingPassengerAdapter()
             val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
-            rv_passengers_info.layoutManager = layoutManager
-            rv_passengers_info.adapter = flightPassengerAdapter
+            binding?.rvPassengersInfo?.layoutManager = layoutManager
+            binding?.rvPassengersInfo?.adapter = flightPassengerAdapter
             flightPassengerAdapter.listener = object : FlightBookingPassengerAdapter.PassengerViewHolderListener {
                 override fun onClickEditPassengerListener(passenger: FlightBookingPassengerModel) {
-                    passengerAsTraveller = switch_traveller_as_passenger.isChecked
+                    passengerAsTraveller = binding?.switchTravellerAsPassenger?.isChecked == true
                     navigateToPassengerInfoDetail(passenger, getRequestId())
                 }
             }
         }
         flightPassengerAdapter.updateList(passengers)
 
-        if (passengers.isNotEmpty() && switch_traveller_as_passenger.isChecked) {
+        if (passengers.isNotEmpty() && binding?.switchTravellerAsPassenger?.isChecked == true) {
             val firstPassenger = passengers.first()
             val fullName = "${firstPassenger.passengerFirstName} ${firstPassenger.passengerLastName}"
-            if (!fullName.equals(widget_traveller_info.getContactName(), true) &&
-                    !firstPassenger.passengerFirstName.equals(widget_traveller_info.getContactName(), true)) {
+            if (!fullName.equals(binding?.widgetTravellerInfo?.getContactName(), true) &&
+                    !firstPassenger.passengerFirstName.equals(binding?.widgetTravellerInfo?.getContactName(), true)) {
                 needToDoChangesOnFirstPassenger = false
-                switch_traveller_as_passenger.isChecked = false
+                binding?.switchTravellerAsPassenger?.isChecked = false
             }
         }
     }
@@ -595,17 +606,17 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun renderProfileData(profileInfo: ProfileInfo) {
-        widget_traveller_info.setContactName(profileInfo.fullName)
-        widget_traveller_info.setContactPhoneNum(62, profileInfo.phone)
-        widget_traveller_info.setContactEmail(profileInfo.email)
-        widget_traveller_info.setContactPhoneCountry("ID")
+        binding?.widgetTravellerInfo?.setContactName(profileInfo.fullName)
+        binding?.widgetTravellerInfo?.setContactPhoneNum(ID_COUNTRY_CODE, profileInfo.phone)
+        binding?.widgetTravellerInfo?.setContactEmail(profileInfo.email)
+        binding?.widgetTravellerInfo?.setContactPhoneCountry("ID")
     }
 
     private fun renderProfileData(profileInfo: FlightContactData) {
-        widget_traveller_info.setContactName(profileInfo.name)
-        widget_traveller_info.setContactPhoneNum(profileInfo.countryCode, profileInfo.phone)
-        widget_traveller_info.setContactEmail(profileInfo.email)
-        widget_traveller_info.setContactPhoneCountry(profileInfo.country)
+        binding?.widgetTravellerInfo?.setContactName(profileInfo.name)
+        binding?.widgetTravellerInfo?.setContactPhoneNum(profileInfo.countryCode, profileInfo.phone)
+        binding?.widgetTravellerInfo?.setContactEmail(profileInfo.email)
+        binding?.widgetTravellerInfo?.setContactPhoneCountry(profileInfo.country)
     }
 
     override fun initInjector() {
@@ -614,7 +625,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         splitCompat()
-        return inflater.inflate(R.layout.fragment_flight_booking_v3, container, false)
+        binding = FragmentFlightBookingV3Binding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -679,7 +691,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun navigateToTopPay(checkoutData: FlightCheckoutData) {
-        countdown_timeout.cancel()
+        binding?.countdownTimeout?.cancel()
         val paymentPassData = PaymentPassData()
         paymentPassData.paymentId = checkoutData.parameter.pid
         paymentPassData.transactionId = checkoutData.parameter.transactionId
@@ -698,10 +710,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
         bookingViewModel.validateDataAndVerifyCart(
                 getVerifyCartQuery(),
                 totalPrice = totalCartPrice,
-                contactName = widget_traveller_info.getContactName(),
-                contactEmail = widget_traveller_info.getContactEmail(),
-                contactPhone = widget_traveller_info.getContactPhoneNum(),
-                contactCountry = widget_traveller_info.getContactPhoneCountry(),
+                contactName = binding?.widgetTravellerInfo?.getContactName() ?: "",
+                contactEmail = binding?.widgetTravellerInfo?.getContactEmail() ?: "",
+                contactPhone = binding?.widgetTravellerInfo?.getContactPhoneNum() ?: "",
+                contactCountry = binding?.widgetTravellerInfo?.getContactPhoneCountry() ?: "",
                 checkVoucherQuery = getCheckVoucherQuery(),
                 addToCartQuery = getAtcQuery(),
                 idempotencyKey = getRequestId(),
@@ -719,18 +731,17 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun renderPromoTicker(flightVoucher: FlightPromoViewEntity) {
-        flight_promo_ticker_view.state = when (flightVoucher.promoData.state) {
+        binding?.flightPromoTickerView?.state = when (flightVoucher.promoData.state) {
             TickerCheckoutView.State.EMPTY -> TickerPromoStackingCheckoutView.State.EMPTY
             TickerCheckoutView.State.ACTIVE -> TickerPromoStackingCheckoutView.State.ACTIVE
             TickerCheckoutView.State.FAILED -> TickerPromoStackingCheckoutView.State.FAILED
             else -> TickerPromoStackingCheckoutView.State.EMPTY
         }
-        flight_promo_ticker_view.title = flightVoucher.promoData.title
-        flight_promo_ticker_view.desc = flightVoucher.promoData.description
-        flight_promo_ticker_view.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
+        binding?.flightPromoTickerView?.title = flightVoucher.promoData.title
+        binding?.flightPromoTickerView?.desc = flightVoucher.promoData.description
+        binding?.flightPromoTickerView?.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
             override fun onResetPromoDiscount() {
                 isCouponChanged = true
-                bookingViewModel.updatePromoData(PromoData(state = TickerCheckoutView.State.EMPTY, title = "", description = "", promoCode = ""))
                 bookingViewModel.onCancelAppliedVoucher(getCancelVoucherQuery())
             }
 
@@ -772,13 +783,13 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun hideVoucherContainer() {
-        flight_promo_ticker_view.hide()
-        seperator_4.hide()
+        binding?.flightPromoTickerView?.hide()
+        binding?.seperator4?.hide()
     }
 
     private fun showVoucherContainer() {
-        flight_promo_ticker_view.show()
-        seperator_4.show()
+        binding?.flightPromoTickerView?.show()
+        binding?.seperator4?.show()
     }
 
     private fun randomLoadingSubtitle(): List<String> {
@@ -794,15 +805,15 @@ class FlightBookingFragment : BaseDaggerFragment() {
             if (bookingViewModel.getCartId().isEmpty()) {
                 val list = randomLoadingSubtitle()
                 if (list.isNotEmpty()) {
-                    layout_loading.visibility = View.VISIBLE
-                    tv_loading_subtitle.text = list[0]
-                    delay(2000L)
-                    tv_loading_subtitle.text = list[1]
-                    delay(2000L)
-                    tv_loading_subtitle.text = list[2]
-                    delay(2000L)
-                    layout_loading.visibility = View.GONE
-                    layout_shimmering.visibility = View.VISIBLE
+                    binding?.layoutLoading?.root?.visibility = View.VISIBLE
+                    binding?.layoutLoading?.tvLoadingSubtitle?.text = list[0]
+                    delay(LOADING_DELAY)
+                    binding?.layoutLoading?.tvLoadingSubtitle?.text = list[1]
+                    delay(LOADING_DELAY)
+                    binding?.layoutLoading?.tvLoadingSubtitle?.text = list[2]
+                    delay(LOADING_DELAY)
+                    binding?.layoutLoading?.root?.visibility = View.GONE
+                    binding?.layoutShimmering?.root?.visibility = View.VISIBLE
                 }
             }
         } catch (e: Throwable) {
@@ -810,8 +821,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun hideShimmering() {
-        if (layout_loading.isVisible) layout_loading.hide()
-        if (layout_shimmering.isVisible) layout_shimmering.hide()
+        if (binding?.layoutLoading?.root?.isVisible == true) binding?.layoutLoading?.root?.hide()
+        if (binding?.layoutShimmering?.root?.isVisible == true) binding?.layoutShimmering?.root?.hide()
         hideLoadingDialog()
     }
 
@@ -820,36 +831,36 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun hidePriceDetail() {
-        thin_seperator_1.hide()
-        rv_flight_price_detail.hide()
-        iv_see_detail_price_arrow.setImageResource(com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_down_normal_24)
+        binding?.thinSeperator1?.hide()
+        binding?.rvFlightPriceDetail?.hide()
+        binding?.ivSeeDetailPriceArrow?.setImageResource(com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_down_normal_24)
     }
 
     private fun showPriceDetail() {
-        thin_seperator_1.show()
-        rv_flight_price_detail.show()
-        iv_see_detail_price_arrow.setImageResource(com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_up_normal_24)
+        binding?.thinSeperator1?.show()
+        binding?.rvFlightPriceDetail?.show()
+        binding?.ivSeeDetailPriceArrow?.setImageResource(com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_up_normal_24)
     }
 
     private fun showErrorFullPage(e: FlightError) {
         val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(e.id.toInt())
-        layout_full_page_error.visibility = View.VISIBLE
-        layout_full_page_error.iv_error_page.setImageResource(FlightBookingErrorCodeMapper.getErrorIcon(errorCode))
-        layout_full_page_error.tv_error_title.text = e.head
-        layout_full_page_error.tv_error_subtitle.text = e.message
-        layout_full_page_error.button_error_action.text = getString(R.string.flight_booking_action_refind_ticket)
-        layout_full_page_error.button_error_action.setOnClickListener { finishActivityToSearchPage() }
+        binding?.layoutFullPageError?.root?.visibility = View.VISIBLE
+        binding?.layoutFullPageError?.ivErrorPage?.setImageResource(FlightBookingErrorCodeMapper.getErrorIcon(errorCode))
+        binding?.layoutFullPageError?.tvErrorTitle?.text = e.head
+        binding?.layoutFullPageError?.tvErrorSubtitle?.text = e.message
+        binding?.layoutFullPageError?.buttonErrorAction?.text = getString(R.string.flight_booking_action_refind_ticket)
+        binding?.layoutFullPageError?.buttonErrorAction?.setOnClickListener { finishActivityToSearchPage() }
     }
 
     @SuppressLint("DialogUnifyUsage")
-    private fun showErrorDialog(e: FlightError, action: () -> Unit) {
+    private fun showErrorDialog(flightError: FlightError, action: () -> Unit) {
         if (activity != null) {
-            if (e.id.isNotEmpty()) {
-                val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(e.id.toInt())
+            if (flightError.id.isNotEmpty()) {
+                val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(flightError.id.toInt())
                 if (errorCode == FlightErrorConstant.FLIGHT_DUPLICATE_USER_NAME)
                     renderErrorToast(R.string.flight_duplicate_user_error_toaster_text)
                 else if (errorCode == FlightErrorConstant.FLIGHT_SOLD_OUT) {
-                    showErrorFullPage(e)
+                    showErrorFullPage(flightError)
                 } else {
                     lateinit var dialog: DialogUnify
                     when (errorCode) {
@@ -937,13 +948,13 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     }
                     dialog.setCancelable(false)
                     dialog.setOverlayClose(false)
-                    if (e.head.isNotEmpty()) dialog.setTitle(e.head) else dialog.setTitle(getString(R.string.flight_booking_general_error_title))
-                    if (e.message.isNotEmpty()) dialog.setDescription(e.message) else dialog.setTitle(getString(R.string.flight_booking_general_error_subtitle))
+                    if (flightError.head.isNotEmpty()) dialog.setTitle(flightError.head) else dialog.setTitle(getString(R.string.flight_booking_general_error_title))
+                    if (flightError.message.isNotEmpty()) dialog.setDescription(flightError.message) else dialog.setTitle(getString(R.string.flight_booking_general_error_subtitle))
                     dialog.setImageDrawable(FlightBookingErrorCodeMapper.getErrorIcon(errorCode))
                     dialog.show()
                 }
             } else {
-                NetworkErrorHelper.showEmptyState(activity, view) {
+                NetworkErrorHelper.showEmptyState(activity, view, ErrorHandler.getErrorMessage(activity, null), getString(com.tokopedia.globalerror.R.string.error500Desc) ,getString(com.tokopedia.globalerror.R.string.error500Action), com.tokopedia.globalerror.R.drawable.unify_globalerrors_500) {
                     NetworkErrorHelper.hideEmptyState(view)
                     showLoadingDialog()
                     action()
@@ -958,10 +969,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 getCheckVoucherQuery(),
                 getVerifyCartQuery(),
                 flightPriceAdapter.getTotalPriceWithoutAmenities(),
-                widget_traveller_info.getContactName(),
-                widget_traveller_info.getContactEmail(),
-                widget_traveller_info.getContactPhoneNum(),
-                widget_traveller_info.getContactPhoneCountry())
+                binding?.widgetTravellerInfo?.getContactName() ?:"",
+                binding?.widgetTravellerInfo?.getContactEmail() ?: "",
+                binding?.widgetTravellerInfo?.getContactPhoneNum() ?: "",
+                binding?.widgetTravellerInfo?.getContactPhoneCountry() ?: "")
     }
 
     private fun navigateToPromoPage() {
@@ -1025,11 +1036,11 @@ class FlightBookingFragment : BaseDaggerFragment() {
         when (requestCode) {
             REQUEST_CODE_CONTACT_FORM -> if (resultCode == Activity.RESULT_OK) {
                 data?.let {
-                    val contactData: TravelContactData = it.getParcelableExtra(TravelContactDataFragment.EXTRA_CONTACT_DATA)
-                    widget_traveller_info.setContactName(contactData.name)
-                    widget_traveller_info.setContactEmail(contactData.email)
-                    widget_traveller_info.setContactPhoneNum(contactData.phoneCode, contactData.phone)
-                    widget_traveller_info.setContactPhoneCountry(contactData.phoneCountry)
+                    val contactData: TravelContactData = it.getParcelableExtra(TravelContactDataFragment.EXTRA_CONTACT_DATA) ?: TravelContactData()
+                    binding?.widgetTravellerInfo?.setContactName(contactData.name)
+                    binding?.widgetTravellerInfo?.setContactEmail(contactData.email)
+                    binding?.widgetTravellerInfo?.setContactPhoneNum(contactData.phoneCode, contactData.phone)
+                    binding?.widgetTravellerInfo?.setContactPhoneCountry(contactData.phoneCountry)
                 }
             }
 
@@ -1037,13 +1048,13 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 when (resultCode) {
                     Activity.RESULT_OK -> {
                         data?.let {
-                            val passengerViewModel = it.getParcelableExtra<FlightBookingPassengerModel>(FlightBookingPassengerActivity.EXTRA_PASSENGER)
+                            val passengerViewModel = it.getParcelableExtra<FlightBookingPassengerModel>(FlightBookingPassengerActivity.EXTRA_PASSENGER) ?: FlightBookingPassengerModel()
                             bookingViewModel.onPassengerResultReceived(passengerViewModel)
                         }
                     }
                     Activity.RESULT_CANCELED -> {
                         needToDoChangesOnFirstPassenger = false
-                        switch_traveller_as_passenger.isChecked = passengerAsTraveller
+                        binding?.switchTravellerAsPassenger?.isChecked = passengerAsTraveller
                         needToDoChangesOnFirstPassenger = true
                     }
                 }
@@ -1052,7 +1063,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             COUPON_EXTRA_LIST_ACTIVITY_RESULT, COUPON_EXTRA_DETAIL_ACTIVITY_RESULT -> if (resultCode == RESULT_OK) {
                 data?.let {
                     var promoData = PromoData()
-                    if (it.hasExtra(EXTRA_PROMO_DATA)) promoData = data.getParcelableExtra(COUPON_EXTRA_PROMO_DATA)
+                    if (it.hasExtra(EXTRA_PROMO_DATA)) promoData = data.getParcelableExtra(COUPON_EXTRA_PROMO_DATA) ?: PromoData()
                     when (promoData.state) {
                         TickerCheckoutView.State.EMPTY -> {
                             promoData.promoCode = ""
@@ -1101,9 +1112,13 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun getCancelVoucherQuery(): String = PromoCheckoutCommonQueryConst.QUERY_FLIGHT_CANCEL_VOUCHER
 
     private fun renderTickerView(travelTickerModel: TravelTickerModel) {
-        TravelTickerUtils.buildUnifyTravelTicker(travelTickerModel, flightBookingTicker)
+        binding?.flightBookingTicker?.let {
+            TravelTickerUtils.buildUnifyTravelTicker(travelTickerModel,
+                it
+            )
+        }
         if (travelTickerModel.url.isNotEmpty()) {
-            flightBookingTicker.setOnClickListener {
+            binding?.flightBookingTicker?.setOnClickListener {
                 RouteManager.route(requireContext(), travelTickerModel.url)
             }
         }
@@ -1112,11 +1127,11 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun showTickerView() {
-        flightBookingTicker.visibility = View.VISIBLE
+        binding?.flightBookingTicker?.visibility = View.VISIBLE
     }
 
     private fun hideTickerView() {
-        flightBookingTicker.visibility = View.GONE
+        binding?.flightBookingTicker?.visibility = View.GONE
     }
 
     companion object {
@@ -1149,6 +1164,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
         const val COUPON_EXTRA_LIST_ACTIVITY_RESULT = 3121
         const val COUPON_EXTRA_DETAIL_ACTIVITY_RESULT = 3122
         const val REQUEST_CODE_OTP = 5
+        const val EMPTY_VOUCHER_STATE = 0
+        const val ID_COUNTRY_CODE = 62
+        const val LOADING_DELAY = 2000L
 
         fun newInstance(): FlightBookingFragment {
             return FlightBookingFragment()

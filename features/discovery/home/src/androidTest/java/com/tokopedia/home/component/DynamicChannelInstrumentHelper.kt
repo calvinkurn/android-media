@@ -8,7 +8,8 @@ import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.contrib.RecyclerViewActions.*
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
@@ -19,8 +20,8 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.helper.*
 import com.tokopedia.home_component.model.ReminderEnum
-import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselEmptyCardViewHolder
+import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetMixLeftViewHolder
 import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
@@ -134,7 +135,7 @@ fun String.name(loggedIn: Boolean, darkMode: Boolean = false) = this + (if (logg
 
 fun clickOnProductHighlightItem() {
     try {
-        Espresso.onView(firstView(ViewMatchers.withId(R.id.deals_product_card)))
+        Espresso.onView(firstView(ViewMatchers.withId(R.id.master_product_card_deals)))
                 .perform(ViewActions.click())
     } catch (e: PerformException) {
         e.printStackTrace()
@@ -234,7 +235,7 @@ private fun clickProductRechargeBUWidget(){
     waitForData()
     try {
         Espresso.onView(ViewMatchers.withId(R.id.rv_recharge_bu_product))
-            .perform(RecyclerViewActions.actionOnItemAtPosition<RechargeBUWidgetMixLeftViewHolder>(3, ViewActions.click()))
+            .perform(RecyclerViewActions.actionOnItemAtPosition<RechargeBUWidgetMixLeftViewHolder>(4, ViewActions.click()))
     } catch (e: PerformException) {
         e.printStackTrace()
     }
@@ -243,6 +244,7 @@ private fun clickProductRechargeBUWidget(){
 private fun clickAllProductCardRechargeBUWidget(){
     waitForData()
     try {
+        Espresso.onView(ViewMatchers.withId(R.id.rv_recharge_bu_product)).perform(scrollToPosition<RechargeBUWidgetMixLeftViewHolder>(5))
         Espresso.onView(ViewMatchers.withId(R.id.card_see_more_banner_mix))
             .perform(ViewActions.click());
     } catch (e: PerformException) {

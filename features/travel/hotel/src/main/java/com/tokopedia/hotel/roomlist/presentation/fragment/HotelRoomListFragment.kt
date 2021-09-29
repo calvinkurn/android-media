@@ -44,6 +44,8 @@ import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity.
 import com.tokopedia.hotel.roomlist.presentation.adapter.RoomListTypeFactory
 import com.tokopedia.hotel.roomlist.presentation.adapter.viewholder.RoomListViewHolder
 import com.tokopedia.hotel.roomlist.presentation.viewmodel.HotelRoomListViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -234,7 +236,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
                     val itemPosition = parent.getChildLayoutPosition(view)
                     val itemCount = state.getItemCount()
-                    outRect.bottom = if (itemCount > 0 && itemPosition == itemCount - 1) 20 else 0
+                    outRect.bottom = if (itemCount > ITEM_COUNT_NUll && itemPosition == itemCount - ITEM_COUNT_NOT_EMPTY) ITEM_COUNT_FULL else ITEM_COUNT_NUll
                 }
             })
 
@@ -439,9 +441,27 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     override fun onGetListErrorWithEmptyData(throwable: Throwable?) {
         adapter.errorNetworkModel.iconDrawableRes = ErrorHandlerHotel.getErrorImage(throwable)
         adapter.errorNetworkModel.errorMessage = ErrorHandlerHotel.getErrorTitle(context, throwable)
-        adapter.errorNetworkModel.subErrorMessage = ErrorHandlerHotel.getErrorMessage(context, throwable)
+        adapter.errorNetworkModel.subErrorMessage = ErrorHandler.getErrorMessage(context, throwable)
         adapter.errorNetworkModel.onRetryListener = this
         adapter.showErrorNetwork()
+    }
+
+    override fun showGetListError(throwable: Throwable?) {
+        binding?.containerError?.root?.visible()
+        context?.run {
+            binding?.containerError?.globalError?.let {
+                ErrorHandlerHotel.getErrorUnify(this, throwable,
+                    { onRetryClicked() }, it
+                )
+            }
+        }
+    }
+
+    override fun onRetryClicked() {
+        binding?.let {
+            it.containerError.root.hide()
+        }
+        super.onRetryClicked()
     }
 
     private fun navigateToAddPhonePage() {
@@ -468,6 +488,10 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
         const val RESULT_ROOM_DETAIL = 102
         const val REQ_CODE_LOGIN = 1345
+
+        const val ITEM_COUNT_NUll = 0
+        const val ITEM_COUNT_NOT_EMPTY = 1
+        const val ITEM_COUNT_FULL = 20
 
         const val ARG_PROPERTY_ID = "arg_property_id"
         const val ARG_PROPERTY_NAME = "arg_property_name"

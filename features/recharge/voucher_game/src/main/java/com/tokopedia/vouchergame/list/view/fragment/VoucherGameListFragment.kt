@@ -14,13 +14,12 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -31,7 +30,7 @@ import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
 import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
-import com.tokopedia.vouchergame.list.view.activity.VoucherGameListActivity.Companion.RECHARGE_PRODUCT_EXTRA
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -45,6 +44,7 @@ import com.tokopedia.vouchergame.detail.view.activity.VoucherGameDetailActivity
 import com.tokopedia.vouchergame.list.data.VoucherGameListData
 import com.tokopedia.vouchergame.list.data.VoucherGameOperator
 import com.tokopedia.vouchergame.list.di.VoucherGameListComponent
+import com.tokopedia.vouchergame.list.view.activity.VoucherGameListActivity.Companion.RECHARGE_PRODUCT_EXTRA
 import com.tokopedia.vouchergame.list.view.adapter.VoucherGameListAdapterFactory
 import com.tokopedia.vouchergame.list.view.adapter.VoucherGameListDecorator
 import com.tokopedia.vouchergame.list.view.adapter.viewholder.VoucherGameListViewHolder
@@ -80,7 +80,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
         super.onCreate(savedInstanceState)
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             voucherGameViewModel = viewModelProvider.get(VoucherGameListViewModel::class.java)
         }
 
@@ -182,6 +182,34 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
         }
     }
 
+    override fun showGetListError(throwable: Throwable) {
+        hideLoading()
+
+        updateStateScrollListener()
+
+        if (adapter.itemCount > 0) {
+            onGetListErrorWithExistingData(throwable)
+        } else {
+            val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
+                context, throwable, ErrorHandler.Builder().build())
+            val errorNetworkModel = ErrorNetworkModel()
+
+            errorNetworkModel.run {
+                errorMessage = errMsg
+                subErrorMessage = "${getString(
+                    com.tokopedia.kotlin.extensions.R.string.title_try_again)}. Kode Error: ($errCode)"
+                onRetryListener = ErrorNetworkModel.OnRetryListener {
+                    showLoading()
+                    loadInitialData()
+                }
+            }
+            adapter.run {
+                setErrorNetworkModel(errorNetworkModel)
+                showErrorNetwork()
+            }
+        }
+    }
+
     private fun initView() {
 
         search_input_view.clearListener = {
@@ -258,12 +286,16 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
             clearAllData()
             renderList(data.operators)
 
-            recycler_view.post {
-                val visibleIndexes = AnalyticUtils.getVisibleItemIndexes(recycler_view)
-                if (search_input_view.searchBarTextField.text.isNullOrEmpty()) {
-                    voucherGameAnalytics.impressionOperatorCard(
-                            data.operators.subList(visibleIndexes.first, visibleIndexes.second + 1))
+            try {
+                recycler_view.post {
+                    val visibleIndexes = AnalyticUtils.getVisibleItemIndexes(recycler_view)
+                    if (search_input_view.searchBarTextField.text.isNullOrEmpty()) {
+                        voucherGameAnalytics.impressionOperatorCard(
+                                data.operators.subList(visibleIndexes.first, visibleIndexes.second + 1))
+                    }
                 }
+            } catch (t: Throwable){
+                t.printStackTrace()
             }
         }
     }

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <!--
+        Initial Animation
+        - Curved shop status background fade in from top
+        - Other menu layout fade in from bottom
+    -->
+
+    <ConstraintSet
+        android:id="@+id/constraint_sah_new_other_initial_start"
+        motion:transitionEasing="decelerate">
+        <Constraint
+            android:id="@+id/iv_sah_new_other_curved_header"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/sah_new_other_header_background_height"
+            android:alpha="0.2"
+            motion:layout_constraintBottom_toTopOf="parent" />
+        <Constraint
+            android:id="@+id/layout_sah_new_other_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/sah_new_other_layout_animation_start_margin_top"
+            android:alpha="0.2"
+            motion:layout_constraintTop_toTopOf="parent"/>
+    </ConstraintSet>
+
+    <ConstraintSet
+        android:id="@+id/constraint_sah_new_other_initial_end"
+        motion:transitionEasing="decelerate">
+        <Constraint
+            android:id="@+id/iv_sah_new_other_curved_header"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/sah_new_other_header_background_height"
+            android:alpha="1"
+            motion:layout_constraintTop_toTopOf="parent" />
+        <Constraint
+            android:id="@+id/layout_sah_new_other_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl6"
+            android:alpha="1"
+            motion:layout_constraintTop_toTopOf="parent"/>
+    </ConstraintSet>
+
+</MotionScene>

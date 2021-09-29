@@ -1,35 +1,33 @@
 package com.tokopedia.mediauploader.domain
 
-import com.tokopedia.mediauploader.base.BaseUseCase
-import com.tokopedia.mediauploader.MediaRepository
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.mediauploader.data.consts.GraphQueryBuilder
 import com.tokopedia.mediauploader.data.entity.DataUploaderPolicy
-import com.tokopedia.usecase.RequestParams
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 open class DataPolicyUseCase @Inject constructor(
-        private val repository: MediaRepository
-) : BaseUseCase<RequestParams, DataUploaderPolicy>() {
+    private val repository: GraphqlRepository
+) : CoroutineUseCase<String, DataUploaderPolicy>(Dispatchers.IO) {
 
-    override suspend fun execute(params: RequestParams): DataUploaderPolicy {
-        if (params.paramsAllValueInString.isEmpty()) throw Exception("Not param found")
-
-        return execute(
-                query = QUERY,
-                repository = repository,
-                requestParams = params
-        )
+    override fun graphqlQuery(): String {
+        return GraphQueryBuilder.mediaPolicy
     }
 
-    companion object {
-        private val QUERY = GraphQueryBuilder.mediaPolicy
-        private const val PARAM_SOURCE_ID = "source"
+    override suspend fun execute(params: String): DataUploaderPolicy {
+        val param = setSourceId(params)
 
-        fun createParams(sourceId: String): RequestParams {
-            return RequestParams.create().apply {
-                putString(PARAM_SOURCE_ID, sourceId)
-            }
-        }
+        return repository.request(graphqlQuery(), param)
+    }
+
+    private fun setSourceId(sourceId: String) = mapOf(
+        PARAM_SOURCE_ID to sourceId
+    )
+
+    companion object {
+        private const val PARAM_SOURCE_ID = "source"
     }
 
 }

@@ -2,17 +2,17 @@ package com.tkpd.atcvariant.view.activity
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tkpd.atcvariant.R
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
-import com.tkpd.atcvariant.view.listener.AtcVariantBottomSheetListener
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.detail.common.AtcVariantHelper.ATC_VARIANT_CACHE_ID
-import com.tokopedia.product.detail.common.AtcVariantHelper.PDP_PARCEL_KEY_RESPONSE
 import com.tokopedia.product.detail.common.AtcVariantHelper.PDP_PARCEL_KEY_RESULT
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import timber.log.Timber
@@ -20,11 +20,12 @@ import timber.log.Timber
 /**
  * Created by Yehezkiel on 05/05/21
  */
-class AtcVariantActivity : BaseSimpleActivity(), AtcVariantBottomSheetListener {
+class AtcVariantActivity : BaseSimpleActivity() {
     companion object {
         const val TOKO_NOW_EXTRA = "isTokoNow"
         const val PAGE_SOURCE_EXTRA = "pageSource"
         const val CD_LIST_EXTRA = "cdListName"
+        private const val KEY_BS_VARIANT = "atc variant bs"
     }
 
     private val sharedViewModel by lazy {
@@ -53,27 +54,19 @@ class AtcVariantActivity : BaseSimpleActivity(), AtcVariantBottomSheetListener {
             ""
         }
 
-        var paramsData = ProductVariantBottomSheetParams()
+        val paramsData = ProductVariantBottomSheetParams()
 
         if (bundle != null) {
-            val cacheId = bundle.getString(ATC_VARIANT_CACHE_ID)
-
-            val cacheManager = SaveInstanceCacheManager(this, cacheId)
-            val data: ProductVariantBottomSheetParams? = cacheManager.get(PDP_PARCEL_KEY_RESPONSE, ProductVariantBottomSheetParams::class.java, null)
-
-            if (data == null) {
-                paramsData.isTokoNow = bundle.getString(TOKO_NOW_EXTRA, "false").toBoolean()
-                paramsData.pageSource = bundle.getString(PAGE_SOURCE_EXTRA, "")
-                paramsData.trackerCdListName = bundle.getString(CD_LIST_EXTRA, "")
-                paramsData.productId = productId
-                paramsData.shopId = shopId
-            } else {
-                paramsData = data
-            }
+            paramsData.isTokoNow = bundle.getString(TOKO_NOW_EXTRA, "false").toBoolean()
+            paramsData.pageSource = bundle.getString(PAGE_SOURCE_EXTRA, "")
+            paramsData.trackerCdListName = bundle.getString(CD_LIST_EXTRA, "")
+            paramsData.productId = productId
+            paramsData.shopId = shopId
+            paramsData.cacheId = bundle.getString(ATC_VARIANT_CACHE_ID, "") ?: ""
         }
 
         super.onCreate(savedInstanceState)
-
+        adjustOrientation()
         try {
             window.setDimAmount(0f)
         } catch (th: Throwable) {
@@ -83,7 +76,7 @@ class AtcVariantActivity : BaseSimpleActivity(), AtcVariantBottomSheetListener {
         observeData()
 
         sharedViewModel.setAtcBottomSheetParams(paramsData)
-        AtcVariantBottomSheet().show(supportFragmentManager, "test", this)
+        AtcVariantBottomSheet().show(supportFragmentManager, KEY_BS_VARIANT)
     }
 
     private fun observeData() {
@@ -98,8 +91,9 @@ class AtcVariantActivity : BaseSimpleActivity(), AtcVariantBottomSheetListener {
         })
     }
 
-    override fun onBottomSheetDismiss() {
-        finish()
+    private fun adjustOrientation() {
+        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
     }
-
 }

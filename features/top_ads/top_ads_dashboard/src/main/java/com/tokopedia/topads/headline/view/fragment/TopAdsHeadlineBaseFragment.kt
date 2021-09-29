@@ -88,6 +88,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     private val groupIds: MutableList<String> = mutableListOf()
     private var mCurrentState = TopAdsProductIklanFragment.State.IDLE
     private var collapseStateCallBack: AppBarActionHeadline? = null
+    private var currentDateText: String = ""
 
 
     companion object {
@@ -123,13 +124,17 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         currentStatisticsFragment?.showLineGraph(dataStatistic)
     }
 
+    override fun getCustomDateText(customDateText: String) {
+        currentDateText = customDateText
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adapter = HeadLineAdItemsListAdapter(HeadLineAdItemsAdapterTypeFactoryImpl(::startSelectMode,
                 ::singleItemDelete, ::statusChange, ::editGroup, ::onGroupClicked))
     }
 
-    private fun editGroup(groupId: Int) {
+    private fun editGroup(groupId: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_EDIT)?.apply {
             putExtra(TopAdsDashboardConstant.TAB_POSITION, 0)
             putExtra(ParamObject.GROUP_ID, groupId.toString())
@@ -143,6 +148,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         loadStatisticsData()
         btnFilter.setOnClickListener {
             groupFilterSheet.show(childFragmentManager, "")
+            groupFilterSheet.showAdplacementFilter(false)
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
         close_butt.setOnClickListener {
@@ -230,7 +236,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         }
     }
 
-    private fun onGroupClicked(id: Int, priceSpent: String) {
+    private fun onGroupClicked(id: String, priceSpent: String) {
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(CLICK_GRUP_CARD, "{${userSession.shopId}} - {$id}", userSession.userId)
         val intent = Intent(context, TopAdsHeadlineAdDetailViewActivity::class.java)
         intent.putExtra(TopAdsDashboardConstant.GROUP_ID, id)

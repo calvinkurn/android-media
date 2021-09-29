@@ -15,9 +15,12 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.topchat.chatlist.domain.websocket.*
+import com.tokopedia.topchat.common.Constant.NET_CONNECT_TIMEOUT
+import com.tokopedia.topchat.common.Constant.NET_READ_TIMEOUT
+import com.tokopedia.topchat.common.Constant.NET_RETRY
+import com.tokopedia.topchat.common.Constant.NET_WRITE_TIMEOUT
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
-import com.tokopedia.topchat.common.network.XUserIdInterceptor
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.DEFAULT_PING
@@ -35,11 +38,6 @@ import javax.inject.Named
 
 @Module
 class ChatListNetworkModule {
-
-    private val NET_READ_TIMEOUT = 60
-    private val NET_WRITE_TIMEOUT = 60
-    private val NET_CONNECT_TIMEOUT = 60
-    private val NET_RETRY = 1
 
     @ChatListScope
     @Provides
@@ -119,15 +117,6 @@ class ChatListNetworkModule {
 
     @ChatListScope
     @Provides
-    fun provideXUserIdInterceptor(@ApplicationContext context: Context,
-                                  networkRouter: NetworkRouter,
-                                  userSession: UserSessionInterface):
-            XUserIdInterceptor {
-        return XUserIdInterceptor(context, networkRouter, userSession)
-    }
-
-    @ChatListScope
-    @Provides
     fun provideFingerprintInterceptor(networkRouter: NetworkRouter,
                                       userSessionInterface: UserSessionInterface):
             FingerprintInterceptor {
@@ -149,12 +138,10 @@ class ChatListNetworkModule {
                             errorResponseInterceptor: ErrorResponseInterceptor,
                             chuckInterceptor: ChuckerInterceptor,
                             fingerprintInterceptor: FingerprintInterceptor,
-                            httpLoggingInterceptor: HttpLoggingInterceptor,
-                            xUserIdInterceptor: XUserIdInterceptor):
+                            httpLoggingInterceptor: HttpLoggingInterceptor):
             OkHttpClient {
         val builder = OkHttpClient.Builder()
                 .addInterceptor(fingerprintInterceptor)
-                .addInterceptor(xUserIdInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .pingInterval(DEFAULT_PING, TimeUnit.MILLISECONDS)
                 .connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)

@@ -16,13 +16,16 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.test.application.util.InstrumentationAuthHelper
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.graphql.GraphqlCacheManager
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.smartbills.presentation.activity.SmartBillsActivity
 import com.tokopedia.smartbills.presentation.fragment.SmartBillsFragment
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import com.tokopedia.test.application.espresso_component.CommonMatcher
+import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.ResourcePathUtil
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.AllOf.allOf
 import org.junit.After
@@ -55,8 +58,18 @@ class SmartBillsActivityTest {
                     KEY_STATEMENT_BILLS,
                     ResourcePathUtil.getJsonFromResource(PATH_STATEMENT_BILLS),
                     MockModelConfig.FIND_BY_CONTAINS)
-        }
 
+            addMockResponse(
+                    KEY_CATALOG_MENU,
+                    ResourcePathUtil.getJsonFromResource(PATH_CATALOG_BILLS),
+                    MockModelConfig.FIND_BY_CONTAINS)
+
+            addMockResponse(
+                    KEY_DELETE_PRODUCT,
+                    ResourcePathUtil.getJsonFromResource(PATH_DELELTE_BILLS),
+                    MockModelConfig.FIND_BY_CONTAINS)
+        }
+        setupAbTestRemoteConfig()
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
 
         LocalCacheHandler(context, SmartBillsFragment.SMART_BILLS_PREF).also {
@@ -69,14 +82,24 @@ class SmartBillsActivityTest {
         activityRule.launchActivity(intent)
     }
 
+    private fun setupAbTestRemoteConfig() {
+        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+                RollenceKey.SBM_ADD_BILLS_KEY,
+                RollenceKey.SBM_ADD_BILLS_TRUE)
+    }
+
     @Test
     fun validateSmartBills() {
         Thread.sleep(3000)
         validate_onboarding()
         validate_bill_selection()
         validate_bill_detail()
+        validate_click_bayar()
         validate_tooltip()
         validate_refresh_action()
+        click_add_bills()
+        click_delete_cancel()
+        click_delete_success()
 
         ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, SMART_BILLS_VALIDATOR_QUERY), hasAllSuccess())
     }
@@ -134,10 +157,62 @@ class SmartBillsActivityTest {
         onView(withId(R.id.bottom_sheet_close)).perform(click())
     }
 
+    private fun validate_click_bayar() {
+        Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        Thread.sleep(2000)
+        val billCheckbox = onView(AllOf.allOf(
+                withId(R.id.cb_smart_bills_item),
+                ViewMatchers.hasSibling(ViewMatchers.withChild(ViewMatchers.withText("Air PDAM - ATB BATAM")))
+        ))
+        billCheckbox.perform(click())
+        Thread.sleep(2000)
+        onView(withId(R.id.btn_recharge_checkout_next)).perform(click())
+    }
+
     private fun validate_refresh_action() {
         onView(withId(R.id.accordion_header)).perform(click())
         onView(withId(R.id.accordion_header)).perform(click())
         onView(withId(R.id.refreshID)).perform(click())
+    }
+
+    private fun click_add_bills(){
+        Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        Thread.sleep(3000)
+        onView(withId(R.id.tv_sbm_add_bills)).perform(click())
+        Thread.sleep(3000)
+        onView(withText("Pulsa")).perform(click())
+    }
+
+    private fun click_delete_cancel(){
+        click_kebab()
+        click_delete_bottom_sheet()
+        click_batal_dialog()
+    }
+
+    private fun click_delete_success(){
+        click_kebab()
+        click_delete_bottom_sheet()
+        click_ok_dialog()
+    }
+
+    private fun click_kebab(){
+        Thread.sleep(3000)
+        onView(CommonMatcher.getElementFromMatchAtPosition(withId(R.id.icon_menu_sbm_delete), 0)).perform(click())
+    }
+
+    private fun click_delete_bottom_sheet(){
+        Thread.sleep(3000)
+        onView(withId(R.id.tg_delete_sbm)).perform(click())
+    }
+
+    private fun click_batal_dialog(){
+        Thread.sleep(3000)
+        onView(withId(R.id.dialog_btn_secondary)).perform(click())
+    }
+
+    private fun click_ok_dialog(){
+        Thread.sleep(3000)
+        onView(withId(R.id.dialog_btn_primary)).perform(click())
     }
 
     @After
@@ -149,9 +224,13 @@ class SmartBillsActivityTest {
     companion object {
         private const val KEY_STATEMENT_MONTHS = "rechargeStatementMonths"
         private const val KEY_STATEMENT_BILLS = "rechargeSBMList"
+        private const val KEY_CATALOG_MENU = "rechargeCatalogMenu"
+        private const val KEY_DELETE_PRODUCT = "rechargeSBMDeleteBill"
 
         private const val PATH_STATEMENT_MONTHS = "statement_months.json"
         private const val PATH_STATEMENT_BILLS = "statement_bills.json"
+        private const val PATH_CATALOG_BILLS = "catalog_bills.json"
+        private const val PATH_DELELTE_BILLS = "delete_bills.json"
 
         private const val SMART_BILLS_VALIDATOR_QUERY = "tracker/recharge/smart_bills_management_test.json"
     }

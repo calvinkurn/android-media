@@ -49,14 +49,16 @@ import com.tokopedia.hotel.hoteldetail.util.HotelShare
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
-import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.getDimens
+import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.mapviewer.activity.MapViewerActivity
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.DateUtil
@@ -64,6 +66,7 @@ import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toString
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.android.synthetic.main.item_network_error_view.*
+import java.lang.ref.WeakReference
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
@@ -113,6 +116,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     private var loadingProgressDialog: ProgressDialog? = null
     private var isTickerValid = false
     private var isScrolled = false
+    private lateinit var hotelShare: HotelShare
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -122,6 +126,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             detailViewModel = viewModelProvider.get(HotelDetailViewModel::class.java)
+            val ctx = WeakReference<Activity>(this)
+            hotelShare = HotelShare(ctx)
         }
 
         arguments?.let {
@@ -304,8 +310,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             REQUEST_CODE_GLOBAL_SEARCH -> if (resultCode == Activity.RESULT_OK) {
                 data?.let {
                     hotelHomepageModel.apply {
-                        if (it.hasExtra(HotelGlobalSearchActivity.CHECK_IN_DATE)) checkInDate = it.getStringExtra(HotelGlobalSearchActivity.CHECK_IN_DATE)
-                        if (it.hasExtra(HotelGlobalSearchActivity.CHECK_OUT_DATE)) checkOutDate = it.getStringExtra(HotelGlobalSearchActivity.CHECK_OUT_DATE)
+                        if (it.hasExtra(HotelGlobalSearchActivity.CHECK_IN_DATE)) checkInDate = it.getStringExtra(HotelGlobalSearchActivity.CHECK_IN_DATE) ?: ""
+                        if (it.hasExtra(HotelGlobalSearchActivity.CHECK_OUT_DATE)) checkOutDate = it.getStringExtra(HotelGlobalSearchActivity.CHECK_OUT_DATE) ?: ""
                         if (it.hasExtra(HotelGlobalSearchActivity.NUM_OF_ROOMS)) roomCount = it.getIntExtra(HotelGlobalSearchActivity.NUM_OF_ROOMS, 1)
                         if (it.hasExtra(HotelGlobalSearchActivity.NUM_OF_GUESTS)) adultCount = it.getIntExtra(HotelGlobalSearchActivity.NUM_OF_GUESTS, 1)
                     }
@@ -320,7 +326,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         }
     }
 
-    private fun showErrorView(e: Throwable) {
+    private fun showErrorView(error: Throwable) {
         if (!isHotelDetailSuccess && !isHotelReviewSuccess && !isRoomListSuccess) {
             stopTrace()
 
@@ -329,14 +335,9 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 it.containerError.root.visibility = View.VISIBLE
             }
 
-            iv_icon.setImageResource(ErrorHandlerHotel.getErrorImage(e))
-            message_retry.text = ErrorHandlerHotel.getErrorTitle(context, e)
-            sub_message_retry.text = ErrorHandlerHotel.getErrorMessage(context, e)
-
-            button_retry.setOnClickListener {
-                hideErrorView()
-                onErrorRetryClicked()
-            }
+            context?.run {
+                ErrorHandlerHotel.getErrorUnify(this, error, { onErrorRetryClicked() },  global_error,
+                    { (activity as HotelDetailActivity).onBackPressed() })            }
         }
     }
 
@@ -373,8 +374,22 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
         setupMainImage(data.property.images)
 
+        binding?.hotelRatingContainer?.let{
+            it.removeAllViews()
+        }
+        context?.run {
+            val textView = Typography(requireContext())
+            textView.apply {
+                background = ContextCompat.getDrawable(context, R.drawable.bg_search_destination_tag)
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N200))
+                text = data.property.typeName
+                setType(Typography.BODY_3)
+                setWeight(Typography.BOLD)
+                setPadding(getDimens(R.dimen.hotel_6dp), getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1),getDimens(R.dimen.hotel_6dp), getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1))
+            }
+            binding?.hotelRatingContainer?.addView(textView)
+        }
         binding?.tvHotelName?.text = data.property.name
-        binding?.hotelPropertyType?.text = data.property.typeName
         for (i in 1..data.property.star) {
             context?.run { binding?.hotelRatingContainer?.addView(RatingStarView(this)) }
         }
@@ -423,11 +438,11 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     private fun setupShareLink(propertyDetailData: PropertyDetailData) {
         binding?.hotelShareButton?.setOnClickListener {
             trackingHotelUtil.clickShareUrl(requireContext(), PDP_SCREEN_NAME, hotelId.toString(), roomPriceAmount)
-            activity?.run {
-                HotelShare(this).shareEvent(propertyDetailData, isPromo,
+            if(::hotelShare.isInitialized) {
+                hotelShare.shareEvent(propertyDetailData, isPromo,
                         { showProgressDialog() },
                         { hideProgressDialog() },
-                        this.applicationContext)
+                    requireContext())
             }
         }
     }
@@ -469,10 +484,10 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             thumbnailImageList.add(item.urlMax300)
 
             when (imageCounter) {
-                0 -> {
+                IMAGE_COUNTER_ZERO -> {
                     // do nothing, preventing break if mainPhoto not in the first item
                 }
-                1 -> {
+                IMAGE_COUNTER_FIRST -> {
                     binding?.ivFirstPhotoPreview?.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                     binding?.ivFirstPhotoPreview?.setOnClickListener {
                         onPhotoClicked()
@@ -480,7 +495,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     }
                     imageCounter++
                 }
-                2 -> {
+                IMAGE_COUNTER_SECOND -> {
                     binding?.ivSecondPhotoPreview?.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                     binding?.ivSecondPhotoPreview?.setOnClickListener {
                         onPhotoClicked()
@@ -488,7 +503,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     }
                     imageCounter++
                 }
-                3 -> {
+                IMAGE_COUNTER_THIRD -> {
                     binding?.ivThirdPhotoPreview?.loadImage(item.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
                     binding?.ivThirdPhotoPreview?.setOnClickListener {
                         onPhotoClicked()
@@ -709,6 +724,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     }
 
     override fun onErrorRetryClicked() {
+        hideErrorView()
         if (isButtonEnabled) {
             detailViewModel.getHotelDetailData(
                     HotelGqlQuery.PROPERTY_DETAIL,
@@ -768,7 +784,6 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             }
         }
     }
-
     companion object {
 
         const val REQUEST_CODE_GLOBAL_SEARCH = 103
@@ -782,6 +797,11 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
         const val RESULT_ROOM_LIST = 101
         const val RESULT_REVIEW = 102
+
+        const val IMAGE_COUNTER_ZERO = 0
+        const val IMAGE_COUNTER_FIRST = 1
+        const val IMAGE_COUNTER_SECOND = 2
+        const val IMAGE_COUNTER_THIRD = 3
 
         fun getInstance(checkInDate: String, checkOutDate: String, propertyId: Long, roomCount: Int,
                         adultCount: Int, destinationType: String, destinationName: String,

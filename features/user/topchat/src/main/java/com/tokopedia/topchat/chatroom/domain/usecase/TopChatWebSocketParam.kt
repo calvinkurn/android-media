@@ -8,12 +8,13 @@ import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
 import com.tokopedia.chat_common.data.WebsocketEvent
 import com.tokopedia.chat_common.data.preview.ProductPreview
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.common.InboxChatConstant.UPLOADING
+import com.tokopedia.topchat.common.util.AddressUtil
 
 /**
  * @author : Steven 01/01/19
@@ -26,6 +27,7 @@ object TopChatWebSocketParam {
         messageText: String,
         startTime: String,
         attachments: List<SendablePreview>,
+        localId: String,
         intention: String? = null,
         userLocationInfo: LocalCacheModel? = null
     ): String {
@@ -33,7 +35,8 @@ object TopChatWebSocketParam {
             addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
         }
         val data = JsonObject().apply {
-            addProperty("message_id", thisMessageId.toLong())
+            addProperty("local_id", localId)
+            addProperty("message_id", thisMessageId.toLongOrZero())
             addProperty("message", messageText)
             addProperty("source", "inbox")
             addProperty("start_time", startTime)
@@ -55,12 +58,14 @@ object TopChatWebSocketParam {
         toUid: String,
         productPreview: ProductPreview,
         message: String,
-        userLocationInfo: LocalCacheModel
+        userLocationInfo: LocalCacheModel,
+        localId: String
     ): JsonObject {
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
         val data = JsonObject()
         data.addProperty("message_id", messageId.toLong())
+        data.addProperty("local_id", localId)
         data.addProperty("message", product.productUrl)
         data.addProperty("start_time", startTime)
         data.addProperty("to_uid", toUid)
@@ -74,7 +79,7 @@ object TopChatWebSocketParam {
         productProfile.addProperty("name", product.name)
         productProfile.addProperty("price", product.price)
         productProfile.addProperty("price_before", productPreview.priceBefore)
-        productProfile.addProperty("price_before_int", productPreview.priceBeforeInt)
+        productProfile.addProperty("price_before_int", productPreview.priceBeforeInt.toLong())
         productProfile.addProperty("drop_percentage", productPreview.dropPercentage)
         productProfile.addProperty("image_url", product.productImageThumbnail)
         productProfile.addProperty("url", product.productUrl)
@@ -153,10 +158,17 @@ object TopChatWebSocketParam {
         userLocationInfo: LocalCacheModel
     ): JsonObject {
         return JsonObject().apply {
-            val latlon = "${userLocationInfo.lat},${userLocationInfo.long}"
+            val lat = userLocationInfo.lat
+            val long = userLocationInfo.long
+            val latlon = if (lat.isNotEmpty() && long.isNotEmpty()) {
+                "$lat,$long"
+            } else ""
             addProperty("address_id", userLocationInfo.address_id.toLongOrZero())
             addProperty("district_id", userLocationInfo.district_id.toLongOrZero())
             addProperty("postal_code", userLocationInfo.postal_code)
+            addProperty(
+                "address_name", AddressUtil.getAddressMasking(userLocationInfo.label)
+            )
             addProperty("latlon", latlon)
         }
     }
@@ -165,7 +177,7 @@ object TopChatWebSocketParam {
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
         val data = JsonObject()
-        data.addProperty("message_id", thisMessageId.toLong())
+        data.addProperty("message_id", thisMessageId.toLongOrZero())
         data.addProperty("message", UPLOADING)
         data.addProperty("start_time", startTime)
         data.addProperty("file_path", path)
@@ -178,7 +190,7 @@ object TopChatWebSocketParam {
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_TYPING)
         val data = JsonObject()
-        data.addProperty("msg_id", thisMessageId.toLong())
+        data.addProperty("msg_id", thisMessageId.toLongOrZero())
         json.add("data", data)
         return json.toString()
     }
@@ -187,7 +199,7 @@ object TopChatWebSocketParam {
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING)
         val data = JsonObject()
-        data.addProperty("msg_id", thisMessageId.toLong())
+        data.addProperty("msg_id", thisMessageId.toLongOrZero())
         json.add("data", data)
         return json.toString()
     }
@@ -196,7 +208,7 @@ object TopChatWebSocketParam {
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE)
         val data = JsonObject()
-        data.addProperty("msg_id", thisMessageId.toLong())
+        data.addProperty("msg_id", thisMessageId.toLongOrZero())
         json.add("data", data)
         return json.toString()
     }

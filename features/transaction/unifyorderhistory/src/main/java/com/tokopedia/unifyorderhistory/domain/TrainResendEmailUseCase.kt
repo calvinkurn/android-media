@@ -18,7 +18,7 @@ class TrainResendEmailUseCase @Inject constructor(private val gqlRepository: Gra
     suspend fun executeSuspend(param: TrainResendEmailParam): Result<TrainResendEmail.Data> {
         return try {
             val request = GraphqlRequest(QUERY, TrainResendEmail.Data::class.java, generateParam(param))
-            val response = gqlRepository.getReseponse(listOf(request)).getSuccessData<TrainResendEmail.Data>()
+            val response = gqlRepository.response(listOf(request)).getSuccessData<TrainResendEmail.Data>()
             Success(response)
         } catch (e: Exception) {
             Fail(e)

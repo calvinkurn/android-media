@@ -19,22 +19,23 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.common.constants.BuyerOrderIntentCode
 import com.tokopedia.buyerorder.common.util.BuyerConsts
 import com.tokopedia.buyerorder.common.util.BuyerConsts.BUTTON_INSTANT_CANCELATION
 import com.tokopedia.buyerorder.common.util.BuyerConsts.BUTTON_REGULER_CANCELATION
 import com.tokopedia.buyerorder.common.util.BuyerConsts.BUYER_CANCEL_REASON_SCREEN_NAME
 import com.tokopedia.buyerorder.common.util.BuyerConsts.LAINNYA
+import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_BACK
 import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_INSTANT_CANCEL
+import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_SUCCESS
 import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_MSG_INSTANT_CANCEL
-import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_BODY_INSTANT_CANCEL
-import com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_TITLE_INSTANT_CANCEL
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_LABEL
 import com.tokopedia.buyerorder.common.util.BuyerConsts.TICKER_URL
 import com.tokopedia.buyerorder.common.util.BuyerUtils
@@ -54,7 +55,6 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.trackingoptimizer.gson.GsonSingleton
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -64,7 +64,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.bottomsheet_buyer_request_cancel.view.*
 import kotlinx.android.synthetic.main.fragment_buyer_request_cancel.*
-import java.io.Serializable
 import javax.inject.Inject
 
 /**
@@ -92,9 +91,9 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private var invoiceUrl = ""
     private var statusId = ""
     private var statusInfo = ""
-    private var listProductsSerializable : Serializable? = null
-    private var listProductsJsonString : String? = null
-    private var listProduct = emptyList<Items>()
+    private var isFromUoh : Boolean = false
+    private var helplinkUrl: String = ""
+    private var listProduct = listOf<BuyerGetCancellationReasonData.Data.GetCancellationReason.OrderDetailsCancellation>()
     private var cancelReasonResponse = BuyerGetCancellationReasonData.Data.GetCancellationReason()
     private var instantCancelResponse = BuyerInstantCancelData.Data.BuyerInstantCancel()
     private var buyerRequestCancelResponse = BuyerRequestCancelData.Data.BuyerRequestCancel()
@@ -136,9 +135,19 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     putString(BuyerConsts.PARAM_STATUS_INFO, bundle.getString(BuyerConsts.PARAM_STATUS_INFO))
                     putBoolean(BuyerConsts.PARAM_IS_WAIT_TO_CANCEL, bundle.getBoolean(BuyerConsts.PARAM_IS_WAIT_TO_CANCEL))
                     putString(BuyerConsts.PARAM_WAIT_MSG, bundle.getString(BuyerConsts.PARAM_WAIT_MSG))
+                    putBoolean(BuyerConsts.PARAM_SOURCE_UOH, bundle.getBoolean(BuyerConsts.PARAM_SOURCE_UOH))
+                    putString(BuyerConsts.PARAM_HELP_LINK_URL, bundle.getString(BuyerConsts.PARAM_HELP_LINK_URL))
                 }
             }
         }
+
+        const val SUCCESS_CODE_0 = 0
+        const val SUCCESS_CODE_1 = 1
+        const val SUCCESS_CODE_2 = 2
+        const val SUCCESS_CODE_3 = 3
+        const val COUNTER_160 = 160
+        const val COUNTER_15 = 15
+        const val COUNTER_7 = 7
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -146,11 +155,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         if (arguments != null) {
             shopName = arguments?.getString(BuyerConsts.PARAM_SHOP_NAME).toString()
             invoiceNum = arguments?.getString(BuyerConsts.PARAM_INVOICE).toString()
-            listProductsSerializable = arguments?.getSerializable(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT)
-            listProductsJsonString = arguments?.getString(BuyerConsts.PARAM_JSON_LIST_PRODUCT)
-            listProduct = (listProductsSerializable as? List<Items>) ?: listProductsJsonString.takeIf { !it.isNullOrBlank() }?.let {
-                GsonSingleton.instance.fromJson(it, productListTypeToken) as? List<Items>
-            } ?: emptyList()
             orderId = arguments?.getString(BuyerConsts.PARAM_ORDER_ID).toString()
             uri = arguments?.getString(BuyerConsts.PARAM_URI).toString()
             isCancelAlreadyRequested = arguments?.getBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED) ?: false
@@ -163,6 +167,8 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             statusInfo = arguments?.getString(BuyerConsts.PARAM_STATUS_INFO).toString()
             isWaitToCancel = arguments?.getBoolean(BuyerConsts.PARAM_IS_WAIT_TO_CANCEL) ?: false
             waitMessage = arguments?.getString(BuyerConsts.PARAM_WAIT_MSG).toString()
+            isFromUoh = arguments?.getBoolean(BuyerConsts.PARAM_SOURCE_UOH) ?: false
+            helplinkUrl = arguments?.getString(BuyerConsts.PARAM_HELP_LINK_URL).toString()
         }
         getCancelReasons()
     }
@@ -182,7 +188,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.let { BuyerAnalytics.sendScreenName(it, BUYER_CANCEL_REASON_SCREEN_NAME) }
+        activity?.let { BuyerAnalytics.sendScreenName(BUYER_CANCEL_REASON_SCREEN_NAME) }
         observingCancelReasons()
         observingInstantCancel()
         observingRequestCancel()
@@ -196,20 +202,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         reasonBottomSheetAdapter = GetCancelReasonBottomSheetAdapter(this)
         label_shop_name?.text = shopName
         label_invoice?.text = invoiceNum
-
-        if (listProduct.isNotEmpty()) {
-            label_product_name?.text = listProduct.first().title
-            label_price?.text = listProduct.first().price
-            iv_product?.loadImage(listProduct.first().imageUrl)
-
-            if (listProduct.size > 1) {
-                label_see_all_products?.visible()
-                label_see_all_products?.text = "${getString(R.string.see_all_placeholder)} (${listProduct.size})"
-                label_see_all_products?.setOnClickListener { showProductsBottomSheet() }
-            } else {
-                label_see_all_products?.gone()
-            }
-        }
 
         when {
             isCancelAlreadyRequested -> {
@@ -276,11 +268,11 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
         tv_cancel_wait_desc?.visible()
         if (waitMessage.contains(BuyerConsts.KEY_SETELAH))  {
-            tv_cancel_wait_desc?.text = waitMessage.substring(0, waitMessage.indexOf(BuyerConsts.KEY_SETELAH)+7) + BuyerConsts.KEY_HOUR_DIVIDER
+            tv_cancel_wait_desc?.text = waitMessage.substring(0, waitMessage.indexOf(BuyerConsts.KEY_SETELAH)+ COUNTER_7) + BuyerConsts.KEY_HOUR_DIVIDER
 
             if (waitMessage.contains(BuyerConsts.KEY_LAGI)) {
                 tv_cancel_wait_time?.visible()
-                tv_cancel_wait_time?.text = waitMessage.substring(waitMessage.indexOf(BuyerConsts.KEY_SETELAH)+7, waitMessage.indexOf(BuyerConsts.KEY_LAGI))
+                tv_cancel_wait_time?.text = waitMessage.substring(waitMessage.indexOf(BuyerConsts.KEY_SETELAH)+ COUNTER_7, waitMessage.indexOf(BuyerConsts.KEY_LAGI))
             }
             // do not delete - plan B : manual splitting
             /*var hour = waitMessage.substring(waitMessage.indexOf(BuyerConsts.KEY_SETELAH)+8, waitMessage.indexOf(BuyerConsts.KEY_HOUR))
@@ -399,6 +391,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     empty_state_cancellation?.gone()
                     cl_cancellation_content?.visible()
                     cancelReasonResponse = it.data.getCancellationReason
+                    listProduct = it.data.getCancellationReason.orderDetails
                     renderPage()
                 }
                 is Fail -> {
@@ -418,12 +411,28 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         })
     }
 
+    @SuppressLint("SetTextI18n")
     private fun renderPage() {
         // page title
         if (cancelReasonResponse.isEligibleInstantCancel) {
             (activity as BuyerRequestCancelActivity).supportActionBar?.title = BUTTON_INSTANT_CANCELATION
         } else {
             (activity as BuyerRequestCancelActivity).supportActionBar?.title = BUTTON_REGULER_CANCELATION
+        }
+
+        // list product
+        if (listProduct.isNotEmpty()) {
+            label_product_name?.text = listProduct.first().productName
+            label_price?.text = listProduct.first().productPrice
+            iv_product?.loadImage(listProduct.first().picture)
+
+            if (listProduct.size > 1) {
+                label_see_all_products?.visible()
+                label_see_all_products?.text = "${getString(R.string.see_all_placeholder)} (${listProduct.size})"
+                label_see_all_products?.setOnClickListener { showProductsBottomSheet() }
+            } else {
+                label_see_all_products?.gone()
+            }
         }
 
         // cancel reasons
@@ -458,10 +467,10 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                 tf_choose_sub_reason_editable.textFieldInput.text.isEmpty() -> {
                     showToaster(getString(R.string.toaster_lainnya_empty), Toaster.TYPE_NORMAL)
                 }
-                tf_choose_sub_reason_editable.textFieldInput.text.length < 15 -> {
+                tf_choose_sub_reason_editable.textFieldInput.text.length < COUNTER_15 -> {
                     showToaster(getString(R.string.toaster_manual_min), Toaster.TYPE_ERROR)
                 }
-                tf_choose_sub_reason_editable.textFieldInput.text.length > 160 -> {
+                tf_choose_sub_reason_editable.textFieldInput.text.length > COUNTER_160 -> {
                     showToaster(getString(R.string.toaster_manual_max), Toaster.TYPE_ERROR)
                 }
                 else -> {
@@ -503,7 +512,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             tf_choose_sub_reason_editable?.visible()
             tf_choose_sub_reason_editable?.requestFocus()
             context?.let { showKeyboard(it) }
-            tf_choose_sub_reason_editable?.setCounter(160)
+            tf_choose_sub_reason_editable?.setCounter(COUNTER_160)
             tf_choose_sub_reason_editable?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_FLAG_MULTI_LINE
             tf_choose_sub_reason_editable?.textFieldInput?.isSingleLine = false
             tf_choose_sub_reason_editable?.textFieldInput?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
@@ -584,8 +593,8 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             when (it) {
                 is Success -> {
                     buyerRequestCancelResponse = it.data.buyerRequestCancel
-                    if (buyerRequestCancelResponse.success == 1 && buyerRequestCancelResponse.message.isNotEmpty()) {
-                        backToDetailPage(1, buyerRequestCancelResponse.message.first(), "", "")
+                    if (buyerRequestCancelResponse.success == RESULT_CODE_SUCCESS && buyerRequestCancelResponse.message.isNotEmpty()) {
+                        backToEntryPoint(RESULT_CODE_SUCCESS, buyerRequestCancelResponse.message.first())
                     } else if (buyerRequestCancelResponse.success == 0) {
                         if (buyerRequestCancelResponse.popup.title.isNotEmpty() && buyerRequestCancelResponse.popup.body.isNotEmpty()) {
                             showPopup(buyerRequestCancelResponse.popup)
@@ -630,31 +639,46 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
     private fun renderInstantCancellation() {
         when (instantCancelResponse.success) {
-            0 -> {
+            SUCCESS_CODE_0 -> {
                 showToaster(instantCancelResponse.message, Toaster.TYPE_ERROR)
             }
-            1 -> {
+            SUCCESS_CODE_1 -> {
                 // showToaster(instantCancelResponse.message, Toaster.TYPE_NORMAL)
-                backToDetailPage(1, instantCancelResponse.message, "", "")
+                backToEntryPoint(RESULT_CODE_SUCCESS, instantCancelResponse.message)
             }
-            2 -> {
+            SUCCESS_CODE_2 -> {
                 showPopupWithTwoButtons()
             }
-            3 -> {
-                // showPopupWithSingleButton()
-                backToDetailPage(3, instantCancelResponse.message, instantCancelResponse.popup.title, instantCancelResponse.popup.body)
+            SUCCESS_CODE_3 -> {
+                showPopupWithHelpButton(instantCancelResponse.popup.title, instantCancelResponse.popup.body)
             }
         }
     }
 
-    private fun backToDetailPage(resultCode: Int, resultMsg: String, popupTitle: String, popupBody: String) {
+    private fun backToEntryPoint(resultCode: Int, resultMsg: String) {
         val intent = Intent()
         intent.putExtra(RESULT_CODE_INSTANT_CANCEL, resultCode)
         intent.putExtra(RESULT_MSG_INSTANT_CANCEL, resultMsg)
-        intent.putExtra(RESULT_POPUP_TITLE_INSTANT_CANCEL, popupTitle)
-        intent.putExtra(RESULT_POPUP_BODY_INSTANT_CANCEL, popupBody)
-        activity?.setResult(MarketPlaceDetailFragment.INSTANT_CANCEL_BUYER_REQUEST, intent)
+        activity?.setResult(BuyerOrderIntentCode.RESULT_CODE_INSTANT_CANCEL_BUYER, intent)
         activity?.finish()
+    }
+
+    private fun showPopupWithHelpButton(popupTitle: String, popupBody: String) {
+        val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
+        dialog?.apply {
+            setTitle(popupTitle)
+            setDescription(popupBody)
+            setPrimaryCTAText(getString(R.string.mengerti_button))
+            setPrimaryCTAClickListener { dismiss() }
+            setSecondaryCTAText(getString(R.string.pusat_bantuan_button))
+            setSecondaryCTAClickListener {
+                dismiss()
+                if (helplinkUrl.isNotEmpty()) {
+                    RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW, helplinkUrl)
+                }
+            }
+        }
+        dialog?.show()
     }
 
     private fun showPopupWithTwoButtons() {
@@ -670,7 +694,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             setSecondaryCTAText(getString(R.string.popup_selesai_cancel_btn))
             setSecondaryCTAClickListener {
                 dismiss()
-                backToDetailPage(0, "", "", "")
+                backToEntryPoint(RESULT_CODE_BACK, "")
             }
         }
         dialog?.show()
@@ -688,16 +712,16 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         if (shopId != -1) {
             val applink = "tokopedia://topchat/askseller/$shopId"
             val intent = RouteManager.getIntent(context, applink)
-            intent.putExtra(ApplinkConst.Chat.INVOICE_ID, listProduct.first().invoiceId)
+            intent.putExtra(ApplinkConst.Chat.INVOICE_ID, orderId)
             intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, invoiceNum)
-            intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, listProduct.first().title)
+            intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, listProduct.first().productName)
             intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, boughtDate)
-            intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, listProduct.first().imageUrl)
+            intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, listProduct.first().picture)
             intent.putExtra(ApplinkConst.Chat.INVOICE_URL, invoiceUrl)
             intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, statusId)
             intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, statusInfo)
-            intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, listProduct.first().totalPrice)
-            intent.putExtra(ApplinkConst.Chat.SOURCE, MarketPlaceDetailFragment.TX_ASK_SELLER)
+            intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, listProduct.first().productPrice)
+            intent.putExtra(ApplinkConst.Chat.SOURCE, ApplinkConst.Chat.SOURCE_ASK_SELLER)
             startActivity(intent)
         }
     }
@@ -717,7 +741,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         dialog?.setPrimaryCTAText(getString(R.string.mengerti_button))
         dialog?.setPrimaryCTAClickListener {
                 dialog.dismiss()
-                activity?.setResult(MarketPlaceDetailFragment.CANCEL_ORDER_DISABLE)
+                activity?.setResult(BuyerOrderIntentCode.RESULT_CODE_CANCEL_ORDER_DISABLE)
                 activity?.finish()
         }
         dialog?.show()

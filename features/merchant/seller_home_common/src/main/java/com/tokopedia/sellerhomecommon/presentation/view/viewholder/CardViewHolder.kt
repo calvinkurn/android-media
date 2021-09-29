@@ -5,9 +5,12 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.customview.CardValueCountdownView
+import com.tokopedia.unifycomponents.NotificationUnify
 import kotlinx.android.synthetic.main.shc_card_widget.view.*
 
 /**
@@ -15,8 +18,8 @@ import kotlinx.android.synthetic.main.shc_card_widget.view.*
  */
 
 class CardViewHolder(
-        itemView: View?,
-        private val listener: Listener
+    itemView: View?,
+    private val listener: Listener
 ) : AbstractViewHolder<CardWidgetUiModel>(itemView) {
 
     companion object {
@@ -84,16 +87,21 @@ class CardViewHolder(
             }
         }
 
+        setTagNotification(element.tag)
+
         if (!isShown) return
 
         with(itemView) {
             if (element.appLink.isNotBlank()) {
                 val selectableItemBg = TypedValue()
-                context.theme.resolveAttribute(android.R.attr.selectableItemBackground,
-                        selectableItemBg, true)
+                context.theme.resolveAttribute(
+                    android.R.attr.selectableItemBackground,
+                    selectableItemBg, true
+                )
                 containerCard.setBackgroundResource(selectableItemBg.resourceId)
-            } else
+            } else {
                 containerCard.setBackgroundColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            }
 
             tvCardTitle.text = element.title
             if (shouldLoadAnimation) {
@@ -113,6 +121,34 @@ class CardViewHolder(
                         listener.sendCardClickTracking(element)
                     }
                 }
+            }
+
+            showCardState(element.data)
+        }
+    }
+
+    private fun showCardState(data: CardDataUiModel?) {
+        with(itemView.imgShcCardState) {
+            when (data?.state) {
+                CardDataUiModel.State.WARNING, CardDataUiModel.State.DANGER -> {
+                    visible()
+                    loadImage(R.drawable.bg_shc_card_stata_warning)
+                }
+                CardDataUiModel.State.NORMAL -> gone()
+            }
+        }
+    }
+
+    private fun setTagNotification(tag: String) {
+        val isTagVisible = tag.isNotBlank()
+        with(itemView) {
+            notifTagCard.showWithCondition(isTagVisible)
+            if (isTagVisible) {
+                notifTagCard.setNotification(
+                    tag,
+                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COLOR_TEXT_TYPE
+                )
             }
         }
     }

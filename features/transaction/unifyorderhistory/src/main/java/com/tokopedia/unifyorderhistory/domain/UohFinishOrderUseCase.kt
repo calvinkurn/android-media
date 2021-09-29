@@ -18,7 +18,7 @@ class UohFinishOrderUseCase @Inject constructor(private val gqlRepository: Graph
     suspend fun executeSuspend(param: UohFinishOrderParam): Result<UohFinishOrder.Data.FinishOrderBuyer> {
         return try {
             val request = GraphqlRequest(QUERY, UohFinishOrder.Data::class.java, generateParam(param))
-            val response = gqlRepository.getReseponse(listOf(request)).getSuccessData<UohFinishOrder.Data>()
+            val response = gqlRepository.response(listOf(request)).getSuccessData<UohFinishOrder.Data>()
             Success(response.finishOrderBuyer)
         } catch (e: Exception) {
             Fail(e)

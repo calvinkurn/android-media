@@ -9,6 +9,7 @@ import com.tokopedia.chat_common.domain.pojo.*
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductProfile
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.chatlist.data.ChatWebSocketConstant
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
@@ -29,6 +30,14 @@ class RxWebSocketUtilStub constructor(
 ) : RxWebSocketUtil(
     emptyList(), 60, 5, 5
 ) {
+
+    val changeAddressResponse: WebSocketResponse
+        get() {
+            return AndroidFileUtil.parse(
+                "buyer/ws_opposite_with_label.json",
+                WebSocketResponse::class.java
+            )
+        }
 
     private val websocketInfoObservable = PublishSubject.create<WebSocketInfo>()
     private val websocket: WebSocket = WebSocketStub()
@@ -96,6 +105,7 @@ class RxWebSocketUtilStub constructor(
     ) {
         val requestStartTime = request.jsonObject?.get("start_time")?.asString ?: ""
         val requestMsg = request.jsonObject?.get("message")?.asString ?: ""
+        val localId = request.jsonObject?.get("local_id")?.asString ?: ""
         val requestAttachment = request.jsonObject?.get("product_profile")?.asJsonObject
         val requestProductProfile: ProductProfile = CommonUtil.fromJson(
             requestAttachment.toString(), ProductProfile::class.java
@@ -138,7 +148,8 @@ class RxWebSocketUtilStub constructor(
             isOpposite = false,
             blastId = 0,
             source = "inbox",
-            label = ""
+            label = "",
+            localId = localId
         )
         val chatElement = gson.toJsonTree(chat)
         val response = WebSocketResponse(
@@ -153,6 +164,7 @@ class RxWebSocketUtilStub constructor(
     ) {
         val requestStartTime = request.jsonObject?.get("start_time")?.asString ?: ""
         val requestMsg = request.jsonObject?.get("message")?.asString ?: ""
+        val localId = request.jsonObject?.get("local_id")?.asString ?: ""
         val uiModel = mapper.map(room)
         val timestamp = RfcDateTimeParser.parseDateString(
             requestStartTime, arrayOf(START_TIME_FORMAT)
@@ -180,7 +192,8 @@ class RxWebSocketUtilStub constructor(
             isOpposite = false,
             blastId = 0,
             source = "inbox",
-            label = ""
+            label = "",
+            localId = localId
         )
         val chatElement = gson.toJsonTree(chat)
         val response = WebSocketResponse(
