@@ -187,6 +187,9 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     override fun onResume() {
         super.onResume()
         viewModel.getAllOtherMenuData()
+        if (isSharingEnabled) {
+            viewModel.getShopShareInfoData()
+        }
     }
 
     override fun onItemClicked(t: SettingUiModel?) {}
@@ -564,9 +567,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     private fun observeShopShareInfo() {
         viewModel.shopShareInfoLiveData.observe(viewLifecycleOwner) { shareInfo ->
-            if (isSharingEnabled) {
-                animateShareButtonFromShareData(shareInfo)
-            }
+            animateShareButtonFromShareData(shareInfo)
         }
     }
 
