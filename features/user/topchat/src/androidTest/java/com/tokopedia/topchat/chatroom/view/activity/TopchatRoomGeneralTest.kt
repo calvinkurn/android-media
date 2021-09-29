@@ -9,7 +9,6 @@ import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import org.junit.Test
-import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel as ChatRoomHeaderViewModel1
 
 class TopchatRoomGeneralTest : TopchatRoomTest() {
 
@@ -55,8 +54,6 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
         // Given
         val source = "product"
         val shopName = "Testing Tokopedia"
-        val model = ChatRoomHeaderViewModel1()
-        model.name = shopName
 
         getChatUseCase.response = GetExistingChatPojo()
         getChatUseCase.isError = true
