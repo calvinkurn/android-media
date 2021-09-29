@@ -510,7 +510,7 @@ class PlayAnalytic(
     fun impressCast(channelId: String, channelType: PlayChannelType) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
-                KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
+                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_EVENT_ACTION to "impression on chromecast button",
                 KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                 KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
