@@ -1058,6 +1058,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     override fun loadTopads(pageName: String) {
         pdpUiUpdater?.updateRecommendationDataPageName(pageName)
+        updateUi()
     }
 
     /**
