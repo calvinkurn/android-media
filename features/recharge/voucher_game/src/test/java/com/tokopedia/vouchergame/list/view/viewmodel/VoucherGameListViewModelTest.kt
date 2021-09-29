@@ -56,7 +56,7 @@ class VoucherGameListViewModelTest {
 
     @Test
     fun getVoucherGameOperators_Success() {
-        val useCaseResultSuccess = VoucherGameListData(operators = listOf(VoucherGameOperator(id = 1)))
+        val useCaseResultSuccess = VoucherGameListData(operators = listOf(VoucherGameOperator(id = "1")))
         coEvery {
             voucherGameListUseCase.getVoucherGameOperators(any(), any(), any(), any())
         } returns Success(useCaseResultSuccess)

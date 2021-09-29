@@ -123,8 +123,8 @@ class VoucherGameDetailViewModelTest {
     fun getVoucherGameOperators_Success() {
         // given
         val attributes = CatalogOperatorAttributes(name = "vouchergame1")
-        val useCaseResultSuccess = VoucherGameListData(operators = listOf(VoucherGameOperator(id = 1, attributes = attributes),
-                VoucherGameOperator(id = 3)))
+        val useCaseResultSuccess = VoucherGameListData(operators = listOf(VoucherGameOperator(id = "1", attributes = attributes),
+                VoucherGameOperator(id = "3")))
         coEvery {
             voucherGameListUseCase.getVoucherGameOperators(any(), any(), any(), any())
         } returns Success(useCaseResultSuccess)
@@ -145,8 +145,8 @@ class VoucherGameDetailViewModelTest {
     fun getVoucherGameOperators_FailToFindCertainId() {
         // given
         val attributes = CatalogOperatorAttributes(name = "vouchergame1")
-        val useCaseResultSuccess = VoucherGameListData(operators = listOf(VoucherGameOperator(id = 1, attributes = attributes),
-                VoucherGameOperator(id = 3)))
+        val useCaseResultSuccess = VoucherGameListData(operators = listOf(VoucherGameOperator(id = "1", attributes = attributes),
+                VoucherGameOperator(id = "3")))
         coEvery {
             voucherGameListUseCase.getVoucherGameOperators(any(), any(), any(), any())
         } returns Success(useCaseResultSuccess)
