@@ -20,7 +20,7 @@ class TokoMartEducationalInformationBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val BACKGROUND_URL =
-            "https://images.tokopedia.net/img/android/tokonow/tokopedianow_ic_bottom_background_bottomsheet.png"
+            "https://images.tokopedia.net/img/android/others/bg_bottomsheet_tokomart_educational_information.png"
     }
 
     override fun onCreateView(
@@ -48,9 +48,10 @@ class TokoMartEducationalInformationBottomSheet : BottomSheetUnify() {
             val text5 = findViewById<Typography>(R.id.pdp_tokomart_text_5)
             val background = findViewById<AppCompatImageView>(R.id.pdp_tokomart_background)
 
-            text1.text = MethodChecker.fromHtml(getString(R.string.pdp_usp_tokomart_static_text_1))
-            text2.text = MethodChecker.fromHtml(getString(R.string.pdp_usp_tokomart_static_text_2))
-            text3.text = MethodChecker.fromHtml(getString(R.string.pdp_usp_tokomart_static_text_3))
+            val boldColor = resources.getColor(R.color.Unify_NN950).toString()
+            text1.text = MethodChecker.fromHtml(getString(R.string.pdp_usp_tokomart_static_text_1, boldColor))
+            text2.text = MethodChecker.fromHtml(getString(R.string.pdp_usp_tokomart_static_text_2, boldColor))
+            text3.text = MethodChecker.fromHtml(getString(R.string.pdp_usp_tokomart_static_text_3, boldColor))
 
             convertStringToLink(text4, context, R.string.pdp_usp_tokomart_static_text_4)
             convertStringToLink(text5, context, R.string.pdp_usp_tokomart_static_text_5)
