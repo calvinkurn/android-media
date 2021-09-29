@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.Handler
 import android.view.*
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
@@ -21,6 +22,7 @@ import com.tokopedia.createpost.view.plist.ShopPageProduct
 import com.tokopedia.createpost.view.posttag.TagViewProvider
 import com.tokopedia.createpost.view.viewmodel.*
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
+import com.tokopedia.feedcomponent.util.util.doOnLayout
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.kotlin.extensions.view.*
@@ -189,7 +191,6 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                     feedMedia.imageView = imageItem
                     imageItem.run {
                         val postImage = findViewById<ImageUnify>(R.id.content_creation_post_image)
-                        postImage.setImageUrl(imageList[index])
                         findViewById<CardView>(R.id.product_tagging_button_parent).showWithCondition(
                             products.isNotEmpty()
                         )
@@ -554,6 +555,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         imageItem?.run {
             val lihatProductTagView = findViewById<CardView>(R.id.product_tagging_button_parent)
             val postImage = findViewById<ImageUnify>(R.id.content_creation_post_image)
+            postImage.setImageUrl(imageList[createPostModel.currentCorouselIndex])
 
             lihatProductTagView.showWithCondition(products.isNotEmpty())
 
@@ -561,24 +563,27 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                 openBottomSheet(createPostModel.completeImageList[createPostModel.currentCorouselIndex].products, MediaType.IMAGE)
             }
             val layout = findViewById<ConstraintLayout>(R.id.product_tagging_parent_layout)
-            val childCount = layout?.childCount ?: 0
-                for (i in 0 until childCount) {
-                    val view = layout.getChildAt(i)
-                        layout.removeView(view)
+            layout.removeAllViews()
 
-                }
+            doOnLayout {
+                media.tags.forEachIndexed { index, feedXMediaTagging ->
+                    val tagViewProvider = TagViewProvider()
+                    val view = tagViewProvider.getTagView(context,
+                        products,
+                        index,
+                        listener,
+                        feedXMediaTagging)
+                    if (view != null) {
+                        Handler().postDelayed(Runnable {
+                            val bitmap = postImage.drawable.toBitmap()
+                            tagViewProvider.addViewToParent(view,
+                                layout,
+                                feedXMediaTagging,
+                                index,
+                                bitmap)
+                        },50)
 
-            media.tags.forEachIndexed { index, feedXMediaTagging ->
-                val tagViewProvider = TagViewProvider()
-                val view = tagViewProvider.getTagView(context,
-                    products,
-                    index,
-                    listener,
-                    feedXMediaTagging)
-                if (view != null) {
-                    val bitmap = postImage.drawable.toBitmap()
-                    tagViewProvider.addViewToParent(view, layout, feedXMediaTagging, index, bitmap)
-
+                    }
                 }
 
             }
