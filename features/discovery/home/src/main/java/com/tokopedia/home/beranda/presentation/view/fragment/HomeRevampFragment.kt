@@ -627,18 +627,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             viewLifecycleOwner.lifecycle.addObserver(fragmentFramePerformanceIndexMonitoring)
         }
-        view.findViewById<Button>(R.id.btnTest).setOnClickListener {
-            setFalseNewWalletAppCoachmarkShown(context!!)
-            setFalseNewTokopointCoachmarkShown(context!!)
-            enableOnboarding(context!!)
-            setCoachmarkSharedPrefValue(context!!, PREF_KEY_HOME_COACHMARK, false)
-            setCoachmarkSharedPrefValue(context!!, PREF_KEY_HOME_COACHMARK_NAV, false)
-            setCoachmarkSharedPrefValue(context!!, PREF_KEY_HOME_COACHMARK_INBOX, false)
-            setCoachmarkSharedPrefValue(context!!, PREF_KEY_HOME_COACHMARK_CHOOSEADDRESS, false)
-            setCoachmarkSharedPrefValue(context!!, PREF_KEY_HOME_COACHMARK_BALANCE, false)
-            setCoachmarkSharedPrefValue(context!!, PREF_KEY_WALLETAPP_COACHMARK_BALANCE, false)
-            setCoachmarkSharedPrefValue(context!!, PREF_KEY_WALLETAPP2_COACHMARK_BALANCE, false)
-        }
         oldToolbar = view.findViewById(R.id.toolbar)
         navToolbar = view.findViewById(R.id.navToolbar)
 
