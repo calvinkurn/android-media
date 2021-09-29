@@ -37,6 +37,12 @@ class ToggleNotifyMeUseCase @Inject constructor(private val rawQueries: Map<Stri
             throw RuntimeException()
         } else if (errorResult != null && errorResult.isNotEmpty() && errorResult.first().message.isNotEmpty()) {
             throw MessageErrorException(errorResult.first().message)
+        } else if (!result.result.isSuccess) {
+            if (result.result.errorMessage != "") {
+                throw MessageErrorException(result.result.errorMessage)
+            } else {
+                throw Throwable()
+            }
         }
 
         return result

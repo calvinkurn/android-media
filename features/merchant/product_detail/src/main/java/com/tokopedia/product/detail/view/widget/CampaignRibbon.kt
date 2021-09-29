@@ -50,8 +50,8 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     private var campaignRibbonType1View: View? = null
     private var campaignNameViews1: Typography? = null
     private var timerView1: TimerUnifySingle? = null
-    private var regulatoryInfoLayout1: View? = null
     private var remindMeButton1: Typography? = null
+    private var dateTimer1: RoundedCornerDateInfo? = null
 
     // ongoing components - structure type 2
     private var campaignRibbonType2View: View? = null
@@ -91,8 +91,8 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         campaignRibbonType1View = rootView.findViewById(R.id.campaign_ribbon_type_1)
         campaignNameViews1 = campaignRibbonType1View?.findViewById(R.id.tpg_campaign_name_s1)
         timerView1 = campaignRibbonType1View?.findViewById(R.id.tus_timer_view_s1)
-        regulatoryInfoLayout1 = campaignRibbonType1View?.findViewById(R.id.regulatory_info_layout_s1)
         remindMeButton1 = campaignRibbonType1View?.findViewById(R.id.remind_me_button_s1)
+        dateTimer1 = campaignRibbonType1View?.findViewById(R.id.day_info_timer)
         // TYPE 2 PROPERTIES
         campaignRibbonType2View = rootView.findViewById(R.id.campaign_ribbon_type_2)
         campaignLogoView2 = campaignRibbonType2View?.findViewById(R.id.iu_campaign_logo_s2)
@@ -227,28 +227,47 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     // UPCOMING CAMPAIGN -  use campaign ribbon structure type 1
     fun renderUpComingCampaignRibbon(upcomingData: ProductNotifyMeDataModel?, upcomingIdentifier: String) {
         showCampaignRibbonType1()
-        val gradientDrawable = if (upcomingIdentifier == ProductUpcomingTypeDef.UPCOMING_NPL) {
-            ContextCompat.getDrawable(context, R.drawable.bg_gradient_default_blue)
-        } else {
-            ContextCompat.getDrawable(context, R.drawable.bg_gradient_default_red)
-        }
-        // render campaign ribbon background
-        gradientDrawable?.run { campaignRibbonType1View?.background = gradientDrawable }
-        // render campaign name
+        renderUpcomingBackground(upcomingData, upcomingIdentifier)
+        renderTimerUpcoming(upcomingData)
         val campaignTypeName = upcomingData?.upcomingNplData?.ribbonCopy ?: ""
         campaignNameViews1?.text = if (campaignTypeName.isNotEmpty()) campaignTypeName else context.getString(R.string.notify_me_title)
-        // count down timer
-        upcomingData?.let { data ->
-            renderUpComingNplCountDownTimer(
-                    data.startDate,
-                    timerView1
-            )
-        }
-        // update remind me button
         updateRemindMeButton(listener, upcomingData, upcomingIdentifier)
-        // hide regulatory info
-        regulatoryInfoLayout1?.hide()
     }
+
+    private fun renderTimerUpcoming(upcomingData: ProductNotifyMeDataModel?) {
+        if (upcomingData?.timerWording == null || upcomingData.timerWording.isEmpty()) {
+            upcomingData?.let { data ->
+                renderUpComingNplCountDownTimer(
+                        data.startDate,
+                        timerView1
+                )
+            }
+            timerView1?.show()
+            dateTimer1?.hide()
+        } else {
+            dateTimer1?.setDateText(upcomingData.timerWording)
+            timerView1?.hide()
+            dateTimer1?.show()
+        }
+    }
+
+    private fun renderUpcomingBackground(upcomingData: ProductNotifyMeDataModel?,
+                                         upcomingIdentifier: String) {
+        if (upcomingData?.bgColorUpcoming == null ||
+                upcomingData.bgColorUpcoming.isEmpty()) {
+            val drawable = if (upcomingIdentifier == ProductUpcomingTypeDef.UPCOMING_NPL) {
+                ContextCompat.getDrawable(context, R.drawable.bg_gradient_default_blue)
+            } else {
+                ContextCompat.getDrawable(context, R.drawable.bg_gradient_default_red)
+            }
+            drawable?.run { campaignRibbonType1View?.background = this }
+        } else {
+            getGradientDrawableForBackGround(upcomingData.bgColorUpcoming).run {
+                campaignRibbonType1View?.background = this
+            }
+        }
+    }
+
 
     private fun renderUpComingNplCountDownTimer(startDateData: String, timerView: TimerUnifySingle?) {
         try {

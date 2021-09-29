@@ -42,7 +42,15 @@ data class ProductUpcomingData(
 
         @SerializedName("upcomingType")
         @Expose
-        val upcomingType: String? = ""
+        val upcomingType: String? = "",
+
+        @SerializedName("bgColor")
+        @Expose
+        val bgColorUpcoming: String? = "",
+
+        @SerializedName("timerWording")
+        @Expose
+        val timerWording: String? = ""
 ) {
         fun isUpcomingNplType(): Boolean = upcomingType == ProductUpcomingTypeDef.UPCOMING_NPL
 }
