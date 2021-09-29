@@ -292,8 +292,11 @@ class PlayActivity : BaseActivity(),
             val baseIntent = task.taskInfo.baseIntent
             val packageName = baseIntent.`package`
             val categories = baseIntent.categories
+
             Log.d("<INTENT>", "packageName : $packageName")
             Log.d("<INTENT>", "categories : $categories")
+            Log.d("<INTENT>", "action : ${baseIntent.action}")
+            Log.d("<INTENT>", "scheme : ${baseIntent.scheme}")
             Log.d("<INTENT>", "isTrue : ${categories != null && categories.contains(Intent.CATEGORY_LAUNCHER)}")
             return categories != null && categories.contains(Intent.CATEGORY_LAUNCHER)
         }
