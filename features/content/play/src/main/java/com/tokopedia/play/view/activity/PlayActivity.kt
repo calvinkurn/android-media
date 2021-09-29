@@ -1,9 +1,12 @@
 package com.tokopedia.play.view.activity
 
+import android.app.ActivityManager
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.media.AudioManager
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
@@ -269,7 +272,7 @@ class PlayActivity : BaseActivity(),
             if (!fragment.onBackPressed()) {
                 if (isSystemBack && orientation.isLandscape) onOrientationChanged(ScreenOrientation.Portrait, false)
                 else {
-                    if (isTaskRoot) {
+                    if (isCustomTaskRoot()) {
                         val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
                         startActivity(intent)
                         finish()
@@ -280,6 +283,21 @@ class PlayActivity : BaseActivity(),
                 }
             }
         } else super.onBackPressed()
+    }
+
+    private fun isCustomTaskRoot(): Boolean {
+        val activityManager = applicationContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val appTasks = activityManager.appTasks
+        for(task in appTasks) {
+            val baseIntent = task.taskInfo.baseIntent
+            val packageName = baseIntent.`package`
+            val categories = baseIntent.categories
+            Log.d("<INTENT>", "packageName : $packageName")
+            Log.d("<INTENT>", "categories : $categories")
+            Log.d("<INTENT>", "isTrue : ${categories != null && categories.contains(Intent.CATEGORY_LAUNCHER)}")
+            return categories != null && categories.contains(Intent.CATEGORY_LAUNCHER)
+        }
+        return isTaskRoot
     }
 
     override fun requestEnableNavigation() {
