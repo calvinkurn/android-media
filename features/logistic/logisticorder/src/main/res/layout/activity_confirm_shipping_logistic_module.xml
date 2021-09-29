@@ -6,37 +6,38 @@
     android:layout_height="match_parent"
     android:background="@color/Unify_N0">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/courier_lbl"
+    <LinearLayout
+        android:id="@+id/courier_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
-        android:text="@string/title_courier_logistic_module"
-        app:layout_constraintEnd_toStartOf="@id/courier_name"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintLeft_toRightOf="@id/padding_left"
-        app:layout_constraintRight_toLeftOf="@id/courier_name"
-        app:layout_constraintStart_toEndOf="@id/padding_left"
-        app:layout_constraintTop_toBottomOf="@id/padding_top"
-        app:typographyType="body_2" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/courier_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
-        android:gravity="end"
-        android:text="@string/title_choose_logistic_module"
-        android:textColor="@color/Unify_G400"
-        app:layout_constraintBaseline_toBaselineOf="@id/courier_lbl"
-        app:layout_constraintEnd_toStartOf="@id/padding_right"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintLeft_toRightOf="@id/courier_lbl"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toEndOf="@id/courier_lbl"
+        android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="@id/padding_top"
-        app:typographyType="body_2"
-        tools:text="Jne Reguler" />
+        app:layout_constraintStart_toEndOf="@id/padding_left"
+        app:layout_constraintLeft_toRightOf="@id/padding_left"
+        app:layout_constraintEnd_toStartOf="@id/padding_right"
+        app:layout_constraintRight_toLeftOf="@id/padding_right">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/courier_lbl"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:text="@string/title_courier_logistic_module"
+                app:typographyType="body_2" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/courier_name"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:gravity="end"
+                android:text="@string/title_choose_logistic_module"
+                android:textColor="@color/Unify_G400"
+                app:typographyType="body_2"
+                tools:text="Jne Reguler" />
+    </LinearLayout>
 
     <View
         android:id="@+id/divider"
@@ -48,7 +49,7 @@
         app:layout_constraintLeft_toRightOf="@id/padding_left"
         app:layout_constraintRight_toLeftOf="@id/padding_right"
         app:layout_constraintStart_toEndOf="@id/padding_left"
-        app:layout_constraintTop_toBottomOf="@id/courier_name" />
+        app:layout_constraintTop_toBottomOf="@id/courier_layout" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/barcode_lbl"
@@ -141,12 +142,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_end="@dimen/dp_10" />
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/courier_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="courier_name,courier_lbl"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
