@@ -459,6 +459,16 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         getTracker().sendGeneralEvent(map)
     }
 
+    override fun trackMerchantVoucherLihatSemuaClick(dataItem: DataItem?) {
+        val map = createGeneralEvent(eventAction = CLICK_MV_MULTIPLE_LIHAT, eventLabel = dataItem?.title
+                ?: EMPTY_STRING)
+        map[PAGE_TYPE] = pageType
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        getTracker().sendGeneralEvent(map)
+    }
+
     override fun trackImpressionIconDynamicComponent(headerName: String, icons: List<DataItem>) {
         val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW,
                 eventAction = "$IMPRESSION_ICON_DYNAMIC_COMPONENT - $headerName")
@@ -1244,6 +1254,30 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
+    override fun trackMerchantVoucherMultipleImpression(components: ComponentsItem, userID: String?, position:Int){
+//        TODO:: Banner id in key id
+        val dataItem = components.data?.firstOrNull()
+        val shopId  = dataItem?.shopInfo?.id?:""
+        val list = ArrayList<Map<String, Any>>()
+        list.add(mapOf(
+            KEY_ID to "${components.id}_$shopId",
+            KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${components.parentComponentPosition + 1} - $MV_MULTIPLE_COMPONENT",
+            KEY_CREATIVE to (dataItem?.title?: EMPTY_STRING),
+            KEY_POSITION to position+1
+        ))
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+            EVENT_PROMO_VIEW to mapOf(
+                KEY_PROMOTIONS to list))
+        val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW, eventAction = IMPRESSION_MV_MULTIPLE, shopId)
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[KEY_E_COMMERCE] = eCommerce
+        map[PAGE_TYPE] = pageType
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[USER_ID] = userID ?: EMPTY_STRING
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
     override fun trackSingleMerchantVoucherClick(components: ComponentsItem, shopId: String, userID: String?, positionInPage:Int,couponName: String?) {
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
@@ -1265,7 +1299,96 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
-    override fun trackMerchantCouponDetailImpression(components: ComponentsItem, shopId: String, shopType:String, userID: String?, positionInPage:Int,couponName: String?){
+    override fun trackMerchantVoucherMultipleShopClicks(components: ComponentsItem, userID: String?, position:Int){
+//        TODO:: Banner id in key id
+        val shopInfo = components.data?.firstOrNull()?.shopInfo
+        val shopId  = shopInfo?.id?:""
+        val shopName = shopInfo?.name?:""
+        val list = ArrayList<Map<String, Any>>()
+        list.add(mapOf(
+            KEY_ID to "${components.id}_$shopId",
+            KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${components.parentComponentPosition + 1} - $MV_MULTIPLE_COMPONENT",
+            KEY_CREATIVE to "$SHOP_DETAIL - $shopName",
+            KEY_POSITION to position+1
+        ))
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+            EVENT_PROMO_CLICK to mapOf(
+                KEY_PROMOTIONS to list))
+        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_MV_MULTIPLE_SHOP, shopId)
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[KEY_E_COMMERCE] = eCommerce
+        map[PAGE_TYPE] = pageType
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[USER_ID] = userID ?: EMPTY_STRING
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
+    override fun trackMerchantVoucherMultipleVoucherDetailClicks(components: ComponentsItem, userID: String?, position:Int){
+//        TODO:: Banner id in key id
+        val dataItem = components.data?.firstOrNull()
+        val shopId  = dataItem?.shopInfo?.id ?: ""
+        val list = ArrayList<Map<String, Any>>()
+        list.add(mapOf(
+            KEY_ID to "${components.id}_$shopId",
+            KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${components.parentComponentPosition + 1} - $MV_MULTIPLE_COMPONENT",
+            KEY_CREATIVE to "$VOUCHER_DETAIL - ${dataItem?.title?: EMPTY_STRING}",
+            KEY_POSITION to position+1
+        ))
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+            EVENT_PROMO_CLICK to mapOf(
+                KEY_PROMOTIONS to list))
+        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_MV_MULTIPLE_DETAIL, shopId)
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[BUSINESS_UNIT] = HOME_BROWSE
+        map[KEY_E_COMMERCE] = eCommerce
+        map[PAGE_TYPE] = pageType
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[USER_ID] = userID ?: EMPTY_STRING
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
+    override fun trackMerchantVoucherMultipleVoucherProductClicks(
+        components: ComponentsItem,
+        userID: String?,
+        position: Int,
+        productIndex: Int
+    ) {
+
+//        TODO:: Need to handle. Recheck after discussion
+        if (!components.data.isNullOrEmpty()) {
+            val shopId  = components.data?.firstOrNull()?.shopInfo?.id ?: ""
+            var productId = ""
+            var listItem = ""
+            val login = if (userID.isNullOrEmpty()) NON_LOGIN else LOGIN
+            val list = ArrayList<Map<String, Any>>()
+            val listMap = HashMap<String, Any>()
+            components.data?.get(0)?.let { dataItem ->
+                if((dataItem.products?.size?:0) > productIndex && dataItem.products?.get(productIndex)!= null)
+                dataItem.products[productIndex]?.let{
+                    productId = it.id?:""
+                    listItem = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${components.parentComponentPosition+1} - $login - $MV_MULTIPLE_COMPONENT - - - - "
+                }
+            }
+            list.add(listMap)
+            val eCommerce = mapOf(
+                CLICK to mapOf(
+                    ACTION_FIELD to mapOf(
+                        LIST to listItem
+                    ),
+                    PRODUCTS to list
+                )
+            )
+            val map = createGeneralEvent(eventName = EVENT_PRODUCT_CLICK, eventAction = CLICK_MV_MULTIPLE_PRODUCT, eventLabel = "$productId - $shopId")
+            map[PAGE_TYPE] = pageType
+            map[PAGE_PATH] = removedDashPageIdentifier
+            map[KEY_E_COMMERCE] = eCommerce
+            getTracker().sendEnhanceEcommerceEvent(map)
+        }
+
+    }
+
+    override fun trackMerchantCouponDetailImpression(components: ComponentsItem, shopId: String, shopType:String, userID: String?, positionInPage:Int, couponName: String?){
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
             KEY_ID to "${components.id}_$shopId",

@@ -7,8 +7,6 @@ import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryDataGQLReposit
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.discovery2.repository.emptystate.DiscoveryEmptyStateRepository
 import com.tokopedia.discovery2.repository.emptystate.EmptyStateRepository
-import com.tokopedia.discovery2.repository.merchantvoucher.MerchantVoucherGQLRepository
-import com.tokopedia.discovery2.repository.merchantvoucher.MerchantVoucherRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsGQLRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.repository.quickFilter.FilterGQLRepository
@@ -59,9 +57,5 @@ class DiscoveryRepoProvider : RepositoryProvider {
 
     override fun provideTopAdsHeadlineRepository(): TopAdsHeadlineRepository {
         return DiscoveryTopAdsHeadlineRepository()
-    }
-
-    override fun provideMerchantVoucherRepository(): MerchantVoucherRepository{
-        return MerchantVoucherGQLRepository()
     }
 }

@@ -40,7 +40,7 @@ class MerchantVoucherCarouselViewModel(application: Application, val components:
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-    private suspend fun setVoucherList() {
+    private fun setVoucherList() {
         getVoucherList()?.let {
             if (it.isNotEmpty()) {
                 _loadError.value = false
@@ -52,7 +52,7 @@ class MerchantVoucherCarouselViewModel(application: Application, val components:
         }
     }
 
-    fun getVoucherList(): ArrayList<ComponentsItem>? {
+    private fun getVoucherList(): ArrayList<ComponentsItem>? {
         components.getComponentsItem()?.let { productList ->
             return productList as ArrayList<ComponentsItem>
         }

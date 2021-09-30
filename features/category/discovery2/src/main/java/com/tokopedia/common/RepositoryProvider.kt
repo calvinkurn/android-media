@@ -3,7 +3,6 @@ package com.tokopedia.common
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.discovery2.repository.emptystate.EmptyStateRepository
-import com.tokopedia.discovery2.repository.merchantvoucher.MerchantVoucherRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
@@ -20,5 +19,4 @@ interface RepositoryProvider {
     fun provideEmptyStateRepository(): EmptyStateRepository
     fun provideFilterRepository(): FilterRepository
     fun provideTopAdsHeadlineRepository(): TopAdsHeadlineRepository
-    fun provideMerchantVoucherRepository(): MerchantVoucherRepository
 }

@@ -8,11 +8,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.discovery2.Constant.MultipleShopMVCCarousel.CAROUSEL_ITEM_DESIGN
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.analytics.merchantvoucher.DiscoMerchantAnalytics
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.multishopmvc.MvcMultiShopView
+import com.tokopedia.user.session.UserSession
 
 const val RATIO_FOR_CAROUSEL = 0.85
 
@@ -44,7 +47,14 @@ class MerchantVoucherCarouselItemViewHolder (itemView: View, val fragment: Fragm
         lifecycleOwner?.let { lifecycle ->
             merchantVoucherCarouselItemViewModel.multiShopModel.observe(lifecycle,{
                 mvcMultiShopView.show()
-                mvcMultiShopView.setMultiShopModel(it,MvcSource.DISCO)
+                mvcMultiShopView.setTracker(getMerchantAnalytics())
+                mvcMultiShopView.setMultiShopModel(it, MvcSource.DISCO)
+                (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                    .trackMerchantVoucherMultipleImpression(
+                        merchantVoucherCarouselItemViewModel.components,
+                        UserSession(fragment.context).userId,
+                        merchantVoucherCarouselItemViewModel.position
+                    )
             })
         }
     }
@@ -52,5 +62,15 @@ class MerchantVoucherCarouselItemViewHolder (itemView: View, val fragment: Fragm
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {merchantVoucherCarouselItemViewModel.multiShopModel.removeObservers(it)}
+    }
+
+    private fun getMerchantAnalytics(): DiscoMerchantAnalytics {
+        return DiscoMerchantAnalytics(
+            (fragment as DiscoveryFragment).getDiscoveryAnalytics(),
+            merchantVoucherCarouselItemViewModel.components,
+            merchantVoucherCarouselItemViewModel.components.parentComponentPosition,
+            "",
+            merchantVoucherCarouselItemViewModel.position
+        )
     }
 }

@@ -100,6 +100,7 @@ data class ComponentsItem(
             it.pageEndPoint = this.pageEndPoint
             it.tabName = tabName
             it.data?.firstOrNull()?.tabName = tabName
+            it.parentComponentPosition = position
             discoveryPageData[this.pageEndPoint]?.componentMap?.set(it.id, it)
         }
         componentsItem = listComponents

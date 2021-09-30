@@ -1,5 +1,6 @@
 package com.tokopedia.mvcwidget.multishopmvc
 
+import android.app.Application
 import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
@@ -15,11 +16,13 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.mvcwidget.MVCActivityCallbacks
 import com.tokopedia.mvcwidget.R
 import com.tokopedia.mvcwidget.multishopmvc.data.AdInfo
 import com.tokopedia.mvcwidget.multishopmvc.data.MultiShopModel
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.trackers.MvcTracker
+import com.tokopedia.mvcwidget.trackers.MvcTrackerImpl
 import com.tokopedia.mvcwidget.trackers.Tracker.Event.CLICK_COUPON_TITLE
 import com.tokopedia.mvcwidget.trackers.Tracker.Event.CLICK_PRODUCT_CARD
 import com.tokopedia.mvcwidget.trackers.Tracker.Event.CLICK_SHOP_NAME
@@ -48,6 +51,8 @@ class MvcMultiShopView @JvmOverloads constructor(
     var tvCouponCount: Typography? = null
     var tvDealsCouponOne: Typography? = null
     var tvDealsCouponTwo: Typography? = null
+    val tracker = MvcTracker()
+    private val mvcActivityCallbacks = MVCActivityCallbacks()
 
 
     init {
@@ -69,8 +74,13 @@ class MvcMultiShopView @JvmOverloads constructor(
 
     }
 
-    fun setMultiShopModel(item: MultiShopModel , @MvcSource source: Int) {
+    fun setTracker(mvcTrackerImpl: MvcTrackerImpl){
+        mvcActivityCallbacks.mvcTrackerImpl = mvcTrackerImpl
+        tracker.trackerImpl = mvcTrackerImpl
+    }
 
+    fun setMultiShopModel(item: MultiShopModel , @MvcSource source: Int) {
+        mvcActivityCallbacks.hashCodeForMVC = item.hashCode()
         item.shopIcon.let {
             if (it.isNotEmpty()) {
                 ivShopIcon?.loadImage(it)
@@ -156,6 +166,7 @@ class MvcMultiShopView @JvmOverloads constructor(
                 item.shopName,
                 CLICK_PRODUCT_CARD,
                 item.AdInfo ?: AdInfo(),
+                0,
                 source
             )
         }
@@ -166,6 +177,7 @@ class MvcMultiShopView @JvmOverloads constructor(
                 item.shopName,
                 CLICK_PRODUCT_CARD,
                 item.AdInfo ?: AdInfo(),
+                1,
                 source
             )
         }
@@ -174,19 +186,25 @@ class MvcMultiShopView @JvmOverloads constructor(
             val shopName = item.shopName
             val shopApplink = item?.applink
             val shopId = item?.id
+            (context.applicationContext as Application).let {app->
+                app.unregisterActivityLifecycleCallbacks(mvcActivityCallbacks)
+                app.registerActivityLifecycleCallbacks(mvcActivityCallbacks)
+            }
             it.context.startActivity(
                 TransParentActivity.getIntent(
                     it.context,
                     shopId,
                     0,
                     shopApplink,
-                    shopName
+                    shopName,
+                    mvcActivityCallbacks.hashCodeForMVC
                 )
             )
             sendCouponClickEvent(
                 item.shopName,
                 CLICK_COUPON_TITLE,
                 item.AdInfo ?: AdInfo(),
+                -1,
                 source
             )
         }
@@ -198,6 +216,7 @@ class MvcMultiShopView @JvmOverloads constructor(
             item.shopName,
             CLICK_SHOP_NAME,
             item.AdInfo ?: AdInfo(),
+            -1,
             source
         )
     }
@@ -205,8 +224,8 @@ class MvcMultiShopView @JvmOverloads constructor(
     private fun sendTopadsClick(context: Context, adInfo: AdInfo?) {
         TopAdsUrlHitter(context).hitClickUrl(
             this::class.java.simpleName,
-            adInfo?.AdClickUrl,
-            adInfo?.AdID,
+            adInfo?.AdClickUrl?:"",
+            adInfo?.AdID?:"",
             "",
             "",
             ""
@@ -217,14 +236,16 @@ class MvcMultiShopView @JvmOverloads constructor(
         shopName: String,
         eventAction: String,
         adInfo: AdInfo,
+        productPosition: Int,
         @MvcSource mvcSource: Int
     ) {
         sendTopadsClick(this.context, adInfo)
-        MvcTracker().mvcMultiShopCardClick(
+        tracker.mvcMultiShopCardClick(
             shopName,
             eventAction,
             mvcSource,
-            UserSession(context).userId
+            UserSession(context).userId,
+            productPosition
         )
     }
 
@@ -244,5 +265,10 @@ class MvcMultiShopView @JvmOverloads constructor(
                 com.tokopedia.unifyprinciples.R.color.Unify_Static_White
             )
         )
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        (context.applicationContext as Application).unregisterActivityLifecycleCallbacks(mvcActivityCallbacks)
     }
 }
