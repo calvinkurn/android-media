@@ -153,7 +153,7 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
                is NetworkResult.Success -> {
                    showError(false)
                    btnRefresh.isLoading = false
-                   leaderboardAdapter.setItemsAndAnimateChanges(it.data.leaderboardWinners)
+                   leaderboardAdapter.setItems(it.data.leaderboardWinners)
                    leaderboardAdapter.notifyDataSetChanged()
                }
            }
