@@ -442,15 +442,13 @@ public class MainParentActivity extends BaseActivity implements
                 } catch (Exception e) {
                     return HOME_MENU;
                 }
-            } else {
-                if (getIntent().getData().getQueryParameter(ARGS_TAB_POSITION) != null) {
-                    try {
-                        String posString = getIntent().getData().getQueryParameter(ARGS_TAB_POSITION);
-                        return Integer.parseInt(posString);
-                    } catch (Exception e) {
-                        return HOME_MENU;
-                    }
-                }
+            }
+        } else if (getIntent().getData().getQueryParameter(ARGS_TAB_POSITION) != null) {
+            try {
+                String posString = getIntent().getData().getQueryParameter(ARGS_TAB_POSITION);
+                return Integer.parseInt(posString);
+            } catch (Exception e) {
+                return HOME_MENU;
             }
         } else {
             return HOME_MENU;
