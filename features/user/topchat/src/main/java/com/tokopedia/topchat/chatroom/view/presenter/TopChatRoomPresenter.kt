@@ -565,14 +565,10 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun sendAttachmentsAndSticker(
-        messageId: String,
-        sticker: Sticker,
-        startTime: String,
-        opponentId: String,
-        onSendingMessage: () -> Unit
+        sticker: Sticker
     ) {
         sendAttachments(sticker.intention)
-        sendSticker(messageId, sticker, startTime, opponentId, onSendingMessage)
+        sendSticker(sticker)
         view?.clearAttachmentPreviews()
     }
 
@@ -694,28 +690,13 @@ open class TopChatRoomPresenter @Inject constructor(
         sendByApi(ReplyChatUseCase.generateParam(messageId, sendMessage), dummyMessage)
     }
 
-    private fun sendSticker(
-        messageId: String,
-        sticker: Sticker,
-        startTime: String,
-        opponentId: String,
-        onSendingMessage: () -> Unit
-    ) {
-        onSendingMessage()
-        sendStickerWithWebSocket(messageId, sticker, opponentId, startTime)
-    }
-
-    private fun sendStickerWithWebSocket(
-        messageId: String,
-        sticker: Sticker,
-        opponentId: String,
-        startTime: String
-    ) {
+    private fun sendSticker(sticker: Sticker) {
+        val startTime = SendableViewModel.generateStartTime()
         val previewSticker = StickerUiModel.generatePreviewMessage(
             roomMetaData, sticker
         )
         val stickerContract = sticker.generateWebSocketPayload(
-            messageId, opponentId, startTime, attachmentsPreview, previewSticker.localId
+            roomMetaData.msgId, startTime, attachmentsPreview, previewSticker.localId
         )
         val request = CommonUtil.toJson(stickerContract)
         sendWs(request, previewSticker)

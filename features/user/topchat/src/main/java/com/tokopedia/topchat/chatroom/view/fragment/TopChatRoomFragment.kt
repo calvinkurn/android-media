@@ -1104,16 +1104,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun sendSticker(sticker: Sticker?) {
         if (sticker == null) return
         onSendAndReceiveMessage()
-        val startTime = SendableViewModel.generateStartTime()
         if (rvSrw?.isShowing() == true) {
             addSrwBubbleToChat()
         }
+        onSendingMessage().invoke()
         presenter.sendAttachmentsAndSticker(
-            messageId,
-            sticker,
-            startTime,
-            opponentId,
-            onSendingMessage()
+            sticker
         )
     }
 

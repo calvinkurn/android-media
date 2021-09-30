@@ -24,7 +24,6 @@ data class Sticker(
 
     fun generateWebSocketPayload(
             messageId: String,
-            opponentId: String,
             startTime: String,
             attachments: List<SendablePreview>,
             localId: String,
