@@ -23,7 +23,7 @@ class PostLikeUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): Boolean {
         val gqlRequest = GraphqlRequest(PostLikeUseCaseQuery.GQL_QUERY, LikeContent.Response::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
 
         val response = gqlResponse.getData<LikeContent.Response>(LikeContent.Response::class.java)

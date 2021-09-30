@@ -5,17 +5,11 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.appsflyer.AFInAppEventParameterName;
-import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.legacy.CommonUtils;
-import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.track.TrackApp;
 
-import org.json.JSONArray;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +20,7 @@ import java.util.Map;
 
 @Deprecated
 public class TrackingUtils{
+    private static final String PARAM_1 = "af_param_1";
     // consider replacing this with getGtm().sendCampaignV4V5 instead.
     @Deprecated
     public static void eventCampaign(Context context, Campaign campaign) {
@@ -42,30 +37,9 @@ public class TrackingUtils{
     public static void activityBasedAFEvent(Context context, String tag) {
         Map<String, Object> afValue = new HashMap<>();
         if (tag.equals(AppScreen.IDENTIFIER_HOME_ACTIVITY)) {
-            afValue.put(AFInAppEventParameterName.PARAM_1, CommonUtils.getUniqueDeviceID(context));
+            afValue.put(PARAM_1, CommonUtils.getUniqueDeviceID(context));
         }
         TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AppScreen.convertAFActivityEvent(tag), afValue);
-    }
-
-    public static String extractFirstSegment(Context context,String inputString, String separator) {
-        String firstSegment = "";
-        if (!TextUtils.isEmpty(inputString)) {
-            String token[] = inputString.split(separator);
-            if (token.length > 1) {
-                firstSegment = token[0];
-            } else {
-                firstSegment = separator;
-            }
-        }
-
-        return firstSegment;
-    }
-
-    public static String normalizePhoneNumber(String phoneNum) {
-        if (!TextUtils.isEmpty(phoneNum))
-            return phoneNum.replaceFirst("^0(?!$)", "62");
-        else
-            return "";
     }
 
     public static void sendMoEngageClickMainCategoryIcon(Context context, String categoryName) {

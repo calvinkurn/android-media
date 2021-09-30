@@ -94,7 +94,7 @@ class VoucherGameListViewModelTest {
         result[objectType] = telcoCatalogMenuDetailData
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         voucherGameListViewModel.getVoucherGameMenuDetail("", mapParams)
         val actualData = voucherGameListViewModel.voucherGameMenuDetail.value
@@ -113,7 +113,7 @@ class VoucherGameListViewModelTest {
 
     @Test
     fun getVoucherGameMenuDetail_Fail() {
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
 
         voucherGameListViewModel.getVoucherGameMenuDetail("", mapParams)
         val actualData = voucherGameListViewModel.voucherGameMenuDetail.value

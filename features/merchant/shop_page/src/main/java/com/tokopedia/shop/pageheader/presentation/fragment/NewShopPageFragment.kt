@@ -50,7 +50,7 @@ import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.mvcwidget.MvcSource
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.UserNotLoginException
@@ -72,7 +72,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
-import com.tokopedia.shop.analytic.model.TrackShopTypeDef
+import com.tokopedia.shop.common.constant.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopModerateRequestStatusCode
 import com.tokopedia.shop.common.constant.ShopPageConstant
@@ -134,7 +134,6 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidge
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.review.shop.view.ReviewShopFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
-import com.tokopedia.shop.setting.view.activity.ShopPageSettingActivity
 import com.tokopedia.shop.showcase.presentation.fragment.ShopPageShowcaseFragment
 import com.tokopedia.stickylogin.common.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginAction
@@ -1287,7 +1286,7 @@ class NewShopPageFragment :
             if (GlobalConfig.isSellerApp()) {
                 RouteManager.route(context, ApplinkConstInternalSellerapp.MENU_SETTING)
             } else {
-                startActivity(ShopPageSettingActivity.createIntent(context, shopId))
+                RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID, shopId)
             }
         }
     }
@@ -2429,47 +2428,49 @@ class NewShopPageFragment :
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    checkUsingCustomBranchLinkDomain(linkerShareData)
-                    var shareString = getString(
-                        R.string.shop_page_share_text_with_link,
-                        shopPageHeaderDataModel?.shopName,
-                        linkerShareData?.shareContents
-                    )
-                    shareModel.subjectName = shopPageHeaderDataModel?.shopName.toString()
-                    SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
-                    // send gql tracker
-                    shareModel.socialMediaName?.let { name ->
-                        shopViewModel?.sendShopShareTracker(
-                            shopId,
-                            channel = when (shareModel) {
-                                is ShareModel.CopyLink -> {
-                                    ShopPageConstant.SHOP_SHARE_DEFAULT_CHANNEL
-                                }
-                                is ShareModel.Others -> {
-                                    ShopPageConstant.SHOP_SHARE_OTHERS_CHANNEL
-                                }
-                                else -> name
-                            }
+                    context?.let{
+                        checkUsingCustomBranchLinkDomain(linkerShareData)
+                        var shareString = getString(
+                                R.string.shop_page_share_text_with_link,
+                                shopPageHeaderDataModel?.shopName,
+                                linkerShareData?.shareContents
                         )
-                    }
+                        shareModel.subjectName = shopPageHeaderDataModel?.shopName.toString()
+                        SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
+                        // send gql tracker
+                        shareModel.socialMediaName?.let { name ->
+                            shopViewModel?.sendShopShareTracker(
+                                    shopId,
+                                    channel = when (shareModel) {
+                                        is ShareModel.CopyLink -> {
+                                            ShopPageConstant.SHOP_SHARE_DEFAULT_CHANNEL
+                                        }
+                                        is ShareModel.Others -> {
+                                            ShopPageConstant.SHOP_SHARE_OTHERS_CHANNEL
+                                        }
+                                        else -> name
+                                    }
+                            )
+                        }
 
-                    // send gtm tracker
-                    if(isGeneralShareBottomSheet) {
-                        shopPageTracking?.clickShareBottomSheetOption(
-                                shareModel.channel.orEmpty(),
-                                customDimensionShopPage,
-                                userId
-                        )
-                    } else{
-                        shopPageTracking?.clickScreenshotShareBottomSheetOption(
-                                shareModel.channel.orEmpty(),
-                                customDimensionShopPage,
-                                userId
-                        )
-                    }
+                        // send gtm tracker
+                        if(isGeneralShareBottomSheet) {
+                            shopPageTracking?.clickShareBottomSheetOption(
+                                    shareModel.channel.orEmpty(),
+                                    customDimensionShopPage,
+                                    userId
+                            )
+                        } else{
+                            shopPageTracking?.clickScreenshotShareBottomSheetOption(
+                                    shareModel.channel.orEmpty(),
+                                    customDimensionShopPage,
+                                    userId
+                            )
+                        }
 
-                    //we have to check if we can move it inside the common function
-                    universalShareBottomSheet?.dismiss()
+                        //we have to check if we can move it inside the common function
+                        universalShareBottomSheet?.dismiss()
+                    }
                 }
 
                 override fun onError(linkerError: LinkerError?) {}

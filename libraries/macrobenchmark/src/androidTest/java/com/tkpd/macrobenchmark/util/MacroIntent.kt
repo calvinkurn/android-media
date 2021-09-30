@@ -10,6 +10,11 @@ object MacroIntent {
      */
     const val TKPD_PACKAGE_NAME = "com.tokopedia.tkpd"
 
+    /**
+     * Please create intent with deeplink URI that DIRECTLY open your page
+     * Don't pass intent that need to open DeeplinkActivity (which started with tokopedia://),
+     * it can make macrobenchmark misinterpret DeeplinkActivity becomes the target benchmark
+     */
     object Home {
         /**
          * Target recyclerview

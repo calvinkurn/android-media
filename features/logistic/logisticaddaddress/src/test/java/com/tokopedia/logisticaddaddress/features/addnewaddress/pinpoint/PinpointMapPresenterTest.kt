@@ -15,6 +15,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.spyk
 import io.mockk.verifyOrder
 import org.junit.Assert
 import org.junit.Before
@@ -114,6 +115,35 @@ class PinpointMapPresenterTest {
     }
 
     @Test
+    fun `autofill success with circuit breaker on code`() {
+        val keroMaps = KeroMapsAutofill(data = Data(title = "city test"), messageError = listOf("Lokasi gagal ditemukan"), errorCode = 101)
+        every { revGeoCodeUseCase.execute(any())
+        } answers {
+            Observable.just(keroMaps)
+        }
+
+        presenter.autoFill(0.1, 0.1, 0.0f)
+
+        verifyOrder {
+            view.goToAddNewAddressNegative()
+        }
+    }
+
+    @Test
+    fun `autofill fails return error`() {
+        val defaultThrowable = spyk(Throwable())
+        every { revGeoCodeUseCase.execute(any()) } answers {
+            Observable.error(defaultThrowable)
+        }
+
+        presenter.autoFill(0.1, 0.1, 0.0f)
+
+        verifyOrder {
+            defaultThrowable.printStackTrace()
+        }
+    }
+
+    @Test
     fun `district boundary success`() {
         val anyGql = GraphqlResponse(null, null, false)
         val listBoundaries = mutableListOf(LatLng(12.4, 12.5))
@@ -146,6 +176,15 @@ class PinpointMapPresenterTest {
 
         Assert.assertFalse(result.formattedAddress.contains("Unnamed Road"))
         Assert.assertEquals(result.formattedAddress, result.selectedDistrict)
+    }
+
+    @Test
+    fun `get save address` () {
+        val address = SaveAddressDataModel(formattedAddress = "Unnamed Road, Jl Testimoni", selectedDistrict = "Testimoni")
+
+        presenter.setAddress(address)
+
+        Assert.assertEquals(presenter.getSaveAddressDataModel(), address)
     }
 
     @Test

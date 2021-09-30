@@ -50,7 +50,7 @@ class PlaySearchResultFragment @Inject constructor(
         get() = arguments?.getString(EXTRA_KEYWORD) ?: ""
 
     private val searchProductsAdapter = ProductSelectableAdapter(object : ProductSelectableViewHolder.Listener {
-        override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
+        override fun onProductSelectStateChanged(productId: String, isSelected: Boolean) {
             viewModel.selectProduct(productId, isSelected)
         }
 

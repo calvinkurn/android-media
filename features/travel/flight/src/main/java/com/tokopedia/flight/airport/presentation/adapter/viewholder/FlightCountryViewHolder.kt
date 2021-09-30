@@ -1,22 +1,19 @@
 package com.tokopedia.flight.airport.presentation.adapter.viewholder
 
-import android.view.View
-import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.presentation.model.FlightCountryAirportModel
+import com.tokopedia.flight.databinding.ItemFlightCountryBinding
 
 /**
  * Created by zulfikarrahman on 10/24/17.
  */
-class FlightCountryViewHolder(itemView: View)
-    : AbstractViewHolder<FlightCountryAirportModel>(itemView) {
-
-    private val countryTextView: TextView = itemView.findViewById<View>(R.id.country) as TextView
+class FlightCountryViewHolder(val binding: ItemFlightCountryBinding)
+    : AbstractViewHolder<FlightCountryAirportModel>(binding.root) {
 
     override fun bind(country: FlightCountryAirportModel) {
-        countryTextView.text = country.countryName.toUpperCase()
+        binding.country.text = country.countryName.toUpperCase()
     }
 
     companion object {

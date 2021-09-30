@@ -1166,7 +1166,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onGridItemClick(
         positionInFeed: Int,
         contentPosition: Int,
-        productPosition: Int,
+        productPosition: String,
         redirectLink: String,
         type: String,
         isFollowed: Boolean,
@@ -1795,7 +1795,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun goToDashboard() {
-        RouteManager.route(requireContext(), ApplinkConstInternalContent.AFFILIATE_DASHBOARD)
         profileAnalytics.eventClickStatistic(userId.toString())
     }
 
