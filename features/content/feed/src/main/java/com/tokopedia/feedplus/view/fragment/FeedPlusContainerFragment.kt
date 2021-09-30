@@ -663,16 +663,20 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     fun showCreatePostOnBoarding() {
-        fab_feed.addOneTimeGlobalLayoutListener {
-            val x1: Int = fab_feed.x.toInt()
-            val y1: Int = fab_feed.y.toInt()
-            val x2: Int = x1 + fab_feed.width
-            val y2: Int = y1 + fab_feed.height
+        val fabCircle = fab_feed.circleMainMenu
+        fabCircle.addOneTimeGlobalLayoutListener {
+            val location = IntArray(2)
+            fabCircle.getLocationOnScreen(location)
+
+            val x1 = location[0]
+            val y1 = location[1]
+            val x2 = x1 + fabCircle.width
+            val y2 = y1 + fabCircle.height
 
             coachMarkItem = CoachMarkItem(
-                    fab_feed,
-                    getString(R.string.feed_onboarding_create_post_title),
-                    getString(R.string.feed_onboarding_create_post_detail)
+                fabCircle,
+                getString(R.string.feed_onboarding_create_post_title),
+                getString(R.string.feed_onboarding_create_post_detail)
             ).withCustomTarget(intArrayOf(x1, y1, x2, y2))
 
             showFabCoachMark()
