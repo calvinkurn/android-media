@@ -13,6 +13,10 @@ interface CreateContentPostCOmmonLIstener {
     fun updateHeader(header: HeaderViewModel)
     fun openProductTagginPageOnPreviewMediaClick(position: Int)
     fun clickProductTagBubbleAnalytics(mediaType: String, productId: String)
-    fun updateTaggingInfoInViewModel( feedXMediaTagging: FeedXMediaTagging, index: Int)
+    fun updateTaggingInfoInViewModel(
+        feedXMediaTagging: FeedXMediaTagging,
+        index: Int,
+        mediaIndex: Int,
+    )
 
 }

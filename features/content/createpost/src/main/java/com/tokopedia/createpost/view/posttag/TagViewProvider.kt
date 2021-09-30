@@ -88,7 +88,8 @@ class TagViewProvider {
         parent: ConstraintLayout,
         feedXMediaTagging: FeedXMediaTagging,
         index: Int,
-        bitmap: Bitmap
+        bitmap: Bitmap,
+        mediaIndex:Int
     ) {
         val greyAreaX = calculateGreyAreaY(parent, bitmap)
         val greyAreaY = calculateGreyAreaX(parent, bitmap)
@@ -111,9 +112,6 @@ class TagViewProvider {
                 productTagViewDeleteFinal.gone()
             scaleUp(child)
             isLongPress = true
-            child.postDelayed({
-                scaleDown(child)
-            }, 1000)
         }
 
         child.setOnTouchListener(View.OnTouchListener { view, motionEvent ->
@@ -130,7 +128,6 @@ class TagViewProvider {
                 }
 
                 MotionEvent.ACTION_MOVE -> {
-                    isLongPress = false
 
                     isDrag = true
                     val gotoX: Float = when {
@@ -158,9 +155,11 @@ class TagViewProvider {
                             motionEvent.rawY.plus(dY)  /*Normal vertical drag*/
                         }
 
-                    if (gotoX - view.x > 10 && gotoY - view.y > 10)
+                    if (gotoX - view.x > 10 && gotoY - view.y > 10) {
+                        isLongPress = false
                         handler.removeCallbacks(
                             mLongPressed)
+                    }
 
                     view.animate()
                         .x(gotoX)
@@ -186,6 +185,9 @@ class TagViewProvider {
                 }
 
                 MotionEvent.ACTION_UP -> {
+                    if (isLongPress) {
+                        scaleDown(child)
+                    }
                     handler.removeCallbacks(
                         mLongPressed)
 
@@ -228,7 +230,7 @@ class TagViewProvider {
                         posX = round((feedXMediaTagging.X!! / parent.width) * 10) / 10
                         posY = round((feedXMediaTagging.Y!! / parent.height) * 10) / 10
                     }
-                    listener?.updateTaggingInfoInViewModel(feedXMediaTagging, index)
+                    listener?.updateTaggingInfoInViewModel(feedXMediaTagging, index, mediaIndex)
                 }
             }
 
@@ -297,7 +299,7 @@ class TagViewProvider {
             posY = round((feedXMediaTagging.Y!! / parent.height) * 10) / 10
         }
 
-        listener?.updateTaggingInfoInViewModel(feedXMediaTagging, index)
+        listener?.updateTaggingInfoInViewModel(feedXMediaTagging, index, mediaIndex)
 
     }
 
@@ -314,8 +316,8 @@ class TagViewProvider {
             view, ConstraintLayout.SCALE_X, 1.05f)
         val scaleDownY2 = ObjectAnimator.ofFloat(
             view, ConstraintLayout.SCALE_Y, 1.05f)
-        scaleDownX2.duration = 1000
-        scaleDownY2.duration = 1000
+        scaleDownX2.duration = 250
+        scaleDownY2.duration = 250
 
         val scaleDown2 = AnimatorSet()
         scaleDown2.play(scaleDownX2).with(scaleDownY2)
@@ -329,8 +331,8 @@ class TagViewProvider {
             ConstraintLayout.SCALE_X, 1f)
         val scaleDownY = ObjectAnimator.ofFloat(view,
             ConstraintLayout.SCALE_Y, 1f)
-        scaleDownX.duration = 1000
-        scaleDownY.duration = 1000
+        scaleDownX.duration = 250
+        scaleDownY.duration = 250
 
         val scaleDown = AnimatorSet()
         scaleDown.play(scaleDownX).with(scaleDownY)

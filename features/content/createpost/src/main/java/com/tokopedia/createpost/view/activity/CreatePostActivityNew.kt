@@ -98,7 +98,11 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
         TODO("Not yet implemented")
     }
 
-    override fun updateTaggingInfoInViewModel(feedXMediaTagging: FeedXMediaTagging, index: Int) {
+    override fun updateTaggingInfoInViewModel(
+        feedXMediaTagging: FeedXMediaTagging,
+        index: Int,
+        mediaIndex: Int
+    ) {
         TODO("Not yet implemented")
     }
 
