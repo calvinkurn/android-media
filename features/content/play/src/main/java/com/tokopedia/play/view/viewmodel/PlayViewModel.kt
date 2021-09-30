@@ -1653,9 +1653,9 @@ class PlayViewModel @Inject constructor(
         when (requestCode) {
             REQUEST_CODE_LOGIN_FOLLOW -> handleClickFollow(isFromLogin = true)
             REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE -> handleClickFollowInteractive()
+            REQUEST_CODE_LOGIN_REMIND_ME -> handleRemindMeUpcomingChannel(userClick = false)
             REQUEST_CODE_LOGIN_LIKE -> handleClickLike(isFromLogin = true)
             REQUEST_CODE_LOGIN_CART_PAGE -> handleClickCart(isFromLogin = true)
-            REQUEST_CODE_LOGIN_REMIND_ME -> handleRemindMeUpcomingChannel(userClick = false)
             else -> {}
         }
     }
@@ -1667,9 +1667,8 @@ class PlayViewModel @Inject constructor(
             val currentTotalLikeFmt = _channelReport.value.totalLikeFmt
             return if (!hasWordsOrDotsRegex.containsMatchIn(currentTotalLikeFmt)) {
                 val totalLike =
-                    (_channelReport.value.totalLike + (if (status == PlayLikeStatus.Liked) 1 else -1)).coerceAtLeast(
-                        0
-                    )
+                    (_channelReport.value.totalLike + (if (status == PlayLikeStatus.Liked) 1 else -1))
+                        .coerceAtLeast(0)
                 val fmt = totalLike.toAmountString(amountStringStepArray, separator = ".")
                 totalLike to fmt
             } else {
@@ -1829,7 +1828,7 @@ class PlayViewModel @Inject constructor(
         private const val REQUEST_CODE_LOGIN_FOLLOW = 571
         private const val REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE = 572
         private const val REQUEST_CODE_LOGIN_LIKE = 573
-        private const val REQUEST_CODE_LOGIN_CART_PAGE = 574
-        private const val REQUEST_CODE_LOGIN_REMIND_ME = 575
+        private const val REQUEST_CODE_LOGIN_REMIND_ME = 574
+        private const val REQUEST_CODE_LOGIN_CART_PAGE = 575
     }
 }

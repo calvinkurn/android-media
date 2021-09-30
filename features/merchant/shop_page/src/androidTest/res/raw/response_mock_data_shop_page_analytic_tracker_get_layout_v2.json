@@ -1,16 +1,11 @@
 [
   {
     "data": {
-      "shopPageGetLayout": {
-        "layoutID": 44070,
-        "masterLayoutID": 4,
-        "merchantTierID": 3,
-        "status": 3,
-        "maxWidgets": 6,
-        "publishDate": "0001-01-01T00:00:00+07:07",
+      "shopPageGetLayoutV2": {
         "widgets": [
           {
-            "widgetID": 1380615,
+            "widgetID": 1,
+            "widgetMasterID": 1,
             "layoutOrder": 1,
             "name": "display_single_column",
             "type": "display",
@@ -32,7 +27,8 @@
             ]
           },
           {
-            "widgetID": 688255,
+            "widgetID": 2,
+            "widgetMasterID": 2,
             "layoutOrder": 3,
             "name": "product",
             "type": "product",
@@ -208,22 +204,8 @@
             ]
           },
           {
-            "widgetID": 1236550,
-            "layoutOrder": 6,
-            "name": "voucher",
-            "type": "promo",
-            "header": {
-              "title": "Voucher Toko",
-              "ctaText": "Lihat Semua",
-              "ctaLink": "",
-              "cover": "",
-              "ratio": "",
-              "isATC": 0
-            },
-            "data": [{}, {}, {}]
-          },
-          {
-            "widgetID": 0,
+            "widgetID": 3,
+            "widgetMasterID": 3,
             "layoutOrder": 2,
             "name": "promo_campaign",
             "type": "campaign",

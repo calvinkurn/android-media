@@ -269,7 +269,7 @@ class ShopHomeNplCampaignViewHolder(
 
     private fun setWidgetImpressionListener(model: ShopHomeNewProductLaunchCampaignUiModel) {
         model.data?.firstOrNull()?.let {
-            itemView.addOnImpressionListener(model) {
+            itemView.addOnImpressionListener(model.impressHolder) {
                 shopHomeCampaignNplWidgetListener.onImpressionCampaignNplWidget(adapterPosition, model)
             }
         }
