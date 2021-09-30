@@ -15,7 +15,7 @@ import com.tokopedia.createpost.domain.entity.FeedDetail
 import com.tokopedia.createpost.view.activity.PARAM_POST_ID
 import com.tokopedia.createpost.view.activity.PARAM_TYPE
 import com.tokopedia.createpost.view.contract.CreatePostContract
-import com.tokopedia.createpost.view.listener.CreateContentPostCOmmonLIstener
+import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
 import com.tokopedia.createpost.view.type.ShareType
 import com.tokopedia.createpost.view.viewmodel.CreateContentPostViewModel
 import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
@@ -46,8 +46,8 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    val activityListener: CreateContentPostCOmmonLIstener? by lazy {
-        activity as? CreateContentPostCOmmonLIstener
+    val activityListener: CreateContentPostCommonListener? by lazy {
+        activity as? CreateContentPostCommonListener
     }
     companion object {
         private const val VIEW_MODEL = "view_model"
@@ -75,9 +75,8 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
         presenter.attachView(this)
         initVar(savedInstanceState)
         fetchContentForm()
-
-
     }
+
     protected open fun initVar(savedInstanceState: Bundle?) {
         when {
             savedInstanceState != null -> {
@@ -100,8 +99,6 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
             createPostModel = it
         })
     }
-
-
 
     override fun onDestroy() {
         presenter.detachView()
@@ -154,14 +151,10 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
     }
 
 
-    override fun onErrorGetContentForm(message: String) {
-//        NetworkErrorHelper.showEmptyState(context, main_view, message) {
-//            fetchContentForm()
-//        }
-    }
+    override fun onErrorGetContentForm(message: String) {}
 
     override fun onErrorNoQuota() {
-        TODO("Not yet implemented")
+        //DO nothing
     }
 
     override fun onSuccessGetPostEdit(feedDetail: FeedDetail) {
@@ -169,28 +162,26 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
     }
 
     override fun onErrorGetPostEdit(e: Throwable?) {
-        TODO("Not yet implemented")
+        //Do noting
     }
 
     override fun onGetAvailableShareTypeList(typeList: List<ShareType>) {
-        TODO("Not yet implemented")
+        //Do noting
     }
 
     override fun onAuthenticateTwitter(authenticator: TwitterAuthenticator) {
-        TODO("Not yet implemented")
+        //Do noting
     }
 
     override fun changeShareHeaderText(text: String) {
-        TODO("Not yet implemented")
+        //Do noting
     }
 
     override fun getScreenName(): String {
-        TODO("Not yet implemented")
+        return ""
     }
 
     fun getLatestCreatePostData(): CreatePostViewModel {
         return createContentPostViewModel.getPostData() ?: CreatePostViewModel()
     }
-
-
 }

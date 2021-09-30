@@ -70,7 +70,6 @@ open class ShopProductListBaseAdapter(
     override fun onViewAttachedToWindow(vh: RecyclerView.ViewHolder) {
         super.onViewAttachedToWindow(vh)
 
-
         if (vh is ViewHolder) {
             val holder = vh as ViewHolder
             val data = items[holder.adapterPosition] ?: return
@@ -81,7 +80,6 @@ open class ShopProductListBaseAdapter(
     private fun sendClickEvent(context: Context, data: ShopPageProduct, position: Int) {
         listener.shopProductClicked(position, data)
     }
-
 
     private fun toShopProductModel(item: ShopPageProduct): ProductCardModel {
         return ProductCardModel(

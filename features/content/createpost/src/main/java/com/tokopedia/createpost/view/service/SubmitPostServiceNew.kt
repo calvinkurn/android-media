@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.view.service
 
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -98,7 +99,7 @@ class SubmitPostServiceNew : JobIntentService() {
     }
 
     private fun getFileAbsolutePath(path: String): String? {
-        return if (path.startsWith("file://"))
+        return if (path.startsWith("${ContentResolver.SCHEME_FILE}://"))
             Uri.parse(path).path
         else
             path
