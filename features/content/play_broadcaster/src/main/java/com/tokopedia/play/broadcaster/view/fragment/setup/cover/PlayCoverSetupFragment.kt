@@ -286,7 +286,7 @@ class PlayCoverSetupFragment @Inject constructor(
         }
     }
 
-    private fun onGetCoverFromProduct(productId: Long, imageUrl: String) {
+    private fun onGetCoverFromProduct(productId: String, imageUrl: String) {
         viewModel.setCroppingProductCover(productId, imageUrl)
     }
 
@@ -389,7 +389,7 @@ class PlayCoverSetupFragment @Inject constructor(
                     context = requireContext(),
                     fragmentManager = childFragmentManager,
                     listener = object : CoverImagePickerHelper.OnChosenListener {
-                        override fun onGetFromProduct(productId: Long, imageUrl: String) {
+                        override fun onGetFromProduct(productId: String, imageUrl: String) {
                             onGetCoverFromProduct(productId, imageUrl)
                         }
 

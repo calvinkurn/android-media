@@ -23,7 +23,7 @@ data class ReminderData(
         val title: String = "",
         val UUID:String = "",
         val state: ReminderState = ReminderState.NEUTRAL,
-        val buttonType: Int = UnifyButton.Type.TRANSACTION
+        val buttonType: Int = UnifyButton.Type.MAIN
 )
 
 enum class ReminderState(val type: String){

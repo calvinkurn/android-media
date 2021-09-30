@@ -73,7 +73,7 @@ class PlayEtalasePickerFragment @Inject constructor(
 
     private val selectedProductPage by viewComponent {
         SelectedProductPageViewComponent(view as ViewGroup, object : SelectedProductPageViewComponent.Listener {
-            override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
+            override fun onProductSelectStateChanged(productId: String, isSelected: Boolean) {
                 viewModel.selectProduct(productId, isSelected)
                 onSelectedProductChanged()
             }
