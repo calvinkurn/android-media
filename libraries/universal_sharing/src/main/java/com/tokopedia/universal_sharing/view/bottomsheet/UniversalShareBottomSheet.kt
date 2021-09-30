@@ -85,6 +85,10 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         private const val SCREENSHOT_TITLE = "Yay, screenshot & link tersimpan!"
         const val CUSTOM_SHARE_SHEET = 1
         const val SCREENSHOT_SHARE_SHEET = 2
+        const val PREVIEW_IMG_SCREENSHOT_HEIGHT = 600
+        const val PREVIEW_IMG_SCREENSHOT_WIDTH = 1080
+        const val THUMBNAIL_IMG_SCREENSHOT_HEIGHT = 200
+        const val THUMBNAIL_IMG_SCREENSHOT_WIDTH = 360
 
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
 
@@ -575,11 +579,10 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         thumbNailTitleTxTv?.text = thumbNailTitle
         if(isImageOnlySharing){
             context?.let { thumbNailImage?.let { imgView ->
-                Glide.with(it).load(thumbNailImageUrl).override(360, 200).into(
+                Glide.with(it).load(thumbNailImageUrl).override(THUMBNAIL_IMG_SCREENSHOT_WIDTH, THUMBNAIL_IMG_SCREENSHOT_HEIGHT).into(
                     imgView
                 )
             } }
-//            thumbNailImage?.setImageURI(Uri.parse(File(thumbNailImageUrl).toString()))
         }
         else{
             thumbNailImage?.setImageUrl(thumbNailImageUrl)
@@ -591,7 +594,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             previewImage?.visibility = View.VISIBLE
             if(isImageOnlySharing){
                 context?.let { previewImage?.let { imgView ->
-                    Glide.with(it).load(previewImageUrl).override(1080, 600).into(
+                    Glide.with(it).load(previewImageUrl).override(PREVIEW_IMG_SCREENSHOT_WIDTH, PREVIEW_IMG_SCREENSHOT_HEIGHT).into(
                         imgView
                     )
                 } }
