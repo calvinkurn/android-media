@@ -113,7 +113,8 @@ class ShopPenaltyViewModel @Inject constructor(
                 )
                 getShopPenaltyDetailMergeUseCase.get().executeOnBackground()
             }
-            penaltyFilterUiModel = penaltyDetailMerge.penaltyFilterList
+            penaltyFilterUiModel =
+                penaltyDetailMerge.penaltyFilterList?.toMutableList() ?: mutableListOf()
             _penaltyPageData.value = Success(penaltyDetailMerge)
         }, onError = {
             _penaltyPageData.value = Fail(it)
