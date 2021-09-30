@@ -26,7 +26,7 @@ ext {
     gsonDebugVersion = '2.8.6'
     okHttpVersion = '3.12.5'
     brotliVersion = '0.1.2'
-    glideVersion = '4.12.0'
+    glideVersion = '4.9.0'
     viewPager2 = '1.0.0'
     deeplinkDispatchVersion = '4.1.0'
     espressoVersion = "3.1.0"

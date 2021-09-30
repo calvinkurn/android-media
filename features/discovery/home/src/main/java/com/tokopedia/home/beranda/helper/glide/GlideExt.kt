@@ -9,7 +9,6 @@ import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
@@ -86,39 +85,6 @@ fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: St
             .centerCrop()
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
             .transform(CenterCrop(), RoundedCorners(roundedRadius))
-            .listener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        isFirstResource: Boolean
-                ): Boolean {
-                    return false
-                }
-
-                override fun onResourceReady(
-                        resource: Drawable?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                ): Boolean {
-                    handleOnResourceReady(MediaDataSource.mapTo(dataSource), null, performanceMonitoring, fpmItemLabel)
-                    return false
-                }
-            })
-            .into(this)
-}
-
-fun ImageView.loadImageRoundedTop(url: String, roundedRadius: Float, fpmItemLabel: String = ""){
-    val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
-
-    Glide.with(context)
-            .load(url)
-            .format(DecodeFormat.PREFER_ARGB_8888)
-            .centerCrop()
-            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .transform(CenterCrop(), GranularRoundedCorners(roundedRadius, roundedRadius, 0f,0f))
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
                         e: GlideException?,
