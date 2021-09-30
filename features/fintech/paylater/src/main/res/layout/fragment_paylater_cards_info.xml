@@ -190,7 +190,7 @@
                         android:textSize="@dimen/sp_13"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/serviceFeeInfoText"
-                        app:typographyType="body_1" />
+                        app:typographyType="body_3" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/totalAmount"
@@ -203,7 +203,7 @@
                         app:layout_constraintBottom_toBottomOf="@id/duration"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/duration"
-                        app:typographyType="body_1"
+                        app:typographyType="body_3"
                         app:typographyWeight="bold"
                         tools:text="Rp1.600.000" />
 
