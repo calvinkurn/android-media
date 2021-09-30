@@ -7,8 +7,7 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.scrollTo
-import androidx.test.espresso.action.ViewActions.swipeUp
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -35,6 +34,13 @@ class PdpSimulationRobot {
         onView(
             CommonMatcher.firstView(AllOf.allOf(withId(R.id.btnRegister), isDisplayed()))
         ).perform(ViewActions.click())
+    }
+
+
+    fun closeBottomSheet()
+    {
+        onView( CommonMatcher.firstView(AllOf.allOf(withId(R.id.rvPaylaterFaq), isDisplayed()))).perform(
+            swipeDown())
     }
 
 

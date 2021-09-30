@@ -17,6 +17,14 @@
       "eventLabel": ".*",
       "sessionIris": ".*",
       "userId": ".*"
+    },
+    {
+      "event": "clickFintechMicrosite",
+      "eventAction": "sim vcc - click lihat lebih banyak",
+      "eventCategory": "fin - info page",
+      "eventLabel": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
     }
   ]
 }
