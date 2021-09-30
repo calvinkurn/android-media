@@ -376,8 +376,5 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.testCore
 
     implementation projectOrAar(rootProject.ext.features.createpost)
-    implementation projectOrAar(rootProject.ext.libraries.twitterShare)
-    implementation projectOrAar(rootProject.ext.libraries.videoUploader)
-    implementation rootProject.ext.miscDependencies.twitter
 
 }
