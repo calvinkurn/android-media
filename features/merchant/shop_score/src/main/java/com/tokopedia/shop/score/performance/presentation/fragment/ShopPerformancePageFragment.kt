@@ -751,7 +751,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     impressMenuShopPerformance()
                 }
                 is Fail -> {
-                    shopPerformanceAdapter.removeShopPerformanceLoading()
+                    hideLoading()
                     shopPerformanceAdapter.setShopPerformanceError(
                         ItemShopPerformanceErrorUiModel(
                             it.throwable
@@ -772,7 +772,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun observeShopPerformancePage() {
         observe(viewModel.shopPerformancePage) {
-            shopPerformanceAdapter.removeShopPerformanceLoading()
+            hideLoading()
             when (it) {
                 is Success -> {
                     stopNetworkRequestPerformanceMonitoring()
@@ -837,7 +837,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun hideLoading() {
-        shopPerformanceAdapter.hideLoading()
+        shopPerformanceAdapter.removeShopPerformanceLoading()
     }
 
     private fun setupActionBar() {
