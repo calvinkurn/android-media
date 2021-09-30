@@ -575,11 +575,11 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         thumbNailTitleTxTv?.text = thumbNailTitle
         if(isImageOnlySharing){
             context?.let { thumbNailImage?.let { imgView ->
-                Glide.with(it).load(thumbNailImageUrl).override(36, 20).into(
+                Glide.with(it).load(thumbNailImageUrl).override(360, 200).into(
                     imgView
                 )
             } }
-            thumbNailImage?.setImageURI(Uri.parse(File(thumbNailImageUrl).toString()))
+//            thumbNailImage?.setImageURI(Uri.parse(File(thumbNailImageUrl).toString()))
         }
         else{
             thumbNailImage?.setImageUrl(thumbNailImageUrl)
