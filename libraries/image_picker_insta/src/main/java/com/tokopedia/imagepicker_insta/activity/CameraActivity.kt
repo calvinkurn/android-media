@@ -82,8 +82,8 @@ class CameraActivity : PermissionActivity() {
             .replace(container.id, CameraFragment())
             .commit()
 
-        toolbarIcon.setColorFilter(MethodChecker.getColor(this, R.color.Unify_Static_White), PorterDuff.Mode.SRC_IN)
-        toolbarTitle.setTextColor(MethodChecker.getColor(this, R.color.Unify_Static_White))
+        toolbarIcon.setColorFilter(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Static_White), PorterDuff.Mode.SRC_IN)
+        toolbarTitle.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
     }
 
     private fun showPermissionFragment() {
@@ -91,8 +91,8 @@ class CameraActivity : PermissionActivity() {
             .replace(container.id, NoPermissionFragment())
             .commit()
 
-        toolbarIcon.setColorFilter(MethodChecker.getColor(this, R.color.Unify_Static_Black), PorterDuff.Mode.SRC_IN)
-        toolbarTitle.setTextColor(MethodChecker.getColor(this, R.color.Unify_Static_Black))
+        toolbarIcon.setColorFilter(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), PorterDuff.Mode.SRC_IN)
+        toolbarTitle.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black))
     }
 
     private fun readIntentData() {
