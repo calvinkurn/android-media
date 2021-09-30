@@ -220,14 +220,16 @@ class MvcMultiShopView @JvmOverloads constructor(
     }
 
     private fun sendTopadsClick(context: Context, adInfo: AdInfo?) {
-        TopAdsUrlHitter(context).hitClickUrl(
-            className,
-            adInfo?.AdClickUrl,
-            adInfo?.AdID,
-            "",
-            "",
-            ""
-        )
+        adInfo?.let {
+            TopAdsUrlHitter(context).hitClickUrl(
+                className,
+                it.AdClickUrl,
+                it.AdID,
+                "",
+                "",
+                ""
+            )
+        }
     }
 
     private fun sendCouponClickEvent(

@@ -13,7 +13,6 @@ import com.tokopedia.tokopoints.view.model.usersaving.UserSavingResponse
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.APIVERSION
 import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.REWARDS_SOURCE
-import com.tokopedia.tokopoints.view.util.TP_STATUS_MATCHING_QUERY
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
