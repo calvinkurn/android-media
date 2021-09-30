@@ -179,7 +179,11 @@ class ProductBundleActivity : BaseSimpleActivity() {
     }
 
     fun refreshPage() {
+        supportFragmentManager.beginTransaction()
+            .replace(parentViewResourceID, entryPointFragment, tagFragment)
+            .commit()
         val productId = viewModel.parentProductID
+        viewModel.resetBundleMap()
         viewModel.getBundleInfo(productId)
     }
 }

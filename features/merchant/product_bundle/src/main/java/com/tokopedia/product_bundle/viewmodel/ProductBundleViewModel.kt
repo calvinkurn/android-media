@@ -281,6 +281,10 @@ class ProductBundleViewModel @Inject constructor(
         return target
     }
 
+    fun resetBundleMap() {
+        productBundleMap = HashMap()
+    }
+
     private fun getSelectedVariantText(selectedProductVariant: ProductVariant?, selectedVariantId: String): String {
         val selectedVariantTexts = mutableListOf<String?>()
         val variantOptions = selectedProductVariant?.getOptionListString(selectedVariantId)

@@ -17,13 +17,14 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product_bundle.R
 import com.tokopedia.product_bundle.activity.ProductBundleActivity
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_IS_VARIANT_CHANGED
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_NEW_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_OLD_BUNDLE_ID
@@ -84,6 +85,8 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
 
     private var processDayView: Typography? = null
     private var productBundleOverView: TotalAmount? = null
+    private var layoutBundlePage: ViewGroup? = null
+    private var geBundlePage: GlobalError? = null
 
     // product bundle master components
     private var productBundleMasterView: RecyclerView? = null
@@ -121,6 +124,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         setupProductBundleMasterView(view)
         setupProductBundleDetailView(view, emptyVariantProductIds)
         setupProductBundleOverView(view)
+        setupGlobalError(view)
         setupToolbarActions()
 
         // render product bundle info
@@ -151,6 +155,8 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                     // update totalView atc button text
                     updateProductBundleOverViewButtonText(preOrderStatus)
                 }
+                //show error if bundle is empty
+                showGlobalError(productBundleMasters.isEmpty())
             }
         }
         observeLiveData()
@@ -277,6 +283,25 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun setupGlobalError(view: View) {
+        layoutBundlePage = view.findViewById(R.id.layout_bundle_page)
+        geBundlePage = view.findViewById(R.id.ge_bundle_page)
+        geBundlePage?.apply {
+            errorIllustration.loadImageWithoutPlaceholder(ProductBundleConstants.BUNDLE_EMPTY_IMAGE_URL)
+            errorTitle.text = getString(R.string.single_bundle_error_bundle)
+            errorDescription.text = getString(R.string.single_bundle_error_bundle_desc)
+            errorAction.text = if (viewModel.pageSource == PAGE_SOURCE_CART) {
+                getString(R.string.action_back_to_cart)
+            } else {
+                getString(R.string.action_back_to_pdp)
+            }
+            errorAction.setOnClickListener {
+                activity?.finish()
+            }
+        }
+        showGlobalError(false)
+    }
+
     private fun setupToolbarActions() {
         activity?.findViewById<HeaderUnify>(R.id.toolbar_product_bundle)?.apply {
             setNavigationOnClickListener {
@@ -325,6 +350,11 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun showGlobalError(isVisible: Boolean) {
+        layoutBundlePage?.showWithCondition(!isVisible)
+        geBundlePage?.showWithCondition(isVisible)
+    }
+
     private fun showAtcDialog(title: String, message: String) {
         DialogUnify(requireContext(), HORIZONTAL_ACTION, NO_IMAGE).apply {
             setTitle(title)
@@ -332,7 +362,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             setPrimaryCTAText(getString(R.string.action_select_another_bundle))
             setSecondaryCTAText(getString(R.string.action_back))
             dialogSecondaryCTA.buttonVariant = UnifyButton.Variant.TEXT_ONLY
-            setSecondaryCTAClickListener { dismiss() }
+            setSecondaryCTAClickListener { activity?.finish() }
             setPrimaryCTAClickListener {
                 refreshPage()
                 dismiss()
