@@ -436,12 +436,24 @@ public class MainParentActivity extends BaseActivity implements
         int position = getIntent().getExtras().getInt(ARGS_TAB_POSITION, -1);
         if (position != -1) return position;
 
-        try {
-            String posString = getIntent().getExtras().getString(ARGS_TAB_POSITION);
-            return Integer.parseInt(posString);
-        } catch (Exception e) {
-            return HOME_MENU;
+        if (getIntent().getExtras().getString(ARGS_TAB_POSITION) != null) {
+            try {
+                String posString = getIntent().getExtras().getString(ARGS_TAB_POSITION);
+                return Integer.parseInt(posString);
+            } catch (Exception e) {
+                return HOME_MENU;
+            }
+        } else {
+            if (getIntent().getData().getQueryParameter(ARGS_TAB_POSITION) != null) {
+                try {
+                    String posString = getIntent().getData().getQueryParameter(ARGS_TAB_POSITION);
+                    return Integer.parseInt(posString);
+                } catch (Exception e) {
+                    return HOME_MENU;
+                }
+            }
         }
+        return HOME_MENU;
     }
 
     private void startSelectedPagePerformanceMonitoring() {
