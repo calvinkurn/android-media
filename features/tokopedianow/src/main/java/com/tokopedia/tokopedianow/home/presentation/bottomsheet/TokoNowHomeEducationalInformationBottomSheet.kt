@@ -20,7 +20,7 @@ import com.tokopedia.unifyprinciples.Typography
 class TokoNowHomeEducationalInformationBottomSheet : BottomSheetUnify() {
 
     companion object {
-        private const val BACKGROUND_BOTTOMSHEET = "https://images.tokopedia.net/img/android/tokonow/tokopedianow_ic_bottom_background_bottomsheet.png"
+        private const val BACKGROUND_BOTTOMSHEET = "https://images.tokopedia.net/img/android/others/bg_bottomsheet_tokomart_educational_information.png"
         private val TAG = TokoNowHomeEducationalInformationBottomSheet::class.simpleName
 
         fun newInstance(): TokoNowHomeEducationalInformationBottomSheet {

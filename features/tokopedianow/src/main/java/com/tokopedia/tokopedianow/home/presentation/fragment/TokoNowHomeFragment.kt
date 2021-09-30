@@ -139,10 +139,9 @@ class TokoNowHomeFragment: Fragment(),
         const val SOURCE = "tokonow"
         const val SOURCE_TRACKING = "tokonow page"
         const val DEFAULT_QUANTITY = 0
-        const val SHARE_URL = "https://www.tokopedia.com/now"
+        const val SHARE_URL = "https://www.tokopedia.com/tokomart"
         const val THUMBNAIL_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/thumbnail_now_home.png"
         const val OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/og_now_home.jpg"
-        const val PAGE_SHARE_NAME = "TokoNow"
         const val SHARE = "Share"
 
         fun newInstance() = TokoNowHomeFragment()
@@ -530,6 +529,7 @@ class TokoNowHomeFragment: Fragment(),
         miniCartWidget?.hide()
         miniCartWidget?.hideCoachMark()
         setupPadding(false)
+        navToolbar?.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE)
     }
 
     private fun showFailedToFetchData() {
@@ -547,6 +547,7 @@ class TokoNowHomeFragment: Fragment(),
     private fun showLayout() {
         getHomeLayout()
         getMiniCart()
+        navToolbar?.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH)
     }
 
     private fun stickyLoginSetup(){
@@ -644,6 +645,7 @@ class TokoNowHomeFragment: Fragment(),
             addNavBarScrollListener()
             activity?.let {
                 toolbar.setupToolbarWithStatusBar(it)
+                toolbar.setToolbarTitle(getString(R.string.tokopedianow_home_title))
             }
         }
     }
@@ -1270,7 +1272,7 @@ class TokoNowHomeFragment: Fragment(),
     private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareHomeTokonow?) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@TokoNowHomeFragment)
-            setUtmCampaignData(PAGE_SHARE_NAME, shareHomeTokonow?.userId ?: "", shareHomeTokonow?.pageId ?: "", SHARE)
+            setUtmCampaignData(resources.getString(R.string.tokopedianow_home_share_thumbnail_title), shareHomeTokonow?.userId ?: "", shareHomeTokonow?.pageId ?: "", SHARE)
             setMetaData(
                 shareHomeTokonow?.thumbNailTitle ?: "", shareHomeTokonow?.thumbNailImage ?: ""
             )

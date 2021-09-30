@@ -563,15 +563,15 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     private suspend fun addEmptyState(@RepurchaseStaticLayoutId id: String) {
         when(id) {
             EMPTY_STATE_NO_HISTORY_SEARCH -> {
-                val description = R.string
-                    .tokopedianow_repurchase_empty_state_no_history_desc_search
-                layoutList.addEmptyStateNoHistory(description)
+                val title = R.string.tokopedianow_repurchase_empty_state_no_history_title_search
+                val description = R.string.tokopedianow_repurchase_empty_state_no_history_desc_search
+                layoutList.addEmptyStateNoHistory(title, description)
                 layoutList.removeAllProduct()
             }
             EMPTY_STATE_NO_HISTORY_FILTER -> {
-                val description = R.string
-                    .tokopedianow_repurchase_empty_state_no_history_desc_filter
-                layoutList.addEmptyStateNoHistory(description)
+                val title = R.string.tokopedianow_repurchase_empty_state_no_history_title_filter
+                val description = R.string.tokopedianow_repurchase_empty_state_no_history_desc_filter
+                layoutList.addEmptyStateNoHistory(title, description)
                 layoutList.removeAllProduct()
             }
             EMPTY_STATE_OOC -> {
