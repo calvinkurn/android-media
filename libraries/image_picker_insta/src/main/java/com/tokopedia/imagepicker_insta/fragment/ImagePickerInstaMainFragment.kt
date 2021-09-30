@@ -16,7 +16,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker_insta.*
 import com.tokopedia.imagepicker_insta.activity.CameraActivity
 import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity
@@ -43,8 +42,6 @@ import java.lang.ref.WeakReference
 
 
 class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentContract {
-
-    val EDITOR_REQUEST_CODE = 221
 
     lateinit var viewModel: PickerViewModel
 
@@ -382,8 +379,10 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         imageMultiSelect.toggleCallback = { isMultiSelect ->
             if (isMultiSelect) {
                 imageFitCenter.visibility = View.GONE
+                selectedMediaView.lockAspectRatio()
             } else {
                 imageFitCenter.visibility = View.VISIBLE
+                selectedMediaView.unLockAspectRatio()
             }
         }
 
@@ -578,15 +577,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                     handleCameraErrorResponse(data)
                 }
             }
-            EDITOR_REQUEST_CODE -> {
-                handleEditorCallback(data)
-            }
         }
-    }
-
-    private fun handleEditorCallback(data: Intent?) {
-        val imageOrPathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
-        imageOrPathList.size
     }
 
     private fun handleCameraSuccessResponse(data: Intent?) {

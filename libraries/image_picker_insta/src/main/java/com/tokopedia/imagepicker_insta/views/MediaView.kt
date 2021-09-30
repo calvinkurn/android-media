@@ -247,4 +247,12 @@ class MediaView @JvmOverloads constructor(
             super.onMeasure(heightMeasureSpec, heightMeasureSpec)
         }
     }
+
+    fun lockAspectRatio() {
+//        assetView.lockAspectRatio()
+    }
+
+    fun unLockAspectRatio() {
+//        assetView.unLockAspectRatio()
+    }
 }
