@@ -1,10 +1,12 @@
-package com.tokopedia.shop.review.shop.view.presenter
+package com.tokopedia.review_shop.presenter
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.shop.review.product.view.ReviewProductListMapper
-import com.tokopedia.shop.review.shop.domain.DeleteReviewResponseUseCase
-import com.tokopedia.shop.review.shop.domain.LikeDislikeReviewUseCase
-import com.tokopedia.shop.review.shop.domain.ReviewShopUseCase
+import com.tokopedia.review_shop.product.view.ReviewProductListMapper
+import com.tokopedia.review_shop.shop.domain.DeleteReviewResponseUseCase
+import com.tokopedia.review_shop.shop.domain.LikeDislikeReviewUseCase
+import com.tokopedia.review_shop.shop.domain.ReviewShopUseCase
+import com.tokopedia.review_shop.shop.view.presenter.ReviewShopContract
+import com.tokopedia.review_shop.shop.view.presenter.ReviewShopPresenter
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK

@@ -1,8 +1,8 @@
-package com.tokopedia.shop.review.shop.view.presenter
+package com.tokopedia.review_shop.presenter
 
-import com.tokopedia.shop.review.product.data.model.reviewlist.DataResponseReviewShop
-import com.tokopedia.shop.review.shop.domain.model.DeleteReviewResponseDomain
-import com.tokopedia.shop.review.shop.domain.model.LikeDislikeDomain
+import com.tokopedia.review_shop.product.data.model.reviewlist.DataResponseReviewShop
+import com.tokopedia.review_shop.shop.domain.model.DeleteReviewResponseDomain
+import com.tokopedia.review_shop.shop.domain.model.LikeDislikeDomain
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
