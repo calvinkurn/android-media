@@ -1,6 +1,7 @@
 package com.tokopedia.digital_deals.view.fragment
 
 import android.app.Activity
+import android.content.Intent
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -12,15 +13,13 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.digital_deals.R
 import com.tokopedia.digital_deals.di.DealsComponent
+import com.tokopedia.digital_deals.view.activity.CheckoutActivity
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks
 import com.tokopedia.digital_deals.view.utils.Utils
 import com.tokopedia.digital_deals.view.viewmodel.DealsVerifyViewModel
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -61,6 +60,7 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         showLayout()
+        observeVerify()
     }
 
     override fun onAttach(activity: Activity) {
@@ -124,6 +124,7 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
         }
 
         tv_continue.setOnClickListener {
+            showProgress()
             verify()
         }
 
@@ -131,9 +132,13 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
 
     private fun observeVerify(){
         observe(viewModel.dealsVerify){
+            hideProgress()
             when (it){
                 is Success -> {
-                    // do success action
+                    val intent = Intent(activity, CheckoutActivity::class.java)
+                    intent.putExtra(CheckoutActivity.EXTRA_DEALDETAIL, dealsDetail)
+                    intent.putExtra(CheckoutActivity.EXTRA_VERIFY, it.data.eventVerify)
+                    startActivity(intent)
                 }
 
                 is Fail -> {
@@ -171,6 +176,14 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
 
     private fun verify(){
         viewModel.verify(viewModel.mapVerifyRequest(currentQuantity, dealsDetail))
+    }
+
+    private fun showProgress(){
+        progress_bar_layout?.show()
+    }
+
+    private fun hideProgress(){
+        progress_bar_layout?.hide()
     }
 
     companion object{

@@ -34,12 +34,12 @@ class DealsVerifyViewModel @Inject constructor(
                 graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<DealsVerifyResponse>()
             if (data.eventVerify.error.isNullOrEmpty()) {
-                mutableDealsVerify.value = Success(data)
+                mutableDealsVerify.postValue(Success(data))
             } else {
-                mutableDealsVerify.value = Fail(MessageErrorException(data.eventVerify.errorDescription))
+                mutableDealsVerify.postValue(Fail(MessageErrorException(data.eventVerify.errorDescription)))
             }
         }) {
-            mutableDealsVerify.value = Fail(it)
+            mutableDealsVerify.postValue(Fail(it))
         }
     }
 

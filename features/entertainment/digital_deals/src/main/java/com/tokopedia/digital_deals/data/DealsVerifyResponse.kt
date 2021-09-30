@@ -5,12 +5,14 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class DealsVerifyResponse(
         @SerializedName("event_verify")
         @Expose
         val eventVerify: EventVerifyResponse = EventVerifyResponse()
-)
+): Parcelable
 
+@Parcelize
 data class EventVerifyResponse(
         @SerializedName("error")
         @Expose
@@ -27,7 +29,7 @@ data class EventVerifyResponse(
         @SerializedName("gateway_code")
         @Expose
         val gatewayCode: String = ""
-)
+): Parcelable
 
 @Parcelize
 data class MetaDataResponse(
