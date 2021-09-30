@@ -32,26 +32,32 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
         val LAYOUT = R.layout.home_dc_category_widget_v2
     }
 
-    private fun getHeight2LineText(context: Context) : Int {
-            val params =
-                LinearLayout.LayoutParams(context.resources.getDimensionPixelSize(R.dimen.dp_120), LinearLayout.LayoutParams.WRAP_CONTENT)
-            val paramsTextView =
-                LinearLayout.LayoutParams(context.resources.getDimensionPixelSize(R.dimen.dp_120), LinearLayout.LayoutParams.WRAP_CONTENT)
-            val typography = Typography(context)
-            typography.setType(Typography.HEADING_6)
-            typography.layoutParams = paramsTextView
-            typography.maxLines = 2
-            val dummyText = "This Text Will Contains 2 Lines Text"
-            typography.text = dummyText
-            typography.measure(0,0)
-            val linearLayout = LinearLayout(context)
-            linearLayout.layoutParams = params
-            linearLayout.addView(typography)
-            linearLayout.measure(0,0)
-            typography.post {}.run {
-                return typography.measuredHeight
-            }
+    private fun getHeight2LinesTypographyHeading6(context: Context) : Int {
+        val params =
+            LinearLayout.LayoutParams(
+                context.resources.getDimensionPixelSize(R.dimen.dp_120),
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+        val paramsTextView =
+            LinearLayout.LayoutParams(
+                context.resources.getDimensionPixelSize(R.dimen.dp_120),
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+        val typography = Typography(context)
+        typography.setType(Typography.HEADING_6)
+        typography.layoutParams = paramsTextView
+        typography.maxLines = 2
+        val dummyText = "This Text Will Contains 2 Lines Text"
+        typography.text = dummyText
+        typography.measure(0, 0)
+        val linearLayout = LinearLayout(context)
+        linearLayout.layoutParams = params
+        linearLayout.addView(typography)
+        linearLayout.measure(0, 0)
+        typography.post {}.run {
+            return typography.measuredHeight
         }
+    }
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
         val recyclerView = itemView.findViewById<RecyclerView>(R.id.recycleList)
@@ -66,7 +72,7 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
                 )
             }
         }
-        recyclerView.adapter = CategoryWidgetItemAdapter(channel, categoryListener, getHeight2LineText(itemView.context))
+        recyclerView.adapter = CategoryWidgetItemAdapter(channel, categoryListener, getHeight2LinesTypographyHeading6(itemView.context))
         recyclerView.layoutManager = GridLayoutManager(
                 view.context,
                 2,
@@ -74,12 +80,7 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
                 false)
 
         if (recyclerView.itemDecorationCount == 0) {
-            recyclerView.addItemDecoration(
-                CategoryWidgetV2SpacingItemDecoration(
-                    2,
-                    itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_8)
-                )
-            )
+            recyclerView.addItemDecoration(CategoryWidgetV2SpacingItemDecoration(itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_8)))
         }
         setChannelDivider(channel)
     }

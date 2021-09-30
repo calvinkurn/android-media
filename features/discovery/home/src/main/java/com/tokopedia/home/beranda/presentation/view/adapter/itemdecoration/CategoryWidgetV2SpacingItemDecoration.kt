@@ -8,11 +8,10 @@ import com.tokopedia.home.R
 /**
  * created by Dhaba
  */
-class CategoryWidgetV2SpacingItemDecoration(private val spanCount: Int, private val spacing: Int) : RecyclerView.ItemDecoration() {
+class CategoryWidgetV2SpacingItemDecoration(private val spacing: Int) : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val position = parent.getChildAdapterPosition(view) // item position
-        val column = position % spanCount // item column
 
         if (position == 0 || position == 1) {
             outRect.left = view.context.resources.getDimensionPixelOffset(R.dimen.dp_16)
