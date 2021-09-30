@@ -67,6 +67,14 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
         assert(viewModel.shopBadgeReputation.value is Success)
     }
 
+    @Test
+    fun `check whether shopBadgeReputation value is error`() {
+        val shopId = "2913"
+        onGetShopReputation_thenThrowError()
+        viewModel.getShopReputationBadge(shopId)
+        assert(viewModel.shopBadgeReputation.value == null)
+    }
+
     //region stub
     private suspend fun onGetShopInfo_thenReturn(shopInfo: ShopInfo) {
         coEvery { getShopInfoUseCase.executeOnBackground() } returns shopInfo
@@ -78,6 +86,10 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
 
     private fun onGetShopReputation_thenReturn(shopBadge: ShopBadge) {
         coEvery { getShopReputationUseCase.executeOnBackground() } returns shopBadge
+    }
+
+    private fun onGetShopReputation_thenThrowError() {
+        coEvery { getShopReputationUseCase.executeOnBackground() } throws Exception()
     }
 
     private fun onGetShopId_thenReturn(shopId: String) {
