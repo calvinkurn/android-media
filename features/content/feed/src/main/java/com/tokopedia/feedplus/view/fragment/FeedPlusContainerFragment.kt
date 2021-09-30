@@ -43,6 +43,7 @@ import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
 import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter
 import com.tokopedia.feedplus.view.analytics.FeedToolBarAnalytics
+import com.tokopedia.feedplus.view.analytics.entrypoint.FeedEntryPointAnalytic
 import com.tokopedia.feedplus.view.customview.FeedMainToolbar
 import com.tokopedia.feedplus.view.di.DaggerFeedContainerComponent
 import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
@@ -124,6 +125,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     @Inject
     lateinit var toolBarAnalytics: FeedToolBarAnalytics
 
+    @Inject
+    lateinit var entryPointAnalytic: FeedEntryPointAnalytic
+
     val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
     private var mainParentStatusBarListener: MainParentStatusBarListener? = null
 
@@ -193,7 +197,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         initToolbar()
         initView()
         requestFeedTab()
-//        showFeedFab()
         initFab()
     }
 
@@ -285,7 +288,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onPause() {
         super.onPause()
-        hideAllFab(false)
+        hideAllFab()
     }
 
     override fun onResume() {
@@ -379,9 +382,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if (!isVisibleToUser) {
-            hideAllFab(false)
-        }
+        if (!isVisibleToUser) hideAllFab()
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -406,7 +407,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         postProgressUpdateView = view?.findViewById(R.id.postUpdateView)
         postProgressUpdateView?.setCreatePostData(CreatePostViewModel())
         postProgressUpdateView?.setPostUpdateListener(this)
-        hideAllFab(true)
+        hideAllFab()
         setAdapter()
         setViewPager()
         onNotificationChanged(
@@ -419,6 +420,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun initFab() {
         fab_feed.type = FloatingButtonUnify.BASIC
         fab_feed.color = FloatingButtonUnify.COLOR_GREEN
+        fab_feed.circleMainMenu.setOnClickListener {
+            entryPointAnalytic.clickMainEntryPoint()
+            fab_feed.menuOpen = true
+        }
 
         val items = arrayListOf<FloatingButtonItem>()
 
@@ -427,7 +432,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 FloatingButtonItem(
                     iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
                     title = getString(R.string.feed_fab_create_live),
-                    listener = { RouteManager.route(requireContext(), ApplinkConst.PLAY_BROADCASTER) }
+                    listener = {
+                        fab_feed.menuOpen = false
+                        entryPointAnalytic.clickCreateLiveEntryPoint()
+
+                        RouteManager.route(requireContext(), ApplinkConst.PLAY_BROADCASTER)
+                    }
                 )
             )
         }
@@ -438,7 +448,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                     iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.IMAGE),
                     title = getString(R.string.feed_fab_create_post),
                     listener = {
-                        toolBarAnalytics.sendClickBuatFeedPostEvent(userSession.userId, userSession.shopId)
+                        fab_feed.menuOpen = false
+                        entryPointAnalytic.clickCreatePostEntryPoint()
+
                         val authors = viewModel.feedContentForm.authors
                         val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
                         intent.putExtra(APPLINK_AFTER_CAMERA_CAPTURE,
@@ -629,13 +641,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
-    fun hideAllFab(isInitial: Boolean) {
+    fun hideAllFab() {
         if (activity == null) {
             return
         }
 
         fab_feed.menuOpen = false
-        layout_grey_popup.visibility = View.GONE
     }
 
     private fun onGoToLink(link: String) {
