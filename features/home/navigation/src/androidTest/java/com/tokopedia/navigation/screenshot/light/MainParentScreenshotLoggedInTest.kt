@@ -44,8 +44,6 @@ class MainParentScreenshotLoggedInTest {
     private fun setupHomeEnvironment() {
         val userSession = UserSession(context)
         userSession.setFirstTimeUserOnboarding(false)
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                RollenceKey.HOME_EXP, RollenceKey.HOME_VARIANT_REVAMP)
     }
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -81,9 +79,6 @@ class MainParentScreenshotLoggedInTest {
         RemoteConfigInstance.getInstance().abTestPlatform.setString(
                 RollenceKey.BALANCE_EXP,
                 RollenceKey.BALANCE_VARIANT_NEW)
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                RollenceKey.HOME_EXP,
-                RollenceKey.HOME_VARIANT_REVAMP)
     }
 
     private fun fileName(suffix: String? = null): String {
