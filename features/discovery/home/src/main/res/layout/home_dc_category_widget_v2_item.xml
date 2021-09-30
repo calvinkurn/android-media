@@ -6,6 +6,8 @@
     app:cardCornerRadius="@dimen/dp_9"
     app:cardElevation="@dimen/dp_0"
     android:foreground="@drawable/bg_category_widget_v2"
+    android:background="@color/product_card_dms_card_background"
+    app:cardBackgroundColor="@color/product_card_dms_card_background"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -29,7 +31,6 @@
             android:id="@+id/container_title_category"
             android:layout_width="@dimen/dp_120"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N0"
             android:paddingHorizontal="@dimen/dp_8"
             android:paddingTop="@dimen/dp_6"
             android:paddingBottom="@dimen/dp_8"
@@ -50,7 +51,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Your Text Here"/>
+                tools:text="Your text here"
+                />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
