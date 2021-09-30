@@ -181,6 +181,8 @@ public class MainParentActivity extends BaseActivity implements
 
     private static final String MAIN_PARENT_PERFORMANCE_MONITORING_KEY = "mp_slow_rendering_perf";
 
+    private static final String MAIN_PARENT_LOAD_ON_RESUME = "main_parent_load_on_resume";
+
     private static final String ROLLANCE_EXP_NAME = RollenceKey.NAVIGATION_EXP_TOP_NAV;
     private static final String ROLLANCE_EXP_NAME2 = RollenceKey.NAVIGATION_EXP_TOP_NAV2;
     private static final String ROLLANCE_VARIANT_OLD = RollenceKey.NAVIGATION_VARIANT_OLD;
@@ -652,7 +654,9 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        pageLoadTimePerformanceCallback.startCustomMetric(MAIN_PARENT_ON_RESUME_METRICS);
+        if(!getIntent().getBooleanExtra(MAIN_PARENT_LOAD_ON_RESUME, false)) {
+            pageLoadTimePerformanceCallback.startCustomMetric(MAIN_PARENT_ON_RESUME_METRICS);
+        }
         // if user is downloading the update (in app update feature),
         // check if the download is finished or is in progress
         checkForInAppUpdateInProgressOrCompleted();
@@ -679,7 +683,10 @@ public class MainParentActivity extends BaseActivity implements
             configureStatusBarBasedOnFragment(currentFragment);
             FragmentLifecycleObserver.INSTANCE.onFragmentSelected(currentFragment);
         }
-        pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_RESUME_METRICS);
+        if(!getIntent().getBooleanExtra(MAIN_PARENT_LOAD_ON_RESUME, false)) {
+            pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_RESUME_METRICS);
+            getIntent().putExtra(MAIN_PARENT_LOAD_ON_RESUME, true);
+        }
     }
 
     @Override
