@@ -36,6 +36,7 @@ public final class AppScreen {
     public static final String SCREEN_DEEPLINK_APPLINKHANDLER = "AppLink Handler";
     public static final String CREATE_SHOP_REDIRECT = "Create Shop Redirect Page";
     public static final String SCREEN_DISCOVERY_PAGE = "Discovery Page";
+    public static final String SCREEN_TOKO_MART = "TokoMart";
 
 
     public static String GROUP_CHAT = "Group Chat Page";

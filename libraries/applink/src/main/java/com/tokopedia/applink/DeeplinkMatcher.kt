@@ -32,6 +32,7 @@ import com.tokopedia.applink.DeepLinkChecker.REFERRAL
 import com.tokopedia.applink.DeepLinkChecker.SALE
 import com.tokopedia.applink.DeepLinkChecker.SHOP
 import com.tokopedia.applink.DeepLinkChecker.SMCREFERRAL
+import com.tokopedia.applink.DeepLinkChecker.TOKOMART
 import com.tokopedia.applink.DeepLinkChecker.TOKOPOINT
 import com.tokopedia.applink.DeepLinkChecker.TRAVEL_HOMEPAGE
 import com.tokopedia.applink.DeepLinkChecker.WALLET_OVO
@@ -94,6 +95,7 @@ class DeeplinkMatcher {
         add(Pattern(GT, 0, mapOf(0 to "edu")) to OTHER)
         add(Pattern(EQ, 3, mapOf(1 to "campaign")) to ETALASE)
         add(Pattern(EQ, 4, mapOf(0 to "payment", 1 to "thank-you")) to NATIVE_THANK_YOU)
+        add(Pattern(EQ, 1, mapOf(0 to "tokomart")) to TOKOMART)
         add(Pattern(EQ, 1, null) to SHOP)
         add(Pattern(EQ, 2, null) to PRODUCT)
     }
