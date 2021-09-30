@@ -25,10 +25,8 @@ class CalendarWidgetItemViewModel(
     private val pushBannerSubscription: MutableLiveData<Boolean> = MutableLiveData()
     private val pushBannerStatus: MutableLiveData<Pair<Boolean, String>> = MutableLiveData()
     private val showLogin: MutableLiveData<Boolean> = MutableLiveData()
-    private val buttonIsLoading: MutableLiveData<Boolean> = MutableLiveData()
 
     fun getShowLoginData(): LiveData<Boolean> = showLogin
-    fun getButtonIsLoading(): LiveData<Boolean> = buttonIsLoading
     fun getPushBannerSubscriptionData(): LiveData<Boolean> = pushBannerSubscription
     fun getPushBannerStatusData(): LiveData<Pair<Boolean, String>> = pushBannerStatus
 
@@ -45,15 +43,12 @@ class CalendarWidgetItemViewModel(
 
     fun subscribeUserForPushNotification(campaignId: Int) {
         if (isUserLoggedIn()) {
-            buttonIsLoading.value = true
             launchCatchError(block = {
                 val pushSubscriptionResponse = subScribeToUseCase.subscribeToPush(campaignId)
                 if (pushSubscriptionResponse.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse.notifierSetReminder?.isSuccess == 2) {
                     pushBannerStatus.value = Pair(true, application.getString(R.string.discovery_calendar_push_subscribe))
                 }
-                buttonIsLoading.value = false
             }, onError = {
-                buttonIsLoading.value = false
                 it.printStackTrace()
             })
         } else {
@@ -63,15 +58,12 @@ class CalendarWidgetItemViewModel(
 
     fun unSubscribeUserForPushNotification(campaignId: Int) {
         if (isUserLoggedIn()) {
-            buttonIsLoading.value = true
             launchCatchError(block = {
                 val pushSubscriptionResponse = subScribeToUseCase.unSubscribeToPush(campaignId)
                 if (pushSubscriptionResponse.notifierSetReminder?.isSuccess == 1 || pushSubscriptionResponse.notifierSetReminder?.isSuccess == 2) {
                     pushBannerStatus.value = Pair(false, application.getString(R.string.discovery_calendar_push_unsubscribe))
                 }
-                buttonIsLoading.value = false
             }, onError = {
-                buttonIsLoading.value = false
                 it.printStackTrace()
             })
         } else {

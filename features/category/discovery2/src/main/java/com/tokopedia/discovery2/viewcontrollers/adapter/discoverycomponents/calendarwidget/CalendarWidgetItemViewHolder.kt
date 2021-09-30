@@ -187,11 +187,6 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                     )
                 )
             })
-            calendarWidgetItemViewModel.getButtonIsLoading().observe(fragment.viewLifecycleOwner, {
-                itemView.findViewById<UnifyButton>(R.id.calendar_button).apply {
-                    isLoading = it
-                }
-            })
             calendarWidgetItemViewModel.getPushBannerSubscriptionData().observe(fragment.viewLifecycleOwner, {
                 updateButton(it)
             })
@@ -237,6 +232,9 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
             calendarWidgetItemViewModel.getSyncPageLiveData().removeObservers(it)
+            calendarWidgetItemViewModel.getShowLoginData().removeObservers(it)
+            calendarWidgetItemViewModel.getPushBannerSubscriptionData().removeObservers(it)
+            calendarWidgetItemViewModel.getPushBannerStatusData().removeObservers(it)
         }
     }
 }
