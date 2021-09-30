@@ -20,7 +20,7 @@ sealed class CoverSetupState {
 
         abstract val coverSource: CoverSource
 
-        data class Product(val productId: Long, val imageUrl: String) : Cropping() {
+        data class Product(val productId: String, val imageUrl: String) : Cropping() {
             override val coverSource: CoverSource
                 get() = CoverSource.Product(productId)
         }

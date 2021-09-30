@@ -21,7 +21,8 @@ object ReminderWidgetMapper {
                                     link = it.link,
                                     mainText = it.mainText,
                                     subText = it.subText,
-                                    title = it.title
+                                    title = it.title,
+                                    UUID = recharge.UUID
                             )
                     )
             )
