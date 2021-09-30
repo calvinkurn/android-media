@@ -140,7 +140,7 @@ class TokoNowHomeFragment: Fragment(),
         const val SOURCE_TRACKING = "tokonow page"
         const val DEFAULT_QUANTITY = 0
         const val SHARE_URL = "https://www.tokopedia.com/tokomart"
-        const val THUMBNAIL_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/thumbnail_now_home.png"
+        const val THUMBNAIL_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/img/android/tokomart/tokomart_logo_share_bottomsheet.png"
         const val OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/og_now_home.jpg"
         const val SHARE = "Share"
         const val PAGE_SHARE_NAME = "TokoMart"
