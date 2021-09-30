@@ -239,7 +239,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val SCROLL_RECOMMEND_LIST = "recommend_list"
         private const val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
         private const val CLICK_TIME_INTERVAL: Long = 500
-        private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
 
         private const val EXP_TOP_NAV = RollenceKey.NAVIGATION_EXP_TOP_NAV
         private const val VARIANT_OLD = RollenceKey.NAVIGATION_VARIANT_OLD
@@ -359,7 +358,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var mShowTokopointNative = false
     private var showSeeAllCard = true
     private var isShowFirstInstallSearch = false
-    private var durationAutoTransition: Long = DEFAULT_INTERVAL_HINT
     private var scrollToRecommendList = false
     private var isFeedLoaded = false
     private var startToTransitionOffset = 0
@@ -594,7 +592,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             showRecomendation = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false)
             mShowTokopointNative = it.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, false)
             isShowFirstInstallSearch = it.getBoolean(ConstantKey.RemoteConfigKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH, false)
-            durationAutoTransition = it.getLong(ConstantKey.RemoteConfigKey.REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH, DEFAULT_INTERVAL_HINT)
             showSeeAllCard = it.getBoolean(SEE_ALL_CARD, true)
         }
     }
@@ -626,18 +623,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             viewLifecycleOwner.lifecycle.addObserver(fragmentFramePerformanceIndexMonitoring)
-        }
-        view.findViewById<Button>(R.id.btnTest).setOnClickListener {
-            setFalseNewWalletAppCoachmarkShown(context!!)
-            setFalseNewTokopointCoachmarkShown(context!!)
-            enableOnboarding(context!!)
-            setCoachmarkSharedPrefValue(context!!, PREF_KEY_HOME_COACHMARK, false)
-            setCoachmarkSharedPrefValue(context!!, PREF_KEY_HOME_COACHMARK_NAV, false)
-            setCoachmarkSharedPrefValue(context!!, PREF_KEY_HOME_COACHMARK_INBOX, false)
-            setCoachmarkSharedPrefValue(context!!, PREF_KEY_HOME_COACHMARK_CHOOSEADDRESS, false)
-            setCoachmarkSharedPrefValue(context!!, PREF_KEY_HOME_COACHMARK_BALANCE, false)
-            setCoachmarkSharedPrefValue(context!!, PREF_KEY_WALLETAPP_COACHMARK_BALANCE, false)
-            setCoachmarkSharedPrefValue(context!!, PREF_KEY_WALLETAPP2_COACHMARK_BALANCE, false)
         }
         oldToolbar = view.findViewById(R.id.toolbar)
         navToolbar = view.findViewById(R.id.navToolbar)
@@ -2501,8 +2486,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                 HintData(data.placeholder ?: "", data.keyword ?: ""),
                                 placeholderToHint(data),
                                 isFirstInstall(),
-                                shouldShowTransition(),
-                                durationAutoTransition)
+                                false)
                     },
                     ifNavRevamp = {
                         navToolbar?.setupSearchbar(
@@ -2519,8 +2503,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                                             isFirstInstall().toString())
                                 },
                                 searchbarImpressionCallback = {},
-                                durationAutoTransition = durationAutoTransition,
-                                shouldShowTransition = shouldShowTransition()
+                                shouldShowTransition = false
                         )
                     }
             )
@@ -3245,11 +3228,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun showToasterReviewSuccess() {
         view?.let { build(it, getString(R.string.review_create_success_toaster, getHomeViewModel().getUserName()), Snackbar.LENGTH_LONG, TYPE_NORMAL, getString(R.string.review_oke)).show() }
-    }
-
-    private fun shouldShowTransition(): Boolean {
-        val abTestValue = getAbTestPlatform().getString(ConstantKey.RemoteConfigKey.AB_TEST_AUTO_TRANSITION_KEY, "")
-        return abTestValue == ConstantKey.ABtestValue.AUTO_TRANSITION_VARIANT
     }
 
     /**

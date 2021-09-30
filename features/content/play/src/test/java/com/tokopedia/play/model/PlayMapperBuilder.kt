@@ -13,19 +13,21 @@ import io.mockk.mockk
 class PlayMapperBuilder {
 
     fun buildSocketMapper(
-            productTagMapper: PlayProductTagUiMapper = buildProductTagMapper(),
-            merchantVoucherMapper: PlayMerchantVoucherUiMapper = buildMerchantVoucherMapper(),
-            chatMapper: PlayChatUiMapper = buildChatMapper(),
-            channelStatusMapper: PlayChannelStatusMapper = buildChannelStatusMapper(),
-            channelInteractiveMapper: PlayChannelInteractiveMapper = buildChannelInteractiveMapper(),
-            realTimeNotificationMapper: PlayRealTimeNotificationMapper = buildRealTimeNotificationMapper(),
+        productTagMapper: PlayProductTagUiMapper = buildProductTagMapper(),
+        merchantVoucherMapper: PlayMerchantVoucherUiMapper = buildMerchantVoucherMapper(),
+        chatMapper: PlayChatUiMapper = buildChatMapper(),
+        channelStatusMapper: PlayChannelStatusMapper = buildChannelStatusMapper(),
+        channelInteractiveMapper: PlayChannelInteractiveMapper = buildChannelInteractiveMapper(),
+        realTimeNotificationMapper: PlayRealTimeNotificationMapper = buildRealTimeNotificationMapper(),
+        multipleLikesMapper: PlayMultipleLikesMapper = buildMultipleLikesMapper(),
     ) = PlaySocketToModelMapper(
-            productTagMapper = productTagMapper,
-            merchantVoucherMapper = merchantVoucherMapper,
-            chatMapper = chatMapper,
-            channelStatusMapper = channelStatusMapper,
-            channelInteractiveMapper = channelInteractiveMapper,
-            realTimeNotificationMapper = realTimeNotificationMapper,
+        productTagMapper = productTagMapper,
+        merchantVoucherMapper = merchantVoucherMapper,
+        chatMapper = chatMapper,
+        channelStatusMapper = channelStatusMapper,
+        channelInteractiveMapper = channelInteractiveMapper,
+        realTimeNotificationMapper = realTimeNotificationMapper,
+        multipleLikesMapper = multipleLikesMapper,
     )
 
     fun buildProductTagMapper() = PlayProductTagUiMapper()
@@ -49,4 +51,6 @@ class PlayMapperBuilder {
             userSession = userSession,
             htmlTextTransformer = htmlTextTransformer,
     )
+
+    fun buildMultipleLikesMapper() = PlayMultipleLikesMapper()
 }
