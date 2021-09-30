@@ -9,7 +9,7 @@ import com.tokopedia.common_digital.common.constant.DigitalTrackingConst.Value.R
 import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpAnalyticsConst.Category.EMONEY_PDP_SCREEN_NAME
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import java.util.*
+import java.util.HashMap
 
 /**
  * @author by jessica on 06/05/21
