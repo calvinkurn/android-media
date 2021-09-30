@@ -204,6 +204,7 @@ object DeviceConnectionInfo {
                 WIFI -> CONN_WIFI
                 MOBILE -> {
                     val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+                    if (cm.activeNetworkInfo?.subtype == null) return CONN_UNKNOWN
                     return when (cm.activeNetworkInfo?.subtype) {
                         // 2G:
                         TelephonyManager.NETWORK_TYPE_GPRS -> CONN_GPRS // ~ 100 kbps

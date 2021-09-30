@@ -10,7 +10,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics;
-import com.tokopedia.loginregister.common.data.LoginRegisterApi;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.sessioncommon.data.TokenApi;
 import com.tokopedia.sessioncommon.di.SessionCommonScope;
@@ -40,8 +39,6 @@ public interface LoginRegisterComponent {
     Retrofit.Builder getRetrofitBuilder();
 
     CacheManager provideCacheManager();
-
-    LoginRegisterApi provideLoginRegisterApi();
 
     @Named(SessionModule.SESSION_MODULE)
     UserSessionInterface provideUserSession();

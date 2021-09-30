@@ -1,6 +1,7 @@
 package com.tokopedia.play.model
 
 import com.tokopedia.play.view.storage.PlayChannelData
+import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 
@@ -18,6 +19,7 @@ class PlayChannelDataModelBuilder {
     private val quickReplyBuilder = PlayQuickReplyModelBuilder()
     private val videoInfoBuilder = PlayVideoModelBuilder()
     private val statusInfoBuilder = PlayStatusInfoModelBuilder()
+    private val upcomingInfoBuilder = PlayUpcomingInfoModelBuilder()
 
     fun buildChannelData(
             id: String = "1",
@@ -30,7 +32,8 @@ class PlayChannelDataModelBuilder {
             quickReplyInfo: PlayQuickReplyInfoUiModel = quickReplyBuilder.build(),
             videoMetaInfo: PlayVideoMetaInfoUiModel = videoInfoBuilder.buildVideoMeta(),
             statusInfo: PlayStatusInfoUiModel = statusInfoBuilder.build(),
-            leaderboardInfo: PlayLeaderboardInfoUiModel = PlayLeaderboardInfoUiModel()
+            leaderboardInfo: PlayLeaderboardInfoUiModel = PlayLeaderboardInfoUiModel(),
+            upcomingInfo: PlayUpcomingUiModel = upcomingInfoBuilder.buildUpcomingInfo()
     ) = PlayChannelData(
             id = id,
             channelDetail = channelDetail,
@@ -43,5 +46,6 @@ class PlayChannelDataModelBuilder {
             statusInfo = statusInfo,
             leaderboardInfo = leaderboardInfo,
             channelReportInfo = channelReportInfo,
+            upcomingInfo = upcomingInfo
     )
 }

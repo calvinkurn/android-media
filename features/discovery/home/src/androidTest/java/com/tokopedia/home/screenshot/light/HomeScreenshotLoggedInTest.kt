@@ -21,8 +21,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Compan
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey.BALANCE_EXP
 import com.tokopedia.remoteconfig.RollenceKey.BALANCE_VARIANT_NEW
-import com.tokopedia.remoteconfig.RollenceKey.HOME_EXP
-import com.tokopedia.remoteconfig.RollenceKey.HOME_VARIANT_REVAMP
+
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
 import com.tokopedia.test.application.espresso_component.CommonActions.findViewHolderAndScreenshot
@@ -144,8 +143,5 @@ class HomeScreenshotLoggedInTest {
         RemoteConfigInstance.getInstance().abTestPlatform.setString(
                 BALANCE_EXP,
                 BALANCE_VARIANT_NEW)
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                HOME_EXP,
-                HOME_VARIANT_REVAMP)
     }
 }

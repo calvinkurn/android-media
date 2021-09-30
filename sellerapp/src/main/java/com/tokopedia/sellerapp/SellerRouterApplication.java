@@ -69,7 +69,6 @@ import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerorder.common.presenter.fragments.SomContainerFragment;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment;
-import com.tokopedia.talk.feature.inbox.presentation.activity.TalkInboxActivity;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
@@ -81,6 +80,7 @@ import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -431,11 +431,11 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     @NotNull
     @Override
-    public Fragment getSomListFragment(String tabPage, int orderType, String searchKeyword, String orderId) {
+    public Fragment getSomListFragment(@NotNull Context context, @Nullable String tabPage, @NotNull String orderType, @NotNull String searchKeyword, @NotNull String orderId) {
         Bundle bundle = new Bundle();
         tabPage = (null == tabPage || "".equals(tabPage)) ? SomConsts.STATUS_ALL_ORDER : tabPage;
         bundle.putString(SomConsts.TAB_ACTIVE, tabPage);
-        bundle.putInt(SomConsts.FILTER_ORDER_TYPE, orderType);
+        bundle.putString(SomConsts.FILTER_ORDER_TYPE, orderType);
         bundle.putString(QUERY_PARAM_SEARCH, searchKeyword);
         if (DeviceScreenInfo.isTablet(context)) {
             if (orderId != null && orderId.trim().length() > 0) {

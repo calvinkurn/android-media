@@ -1,137 +1,111 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
-import android.text.format.DateFormat
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
 import androidx.annotation.LayoutRes
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
-import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
-import com.tokopedia.chatbot.EllipsizeMaker
-import com.tokopedia.chatbot.EllipsizeMaker.MESSAGE_LINE_COUNT
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
-import com.tokopedia.chatbot.util.ChatBotTimeConverter
+import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
-import java.util.*
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 
 /**
  * @author by yfsx on 14/05/18.
  */
-class ChatRatingViewHolder(itemView: View,
-                           private val chatLinkHandlerListener: ChatLinkHandlerListener,
-                           private val viewListener: ChatRatingListener) : BaseChatViewHolder<ChatRatingViewModel>(itemView) {
-    private val message: TextView
-    private val ratingHolder: LinearLayout
-    private val ratingYes: ImageView
-    private val ratingNo: ImageView
-    private val ratingSelected: ImageView
-    private val mesageLayout: RelativeLayout
-    private val mesageBottom: TextView
+class ChatRatingViewHolder(
+    itemView: View,
+    private val chatLinkHandlerListener: ChatLinkHandlerListener,
+    chatbotAdapterListener: ChatbotAdapterListener,
+    private val viewListener: ChatRatingListener
+) : BaseChatBotViewHolder<ChatRatingViewModel>(itemView, chatbotAdapterListener) {
 
-    init {
-        view = itemView
-        message = itemView.findViewById(R.id.message)
-        hour = itemView.findViewById(R.id.hour)
-        date = itemView.findViewById(R.id.date)
-        ratingHolder = itemView.findViewById(R.id.rating_option_holder)
-        ratingYes = itemView.findViewById(R.id.rating_option_yes)
-        ratingNo = itemView.findViewById(R.id.rating_option_no)
-        ratingSelected = itemView.findViewById(R.id.rating_selected)
-        mesageLayout = itemView.findViewById(R.id.message_text_holder)
-        mesageBottom = itemView.findViewById(R.id.bottom_view)
+    private val movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
+    private val thumbsUpCntr = itemView.findViewById<CardView>(R.id.rating_option_yes_container)
+    private val thumbsDownCntr = itemView.findViewById<CardView>(R.id.rating_option_no_container)
+    private val thumbsDown = itemView.findViewById<ImageView>(R.id.rating_option_no)
+    private val thumbsUp = itemView.findViewById<ImageView>(R.id.rating_option_yes)
+    private val ratingHolder = itemView.findViewById<LinearLayout>(R.id.rating_option_holder)
+
+    override fun bind(viewModel: ChatRatingViewModel) {
+        super.bind(viewModel)
+        ChatbotMessageViewHolderBinder.bindChatMessage(
+            viewModel.message,
+            customChatLayout,
+            movementMethod
+        )
+        bindRatingView(viewModel)
     }
 
-    override fun bind(element: ChatRatingViewModel) {
-        view.setOnClickListener { v -> KeyboardHandler.DropKeyboard(itemView.context, view) }
-
-        message.movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
-        setMessage(element)
-        date.visibility = View.VISIBLE
-        var time: String?
-
-        try {
-            val myTime = (element.replyTime)?.toLong() ?: 0L
-            time = DateFormat.getLongDateFormat(itemView.context).format(Date(myTime))
-        } catch (e: NumberFormatException) {
-            time = element.replyTime
-        }
-
-        date.text = time
-
-        if (element.isShowDate) {
-            date.visibility = View.VISIBLE
-        } else {
-            date.visibility = View.GONE
-        }
-
-        hour.text = getHourTime(element.replyTime ?: "")
-
-        when (element.ratingStatus) {
+    private fun bindRatingView(viewModel: ChatRatingViewModel) {
+        resetRating()
+        when (viewModel.ratingStatus) {
             ChatRatingViewModel.RATING_NONE -> {
-                ratingHolder.visibility = View.VISIBLE
-                ratingSelected.visibility = View.GONE
-                ratingYes.setOnClickListener { v -> viewListener.onClickRating(element, ChatRatingViewModel.RATING_GOOD) }
+                ratingHolder.show()
+                thumbsUpCntr.setOnClickListener {
+                    viewListener.onClickRating(
+                        viewModel,
+                        ChatRatingViewModel.RATING_GOOD
+                    )
+                }
 
-                ratingNo.setOnClickListener { v -> viewListener.onClickRating(element, ChatRatingViewModel.RATING_BAD) }
-            }
-
-            ChatRatingViewModel.RATING_GOOD -> {
-                ratingHolder.visibility = View.GONE
-                ratingSelected.isSelected = true
-                ratingSelected.visibility = View.VISIBLE
-            }
-
-            ChatRatingViewModel.RATING_BAD -> {
-                ratingHolder.visibility = View.GONE
-                ratingSelected.isSelected = false
-                ratingSelected.visibility = View.VISIBLE
-            }
-
-            else -> {
-                ratingHolder.visibility = View.GONE
-                ratingSelected.visibility = View.GONE
-            }
-        }
-
-    }
-
-    override fun getHourTime(replyTime: String): String {
-        return ChatBotTimeConverter.getHourTime(replyTime)
-    }
-
-    private fun setMessage(element: ChatRatingViewModel) {
-        if (element.message.isNotEmpty()) {
-            message.text = MethodChecker.fromHtml(element.message)
-            message.post {
-                if (message.lineCount > MESSAGE_LINE_COUNT) {
-                    message.maxLines = MESSAGE_LINE_COUNT
-                    message.text = EllipsizeMaker.getTruncatedMsg(message)
-                    mesageBottom.visibility = View.VISIBLE
-                    mesageBottom.setOnClickListener {
-                        showFullMessage(element.message)
-                    }
-
-                } else {
-                    mesageBottom.visibility = View.GONE
-                    MethodChecker.setBackground(mesageLayout, ContextCompat.getDrawable(itemView.context,com.tokopedia.chat_common.R.drawable.left_bubble))
+                thumbsDownCntr.setOnClickListener {
+                    viewListener.onClickRating(
+                        viewModel,
+                        ChatRatingViewModel.RATING_BAD
+                    )
                 }
             }
 
+            ChatRatingViewModel.RATING_GOOD -> setRatingGood()
+            ChatRatingViewModel.RATING_BAD -> setRatingBad()
+            else -> ratingHolder.hide()
         }
+
     }
 
-    private fun showFullMessage(message: String) {
-        this.message.maxLines = Int.MAX_VALUE
-        this.message.text = MethodChecker.fromHtml(message)
-        mesageBottom.visibility = View.GONE
+    private fun setRatingBad() {
+        ratingHolder.visibility = View.VISIBLE
+        thumbsUpCntr.hide()
+        thumbsDown.setColorFilter(
+            ContextCompat.getColor(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_R500
+            )
+        )
+        thumbsDown.show()
     }
+
+    private fun setRatingGood() {
+        ratingHolder.visibility = View.VISIBLE
+        thumbsDownCntr.hide()
+        thumbsUp.setColorFilter(
+            ContextCompat.getColor(
+                itemView.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            )
+        )
+        thumbsUp.show()
+    }
+
+    private fun resetRating() {
+        thumbsUp.colorFilter = null
+        thumbsDown.colorFilter = null
+        thumbsUpCntr.show()
+        thumbsDownCntr.show()
+
+    }
+
+    override fun getCustomChatLayoutId(): Int = com.tokopedia.chatbot.R.id.customChatLayout
+    override fun getSenderAvatarId(): Int = R.id.senderAvatar
+    override fun getSenderNameId(): Int = R.id.senderName
+    override fun getDateContainerId(): Int = R.id.dateContainer
 
     companion object {
 
@@ -139,3 +113,4 @@ class ChatRatingViewHolder(itemView: View,
         val LAYOUT = R.layout.item_chat_rating
     }
 }
+
