@@ -15,7 +15,8 @@ class AffiliatePromotionProductCard  {
 
     enum class FooterType(val type : Int){
         SHOP(1),
-        RATING(2)
+        RATING(2),
+        SALES(3)
     }
 
     enum class MessageType(val type : Int){
@@ -30,6 +31,7 @@ class AffiliatePromotionProductCard  {
         private const val LABEL_COLOR_COMMISSION = "textGreen"
         private const val LABEL_SISA = "gimmick"
         private const val LABEL_SISA_COLOR = "textDarkRed"
+        private const val LABEL_INTEGRITY = "integrity"
 
         fun toAffiliateProductModel(item : AffiliateSearchData.SearchAffiliate.Data.Card.Item) : ProductCardModel{
             return ProductCardModel(
@@ -43,6 +45,8 @@ class AffiliatePromotionProductCard  {
                                     getAdditionalDataFromType(item, AdditionalInfoType.COMMISSION_AMOUNT_TYPE),LABEL_COLOR_COMMISSION),
                             ProductCardModel.LabelGroup(LABEL_SISA,
                                     getAdditionalDataFromType(item, AdditionalInfoType.PRODUCT_STOCK_TYPE),LABEL_SISA_COLOR),
+                            ProductCardModel.LabelGroup(LABEL_INTEGRITY,
+                                    getFooterDataFromType(item, FooterType.SALES)?.footerText ?: ""),
                             ProductCardModel.LabelGroup(LABEL_TYPE,
                                     getMessageDataFromType(item,MessageType.OVERLAY_IMAGE_TYPE), LABEL_COLOR)),
                     shopBadgeList = arrayListOf(ProductCardModel.ShopBadge(getFooterDataFromType(item,FooterType.SHOP)?.footerIcon?.isNotEmpty() == true,

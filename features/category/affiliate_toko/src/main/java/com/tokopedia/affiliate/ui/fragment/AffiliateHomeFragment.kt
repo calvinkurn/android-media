@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.affiliate.AFFILIATE_LOGIN_REQUEST_CODE
 import com.tokopedia.affiliate.AffiliateAnalytics
+import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
@@ -46,6 +47,7 @@ import javax.inject.Inject
 class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), ProductClickInterface {
 
     private var totalDataItemsCount: Int = 0
+    private var isSwipeRefresh = false
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -91,6 +93,11 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter.setVisitables(ArrayList())
         products_rv.layoutManager = layoutManager
+        swipe_refresh_layout.setOnRefreshListener {
+            isSwipeRefresh = true
+            loadMoreTriggerListener?.resetState()
+            affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO)
+        }
         loadMoreTriggerListener = getEndlessRecyclerViewListener(layoutManager)
         products_rv.adapter = adapter
         loadMoreTriggerListener?.let { products_rv.addOnScrollListener(it) }
@@ -171,7 +178,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         })
         affiliateHomeViewModel.getValidateUserdata().observe(this, { validateUserdata ->
             if (validateUserdata.validateAffiliateUserStatus.data?.isEligible == true) {
-                affiliateHomeViewModel.getAffiliatePerformance(page = 0)
+                affiliateHomeViewModel.getAffiliatePerformance(page = PAGE_ZERO)
             }else {
                 validateUserdata.validateAffiliateUserStatus.data?.error?.ctaLink?.androidUrl?.let {
                     activity?.startActivity(Intent(Intent.ACTION_VIEW,Uri.parse(it)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
@@ -182,6 +189,10 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
 
         affiliateHomeViewModel.getAffiliateDataItems().observe(this ,{ dataList ->
             if (dataList.isNotEmpty()) {
+                if(isSwipeRefresh){
+                    swipe_refresh_layout.isRefreshing = false
+                    isSwipeRefresh = !isSwipeRefresh
+                }
                 adapter.addMoreData(dataList)
                 loadMoreTriggerListener?.updateStateAfterGetData()
             } else {

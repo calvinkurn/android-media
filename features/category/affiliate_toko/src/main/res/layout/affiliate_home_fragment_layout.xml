@@ -88,9 +88,10 @@
         app:typographyWeight="reguler"
         tools:text="6 Produk" />
 
-    <FrameLayout
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:id="@+id/swipe_refresh_layout"
         android:layout_marginBottom="@dimen/unify_space_48"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -107,7 +108,7 @@
             tools:listitem="@layout/affiliate_vertical_product_card_item_layout"
             tools:orientation="vertical" />
 
-    </FrameLayout>
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
 
     <com.tkpd.remoteresourcerequest.view.DeferredImageView
