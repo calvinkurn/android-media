@@ -7,10 +7,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Paint
 import android.os.Handler
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
+import android.view.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.listener.CreateContentPostCOmmonLIstener
@@ -18,13 +15,12 @@ import com.tokopedia.createpost.view.viewmodel.MediaType
 import com.tokopedia.createpost.view.viewmodel.RelatedProductItem
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.imagepicker_insta.toPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.round
-import android.view.ViewConfiguration
-import com.tokopedia.imagepicker_insta.toPx
 
 
 class TagViewProvider {
@@ -34,6 +30,7 @@ class TagViewProvider {
 
     companion object {
         private const val POINTER_HALF_DIMEN = 8
+        private const val POINTER_HEIGHT = 28
     }
 
 
@@ -100,12 +97,18 @@ class TagViewProvider {
         parent.addView(child)
         var productTagViewDelete: IconUnify = child.findViewById(R.id.product_tag_clear)
         var productTagViewDeleteRight: IconUnify = child.findViewById(R.id.product_tag_clear_right)
-        var productTagViewDeleteFinal: IconUnify = child.findViewById(R.id.product_tag_clear)
+        var productTagViewDeleteFinal: IconUnify = productTagViewDelete
+        var productTagViewTopNotch: View = child.findViewById<View>(R.id.topNotch)
+        var productTagViewBottomNotch: View = child.findViewById<View>(R.id.bottomNotch)
+        var productTagNotchViewFinal: View = productTagViewTopNotch
+        var productTopNotchVisible = true
         var isDrag = false
         var isLongPress = false
 
         val handler = Handler()
         val mLongPressed: Runnable = Runnable {
+            if (productTagViewDeleteFinal.isVisible)
+                productTagViewDeleteFinal.gone()
             scaleUp(child)
             isLongPress = true
             child.postDelayed({
@@ -127,10 +130,8 @@ class TagViewProvider {
                 }
 
                 MotionEvent.ACTION_MOVE -> {
-
                     isLongPress = false
-                    handler.removeCallbacks(
-                        mLongPressed)
+
                     isDrag = true
                     val gotoX: Float = when {
                         (motionEvent.rawX.plus(dX)
@@ -153,10 +154,13 @@ class TagViewProvider {
                             ?: 0f) + view.height > (parent.bottom - greyAreaY) -> {
                             parent.bottom - greyAreaY - view.height.toFloat() /*Blocking bottom on drag*/
                         }
-                        else -> {
+                        else ->
                             motionEvent.rawY.plus(dY)  /*Normal vertical drag*/
                         }
-                    }
+
+                    if (gotoX - view.x > 10 && gotoY - view.y > 10)
+                        handler.removeCallbacks(
+                            mLongPressed)
 
                     view.animate()
                         .x(gotoX)
@@ -166,11 +170,16 @@ class TagViewProvider {
 
                     val bitmapCurrentHeight = (parent.height - (2 * greyAreaY))
                     if (view.y < (bitmapCurrentHeight + greyAreaY) * 0.70) {
-                        view.findViewById<View>(R.id.topNotch).visibility = View.VISIBLE
-                        view.findViewById<View>(R.id.bottomNotch).visibility = View.GONE
+                        productTopNotchVisible = true
+                        productTagViewTopNotch.visibility = View.VISIBLE
+                        productTagViewBottomNotch.visibility = View.GONE
+                        productTagNotchViewFinal = productTagViewTopNotch
+
                     } else {
-                        view.findViewById<View>(R.id.topNotch).visibility = View.GONE
-                        view.findViewById<View>(R.id.bottomNotch).visibility = View.VISIBLE
+                        productTopNotchVisible = false
+                        productTagViewBottomNotch.visibility = View.VISIBLE
+                        productTagViewTopNotch.visibility = View.GONE
+                        productTagNotchViewFinal = productTagViewBottomNotch
                     }
 
                     return@OnTouchListener true
@@ -182,7 +191,9 @@ class TagViewProvider {
 
                     var isRightClearIconVisible = false
                     if (!isDrag) {
-                        if (!productTagViewDeleteFinal.isVisible) {
+                        if (productTagViewDeleteFinal.isVisible) {
+                            productTagViewDeleteFinal.gone()
+                        } else if (!isLongPress) {
                             productTagViewDeleteFinal =
                                 if (((view.parent as ConstraintLayout).right) - (view.x + view.width + greyAreaX) > 88) {
                                     isRightClearIconVisible = false
@@ -191,11 +202,7 @@ class TagViewProvider {
                                     isRightClearIconVisible = true
                                     productTagViewDeleteRight
                                 }
-                        }
 
-                        if (productTagViewDeleteFinal.isVisible) {
-                            productTagViewDeleteFinal.gone()
-                        } else if (!isLongPress) {
                             val endSpace =
                                 ((view.parent as ConstraintLayout).right) - (view.x + view.width + greyAreaX)
                             val endSpaceToBeAdded = 88 - endSpace
@@ -213,7 +220,11 @@ class TagViewProvider {
                     parent.getLocationOnScreen(locationParent)
                     feedXMediaTagging.run {
                         X = (location[0].toFloat() ?: 0f) + POINTER_HALF_DIMEN.toPx()
-                        Y = (location[1] - locationParent[1]).toFloat() ?: 0f
+                        Y = if (productTopNotchVisible)
+                            (location[1] - locationParent[1]).toFloat() ?: 0f
+                        else
+                            (location[1] - locationParent[1]).toFloat()
+                                ?: 0f
                         posX = round((feedXMediaTagging.X!! / parent.width) * 10) / 10
                         posY = round((feedXMediaTagging.Y!! / parent.height) * 10) / 10
                     }
@@ -243,24 +254,48 @@ class TagViewProvider {
             }
 
             //Handling for negative X axis
-            if (xTapped < 0) {
-                child.x = 0f
-            } else {
-                child.x = xTapped
+            when {
+                xTapped < greyAreaX ->
+                     child.x = greyAreaX.toFloat()
+                xTapped + child.width > (parent.right - greyAreaX) ->
+                    child.x = (parent.width - greyAreaX - child.width).toFloat()
+                else -> child.x = xTapped
+
+            }
+            when {
+                yTapped < greyAreaY -> child.y = greyAreaY.toFloat()
+                yTapped + child.height > parent.bottom - greyAreaY ->
+                    child.y = (parent.bottom - greyAreaY - child.height).toFloat()
+                else -> child.y = yTapped
             }
 
-            child.y = yTapped
             child.visibility = View.VISIBLE
 
-            if (child.y < parent.height * 0.75) {
-                child.findViewById<View>(R.id.topNotch).visibility = View.VISIBLE
-                child.findViewById<View>(R.id.bottomNotch).visibility = View.GONE
+            val bitmapCurrentHeight = (parent.height - (2 * greyAreaY))
+            if (child.y < (bitmapCurrentHeight + greyAreaY) * 0.70) {
+                productTopNotchVisible = true
+                productTagViewTopNotch.visibility = View.VISIBLE
+                productTagViewBottomNotch.visibility = View.GONE
+                productTagNotchViewFinal = productTagViewTopNotch
+
             } else {
-                child.findViewById<View>(R.id.topNotch).visibility = View.GONE
-                child.findViewById<View>(R.id.bottomNotch).visibility = View.VISIBLE
+                productTopNotchVisible = false
+                productTagViewBottomNotch.visibility = View.VISIBLE
+                productTagViewTopNotch.visibility = View.GONE
+                productTagNotchViewFinal = productTagViewBottomNotch
             }
 
         }, 50)
+
+        val location = IntArray(2)
+        val locationParent = IntArray(2)
+        val view = child.findViewById<View>(R.id.topNotch)
+        view.getLocationOnScreen(location)
+        parent.getLocationOnScreen(locationParent)
+        feedXMediaTagging.run {
+            posX = round((feedXMediaTagging.X!! / parent.width) * 10) / 10
+            posY = round((feedXMediaTagging.Y!! / parent.height) * 10) / 10
+        }
 
         listener?.updateTaggingInfoInViewModel(feedXMediaTagging, index)
 
@@ -276,9 +311,9 @@ class TagViewProvider {
 
     private fun scaleUp(view: View) {
         val scaleDownX2 = ObjectAnimator.ofFloat(
-            view, "scaleX", 1.05f)
+            view, ConstraintLayout.SCALE_X, 1.05f)
         val scaleDownY2 = ObjectAnimator.ofFloat(
-            view, "scaleY", 1.05f)
+            view, ConstraintLayout.SCALE_Y, 1.05f)
         scaleDownX2.duration = 1000
         scaleDownY2.duration = 1000
 
@@ -302,22 +337,7 @@ class TagViewProvider {
         scaleDown.start()
     }
 
-    private fun calculateGreyAreaDistance(parent: ConstraintLayout, bitmap: Bitmap) {
-        when {
-            bitmap.width == bitmap.height -> {
-                //do nothing
-            }
-            bitmap.width > bitmap.height -> {
-                val newBitmapHeight = (parent.height * bitmap.height) / bitmap.width
-                val greyAreaY = (parent.height - newBitmapHeight) / 2
-            }
-            bitmap.height > bitmap.width -> {
-                val newBitmapWidth = (parent.width * bitmap.width) / bitmap.height
-                val greyAreaX = (parent.width - newBitmapWidth) / 2
-            }
-        }
 
-    }
     private fun calculateGreyAreaX(parent: ConstraintLayout, bitmap: Bitmap): Int {
         return if (bitmap.width > bitmap.height) {
             val newBitmapHeight = (parent.height * bitmap.height) / bitmap.width

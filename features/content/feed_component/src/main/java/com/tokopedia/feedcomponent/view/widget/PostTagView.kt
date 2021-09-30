@@ -27,7 +27,7 @@ private const val POINTER_HEIGHT = 8
 private const val BUBBLE_HEIGHT = 52
 private const val DOT_HALF_DIMEN = 8
 private const val CENTER_POS_X = 0.5
-private const val THRESHOLD_POS_Y_TO_INFLATE_TAGGING_BUBBLE_DOWNWARD = 0.75
+private const val THRESHOLD_POS_Y_TO_INFLATE_TAGGING_BUBBLE_DOWNWARD = 0.70
 
 class PostTagView @JvmOverloads constructor(
     context: Context,
