@@ -921,9 +921,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
     
     private fun renderChipsFilterStatus(chips: ArrayList<SortFilterItem>) {
+        _arrayListStatusFilterBundle.clear()
         orderList.v2Filters.forEach { v2Filter ->
             val type = if (v2Filter.isPrimary) 0 else 1
-            _arrayListStatusFilterBundle.clear()
             _arrayListStatusFilterBundle.add(UohFilterBundle(key = v2Filter.value, value = v2Filter.label, type = type))
         }
 
