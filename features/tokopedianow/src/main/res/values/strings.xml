@@ -2,9 +2,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="tokopedianow_home_title">TokoMart</string>
 
-    <string name="tokopedianow_common_empty_state_title">Yaah, saat ini Tokopedia NOW! belum bisa antar ke tempatmu</string>
-    <string name="tokopedianow_common_empty_state_desc_1">Melayani kebutuhan harianmu hanya dalam 2 jam pengiriman agar produk tetap fresh.</string>
-    <string name="tokopedianow_common_empty_state_desc_2">Saat ini, kami baru ada di daerah tertentu. Tunggu Tokopedia NOW! di kotamu, ya!</string>
+    <string name="tokopedianow_common_empty_state_title">Tunggu TokoMart hadir di lokasimu</string>
+    <string name="tokopedianow_common_empty_state_desc">Siap-siap nikmati layanan 2 jam tiba &amp; gratis ongkir. Nantikan kabar dari kami, ya!</string>
     <string name="tokopedianow_common_empty_state_button_change_address">Ubah Alamat</string>
     <string name="tokopedianow_common_empty_state_button_return">Belanja di Tokopedia</string>
     <string name="tokopedianow_common_empty_state_bullet_symbol">•</string>
