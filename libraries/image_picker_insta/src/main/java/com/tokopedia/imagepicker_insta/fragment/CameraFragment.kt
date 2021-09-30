@@ -370,7 +370,8 @@ class CameraFragment : Fragment() {
     private fun cropBitmap(srcBitmap: Bitmap) {
         context?.let {
             val file = CameraUtil.createMediaFile(it)
-            viewModel.cropPhoto(srcBitmap, imageCaptureRegion.y.toInt(), srcBitmap.width, file)
+            val yOffset = srcBitmap.height/2 - srcBitmap.width/2
+            viewModel.cropPhoto(srcBitmap, yOffset, srcBitmap.width, file)
         }
     }
 

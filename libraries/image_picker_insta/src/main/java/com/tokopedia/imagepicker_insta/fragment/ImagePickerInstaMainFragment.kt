@@ -494,7 +494,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                 }
             }
 
-            if (wasListInitiallyEmpty && imageDataList.isNotEmpty()) {
+            if ((wasListInitiallyEmpty || mediaVmMData?.isNewItem == true) && imageDataList.isNotEmpty()) {
                 autoSelectFirstItemWhenFolderIsChanged(tempImageAdapterList)
             }
             if (oldSize != imageDataList.size) {
@@ -512,6 +512,8 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
                 val itemData = list.first()
                 selectedMediaView.loadAsset(itemData, prepareZoomInfo(itemData))
+
+                imageAdapter.notifyItems()
             }
         }
     }

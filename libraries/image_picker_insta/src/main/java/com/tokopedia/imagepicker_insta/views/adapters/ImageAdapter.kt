@@ -29,8 +29,6 @@ class ImageAdapter(
      * */
     val selectedPositionMap = mutableMapOf<ImageAdapterData, Int>()
 
-    val INVALID_KEY = -1
-
     fun isSelectedPositionsEmpty(): Boolean {
         return selectedPositionMap.isEmpty()
     }
@@ -136,7 +134,6 @@ class ImageAdapter(
             if (circleCount != null) {
                 if (v > circleCount) {
                     selectedPositionMap[k] = v - 1
-//                    notifyItemChanged(k)
                 }
             }
         }
@@ -150,14 +147,14 @@ class ImageAdapter(
         }
     }
 
-    private fun notifyItems() {
+    fun notifyItems() {
         val firstPos = Math.max(0, layoutManager.findFirstVisibleItemPosition())
         val lastPos = Math.min(layoutManager.findLastVisibleItemPosition(), dataList.size - 1)
         (firstPos..lastPos).forEach { index ->
-            val isSelected = selectedPositionMap[dataList[index]]
-            if (isSelected != null) {
+//            val isSelected = selectedPositionMap[dataList[index]]
+//            if (isSelected != null) {
                 notifyItemChanged(index)
-            }
+//            }
         }
     }
 
