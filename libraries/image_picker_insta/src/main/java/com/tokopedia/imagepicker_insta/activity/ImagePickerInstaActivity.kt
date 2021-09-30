@@ -18,14 +18,14 @@ class ImagePickerInstaActivity : PermissionActivity() {
     var menuTitle = ""
     var toolbarIconRes = 0
     var toolbarIconUrl = ""
-    var maxMultiSelectAllowed = MAX_MULTI_SELECT_LIMIT
+    var maxMultiSelectAllowed = DEFAULT_MULTI_SELECT_LIMIT
     var applinkToNavigateAfterMediaCapture = ""
     var applinkForGalleryProceed = ""
     var applinkForBackNavigation = ""
 
     companion object {
 
-        internal const val MAX_MULTI_SELECT_LIMIT = 5
+        internal const val DEFAULT_MULTI_SELECT_LIMIT = 5
 
         fun getIntent(
             context: Context, title: String? = null,
@@ -33,7 +33,7 @@ class ImagePickerInstaActivity : PermissionActivity() {
             toolbarIconRes: Int? = null,
             toolbarIconUrl: String? = null,
             menuTitle: String? = null,
-            @IntRange(from = 1L, to = MAX_MULTI_SELECT_LIMIT.toLong())
+            @IntRange(from = 1L, to = DEFAULT_MULTI_SELECT_LIMIT.toLong())
             maxMultiSelectAllowed: Int = 5,
             applinkToNavigateAfterMediaCapture: String? = null,
             applinkForGalleryProceed: String? = null,
@@ -45,7 +45,7 @@ class ImagePickerInstaActivity : PermissionActivity() {
             intent.putExtra(BundleData.TOOLBAR_ICON_RES, toolbarIconRes)
             intent.putExtra(BundleData.TOOLBAR_ICON_URL, toolbarIconUrl)
             intent.putExtra(BundleData.MENU_TITLE, menuTitle)
-            intent.putExtra(BundleData.MAX_MULTI_SELECT_ALLOWED, Math.min(maxMultiSelectAllowed, MAX_MULTI_SELECT_LIMIT))
+            intent.putExtra(BundleData.MAX_MULTI_SELECT_ALLOWED, Math.min(maxMultiSelectAllowed, DEFAULT_MULTI_SELECT_LIMIT))
             intent.putExtra(BundleData.APPLINK_AFTER_CAMERA_CAPTURE, applinkToNavigateAfterMediaCapture)
             intent.putExtra(BundleData.APPLINK_FOR_GALLERY_PROCEED, applinkForGalleryProceed)
             intent.putExtra(BundleData.APPLINK_FOR_BACK_NAVIGATION, applinkForBackNavigation)
@@ -92,7 +92,10 @@ class ImagePickerInstaActivity : PermissionActivity() {
         toolbarSubTitle = intent.extras?.getString(BundleData.SUB_TITLE, "") ?: ""
         toolbarIconRes = intent.extras?.getInt(BundleData.TOOLBAR_ICON_RES) ?: 0
         menuTitle = intent.extras?.getString(BundleData.MENU_TITLE) ?: getString(R.string.imagepicker_insta_lanjut)
-        maxMultiSelectAllowed = intent.extras?.getInt(BundleData.MAX_MULTI_SELECT_ALLOWED) ?: MAX_MULTI_SELECT_LIMIT
+        maxMultiSelectAllowed = intent.extras?.getInt(BundleData.MAX_MULTI_SELECT_ALLOWED) ?: DEFAULT_MULTI_SELECT_LIMIT
+        if (maxMultiSelectAllowed == 0) {
+            maxMultiSelectAllowed = DEFAULT_MULTI_SELECT_LIMIT
+        }
         applinkToNavigateAfterMediaCapture = intent.extras?.getString(BundleData.APPLINK_AFTER_CAMERA_CAPTURE) ?: ""
         applinkForGalleryProceed = intent.extras?.getString(BundleData.APPLINK_FOR_GALLERY_PROCEED) ?: ""
         applinkForBackNavigation = intent.extras?.getString(BundleData.APPLINK_FOR_BACK_NAVIGATION) ?: ""

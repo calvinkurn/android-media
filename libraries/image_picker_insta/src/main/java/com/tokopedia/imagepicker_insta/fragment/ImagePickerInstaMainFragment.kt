@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.view.*
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +20,7 @@ import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker_insta.*
 import com.tokopedia.imagepicker_insta.activity.CameraActivity
 import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity
-import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity.Companion.MAX_MULTI_SELECT_LIMIT
+import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity.Companion.DEFAULT_MULTI_SELECT_LIMIT
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
 import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
 import com.tokopedia.imagepicker_insta.mediaImporter.PhotoImporter
@@ -30,7 +29,6 @@ import com.tokopedia.imagepicker_insta.models.*
 import com.tokopedia.imagepicker_insta.trackers.TrackerProvider
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.util.PermissionUtil
-import com.tokopedia.imagepicker_insta.util.StorageUtil
 import com.tokopedia.imagepicker_insta.viewmodel.PickerViewModel
 import com.tokopedia.imagepicker_insta.views.FolderChooserView
 import com.tokopedia.imagepicker_insta.views.MediaView
@@ -61,10 +59,13 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     lateinit var imageAdapter: ImageAdapter
     val imageDataList = ArrayList<ImageAdapterData>()
+    val allImageDataList = ArrayList<ImageAdapterData>()
     val folders = arrayListOf<FolderData>()
     val zoomImageAdapterDataMap = mutableMapOf<ImageAdapterData, ZoomInfo>()
 
     var cameraCaptureFilePath: String? = null
+    var selectedFolderText: String? = null
+    var mediaLoadingFailed = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -243,7 +244,35 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             folderView.setData(folders)
             bottomSheet.setTitle(it.context?.getString(R.string.imagepicker_insta_pilih) ?: "")
             folderView.itemOnClick { folderData ->
-                refreshImages(folderData?.folderTitle)
+
+                //When user selects same folder
+                if (folderData?.folderTitle == selectedFolderText) {
+                    bottomSheet.dismiss()
+                    return@itemOnClick
+                }
+
+                //When user selects same folder and folder name is PhotoImporter.ALL
+                if (folderData?.folderTitle.isNullOrEmpty() && selectedFolderText == PhotoImporter.ALL) {
+                    bottomSheet.dismiss()
+                    return@itemOnClick
+                }
+
+                if (!folderData?.folderTitle.isNullOrEmpty()) {
+                    val size = imageDataList.size
+                    imageDataList.clear()
+                    imageAdapter.notifyItemRangeRemoved(0, size)
+
+                    updateSelectedFolderText(folderData?.folderTitle!!)
+                    refreshImages(folderData.folderTitle, folderData?.itemCount)
+                } else {
+                    updateSelectedFolderText(PhotoImporter.ALL)
+
+                    imageDataList.clear()
+                    addCameraItemInEmptyList()
+                    imageDataList.addAll(allImageDataList)
+                    imageAdapter.notifyItemRangeInserted(0, imageDataList.size)
+                }
+
                 bottomSheet.dismiss()
             }
         }
@@ -287,8 +316,8 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         }
     }
 
-    private fun refreshImages(folderName: String?) {
-        viewModel.getImagesByFolderName(folderName)
+    private fun refreshImages(folderName: String, mediaCount: Int?) {
+        viewModel.getMediaByFolderName(folderName, mediaCount)
     }
 
     fun setupRv() {
@@ -299,7 +328,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         val width = context?.resources?.displayMetrics?.widthPixels ?: 0
         val contentHeight = width / columnCount
 
-        var maxMultiSelect: Int = MAX_MULTI_SELECT_LIMIT
+        var maxMultiSelect: Int = DEFAULT_MULTI_SELECT_LIMIT
         if ((activity as? ImagePickerInstaActivity)?.maxMultiSelectAllowed != null) {
             maxMultiSelect = (activity as ImagePickerInstaActivity).maxMultiSelectAllowed
         }
@@ -309,6 +338,18 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         val itemPadding = 4.toPx().toInt()
         rv.addItemDecoration(GridItemDecoration(itemPadding, true))
         rv.itemAnimator = null
+    }
+
+    private fun updateSelectedFolderText(text: String, clearList: Boolean = true) {
+        if (selectedFolderText == text) return
+
+        selectedFolderText = text
+        tvSelectedFolder.text = selectedFolderText
+
+        if (clearList) {
+            imageDataList.clear()
+            imageAdapter.notifyDataSetChanged()
+        }
     }
 
     private fun openCamera() {
@@ -338,60 +379,36 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     private fun setObservers() {
         viewLifecycleOwner.lifecycle.addObserver(selectedMediaView)
 
-        imageMultiSelect.toggleCallback = { isMultiSelect->
-            if(isMultiSelect){
+        imageMultiSelect.toggleCallback = { isMultiSelect ->
+            if (isMultiSelect) {
                 imageFitCenter.visibility = View.GONE
-            }else{
+            } else {
                 imageFitCenter.visibility = View.VISIBLE
             }
         }
+
+        viewModel.folderLiveData.observe(viewLifecycleOwner, {
+            when (it.status) {
+                LiveDataResult.STATUS.LOADING -> {
+                }
+
+                LiveDataResult.STATUS.SUCCESS -> {
+                    updateFolders(it.data)
+                }
+                LiveDataResult.STATUS.ERROR -> {
+                    updateFolders(null)
+                }
+            }
+        })
 
         viewModel.photosLiveData.observe(viewLifecycleOwner, {
             when (it.status) {
                 LiveDataResult.STATUS.LOADING -> {
                 }
                 LiveDataResult.STATUS.SUCCESS -> {
-
-                    imageDataList.clear()
-
-                    context?.let { c ->
-                        if (c.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
-                            imageDataList.add(ImageAdapterData(Camera()))
-                        }
-                    }
-
-                    folders.clear()
-
-                    if (!it.data?.mediaImporterData?.imageAdapterDataList.isNullOrEmpty()) {
-                        imageDataList.addAll(it.data!!.mediaImporterData.imageAdapterDataList)
-
-                        if (!isMultiSelectEnable()) {
-                            imageAdapter.clearSelectedItems()
-
-                            if (imageAdapter.addSelectedItem(1)) {
-
-                                zoomImageAdapterDataMap.clear()
-
-                                val itemData = it.data.mediaImporterData.imageAdapterDataList.first()
-                                selectedMediaView.loadAsset(itemData, prepareZoomInfo(itemData))
-                            }
-                        }
-
-                        //update folders
-                        if (!it.data.folderDataList.isNullOrEmpty()) {
-                            folders.addAll(it.data.folderDataList)
-                            tvSelectedFolder.text = it.data.selectedFolder ?: PhotoImporter.ALL
-                        }
-
-                    } else {
-                        tvSelectedFolder.text = getString(R.string.imagepicker_insta_no_media_available)
-                        showToast(getString(R.string.imagepicker_insta_no_media_available))
-                    }
-                    imageAdapter.notifyDataSetChanged()
-                    rv.post { rv.scrollTo(0, 0) }
+                    updateMediaToUi(it.data)
                 }
                 LiveDataResult.STATUS.ERROR -> {
-                    tvSelectedFolder.text = getString(R.string.imagepicker_insta_utlam)
                     showToast(getString(R.string.imagepicker_insta_utlam), Toaster.TYPE_ERROR)
                 }
             }
@@ -440,6 +457,88 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         }
     }
 
+    private fun updateMediaToUi(mediaVmMData: MediaVmMData?) {
+        val tempImageAdapterList = mediaVmMData?.mediaUseCaseData?.mediaImporterData?.imageAdapterDataList?: emptyList()
+
+            val wasListInitiallyEmpty = imageDataList.size == 0
+            val oldSize = imageDataList.size
+            val dataForAllFolders = mediaVmMData?.folderName == null
+
+            if (dataForAllFolders) {
+                allImageDataList.addAll(tempImageAdapterList)
+                if (selectedFolderText.isNullOrEmpty() || selectedFolderText == PhotoImporter.ALL) {
+                    imageDataList.clear()
+
+                    addCameraItemInEmptyList()
+                    imageDataList.addAll(allImageDataList)
+                }
+
+            } else {
+
+                if (mediaVmMData?.isNewItem == true) {
+                    allImageDataList.addAll(0, tempImageAdapterList)
+                }
+
+                if (tvSelectedFolder.text == mediaVmMData?.folderName || tvSelectedFolder.text == PhotoImporter.ALL) {
+
+                    addCameraItemInEmptyList()
+
+                    if (mediaVmMData?.isNewItem == true) {
+                        if(imageDataList.isNotEmpty()) {
+                            imageDataList.addAll(1, tempImageAdapterList)
+                            imageAdapter.notifyItemRangeInserted(1,tempImageAdapterList.size)
+                        }
+                    }else{
+                        imageDataList.addAll(tempImageAdapterList)
+                    }
+                }
+            }
+
+            if ((wasListInitiallyEmpty || mediaVmMData?.isNewItem == true) && imageDataList.isNotEmpty()) {
+                autoSelectFirstItemWhenFolderIsChanged(tempImageAdapterList)
+            }
+            if (oldSize != imageDataList.size) {
+                imageAdapter.notifyItemRangeInserted(oldSize, tempImageAdapterList.size)
+            }
+    }
+
+    private fun autoSelectFirstItemWhenFolderIsChanged(list: List<ImageAdapterData>) {
+        if (!isMultiSelectEnable()) {
+            imageAdapter.clearSelectedItems()
+
+            if (imageAdapter.itemCount > 1 && imageAdapter.addSelectedItem(1)) {
+
+                zoomImageAdapterDataMap.clear()
+
+                val itemData = list.first()
+                selectedMediaView.loadAsset(itemData, prepareZoomInfo(itemData))
+
+                imageAdapter.notifyItems()
+            }
+        }
+    }
+
+    private fun updateFolders(folderList: List<FolderData>?) {
+        if (!folderList.isNullOrEmpty()) {
+            folders.addAll(folderList)
+            updateSelectedFolderText(PhotoImporter.ALL, clearList = false)
+        } else {
+            mediaLoadingFailed = true
+            updateSelectedFolderText(getString(R.string.imagepicker_insta_no_media_available), clearList = false)
+            showToast(getString(R.string.imagepicker_insta_no_media_available))
+        }
+    }
+
+    private fun addCameraItemInEmptyList() {
+        if (imageDataList.isEmpty()) {
+            context?.let { c ->
+                if (c.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
+                    imageDataList.add(ImageAdapterData(Camera()))
+                }
+            }
+        }
+    }
+
     private fun handleSuccessSelectedUri(uris: List<Uri>) {
         if (!uris.isNullOrEmpty()) {
 
@@ -465,6 +564,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     private fun getPhotos() {
+        viewModel.getFolderData()
         viewModel.getPhotos()
     }
 
@@ -510,22 +610,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         } else {
             activity?.setResult(Activity.RESULT_CANCELED, data)
             activity?.finish()
-        }
-    }
-
-    private fun addAssetToGallery(asset: Asset) {
-        //Do nothing
-    }
-
-    private fun addToCurrnetDisplayedList(imageAdapterData: ImageAdapterData) {
-
-        if (tvSelectedFolder.text == Environment.DIRECTORY_PICTURES ||
-            tvSelectedFolder.text == PhotoImporter.ALL ||
-            tvSelectedFolder.text == StorageUtil.INTERNAL_FOLDER_NAME
-        ) {
-            imageDataList.add(1, imageAdapterData)
-            imageAdapter.addSelectedItem(1)
-            imageAdapter.notifyItemInserted(1)
         }
     }
 

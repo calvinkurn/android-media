@@ -4,10 +4,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.imagepicker_insta.fragment.ImagePickerFragmentContract
-import com.tokopedia.imagepicker_insta.mediaImporter.VideoImporter
 import com.tokopedia.imagepicker_insta.models.Camera
 import com.tokopedia.imagepicker_insta.models.ImageAdapterData
 import com.tokopedia.imagepicker_insta.models.VideoData
+import com.tokopedia.imagepicker_insta.util.VideoUtil
 import com.tokopedia.imagepicker_insta.views.viewholders.CameraViewHolder
 import com.tokopedia.imagepicker_insta.views.viewholders.PhotosViewHolder
 import com.tokopedia.imagepicker_insta.views.viewholders.VideosViewHolder
@@ -28,8 +28,6 @@ class ImageAdapter(
      * Data and count
      * */
     val selectedPositionMap = mutableMapOf<ImageAdapterData, Int>()
-
-    val INVALID_KEY = -1
 
     fun isSelectedPositionsEmpty(): Boolean {
         return selectedPositionMap.isEmpty()
@@ -136,7 +134,6 @@ class ImageAdapter(
             if (circleCount != null) {
                 if (v > circleCount) {
                     selectedPositionMap[k] = v - 1
-//                    notifyItemChanged(k)
                 }
             }
         }
@@ -150,14 +147,14 @@ class ImageAdapter(
         }
     }
 
-    private fun notifyItems() {
+    fun notifyItems() {
         val firstPos = Math.max(0, layoutManager.findFirstVisibleItemPosition())
         val lastPos = Math.min(layoutManager.findLastVisibleItemPosition(), dataList.size - 1)
         (firstPos..lastPos).forEach { index ->
-            val isSelected = selectedPositionMap[dataList[index]]
-            if (isSelected != null) {
+//            val isSelected = selectedPositionMap[dataList[index]]
+//            if (isSelected != null) {
                 notifyItemChanged(index)
-            }
+//            }
         }
     }
 
@@ -217,7 +214,7 @@ class ImageAdapter(
     private fun selectItem(position: Int, holder: PhotosViewHolder) {
         if (dataList[position].asset is VideoData) {
             if (!(dataList[position].asset as VideoData).canBeSelected) {
-                mainFragmentContract.showToast("Video harus berdurasi maksimum ${VideoImporter.DURATION_MAX_LIMIT} detik.", Toaster.TYPE_ERROR)
+                mainFragmentContract.showToast("Video harus berdurasi maksimum ${VideoUtil.DURATION_MAX_LIMIT} detik.", Toaster.TYPE_ERROR)
                 return
             }
         }

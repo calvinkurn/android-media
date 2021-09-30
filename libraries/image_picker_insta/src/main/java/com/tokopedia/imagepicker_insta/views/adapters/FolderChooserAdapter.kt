@@ -2,6 +2,7 @@ package com.tokopedia.imagepicker_insta.views.adapters
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.imagepicker_insta.mediaImporter.PhotoImporter
 import com.tokopedia.imagepicker_insta.models.FolderData
 import com.tokopedia.imagepicker_insta.views.FolderChooserViewHolder
 
@@ -16,7 +17,7 @@ class FolderChooserAdapter(val dataList:List<FolderData>): RecyclerView.Adapter<
     override fun onBindViewHolder(holder: FolderChooserViewHolder, position: Int) {
         holder.setData(dataList[position])
         holder.itemView.setOnClickListener {
-            if(position == 0){
+            if(position == PhotoImporter.INDEX_OF_RECENT_MEDIA_IN_FOLDER_LIST){
                 onClick?.invoke(null)
             }else{
                 onClick?.invoke(dataList[position])
