@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatroom.view.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType
+import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.data.attachment.AttachmentId
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
@@ -22,7 +23,8 @@ class StickerUiModel private constructor(
     companion object {
         fun generatePreviewMessage(
             roomMetaData: RoomMetaData,
-            sticker: Sticker
+            sticker: Sticker,
+            referredMsg: BaseChatViewModel?
         ): StickerUiModel {
             val stickerProfile = StickerProfile(
                 groupId = sticker.groupUUID,
@@ -35,6 +37,7 @@ class StickerUiModel private constructor(
                 .withAttachmentId(AttachmentId.NOT_YET_GENERATED)
                 .withAttachmentType(AttachmentType.Companion.TYPE_STICKER.toString())
                 .withStickerProfile(stickerProfile)
+                .withReferredMsg(referredMsg)
                 .build()
         }
     }

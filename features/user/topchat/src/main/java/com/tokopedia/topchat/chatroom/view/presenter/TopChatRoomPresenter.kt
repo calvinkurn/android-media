@@ -693,10 +693,16 @@ open class TopChatRoomPresenter @Inject constructor(
     private fun sendSticker(sticker: Sticker) {
         val startTime = SendableViewModel.generateStartTime()
         val previewSticker = StickerUiModel.generatePreviewMessage(
-            roomMetaData, sticker
+            roomMetaData = roomMetaData,
+            sticker = sticker,
+            referredMsg = referredMsg
         )
         val stickerContract = sticker.generateWebSocketPayload(
-            roomMetaData.msgId, startTime, attachmentsPreview, previewSticker.localId
+            messageId = roomMetaData.msgId,
+            startTime = startTime,
+            attachments = attachmentsPreview,
+            localId = previewSticker.localId,
+            referredMsg = referredMsg
         )
         val request = CommonUtil.toJson(stickerContract)
         sendWs(request, previewSticker)
