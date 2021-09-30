@@ -125,7 +125,9 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_CONFIRM_REQUEST_PICKUP_DATA)
-                    Utils.showToasterError(it.throwable.localizedMessage, view)
+                    context?.run {
+                        Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
+                    }
                 }
             }
         })
@@ -144,7 +146,9 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_PROCESSING_REQUEST_PICKUP)
-                    Utils.showToasterError(it.throwable.localizedMessage, view)
+                    context?.run {
+                        Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
+                    }
                 }
             }
         })
