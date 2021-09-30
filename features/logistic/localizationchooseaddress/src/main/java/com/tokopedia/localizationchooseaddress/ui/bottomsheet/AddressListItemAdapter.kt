@@ -93,7 +93,7 @@ class AddressListItemAdapter(private val listener: AddressListItemAdapterListene
                 receiverName.text = item.receiverName
                 addressPhone.text = item.phone
                 addressDetail.text = item.address1
-                addressDistrict.text = item.districtName
+                addressDistrict.text = itemView.context.getString(R.string.txt_district_choose_address_list, item.districtName, item.cityName)
 
                 if (item.status == 2) labelUtama.visible() else labelUtama.gone()
                 if (item.tokonow.coverageLabel.isEmpty()) {
