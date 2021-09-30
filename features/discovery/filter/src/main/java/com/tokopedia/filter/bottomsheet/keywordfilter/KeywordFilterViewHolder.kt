@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -92,13 +93,7 @@ internal class KeywordFilterViewHolder(
             onKeywordTextFieldFocusChanged(hasFocus)
         }
 
-        keywordFilterTextField?.editText?.setOnEditorActionListener { _, actionId, event ->
-            if (isEnterPressed(actionId, event)) {
-                onAddKeywordClicked()
-                true
-            }
-            else false
-        }
+        keywordFilterTextField?.editText?.setOnEditorActionListener(::onKeywordFilterEditorAction)
 
         keywordFilterTextField?.icon1?.apply {
             visible()
@@ -114,9 +109,22 @@ internal class KeywordFilterViewHolder(
             listener.scrollToPosition(adapterPosition)
     }
 
-    private fun isEnterPressed(actionId: Int, event: KeyEvent) =
-        actionId == EditorInfo.IME_NULL && event.action == KeyEvent.ACTION_DOWN
+    private fun onKeywordFilterEditorAction(
+        textView: TextView?,
+        actionId: Int,
+        event: KeyEvent?
+    ): Boolean {
+        return if (isEnterPressed(actionId, event)) {
+            onAddKeywordClicked()
+            true
+        } else false
+    }
 
+    private fun isEnterPressed(actionId: Int, event: KeyEvent?): Boolean {
+        val action = event?.action ?: return false
+
+        return actionId == EditorInfo.IME_NULL && action == KeyEvent.ACTION_DOWN
+    }
 
     private fun onAddKeywordClicked() {
         val keyword = keywordFilterTextField?.getEditableValue()?.toString() ?: ""
