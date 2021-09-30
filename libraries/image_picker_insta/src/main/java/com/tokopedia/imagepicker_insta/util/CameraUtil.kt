@@ -2,14 +2,9 @@ package com.tokopedia.imagepicker_insta.util
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.provider.MediaStore
-import android.util.Size
-import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.tokopedia.imagepicker_insta.activity.CameraActivity
 import com.tokopedia.imagepicker_insta.models.BundleData
@@ -18,9 +13,12 @@ import java.io.IOException
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 object CameraUtil {
+
+    fun getMediaCountText(mediaCount: Int): String {
+        return "$mediaCount media"
+    }
 
     fun openCamera(weakFragment: WeakReference<Fragment?>?, applinkToNavigateAfterMediaCapture: String?): String? {
         weakFragment?.get()?.let {
@@ -38,14 +36,14 @@ object CameraUtil {
     }
 
     @Throws(IOException::class)
-    fun createMediaFile(context: Context, isImage: Boolean = true, storeInCache:Boolean = false): File {
+    fun createMediaFile(context: Context, isImage: Boolean = true, storeInCache: Boolean = false): File {
         // Create an image file name
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         var storageDir: File? = null
 
-        if(storeInCache){
+        if (storeInCache) {
             storageDir = context.cacheDir
-        }else{
+        } else {
             when (StorageUtil.WRITE_LOCATION) {
                 WriteStorageLocation.INTERNAL -> {
                     storageDir = getInternalDir(context)
@@ -86,10 +84,10 @@ object CameraUtil {
     }
 
 
-    fun getIntentfromFileUris(fileUriList: ArrayList<Uri>):Intent{
+    fun getIntentfromFileUris(fileUriList: ArrayList<Uri>): Intent {
         val intent = Intent()
         val bundle = Bundle()
-        bundle.putParcelableArrayList(BundleData.URIS,fileUriList)
+        bundle.putParcelableArrayList(BundleData.URIS, fileUriList)
         intent.putExtras(bundle)
         return intent
     }

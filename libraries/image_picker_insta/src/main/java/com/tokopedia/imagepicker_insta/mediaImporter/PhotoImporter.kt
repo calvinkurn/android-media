@@ -1,132 +1,257 @@
 package com.tokopedia.imagepicker_insta.mediaImporter
 
+import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
+import android.os.Bundle
 import android.provider.MediaStore
-import com.tokopedia.imagepicker_insta.models.Asset
-import com.tokopedia.imagepicker_insta.models.ImageAdapterData
-import com.tokopedia.imagepicker_insta.models.MediaImporterData
-import com.tokopedia.imagepicker_insta.models.PhotosData
-import com.tokopedia.imagepicker_insta.util.CursorUtil
-import com.tokopedia.imagepicker_insta.util.FileUtil
+import com.tokopedia.imagepicker_insta.models.*
+import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.util.StorageUtil
-import org.json.JSONException
-import org.json.JSONObject
+import com.tokopedia.imagepicker_insta.util.VideoUtil
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import timber.log.Timber
 import java.io.File
 
 class PhotoImporter : MediaImporter {
+
     companion object {
         const val ALL = "Recents"
-        const val FOLDER_KEY = "nw_st"
+        const val INDEX_OF_RECENT_MEDIA_IN_FOLDER_LIST = 0
+        private val URI = MediaStore.Files.getContentUri("external") //TODO Rahul check for available volumes
+        private val BATCH_LIMIT = 1000
+
     }
 
-    fun isImageFile(filePath: String?): Boolean {
-        if (filePath.isNullOrEmpty()) return false
-        return (filePath.endsWith(".jpg", ignoreCase = true) ||
-                filePath.endsWith(".jpeg", ignoreCase = true) ||
-                filePath.endsWith(".png", ignoreCase = true) ||
-                filePath.endsWith(".webP", ignoreCase = true))
+    private fun getSelectionStringBuilder(folderName: String? = null): StringBuilder {
+        val selectionBuilder = StringBuilder()
+        selectionBuilder.append("(")
+        selectionBuilder.append(MediaStore.Files.FileColumns.MEDIA_TYPE)
+        selectionBuilder.append("=")
+        selectionBuilder.append(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)
+        selectionBuilder.append(" OR ")
+        selectionBuilder.append(MediaStore.Files.FileColumns.MEDIA_TYPE)
+        selectionBuilder.append("=")
+        selectionBuilder.append(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
+        selectionBuilder.append(")")
+        selectionBuilder.append(" AND ")
+        selectionBuilder.append(" ${MediaStore.Images.Media.SIZE} > 10 ")
+
+        if (!folderName.isNullOrEmpty() && folderName != PhotoImporter.ALL) {
+            selectionBuilder.append(" AND ")
+            selectionBuilder.append(" ${MediaStore.Images.Media.BUCKET_DISPLAY_NAME} ")
+            selectionBuilder.append("=")
+            selectionBuilder.append("'$folderName'")
+        }
+
+        return selectionBuilder
     }
 
-    fun createPhotosDataFromInternalFile(file: File): PhotosData {
-        if (file.isDirectory) throw Exception("Got folder instead of file")
-        return PhotosData(
-            file.absolutePath,
-            StorageUtil.INTERNAL_FOLDER_NAME,
-            Uri.fromFile(file),
-            createdDate = getCreateAtForInternalFile(file)
-        )
-    }
-
-    override suspend fun importMediaFromInternalDir(context: Context): ArrayList<Asset> {
+    fun getInternalMediaAlbum(context: Context): List<FolderData> {
+        val list = arrayListOf<FolderData>()
         val directory = File(context.filesDir, StorageUtil.INTERNAL_FOLDER_NAME)
-        val photosDataList = arrayListOf<Asset>()
-        if (directory.isDirectory) {
-            directory.listFiles()?.forEach {
-                val filePath = it.absolutePath
-                val isFileSupported = isImageFile(filePath)
 
-                if (isFileSupported) {
-                    val photoData = createPhotosDataFromInternalFile(it)
-                    photosDataList.add(photoData)
-                }
+        if (directory.exists() && directory.isDirectory) {
+
+            val supportedFileList = directory.listFiles()?.filter {
+                val filePath = it.absolutePath
+                isImageFile(filePath) || isVideoFile(filePath)
+            }
+            if (!supportedFileList.isNullOrEmpty()) {
+                val folderData = FolderData(
+                    StorageUtil.INTERNAL_FOLDER_NAME,
+                    CameraUtil.getMediaCountText(supportedFileList.size),
+                    Uri.fromFile(supportedFileList.first()),
+                    supportedFileList.size
+                )
+                list.add(folderData)
             }
         }
-        return photosDataList
+        return list
     }
 
-    override suspend fun importMedia(context: Context): MediaImporterData {
-        val photoCursor = CursorUtil.getPhotoCursor(context, "", null)
-        val data = iteratePhotoCursor(photoCursor)
-
-        return data
-    }
-
-    protected fun iteratePhotoCursor(cur: Cursor?): MediaImporterData {
-        val photosList = arrayListOf<Asset>()
-        val folders = hashSetOf<String>()
-
-        if (cur != null && cur.count > 0) {
-            try {
-                if (cur.moveToFirst()) {
-                    val dateTakenIndex = cur.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN)
-                    val dateAddedIndex = cur.getColumnIndex(MediaStore.Images.Media.DATE_ADDED)
-                    val pathIndex = cur.getColumnIndex(MediaStore.Images.Media.DATA)
-                    val id = cur.getColumnIndex(MediaStore.Images.Media._ID)
-                    val bytes = cur.getColumnIndex(MediaStore.Images.Media.SIZE)
+    fun getDateFromContentUri(uri: Uri, context: Context): Long {
+        if (uri.scheme != ContentResolver.SCHEME_CONTENT) throw Exception("Should be content uri")
+        val projections = arrayOf(MediaStore.Files.FileColumns.DATE_ADDED)
+        val cur = context.contentResolver.query(uri, projections, null, null, null)
+        var dateAdded = 0L
+        try {
+            if (cur != null && cur.count > 0) {
+                if (cur.moveToNext()) {
                     do {
-                        try {
-                            val item = JSONObject()
-                            val name = cur.getString(pathIndex)
-                            val numBytes = cur.getLong(bytes)
-                            val numBytesKB = numBytes / 1024 // skip photos below 10 KB in size
-                            val index = cur.getLong(id)
-
-                            //Set default values
-                            item.put(FOLDER_KEY, "")
-                            val dateAdded = cur.getLong(dateAddedIndex)
-
-                            if (isImageFile(name) && numBytesKB > 10) {
-
-                                val dateLong = getDate(dateAdded, 0L, name)
-                                if (dateLong != 0L) {
-
-                                    val folderName: String = FileUtil.getFolderName(name)
-                                    item.put(FOLDER_KEY, folderName)
-                                }
-
-                                val folderName = item[FOLDER_KEY] as String
-                                val photosData = PhotosData(
-                                    assetPath = name,
-                                    folder = folderName,
-                                    contentUri = ContentUris.withAppendedId(
-                                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                                        index
-                                    ),
-                                    createdDate = dateLong
-                                )
-                                folders.add(folderName)
-                                photosList.add(photosData)
-                            }
-
-                        } catch (e: JSONException) {
-                            Timber.e(e)
-                        }
-
+                        val dateAddedIndex = cur.getColumnIndex(MediaStore.Files.FileColumns.DATE_ADDED)
+                        dateAdded = cur.getLong(dateAddedIndex)
                     } while (cur.moveToNext())
                 }
-            } finally {
-                cur.close()
             }
-        }
 
-        val imageAdapterDataList = ArrayList<ImageAdapterData>()
-        photosList.forEach {
-            imageAdapterDataList.add(ImageAdapterData(it))
+        } catch (th: Throwable) {
+            Timber.e(th)
+        } finally {
+            cur?.close()
         }
-        return MediaImporterData(imageAdapterDataList, folders)
+        return dateAdded
+    }
+
+    fun getExternalMediaAlbums(context: Context): List<FolderData> {
+        val projections = arrayOf(
+            MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+            MediaStore.Files.FileColumns.MEDIA_TYPE
+        )
+
+        val cur = context.contentResolver.query(URI, projections, getSelectionStringBuilder().toString(), null, null)
+
+        val albumMap = mutableMapOf<String, Int>()
+        val albumThumbnailMap = mutableMapOf<String, Uri>()
+        try {
+            if (cur != null && cur.count > 0) {
+                if (cur.moveToNext()) {
+                    do {
+                        val idIndex = cur.getColumnIndex(MediaStore.Images.Media._ID)
+                        val folderIndex = cur.getColumnIndex(MediaStore.Images.Media.BUCKET_DISPLAY_NAME)
+                        val mediaTypeIndex = cur.getColumnIndex(MediaStore.Files.FileColumns.MEDIA_TYPE)
+
+                        val index = cur.getLong(idIndex)
+                        val folderName = cur.getString(folderIndex)
+
+                        val contentUri = when (cur.getInt(mediaTypeIndex)) {
+                            MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE -> ContentUris.withAppendedId(
+                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                index
+                            )
+                            else -> ContentUris.withAppendedId(
+                                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                                index
+                            )
+                        }
+
+                        val mediaInAlbum = albumMap[folderName]
+                        if (mediaInAlbum == null) {
+                            albumMap[folderName] = 1
+                            albumThumbnailMap[folderName] = contentUri
+                        } else {
+                            albumMap[folderName] = mediaInAlbum + 1
+                        }
+                    } while (cur.moveToNext())
+                }
+            }
+            return albumMap.filter {
+                albumThumbnailMap[it.key] != null
+            }.map {
+                FolderData(it.key, CameraUtil.getMediaCountText(it.value), albumThumbnailMap[it.key]!!, it.value)
+            }
+        } catch (th: Throwable) {
+            Timber.e(th)
+        } finally {
+            cur?.close()
+        }
+        return emptyList()
+    }
+
+    suspend fun importPhotoVideoFlow(context: Context, folderName: String? = null): Flow<ImportedMediaMetaData> {
+        return flow {
+                val imageAdapterDataList = ArrayList<ImageAdapterData>()
+
+                val projections = arrayOf(
+                    MediaStore.Files.FileColumns.MEDIA_TYPE,
+                    MediaStore.Images.Media.DATE_ADDED,
+                    MediaStore.Video.Media.DURATION,
+                    MediaStore.Images.Media._ID
+                )
+                val selectionBuilder = getSelectionStringBuilder(folderName)
+
+                val cur: Cursor?
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+                    val bundle = Bundle()
+                    bundle.putString(ContentResolver.QUERY_ARG_SQL_SELECTION, selectionBuilder.toString())
+                    bundle.putStringArray(ContentResolver.QUERY_ARG_SORT_COLUMNS, arrayOf(MediaStore.Images.Media.DATE_ADDED))
+                    bundle.putInt(ContentResolver.QUERY_ARG_SORT_DIRECTION, ContentResolver.QUERY_SORT_DIRECTION_DESCENDING)
+
+                    cur = context.contentResolver.query(URI, projections, bundle, null)
+                } else {
+                    val sortOrder = MediaStore.Images.Media.DATE_ADDED + " DESC"
+                    cur = context.contentResolver.query(URI, projections, selectionBuilder.toString(), null, sortOrder)
+                }
+                var lastIndex: Long? = null
+
+                var processedItemCount = 0
+
+                try {
+                    if (cur != null) {
+                        if (cur.count == 0) {
+                            emit(ImportedMediaMetaData(MediaImporterData(ArrayList(imageAdapterDataList)), 0))
+                        } else if (cur.count > 0) {
+                            val totalMediaCount = cur.count
+
+                            if (cur.moveToNext()) {
+                                do {
+                                    val dateAddedIndex = cur.getColumnIndex(MediaStore.Images.Media.DATE_ADDED)
+
+                                    val idIndex = cur.getColumnIndex(MediaStore.Images.Media._ID)
+                                    val mediaTypeIndex = cur.getColumnIndex(MediaStore.Files.FileColumns.MEDIA_TYPE)
+
+                                    val index = cur.getLong(idIndex)
+                                    if (lastIndex != null && lastIndex < index) {
+                                        print(index)
+                                        print(index)
+                                    }
+                                    lastIndex = index
+
+                                    val dateAdded = cur.getLong(dateAddedIndex)
+
+                                    val asset = when (cur.getInt(mediaTypeIndex)) {
+                                        MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE -> PhotosData(
+                                            contentUri = ContentUris.withAppendedId(
+                                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                                index
+                                            ),
+                                            createdDate = dateAdded
+                                        )
+                                        else -> {
+                                            val durationIndex = cur.getColumnIndex(MediaStore.Video.Media.DURATION)
+                                            val duration = cur.getLong(durationIndex)
+                                            VideoData(
+                                                contentUri = ContentUris.withAppendedId(
+                                                    MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                                                    index
+                                                ),
+                                                createdDate = dateAdded,
+                                                durationText = VideoUtil.getFormattedDurationText(duration),
+                                                canBeSelected = VideoUtil.isVideoWithinLimit(duration)
+                                            )
+                                        }
+
+                                    }
+                                    processedItemCount += 1
+
+                                    val imageAdapterData = ImageAdapterData(asset)
+                                    imageAdapterDataList.add(imageAdapterData)
+
+                                    if ((processedItemCount % BATCH_LIMIT == 0) || processedItemCount == totalMediaCount) {
+                                        emit(ImportedMediaMetaData(MediaImporterData(ArrayList(imageAdapterDataList)), lastIndex))
+                                        imageAdapterDataList.clear()
+                                    }
+
+                                    if (processedItemCount > totalMediaCount) {
+                                        throw Exception("processed media item count can never greater than total media")
+                                    }
+                                } while (cur.moveToNext())
+                            }
+                        }
+                    }
+
+                } catch (th: Throwable) {
+                    Timber.e(th)
+                } finally {
+                    cur?.close()
+                }
+            }
     }
 }

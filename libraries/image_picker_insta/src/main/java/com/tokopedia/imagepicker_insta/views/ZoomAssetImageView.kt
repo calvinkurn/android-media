@@ -1,5 +1,6 @@
 package com.tokopedia.imagepicker_insta.views
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Matrix
 import android.graphics.drawable.BitmapDrawable
@@ -78,9 +79,17 @@ class ZoomAssetImageView @JvmOverloads constructor(
     fun centerInside() {
         engine.moveTo(1f, 0f,0f,true)
     }
+    fun isValidGlideContext(context: Context):Boolean{
+        if(context is Activity){
+            return !(context.isFinishing || context.isDestroyed)
+        }
+        return false
+    }
 
     fun loadAsset(asset: Asset, zoomInfo: ZoomInfo) {
         this.zoomInfo = zoomInfo
+
+        if(!isValidGlideContext(context)) return
 
         Glide.with(this)
             .load(asset.contentUri)
