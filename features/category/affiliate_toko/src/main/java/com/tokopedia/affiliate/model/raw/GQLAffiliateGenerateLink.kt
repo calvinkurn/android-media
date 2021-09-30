@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.model.raw
 
-const val GQL_Affiliate_Generate_Link: String = """mutation generateAffiliateLink(${'$'}input: GenerateLinkRequest!) {
+val GQL_Affiliate_Generate_Link: String = """mutation generateAffiliateLink(${'$'}input: GenerateLinkRequest!) {
   generateAffiliateLink(input: ${"$"}input) {
      Data {
       Status
@@ -15,4 +15,4 @@ const val GQL_Affiliate_Generate_Link: String = """mutation generateAffiliateLin
       }
     }
   }
-}"""
+}""".trimIndent()

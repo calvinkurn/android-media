@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.model.raw
 
-const val GQL_Affiliate_Performance: String = """query getAffiliateItemsPerformanceList(${"$"}page: Int,${"$"}limit: Int){
+val GQL_Affiliate_Performance: String = """query getAffiliateItemsPerformanceList(${"$"}page: Int,${"$"}limit: Int){
   getAffiliateItemsPerformanceList(page: ${"$"}page,limit: ${"$"}limit) {
     Data {
       Status
@@ -45,4 +45,4 @@ const val GQL_Affiliate_Performance: String = """query getAffiliateItemsPerforma
       }
     }
   }
-}"""
+}""".trimIndent()

@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.model.raw
 
-const val GQL_Affiliate_Search: String = """query searchAffiliate(${"$"}filter: [String]!){
+val GQL_Affiliate_Search: String = """query searchAffiliate(${"$"}filter: [String]!){
   searchAffiliate(filter: ${"$"}filter) {
     data {
       status
@@ -70,4 +70,4 @@ const val GQL_Affiliate_Search: String = """query searchAffiliate(${"$"}filter: 
       }
     }
   }
-}"""
+}""".trimIndent()
