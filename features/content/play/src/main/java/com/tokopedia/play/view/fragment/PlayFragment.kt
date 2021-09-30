@@ -630,7 +630,7 @@ class PlayFragment @Inject constructor(
                 return@launchWhenResumed
             }
 
-            if (videoPlayer.isYouTube && isFirstTopBoundsCalculated && !fragmentUpcomingView.isPageAlreadyInit()) {
+            if (videoPlayer.isYouTube && isFirstTopBoundsCalculated) {
                 fragmentYouTubeView.safeInit()
                 fragmentYouTubeView.show()
             }
