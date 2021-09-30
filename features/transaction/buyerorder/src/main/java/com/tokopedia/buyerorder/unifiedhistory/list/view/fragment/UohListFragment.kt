@@ -921,9 +921,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
     
     private fun renderChipsFilterStatus(chips: ArrayList<SortFilterItem>) {
+        _arrayListStatusFilterBundle.clear()
         orderList.v2Filters.forEach { v2Filter ->
-            val type = if (v2Filter.isPrimary) 0
-            else 1
+            val type = if (v2Filter.isPrimary) 0 else 1
             _arrayListStatusFilterBundle.add(UohFilterBundle(key = v2Filter.value, value = v2Filter.label, type = type))
         }
 
@@ -955,6 +955,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun renderChipsFilterCategoryProducts(chips: ArrayList<SortFilterItem>) {
+        _arrayListCategoryProductFilterBundle.clear()
         _arrayListCategoryProductFilterBundle.add(UohFilterBundle(key = "", value = ALL_PRODUCTS, type = 0))
         orderList.categories.forEach { category ->
             _arrayListCategoryProductFilterBundle.add(UohFilterBundle(key = category.value, value = category.label, type = 0))
