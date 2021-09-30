@@ -72,7 +72,7 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
                 )
             }
         }
-        recyclerView.adapter = CategoryWidgetItemAdapter(channel, categoryListener, getHeight2LinesTypographyHeading6(itemView.context))
+        recyclerView.adapter = CategoryWidgetV2ItemAdapter(channel, categoryListener, getHeight2LinesTypographyHeading6(itemView.context))
         recyclerView.layoutManager = GridLayoutManager(
                 view.context,
                 2,
@@ -101,7 +101,7 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
         )
     }
 
-    class CategoryWidgetItemAdapter(
+    class CategoryWidgetV2ItemAdapter(
         private val channels: DynamicHomeChannel.Channels,
         private val listener: HomeCategoryListener?,
         private val height2LinesText: Int
