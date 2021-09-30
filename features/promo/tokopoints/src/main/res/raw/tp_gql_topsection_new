@@ -1,5 +1,5 @@
 {
-  tokopediaRewardTopSection {
+  tokopediaRewardTopSection(apiVersion: "2.0.0") {
     title
     profilePicture
     introductionText
@@ -13,6 +13,7 @@
       backgroundColor
     }
     dynamicActionList {
+      id
       cta {
         icon
         text

@@ -1033,8 +1033,12 @@ class DiscoveryFragment :
                     return
                 val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID).orEmpty()
                 val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW).orEmpty()
-                if (discoveryBaseViewModel is DiscoveryPlayWidgetViewModel)
-                    (discoveryBaseViewModel as DiscoveryPlayWidgetViewModel).updatePlayWidgetTotalView(channelId, totalView)
+                val isReminder = data.getBooleanExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_IS_REMINDER, false)
+                if (discoveryBaseViewModel is DiscoveryPlayWidgetViewModel){
+                    val discoveryPlayWidgetViewModel = (discoveryBaseViewModel as DiscoveryPlayWidgetViewModel)
+                    discoveryPlayWidgetViewModel.updatePlayWidgetTotalView(channelId, totalView)
+                    discoveryPlayWidgetViewModel.updatePlayWidgetReminder(channelId, isReminder)
+                }
             }
             MvcView.REQUEST_CODE ->{
                 if(resultCode == MvcView.RESULT_CODE_OK){

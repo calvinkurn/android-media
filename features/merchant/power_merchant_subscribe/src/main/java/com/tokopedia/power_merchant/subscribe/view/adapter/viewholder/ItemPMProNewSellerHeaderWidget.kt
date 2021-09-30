@@ -27,7 +27,9 @@ class ItemPMProNewSellerHeaderWidget(view: View) :
         with(itemView) {
             val pmProNewSellerRequirementAdapter =
                 PMProNewSellerRequirementAdapter(element.itemRequiredPMProNewSeller)
-            rvRequirePmProNewSellerHeader.layoutManager = LinearLayoutManager(context)
+            rvRequirePmProNewSellerHeader.layoutManager = object: LinearLayoutManager(context) {
+                override fun canScrollVertically(): Boolean = false
+            }
             rvRequirePmProNewSellerHeader.adapter = pmProNewSellerRequirementAdapter
         }
     }

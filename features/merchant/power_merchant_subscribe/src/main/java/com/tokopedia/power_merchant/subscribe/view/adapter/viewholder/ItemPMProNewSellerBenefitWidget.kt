@@ -27,7 +27,9 @@ class ItemPMProNewSellerBenefitWidget(view: View, private val pmWidgetListener: 
     private fun setupAdapter(element: WidgetPmProNewSellerBenefitUiModel?) {
         with(itemView) {
             rvBenefitExclusivePmPro?.apply {
-                layoutManager = LinearLayoutManager(context)
+                layoutManager = object: LinearLayoutManager(context) {
+                    override fun canScrollVertically(): Boolean = false
+                }
                 adapter = PMProBenefitAdapter(element?.items.orEmpty())
             }
         }

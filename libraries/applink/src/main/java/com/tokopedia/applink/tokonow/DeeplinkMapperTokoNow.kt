@@ -2,9 +2,7 @@ package com.tokopedia.applink.tokonow
 
 import android.content.Context
 import android.net.Uri
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.FirebaseRemoteConfigInstance
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
@@ -50,6 +48,14 @@ object DeeplinkMapperTokopediaNow {
 
             return "${ApplinkConstInternalTokopediaNow.CATEGORY}?$categoryL1$categoryL2$queryString"
         } else return ApplinkConstInternalTokopediaNow.OLD_TOKOMART
+    }
+
+    fun getRegisteredNavigationTokopediaNowRepurchase(context: Context): String {
+        return if (getRemoteConfigTokopediaNowEnabler(context)) {
+            ApplinkConstInternalTokopediaNow.REPURCHASE
+        } else {
+            ApplinkConstInternalTokopediaNow.OLD_TOKOMART
+        }
     }
 
     fun getRemoteConfigTokopediaNowEnabler(context: Context): Boolean{

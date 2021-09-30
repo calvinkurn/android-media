@@ -33,7 +33,7 @@ class GetTableDataUseCase(
         val dataKays: List<DataKeyModel> =
             (params.getObject(DATA_KEYS) as? List<DataKeyModel>).orEmpty()
         val gqlRequest = GraphqlRequest(QUERY, GetTableDataResponse::class.java, params.parameters)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val errors = gqlResponse.getError(GetTableDataResponse::class.java)
         if (errors.isNullOrEmpty()) {
