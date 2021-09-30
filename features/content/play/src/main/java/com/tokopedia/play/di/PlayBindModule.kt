@@ -12,6 +12,8 @@ import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalytic
 import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalyticImpl
 import com.tokopedia.play.data.repository.*
 import com.tokopedia.play.domain.repository.*
+import com.tokopedia.play.util.timer.PlayTimerFactory
+import com.tokopedia.play.util.timer.TimerFactory
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorageImpl
 import dagger.Binds
@@ -69,4 +71,11 @@ abstract class PlayBindModule {
     @Binds
     @PlayScope
     abstract fun bindUpcomingAnalytic(analytic: PlayUpcomingAnalyticImpl): PlayUpcomingAnalytic
+
+    /**
+     * Utils
+     */
+    @Binds
+    @PlayScope
+    abstract fun bindTimerFactory(timerFactory: PlayTimerFactory): TimerFactory
 }

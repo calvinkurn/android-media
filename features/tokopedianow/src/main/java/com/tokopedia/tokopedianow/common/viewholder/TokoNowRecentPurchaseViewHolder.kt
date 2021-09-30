@@ -9,6 +9,8 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
@@ -33,6 +35,7 @@ class TokoNowRecentPurchaseViewHolder(
 
     private var vsTitle: ViewStub? = null
     private var tvTitle: Typography? = null
+    private var tvSeeAll: Typography? = null
     private var layoutShimmering: View? = null
     private var rvProduct: RecyclerView? = null
     private var linearLayoutManager: LinearLayoutManager? = null
@@ -44,6 +47,7 @@ class TokoNowRecentPurchaseViewHolder(
     init {
         vsTitle = itemView.findViewById(R.id.vsTitle)
         tvTitle = vsTitle?.inflate()?.findViewById(R.id.channel_title)
+        tvSeeAll = itemView.findViewById(R.id.tv_see_all)
         layoutShimmering = itemView.findViewById(R.id.layoutShimmering)
         rvProduct = itemView.findViewById(R.id.rvProduct)
     }
@@ -66,6 +70,11 @@ class TokoNowRecentPurchaseViewHolder(
     private fun initView(data: TokoNowRecentPurchaseUiModel) {
         tvTitle?.text = data.title
         tvTitle?.setType(Typography.HEADING_4)
+
+        tvSeeAll?.setOnClickListener {
+            goToRepurchasePage()
+        }
+
         rvProduct?.apply {
             adapter = this@TokoNowRecentPurchaseViewHolder.adapter
             linearLayoutManager = createLinearLayoutManager()
@@ -78,11 +87,13 @@ class TokoNowRecentPurchaseViewHolder(
     private fun showAllView() {
         vsTitle?.show()
         rvProduct?.show()
+        tvSeeAll?.show()
     }
 
     private fun hideAllView() {
         vsTitle?.hide()
         rvProduct?.hide()
+        tvSeeAll?.hide()
     }
 
     private fun showShimmering() {
@@ -116,13 +127,17 @@ class TokoNowRecentPurchaseViewHolder(
     }
 
     private fun createScrollListener(): RecyclerView.OnScrollListener {
-        return  object : RecyclerView.OnScrollListener() {
+        return object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val scrollState = linearLayoutManager?.onSaveInstanceState()
                 tokoNowView?.saveScrollState(adapterPosition, scrollState)
             }
         }
+    }
+
+    private fun goToRepurchasePage() {
+        RouteManager.route(itemView.context, ApplinkConstInternalTokopediaNow.REPURCHASE)
     }
 
     private fun restoreScrollState() {

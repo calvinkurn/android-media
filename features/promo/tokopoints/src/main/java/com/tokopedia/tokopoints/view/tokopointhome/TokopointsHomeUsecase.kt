@@ -7,9 +7,13 @@ import com.tokopedia.mvcwidget.MVC_REWARD_MULTISHOP_QUERY
 import com.tokopedia.tokopoints.di.TokoPointScope
 import com.tokopedia.tokopoints.view.model.rewardintro.IntroResponse
 import com.tokopedia.tokopoints.view.model.rewardtopsection.RewardResponse
+import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.RewardTickerListResponse
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter
 import com.tokopedia.tokopoints.view.model.usersaving.UserSavingResponse
 import com.tokopedia.tokopoints.view.util.CommonConstant
+import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.APIVERSION
+import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.REWARDS_SOURCE
+import com.tokopedia.tokopoints.view.util.TP_STATUS_MATCHING_QUERY
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -34,6 +38,9 @@ class TokopointsHomeUsecase @Inject constructor(@Named(CommonConstant.GQLQuery.T
 
     @Inject
     lateinit var mGetUserSavingUsecase: MultiRequestGraphqlUseCase
+
+    @Inject
+    lateinit var mGetStatusMatchingUsecase: MultiRequestGraphqlUseCase
 
     @GqlQuery("TpHomePageSection", TP_HOMEPAGE_SECTION)
     suspend fun getTokoPointDetailData() = withContext(Dispatchers.IO) {
@@ -68,5 +75,17 @@ class TokopointsHomeUsecase @Inject constructor(@Named(CommonConstant.GQLQuery.T
         val requestSaving = GraphqlRequest(tp_gql_usersaving,UserSavingResponse::class.java,variables,false)
         mGetUserSavingUsecase.addRequest(requestSaving)
         mGetUserSavingUsecase.executeOnBackground()
+    }
+
+    @GqlQuery("TpStatusMatching", TP_STATUS_MATCHING_QUERY)
+    suspend fun getUserStatusMatchingData() = withContext(Dispatchers.IO){
+        val variables: MutableMap<String, Any> = HashMap()
+        variables[CommonConstant.GraphqlVariableKeys.APIVERSION] = APIVERSION
+        variables[CommonConstant.GraphqlVariableKeys.SOURCE] = REWARDS_SOURCE
+        mGetStatusMatchingUsecase.clearRequest()
+        val requestSaving = GraphqlRequest(TpStatusMatching.GQL_QUERY,
+            RewardTickerListResponse::class.java,variables,false)
+        mGetStatusMatchingUsecase.addRequest(requestSaving)
+        mGetStatusMatchingUsecase.executeOnBackground()
     }
 }
