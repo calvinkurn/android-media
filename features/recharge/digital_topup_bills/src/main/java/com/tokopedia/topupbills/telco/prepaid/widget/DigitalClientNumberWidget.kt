@@ -2,7 +2,6 @@ package com.tokopedia.topupbills.telco.prepaid.widget
 
 import android.content.Context
 import android.text.Editable
-import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
@@ -49,6 +48,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     private val imgOperatorResult: ImageView
     private val layoutResult: ConstraintLayout
     private var favoriteNumbers: List<TopupBillsSeamlessFavNumberItem> = listOf()
+    private var textFieldStaticLabel: String = context.getString(R.string.digital_client_label)
     protected val view: View
 
     private lateinit var listener: ActionListener
@@ -84,14 +84,13 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         inputNumberField.clearIconView.setOnClickListener {
             inputNumberField.editText.setText("")
             inputNumberField.isInputError = false
-            inputNumberField.textInputLayout.hint = context.getString(R.string.digital_client_label)
+            inputNumberField.textInputLayout.hint = textFieldStaticLabel
             clearErrorState()
             imgOperator.hide()
             listener.onClickClearInput()
         }
 
         inputNumberField.editText.run {
-            inputType = InputType.TYPE_CLASS_TEXT
             threshold = AUTOCOMPLETE_THRESHOLD
             dropDownVerticalOffset = AUTOCOMPLETE_DROPDOWN_VERTICAL_OFFSET
 
@@ -141,6 +140,10 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         initClientNumberAutoComplete(context)
     }
 
+    fun setInputType(inputType: Int) {
+        inputNumberField.editText.inputType = inputType
+    }
+
     fun setFavoriteNumber(favNumberItems: List<TopupBillsSeamlessFavNumberItem>) {
         this.favoriteNumbers = favNumberItems
         initSortFilterChip(favNumberItems)
@@ -159,7 +162,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             val sortFilterItem = SortFilterItem(chipText, type = ChipsUnify.TYPE_ALTERNATE)
             sortFilterItem.listener = {
                 if (number.clientName.isEmpty()) {
-                    setContactName(context.getString(R.string.digital_client_label))
+                    setContactName("")
                     listener.onClickFilterChip(false)
                 } else {
                     setContactName(number.clientName)
@@ -264,12 +267,12 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         }
     }
 
-    fun setFilterChipShimmer(show: Boolean) {
+    fun setFilterChipShimmer(show: Boolean, shouldHideChip: Boolean = false) {
         if (show) {
             sortFilterChip.hide()
             sortFilterChipShimmer.show()
         } else {
-            sortFilterChip.show()
+            if (!shouldHideChip) sortFilterChip.show()
             sortFilterChipShimmer.hide()
         }
     }
@@ -290,19 +293,15 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     private fun validateContactName(contactName: String): String {
-        val label = if (contactName.matches(REGEX_IS_ALPHABET_AND_SPACE_ONLY.toRegex()) && contactName.isNotEmpty()) {
-            contactName
+        return if (contactName.matches(REGEX_IS_ALPHABET_AND_SPACE_ONLY.toRegex()) && contactName.isNotEmpty()) {
+            if (contactName.length > LABEL_MAX_CHAR) {
+                contactName.substring(0, LABEL_MAX_CHAR).plus(ELLIPSIZE)
+            } else {
+                contactName
+            }
         } else {
             context.getString(R.string.digital_client_label)
         }
-
-        val validatedName = if (label.length > LABEL_MAX_CHAR) {
-            label.substring(0, LABEL_MAX_CHAR).plus(ELLIPSIZE)
-        } else {
-            label
-        }
-
-        return validatedName
     }
 
     private fun validatePrefixClientNumber(phoneNumber: String): String {

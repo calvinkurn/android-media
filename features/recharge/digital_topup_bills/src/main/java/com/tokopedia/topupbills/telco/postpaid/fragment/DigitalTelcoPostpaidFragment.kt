@@ -134,6 +134,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
+    override fun getClientInputNumber(): DigitalClientNumberWidget = postpaidClientNumberWidget
+
     private fun initViewPager() {
         val pagerAdapter = TelcoTabAdapter(this, object : TelcoTabAdapter.Listener {
             override fun getTabList(): List<TelcoTabItem> {
@@ -543,13 +545,13 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun errorSetFavNumbers() {
         performanceMonitoringStopTrace()
-        postpaidClientNumberWidget.setFilterChipShimmer(false)
+        postpaidClientNumberWidget.setFilterChipShimmer(false, true)
     }
 
     override fun setSeamlessFavNumbers(data: TopupBillsSeamlessFavNumber) {
         performanceMonitoringStopTrace()
         seamlessFavNumberList.addAll(data.favoriteNumbers)
-        postpaidClientNumberWidget.setFilterChipShimmer(false)
+        postpaidClientNumberWidget.setFilterChipShimmer(false, data.favoriteNumbers.isEmpty())
         postpaidClientNumberWidget.setFavoriteNumber(data.favoriteNumbers)
         postpaidClientNumberWidget.setAutoCompleteList(data.favoriteNumbers)
     }

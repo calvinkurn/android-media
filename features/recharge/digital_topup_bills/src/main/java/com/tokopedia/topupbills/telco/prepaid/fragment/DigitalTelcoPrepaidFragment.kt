@@ -2,6 +2,7 @@ package com.tokopedia.topupbills.telco.prepaid.fragment
 
 import android.os.Bundle
 import android.os.Handler
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -208,6 +209,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             rechargeAnalytics.onOpenPageFromSlice(TITLE_PAGE)
         }
     }
+
+    override fun getClientInputNumber(): DigitalClientNumberWidget = telcoClientNumberWidget
 
     private fun prepareProductForCheckout(telcoProduct: TelcoProduct) {
         productId = telcoProduct.id.toIntOrZero()
@@ -422,6 +425,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 true
             )
             buyWidget.setBuyButtonState(false)
+            autoSelectTabProduct = false
         }
     }
 
@@ -483,12 +487,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
 
         override fun onClearAutoComplete() {
-            showProducts = false
-            renderPromoAndRecommendation()
-
-            productId = 0
-            operatorId = ""
-            sharedModelPrepaid.setVisibilityTotalPrice(false)
+            topupAnalytics.eventClearInputNumber()
+            showPromoAndRecommendation()
         }
 
         override fun onShowFilterChip(isLabeled: Boolean) {
@@ -500,6 +500,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
 
         override fun onClickFilterChip(isLabeled: Boolean) {
+            autoSelectTabProduct = true
             if (isLabeled) {
                 topupAnalytics.clickFavoriteNumberChips(categoryId, userSession.userId)
             } else {
@@ -510,6 +511,15 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         override fun onClickClearInput() {
             topupAnalytics.eventClearInputNumber()
         }
+    }
+
+    private fun showPromoAndRecommendation() {
+        showProducts = false
+        renderPromoAndRecommendation()
+
+        productId = 0
+        operatorId = ""
+        sharedModelPrepaid.setVisibilityTotalPrice(false)
     }
 
     override fun setInputNumberFromContact(contactNumber: String) {
@@ -644,8 +654,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override fun setSeamlessFavNumbers(data: TopupBillsSeamlessFavNumber) {
         performanceMonitoringStopTrace()
-        telcoClientNumberWidget.setFilterChipShimmer(false)
         val favNumbers = data.favoriteNumbers
+        telcoClientNumberWidget.setFilterChipShimmer(false, favNumbers.isEmpty())
         seamlessFavNumberList.addAll(favNumbers)
         if (clientNumber.isEmpty() && favNumbers.isNotEmpty() && ::viewPager.isInitialized) {
             autoSelectTabProduct = true
@@ -661,7 +671,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override fun errorSetFavNumbers() {
         performanceMonitoringStopTrace()
-        telcoClientNumberWidget.setFilterChipShimmer(false)
+        telcoClientNumberWidget.setFilterChipShimmer(false, true)
     }
 
     private fun performanceMonitoringStopTrace() {
