@@ -107,9 +107,9 @@ class DigitalAddToCartUseCase @Inject constructor(@DigitalAddToCartQualifier val
             attributes.userAgent = DeviceUtil.userAgentForApiCall
             attributes.userId = userId
             attributes.productId = if (!digitalCheckoutPassData.productId.isNullOrEmpty())
-                digitalCheckoutPassData.productId ?: "" else ""
+                digitalCheckoutPassData.productId ?: "0" else "0"
             val orderId = if (!digitalCheckoutPassData.orderId.isNullOrEmpty())
-                digitalCheckoutPassData.orderId ?: "" else ""
+                digitalCheckoutPassData.orderId ?: "0" else "0"
             if (orderId.isNotEmpty()) attributes.orderId = orderId
             attributes.fields = fieldList
             if (GlobalConfig.isSellerApp()) {
