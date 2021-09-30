@@ -105,11 +105,11 @@ class DigitalAddToCartUseCase @Inject constructor(@DigitalAddToCartQualifier val
             attributes.instantCheckout = digitalCheckoutPassData.instantCheckout == VALUE_INSTANT_CHECKOUT_ID
             attributes.ipAddress = DeviceUtil.localIpAddress
             attributes.userAgent = DeviceUtil.userAgentForApiCall
-            attributes.userId = userId.toInt()
+            attributes.userId = userId.toLong()
             attributes.productId = if (!digitalCheckoutPassData.productId.isNullOrEmpty())
-                digitalCheckoutPassData.productId?.toInt() ?: 0 else 0
+                digitalCheckoutPassData.productId?.toLong() ?: 0L else 0L
             attributes.orderId = if (!digitalCheckoutPassData.orderId.isNullOrEmpty())
-                digitalCheckoutPassData.orderId?.toInt() ?: 0 else 0
+                digitalCheckoutPassData.orderId?.toLong() ?: 0L else 0L
             attributes.fields = fieldList
             if (GlobalConfig.isSellerApp()) {
                 attributes.isReseller = true

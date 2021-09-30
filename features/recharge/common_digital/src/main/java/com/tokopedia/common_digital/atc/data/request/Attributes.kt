@@ -11,17 +11,17 @@ data class Attributes(
         @SuppressLint("Invalid Data Type")
         @SerializedName("user_id")
         @Expose
-        var userId: Int = 0,
+        var userId: Long = 0L,
 
         @SuppressLint("Invalid Data Type")
         @SerializedName("product_id")
         @Expose
-        var productId: Int = 0,
+        var productId: Long = 0L,
 
         @SuppressLint("Invalid Data Type")
         @SerializedName("order_id")
         @Expose
-        var orderId: Int = 0,
+        var orderId: Long = 0L,
 
         @SuppressLint("Invalid Data Type")
         @SerializedName("device_id")
