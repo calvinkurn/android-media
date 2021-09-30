@@ -25,6 +25,8 @@ internal class ProductNotification(
 
     override fun createNotification(): Notification? {
         if (baseNotificationModel.productInfoList.isEmpty()) return null
+        if(baseNotificationModel.notificationProductType != CMConstant.NotificationProductType.V2)
+            return null
 
         val productWidget = ProductWidget(
                 context,
