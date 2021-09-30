@@ -93,7 +93,13 @@ internal class KeywordFilterViewHolder(
             onKeywordTextFieldFocusChanged(hasFocus)
         }
 
-        keywordFilterTextField?.editText?.setOnEditorActionListener(::onKeywordFilterEditorAction)
+        keywordFilterTextField?.editText?.setOnEditorActionListener {
+            _: TextView?, actionId: Int, event: KeyEvent? ->
+            if (isEnterPressed(actionId, event)) {
+                onAddKeywordClicked()
+                true
+            } else false
+        }
 
         keywordFilterTextField?.icon1?.apply {
             visible()
@@ -107,17 +113,6 @@ internal class KeywordFilterViewHolder(
     private fun onKeywordTextFieldFocusChanged(hasFocus: Boolean) {
         if (hasFocus)
             listener.scrollToPosition(adapterPosition)
-    }
-
-    private fun onKeywordFilterEditorAction(
-        textView: TextView?,
-        actionId: Int,
-        event: KeyEvent?
-    ): Boolean {
-        return if (isEnterPressed(actionId, event)) {
-            onAddKeywordClicked()
-            true
-        } else false
     }
 
     private fun isEnterPressed(actionId: Int, event: KeyEvent?): Boolean {
