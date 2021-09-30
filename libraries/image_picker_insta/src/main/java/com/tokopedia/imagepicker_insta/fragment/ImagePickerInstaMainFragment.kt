@@ -479,13 +479,14 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                     allImageDataList.addAll(0, tempImageAdapterList)
                 }
 
-                if (tvSelectedFolder.text == mediaVmMData?.folderName) {
+                if (tvSelectedFolder.text == mediaVmMData?.folderName || tvSelectedFolder.text == PhotoImporter.ALL) {
 
                     addCameraItemInEmptyList()
 
                     if (mediaVmMData?.isNewItem == true) {
                         if(imageDataList.isNotEmpty()) {
                             imageDataList.addAll(1, tempImageAdapterList)
+                            imageAdapter.notifyItemRangeInserted(1,tempImageAdapterList.size)
                         }
                     }else{
                         imageDataList.addAll(tempImageAdapterList)
@@ -497,7 +498,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                 autoSelectFirstItemWhenFolderIsChanged(tempImageAdapterList)
             }
             if (oldSize != imageDataList.size) {
-                imageAdapter.notifyItemRangeInserted(oldSize, imageDataList.size)
+                imageAdapter.notifyItemRangeInserted(oldSize, tempImageAdapterList.size)
             }
     }
 
