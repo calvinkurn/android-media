@@ -138,7 +138,7 @@ public class AlbumLoader extends CursorLoader {
 
     public static CursorLoader newInstance(Context context, GalleryType galleryType) {
         boolean useNewLogic = RemoteConfigInstance.INSTANCE.getRemoteConfig(context).getBoolean(REMOTE_CONFIG_ALBUM_LOAD_NEW, true);
-        if (useNewLogic){
+        if (useNewLogic) {
             return newInstanceNew(context, galleryType);
         } else {
             return newInstanceOld(context, galleryType);
@@ -174,17 +174,16 @@ public class AlbumLoader extends CursorLoader {
         String selection;
         String[] selectionArgs;
         Uri uri = QUERY_URI;
-        if (galleryType == GalleryType.GIF_ONLY || galleryType == GalleryType.IMAGE_ONLY) {
-            if (galleryType == GalleryType.GIF_ONLY) {
-                selection = beforeAndroidTen()
-                        ? SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE_NO_MEDIA : SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE_29_NO_MEDIA;
-                selectionArgs = new String[]{"image/gif"};
-            } else {
-                selection = beforeAndroidTen()
-                        ? SELECTION_FOR_SINGLE_MEDIA_TYPE_NO_MEDIA : SELECTION_FOR_SINGLE_MEDIA_TYPE_29_NO_MEDIA;
-                selectionArgs = new String[]{};
-            }
+        if (galleryType == GalleryType.GIF_ONLY) {
             uri = getUriImageCheckOS();
+            selection = beforeAndroidTen()
+                    ? SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE_NO_MEDIA : SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE_29_NO_MEDIA;
+            selectionArgs = new String[]{"image/gif"};
+        } else if (galleryType == GalleryType.IMAGE_ONLY) {
+            uri = getUriImageCheckOS();
+            selection = beforeAndroidTen()
+                    ? SELECTION_FOR_SINGLE_MEDIA_TYPE_NO_MEDIA : SELECTION_FOR_SINGLE_MEDIA_TYPE_29_NO_MEDIA;
+            selectionArgs = new String[]{};
         } else if (galleryType == GalleryType.VIDEO_ONLY) {
             selection = beforeAndroidTen()
                     ? SELECTION_FOR_SINGLE_MEDIA_TYPE_NO_MEDIA : SELECTION_FOR_SINGLE_MEDIA_TYPE_29_NO_MEDIA;
@@ -197,7 +196,7 @@ public class AlbumLoader extends CursorLoader {
         return new AlbumLoader(context, uri, selection, selectionArgs);
     }
 
-    private static Uri getUriImageCheckOS(){
+    private static Uri getUriImageCheckOS() {
         Uri uri;
         if (beforeAndroidTen()) {
             uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
@@ -207,7 +206,7 @@ public class AlbumLoader extends CursorLoader {
         return uri;
     }
 
-    private static Uri getUriVideoCheckOS(){
+    private static Uri getUriVideoCheckOS() {
         Uri uri;
         if (beforeAndroidTen()) {
             uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
