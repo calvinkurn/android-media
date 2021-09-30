@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -72,8 +71,7 @@ import com.tokopedia.product.addedit.productlimitation.presentation.model.Produc
 import com.tokopedia.product.addedit.shipment.di.DaggerAddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.presentation.adapter.ShipmentAdapter
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.CONVENTIONAL_VALIDATION
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.CPL_FIRST_INDEX
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.CPL_SECOND_INDEX
+import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.CPL_CONVENTIONAL_INDEX
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.CPL_STANDARD_SHIPMENT_STATUS
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.CPL_THRESHOLD_SIZE
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_CPL_ACTIVATED
@@ -609,7 +607,7 @@ class AddEditProductShipmentFragment:
 
     private fun applyShipmentValue(data: CustomProductLogisticModel) {
         val cplProduct = data.cplProduct
-        if (cplProduct.isEmpty() || cplProduct.getOrNull(CPL_FIRST_INDEX)?.cplStatus == CPL_STANDARD_SHIPMENT_STATUS) {
+        if (cplProduct.isEmpty() || cplProduct.firstOrNull()?.cplStatus == CPL_STANDARD_SHIPMENT_STATUS) {
             radioStandarShipment?.isChecked = true
             radioCustomShipment?.isChecked = false
             isCPLActivated = true
@@ -634,7 +632,7 @@ class AddEditProductShipmentFragment:
             shipmentOnDemandAdapter.updateData(it.shipper)
             shipmentOnDemandAdapter.setAllProductIdsActivated()
         }
-        data.shipperList.getOrNull(CPL_FIRST_INDEX)?.let {
+        data.shipperList.getOrNull(CPL_CONVENTIONAL_INDEX)?.let {
             shipmentConventionalAdapter.updateData(it.shipper)
             shipmentConventionalAdapter.setAllProductIdsActivated()
         }
@@ -642,21 +640,21 @@ class AddEditProductShipmentFragment:
 
     private fun updateShipmentDataCustom(data: CustomProductLogisticModel) {
         if (data.shipperList.isNotEmpty() && data.cplProduct.isNotEmpty()) {
-            when (data.shipperList[CPL_FIRST_INDEX].header) {
+            when (data.shipperList.first().header) {
                 ON_DEMAND_VALIDATION -> {
-                    shipmentOnDemandAdapter.updateData(data.shipperList[CPL_FIRST_INDEX].shipper)
-                    shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct[CPL_FIRST_INDEX])
+                    shipmentOnDemandAdapter.updateData(data.shipperList.first().shipper)
+                    shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct.first())
                 }
                 CONVENTIONAL_VALIDATION -> {
-                    shipmentConventionalAdapter.updateData(data.shipperList[CPL_FIRST_INDEX].shipper)
-                    shipmentConventionalAdapter.setProductIdsActivated(data.cplProduct[CPL_FIRST_INDEX])
+                    shipmentConventionalAdapter.updateData(data.shipperList.first().shipper)
+                    shipmentConventionalAdapter.setProductIdsActivated(data.cplProduct.first())
                 }
                 else -> {
-                    shipmentOnDemandAdapter.updateData(data.shipperList[CPL_FIRST_INDEX].shipper)
-                    shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct[CPL_FIRST_INDEX])
+                    shipmentOnDemandAdapter.updateData(data.shipperList.first().shipper)
+                    shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct.first())
                     if (data.shipperList.size >= CPL_THRESHOLD_SIZE)
-                        shipmentConventionalAdapter.updateData(data.shipperList[CPL_SECOND_INDEX].shipper)
-                    shipmentConventionalAdapter.setProductIdsActivated(data.cplProduct[CPL_FIRST_INDEX])
+                        shipmentConventionalAdapter.updateData(data.shipperList.last().shipper)
+                    shipmentConventionalAdapter.setProductIdsActivated(data.cplProduct.first())
                 }
             }
         }
