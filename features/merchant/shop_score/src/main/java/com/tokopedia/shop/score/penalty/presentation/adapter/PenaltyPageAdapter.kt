@@ -7,11 +7,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemSortFilterPenaltyViewHolder
 import com.tokopedia.shop.score.penalty.presentation.model.*
 import com.tokopedia.shop.score.penalty.presentation.widget.OnStickySingleHeaderListener
 import com.tokopedia.shop.score.penalty.presentation.widget.StickySingleHeaderView
+import com.tokopedia.shop.score.performance.presentation.model.BaseShopPerformance
 
 class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapterFactory) :
     BaseListAdapter<Visitable<*>, PenaltyPageAdapterFactory>(penaltyPageAdapterFactory),
@@ -35,6 +37,14 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
         val penaltyListCount = visitables.count { it is ItemPenaltyUiModel }
         visitables.removeAll { it is ItemPenaltyUiModel }
         notifyItemRangeRemoved(visitables.size, penaltyListCount)
+    }
+
+    fun removeShopPenaltyAllData() {
+        val shopPerformanceDataCount = visitables.filterIsInstance<BasePenaltyPage>().count()
+        if (shopPerformanceDataCount.isMoreThanZero()) {
+            visitables.removeAll { it is BasePenaltyPage }
+            notifyItemRangeRemoved(visitables.size, shopPerformanceDataCount)
+        }
     }
 
     fun updatePenaltyListData(penaltyListUiModel: List<BasePenaltyPage>) {
@@ -84,6 +94,20 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
 
     fun removeErrorStatePenalty() {
         if (visitables.getOrNull(lastIndex) is ItemPenaltyErrorUiModel) {
+            visitables.removeAt(lastIndex)
+            notifyItemRemoved(lastIndex)
+        }
+    }
+
+    fun setShopPenaltyLoading(item: LoadingModel) {
+        if (visitables.getOrNull(lastIndex) !is LoadingModel) {
+            visitables.add(item)
+            notifyItemInserted(lastIndex)
+        }
+    }
+
+    fun removeShopPenaltyLoading() {
+        if (visitables.getOrNull(lastIndex) is LoadingModel) {
             visitables.removeAt(lastIndex)
             notifyItemRemoved(lastIndex)
         }
