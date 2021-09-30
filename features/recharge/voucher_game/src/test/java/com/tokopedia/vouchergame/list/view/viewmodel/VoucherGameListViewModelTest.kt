@@ -66,7 +66,7 @@ class VoucherGameListViewModelTest {
         assert(actualData is Success)
         val response = actualData as Success
         assert(response.data.operators.isNotEmpty())
-        assertEquals(response.data.operators[0].id, 1)
+        assertEquals(response.data.operators[0].id, "1")
     }
 
     @Test

@@ -74,7 +74,7 @@ class RechargeGeneralViewModelTest {
         val operatorGroups = (actualData as Success).data.operatorGroups
         assertNotNull(operatorGroups)
         operatorGroups?.run {
-            assertEquals(operatorGroups.first().operators.first().id, 1)
+            assertEquals(operatorGroups.first().operators.first().id, "1")
         }
     }
 
