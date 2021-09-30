@@ -43,7 +43,7 @@ class UiModelBuilder {
      * Pojo
      */
     fun buildProductData(
-            id: Long = 1L,
+            id: String = "1",
             name: String = "Product 1",
             imageUrl: String = "https://www.tokopedia.com",
             originalImageUrl: String = "https://www.tokopedia.com",

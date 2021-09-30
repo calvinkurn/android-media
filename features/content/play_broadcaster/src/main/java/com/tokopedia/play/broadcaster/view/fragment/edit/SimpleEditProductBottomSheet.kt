@@ -69,7 +69,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
     private var toasterBottomMargin = 0
 
     private val selectableProductAdapter = ProductSelectableAdapter(object : ProductSelectableViewHolder.Listener {
-        override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
+        override fun onProductSelectStateChanged(productId: String, isSelected: Boolean) {
             viewModel.selectProduct(productId, isSelected)
         }
 

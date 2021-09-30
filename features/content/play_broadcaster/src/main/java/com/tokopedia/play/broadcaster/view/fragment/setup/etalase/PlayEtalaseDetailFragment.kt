@@ -72,7 +72,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     private val selectedProductPageView by viewComponent {
         SelectedProductPageViewComponent(view as ViewGroup, object : SelectedProductPageViewComponent.Listener {
-            override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
+            override fun onProductSelectStateChanged(productId: String, isSelected: Boolean) {
                 viewModel.selectProduct(productId, isSelected)
                 onSelectedProductChanged()
             }
@@ -111,9 +111,9 @@ class PlayEtalaseDetailFragment @Inject constructor(
                         }
                     }
 
-                    override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
+                    override fun onProductSelectStateChanged(productId: String, isSelected: Boolean) {
                         viewModel.selectProduct(productId, isSelected)
-                        analytic.clickProductCard(productId.toString(), isSelected)
+                        analytic.clickProductCard(productId, isSelected)
                     }
 
                     override fun onProductSelectError(reason: Throwable) {
