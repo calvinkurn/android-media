@@ -433,7 +433,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     private fun initAccordion(){
-        rv_smart_bills_accordion.apply {
+        rv_smart_bills_accordion?.apply {
             resertAccordion()
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = adapterAccordion
@@ -442,7 +442,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     private fun renderAccordionList(listSection: List<Section>){
-        rv_smart_bills_accordion.apply {
+        rv_smart_bills_accordion?.apply {
             show()
             adapterAccordion.clearAllElements()
             adapterAccordion.addElement(listSection)
@@ -451,7 +451,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     private fun resertAccordion(){
-        rv_smart_bills_accordion.apply {
+        rv_smart_bills_accordion?.apply {
             hide()
             adapterAccordion.clearAllElements()
         }
