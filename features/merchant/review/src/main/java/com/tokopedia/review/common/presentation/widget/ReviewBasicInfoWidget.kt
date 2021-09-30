@@ -40,6 +40,12 @@ class ReviewBasicInfoWidget : BaseCustomView {
     private var reviewerStats: Typography? = null
     private var profilePicture: ImageUnify? = null
 
+    private var isProductReview = false
+    private var isAnonymous = false
+    private var userId = ""
+    private var feedbackId = ""
+    private var listener: ReviewBasicInfoListener? = null
+
     private fun init() {
         View.inflate(context, R.layout.widget_review_basic_info, this)
         bindViews()
@@ -54,12 +60,13 @@ class ReviewBasicInfoWidget : BaseCustomView {
         profilePicture = findViewById(R.id.review_item_reviewer_image)
     }
 
-    fun setRating(rating: Int, reviewBasicInfoListener: ReviewBasicInfoListener, userId: String, isProductReview: Boolean, isAnonymous: Boolean) {
+    fun setRating(rating: Int) {
         ratingStars?.apply {
             loadImage(getReviewStar(rating))
-            if (reviewBasicInfoListener.shouldShowCredibilityComponent() && isProductReview && !isAnonymous) {
+            if (shouldShowCredibility()) {
                 setOnClickListener {
-                    reviewBasicInfoListener.onUserNameClicked(context, userId)
+                    goToCredibility()
+                    trackOnUserInfoClicked()
                 }
             } else {
                 setOnClickListener { }
@@ -67,39 +74,27 @@ class ReviewBasicInfoWidget : BaseCustomView {
         }
     }
 
-    fun setCreateTime(
-        createTime: String,
-        reviewBasicInfoListener: ReviewBasicInfoListener,
-        userId: String,
-        isProductReview: Boolean,
-        isAnonymous: Boolean
-    ) {
+    fun setCreateTime(createTime: String) {
         timeStamp?.apply {
             text = createTime
-            if (reviewBasicInfoListener.shouldShowCredibilityComponent() && isProductReview && !isAnonymous) {
+            if (shouldShowCredibility()) {
                 setOnClickListener {
-                    reviewBasicInfoListener.onUserNameClicked(
-                        context, userId
-                    )
+                    goToCredibility()
+                    trackOnUserInfoClicked()
                 }
             } else {
-                setOnClickListener {  }
+                setOnClickListener { }
             }
         }
     }
 
-    fun setReviewerName(
-        name: String,
-        userId: String = "",
-        listener: ReviewBasicInfoListener,
-        isAnonymous: Boolean,
-        isProductReview: Boolean
-    ) {
+    fun setReviewerName(name: String) {
         reviewerName?.apply {
             text = name
-            if (!isAnonymous && isProductReview && listener.shouldShowCredibilityComponent()) {
+            if (shouldShowCredibility()) {
                 setOnClickListener {
-                    listener.onUserNameClicked(context, userId)
+                    goToCredibility()
+                    trackOnUserInfoClicked()
                 }
             } else {
                 setOnClickListener {}
@@ -127,10 +122,7 @@ class ReviewBasicInfoWidget : BaseCustomView {
     }
 
     fun setStats(
-        userStats: List<UserReviewStats>,
-        userId: String,
-        listener: ReviewBasicInfoListener,
-        isAnonymous: Boolean
+        userStats: List<UserReviewStats>
     ) {
         if (isAnonymous) {
             hideStats()
@@ -153,7 +145,8 @@ class ReviewBasicInfoWidget : BaseCustomView {
                 text = textToShow
                 show()
                 setOnClickListener {
-                    listener.onUserNameClicked(context, userId)
+                    goToCredibility()
+                    trackOnUserInfoClicked()
                 }
             }
         }
@@ -172,27 +165,54 @@ class ReviewBasicInfoWidget : BaseCustomView {
         )
     }
 
-    fun setReviewerImage(
-        imageUrl: String,
-        userId: String,
-        listener: ReviewBasicInfoListener,
-        isAnonymous: Boolean,
-        isProductReview: Boolean
-    ) {
+    fun setReviewerImage(imageUrl: String) {
         profilePicture?.apply {
-            loadImage(imageUrl)
-            show()
-            if (!isAnonymous && isProductReview && listener.shouldShowCredibilityComponent()) {
-                setOnClickListener {
-                    listener.onUserNameClicked(context, userId)
+            if (listener?.shouldShowCredibilityComponent() == true && isProductReview) {
+                loadImage(imageUrl)
+                show()
+                if (!isAnonymous) {
+                    setOnClickListener {
+                        goToCredibility()
+                        trackOnUserInfoClicked()
+                    }
+                } else {
+                    setOnClickListener {}
                 }
             } else {
-                setOnClickListener {}
+                hideReviewerImage()
             }
         }
     }
 
-    fun hideReviewerImage() {
+    private fun hideReviewerImage() {
         profilePicture?.hide()
+    }
+
+    fun setListener(reviewBasicInfoListener: ReviewBasicInfoListener) {
+        this.listener = reviewBasicInfoListener
+    }
+
+    fun setCredibilityData(
+        isProductReview: Boolean,
+        isAnonymous: Boolean,
+        userId: String,
+        feedbackId: String
+    ) {
+        this.isProductReview = isProductReview
+        this.isAnonymous = isAnonymous
+        this.userId = userId
+        this.feedbackId = feedbackId
+    }
+
+    private fun goToCredibility() {
+        listener?.onUserNameClicked(userId)
+    }
+
+    private fun trackOnUserInfoClicked() {
+        listener?.trackOnUserInfoClicked(feedbackId, userId, reviewerStats?.text.toString())
+    }
+
+    fun shouldShowCredibility(): Boolean {
+        return listener?.shouldShowCredibilityComponent() == true && isProductReview && !isAnonymous
     }
 }

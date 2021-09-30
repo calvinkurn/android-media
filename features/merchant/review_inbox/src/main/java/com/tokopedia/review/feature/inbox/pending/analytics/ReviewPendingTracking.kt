@@ -32,6 +32,20 @@ object ReviewPendingTracking {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
+    fun trackOnCredibilityClicked(userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                ReviewTrackingConstant.EVENT to ReviewPendingTrackingConstants.EVENT_CLICK_INBOX_REVIEW,
+                ReviewTrackingConstant.EVENT_CATEGORY to ReviewInboxTrackingConstants.EVENT_CATEGORY_PENDING_TAB,
+                ReviewTrackingConstant.EVENT_ACTION to ReviewPendingTrackingConstants.EVENT_ACTION_CLICK_CREDIBILITY,
+                ReviewTrackingConstant.EVENT_LABEL to "",
+                ReviewTrackingConstant.KEY_USER_ID to userId,
+                ReviewPendingTrackingConstants.BUSINESS_UNIT to ReviewPendingTrackingConstants.PDP_BUSINESS_UNIT,
+                ReviewPendingTrackingConstants.CURRENT_SITE to ReviewPendingTrackingConstants.CREDIBILITY_CURRENT_SITE
+            )
+        )
+    }
+
     private fun generateTrackingMap(label: String, action: String, userId: String, source: String): Map<String, String> {
         with(ReviewTrackingConstant) {
             return mapOf(

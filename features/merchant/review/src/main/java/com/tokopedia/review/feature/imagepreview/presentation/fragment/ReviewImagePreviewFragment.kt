@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.imagepreview.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.iconunify.IconUnify
@@ -27,6 +29,7 @@ import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.common.util.OnBackPressedListener
+import com.tokopedia.review.feature.credibility.presentation.activity.ReviewCredibilityActivity
 import com.tokopedia.review.feature.gallery.data.Detail
 import com.tokopedia.review.feature.gallery.data.ProductrevGetReviewImage
 import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryUiModel
@@ -235,6 +238,14 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    override fun trackOnUserInfoClicked(feedbackId: String, userId: String, statistics: String) {
+        // No Op
+    }
+
+    override fun onUserNameClicked(userId: String) {
+        goToReviewCredibility(userId)
+    }
+
     private fun getDataFromArguments() {
         arguments?.let {
             val cacheManagerId =
@@ -357,9 +368,12 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         with(productReview) {
             reviewImagePreviewDetail?.apply {
                 setPhotoCount(index, imageAttachments.size.toLong())
-                setRating(productRating, this@ReviewImagePreviewFragment, user.userID, isProductReview, isAnonymous)
-                setReviewerName(user.fullName, user.userID, this@ReviewImagePreviewFragment, isAnonymous, isProductReview)
-                setTimeStamp(reviewCreateTimestamp, this@ReviewImagePreviewFragment, user.userID, isProductReview, isAnonymous)
+                setRating(productRating)
+                setCredibilityData(isProductReview, isAnonymous, user.userID, feedbackID)
+                setReviewerName(user.fullName)
+                setTimeStamp(reviewCreateTimestamp)
+                setBasicInfoListener(this@ReviewImagePreviewFragment)
+                setReviewerImage(user.image)
                 setReviewMessage(message) { openExpandedReviewBottomSheet() }
                 setLikeCount(likeDislike.totalLike.toString())
                 setLikeButtonClickListener {
@@ -386,7 +400,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                 }
                 setLikeButtonImage(likeDislike.isLiked())
                 setVariantName(variantName)
-                setStats(userReviewStats, user.userID, this@ReviewImagePreviewFragment, isAnonymous)
+                setStats(userReviewStats)
             }
             setThreeDotsVisibility(isReportable && !areComponentsHidden)
         }
@@ -523,7 +537,12 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                         it.userStats,
                         it.userId,
                         it.isAnonymous,
-                        isProductReview
+                        isProductReview,
+                        it.feedbackId,
+                        productId,
+                        isFromGallery,
+                        viewModel.getUserId(),
+                        it.userImage
                     )
             }
         } else {
@@ -538,7 +557,12 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                         userReviewStats,
                         user.userID,
                         isAnonymous,
-                        isProductReview
+                        isProductReview,
+                        feedbackID,
+                        productId,
+                        isFromGallery,
+                        viewModel.getUserId(),
+                        user.image
                     )
             }
         }
@@ -625,12 +649,17 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             }?.let { selectedReview ->
                 with(selectedReview) {
                     reviewImagePreviewDetail?.apply {
-                        if (isFirstTimeUpdate) setPhotoCount(currentPosition, totalImageCount)
-                        setRating(rating, this@ReviewImagePreviewFragment, userId, isProductReview, isAnonymous)
-                        setReviewerName(reviewerName, userId, this@ReviewImagePreviewFragment, isAnonymous, isProductReview)
-                        setTimeStamp(reviewTime, this@ReviewImagePreviewFragment, userId, isProductReview, isAnonymous)
+                        if (isFirstTimeUpdate) {
+                            setPhotoCount(currentPosition, totalImageCount)
+                            setBasicInfoListener(this@ReviewImagePreviewFragment)
+                        }
+                        setCredibilityData(isProductReview, isAnonymous, userId, feedbackId)
+                        setRating(rating)
+                        setReviewerName(reviewerName)
+                        setTimeStamp(reviewTime)
                         setReviewMessage(review) { openExpandedReviewBottomSheet() }
-                        setStats(userStats, userId, this@ReviewImagePreviewFragment, isAnonymous)
+                        setStats(userStats)
+                        setReviewerImage(userImage)
                         setLikeCount(totalLiked.toString())
                         setLikeButtonClickListener {
                             ReviewImagePreviewTracking.trackOnLikeReviewClicked(
@@ -737,5 +766,20 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             imageNumber = imageNumber
         )
         return reviewGalleryUiModel
+    }
+
+    private fun goToReviewCredibility(userId: String) {
+        RouteManager.route(
+            context,
+            Uri.parse(
+                UriUtil.buildUri(
+                    ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY,
+                    userId,
+                    ReadReviewFragment.READING_SOURCE
+                )
+            ).buildUpon()
+                .appendQueryParameter(ReviewCredibilityActivity.PARAM_PRODUCT_ID, productId).build()
+                .toString()
+        )
     }
 }

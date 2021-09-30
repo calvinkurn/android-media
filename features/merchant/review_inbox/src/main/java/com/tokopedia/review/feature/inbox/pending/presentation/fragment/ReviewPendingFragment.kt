@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
@@ -270,6 +269,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     override fun onReviewCredibilityWidgetClicked() {
         goToCredibility()
+        ReviewPendingTracking.trackOnCredibilityClicked(viewModel.getUserId())
     }
 
     override fun onSwipeRefresh() {
@@ -378,7 +378,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     private fun observeOvoIncentive() {
-        viewModel.incentiveOvo.observe(viewLifecycleOwner, Observer {
+        viewModel.incentiveOvo.observe(viewLifecycleOwner, {
             when (it) {
                 is CoroutineSucess -> onSuccessGetIncentiveOvo(it.data)
                 is CoroutineFail -> onErrorGetIncentiveOvo()
@@ -388,7 +388,7 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     private fun observeReviewList() {
-        viewModel.reviewList.observe(viewLifecycleOwner, Observer {
+        viewModel.reviewList.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     stopNetworkRequestPerformanceMonitoring()

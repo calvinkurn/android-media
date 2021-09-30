@@ -623,5 +623,16 @@ object ReadReviewTracking {
             )
         )
     }
+
+    fun trackOnGoToCredibility(feedbackId: String, userId: String, statistics: String, productId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            getTrackEventMap(
+                ReadReviewTrackingConstants.EVENT_CLICK_PDP,
+                ReadReviewTrackingConstants.EVENT_ACTION_CLICK_USER_NAME,
+                String.format(ReadReviewTrackingConstants.EVENT_LABEL_CLICK_USER_NAME, feedbackId, userId, statistics),
+                productId
+            )
+        )
+    }
 }
 

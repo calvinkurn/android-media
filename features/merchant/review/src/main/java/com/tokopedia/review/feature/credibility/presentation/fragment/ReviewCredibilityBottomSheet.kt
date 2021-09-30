@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInboxInstance
+import com.tokopedia.review.feature.credibility.analytics.ReviewCredibilityTracking
 import com.tokopedia.review.feature.credibility.data.ReviewerCredibilityLabel
 import com.tokopedia.review.feature.credibility.data.ReviewerCredibilityStat
 import com.tokopedia.review.feature.credibility.data.ReviewerCredibilityStatsWrapper
@@ -42,9 +43,10 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
     companion object {
         const val LOGIN_REQUEST_CODE = 200
 
-        fun newInstance(userId: String, source: String) = ReviewCredibilityBottomSheet().apply {
+        fun newInstance(userId: String, source: String, productId: String) = ReviewCredibilityBottomSheet().apply {
             this.userId = userId
             this.source = source
+            this.productId = productId
         }
     }
 
@@ -52,6 +54,7 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
     lateinit var viewModel: ReviewCredibilityViewModel
     private var userId: String = ""
     private var source: String = ""
+    private var productId: String = ""
 
     private var reviewerName: Typography? = null
     private var joinDate: Typography? = null
@@ -177,6 +180,11 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
         mainButton?.apply {
             text = buttonText
             setOnClickListener {
+                if (isUsersOwnCredibility()) {
+                    ReviewCredibilityTracking.trackOnClickCTASelfCredibility(buttonText, userId)
+                } else {
+                    ReviewCredibilityTracking.trackOnClickCTAOtherUserCredibility(buttonText, userId, productId)
+                }
                 handleRouting(applink)
             }
         }
@@ -256,6 +264,10 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), LOGIN_REQUEST_CODE)
             }
         }
+    }
+
+    private fun isUsersOwnCredibility(): Boolean {
+        return viewModel.isUsersOwnCredibility(userId)
     }
 
 }

@@ -4,6 +4,7 @@ package com.tokopedia.review.feature.reading.presentation.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
@@ -37,6 +39,7 @@ import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.feature.credibility.presentation.activity.ReviewCredibilityActivity
 import com.tokopedia.review.feature.imagepreview.presentation.activity.ReviewImagePreviewActivity
 import com.tokopedia.review.feature.imagepreview.presentation.fragment.ReviewImagePreviewFragment
 import com.tokopedia.review.feature.imagepreview.presentation.uimodel.ReviewImagePreviewFinalLikeCount
@@ -732,6 +735,19 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         )
     }
 
+    override fun trackOnUserInfoClicked(feedbackId: String, userId: String, statistics: String) {
+        ReadReviewTracking.trackOnGoToCredibility(
+            feedbackId,
+            userId,
+            statistics,
+            viewModel.getProductId()
+        )
+    }
+
+    override fun onUserNameClicked(userId: String) {
+        goToReviewCredibility(userId)
+    }
+
     private fun getProductIdFromArguments() {
         viewModel.setProductId(arguments?.getString(ReviewConstants.ARGS_PRODUCT_ID, "") ?: "")
     }
@@ -1092,6 +1108,24 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     private fun isLiked(likeStatus: Int): Boolean {
         return likeStatus == LikeDislike.LIKED
+    }
+
+    private fun goToReviewCredibility(userId: String) {
+        RouteManager.route(
+            context,
+            Uri.parse(
+                UriUtil.buildUri(
+                    ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY,
+                    userId,
+                    READING_SOURCE
+                )
+            ).buildUpon()
+                .appendQueryParameter(
+                    ReviewCredibilityActivity.PARAM_PRODUCT_ID,
+                    viewModel.getProductId()
+                ).build()
+                .toString()
+        )
     }
 
 }

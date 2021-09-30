@@ -23,10 +23,12 @@ class ReviewCredibilityActivity : BaseSimpleActivity(), HasComponent<BaseAppComp
 
     companion object {
         const val REVIEW_CREDIBILITY_BOTTOM_SHEET_TAG = "ReviewCredibilityBottomSheetTag"
+        const val PARAM_PRODUCT_ID = "productId"
     }
 
     private var userId = ""
     private var source = ""
+    private var productId = ""
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var reviewCredibilityBottomSheet: BottomSheetUnify? = null
 
@@ -113,6 +115,7 @@ class ReviewCredibilityActivity : BaseSimpleActivity(), HasComponent<BaseAppComp
             val uriSegment = uri.pathSegments
             userId = uriSegment.getOrNull(uriSegment.size - 2) ?: ""
             source = uriSegment.getOrNull(uriSegment.size - 1) ?: ""
+            productId = uri.getQueryParameter(PARAM_PRODUCT_ID) ?: ""
         }
     }
 
@@ -129,7 +132,7 @@ class ReviewCredibilityActivity : BaseSimpleActivity(), HasComponent<BaseAppComp
     }
 
     private fun showReviewCredibilityBottomSheet() {
-        reviewCredibilityBottomSheet = ReviewCredibilityBottomSheet.newInstance(userId, source)
+        reviewCredibilityBottomSheet = ReviewCredibilityBottomSheet.newInstance(userId, source, productId)
         reviewCredibilityBottomSheet?.apply {
             showKnob = true
             showCloseIcon = false

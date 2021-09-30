@@ -29,7 +29,11 @@ class ReviewImagePreviewDetailWidget : BaseCustomView {
         init()
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         init()
     }
 
@@ -57,16 +61,16 @@ class ReviewImagePreviewDetailWidget : BaseCustomView {
         photoCount?.text = context.getString(R.string.review_gallery_image_count, index, total)
     }
 
-    fun setRating(rating: Int, reviewBasicInfoListener: ReviewBasicInfoListener, userId: String, isProductReview: Boolean, isAnonymous: Boolean) {
-        basicInfo?.setRating(rating, reviewBasicInfoListener, userId, isProductReview, isAnonymous)
+    fun setRating(rating: Int) {
+        basicInfo?.setRating(rating)
     }
 
-    fun setTimeStamp(timeStamp: String, reviewBasicInfoListener: ReviewBasicInfoListener, userId: String, isProductReview: Boolean, isAnonymous: Boolean) {
-        basicInfo?.setCreateTime(timeStamp, reviewBasicInfoListener, userId, isProductReview, isAnonymous)
+    fun setTimeStamp(timeStamp: String) {
+        basicInfo?.setCreateTime(timeStamp)
     }
 
-    fun setReviewerName(reviewerName: String, userId: String, basicInfoListener: ReviewBasicInfoListener, isAnonymous: Boolean, isProductReview: Boolean) {
-        basicInfo?.setReviewerName(reviewerName, userId, basicInfoListener, isAnonymous, isProductReview)
+    fun setReviewerName(reviewerName: String) {
+        basicInfo?.setReviewerName(reviewerName)
     }
 
     fun setLikeCount(totalLike: String) {
@@ -94,7 +98,8 @@ class ReviewImagePreviewDetailWidget : BaseCustomView {
         }
         reviewText?.apply {
             isEnabled = true
-            val formattingResult = ReviewUtil.formatReviewExpand(context, reviewMessage, MAX_CHAR, ALLOW_CLICK)
+            val formattingResult =
+                ReviewUtil.formatReviewExpand(context, reviewMessage, MAX_CHAR, ALLOW_CLICK)
             maxLines = MAX_LINES
             text = formattingResult.first
             if (formattingResult.second) {
@@ -112,13 +117,20 @@ class ReviewImagePreviewDetailWidget : BaseCustomView {
         basicInfo?.setVariantName(variantName)
     }
 
-    fun setStats(
-        userStats: List<UserReviewStats>,
-        userId: String,
-        listener: ReviewBasicInfoListener,
-        isAnonymous: Boolean
-    ) {
-        basicInfo?.setStats(userStats, userId, listener, isAnonymous)
+    fun setStats(userStats: List<UserReviewStats>) {
+        basicInfo?.setStats(userStats)
+    }
+
+    fun setBasicInfoListener(listener: ReviewBasicInfoListener) {
+        basicInfo?.setListener(listener)
+    }
+
+    fun setCredibilityData(isProductReview: Boolean, isAnonymous: Boolean, userId: String, feedbackId: String) {
+        basicInfo?.setCredibilityData(isProductReview, isAnonymous, userId, feedbackId)
+    }
+
+    fun setReviewerImage(imageUrl: String) {
+        basicInfo?.setReviewerImage(imageUrl)
     }
 
 }

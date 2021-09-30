@@ -36,4 +36,8 @@ class ReviewCredibilityViewModel @Inject constructor(
     fun isLoggedIn(): Boolean {
         return userSession.isLoggedIn
     }
+
+    fun isUsersOwnCredibility(userId: String): Boolean {
+        return userId == userSession.userId
+    }
 }
