@@ -140,9 +140,10 @@ class TokoNowHomeFragment: Fragment(),
         const val SOURCE_TRACKING = "tokonow page"
         const val DEFAULT_QUANTITY = 0
         const val SHARE_URL = "https://www.tokopedia.com/tokomart"
-        const val THUMBNAIL_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/thumbnail_now_home.png"
+        const val THUMBNAIL_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/tokomart/thumbnail_image_bottomsheet.png"
         const val OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/og_now_home.jpg"
         const val SHARE = "Share"
+        const val PAGE_SHARE_NAME = "TokoMart"
 
         fun newInstance() = TokoNowHomeFragment()
     }
@@ -1272,7 +1273,7 @@ class TokoNowHomeFragment: Fragment(),
     private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareHomeTokonow?) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@TokoNowHomeFragment)
-            setUtmCampaignData(resources.getString(R.string.tokopedianow_home_share_thumbnail_title), shareHomeTokonow?.userId ?: "", shareHomeTokonow?.pageId ?: "", SHARE)
+            setUtmCampaignData(PAGE_SHARE_NAME, shareHomeTokonow?.userId ?: "", shareHomeTokonow?.pageId ?: "", SHARE)
             setMetaData(
                 shareHomeTokonow?.thumbNailTitle ?: "", shareHomeTokonow?.thumbNailImage ?: ""
             )
