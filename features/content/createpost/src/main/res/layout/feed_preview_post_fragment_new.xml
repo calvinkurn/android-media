@@ -8,7 +8,7 @@
     <com.tokopedia.carousel.CarouselUnify
         android:id="@+id/feed_content_carousel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -40,8 +40,8 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/product_tag_button"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
         android:layout_marginTop="@dimen/dp_28"
         app:icon_color_light_enable="@color/Unify_NN900"
         app:icon_color_night_enable="@color/Unify_NN900"
@@ -56,6 +56,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_28"
         android:text="@string/feed_content_tag_product_text"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toEndOf="parent"

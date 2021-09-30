@@ -185,12 +185,12 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                     feedMedia.imageView = imageItem
                     imageItem.run {
                         val postImage = findViewById<ImageUnify>(R.id.content_creation_post_image)
+                        postImage.setImageUrl(imageList[index])
                         findViewById<CardView>(R.id.product_tagging_button_parent).showWithCondition(
                             products.isNotEmpty()
                         )
                         val layout = findViewById<ConstraintLayout>(R.id.product_tagging_parent_layout)
-                        bindImage(feedMedia)
-
+                        bindImage(feedMedia, index)
 
                         val gd = GestureDetector(
                             context,
@@ -417,7 +417,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         if (mediaModel.type == MediaType.VIDEO)
             bindVideo(mediaModel)
         else
-            bindImage(mediaModel)
+            bindImage(mediaModel, currentImagePos)
 
         updateResultIntent()
 
@@ -442,10 +442,17 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         createPostAnalytics.eventClickProductTagBubble(mediaType, productId)
     }
 
-    override fun updateTaggingInfoInViewModel(feedXMediaTagging: FeedXMediaTagging, index: Int) {
-        createPostModel.completeImageList[createPostModel.currentCorouselIndex].tags[index] =
-            feedXMediaTagging
-        updateResultIntent()
+    override fun updateTaggingInfoInViewModel(
+        feedXMediaTagging: FeedXMediaTagging,
+        index: Int,
+        mediaIndex: Int,
+    ) {
+        val tags = createPostModel.completeImageList[createPostModel.currentCorouselIndex].tags
+        if (tags.size > index) {
+            createPostModel.completeImageList[createPostModel.currentCorouselIndex].tags[index] =
+                feedXMediaTagging
+            updateResultIntent()
+        }
     }
 
     private fun openProductTaggingScreen() {
@@ -497,7 +504,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             if (mediaModel.type == MediaType.VIDEO)
                 bindVideo(mediaModel)
             else
-                bindImage(mediaModel)
+                bindImage(mediaModel, createPostModel.currentCorouselIndex)
         }
         updateResultIntent()
     }
@@ -536,7 +543,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         }
     }
 
-    private fun bindImage(media: MediaModel) {
+    private fun bindImage(media: MediaModel, mediaIndex: Int) {
         val products = media.products
         val imageItem = media.imageView
         val listener = this
@@ -546,7 +553,6 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         imageItem?.run {
             val lihatProductTagView = findViewById<CardView>(R.id.product_tagging_button_parent)
             val postImage = findViewById<ImageUnify>(R.id.content_creation_post_image)
-            postImage.setImageUrl(imageList[createPostModel.currentCorouselIndex])
 
             lihatProductTagView.showWithCondition(products.isNotEmpty())
 
@@ -571,8 +577,9 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                                 layout,
                                 feedXMediaTagging,
                                 index,
-                                bitmap)
-                        },50)
+                                bitmap,
+                                mediaIndex)
+                        }, 50)
 
                     }
                 }

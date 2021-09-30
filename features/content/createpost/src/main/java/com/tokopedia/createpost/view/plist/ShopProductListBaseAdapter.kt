@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.createpost.createpost.R
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.library.baseadapter.BaseItem
@@ -82,10 +83,15 @@ open class ShopProductListBaseAdapter(
     }
 
     private fun toShopProductModel(item: ShopPageProduct): ProductCardModel {
+        val isDiscount = !item.campaign?.dPrice?.toInt().isZero()
         return ProductCardModel(
             productImageUrl = item.pImage?.img!!,
             productName = item.name ?: "",
-            formattedPrice = item.price?.priceIdr!!
+            formattedPrice = item.price?.priceIdr!!,
+            discountPercentage = if (isDiscount)
+                ("${item.campaign?.dPrice!!}%") else "",
+            slashedPrice = if (isDiscount) item.campaign?.oPriceFormatted!! else ""
         )
     }
 }
+

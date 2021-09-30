@@ -57,6 +57,7 @@
                 android:lineHeight="@dimen/sp_20"
                 android:lineSpacingExtra="@dimen/sp_4"
                 android:maxLength="1000"
+                android:paddingTop="@dimen/dp_16"
                 android:paddingBottom="@dimen/dp_16"
                 android:singleLine="false"
                 android:textColor="@color/Unify_NN950"
