@@ -641,7 +641,7 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == ADMIN_RESTRICTION_REQUEST) {
-            finish()
+            RouteManager.route(applicationContext, ApplinkConstInternalSellerapp.CENTRALIZED_PROMO)
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
