@@ -948,7 +948,7 @@ class ShopScoreMapper @Inject constructor(
         }
     }
 
-    //
+
     private fun getIsShowPopupEndTenure(shopAge: Long, dateShopCreated: String): Boolean {
         return if (shopScorePrefManager.getIsShowPopupEndTenure()) {
             val calendar = Calendar.getInstance(getLocale())
