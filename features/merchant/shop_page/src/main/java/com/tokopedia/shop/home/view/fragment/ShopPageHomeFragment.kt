@@ -166,6 +166,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         private const val CUSTOMER_APP_PACKAGE = "com.tokopedia.tkpd"
         private const val PLAY_WIDGET_NEWLY_BROADCAST_SCROLL_DELAY = 40L
         private const val LOAD_WIDGET_ITEM_PER_PAGE = 3
+        private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
 
         fun createInstance(
                 shopId: String,
@@ -1087,11 +1088,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun getListWidgetLayoutToLoad(lastCompletelyVisibleItemPosition: Int): MutableList<ShopPageHomeWidgetLayoutUiModel.WidgetLayout> {
         return if (shopHomeAdapter.isLoadFirstWidgetContentData()) {
-            listWidgetLayout.subList(0, lastCompletelyVisibleItemPosition + 1)
+            listWidgetLayout.subList(LIST_WIDGET_LAYOUT_START_INDEX, lastCompletelyVisibleItemPosition + 1)
         } else {
             val toIndex = LOAD_WIDGET_ITEM_PER_PAGE.takeIf { it <= listWidgetLayout.size }
                     ?: listWidgetLayout.size
-            listWidgetLayout.subList(0, toIndex)
+            listWidgetLayout.subList(LIST_WIDGET_LAYOUT_START_INDEX, toIndex)
         }
     }
 

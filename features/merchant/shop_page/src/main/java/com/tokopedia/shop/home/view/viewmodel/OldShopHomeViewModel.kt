@@ -166,7 +166,7 @@ class OldShopHomeViewModel @Inject constructor(
                     dispatcherProvider.io,
                     block = {
                         if(initialProductListData == null)
-                            getProductListData(shopId, 1, shopProductFilterParameter,widgetUserAddressLocalData)
+                            getProductListData(shopId, ShopPageConstant.START_PAGE, shopProductFilterParameter,widgetUserAddressLocalData)
                         else
                             null
                     },
@@ -260,7 +260,7 @@ class OldShopHomeViewModel @Inject constructor(
             val addToCartSubmitData = withContext(dispatcherProvider.io) {
                 submitAddProductToCart(shopId, product)
             }
-            if (addToCartSubmitData.data.success == 1)
+            if (addToCartSubmitData.data.success == ShopPageConstant.ATC_SUCCESS_VALUE)
                 onSuccessAddToCart(addToCartSubmitData.data)
             else
                 onErrorAddToCart(MessageErrorException(addToCartSubmitData.data.message.first()))
@@ -279,7 +279,7 @@ class OldShopHomeViewModel @Inject constructor(
             val addToCartOccSubmitData = withContext(dispatcherProvider.io) {
                 submitAddProductToCartOcc(shopId, product)
             }
-            if (addToCartOccSubmitData.data.success == 1)
+            if (addToCartOccSubmitData.data.success == ShopPageConstant.ATC_SUCCESS_VALUE)
                 onSuccessAddToCartOcc(addToCartOccSubmitData.data)
             else
                 onErrorAddToCartOcc(MessageErrorException(addToCartOccSubmitData.data.message.first()))
