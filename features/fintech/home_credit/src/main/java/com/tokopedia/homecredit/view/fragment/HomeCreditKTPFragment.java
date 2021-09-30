@@ -72,6 +72,7 @@ public class HomeCreditKTPFragment extends HomeCreditBaseCameraFragment {
             reverseCamera.setVisibility(View.GONE);
         }
         cameraLayout = view.findViewById(R.id.hc_camera_layout);
+        headerText = view.findViewById(R.id.desc_1);
         cameraView.setFacing(Facing.BACK);
         cameraView.setZoom(0f);
         cameraOverlayImage = view.findViewById(R.id.img_cutout);
