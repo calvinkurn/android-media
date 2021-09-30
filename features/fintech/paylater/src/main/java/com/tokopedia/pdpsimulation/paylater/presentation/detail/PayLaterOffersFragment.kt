@@ -98,7 +98,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
                         SortFilterItem(
                             name,
                             ChipsUnify.TYPE_SELECTED,
-                            ChipsUnify.SIZE_SMALL
+                            ChipsUnify.SIZE_MEDIUM
                         ) {
                             selectOtherTenure(i, name)
                         })
@@ -112,7 +112,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
                         onPageSelectedByUser(detail)
                     }
                 } else {
-                    filterData.add(SortFilterItem(name) {
+                    filterData.add(SortFilterItem(name, size = ChipsUnify.SIZE_MEDIUM) {
                         selectOtherTenure(i, name)
                     })
                 }
