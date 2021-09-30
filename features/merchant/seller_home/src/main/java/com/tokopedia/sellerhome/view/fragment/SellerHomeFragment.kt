@@ -1144,6 +1144,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
 
         setProgressBarVisibility(false)
+        showEmptyState()
 
         if (isWidgetHasError) {
             showErrorToaster()
@@ -1243,8 +1244,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     if (isVisible) return@post
                     emptyState?.setImageUrl(SellerHomeUrl.IMG_LAYOUT_NO_PERMISSION)
                     setTitle(getString(R.string.sah_empty_layout_message))
-                    setDescription("")
-                    setPrimaryCTAText("")
+                    setDescription(SellerHomeConst.EMPTY_STRING)
+                    setPrimaryCTAText(SellerHomeConst.EMPTY_STRING)
                     visible()
                 }
                 view?.sahGlobalError?.gone()
@@ -1686,8 +1687,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         adapter.data.clear()
         adapter.data.addAll(newWidgets)
         diffUtilResult.dispatchUpdatesTo(adapter)
-
-        showEmptyState()
     }
 
     private fun checkLoadingWidgets() {
