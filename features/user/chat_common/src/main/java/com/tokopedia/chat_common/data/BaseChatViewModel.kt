@@ -62,6 +62,10 @@ open class BaseChatViewModel constructor(
         return ""
     }
 
+    fun hasReplyBubble(): Boolean {
+        return parentReply != null
+    }
+
     companion object {
         const val SENDING_TEXT = "Sedang mengirim ..."
         const val SOURCE_AUTO_REPLY = "auto_reply"
