@@ -539,7 +539,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                         it.isAnonymous,
                         isProductReview,
                         it.feedbackId,
-                        it.productId,
+                        viewModel.getProductId(),
                         isFromGallery,
                         viewModel.getUserId(),
                         it.userImage
@@ -665,13 +665,13 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                             ReviewImagePreviewTracking.trackOnLikeReviewClicked(
                                 feedbackId,
                                 isLiked,
-                                productId,
+                                viewModel.getProductId(),
                                 isFromGallery
                             )
                             viewModel.toggleLikeReview(
                                 feedbackId,
                                 shopId,
-                                productId,
+                                viewModel.getProductId(),
                                 mapToLikeStatus(selectedReview.isLiked)
                             )
                         }
