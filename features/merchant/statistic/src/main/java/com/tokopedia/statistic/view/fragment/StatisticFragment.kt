@@ -3,6 +3,7 @@ package com.tokopedia.statistic.view.fragment
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
+import android.os.Looper
 import android.view.*
 import android.widget.Toast
 import androidx.lifecycle.LiveData
@@ -43,6 +44,7 @@ import com.tokopedia.statistic.common.Const
 import com.tokopedia.statistic.common.StatisticPageHelper
 import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.common.utils.logger.StatisticLogger
+import com.tokopedia.statistic.databinding.FragmentStcStatisticBinding
 import com.tokopedia.statistic.di.StatisticComponent
 import com.tokopedia.statistic.view.bottomsheet.ActionMenuBottomSheet
 import com.tokopedia.statistic.view.bottomsheet.DateFilterBottomSheet
@@ -58,7 +60,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_stc_statistic.view.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -135,8 +137,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private var isFirstLoad = true
     private var isErrorToastShown = false
     private var headerSubTitle: String = ""
-    private var selectedWidget: String =
-        "" //format should be : widgetType-widgetId, ex: section-109
+
+    //format should be : widgetType-widgetId, ex: section-109
+    private var selectedWidget: String = ""
     private val dateFilterImpressHolder = ImpressHolder()
     private val otherMenuImpressHolder = ImpressHolder()
 
@@ -149,6 +152,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     private var performanceMonitoringTableWidget: PerformanceMonitoring? = null
     private var performanceMonitoringPieChartWidget: PerformanceMonitoring? = null
     private var performanceMonitoringBarChartWidget: PerformanceMonitoring? = null
+
+    private var binding by autoClearedNullable<FragmentStcStatisticBinding>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -166,7 +171,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return layoutInflater.inflate(R.layout.fragment_stc_statistic, container, false)
+        binding = FragmentStcStatisticBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -428,7 +434,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
-    private fun setupView() = view?.run {
+    private fun setupView() = binding?.run {
         setDefaultRange()
         setupRecyclerView()
 
@@ -476,7 +482,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
-    private fun setDefaultRange() = view?.run {
+    private fun setDefaultRange() {
         statisticPage?.dateFilters?.firstOrNull { it.isSelected }.let {
             val headerSubtitle = it?.getHeaderSubTitle(requireContext())
                 ?: if (StatisticPageHelper.getRegularMerchantStatus(userSession) ||
@@ -504,7 +510,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         (activity as? FragmentListener)?.setHeaderSubTitle(subTitle)
     }
 
-    private fun setupRecyclerView() = view?.run {
+    private fun setupRecyclerView() = binding?.run {
         with(mLayoutManager) {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
@@ -567,10 +573,11 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun fetchPostData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEach { it.isLoaded = true }
-        val dataKeys: List<TableAndPostDataKey> = widgets.filterIsInstance<PostListWidgetUiModel>().map {
-            val postFilter = it.postFilter.find { filter -> filter.isSelected }?.value.orEmpty()
-            return@map TableAndPostDataKey(it.dataKey, postFilter, it.maxData, it.maxDisplay)
-        }
+        val dataKeys: List<TableAndPostDataKey> =
+            widgets.filterIsInstance<PostListWidgetUiModel>().map {
+                val postFilter = it.postFilter.find { filter -> filter.isSelected }?.value.orEmpty()
+                return@map TableAndPostDataKey(it.dataKey, postFilter, it.maxData, it.maxDisplay)
+            }
         performanceMonitoringPostListWidget = PerformanceMonitoring.start(POST_LIST_WIDGET_TRACE)
         mViewModel.getPostWidgetData(dataKeys)
     }
@@ -589,7 +596,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 val tableFilter = it.tableFilters
                     .find { filter -> filter.isSelected }?.value.orEmpty()
                 return@map TableAndPostDataKey(it.dataKey, tableFilter, it.maxData, it.maxDisplay)
-        }
+            }
         performanceMonitoringTableWidget = PerformanceMonitoring.start(TABLE_WIDGET_TRACE)
         mViewModel.getTableWidgetData(dataKeys)
     }
@@ -675,7 +682,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
         recyclerView?.visible()
-        view?.globalErrorStc?.gone()
+        binding?.globalErrorStc?.gone()
 
         val mWidgetList = mutableListOf<BaseWidgetUiModel<*>>()
         mWidgetList.add(tickerWidget)
@@ -736,13 +743,13 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     private fun setOnErrorGetLayout(throwable: Throwable) = view?.run {
         if (adapter.data.isEmpty()) {
-            globalErrorStc.visible()
+            binding?.globalErrorStc?.visible()
             recyclerView?.gone()
         } else {
             showErrorToaster()
-            globalErrorStc.gone()
+            binding?.globalErrorStc?.gone()
         }
-        swipeRefreshStc.isRefreshing = false
+        binding?.swipeRefreshStc?.isRefreshing = false
         StatisticLogger.logToCrashlytics(throwable, StatisticLogger.ERROR_LAYOUT)
     }
 
@@ -757,7 +764,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             reloadPageOrLoadDataOfErrorWidget()
         }.show()
 
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             isErrorToastShown = false
         }, TOAST_DURATION)
     }
@@ -790,7 +797,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
-    private fun reloadPage() = view?.run {
+    private fun reloadPage() = binding?.run {
         val isAdapterNotEmpty = adapter.data.isNotEmpty()
         setProgressBarVisibility(!isAdapterNotEmpty)
         swipeRefreshStc.isRefreshing = isAdapterNotEmpty
@@ -801,7 +808,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         }
     }
 
-    private fun setProgressBarVisibility(isShown: Boolean) = view?.run {
+    private fun setProgressBarVisibility(isShown: Boolean) = binding?.run {
         if (isShown) {
             globalErrorStc.gone()
             progressBarStc.visible()
@@ -857,7 +864,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             val widgetPosition = adapter.data.indexOf(widget)
             if (widgetPosition != RecyclerView.NO_POSITION) {
                 adapter.notifyItemChanged(widgetPosition)
-                view?.swipeRefreshStc?.isRefreshing = false
+                binding?.swipeRefreshStc?.isRefreshing = false
             }
         }
     }
