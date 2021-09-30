@@ -19,6 +19,8 @@ class FragmentUpcomingViewComponent(
 
     private var isAlreadyInit: AtomicBoolean = AtomicBoolean(false)
 
+    fun isPageAlreadyInit(): Boolean = isAlreadyInit.get()
+
     fun safeInit() = synchronized(this) {
         if (isAlreadyInit.get()) return@synchronized
         isAlreadyInit.compareAndSet(false, true)
