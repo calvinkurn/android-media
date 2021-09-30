@@ -13,7 +13,7 @@ object DeeplinkMapperTokopediaNow {
     private const val PARAM_CATEGORY_L1 = "category_l1"
     private const val PARAM_CATEGORY_L2 = "category_l2"
 
-    fun getRegisteredNavigationTokopediaNowHome(context: Context, deeplink: String): String {
+    fun getRegisteredNavigationTokopediaNowHome(context: Context): String {
         return if (getRemoteConfigTokopediaNowEnabler(context)) ApplinkConstInternalTokopediaNow.HOME
         else ApplinkConstInternalTokopediaNow.OLD_TOKOMART
     }
