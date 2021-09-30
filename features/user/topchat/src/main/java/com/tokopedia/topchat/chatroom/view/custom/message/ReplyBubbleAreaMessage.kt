@@ -6,17 +6,22 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout.Companion.DEFAULT_MSG_ORIENTATION
+import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout.Companion.LEFT_MSG_ORIENTATION
+import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout.Companion.RIGHT_MSG_ORIENTATION
 
 class ReplyBubbleAreaMessage : ConstraintLayout {
 
     private var title: TextView? = null
     private var desc: TextView? = null
     private var closeBtn: ImageView? = null
+    private var orientation: Int = DEFAULT_MSG_ORIENTATION
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -84,6 +89,14 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         hide()
     }
 
+    fun alignRight() {
+        align(RIGHT_MSG_ORIENTATION)
+    }
+
+    fun alignLeft() {
+        align(LEFT_MSG_ORIENTATION)
+    }
+
     private fun updateCloseButtonState(enableCloseButton: Boolean) {
         if (enableCloseButton) {
             closeBtn?.show()
@@ -114,6 +127,26 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
 
     private fun setReplyMsg(msg: String) {
         desc?.text = msg
+    }
+
+    fun updateMessageOrientation(msgOrientation: Int) {
+        this.orientation = msgOrientation
+        updateBackground()
+    }
+
+    private fun updateBackground() {
+        val drawableRes = when (orientation) {
+            LEFT_MSG_ORIENTATION -> R.drawable.bg_chat_reply_preview_left_bubble
+            RIGHT_MSG_ORIENTATION -> R.drawable.bg_chat_reply_preview_right_bubble
+            else -> null
+        } ?: return
+        val drawable = ContextCompat.getDrawable(context, drawableRes)
+        background = drawable
+    }
+
+    private fun align(orientation: Int) {
+        this.orientation = orientation
+        updateBackground()
     }
 
     companion object {

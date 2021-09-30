@@ -114,13 +114,7 @@ class MessageBubbleLayout : ViewGroup {
     }
 
     private fun initReplyBubbleBackground() {
-        val drawableRes = when (msgOrientation) {
-            LEFT_MSG_ORIENTATION -> R.drawable.bg_chat_reply_preview_left_bubble
-            RIGHT_MSG_ORIENTATION -> R.drawable.bg_chat_reply_preview_right_bubble
-            else -> null
-        } ?: return
-        val drawable = ContextCompat.getDrawable(context, drawableRes)
-        replyBubbleContainer?.background = drawable
+        replyBubbleContainer?.updateMessageOrientation(msgOrientation)
     }
 
     /**
