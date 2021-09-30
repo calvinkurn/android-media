@@ -13,7 +13,6 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.CategoryWidgetTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.glide.FPM_CATEGORY_WIDGET_ITEM
-import com.tokopedia.home.beranda.helper.glide.loadImageRoundedTop
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.CategoryWidgetV2SpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
