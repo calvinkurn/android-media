@@ -311,6 +311,7 @@
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:paddingEnd="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_8"
                 android:text="@string/warning_no_courier_change"
                 app:layout_constraintEnd_toStartOf="@id/right_padding"
                 app:layout_constraintLeft_toRightOf="@id/img_info"
