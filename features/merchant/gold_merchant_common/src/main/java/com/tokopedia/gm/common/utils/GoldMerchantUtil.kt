@@ -38,7 +38,7 @@ object GoldMerchantUtil {
             simpleDateFormat.parse(dateString)?.let { calendar.time = it }
             calendar.add(Calendar.DATE, NEW_SELLER_DAYS)
             calendarNow.timeInMillis = System.currentTimeMillis()
-            return calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY &&
+            return calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY ||
                     (calendarNow.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY)
         } catch (e: Exception) {
             e.printStackTrace()
