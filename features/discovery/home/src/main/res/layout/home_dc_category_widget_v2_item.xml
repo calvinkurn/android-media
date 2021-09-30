@@ -26,6 +26,7 @@
             android:contentDescription="@string/content_desc_home_category_widget"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container_title_category"
             android:layout_width="@dimen/dp_120"
             android:layout_height="wrap_content"
             android:background="@color/Unify_N0"
