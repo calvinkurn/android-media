@@ -96,6 +96,9 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
+        if (!currentActiveChat.isNullOrEmpty()) {
+            handleIntentChatRoomWithMessageId()
+        }
         if (intent != null && intent.extras != null) {
             bundle.putAll(intent.extras)
 
@@ -162,9 +165,6 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         data?.let {
             val pathSegments = it.pathSegments
             when {
-                (!currentActiveChat.isNullOrEmpty()) -> {
-                    handleIntentChatRoomWithMessageId()
-                }
                 pathSegments.contains(ApplinkConst.Chat.PATH_ASK_SELLER) -> {
                     val toShopId = intent?.data?.lastPathSegment.toZeroStringIfNull()
                     val shopName =
@@ -236,18 +236,28 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
 
     override fun setupToolbar() {
         scanPathQuery(intent.data)
+        clearToolbar()
+        bindToolbarViews()
+        setupDummyToolbar()
+    }
+
+    private fun clearToolbar() {
         val mInflater = LayoutInflater.from(this)
         val mCustomView = mInflater.inflate(getChatHeaderLayout(), null)
         toolbar.removeAllViews()
         toolbar.addView(mCustomView)
         toolbar.contentInsetStartWithNavigation = 0
         toolbar.contentInsetEndWithActions = 0
+    }
 
+    private fun bindToolbarViews() {
         chatRoomToolbarTitle = findViewById(com.tokopedia.chat_common.R.id.title)
         chatRoomToolbarLabel = findViewById(com.tokopedia.chat_common.R.id.label)
         chatRoomToolbarSubtitle = findViewById(com.tokopedia.chat_common.R.id.subtitle)
         chatRoomToolbarAvatar = findViewById(com.tokopedia.chat_common.R.id.user_avatar)
+    }
 
+    private fun setupDummyToolbar() {
         intent.getParcelableExtra<ChatRoomHeaderViewModel>(ApplinkConst.Chat.PARAM_HEADER)?.let { header ->
             chatRoomToolbarAvatar?.let { imageView ->
                 ImageHandler.loadImageCircle2(this, imageView, header.image)
@@ -498,7 +508,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        return if( isFlexMode()) {
+        return if (isFlexMode()) {
             menu?.clear()
             if (GlobalConfig.isSellerApp()) {
                 menuInflater.inflate(R.menu.chat_options_menu_sellerapp, menu)
