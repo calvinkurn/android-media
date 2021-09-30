@@ -40,7 +40,6 @@ object BuyerConsts {
     const val BUTTON_REGULER_CANCELATION = "Ajukan Pembatalan"
     const val RESULT_CODE_INSTANT_CANCEL = "result_code_instant"
     const val RESULT_MSG_INSTANT_CANCEL = "result_msg_instant"
-    const val INSTANT_CANCEL_BUYER_REQUEST = 100
     const val RESULT_CODE_SUCCESS = 1
     const val RESULT_CODE_BACK = 0
 

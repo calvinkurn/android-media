@@ -4,7 +4,6 @@ import android.app.Activity
 import android.os.Bundle
 import com.google.gson.JsonArray
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.unifyorderhistory.util.UohConsts.BUSINESS_UNIT_REPLACEE
 import com.tokopedia.unifyorderhistory.util.UohConsts.RECOMMENDATION_LIST_TOPADS_TRACK
 import com.tokopedia.unifyorderhistory.util.UohConsts.RECOMMENDATION_LIST_TRACK
@@ -16,6 +15,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifyorderhistory.util.UohConsts
 import java.util.*
 
 /**

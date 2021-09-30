@@ -13,12 +13,12 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_RECOMMENDATION_ITEM
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_TICKER
 import com.tokopedia.unifyorderhistory.data.model.UohListOrder
 import com.tokopedia.unifyorderhistory.data.model.UohTypeData
-import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.unifyorderhistory.R
 import com.tokopedia.unifyorderhistory.view.adapter.viewholder.*
+import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
 
 /**
  * Created by fwidjaja on 22/07/20.

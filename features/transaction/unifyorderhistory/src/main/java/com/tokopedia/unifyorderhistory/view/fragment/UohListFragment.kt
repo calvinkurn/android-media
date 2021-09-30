@@ -53,6 +53,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
+import com.tokopedia.buyerorder.unifiedhistory.list.data.model.CancelOrderQueryParams
 import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.unifyorderhistory.util.UohConsts.ALL_DATE
 import com.tokopedia.unifyorderhistory.util.UohConsts.ALL_PRODUCTS
@@ -67,8 +68,6 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.DIKIRIM
 import com.tokopedia.unifyorderhistory.util.UohConsts.DIPROSES
 import com.tokopedia.unifyorderhistory.util.UohConsts.EE_PRODUCT_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.EE_PRODUCT_PRICE
-import com.tokopedia.unifyorderhistory.util.UohConsts.EE_QUANTITY
-import com.tokopedia.unifyorderhistory.util.UohConsts.EE_SHOP_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.EMAIL_MUST_NOT_BE_EMPTY
 import com.tokopedia.unifyorderhistory.util.UohConsts.END_DATE
 import com.tokopedia.unifyorderhistory.util.UohConsts.E_TIKET
@@ -104,13 +103,11 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.TRANSAKSI_BERLANGSUNG
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_ACTION_BUTTON_LINK
 import com.tokopedia.unifyorderhistory.util.UohConsts.URL_RESO
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_DEALS
-import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_DIGITAL
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_EVENTS
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_FLIGHT
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_GIFTCARD
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_HOTEL
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_INSURANCE
-import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_KEUANGAN
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_MODALTOKO
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_MP
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TRAIN
@@ -120,10 +117,8 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.WEB_LINK_TYPE
 import com.tokopedia.unifyorderhistory.util.UohConsts.WRONG_FORMAT_EMAIL
 import com.tokopedia.unifyorderhistory.util.UohUtils
 import com.tokopedia.unifyorderhistory.analytics.UohAnalytics
-import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAdd
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAddRecommendation
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceClick
-import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceImpressions
 import com.tokopedia.unifyorderhistory.view.adapter.UohBottomSheetKebabMenuAdapter
 import com.tokopedia.unifyorderhistory.view.adapter.UohBottomSheetOptionAdapter
 import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
@@ -134,10 +129,13 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_UOH
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
@@ -148,6 +146,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -155,6 +154,17 @@ import com.tokopedia.unifyorderhistory.R
 import com.tokopedia.unifyorderhistory.data.model.*
 import com.tokopedia.unifyorderhistory.di.UohListComponent
 import com.tokopedia.unifyorderhistory.util.UohConsts.ACTION_FINISH_ORDER
+import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_BOUGHT_DATE
+import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_HELP_LINK_URL
+import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_INVOICE
+import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_INVOICE_URL
+import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_ORDER_ID
+import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_SERIALIZABLE_LIST_PRODUCT
+import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_SHOP_ID
+import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_SHOP_NAME
+import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_SOURCE_UOH
+import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_STATUS_ID
+import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_ACTION_CANCEL_ORDER
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -173,10 +183,6 @@ import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import com.tokopedia.navigation_common.listener.MainParentStateListener
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_UOH
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlin.collections.ArrayList
 
 /**
@@ -286,6 +292,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             }
         }
 
+        const val URL_IMG_EMPTY_SEARCH_LIST = "https://images.tokopedia.net/img/android/uoh/uoh_empty_search_list.png"
+        const val URL_IMG_EMPTY_ORDER_LIST = "https://images.tokopedia.net/img/android/uoh/uoh_empty_order_list.png"
         const val CREATE_REVIEW_APPLINK = "product-review/create/"
         const val CREATE_REVIEW_ERROR_MESSAGE = "create_review_error"
         const val CREATE_REVIEW_REQUEST_CODE = 200
@@ -302,6 +310,10 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         const val MINUS_30 = -30
         const val MINUS_90 = -90
         private const val MIN_30_DAYS = -30
+        const val INSTANT_CANCEL_BUYER_REQUEST = 100
+        const val RESULT_MSG_INSTANT_CANCEL = "result_msg_instant"
+        const val RESULT_CODE_INSTANT_CANCEL = "result_code_instant"
+        const val RESULT_CODE_SUCCESS = 1
     }
 
     private fun getAbTestPlatform(): AbTestPlatform {
@@ -343,8 +355,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             e.printStackTrace()
             false
         }
-        const val URL_IMG_EMPTY_SEARCH_LIST = "https://images.tokopedia.net/img/android/uoh/uoh_empty_search_list.png"
-        const val URL_IMG_EMPTY_ORDER_LIST = "https://images.tokopedia.net/img/android/uoh/uoh_empty_order_list.png"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -579,7 +589,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         uoh_navtoolbar?.let {
             viewLifecycleOwner.lifecycle.addObserver(it)
             it.setupSearchbar(searchbarType = NavToolbar.Companion.SearchBarType.TYPE_EDITABLE, hints = arrayListOf(
-                HintData(getString(R.string.hint_cari_transaksi) )),
+                HintData(getString(R.string.hint_cari_transaksi) )
+            ),
                 editorActionCallback = {query ->
                     searchQuery = query
                     when {
@@ -1725,16 +1736,16 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
                 val cancelOrderQueryParam = gson.fromJson(orderData.metadata.queryParams, CancelOrderQueryParams::class.java)
                 val intentCancelOrder = RouteManager.getIntent(context, URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8)).apply {
-                    putExtra(BuyerConsts.PARAM_SHOP_NAME, cancelOrderQueryParam.shopName)
-                    putExtra(BuyerConsts.PARAM_INVOICE, cancelOrderQueryParam.invoice)
-                    putExtra(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT, orderData.metadata.listProducts as Serializable?)
-                    putExtra(BuyerConsts.PARAM_ORDER_ID, cancelOrderQueryParam.orderId)
-                    putExtra(BuyerConsts.PARAM_SHOP_ID, cancelOrderQueryParam.shopId)
-                    putExtra(BuyerConsts.PARAM_BOUGHT_DATE, orderData.metadata.paymentDateStr)
-                    putExtra(BuyerConsts.PARAM_INVOICE_URL, cancelOrderQueryParam.invoiceUrl)
-                    putExtra(BuyerConsts.PARAM_STATUS_ID, cancelOrderQueryParam.status)
-                    putExtra(BuyerConsts.PARAM_SOURCE_UOH, true)
-                    putExtra(BuyerConsts.PARAM_HELP_LINK_URL, helpLinkUrl)
+                    putExtra(PARAM_SHOP_NAME, cancelOrderQueryParam.shopName)
+                    putExtra(PARAM_INVOICE, cancelOrderQueryParam.invoice)
+                    putExtra(PARAM_SERIALIZABLE_LIST_PRODUCT, orderData.metadata.listProducts as Serializable?)
+                    putExtra(PARAM_ORDER_ID, cancelOrderQueryParam.orderId)
+                    putExtra(PARAM_SHOP_ID, cancelOrderQueryParam.shopId)
+                    putExtra(PARAM_BOUGHT_DATE, orderData.metadata.paymentDateStr)
+                    putExtra(PARAM_INVOICE_URL, cancelOrderQueryParam.invoiceUrl)
+                    putExtra(PARAM_STATUS_ID, cancelOrderQueryParam.status)
+                    putExtra(PARAM_SOURCE_UOH, true)
+                    putExtra(PARAM_HELP_LINK_URL, helpLinkUrl)
                 }
                 startActivityForResult(intentCancelOrder, UOH_CANCEL_ORDER)
             } else {

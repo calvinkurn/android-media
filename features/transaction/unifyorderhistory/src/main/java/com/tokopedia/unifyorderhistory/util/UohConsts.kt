@@ -147,4 +147,15 @@ object UohConsts {
     const val PARAM_INPUT = "input"
     const val TICKER_URL = "#ticker_url"
     const val TICKER_LABEL = "#ticker_label"
+
+    const val PARAM_SHOP_NAME = "param_shop_name"
+    const val PARAM_ORDER_ID = "order_id"
+    const val PARAM_INVOICE = "param_invoice"
+    const val PARAM_SERIALIZABLE_LIST_PRODUCT = "param_serializable_list_product"
+    const val PARAM_SHOP_ID = "shop_id"
+    const val PARAM_BOUGHT_DATE = "bought_date"
+    const val PARAM_INVOICE_URL = "invoice_url"
+    const val PARAM_STATUS_ID = "status_id"
+    const val PARAM_SOURCE_UOH = "source_uoh"
+    const val PARAM_HELP_LINK_URL = "help_link_url"
 }
