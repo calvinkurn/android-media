@@ -50,6 +50,5 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(rootProject.ext.app.customerapp)
-    implementation project(rootProject.ext.app.sellerapp)
     implementation projectOrAar(rootProject.ext.libraries.imagePickerInsta)
 }
