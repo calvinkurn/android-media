@@ -41,7 +41,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
     implementation project(rootProject.ext.features.productCard)
-    implementation projectOrAar(rootProject.ext.libraries.imagePickerInsta)
+    implementation projectOrAar(rootProject.ext.libraries.imagePickerInstaCommon)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components

@@ -1,14 +1,12 @@
 package com.tokopedia.imagepicker_insta.activity
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import androidx.annotation.IntRange
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.imagepicker_insta.R
+import com.tokopedia.imagepicker_insta.common.BundleData
+import com.tokopedia.imagepicker_insta.common.ImagePickerRouter.DEFAULT_MULTI_SELECT_LIMIT
+import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.imagepicker_insta.fragment.ImagePickerInstaMainFragment
-import com.tokopedia.imagepicker_insta.models.BundleData
-import com.tokopedia.imagepicker_insta.trackers.TrackerProvider
 import com.tokopedia.imagepicker_insta.util.PermissionUtil
 
 class ImagePickerInstaActivity : PermissionActivity() {
@@ -22,36 +20,6 @@ class ImagePickerInstaActivity : PermissionActivity() {
     var applinkToNavigateAfterMediaCapture = ""
     var applinkForGalleryProceed = ""
     var applinkForBackNavigation = ""
-
-    companion object {
-
-        internal const val DEFAULT_MULTI_SELECT_LIMIT = 5
-
-        fun getIntent(
-            context: Context, title: String? = null,
-            subtitle: String? = null,
-            toolbarIconRes: Int? = null,
-            toolbarIconUrl: String? = null,
-            menuTitle: String? = null,
-            @IntRange(from = 1L, to = DEFAULT_MULTI_SELECT_LIMIT.toLong())
-            maxMultiSelectAllowed: Int = 5,
-            applinkToNavigateAfterMediaCapture: String? = null,
-            applinkForGalleryProceed: String? = null,
-            applinkForBackNavigation: String? = null,
-        ): Intent {
-            val intent = Intent(context, ImagePickerInstaActivity::class.java)
-            intent.putExtra(BundleData.TITLE, title)
-            intent.putExtra(BundleData.SUB_TITLE, subtitle)
-            intent.putExtra(BundleData.TOOLBAR_ICON_RES, toolbarIconRes)
-            intent.putExtra(BundleData.TOOLBAR_ICON_URL, toolbarIconUrl)
-            intent.putExtra(BundleData.MENU_TITLE, menuTitle)
-            intent.putExtra(BundleData.MAX_MULTI_SELECT_ALLOWED, Math.min(maxMultiSelectAllowed, DEFAULT_MULTI_SELECT_LIMIT))
-            intent.putExtra(BundleData.APPLINK_AFTER_CAMERA_CAPTURE, applinkToNavigateAfterMediaCapture)
-            intent.putExtra(BundleData.APPLINK_FOR_GALLERY_PROCEED, applinkForGalleryProceed)
-            intent.putExtra(BundleData.APPLINK_FOR_BACK_NAVIGATION, applinkForBackNavigation)
-            return intent
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

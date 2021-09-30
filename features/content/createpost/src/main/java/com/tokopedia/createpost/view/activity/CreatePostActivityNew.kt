@@ -38,7 +38,7 @@ import javax.inject.Inject
 import android.content.ContentResolver
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
-import com.tokopedia.imagepicker_insta.models.BundleData
+import com.tokopedia.imagepicker_insta.common.BundleData
 import java.util.*
 
 

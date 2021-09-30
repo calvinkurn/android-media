@@ -6,7 +6,7 @@ import com.tokopedia.createpost.analyics.FeedTrackerImagePickerInsta.Action.CLIC
 import com.tokopedia.createpost.analyics.FeedTrackerImagePickerInsta.Action.CLICK_NEXT_ON_PICKER_PAGE
 import com.tokopedia.createpost.analyics.FeedTrackerImagePickerInsta.Category.CONTENT_FEED_CREATION
 import com.tokopedia.createpost.analyics.FeedTrackerImagePickerInsta.Event.CLICK_FEED
-import com.tokopedia.imagepicker_insta.trackers.TrackerContract
+import com.tokopedia.imagepicker_insta.common.trackers.TrackerContract
 
 class FeedTrackerImagePickerInsta(val shopId: String) : TrackerContract {
 

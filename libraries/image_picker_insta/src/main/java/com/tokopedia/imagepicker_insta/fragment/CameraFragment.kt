@@ -22,15 +22,12 @@ import com.otaliastudios.cameraview.*
 import com.otaliastudios.cameraview.controls.Flash
 import com.otaliastudios.cameraview.controls.Mode
 import com.otaliastudios.cameraview.controls.PictureFormat
-import com.otaliastudios.cameraview.size.Size
-import com.otaliastudios.cameraview.size.SizeSelector
-import com.otaliastudios.cameraview.size.SizeSelectors
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.imagepicker_insta.LiveDataResult
 import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.activity.CameraActivity
-import com.tokopedia.imagepicker_insta.trackers.MediaType
-import com.tokopedia.imagepicker_insta.trackers.TrackerProvider
+import com.tokopedia.imagepicker_insta.common.trackers.MediaType
+import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.viewmodel.CameraViewModel
 import com.tokopedia.imagepicker_insta.views.CameraButton

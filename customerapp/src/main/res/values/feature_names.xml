@@ -393,4 +393,6 @@
 
     <!-- Review   -->
     <string name="title_review">Ulasan</string>
+
+    <string name="title_image_picker_insta_df">Media Picker</string>
 </resources>
