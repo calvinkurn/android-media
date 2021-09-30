@@ -148,18 +148,16 @@ public class AlbumLoader extends CursorLoader {
     public static CursorLoader newInstanceOld(Context context, GalleryType galleryType) {
         String selection;
         String[] selectionArgs;
-        if (galleryType == GalleryType.GIF_ONLY || galleryType == GalleryType.IMAGE_ONLY) {
-            if (galleryType == GalleryType.GIF_ONLY) {
-                selection = beforeAndroidTen()
-                        ? SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE : SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE_29;
-                selectionArgs = getSelectionArgsForSingleMediaGifType(
-                        MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
-            } else {
-                selection = beforeAndroidTen()
-                        ? SELECTION_FOR_SINGLE_MEDIA_TYPE : SELECTION_FOR_SINGLE_MEDIA_TYPE_29;
-                selectionArgs = getSelectionArgsForSingleMediaType(
-                        MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
-            }
+        if (galleryType == GalleryType.GIF_ONLY) {
+            selection = beforeAndroidTen()
+                    ? SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE : SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE_29;
+            selectionArgs = getSelectionArgsForSingleMediaGifType(
+                    MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
+        } else if (galleryType == GalleryType.IMAGE_ONLY) {
+            selection = beforeAndroidTen()
+                    ? SELECTION_FOR_SINGLE_MEDIA_TYPE : SELECTION_FOR_SINGLE_MEDIA_TYPE_29;
+            selectionArgs = getSelectionArgsForSingleMediaType(
+                    MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
         } else if (galleryType == GalleryType.VIDEO_ONLY) {
             selection = beforeAndroidTen()
                     ? SELECTION_FOR_SINGLE_MEDIA_TYPE : SELECTION_FOR_SINGLE_MEDIA_TYPE_29;
