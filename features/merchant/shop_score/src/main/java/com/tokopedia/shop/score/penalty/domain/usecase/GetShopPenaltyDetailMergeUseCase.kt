@@ -86,7 +86,8 @@ class GetShopPenaltyDetailMergeUseCase @Inject constructor(
                 ${'$'}typeID: Int!,
                 ${'$'}sort: Int!
               ){
-              shopScorePenaltyTypes(input: {
+              shopScorePenaltyTypes(
+                 input: {
                   lang: "id"
                   source: "android"
                 }){
@@ -101,10 +102,11 @@ class GetShopPenaltyDetailMergeUseCase @Inject constructor(
                 }
               }
               shopScorePenaltySummary(
+                 input: {
                  startDate : ${'$'}startDate
                  endDate : ${'$'}endDate
                  source: "android"
-              ) {
+                }) {
                  result {
                    penalty
                    penaltyAmount
@@ -114,6 +116,7 @@ class GetShopPenaltyDetailMergeUseCase @Inject constructor(
                  }
                }
                shopScorePenaltyDetail(
+                 input: {
                    page : 1
                    total : 10
                    startDate : ${'$'}startDate
@@ -122,6 +125,7 @@ class GetShopPenaltyDetailMergeUseCase @Inject constructor(
                    sort : ${'$'}sort
                    lang : "id"
                    source: "android-shop-penalty"
+                 }
                ) {
                   result {
                       shopPenaltyID

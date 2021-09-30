@@ -66,7 +66,8 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        shopPenaltyPerformanceMonitoringListener = castContextToTalkPerformanceMonitoringListener(context)
+        shopPenaltyPerformanceMonitoringListener =
+            castContextToTalkPerformanceMonitoringListener(context)
     }
 
     override fun onCreateView(
@@ -111,13 +112,14 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
 
     override fun onSwipeRefresh() {
         swipeToRefresh?.isRefreshing = false
-        clearAllData()
-        penaltyPageAdapter.showLoading()
+        clearAllPenaltyData()
+        showLoading()
         viewModelShopPenalty.getDataPenalty()
     }
 
+
     override fun loadInitialData() {
-        clearAllData()
+        clearAllPenaltyData()
         showLoading()
         viewModelShopPenalty.getDataPenalty()
     }
@@ -157,6 +159,16 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
             showLoading()
         }
         endlessRecyclerViewScrollListener.resetState()
+    }
+
+    private fun clearAllPenaltyData() {
+        penaltyPageAdapter.run {
+            removeShopPenaltyLoading()
+            removeErrorStatePenalty()
+            removeNotFoundPenalty()
+            removeShopPenaltyAllData()
+            refreshSticky()
+        }
     }
 
     private fun List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>?.chipsPenaltyMapToItemSortFilter(): List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper> {
@@ -242,14 +254,13 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
 
     private fun observePenaltyPage() {
         observe(viewModelShopPenalty.penaltyPageData) {
-            hideLoading()
+            penaltyPageAdapter.removeShopPenaltyLoading()
             when (it) {
                 is Success -> {
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
                     val basePenaltyData =
-                        it.data.penaltyVisitableList.first.filterNot {
-                                visitable -> visitable is ItemPenaltyUiModel }
+                        it.data.penaltyVisitableList.first.filterNot { visitable -> visitable is ItemPenaltyUiModel }
                     val penaltyFilterDetailData =
                         it.data.penaltyVisitableList.first.filterIsInstance<ItemPenaltyUiModel>()
                     penaltyPageAdapter.setPenaltyData(basePenaltyData)
@@ -370,7 +381,8 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
 
     override fun startRenderPerformanceMonitoring() {
         shopPenaltyPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
-        binding?.rvPenaltyPage?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        binding?.rvPenaltyPage?.viewTreeObserver?.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 shopPenaltyPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
                 shopPenaltyPerformanceMonitoringListener?.stopPerformanceMonitoring()

@@ -3,6 +3,7 @@ package com.tokopedia.shop.score.penalty.presentation.adapter
 import android.os.Handler
 import android.os.Looper
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -13,6 +14,7 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemSort
 import com.tokopedia.shop.score.penalty.presentation.model.*
 import com.tokopedia.shop.score.penalty.presentation.widget.OnStickySingleHeaderListener
 import com.tokopedia.shop.score.penalty.presentation.widget.StickySingleHeaderView
+import com.tokopedia.shop.score.performance.presentation.adapter.diffutilscallback.ShopPerformanceDiffUtilCallback
 import com.tokopedia.shop.score.performance.presentation.model.BaseShopPerformance
 
 class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapterFactory) :
@@ -28,9 +30,11 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
         }.takeIf { it != -1 }
 
     fun setPenaltyData(penaltyListUiModel: List<BasePenaltyPage>) {
+        val diffCallback = ShopPerformanceDiffUtilCallback(visitables, penaltyListUiModel)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
         visitables.clear()
         visitables.addAll(penaltyListUiModel)
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun removePenaltyListData() {
@@ -99,13 +103,6 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
         }
     }
 
-    fun setShopPenaltyLoading(item: LoadingModel) {
-        if (visitables.getOrNull(lastIndex) !is LoadingModel) {
-            visitables.add(item)
-            notifyItemInserted(lastIndex)
-        }
-    }
-
     fun removeShopPenaltyLoading() {
         if (visitables.getOrNull(lastIndex) is LoadingModel) {
             visitables.removeAt(lastIndex)
@@ -117,11 +114,6 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
         if (onStickySingleHeaderViewListener != null) {
             recyclerView?.post { onStickySingleHeaderViewListener?.refreshSticky() }
         }
-    }
-
-    override fun clearAllElements() {
-        super.clearAllElements()
-        refreshSticky()
     }
 
     override val stickyHeaderPosition: Int

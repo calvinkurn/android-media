@@ -2,6 +2,10 @@ package com.tokopedia.shop.score.penalty.presentation.adapter.diffutil
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.shop.score.penalty.presentation.model.ItemCardShopPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPeriodDetailPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemSortFilterPenaltyUiModel
 import com.tokopedia.shop.score.performance.presentation.model.*
 
 class ShopPerformanceDiffUtilCallback(
@@ -16,10 +20,10 @@ class ShopPerformanceDiffUtilCallback(
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldList.getOrNull(oldItemPosition)
         val newItem = newList.getOrNull(newItemPosition)
-        return isTheSameHeaderShopPerformanceUiModel(oldItem, newItem) ||
-                isTheSameDetailPerformanceUiModel(oldItem, newItem) ||
-                isTheSameLevelScoreProjectUiModel(oldItem, newItem) ||
-                isTheSameItemStatusPMProUiModel(oldItem, newItem)
+        return isTheSameItemPenaltyUiModel(oldItem, newItem) ||
+                isTheSameItemCardShopPenaltyUiModel(oldItem, newItem) ||
+                isTheSameItemPeriodDetailPenaltyUiModel(oldItem, newItem) ||
+                isTheSameItemSortFilterPenaltyUiModel(oldItem, newItem)
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
@@ -28,35 +32,39 @@ class ShopPerformanceDiffUtilCallback(
         return oldItem == newItem
     }
 
-    private fun isTheSameHeaderShopPerformanceUiModel(
+    private fun isTheSameItemPenaltyUiModel(
         oldItem: Visitable<*>?,
         newItem: Visitable<*>?
     ): Boolean {
-        return oldItem is HeaderShopPerformanceUiModel && newItem is HeaderShopPerformanceUiModel &&
-                oldItem.shopScore == newItem.shopScore && oldItem.shopLevel == newItem.shopLevel &&
-                oldItem.showCardNewSeller == newItem.showCardNewSeller
+        return oldItem is ItemPenaltyUiModel && newItem is ItemPenaltyUiModel &&
+                oldItem.invoicePenalty == newItem.invoicePenalty &&
+                oldItem.deductionPoint == newItem.deductionPoint &&
+                oldItem.descStatusPenalty == newItem.descStatusPenalty
     }
 
-    private fun isTheSameDetailPerformanceUiModel(
+    private fun isTheSameItemCardShopPenaltyUiModel(
         oldItem: Visitable<*>?,
         newItem: Visitable<*>?
     ): Boolean {
-        return oldItem is ItemDetailPerformanceUiModel && newItem is ItemDetailPerformanceUiModel &&
-                oldItem.shopScore == newItem.shopScore && oldItem.titleDetailPerformance == newItem.titleDetailPerformance &&
-                oldItem.valueDetailPerformance == newItem.valueDetailPerformance
+        return oldItem is ItemCardShopPenaltyUiModel && newItem is ItemCardShopPenaltyUiModel &&
+                oldItem.totalPenalty == newItem.totalPenalty &&
+                oldItem.hasPenalty == newItem.hasPenalty &&
+                oldItem.deductionPoints == newItem.deductionPoints
     }
 
-    private fun isTheSameLevelScoreProjectUiModel(
+    private fun isTheSameItemPeriodDetailPenaltyUiModel(
         oldItem: Visitable<*>?,
         newItem: Visitable<*>?
     ): Boolean {
-        return oldItem is ItemLevelScoreProjectUiModel && newItem is ItemLevelScoreProjectUiModel
+        return oldItem is ItemPeriodDetailPenaltyUiModel && newItem is ItemPeriodDetailPenaltyUiModel &&
+                oldItem.periodDetail == newItem.periodDetail
     }
 
-    private fun isTheSameItemStatusPMProUiModel(
+    private fun isTheSameItemSortFilterPenaltyUiModel(
         oldItem: Visitable<*>?,
         newItem: Visitable<*>?
     ): Boolean {
-        return oldItem is ItemStatusPMProUiModel && newItem is ItemStatusPMProUiModel
+        return oldItem is ItemSortFilterPenaltyUiModel && newItem is ItemSortFilterPenaltyUiModel &&
+                oldItem.itemSortFilterWrapperList == newItem.itemSortFilterWrapperList
     }
 }
