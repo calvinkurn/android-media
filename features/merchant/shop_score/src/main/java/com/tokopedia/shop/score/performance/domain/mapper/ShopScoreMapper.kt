@@ -953,7 +953,7 @@ class ShopScoreMapper @Inject constructor(
         return if (shopScorePrefManager.getIsShowPopupEndTenure()) {
             val calendar = Calendar.getInstance(getLocale())
             if (shopAge in SHOP_AGE_NINETY..SHOP_AGE_NINETY_SIX &&
-                !GoldMerchantUtil.getIsExistingSellerPastMonday(dateShopCreated, shopAge)
+                GoldMerchantUtil.getIsExistingSellerRangeInMonday(dateShopCreated)
             ) {
                 calendar.getIsRangeCurrentWeekFromMonday()
             } else if (shopAge > SHOP_AGE_NINETY_SIX &&
