@@ -16,22 +16,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintVertical_chainStyle="packed"
-        app:lottie_rawRes="@raw/anim_play_like"
+        app:lottie_rawRes="@raw/anim_outline_spam_like"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/tv_total_likes"
-        />
-
-    <View
-        android:id="@+id/v_like_click_area"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:padding="@dimen/spacing_lvl3"
-        app:layout_constraintStart_toStartOf="@id/animation_like"
-        app:layout_constraintEnd_toEndOf="@id/animation_like"
-        app:layout_constraintBottom_toBottomOf="@id/animation_like"
-        app:layout_constraintDimensionRatio="H,1:1"
         />
 
     <com.tokopedia.unifyprinciples.Typography
