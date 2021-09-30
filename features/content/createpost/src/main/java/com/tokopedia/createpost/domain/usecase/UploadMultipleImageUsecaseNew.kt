@@ -1,6 +1,7 @@
 package com.tokopedia.createpost.domain.usecase
 
-import android.content.Context
+import android.app.Application
+import android.content.ContentResolver
 import android.net.Uri
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
 import com.tokopedia.createpost.data.pojo.uploadimage.UploadImageResponse
@@ -21,7 +22,6 @@ import rx.functions.Func1
 import java.io.File
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class UploadMultipleImageUsecaseNew @Inject constructor(
     private val uploadImageUseCase: UploadImageUseCase<UploadImageResponse>,
@@ -30,7 +30,6 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
 
     var postUpdateProgressManager: PostUpdateProgressManager? = null
     var tempFilePath=""
-    var firstTimeUpoad = true
 
     @Suppress("UNCHECKED_CAST")
     override fun createObservable(requestParams: RequestParams): Observable<List<SubmitPostMedium>> {
@@ -58,7 +57,7 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
     }
 
     private fun setTempFilePath(medium: SubmitPostMedium): String {
-        if (medium.mediaURL.contains("content://")) {
+        if (medium.mediaURL.contains("${ContentResolver.SCHEME_CONTENT}://")) {
             tempFilePath = handleUri(medium)
         } else {
             tempFilePath = medium.mediaURL
@@ -73,10 +72,7 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
             if (imageUrl.contains(DEFAULT_RESOLUTION)) {
                 imageUrl = imageUrl.replaceFirst(DEFAULT_RESOLUTION.toRegex(), RESOLUTION_500)
             }
-//            if (firstTimeUpoad) {
-                postUpdateProgressManager?.addProgress()
-//                firstTimeUpoad = false
-//            }
+            postUpdateProgressManager?.addProgress()
             postUpdateProgressManager?.onAddProgress()
             deleteCacheFile()
             medium.mediaURL = imageUrl
@@ -91,10 +87,7 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
             val videoId: String = uploadDomainModel?.dataResultVideoUpload?.videoId ?: ""
             val videoUrl: String = uploadDomainModel?.dataResultVideoUpload?.playbackList?.get(0)?.url
                 ?: ""
-//            if (firstTimeUpoad) {
             postUpdateProgressManager?.addProgress()
-//                firstTimeUpoad = false
-//            }
             postUpdateProgressManager?.onAddProgress()
             deleteCacheFile()
             medium.videoID = videoId
@@ -148,7 +141,7 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
         private const val RESOLUTION_500 = "500"
         private const val TEXT_PLAIN = "text/plain"
 
-        var mContext: Context? = null
+        var mContext: Application? = null
 
         fun createRequestParams(mediumList: List<SubmitPostMedium>):
                 RequestParams {

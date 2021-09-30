@@ -10,7 +10,7 @@ import android.os.Handler
 import android.view.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.view.listener.CreateContentPostCOmmonLIstener
+import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
 import com.tokopedia.createpost.view.viewmodel.MediaType
 import com.tokopedia.createpost.view.viewmodel.RelatedProductItem
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
@@ -26,7 +26,7 @@ import kotlin.math.round
 class TagViewProvider {
     var dX = 0f
     var dY = 0f
-    var listener: CreateContentPostCOmmonLIstener? = null
+    var listener: CreateContentPostCommonListener? = null
 
     companion object {
         private const val POINTER_HALF_DIMEN = 8
@@ -38,7 +38,7 @@ class TagViewProvider {
         context: Context?,
         products: List<RelatedProductItem>,
         index: Int,
-        listener: CreateContentPostCOmmonLIstener?,
+        listener: CreateContentPostCommonListener?,
         feedXTag: FeedXMediaTagging,
     ): View? {
         val inflater = LayoutInflater.from(context)

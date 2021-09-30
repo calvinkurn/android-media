@@ -9,7 +9,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.adapter.CreatePostTagAdapter
-import com.tokopedia.createpost.view.listener.CreateContentPostCOmmonLIstener
+import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
 import com.tokopedia.createpost.view.viewmodel.RelatedProductItem
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -25,7 +25,7 @@ class ContentCreationProductTagBottomSheet : BottomSheetUnify() {
     private val createPostTagAdapter: CreatePostTagAdapter by lazy {
         CreatePostTagAdapter(onDeleteProduct = this::onDeleteProduct)
     }
-    private lateinit var listener: CreateContentPostCOmmonLIstener
+    private lateinit var listener: CreateContentPostCommonListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,7 +87,7 @@ class ContentCreationProductTagBottomSheet : BottomSheetUnify() {
         bundle: Bundle,
         childFragmentManager: FragmentManager,
         productList: List<RelatedProductItem>,
-        listener: CreateContentPostCOmmonLIstener,
+        listener: CreateContentPostCommonListener,
         mediaType: String,
     ) {
         arguments = bundle

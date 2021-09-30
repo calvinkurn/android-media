@@ -17,7 +17,7 @@ import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.createpost.view.bottomSheet.ContentCreationProductTagBottomSheet
-import com.tokopedia.createpost.view.listener.CreateContentPostCOmmonLIstener
+import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
 import com.tokopedia.createpost.view.plist.ShopPageProduct
 import com.tokopedia.createpost.view.posttag.TagViewProvider
 import com.tokopedia.createpost.view.viewmodel.*
@@ -42,15 +42,12 @@ import kotlin.math.round
  * @author by shruti on 30/08/21.
  */
 
-class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentPostCOmmonLIstener {
-
+class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentPostCommonListener {
 
     private var videoPlayer: FeedExoPlayer? = null
     private var productVideoJob: Job? = null
     private val scope = CoroutineScope(Dispatchers.Main)
     var isMute = true
-
-
 
     private lateinit var contentProductTagBS: ContentCreationProductTagBottomSheet
 
@@ -151,15 +148,12 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                 createPostModel.completeImageList[createPostModel.currentCorouselIndex]
                     .tags.removeAt((tagListSize + i) - 1)
             }
-
         }
-
     }
 
     private fun updateResultIntent() {
         createContentPostViewModel.setNewContentData(createPostModel)
     }
-
 
     @SuppressLint("ClickableViewAccessibility")
     private fun updateCarouselView() {
@@ -279,7 +273,6 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                         playVideo(createPostModel.completeImageList[current],
                             current)
                     }
-
                 }
             }
         }
@@ -441,7 +434,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         TODO("Not yet implemented")
     }
 
-    override fun openProductTagginPageOnPreviewMediaClick(position: Int) {
+    override fun openProductTaggingPageOnPreviewMediaClick(position: Int) {
         TODO("Not yet implemented")
     }
 
@@ -462,10 +455,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         }
     }
 
-
     private fun openProductTaggingScreen() {
         goToAttachProduct()
-
     }
 
     private fun goToAttachProduct() {
@@ -651,6 +642,5 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         } else
             0
     }
-
 }
 
