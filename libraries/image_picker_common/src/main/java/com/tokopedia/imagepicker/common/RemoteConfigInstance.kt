@@ -11,6 +11,7 @@ object RemoteConfigInstance {
         with(remoteConfig) {
             if (this == null) {
                 FirebaseRemoteConfigImpl(context.applicationContext).also {
+                    remoteConfig = it
                     return it
                 }
             } else {
