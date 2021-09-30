@@ -166,9 +166,9 @@ public class MainParentActivity extends BaseActivity implements
     private static final String HOME_PERFORMANCE_MONITORING_PREPARE_METRICS = "home_plt_start_page_metrics";
     private static final String HOME_PERFORMANCE_MONITORING_NETWORK_METRICS = "home_plt_network_request_page_metrics";
     private static final String HOME_PERFORMANCE_MONITORING_RENDER_METRICS = "home_plt_render_page_metrics";
-    private static final String MAIN_PARENT_ON_CREATE_METRICS = "main_parent_on_create_metrics";
-    private static final String MAIN_PARENT_ON_START_METRICS = "main_parent_on_start_metrics";
-    private static final String MAIN_PARENT_ON_RESUME_METRICS = "main_parent_on_resume_metrics";
+    private static final String MAIN_PARENT_ON_CREATE_METRICS = "mp_main_parent_on_create_metrics";
+    private static final String MAIN_PARENT_ON_START_METRICS = "mp_main_parent_on_start_metrics";
+    private static final String MAIN_PARENT_ON_RESUME_METRICS = "mp_main_parent_on_resume_metrics";
 
     private static final String HOME_PERFORMANCE_MONITORING_CACHE_ATTRIBUTION = "dataSource";
     private static final String HOME_PERFORMANCE_MONITORING_CACHE_VALUE = "Cache";
