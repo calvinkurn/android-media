@@ -82,8 +82,8 @@ class CameraActivity : PermissionActivity() {
             .replace(container.id, CameraFragment())
             .commit()
 
-        toolbarIcon.setColorFilter(MethodChecker.getColor(this, R.color.white), PorterDuff.Mode.SRC_IN)
-        toolbarTitle.setTextColor(MethodChecker.getColor(this, R.color.white))
+        toolbarIcon.setColorFilter(MethodChecker.getColor(this, R.color.Unify_Static_White), PorterDuff.Mode.SRC_IN)
+        toolbarTitle.setTextColor(MethodChecker.getColor(this, R.color.Unify_Static_White))
     }
 
     private fun showPermissionFragment() {
@@ -91,8 +91,8 @@ class CameraActivity : PermissionActivity() {
             .replace(container.id, NoPermissionFragment())
             .commit()
 
-        toolbarIcon.setColorFilter(MethodChecker.getColor(this, R.color.black), PorterDuff.Mode.SRC_IN)
-        toolbarTitle.setTextColor(MethodChecker.getColor(this, R.color.black))
+        toolbarIcon.setColorFilter(MethodChecker.getColor(this, R.color.Unify_Static_Black), PorterDuff.Mode.SRC_IN)
+        toolbarTitle.setTextColor(MethodChecker.getColor(this, R.color.Unify_Static_Black))
     }
 
     private fun readIntentData() {
