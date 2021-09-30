@@ -26,49 +26,49 @@ import kotlin.collections.HashMap
 class LayananAdapter(private val list: List<LayananListItem>) : RecyclerView.Adapter<LayananAdapter.LayananViewHolder>() {
 
 
-    inner class LayananViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        fun setData(layananListItem: LayananListItem) {
-            itemView.apply {
-                ImageLoader.LoadImage(icon,layananListItem.iconUrl)
-                name.text = layananListItem.name
-                category.text = layananListItem.categrory
-                desc_1.text = layananListItem.desc1
-                if(!layananListItem.desc2.isNullOrEmpty()){
-                    desc_1.setLines(1)
-                    desc_2.text = layananListItem.desc2
-                    desc_2.show()
-                } else {
-                    desc_1.setLines(2)
-                    desc_2.hide()
-                }
-                if (!layananListItem.cta.isNullOrEmpty()) {
-                    cta.show()
-                    view.show()
-                    arrow.show()
-                    cta.text = layananListItem.cta
-                } else {
-                    cta.hide()
-                    view.hide()
-                    arrow.hide()
-                }
-                if(!layananListItem.status.isNullOrEmpty()){
-                    status.text = layananListItem.status
-                    (status.background as GradientDrawable).setColor(Color.parseColor(layananListItem.statusBackgroundColor))
-                    status.setTextColor(Color.parseColor(layananListItem.statusTextColor))
-                    status.show()
-                } else {
-                    status.hide()
-                }
-                setOnClickListener{
-                    RouteManager.route(context, String.format("%s?url=%s",ApplinkConst.WEBVIEW,layananListItem.url))
-                    val label = "product: ${layananListItem.name}, status: ${layananListItem.datalayerStatus}"
-                    Analytics.sendEcomerceEvent(EVENT_PROMO_CLICK,LAYANAN_FINANSIAL_CATEGORY, LAYANAN_FINANSILA_click_ACTION,label,createEcommerceMap(position = layoutPosition,item =  layananListItem))
-                }
-            }
+   inner class LayananViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+       fun setData(layananListItem: LayananListItem) {
+           itemView.apply {
+               ImageLoader.LoadImage(icon,layananListItem.iconUrl)
+               name.text = layananListItem.name
+               category.text = layananListItem.categrory
+               desc_1.text = layananListItem.desc1
+               if(!layananListItem.desc2.isNullOrEmpty()){
+                   desc_1.setLines(1)
+                   desc_2.text = layananListItem.desc2
+                   desc_2.show()
+               } else {
+                   desc_1.setLines(2)
+                   desc_2.hide()
+               }
+               if (!layananListItem.cta.isNullOrEmpty()) {
+                   cta.show()
+                   view.show()
+                   arrow.show()
+                   cta.text = layananListItem.cta
+               } else {
+                   cta.hide()
+                   view.hide()
+                   arrow.hide()
+               }
+               if(!layananListItem.status.isNullOrEmpty()){
+                   status.text = layananListItem.status
+                   (status.background as GradientDrawable).setColor(Color.parseColor(layananListItem.statusBackgroundColor))
+                   status.setTextColor(Color.parseColor(layananListItem.statusTextColor))
+                   status.show()
+               } else {
+                   status.hide()
+               }
+               setOnClickListener{
+                   RouteManager.route(context, String.format("%s?url=%s",ApplinkConst.WEBVIEW,layananListItem.url))
+                   val label = "product: ${layananListItem.name}, status: ${layananListItem.datalayerStatus}"
+                   Analytics.sendEcomerceEvent(EVENT_PROMO_CLICK,LAYANAN_FINANSIAL_CATEGORY, LAYANAN_FINANSILA_click_ACTION,label,createEcommerceMap(position = layoutPosition,item =  layananListItem))
+               }
+           }
 
-        }
+       }
 
-    }
+   }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LayananViewHolder {
         return LayananViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layanan_card_item,parent,false))
