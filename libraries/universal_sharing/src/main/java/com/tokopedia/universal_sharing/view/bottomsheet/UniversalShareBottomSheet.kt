@@ -32,6 +32,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -573,6 +574,11 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private fun setUserVisualData(){
         thumbNailTitleTxTv?.text = thumbNailTitle
         if(isImageOnlySharing){
+            context?.let { thumbNailImage?.let { imgView ->
+                Glide.with(it).load(thumbNailImageUrl).override(36, 20).into(
+                    imgView
+                )
+            } }
             thumbNailImage?.setImageURI(Uri.parse(File(thumbNailImageUrl).toString()))
         }
         else{
@@ -583,7 +589,16 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }
         else {
             previewImage?.visibility = View.VISIBLE
-            previewImage?.setImageURI(Uri.parse(File(previewImageUrl).toString()))
+            if(isImageOnlySharing){
+                context?.let { previewImage?.let { imgView ->
+                    Glide.with(it).load(previewImageUrl).override(1080, 600).into(
+                        imgView
+                    )
+                } }
+            }
+            else{
+                previewImage?.setImageURI(Uri.parse(File(previewImageUrl).toString()))
+            }
         }
         if(imageOptionsList != null){
             imageListViewGroup?.visibility = View.VISIBLE
