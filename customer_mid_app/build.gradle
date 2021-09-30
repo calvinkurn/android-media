@@ -122,7 +122,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.fingerprint)
     implementation projectOrAar(rootProject.ext.libraries.imageuploader)
     implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
-    implementation projectOrAar(rootProject.ext.libraries.imagePicker)
     implementation projectOrAar(rootProject.ext.libraries.imagePickerInsta)
     implementation projectOrAar(rootProject.ext.libraries.travelCalendar)
     implementation projectOrAar(rootProject.ext.libraries.datePickerRange)
@@ -377,8 +376,5 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.testCore
 
     implementation projectOrAar(rootProject.ext.features.createpost)
-    implementation projectOrAar(rootProject.ext.libraries.twitterShare)
-    implementation projectOrAar(rootProject.ext.libraries.videoUploader)
-    implementation rootProject.ext.miscDependencies.twitter
 
 }
