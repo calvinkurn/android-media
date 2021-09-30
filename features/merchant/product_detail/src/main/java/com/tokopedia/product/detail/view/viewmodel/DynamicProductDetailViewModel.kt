@@ -408,11 +408,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         this.talkLastAction = talkLastAction
     }
 
-    fun updateNotifyMeData() {
-        val selectedUpcoming = p2Data.value?.upcomingCampaigns?.get(getDynamicProductInfoP1?.basic?.productID)
-        p2Data.value?.upcomingCampaigns?.get(getDynamicProductInfoP1?.basic?.productID)?.notifyMe = selectedUpcoming?.notifyMe != true
-    }
-
     fun getMiniCartItem(): MiniCartItem? {
         return p2Data.value?.miniCart?.get(getDynamicProductInfoP1?.basic?.productID ?: "")
     }
@@ -979,12 +974,16 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             val action = if (isNotifyMeActive) ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
             else ProductDetailCommonConstant.VALUE_TEASER_ACTION_REGISTER
 
-            toggleNotifyMeUseCase.get().createParams(campaignId,
-                    productId,
-                    action,
-                    ProductDetailCommonConstant.VALUE_TEASER_SOURCE)
+            val result = toggleNotifyMeUseCase.get().executeOnBackground(
+                    ToggleNotifyMeUseCase.createParams(
+                            campaignId,
+                            productId,
+                            action,
+                            ProductDetailCommonConstant.VALUE_TEASER_SOURCE
+                    )
+            ).result
 
-            val result = toggleNotifyMeUseCase.get().executeOnBackground().result
+            updateNotifyMeData(productId.toString())
             _toggleTeaserNotifyMe.value = NotifyMeUiData(action,
                     result.isSuccess,
                     result.message).asSuccess()
@@ -1192,5 +1191,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private fun logP2Data(throwable: Throwable, productId: String, pdpSession: String) {
         val extras = mapOf(ProductDetailConstant.SESSION_KEY to pdpSession).toString()
         ProductDetailLogger.logThrowable(throwable, P2_DATA_ERROR_TYPE, productId, deviceId, extras)
+    }
+
+    private fun updateNotifyMeData(productId:String) {
+        val selectedUpcoming = p2Data.value?.upcomingCampaigns?.get(productId)
+        p2Data.value?.upcomingCampaigns?.get(productId)?.notifyMe = selectedUpcoming?.notifyMe != true
     }
 }

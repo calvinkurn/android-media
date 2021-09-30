@@ -3553,21 +3553,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun onSuccessToggleNotifyMe(data: NotifyMeUiData) {
         viewModel.clearCacheP2Data()
-//        val messageSuccess = if (data.upcomingType == "fs toko") {
-//            if (data.notifyMeAction == ProductDetailCommonConstant.VALUE_TEASER_ACTION_REGISTER)
-//                getString(R.string.notify_me_fs_toko_success_registered_message)
-//            else {
-//                getString(R.string.notify_me_success_unregistered_message)
-//            }
-//        } else {
-//            if (viewModel.notifyMeAction == ProductDetailCommonConstant.VALUE_TEASER_ACTION_REGISTER)
-//                getString(R.string.notify_me_success_registered_message)
-//            else
-//                getString(R.string.notify_me_success_unregistered_message)
-//        }
-
         view?.showToasterSuccess(data.successMessage)
-        viewModel.updateNotifyMeData()
     }
 
     private fun onFailNotifyMe(t: Throwable) {
