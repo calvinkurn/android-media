@@ -43,6 +43,7 @@ import com.tokopedia.play.broadcaster.view.partial.ChatListViewComponent
 import com.tokopedia.play.broadcaster.view.state.PlayLiveCountDownTimerState
 import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
 import com.tokopedia.play_common.detachableview.detachableView
@@ -402,7 +403,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     .className(this::class.java.simpleName)
                     .build()
             )
-            "$customErrMessage. Kode Error: (${errCode})"
+            getString(
+                commonR.string.play_custom_error_handler_msg,
+                customErrMessage,
+                errCode
+            )
         }
         showToaster(errMessage, Toaster.TYPE_ERROR, duration, actionLabel, actionListener)
     }

@@ -10,6 +10,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.unifycomponents.Toaster
 import java.text.SimpleDateFormat
 import java.util.*
@@ -60,7 +61,11 @@ internal fun View.showErrorToaster(
                 .className(className)
                 .build()
         )
-        "$customErrMessage. Kode Error: (${errCode})"
+        context.getString(
+            commonR.string.play_custom_error_handler_msg,
+            customErrMessage,
+            errCode
+        )
     }
     showToaster(
         errMessage,

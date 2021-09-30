@@ -31,6 +31,7 @@ import com.tokopedia.play.view.viewcomponent.UpcomingActionButtonViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingTimerViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -176,7 +177,11 @@ class PlayUpcomingFragment @Inject constructor(
                                     .className(PlayViewModel::class.java.simpleName)
                                     .build()
                             )
-                            "${getTextFromUiString(event.errMessage)}. Kode Error: (${errCode})"
+                            getString(
+                                commonR.string.play_custom_error_handler_msg,
+                                getTextFromUiString(event.errMessage),
+                                errCode
+                            )
                         }
                         doShowToaster(
                             toasterType = Toaster.TYPE_ERROR,

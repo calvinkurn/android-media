@@ -41,6 +41,7 @@ import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.BroadcastScheduleViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -527,7 +528,11 @@ class PlayBeforeLiveFragment @Inject constructor(
                     .className(this::class.java.simpleName)
                     .build()
             )
-            "$customErrMessage. Kode Error: (${errCode})"
+            getString(
+                commonR.string.play_custom_error_handler_msg,
+                customErrMessage,
+                errCode
+            )
         }
         showToaster(errMessage, Toaster.TYPE_ERROR, actionLabel, actionListener)
     }

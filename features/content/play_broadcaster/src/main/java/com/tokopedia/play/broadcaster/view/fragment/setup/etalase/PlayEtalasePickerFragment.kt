@@ -33,6 +33,7 @@ import com.tokopedia.play.broadcaster.view.partial.BottomActionViewComponent
 import com.tokopedia.play.broadcaster.view.partial.SelectedProductPageViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
 import com.tokopedia.play_common.detachableview.detachableView
@@ -308,7 +309,11 @@ class PlayEtalasePickerFragment @Inject constructor(
                     .className(this::class.java.simpleName)
                     .build()
             )
-            "$customErrMessage. Kode Error: (${errCode})"
+            getString(
+                commonR.string.play_custom_error_handler_msg,
+                customErrMessage,
+                errCode
+            )
         }
         showToaster(errMessage, Toaster.TYPE_ERROR, duration, actionLabel, actionListener)
     }

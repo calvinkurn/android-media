@@ -72,6 +72,7 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.*
@@ -888,7 +889,11 @@ class PlayUserInteractionFragment @Inject constructor(
                                     .className(PlayViewModel::class.java.simpleName)
                                     .build()
                             )
-                            "${getTextFromUiString(event.errMessage)}. Kode Error: (${errCode})"
+                            getString(
+                                commonR.string.play_custom_error_handler_msg,
+                                getTextFromUiString(event.errMessage),
+                                errCode
+                            )
                         }
                         doShowToaster(
                             toasterType = Toaster.TYPE_ERROR,
