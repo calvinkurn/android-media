@@ -13,6 +13,7 @@
         android:alpha="0.5"
         android:background="@color/discovery2_dms_clr_262626"
         android:visibility="gone"
+        android:elevation="@dimen/dp_5"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -86,7 +87,7 @@
         android:gravity="center"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
-        app:layout_constraintBottom_toTopOf="@id/calendar_button"
+        app:layout_constraintBottom_toTopOf="@+id/calendar_button_parent"
         app:layout_constraintLeft_toRightOf="@id/calendar_image"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/calendar_title"
@@ -94,17 +95,25 @@
         app:typographyWeight="reguler"
         tools:text="Description maximum 30 character" />
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/calendar_button"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/calendar_button_parent"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_24"
         android:layout_margin="@dimen/dp_4"
+        app:cardCornerRadius="@dimen/dp_8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/calendar_image"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/calendar_desc"
-        app:unifyButtonSize="medium"
-        app:unifyButtonType="alternate"
-        app:unifyButtonVariant="ghost"
-        tools:text="Ingatkan" />
+        app:layout_constraintTop_toBottomOf="@id/calendar_desc">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/calendar_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost"
+            tools:text="Ingatkan" />
+    </androidx.cardview.widget.CardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

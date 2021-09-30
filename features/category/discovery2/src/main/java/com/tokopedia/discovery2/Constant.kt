@@ -67,6 +67,7 @@ object Constant {
         const val STATIC = "static"
         const val SINGLE = "single"
         const val DOUBLE = "double"
+        const val GRID = "grid"
         const val TRIPLE = "triple"
     }
 

@@ -4,6 +4,7 @@ import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.push.PushStatusResponse
 import com.tokopedia.discovery2.data.push.PushSubscriptionResponse
+import com.tokopedia.discovery2.data.push.PushUnSubscriptionResponse
 import javax.inject.Inject
 
 
@@ -17,5 +18,10 @@ class PushStatusGQLRepository @Inject constructor(val getGQLString: (Int) -> Str
     override suspend fun subscribeToPush(compaignId: Int): PushSubscriptionResponse {
         return getGQLData(getGQLString(R.raw.set_push_reminder_gql),
                 PushSubscriptionResponse::class.java, mapOf("campaignID" to compaignId))
+    }
+
+    override suspend fun unsSubscribeToPush(compaignId: Int): PushUnSubscriptionResponse {
+        return getGQLData(getGQLString(R.raw.unset_push_reminder_gql),
+            PushUnSubscriptionResponse::class.java, mapOf("campaignID" to compaignId))
     }
 }

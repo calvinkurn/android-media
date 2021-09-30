@@ -50,7 +50,7 @@ data class DataItem(
         @SerializedName("end_date")
         val endDate: String? = "",
 
-        @SerializedName("button_applink", alternate = ["cta_applink"])
+        @SerializedName("button_applink", alternate = ["cta_applink", "cta_url"])
         val buttonApplink: String? = "",
 
         @SerializedName("code")
@@ -385,6 +385,9 @@ data class DataItem(
 
         @SerializedName("title_logo_url")
         var titleLogoUrl: String? = null,
+
+        @SerializedName("notify_campaign_id")
+        var notifyCampaignId: Int = 0,
 
         var shopAdsClickURL: String? = "",
 
