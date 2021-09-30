@@ -1647,7 +1647,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check deals detail appLink then should return tokopedia internal deals detail in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/deals-brand/12345/"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://deals/brand-detail-new?12345"
         val appLink = UriUtil.buildUri(ApplinkConst.DEALS_BRAND_DETAIL, "12345")
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }

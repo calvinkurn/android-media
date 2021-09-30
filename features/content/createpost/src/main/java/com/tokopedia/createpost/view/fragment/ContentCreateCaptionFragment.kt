@@ -93,15 +93,17 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
         caption.afterTextChanged {
             createPostModel.caption = it
         }
-        caption.isVerticalScrollBarEnabled = true
-        caption.canScrollVertically(-1)
         caption.setOnTouchListener { v, event ->
             if (v.id == R.id.caption) {
                 showKeyboard()
                 v.parent.requestDisallowInterceptTouchEvent(true)
                 when (event.action and MotionEvent.ACTION_MASK) {
                     MotionEvent.ACTION_UP -> v.parent.requestDisallowInterceptTouchEvent(false)
-                    MotionEvent.ACTION_DOWN -> createPostAnalytics.eventClickOnCaptionBox()
+                    MotionEvent.ACTION_DOWN -> {
+                        v.parent.requestDisallowInterceptTouchEvent(true)
+                        createPostAnalytics.eventClickOnCaptionBox()
+                    }
+                    MotionEvent.ACTION_MOVE -> v.parent.requestDisallowInterceptTouchEvent(false)
                 }
             }
             false

@@ -19,13 +19,20 @@ abstract class PostUpdateProgressManager(
 
     companion object {
         private val TAG = PostUpdateProgressManager::class.java.simpleName
+        private var isEditPostValue: Boolean = false
     }
 
     private var currentProgress = 0
     private var imgUrl=""
 
     fun onAddProgress() {
-        sendBroadcast(++currentProgress,imgUrl)
+        sendBroadcast(currentProgress, imgUrl)
+    }
+    fun addProgress() {
+        ++currentProgress
+    }
+    fun isEditPostValue(isEdit: Boolean) {
+        isEditPostValue = isEdit
     }
 
     fun onSubmitPost() {
@@ -65,6 +72,7 @@ abstract class PostUpdateProgressManager(
         intent.putExtra(UPLOAD_POST_PROGRESS, currentProgress)
         intent.putExtra(MAX_FILE_UPLOAD, maxCount)
         intent.putExtra(UPLOAD_FIRST_IMAGE, imageUrl)
+        intent.putExtra(IS_EDIT_POST, isEditPostValue)
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
     }
 }

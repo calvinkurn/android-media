@@ -58,7 +58,11 @@
                   }
                 ],
                 "billName": "",
-                "isChecked": false
+                "isChecked": false,
+                "newBillLabel": {
+                  "isNewLabel": true,
+                  "text": "Baru"
+                }
               },
               {
                 "index": 1,

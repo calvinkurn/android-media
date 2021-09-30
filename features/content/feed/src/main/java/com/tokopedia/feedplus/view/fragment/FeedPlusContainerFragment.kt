@@ -87,6 +87,11 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     companion object {
         const val TOOLBAR_GRADIENT = 1
         const val TOOLBAR_WHITE = 2
+        const val PARAM_SHOW_PROGRESS_BAR = "show_posting_progress_bar"
+        const val PARAM_IS_EDIT_STATE = "is_edit_state"
+        const val PARAM_MEDIA_PREVIEW = "media_preview"
+        val MAX_MULTI_SELECT_ALLOWED_VALUE = 5
+
         val TITLE = "title"
         val SUB_TITLE = "subtitle"
         val TOOLBAR_ICON_RES = "icon_res"
@@ -174,6 +179,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        isSeller = userSession.hasShop() || userSession.isAffiliate
         activity?.let {
             status_bar_bg.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
             status_bar_bg2.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
@@ -183,6 +189,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         initToolbar()
         initView()
         requestFeedTab()
+        showFeedFab()
     }
 
     private fun initNavRevampAbTest() {
@@ -283,9 +290,16 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         else
             fab_feed.show()
 
-        if (activity?.intent?.getBooleanExtra("show_posting_progress_bar", false) == true) {
+        if (activity?.intent?.getBooleanExtra(PARAM_SHOW_PROGRESS_BAR, false) == true) {
             if (!mInProgress) {
-                postProgressUpdateView?.resetProgressBarState()
+                val isEditPost = activity?.intent?.getBooleanExtra(
+                    PARAM_IS_EDIT_STATE, false) ?: false
+                postProgressUpdateView?.resetProgressBarState(isEditPost ?: false)
+                if (!isEditPost) {
+                    val mediaPath = activity?.intent?.getStringExtra(
+                        PARAM_MEDIA_PREVIEW) ?: ""
+                    postProgressUpdateView?.setFirstIcon(mediaPath)
+                }
                 updateVisibility(true)
                 mInProgress = true
                 postProgressUpdateView?.registerBroadcastReceiver()
@@ -388,7 +402,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         postProgressUpdateView?.setCreatePostData(CreatePostViewModel())
         postProgressUpdateView?.setPostUpdateListener(this)
         hideAllFab(true)
-        isSeller = userSession.hasShop() || userSession.isAffiliate
         setAdapter()
         setViewPager()
         onNotificationChanged(
@@ -469,9 +482,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun renderFab(whitelistDomain: WhitelistDomain) {
         authorList = whitelistDomain.authors
-        if (userSession.isLoggedIn && whitelistDomain.authors.isNotEmpty()) {
-            showFeedFab(whitelistDomain)
-        }
     }
 
     private fun onErrorGetWhitelist(throwable: Throwable) {
@@ -543,7 +553,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         return pagerAdapter.isContextExploreExist
     }
 
-    private fun showFeedFab(whitelistDomain: WhitelistDomain) {
+    private fun showFeedFab() {
         val isLoggedIn = userSession.isLoggedIn
         if (isSeller && isLoggedIn)
             fab_feed.show()
@@ -552,12 +562,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         isFabExpanded = true
         fab_feed.setOnClickListener {
             toolBarAnalytics.sendClickBuatFeedPostEvent(userSession.userId, userSession.shopId)
-            if (postProgressUpdateView?.isVisible == true)
-                updateVisibility(false)
             val authors = viewModel.feedContentForm.authors
             val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
             intent.putExtra(APPLINK_AFTER_CAMERA_CAPTURE,
                 ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+            intent.putExtra(MAX_MULTI_SELECT_ALLOWED,
+                MAX_MULTI_SELECT_ALLOWED_VALUE)
             intent.putExtra(TITLE,
                 getString(com.tokopedia.createpost.createpost.R.string.feed_content_post_sebagai))
             val name: String = MethodChecker.fromHtml(authors.first().name).toString()
@@ -569,32 +579,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
             startActivity(intent)
             TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
-        }
-    }
-
-    private fun fabClickListener(whitelistDomain: WhitelistDomain): View.OnClickListener {
-        return View.OnClickListener {
-            if (isFabExpanded) {
-                hideAllFab(false)
-            } else {
-                fab_feed.animation = AnimationUtils.loadAnimation(activity, com.tokopedia.feedcomponent.R.anim.rotate_forward)
-                layout_grey_popup.visibility = View.VISIBLE
-                for (author in whitelistDomain.authors) {
-                    if (author.type.equals(Author.TYPE_AFFILIATE, ignoreCase = true)) {
-                        fab_feed_byme.show()
-                        text_fab_byme.visibility = View.VISIBLE
-                        text_fab_byme.text = author.title
-                        fab_feed_byme.setOnClickListener { goToCreateAffiliate() }
-                    } else {
-                        fab_feed_shop.show()
-                        text_fab_shop.visibility = View.VISIBLE
-                        text_fab_shop.text = author.title
-                        fab_feed_shop.setOnClickListener { onGoToLink(author.link) }
-                    }
-                }
-                layout_grey_popup.setOnClickListener { hideAllFab(false) }
-                isFabExpanded = true
-            }
         }
     }
 
@@ -709,7 +693,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         try {
             val fragment = pagerAdapter.getRegisteredFragment(view_pager.currentItem)
             if (fragment is FeedPlusFragment) {
-                fragment.onRefresh()
+                fragment.onRefreshForNewPostUpdated()
             }
         } catch (e: IllegalStateException) {
             //no op

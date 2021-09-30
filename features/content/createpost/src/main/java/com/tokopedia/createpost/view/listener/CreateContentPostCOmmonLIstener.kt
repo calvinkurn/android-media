@@ -1,6 +1,7 @@
 package com.tokopedia.createpost.view.listener
 
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
 
 interface CreateContentPostCOmmonLIstener {
     fun deleteItemFromProductTagList(
@@ -12,5 +13,6 @@ interface CreateContentPostCOmmonLIstener {
     fun updateHeader(header: HeaderViewModel)
     fun openProductTagginPageOnPreviewMediaClick(position: Int)
     fun clickProductTagBubbleAnalytics(mediaType: String, productId: String)
+    fun updateTaggingInfoInViewModel( feedXMediaTagging: FeedXMediaTagging, index: Int)
 
 }

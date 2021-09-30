@@ -15,6 +15,7 @@ import com.tokopedia.createpost.DRAFT_ID
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.service.SubmitPostServiceNew
 import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
@@ -48,6 +49,10 @@ class PostProgressUpdateView @JvmOverloads constructor(
     fun setFirstIcon(productImage: String?) {
         if (productImage != null)
             postIcon?.setImageUrl(productImage)
+    }
+    fun setIconVisibility(isEditPost: Boolean) {
+        if (isEditPost)
+            postIcon?.setImageDrawable(context.getDrawable((R.drawable.bg_rect_white_round)))
     }
 
     fun setProgressUpdate(progress: Int, maxCount: Int) {
@@ -124,9 +129,11 @@ class PostProgressUpdateView @JvmOverloads constructor(
                     val progress = intent.getIntExtra(UPLOAD_POST_PROGRESS, 0)
                     val maxCount = intent.getIntExtra(MAX_FILE_UPLOAD, 0)
                     val firstIcon = intent.getStringExtra(UPLOAD_FIRST_IMAGE)
+                    val isEditPost = intent.getBooleanExtra(IS_EDIT_POST, false)
                     progressBar?.progressBarColorType = ProgressBarUnify.COLOR_GREEN
                     if (firstIcon != null)
                         setFirstIcon(firstIcon)
+                    setIconVisibility(isEditPost)
                     setProgressUpdate(progress, maxCount)
                 } else if (intent.action == UPLOAD_POST_NEW
                     && intent.extras?.getBoolean(UPLOAD_POST_SUCCESS_NEW) == false
@@ -136,14 +143,14 @@ class PostProgressUpdateView @JvmOverloads constructor(
             }
         }
     }
-    fun resetProgressBarState(){
+    fun resetProgressBarState(isEditPost: Boolean) {
         processingText?.text =
             context.getString(R.string.feed_content_progress_bar_text)
         processingText?.setTextColor(ContextCompat.getColor(context,
             com.tokopedia.unifyprinciples.R.color.Unify_NN950))
         progressBar?.progressBarColorType = ProgressBarUnify.COLOR_GREEN
         retryText?.gone()
-        setFirstIcon("")
+        setIconVisibility(isEditPost)
         setProgressUpdate(0, 0)
     }
 

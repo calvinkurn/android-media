@@ -73,10 +73,10 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
             if (imageUrl.contains(DEFAULT_RESOLUTION)) {
                 imageUrl = imageUrl.replaceFirst(DEFAULT_RESOLUTION.toRegex(), RESOLUTION_500)
             }
-            if (firstTimeUpoad) {
-                postUpdateProgressManager?.setFirstIcon(imageUrl)
-                firstTimeUpoad = false
-            }
+//            if (firstTimeUpoad) {
+                postUpdateProgressManager?.addProgress()
+//                firstTimeUpoad = false
+//            }
             postUpdateProgressManager?.onAddProgress()
             deleteCacheFile()
             medium.mediaURL = imageUrl
@@ -91,10 +91,10 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
             val videoId: String = uploadDomainModel?.dataResultVideoUpload?.videoId ?: ""
             val videoUrl: String = uploadDomainModel?.dataResultVideoUpload?.playbackList?.get(0)?.url
                 ?: ""
-            if (firstTimeUpoad) {
-                postUpdateProgressManager?.setFirstIcon(videoUrl)
-                firstTimeUpoad = false
-            }
+//            if (firstTimeUpoad) {
+            postUpdateProgressManager?.addProgress()
+//                firstTimeUpoad = false
+//            }
             postUpdateProgressManager?.onAddProgress()
             deleteCacheFile()
             medium.videoID = videoId
@@ -109,12 +109,6 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
         }
     }
 
-    private fun updateNotification(): Func1<SubmitPostMedium, SubmitPostMedium> {
-        return Func1 {
-            postUpdateProgressManager?.onAddProgress()
-            it
-        }
-    }
 
     private fun createUploadParams(fileToUpload:String): RequestParams {
         val maps = HashMap<String, RequestBody>()
