@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.media.AudioManager
 import android.os.Bundle
-import android.util.Log
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
@@ -40,7 +39,6 @@ import com.tokopedia.play_common.model.result.PageResultState
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
-import com.tokopedia.url.TokopediaUrl
 import javax.inject.Inject
 
 /**
@@ -290,32 +288,6 @@ class PlayActivity : BaseActivity(),
         val appTasks = activityManager.appTasks
         for(task in appTasks) {
             val baseIntent = task.taskInfo.baseIntent
-            val packageName = baseIntent.`package`
-            val categories = baseIntent.categories
-
-            Log.d("<INTENT>", "baseActivity packageName: ${task.taskInfo.baseActivity?.packageName}")
-            Log.d("<INTENT>", "baseActivity className: ${task.taskInfo.baseActivity?.className}")
-            Log.d("<INTENT>", "baseActivity shortClassName: ${task.taskInfo.baseActivity?.shortClassName}")
-
-            Log.d("<INTENT>", "packageName : $packageName")
-            Log.d("<INTENT>", "categories : $categories")
-            Log.d("<INTENT>", "action : ${baseIntent.action}")
-            Log.d("<INTENT>", "scheme : ${baseIntent.scheme}")
-            Log.d("<INTENT>", "isTrue : ${categories != null && categories.contains(Intent.CATEGORY_LAUNCHER)}")
-
-            Log.d("<INTENT>", "numActivities: ${task.taskInfo.numActivities}")
-            Log.d("<INTENT>", "origActivity packageName: ${task.taskInfo.origActivity?.packageName}")
-            Log.d("<INTENT>", "origActivity className: ${task.taskInfo.origActivity?.className}")
-            Log.d("<INTENT>", "isRunning: ${task.taskInfo.isRunning}")
-            Log.d("<INTENT>", "taskId: ${task.taskInfo.taskId}")
-            Log.d("<INTENT>", "topActivity packageName: ${task.taskInfo.topActivity?.packageName}")
-            Log.d("<INTENT>", "topActivity className: ${task.taskInfo.topActivity?.className}")
-            Log.d("<INTENT>", "==============================================")
-        }
-
-        for(task in appTasks) {
-            val baseIntent = task.taskInfo.baseIntent
-            val packageName = baseIntent.`package`
             val categories = baseIntent.categories ?: return true
 
             return !categories.contains(Intent.CATEGORY_LAUNCHER)
