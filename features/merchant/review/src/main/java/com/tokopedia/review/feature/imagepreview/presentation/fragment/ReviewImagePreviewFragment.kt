@@ -539,7 +539,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                         it.isAnonymous,
                         isProductReview,
                         it.feedbackId,
-                        productId,
+                        it.productId,
                         isFromGallery,
                         viewModel.getUserId(),
                         it.userImage
