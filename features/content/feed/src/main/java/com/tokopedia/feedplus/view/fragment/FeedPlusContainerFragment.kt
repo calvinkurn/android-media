@@ -421,8 +421,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         fab_feed.type = FloatingButtonUnify.BASIC
         fab_feed.color = FloatingButtonUnify.COLOR_GREEN
         fab_feed.circleMainMenu.setOnClickListener {
-            entryPointAnalytic.clickMainEntryPoint()
-            fab_feed.menuOpen = true
+            fab_feed.menuOpen = !fab_feed.menuOpen
+            if (fab_feed.menuOpen) entryPointAnalytic.clickMainEntryPoint()
         }
 
         val items = arrayListOf<FloatingButtonItem>()
