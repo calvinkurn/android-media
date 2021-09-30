@@ -39,17 +39,23 @@ class PdpSimulationRobot {
 
     fun closeBottomSheet()
     {
-        onView( CommonMatcher.firstView(AllOf.allOf(withId(R.id.rvPaylaterFaq), isDisplayed()))).perform(
-            swipeDown())
+        onView( CommonMatcher.firstView(AllOf.allOf(withId(R.id.bottom_sheet_close), isDisplayed()))).perform(
+            click()
+        )
     }
 
 
     fun clickPartnerFaq() {
-        onView(CommonMatcher.firstView(AllOf.allOf(withId(R.id.parent_scroll_view), isDisplayed()))).perform(
-            swipeUp())
         onView(
             CommonMatcher.firstView(AllOf.allOf(withId(R.id.faqList), isDisplayed()))
         ).perform(ViewActions.click())
+    }
+
+
+    fun swipeUpCoordinateLayout()
+    {
+        onView(CommonMatcher.firstView(AllOf.allOf(withId(R.id.parent_scroll_view), isDisplayed()))).perform(
+            swipeUp())
     }
 
 

@@ -66,8 +66,12 @@ class PdpSimulationFragmentTest {
     @Test
     fun check_pay_later_partner_button_click() {
         actionTest {
+            swipeUpCoordinateLayout()
             clickPartnerButton()
             clickPartnerButtonBottomSheet()
+            closeBottomSheet()
+            clickPartnerFaq()
+            clickPartnerFaqBottomSheet()
         } assertTest {
             validate(gtmLogDBSource, context, PAY_LATER_PARTNER_BUTTON_CLICK)
             clearData()
@@ -77,16 +81,6 @@ class PdpSimulationFragmentTest {
 
 
 
-    @Test
-    fun check_pay_later_faq_click() {
-        actionTest {
-            clickPartnerFaq()
-            clickPartnerFaqBottomSheet()
-        } assertTest {
-            validate(gtmLogDBSource, context, PAY_LATER_FAQ_CLICK)
-            clearData()
-        }
-    }
 
 
 
@@ -124,7 +118,7 @@ class PdpSimulationFragmentTest {
 
 
 
-        const val PAY_LATER_FAQ_CLICK = "tracker/fintech/pdpsimulation/patner_faq_click.json"
+      
 
 
     }

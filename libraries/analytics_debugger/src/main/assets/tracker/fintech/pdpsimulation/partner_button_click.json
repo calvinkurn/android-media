@@ -49,6 +49,30 @@
       "eventLabel": ".*",
       "sessionIris": ".*",
       "userId": ".*"
+    },
+    {
+      "event": "clickFintechMicrosite",
+      "eventAction": "sim vcc - click lihat selengkapnya",
+      "eventCategory": "fin - info page",
+      "eventLabel": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickFintechMicrosite",
+      "eventAction": "sim vcc - impression popup lihat selengkapnya",
+      "eventCategory": "fin - info page",
+      "eventLabel": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickFintechMicrosite",
+      "eventAction": "sim vcc - click lihat lebih banyak",
+      "eventCategory": "fin - info page",
+      "eventLabel": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
     }
   ]
 }
