@@ -740,7 +740,8 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             feedbackId,
             userId,
             statistics,
-            viewModel.getProductId()
+            viewModel.getProductId(),
+            viewModel.userId
         )
     }
 

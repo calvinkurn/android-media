@@ -324,7 +324,8 @@ class ReviewGalleryFragment :
                 userStats = this.userStats,
                 isAnonymous = this.isAnonymous,
                 userId = this.user.userId,
-                userImage = this.user.image
+                userImage = this.user.image,
+                productId = viewModel.getProductId()
             )
         }
         detail.reviewGalleryImages.firstOrNull { it.attachmentId == attachmentId }?.apply {
