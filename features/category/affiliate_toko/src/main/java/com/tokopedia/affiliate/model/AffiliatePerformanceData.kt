@@ -1,20 +1,16 @@
 package com.tokopedia.affiliate.model
 
 
-import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
-@Keep
 data class AffiliatePerformanceData(
         @SerializedName("getAffiliateItemsPerformanceList")
         var getAffiliateItemsPerformanceList: GetAffiliateItemsPerformanceList?
 ) {
-    @Keep
     data class GetAffiliateItemsPerformanceList(
             @SerializedName("Data")
             var `data`: Data?
     ) {
-        @Keep
         data class Data(
                 @SerializedName("Error")
                 var error: Error?,
@@ -23,7 +19,6 @@ data class AffiliatePerformanceData(
                 @SerializedName("Status")
                 var status: Int?
         ) {
-            @Keep
             data class Error(
                     @SerializedName("CtaLink")
                     var ctaLink: CtaLink?,
@@ -34,7 +29,6 @@ data class AffiliatePerformanceData(
                     @SerializedName("Message")
                     var message: String?
             ) {
-                @Keep
                 data class CtaLink(
                         @SerializedName("AndroidURL")
                         var androidURL: String?,
@@ -47,7 +41,6 @@ data class AffiliatePerformanceData(
                 )
             }
 
-            @Keep
             data class SectionData(
                     @SerializedName("AffiliateID")
                     var affiliateID: String?,
@@ -66,7 +59,6 @@ data class AffiliatePerformanceData(
                     @SerializedName("StartTime")
                     var startTime: String?
             ) {
-                @Keep
                 data class Item(
                         @SerializedName("DefaultLinkURL")
                         var defaultLinkURL: String?,
@@ -85,7 +77,6 @@ data class AffiliatePerformanceData(
                         @SerializedName("Status")
                         var status: Int?
                 ) {
-                    @Keep
                     data class Footer(
                             @SerializedName("FooterIcon")
                             var footerIcon: String?,
@@ -95,7 +86,6 @@ data class AffiliatePerformanceData(
                             var footerType: Int?
                     )
 
-                    @Keep
                     data class Image(
                             @SerializedName("AndroidURL")
                             var androidURL: String?,

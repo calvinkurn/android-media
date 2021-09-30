@@ -2,19 +2,15 @@ package com.tokopedia.affiliate.model
 
 
 import com.google.gson.annotations.SerializedName
-import androidx.annotation.Keep
 
-@Keep
 data class AffiliateGenerateLinkData(
         @SerializedName("generateAffiliateLink")
         var affiliateGenerateLink: AffiliateGenerateLink
 ) {
-    @Keep
     data class AffiliateGenerateLink(
             @SerializedName("Data")
             var `data`: List<Data>?
     ) {
-        @Keep
         data class Data(
                 @SerializedName("Status")
                 var status: Int?,
@@ -29,7 +25,6 @@ data class AffiliateGenerateLinkData(
                 @SerializedName("LinkID")
                 var linkID : String?
         ) {
-            @Keep
             data class Url(
                     @SerializedName("RegularURL")
                     var regularURL: String?,

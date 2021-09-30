@@ -1,19 +1,15 @@
 package com.tokopedia.affiliate.model
 
-import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
-@Keep
 data class AffiliateSearchData(
     @SerializedName("searchAffiliate")
     var searchAffiliate: SearchAffiliate?
 ) {
-    @Keep
     data class SearchAffiliate(
         @SerializedName("data")
         var `data`: Data?
     ) {
-        @Keep
         data class Data(
             @SerializedName("cards")
             var cards: List<Card?>?,
@@ -22,7 +18,6 @@ data class AffiliateSearchData(
             @SerializedName("status")
             var status: Int?
         ) {
-            @Keep
             data class Card(
                 @SerializedName("hasMore")
                 var hasMore: Boolean?,
@@ -33,7 +28,6 @@ data class AffiliateSearchData(
                 @SerializedName("title")
                 var title: String?
             ) {
-                @Keep
                 data class Item(
                     @SerializedName("productID")
                     var productID: String,
@@ -54,7 +48,6 @@ data class AffiliateSearchData(
                     @SerializedName("title")
                     var title: String?
                 ) {
-                    @Keep
                     data class AdditionalInformation(
                         @SerializedName("color")
                         var color: String?,
@@ -64,7 +57,6 @@ data class AffiliateSearchData(
                         var type: Int?
                     )
 
-                    @Keep
                     data class Commission(
                         @SerializedName("amount")
                         var amount: Int?,
@@ -76,7 +68,6 @@ data class AffiliateSearchData(
                         var percentageFormatted: String?
                     )
 
-                    @Keep
                     data class Footer(
                         @SerializedName("footerIcon")
                         var footerIcon: String?,
@@ -86,7 +77,6 @@ data class AffiliateSearchData(
                         var footerType: Int?
                     )
 
-                    @Keep
                     data class Image(
                         @SerializedName("AndroidURL")
                         var androidURL: String?,
@@ -98,7 +88,6 @@ data class AffiliateSearchData(
                         var mobileURL: String?
                     )
 
-                    @Keep
                     data class Status(
                         @SerializedName("isLinkGenerationAllowed")
                         var isLinkGenerationAllowed: Boolean?,
@@ -117,7 +106,6 @@ data class AffiliateSearchData(
                 }
             }
 
-            @Keep
             data class Error(
                 @SerializedName("errorCta")
                 var errorCta: List<ErrorCta?>?,
@@ -147,7 +135,6 @@ data class AffiliateSearchData(
                     )
                 }
 
-                @Keep
                 data class ErrorImage(
                     @SerializedName("AndroidURL")
                     var androidURL: String?,
