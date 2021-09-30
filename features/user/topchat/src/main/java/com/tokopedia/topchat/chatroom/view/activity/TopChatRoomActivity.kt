@@ -12,6 +12,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.appcompat.widget.Toolbar
@@ -69,6 +70,10 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     private var constraintLayoutParent: ConstraintLayout? = null
     private var frameLayoutChatRoom: FrameLayout? = null
     private var frameLayoutChatList: FrameLayout? = null
+    private var chatRoomToolbarTitle: TextView? = null
+    private var chatRoomToolbarLabel: TextView? = null
+    private var chatRoomToolbarSubtitle: TextView? = null
+    private var chatRoomToolbarAvatar: ImageView? = null
 
     private var layoutUpdatesJob: Job? = null
     private var displayState: Int = 0
@@ -238,11 +243,18 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         toolbar.contentInsetStartWithNavigation = 0
         toolbar.contentInsetEndWithActions = 0
 
-        intent.getParcelableExtra<ChatRoomHeaderViewModel>(ApplinkConst.Chat.PARAM_HEADER)?.let {
-            ImageHandler.loadImageCircle2(this, findViewById(com.tokopedia.chat_common.R.id.user_avatar), it.image)
-            (findViewById<TextView>(com.tokopedia.chat_common.R.id.title)).text = it.name
-            (findViewById<TextView>(com.tokopedia.chat_common.R.id.label)).visibility = View.GONE
-            (findViewById<TextView>(com.tokopedia.chat_common.R.id.subtitle)).visibility = View.GONE
+        chatRoomToolbarTitle = findViewById(com.tokopedia.chat_common.R.id.title)
+        chatRoomToolbarLabel = findViewById(com.tokopedia.chat_common.R.id.label)
+        chatRoomToolbarSubtitle = findViewById(com.tokopedia.chat_common.R.id.subtitle)
+        chatRoomToolbarAvatar = findViewById(com.tokopedia.chat_common.R.id.user_avatar)
+
+        intent.getParcelableExtra<ChatRoomHeaderViewModel>(ApplinkConst.Chat.PARAM_HEADER)?.let { header ->
+            chatRoomToolbarAvatar?.let { imageView ->
+                ImageHandler.loadImageCircle2(this, imageView, header.image)
+            }
+            chatRoomToolbarTitle?.text = header.name
+            chatRoomToolbarLabel?.hide()
+            chatRoomToolbarSubtitle?.hide()
         }
     }
 

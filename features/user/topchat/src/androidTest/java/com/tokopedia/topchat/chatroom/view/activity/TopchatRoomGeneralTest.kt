@@ -54,7 +54,6 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
         // Given
         val source = "product"
         val shopName = "Testing Tokopedia"
-
         getChatUseCase.response = GetExistingChatPojo()
         getChatUseCase.isError = true
 
@@ -69,7 +68,7 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
         }
 
         // Then
-        onView(withText(shopName)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+        assertToolbarTitle(shopName)
     }
 
 }
