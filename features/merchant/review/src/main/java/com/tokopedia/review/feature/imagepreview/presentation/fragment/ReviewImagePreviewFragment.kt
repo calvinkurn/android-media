@@ -367,12 +367,12 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     private fun setupReviewDetail() {
         with(productReview) {
             reviewImagePreviewDetail?.apply {
+                setCredibilityData(isProductReview, isAnonymous, user.userID, feedbackID)
+                setBasicInfoListener(this@ReviewImagePreviewFragment)
                 setPhotoCount(index, imageAttachments.size.toLong())
                 setRating(productRating)
-                setCredibilityData(isProductReview, isAnonymous, user.userID, feedbackID)
                 setReviewerName(user.fullName)
                 setTimeStamp(reviewCreateTimestamp)
-                setBasicInfoListener(this@ReviewImagePreviewFragment)
                 setReviewerImage(user.image)
                 setReviewMessage(message) { openExpandedReviewBottomSheet() }
                 setLikeCount(likeDislike.totalLike.toString())
