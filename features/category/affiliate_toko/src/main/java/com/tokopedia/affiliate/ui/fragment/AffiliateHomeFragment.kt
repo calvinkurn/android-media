@@ -188,11 +188,11 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         })
 
         affiliateHomeViewModel.getAffiliateDataItems().observe(this ,{ dataList ->
+            if(isSwipeRefresh){
+                swipe_refresh_layout.isRefreshing = false
+                isSwipeRefresh = !isSwipeRefresh
+            }
             if (dataList.isNotEmpty()) {
-                if(isSwipeRefresh){
-                    swipe_refresh_layout.isRefreshing = false
-                    isSwipeRefresh = !isSwipeRefresh
-                }
                 adapter.addMoreData(dataList)
                 loadMoreTriggerListener?.updateStateAfterGetData()
             } else {
