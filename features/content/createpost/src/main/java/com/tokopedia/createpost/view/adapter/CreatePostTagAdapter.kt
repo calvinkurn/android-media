@@ -4,7 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.view.viewmodel.RelatedProductItem
+import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import kotlinx.android.synthetic.main.content_item_product_tag_view.view.*
 

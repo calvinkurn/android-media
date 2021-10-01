@@ -3,10 +3,10 @@ package com.tokopedia.createpost.view.contract
 import android.content.Context
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.createpost.data.pojo.getcontentform.FeedContentForm
+import com.tokopedia.createpost.common.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.createpost.domain.entity.FeedDetail
 import com.tokopedia.createpost.view.type.ShareType
-import com.tokopedia.createpost.view.viewmodel.ProductSuggestionItem
+import com.tokopedia.createpost.common.view.viewmodel.ProductSuggestionItem
 import com.tokopedia.twitter_share.TwitterAuthenticator
 
 /**

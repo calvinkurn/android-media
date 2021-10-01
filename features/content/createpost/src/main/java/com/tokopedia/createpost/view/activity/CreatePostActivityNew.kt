@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.createpost.analyics.CreatePostAnalytics
+import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
@@ -21,14 +21,13 @@ import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
 import com.tokopedia.createpost.domain.usecase.UploadMultipleImageUsecaseNew
 import com.tokopedia.createpost.view.fragment.ContentCreateCaptionFragment
 import com.tokopedia.createpost.view.fragment.CreatePostPreviewFragmentNew
-import com.tokopedia.createpost.view.listener.CreateContentPostCOmmonLIstener
+import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
 import com.tokopedia.createpost.view.service.SubmitPostServiceNew
-import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
+import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
-import com.tokopedia.createpost.view.viewmodel.MediaModel
-import com.tokopedia.createpost.view.viewmodel.MediaType
+import com.tokopedia.createpost.common.view.viewmodel.MediaModel
+import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.imagepicker.common.model.MimeType
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -38,11 +37,12 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import android.content.ContentResolver
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
+import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
+import com.tokopedia.imagepicker_insta.common.BundleData
 import java.util.*
 
 
-class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIstener {
+class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListener {
 
     @Inject
     lateinit var createPostAnalytics: CreatePostAnalytics
@@ -84,7 +84,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
         content_post_name.text = MethodChecker.fromHtml(header.title)
     }
 
-    override fun openProductTagginPageOnPreviewMediaClick(position: Int) {
+    override fun openProductTaggingPageOnPreviewMediaClick(position: Int) {
         KeyboardHandler.hideSoftKeyboard(this)
         (fragment as BaseCreatePostFragmentNew).getLatestCreatePostData().currentCorouselIndex =
             position
@@ -95,16 +95,20 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
     }
 
     override fun clickProductTagBubbleAnalytics(mediaType: String, productId: String) {
-        TODO("Not yet implemented")
+        //DO nothing
     }
 
-    override fun updateTaggingInfoInViewModel(feedXMediaTagging: FeedXMediaTagging, index: Int) {
-        TODO("Not yet implemented")
+    override fun updateTaggingInfoInViewModel(
+        feedXMediaTagging: FeedXMediaTagging,
+        index: Int,
+        mediaIndex: Int
+    ) {
+        //DO nothing
     }
 
     private fun isVideoFile(uri: Uri): Boolean {
         val mimetype = uri.getMimeType(this);
-        return mimetype?.contains("video") ?: false
+        return mimetype?.contains(MediaType.VIDEO) ?: false
     }
 
     private fun Uri.getMimeType(context: Context): String? {
@@ -152,7 +156,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCOmmonLIste
             }
         }
         if (intent.getStringExtra(PARAM_TYPE) == null) {
-            val uris = bundle.get("ip_uris")
+            val uris = bundle.get(BundleData.URIS)
             val finalUri =
                 if (uris.toString().endsWith(","))
                     (uris as CharSequence).subSequence(0, uris.length - 1)

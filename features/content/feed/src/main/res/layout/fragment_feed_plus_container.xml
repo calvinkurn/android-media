@@ -80,7 +80,7 @@
             app:tabIndicatorColor="@color/Unify_GN500"
             android:theme="@style/ThemeOverlay.AppCompat.Light"/>
 
-        <com.tokopedia.createpost.view.customview.PostProgressUpdateView
+        <com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
             android:id="@+id/postUpdateView"
             android:visibility="gone"
             android:layout_width="match_parent"

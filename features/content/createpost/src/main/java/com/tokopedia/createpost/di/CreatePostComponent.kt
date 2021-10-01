@@ -2,7 +2,7 @@ package com.tokopedia.createpost.di
 
 
 import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics
-import com.tokopedia.createpost.analyics.CreatePostAnalytics
+import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.view.activity.CreatePostActivityNew
 import com.tokopedia.createpost.view.fragment.BaseCreatePostFragment
 import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew

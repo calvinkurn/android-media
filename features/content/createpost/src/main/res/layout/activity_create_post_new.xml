@@ -10,8 +10,7 @@
     <LinearLayout
         android:id="@+id/create_post_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_64"
-        android:background="@drawable/card_shadow_bottom"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical">
 
         <com.tokopedia.iconunify.IconUnify
@@ -28,7 +27,9 @@
             android:id="@+id/content_post_avatar"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
+            android:layout_marginTop="@dimen/dp_6"
             android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_6"
             tools:ignore="ContentDescription"
             tools:src="@tools:sample/avatars" />
 
@@ -36,6 +37,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_4"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:orientation="vertical">

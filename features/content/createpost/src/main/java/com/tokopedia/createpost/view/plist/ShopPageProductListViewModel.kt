@@ -2,6 +2,7 @@ package com.tokopedia.createpost.view.plist
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.createpost.common.view.plist.*
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -33,6 +34,9 @@ class ShopPageProductListViewModel @Inject constructor() : BaseViewModel(Dispatc
         const val PARAM_SOURCE = "source"
         const val PARAM_DEVICE_VALUE_ANDROID = "android"
         const val PARAM_SOURCE_VALUE = "shop_product"
+        const val PARAM_PAGE_NUMBER = "pageNumber"
+        const val PARAM_PER_PAGE = "perPage"
+        const val PARAM_SORT = "sort"
     }
 
     fun getPageData(shopId: String?, source: String?, sort: String = "") {
@@ -57,12 +61,12 @@ class ShopPageProductListViewModel @Inject constructor() : BaseViewModel(Dispatc
     fun getList(pageNumber: Int) {
         launchCatchError(block = {
             val variablesMain = java.util.HashMap<String, Any>()
-            variablesMain["shopId"] = shopId!!
-            variablesMain["pageNumber"] = pageNumber
-            variablesMain["perPage"] = 10
+            variablesMain[PARAM_SHOP_ID] = shopId!!
+            variablesMain[PARAM_PAGE_NUMBER] = pageNumber
+            variablesMain[PARAM_PER_PAGE] = 10
 
             if (!sort.isZero()) {
-                variablesMain["sort"] = sort!!.toInt()
+                variablesMain[PARAM_SORT] = sort!!.toInt()
             }
 
             val request = GraphqlRequest(

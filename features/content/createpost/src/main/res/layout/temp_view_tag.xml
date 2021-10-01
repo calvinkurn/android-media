@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="@dimen/dp_52"
+    android:alpha="0.9"
     xmlns:tools="http://schemas.android.com/tools"
     android:animateLayoutChanges="true">
 
@@ -43,6 +44,9 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:paddingTop="@dimen/dp_4"
+        android:paddingBottom="@dimen/dp_4"
+        android:gravity="center_vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/product_tag_clear_right"
@@ -52,7 +56,7 @@
             android:id="@+id/product_tag_name_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/dp_9"
+            android:paddingTop="@dimen/dp_4"
             android:paddingEnd="@dimen/dp_8"
             android:maxWidth="@dimen/dp_145"
             android:ellipsize="marquee"
@@ -74,7 +78,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/dp_8"
-                android:paddingBottom="@dimen/dp_8"
+                android:paddingBottom="@dimen/dp_6"
                 android:visibility="gone"
                 app:typographyType="body_3"
                 android:singleLine="true"
@@ -91,7 +95,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/dp_8"
-                android:paddingBottom="@dimen/dp_8"
+                android:paddingBottom="@dimen/dp_6"
                 app:typographyType="body_3"
                 app:typographyWeight="bold"
                 android:singleLine="true"
@@ -117,7 +121,7 @@
         app:layout_constraintStart_toEndOf="@+id/bubble_text_layout"
         app:layout_constraintTop_toTopOf="@+id/dot"
         app:unify_image_type="circle"
-        tools:visibility="visible"/>
+        tools:visibility="gone"/>
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/product_tag_clear_right"
@@ -129,7 +133,6 @@
         app:icon_name="CLEAR"
         app:layout_constraintBottom_toBottomOf="@+id/dot"
         app:layout_constraintStart_toStartOf="@+id/dot"
-        app:layout_constraintEnd_toStartOf="@+id/bubble_text_layout"
         app:layout_constraintTop_toTopOf="@+id/dot"
         app:unify_image_type="circle"
         tools:visibility="visible"/>

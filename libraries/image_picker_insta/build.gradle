@@ -51,8 +51,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.viewModel
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
-    implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
-    implementation projectOrAar(rootProject.ext.libraries.imagePicker)
     implementation rootProject.ext.miscDependencies.mp4Composer
     implementation rootProject.ext.miscDependencies.zoomLayout
     implementation projectOrAar(rootProject.ext.features.medialoader)
@@ -60,4 +58,5 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.imagePickerInstaCommon)
 }

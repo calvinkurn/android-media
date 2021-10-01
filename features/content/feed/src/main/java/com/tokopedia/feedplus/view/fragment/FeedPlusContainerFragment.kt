@@ -33,9 +33,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.createpost.analyics.FeedTrackerImagePickerInsta
-import com.tokopedia.createpost.view.customview.PostProgressUpdateView
-import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
+import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
+import com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
+import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.explore.view.fragment.ContentExploreFragment
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.feedplus.R
@@ -50,9 +50,9 @@ import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.imagepicker_insta.trackers.TrackerProvider
+import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
@@ -458,7 +458,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                         intent.putExtra(MAX_MULTI_SELECT_ALLOWED,
                             MAX_MULTI_SELECT_ALLOWED_VALUE)
                         intent.putExtra(TITLE,
-                            getString(com.tokopedia.createpost.createpost.R.string.feed_content_post_sebagai))
+                            getString(com.tokopedia.feedplus.R.string.feed_post_sebagai))
                         val name: String = MethodChecker.fromHtml(authors.first().name).toString()
                         intent.putExtra(SUB_TITLE, name)
                         intent.putExtra(TOOLBAR_ICON_URL,
@@ -720,7 +720,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun swipeOnPostUpdate() {
         Toaster.build(requireView(),
-            getString(com.tokopedia.createpost.createpost.R.string.feed_content_post_successful_toaster),
+            getString(com.tokopedia.feedplus.R.string.feed_post_successful_toaster),
             Toaster.LENGTH_LONG,
             Toaster.TYPE_NORMAL).show()
         mInProgress = false
@@ -730,7 +730,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         try {
             val fragment = pagerAdapter.getRegisteredFragment(view_pager.currentItem)
             if (fragment is FeedPlusFragment) {
-                fragment.onRefresh()
+                fragment.onRefreshForNewPostUpdated()
             }
         } catch (e: IllegalStateException) {
             //no op

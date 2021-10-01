@@ -5,9 +5,8 @@ import android.content.Intent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.affiliatecommon.*
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.createpost.DRAFT_ID
-import com.tokopedia.createpost.view.service.SubmitPostServiceNew
-import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
+import com.tokopedia.createpost.common.DRAFT_ID
+import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import java.util.concurrent.TimeUnit
 
 abstract class PostUpdateProgressManager(

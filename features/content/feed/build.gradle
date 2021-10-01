@@ -80,7 +80,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
-    implementation projectOrAar(rootProject.ext.libraries.imagePickerInsta)
+    implementation projectOrAar(rootProject.ext.libraries.imagePickerInstaCommon)
 
 
     implementation rootProject.ext.unifyDependencies.coach_mark
@@ -115,7 +115,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.embraceSdk
 
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
-    implementation projectOrAar(rootProject.ext.features.createpost)
+    implementation projectOrAar(rootProject.ext.features.createpostCommon)
 
 
     implementation rootProject.ext.networkDependencies.glide
@@ -129,8 +129,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
-    implementation projectOrAar(rootProject.ext.features.createpost)
-
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime

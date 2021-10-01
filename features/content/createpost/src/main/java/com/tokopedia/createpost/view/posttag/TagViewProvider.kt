@@ -1,37 +1,47 @@
 package com.tokopedia.createpost.view.posttag;
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Paint
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
+import android.os.Handler
+import android.view.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.view.listener.CreateContentPostCOmmonLIstener
-import com.tokopedia.createpost.view.viewmodel.MediaType
-import com.tokopedia.createpost.view.viewmodel.RelatedProductItem
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
+import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
+import com.tokopedia.createpost.common.view.viewmodel.MediaType
+import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
+import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import kotlin.math.abs
+import kotlin.math.ceil
+
 
 class TagViewProvider {
     var dX = 0f
     var dY = 0f
-    var listener: CreateContentPostCOmmonLIstener? = null
+    var listener: CreateContentPostCommonListener? = null
 
+    companion object {
+        private const val POINTER_HALF_DIMEN = 8
+        private const val POINTER_HEIGHT = 28
+    }
 
 
     fun getTagView(
         context: Context?,
         products: List<RelatedProductItem>,
         index: Int,
-        listener: CreateContentPostCOmmonLIstener?,
+        listener: CreateContentPostCommonListener?,
         feedXTag: FeedXMediaTagging,
+        parent: ConstraintLayout
     ): View? {
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.temp_view_tag, null)
@@ -41,35 +51,36 @@ class TagViewProvider {
         var productTagViewDelete: IconUnify = view.findViewById(R.id.product_tag_clear)
         var productTagViewDeleteRight: IconUnify = view.findViewById(R.id.product_tag_clear_right)
 
-        val (id, name, price, _, _, _, priceDiscountFmt, isDiscount) = products[index]
+        val productItem = products[index]
         this.listener = listener
-        productName.text = name
-        if (isDiscount) {
+        productName.text = productItem.name
+        productViewPrice.text = productItem.price
+        if (productItem.isDiscount) {
+            tv.text = productItem.priceOriginalFmt
             tv.visibility = View.VISIBLE
-            productViewPrice.text = priceDiscountFmt
             tv.paintFlags = tv.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         } else {
             tv.visibility = View.GONE
-            productViewPrice.text = price
         }
         productTagViewDelete.setOnClickListener {
             listener?.deleteItemFromProductTagList(
                 feedXTag.tagIndex,
-                id,
+                productItem.id,
                 true,
                 MediaType.IMAGE
             )
-            view.gone()
+            parent.removeView(view)
         }
         productTagViewDeleteRight.setOnClickListener {
             listener?.deleteItemFromProductTagList(
                 feedXTag.tagIndex,
-                id,
+                productItem.id,
                 true,
                 MediaType.IMAGE
             )
-            view.gone()
+            parent.removeView(view)
         }
+        view.tag = productItem.id
 
         return view
     }
@@ -79,19 +90,40 @@ class TagViewProvider {
         child: View,
         parent: ConstraintLayout,
         feedXMediaTagging: FeedXMediaTagging,
-        index: Int
-
+        index: Int,
+        bitmap: Bitmap,
+        mediaIndex:Int
     ) {
+        val greyAreaX = calculateGreyAreaY(parent, bitmap)
+        val greyAreaY = calculateGreyAreaX(parent, bitmap)
+
         child.visibility = View.INVISIBLE
         parent.addView(child)
         var productTagViewDelete: IconUnify = child.findViewById(R.id.product_tag_clear)
         var productTagViewDeleteRight: IconUnify = child.findViewById(R.id.product_tag_clear_right)
-        var productTagViewDeleteFinal: IconUnify = child.findViewById(R.id.product_tag_clear)
+        var productTagViewDeleteFinal: IconUnify = productTagViewDelete
+        var productTagViewTopNotch: View = child.findViewById<View>(R.id.topNotch)
+        var productTagViewBottomNotch: View = child.findViewById<View>(R.id.bottomNotch)
+        var productTagNotchViewFinal: View = productTagViewTopNotch
+        var productTopNotchVisible = true
+        var isDrag = false
+        var isLongPress = false
+
+        val handler = Handler()
+        val mLongPressed: Runnable = Runnable {
+            if (productTagViewDeleteFinal.isVisible)
+                productTagViewDeleteFinal.gone()
+            scaleUp(child)
+            isLongPress = true
+        }
+
         child.setOnTouchListener(View.OnTouchListener { view, motionEvent ->
-            var isDrag = false
             view.parent.requestDisallowInterceptTouchEvent(true)
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    isLongPress = false
+                    handler.postDelayed(mLongPressed,
+                        ViewConfiguration.getLongPressTimeout().toLong())
                     isDrag = false
                     dX = view.x - motionEvent.rawX
                     dY = view.y - motionEvent.rawY
@@ -99,13 +131,15 @@ class TagViewProvider {
                 }
 
                 MotionEvent.ACTION_MOVE -> {
+
                     isDrag = true
                     val gotoX: Float = when {
-                        (motionEvent.rawX.plus(dX) ?: 0f) + view.width > parent.right -> {
-                            parent.right - view.width.toFloat() /*Blocking right on drag*/
+                        (motionEvent.rawX.plus(dX)
+                            ?: 0f) + view.width > (parent.right - greyAreaX) -> {
+                            parent.right - greyAreaX - view.width.toFloat() /*Blocking right on drag*/
                         }
-                        motionEvent.rawX.plus(dX) ?: 0f < 0 -> {
-                            0f /*Blocking left on drag*/
+                        motionEvent.rawX.plus(dX) ?: 0f < greyAreaX -> {
+                            greyAreaX.toFloat() /*Blocking left on drag*/
                         }
                         else -> {
                             motionEvent.rawX.plus(dX) /*Normal horizontal drag*/
@@ -113,15 +147,21 @@ class TagViewProvider {
                     }
 
                     val gotoY: Float = when {
-                        motionEvent.rawY.plus(dY) < 0 -> {
-                            0f /*Blocking top on drag*/
+                        motionEvent.rawY.plus(dY) < greyAreaY -> {
+                            greyAreaY.toFloat() /*Blocking top on drag*/
                         }
-                        (motionEvent.rawY?.plus(dY) ?: 0f) + view.height > parent.bottom -> {
-                            parent.bottom - view.height.toFloat() /*Blocking bottom on drag*/
+                        (motionEvent.rawY?.plus(dY)
+                            ?: 0f) + view.height > (parent.bottom - greyAreaY) -> {
+                            parent.bottom - greyAreaY - view.height.toFloat() /*Blocking bottom on drag*/
                         }
-                        else -> {
+                        else ->
                             motionEvent.rawY.plus(dY)  /*Normal vertical drag*/
                         }
+
+                    if (gotoX - view.x > 10 && gotoY - view.y > 10) {
+                        isLongPress = false
+                        handler.removeCallbacks(
+                            mLongPressed)
                     }
 
                     view.animate()
@@ -130,46 +170,81 @@ class TagViewProvider {
                         .setDuration(0)
                         .start()
 
-                    if (view.y < parent.height * 0.75) {
-                        view.findViewById<View>(R.id.topNotch).visibility = View.VISIBLE
-                        view.findViewById<View>(R.id.bottomNotch).visibility = View.GONE
+                    val location = IntArray(2)
+                    val locationParent = IntArray(2)
+
+                    productTagNotchViewFinal.getLocationOnScreen(location)
+                    parent.getLocationOnScreen(locationParent)
+                    val pointerPositionY = (location[1] - locationParent[1]).toFloat()
+                    if (pointerPositionY < (parent.height) * 0.70) {
+                        productTopNotchVisible = true
+                        productTagViewTopNotch.visibility = View.VISIBLE
+                        productTagViewBottomNotch.visibility = View.GONE
+                        productTagNotchViewFinal = productTagViewTopNotch
+
                     } else {
-                        view.findViewById<View>(R.id.topNotch).visibility = View.GONE
-                        view.findViewById<View>(R.id.bottomNotch).visibility = View.VISIBLE
+                        productTopNotchVisible = false
+                        productTagViewBottomNotch.visibility = View.VISIBLE
+                        productTagViewTopNotch.visibility = View.GONE
+                        productTagNotchViewFinal = productTagViewBottomNotch
                     }
 
                     return@OnTouchListener true
                 }
 
                 MotionEvent.ACTION_UP -> {
-                    if (!isDrag) {
-                        if (!productTagViewDeleteFinal.isVisible) {
-                            productTagViewDeleteFinal =
-                                if (((view.parent as ConstraintLayout).right) - (view.x + view.width) > 88)
-                                    productTagViewDelete
-                                else
-                                    productTagViewDeleteRight
-                        }
+                    if (isLongPress) {
+                        scaleDown(child)
+                    }
+                    handler.removeCallbacks(
+                        mLongPressed)
 
+                    var isRightClearIconVisible = false
+                    if (!isDrag) {
                         if (productTagViewDeleteFinal.isVisible) {
                             productTagViewDeleteFinal.gone()
-                        } else {
+                        } else if (!isLongPress) {
+                            productTagViewDeleteFinal =
+                                if (((view.parent as ConstraintLayout).right) - (view.x + view.width + greyAreaX) > 88) {
+                                    isRightClearIconVisible = false
+                                    productTagViewDelete
+                                } else {
+                                    isRightClearIconVisible = true
+                                    productTagViewDeleteRight
+                                }
+
+                            val endSpace =
+                                ((view.parent as ConstraintLayout).right) - (view.x + view.width + greyAreaX)
+                            val endSpaceToBeAdded = 88 - endSpace
+                            if (isRightClearIconVisible) {
+                                view.x = view.x - endSpaceToBeAdded
+                            }
                             productTagViewDeleteFinal.visible()
                         }
                     }
 
                     val location = IntArray(2)
-                    view.findViewById<View>(R.id.topNotch).getLocationOnScreen(location)
-                    feedXMediaTagging.X =  location[0].toFloat()
-                    feedXMediaTagging.Y =  location[1].toFloat()
-                    listener?.updateTaggingInfoInViewModel(feedXMediaTagging, index)
+                    val locationParent = IntArray(2)
+                    productTagNotchViewFinal.getLocationOnScreen(location)
+                    parent.getLocationOnScreen(locationParent)
+                    feedXMediaTagging.run {
+                        X = ((location[0].toFloat() ?: 0f) + productTagNotchViewFinal.width / 2)
+                        Y = if (productTopNotchVisible)
+                            (location[1] - locationParent[1]).toFloat() ?: 0f
+                        else
+                            ((location[1] - locationParent[1]).toFloat() + productTagNotchViewFinal.height)
+                                ?: 0f
+                        posX = ceil((abs(feedXMediaTagging.X!!) / parent.width) * 1000) / 1000
+                        posY = ceil((abs(feedXMediaTagging.Y!!) / parent.height) * 1000) / 1000
+                    }
+                    listener?.updateTaggingInfoInViewModel(feedXMediaTagging, index, mediaIndex)
                 }
             }
 
             false
         })
 
-        android.os.Handler().postDelayed(Runnable {
+        Handler().postDelayed(Runnable {
             /*Handling for X position*/
             var xTapped: Float =
                 feedXMediaTagging.X?.minus(child.width / 2) ?: 0f
@@ -188,34 +263,85 @@ class TagViewProvider {
             }
 
             //Handling for negative X axis
-            if (xTapped < 0) {
-                child.x = 0f
-            } else {
-                child.x = xTapped
+            when {
+                xTapped < greyAreaX ->
+                     child.x = greyAreaX.toFloat()
+                xTapped + child.width > (parent.right - greyAreaX) ->
+                    child.x = (parent.width - greyAreaX - child.width).toFloat()
+                else -> child.x = xTapped
+
+            }
+            when {
+                yTapped < greyAreaY -> child.y = greyAreaY.toFloat()
+                yTapped + child.height > parent.bottom - greyAreaY ->
+                    child.y = (parent.bottom - greyAreaY - child.height).toFloat()
+                else -> child.y = yTapped
             }
 
-            child.y = yTapped
-            child.visibility = View.VISIBLE
+            if (child.y < (parent.height) * 0.70) {
+                productTopNotchVisible = true
+                productTagViewTopNotch.visibility = View.VISIBLE
+                productTagViewBottomNotch.visibility = View.GONE
+                productTagNotchViewFinal = productTagViewTopNotch
 
-            if (child.y < parent.height * 0.75) {
-                child.findViewById<View>(R.id.topNotch).visibility = View.VISIBLE
-                child.findViewById<View>(R.id.bottomNotch).visibility = View.GONE
             } else {
-                child.findViewById<View>(R.id.topNotch).visibility = View.GONE
-                child.findViewById<View>(R.id.bottomNotch).visibility = View.VISIBLE
+                productTopNotchVisible = false
+                productTagViewBottomNotch.visibility = View.VISIBLE
+                productTagViewTopNotch.visibility = View.GONE
+                productTagNotchViewFinal = productTagViewBottomNotch
             }
 
         }, 50)
 
-     listener?.updateTaggingInfoInViewModel(feedXMediaTagging, index)
+        child.visibility = View.VISIBLE
+
+
+        listener?.updateTaggingInfoInViewModel(feedXMediaTagging, index, mediaIndex)
 
     }
 
-    fun dpFromPx(context: Context, px: Float): Float {
-        return px / context.resources.displayMetrics.density
+    private fun scaleUp(view: View) {
+        val scaleDownX2 = ObjectAnimator.ofFloat(
+            view, ConstraintLayout.SCALE_X, 1.05f)
+        val scaleDownY2 = ObjectAnimator.ofFloat(
+            view, ConstraintLayout.SCALE_Y, 1.05f)
+        scaleDownX2.duration = 150
+        scaleDownY2.duration = 150
+
+        val scaleDown2 = AnimatorSet()
+        scaleDown2.play(scaleDownX2).with(scaleDownY2)
+
+        scaleDown2.start()
+
     }
 
-    fun pxFromDp(context: Context, dp: Float): Float {
-        return dp * context.resources.displayMetrics.density
+    private fun scaleDown(view: View) {
+        val scaleDownX = ObjectAnimator.ofFloat(view,
+            ConstraintLayout.SCALE_X, 1f)
+        val scaleDownY = ObjectAnimator.ofFloat(view,
+            ConstraintLayout.SCALE_Y, 1f)
+        scaleDownX.duration = 150
+        scaleDownY.duration = 150
+
+        val scaleDown = AnimatorSet()
+        scaleDown.play(scaleDownX).with(scaleDownY)
+        scaleDown.start()
+    }
+
+
+    private fun calculateGreyAreaX(parent: ConstraintLayout, bitmap: Bitmap): Int {
+        return if (bitmap.width > bitmap.height) {
+            val newBitmapHeight = (parent.height * bitmap.height) / bitmap.width
+            (parent.height - newBitmapHeight) / 2
+        } else
+            0
+    }
+
+    private fun calculateGreyAreaY(parent: ConstraintLayout, bitmap: Bitmap): Int {
+        return if (bitmap.height > bitmap.width) {
+            val newBitmapHeight = (parent.width * bitmap.width) / bitmap.height
+            (parent.width - newBitmapHeight) / 2
+        } else
+            0
     }
 }

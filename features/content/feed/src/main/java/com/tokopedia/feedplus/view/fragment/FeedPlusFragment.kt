@@ -34,11 +34,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.createpost.view.activity.CreatePostActivityNew
-import com.tokopedia.createpost.view.customview.PostProgressUpdateView
-import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
+import com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
+import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
@@ -211,6 +211,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private var isUserEventTrackerDoneOnResume = false
     private var isFeedPageShown = false
+    private var isRefreshForPostCOntentCreation = false
 
     private lateinit var shareData: LinkerData
     private lateinit var reportBottomSheet: ReportBottomSheet
@@ -756,6 +757,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedViewModel.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS)
         afterRefresh = true
         TopAdsHeadlineActivityCounter.page = 1
+    }
+
+    fun onRefreshForNewPostUpdated() {
+        feedViewModel.getFeedFirstPage()
+        isRefreshForPostCOntentCreation = true
     }
 
     override fun onDestroyView() {
@@ -1639,8 +1645,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         var createPostViewModel = CreatePostViewModel()
         createPostViewModel.caption = caption
         createPostViewModel.postId = postId
-        val intent = CreatePostActivityNew.createIntent(requireContext(), createPostViewModel,
-            TYPE_CONTENT_PREVIEW_PAGE)
+
+        val intent = RouteManager.getIntent(context,INTERNAL_AFFILIATE_CREATE_POST_V2)
+        intent.putExtra("author_type",TYPE_CONTENT_PREVIEW_PAGE)
+        intent.putExtra(CreatePostViewModel.TAG,createPostViewModel)
         startActivity(intent)
     }
 
@@ -2373,6 +2381,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun onSuccessGetFirstFeed(firstPageDomainModel: DynamicFeedFirstPageDomainModel) {
         if (!firstPageDomainModel.shouldOverwrite) {
             adapter.updateList(firstPageDomainModel.dynamicFeedDomainModel.postList)
+            return
+        }
+        if (isRefreshForPostCOntentCreation) {
+            isRefreshForPostCOntentCreation = false
+            adapter.addListItemAtTop(firstPageDomainModel.dynamicFeedDomainModel.postList[1])
             return
         }
 

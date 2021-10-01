@@ -5,7 +5,7 @@ import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics
-import com.tokopedia.createpost.analyics.CreatePostAnalytics
+import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.data.pojo.uploadimage.UploadImageResponse
 import com.tokopedia.createpost.view.contract.CreatePostContract
 import com.tokopedia.createpost.view.presenter.CreatePostPresenter

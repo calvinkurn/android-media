@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
+import com.tokopedia.createpost.common.view.plist.*
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -13,7 +14,7 @@ import kotlinx.android.synthetic.main.bs_shop_page_plist_sort.view.*
 import java.util.*
 import android.view.LayoutInflater as LayoutInflater1
 
-class ShopPListSortFilterBs(val vm: ShopPageProductListViewModel, val listener: ShopPageListener,   var sortListItems: List<ShopPagePListSortItem>) : BottomSheetUnify() {
+class ShopPListSortFilterBs(val vm: ShopPageProductListViewModel, val listener: ShopPageListener, var sortListItems: List<ShopPagePListSortItem>) : BottomSheetUnify() {
 
     private var rvSort: ListUnify? = null
     var positionSort = 0

@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/Unify_NN100"
     android:layout_height="wrap_content"
     >
 
@@ -18,7 +19,7 @@
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/contentVideoPreviewImage"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="383dp"
             android:scaleType="centerInside"
             app:unify_image_corner_radius="0"
             android:src="@color/transparent"
@@ -75,7 +76,7 @@
         <com.google.android.exoplayer2.ui.PlayerView
             android:id="@+id/feed_content_layout_video"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="383dp"
             app:resize_mode="fixed_width"
             app:show_timeout="3000"
             app:shutter_background_color="@android:color/transparent"
