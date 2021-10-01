@@ -5,107 +5,107 @@
     android:layout_height="wrap_content">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_number_one"
+        android:id="@+id/pdp_tokomart_icon_number_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="22dp"
         android:layout_marginTop="8dp"
-        android:src="@drawable/tokopedianow_ic_educational_information_one_bottomsheet"
+        android:src="@drawable/ic_tokomart_educational_information_number_1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tp_two_hours"
+        android:id="@+id/pdp_tokomart_text_1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/iv_number_one"
-        app:layout_constraintTop_toTopOf="@+id/iv_number_one"
+        app:layout_constraintStart_toEndOf="@+id/pdp_tokomart_icon_number_1"
+        app:layout_constraintTop_toTopOf="@+id/pdp_tokomart_icon_number_1"
         app:typographyType="body_3" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_number_two"
+        android:id="@+id/pdp_tokomart_icon_number_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="22dp"
         android:layout_marginTop="16dp"
-        android:src="@drawable/tokopedianow_ic_educational_information_two_bottomsheet"
+        android:src="@drawable/ic_tokomart_educational_information_number_2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tp_two_hours" />
+        app:layout_constraintTop_toBottomOf="@+id/pdp_tokomart_text_1" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tp_stock_available"
+        android:id="@+id/pdp_tokomart_text_2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
         android:paddingTop="-5dp"
         android:textColor="@color/Unify_NN600"
-        app:typographyType="body_3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/iv_number_two"
-        app:layout_constraintTop_toTopOf="@+id/iv_number_two" />
+        app:layout_constraintStart_toEndOf="@+id/pdp_tokomart_icon_number_2"
+        app:layout_constraintTop_toTopOf="@+id/pdp_tokomart_icon_number_2"
+        app:typographyType="body_3" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_number_three"
+        android:id="@+id/pdp_tokomart_icon_number_3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="22dp"
         android:layout_marginTop="16dp"
-        android:src="@drawable/tokopedianow_ic_educational_information_three_bottomsheet"
+        android:src="@drawable/ic_tokomart_educational_information_number_3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tp_stock_available" />
+        app:layout_constraintTop_toBottomOf="@+id/pdp_tokomart_text_2" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tp_guaranteed_quality"
+        android:id="@+id/pdp_tokomart_text_3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
         android:textColor="@color/Unify_NN600"
-        app:typographyType="body_3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/iv_number_three"
-        app:layout_constraintTop_toTopOf="@+id/iv_number_three" />
+        app:layout_constraintStart_toEndOf="@+id/pdp_tokomart_icon_number_3"
+        app:layout_constraintTop_toTopOf="@+id/pdp_tokomart_icon_number_3"
+        app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tp_twenty_four_hours"
+        android:id="@+id/pdp_tokomart_text_4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:textColor="@color/Unify_NN600"
-        app:typographyType="body_3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tp_guaranteed_quality" />
+        app:layout_constraintTop_toBottomOf="@+id/pdp_tokomart_text_3"
+        app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tp_terms_and_conditions"
+        android:id="@+id/pdp_tokomart_text_5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:textColor="@color/Unify_NN600"
-        app:typographyType="body_3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tp_twenty_four_hours" />
+        app:layout_constraintTop_toBottomOf="@+id/pdp_tokomart_text_4"
+        app:typographyType="body_3" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_background_image"
+        android:id="@+id/pdp_tokomart_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:adjustViewBounds="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tp_terms_and_conditions" />
+        app:layout_constraintTop_toBottomOf="@+id/pdp_tokomart_text_5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
