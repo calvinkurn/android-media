@@ -2,7 +2,6 @@ package com.tokopedia.updateinactivephone.features
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -71,10 +70,9 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
         }
 
         if (isVersionValid()) {
-            viewModel.userValidation(
-                inactivePhoneUserDataModel?.oldPhoneNumber.orEmpty(),
-                inactivePhoneUserDataModel?.email.orEmpty()
-            )
+            inactivePhoneUserDataModel?.let {
+                viewModel.userValidation(it)
+            }
         }
     }
 
@@ -83,11 +81,7 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
             when (it) {
                 is Success -> {
                     if (it.data.validation.status == InactivePhoneConstant.STATUS_SUCCESS) {
-                        inactivePhoneUserDataModel?.userIndex = 1
-                        isHasEmailAndPin(
-                            inactivePhoneUserDataModel?.email,
-                            inactivePhoneUserDataModel?.oldPhoneNumber,
-                            0)
+                        isHasEmailAndPin()
                     } else if (it.data.validation.status == InactivePhoneConstant.STATUS_MULTIPLE_ACCOUNT) {
                         gotoChoseAccount(inactivePhoneUserDataModel?.oldPhoneNumber.orEmpty())
                     }
@@ -117,11 +111,7 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
                     data?.extras?.let {
                         it.getParcelable<AccountListDataModel.UserDetailDataModel>(InactivePhoneConstant.PARAM_USER_DETAIL_DATA)?.let { userDetail ->
                             inactivePhoneUserDataModel?.userIndex = userDetail.index
-                            isHasEmailAndPin(
-                                inactivePhoneUserDataModel?.email,
-                                inactivePhoneUserDataModel?.oldPhoneNumber,
-                                inactivePhoneUserDataModel?.userIndex
-                            )
+                            isHasEmailAndPin()
                         }
                     }
                 } else {
@@ -134,12 +124,10 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
         }
     }
 
-    private fun isHasEmailAndPin(email: String?, phone: String?, index: Int?) {
-        viewModel.getStatusPhoneNumber(
-            email.orEmpty(),
-            phone.orEmpty(),
-            index.orZero()
-        )
+    private fun isHasEmailAndPin() {
+        inactivePhoneUserDataModel?.let {
+            viewModel.getStatusPhoneNumber(it)
+        }
     }
 
     private fun onSuccessGetStatus(statusInactivePhoneNumberDataModel: StatusInactivePhoneNumberDataModel) {
@@ -152,6 +140,7 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
                 userIndex = inactivePhoneUserDataModel?.userIndex.orZero()
             ))
         } else {
+            inactivePhoneUserDataModel?.userIndex = 1
             gotoRegularRegularFlow()
         }
     }
@@ -187,7 +176,6 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
                 return false
             }
         }
-
         return true
     }
 
@@ -241,9 +229,5 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
 
         private const val KEY_MINIMUM_VERSION_CUSTOMER = "key_android_inactive_phone_minimum_version_customer"
         private const val KEY_MINIMUM_VERSION_SELLER = "key_android_inactive_phone_minimum_version_seller"
-
-        fun getIntent(context: Context): Intent {
-            return Intent(context, InactivePhoneActivity::class.java)
-        }
     }
 }

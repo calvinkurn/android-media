@@ -75,16 +75,9 @@ class RegularSuccessPageGeneralTest : BaseSuccessPageTest() {
 
     @Test
     fun click_on_button_goto_home() {
-        val query = listOf(createQueryMap(
-            InactivePhoneTracker.Companion.EVENT.CLICK_UBAH_NOMOR_HP,
-            InactivePhoneTracker.Companion.CATEGORY.UBAH_NOMOR_HP,
-            InactivePhoneTracker.Companion.ACTION.CLICK_BUTTON_GOTO_HOME,
-            InactivePhoneTracker.Companion.LABEL.EMPTY
-        ))
-
         runTest(source = "") {
             clickOnGotoHomeButton()
-            checkTracker(query)
+            checkTracker()
         }
     }
 }

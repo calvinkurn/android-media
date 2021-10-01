@@ -47,10 +47,10 @@ open class InactivePhoneEmailVerificationFragment : VerificationFragment() {
     }
 
     override fun setFooterText(spannable: Spannable?) {
-        super.setFooterText(getPEmailFooterSpan())
+        super.setFooterText(getEmailFooterSpan())
     }
 
-    private fun getPEmailFooterSpan(): SpannableString {
+    private fun getEmailFooterSpan(): SpannableString {
         val msgMeta = context?.getString(R.string.inactive_phone_text_footer_email_challenge_meta).orEmpty()
         val msgAction = context?.getString(R.string.inactive_phone_text_footer_email_challenge_action).orEmpty()
 
@@ -59,6 +59,7 @@ open class InactivePhoneEmailVerificationFragment : VerificationFragment() {
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
                         viewModel.done = true
+                        analytics.trackClickRequestChangePhoneNumberOnPin()
                         gotoRegularFlow()
                     }
 

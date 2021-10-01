@@ -2,6 +2,7 @@ package com.tokopedia.updateinactivephone.common.viewaction
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
@@ -72,6 +73,11 @@ fun assertRecyclerViewItem(resId: Int, matcher: Matcher<in View>) {
 fun setText(resId: Int, text: String) {
     onView(withId(resId))
         .perform(typeText(text), closeSoftKeyboard())
+}
+
+fun simulateOnBackPressed() {
+    Thread.sleep(2000)
+    Espresso.pressBackUnconditionally()
 }
 
 

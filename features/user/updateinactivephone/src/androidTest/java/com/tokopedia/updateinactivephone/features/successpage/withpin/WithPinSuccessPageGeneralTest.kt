@@ -40,16 +40,9 @@ class WithPinSuccessPageGeneralTest : BaseSuccessPageTest() {
 
     @Test
     fun click_on_button_goto_home() {
-        val query = listOf(createQueryMap(
-            InactivePhoneWithPinTracker.Companion.Event.CLICK_INACTIVE_PHONE_NUMBER,
-            InactivePhoneWithPinTracker.Companion.Category.INACTIVE_PHONE_PAGE,
-            InactivePhoneWithPinTracker.Companion.Action.CLICK_ON_BUTTON_HOME,
-            InactivePhoneWithPinTracker.Companion.Label.EMPTY
-        ))
-
         runTest(source = InactivePhoneConstant.EXPEDITED) {
             clickOnGotoHomeButton()
-            checkTracker(query)
+            checkTracker()
         }
     }
 }

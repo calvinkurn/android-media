@@ -30,7 +30,7 @@ class FakeInactivePhoneDependency {
     var statusInactivePhoneNumberDataModel = StatusInactivePhoneNumberDataModel()
     var phoneValidationDataModel = PhoneValidationDataModel()
     var inactivePhoneSubmitDataModel = InactivePhoneSubmitDataModel()
-    var submitExpeditedInactivePhoneDataModel = SubmitExpeditedInactivePhoneDataModel()
+    var submitExpeditedInactivePhoneDataModel = SubmitExpeditedDataModel()
 
     /*
      * Default response = success response
@@ -58,7 +58,7 @@ class FakeInactivePhoneDependency {
 
         submitExpeditedInactivePhoneDataModel = AndroidFileUtil.parseRaw(
             R.raw.submit_expedited_inactive_phone,
-            SubmitExpeditedInactivePhoneDataModel::class.java
+            SubmitExpeditedDataModel::class.java
         )
     }
 }

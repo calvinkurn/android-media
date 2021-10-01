@@ -5,7 +5,7 @@ import com.tokopedia.updateinactivephone.features.submitnewphone.withpin.Inactiv
 
 class InactivePhoneSubmitNewPhoneFragmentStub : InactivePhoneSubmitNewPhoneFragment() {
 
-    override fun gotoPhoneVerification() {
+    override fun gotoValidateNewPhoneNumber() {
 
     }
 

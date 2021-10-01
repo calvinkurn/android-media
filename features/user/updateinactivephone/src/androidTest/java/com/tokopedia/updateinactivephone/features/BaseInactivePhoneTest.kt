@@ -20,7 +20,7 @@ import org.junit.Rule
 abstract class BaseInactivePhoneTest {
 
     @get:Rule
-    var cassavaTestRule = CassavaTestRule()
+    var cassavaTestRule = CassavaTestRule(isFromNetwork = true)
 
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
     protected val applicationContext: Context
@@ -54,32 +54,14 @@ abstract class BaseInactivePhoneTest {
         test.invoke()
     }
 
-    protected fun checkTracker(path: String, sleepTime: Long = 6000L) {
+    protected fun checkTracker(path: String = THANOS_JOURNEY_LIST_ID, sleepTime: Long = 6000L) {
         Thread.sleep(sleepTime)
         assertThat(cassavaTestRule.validate(path), hasAllSuccess())
     }
 
-    protected fun checkTracker(queryList: List<Map<String, Any>>, sleepTime: Long = 6000L) {
-        Thread.sleep(sleepTime)
-        assertThat(cassavaTestRule.validate(queryList, CassavaTestRule.MODE_SUBSET), hasAllSuccess())
-    }
-
-    protected fun createQueryMap(
-        event: String,
-        category: String,
-        action: String,
-        label: String,
-    ): Map<String, String> {
-        return mapOf(
-            "event" to event,
-            "eventCategory" to category,
-            "eventAction" to action,
-            "eventLabel" to label
-        )
-    }
-
     companion object {
         private const val RESOURCE = "global"
+        private const val THANOS_JOURNEY_LIST_ID = "58"
         var baseAppComponent: FakeBaseAppComponent? = null
         var inactivePhoneComponent: InactivePhoneComponentStub? = null
     }

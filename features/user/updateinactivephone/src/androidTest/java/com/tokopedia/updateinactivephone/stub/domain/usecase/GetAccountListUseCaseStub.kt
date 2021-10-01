@@ -14,7 +14,7 @@ class GetAccountListUseCaseStub @Inject constructor(
 
     var response = AccountListDataModel()
 
-    override suspend fun execute(params: Map<String, Any>): AccountListDataModel {
+    override suspend fun execute(params: String): AccountListDataModel {
         return response
     }
 }

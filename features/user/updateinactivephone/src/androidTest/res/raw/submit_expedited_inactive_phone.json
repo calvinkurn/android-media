@@ -1,6 +1,6 @@
 {
     "SubmitExpeditedInactivePhone": {
-        "message_error": "",
-        "is_success": true
+        "message_error": [],
+        "is_success": 1
     }
 }

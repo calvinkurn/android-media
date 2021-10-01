@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.updateinactivephone.domain.data.InactivePhoneSubmitDataModel
+import com.tokopedia.updateinactivephone.domain.usecase.SubmitDataModel
 import com.tokopedia.updateinactivephone.domain.usecase.SubmitDataUseCase
 import javax.inject.Inject
 
@@ -14,7 +15,7 @@ class SubmitDataUseCaseStub @Inject constructor(
 
     var response = InactivePhoneSubmitDataModel()
 
-    override suspend fun execute(params: Map<String, Any>): InactivePhoneSubmitDataModel {
+    override suspend fun execute(params: SubmitDataModel): InactivePhoneSubmitDataModel {
         return response
     }
 }

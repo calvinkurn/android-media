@@ -69,4 +69,13 @@ class InactivePhoneUseCaseModule {
         return SubmitExpeditedInactivePhoneUseCase(repository, dispatchers)
     }
 
+    @ActivityScope
+    @Provides
+    fun provideVerifyNewPhoneUseCase(
+        repository: GraphqlRepository,
+        dispatchers: CoroutineDispatchers
+    ): VerifyNewPhoneUseCase {
+        return VerifyNewPhoneUseCase(repository, dispatchers)
+    }
+
 }

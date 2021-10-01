@@ -1,9 +1,6 @@
 package com.tokopedia.updateinactivephone.features.submitnewphone
 
-import com.tokopedia.updateinactivephone.common.viewaction.clickOnButton
-import com.tokopedia.updateinactivephone.common.viewaction.isDisplayed
-import com.tokopedia.updateinactivephone.common.viewaction.scrollToView
-import com.tokopedia.updateinactivephone.common.viewaction.setText
+import com.tokopedia.updateinactivephone.common.viewaction.*
 import com.tokopedia.updateinactivephone.test.R
 
 object SubmitDataViewAction {
@@ -24,5 +21,17 @@ object SubmitDataViewAction {
     fun clickOnButtonSubmit() {
         scrollToView(R.id.button_next)
         clickOnButton(R.id.button_next)
+    }
+
+    fun checkPopupIsDisplayed() {
+        isTextDisplayed("Keluar dari halaman ini?")
+    }
+
+    fun clickOnButtonExitPopup() {
+        clickOnButtonWithText("Keluar")
+    }
+
+    fun clickOnButtonLanjutVerifikasi() {
+        clickOnButtonWithText("Lanjut Verifikasi")
     }
 }

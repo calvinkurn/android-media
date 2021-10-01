@@ -5,6 +5,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.domain.data.GetStatusInactivePhoneNumber
+import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
 import com.tokopedia.updateinactivephone.domain.data.PhoneValidationDataModel
 import com.tokopedia.updateinactivephone.domain.data.StatusInactivePhoneNumberDataModel
 import com.tokopedia.updateinactivephone.domain.usecase.GetStatusInactivePhoneNumberUseCase
@@ -34,71 +35,88 @@ class InactivePhoneViewModelTest {
     val observerPhoneValidation = mockk<Observer<Result<PhoneValidationDataModel>>>(relaxed = true)
     val observerGetStatusInactivePhoneNumber = mockk<Observer<Result<StatusInactivePhoneNumberDataModel>>>(relaxed = true)
 
-    lateinit var viewModel: InactivePhoneViewModel
-
-    var phoneNumber = "62800000000000"
-    var email = "account@test.com"
-    var userIndex = 1
-    val mockThrowable = Throwable("Opss!")
+    private var viewModel: InactivePhoneViewModel? = null
+    private val inactivePhoneUserDataModel = InactivePhoneUserDataModel(
+        email = "rivaldy.firmansyah@gmail.com",
+        oldPhoneNumber = "084444123123",
+        newPhoneNumber = "084444123456",
+        userIndex = 1,
+        userIdEnc = "#EncryptedUserId",
+        validateToken = "#UserToken"
+    )
 
     @Before
     fun setup() {
         viewModel = InactivePhoneViewModel(phoneValidationUseCase, getStatusInactivePhoneNumberUseCase, dispatcherProviderTest)
-        viewModel.phoneValidation.observeForever(observerPhoneValidation)
-        viewModel.getStatusPhoneNumber.observeForever(observerGetStatusInactivePhoneNumber)
+        viewModel?.phoneValidation?.observeForever(observerPhoneValidation)
+        viewModel?.getStatusPhoneNumber?.observeForever(observerGetStatusInactivePhoneNumber)
     }
 
     @After
     fun tearDown() {
-        viewModel.phoneValidation.removeObserver(observerPhoneValidation)
-        viewModel.getStatusPhoneNumber.removeObserver(observerGetStatusInactivePhoneNumber)
+        viewModel?.phoneValidation?.removeObserver(observerPhoneValidation)
+        viewModel?.getStatusPhoneNumber?.removeObserver(observerGetStatusInactivePhoneNumber)
     }
 
     @Test
     fun `Validate Phone Number - Success`() {
-        assert(viewModel.isValidPhoneNumber("089683321123"))
+        assert(viewModel?.isValidPhoneNumber("089683321123") == true)
+    }
+
+    @Test
+    fun `Validate Phone Number - empty number`() {
+        assert(viewModel?.isValidPhoneNumber("") == true)
     }
 
     @Test
     fun `Validate Phone Number - Error invalid phone format`() {
-        viewModel.isValidPhoneNumber("NOMOR")
+        val isValid = viewModel?.isValidPhoneNumber("NOMOR")
 
         verify {
             observerPhoneValidation.onChanged(any())
         }
 
-        assert(viewModel.phoneValidation.value is Fail)
+        assert(viewModel?.phoneValidation?.value is Fail)
 
-        val result = viewModel.phoneValidation.value as Fail
+        val result = viewModel?.phoneValidation?.value as Fail
         assertEquals(result.throwable.message, InactivePhoneConstant.ERROR_INVALID_PHONE_NUMBER)
+        if (isValid != null) {
+            assert(!isValid)
+        }
     }
 
     @Test
     fun `Validate Phone Number - Error exceed max`() {
-        viewModel.isValidPhoneNumber("12345678900987654321")
+        val isValid = viewModel?.isValidPhoneNumber("12345678900987654321")
 
         verify {
             observerPhoneValidation.onChanged(any())
         }
 
-        assert(viewModel.phoneValidation.value is Fail)
+        assert(viewModel?.phoneValidation?.value is Fail)
 
-        val result = viewModel.phoneValidation.value as Fail
+        val result = viewModel?.phoneValidation?.value as Fail
         assertEquals(result.throwable.message, InactivePhoneConstant.ERROR_PHONE_NUMBER_MAX)
+        if (isValid != null) {
+            assert(!isValid)
+        }
     }
 
     @Test
     fun `Validate Phone Number - Error less than min`() {
-        viewModel.isValidPhoneNumber("123")
+        val isValid = viewModel?.isValidPhoneNumber("08444412")
 
         verify {
             observerPhoneValidation.onChanged(any())
         }
 
-        assert(viewModel.phoneValidation.value is Fail)
+        assert(viewModel?.phoneValidation?.value is Fail)
 
-        val result = viewModel.phoneValidation.value as Fail
+        val result = viewModel?.phoneValidation?.value as Fail
         assertEquals(result.throwable.message, InactivePhoneConstant.ERROR_PHONE_NUMBER_MIN)
+        if (isValid != null) {
+            assert(!isValid)
+        }
     }
 
     @Test
@@ -109,15 +127,15 @@ class InactivePhoneViewModelTest {
             phoneValidationUseCase(any())
         } returns mockResponse
 
-        viewModel.userValidation(phoneNumber, email)
+        viewModel?.userValidation(inactivePhoneUserDataModel)
 
         verify {
             observerPhoneValidation.onChanged(any())
         }
 
-        assert(viewModel.phoneValidation.value is Success)
+        assert(viewModel?.phoneValidation?.value is Success)
 
-        val result = viewModel.phoneValidation.value as Success
+        val result = viewModel?.phoneValidation?.value as Success
         assert(result.data.validation.isSuccess)
     }
 
@@ -129,15 +147,15 @@ class InactivePhoneViewModelTest {
             phoneValidationUseCase(any())
         } returns mockResponse
 
-        viewModel.userValidation(phoneNumber, email)
+        viewModel?.userValidation(inactivePhoneUserDataModel)
 
         verify {
             observerPhoneValidation.onChanged(any())
         }
 
-        assert(viewModel.phoneValidation.value is Success)
+        assert(viewModel?.phoneValidation?.value is Success)
 
-        val result = viewModel.phoneValidation.value as Success
+        val result = viewModel?.phoneValidation?.value as Success
         assert(!result.data.validation.isSuccess)
     }
 
@@ -156,13 +174,13 @@ class InactivePhoneViewModelTest {
             getStatusInactivePhoneNumberUseCase(any())
         } returns mockResponse
 
-        viewModel.getStatusPhoneNumber(email, phoneNumber, userIndex)
+        viewModel?.getStatusPhoneNumber(inactivePhoneUserDataModel)
 
         coVerify {
             observerGetStatusInactivePhoneNumber.onChanged(expectedValue)
         }
 
-        assertEquals(viewModel.getStatusPhoneNumber.value, expectedValue)
+        assertEquals(viewModel?.getStatusPhoneNumber?.value, expectedValue)
     }
 
     @Test
@@ -180,15 +198,15 @@ class InactivePhoneViewModelTest {
             getStatusInactivePhoneNumberUseCase(any())
         } returns mockResponse
 
-        viewModel.getStatusPhoneNumber(email, phoneNumber, userIndex)
+        viewModel?.getStatusPhoneNumber(inactivePhoneUserDataModel)
 
         coVerify {
             observerGetStatusInactivePhoneNumber.onChanged(expectedValue)
         }
 
-        assertEquals(viewModel.getStatusPhoneNumber.value, expectedValue)
+        assertEquals(viewModel?.getStatusPhoneNumber?.value, expectedValue)
 
-        val result = viewModel.getStatusPhoneNumber.value as Success
+        val result = viewModel?.getStatusPhoneNumber?.value as Success
         assert(!result.data.statusInactivePhoneNumber.isSuccess)
         assert(!result.data.statusInactivePhoneNumber.isAllowed)
     }

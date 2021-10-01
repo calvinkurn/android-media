@@ -48,9 +48,11 @@ abstract class BaseInactivePhoneSubmitDataFragment : BaseDaggerFragment() {
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        InactivePhoneComponentBuilder
-            .getComponent(requireContext())
-            .inject(this)
+        activity?.application?.let {
+            InactivePhoneComponentBuilder
+                .getComponent(it)
+                .inject(this)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -71,11 +73,6 @@ abstract class BaseInactivePhoneSubmitDataFragment : BaseDaggerFragment() {
         viewBinding?.buttonNext?.setOnClickListener {
             onSubmit()
         }
-    }
-
-    override fun onFragmentBackPressed(): Boolean {
-        dialogOnBackPressed()
-        return true
     }
 
     open fun gotoSuccessPage() {

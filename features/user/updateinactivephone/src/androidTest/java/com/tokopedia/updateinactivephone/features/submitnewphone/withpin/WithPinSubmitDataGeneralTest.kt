@@ -1,7 +1,9 @@
 package com.tokopedia.updateinactivephone.features.submitnewphone.withpin
 
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
+import com.tokopedia.updateinactivephone.common.viewaction.simulateOnBackPressed
 import com.tokopedia.updateinactivephone.features.submitnewphone.BaseSubmitDataTest
+import com.tokopedia.updateinactivephone.features.submitnewphone.SubmitDataViewAction.checkPopupIsDisplayed
 import com.tokopedia.updateinactivephone.features.submitnewphone.SubmitDataViewAction.checkSubmitDataPageDisplayed
 import com.tokopedia.updateinactivephone.features.submitnewphone.SubmitDataViewAction.clickOnButtonSubmit
 import com.tokopedia.updateinactivephone.features.submitnewphone.SubmitDataViewAction.setPhoneNumberText
@@ -39,6 +41,33 @@ class WithPinSubmitDataGeneralTest: BaseSubmitDataTest() {
         runTest(source = InactivePhoneConstant.EXPEDITED) {
             setPhoneNumberText(phone)
             clickOnButtonSubmit()
+        }
+    }
+
+    @Test
+    fun open_popup() {
+        runTest {
+            simulateOnBackPressed()
+            checkPopupIsDisplayed()
+            checkTracker()
+        }
+    }
+
+    @Test
+    fun on_click_exit_popup() {
+        runTest {
+            simulateOnBackPressed()
+            checkPopupIsDisplayed()
+            checkTracker()
+        }
+    }
+
+    @Test
+    fun on_click_lanjut_verifikasi() {
+        runTest {
+            simulateOnBackPressed()
+            checkPopupIsDisplayed()
+            checkTracker()
         }
     }
 }

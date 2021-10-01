@@ -51,6 +51,7 @@ open class InactivePhonePinVerificationFragment : VerificationFragment() {
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
                         viewModel.done = true
+                        analytics.trackClickRequestChangePhoneNumberOnPin()
                         gotoRegularFlow()
                     }
 

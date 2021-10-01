@@ -31,8 +31,8 @@ object OtpConstant {
         const val AFTER_LOGIN_PHONE = 148
         const val RESET_PIN = 149
 
-        const val INACTIVE_PHONE_VERIFY_PIN = 160
-        const val INACTIVE_PHONE_VERIFY_EMAIL = 161
+        const val INACTIVE_PHONE_VERIFY_EMAIL = 160
+        const val INACTIVE_PHONE_VERIFY_PIN = 161
         const val INACTIVE_PHONE_VERIFY_NEW_PHONE = 162
     }
 }

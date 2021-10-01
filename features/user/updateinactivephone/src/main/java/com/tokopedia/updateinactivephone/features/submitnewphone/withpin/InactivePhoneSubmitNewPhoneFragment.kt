@@ -7,12 +7,12 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.SOURCE_INACTIVE_PHONE
-import com.tokopedia.updateinactivephone.common.utils.getValidEmail
+import com.tokopedia.updateinactivephone.domain.data.VerifyNewPhoneDataModel
 import com.tokopedia.updateinactivephone.features.onboarding.withpin.InactivePhoneWithPinActivity
 import com.tokopedia.updateinactivephone.features.submitnewphone.BaseInactivePhoneSubmitDataFragment
 import com.tokopedia.usecase.coroutines.Fail
@@ -33,16 +33,32 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
         })
 
         viewModel.submitDataExpedited.observe(viewLifecycleOwner, {
+            hideLoading()
             when (it) {
                 is Success -> {
-                    if (it.data.isSuccess) {
+                    if (it.data.submit.isSuccess == STATUS_OK) {
                         onSuccessSubmitNewPhoneNumber()
                     } else {
-                        onFailedSubmitNewPhoneNumber(Throwable(it.data.errorMessage))
+                        val errors = it.data.submit.errorMessage
+                        if (errors.isNullOrEmpty()) {
+                            onFailedSubmitNewPhoneNumber(Throwable(it.data.submit.errorMessage.first()))
+                        }
                     }
                 }
                 is Fail -> {
                     onFailedSubmitNewPhoneNumber(it.throwable)
+                }
+            }
+        })
+
+        viewModel.verifyNewPhone.observe(viewLifecycleOwner, {
+            hideLoading()
+            when (it) {
+                is Success -> {
+                    onSuccessVerificationNewPhone(it.data)
+                }
+                is Fail -> {
+                    onFailedVerificationNewPhone(it.throwable)
                 }
             }
         })
@@ -62,11 +78,9 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
         if (isPhoneValid()) {
             showLoading()
 
-            viewModel.userValidation(
-                inactivePhoneUserDataModel?.oldPhoneNumber.orEmpty(),
-                inactivePhoneUserDataModel?.email?.getValidEmail().orEmpty(),
-                inactivePhoneUserDataModel?.userIndex.orZero()
-            )
+            inactivePhoneUserDataModel?.let {
+                viewModel.userValidation(it)
+            }
         }
     }
 
@@ -75,54 +89,71 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
             REQUEST_CODE_PHONE_VERIFICATION -> {
                 hideLoading()
                 if (resultCode == Activity.RESULT_OK) {
-                    onSuccessVerificationNewPhone()
-                } else {
-                    onFailedVerificationNewPhone()
+                    onSuccessValidatePhoneNumber()
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
-    private fun onSuccessPhoneValidation() {
-        inactivePhoneUserDataModel?.newPhoneNumber = viewBinding?.textPhoneNumber?.text.orEmpty()
+    override fun onFragmentBackPressed(): Boolean {
+        trackerWithPin.clickOnButtonBackAddNewPhone()
+        dialogOnBackPressed()
+        return true
+    }
 
-        viewModel.submitNewPhoneNumber(
-            inactivePhoneUserDataModel?.userIdEnc.orEmpty(),
-            inactivePhoneUserDataModel?.validateToken.orEmpty(),
-            inactivePhoneUserDataModel?.newPhoneNumber.toString()
-        )
+    private fun onSuccessPhoneValidation() {
+        inactivePhoneUserDataModel?.let {
+            it.newPhoneNumber = viewBinding?.textPhoneNumber?.text.orEmpty()
+            viewModel.submitNewPhoneNumber(it)
+        }
     }
 
     private fun onFailedPhoneValidation(throwable: Throwable) {
+        val message = ErrorHandler.getErrorMessage(requireContext(), throwable)
         view?.let {
-            Toaster.build(it, throwable.message.toString(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 
     private fun onSuccessSubmitNewPhoneNumber() {
         trackerWithPin.onSuccessSubmitNewPhone()
-        gotoPhoneVerification()
+        gotoValidateNewPhoneNumber()
     }
 
     private fun onFailedSubmitNewPhoneNumber(throwable: Throwable) {
+        trackerWithPin.onFailedSubmitNewPhone(throwable.message.toString())
+
+        val message = ErrorHandler.getErrorMessage(context, throwable)
         view?.let {
-            Toaster.build(it, throwable.message.toString(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 
-    private fun onSuccessVerificationNewPhone() {
-
+    private fun onSuccessValidatePhoneNumber() {
+        inactivePhoneUserDataModel?.let {
+            showLoading()
+            viewModel.verifyNewPhone(it)
+        }
     }
 
-    private fun onFailedVerificationNewPhone() {
-
+    private fun onSuccessVerificationNewPhone(verifyNewPhoneDataModel: VerifyNewPhoneDataModel) {
+        if (verifyNewPhoneDataModel.verify.isSuccess) {
+            gotoSuccessPage()
+        }
     }
 
-    open fun gotoPhoneVerification() {
+    private fun onFailedVerificationNewPhone(throwable: Throwable) {
+        val message = ErrorHandler.getErrorMessage(requireContext(), throwable)
+        view?.let {
+            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        }
+    }
+
+    open fun gotoValidateNewPhoneNumber() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ID_ENC, inactivePhoneUserDataModel?.userIdEnc.orEmpty())
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, inactivePhoneUserDataModel?.newPhoneNumber.orEmpty())
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, inactivePhoneUserDataModel?.email?.getValidEmail().orEmpty())
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN, inactivePhoneUserDataModel?.validateToken.orEmpty())
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_INACTIVE_PHONE)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, InactivePhoneConstant.OTP_TYPE_INACTIVE_PHONE_SMS)
@@ -142,6 +173,7 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
                     gotoOnboardingPage()
                 }
                 setSecondaryCTAClickListener {
+                    trackerWithPin.clickOnPopupLanjutVerifikasi()
                     this.dismiss()
                 }
                 setCancelable(false)
@@ -161,6 +193,7 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
     }
 
     companion object {
+        private const val STATUS_OK = 1
         private const val REQUEST_CODE_PHONE_VERIFICATION = 100
 
         fun create(bundle: Bundle): Fragment {

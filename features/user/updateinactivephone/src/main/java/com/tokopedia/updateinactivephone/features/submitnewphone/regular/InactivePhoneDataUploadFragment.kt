@@ -17,6 +17,7 @@ import com.tokopedia.updateinactivephone.common.cameraview.CameraViewMode
 import com.tokopedia.updateinactivephone.common.cameraview.FileType
 import com.tokopedia.updateinactivephone.common.utils.getValidEmail
 import com.tokopedia.updateinactivephone.common.view.ThumbnailFileView
+import com.tokopedia.updateinactivephone.domain.usecase.SubmitDataModel
 import com.tokopedia.updateinactivephone.features.imagepicker.InactivePhoneImagePickerActivity
 import com.tokopedia.updateinactivephone.features.onboarding.withpin.InactivePhoneWithPinActivity
 import com.tokopedia.updateinactivephone.features.submitnewphone.BaseInactivePhoneSubmitDataFragment
@@ -76,16 +77,18 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
                         doUploadImage(FileType.SELFIE, SELFIE)
                     } else if (it.data.source == SELFIE) {
                         selfieObj = it.data.data.pictureObject
-                        inactivePhoneUserDataModel?.newPhoneNumber = viewBinding?.textPhoneNumber?.text.orEmpty()
 
-                        viewModel.submitForm(
-                            inactivePhoneUserDataModel?.email?.getValidEmail().orEmpty(),
-                            inactivePhoneUserDataModel?.oldPhoneNumber.orEmpty(),
-                            inactivePhoneUserDataModel?.newPhoneNumber.orEmpty(),
-                            inactivePhoneUserDataModel?.userIndex.orZero(),
-                            idCardObj,
-                            selfieObj
-                        )
+                        inactivePhoneUserDataModel?.let { userData ->
+                            userData.newPhoneNumber = viewBinding?.textPhoneNumber?.text.orEmpty()
+                            viewModel.submitForm(SubmitDataModel(
+                                email = userData.email,
+                                oldPhone = userData.oldPhoneNumber,
+                                newPhone = userData.newPhoneNumber,
+                                userIndex = userData.userIndex.toString(),
+                                idCardImage = idCardObj,
+                                selfieImage = selfieObj
+                            ))
+                        }
                     }
                 }
 
@@ -130,14 +133,17 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
         if (isPhoneValid()) {
             showLoading()
 
-            inactivePhoneUserDataModel?.newPhoneNumber = viewBinding?.textPhoneNumber?.text.orEmpty()
-
-            viewModel.userValidation(
-                inactivePhoneUserDataModel?.oldPhoneNumber.orEmpty(),
-                inactivePhoneUserDataModel?.email?.getValidEmail().orEmpty(),
-                inactivePhoneUserDataModel?.userIndex.orZero()
-            )
+            inactivePhoneUserDataModel?.let {
+                it.newPhoneNumber = viewBinding?.textPhoneNumber?.text.orEmpty()
+                viewModel.userValidation(it)
+            }
         }
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        trackerRegular.clickOnBackButtonUploadData()
+        dialogOnBackPressed()
+        return true
     }
 
     private fun doUploadImage(fileType: FileType, source: String) {
