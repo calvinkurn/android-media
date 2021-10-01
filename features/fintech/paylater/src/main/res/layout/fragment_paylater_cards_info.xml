@@ -25,7 +25,6 @@
         android:layout_marginStart="@dimen/unify_space_4"
         android:layout_marginTop="@dimen/unify_space_2"
         app:card_type="border"
-        app:background="@drawable/cust_card"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -51,11 +50,11 @@
                         android:id="@+id/ivPaylaterPartner"
                         android:layout_width="@dimen/unify_space_48"
                         android:layout_height="@dimen/unify_space_48"
-                        android:layout_marginTop="@dimen/unify_space_12"
+                        android:layout_marginTop="@dimen/unify_space_24"
                         android:scaleType="centerInside"
                         app:layout_constraintBottom_toBottomOf="@id/tvSubTitlePaylaterPartner"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/tvTitlePaymentPartner"
+                        app:layout_constraintTop_toTopOf="parent"
                         tools:src="@tools:sample/avatars" />
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -63,15 +62,11 @@
                         android:layout_width="@dimen/unify_space_0"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/pay_later_payment_cl_margin_dp_14"
-                        android:layout_marginTop="@dimen/unify_space_24"
                         android:layout_marginEnd="@dimen/unify_space_16"
                         android:textColor="@color/Unify_N700_96"
                         android:textSize="@dimen/unify_font_14"
-                        app:layout_constraintBottom_toTopOf="@+id/tvSmallSubTitlePaylaterPartner"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toEndOf="@+id/ivPaylaterPartner"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_chainStyle="packed"
+                        app:layout_constraintBottom_toBottomOf="@id/dummyView"
+                        app:layout_constraintLeft_toRightOf="@id/ivPaylaterPartner"
                         app:typographyType="body_1"
                         app:typographyWeight="bold"
                         tools:text="@string/kredivo" />
@@ -80,13 +75,13 @@
                         android:id="@+id/tvSubTitlePaylaterPartner"
                         android:layout_width="@dimen/unify_space_0"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/pay_later_payment_cl_margin_dp_14"
                         android:layout_marginTop="@dimen/unify_space_2"
                         android:textColor="@color/Unify_N700_68"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/tvTitlePaymentPartner"
-                        app:layout_constraintTop_toBottomOf="@+id/tvSmallSubTitlePaylaterPartner"
+                        app:layout_constraintLeft_toRightOf="@id/ivPaylaterPartner"
+                        app:layout_constraintTop_toBottomOf="@id/dummyView"
                         app:typographyType="body_3"
-                        tools:text="Yuk, daftar sedjlfgjdfgkjndfgk  djkfnbglkjsdfngjskldfg   sdjkfngjksdfngkjsdlfkarang!" />
+                        tools:text="Yukjdfgkjndfgk  djkfnbglkjsdfngjskldfg   sdjkfngjksdfngkjsdlfkarang!" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tvSmallSubTitlePaylaterPartner"
@@ -106,7 +101,7 @@
                         android:id="@+id/simulasiHeading"
                         android:layout_width="@dimen/unify_space_0"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/unify_space_16"
+                        android:layout_marginTop="@dimen/unify_space_24"
                         android:text="@string/pay_later_payment_simulation"
                         android:textColor="@color/Unify_N700_96"
                         android:textSize="@dimen/unify_font_12"
@@ -298,6 +293,14 @@
                         app:layout_constraintLeft_toLeftOf="@id/rvPaymentDesciption"
                         app:layout_constraintTop_toBottomOf="@id/rvPaymentDesciption"
                         app:typographyType="body_3" />
+
+
+                    <View
+                        android:id="@+id/dummyView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="@id/ivPaylaterPartner"
+                        app:layout_constraintTop_toTopOf="@id/ivPaylaterPartner" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </RelativeLayout>

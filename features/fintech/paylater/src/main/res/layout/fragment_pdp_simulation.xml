@@ -52,8 +52,7 @@
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/payLaterBorder"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/unify_space_8"
-               />
+                android:layout_height="@dimen/unify_space_8" />
 
             <com.tokopedia.unifycomponents.ContentSwitcherUnify
                 android:id="@+id/modeSwitcher"
@@ -62,7 +61,6 @@
                 android:layout_marginTop="@dimen/unify_space_16"
                 android:textOff="@string/pay_later_content_switcher_heading"
                 android:textOn="@string/pay_later_credit_content_switcher_heading" />
-
 
 
             <com.tokopedia.unifycomponents.TabsUnify
