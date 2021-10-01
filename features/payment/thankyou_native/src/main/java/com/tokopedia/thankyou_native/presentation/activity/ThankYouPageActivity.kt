@@ -96,7 +96,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         val bundle = Bundle()
         intent.data?.getQueryParameter(ARG_PAYMENT_ID)?.let {
             intent.putExtra(ARG_MERCHANT, intent.data?.getQueryParameter(ARG_MERCHANT))
-            intent.putExtra(ARG_PAYMENT_ID, it.toLong())
+            intent.putExtra(ARG_PAYMENT_ID, it)
             if (intent.extras != null) {
                 bundle.putAll(intent.extras)
             }
@@ -286,7 +286,8 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     override fun onBackPressed() {
         if (::thanksPageData.isInitialized)
             thankYouPageAnalytics.get().sendBackPressedEvent(thanksPageData.profileCode,
-                    thanksPageData.paymentID.toString())
+                thanksPageData.paymentID
+            )
         if (!isOnBackPressOverride()) {
             gotoHomePage()
             finish()

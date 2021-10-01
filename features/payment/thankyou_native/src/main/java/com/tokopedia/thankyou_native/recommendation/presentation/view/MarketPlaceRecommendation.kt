@@ -99,7 +99,7 @@ class MarketPlaceRecommendation : BaseCustomView, IRecommendationView {
 
     override fun loadRecommendation(thanksPageData: ThanksPageData, fragment: BaseDaggerFragment) {
         this.thanksPageData = thanksPageData
-        this.paymentId = thanksPageData.paymentID.toString()
+        this.paymentId = thanksPageData.paymentID
         this.fragment = fragment
         startViewModelObserver()
         viewModel.loadRecommendationData()
