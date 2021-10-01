@@ -7,7 +7,8 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -37,9 +38,15 @@ class PdpSimulationRobot {
     }
 
 
-    fun closeBottomSheet()
-    {
-        onView( CommonMatcher.firstView(AllOf.allOf(withId(R.id.bottom_sheet_close), isDisplayed()))).perform(
+    fun closeBottomSheet() {
+        onView(
+            CommonMatcher.firstView(
+                AllOf.allOf(
+                    withId(R.id.bottom_sheet_close),
+                    isDisplayed()
+                )
+            )
+        ).perform(
             click()
         )
     }
@@ -52,10 +59,17 @@ class PdpSimulationRobot {
     }
 
 
-    fun swipeUpCoordinateLayout()
-    {
-        onView(CommonMatcher.firstView(AllOf.allOf(withId(R.id.parent_scroll_view), isDisplayed()))).perform(
-            swipeUp())
+    fun swipeUpCoordinateLayout() {
+        onView(
+            CommonMatcher.firstView(
+                AllOf.allOf(
+                    withId(R.id.parent_scroll_view),
+                    isDisplayed()
+                )
+            )
+        ).perform(
+            swipeUp()
+        )
     }
 
 

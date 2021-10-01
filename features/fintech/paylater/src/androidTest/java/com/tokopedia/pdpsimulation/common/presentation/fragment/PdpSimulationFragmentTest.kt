@@ -60,9 +60,6 @@ class PdpSimulationFragmentTest {
     }
 
 
-
-
-
     @Test
     fun check_pay_later_partner_button_click() {
         actionTest {
@@ -77,11 +74,6 @@ class PdpSimulationFragmentTest {
             clearData()
         }
     }
-
-
-
-
-
 
 
     private fun clearData() {
@@ -115,10 +107,6 @@ class PdpSimulationFragmentTest {
 
         const val PAY_LATER_PARTNER_BUTTON_CLICK =
             "tracker/fintech/pdpsimulation/partner_button_click.json"
-
-
-
-      
 
 
     }
