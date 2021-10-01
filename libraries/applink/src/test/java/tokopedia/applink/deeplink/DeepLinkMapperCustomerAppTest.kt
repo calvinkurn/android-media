@@ -1894,6 +1894,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check tokonow repurchase appLink then should return tokopedia internal tokonow repurchase in customerapp`() {
+        val expectedDeepLink = ApplinkConstInternalTokopediaNow.REPURCHASE
+        val actualDeeplink = ApplinkConst.TokopediaNow.REPURCHASE
+        assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
+    }
+
+    @Test
     fun `check tokonow search appLink then should return tokopedia internal tokonow search in customerapp`() {
         val queryParams = "?q=keju"
         val expectedDeepLink = ApplinkConstInternalTokopediaNow.SEARCH + queryParams
@@ -1946,6 +1953,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check tokomart home appLink then should return tokopedia internal tokomart home in customerapp`() {
         val expectedDeepLink = ApplinkConstInternalTokopediaNow.HOME
         val actualDeeplink = ApplinkConst.TokoMart.HOME
+        assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check tokomart repurchase appLink then should return tokopedia internal tokomart repurchase in customerapp`() {
+        val expectedDeepLink = ApplinkConstInternalTokopediaNow.REPURCHASE
+        val actualDeeplink = ApplinkConst.TokoMart.REPURCHASE
         assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
     }
 
