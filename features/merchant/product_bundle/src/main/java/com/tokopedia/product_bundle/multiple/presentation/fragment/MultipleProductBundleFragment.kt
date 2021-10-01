@@ -322,7 +322,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                                      processTypeNum: Int) {
         if (viewModel.isPreOrderActive(preOrderStatus)) {
             val timeUnitWording = viewModel.getPreOrderTimeUnitWording(processTypeNum)
-            processDayView?.text = "$processDay $timeUnitWording"
+            processDayView?.text = getString(R.string.preorder_prefix, "$processDay $timeUnitWording")
             processDayView?.visible()
         }
         else processDayView?.invisible()
