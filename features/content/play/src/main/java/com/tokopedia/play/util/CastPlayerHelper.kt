@@ -20,7 +20,7 @@ import javax.inject.Inject
  */
 @PlayScope
 class CastPlayerHelper @Inject constructor(
-        private val castContext: CastContext,
+        val castContext: CastContext,
         val player: CastPlayer
 ) {
 
@@ -75,7 +75,7 @@ class CastPlayerHelper @Inject constructor(
         return MediaQueueItem.Builder(mediaInfo).build()
     }
 
-    fun mapCastState(castState: Int = castContext.castState): PlayCastState {
+    fun mapCastState(castState: Int): PlayCastState {
         return when(castState) {
             CastState.CONNECTING -> PlayCastState.CONNECTING
             CastState.CONNECTED -> PlayCastState.CONNECTED

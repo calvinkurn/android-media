@@ -98,8 +98,8 @@ class PlayViewModelRobot2(
         viewModel.createPage(channelData)
     }
 
-    fun focusPage(channelData: PlayChannelData, castContext: CastContext = mockk(relaxed = true)) {
-        viewModel.focusPage(channelData, castContext)
+    fun focusPage(channelData: PlayChannelData) {
+        viewModel.focusPage(channelData)
     }
 
     fun submitAction(action: PlayViewerNewAction) {

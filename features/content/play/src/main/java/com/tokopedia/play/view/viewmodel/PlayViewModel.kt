@@ -788,7 +788,7 @@ class PlayViewModel @Inject constructor(
 
             addCastStateListener()
 
-            setCastState(castPlayerHelper.mapCastState())
+            setCastState(castPlayerHelper.mapCastState(castPlayerHelper.castContext.castState))
         }
 
         updateChannelInfo(channelData)
