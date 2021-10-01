@@ -14,7 +14,7 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
 class CastViewComponent(
         container: ViewGroup,
         listener: Listener
-) : ViewComponent(container, R.id.btn_cast) {
+) : ViewComponent(container, R.id.btn_play_cast) {
 
     private val btnCast = rootView as MediaRouteButton
 

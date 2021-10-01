@@ -216,7 +216,7 @@
         />
 
     <androidx.mediarouter.app.MediaRouteButton
-        android:id="@+id/btn_cast"
+        android:id="@+id/btn_play_cast"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@id/view_pip_control"
