@@ -66,8 +66,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.kol)
     implementation projectOrAar(rootProject.ext.features.interestPick)
     implementation projectOrAar(rootProject.ext.features.feed)
-    implementation projectOrAar(rootProject.ext.features.createpost)
-
 
     //Digital
     implementation projectOrAar(rootProject.ext.features.digitalTopupBills)
@@ -158,5 +156,4 @@ dependencies {
 
     //Library
     implementation projectOrAar(rootProject.ext.libraries.imagePicker)
-
 }

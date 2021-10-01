@@ -6,9 +6,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.createpost.analyics.CreatePostAnalytics
-import com.tokopedia.createpost.data.pojo.getcontentform.Author
-import com.tokopedia.createpost.data.pojo.getcontentform.FeedContentForm
+import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
+import com.tokopedia.createpost.common.data.pojo.getcontentform.Author
+import com.tokopedia.createpost.common.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.domain.entity.FeedDetail
@@ -18,9 +18,9 @@ import com.tokopedia.createpost.view.contract.CreatePostContract
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
 import com.tokopedia.createpost.view.type.ShareType
 import com.tokopedia.createpost.view.viewmodel.CreateContentPostViewModel
-import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
+import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
+import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
-import com.tokopedia.createpost.view.viewmodel.MediaModel
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.twitter_share.TwitterAuthenticator

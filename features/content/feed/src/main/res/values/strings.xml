@@ -123,4 +123,7 @@ dari Feed.</string>
     <string name="feed_header_mask">searchbar feed header mask</string>
     <string name="feed_fab_shop">Feed Fab Shop</string>
 
+    <string name="feed_post_sebagai">Post sebagai</string>
+    <string name="feed_post_successful_toaster">Yay,Post kamu berhasil di-upload</string>
+
 </resources>

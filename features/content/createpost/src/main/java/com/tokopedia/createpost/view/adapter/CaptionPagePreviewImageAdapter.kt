@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
-import com.tokopedia.createpost.view.viewmodel.MediaModel
+import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.android.synthetic.main.content_preview_post_view_item.view.*

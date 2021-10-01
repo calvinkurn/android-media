@@ -17,13 +17,14 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.createpost.*
+import com.tokopedia.createpost.common.*
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.domain.usecase.SubmitPostUseCase
 import com.tokopedia.createpost.view.util.FeedSellerAppReviewHelper
 import com.tokopedia.createpost.view.util.SubmitPostNotificationManager
-import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
+import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.twitter_share.TwitterManager
 import com.tokopedia.user.session.UserSessionInterface

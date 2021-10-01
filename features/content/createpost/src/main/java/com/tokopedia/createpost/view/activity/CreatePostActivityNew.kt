@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.createpost.analyics.CreatePostAnalytics
+import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
@@ -23,10 +23,10 @@ import com.tokopedia.createpost.view.fragment.ContentCreateCaptionFragment
 import com.tokopedia.createpost.view.fragment.CreatePostPreviewFragmentNew
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
 import com.tokopedia.createpost.view.service.SubmitPostServiceNew
-import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
+import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
-import com.tokopedia.createpost.view.viewmodel.MediaModel
-import com.tokopedia.createpost.view.viewmodel.MediaType
+import com.tokopedia.createpost.common.view.viewmodel.MediaModel
+import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImageCircle

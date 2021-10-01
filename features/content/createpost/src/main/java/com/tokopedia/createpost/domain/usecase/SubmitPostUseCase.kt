@@ -6,7 +6,7 @@ import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.ContentSubmitI
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.MediaTag
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
-import com.tokopedia.createpost.TYPE_CONTENT_SHOP
+import com.tokopedia.createpost.common.TYPE_CONTENT_SHOP
 import com.tokopedia.createpost.di.ActivityContext
 import com.tokopedia.createpost.view.util.SubmitPostNotificationManager
 import com.tokopedia.graphql.data.model.GraphqlRequest

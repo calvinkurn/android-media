@@ -10,7 +10,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.adapter.CreatePostTagAdapter
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
-import com.tokopedia.createpost.view.viewmodel.RelatedProductItem
+import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster

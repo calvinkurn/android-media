@@ -5,6 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.createpost.common.view.plist.GetShopProduct
+import com.tokopedia.createpost.common.view.plist.ShopPageListener
+import com.tokopedia.createpost.common.view.plist.ShopPageProduct
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.library.baseadapter.AdapterCallback

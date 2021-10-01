@@ -18,7 +18,11 @@ import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.createpost.view.bottomSheet.ContentCreationProductTagBottomSheet
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
-import com.tokopedia.createpost.view.plist.ShopPageProduct
+import com.tokopedia.createpost.common.view.plist.ShopPageProduct
+import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
+import com.tokopedia.createpost.common.view.viewmodel.MediaModel
+import com.tokopedia.createpost.common.view.viewmodel.MediaType
+import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
 import com.tokopedia.createpost.view.posttag.TagViewProvider
 import com.tokopedia.createpost.view.viewmodel.*
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
@@ -516,8 +520,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             price = item.price?.priceIdr!!,
             image = item.pImage?.img!!,
             priceOriginalFmt = item.campaign?.oPriceFormatted!!,
-            priceDiscountFmt = item.campaign.dPriceFormatted,
-            isDiscount = (item.campaign.dPrice.toInt() != 0)
+            priceDiscountFmt = item.campaign?.dPriceFormatted!!,
+            isDiscount = (item.campaign?.dPrice?.toInt() != 0)
         )
     }
     private fun getLatestTotalProductCount() : Int{

@@ -2,8 +2,8 @@ package com.tokopedia.feedplus.view.presenter
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.createpost.data.pojo.getcontentform.FeedContentForm
-import com.tokopedia.createpost.data.pojo.getcontentform.FeedContentResponse
+import com.tokopedia.createpost.common.data.pojo.getcontentform.FeedContentForm
+import com.tokopedia.createpost.common.data.pojo.getcontentform.FeedContentResponse
 import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase

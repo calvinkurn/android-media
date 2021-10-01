@@ -3,7 +3,7 @@ package com.tokopedia.feedplus.domain.usecase
 import android.content.Context
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.createpost.data.pojo.getcontentform.FeedContentResponse
+import com.tokopedia.createpost.common.data.pojo.getcontentform.FeedContentResponse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
