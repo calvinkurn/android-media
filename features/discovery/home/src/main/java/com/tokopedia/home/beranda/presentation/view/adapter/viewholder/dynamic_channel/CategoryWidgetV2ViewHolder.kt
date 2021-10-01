@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -32,33 +31,6 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
         val LAYOUT = R.layout.home_dc_category_widget_v2
     }
 
-    private fun getHeight2LinesTypographyHeading6(context: Context) : Int {
-        val params =
-            LinearLayout.LayoutParams(
-                context.resources.getDimensionPixelSize(R.dimen.dp_120),
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-        val paramsTextView =
-            LinearLayout.LayoutParams(
-                context.resources.getDimensionPixelSize(R.dimen.dp_120),
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-        val typography = Typography(context)
-        typography.setType(Typography.HEADING_6)
-        typography.layoutParams = paramsTextView
-        typography.maxLines = 2
-        val dummyText = "This Text Will Contains 2 Lines Text"
-        typography.text = dummyText
-        typography.measure(0, 0)
-        val linearLayout = LinearLayout(context)
-        linearLayout.layoutParams = params
-        linearLayout.addView(typography)
-        linearLayout.measure(0, 0)
-        typography.post {}.run {
-            return typography.measuredHeight
-        }
-    }
-
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
         val recyclerView = itemView.findViewById<RecyclerView>(R.id.recycleList)
         if (!channel.isCache) {
@@ -72,7 +44,7 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
                 )
             }
         }
-        recyclerView.adapter = CategoryWidgetV2ItemAdapter(channel, categoryListener, getHeight2LinesTypographyHeading6(itemView.context))
+        recyclerView.adapter = CategoryWidgetV2ItemAdapter(channel, categoryListener)
         recyclerView.layoutManager = GridLayoutManager(
                 view.context,
                 2,
@@ -103,8 +75,7 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
 
     class CategoryWidgetV2ItemAdapter(
         private val channels: DynamicHomeChannel.Channels,
-        private val listener: HomeCategoryListener?,
-        private val height2LinesText: Int
+        private val listener: HomeCategoryListener?
     ): RecyclerView.Adapter<CategoryWidgetItemViewHolder>() {
         private var grids: Array<DynamicHomeChannel.Grid> = channels.grids
 
@@ -121,7 +92,6 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
         override fun onBindViewHolder(holder: CategoryWidgetItemViewHolder, position: Int) {
             val grid = grids[position]
             holder.categoryImageView.loadImageWithoutPlaceholder(grid.imageUrl, FPM_CATEGORY_WIDGET_ITEM)
-            holder.categoryName.height = height2LinesText
             holder.categoryName.text = grid.name
             holder.itemView.setOnClickListener {
                 listener?.sendEETracking(
