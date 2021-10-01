@@ -374,6 +374,4 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.benchmark
     androidTestImplementation rootProject.ext.testDependencies.testCore
 
-    implementation projectOrAar(rootProject.ext.features.createpost)
-
 }

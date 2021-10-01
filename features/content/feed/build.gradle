@@ -115,7 +115,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.embraceSdk
 
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
-    implementation projectOrAar(rootProject.ext.features.createpost)
+    implementation projectOrAar(rootProject.ext.features.createpostCommon)
 
 
     implementation rootProject.ext.networkDependencies.glide
@@ -129,7 +129,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
-
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime

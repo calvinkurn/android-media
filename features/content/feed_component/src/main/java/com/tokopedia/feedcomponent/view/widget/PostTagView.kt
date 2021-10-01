@@ -8,9 +8,8 @@ import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
+import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.util.util.*
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
@@ -31,7 +30,7 @@ private const val THRESHOLD_POS_Y_TO_INFLATE_TAGGING_BUBBLE_DOWNWARD = 0.70
 
 class PostTagView @JvmOverloads constructor(
     context: Context,
-    feedXMediaTagging: FeedXMediaTagging,
+    feedXMediaTagging: com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
 ) : ConstraintLayout(context, attrs, defStyleAttr), LifecycleObserver {
@@ -53,7 +52,7 @@ class PostTagView @JvmOverloads constructor(
     private var postImageWidth: Int = 0
     private var postImageHeight: Int = 0
     private var position: Int = 0
-    private var feedXTag: FeedXMediaTagging = feedXMediaTagging
+    private var feedXTag: com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging = feedXMediaTagging
     private var initialBubbleVisible: Boolean
 
     init {

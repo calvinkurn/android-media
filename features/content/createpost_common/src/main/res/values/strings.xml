@@ -1,0 +1,5 @@
+<resources>
+    <string name="cp_common_progress_bar_text">Memproses...</string>
+    <string name="cp_common_progress_bar_failed_text">Gagal Diproses</string>
+    <string name="cp_common_coba_lagi_text">Coba Lagi</string>
+</resources>

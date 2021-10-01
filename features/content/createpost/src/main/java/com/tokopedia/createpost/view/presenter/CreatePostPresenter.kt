@@ -10,7 +10,7 @@ import com.tokopedia.createpost.domain.usecase.GetShopProductSuggestionUseCase
 import com.tokopedia.createpost.view.contract.CreatePostContract
 import com.tokopedia.createpost.view.subscriber.GetContentFormSubscriber
 import com.tokopedia.createpost.view.type.ShareType
-import com.tokopedia.createpost.view.viewmodel.ProductSuggestionItem
+import com.tokopedia.createpost.common.view.viewmodel.ProductSuggestionItem
 import com.tokopedia.feedcomponent.data.pojo.profileheader.ProfileHeaderData
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetProfileHeaderUseCase

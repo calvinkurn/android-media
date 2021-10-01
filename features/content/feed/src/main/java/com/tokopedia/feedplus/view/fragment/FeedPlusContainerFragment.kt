@@ -32,9 +32,9 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.createpost.analyics.FeedTrackerImagePickerInsta
-import com.tokopedia.createpost.view.customview.PostProgressUpdateView
-import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
+import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
+import com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
+import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.explore.view.fragment.ContentExploreFragment
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.feedplus.R
@@ -568,7 +568,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             intent.putExtra(MAX_MULTI_SELECT_ALLOWED,
                 MAX_MULTI_SELECT_ALLOWED_VALUE)
             intent.putExtra(TITLE,
-                getString(com.tokopedia.createpost.createpost.R.string.feed_content_post_sebagai))
+                getString(com.tokopedia.feedplus.R.string.feed_post_sebagai))
             val name: String = MethodChecker.fromHtml(authors.first().name).toString()
             intent.putExtra(SUB_TITLE, name)
             intent.putExtra(TOOLBAR_ICON_URL,
@@ -682,7 +682,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun swipeOnPostUpdate() {
         Toaster.build(requireView(),
-            getString(com.tokopedia.createpost.createpost.R.string.feed_content_post_successful_toaster),
+            getString(com.tokopedia.feedplus.R.string.feed_post_successful_toaster),
             Toaster.LENGTH_LONG,
             Toaster.TYPE_NORMAL).show()
         mInProgress = false
