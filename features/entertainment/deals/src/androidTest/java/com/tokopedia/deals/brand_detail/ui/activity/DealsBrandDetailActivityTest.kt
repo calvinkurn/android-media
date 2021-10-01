@@ -11,7 +11,7 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.deals.test.R
 import com.tokopedia.graphql.GraphqlCacheManager
@@ -28,9 +28,6 @@ class DealsBrandDetailActivityTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
     private val graphqlCacheManager = GraphqlCacheManager()
-
-    @get:Rule
-    var cassavaTestRule = CassavaTestRule()
 
     @get:Rule
     var activityRule: IntentsTestRule<DealsBrandDetailActivity> = object : IntentsTestRule<DealsBrandDetailActivity>(DealsBrandDetailActivity::class.java) {
@@ -58,7 +55,7 @@ class DealsBrandDetailActivityTest {
 
         Espresso.onView(ViewMatchers.withText("KlikDokter ECG")).perform(ViewActions.click())
 
-        Assert.assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_DEALS_BRAND_DETAIL_PAGE), hasAllSuccess())
+        Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_DEALS_BRAND_DETAIL_PAGE), hasAllSuccess())
     }
 
     @After
