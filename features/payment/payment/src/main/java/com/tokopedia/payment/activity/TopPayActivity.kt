@@ -50,10 +50,7 @@ import com.tokopedia.payment.fingerprint.view.FingerPrintDialogPayment
 import com.tokopedia.payment.fingerprint.view.FingerprintDialogRegister
 import com.tokopedia.payment.presenter.TopPayContract
 import com.tokopedia.payment.presenter.TopPayPresenter
-import com.tokopedia.payment.utils.Constant
-import com.tokopedia.payment.utils.HEADER_TKPD_SESSION_ID
-import com.tokopedia.payment.utils.HEADER_TKPD_USER_AGENT
-import com.tokopedia.payment.utils.PaymentPageTimeOutLogging
+import com.tokopedia.payment.utils.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
@@ -437,16 +434,16 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                 }
                 reloadPayment()
             } else {
-                showToaster("Gagal menghubungkan akun", Toaster.TYPE_ERROR)
+                showToaster("Gagal menyambungkan akun", Toaster.TYPE_ERROR)
                 hideFullLoading()
             }
         }
     }
 
     private fun handleStatusMatching(status: String) {
-        when(status) {
-            "linked" -> showToaster("Akun anda telah terhubung", Toaster.TYPE_NORMAL)
-            "not_linked", "in_progress" -> showToaster("Gagal menghubungkan akun", Toaster.TYPE_ERROR)
+        val message = LinkStatusMatcher.getStatus(status)
+        if(message.isNotEmpty()) {
+            showToaster(message, Toaster.TYPE_NORMAL)
         }
     }
 
