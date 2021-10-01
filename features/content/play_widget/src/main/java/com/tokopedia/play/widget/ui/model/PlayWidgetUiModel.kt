@@ -35,10 +35,4 @@ sealed class PlayWidgetUiModel {
     }
 
     object Placeholder : PlayWidgetUiModel()
-
-    companion object {
-        const val HEADER_HOME = "header_home"
-    }
-
-    var headerType: String = ""
 }

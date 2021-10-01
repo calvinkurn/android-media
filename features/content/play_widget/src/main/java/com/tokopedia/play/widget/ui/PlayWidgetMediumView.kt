@@ -28,7 +28,6 @@ import com.tokopedia.play.widget.ui.itemdecoration.PlayWidgetCardMediumItemDecor
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetMediumListener
 import com.tokopedia.play.widget.ui.model.*
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel.Companion.HEADER_HOME
 import com.tokopedia.play.widget.ui.snaphelper.PlayWidgetSnapHelper
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
@@ -239,14 +238,6 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         adapter.setItemsAndAnimateChanges(data.items)
 
         mIsAutoPlay = data.config.autoPlay
-        setHeaderType(data.headerType)
-    }
-
-    private fun setHeaderType(type: String) {
-        title.setType(when (type) {
-            HEADER_HOME -> Typography.HEADING_4
-            else -> Typography.HEADING_3
-        })
     }
 
     /**
