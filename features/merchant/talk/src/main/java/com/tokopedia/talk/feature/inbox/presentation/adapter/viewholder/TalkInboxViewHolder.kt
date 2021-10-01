@@ -7,13 +7,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxOldUiModel
+import com.tokopedia.talk.R
+import com.tokopedia.talk.databinding.ItemTalkInboxBinding
 import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxUiModel
 import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxViewHolderListener
-import com.tokopedia.talk.R
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.item_talk_inbox.view.*
 
 class TalkInboxViewHolder(
         view: View,
@@ -24,6 +22,8 @@ class TalkInboxViewHolder(
         const val DELETED_PRODUCT_PLACEHOLDER = "https://ecs7.tokopedia.net/img/android/others/talk_reply_deleted_product_placeholder.png"
         val LAYOUT = R.layout.item_talk_inbox
     }
+
+    private val binding: ItemTalkInboxBinding = ItemTalkInboxBinding.bind(view)
 
     override fun bind(element: TalkInboxUiModel) {
         with(element.inboxDetail) {
@@ -43,23 +43,23 @@ class TalkInboxViewHolder(
     }
 
     private fun setProductThumbnail(productThumbnail: String) {
-        with(itemView) {
+        with(binding) {
             if (productThumbnail.isEmpty()) {
-                itemView.talkInboxProductThumbnail.setImageUrl(DELETED_PRODUCT_PLACEHOLDER)
-                talkInboxProductName.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+                talkInboxProductThumbnail.setImageUrl(DELETED_PRODUCT_PLACEHOLDER)
+                talkInboxProductName.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
                 return
             }
             talkInboxProductThumbnail.setImageUrl(productThumbnail)
-            talkInboxProductName.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            talkInboxProductName.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         }
     }
 
     private fun setProductName(productName: String) {
-        itemView.talkInboxProductName.text = productName
+        binding.talkInboxProductName.text = productName
     }
 
     private fun setQuestion(question: String) {
-        itemView.talkInboxMessage.apply {
+        binding.talkInboxMessage.apply {
             text = HtmlCompat.fromHtml(question, HtmlCompat.FROM_HTML_MODE_LEGACY).toString().replace("\n", " ")
             setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
             setWeight(Typography.BOLD)
@@ -68,14 +68,14 @@ class TalkInboxViewHolder(
 
     private fun setNotification(isUnread: Boolean) {
         if (isUnread) {
-            itemView.talkInboxNotification.showWithCondition(isUnread)
+            binding.talkInboxNotification.showWithCondition(isUnread)
         } else {
-            itemView.talkInboxNotification.hide()
+            binding.talkInboxNotification.hide()
         }
     }
 
     private fun setCountAndDate(totalAnswer: Int, date: String) {
-        with(itemView) {
+        with(binding) {
             when (totalAnswer) {
                 0 -> {
                     talkInboxAnswerCount.apply {
@@ -98,7 +98,7 @@ class TalkInboxViewHolder(
     }
 
     private fun setAlertState(hasProblem: Boolean, isSellerView: Boolean) {
-        itemView.talkInboxAlertSignifier.showWithCondition(hasProblem && isSellerView)
+        binding.talkInboxAlertSignifier.showWithCondition(hasProblem && isSellerView)
     }
 
 }

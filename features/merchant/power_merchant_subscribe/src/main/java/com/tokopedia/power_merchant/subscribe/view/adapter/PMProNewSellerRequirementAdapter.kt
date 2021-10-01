@@ -1,13 +1,11 @@
 package com.tokopedia.power_merchant.subscribe.view.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.databinding.ItemRequirementPmProNewSellerBinding
 import com.tokopedia.power_merchant.subscribe.view.model.ItemPMProNewSellerRequirement
-import kotlinx.android.synthetic.main.item_requirement_pm_pro_new_seller.view.*
 
 class PMProNewSellerRequirementAdapter(val items: List<ItemPMProNewSellerRequirement>) :
     RecyclerView.Adapter<PMProNewSellerRequirementAdapter.PMProNewSellerRequirementViewHolder>() {
@@ -16,9 +14,12 @@ class PMProNewSellerRequirementAdapter(val items: List<ItemPMProNewSellerRequire
         parent: ViewGroup,
         viewType: Int
     ): PMProNewSellerRequirementViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_requirement_pm_pro_new_seller, parent, false)
-        return PMProNewSellerRequirementViewHolder(view)
+        val binding = ItemRequirementPmProNewSellerBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return PMProNewSellerRequirementViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: PMProNewSellerRequirementViewHolder, position: Int) {
@@ -28,9 +29,10 @@ class PMProNewSellerRequirementAdapter(val items: List<ItemPMProNewSellerRequire
 
     override fun getItemCount(): Int = items.size
 
-    class PMProNewSellerRequirementViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class PMProNewSellerRequirementViewHolder(private val binding: ItemRequirementPmProNewSellerBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(data: ItemPMProNewSellerRequirement) {
-            with(itemView) {
+            with(binding) {
                 ivRequirementPmProNewSeller.loadImage(data.imageUrl)
                 tvRequirementPmProNewSeller.text = data.title
             }

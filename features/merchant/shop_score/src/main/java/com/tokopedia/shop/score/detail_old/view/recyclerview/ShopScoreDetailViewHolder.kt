@@ -12,9 +12,11 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.databinding.ItemShopScoreDetailBinding
 import com.tokopedia.shop.score.detail_old.view.model.ShopScoreDetailItem
 import com.tokopedia.shop.score.detail_old.view.util.formatShopScore
-import kotlinx.android.synthetic.main.item_shop_score_detail.view.*
+import com.tokopedia.utils.view.binding.viewBinding
+
 
 class ShopScoreDetailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -24,6 +26,8 @@ class ShopScoreDetailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVi
     }
     
     private val context by lazy { itemView.context }
+
+    private val binding: ItemShopScoreDetailBinding? by viewBinding()
     
     fun bind(data: ShopScoreDetailItem) {
         data.run {
@@ -36,27 +40,27 @@ class ShopScoreDetailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVi
     }
 
     private fun setTitle(title: String?) {
-        itemView.title_shop_score_detail.text = title
+        binding?.titleShopScoreDetail?.text = title
     }
 
     private fun setShopScoreValue(value: Float) {
-        itemView.apply {
-            description_shop_score_value.text = value.formatShopScore()
-            progress_bar_shop_score_detail.progress = value
+        binding?.run {
+            descriptionShopScoreValue.text = value.formatShopScore()
+            progressBarShopScoreDetail.progress = value
         }
     }
 
     private fun setShopScoreMaxValue(maxValue: Float) {
-        itemView.apply {
+        binding?.run {
             val maxScore = context.getString(R.string.description_shop_score_percent,
                 maxValue.formatShopScore())
-            description_shop_score_percent.text = maxScore
-            progress_bar_shop_score_detail.max = maxValue
+            descriptionShopScoreValue.text = maxScore
+            progressBarShopScoreDetail.max = maxValue
         }
     }
 
     private fun setShopScoreDescription(description: String?) {
-        itemView.apply {
+        binding?.run {
             if (description != null) {
                 val sequence: CharSequence = MethodChecker.fromHtml(description)
                 val strBuilder = SpannableStringBuilder(sequence)
@@ -64,11 +68,11 @@ class ShopScoreDetailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVi
                 for (span in urls) {
                     makeLinkClickable(strBuilder, span)
                 }
-                description_shop_score_detail.text = strBuilder
-                description_shop_score_detail.movementMethod = LinkMovementMethod.getInstance()
-                description_shop_score_detail.visibility = View.VISIBLE
+                descriptionShopScoreDetail.text = strBuilder
+                descriptionShopScoreDetail.movementMethod = LinkMovementMethod.getInstance()
+                descriptionShopScoreDetail.visibility = View.VISIBLE
             } else {
-                description_shop_score_detail.visibility = View.GONE
+                descriptionShopScoreDetail.visibility = View.GONE
             }
         }
     }
@@ -115,7 +119,7 @@ class ShopScoreDetailViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVi
     private fun setProgressBarColor(progressBarColor: String?) {
         try {
             val color = Color.parseColor(progressBarColor)
-            itemView.progress_bar_shop_score_detail.progressColor = color
+            binding?.progressBarShopScoreDetail?.progressColor = color
         } catch (e: Exception) {
             e.printStackTrace()
         }
