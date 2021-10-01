@@ -24,6 +24,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
@@ -41,9 +42,6 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
     private val viewModelFactory: ViewModelFactory,
     private val analytic: PlayBroadcastAnalytic,
 ) : BottomSheetDialogFragment() {
-
-    private val needRebindLeaderboard: Boolean
-        get() = arguments?.getBoolean(PLAY_NEED_REBIND_LEADERBOARD, false) ?: false
 
     private val leaderboardAdapter = PlayInteractiveLeaderboardAdapter(object : PlayInteractiveLeaderboardViewHolder.Listener{
         override fun onChatWinnerButtonClicked(winner: PlayWinnerUiModel, position: Int) {
@@ -156,7 +154,9 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
                is NetworkResult.Success -> {
                    showError(false)
                    btnRefresh.isLoading = false
-                   if(needRebindLeaderboard) {
+
+                   val liveState = parentViewModel.observableLiveViewState.value
+                   if(liveState != null && (liveState is PlayLiveViewState.Stopped || liveState is PlayLiveViewState.Error)) {
                        leaderboardAdapter.setItems(it.data.leaderboardWinners)
                        leaderboardAdapter.notifyDataSetChanged()
                    }
@@ -195,6 +195,5 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
         private const val TAG = "PlayInteractiveLeaderBoardBottomSheet"
         private const val HEIGHT_MULTIPLIER = 0.67f
         private const val ADDITIONAL_ARG = "&source=tx_ask_buyer"
-        const val PLAY_NEED_REBIND_LEADERBOARD = "EXTRA_PLAY_NEED_REBIND_LEADERBOARD"
     }
 }

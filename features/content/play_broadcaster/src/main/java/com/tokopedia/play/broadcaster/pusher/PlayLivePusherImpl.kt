@@ -146,8 +146,6 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
                 if (state == Streamer.CONNECTION_STATE.DISCONNECTED && lastState is PlayLivePusherState.Paused) return
                 if (info?.length().orZero() > 0) {
                     broadcastState(PlayLivePusherState.Error("network: reason ${info?.toString()}"))
-                } else {
-                    broadcastState(PlayLivePusherState.Error("network: unknown network fail"))
                 }
             }
             Streamer.STATUS.SUCCESS -> {

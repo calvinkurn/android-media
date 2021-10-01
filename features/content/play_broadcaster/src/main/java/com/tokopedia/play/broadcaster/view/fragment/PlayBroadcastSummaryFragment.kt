@@ -20,7 +20,6 @@ import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet.Companion.PLAY_NEED_REBIND_LEADERBOARD
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
@@ -283,11 +282,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         val fragmentFactory = childFragmentManager.fragmentFactory
         val leaderBoardBottomSheet = fragmentFactory.instantiate(
             requireContext().classLoader,
-            PlayInteractiveLeaderBoardBottomSheet::class.java.name).apply {
-                arguments = Bundle().apply {
-                    putBoolean(PLAY_NEED_REBIND_LEADERBOARD, true)
-                }
-            } as PlayInteractiveLeaderBoardBottomSheet
+            PlayInteractiveLeaderBoardBottomSheet::class.java.name) as PlayInteractiveLeaderBoardBottomSheet
         leaderBoardBottomSheet.show(childFragmentManager)
     }
 }
