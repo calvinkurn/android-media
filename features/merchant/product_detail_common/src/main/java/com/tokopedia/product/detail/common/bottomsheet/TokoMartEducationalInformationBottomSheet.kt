@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -48,7 +49,7 @@ class TokoMartEducationalInformationBottomSheet : BottomSheetUnify() {
             val text5 = findViewById<Typography>(R.id.pdp_tokomart_text_5)
             val background = findViewById<AppCompatImageView>(R.id.pdp_tokomart_background)
 
-            val boldColor = resources.getColor(R.color.Unify_NN950).toString()
+            val boldColor = ContextCompat.getColor(context, R.color.Unify_NN950).toString()
             text1.text = MethodChecker.fromHtml(
                 getString(
                     R.string.pdp_usp_tokomart_static_text_1,
@@ -76,7 +77,8 @@ class TokoMartEducationalInformationBottomSheet : BottomSheetUnify() {
     }
 
     private fun convertStringToLink(typography: Typography, context: Context, stringRes: Int) {
-        val linkHelper = HtmlLinkHelper(context, getString(stringRes))
+        val linkColor = ContextCompat.getColor(context, R.color.Unify_GN500).toString()
+        val linkHelper = HtmlLinkHelper(context, getString(stringRes, linkColor))
         typography.text = linkHelper.spannedString
         typography.movementMethod = LinkMovementMethod.getInstance()
         linkHelper.urlList[0].let { link ->
