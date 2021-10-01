@@ -1104,12 +1104,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun sendSticker(sticker: Sticker?) {
         if (sticker == null) return
         onSendAndReceiveMessage()
+        val referredMsg = replyCompose?.referredMsg
         if (rvSrw?.isShowing() == true) {
             addSrwBubbleToChat()
         }
         onSendingMessage().invoke()
         presenter.sendAttachmentsAndSticker(
-            sticker
+            sticker, referredMsg
         )
     }
 

@@ -151,7 +151,7 @@ interface TopChatContract {
         )
 
         fun sendAttachmentsAndSticker(
-            sticker: Sticker
+            sticker: Sticker, referredMsg: BaseChatViewModel?
         )
 
         fun sendAttachmentsAndSrw(

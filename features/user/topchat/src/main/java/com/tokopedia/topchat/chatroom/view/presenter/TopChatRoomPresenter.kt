@@ -565,10 +565,10 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun sendAttachmentsAndSticker(
-        sticker: Sticker
+        sticker: Sticker, referredMsg: BaseChatViewModel?
     ) {
         sendAttachments(sticker.intention)
-        sendSticker(sticker)
+        sendSticker(sticker, referredMsg)
         view?.clearAttachmentPreviews()
     }
 
@@ -690,7 +690,10 @@ open class TopChatRoomPresenter @Inject constructor(
         sendByApi(ReplyChatUseCase.generateParam(messageId, sendMessage), dummyMessage)
     }
 
-    private fun sendSticker(sticker: Sticker) {
+    private fun sendSticker(
+        sticker: Sticker,
+        referredMsg: BaseChatViewModel?
+    ) {
         val startTime = SendableViewModel.generateStartTime()
         val previewSticker = StickerUiModel.generatePreviewMessage(
             roomMetaData = roomMetaData,
