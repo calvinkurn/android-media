@@ -188,10 +188,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         screenName = AppScreen.SCREEN_PRODUCT_INFO;
                     }
                     break;
-                case DeepLinkChecker.TOKOMART:
-                    openTokoMart();
-                    screenName = AppScreen.SCREEN_TOKO_MART;
-                    break;
                 case DeepLinkChecker.ETALASE:
                 case DeepLinkChecker.SHOP:
                     keepActivityOn = true;
@@ -512,11 +508,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 GqlGetShopIdByDomainUseCaseRx.createParams(linkSegment.get(0)),
                 getOpenShopInfoSubscriber(linkSegment, uriData, bundle)
         );
-    }
-
-    private void openTokoMart() {
-        Intent intent = RouteManager.getIntent(context, ApplinkConst.TokoMart.HOME);
-        viewListener.goToPage(intent);
     }
 
     private Subscriber<String> getOpenShopInfoSubscriber(final List<String> linkSegment,
