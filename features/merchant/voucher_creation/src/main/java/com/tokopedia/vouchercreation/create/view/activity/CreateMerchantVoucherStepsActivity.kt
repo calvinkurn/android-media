@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.create.view.activity
 import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -641,6 +642,9 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == ADMIN_RESTRICTION_REQUEST) {
+            val centralizedPromoIntent = RouteManager.getIntent(applicationContext, ApplinkConstInternalSellerapp.CENTRALIZED_PROMO)
+            centralizedPromoIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(centralizedPromoIntent)
             finish()
         }
         super.onActivityResult(requestCode, resultCode, data)
