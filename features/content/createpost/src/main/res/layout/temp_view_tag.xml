@@ -6,7 +6,8 @@
     android:layout_height="@dimen/dp_52"
     android:alpha="0.9"
     xmlns:tools="http://schemas.android.com/tools"
-    android:animateLayoutChanges="true">
+    android:animateLayoutChanges="true"
+    tools:visibility="visible">
 
     <View
         android:id="@+id/topNotch"
@@ -42,25 +43,22 @@
     <LinearLayout
         android:id="@+id/bubble_text_layout"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:orientation="vertical"
-        android:paddingTop="@dimen/dp_4"
-        android:paddingBottom="@dimen/dp_4"
         android:gravity="center_vertical"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/dot"
+        app:layout_constraintEnd_toStartOf="@id/product_tag_clear"
         app:layout_constraintStart_toEndOf="@id/product_tag_clear_right"
-        app:layout_constraintEnd_toStartOf="@id/product_tag_clear" >
+        app:layout_constraintTop_toTopOf="@id/dot">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/product_tag_name_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/dp_4"
-            android:paddingEnd="@dimen/dp_8"
-            android:maxWidth="@dimen/dp_145"
-            android:ellipsize="marquee"
             android:layout_marginStart="@dimen/dp_8"
+            android:ellipsize="marquee"
+            android:maxWidth="@dimen/dp_145"
+            android:paddingEnd="@dimen/dp_8"
             android:singleLine="true"
             android:textColor="@color/Unify_N0"
             app:typographyType="body_3"
@@ -70,41 +68,37 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginStart="@dimen/dp_8">
+            android:layout_marginStart="@dimen/dp_8"
+            android:orientation="horizontal">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/product_tag_slashed_price_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/dp_8"
-                android:paddingBottom="@dimen/dp_6"
-                android:visibility="gone"
-                app:typographyType="body_3"
                 android:singleLine="true"
                 android:textColor="@color/Unify_NN400"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@id/product_tag_name_text"
                 app:layout_constraintTop_toBottomOf="@id/product_tag_name_text"
-                tools:visibility="visible"
+                app:typographyType="body_3"
                 tools:text="Rp2.750.000"
-                />
+                tools:visibility="visible" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/product_tag_price_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/dp_8"
-                android:paddingBottom="@dimen/dp_6"
-                app:typographyType="body_3"
-                app:typographyWeight="bold"
                 android:singleLine="true"
                 android:textColor="@color/Unify_NN400"
                 app:layout_constraintBottom_toBottomOf="@id/product_tag_slashed_price_text"
                 app:layout_constraintStart_toEndOf="@id/product_tag_slashed_price_text"
                 app:layout_constraintTop_toTopOf="@id/product_tag_slashed_price_text"
-                tools:text="Rp2.750.000"
-                />
+                app:typographyType="body_3"
+                app:typographyWeight="bold"
+                tools:text="Rp2.750.000" />
         </LinearLayout>
     </LinearLayout>
 
@@ -116,10 +110,10 @@
         android:visibility="gone"
         app:icon_color_light_enable="@color/Unify_N0"
         app:icon_name="CLEAR"
-        app:layout_constraintBottom_toBottomOf="@+id/dot"
-        app:layout_constraintEnd_toEndOf="@+id/dot"
+        app:layout_constraintBottom_toBottomOf="@id/dot"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/bubble_text_layout"
-        app:layout_constraintTop_toTopOf="@+id/dot"
+        app:layout_constraintTop_toTopOf="@id/dot"
         app:unify_image_type="circle"
         tools:visibility="gone"/>
 
@@ -131,9 +125,9 @@
         android:visibility="gone"
         app:icon_color_light_enable="@color/Unify_N0"
         app:icon_name="CLEAR"
-        app:layout_constraintBottom_toBottomOf="@+id/dot"
-        app:layout_constraintStart_toStartOf="@+id/dot"
-        app:layout_constraintTop_toTopOf="@+id/dot"
+        app:layout_constraintBottom_toBottomOf="@id/dot"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/dot"
         app:unify_image_type="circle"
         tools:visibility="visible"/>
 

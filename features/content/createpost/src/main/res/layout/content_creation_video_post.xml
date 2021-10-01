@@ -19,7 +19,7 @@
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/contentVideoPreviewImage"
             android:layout_width="match_parent"
-            android:layout_height="383dp"
+            android:layout_height="384dp"
             android:scaleType="centerInside"
             app:unify_image_corner_radius="0"
             android:src="@color/transparent"
@@ -76,12 +76,13 @@
         <com.google.android.exoplayer2.ui.PlayerView
             android:id="@+id/feed_content_layout_video"
             android:layout_width="match_parent"
-            android:layout_height="383dp"
+            android:layout_height="384dp"
             app:resize_mode="fixed_width"
             app:show_timeout="3000"
             app:shutter_background_color="@android:color/transparent"
             app:surface_type="texture_view"
-            app:use_controller="false" />
+            app:use_controller="false"
+            />
     </FrameLayout>
 
 

@@ -21,6 +21,7 @@ class ShopPListSortFilterBs(val vm: ShopPageProductListViewModel, val listener: 
     var selectedSortText = 0
 
     companion object {
+        const val DEFAULT_SORT_VALUE_NAME = "Pembaruan Terakhir"
         @JvmStatic
         fun newInstance(vm: ShopPageProductListViewModel, listener: ShopPageListener, sortListItems: List<ShopPagePListSortItem>): ShopPListSortFilterBs {
             return ShopPListSortFilterBs(vm, listener, sortListItems)
@@ -40,8 +41,12 @@ class ShopPListSortFilterBs(val vm: ShopPageProductListViewModel, val listener: 
 
          view?.rv_sort?.let {
              it.onLoadFinish {
+                 sortListItems.forEachIndexed { index, shopPagePListSortItem ->
+                     if (shopPagePListSortItem.name.equals(DEFAULT_SORT_VALUE_NAME))
+                        positionSort = index
+                 }
+                 sortListItemUnify[positionSort].listRightRadiobtn?.isChecked = true
 
-                 it.setSelectedFilterOrSort(sortListItemUnify, vm.getSortPosition().orZero())
 
                  it.setOnItemClickListener { adapterView, view, index, l ->
                      onItemSortClickedBottomSheet(index, sortListItemUnify, it)

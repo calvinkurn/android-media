@@ -9,16 +9,15 @@ import android.graphics.Paint
 import android.os.Handler
 import android.view.*
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
+import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
-import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
+import com.tokopedia.createpost.createpost.R
+import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.abs
 import kotlin.math.ceil
@@ -98,7 +97,6 @@ class TagViewProvider {
         val greyAreaY = calculateGreyAreaX(parent, bitmap)
 
         child.visibility = View.INVISIBLE
-        parent.addView(child)
         var productTagViewDelete: IconUnify = child.findViewById(R.id.product_tag_clear)
         var productTagViewDeleteRight: IconUnify = child.findViewById(R.id.product_tag_clear_right)
         var productTagViewDeleteFinal: IconUnify = productTagViewDelete
@@ -245,6 +243,7 @@ class TagViewProvider {
         })
 
         Handler().postDelayed(Runnable {
+            parent.addView(child)
             /*Handling for X position*/
             var xTapped: Float =
                 feedXMediaTagging.X?.minus(child.width / 2) ?: 0f

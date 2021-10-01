@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.createpost.createpost.R
@@ -323,6 +324,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             productVideoJob = scope.launch {
                 if (videoPlayer == null)
                     videoPlayer = FeedExoPlayer(context)
+                feed_content_layout_video?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                 feed_content_layout_video?.player = videoPlayer?.getExoPlayer()
                 feed_content_layout_video?.videoSurfaceView?.setOnClickListener {
                     if (createPostModel.completeImageList[index].isPlaying) {
@@ -420,15 +422,10 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         val mediaModel = createPostModel.completeImageList[currentImagePos]
         if (getLatestTotalProductCount() < 5)
             enableProductIcon()
-        val imageItem = mediaModel.imageView
-        imageItem?.run {
-            val layout = findViewById<ConstraintLayout>(R.id.product_tagging_parent_layout)
-            for (view in layout.children) {
-                if (view.tag == productId)
-                    layout.removeView(view)
-            }
-
-        }
+        if (mediaModel.type == MediaType.VIDEO)
+            bindVideo(mediaModel)
+        else
+            bindImageAfterDelete(mediaModel, currentImagePos, productId)
 
         updateResultIntent()
 
@@ -553,6 +550,22 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             product_tag_button.setColorFilter(it)
             content_tag_product_text.setTextColor(it)
         }
+    }
+    private fun bindImageAfterDelete(media: MediaModel, mediaIndex: Int, productId: String) {
+        val products = media.products
+        val imageItem = media.imageView
+        imageItem?.run {
+            val layout = findViewById<ConstraintLayout>(R.id.product_tagging_parent_layout)
+            val lihatProductTagView = findViewById<CardView>(R.id.product_tagging_button_parent)
+            lihatProductTagView.showWithCondition(products.isNotEmpty())
+
+            for (view in layout.children) {
+                if (view.tag == productId)
+                    layout.removeView(view)
+            }
+
+        }
+
     }
 
     private fun bindImage(media: MediaModel, mediaIndex: Int) {
