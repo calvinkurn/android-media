@@ -45,10 +45,9 @@ import com.tokopedia.feedplus.view.analytics.FeedToolBarAnalytics
 import com.tokopedia.feedplus.view.customview.FeedMainToolbar
 import com.tokopedia.feedplus.view.di.DaggerFeedContainerComponent
 import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
-import com.tokopedia.imagepicker_insta.trackers.TrackerProvider
+import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener

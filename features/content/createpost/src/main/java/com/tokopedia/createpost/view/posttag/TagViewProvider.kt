@@ -15,10 +15,10 @@ import com.tokopedia.createpost.view.viewmodel.MediaType
 import com.tokopedia.createpost.view.viewmodel.RelatedProductItem
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.imagepicker_insta.toPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.abs
 import kotlin.math.ceil

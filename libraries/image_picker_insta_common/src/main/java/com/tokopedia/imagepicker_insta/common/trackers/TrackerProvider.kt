@@ -1,7 +1,7 @@
-package com.tokopedia.imagepicker_insta.trackers
+package com.tokopedia.imagepicker_insta.common.trackers
 
 object TrackerProvider {
-    internal var tracker: TrackerContract? = null
+    var tracker: TrackerContract? = null
 
     fun attachTracker(trackerContract: TrackerContract) {
         tracker = trackerContract

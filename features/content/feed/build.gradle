@@ -80,7 +80,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
-    implementation projectOrAar(rootProject.ext.libraries.imagePickerInsta)
+    implementation projectOrAar(rootProject.ext.libraries.imagePickerInstaCommon)
 
 
     implementation rootProject.ext.unifyDependencies.coach_mark

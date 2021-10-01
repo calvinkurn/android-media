@@ -19,13 +19,14 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.imagepicker_insta.*
 import com.tokopedia.imagepicker_insta.activity.CameraActivity
 import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity
-import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity.Companion.DEFAULT_MULTI_SELECT_LIMIT
+import com.tokopedia.imagepicker_insta.common.ImagePickerRouter.DEFAULT_MULTI_SELECT_LIMIT
+import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
 import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
 import com.tokopedia.imagepicker_insta.mediaImporter.PhotoImporter
 import com.tokopedia.imagepicker_insta.menu.MenuManager
 import com.tokopedia.imagepicker_insta.models.*
-import com.tokopedia.imagepicker_insta.trackers.TrackerProvider
+import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.util.PermissionUtil
 import com.tokopedia.imagepicker_insta.viewmodel.PickerViewModel

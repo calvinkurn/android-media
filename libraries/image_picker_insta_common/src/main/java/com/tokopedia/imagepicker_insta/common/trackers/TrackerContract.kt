@@ -1,8 +1,8 @@
-package com.tokopedia.imagepicker_insta.trackers
+package com.tokopedia.imagepicker_insta.common.trackers
 
 import androidx.annotation.StringDef
-import com.tokopedia.imagepicker_insta.trackers.MediaType.Companion.IMAGE
-import com.tokopedia.imagepicker_insta.trackers.MediaType.Companion.VIDEO
+import com.tokopedia.imagepicker_insta.common.trackers.MediaType.Companion.IMAGE
+import com.tokopedia.imagepicker_insta.common.trackers.MediaType.Companion.VIDEO
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 
