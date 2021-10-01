@@ -322,4 +322,5 @@ class OfficialStoreHomeViewModel @Inject constructor(
         removeWishListUseCase.unsubscribe()
         getDisplayHeadlineAds.cancelJobs()
     }
+
 }
