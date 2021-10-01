@@ -166,7 +166,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.csat_rating)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.agerestriction)
-    implementation projectOrAar(rootProject.ext.features.affiliateToko)
     implementation projectOrAar(rootProject.ext.features.promotionsTarget)
     implementation projectOrAar(rootProject.ext.features.promoGamificationCommon)
     implementation projectOrAar(rootProject.ext.libraries.shakeDetect)
