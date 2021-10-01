@@ -1,4 +1,4 @@
-package com.tokopedia.digital.digital_recommendation.presentation.customview
+package com.tokopedia.digital.digital_recommendation.presentation.widget
 
 import android.content.Context
 import android.os.Bundle

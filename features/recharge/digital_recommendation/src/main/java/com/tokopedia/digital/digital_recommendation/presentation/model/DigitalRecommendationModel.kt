@@ -11,9 +11,10 @@ data class DigitalRecommendationModel(
         val iconUrl: String,
         val categoryName: String,
         val productName: String,
-        val clientNumber: String,
         val applink: String,
         val tracking: DigitalRecommendationTrackingModel = DigitalRecommendationTrackingModel(),
         val type: DigitalRecommendationType,
-        val price: Double = 0.0
+        val price: String,
+        val beforePrice: String,
+        val discountTag: String
 ) : Parcelable

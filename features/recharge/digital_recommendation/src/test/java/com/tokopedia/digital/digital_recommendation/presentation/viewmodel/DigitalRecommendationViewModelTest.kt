@@ -65,7 +65,6 @@ class DigitalRecommendationViewModelTest {
                         "someurl.com",
                         "dummy category",
                         "dummy product",
-                        "dummy client number",
                         "tokopedia-test://dummy-applink",
                         DigitalRecommendationTrackingModel(
                                 "dummy typename",
@@ -77,7 +76,10 @@ class DigitalRecommendationViewModelTest {
                                 "dummy operator id",
                                 "dummy product id"
                         ),
-                        DigitalRecommendationType.CATEGORY
+                        DigitalRecommendationType.CATEGORY,
+                        "Rp10.000",
+                        "Rp100.000",
+                        "90%"
                 )
         ))
 
@@ -93,8 +95,10 @@ class DigitalRecommendationViewModelTest {
         assertEquals(dataIndexZero.iconUrl, "someurl.com")
         assertEquals(dataIndexZero.categoryName, "dummy category")
         assertEquals(dataIndexZero.productName, "dummy product")
-        assertEquals(dataIndexZero.clientNumber, "dummy client number")
         assertEquals(dataIndexZero.applink, "tokopedia-test://dummy-applink")
+        assertEquals(dataIndexZero.price, "Rp10.000")
+        assertEquals(dataIndexZero.beforePrice, "Rp100.000")
+        assertEquals(dataIndexZero.discountTag, "90%")
         assertEquals(dataIndexZero.tracking.typeName, "dummy typename")
         assertEquals(dataIndexZero.tracking.businessUnit, "dummy business unit")
         assertEquals(dataIndexZero.tracking.categoryId, "dummy category id")

@@ -1,14 +1,13 @@
 package com.tokopedia.digital.digital_recommendation.presentation.adapter.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.digital_recommendation.databinding.ItemDigitalRecommendationBinding
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
-import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
 /**
@@ -19,10 +18,11 @@ class DigitalRecommendationViewHolder(private val binding: ItemDigitalRecommenda
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(element: DigitalRecommendationModel) {
+        setupProductNameMaxLine(element)
         renderCategoryName(element)
         renderProductName(element)
         renderImage(element)
-        renderClientNumber(element)
+        renderBottomLabel(element)
 
         if (element.applink.isNotEmpty()) {
             binding.root.setOnClickListener {
@@ -32,6 +32,15 @@ class DigitalRecommendationViewHolder(private val binding: ItemDigitalRecommenda
         }
 
         actionListener.onItemBinding(element, adapterPosition)
+    }
+
+    private fun setupProductNameMaxLine(element: DigitalRecommendationModel) {
+        if (element.discountTag.isNotEmpty() || element.beforePrice.isNotEmpty() || element.price.isNotEmpty()) {
+            binding.tgProductDigitalRecommendation.maxLines = 2
+        } else {
+            binding.tgProductDigitalRecommendation.maxLines = 3
+        }
+        binding.tgProductDigitalRecommendation.requestLayout()
     }
 
     private fun renderCategoryName(element: DigitalRecommendationModel) {
@@ -52,15 +61,7 @@ class DigitalRecommendationViewHolder(private val binding: ItemDigitalRecommenda
             binding.tgProductDigitalRecommendation.hide()
         } else {
             binding.tgProductDigitalRecommendation.show()
-            binding.tgProductDigitalRecommendation.text = element.productName.trim()
-            when (element.type) {
-                DigitalRecommendationType.PRODUCT -> {
-                    binding.tgProductDigitalRecommendation.setWeight(Typography.REGULAR)
-                }
-                DigitalRecommendationType.CATEGORY -> {
-                    binding.tgProductDigitalRecommendation.setWeight(Typography.BOLD)
-                }
-            }
+            binding.tgProductDigitalRecommendation.text = MethodChecker.fromHtml(element.productName.trim())
         }
     }
 
@@ -68,14 +69,31 @@ class DigitalRecommendationViewHolder(private val binding: ItemDigitalRecommenda
         binding.ivIconDigitalRecommendation.loadImage(element.iconUrl)
     }
 
-    private fun renderClientNumber(element: DigitalRecommendationModel) {
-        if (element.clientNumber.isEmpty()) {
-            binding.tgNumberDigitalRecommendation.hide()
-            binding.tgProductDigitalRecommendation.maxLines = 3
-        } else {
-            binding.tgNumberDigitalRecommendation.show()
-            binding.tgNumberDigitalRecommendation.text = element.clientNumber.trim()
-            binding.tgProductDigitalRecommendation.maxLines = 2
+    private fun renderBottomLabel(element: DigitalRecommendationModel) {
+        with(binding) {
+            // render price
+            if (element.price.isNotEmpty()) {
+                tgPriceDigitalRecommendation.text = element.price
+                tgPriceDigitalRecommendation.show()
+            } else {
+                tgPriceDigitalRecommendation.hide()
+            }
+
+            // render real price
+            if (element.beforePrice.isNotEmpty()) {
+                tgRealPriceDigitalRecommendation.text = element.beforePrice
+                tgRealPriceDigitalRecommendation.show()
+            } else {
+                tgRealPriceDigitalRecommendation.hide()
+            }
+
+            // render discount tag
+            if (element.discountTag.isNotEmpty()) {
+                tgDiscountPercentageDigitalRecommendation.text = element.discountTag
+                tgDiscountPercentageDigitalRecommendation.show()
+            } else {
+                tgDiscountPercentageDigitalRecommendation.hide()
+            }
         }
     }
 

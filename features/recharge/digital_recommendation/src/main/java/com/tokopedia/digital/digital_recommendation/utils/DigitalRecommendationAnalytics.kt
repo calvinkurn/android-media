@@ -41,7 +41,7 @@ class DigitalRecommendationAnalytics {
                         it.putString(DigitalRecommendationKeys.ITEM_ID, digitalRecommendationModel.tracking.productId)
                         it.putString(DigitalRecommendationKeys.ITEM_NAME, digitalRecommendationModel.productName)
                         it.putString(DigitalRecommendationKeys.ITEM_VARIANT, digitalRecommendationModel.tracking.itemType)
-                        it.putDouble(DigitalRecommendationKeys.PRICE, digitalRecommendationModel.price)
+                        it.putString(DigitalRecommendationKeys.PRICE, digitalRecommendationModel.price)
                     }
             ))
             putString(DigitalRecommendationKeys.USER_ID, userId)
@@ -81,7 +81,7 @@ class DigitalRecommendationAnalytics {
                         it.putString(DigitalRecommendationKeys.ITEM_ID, digitalRecommendationModel.tracking.productId)
                         it.putString(DigitalRecommendationKeys.ITEM_NAME, digitalRecommendationModel.productName)
                         it.putString(DigitalRecommendationKeys.ITEM_VARIANT, digitalRecommendationModel.tracking.itemType)
-                        it.putDouble(DigitalRecommendationKeys.PRICE, digitalRecommendationModel.price)
+                        it.putString(DigitalRecommendationKeys.PRICE, digitalRecommendationModel.price)
                     }
             ))
             putString(DigitalRecommendationKeys.USER_ID, userId)

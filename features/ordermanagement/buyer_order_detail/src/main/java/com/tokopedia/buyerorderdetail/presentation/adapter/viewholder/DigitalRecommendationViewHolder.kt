@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.presentation.model.DigitalRecommendationUiModel
-import com.tokopedia.digital.digital_recommendation.presentation.customview.DigitalRecommendationWidget
+import com.tokopedia.digital.digital_recommendation.presentation.widget.DigitalRecommendationWidget
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
 
 /**

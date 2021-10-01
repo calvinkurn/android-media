@@ -26,7 +26,6 @@ class DigitalRecommendationMapper {
                                     }
                                 } else "",
                                 productName = item.subtitle,
-                                clientNumber = item.label1,
                                 applink = item.appLink,
                                 tracking = transform(item.trackingData),
                                 type = if (item.trackingData.itemLabel.isNotEmpty()) {
@@ -34,7 +33,10 @@ class DigitalRecommendationMapper {
                                         TYPE_PRODUCT_RECOMMENDATION -> DigitalRecommendationType.PRODUCT
                                         else -> DigitalRecommendationType.CATEGORY
                                     }
-                                } else DigitalRecommendationType.CATEGORY
+                                } else DigitalRecommendationType.CATEGORY,
+                                discountTag = item.label1,
+                                beforePrice = item.label2,
+                                price = item.label3
                         )
                 )
             }

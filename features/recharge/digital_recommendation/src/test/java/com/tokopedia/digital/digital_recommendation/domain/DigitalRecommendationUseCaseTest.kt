@@ -110,10 +110,10 @@ class DigitalRecommendationUseCaseTest {
                                                 appLink = "tokopediatest://dummy_product_applink",
                                                 backgroundColor = "",
                                                 id = "1234567890",
-                                                label1 = "Label 1",
+                                                label1 = "Discount 20%",
                                                 label1Mode = "",
-                                                label2 = "",
-                                                label3 = "",
+                                                label2 = "Rp100.000",
+                                                label3 = "Rp80.000",
                                                 mediaURL = "www.mediaurl.com/gambar.png",
                                                 mediaUrlType = "",
                                                 subtitle = "Subtitle",
@@ -134,7 +134,7 @@ class DigitalRecommendationUseCaseTest {
                                                 appLink = "tokopediatest://dummy_product_applink",
                                                 backgroundColor = "",
                                                 id = "1234567890",
-                                                label1 = "Label 1",
+                                                label1 = "",
                                                 label1Mode = "",
                                                 label2 = "",
                                                 label3 = "",
@@ -158,10 +158,10 @@ class DigitalRecommendationUseCaseTest {
                                                 appLink = "tokopediatest://dummy_product_applink",
                                                 backgroundColor = "",
                                                 id = "1234567890",
-                                                label1 = "Label 1",
+                                                label1 = "Discount 30%",
                                                 label1Mode = "",
-                                                label2 = "",
-                                                label3 = "",
+                                                label2 = "Rp100.000",
+                                                label3 = "Rp70.000",
                                                 mediaURL = "www.mediaurl.com/gambar.png",
                                                 mediaUrlType = "",
                                                 subtitle = "Subtitle",
@@ -182,10 +182,10 @@ class DigitalRecommendationUseCaseTest {
                                                 appLink = "tokopediatest://dummy_product_applink",
                                                 backgroundColor = "",
                                                 id = "1234567890",
-                                                label1 = "Label 1",
+                                                label1 = "",
                                                 label1Mode = "",
                                                 label2 = "",
-                                                label3 = "",
+                                                label3 = "Rp10.000",
                                                 mediaURL = "www.mediaurl.com/gambar.png",
                                                 mediaUrlType = "",
                                                 subtitle = "Subtitle",
@@ -233,7 +233,9 @@ class DigitalRecommendationUseCaseTest {
             val firstData = successData[0]
             assertEquals(firstData.iconUrl, "www.mediaurl.com/gambar.png")
             assertEquals(firstData.productName, "Subtitle")
-            assertEquals(firstData.clientNumber, "Label 1")
+            assertEquals(firstData.discountTag, "Discount 20%")
+            assertEquals(firstData.beforePrice, "Rp100.000")
+            assertEquals(firstData.price, "Rp80.000")
             assertEquals(firstData.applink, "tokopediatest://dummy_product_applink")
             assertEquals(firstData.categoryName, "product title")
 
@@ -241,7 +243,9 @@ class DigitalRecommendationUseCaseTest {
             val secondData = successData[1]
             assertEquals(secondData.iconUrl, "www.mediaurl.com/gambar.png")
             assertEquals(secondData.productName, "Subtitle")
-            assertEquals(secondData.clientNumber, "Label 1")
+            assertEquals(secondData.discountTag, "")
+            assertEquals(secondData.beforePrice, "")
+            assertEquals(secondData.price, "")
             assertEquals(secondData.applink, "tokopediatest://dummy_product_applink")
             assertEquals(secondData.categoryName, "category name")
 
@@ -249,7 +253,9 @@ class DigitalRecommendationUseCaseTest {
             val thirdData = successData[2]
             assertEquals(thirdData.iconUrl, "www.mediaurl.com/gambar.png")
             assertEquals(thirdData.productName, "Subtitle")
-            assertEquals(thirdData.clientNumber, "Label 1")
+            assertEquals(thirdData.discountTag, "Discount 30%")
+            assertEquals(thirdData.beforePrice, "Rp100.000")
+            assertEquals(thirdData.price, "Rp70.000")
             assertEquals(thirdData.applink, "tokopediatest://dummy_product_applink")
             assertEquals(thirdData.categoryName, "product title")
 
@@ -257,7 +263,9 @@ class DigitalRecommendationUseCaseTest {
             val fourthData = successData[3]
             assertEquals(fourthData.iconUrl, "www.mediaurl.com/gambar.png")
             assertEquals(fourthData.productName, "Subtitle")
-            assertEquals(fourthData.clientNumber, "Label 1")
+            assertEquals(fourthData.discountTag, "")
+            assertEquals(fourthData.beforePrice, "")
+            assertEquals(fourthData.price, "Rp10.000")
             assertEquals(fourthData.applink, "tokopediatest://dummy_product_applink")
             assertEquals(fourthData.categoryName, "")
         }
