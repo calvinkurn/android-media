@@ -35,7 +35,17 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.baseAdapter)
-
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.imageuploader)
+    implementation projectOrAar(rootProject.ext.libraries.videoUploader)
+    implementation projectOrAar(rootProject.ext.libraries.twitterShare)
+    implementation rootProject.ext.networkDependencies.glide
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
 }
 
 project.ext {

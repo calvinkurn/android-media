@@ -1,4 +1,4 @@
-package com.tokopedia.createpost.view.util
+package com.tokopedia.createpost.common.view.util
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext

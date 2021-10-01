@@ -1,4 +1,4 @@
-package com.tokopedia.createpost.view.service
+package com.tokopedia.createpost.common.view.service
 
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -18,12 +18,11 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.createpost.*
 import com.tokopedia.createpost.common.*
-import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.di.CreatePostModule
-import com.tokopedia.createpost.di.DaggerCreatePostComponent
-import com.tokopedia.createpost.domain.usecase.SubmitPostUseCase
-import com.tokopedia.createpost.view.util.FeedSellerAppReviewHelper
-import com.tokopedia.createpost.view.util.SubmitPostNotificationManager
+import com.tokopedia.createpost.common.di.CreatePostCommonModule
+import com.tokopedia.createpost.common.di.DaggerCreatePostCommonComponent
+import com.tokopedia.createpost.common.domain.usecase.SubmitPostUseCase
+import com.tokopedia.createpost.common.view.util.FeedSellerAppReviewHelper
+import com.tokopedia.createpost.common.view.util.SubmitPostNotificationManager
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.twitter_share.TwitterManager
@@ -97,8 +96,8 @@ class SubmitPostService : JobIntentService() {
     }
 
     private fun initInjector() {
-        DaggerCreatePostComponent.builder()
-                .createPostModule(CreatePostModule(this.applicationContext))
+        DaggerCreatePostCommonComponent.builder()
+                .createPostCommonModule(CreatePostCommonModule(this.applicationContext))
                 .build()
                 .inject(this)
     }
@@ -133,7 +132,7 @@ class SubmitPostService : JobIntentService() {
 
             override fun getFailedIntent(errorMessage: String): PendingIntent {
                 val message = if (errorMessage.contains(context.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown_short), false))
-                    context.getString(R.string.cp_error_create_post)
+                    context.getString(R.string.cp_common_error_create_post)
                 else
                     errorMessage
 

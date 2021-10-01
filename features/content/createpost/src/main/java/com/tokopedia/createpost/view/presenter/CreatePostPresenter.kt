@@ -2,14 +2,14 @@ package com.tokopedia.createpost.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.createpost.domain.entity.FeedDetail
+import com.tokopedia.createpost.common.domain.entity.FeedDetail
 import com.tokopedia.createpost.domain.usecase.GetContentFormUseCase
 import com.tokopedia.createpost.domain.usecase.GetFeedForEditUseCase
 import com.tokopedia.createpost.domain.usecase.GetProductSuggestionUseCase
 import com.tokopedia.createpost.domain.usecase.GetShopProductSuggestionUseCase
-import com.tokopedia.createpost.view.contract.CreatePostContract
+import com.tokopedia.createpost.common.view.contract.CreatePostContract
 import com.tokopedia.createpost.view.subscriber.GetContentFormSubscriber
-import com.tokopedia.createpost.view.type.ShareType
+import com.tokopedia.createpost.common.view.type.ShareType
 import com.tokopedia.createpost.common.view.viewmodel.ProductSuggestionItem
 import com.tokopedia.feedcomponent.data.pojo.profileheader.ProfileHeaderData
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase

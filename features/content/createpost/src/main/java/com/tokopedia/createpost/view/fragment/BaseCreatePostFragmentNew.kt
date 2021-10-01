@@ -11,12 +11,12 @@ import com.tokopedia.createpost.common.data.pojo.getcontentform.Author
 import com.tokopedia.createpost.common.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
-import com.tokopedia.createpost.domain.entity.FeedDetail
+import com.tokopedia.createpost.common.domain.entity.FeedDetail
 import com.tokopedia.createpost.view.activity.PARAM_POST_ID
 import com.tokopedia.createpost.view.activity.PARAM_TYPE
-import com.tokopedia.createpost.view.contract.CreatePostContract
+import com.tokopedia.createpost.common.view.contract.CreatePostContract
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
-import com.tokopedia.createpost.view.type.ShareType
+import com.tokopedia.createpost.common.view.type.ShareType
 import com.tokopedia.createpost.view.viewmodel.CreateContentPostViewModel
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaModel

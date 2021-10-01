@@ -3,12 +3,13 @@ package com.tokopedia.createpost.di
 
 import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
+import com.tokopedia.createpost.common.di.CreatePostScope
 import com.tokopedia.createpost.view.activity.CreatePostActivityNew
 import com.tokopedia.createpost.view.fragment.BaseCreatePostFragment
 import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
 import com.tokopedia.createpost.view.plist.ShopProductListFragment
-import com.tokopedia.createpost.view.service.SubmitPostService
-import com.tokopedia.createpost.view.service.SubmitPostServiceNew
+import com.tokopedia.createpost.common.view.service.SubmitPostService
+import com.tokopedia.createpost.common.view.service.SubmitPostServiceNew
 import dagger.Component
 
 /**
@@ -18,10 +19,6 @@ import dagger.Component
 @Component(modules = [CreatePostModule::class, ViewModelModule::class])
 interface CreatePostComponent {
     fun inject(fragment: BaseCreatePostFragment)
-
-    fun inject(service: SubmitPostService)
-
-    fun inject(service: SubmitPostServiceNew)
 
     fun provideAffiliateAnalytics(): AffiliateAnalytics
 

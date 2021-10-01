@@ -1,4 +1,4 @@
-package com.tokopedia.createpost.view.service
+package com.tokopedia.createpost.common.view.service
 
 import android.content.ContentResolver
 import android.content.Context
@@ -7,7 +7,6 @@ import android.net.Uri
 import android.text.TextUtils
 import androidx.core.app.JobIntentService
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST_NEW
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS_NEW
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.Content
@@ -15,15 +14,11 @@ import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostDat
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.common.DRAFT_ID
 import com.tokopedia.createpost.common.TYPE_AFFILIATE
-import com.tokopedia.createpost.di.CreatePostModule
-import com.tokopedia.createpost.di.DaggerCreatePostComponent
-import com.tokopedia.createpost.domain.usecase.SubmitPostUseCaseNew
-import com.tokopedia.createpost.view.util.FeedSellerAppReviewHelper
-import com.tokopedia.createpost.view.util.FileUtil
-import com.tokopedia.createpost.view.util.PostUpdateProgressManager
+import com.tokopedia.createpost.common.di.CreatePostCommonModule
+import com.tokopedia.createpost.common.di.DaggerCreatePostCommonComponent
+import com.tokopedia.createpost.common.domain.usecase.SubmitPostUseCaseNew
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.twitter_share.TwitterManager
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -40,12 +35,12 @@ class SubmitPostServiceNew : JobIntentService() {
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var twitterManager: TwitterManager
+    lateinit var twitterManager: com.tokopedia.twitter_share.TwitterManager
 
     @Inject
-    lateinit var sellerAppReviewHelper: FeedSellerAppReviewHelper
+    lateinit var sellerAppReviewHelper: com.tokopedia.createpost.common.view.util.FeedSellerAppReviewHelper
 
-    private var postUpdateProgressManager: PostUpdateProgressManager? = null
+    private var postUpdateProgressManager: com.tokopedia.createpost.common.view.util.PostUpdateProgressManager? = null
 
 
     companion object {
@@ -106,24 +101,26 @@ class SubmitPostServiceNew : JobIntentService() {
     }
 
     private fun initInjector() {
-        DaggerCreatePostComponent.builder()
-            .createPostModule(CreatePostModule(this.applicationContext))
+        DaggerCreatePostCommonComponent.builder()
+            .createPostCommonModule(CreatePostCommonModule(this.applicationContext))
             .build()
             .inject(this)
     }
 
     private fun isTypeAffiliate(authorType: String) = authorType == TYPE_AFFILIATE
 
-    private fun getProgressManager(viewModel: CreatePostViewModel): PostUpdateProgressManager {
+    private fun getProgressManager(viewModel: CreatePostViewModel): com.tokopedia.createpost.common.view.util.PostUpdateProgressManager {
         val firstImage = ""
         try {
-            FileUtil.createFilePathFromUri(applicationContext,
-                Uri.parse(viewModel.completeImageList.firstOrNull()?.path ?: ""))
+            com.tokopedia.createpost.common.view.util.FileUtil.createFilePathFromUri(
+                applicationContext,
+                Uri.parse(viewModel.completeImageList.firstOrNull()?.path ?: "")
+            )
         } catch (e: Exception) {
             Timber.e("Exception")
         }
         val maxCount = viewModel.completeImageList.size
-        return object : PostUpdateProgressManager(maxCount, firstImage, applicationContext) {
+        return object : com.tokopedia.createpost.common.view.util.PostUpdateProgressManager(maxCount, firstImage, applicationContext) {
         }
     }
 
@@ -133,10 +130,11 @@ class SubmitPostServiceNew : JobIntentService() {
                 if (submitPostData == null
                     || submitPostData.feedContentSubmit.success != SubmitPostData.SUCCESS) {
                     postUpdateProgressManager?.onFailedPost(
-                        ErrorHandler.getErrorMessage(
-                        this@SubmitPostServiceNew,
-                        RuntimeException()
-                    ))
+                        com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
+                            this@SubmitPostServiceNew,
+                            RuntimeException()
+                        )
+                    )
                     return
                 } else if (!TextUtils.isEmpty(submitPostData.feedContentSubmit.error)) {
                     postUpdateProgressManager?.onFailedPost(submitPostData.feedContentSubmit.error)
@@ -152,10 +150,12 @@ class SubmitPostServiceNew : JobIntentService() {
             }
 
             override fun onError(e: Throwable?) {
-                postUpdateProgressManager?.onFailedPost(ErrorHandler.getErrorMessage(
-                    this@SubmitPostServiceNew,
-                    e
-                ))
+                postUpdateProgressManager?.onFailedPost(
+                    com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
+                        this@SubmitPostServiceNew,
+                        e
+                    )
+                )
             }
 
             private fun sendBroadcast() {
