@@ -29,6 +29,7 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_dc_category_widget_v2
+        private const val TOTAL_SPAN_RECYCLER = 2
     }
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
@@ -47,7 +48,7 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
         recyclerView.adapter = CategoryWidgetV2ItemAdapter(channel, categoryListener)
         recyclerView.layoutManager = GridLayoutManager(
                 view.context,
-                2,
+                TOTAL_SPAN_RECYCLER,
                 GridLayoutManager.HORIZONTAL,
                 false)
 
