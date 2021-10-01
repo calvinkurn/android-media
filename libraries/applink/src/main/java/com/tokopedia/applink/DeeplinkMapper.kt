@@ -85,6 +85,7 @@ import com.tokopedia.config.GlobalConfig
 object DeeplinkMapper {
 
     const val TOKOPOINTS = "tokopoints"
+    const val TOKOMART = "tokomart"
     val LOCK = Any()
 
     /**
@@ -197,6 +198,11 @@ object DeeplinkMapper {
         ) {
             return ApplinkConstInternalPromo.TOKOPOINTS_HOME
         }
+
+        if (pathSize == 1 && (uri.pathSegments[0] == TOKOMART)) {
+            return ApplinkConstInternalTokopediaNow.HOME
+        }
+
         val appLinkContent =
             DeeplinkMapperContent.getRegisteredNavigationContentFromHttp(uri, deeplink)
         if (appLinkContent.isNotBlank()) return appLinkContent

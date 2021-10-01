@@ -29,7 +29,6 @@ import com.tokopedia.applink.DeepLinkChecker.REFERRAL
 import com.tokopedia.applink.DeepLinkChecker.SALE
 import com.tokopedia.applink.DeepLinkChecker.SHOP
 import com.tokopedia.applink.DeepLinkChecker.SMCREFERRAL
-import com.tokopedia.applink.DeepLinkChecker.TOKOMART
 import com.tokopedia.applink.DeepLinkChecker.TOKOPOINT
 import com.tokopedia.applink.DeepLinkChecker.TRAVEL_HOMEPAGE
 import com.tokopedia.applink.DeepLinkChecker.WALLET_OVO
@@ -339,10 +338,5 @@ class DeepLinkMatcherTest: DeepLinkMatcherTestFixture() {
     @Test
     fun `check link url of login by QR then should return LOGIN_BY_QR`() {
         assertEqualsDeepLinkMatcher(LOGIN_BY_QR, LOGIN_BY_QR_LINK_URL)
-    }
-
-    @Test
-    fun `check link url of tokomart then should return tokomart`() {
-        assertEqualsDeepLinkMatcher(TOKOMART, TOKOMART_LINK_URL)
     }
 }
