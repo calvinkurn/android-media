@@ -493,7 +493,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         homeAccountAnalytic.eventClickAccountPage(
             balanceAndPointUiModel.id,
             balanceAndPointUiModel.isActive,
-            balanceAndPointUiModel. isFailed
+            balanceAndPointUiModel.isFailed
         )
         if (balanceAndPointUiModel.isFailed) {
             balanceAndPointAdapter?.changeItemToShimmer(
