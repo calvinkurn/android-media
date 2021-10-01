@@ -154,9 +154,7 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
                is NetworkResult.Success -> {
                    showError(false)
                    btnRefresh.isLoading = false
-
-                   val liveState = parentViewModel.observableLiveViewState.value
-                   if(liveState != null && (liveState is PlayLiveViewState.Stopped || liveState is PlayLiveViewState.Error)) {
+                   if(needRebindLeaderboard()) {
                        leaderboardAdapter.setItems(it.data.leaderboardWinners)
                        leaderboardAdapter.notifyDataSetChanged()
                    }
@@ -166,6 +164,11 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
                }
            }
         })
+    }
+
+    private fun needRebindLeaderboard(): Boolean {
+        val liveState = parentViewModel.observableLiveViewState.value
+        return liveState != null && (liveState is PlayLiveViewState.Stopped || liveState is PlayLiveViewState.Error)
     }
 
     private fun setupDialog(dialog: Dialog) {
