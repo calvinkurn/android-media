@@ -467,6 +467,7 @@ class PlayVideoFragment @Inject constructor(
                         PlayerType.Client -> {
                             videoView.setPlayer(videoPlayer.exoPlayer)
                             videoView.hideThumbnail()
+                            handleVideoStateChanged(state)
                         }
                         is PlayerType.Cast -> videoView.showThumbnail(playerType.coverUrl)
                     }
@@ -474,7 +475,6 @@ class PlayVideoFragment @Inject constructor(
 
                 videoAnalyticHelper.onNewVideoState(state)
                 videoView.show()
-                if (videoPlayer is PlayVideoPlayerUiModel.General.Complete && videoPlayer.playerType == PlayerType.Client) handleVideoStateChanged(state)
             }
         }
     }
