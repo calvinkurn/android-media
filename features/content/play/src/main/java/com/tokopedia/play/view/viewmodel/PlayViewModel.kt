@@ -890,7 +890,6 @@ class PlayViewModel @Inject constructor(
         updatePartnerInfo(channelData.partnerInfo)
         updateCartInfo(channelData.cartInfo)
         if (!channelData.statusInfo.statusType.isFreeze && upcomingInfo != null && upcomingInfo?.isUpcoming == false) {
-//            updateVideoMetaInfo(channelData.videoMetaInfo)
             updateLikeAndTotalViewInfo(channelData.likeInfo, channelData.id)
             updateProductTagsInfo(channelData.pinnedInfo.pinnedProduct.productTags, channelData.pinnedInfo, channelData.id)
         }
