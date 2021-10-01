@@ -284,7 +284,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                upcomingType
                productID
                bgColor
-               timerWording
              }
             shopTopChatSpeed {
               messageResponseTime

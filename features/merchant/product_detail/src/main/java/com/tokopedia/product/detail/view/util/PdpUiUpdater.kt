@@ -470,7 +470,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 startDate = selectedUpcoming?.startDate ?: ""
                 notifyMe = selectedUpcoming?.notifyMe ?: false
                 bgColorUpcoming = selectedUpcoming?.bgColorUpcoming ?: ""
-                timerWording = selectedUpcoming?.timerWording ?: ""
                 upcomingNplData = UpcomingNplDataModel(
                         upcomingType = selectedUpcoming?.upcomingType ?: "",
                         ribbonCopy = selectedUpcoming?.campaignTypeName ?: "",

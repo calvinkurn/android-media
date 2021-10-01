@@ -23,7 +23,6 @@ import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
@@ -51,7 +50,6 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     private var campaignNameViews1: Typography? = null
     private var timerView1: TimerUnifySingle? = null
     private var remindMeButton1: Typography? = null
-    private var dateTimer1: RoundedCornerDateInfo? = null
 
     // ongoing components - structure type 2
     private var campaignRibbonType2View: View? = null
@@ -92,7 +90,6 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         campaignNameViews1 = campaignRibbonType1View?.findViewById(R.id.tpg_campaign_name_s1)
         timerView1 = campaignRibbonType1View?.findViewById(R.id.tus_timer_view_s1)
         remindMeButton1 = campaignRibbonType1View?.findViewById(R.id.remind_me_button_s1)
-        dateTimer1 = campaignRibbonType1View?.findViewById(R.id.day_info_timer)
         // TYPE 2 PROPERTIES
         campaignRibbonType2View = rootView.findViewById(R.id.campaign_ribbon_type_2)
         campaignLogoView2 = campaignRibbonType2View?.findViewById(R.id.iu_campaign_logo_s2)
@@ -235,19 +232,11 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     }
 
     private fun renderTimerUpcoming(upcomingData: ProductNotifyMeDataModel?) {
-        if (upcomingData?.timerWording == null || upcomingData.timerWording.isEmpty()) {
-            upcomingData?.let { data ->
-                renderUpComingNplCountDownTimer(
-                        data.startDate,
-                        timerView1
-                )
-            }
-            timerView1?.show()
-            dateTimer1?.hide()
-        } else {
-            dateTimer1?.setDateText(upcomingData.timerWording)
-            timerView1?.hide()
-            dateTimer1?.show()
+        upcomingData?.let { data ->
+            renderUpComingNplCountDownTimer(
+                    data.startDate,
+                    timerView1
+            )
         }
     }
 
@@ -271,7 +260,6 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
 
     private fun renderUpComingNplCountDownTimer(startDateData: String, timerView: TimerUnifySingle?) {
         try {
-            val now = System.currentTimeMillis()
             val startTime = startDateData.toLongOrZero() * ONE_THOUSAND
             val startDate = Date(startTime)
             val calendar = Calendar.getInstance()
@@ -279,14 +267,9 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
             timerView?.targetDate = calendar
             timerView?.isShowClockIcon = false
 
-            // less then 24 hours campaign period
-            if (TimeUnit.MILLISECONDS.toDays(startDate.time - now) < 1) {
-                timerView?.timerFormat = TimerUnifySingle.FORMAT_HOUR
-                timerView?.onFinish = {
-                    listener?.refreshPage()
-                }
-            } else {
-                timerView?.timerFormat = TimerUnifySingle.FORMAT_DAY
+            timerView?.timerFormat = TimerUnifySingle.FORMAT_AUTO
+            timerView?.onFinish = {
+                listener?.refreshPage()
             }
             timerView?.show()
         } catch (e: Throwable) {
@@ -396,15 +379,10 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
                 timerView?.targetDate = calendar
                 timerView?.isShowClockIcon = false
 
-                // less then 24 hours campaign period
-                if (TimeUnit.MILLISECONDS.toDays(endDate.time - now) < 1) {
-                    timerView?.timerFormat = TimerUnifySingle.FORMAT_HOUR
-                    timerView?.onFinish = {
-                        callback?.onOnGoingCampaignEnded(campaign)
-                        listener?.showAlertCampaignEnded()
-                    }
-                } else {
-                    timerView?.timerFormat = TimerUnifySingle.FORMAT_DAY
+                timerView?.timerFormat = TimerUnifySingle.FORMAT_AUTO
+                timerView?.onFinish = {
+                    callback?.onOnGoingCampaignEnded(campaign)
+                    listener?.showAlertCampaignEnded()
                 }
                 timerView?.show()
             }
