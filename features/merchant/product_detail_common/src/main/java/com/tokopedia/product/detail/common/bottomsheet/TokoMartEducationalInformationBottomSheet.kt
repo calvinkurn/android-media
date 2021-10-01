@@ -76,7 +76,8 @@ class TokoMartEducationalInformationBottomSheet : BottomSheetUnify() {
     }
 
     private fun convertStringToLink(typography: Typography, context: Context, stringRes: Int) {
-        val linkHelper = HtmlLinkHelper(context, getString(stringRes))
+        val linkColor = resources.getColor(R.color.Unify_GN500)
+        val linkHelper = HtmlLinkHelper(context, getString(stringRes, linkColor))
         typography.text = linkHelper.spannedString
         typography.movementMethod = LinkMovementMethod.getInstance()
         linkHelper.urlList[0].let { link ->
