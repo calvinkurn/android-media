@@ -434,7 +434,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                 }
                 reloadPayment()
             } else {
-                showToaster("Gagal menyambungkan akun", Toaster.TYPE_ERROR)
                 hideFullLoading()
             }
         }
