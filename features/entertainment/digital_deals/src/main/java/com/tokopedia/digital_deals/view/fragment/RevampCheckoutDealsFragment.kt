@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.view.fragment
 
+import android.app.Activity
 import android.graphics.Paint
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,9 +10,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.digital_deals.data.EventVerifyResponse
 import com.tokopedia.digital_deals.data.ItemMapResponse
 import com.tokopedia.digital_deals.di.DealsComponent
+import com.tokopedia.digital_deals.view.activity.CheckoutActivity
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity.EXTRA_DEALDETAIL
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity.EXTRA_VERIFY
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse
+import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks
 import com.tokopedia.digital_deals.view.utils.Utils
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -19,8 +22,6 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_checkout_deal.*
-import kotlinx.android.synthetic.main.fragment_checkout_deal.tv_available_locations
-import kotlinx.android.synthetic.main.header_layout_brand_page.*
 import javax.inject.Inject
 
 class RevampCheckoutDealsFragment: BaseDaggerFragment() {
@@ -29,6 +30,8 @@ class RevampCheckoutDealsFragment: BaseDaggerFragment() {
     private var verifyData: EventVerifyResponse = EventVerifyResponse()
     private var itemMap: ItemMapResponse = ItemMapResponse()
     private var quantity = 1
+
+    private lateinit var fragmentCallbacks: DealFragmentCallbacks
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -40,6 +43,11 @@ class RevampCheckoutDealsFragment: BaseDaggerFragment() {
             verifyData = it.getParcelable(EXTRA_VERIFY) ?: EventVerifyResponse()
             itemMap = verifyData.metadata.itemMap.firstOrNull() ?: ItemMapResponse()
         }
+    }
+
+    override fun onAttach(activity: Activity) {
+        super.onAttach(activity)
+        fragmentCallbacks = activity as CheckoutActivity
     }
 
     override fun getScreenName(): String = ""
@@ -96,7 +104,7 @@ class RevampCheckoutDealsFragment: BaseDaggerFragment() {
         tv_number_vouchers?.text = resources.getString(com.tokopedia.digital_deals.R.string.number_of_vouchers, itemMap.quantity)
 
         if(dealsDetail.outlets != null && dealsDetail.outlets.size > 0){
-            tv_number_locations?.text = resources.getString(com.tokopedia.digital_deals.R.string.number_of_locations, dealsDetail.outlets.size)
+            tv_no_locations?.text = resources.getString(com.tokopedia.digital_deals.R.string.number_of_locations, dealsDetail.outlets.size)
         }
 
         tv_email?.setText(userSession.email)
@@ -104,6 +112,10 @@ class RevampCheckoutDealsFragment: BaseDaggerFragment() {
         ticker_promocode?.enableView()
         base_main_content?.show()
         cl_btn_payment?.show()
+
+        tv_no_locations?.setOnClickListener {
+            fragmentCallbacks.replaceFragment(dealsDetail.outlets, 0)
+        }
 
     }
 
