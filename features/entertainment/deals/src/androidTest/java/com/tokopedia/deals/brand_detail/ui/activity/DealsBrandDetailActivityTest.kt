@@ -7,9 +7,9 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
@@ -18,7 +18,10 @@ import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.junit.*
+import org.junit.After
+import org.junit.Assert
+import org.junit.Rule
+import org.junit.Test
 
 class DealsBrandDetailActivityTest {
 
@@ -30,27 +33,23 @@ class DealsBrandDetailActivityTest {
     var cassavaTestRule = CassavaTestRule()
 
     @get:Rule
-    var activityRule =
-            ActivityTestRule(DealsBrandDetailActivity::class.java, false, false)
-
-    @Before
-    fun setup() {
-        Intents.init()
-        graphqlCacheManager.deleteAll()
-        gtmLogDBSource.deleteAll().subscribe()
-        setupGraphqlMockResponse{
-            addMockResponse(KEY_EVENT_BRAND_DETAIL,
+    var activityRule: IntentsTestRule<DealsBrandDetailActivity> = object : IntentsTestRule<DealsBrandDetailActivity>(DealsBrandDetailActivity::class.java) {
+        override fun beforeActivityLaunched() {
+            super.beforeActivityLaunched()
+            graphqlCacheManager.deleteAll()
+            gtmLogDBSource.deleteAll().subscribe()
+            setupGraphqlMockResponse{
+                addMockResponse(KEY_EVENT_BRAND_DETAIL,
                     InstrumentationMockHelper.getRawString(context, R.raw.mock_gql_deals_brand_detail),
                     MockModelConfig.FIND_BY_CONTAINS)
+            }
         }
 
-        val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-        val intent = Intent(targetContext, DealsBrandDetailActivity::class.java).apply {
-            putExtra(DealsBrandDetailActivity.EXTRA_SEO_URL, "klik-dokter-6519")
+        override fun getActivityIntent(): Intent {
+            return DealsBrandDetailActivity.getCallingIntent(context, "klik-dokter-6519")
         }
-
-        activityRule.launchActivity(intent)
     }
+
 
     @Test
     fun testBrandDetailFlow() {
@@ -65,7 +64,6 @@ class DealsBrandDetailActivityTest {
     @After
     fun tearDown() {
         gtmLogDBSource.deleteAll().subscribe()
-        Intents.release()
     }
 
     companion object {
