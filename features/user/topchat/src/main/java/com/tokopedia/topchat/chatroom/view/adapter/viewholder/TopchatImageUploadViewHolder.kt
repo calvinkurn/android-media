@@ -2,7 +2,9 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.ImageUploadViewModel
@@ -12,11 +14,20 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWidthSenderDimenRes
+import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.ImageUnify
 
 class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListener)
     : ImageUploadViewHolder(itemView, listener) {
+
+    private val viewContainer: LinearLayout? = itemView?.findViewById(R.id.ll_image_container)
+    private var replyBubbleArea: ReplyBubbleAreaMessage? = itemView?.findViewById(
+        R.id.rba_image
+    )
+    private var msgOffsetLine: View? = itemView?.findViewById(
+        R.id.v_image_offset
+    )
 
     override fun alwaysShowTime() = true
     override fun useWhiteReadStatus() = true
@@ -65,6 +76,33 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
         hideReadStatusIfRetry(element)
         bindBackground(element)
         bindLoadingAnimation(element)
+        bindReplyReference(element)
+        bindMsgOffsetLine(element)
+    }
+
+    override fun setChatLeft(chatBalloon: View?) {
+        replyBubbleArea?.alignLeft()
+        viewContainer?.gravity = Gravity.START
+    }
+
+    override fun setChatRight(chatBalloon: View?) {
+        replyBubbleArea?.alignRight()
+        viewContainer?.gravity = Gravity.END
+    }
+
+    private fun bindMsgOffsetLine(element: ImageUploadViewModel) {
+        val msgOffsetLp = msgOffsetLine?.layoutParams as? ViewGroup.MarginLayoutParams
+        val bottomMargin: Int = if (element.hasReplyBubble()) {
+            itemView.context.resources.getDimension(R.dimen.dp_topchat_20).toInt()
+        } else {
+            0
+        }
+        msgOffsetLp?.bottomMargin = bottomMargin
+        msgOffsetLine?.layoutParams = msgOffsetLp
+    }
+
+    private fun bindReplyReference(element: ImageUploadViewModel) {
+        replyBubbleArea?.bindReplyData(element)
     }
 
     private fun hideReadStatusIfRetry(element: ImageUploadViewModel) {
