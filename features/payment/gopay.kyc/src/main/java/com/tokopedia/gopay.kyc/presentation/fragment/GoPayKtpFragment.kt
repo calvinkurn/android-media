@@ -66,8 +66,6 @@ class GoPayKtpFragment : GoPayKycBaseCameraFragment() {
 
         val params = photoInstructionTV.layoutParams as ConstraintLayout.LayoutParams
         params.topMargin = calculatedMargin.toInt()
-        params.leftMargin = context?.pxToDp(GoPaySelfieKtpFragment.TEXT_MARGIN)?.toInt() ?: 0
-        params.rightMargin = context?.pxToDp(GoPaySelfieKtpFragment.TEXT_MARGIN)?.toInt() ?: 0
         photoInstructionTV.layoutParams = params
         setCaptureInstruction()
         kycHeader.setNavigationOnClickListener { handleBackPressForGopay() }
@@ -97,6 +95,7 @@ class GoPayKtpFragment : GoPayKycBaseCameraFragment() {
     override fun getScreenName() = null
 
     companion object {
+        const val TEXT_MARGIN = 16
         const val HEIGHT_RATIO_CUTOUT = 398 / 640f
         fun newInstance() = GoPayKtpFragment()
     }

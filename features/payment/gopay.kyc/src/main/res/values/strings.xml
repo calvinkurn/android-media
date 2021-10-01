@@ -35,7 +35,7 @@
 
     <string name="gopay_kyc_step_2">2.</string>
     <string name="gopay_kyc_selfie_plus_ktp_text">Selfie + e-KTP</string>
-    <string name="gopay_kyc_selfie_ktp_upload_header_text">Upload selfie dengan KTP</string>
+    <string name="gopay_kyc_selfie_ktp_upload_header_text">Upload selfie dengan e-KTP</string>
     <string name="gopay_kyc_selfie_take_ktp_text">Ambil Selfie dengan e-KTP</string>
     <string name="gopay_kyc_selfie_ktp_check_title">Cek Selfie dengan e-KTP</string>
     <string name="gopay_kyc_selfie_ktp_text">Foto selfie dengan e-KTP, ya</string>
@@ -49,13 +49,13 @@
     <string name="gopay_kyc_selfie_ktp_capture_instruction_text">Posisikan wajah dan e-KTP di dalam bingkai</string>
     <string name="gopay_kyc_selfie_ktp_capture_verification_text">Pastikan muka dan e-KTP kamu berada dalam bingkai dan terlihat jelas</string>
     <string name="gopay_kyc_review_title_text">Periksa lagi datamu dan pastikan semua informasi sudah benar.</string>
-    <string name="gopay_kyc_privacy_bank_text">Diawasi oleh Bank Indonesia</string>
-    <string name="gopay_kyc_privacy_policy_gojek_text">Data hanya digunakan pihak Gojek untuk verifikasi.</string>
-    <string name="gopay_kyc_accept_tnc_text">Dengan klik “Kirim”, saya menyetujui <font color="#03AC0E"><b>Syarat &amp; Ketentuan</b></font></string>
+    <string name="gopay_kyc_privacy_bank_text">GoPay diawasi oleh Bank Indonesia</string>
+    <string name="gopay_kyc_privacy_policy_gojek_text">Data hanya digunakan pihak GoPay untuk verifikasi.</string>
+    <string name="gopay_kyc_accept_tnc_text">Dengan klik “Kirim”, kamu menyetujui <font color="#03AC0E"><b>Syarat &amp; Ketentuan</b></font></string>
     <string name="gopay_kyc_submit_button_text">Kirim</string>
 
     <string name="gopay_kyc_upload_success_title_text">Upgrade lagi diproses</string>
-    <string name="gopay_kyc_upload_success_description_text">Datamu sudah kami teruskan ke Gojek. Biasanya butuh waktu 10 menit. Kamu akan dapat notifikasi kalau prosesnya sudah selesai.</string>
+    <string name="gopay_kyc_upload_success_description_text">Datamu sudah kami teruskan ke Gojek. Biasanya butuh waktu 1x24 jam. Kamu akan dapat notifikasi kalau prosesnya sudah selesai.</string>
     <string name="gopay_kyc_upload_failed_title_text">Datamu gagal dikirim ke Gojek</string>
     <string name="gopay_kyc_upload_failed_description_text">Tenang, kamu nggak perlu isi data dari awal lagi. Coba kirim ulang, ya.</string>
 

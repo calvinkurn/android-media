@@ -15,7 +15,13 @@ import com.tokopedia.gopay.kyc.presentation.activity.GoPayCameraKtpActivity
 import com.tokopedia.gopay.kyc.presentation.fragment.base.GoPayKycBaseCameraFragment
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.pxToDp
+import kotlinx.android.synthetic.main.fragment_gopay_ktp_layout.*
 import kotlinx.android.synthetic.main.fragment_gopay_selfie_ktp_layout.*
+import kotlinx.android.synthetic.main.fragment_gopay_selfie_ktp_layout.camera
+import kotlinx.android.synthetic.main.fragment_gopay_selfie_ktp_layout.capturedImage
+import kotlinx.android.synthetic.main.fragment_gopay_selfie_ktp_layout.gopayCameraLayout
+import kotlinx.android.synthetic.main.fragment_gopay_selfie_ktp_layout.kycHeader
+import kotlinx.android.synthetic.main.fragment_gopay_selfie_ktp_layout.photoInstructionTV
 import kotlinx.android.synthetic.main.gopay_camera_action_layout.*
 
 class GoPaySelfieKtpFragment : GoPayKycBaseCameraFragment() {
@@ -67,8 +73,6 @@ class GoPaySelfieKtpFragment : GoPayKycBaseCameraFragment() {
 
         val params = photoInstructionTV.layoutParams as ConstraintLayout.LayoutParams
         params.topMargin = calculatedMargin.toInt()
-        params.leftMargin = context?.pxToDp(TEXT_MARGIN)?.toInt() ?: 0
-        params.rightMargin = context?.pxToDp(TEXT_MARGIN)?.toInt() ?: 0
         photoInstructionTV.layoutParams = params
         setCaptureInstruction()
         kycHeader.setNavigationOnClickListener { handleBackPressForGopay() }
