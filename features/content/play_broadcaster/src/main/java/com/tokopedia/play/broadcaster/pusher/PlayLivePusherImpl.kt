@@ -142,10 +142,13 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
             )
             Streamer.STATUS.AUTH_FAIL -> broadcastState(PlayLivePusherState.Error("connect fail: Can not connect to server authentication failure, please check stream credentials."))
             Streamer.STATUS.UNKNOWN_FAIL -> {
-                // ignore and just call resume()
-                if (state == Streamer.CONNECTION_STATE.DISCONNECTED && lastState is PlayLivePusherState.Paused) return
+                // let’s ignore when last state nya stopped
+                if (state == Streamer.CONNECTION_STATE.DISCONNECTED && lastState is PlayLivePusherState.Stopped) return
                 if (info?.length().orZero() > 0) {
                     broadcastState(PlayLivePusherState.Error("network: reason ${info?.toString()}"))
+                }
+                else {
+                    broadcastState(PlayLivePusherState.Error("network: unknown network fail"))
                 }
             }
             Streamer.STATUS.SUCCESS -> {
