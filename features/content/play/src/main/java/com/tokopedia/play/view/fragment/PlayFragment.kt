@@ -17,9 +17,6 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.google.android.gms.cast.framework.CastContext
-import com.google.android.gms.cast.framework.CastState
-import com.google.android.gms.cast.framework.CastStateListener
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
@@ -47,13 +44,11 @@ import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
-import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.util.KeyboardWatcher
 import com.tokopedia.play.view.uimodel.action.SetChannelActiveAction
-import com.tokopedia.play.view.uimodel.PlayCastState
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.play_common.util.extension.dismissToaster
@@ -73,8 +68,7 @@ class PlayFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
         private val pageMonitoring: PlayPltPerformanceCallback,
         private val dispatchers: CoroutineDispatchers,
-        private val analytic: PlayAnalytic,
-        private val castContext: CastContext
+        private val analytic: PlayAnalytic
 ) :
         TkpdBaseV4Fragment(),
         PlayFragmentContract,
@@ -321,14 +315,14 @@ class PlayFragment @Inject constructor(
     private fun onPageFocused() {
         try {
             val channelData = playParentViewModel.getLatestChannelStorageData(channelId)
-            playViewModel.focusPage(channelData, castContext)
+            playViewModel.focusPage(channelData)
             analytic.sendScreen(channelId, playViewModel.channelType, playParentViewModel.sourceType, channelName = channelData.channelDetail.channelInfo.title)
             sendSwipeRoomAnalytic()
         } catch (e: Throwable) {}
     }
 
     private fun onPageDefocused() {
-        playViewModel.defocusPage(shouldPauseVideo = !playViewModel.pipState.isInPiP, castContext)
+        playViewModel.defocusPage(shouldPauseVideo = !playViewModel.pipState.isInPiP)
     }
 
     private fun invalidateVideoTopBounds(
