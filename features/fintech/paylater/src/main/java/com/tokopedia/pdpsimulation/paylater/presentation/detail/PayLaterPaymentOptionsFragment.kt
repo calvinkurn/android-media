@@ -191,7 +191,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
                 resources.getString(R.string.pay_later_installment_text) + " ${data.tenure}x"
 
         interestText.text =
-            "${resources.getString(R.string.pay_later_partner_interest)}(${(data.interest_pct ?: 0)}%)"
+            "${resources.getString(R.string.pay_later_partner_interest)} (${(data.interest_pct ?: 0)}%)"
 
 
 

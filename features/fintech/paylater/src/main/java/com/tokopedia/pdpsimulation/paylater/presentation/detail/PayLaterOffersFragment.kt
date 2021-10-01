@@ -98,7 +98,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
                         SortFilterItem(
                             name,
                             ChipsUnify.TYPE_SELECTED,
-                            ChipsUnify.SIZE_MEDIUM
+                            ChipsUnify.SIZE_SMALL
                         ) {
                             selectOtherTenure(i, name)
                         })
@@ -112,7 +112,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
                         onPageSelectedByUser(detail)
                     }
                 } else {
-                    filterData.add(SortFilterItem(name, size = ChipsUnify.SIZE_MEDIUM) {
+                    filterData.add(SortFilterItem(name, size =  ChipsUnify.SIZE_SMALL) {
                         selectOtherTenure(i, name)
                     })
                 }
@@ -263,7 +263,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
 
     companion object {
-        const val PAGE_MARGIN = 16
+        const val PAGE_MARGIN = 8
 
         @JvmStatic
         fun newInstance(

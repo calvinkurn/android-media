@@ -69,7 +69,7 @@
             android:textSize="@dimen/unify_font_16"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/sortFilter"
-            app:typographyType="heading_3"
+            app:typographyType="body_2"
             app:typographyWeight="bold" />
 
 
