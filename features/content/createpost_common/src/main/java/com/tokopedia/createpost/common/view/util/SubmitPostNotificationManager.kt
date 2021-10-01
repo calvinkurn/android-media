@@ -1,4 +1,4 @@
-package com.tokopedia.createpost.view.util
+package com.tokopedia.createpost.common.view.util
 
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -13,7 +13,8 @@ import androidx.core.app.NotificationCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.tokopedia.createpost.createpost.R
+import com.tokopedia.createpost.common.R
+import com.tokopedia.createpost.view.util.urlIsFile
 import java.io.File
 
 /**
@@ -33,9 +34,9 @@ abstract class SubmitPostNotificationManager(
     }
 
     private val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_GENERAL).apply {
-        setContentTitle(context.getString(R.string.cp_notif_uploading))
-        setSmallIcon(com.tokopedia.design.R.drawable.ic_status_bar_notif_customerapp)
-        setLargeIcon(BitmapFactory.decodeResource(context.resources, com.tokopedia.design.R.drawable.ic_big_notif_customerapp))
+        setContentTitle(context.getString(R.string.cp_common_notif_uploading))
+        setSmallIcon(com.tokopedia.resources.common.R.drawable.ic_status_bar_notif_customerapp)
+        setLargeIcon(BitmapFactory.decodeResource(context.resources, com.tokopedia.resources.common.R.drawable.ic_big_notif_customerapp))
         setGroup(NOTIFICATION_GROUP)
         setOnlyAlertOnce(true)
         updateLargeIcon(this)
@@ -68,7 +69,7 @@ abstract class SubmitPostNotificationManager(
     }
 
     fun onSubmitPost() {
-        val text = context.getString(R.string.cp_notif_submit)
+        val text = context.getString(R.string.cp_common_notif_submit)
         val notification = notificationBuilder.setContentText(text)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(text))
                 .setProgress(0, 0, true)
@@ -79,7 +80,7 @@ abstract class SubmitPostNotificationManager(
     }
 
     fun onSuccessPost() {
-        val text = context.getString(R.string.cp_notif_success)
+        val text = context.getString(R.string.cp_common_notif_success)
         val notification = notificationBuilder.setContentText(text)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(text))
                 .setProgress(0, 0, false)
@@ -91,7 +92,7 @@ abstract class SubmitPostNotificationManager(
     }
 
     fun onFailedPost(errorMessage: String) {
-        val text = context.getString(R.string.cp_notif_error)
+        val text = context.getString(R.string.cp_common_notif_error)
         val notification = notificationBuilder.setContentText(text)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(text))
                 .setProgress(0, 0, false)
@@ -115,7 +116,7 @@ abstract class SubmitPostNotificationManager(
             Glide.with(context.applicationContext)
                     .asBitmap()
                     .load(file)
-                    .error(com.tokopedia.design.R.drawable.ic_big_notif_customerapp)
+                    .error(com.tokopedia.resources.common.R.drawable.ic_big_notif_customerapp)
                     .into(object: CustomTarget<Bitmap>(100, 100) {
                         override fun onLoadCleared(placeholder: Drawable?) {
 

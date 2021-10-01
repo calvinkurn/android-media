@@ -9,11 +9,6 @@
     <string name="cp_main_image">Tampil Pertama</string>
     <string name="cp_caption_hint">Tulis caption dengan #Hashtag</string>
     <string name="cp_error_create_post">Ada sedikit kendala nih. Coba beberapa saat lagi ya.</string>
-    <string name="cp_notif_uploading">Meng-upload post</string>
-    <string name="cp_notif_media" formatted="false">%d dari %d Media…</string>
-    <string name="cp_notif_submit">Menyiapkan post…</string>
-    <string name="cp_notif_success">Selesai! Cek post kamu di sini ya</string>
-    <string name="cp_notif_error">Gagal mengunggah post, klik untuk coba lagi</string>
     <string name="cp_update_post">Update Post</string>
     <string name="cp_leave_warning">Yakin nih mau keluar?</string>
     <string name="cp_leave_warning_desc">Post yang telah kamu buat tidak akan disimpan loh.</string>

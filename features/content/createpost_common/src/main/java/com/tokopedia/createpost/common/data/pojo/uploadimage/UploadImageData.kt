@@ -1,4 +1,4 @@
-package com.tokopedia.createpost.data.pojo.uploadimage
+package com.tokopedia.createpost.common.data.pojo.uploadimage
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

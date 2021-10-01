@@ -12,7 +12,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.affiliatecommon.*
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.common.DRAFT_ID
-import com.tokopedia.createpost.common.view.service.SubmitPostServiceNewContract
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -32,7 +31,6 @@ class PostProgressUpdateView @JvmOverloads constructor(
     private var progressBar: ProgressBarUnify? = null
     private var mCreatePostViewModel: CreatePostViewModel? = null
     private var mPostUpdateSwipe: PostUpdateSwipe? = null
-    private var service: SubmitPostServiceNewContract? =null
 
     init {
         View.inflate(this.context, R.layout.cp_common_upload_post_progress_view, this)
@@ -94,7 +92,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
             viewModel, TimeUnit.DAYS.toMillis(7)
         )
 //        cacheManager.id?.let { it1 -> SubmitPostServiceNew.startService(this.context, it1) }
-        cacheManager.id?.let { it1 -> service?.start(this.context, it1) }
+//        cacheManager.id?.let { it1 -> service?.start(this.context, it1) }
         retryText?.gone()
 
     }

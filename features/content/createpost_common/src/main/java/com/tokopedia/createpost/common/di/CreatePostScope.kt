@@ -1,4 +1,4 @@
-package com.tokopedia.createpost.di
+package com.tokopedia.createpost.common.di
 
 import javax.inject.Scope
 

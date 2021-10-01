@@ -22,7 +22,7 @@ import com.tokopedia.createpost.domain.usecase.UploadMultipleImageUsecaseNew
 import com.tokopedia.createpost.view.fragment.ContentCreateCaptionFragment
 import com.tokopedia.createpost.view.fragment.CreatePostPreviewFragmentNew
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
-import com.tokopedia.createpost.view.service.SubmitPostServiceNew
+import com.tokopedia.createpost.common.view.service.SubmitPostServiceNew
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaModel

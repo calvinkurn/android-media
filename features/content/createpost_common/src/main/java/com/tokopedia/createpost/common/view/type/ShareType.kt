@@ -1,9 +1,9 @@
-package com.tokopedia.createpost.view.type
+package com.tokopedia.createpost.common.view.type
 
 import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import com.tokopedia.createpost.createpost.R
+import com.tokopedia.createpost.common.R
 import com.tokopedia.kotlin.extensions.view.toAmountString
 
 private typealias ShareSubtitleGenerator = (Context, Int) -> String?
@@ -20,10 +20,10 @@ sealed class ShareType(
 
     data class Tokopedia(val totalPerson: Int?) :
             ShareType(
-                    R.string.cp_share_tokopedia,
-                    R.string.cp_share_tokopedia_option,
-                    R.string.cp_share_tokopedia_hint,
-                    R.drawable.ic_tokopedia,
+                    R.string.cp_common_share_tokopedia,
+                    R.string.cp_common_share_tokopedia_option,
+                    R.string.cp_common_share_tokopedia_hint,
+                    R.drawable.cp_common_ic_tokopedia,
                     true,
                     true,
                     { ctx, subtitleRes ->
@@ -34,20 +34,20 @@ sealed class ShareType(
 
     data class Facebook(val isActive: Boolean) :
             ShareType(
-                    R.string.cp_share_facebook,
-                    R.string.cp_share_facebook_option,
+                    R.string.cp_common_share_facebook,
+                    R.string.cp_common_share_facebook_option,
                     null,
-                    R.drawable.ic_facebook,
+                    R.drawable.cp_common_ic_facebook,
                     isActive,
                     false
             )
 
     data class Twitter(val isActive: Boolean) :
             ShareType(
-                    R.string.cp_share_twitter,
-                    R.string.cp_share_twitter_option,
+                    R.string.cp_common_share_twitter,
+                    R.string.cp_common_share_twitter_option,
                     null,
-                    R.drawable.ic_twitter,
+                    R.drawable.cp_common_ic_twitter,
                     isActive,
                     false
             )
