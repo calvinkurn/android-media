@@ -168,7 +168,13 @@ class TagViewProvider {
                         .start()
 
                     val bitmapCurrentHeight = (parent.height - (2 * greyAreaY))
-                    if (view.y < (bitmapCurrentHeight + greyAreaY) * 0.70) {
+                    val location = IntArray(2)
+                    val locationParent = IntArray(2)
+
+                    productTagNotchViewFinal.getLocationOnScreen(location)
+                    parent.getLocationOnScreen(locationParent)
+                    val pointerPositionY = (location[1] - locationParent[1]).toFloat()
+                    if (pointerPositionY < (bitmapCurrentHeight + greyAreaY) * 0.70) {
                         productTopNotchVisible = true
                         productTagViewTopNotch.visibility = View.VISIBLE
                         productTagViewBottomNotch.visibility = View.GONE
@@ -271,8 +277,6 @@ class TagViewProvider {
                 else -> child.y = yTapped
             }
 
-            child.visibility = View.VISIBLE
-
             val bitmapCurrentHeight = (parent.height - (2 * greyAreaY))
             if (child.y < (bitmapCurrentHeight + greyAreaY) * 0.70) {
                 productTopNotchVisible = true
@@ -289,11 +293,9 @@ class TagViewProvider {
 
         }, 50)
 
-        val location = IntArray(2)
-        val locationParent = IntArray(2)
-        val view = child.findViewById<View>(R.id.topNotch)
-        view.getLocationOnScreen(location)
-        parent.getLocationOnScreen(locationParent)
+        child.visibility = View.VISIBLE
+
+
         feedXMediaTagging.run {
             posX = round((feedXMediaTagging.X!! / parent.width) * 10) / 10
             posY = round((feedXMediaTagging.Y!! / parent.height) * 10) / 10
