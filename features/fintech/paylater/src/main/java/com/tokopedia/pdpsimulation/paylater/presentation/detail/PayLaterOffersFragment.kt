@@ -263,7 +263,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
 
     companion object {
-        const val PAGE_MARGIN = 8
+        const val PAGE_MARGIN = 4
 
         @JvmStatic
         fun newInstance(

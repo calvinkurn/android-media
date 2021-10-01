@@ -300,7 +300,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     private fun setUIIfDisable(data: Detail) {
         disableVisibilityGroup.gone()
         tvTitlePaymentPartner.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
-        tvSubTitlePaylaterPartner.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+        tvSubTitlePaylaterPartner.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N400_32))
         if (tvSmallSubTitlePaylaterPartner.isVisible)
             tvSmallSubTitlePaylaterPartner.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
         interestText.text = data.disableDetail?.description ?: ""
@@ -326,7 +326,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
     private fun setDefaultHeaderUI(subheader: String) {
         tvSubTitlePaylaterPartner.text = subheader
-        tvSubTitlePaylaterPartner.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
+        tvSubTitlePaylaterPartner.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N400_96))
         tvSubTitlePaylaterPartner.setBackgroundColor(Color.TRANSPARENT)
 
     }
