@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:paddingStart="@dimen/spacing_lvl4"
     android:paddingEnd="@dimen/unify_space_24"
-    android:paddingVertical="@dimen/unify_space_12">
+    android:paddingTop="@dimen/spacing_lvl4">
 
     <com.tokopedia.product_bundle.common.customview.RoundedCornerImageView
         android:id="@+id/riv_product_image"

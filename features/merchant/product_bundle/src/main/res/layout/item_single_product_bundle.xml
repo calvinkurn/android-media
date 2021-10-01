@@ -7,7 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/spacing_lvl4"
     android:paddingStart="@dimen/spacing_lvl4"
     android:paddingEnd="@dimen/spacing_lvl5"
     android:background="?attr/selectableItemBackground">
