@@ -9,6 +9,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -787,28 +788,34 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
                 })
                 product_view_pager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
+
                     override fun onPageSelected(position: Int) {
                         tab_layout.getUnifyTabLayout().getTabAt(position)?.let {
                             it.select()
                         }
                         super.onPageSelected(position)
                         val myFragment = childFragmentManager.findFragmentByTag("f$position")
-                        myFragment?.view?.let { updatePagerHeightForChild(it, product_view_pager) }
+                        myFragment?.view?.let {
+                            it.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                                override fun onGlobalLayout() {
+                                    updatePagerHeightForChild(it, product_view_pager)
+                                    it.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                                }
+                            })
+                        }
                     }
 
                     private fun updatePagerHeightForChild(view: View, pager: ViewPager2) {
-                        view.post {
-                            val wMeasureSpec =
-                                View.MeasureSpec.makeMeasureSpec(view.width, View.MeasureSpec.EXACTLY)
-                            val hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-                            view.measure(wMeasureSpec, hMeasureSpec)
+                        val wMeasureSpec =
+                            View.MeasureSpec.makeMeasureSpec(view.width, View.MeasureSpec.EXACTLY)
+                        val hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                        view.measure(wMeasureSpec, hMeasureSpec)
 
-                            if (pager.layoutParams.height != view.measuredHeight) {
-                                pager.layoutParams = (pager.layoutParams)
-                                    .also { lp ->
-                                        lp.height = view.measuredHeight
-                                    }
-                            }
+                        if (pager.layoutParams.height != view.measuredHeight) {
+                            pager.layoutParams = (pager.layoutParams)
+                                .also { lp ->
+                                    lp.height = view.measuredHeight
+                                }
                         }
                     }
                 })
