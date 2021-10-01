@@ -82,7 +82,6 @@ import tokopedia.applink.util.DeepLinkUrlConstant.SALE_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.SEARCH_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.SERU_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.SHOP_LINK_URL
-import tokopedia.applink.util.DeepLinkUrlConstant.TOKOMART_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.TOKO_POINTS_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.TRAVEL_ENTERTAINMENT_LINK_URL
 import tokopedia.applink.util.DeepLinkUrlConstant.TRAVEL_ENTERTAINTMENT_DETAIL_LINK_URL
