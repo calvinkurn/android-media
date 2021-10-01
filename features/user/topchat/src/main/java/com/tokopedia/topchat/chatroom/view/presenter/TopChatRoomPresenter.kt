@@ -438,7 +438,11 @@ open class TopChatRoomPresenter @Inject constructor(
             startUploadImageWithService(image)
         } else {
             processDummyMessage(image)
-            uploadImageUseCase.upload(image, ::onSuccessUploadImage, ::onErrorUploadImage)
+            uploadImageUseCase.upload(
+                image = image,
+                onSuccess = ::onSuccessUploadImage,
+                onError = ::onErrorUploadImage
+            )
         }
     }
 
@@ -472,8 +476,9 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun sendImageByWebSocket(uploadId: String, image: ImageUploadViewModel) {
-        val requestParams =
-            TopChatWebSocketParam.generateParamSendImage(thisMessageId, uploadId, image.startTime)
+        val requestParams = TopChatWebSocketParam.generateParamSendImage(
+            thisMessageId, uploadId, image
+        )
         sendMessageWebSocket(requestParams)
     }
 

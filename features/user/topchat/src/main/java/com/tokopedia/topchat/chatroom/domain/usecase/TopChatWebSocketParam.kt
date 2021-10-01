@@ -8,7 +8,9 @@ import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
 import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.WebsocketEvent
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.data.parentreply.ParentReplyWsRequest
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
@@ -74,6 +76,24 @@ object TopChatWebSocketParam {
             sub_text = referredMsg.message,
             image_url = referredMsg.getReferredImageUrl(),
             local_id = referredMsg.localId,
+            source = "chat"
+        )
+        return gson.toJsonTree(requestContract)
+    }
+
+    fun generateParentReplyRequestPayload(
+        parentReply: ParentReply?
+    ): JsonElement? {
+        if (parentReply == null) return null
+        val requestContract = ParentReplyWsRequest(
+            attachment_id = parentReply.attachmentId.toLongOrZero(),
+            attachment_type = parentReply.attachmentType.toLongOrZero(),
+            sender_id = parentReply.senderId.toLongOrZero() ,
+            reply_time = parentReply.replyTime.toLongOrZero(),
+            main_text = parentReply.mainText,
+            sub_text = parentReply.subText,
+            image_url = parentReply.imageUrl,
+            local_id = parentReply.localId,
             source = "chat"
         )
         return gson.toJsonTree(requestContract)
@@ -201,15 +221,23 @@ object TopChatWebSocketParam {
         }
     }
 
-    fun generateParamSendImage(thisMessageId: String, path: String, startTime: String): String {
+    fun generateParamSendImage(
+        thisMessageId: String,
+        path: String,
+        image: ImageUploadViewModel
+    ): String {
+        val referredMsgRequest = generateParentReplyRequestPayload(image.parentReply)
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
         val data = JsonObject()
         data.addProperty("message_id", thisMessageId.toLongOrZero())
         data.addProperty("message", UPLOADING)
-        data.addProperty("start_time", startTime)
+        data.addProperty("start_time", image.startTime)
         data.addProperty("file_path", path)
         data.addProperty("attachment_type", Integer.parseInt(TYPE_IMAGE_UPLOAD))
+        if (referredMsgRequest != null) {
+            data.add("parent_reply", referredMsgRequest)
+        }
         json.add("data", data)
         return json.toString()
     }

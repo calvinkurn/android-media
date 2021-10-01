@@ -1391,7 +1391,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun processImagePathToUpload(data: Intent): ImageUploadViewModel? {
-
         val imagePathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
         if (imagePathList.size <= 0) {
             return null
@@ -1399,7 +1398,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val imagePath = imagePathList[0]
 
         if (!TextUtils.isEmpty(imagePath)) {
-            return generateChatViewModelWithImage(imagePath)
+            val preview = generateChatViewModelWithImage(imagePath)
+            replyCompose?.clearReferredComposedMsg()
+            return preview
         }
         return null
     }
@@ -1412,6 +1413,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             .withStartTime(SendableViewModel.generateStartTime())
             .withIsDummy(true)
             .withImageUrl(imageUrl)
+            .withReferredMsg(replyCompose?.referredMsg)
             .build()
     }
 

@@ -111,7 +111,7 @@ interface TopChatContract {
 
         fun startCompressImages(it: ImageUploadViewModel)
 
-        fun startUploadImages(it: ImageUploadViewModel)
+        fun startUploadImages(image: ImageUploadViewModel)
 
         fun loadTopChat(
             messageId: String,
