@@ -62,7 +62,7 @@ class TokoNowHomeEducationalInformationBottomSheet : BottomSheetUnify() {
             val tpTwentyFourHours = findViewById<Typography>(R.id.tp_twenty_four_hours)
             val tpTermsAndConditions = findViewById<Typography>(R.id.tp_terms_and_conditions)
 
-            val boldColor = ContextCompat.getColor(itemView.context, R.color.Unify_NN950).toString()
+            val boldColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).toString()
             tpTwoHours.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_home_educational_information_two_hours_bottomsheet, boldColor, boldColor))
             tpStockAvailable.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_home_educational_information_stock_available_bottomsheet, boldColor))
             tpGuaranteedQuality.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_home_educational_information_guaranteed_quality_bottomsheet, boldColor))
@@ -77,7 +77,7 @@ class TokoNowHomeEducationalInformationBottomSheet : BottomSheetUnify() {
     }
 
     private fun convertStringToLink(typography: Typography, context: Context, stringRes: Int) {
-        val greenColor = ContextCompat.getColor(context, R.color.Unify_GN500).toString()
+        val greenColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500).toString()
         val linkHelper = HtmlLinkHelper(context, getString(stringRes, greenColor))
         typography.text = linkHelper.spannedString
         typography.movementMethod = LinkMovementMethod.getInstance()
