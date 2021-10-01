@@ -509,9 +509,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                     return true
                 }
 
-                if(url.isNotEmpty() && url == ApplinkConst.LINK_ACCOUNT ||
-                    // for testing purpose only, ignore it
-                    url.startsWith("https://accounts-staging.tokopedia.com/account-link/v1/gojek-auth")) {
+                if(url.isNotEmpty() && url.startsWith(ApplinkConst.LINK_ACCOUNT)){
                         gotoLinkAccount()
                         return true
                 }
@@ -607,13 +605,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                         show(supportFragmentManager, "fingerprintPayment")
                     }
                     view?.post { view?.stopLoading() }
-                }
-
-                // for testing purpose only, ignore it
-                if(uri.toString().startsWith(TokopediaUrl.getInstance().ACCOUNTS.plus("account-link/v1/gojek-auth?"))) {
-                    runOnUiThread {
-                        gotoLinkAccount()
-                    }
                 }
             }
             return super.shouldInterceptRequest(view, request)
