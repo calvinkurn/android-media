@@ -83,4 +83,6 @@
     <dimen name="bu_item_small_width">120dp</dimen>
     <dimen name="bu_item_small_height">108dp</dimen>
 
+    <dimen name="home_category_widget_v2_title_height_container">46dp</dimen>
+
 </resources>
