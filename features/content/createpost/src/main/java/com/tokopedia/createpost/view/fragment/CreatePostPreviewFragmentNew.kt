@@ -25,7 +25,7 @@ import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
 import com.tokopedia.createpost.view.posttag.TagViewProvider
 import com.tokopedia.createpost.view.viewmodel.*
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
+import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.util.util.doOnLayout
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
@@ -133,7 +133,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                     posX = 0.5f,
                     posY = 0.5f,
                     X = imageWidth/ 2,
-                    Y = imageHeight / 2))
+                    Y = imageHeight / 2)
+            )
             openProductTaggingScreen()
         } else {
             Toaster.build(requireView(),
@@ -223,7 +224,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                                             X = e?.x,
                                             Y = e?.y,
                                             rawX = e?.rawX,
-                                            rawY = e?.rawY))
+                                            rawY = e?.rawY)
+                                    )
 
                                     if (getLatestTotalProductCount() < 5)
                                         openProductTaggingScreen()
@@ -521,7 +523,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             image = item.pImage?.img!!,
             priceOriginalFmt = item.campaign?.oPriceFormatted!!,
             priceDiscountFmt = item.campaign?.dPriceFormatted!!,
-            isDiscount = (item.campaign?.dPrice?.toInt() != 0)
+            isDiscount = (item.campaign?.dPrice?.toInt()?:0)!=0
         )
     }
     private fun getLatestTotalProductCount() : Int{

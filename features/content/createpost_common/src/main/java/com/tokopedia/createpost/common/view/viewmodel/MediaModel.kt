@@ -3,7 +3,7 @@ package com.tokopedia.createpost.common.view.viewmodel
 import android.os.Parcel
 import android.os.Parcelable
 import android.view.View
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
+import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 
 /**
  * Created by isfaaghyth on 20/03/19.

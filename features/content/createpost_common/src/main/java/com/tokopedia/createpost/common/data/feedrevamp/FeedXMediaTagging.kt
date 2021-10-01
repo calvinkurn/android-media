@@ -1,4 +1,4 @@
-package com.tokopedia.feedcomponent.data.feedrevamp
+package com.tokopedia.createpost.common.data.feedrevamp
 
 import com.google.gson.annotations.SerializedName
 

@@ -1,7 +1,7 @@
 package com.tokopedia.createpost.view.listener
 
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
+import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 
 interface CreateContentPostCommonListener {
     fun deleteItemFromProductTagList(
