@@ -325,7 +325,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             processDayView?.text = getString(R.string.preorder_prefix, "$processDay $timeUnitWording")
             processDayView?.visible()
         }
-        else processDayView?.invisible()
+        else processDayView?.gone()
     }
 
     private fun updateProductBundleOverView(productBundleOverView: TotalAmount?, productBundleDetails: List<ProductBundleDetail>) {
