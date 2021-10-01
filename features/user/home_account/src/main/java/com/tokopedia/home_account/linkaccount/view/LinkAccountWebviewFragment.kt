@@ -105,8 +105,7 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
                 setSecondaryCTAText(getString(R.string.label_secondary_btn_gopay_dialog))
                 setPrimaryCTAClickListener {
                     analytics.trackSkipPopupYes()
-                    val baseUrl = LinkAccountWebViewActivity.getLinkAccountUrl(
-                        ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT)
+                    val baseUrl = LinkAccountWebViewActivity.getLinkAccountUrl("")
                     if(baseUrl != null) {
                         webView?.loadUrl(
                             LinkAccountWebViewActivity.getSuccessUrl(baseUrl).toString()

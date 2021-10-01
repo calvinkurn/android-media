@@ -141,9 +141,6 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Link
         var url = intent.getStringExtra(KEY_URL) ?: ""
         val source = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_SOURCE) ?: ""
 
-        println("LinkAccountWebviewAcr: source=$source")
-        println("LinkAccountWebviewAcr: extras=${intent.extras}")
-
         if(url.isEmpty()) {
             val redirection = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_LD) ?: ApplinkConst.HOME
             val uri = getLinkAccountUrl(redirection)
