@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
@@ -208,8 +209,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
                                     val x = e?.x ?: 0L
                                     val y = e?.y ?: 0L
-                                    val posX = round((x.toFloat() / imageItem.width) * 10) / 10
-                                    val posY = round((y.toFloat() / imageItem.height) * 10) / 10
+                                    val posX = round((x.toFloat() / imageItem.width) * 1000) / 1000
+                                    val posY = round((y.toFloat() / imageItem.height) * 1000) / 1000
                                     val tagIndex = createPostModel.completeImageList[index].tags.size
                                     createPostModel.completeImageList[index].tags.add(
                                         FeedXMediaTagging(
@@ -413,11 +414,15 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         val mediaModel = createPostModel.completeImageList[currentImagePos]
         if (getLatestTotalProductCount() < 5)
             enableProductIcon()
+        val imageItem = mediaModel.imageView
+        imageItem?.run {
+            val layout = findViewById<ConstraintLayout>(R.id.product_tagging_parent_layout)
+            for (view in layout.children) {
+                if (view.tag == productId)
+                    layout.removeView(view)
+            }
 
-        if (mediaModel.type == MediaType.VIDEO)
-            bindVideo(mediaModel)
-        else
-            bindImage(mediaModel, currentImagePos)
+        }
 
         updateResultIntent()
 
@@ -460,11 +465,12 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     }
 
     private fun goToAttachProduct() {
-            activity?.let{
-                val intent = RouteManager.getIntent(context, "tokopedia://productpickerfromshop?shopid=${userSession.shopId}&source=shop_product")
-                intent.putExtra(PARAM_SHOP_NAME, createPostModel.shopName)
-                startActivityForResult(intent, REQUEST_ATTACH_PRODUCT)
-            }
+        activity?.let {
+            val intent = RouteManager.getIntent(context,
+                "tokopedia://productpickerfromshop?shopid=${userSession.shopId}&source=shop_product")
+            intent.putExtra(PARAM_SHOP_NAME, createPostModel.shopName)
+            startActivityForResult(intent, REQUEST_ATTACH_PRODUCT)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -569,7 +575,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                         products,
                         index,
                         listener,
-                        feedXMediaTagging)
+                        feedXMediaTagging,
+                        layout)
                     if (view != null) {
                         Handler().postDelayed(Runnable {
                             val bitmap = postImage.drawable.toBitmap()

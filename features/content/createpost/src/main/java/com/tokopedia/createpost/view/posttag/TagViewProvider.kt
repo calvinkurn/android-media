@@ -20,7 +20,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
-import kotlin.math.round
+import kotlin.math.abs
+import kotlin.math.ceil
 
 
 class TagViewProvider {
@@ -40,6 +41,7 @@ class TagViewProvider {
         index: Int,
         listener: CreateContentPostCommonListener?,
         feedXTag: FeedXMediaTagging,
+        parent: ConstraintLayout
     ): View? {
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.temp_view_tag, null)
@@ -67,7 +69,7 @@ class TagViewProvider {
                 true,
                 MediaType.IMAGE
             )
-            view.gone()
+            parent.removeView(view)
         }
         productTagViewDeleteRight.setOnClickListener {
             listener?.deleteItemFromProductTagList(
@@ -76,8 +78,9 @@ class TagViewProvider {
                 true,
                 MediaType.IMAGE
             )
-            view.gone()
+            parent.removeView(view)
         }
+        view.tag = productItem.id
 
         return view
     }
@@ -167,14 +170,13 @@ class TagViewProvider {
                         .setDuration(0)
                         .start()
 
-                    val bitmapCurrentHeight = (parent.height - (2 * greyAreaY))
                     val location = IntArray(2)
                     val locationParent = IntArray(2)
 
                     productTagNotchViewFinal.getLocationOnScreen(location)
                     parent.getLocationOnScreen(locationParent)
                     val pointerPositionY = (location[1] - locationParent[1]).toFloat()
-                    if (pointerPositionY < (bitmapCurrentHeight + greyAreaY) * 0.70) {
+                    if (pointerPositionY < (parent.height) * 0.70) {
                         productTopNotchVisible = true
                         productTagViewTopNotch.visibility = View.VISIBLE
                         productTagViewBottomNotch.visibility = View.GONE
@@ -223,18 +225,17 @@ class TagViewProvider {
 
                     val location = IntArray(2)
                     val locationParent = IntArray(2)
-                    val view = view.findViewById<View>(R.id.topNotch)
-                    view.getLocationOnScreen(location)
+                    productTagNotchViewFinal.getLocationOnScreen(location)
                     parent.getLocationOnScreen(locationParent)
                     feedXMediaTagging.run {
-                        X = (location[0].toFloat() ?: 0f) + POINTER_HALF_DIMEN.toPx()
+                        X = ((location[0].toFloat() ?: 0f) + productTagNotchViewFinal.width / 2)
                         Y = if (productTopNotchVisible)
                             (location[1] - locationParent[1]).toFloat() ?: 0f
                         else
-                            (location[1] - locationParent[1]).toFloat()
+                            ((location[1] - locationParent[1]).toFloat() + productTagNotchViewFinal.height)
                                 ?: 0f
-                        posX = round((feedXMediaTagging.X!! / parent.width) * 10) / 10
-                        posY = round((feedXMediaTagging.Y!! / parent.height) * 10) / 10
+                        posX = ceil((abs(feedXMediaTagging.X!!) / parent.width) * 1000) / 1000
+                        posY = ceil((abs(feedXMediaTagging.Y!!) / parent.height) * 1000) / 1000
                     }
                     listener?.updateTaggingInfoInViewModel(feedXMediaTagging, index, mediaIndex)
                 }
@@ -277,8 +278,7 @@ class TagViewProvider {
                 else -> child.y = yTapped
             }
 
-            val bitmapCurrentHeight = (parent.height - (2 * greyAreaY))
-            if (child.y < (bitmapCurrentHeight + greyAreaY) * 0.70) {
+            if (child.y < (parent.height) * 0.70) {
                 productTopNotchVisible = true
                 productTagViewTopNotch.visibility = View.VISIBLE
                 productTagViewBottomNotch.visibility = View.GONE
@@ -296,21 +296,8 @@ class TagViewProvider {
         child.visibility = View.VISIBLE
 
 
-        feedXMediaTagging.run {
-            posX = round((feedXMediaTagging.X!! / parent.width) * 10) / 10
-            posY = round((feedXMediaTagging.Y!! / parent.height) * 10) / 10
-        }
-
         listener?.updateTaggingInfoInViewModel(feedXMediaTagging, index, mediaIndex)
 
-    }
-
-    fun dpFromPx(context: Context, px: Float): Float {
-        return px / context.resources.displayMetrics.density
-    }
-
-    fun pxFromDp(context: Context, dp: Float): Float {
-        return dp * context.resources.displayMetrics.density
     }
 
     private fun scaleUp(view: View) {
@@ -318,8 +305,8 @@ class TagViewProvider {
             view, ConstraintLayout.SCALE_X, 1.05f)
         val scaleDownY2 = ObjectAnimator.ofFloat(
             view, ConstraintLayout.SCALE_Y, 1.05f)
-        scaleDownX2.duration = 250
-        scaleDownY2.duration = 250
+        scaleDownX2.duration = 150
+        scaleDownY2.duration = 150
 
         val scaleDown2 = AnimatorSet()
         scaleDown2.play(scaleDownX2).with(scaleDownY2)
@@ -333,8 +320,8 @@ class TagViewProvider {
             ConstraintLayout.SCALE_X, 1f)
         val scaleDownY = ObjectAnimator.ofFloat(view,
             ConstraintLayout.SCALE_Y, 1f)
-        scaleDownX.duration = 250
-        scaleDownY.duration = 250
+        scaleDownX.duration = 150
+        scaleDownY.duration = 150
 
         val scaleDown = AnimatorSet()
         scaleDown.play(scaleDownX).with(scaleDownY)
