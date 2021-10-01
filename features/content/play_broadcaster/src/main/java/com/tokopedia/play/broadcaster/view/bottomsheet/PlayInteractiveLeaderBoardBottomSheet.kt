@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.view.bottomsheet
 import android.app.Dialog
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -157,10 +158,14 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
 
                    val liveState = parentViewModel.observableLiveViewState.value
                    if(liveState != null && (liveState is PlayLiveViewState.Stopped || liveState is PlayLiveViewState.Error)) {
+                       Log.d("<LOG>", "notifyDataSetChanged")
                        leaderboardAdapter.setItems(it.data.leaderboardWinners)
                        leaderboardAdapter.notifyDataSetChanged()
                    }
-                   else leaderboardAdapter.setItemsAndAnimateChanges(it.data.leaderboardWinners)
+                   else {
+                       Log.d("<LOG>", "diffutil")
+                       leaderboardAdapter.setItemsAndAnimateChanges(it.data.leaderboardWinners)
+                   }
                }
            }
         })
