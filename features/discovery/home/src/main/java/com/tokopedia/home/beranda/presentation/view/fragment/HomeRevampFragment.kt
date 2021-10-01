@@ -1290,7 +1290,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onResume() {
-        if(getHomeViewModel().firstLoad) {
+        if(getHomeViewModel().isFirstLoad) {
             getPageLoadTimeCallback()?.startCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_RESUME_HOME)
         }
         startTokopointRotation()
@@ -1315,9 +1315,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         navAbTestCondition(
                 ifNavOld = { oldToolbar?.startHintAnimation() }
         )
-        if(getHomeViewModel().firstLoad) {
+        if(getHomeViewModel().isFirstLoad) {
             getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_RESUME_HOME)
-            getHomeViewModel().firstLoad = false
+            getHomeViewModel().isFirstLoad = false
         }
     }
 
