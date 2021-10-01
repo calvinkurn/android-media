@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -789,6 +790,25 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     override fun onPageSelected(position: Int) {
                         tab_layout.getUnifyTabLayout().getTabAt(position)?.let {
                             it.select()
+                        }
+                        super.onPageSelected(position)
+                        val myFragment = childFragmentManager.findFragmentByTag("f$position")
+                        myFragment?.view?.let { updatePagerHeightForChild(it, product_view_pager) }
+                    }
+
+                    private fun updatePagerHeightForChild(view: View, pager: ViewPager2) {
+                        view.post {
+                            val wMeasureSpec =
+                                View.MeasureSpec.makeMeasureSpec(view.width, View.MeasureSpec.EXACTLY)
+                            val hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                            view.measure(wMeasureSpec, hMeasureSpec)
+
+                            if (pager.layoutParams.height != view.measuredHeight) {
+                                pager.layoutParams = (pager.layoutParams)
+                                    .also { lp ->
+                                        lp.height = view.measuredHeight
+                                    }
+                            }
                         }
                     }
                 })
