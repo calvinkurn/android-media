@@ -245,6 +245,8 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             TotalAmount.Order.AMOUNT,
             TotalAmount.Order.SUBTITLE
         )
+        productBundleOverView?.amountCtaView?.width = resources
+            .getDimension(R.dimen.atc_button_width).toInt()
         productBundleOverView?.amountCtaView?.setOnClickListener {
             val isUserLoggedIn = viewModel.isUserLoggedIn()
             if (isUserLoggedIn) {
@@ -325,7 +327,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             processDayView?.text = getString(R.string.preorder_prefix, "$processDay $timeUnitWording")
             processDayView?.visible()
         }
-        else processDayView?.invisible()
+        else processDayView?.gone()
     }
 
     private fun updateProductBundleOverView(productBundleOverView: TotalAmount?, productBundleDetails: List<ProductBundleDetail>) {

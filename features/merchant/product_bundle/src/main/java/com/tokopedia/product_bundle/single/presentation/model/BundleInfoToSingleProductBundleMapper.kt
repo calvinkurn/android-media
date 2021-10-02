@@ -62,7 +62,9 @@ object BundleInfoToSingleProductBundleMapper {
         val bundleItem = it.bundleItems.firstOrNull() ?: BundleItem()
         val productVariant = AtcVariantMapper.mapToProductVariant(bundleItem)
         if (productVariant.hasVariant) {
-            val child = productVariant.children.firstOrNull()
+            val child = productVariant.children.minByOrNull { child ->
+                child.finalPrice
+            }
             SingleProductBundleItem(
                 quantity = child?.stock?.minimumOrder.toIntOrZero(),
                 productName = bundleItem.name,

@@ -292,6 +292,7 @@ class SingleProductBundleFragment(
     private fun setupTotalAmount(view: View) {
         totalAmount = view.findViewById(R.id.total_amount)
         totalAmount?.apply {
+            amountCtaView.width = resources.getDimension(R.dimen.atc_button_width).toInt()
             setLabelOrder(TotalAmount.Order.TITLE, TotalAmount.Order.AMOUNT, TotalAmount.Order.SUBTITLE)
             val defaultPrice = context.getString(R.string.single_bundle_default_price)
             updateTotalAmount(
