@@ -109,9 +109,12 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             selectedUris.add(selectedMediaView.imageAdapterData!!.asset.contentUri)
         }
 
-
         if (!selectedUris.isNullOrEmpty()) {
-            viewModel.getUriOfSelectedMedia(selectedMediaView.width, zoomImageAdapterDataMap)
+            val filteredResults = zoomImageAdapterDataMap.filter {
+                selectedUris.contains(it.key.asset.contentUri)
+            }
+
+            viewModel.getUriOfSelectedMedia(selectedMediaView.width, filteredResults)
         } else {
             showToast(getString(R.string.imagepicker_insta_samf), Toaster.TYPE_NORMAL)
         }
