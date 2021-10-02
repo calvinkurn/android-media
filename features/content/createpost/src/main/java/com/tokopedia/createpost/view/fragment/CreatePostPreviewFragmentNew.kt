@@ -109,6 +109,10 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             requireContext().getString(R.string.feed_content_position_text),
             pos
         )
+        if (getLatestTotalProductCount() == 5)
+            disableProductIcon()
+        else
+            enableProductIcon()
 
         val mediaModel = createPostModel.completeImageList[createPostModel.currentCorouselIndex]
         product_tag_button.setOnClickListener {

@@ -93,6 +93,7 @@ class TagViewProvider {
         bitmap: Bitmap,
         mediaIndex:Int
     ) {
+        parent.addView(child)
         val greyAreaX = calculateGreyAreaY(parent, bitmap)
         val greyAreaY = calculateGreyAreaX(parent, bitmap)
 
@@ -243,7 +244,6 @@ class TagViewProvider {
         })
 
         Handler().postDelayed(Runnable {
-            parent.addView(child)
             /*Handling for X position*/
             var xTapped: Float =
                 feedXMediaTagging.X?.minus(child.width / 2) ?: 0f
@@ -289,10 +289,9 @@ class TagViewProvider {
                 productTagViewTopNotch.visibility = View.GONE
                 productTagNotchViewFinal = productTagViewBottomNotch
             }
+            child.visibility = View.VISIBLE
 
-        }, 50)
-
-        child.visibility = View.VISIBLE
+        }, 30)
 
 
         listener?.updateTaggingInfoInViewModel(feedXMediaTagging, index, mediaIndex)
