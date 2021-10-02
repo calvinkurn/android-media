@@ -2,7 +2,6 @@ package com.tokopedia.imagepicker_insta.viewmodel
 
 import android.app.Application
 import android.net.Uri
-import android.os.FileObserver
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.imagepicker_insta.LiveDataResult
 import com.tokopedia.imagepicker_insta.mediaImporter.PhotoImporter
@@ -12,9 +11,8 @@ import com.tokopedia.imagepicker_insta.usecase.PhotosUseCase
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.util.StorageUtil
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
@@ -42,7 +40,6 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
     val photosLiveData: MutableLiveData<LiveDataResult<MediaVmMData>> = MutableLiveData()
     val selectedMediaUriLiveData: MutableLiveData<LiveDataResult<List<Uri>>> = MutableLiveData()
 
-    var fileObserver: FileObserver? = null
     val folderDataList = arrayListOf<FolderData>()
     val uriSet = HashSet<Uri>()
     val folderLiveData = MutableLiveData<LiveDataResult<List<FolderData>>>()
@@ -64,7 +61,8 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
                     val file = File(fileUri.path!!)
                     if (file.exists() && file.length() > 0) {
                         if (!uriSet.contains(fileUri)) {
-                            val asset = photosUseCase.createAssetsFromFile(file, app.applicationContext)
+                            val asset =
+                                photosUseCase.createAssetsFromFile(file, app.applicationContext)
                             if (asset != null) {
 
                                 /**
@@ -101,15 +99,21 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
                                     folderDataList.add(finalInternalFolderData)
                                 }
                                 folderLiveData.postValue(LiveDataResult.success(folderDataList))
-                                photosLiveData.postValue(
-                                    LiveDataResult.success(
-                                        MediaVmMData(
-                                            MediaUseCaseData(MediaImporterData(imageAdapterList)),
-                                            StorageUtil.INTERNAL_FOLDER_NAME,
-                                            isNewItem = true
-                                        )
-                                    )
-                                )
+                                withContext(Dispatchers.Main) {
+                                    photosLiveData.value = (
+                                            LiveDataResult.success(
+                                                MediaVmMData(
+                                                    MediaUseCaseData(
+                                                        MediaImporterData(
+                                                            imageAdapterList
+                                                        )
+                                                    ),
+                                                    StorageUtil.INTERNAL_FOLDER_NAME,
+                                                    isNewItem = true
+                                                )
+                                            )
+                                            )
+                                }
                             }
                         }
                     }
@@ -119,16 +123,15 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
         }, onError = {})
     }
 
-    fun getMediaByFolderName(folderName: String, mediaCount: Int?) {
-
+    fun getMediaByFolderName(folderName: String) {
+        photosLiveData.value = (LiveDataResult.loading())
         launchCatchError(block = {
-            photosLiveData.postValue(LiveDataResult.loading())
             photosUseCase.getMediaByFolderNameFlow(folderName, app)
                 .collect {
-                    photosLiveData.postValue(LiveDataResult.success(MediaVmMData(it, folderName)))
+                    photosLiveData.value = (LiveDataResult.success(MediaVmMData(it, folderName)))
                 }
         }, onError = {
-            photosLiveData.postValue(LiveDataResult.error(Exception("Unknown error")))
+            photosLiveData.value = (LiveDataResult.error(Exception("Unknown error")))
             Timber.e(it)
         })
     }
@@ -136,14 +139,21 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
     fun getPhotos() {
 
         launchCatchError(block = {
-            photosLiveData.postValue(LiveDataResult.loading())
+            withContext(Dispatchers.Main){
+                photosLiveData.value = (LiveDataResult.loading())
+            }
             photosUseCase.getMediaByFolderNameFlow(PhotoImporter.ALL, app)
                 .collect {
                     uriSet.addAll(photosUseCase.getUriSetFromImageAdapterData(it.mediaImporterData.imageAdapterDataList))
-                    photosLiveData.postValue(LiveDataResult.success(MediaVmMData(it)))
+                    withContext(Dispatchers.Main) {
+                        photosLiveData.value = (LiveDataResult.success(MediaVmMData(it)))
+                    }
+
                 }
         }, onError = {
-            photosLiveData.postValue(LiveDataResult.error(it))
+            withContext(Dispatchers.Main) {
+                photosLiveData.value = (LiveDataResult.error(it))
+            }
         })
     }
 
@@ -159,7 +169,6 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
 
     override fun onCleared() {
         super.onCleared()
-        fileObserver?.startWatching()
         flush()
     }
 }

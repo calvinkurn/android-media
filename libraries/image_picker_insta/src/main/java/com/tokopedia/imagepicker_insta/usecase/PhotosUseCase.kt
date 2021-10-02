@@ -136,28 +136,29 @@ class PhotosUseCase @Inject constructor() {
                     }
 
                     val allInternalAssetsAreClickedAfterExternalAssets = internalAssetsIndex == -1
-                    val subList: List<Asset>
+                    val subList = ArrayList<Asset>()
                     if (allInternalAssetsAreClickedAfterExternalAssets) {
-                        subList = ArrayList(internalAssets)
+                        subList.addAll(internalAssets)
                         internalAssets.clear()
 
                     } else {
-                        subList = internalAssets.subList(internalAssetsIndex, internalAssetsSize)
+                        subList.addAll(internalAssets.subList(internalAssetsIndex, internalAssetsSize))
                         internalAssets.removeAll(subList)
                     }
 
                     val internalAdapterList = subList.map { ImageAdapterData(it) }
 
+                    val finalList = ArrayList(importedMediaMetaData.mediaImporterData.imageAdapterDataList)
+
                     if (!allInternalAssetsAreClickedAfterExternalAssets) {
-                        importedMediaMetaData.mediaImporterData.imageAdapterDataList
-                            .addAll(internalAdapterList)
-                        sortAdapterDataList(importedMediaMetaData.mediaImporterData.imageAdapterDataList)
+
+                        finalList.addAll(internalAdapterList)
+                        sortAdapterDataList(finalList)
                     } else {
-                        importedMediaMetaData.mediaImporterData.imageAdapterDataList
-                            .addAll(0, internalAdapterList)
+                        finalList.addAll(0, internalAdapterList)
                     }
                     internalAssetsIndex = -1
-                    emit(MediaUseCaseData(importedMediaMetaData.mediaImporterData))
+                    emit(MediaUseCaseData(MediaImporterData(finalList)))
                 }
             }
         }

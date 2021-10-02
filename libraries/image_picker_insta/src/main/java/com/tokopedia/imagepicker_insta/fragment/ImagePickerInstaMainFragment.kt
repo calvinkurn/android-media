@@ -261,7 +261,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                     imageAdapter.notifyItemRangeRemoved(0, size)
 
                     updateSelectedFolderText(folderData?.folderTitle!!)
-                    refreshImages(folderData.folderTitle, folderData?.itemCount)
+                    refreshImages(folderData.folderTitle)
                 } else {
                     updateSelectedFolderText(PhotoImporter.ALL)
 
@@ -314,8 +314,8 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         }
     }
 
-    private fun refreshImages(folderName: String, mediaCount: Int?) {
-        viewModel.getMediaByFolderName(folderName, mediaCount)
+    private fun refreshImages(folderName: String) {
+        viewModel.getMediaByFolderName(folderName)
     }
 
     fun setupRv() {
