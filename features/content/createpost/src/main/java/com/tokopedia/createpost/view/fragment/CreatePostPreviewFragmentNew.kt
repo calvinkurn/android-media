@@ -537,7 +537,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         return count
     }
     private fun disableProductIcon(){
-        val color = context?.let { ContextCompat.getColor(it, R.color.Unify_NN300 ) }
+        val color = context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN300 ) }
         color?.let {
             product_tag_button.setColorFilter(it)
             content_tag_product_text.setTextColor(it)
@@ -545,7 +545,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     }
     private fun enableProductIcon(){
-        val color = context?.let { ContextCompat.getColor(it, R.color.Unify_NN900 ) }
+        val color = context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN900 ) }
         color?.let {
             product_tag_button.setColorFilter(it)
             content_tag_product_text.setTextColor(it)
