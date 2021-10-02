@@ -38,6 +38,7 @@ import javax.inject.Inject
 import android.content.ContentResolver
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
+import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.imagepicker_insta.common.BundleData
 import java.util.*
 
@@ -122,8 +123,8 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
 
     private fun initInjector() {
         DaggerCreatePostComponent.builder()
-            .createPostModule(CreatePostModule(applicationContext))
-            .build()
+            .createPostCommonModule(CreatePostCommonModule(applicationContext))
+            .createPostModule(CreatePostModule(applicationContext)).build()
             .inject(this)
     }
 

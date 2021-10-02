@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
+import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.createpost.common.view.plist.*
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.di.CreatePostModule
@@ -50,8 +51,8 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
     }
     override fun initInjector() {
         DaggerCreatePostComponent.builder()
-            .createPostModule(CreatePostModule(requireContext().applicationContext))
-            .build()
+            .createPostCommonModule(CreatePostCommonModule(requireContext().applicationContext))
+            .createPostModule(CreatePostModule(requireContext().applicationContext)).build()
             .inject(this)
     }
 

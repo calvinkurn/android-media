@@ -8,8 +8,6 @@ import com.tokopedia.createpost.view.activity.CreatePostActivityNew
 import com.tokopedia.createpost.view.fragment.BaseCreatePostFragment
 import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
 import com.tokopedia.createpost.view.plist.ShopProductListFragment
-import com.tokopedia.createpost.common.view.service.SubmitPostService
-import com.tokopedia.createpost.common.view.service.SubmitPostServiceNew
 import dagger.Component
 
 /**

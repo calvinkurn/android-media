@@ -33,6 +33,7 @@ import com.tokopedia.createpost.common.TYPE_AFFILIATE
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.common.data.pojo.getcontentform.Author
 import com.tokopedia.createpost.common.data.pojo.getcontentform.FeedContentForm
+import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.createpost.common.view.viewmodel.*
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
@@ -139,9 +140,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     override fun initInjector() {
         DaggerCreatePostComponent.builder()
-                .createPostModule(CreatePostModule(requireContext().applicationContext))
-                .build()
-                .inject(this)
+            .createPostCommonModule(CreatePostCommonModule(requireContext().applicationContext))
+            .createPostModule(CreatePostModule(requireContext().applicationContext)).build()
+            .inject(this)
     }
 
     override fun onAttach(context: Context) {

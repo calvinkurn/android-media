@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.common.data.pojo.getcontentform.Author
 import com.tokopedia.createpost.common.data.pojo.getcontentform.FeedContentForm
+import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.common.domain.entity.FeedDetail
@@ -57,8 +58,8 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
 
     override fun initInjector() {
         DaggerCreatePostComponent.builder()
-            .createPostModule(CreatePostModule(requireContext().applicationContext))
-            .build()
+            .createPostCommonModule(CreatePostCommonModule(requireContext().applicationContext))
+            .createPostModule(CreatePostModule(requireContext().applicationContext)).build()
             .inject(this)
     }
     override fun onCreate(savedInstanceState: Bundle?) {
