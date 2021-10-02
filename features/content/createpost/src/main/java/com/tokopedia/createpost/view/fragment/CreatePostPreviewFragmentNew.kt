@@ -591,7 +591,6 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             val layout = findViewById<ConstraintLayout>(R.id.product_tagging_parent_layout)
             layout.removeAllViews()
 
-            doOnLayout {
                 media.tags.forEachIndexed { index, feedXMediaTagging ->
                     val tagViewProvider = TagViewProvider()
                     val view = tagViewProvider.getTagView(context,
@@ -601,20 +600,23 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                         feedXMediaTagging,
                         layout)
                     if (view != null) {
-                        Handler().postDelayed(Runnable {
-                            val bitmap = postImage.drawable.toBitmap()
-                            tagViewProvider.addViewToParent(view,
-                                layout,
-                                feedXMediaTagging,
-                                index,
-                                bitmap,
-                                mediaIndex)
-                        }, 50)
-
+                        try {
+                            Handler().postDelayed(Runnable {
+                                val bitmap = postImage.drawable.toBitmap()
+                                tagViewProvider.addViewToParent(view,
+                                    layout,
+                                    feedXMediaTagging,
+                                    index,
+                                    bitmap,
+                                    mediaIndex)
+                            }, 50)
+                        } catch (e: Exception) {
+                            Timber.e(e)
+                        }
                     }
                 }
 
-            }
+
         }
     }
 

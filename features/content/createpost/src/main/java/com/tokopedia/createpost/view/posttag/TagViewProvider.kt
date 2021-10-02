@@ -171,11 +171,12 @@ class TagViewProvider {
 
                     val location = IntArray(2)
                     val locationParent = IntArray(2)
+                    val bitmapCurrentHeight = (parent.height - (2 * greyAreaY))
 
                     productTagNotchViewFinal.getLocationOnScreen(location)
                     parent.getLocationOnScreen(locationParent)
                     val pointerPositionY = (location[1] - locationParent[1]).toFloat()
-                    if (pointerPositionY < (parent.height) * 0.70) {
+                    if (pointerPositionY  < (bitmapCurrentHeight) * 0.70 + greyAreaY) {
                         productTopNotchVisible = true
                         productTagViewTopNotch.visibility = View.VISIBLE
                         productTagViewBottomNotch.visibility = View.GONE
@@ -244,6 +245,7 @@ class TagViewProvider {
         })
 
         Handler().postDelayed(Runnable {
+            val bitmapCurrentHeight = (parent.height - (2 * greyAreaY))
             /*Handling for X position*/
             var xTapped: Float =
                 feedXMediaTagging.X?.minus(child.width / 2) ?: 0f
@@ -252,10 +254,11 @@ class TagViewProvider {
             if (x2Diff < 0) {
                 xTapped += x2Diff
             }
+            val pointerView = child.findViewById<View>(R.id.topNotch)
 
             /*Handling for Y position*/
             var yTapped = feedXMediaTagging.Y!!
-            val y2Want: Float = yTapped + child.height.toFloat()
+            val y2Want: Float = yTapped + child.height.toFloat() + pointerView.height
             val y2Diff = parent.bottom - y2Want
             if (y2Diff < 0) {
                 yTapped += y2Diff
@@ -277,7 +280,7 @@ class TagViewProvider {
                 else -> child.y = yTapped
             }
 
-            if (child.y < (parent.height) * 0.70) {
+            if (child.y < (bitmapCurrentHeight) * 0.70 + greyAreaY) {
                 productTopNotchVisible = true
                 productTagViewTopNotch.visibility = View.VISIBLE
                 productTagViewBottomNotch.visibility = View.GONE
