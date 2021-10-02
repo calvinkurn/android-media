@@ -59,4 +59,5 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.imagePickerInstaCommon)
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
 }

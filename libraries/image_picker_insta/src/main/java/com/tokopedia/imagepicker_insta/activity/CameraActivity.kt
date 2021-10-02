@@ -29,6 +29,7 @@ class CameraActivity : PermissionActivity() {
     lateinit var toolbarTitle: Typography
     lateinit var toolbarIcon: AppCompatImageView
     var applinkToNavigateAfterMediaCapture: String? = null
+    val uriOfClickedMedias = arrayListOf<Uri>()
 
     companion object {
 
@@ -108,9 +109,9 @@ class CameraActivity : PermissionActivity() {
         }
     }
 
-    private fun afterMediaIsCaptured(uri: Uri) {
+    private fun afterMediaIsCaptured(uriList: List<Uri>) {
         if (!applinkToNavigateAfterMediaCapture.isNullOrEmpty()) {
-            val finalApplink = CameraUtil.createApplinkToSendFileUris(applinkToNavigateAfterMediaCapture!!, arrayListOf(uri))
+            val finalApplink = CameraUtil.createApplinkToSendFileUris(applinkToNavigateAfterMediaCapture!!, uriList)
             RouteManager.route(this, finalApplink)
         } else {
             finish()
@@ -128,8 +129,9 @@ class CameraActivity : PermissionActivity() {
     }
 
     fun exitActivityOnSuccess(uri: Uri) {
-        setResult(Activity.RESULT_OK, CameraUtil.getIntentfromFileUris(arrayListOf(uri)))
-        afterMediaIsCaptured(uri)
+        uriOfClickedMedias.add(0,uri)
+        setResult(Activity.RESULT_OK, CameraUtil.getIntentfromFileUris(uriOfClickedMedias))
+        afterMediaIsCaptured(ArrayList(uri))
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

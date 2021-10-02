@@ -490,6 +490,9 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                         if(imageDataList.isNotEmpty()) {
                             imageDataList.addAll(1, tempImageAdapterList)
                             imageAdapter.notifyItemRangeInserted(1,tempImageAdapterList.size)
+
+                            autoSelectFirstItemWhenFolderIsChanged(tempImageAdapterList)
+                            return
                         }
                     }else{
                         imageDataList.addAll(tempImageAdapterList)

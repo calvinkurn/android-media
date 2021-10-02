@@ -56,7 +56,7 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
 
     fun handleFileAddedEvent(fileUriList: ArrayList<Uri>) {
         launchCatchError(block = {
-            fileUriList.forEach { fileUri ->
+            fileUriList.reversed().forEach { fileUri ->
                 if (!fileUri.path.isNullOrEmpty()) {
                     val file = File(fileUri.path!!)
                     if (file.exists() && file.length() > 0) {
@@ -124,14 +124,21 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
     }
 
     fun getMediaByFolderName(folderName: String) {
-        photosLiveData.value = (LiveDataResult.loading())
+
         launchCatchError(block = {
+            withContext(Dispatchers.Main){
+                photosLiveData.value = (LiveDataResult.loading())
+            }
             photosUseCase.getMediaByFolderNameFlow(folderName, app)
                 .collect {
-                    photosLiveData.value = (LiveDataResult.success(MediaVmMData(it, folderName)))
+                    withContext(Dispatchers.Main){
+                        photosLiveData.value = (LiveDataResult.success(MediaVmMData(it, folderName)))
+                    }
                 }
         }, onError = {
-            photosLiveData.value = (LiveDataResult.error(Exception("Unknown error")))
+            withContext(Dispatchers.Main){
+                photosLiveData.value = (LiveDataResult.error(Exception("Unknown error")))
+            }
             Timber.e(it)
         })
     }

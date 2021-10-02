@@ -112,7 +112,7 @@ class ImageAdapter(
 
             if (item.asset != mainFragmentContract.getAssetInPreview()) {
                 itemSelectCallback?.invoke(item, true)
-            } else {
+            } else if (mainFragmentContract.isMultiSelectEnable()){
                 unSelectItem(position, holder)
             }
 
@@ -232,7 +232,7 @@ class ImageAdapter(
             holder.setChecked(selectedPositionMap.size, mainFragmentContract.isMultiSelectEnable())
             itemSelectCallback?.invoke(dataList[position], true)
         } else {
-            mainFragmentContract.showToast("Oops, maksimal upload 5 media, Hapus salah satu media jika ingin menggantinya.", Toaster.TYPE_ERROR)
+            mainFragmentContract.showToast("Oops, maksimal upload $maxMultiSelectLimit media, Hapus salah satu media jika ingin menggantinya.", Toaster.TYPE_ERROR)
         }
     }
 

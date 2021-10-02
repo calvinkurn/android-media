@@ -72,6 +72,7 @@ class CameraFragment : Fragment() {
         override fun onCompleted() {
             handler.post {
                 loader.visibility = View.GONE
+                cameraButton.addTouchListener()
             }
 
             viewModel.deleteFile(sourceVideoFile)
@@ -88,6 +89,7 @@ class CameraFragment : Fragment() {
             handler.post {
                 loader.visibility = View.GONE
                 showToast("Cropping Video cancelled", Toaster.TYPE_ERROR)
+                cameraButton.addTouchListener()
             }
             viewModel.deleteFile(sourceVideoFile)
             (activity as? CameraActivity)?.exitActivityOnError()
@@ -97,6 +99,7 @@ class CameraFragment : Fragment() {
             handler.post {
                 loader.visibility = View.GONE
                 showToast("Cropping Video exception", Toaster.TYPE_ERROR)
+                cameraButton.addTouchListener()
             }
 
             viewModel.deleteFile(sourceVideoFile)
@@ -175,6 +178,7 @@ class CameraFragment : Fragment() {
                     loader.visibility = View.GONE
                     if (it.data != null) {
                         (activity as? CameraActivity)?.exitActivityOnSuccess(it.data)
+                        cameraButton.addTouchListener()
                     } else {
                         showToast("Something went wrong in getting uri", Toaster.TYPE_ERROR)
                         (activity as? CameraActivity)?.exitActivityOnError()
