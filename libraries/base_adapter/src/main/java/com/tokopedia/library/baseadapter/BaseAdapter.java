@@ -278,7 +278,7 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
     @Override
     public final void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         final T item = getItems().get(position);
-        ((BaseVH) holder).bindView(item, position);
+        ((BaseVH)holder).bindView(item, position);
     }
 
     protected final void addLoadingFooter() {
@@ -486,15 +486,21 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 mItems = (List<T>) results.values;
                 notifyDataSetChanged();
+
+                if(!isLastPage() && constraint.toString().isEmpty()) {
+                    mIsLoadingAdded = true;
+                }
             }
 
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
-                List<T> filteredResults;
+                mIsLoadingAdded = false;
+                List<T> filteredResults = null;
+
                 if (constraint.length() == 0) {
                     filteredResults = new ArrayList<>(getOrigItems());
                 } else {
-                    filteredResults = getFilteredResults(constraint.toString().toLowerCase());
+                    filteredResults = getFilteredResults(constraint.toString());
                 }
 
                 FilterResults results = new FilterResults();
@@ -509,11 +515,36 @@ public abstract class BaseAdapter<T extends BaseItem> extends RecyclerView.Adapt
         List<T> results = new ArrayList<T>();
 
         for (T item : getOrigItems()) {
-            if (item.getSearchQuery().contains(constraint)) {
+            if (containsIgnoreCase(item.getSearchQuery(), constraint)) {
                 results.add(item);
             }
         }
 
         return results;
     }
+
+    public static boolean containsIgnoreCase(String src, String what) {
+        final int length = what.length();
+        if (length == 0) {
+            return true; // Empty string is contained
+        }
+
+        final char firstLo = Character.toLowerCase(what.charAt(0));
+        final char firstUp = Character.toUpperCase(what.charAt(0));
+
+        for (int i = src.length() - length; i >= 0; i--) {
+            // Quick check before calling the more expensive regionMatches() method:
+            final char ch = src.charAt(i);
+            if (ch != firstLo && ch != firstUp) {
+                continue;
+            }
+
+            if (src.regionMatches(true, i, what, 0, length)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }
