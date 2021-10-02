@@ -117,7 +117,10 @@ class PhotoImporter : MediaImporter {
                         val mediaTypeIndex = cur.getColumnIndex(MediaStore.Files.FileColumns.MEDIA_TYPE)
 
                         val index = cur.getLong(idIndex)
-                        val folderName = cur.getString(folderIndex)
+                        var folderName = cur.getString(folderIndex)
+                        if (folderName.isNullOrEmpty()) {
+                            folderName = "Others"
+                        }
 
                         val contentUri = when (cur.getInt(mediaTypeIndex)) {
                             MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE -> ContentUris.withAppendedId(
