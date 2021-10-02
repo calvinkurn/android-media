@@ -64,7 +64,7 @@ class ContentCreationProductTagBottomSheet : BottomSheetUnify() {
 
     private fun onDeleteProduct(position: Int) {
         view?.rootView?.let {
-            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.layout_lvl6)
+            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl6)
             Toaster.build(it,
                 getString(R.string.feed_content_delete_toaster_text),
                 Toaster.LENGTH_LONG,
