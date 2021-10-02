@@ -131,7 +131,7 @@ class CameraActivity : PermissionActivity() {
     fun exitActivityOnSuccess(uri: Uri) {
         uriOfClickedMedias.add(0,uri)
         setResult(Activity.RESULT_OK, CameraUtil.getIntentfromFileUris(uriOfClickedMedias))
-        afterMediaIsCaptured(ArrayList(uri))
+        afterMediaIsCaptured(arrayListOf(uri))
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
