@@ -80,7 +80,19 @@ class QuickFilterViewModel(val application: Application, val components: Compone
     }
 
     fun getTargetComponent(): ComponentsItem? {
-        return getComponent(components.properties?.targetId ?: "", components.pageEndPoint)
+        var compId = components.properties?.targetId?:""
+        if (components.properties?.dynamic == true) {
+            getComponent(components.parentComponentId, components.pageEndPoint)?.let parent@{ parentItem ->
+                parentItem.getComponentsItem()?.forEach {
+                    if (!it.dynamicOriginalId.isNullOrEmpty())
+                        if (it.dynamicOriginalId == compId) {
+                            compId = it.id
+                            return@parent
+                        }
+                }
+            }
+        }
+        return getComponent(compId, components.pageEndPoint)
     }
 
     fun getDynamicFilterModelLiveData() = dynamicFilterModel
@@ -104,7 +116,10 @@ class QuickFilterViewModel(val application: Application, val components: Compone
 
     fun fetchDynamicFilterModel() {
         launchCatchError(block = {
-            dynamicFilterModel.value = filterRepository.getFilterData(components.id, mutableMapOf(), components.pageEndPoint)
+            var componentID = components.id
+            if(components.properties?.dynamic == true && !components.dynamicOriginalId.isNullOrEmpty())
+                componentID = components.dynamicOriginalId!!
+            dynamicFilterModel.value = filterRepository.getFilterData(componentID, mutableMapOf(), components.pageEndPoint)
             renderDynamicFilter(dynamicFilterModel.value?.data)
         }, onError = {
             Timber.e(it)
