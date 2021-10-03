@@ -952,8 +952,9 @@ class ShopScoreMapper @Inject constructor(
     private fun getIsShowPopupEndTenure(shopAge: Long, dateShopCreated: String): Boolean {
         return if (shopScorePrefManager.getIsShowPopupEndTenure()) {
             val calendar = Calendar.getInstance(getLocale())
+            //95 -> hari senin
             if (shopAge in SHOP_AGE_NINETY..SHOP_AGE_NINETY_SIX &&
-                GoldMerchantUtil.getIsExistingSellerRangeInMonday(dateShopCreated)
+                !GoldMerchantUtil.getIsExistingSellerStartMonday(dateShopCreated)
             ) {
                 calendar.getIsRangeCurrentWeekFromMonday()
             } else if (shopAge > SHOP_AGE_NINETY_SIX &&
