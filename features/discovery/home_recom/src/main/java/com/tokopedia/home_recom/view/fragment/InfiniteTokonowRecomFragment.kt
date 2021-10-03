@@ -196,6 +196,10 @@ class InfiniteTokonowRecomFragment :
     override fun onCloseRecommendation() {
     }
 
+    override fun onShowSnackbarError(throwable: Throwable) {
+        showErrorSnackbar(throwable)
+    }
+
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(InfiniteRecomTracker.eventRecomItemClick(firstRecomWidget, item, getUserSession().userId, productId) as HashMap<String, Any>)
         goToPDP(item.productId.toString(), item.position)

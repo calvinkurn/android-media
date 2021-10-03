@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.databinding.FilterChildCheckboxItemBinding
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
-import kotlinx.android.synthetic.main.filter_child_checkbox_item.view.cb_filter
-import kotlinx.android.synthetic.main.filter_child_checkbox_item.view.label_checkbox
+import com.tokopedia.utils.view.binding.viewBinding
 
 class SomSubFilterChildCheckBoxAdapter(private val somSubChildFilterListener: SomSubChildFilterListener)
     : RecyclerView.Adapter<SomSubFilterChildCheckBoxAdapter.SomSubFilterChildCheckViewHolder>() {
@@ -51,10 +51,12 @@ class SomSubFilterChildCheckBoxAdapter(private val somSubChildFilterListener: So
 
     inner class SomSubFilterChildCheckViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
+        private val binding by viewBinding<FilterChildCheckboxItemBinding>()
+
         fun bind(data: SomFilterChipsUiModel.ChildStatusUiModel) {
-            with(itemView) {
-                label_checkbox.text = data.text
-                cb_filter.apply {
+            binding?.run {
+                labelCheckbox.text = data.text
+                cbFilter.apply {
                     setOnCheckedChangeListener(null)
                     isChecked = data.isChecked
                     skipAnimation()
@@ -65,12 +67,12 @@ class SomSubFilterChildCheckBoxAdapter(private val somSubChildFilterListener: So
                     if(id != null) idList.add(id)
                 }
 
-                cb_filter.setOnCheckedChangeListener { _, isChecked ->
+                cbFilter.setOnCheckedChangeListener { _, isChecked ->
                     checkBoxClicked(isChecked)
                 }
 
-                setOnClickListener {
-                    cb_filter.isChecked = !cb_filter.isChecked
+                root.setOnClickListener {
+                    cbFilter.isChecked = !cbFilter.isChecked
                 }
             }
         }
