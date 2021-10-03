@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.Uri
 import com.tokopedia.imagepicker_insta.mediaImporter.PhotoImporter
 import com.tokopedia.imagepicker_insta.models.*
+import com.tokopedia.imagepicker_insta.util.AlbumUtil
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.util.StorageUtil
 import kotlinx.coroutines.flow.Flow
@@ -70,7 +71,7 @@ class PhotosUseCase @Inject constructor() {
         finalFolderList.add(
             PhotoImporter.INDEX_OF_RECENT_MEDIA_IN_FOLDER_LIST,
             FolderData(
-                PhotoImporter.ALL,
+                AlbumUtil.RECENTS,
                 CameraUtil.getMediaCountText(totalMediaCount),
                 latestUri,
                 totalMediaCount
@@ -98,7 +99,7 @@ class PhotosUseCase @Inject constructor() {
     suspend fun getMediaByFolderNameFlow(folderName: String, context: Context): Flow<MediaUseCaseData> {
         return flow {
 
-            val internalAssets = if (folderName == StorageUtil.INTERNAL_FOLDER_NAME || folderName == PhotoImporter.ALL)
+            val internalAssets = if (folderName == StorageUtil.INTERNAL_FOLDER_NAME || folderName == AlbumUtil.RECENTS)
                 ArrayList(photosImporter.importMediaFromInternalDir(context))
             else
                 ArrayList()

@@ -4,10 +4,10 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.imagepicker_insta.LiveDataResult
-import com.tokopedia.imagepicker_insta.mediaImporter.PhotoImporter
 import com.tokopedia.imagepicker_insta.models.*
 import com.tokopedia.imagepicker_insta.usecase.CropUseCase
 import com.tokopedia.imagepicker_insta.usecase.PhotosUseCase
+import com.tokopedia.imagepicker_insta.util.AlbumUtil
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.util.StorageUtil
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -56,6 +56,8 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
 
     fun handleFileAddedEvent(fileUriList: ArrayList<Uri>) {
         launchCatchError(block = {
+            val imageAdapterList = ArrayList<ImageAdapterData>()
+
             fileUriList.reversed().forEach { fileUri ->
                 if (!fileUri.path.isNullOrEmpty()) {
                     val file = File(fileUri.path!!)
@@ -72,71 +74,76 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
 
                                 // 1
                                 uriSet.add(asset.contentUri)
-                                val imageAdapterList = ArrayList<ImageAdapterData>()
                                 imageAdapterList.add(ImageAdapterData(asset))
-
-                                val internalFolderData: FolderData? = folderDataList.firstOrNull {
-                                    it.folderTitle == StorageUtil.INTERNAL_FOLDER_NAME
-                                }
-                                if (internalFolderData == null) {
-                                    val finalInternalFolderData = FolderData(
-                                        StorageUtil.INTERNAL_FOLDER_NAME,
-                                        CameraUtil.getMediaCountText(1),
-                                        fileUri, 1
-                                    )
-                                    //2
-                                    folderDataList.add(finalInternalFolderData)
-                                } else {
-                                    folderDataList.remove(internalFolderData)
-
-                                    val finalInternalFolderData = FolderData(
-                                        StorageUtil.INTERNAL_FOLDER_NAME,
-                                        CameraUtil.getMediaCountText(internalFolderData.itemCount + 1),
-                                        fileUri,
-                                        internalFolderData.itemCount + 1
-                                    )
-                                    //2
-                                    folderDataList.add(finalInternalFolderData)
-                                }
-                                folderLiveData.postValue(LiveDataResult.success(folderDataList))
-                                withContext(Dispatchers.Main) {
-                                    photosLiveData.value = (
-                                            LiveDataResult.success(
-                                                MediaVmMData(
-                                                    MediaUseCaseData(
-                                                        MediaImporterData(
-                                                            imageAdapterList
-                                                        )
-                                                    ),
-                                                    StorageUtil.INTERNAL_FOLDER_NAME,
-                                                    isNewItem = true
-                                                )
-                                            )
-                                            )
-                                }
                             }
                         }
                     }
                 }
-
+            }
+            if (imageAdapterList.isNotEmpty()) {
+                updateMediaCountInFolders(imageAdapterList.first().asset.contentUri,imageAdapterList.size, AlbumUtil.RECENTS)
+                updateMediaCountInFolders(imageAdapterList.first().asset.contentUri,imageAdapterList.size, StorageUtil.INTERNAL_FOLDER_NAME)
+                folderLiveData.postValue(LiveDataResult.success(folderDataList))
+                withContext(Dispatchers.Main) {
+                    photosLiveData.value = (
+                            LiveDataResult.success(
+                                MediaVmMData(
+                                    MediaUseCaseData(
+                                        MediaImporterData(
+                                            imageAdapterList
+                                        )
+                                    ),
+                                    StorageUtil.INTERNAL_FOLDER_NAME,
+                                    isNewItem = true
+                                )
+                            )
+                            )
+                }
             }
         }, onError = {})
+    }
+
+    fun updateMediaCountInFolders(fileUri: Uri, mediaCount:Int, folderName: String) {
+        val internalFolderData: FolderData? = folderDataList.firstOrNull {
+            it.folderTitle == folderName
+        }
+        if (internalFolderData == null) {
+            val finalInternalFolderData = FolderData(
+                folderName,
+                CameraUtil.getMediaCountText(mediaCount),
+                fileUri, mediaCount
+            )
+            //2
+            folderDataList.add(finalInternalFolderData)
+        } else {
+            folderDataList.remove(internalFolderData)
+
+            val finalInternalFolderData = FolderData(
+                folderName,
+                CameraUtil.getMediaCountText(internalFolderData.itemCount + mediaCount),
+                fileUri,
+                internalFolderData.itemCount + mediaCount
+            )
+            //2
+            folderDataList.add(finalInternalFolderData)
+        }
     }
 
     fun getMediaByFolderName(folderName: String) {
 
         launchCatchError(block = {
-            withContext(Dispatchers.Main){
+            withContext(Dispatchers.Main) {
                 photosLiveData.value = (LiveDataResult.loading())
             }
             photosUseCase.getMediaByFolderNameFlow(folderName, app)
                 .collect {
-                    withContext(Dispatchers.Main){
-                        photosLiveData.value = (LiveDataResult.success(MediaVmMData(it, folderName)))
+                    withContext(Dispatchers.Main) {
+                        photosLiveData.value =
+                            (LiveDataResult.success(MediaVmMData(it, folderName)))
                     }
                 }
         }, onError = {
-            withContext(Dispatchers.Main){
+            withContext(Dispatchers.Main) {
                 photosLiveData.value = (LiveDataResult.error(Exception("Unknown error")))
             }
             Timber.e(it)
@@ -146,10 +153,10 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
     fun getPhotos() {
 
         launchCatchError(block = {
-            withContext(Dispatchers.Main){
+            withContext(Dispatchers.Main) {
                 photosLiveData.value = (LiveDataResult.loading())
             }
-            photosUseCase.getMediaByFolderNameFlow(PhotoImporter.ALL, app)
+            photosUseCase.getMediaByFolderNameFlow(AlbumUtil.RECENTS, app)
                 .collect {
                     uriSet.addAll(photosUseCase.getUriSetFromImageAdapterData(it.mediaImporterData.imageAdapterDataList))
                     withContext(Dispatchers.Main) {

@@ -23,10 +23,10 @@ import com.tokopedia.imagepicker_insta.common.ImagePickerRouter.DEFAULT_MULTI_SE
 import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
 import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
-import com.tokopedia.imagepicker_insta.mediaImporter.PhotoImporter
 import com.tokopedia.imagepicker_insta.menu.MenuManager
 import com.tokopedia.imagepicker_insta.models.*
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
+import com.tokopedia.imagepicker_insta.util.AlbumUtil
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.util.PermissionUtil
 import com.tokopedia.imagepicker_insta.viewmodel.PickerViewModel
@@ -64,6 +64,8 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     var cameraCaptureFilePath: String? = null
     var selectedFolderText: String? = null
     var mediaLoadingFailed = false
+    lateinit var noMediaAvailableText: String
+    lateinit var loadingMediaText: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -128,8 +130,13 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val v = LayoutInflater.from(context).inflate(R.layout.imagepicker_insta_fragment_main, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val v = LayoutInflater.from(context)
+            .inflate(R.layout.imagepicker_insta_fragment_main, container, false)
         initViews(v)
         setObservers()
         setClicks()
@@ -203,6 +210,9 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
         imageMultiSelect.toggle(false)
         setupRv()
+
+        noMediaAvailableText = getString(R.string.imagepicker_insta_no_media_available)
+        loadingMediaText = getString(R.string.imagepicker_insta_loading)
     }
 
     fun setupToolbar(v: View) {
@@ -252,8 +262,8 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                     return@itemOnClick
                 }
 
-                //When user selects same folder and folder name is PhotoImporter.ALL
-                if (folderData?.folderTitle.isNullOrEmpty() && selectedFolderText == PhotoImporter.ALL) {
+                //When user selects same folder and folder name is AlbumUtil.RECENTS
+                if (folderData?.folderTitle.isNullOrEmpty() && selectedFolderText == AlbumUtil.RECENTS) {
                     bottomSheet.dismiss()
                     return@itemOnClick
                 }
@@ -266,7 +276,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                     updateSelectedFolderText(folderData?.folderTitle!!)
                     refreshImages(folderData.folderTitle)
                 } else {
-                    updateSelectedFolderText(PhotoImporter.ALL)
+                    updateSelectedFolderText(AlbumUtil.RECENTS)
 
                     imageDataList.clear()
                     addCameraItemInEmptyList()
@@ -355,7 +365,10 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     private fun openCamera() {
         cameraCaptureFilePath = null
-        cameraCaptureFilePath = CameraUtil.openCamera(WeakReference(this), (activity as? ImagePickerInstaActivity)?.applinkToNavigateAfterMediaCapture)
+        cameraCaptureFilePath = CameraUtil.openCamera(
+            WeakReference(this),
+            (activity as? ImagePickerInstaActivity)?.applinkToNavigateAfterMediaCapture
+        )
     }
 
     override fun handleOnCameraIconTap() {
@@ -390,7 +403,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             }
         }
 
-        viewModel.folderLiveData.observe(viewLifecycleOwner, {
+        viewModel.folderLiveData.observe(viewLifecycleOwner) {
             when (it.status) {
                 LiveDataResult.STATUS.LOADING -> {
                 }
@@ -402,9 +415,9 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                     updateFolders(null)
                 }
             }
-        })
+        }
 
-        viewModel.photosLiveData.observe(viewLifecycleOwner, {
+        viewModel.photosLiveData.observe(viewLifecycleOwner) {
             when (it.status) {
                 LiveDataResult.STATUS.LOADING -> {
                 }
@@ -415,9 +428,9 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                     showToast(getString(R.string.imagepicker_insta_utlam), Toaster.TYPE_ERROR)
                 }
             }
-        })
+        }
 
-        viewModel.selectedMediaUriLiveData.observe(viewLifecycleOwner, {
+        viewModel.selectedMediaUriLiveData.observe(viewLifecycleOwner) {
             when (it.status) {
                 LiveDataResult.STATUS.LOADING -> {
                     //Do nothing
@@ -433,20 +446,21 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                     showToast(getString(R.string.imagepicker_insta_smwr), Toaster.TYPE_ERROR)
                 }
             }
-        })
-
-        imageAdapter.itemSelectCallback = { imageAdapterData: ImageAdapterData, isSelected: Boolean ->
-            if (isSelected) {
-
-                if (!isMultiSelectEnable()) {
-                    zoomImageAdapterDataMap.clear()
-                }
-
-                selectedMediaView.loadAsset(imageAdapterData, prepareZoomInfo(imageAdapterData))
-            } else {
-                //DO nothing
-            }
         }
+
+        imageAdapter.itemSelectCallback =
+            { imageAdapterData: ImageAdapterData, isSelected: Boolean ->
+                if (isSelected) {
+
+                    if (!isMultiSelectEnable()) {
+                        zoomImageAdapterDataMap.clear()
+                    }
+
+                    selectedMediaView.loadAsset(imageAdapterData, prepareZoomInfo(imageAdapterData))
+                } else {
+                    //DO nothing
+                }
+            }
 
         imageAdapter.onItemLongClick = { imageAdapterData: ImageAdapterData ->
             if (!isMultiSelectEnable()) {
@@ -461,51 +475,59 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     private fun updateMediaToUi(mediaVmMData: MediaVmMData?) {
-        val tempImageAdapterList = mediaVmMData?.mediaUseCaseData?.mediaImporterData?.imageAdapterDataList?: emptyList()
+        val tempImageAdapterList =
+            mediaVmMData?.mediaUseCaseData?.mediaImporterData?.imageAdapterDataList ?: emptyList()
 
-            val wasListInitiallyEmpty = imageDataList.size == 0
-            val oldSize = imageDataList.size
-            val dataForAllFolders = mediaVmMData?.folderName == null
+        val wasListInitiallyEmpty = imageDataList.size == 0
+        val oldSize = imageDataList.size
+        val dataForAllFolders = mediaVmMData?.folderName == null
+        var itemsToBeAdded = tempImageAdapterList.size
 
-            if (dataForAllFolders) {
-                allImageDataList.addAll(tempImageAdapterList)
-                if (selectedFolderText.isNullOrEmpty() || selectedFolderText == PhotoImporter.ALL) {
-                    imageDataList.clear()
+        if (dataForAllFolders) {
+            allImageDataList.addAll(tempImageAdapterList)
 
-                    addCameraItemInEmptyList()
-                    imageDataList.addAll(allImageDataList)
-                }
+            if (selectedFolderText.isNullOrEmpty() ||
+                selectedFolderText == noMediaAvailableText ||
+                selectedFolderText == loadingMediaText ||
+                selectedFolderText == AlbumUtil.RECENTS
+            ) {
+                imageDataList.clear()
 
-            } else {
+                itemsToBeAdded += addCameraItemInEmptyList()
+                imageDataList.addAll(allImageDataList)
+            }
+
+        } else {
+
+            if (mediaVmMData?.isNewItem == true) {
+                allImageDataList.addAll(0, tempImageAdapterList)
+            }
+
+            if (tvSelectedFolder.text == mediaVmMData?.folderName || tvSelectedFolder.text == AlbumUtil.RECENTS) {
+
+                itemsToBeAdded += addCameraItemInEmptyList()
 
                 if (mediaVmMData?.isNewItem == true) {
-                    allImageDataList.addAll(0, tempImageAdapterList)
-                }
+                    if (imageDataList.isNotEmpty()) {
+                        imageDataList.addAll(1, tempImageAdapterList)
 
-                if (tvSelectedFolder.text == mediaVmMData?.folderName || tvSelectedFolder.text == PhotoImporter.ALL) {
-
-                    addCameraItemInEmptyList()
-
-                    if (mediaVmMData?.isNewItem == true) {
-                        if(imageDataList.isNotEmpty()) {
-                            imageDataList.addAll(1, tempImageAdapterList)
-                            imageAdapter.notifyItemRangeInserted(1,tempImageAdapterList.size)
-
-                            autoSelectFirstItemWhenFolderIsChanged(tempImageAdapterList)
-                            return
-                        }
-                    }else{
-                        imageDataList.addAll(tempImageAdapterList)
+                        autoSelectFirstItemWhenFolderIsChanged(tempImageAdapterList)
+                        imageAdapter.notifyItemRangeInserted(1, tempImageAdapterList.size)
+                        return
                     }
+                } else {
+                    imageDataList.addAll(tempImageAdapterList)
                 }
             }
+        }
 
-            if ((wasListInitiallyEmpty || mediaVmMData?.isNewItem == true) && imageDataList.isNotEmpty()) {
-                autoSelectFirstItemWhenFolderIsChanged(tempImageAdapterList)
-            }
-            if (oldSize != imageDataList.size) {
-                imageAdapter.notifyItemRangeInserted(oldSize, tempImageAdapterList.size)
-            }
+        if ((wasListInitiallyEmpty || mediaVmMData?.isNewItem == true) && imageDataList.isNotEmpty()) {
+            autoSelectFirstItemWhenFolderIsChanged(tempImageAdapterList)
+        }
+
+        if (oldSize != imageDataList.size) {
+            imageAdapter.notifyItemRangeInserted(oldSize, itemsToBeAdded)
+        }
     }
 
     private fun autoSelectFirstItemWhenFolderIsChanged(list: List<ImageAdapterData>) {
@@ -526,23 +548,30 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     private fun updateFolders(folderList: List<FolderData>?) {
         if (!folderList.isNullOrEmpty()) {
+            folders.clear()
             folders.addAll(folderList)
-            updateSelectedFolderText(PhotoImporter.ALL, clearList = false)
+            updateSelectedFolderText(AlbumUtil.RECENTS, clearList = false)
         } else {
             mediaLoadingFailed = true
-            updateSelectedFolderText(getString(R.string.imagepicker_insta_no_media_available), clearList = false)
+            updateSelectedFolderText(
+                getString(R.string.imagepicker_insta_no_media_available),
+                clearList = false
+            )
             showToast(getString(R.string.imagepicker_insta_no_media_available))
         }
     }
 
-    private fun addCameraItemInEmptyList() {
+    private fun addCameraItemInEmptyList(): Int {
+        val itemsAdded = 0
         if (imageDataList.isEmpty()) {
             context?.let { c ->
                 if (c.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
                     imageDataList.add(ImageAdapterData(Camera()))
+                    return imageDataList.size
                 }
             }
         }
+        return itemsAdded
     }
 
     private fun handleSuccessSelectedUri(uris: List<Uri>) {
@@ -554,7 +583,10 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                 val finalApplink = CameraUtil.createApplinkToSendFileUris(applink, uris)
                 RouteManager.route(activity, finalApplink)
             } else {
-                activity?.setResult(Activity.RESULT_OK, CameraUtil.getIntentfromFileUris(ArrayList(uris)))
+                activity?.setResult(
+                    Activity.RESULT_OK,
+                    CameraUtil.getIntentfromFileUris(ArrayList(uris))
+                )
                 activity?.finish()
             }
         }
@@ -615,7 +647,11 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         selectedMediaView.stopVideo()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             PermissionUtil.READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE -> {

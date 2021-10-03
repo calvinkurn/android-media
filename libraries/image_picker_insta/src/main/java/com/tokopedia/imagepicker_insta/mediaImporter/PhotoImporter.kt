@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import com.tokopedia.imagepicker_insta.models.*
+import com.tokopedia.imagepicker_insta.util.AlbumUtil
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.util.StorageUtil
 import com.tokopedia.imagepicker_insta.util.VideoUtil
@@ -41,7 +42,7 @@ class PhotoImporter : MediaImporter {
         selectionBuilder.append(" AND ")
         selectionBuilder.append(" ${MediaStore.Images.Media.SIZE} > 10 ")
 
-        if (!folderName.isNullOrEmpty() && folderName != PhotoImporter.ALL) {
+        if (!folderName.isNullOrEmpty() && folderName != AlbumUtil.RECENTS) {
             selectionBuilder.append(" AND ")
             selectionBuilder.append(" ${MediaStore.Images.Media.BUCKET_DISPLAY_NAME} ")
             selectionBuilder.append("=")
