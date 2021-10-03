@@ -2,7 +2,7 @@ package com.tokopedia.unifyorderhistory.analytics.data.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by fwidjaja on 13/08/20.

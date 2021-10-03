@@ -4,17 +4,13 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.JsonArray
@@ -53,7 +49,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
-import com.tokopedia.buyerorder.unifiedhistory.list.data.model.CancelOrderQueryParams
+import com.tokopedia.unifyorderhistory.data.model.CancelOrderQueryParams
 import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.unifyorderhistory.util.UohConsts.ALL_DATE
 import com.tokopedia.unifyorderhistory.util.UohConsts.ALL_PRODUCTS
@@ -68,10 +64,8 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.DIKIRIM
 import com.tokopedia.unifyorderhistory.util.UohConsts.DIPROSES
 import com.tokopedia.unifyorderhistory.util.UohConsts.EE_PRODUCT_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.EE_PRODUCT_PRICE
-import com.tokopedia.unifyorderhistory.util.UohConsts.EMAIL_MUST_NOT_BE_EMPTY
 import com.tokopedia.unifyorderhistory.util.UohConsts.END_DATE
 import com.tokopedia.unifyorderhistory.util.UohConsts.E_TIKET
-import com.tokopedia.unifyorderhistory.util.UohConsts.FINISH_ORDER_BOTTOMSHEET_TITLE
 import com.tokopedia.unifyorderhistory.util.UohConsts.FLIGHT_STATUS_OK
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_ATC
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_FINISH_ORDER
@@ -114,7 +108,6 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TRAIN
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
 import com.tokopedia.unifyorderhistory.util.UohConsts.WAREHOUSE_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.WEB_LINK_TYPE
-import com.tokopedia.unifyorderhistory.util.UohConsts.WRONG_FORMAT_EMAIL
 import com.tokopedia.unifyorderhistory.util.UohUtils
 import com.tokopedia.unifyorderhistory.analytics.UohAnalytics
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAddRecommendation
@@ -126,9 +119,7 @@ import com.tokopedia.unifyorderhistory.view.viewmodel.UohListViewModel
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -152,6 +143,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyorderhistory.R
 import com.tokopedia.unifyorderhistory.data.model.*
+import com.tokopedia.unifyorderhistory.databinding.FragmentUohListBinding
 import com.tokopedia.unifyorderhistory.di.UohListComponent
 import com.tokopedia.unifyorderhistory.util.UohConsts.ACTION_FINISH_ORDER
 import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_BOUGHT_DATE
@@ -165,18 +157,12 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_SHOP_NAME
 import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_SOURCE_UOH
 import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_STATUS_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_ACTION_CANCEL_ORDER
+import com.tokopedia.unifyorderhistory.view.bottomsheet.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils
-import kotlinx.android.synthetic.main.bottomsheet_finish_order_uoh.view.*
-import kotlinx.android.synthetic.main.bottomsheet_kebab_menu_uoh.view.*
-import kotlinx.android.synthetic.main.bottomsheet_ls_finish_order_uoh.view.*
-import kotlinx.android.synthetic.main.bottomsheet_option_uoh.*
-import kotlinx.android.synthetic.main.bottomsheet_option_uoh.view.*
-import kotlinx.android.synthetic.main.bottomsheet_send_email.*
-import kotlinx.android.synthetic.main.bottomsheet_send_email.view.*
-import kotlinx.android.synthetic.main.fragment_uoh_list.*
 import kotlinx.coroutines.*
 import java.io.Serializable
 import java.net.URLDecoder
@@ -190,7 +176,8 @@ import kotlin.collections.ArrayList
  */
 class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener,
         UohBottomSheetOptionAdapter.ActionListener, UohBottomSheetKebabMenuAdapter.ActionListener,
-        UohItemAdapter.ActionListener {
+        UohItemAdapter.ActionListener, UohFinishOrderBottomSheet.ActionListener, UohFilterOptionsBottomSheet.ActionListener,
+        UohLsFinishOrderBottomSheet.ActionListener, UohSendEmailBottomSheet.ActionListener{
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -207,7 +194,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private lateinit var uohBottomSheetKebabMenuAdapter: UohBottomSheetKebabMenuAdapter
     private var bottomSheetOption: BottomSheetUnify? = null
     private var bottomSheetFinishOrder: BottomSheetUnify? = null
-    private var bottomSheetLsFinishOrder: BottomSheetUnify? = null
     private var bottomSheetKebabMenu: BottomSheetUnify? = null
     private var bottomSheetResendEmail: BottomSheetUnify? = null
     private var currFilterDateKey: String = ""
@@ -251,6 +237,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private lateinit var trackingQueue: TrackingQueue
     private var _arrayListStatusFilterBundle = arrayListOf<UohFilterBundle>()
     private var _arrayListCategoryProductFilterBundle = arrayListOf<UohFilterBundle>()
+
+    private var binding by autoClearedNullable<FragmentUohListBinding>()
 
     @SuppressLint("SimpleDateFormat")
     private val monthStringDateFormat = SimpleDateFormat("dd MMM yyyy")
@@ -365,7 +353,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_uoh_list, container, false)
+        binding = FragmentUohListBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -399,7 +388,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun launchAutoRefresh(isVisibleToUser: Boolean = true) {
         if (isVisibleToUser && isAutoRefreshEnabled()) {
-            rv_order_list.scrollToPosition(0)
+            binding?.run {
+                rvOrderList.scrollToPosition(0)
+            }
             refreshUohData()
         }
     }
@@ -581,28 +572,28 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun prepareLayout() {
-        refreshHandler = RefreshHandler(swipe_refresh_layout, this)
-        refreshHandler?.setPullEnabled(true)
-        activityOrderHistory = arguments?.getString(PARAM_ACTIVITY_ORDER_HISTORY, "") as String
+        binding?.run {
+            refreshHandler = RefreshHandler(swipeRefreshLayout, UohListFragment)
+            refreshHandler?.setPullEnabled(true)
+            activityOrderHistory = arguments?.getString(PARAM_ACTIVITY_ORDER_HISTORY, "") as String
 
-        statusbar.layoutParams.height = ViewHelper.getStatusBarHeight(activity)
-        uoh_navtoolbar?.let {
-            viewLifecycleOwner.lifecycle.addObserver(it)
-            it.setupSearchbar(searchbarType = NavToolbar.Companion.SearchBarType.TYPE_EDITABLE, hints = arrayListOf(
+            statusbar.layoutParams.height = ViewHelper.getStatusBarHeight(activity)
+            viewLifecycleOwner.lifecycle.addObserver(uohNavtoolbar)
+            uohNavtoolbar.setupSearchbar(searchbarType = NavToolbar.Companion.SearchBarType.TYPE_EDITABLE, hints = arrayListOf(
                 HintData(getString(R.string.hint_cari_transaksi) )
             ),
                 editorActionCallback = {query ->
                     searchQuery = query
                     when {
                         searchQuery.isBlank() -> {
-                            view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
+                            view?.let { view -> context?.let { context -> UohUtils.hideKeyBoard(context, view) } }
                             triggerSearch()
                         }
                         searchQuery.length in 1 until MIN_KEYWORD_CHARACTER_COUNT -> {
                             showToaster(getString(R.string.error_message_minimum_search_keyword), Toaster.TYPE_ERROR)
                         }
                         else -> {
-                            view?.let { context?.let { it1 -> uoh_navtoolbar?.hideKeyboard() } }
+                            view?.let { context?.let { _ -> uohNavtoolbar.hideKeyboard() } }
                             triggerSearch()
                         }
                     }
@@ -611,7 +602,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             var pageSource = ""
             if(activityOrderHistory != PARAM_HOME)
             {
-                it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
+                uohNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
                 statusbar.visibility = View.GONE
             } else {
                 pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_UOH
@@ -627,7 +618,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     addIcon(IconList.ID_NAV_GLOBAL) {}
                 }
             }
-            it.setIcon(icons)
+            uohNavtoolbar.setIcon(icons)
         }
 
         uohItemAdapter = UohItemAdapter().apply {
@@ -638,10 +629,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
         addEndlessScrollListener()
     }
-
-//    private fun resetFocusEditText() {
-//        KeyboardHandler.DropKeyboard(activity, search_bar?.searchBarTextField)
-//    }
 
     private fun getLimitDate(): GregorianCalendar {
         var returnDate = GregorianCalendar()
@@ -693,9 +680,13 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             }
         }
 
-        rv_order_list?.layoutManager = glm
-        rv_order_list?.adapter = uohItemAdapter
-        rv_order_list?.addOnScrollListener(scrollRecommendationListener)
+        binding?.run {
+            rvOrderList.apply {
+                layoutManager = glm
+                adapter = uohItemAdapter
+                addOnScrollListener(scrollRecommendationListener)
+            }
+        }
     }
 
     private fun loadOrderHistoryList(uuid: String) {
@@ -840,27 +831,30 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun observingFlightResendEmail() {
-        uohListViewModel.flightResendEmailResult.observe(viewLifecycleOwner, {
-            when (it) {
-                is Success -> {
-                    val flightEmailResponse = it.data.flightResendEmailV2
-                    if (flightEmailResponse == null) {
-                        bottomSheetKebabMenu?.tf_email?.setError(true)
-                        bottomSheetKebabMenu?.tf_email?.setMessage(getString(R.string.toaster_failed_send_email))
-                    } else {
-                        if (flightEmailResponse.meta.status.equals(FLIGHT_STATUS_OK, true)) {
-                            bottomSheetResendEmail?.dismiss()
-                            bottomSheetKebabMenu?.dismiss()
-                            showToaster(getString(R.string.toaster_succeed_send_email), Toaster.TYPE_NORMAL)
+        binding?.run {
+            uohListViewModel.flightResendEmailResult.observe(viewLifecycleOwner, { result ->
+                when (result) {
+                    is Success -> {
+                        val flightEmailResponse = result.data.flightResendEmailV2
+                        if (flightEmailResponse == null) {
+                            bottomSheetKebabMenu?.binding
+                            bottomSheetKebabMenu?.tf_email?.setError(true)
+                            bottomSheetKebabMenu?.tf_email?.setMessage(getString(R.string.toaster_failed_send_email))
+                        } else {
+                            if (flightEmailResponse.meta.status.equals(FLIGHT_STATUS_OK, true)) {
+                                bottomSheetResendEmail?.dismiss()
+                                bottomSheetKebabMenu?.dismiss()
+                                showToaster(getString(R.string.toaster_succeed_send_email), Toaster.TYPE_NORMAL)
+                            }
                         }
                     }
+                    is Fail -> {
+                        bottomSheetResendEmail?.tf_email?.setError(true)
+                        bottomSheetResendEmail?.tf_email?.setMessage(getString(R.string.toaster_failed_send_email))
+                    }
                 }
-                is Fail -> {
-                    bottomSheetResendEmail?.tf_email?.setError(true)
-                    bottomSheetResendEmail?.tf_email?.setMessage(getString(R.string.toaster_failed_send_email))
-                }
-            }
-        })
+            })
+        }
     }
 
     private fun observingTrainResendEmail() {
@@ -1095,7 +1089,12 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun onClickFilterDate() {
         uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
-        showBottomSheetFilterOptions(UohConsts.CHOOSE_DATE)
+        UohFilterOptionsBottomSheet().run {
+            setActionListener(this@UohListFragment)
+            context?.let { context -> fragmentManager?.let { fm ->
+                show(context, fm, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_DATE) }}
+        }
+
         val arrayListDateFilterBundle = arrayListOf<UohFilterBundle>()
         arrayFilterDate?.let {
             if (it.isNotEmpty()) {
@@ -1117,7 +1116,11 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun onClickFilterStatus() {
         uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
-        showBottomSheetFilterOptions(UohConsts.CHOOSE_FILTERS)
+        UohFilterOptionsBottomSheet().run {
+            setActionListener(this@UohListFragment)
+            context?.let { context -> fragmentManager?.let { fm ->
+                show(context, fm, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_FILTERS) }}
+        }
 
         tempFilterType = UohConsts.TYPE_FILTER_STATUS
         if (tempFilterStatusLabel.isEmpty()) tempFilterStatusLabel = ALL_STATUS_TRANSACTION
@@ -1132,7 +1135,11 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun onClickFilterCategoryProduct() {
         uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
-        showBottomSheetFilterOptions(UohConsts.CHOOSE_CATEGORIES)
+        UohFilterOptionsBottomSheet().run {
+            setActionListener(this@UohListFragment)
+            context?.let { context -> fragmentManager?.let { fm ->
+                show(context, fm, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_CATEGORIES) }}
+        }
 
         uohBottomSheetOptionAdapter.filterBundleList = _arrayListCategoryProductFilterBundle
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_CATEGORY
@@ -1290,249 +1297,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun getBaseAppComponent(): BaseAppComponent {
         return (activity?.application as BaseMainApplication).baseAppComponent
-    }
-
-    private fun showBottomSheetFilterOptions(title: String) {
-        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_option_uoh, null).apply {
-            rv_option?.apply {
-                layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
-                adapter = uohBottomSheetOptionAdapter
-            }
-
-            btn_apply?.setOnClickListener {
-                isFilterClicked = true
-                isReset = false
-                currFilterType = tempFilterType
-                when (currFilterType) {
-                    UohConsts.TYPE_FILTER_DATE -> {
-                        currFilterDateKey = tempFilterDateKey
-                        currFilterDateLabel = tempFilterDateLabel
-
-                        paramUohOrder.createTimeStart = tempStartDate
-                        paramUohOrder.createTimeEnd = tempEndDate
-
-                        if (tempFilterDateKey != "0") {
-                            chipDate?.type = ChipsUnify.TYPE_SELECTED
-                        } else {
-                            chipDate?.type = ChipsUnify.TYPE_NORMAL
-                        }
-                        val dateOption: String
-                        val labelTrackingDate: String
-                        if (currFilterDateKey.isNotEmpty() && currFilterDateKey == "3") {
-                            if (paramUohOrder.createTimeStart.isEmpty()) {
-                                paramUohOrder.createTimeStart = orderList.dateLimit
-                            }
-                            if (paramUohOrder.createTimeEnd.isEmpty()) {
-                                paramUohOrder.createTimeEnd = Date().toFormattedString("yyyy-MM-dd")
-                            }
-                            val splitStartDate = paramUohOrder.createTimeStart.split('-')
-                            val splitEndDate = paramUohOrder.createTimeEnd.split('-')
-                            if (splitStartDate.isNotEmpty() && splitStartDate.size == MIN_KEYWORD_CHARACTER_COUNT && splitEndDate.isNotEmpty() && splitEndDate.size == MIN_KEYWORD_CHARACTER_COUNT) {
-                                dateOption = "${splitStartDate[2]}/${splitStartDate[1]}/${splitStartDate[0]} - ${splitEndDate[2]}/${splitEndDate[1]}/${splitEndDate[0]}"
-                                chipDate?.title = dateOption
-                            }
-                            labelTrackingDate = getString(R.string.filter_custom_date_title)
-                        } else {
-                            dateOption = currFilterDateLabel
-
-                            if (currFilterDateKey == "0") {
-                                chipDate?.title = ALL_DATE
-                                labelTrackingDate = ALL_DATE
-                            } else {
-                                chipDate?.title = currFilterDateLabel
-                                labelTrackingDate = dateOption
-                            }
-                        }
-
-                        userSession.userId?.let { it1 -> UohAnalytics.clickTerapkanOnDateFilterChips(labelTrackingDate, it1) }
-                    }
-                    UohConsts.TYPE_FILTER_STATUS -> {
-                        val labelTrackingStatus: String
-                        currFilterStatusKey = tempFilterStatusKey
-                        currFilterStatusLabel = tempFilterStatusLabel
-                        if (tempFilterStatusKey.isNotEmpty() && tempFilterStatusKey != ALL_STATUS_TRANSACTION) {
-                            chipStatus?.type = ChipsUnify.TYPE_SELECTED
-                            chipStatus?.title = currFilterStatusLabel
-                            labelTrackingStatus = currFilterStatusLabel
-                        } else {
-                            chipStatus?.type = ChipsUnify.TYPE_NORMAL
-                            chipStatus?.title = ALL_STATUS
-                            labelTrackingStatus = ALL_STATUS
-                        }
-                        userSession.userId?.let { it1 -> UohAnalytics.clickTerapkanOnStatusFilterChips(labelTrackingStatus, it1) }
-                    }
-                    UohConsts.TYPE_FILTER_CATEGORY -> {
-                        filterStatus = ""
-                        val labelTrackingCategory: String
-                        currFilterCategoryKey = tempFilterCategoryKey
-                        currFilterCategoryLabel = tempFilterCategoryLabel
-                        if (tempFilterCategoryKey.isNotEmpty() && tempFilterCategoryKey != ALL_PRODUCTS) {
-                            chipCategoryProduct?.type = ChipsUnify.TYPE_SELECTED
-                            chipCategoryProduct?.title = currFilterCategoryLabel
-                            labelTrackingCategory = currFilterCategoryLabel
-                        } else {
-                            chipCategoryProduct?.type = ChipsUnify.TYPE_NORMAL
-                            chipCategoryProduct?.title = ALL_PRODUCTS
-                            labelTrackingCategory = ALL_PRODUCTS
-                        }
-                        userSession.userId?.let { it1 -> UohAnalytics.clickTerapkanOnCategoryFilterChips(labelTrackingCategory, it1) }
-                    }
-                }
-                bottomSheetOption?.dismiss()
-                isFirstLoad = false
-                refreshHandler?.startRefresh()
-                scrollRecommendationListener.resetState()
-            }
-        }
-
-        bottomSheetOption = BottomSheetUnify().apply {
-            setChild(viewBottomSheet)
-            setTitle(title)
-            setCloseClickListener { dismiss() }
-        }
-
-        fragmentManager?.let { bottomSheetOption?.show(it, getString(R.string.show_bottomsheet)) }
-    }
-
-    private fun showBottomSheetKebabMenu(orderIndex: Int) {
-        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_kebab_menu_uoh, null)
-        uohBottomSheetKebabMenuAdapter._orderIndex = orderIndex
-        viewBottomSheet.rv_kebab.adapter = uohBottomSheetKebabMenuAdapter
-        viewBottomSheet.rv_kebab.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
-
-        bottomSheetKebabMenu = BottomSheetUnify().apply {
-            setChild(viewBottomSheet)
-            setTitle(UohConsts.OTHERS)
-            setCloseClickListener { dismiss() }
-        }
-
-        fragmentManager?.let { bottomSheetKebabMenu?.show(it, getString(R.string.show_bottomsheet)) }
-    }
-
-    private fun showBottomSheetFinishOrder(index: Int, orderId: String, isFromKebabMenu: Boolean, status: String) {
-        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_finish_order_uoh, null).apply {
-
-            ic_finish_detail_1?.apply {
-                background = ContextCompat.getDrawable(context, R.drawable.ic_uoh_bound_icon)
-            }
-
-            ic_finish_detail_2?.apply {
-                background = ContextCompat.getDrawable(context, R.drawable.ic_uoh_bound_icon)
-            }
-
-            btn_finish_order?.setOnClickListener {
-                bottomSheetKebabMenu?.dismiss()
-                bottomSheetFinishOrder?.dismiss()
-                currIndexNeedUpdate = index
-                uohItemAdapter.showLoaderAtIndex(index)
-
-                var actionStatus = ""
-                if (status.isNotEmpty() && status.toIntOrZero() < STATUS_600) actionStatus = ACTION_FINISH_ORDER
-
-                val paramFinishOrder = userSession.userId?.let { it1 ->
-                    UohFinishOrderParam(orderId = orderId, userId = it1, action = actionStatus)
-                }
-                if (paramFinishOrder != null) {
-                    uohListViewModel.doFinishOrder(paramFinishOrder)
-                }
-
-                userSession.userId?.let { it1 -> UohAnalytics.clickSelesaiOnBottomSheetFinishTransaction(it1) }
-            }
-
-            btn_ajukan_komplain?.setOnClickListener {
-                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_RESO.replace(REPLACE_ORDER_ID, orderId)))
-                userSession.userId?.let { it1 -> UohAnalytics.clickAjukanKomplainOnBottomSheetFinishTransaction(it1) }
-            }
-        }
-
-        bottomSheetFinishOrder = BottomSheetUnify().apply {
-            setChild(viewBottomSheet)
-            setTitle(FINISH_ORDER_BOTTOMSHEET_TITLE)
-            setCloseClickListener { dismiss() }
-        }
-
-        fragmentManager?.let { bottomSheetFinishOrder?.show(it, getString(R.string.show_bottomsheet)) }
-    }
-
-    private fun showBottomSheetLsFinishOrder(index: Int, orderId: String) {
-        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_ls_finish_order_uoh, null)
-        viewBottomSheet.btn_ls_finish_order?.setOnClickListener {
-            bottomSheetLsFinishOrder?.dismiss()
-            currIndexNeedUpdate = index
-            uohItemAdapter.showLoaderAtIndex(index)
-            uohListViewModel.doLsPrintFinishOrder(orderId)
-        }
-
-        viewBottomSheet.btn_ls_kembali?.setOnClickListener {
-            bottomSheetLsFinishOrder?.dismiss()
-        }
-
-        bottomSheetLsFinishOrder = BottomSheetUnify().apply {
-            setChild(viewBottomSheet)
-            setTitle(FINISH_ORDER_BOTTOMSHEET_TITLE)
-            setCloseClickListener { dismiss() }
-        }
-
-        fragmentManager?.let { bottomSheetLsFinishOrder?.show(it, getString(R.string.show_bottomsheet)) }
-    }
-
-    private fun showBottomSheetSendEmail(gqlGroup: String, orderData: UohListOrder.Data.UohOrders.Order) {
-        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_send_email, null)
-        viewBottomSheet.tf_email?.textFieldInput?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val isEmailValid = UohUtils.isEmailValid(s.toString())
-                viewBottomSheet.btn_send_email?.isEnabled = isEmailValid
-                if (s.toString().isEmpty()) {
-                    viewBottomSheet.tf_email?.setError(true)
-                    viewBottomSheet.tf_email?.setMessage(EMAIL_MUST_NOT_BE_EMPTY)
-                } else {
-                    if (!isEmailValid) {
-                        viewBottomSheet.tf_email?.setError(true)
-                        viewBottomSheet.tf_email?.setMessage(WRONG_FORMAT_EMAIL)
-                    } else {
-                        viewBottomSheet.tf_email?.setError(false)
-                        viewBottomSheet.tf_email?.setMessage("")
-                    }
-                }
-            }
-
-        })
-        viewBottomSheet.btn_send_email?.setOnClickListener {
-            if (gqlGroup.equals(GQL_FLIGHT_EMAIL, true)) {
-                val flightQueryParam = gson.fromJson(orderData.metadata.queryParams, FlightQueryParams::class.java)
-                val invoiceId = flightQueryParam.invoiceId
-                val email = "${viewBottomSheet.tf_email.textFieldInput.text}"
-                uohListViewModel.doFlightResendEmail(invoiceId, email)
-
-            } else if (gqlGroup.equals(GQL_TRAIN_EMAIL, true)) {
-                val trainQueryParam = gson.fromJson(orderData.metadata.queryParams, TrainQueryParams::class.java)
-                val invoiceId = trainQueryParam.invoiceId
-                val email = "${viewBottomSheet.tf_email.textFieldInput.text}"
-                val param = TrainResendEmailParam(bookCode = invoiceId, email = email)
-                uohListViewModel.doTrainResendEmail(param)
-            }
-            userSession.userId?.let { it1 -> UohAnalytics.clickKirimOnBottomSheetSendEmail(it1, orderData.verticalCategory) }
-        }
-
-        viewBottomSheet.btn_ls_kembali?.setOnClickListener {
-            bottomSheetLsFinishOrder?.dismiss()
-        }
-
-        bottomSheetResendEmail = BottomSheetUnify().apply {
-            isFullpage = false
-            isKeyboardOverlap = false
-            setChild(viewBottomSheet)
-            setTitle(FINISH_ORDER_BOTTOMSHEET_TITLE)
-            setCloseClickListener { dismiss() }
-        }
-
-        fragmentManager?.let { bottomSheetResendEmail?.show(it, getString(R.string.show_bottomsheet)) }
     }
 
     override fun onOptionItemClick(label: String, value: String, filterType: Int) {
@@ -1704,8 +1468,10 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     override fun onKebabMenuClicked(order: UohListOrder.Data.UohOrders.Order, orderIndex: Int) {
-        showBottomSheetKebabMenu(orderIndex)
+        uohBottomSheetKebabMenuAdapter._orderIndex = orderIndex
         uohBottomSheetKebabMenuAdapter.addList(order)
+        context?.let { context -> fragmentManager?.let { fm ->
+            UohKebabMenuBottomSheet().show(context, fm, uohBottomSheetKebabMenuAdapter) } }
         userSession.userId?.let { UohAnalytics.clickThreeDotsMenu(order.verticalCategory, it) }
     }
 
@@ -1759,10 +1525,16 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         } else {
             when {
                 dotMenu.actionType.equals(GQL_FLIGHT_EMAIL, true) -> {
-                    showBottomSheetSendEmail(GQL_FLIGHT_EMAIL, orderData)
+                    context?.let { context -> fragmentManager?.let { fm ->
+                        UohSendEmailBottomSheet().run {
+                            setActionListener(this@UohListFragment)
+                            show(context, fm, GQL_FLIGHT_EMAIL, orderData) } } }
                 }
                 dotMenu.actionType.equals(GQL_TRAIN_EMAIL, true) -> {
-                    showBottomSheetSendEmail(GQL_TRAIN_EMAIL, orderData)
+                    context?.let { context -> fragmentManager?.let { fm ->
+                        UohSendEmailBottomSheet().run {
+                            setActionListener(this@UohListFragment)
+                            show(context, fm, GQL_TRAIN_EMAIL, orderData) } } }
                 }
                 dotMenu.actionType.equals(GQL_MP_CHAT, true) -> {
                     doChatSeller(dotMenu.appURL, orderData)
@@ -1773,7 +1545,10 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 }
                 dotMenu.actionType.equals(GQL_MP_FINISH, true) -> {
                     orderIdNeedUpdated = orderData.orderUUID
-                    showBottomSheetFinishOrder(orderIndex, orderData.verticalID, true, orderData.verticalStatus)
+                    context?.let { context -> fragmentManager?.let { fm ->
+                        UohFinishOrderBottomSheet().run {
+                            setActionListener(this@UohListFragment)
+                            show(context, fm, orderIndex, orderData.verticalID, orderData.verticalStatus) } } }
                 }
                 dotMenu.actionType.equals(GQL_TRACK, true) -> {
                     val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, orderData.verticalID)
@@ -1837,7 +1612,10 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 when {
                     button.actionType.equals(GQL_FINISH_ORDER, true) -> {
                         orderIdNeedUpdated = order.orderUUID
-                        showBottomSheetFinishOrder(index, order.verticalID, false, order.verticalStatus)
+                        context?.let { context -> fragmentManager?.let { fm ->
+                            UohFinishOrderBottomSheet().run {
+                                setActionListener(this@UohListFragment)
+                                show(context, fm, index, order.verticalID, order.verticalStatus) } } }
                     }
                     button.actionType.equals(GQL_ATC, true) -> {
                         atc(order)
@@ -1848,7 +1626,10 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     }
                     button.actionType.equals(GQL_LS_FINISH, true) -> {
                         orderIdNeedUpdated = order.orderUUID
-                        showBottomSheetLsFinishOrder(index, order.verticalID)
+                        context?.let { context -> fragmentManager?.let { fm ->
+                            UohLsFinishOrderBottomSheet().run {
+                                setActionListener(this@UohListFragment)
+                                show(context, fm, index, order.verticalID) } } }
                     }
                     button.actionType.equals(GQL_LS_LACAK, true) -> {
                         val linkUrl = button.appURL
@@ -2062,5 +1843,135 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     override fun onPause() {
         super.onPause()
         trackingQueue.sendAll()
+    }
+
+    override fun onClickFinishOrder(index: Int, status: String, orderId: String) {
+        bottomSheetKebabMenu?.dismiss()
+        bottomSheetFinishOrder?.dismiss()
+        currIndexNeedUpdate = index
+        uohItemAdapter.showLoaderAtIndex(index)
+
+        var actionStatus = ""
+        if (status.isNotEmpty() && status.toIntOrZero() < STATUS_600) actionStatus = ACTION_FINISH_ORDER
+
+        val paramFinishOrder = userSession.userId?.let { it1 ->
+            UohFinishOrderParam(orderId = orderId, userId = it1, action = actionStatus)
+        }
+        if (paramFinishOrder != null) {
+            uohListViewModel.doFinishOrder(paramFinishOrder)
+        }
+
+        userSession.userId?.let { it1 -> UohAnalytics.clickSelesaiOnBottomSheetFinishTransaction(it1) }
+    }
+
+    override fun onClickAjukanKomplain(orderId: String) {
+        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_RESO.replace(REPLACE_ORDER_ID, orderId)))
+        userSession.userId?.let { userId -> UohAnalytics.clickAjukanKomplainOnBottomSheetFinishTransaction(userId) }
+    }
+
+    override fun onClickApply() {
+        isFilterClicked = true
+        isReset = false
+        currFilterType = tempFilterType
+        when (currFilterType) {
+            UohConsts.TYPE_FILTER_DATE -> {
+                currFilterDateKey = tempFilterDateKey
+                currFilterDateLabel = tempFilterDateLabel
+
+                paramUohOrder.createTimeStart = tempStartDate
+                paramUohOrder.createTimeEnd = tempEndDate
+
+                if (tempFilterDateKey != "0") {
+                    chipDate?.type = ChipsUnify.TYPE_SELECTED
+                } else {
+                    chipDate?.type = ChipsUnify.TYPE_NORMAL
+                }
+                val dateOption: String
+                val labelTrackingDate: String
+                if (currFilterDateKey.isNotEmpty() && currFilterDateKey == "3") {
+                    if (paramUohOrder.createTimeStart.isEmpty()) {
+                        paramUohOrder.createTimeStart = orderList.dateLimit
+                    }
+                    if (paramUohOrder.createTimeEnd.isEmpty()) {
+                        paramUohOrder.createTimeEnd = Date().toFormattedString("yyyy-MM-dd")
+                    }
+                    val splitStartDate = paramUohOrder.createTimeStart.split('-')
+                    val splitEndDate = paramUohOrder.createTimeEnd.split('-')
+                    if (splitStartDate.isNotEmpty() && splitStartDate.size == MIN_KEYWORD_CHARACTER_COUNT && splitEndDate.isNotEmpty() && splitEndDate.size == MIN_KEYWORD_CHARACTER_COUNT) {
+                        dateOption = "${splitStartDate[2]}/${splitStartDate[1]}/${splitStartDate[0]} - ${splitEndDate[2]}/${splitEndDate[1]}/${splitEndDate[0]}"
+                        chipDate?.title = dateOption
+                    }
+                    labelTrackingDate = getString(R.string.filter_custom_date_title)
+                } else {
+                    dateOption = currFilterDateLabel
+
+                    if (currFilterDateKey == "0") {
+                        chipDate?.title = ALL_DATE
+                        labelTrackingDate = ALL_DATE
+                    } else {
+                        chipDate?.title = currFilterDateLabel
+                        labelTrackingDate = dateOption
+                    }
+                }
+
+                userSession.userId?.let { it1 -> UohAnalytics.clickTerapkanOnDateFilterChips(labelTrackingDate, it1) }
+            }
+            UohConsts.TYPE_FILTER_STATUS -> {
+                val labelTrackingStatus: String
+                currFilterStatusKey = tempFilterStatusKey
+                currFilterStatusLabel = tempFilterStatusLabel
+                if (tempFilterStatusKey.isNotEmpty() && tempFilterStatusKey != ALL_STATUS_TRANSACTION) {
+                    chipStatus?.type = ChipsUnify.TYPE_SELECTED
+                    chipStatus?.title = currFilterStatusLabel
+                    labelTrackingStatus = currFilterStatusLabel
+                } else {
+                    chipStatus?.type = ChipsUnify.TYPE_NORMAL
+                    chipStatus?.title = ALL_STATUS
+                    labelTrackingStatus = ALL_STATUS
+                }
+                userSession.userId?.let { it1 -> UohAnalytics.clickTerapkanOnStatusFilterChips(labelTrackingStatus, it1) }
+            }
+            UohConsts.TYPE_FILTER_CATEGORY -> {
+                filterStatus = ""
+                val labelTrackingCategory: String
+                currFilterCategoryKey = tempFilterCategoryKey
+                currFilterCategoryLabel = tempFilterCategoryLabel
+                if (tempFilterCategoryKey.isNotEmpty() && tempFilterCategoryKey != ALL_PRODUCTS) {
+                    chipCategoryProduct?.type = ChipsUnify.TYPE_SELECTED
+                    chipCategoryProduct?.title = currFilterCategoryLabel
+                    labelTrackingCategory = currFilterCategoryLabel
+                } else {
+                    chipCategoryProduct?.type = ChipsUnify.TYPE_NORMAL
+                    chipCategoryProduct?.title = ALL_PRODUCTS
+                    labelTrackingCategory = ALL_PRODUCTS
+                }
+                userSession.userId?.let { it1 -> UohAnalytics.clickTerapkanOnCategoryFilterChips(labelTrackingCategory, it1) }
+            }
+        }
+        bottomSheetOption?.dismiss()
+        isFirstLoad = false
+        refreshHandler?.startRefresh()
+        scrollRecommendationListener.resetState()
+    }
+
+    override fun onClickLsFinishOrder(index: Int, orderId: String) {
+        currIndexNeedUpdate = index
+        uohItemAdapter.showLoaderAtIndex(index)
+        uohListViewModel.doLsPrintFinishOrder(orderId)
+    }
+
+    override fun onEmailSent(email: String, gqlGroup: String, orderData: UohListOrder.Data.UohOrders.Order) {
+        if (gqlGroup.equals(GQL_FLIGHT_EMAIL, true)) {
+            val flightQueryParam = gson.fromJson(orderData.metadata.queryParams, FlightQueryParams::class.java)
+            val invoiceId = flightQueryParam.invoiceId
+            uohListViewModel.doFlightResendEmail(invoiceId, email)
+
+        } else if (gqlGroup.equals(GQL_TRAIN_EMAIL, true)) {
+            val trainQueryParam = gson.fromJson(orderData.metadata.queryParams, TrainQueryParams::class.java)
+            val invoiceId = trainQueryParam.invoiceId
+            val param = TrainResendEmailParam(bookCode = invoiceId, email = email)
+            uohListViewModel.doTrainResendEmail(param)
+        }
+        userSession.userId?.let { it1 -> UohAnalytics.clickKirimOnBottomSheetSendEmail(it1, orderData.verticalCategory) }
     }
 }

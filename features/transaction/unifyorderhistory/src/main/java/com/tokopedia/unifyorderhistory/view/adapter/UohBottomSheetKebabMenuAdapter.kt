@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifyorderhistory.R
 import com.tokopedia.unifyorderhistory.data.model.UohListOrder
-import kotlinx.android.synthetic.main.bottomsheet_kebab_uoh_item.view.*
 
 /**
  * Created by fwidjaja on 05/07/20.

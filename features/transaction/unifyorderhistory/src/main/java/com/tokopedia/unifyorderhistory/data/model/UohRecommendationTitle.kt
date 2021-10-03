@@ -1,7 +1,5 @@
 package com.tokopedia.unifyorderhistory.data.model
 
-import android.graphics.drawable.Drawable
-
 /**
  * Created by fwidjaja on 22/07/20.
  */
