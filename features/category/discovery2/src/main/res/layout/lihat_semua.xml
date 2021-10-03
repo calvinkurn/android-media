@@ -7,6 +7,33 @@
     android:paddingTop="@dimen/unify_space_12"
     android:paddingBottom="@dimen/unify_space_8">
 
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/title_iv_parent"
+        android:padding="@dimen/dp_4"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_44"
+        android:id="@+id/title_iv"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+    </FrameLayout>
+
+    <ImageView
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
+        android:id="@+id/bg_iv"
+        android:padding="@dimen/dp_5"
+        app:layout_constraintStart_toEndOf="@+id/title_iv_parent"
+        app:layout_constraintEnd_toEndOf="@+id/title_tv"
+        app:layout_constraintTop_toTopOf="@+id/title_tv"
+        tools:background="@color/green_300"
+        app:layout_constraintBottom_toBottomOf="@+id/sub_header_tv"/>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_tv"
         android:layout_width="@dimen/dp_0"
@@ -17,8 +44,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/sub_header_tv"
         app:layout_constraintEnd_toStartOf="@id/lihat_semua_tv"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/title_iv_parent"
         app:typographyType="heading_4"
         app:typographyWeight="bold"
         tools:text="Title"
@@ -35,8 +61,8 @@
         android:textColor="@color/Unify_N700_68"
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/lihat_semua_tv"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_tv"
+        app:layout_constraintStart_toEndOf="@+id/title_iv_parent"
+        app:layout_constraintBottom_toBottomOf="@+id/bg_iv"
         app:typographyType="body_3"
         tools:text="Sub header"
         tools:visibility="visible" />

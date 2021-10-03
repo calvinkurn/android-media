@@ -1,6 +1,13 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua
 
+import android.graphics.Color
+import android.graphics.Outline
+import android.os.Build
 import android.view.View
+import android.view.ViewOutlineProvider
+import android.widget.FrameLayout
+import android.widget.ImageView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -13,7 +20,12 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageFitCenter
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifyprinciples.Typography
+import java.lang.Exception
 
 class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
@@ -21,6 +33,9 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
     private var lihatTextView: Typography = itemView.findViewById(R.id.lihat_semua_tv)
     private var lihatTitleTextView: Typography = itemView.findViewById(R.id.title_tv)
     private var lihatSubTitleTextView: Typography = itemView.findViewById(R.id.sub_header_tv)
+    private var backgroundImageView: ImageView = itemView.findViewById(R.id.bg_iv)
+    private var titleImageView: ImageView = itemView.findViewById(R.id.title_iv)
+    private var titleImageViewParent: FrameLayout = itemView.findViewById(R.id.title_iv_parent)
     private var onLihatSemuaClickListener: OnLihatSemuaClickListener? = null
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
@@ -39,6 +54,8 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
                 } else {
                     lihatTextView.show()
                 }
+                setupTitleImage(data)
+                setupBackgroundImage(data)
                 lihatTextView.setOnClickListener {
                     navigateToAppLink(data)
                     sendGtmEvent(componentItem)
@@ -52,6 +69,44 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
             lihatSemuaViewModel.getComponentData().removeObservers(it)
+        }
+    }
+
+    private fun setupBackgroundImage(data: DataItem){
+        if(data.boxColor.isNullOrEmpty() && data.backgroundImageUrl.isNullOrEmpty()) {
+            backgroundImageView.hide()
+            return
+        }
+        try {
+            if(!data.boxColor.isNullOrEmpty())
+                backgroundImageView.setBackgroundColor(Color.parseColor(data.boxColor))
+            if(!data.backgroundImageUrl.isNullOrEmpty())
+                backgroundImageView.loadImageWithoutPlaceholder(data.backgroundImageUrl)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+                backgroundImageView.outlineProvider = object : ViewOutlineProvider() {
+
+                    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+                    override fun getOutline(view: View?, outline: Outline?) {
+                        outline?.setRoundRect(-100, 0, (view?.width).toZeroIfNull(), (view?.height).toZeroIfNull(), 100f)
+                    }
+                }
+
+                backgroundImageView.clipToOutline = true
+
+            }
+            backgroundImageView.show()
+        }catch (e:Exception){
+            backgroundImageView.hide()
+        }
+    }
+
+    private fun setupTitleImage(data: DataItem){
+        if(data.imageTitle.isNullOrEmpty()) {
+            titleImageViewParent.hide()
+        }else{
+            titleImageView.loadImage(data.imageTitle)
+            titleImageViewParent.show()
         }
     }
 
