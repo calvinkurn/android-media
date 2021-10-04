@@ -15,7 +15,7 @@ import com.tokopedia.attachinvoice.view.adapter.viewholder.AttachInvoiceViewHold
 import com.tokopedia.attachinvoice.view.adapter.viewholder.EmptyAttachInvoiceViewHolder
 
 class AttachInvoiceTypeFactoryImpl(
-    private val emptyListener: EmptyAttachInvoiceViewHolder.Listener
+        private val emptyListener: EmptyAttachInvoiceViewHolder.Listener
 ) : BaseAdapterTypeFactory(), AttachInvoiceTypeFactory {
 
     override fun type(viewModel: EmptyModel?): Int {
@@ -27,9 +27,9 @@ class AttachInvoiceTypeFactoryImpl(
     }
 
     override fun createViewHolder(
-        view: View,
-        type: Int,
-        invoiceViewHolder: AttachInvoiceViewHolder.Listener
+            view: View,
+            type: Int,
+            invoiceViewHolder: AttachInvoiceViewHolder.Listener
     ): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             AttachInvoiceViewHolder.LAYOUT -> {
