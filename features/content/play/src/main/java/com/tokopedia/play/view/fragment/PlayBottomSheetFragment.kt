@@ -445,7 +445,10 @@ class PlayBottomSheetFragment @Inject constructor(
             }
 
             it[BottomInsetsType.LeaderboardSheet]?.let { state ->
-                if (state is BottomInsetsState.Shown) leaderboardSheetView.showWithHeight(state.estimatedInsetsHeight)
+                if (state is BottomInsetsState.Shown) {
+                    leaderboardSheetView.showWithHeight(state.estimatedInsetsHeight)
+                    playViewModel.refreshLeaderboard()
+                }
                 else leaderboardSheetView.hide()
             }
         })

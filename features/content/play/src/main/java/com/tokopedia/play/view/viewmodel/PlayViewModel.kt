@@ -1142,6 +1142,10 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    fun refreshLeaderboard() {
+        checkLeaderboard(channelId)
+    }
+
     private fun checkLeaderboard(channelId: String) {
         if (!isInteractiveAllowed) return
         viewModelScope.launchCatchError(dispatchers.io, block = {
