@@ -706,6 +706,7 @@ class PlayViewModel @Inject constructor(
             ClickLikeAction -> handleClickLike(isFromLogin = false)
             ClickShareAction -> handleClickShare()
             ClickCartAction -> handleClickCart(isFromLogin = false)
+            RefreshLeaderboard -> handleRefreshLeaderboard()
         }
     }
 
@@ -1140,10 +1141,6 @@ class PlayViewModel @Inject constructor(
             trackVisitChannelBroadcasterUseCase.executeOnBackground()
         }) {
         }
-    }
-
-    fun refreshLeaderboard() {
-        checkLeaderboard(channelId)
     }
 
     private fun checkLeaderboard(channelId: String) {
@@ -1872,6 +1869,13 @@ class PlayViewModel @Inject constructor(
                  if (isFromLogin) AllowedWhenInactiveEvent(event) else event
             )
         }
+    }
+
+    private fun handleRefreshLeaderboard() {
+        /**
+         * TODO: update data with placeholder here
+         */
+        checkLeaderboard(channelId)
     }
 
     /**

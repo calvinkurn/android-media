@@ -10,6 +10,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play_common.R
@@ -32,7 +33,7 @@ class PlayInteractiveLeaderboardViewComponent(
 ) : ViewComponent(container, R.id.cl_leaderboard_sheet) {
 
     private val rvLeaderboard: RecyclerView = findViewById(R.id.rv_leaderboard)
-    private val errorView: ConstraintLayout = findViewById(R.id.cl_leaderboard_error)
+    private val globalErrorLeaderboard: GlobalError = findViewById(R.id.global_error_leaderboard)
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
@@ -68,10 +69,30 @@ class PlayInteractiveLeaderboardViewComponent(
         }
 
         registerAdapterObserver()
+
+        globalErrorLeaderboard.setActionClickListener {
+            listener.onRefreshLeaderboard()
+        }
     }
 
     fun setData(leaderboards: List<PlayLeaderboardUiModel>) {
         leaderboardAdapter.setItemsAndAnimateChanges(leaderboards)
+    }
+
+    fun setError(isConnectionError: Boolean) {
+        globalErrorLeaderboard.setType(
+            if (isConnectionError) GlobalError.NO_CONNECTION else GlobalError.SERVER_ERROR
+        )
+        globalErrorLeaderboard.show()
+        rvLeaderboard.hide()
+    }
+
+    fun setLoading() {
+        globalErrorLeaderboard.hide()
+        rvLeaderboard.show()
+        /**
+         * TODO: update data with placeholder
+         */
     }
 
     fun showWithHeight(height: Int) {
@@ -90,16 +111,6 @@ class PlayInteractiveLeaderboardViewComponent(
 
     override fun hide() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-    }
-
-    fun showError(shouldShow: Boolean) {
-        if (shouldShow) {
-            errorView.show()
-            rvLeaderboard.hide()
-        } else {
-            errorView.hide()
-            rvLeaderboard.show()
-        }
     }
 
     private fun registerAdapterObserver() {
@@ -134,5 +145,7 @@ class PlayInteractiveLeaderboardViewComponent(
         }
         fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
         }
+
+        fun onRefreshLeaderboard()
     }
 }

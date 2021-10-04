@@ -20,6 +20,8 @@ object ClickRetryInteractiveAction : PlayViewerNewAction()
 
 object ClickCloseLeaderboardSheetAction : PlayViewerNewAction()
 
+object RefreshLeaderboard: PlayViewerNewAction()
+
 /**
  * Partner
  */

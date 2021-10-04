@@ -34,6 +34,7 @@ import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
+import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 import com.tokopedia.play.view.viewcomponent.ProductSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.VariantSheetViewComponent
@@ -211,6 +212,10 @@ class PlayBottomSheetFragment @Inject constructor(
      */
     override fun onCloseButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
         playViewModel.submitAction(ClickCloseLeaderboardSheetAction)
+    }
+
+    override fun onRefreshLeaderboard() {
+        playViewModel.submitAction(RefreshLeaderboard)
     }
 
     /**
