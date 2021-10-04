@@ -23,6 +23,11 @@ object SubmitDataViewAction {
         clickOnButton(R.id.button_next)
     }
 
+    fun checkErrorMessageOnInputPhone(errorMessage: String) {
+        scrollToView(R.id.txtInputPhoneNumber)
+        isTextDisplayed(errorMessage)
+    }
+
     fun checkPopupIsDisplayed() {
         isTextDisplayed("Keluar dari halaman ini?")
     }
@@ -33,5 +38,13 @@ object SubmitDataViewAction {
 
     fun clickOnButtonLanjutVerifikasi() {
         clickOnButtonWithText("Lanjut Verifikasi")
+    }
+
+    fun checkThumbnailImageIdCard() {
+        isTextDisplayed("Kartu Identitas")
+    }
+
+    fun checkThumbnailImageSelfie() {
+        isTextDisplayed("Foto Wajah dan Kartu Identitas")
     }
 }

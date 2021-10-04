@@ -12,6 +12,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.PARAM_PHONE
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.PARAM_USER_DETAIL_DATA
@@ -83,14 +85,18 @@ open class InactivePhoneAccountListActivity : BaseSimpleActivity(), HasComponent
     }
 
     private fun initObserver() {
-        viewModel.accountList.observe(this, Observer { result ->
+        viewModel.accountList.observe(this, {
             hideLoading()
-            when (result) {
+            when (it) {
                 is Success -> {
-                    onGetAccountListSuccess(result.data)
+                    if (it.data.accountList.errors.isEmpty()) {
+                        onGetAccountListSuccess(it.data)
+                    } else {
+                        onGetAccountListFail(Throwable(it.data.accountList.errors.first().message))
+                    }
                 }
                 is Fail -> {
-                    onGetAccountListFail(result.throwable)
+                    onGetAccountListFail(it.throwable)
                 }
             }
         })
@@ -123,7 +129,10 @@ open class InactivePhoneAccountListActivity : BaseSimpleActivity(), HasComponent
     }
 
     private fun onGetAccountListFail(throwable: Throwable) {
-
+        val message = ErrorHandler.getErrorMessage(this, throwable)
+        viewBinding?.containerAccountList?.let {
+            Toaster.build(it, message, Toaster.LENGTH_LONG).show()
+        }
     }
 
     private fun showLoading() {

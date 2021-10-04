@@ -9,7 +9,7 @@ import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
 import com.tokopedia.updateinactivephone.domain.data.VerifyNewPhoneDataModel
 import javax.inject.Inject
 
-class VerifyNewPhoneUseCase @Inject constructor(
+open class VerifyNewPhoneUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ): CoroutineUseCase<InactivePhoneUserDataModel, VerifyNewPhoneDataModel>(dispatcher.io) {

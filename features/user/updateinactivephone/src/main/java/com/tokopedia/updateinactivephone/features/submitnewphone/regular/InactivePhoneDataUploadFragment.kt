@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
@@ -57,14 +58,17 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
         viewModel.phoneValidation.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    doUploadImage(FileType.ID_CARD, ID_CARD)
+                    if (it.data.validation.isSuccess) {
+                        doUploadImage(FileType.ID_CARD, ID_CARD)
+                    } else {
+                        hideLoading()
+                        onError(Throwable(it.data.validation.error))
+                    }
                 }
 
                 is Fail -> {
                     hideLoading()
-                    view?.let { view ->
-                        Toaster.make(view, it.throwable.message.toString(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
-                    }
+                    onError(it.throwable)
                 }
             }
         })
@@ -94,9 +98,7 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
 
                 is Fail -> {
                     hideLoading()
-                    view?.let { view ->
-                        Toaster.make(view, it.throwable.message.toString(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
-                    }
+                    onError(it.throwable)
                 }
             }
         })
@@ -117,9 +119,7 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
                     if (it.throwable.message == getString(R.string.error_new_phone_already_registered)) {
                         viewBinding?.textPhoneNumber?.error = getString(R.string.error_input_another_phone)
                     } else {
-                        view?.let { view ->
-                            Toaster.make(view, it.throwable.message.toString(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
-                        }
+                        onError(it.throwable)
                     }
                 }
             }
@@ -155,6 +155,13 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
                 filePath(it, fileType.id),
                 source
             )
+        }
+    }
+
+    private fun onError(throwable: Throwable) {
+        val message = ErrorHandler.getErrorMessage(requireContext(), throwable)
+        view?.let {
+            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 

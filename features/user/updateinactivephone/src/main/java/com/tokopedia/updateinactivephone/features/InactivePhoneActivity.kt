@@ -14,11 +14,13 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.common.utils.removeRegionCodeAndCharacter
+import com.tokopedia.updateinactivephone.databinding.ActivityInactivePhoneBinding
 import com.tokopedia.updateinactivephone.di.InactivePhoneComponent
 import com.tokopedia.updateinactivephone.di.InactivePhoneComponentBuilder
 import com.tokopedia.updateinactivephone.domain.data.AccountListDataModel
@@ -38,8 +40,8 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(InactivePhoneViewModel::class.java) }
 
+    private var viewBinding: ActivityInactivePhoneBinding? = null
     private var container: ConstraintLayout? = null
-
     private var remoteConfig: FirebaseRemoteConfigImpl? = null
     private var inactivePhoneUserDataModel: InactivePhoneUserDataModel? = null
 
@@ -56,7 +58,6 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inactive_phone)
-        container = findViewById(R.id.containerInactivePhone)
 
         component.inject(this)
         initObserver()
@@ -95,7 +96,11 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
         viewModel.getStatusPhoneNumber.observe(this, {
             when (it) {
                 is Success -> {
-                    onSuccessGetStatus(it.data)
+                    if (it.data.statusInactivePhoneNumber.isSuccess) {
+                        onSuccessGetStatus(it.data)
+                    } else {
+                        onError(Throwable(it.data.statusInactivePhoneNumber.errorMessage))
+                    }
                 }
                 is Fail -> {
                     onError(it.throwable)
@@ -207,8 +212,9 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
     }
 
     private fun onError(throwable: Throwable) {
-        container?.let {
-            Toaster.build(it, throwable.message.orEmpty(), Toaster.LENGTH_LONG).show()
+        val message = ErrorHandler.getErrorMessage(this, throwable)
+        viewBinding?.containerInactivePhone?.let {
+            Toaster.build(it, message, Toaster.LENGTH_LONG).show()
         }
     }
 

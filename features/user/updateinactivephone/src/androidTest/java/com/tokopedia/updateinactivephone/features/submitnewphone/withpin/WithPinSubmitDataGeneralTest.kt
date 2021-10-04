@@ -5,6 +5,8 @@ import com.tokopedia.updateinactivephone.common.viewaction.simulateOnBackPressed
 import com.tokopedia.updateinactivephone.features.submitnewphone.BaseSubmitDataTest
 import com.tokopedia.updateinactivephone.features.submitnewphone.SubmitDataViewAction.checkPopupIsDisplayed
 import com.tokopedia.updateinactivephone.features.submitnewphone.SubmitDataViewAction.checkSubmitDataPageDisplayed
+import com.tokopedia.updateinactivephone.features.submitnewphone.SubmitDataViewAction.clickOnButtonExitPopup
+import com.tokopedia.updateinactivephone.features.submitnewphone.SubmitDataViewAction.clickOnButtonLanjutVerifikasi
 import com.tokopedia.updateinactivephone.features.submitnewphone.SubmitDataViewAction.clickOnButtonSubmit
 import com.tokopedia.updateinactivephone.features.submitnewphone.SubmitDataViewAction.setPhoneNumberText
 import org.junit.Test
@@ -15,6 +17,8 @@ class WithPinSubmitDataGeneralTest: BaseSubmitDataTest() {
         super.before()
         inactivePhoneDependency.apply {
             submitExpeditedInactivePhoneUseCaseStub.response = submitExpeditedInactivePhoneDataModel
+            phoneValidationUseCaseStub.response = phoneValidationDataModel
+            verifyNewPhoneUseCaseStub.response = verifyNewPhoneDataModel
         }
     }
 
@@ -41,6 +45,7 @@ class WithPinSubmitDataGeneralTest: BaseSubmitDataTest() {
         runTest(source = InactivePhoneConstant.EXPEDITED) {
             setPhoneNumberText(phone)
             clickOnButtonSubmit()
+            checkTracker()
         }
     }
 
@@ -57,7 +62,7 @@ class WithPinSubmitDataGeneralTest: BaseSubmitDataTest() {
     fun on_click_exit_popup() {
         runTest {
             simulateOnBackPressed()
-            checkPopupIsDisplayed()
+            clickOnButtonExitPopup()
             checkTracker()
         }
     }
@@ -66,7 +71,7 @@ class WithPinSubmitDataGeneralTest: BaseSubmitDataTest() {
     fun on_click_lanjut_verifikasi() {
         runTest {
             simulateOnBackPressed()
-            checkPopupIsDisplayed()
+            clickOnButtonLanjutVerifikasi()
             checkTracker()
         }
     }

@@ -85,4 +85,19 @@ class FakeInactivePhoneUseCaseModule {
     ): SubmitExpeditedInactivePhoneUseCaseStub {
         return SubmitExpeditedInactivePhoneUseCaseStub(repository, dispatcher)
     }
+
+    @ActivityScope
+    @Provides
+    fun provideVerifyNewPhoneUseCase(
+        stub: VerifyNewPhoneUseCaseStub
+    ): VerifyNewPhoneUseCase = stub
+
+    @ActivityScope
+    @Provides
+    fun provideVerifyNewPhoneUseCaseStub(
+        repository: GraphqlRepository,
+        dispatcher: CoroutineDispatchers
+    ): VerifyNewPhoneUseCaseStub {
+        return VerifyNewPhoneUseCaseStub(repository, dispatcher)
+    }
 }

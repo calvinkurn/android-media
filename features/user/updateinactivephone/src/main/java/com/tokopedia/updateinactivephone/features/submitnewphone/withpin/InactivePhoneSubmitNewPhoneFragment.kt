@@ -24,7 +24,11 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
         viewModel.phoneValidation.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    onSuccessPhoneValidation()
+                    if (it.data.validation.isSuccess) {
+                        onSuccessPhoneValidation()
+                    } else {
+                        onFailedPhoneValidation(Throwable(it.data.validation.error))
+                    }
                 }
                 is Fail -> {
                     onFailedPhoneValidation(it.throwable)
@@ -55,7 +59,11 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
             hideLoading()
             when (it) {
                 is Success -> {
-                    onSuccessVerificationNewPhone(it.data)
+                    if (it.data.verify.isSuccess) {
+                        onSuccessVerificationNewPhone(it.data)
+                    } else {
+                        onFailedVerificationNewPhone(Throwable(it.data.verify.errorMessage))
+                    }
                 }
                 is Fail -> {
                     onFailedVerificationNewPhone(it.throwable)
