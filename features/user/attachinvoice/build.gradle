@@ -81,8 +81,6 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.coroutineCore
-    implementation rootProject.ext.networkDependencies.loggingInterceptor
-    implementation rootProject.ext.networkDependencies.retrofit
 
     // spek
     testImplementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
