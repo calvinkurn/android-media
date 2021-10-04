@@ -23,7 +23,7 @@ import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 
-class DealsBrandDetailActivityTest {
+class  DealsBrandDetailActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)

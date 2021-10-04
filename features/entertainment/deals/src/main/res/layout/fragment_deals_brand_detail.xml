@@ -22,7 +22,6 @@
                 android:background="@color/Unify_N0"
                 android:fitsSystemWindows="true"
                 app:contentScrim="@color/Unify_N0"
-                app:expandedTitleGravity="center_horizontal|bottom"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
                 <FrameLayout
