@@ -1387,7 +1387,14 @@ class PlayViewModel @Inject constructor(
                 }
             }
             is UserWinnerStatus -> {
-                _observableUserWinnerStatus.value = playSocketToModelMapper.mapUserWinnerStatus(result)
+                val interactiveState = _interactiveUiState.firstOrNull() ?: return@withContext
+
+                val winnerStatus = playSocketToModelMapper.mapUserWinnerStatus(result)
+                _observableUserWinnerStatus.value = winnerStatus
+
+                if(interactiveState.interactive is PlayInteractiveUiState.Finished) {
+                    handleUserWinnerStatus(winnerStatus)
+                }
             }
         }
     }
