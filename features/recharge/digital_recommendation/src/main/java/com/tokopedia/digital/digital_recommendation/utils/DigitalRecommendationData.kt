@@ -10,6 +10,6 @@ import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRe
 class DigitalRecommendationData(
         val viewModelFactory: ViewModelProvider.Factory,
         val lifecycleOwner: LifecycleOwner,
-        val additionalTrackingData: DigitalRecommendationAdditionalTrackingData
+        var additionalTrackingData: DigitalRecommendationAdditionalTrackingData
 ) {
 }

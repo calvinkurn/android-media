@@ -4,6 +4,8 @@ import com.tokopedia.digital.digital_recommendation.data.DigitalRecommendationQu
 import com.tokopedia.digital.digital_recommendation.data.DigitalRecommendationResponse
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
@@ -29,6 +31,9 @@ class DigitalRecommendationUseCase @Inject constructor(
                 )
         )
 
+        multiRequestGraphqlUseCase.setCacheStrategy(
+                GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+        )
         multiRequestGraphqlUseCase.clearRequest()
 
         return try {
