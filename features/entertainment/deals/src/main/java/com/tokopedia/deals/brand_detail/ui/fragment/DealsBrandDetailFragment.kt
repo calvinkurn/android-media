@@ -26,6 +26,8 @@ import com.tokopedia.deals.common.bottomsheet.DealsBottomSheetNoInternetConnecti
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.FragmentDealsBrandDetailBinding
 import com.tokopedia.deals.location_picker.model.response.Location
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.observe
@@ -156,17 +158,29 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
                     if (abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
                         it.collapsingToolbarBrandDetail.title = title
                         it.toolbarBrandDetail?.let { toolbar ->
-                            toolbar.menu.getItem(0).setIcon(com.tokopedia.deals.R.drawable.ic_deals_revamp_share_black)
                             context?.let {
+                                toolbar.menu.getItem(0).setIcon(getIconUnifyDrawable(
+                                    context = it,
+                                    iconId = IconUnify.SHARE_MOBILE,
+                                    assetColor = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+                                ))
+
                                 setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                             }
                         }
                     } else if (verticalOffset == 0) {
                         it.collapsingToolbarBrandDetail.title = ""
                         it.toolbarBrandDetail?.let { toolbar ->
-                            toolbar.menu.getItem(0).setIcon(com.tokopedia.deals.R.drawable.ic_deals_revamp_share_white)
-                            context?.let {
-                                setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                            it.toolbarBrandDetail?.let { toolbar ->
+                                context?.let {
+                                    toolbar.menu.getItem(0).setIcon(getIconUnifyDrawable(
+                                            context = it,
+                                            iconId = IconUnify.SHARE_MOBILE,
+                                            assetColor = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                                    ))
+
+                                    setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                                }
                             }
                         }
                     }
