@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.common.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -21,6 +22,7 @@ class TokoNowRecommendationCarouselViewHolder(
         @LayoutRes
         @JvmStatic
         val LAYOUT = R.layout.item_tokopedianow_recom_carousel
+        const val TEXT_OTHER_RECOM = "Rekomendasi Lainnya"
     }
 
     private val recommendationCarouselWidgetView =
@@ -33,16 +35,27 @@ class TokoNowRecommendationCarouselViewHolder(
     override fun bind(element: TokoNowRecommendationCarouselUiModel?) {
         uiModel = element ?: return
         val recomWidget = recommendationCarouselWidgetView ?: return
+        recommendationCarouselListener?.setViewToLifecycleOwner(recomWidget)
         val scrollToPosition =
             recommendationCarouselListener?.onGetCarouselScrollPosition(adapterPosition)
-
-        recomWidget.bindRecomWithData(
-            carouselData = element.carouselData,
-            adapterPosition = adapterPosition,
-            widgetListener = this,
-            scrollToPosition = scrollToPosition.orZero(),
-        )
-        recommendationCarouselListener?.onBindRecommendationCarousel(element, adapterPosition)
+        if (element.isBindWithPageName) {
+            recomWidget.bindRecomCategoryIds(
+                pageName = element.pageName,
+                categoryIds = element.categoryId,
+                widgetListener = this,
+                adapterPosition = adapterPosition,
+                scrollToPosition = scrollToPosition.orZero(),
+                tempHeaderName = TEXT_OTHER_RECOM
+            )
+        } else {
+            recomWidget.bindRecomWithData(
+                carouselData = element.carouselData,
+                adapterPosition = adapterPosition,
+                widgetListener = this,
+                scrollToPosition = scrollToPosition.orZero(),
+            )
+            recommendationCarouselListener?.onBindRecommendationCarousel(element, adapterPosition)
+        }
     }
 
     override fun onRecomProductCardImpressed(
@@ -197,5 +210,8 @@ class TokoNowRecommendationCarouselViewHolder(
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
         )
+
+        //lifecycle owner
+        fun setViewToLifecycleOwner(observer: LifecycleObserver)
     }
 }

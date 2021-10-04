@@ -151,6 +151,33 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         }
     }
 
+    fun bindRecomCategoryIds(
+        adapterPosition: Int = 0,
+        widgetListener: RecommendationCarouselWidgetListener?,
+        scrollToPosition: Int = 0,
+        pageName: String,
+        tempHeaderName: String = "",
+        isForceRefresh: Boolean = false,
+        categoryIds: List<String>
+    ) {
+
+        try {
+            this.adapterPosition = adapterPosition
+            this.widgetListener = widgetListener
+            this.scrollToPosition = scrollToPosition
+            this.pageName = pageName
+
+            bindTemporaryHeader(tempHeaderName)
+            bindWidgetWithPageName(
+                pageName = pageName,
+                isForceRefresh = isForceRefresh,
+                categoryIds = categoryIds
+            )
+        } catch (e: Exception) {
+            this.widgetListener?.onWidgetFail(pageName, e)
+        }
+    }
+
     fun bindPdpRecom(
         adapterPosition: Int = 0,
         widgetListener: RecommendationCarouselWidgetListener?,
@@ -181,7 +208,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     private fun bindWidgetWithPageName(
         pageName: String,
         isForceRefresh: Boolean,
-        parentProductId: String = ""
+        parentProductId: String = "",
+        categoryIds: List<String> = listOf()
     ) {
         if (carouselData == null || isForceRefresh) {
             adapter?.clearAllElements()
@@ -189,6 +217,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             viewModel?.loadRecommendationCarousel(
                 pageName = pageName,
                 productIds = listOf(parentProductId),
+                categoryIds = categoryIds,
                 onSuccess = {
                     if (it.recommendationItemList.isNotEmpty()) {
                         bindWidgetWithData(

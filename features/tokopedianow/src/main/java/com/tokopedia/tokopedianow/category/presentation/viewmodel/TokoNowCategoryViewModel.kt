@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -150,21 +151,26 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     override fun createTitleDataView(headerDataView: HeaderDataView): TitleDataView {
         return TitleDataView(
-                titleType = CategoryTitle(headerDataView.title),
-                hasSeeAllCategoryButton = true,
+            titleType = CategoryTitle(headerDataView.title),
+            hasSeeAllCategoryButton = true,
         )
     }
 
-    override fun createFooterVisitableList() = listOf(
+    override fun createFooterVisitableList(): List<Visitable<*>> {
+        val recomData =
+            TokoNowRecommendationCarouselUiModel(pageName = TOKONOW_CLP, isBindWithPageName = true)
+        recomData.categoryId = getRecomCategoryId(recomData)
+        return listOf(
             createAisleDataView(),
-            TokoNowRecommendationCarouselUiModel(pageName = TOKONOW_CLP),
-    )
+            recomData
+        )
+    }
 
     private fun createAisleDataView() = CategoryAisleDataView(
-            listOf(
-                    createAisleItem(navigation?.prev),
-                    createAisleItem(navigation?.next),
-            )
+        listOf(
+            createAisleItem(navigation?.prev),
+            createAisleItem(navigation?.next),
+        )
     )
 
     private fun createAisleItem(navigationItem: NavigationItem?): CategoryAisleItemDataView {

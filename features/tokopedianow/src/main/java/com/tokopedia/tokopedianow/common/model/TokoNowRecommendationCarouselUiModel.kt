@@ -7,9 +7,12 @@ import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTypeFactory
 import com.tokopedia.tokopedianow.searchcategory.utils.OOC_TOKONOW
 
 class TokoNowRecommendationCarouselUiModel(
-        val id: String = "",
-        val pageName: String,
-        var carouselData: RecommendationCarouselData = RecommendationCarouselData(state = STATE_LOADING),
+    val id: String = "",
+    val pageName: String,
+    var carouselData: RecommendationCarouselData = RecommendationCarouselData(state = STATE_LOADING),
+    var isBindWithPageName: Boolean = false,
+    var categoryId: List<String> = listOf()
+
 ): TokoNowLayoutUiModel(id) {
 
     override fun type(typeFactory: TokoNowTypeFactory?): Int {

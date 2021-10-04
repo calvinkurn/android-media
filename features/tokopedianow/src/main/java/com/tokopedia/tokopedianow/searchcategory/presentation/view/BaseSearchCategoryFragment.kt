@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -875,9 +876,9 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onAddVariantRecommendationCarouselItem(
-            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel?,
-            data: RecommendationCarouselData,
-            recomItem: RecommendationItem,
+        recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
     ) {
         val productId = recomItem.productId.toString()
         val shopId = recomItem.shopId.toString()
@@ -885,8 +886,12 @@ abstract class BaseSearchCategoryFragment:
         openATCVariantBottomSheet(productId, shopId)
     }
 
+    override fun setViewToLifecycleOwner(observer: LifecycleObserver) {
+        viewLifecycleOwner.lifecycle.addObserver(observer)
+    }
+
     protected open fun sendAddToCartRecommendationTrackingEvent(
-            atcTrackingData: Triple<Int, String, RecommendationItem>
+        atcTrackingData: Triple<Int, String, RecommendationItem>
     ) {
         val (quantity, cartId, recommendationItem) = atcTrackingData
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
