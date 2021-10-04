@@ -75,5 +75,6 @@
     <string name="feed_content_product_list_page_error">Gagal memuat produk. Silakan ulangi.</string>
     <string name="feed_product_page_search_bar_placeholder_text">Cari produk di %s </string>
     <string name="feed_product_page_filter_title">Urutkan</string>
+    <string name="feed_content_default_filter_value">Pembaruan Terakhir</string>
 
 </resources>
