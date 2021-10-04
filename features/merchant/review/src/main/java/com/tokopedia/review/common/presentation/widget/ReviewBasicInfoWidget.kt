@@ -181,6 +181,14 @@ class ReviewBasicInfoWidget : BaseCustomView {
 
     fun setListener(reviewBasicInfoListener: ReviewBasicInfoListener) {
         this.listener = reviewBasicInfoListener
+        if (shouldShowCredibility()) {
+            setOnClickListener {
+                listener?.onUserNameClicked(userId)
+            }
+        } else {
+            setOnClickListener {  }
+        }
+
     }
 
     fun setCredibilityData(

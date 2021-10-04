@@ -14,11 +14,13 @@
 
     <com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
         android:id="@+id/read_review_basic_info"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/read_review_product_info"
+        app:layout_constraintEnd_toStartOf="@id/read_review_item_three_dots"
         app:layout_goneMarginTop="@dimen/layout_lvl2" />
 
     <com.tokopedia.iconunify.IconUnify

@@ -660,9 +660,9 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                     reviewImagePreviewDetail?.apply {
                         if (isFirstTimeUpdate) {
                             setPhotoCount(currentPosition, totalImageCount)
-                            setBasicInfoListener(this@ReviewImagePreviewFragment)
                         }
                         setCredibilityData(isProductReview, isAnonymous, userId, feedbackId)
+                        setBasicInfoListener(this@ReviewImagePreviewFragment)
                         setRating(rating)
                         setReviewerName(reviewerName)
                         setTimeStamp(reviewTime)
