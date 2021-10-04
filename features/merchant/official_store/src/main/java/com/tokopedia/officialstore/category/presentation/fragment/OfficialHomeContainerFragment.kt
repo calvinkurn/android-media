@@ -268,14 +268,14 @@ class OfficialHomeContainerFragment
             when (it) {
                 is Success -> {
                     removeLoading()
-                    PerformanceCustomTrace.launchFunctionWithTrace(
-                        {
-                            populateCategoriesData(it.data)
-                        }, "PopulateCategoriesData"
-                    )
-//                    PerformanceCustomTrace.beginMethodTracing("PopulateCategoriesData", 10)
-//                    populateCategoriesData(it.data)
-//                    PerformanceCustomTrace.endMethodTracing("PopulateCategoriesData", 10)
+//                    PerformanceCustomTrace.launchFunctionWithTrace(
+//                        {
+//                            populateCategoriesData(it.data)
+//                        }, "PopulateCategoriesData"
+//                    )
+                    PerformanceCustomTrace.beginMethodTracing("PopulateCategoriesData", 10)
+                    populateCategoriesData(it.data)
+                    PerformanceCustomTrace.endMethodTracing("PopulateCategoriesData", 10)
                 }
                 is Fail -> {
                     removeLoading()
@@ -496,7 +496,11 @@ class OfficialHomeContainerFragment
     }
 
     private fun isChooseAddressRollenceActive(): Boolean {
-        return ChooseAddressUtils.isRollOutUser(requireContext())
+        return if (context != null) {
+            ChooseAddressUtils.isRollOutUser(requireContext())
+        } else {
+            false
+        }
     }
 
     private fun getChooseAddressWidget(): ChooseAddressWidget? {
