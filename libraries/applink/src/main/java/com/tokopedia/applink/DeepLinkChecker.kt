@@ -18,7 +18,8 @@ object DeepLinkChecker {
     private const val DEFAULT_EXCLUDED_AMP_VALUE = "stories"
 
     const val WEB_HOST = "www.tokopedia.com"
-    const val MOBILE_HOST = "m.tokopedia.com"
+    const val WEB_HOST_STAGING = "staging.tokopedia.com"
+    const val MOBILE_HOST = "m.tokopedia.com"  // not used anymore on WPE side
 
     const val OTHER = -1
     const val BROWSE = 0
@@ -181,7 +182,7 @@ object DeepLinkChecker {
 
     private fun isHome(uriData: Uri): Boolean {
         return uriData.pathSegments.isEmpty() &&
-            (uriData.host?.contains(WEB_HOST) ?: false || uriData.host?.contains(MOBILE_HOST) ?: false)
+            (uriData.host?.contains(WEB_HOST) ?: false || uriData.host?.contains(WEB_HOST_STAGING) ?: false)
     }
 
     @JvmStatic

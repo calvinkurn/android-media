@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
+import com.tokopedia.url.TokopediaUrl
 
 
 /**
@@ -23,7 +24,7 @@ object RouteManagerKt {
         if (url.endsWith(".pl")) {
             return false
         }
-        if (!url.contains(DeepLinkChecker.WEB_HOST) && !url.contains(DeepLinkChecker.MOBILE_HOST)) {
+        if (!url.contains(DeepLinkChecker.WEB_HOST) && !url.contains(DeepLinkChecker.WEB_HOST_STAGING)) {
             return false
         }
         val registeredNavigation = DeeplinkMapper.getRegisteredNavigationFromHttp(activity.applicationContext, Uri.parse(url), url)
