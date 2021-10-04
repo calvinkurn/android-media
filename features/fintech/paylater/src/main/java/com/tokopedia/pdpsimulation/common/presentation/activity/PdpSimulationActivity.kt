@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationComponent> {
 
-    private lateinit var pdpSimulationComponent: PdpSimulationComponent
+    private  val pdpSimulationComponent: PdpSimulationComponent by lazy{ initInjector()}
     val REQUEST_CODE_LOGIN = 123
 
     @Inject
@@ -34,6 +34,7 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        pdpSimulationComponent.inject(this)
         super.onCreate(savedInstanceState)
         updateTitle(getString(R.string.pdp_simulation_header_title))
     }
@@ -45,7 +46,7 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
     override fun getParentViewResourceID(): Int = R.id.pdpSimulationParentView
 
     override fun getNewFragment(): Fragment? {
-        userSession = UserSession(this)
+
         return if (!userSession.isLoggedIn) {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
             null
@@ -65,15 +66,14 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
         const val SCREEN_NAME = "PayLater & Cicilan"
     }
 
-    override fun getComponent(): PdpSimulationComponent {
-        if (!::pdpSimulationComponent.isInitialized)
-            pdpSimulationComponent = DaggerPdpSimulationComponent.builder()
+     private fun  initInjector() =
+           DaggerPdpSimulationComponent.builder()
                 .baseAppComponent(
                     (applicationContext as BaseMainApplication)
                         .baseAppComponent
                 ).build()
-        return pdpSimulationComponent
-    }
+
+
 
     /**
      * This method is to restart the activity
@@ -96,4 +96,6 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
             }
         }
     }
+
+    override fun getComponent()= pdpSimulationComponent
 }
