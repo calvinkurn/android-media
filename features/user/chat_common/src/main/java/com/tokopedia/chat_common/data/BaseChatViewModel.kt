@@ -256,8 +256,8 @@ open class BaseChatViewModel constructor(
                 attachmentType = referredMsg.attachmentType,
                 senderId = referredMsg.fromUid ?: "",
                 replyTime = referredMsg.replyTime ?: "",
-                mainText = referredMsg.from,
-                subText = referredMsg.message,
+                mainText = referredMsg.message,
+                subText = "",
                 imageUrl = referredMsg.getReferredImageUrl(),
                 localId = referredMsg.localId,
                 source = "chat"

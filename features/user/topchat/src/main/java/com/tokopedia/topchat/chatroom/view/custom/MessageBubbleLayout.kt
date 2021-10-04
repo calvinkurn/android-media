@@ -60,6 +60,10 @@ class MessageBubbleLayout : ViewGroup {
         replyBubbleContainer?.bindReplyData(uiModel)
     }
 
+    fun setReplyListener(listener: ReplyBubbleAreaMessage.Listener) {
+        replyBubbleContainer?.setReplyListener(listener)
+    }
+
     fun setMsgGravity(gravity: Int) {
         val gravityAttr = when (gravity) {
             Gravity.START -> LEFT_MSG_ORIENTATION

@@ -29,6 +29,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewH
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.BannedRightChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.ChatMessageUnifyViewHolder
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
+import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.uimodel.*
@@ -53,7 +54,8 @@ open class TopChatTypeFactoryImpl constructor(
     private val fraudAlertListener: RoomSettingFraudAlertViewHolder.Listener,
     private val reviewListener: ReviewViewHolder.Listener,
     private val srwBubbleListener: SrwBubbleViewHolder.Listener,
-    private val chatMsgListener: FlexBoxChatLayout.Listener
+    private val chatMsgListener: FlexBoxChatLayout.Listener,
+    private val replyBubbleListener: ReplyBubbleAreaMessage.Listener
 ) : BaseChatTypeFactoryImpl(
     imageAnnouncementListener,
     chatLinkHandlerListener,
@@ -200,7 +202,7 @@ open class TopChatTypeFactoryImpl constructor(
             )
             ChatMessageUnifyViewHolder.LAYOUT -> ChatMessageUnifyViewHolder(
                 parent, chatLinkHandlerListener, commonListener, adapterListener,
-                chatMsgListener
+                chatMsgListener, replyBubbleListener
             )
             BannedRightChatMessageViewHolder.LAYOUT -> BannedRightChatMessageViewHolder(
                 parent, chatLinkHandlerListener, commonListener, adapterListener
@@ -235,7 +237,9 @@ open class TopChatTypeFactoryImpl constructor(
             )
             TopchatLoadingModelViewHolder.LAYOUT -> TopchatLoadingModelViewHolder(parent)
             TopchatLoadingMoreViewHolder.LAYOUT -> TopchatLoadingMoreViewHolder(parent)
-            StickerMessageViewHolder.LAYOUT -> StickerMessageViewHolder(parent)
+            StickerMessageViewHolder.LAYOUT -> StickerMessageViewHolder(
+                parent, replyBubbleListener
+            )
             HeaderDateViewHolder.LAYOUT -> HeaderDateViewHolder(parent)
             ProductAttachmentViewHolder.LAYOUT -> TopchatOldProductAttachmentViewHolder(
                 parent,
@@ -253,8 +257,7 @@ open class TopChatTypeFactoryImpl constructor(
                 fraudAlertListener
             )
             TopchatImageUploadViewHolder.LAYOUT -> TopchatImageUploadViewHolder(
-                parent,
-                imageUploadListener
+                parent, imageUploadListener, replyBubbleListener
             )
             ImageDualAnnouncementViewHolder.LAYOUT -> ImageDualAnnouncementViewHolder(
                 parent,

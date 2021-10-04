@@ -153,7 +153,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     RoomSettingFraudAlertViewHolder.Listener, ReviewViewHolder.Listener,
     TopchatProductAttachmentListener, UploadImageBroadcastListener,
     SrwQuestionViewHolder.Listener, ReplyBoxTextListener, SrwBubbleViewHolder.Listener,
-    FlexBoxChatLayout.Listener {
+    FlexBoxChatLayout.Listener, ReplyBubbleAreaMessage.Listener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -695,6 +695,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         topchatViewState?.onSetCustomMessage(customMessage)
         presenter.getTemplate(chatRoom.isSeller())
         presenter.getStickerGroupList(chatRoom)
+        replyCompose?.setReplyListener(this)
         when {
             !isSeller() -> presenter.getSmartReplyWidget(messageId)
             isSeller() -> presenter.adjustInterlocutorWarehouseId(messageId)
@@ -904,7 +905,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             this, this, this, this,
             this, this, this, this,
             this, this, this, this,
-            this, this, this, this
+            this, this, this, this,
+            this
         )
     }
 
@@ -2351,6 +2353,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             replyCompose?.composeReplyData(msg, true)
         }
         return bs.show(getSupportChildFragmentManager(), "CHAT_BUBBLE_MENU")
+    }
+
+    override fun getUserName(senderId: String): String {
+        return presenter.roomMetaData.userIdMap[senderId]?.name ?: ""
     }
 
     companion object {

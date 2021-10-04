@@ -19,7 +19,10 @@ import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.common.util.ViewUtil
 
-class StickerMessageViewHolder(itemView: View?) : BaseChatViewHolder<StickerUiModel>(itemView) {
+class StickerMessageViewHolder(
+    itemView: View?,
+    private val replyBubbleListener: ReplyBubbleAreaMessage.Listener
+) : BaseChatViewHolder<StickerUiModel>(itemView) {
 
     private var replyBubbleArea: ReplyBubbleAreaMessage? = itemView?.findViewById(
         R.id.rba_sticker
@@ -90,9 +93,14 @@ class StickerMessageViewHolder(itemView: View?) : BaseChatViewHolder<StickerUiMo
         bindStickerImage(message.sticker)
         alignLayout(message)
         bindChatReadStatus(message)
+        bindReplyBubbleListener()
         bindReplyReference(message)
         bindBackground(message)
         bindMsgOffsetLine(message)
+    }
+
+    private fun bindReplyBubbleListener() {
+        replyBubbleArea?.setReplyListener(replyBubbleListener)
     }
 
     private fun bindReplyReference(message: StickerUiModel) {

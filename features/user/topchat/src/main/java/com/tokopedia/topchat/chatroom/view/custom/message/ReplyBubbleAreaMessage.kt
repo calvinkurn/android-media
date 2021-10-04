@@ -47,6 +47,12 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         private set
     var referredParentReply: ParentReply? = null
         private set
+    var listener: Listener? = null
+        private set
+
+    interface Listener {
+        fun getUserName(senderId: String): String
+    }
 
     private fun initLayout() {
         View.inflate(context, LAYOUT, this)
@@ -58,14 +64,18 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         closeBtn = findViewById(R.id.iv_rb_close)
     }
 
+    fun setReplyListener(listener: Listener) {
+        this.listener = listener
+    }
+
     fun bindReplyData(
         uiModel: BaseChatViewModel
     ) {
         val parentReply = uiModel.parentReply
         if (parentReply != null) {
             referTo(parentReply)
-            setTitle(parentReply.mainText)
-            setReplyMsg(parentReply.subText)
+            setTitle(parentReply.senderId)
+            setReplyMsg(parentReply.mainText)
             updateCloseButtonState(false)
             show()
         } else {
@@ -78,7 +88,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         enableCloseButton: Boolean = false
     ) {
         referTo(uiModel)
-        setTitle(uiModel.from)
+        setTitle(uiModel.fromUid)
         setReplyMsg(uiModel.message)
         updateCloseButtonState(enableCloseButton)
         show()
@@ -121,8 +131,10 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         referredParentReply = parentReply
     }
 
-    private fun setTitle(title: String) {
-        this.title?.text = title
+    private fun setTitle(senderId: String?) {
+        senderId ?: return
+        val senderName = listener?.getUserName(senderId)
+        this.title?.text = senderName
     }
 
     private fun setReplyMsg(msg: String) {

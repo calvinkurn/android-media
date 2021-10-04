@@ -18,7 +18,11 @@ import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.ImageUnify
 
-class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListener)
+class TopchatImageUploadViewHolder(
+    itemView: View?,
+    listener: ImageUploadListener,
+    private val replyBubbleListener: ReplyBubbleAreaMessage.Listener
+)
     : ImageUploadViewHolder(itemView, listener) {
 
     private val viewContainer: LinearLayout? = itemView?.findViewById(R.id.ll_image_container)
@@ -76,6 +80,7 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
         hideReadStatusIfRetry(element)
         bindBackground(element)
         bindLoadingAnimation(element)
+        bindReplyBubbleListener()
         bindReplyReference(element)
         bindMsgOffsetLine(element)
     }
@@ -99,6 +104,10 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
         }
         msgOffsetLp?.bottomMargin = bottomMargin
         msgOffsetLine?.layoutParams = msgOffsetLp
+    }
+
+    private fun bindReplyBubbleListener() {
+        replyBubbleArea?.setReplyListener(replyBubbleListener)
     }
 
     private fun bindReplyReference(element: ImageUploadViewModel) {

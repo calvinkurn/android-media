@@ -72,8 +72,8 @@ object TopChatWebSocketParam {
             attachment_type = referredMsg.attachmentType.toLongOrZero(),
             sender_id = referredMsg.fromUid.toLongOrZero() ,
             reply_time = referredMsg.replyTime?.toLongOrZero() ?: 0,
-            main_text = referredMsg.from,
-            sub_text = referredMsg.message,
+            main_text = referredMsg.message,
+            sub_text = "",
             image_url = referredMsg.getReferredImageUrl(),
             local_id = referredMsg.localId,
             source = "chat"

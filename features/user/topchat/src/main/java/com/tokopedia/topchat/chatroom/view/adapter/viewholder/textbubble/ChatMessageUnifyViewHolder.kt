@@ -24,6 +24,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.Chat
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getOppositeMargin
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout
+import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifyprinciples.Typography
 
@@ -32,7 +33,8 @@ class ChatMessageUnifyViewHolder(
     protected val msgCliclLinkListener: ChatLinkHandlerListener,
     private val commonListener: CommonViewHolderListener,
     private val adapterListener: AdapterListener,
-    private val chatMsgListener: FlexBoxChatLayout.Listener
+    private val chatMsgListener: FlexBoxChatLayout.Listener,
+    private val replyBubbleListener: ReplyBubbleAreaMessage.Listener
 ) : BaseChatViewHolder<MessageViewModel>(itemView) {
 
     private val messageBubble: MessageBubbleLayout? = itemView?.findViewById(R.id.mb_bubble_msg)
@@ -69,6 +71,7 @@ class ChatMessageUnifyViewHolder(
         ChatMessageViewHolderBinder.bindChatMessage(msg, fxChat)
         ChatMessageViewHolderBinder.bindOnTouchMessageListener(fxChat, onTouchListener)
         ChatMessageViewHolderBinder.bindHour(msg, fxChat)
+        bindReplyBubbleListener()
         bindReplyReference(msg)
         bindAttachment(msg)
         bindMargin(msg)
@@ -163,6 +166,10 @@ class ChatMessageUnifyViewHolder(
         bindGravity(gravity)
         bindLayoutMsgGravity(gravity)
         messageBubble?.setMsgGravity(gravity)
+    }
+
+    private fun bindReplyBubbleListener() {
+        messageBubble?.setReplyListener(replyBubbleListener)
     }
 
     private fun bindReplyReference(msg: MessageViewModel) {
