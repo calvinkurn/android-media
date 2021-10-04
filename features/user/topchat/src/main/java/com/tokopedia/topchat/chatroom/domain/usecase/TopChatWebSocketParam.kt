@@ -37,7 +37,7 @@ object TopChatWebSocketParam {
         localId: String,
         intention: String? = null,
         userLocationInfo: LocalCacheModel? = null,
-        referredMsg: BaseChatViewModel? = null
+        referredMsg: ParentReply? = null
     ): String {
         val referredMsgRequest = generateParentReplyRequestPayload(referredMsg)
         val json = JsonObject().apply {

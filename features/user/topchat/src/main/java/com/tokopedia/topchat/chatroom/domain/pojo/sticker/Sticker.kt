@@ -4,8 +4,8 @@ package com.tokopedia.topchat.chatroom.domain.pojo.sticker
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
-import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.data.WebsocketEvent
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerProfile
 import com.tokopedia.topchat.chatroom.domain.usecase.TopChatWebSocketParam
@@ -29,7 +29,7 @@ data class Sticker(
             startTime: String,
             attachments: List<SendablePreview>,
             localId: String,
-            referredMsg: BaseChatViewModel?
+            referredMsg: ParentReply?
     ): WebsocketAttachmentContract {
         val referredMsgRequest = TopChatWebSocketParam
             .generateParentReplyRequestPayload(referredMsg)

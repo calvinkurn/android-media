@@ -20,6 +20,7 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_M
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_API
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_WEBSOCKET
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
@@ -556,7 +557,7 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun sendAttachmentsAndMessage(
-        sendMessage: String, referredMsg: BaseChatViewModel?
+        sendMessage: String, referredMsg: ParentReply?
     ) {
         if (isValidReply(sendMessage)) {
             sendAttachments(sendMessage)
@@ -570,7 +571,7 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun sendAttachmentsAndSticker(
-        sticker: Sticker, referredMsg: BaseChatViewModel?
+        sticker: Sticker, referredMsg: ParentReply?
     ) {
         sendAttachments(sticker.intention)
         sendSticker(sticker, referredMsg)
@@ -622,7 +623,7 @@ open class TopChatRoomPresenter @Inject constructor(
         sendMessage: String,
         intention: String? = null,
         products: List<SendablePreview>? = null,
-        referredMsg: BaseChatViewModel? = null
+        referredMsg: ParentReply? = null
     ) {
         val startTime = SendableViewModel.generateStartTime()
         val previewMsg = generatePreviewMessage(
@@ -664,7 +665,7 @@ open class TopChatRoomPresenter @Inject constructor(
     private fun generatePreviewMessage(
         messageText: String,
         startTime: String,
-        referredMsg: BaseChatViewModel?
+        referredMsg: ParentReply?
     ): SendableViewModel {
         val localId = IdentifierUtil.generateLocalId()
         return MessageViewModel.Builder()
@@ -675,7 +676,7 @@ open class TopChatRoomPresenter @Inject constructor(
             .withStartTime(startTime)
             .withMsg(messageText)
             .withLocalId(localId)
-            .withReferredMsg(referredMsg)
+            .withParentReply(referredMsg)
             .withIsDummy(true)
             .withIsSender(true)
             .withIsRead(false)
@@ -698,7 +699,7 @@ open class TopChatRoomPresenter @Inject constructor(
 
     private fun sendSticker(
         sticker: Sticker,
-        referredMsg: BaseChatViewModel?
+        referredMsg: ParentReply?
     ) {
         val startTime = SendableViewModel.generateStartTime()
         val previewSticker = StickerUiModel.generatePreviewMessage(

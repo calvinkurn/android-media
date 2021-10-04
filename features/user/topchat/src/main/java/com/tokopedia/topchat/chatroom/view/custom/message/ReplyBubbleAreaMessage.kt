@@ -43,9 +43,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         initViewBinding()
     }
 
-    var referredMsg: BaseChatViewModel? = null
-        private set
-    var referredParentReply: ParentReply? = null
+    var referredMsg: ParentReply? = null
         private set
     var listener: Listener? = null
         private set
@@ -73,9 +71,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     ) {
         val parentReply = uiModel.parentReply
         if (parentReply != null) {
-            referTo(parentReply)
-            setTitle(parentReply.senderId)
-            setReplyMsg(parentReply.mainText)
+            bindParentReply(parentReply)
             updateCloseButtonState(false)
             show()
         } else {
@@ -83,19 +79,34 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         }
     }
 
+    private fun bindParentReply(parentReply: ParentReply) {
+        referTo(parentReply)
+        setTitle(parentReply.senderId)
+        setReplyMsg(parentReply.mainText)
+    }
+
     fun composeReplyData(
-        uiModel: BaseChatViewModel,
+        referredMsg: BaseChatViewModel,
         enableCloseButton: Boolean = false
     ) {
-        referTo(uiModel)
-        setTitle(uiModel.fromUid)
-        setReplyMsg(uiModel.message)
+        val parentReply = ParentReply(
+            attachmentId = referredMsg.attachmentId,
+            attachmentType = referredMsg.attachmentType,
+            senderId = referredMsg.fromUid ?: "",
+            replyTime = referredMsg.replyTime ?: "",
+            mainText = referredMsg.message,
+            subText = "",
+            imageUrl = referredMsg.getReferredImageUrl(),
+            localId = referredMsg.localId,
+            source = "chat"
+        )
+        bindParentReply(parentReply)
         updateCloseButtonState(enableCloseButton)
         show()
     }
 
     fun clearReferredComposedMsg() {
-        referTo(null)
+        clearReferTo()
         hide()
     }
 
@@ -111,24 +122,20 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         if (enableCloseButton) {
             closeBtn?.show()
             closeBtn?.setOnClickListener {
+                clearReferTo()
                 hide()
             }
         } else {
             closeBtn?.hide()
-            clearReferTo()
         }
     }
 
     private fun clearReferTo() {
-        referTo(null)
-    }
-
-    private fun referTo(uiModel: BaseChatViewModel?) {
-        referredMsg = uiModel
+        referredMsg = null
     }
 
     private fun referTo(parentReply: ParentReply) {
-        referredParentReply = parentReply
+        referredMsg = parentReply
     }
 
     private fun setTitle(senderId: String?) {

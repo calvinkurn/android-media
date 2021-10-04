@@ -1415,7 +1415,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             .withStartTime(SendableViewModel.generateStartTime())
             .withIsDummy(true)
             .withImageUrl(imageUrl)
-            .withReferredMsg(replyCompose?.referredMsg)
+            .withParentReply(replyCompose?.referredMsg)
             .build()
     }
 

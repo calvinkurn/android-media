@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -147,11 +148,11 @@ interface TopChatContract {
         )
 
         fun sendAttachmentsAndMessage(
-            sendMessage: String, referredMsg: BaseChatViewModel? = null
+            sendMessage: String, referredMsg: ParentReply? = null
         )
 
         fun sendAttachmentsAndSticker(
-            sticker: Sticker, referredMsg: BaseChatViewModel?
+            sticker: Sticker, referredMsg: ParentReply?
         )
 
         fun sendAttachmentsAndSrw(
