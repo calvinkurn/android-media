@@ -127,11 +127,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@id/product_bundling_total_price"
         app:layout_constraintTop_toBottomOf="@id/product_bundling_total_price"
         app:typographyType="body_3"
-        tools:text="(Total 3 barang)" />
+        tools:text="(Total 3 barang)"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/product_bundling_button_check"
