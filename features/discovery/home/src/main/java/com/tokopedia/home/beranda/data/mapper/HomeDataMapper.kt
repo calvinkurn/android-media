@@ -79,7 +79,6 @@ class HomeDataMapper(
             mutableVisitableList.add(ShimmeringChannelDataModel(SHIMMERING_CHANNEL_ID_0))
             mutableVisitableList.add(ShimmeringChannelDataModel(SHIMMERING_CHANNEL_ID_1))
         }
-        val isChooseAddressActive = ChooseAddressUtils.isRollOutUser(context)
 
         return HomeDataModel(
                 homeFlag = homeData.homeFlag,
@@ -88,7 +87,7 @@ class HomeDataMapper(
                 isFirstPage = firstPage,
                 isProcessingAtf = processingAtf,
                 isProcessingDynamicChannle = processingDynamicChannel,
-                homeChooseAddressData = HomeChooseAddressData(isActive = isChooseAddressActive)
+                homeChooseAddressData = HomeChooseAddressData(true)
         )
     }
 }

@@ -446,11 +446,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun isChooseAddressRollenceActive(): Boolean {
-        return if (context == null) {
-            true
-        } else {
-            ChooseAddressUtils.isRollOutUser(context)
-        }
+        return true
     }
 
     private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {
@@ -1792,7 +1788,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun adjustHomeBackgroundHeight(currentContext: Context) {
-        val isChooseAddressShow = ChooseAddressUtils.isRollOutUser(currentContext)
+        val isChooseAddressShow = true
         if (isChooseAddressShow && (isEligibleGopay != null && isEligibleGopay == true)) {
             val layoutParams = backgroundViewImage.layoutParams
             layoutParams.height =
