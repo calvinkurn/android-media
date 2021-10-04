@@ -163,11 +163,15 @@ class BuyerOrderDetailViewModel @Inject constructor(
     }
 
     fun getCategoryId(): String {
+        val categoryIdMap = HashSet<String>()
         val buyerOrderDetailResult = _buyerOrderDetailResult.value
         return if (buyerOrderDetailResult is Success &&
                 buyerOrderDetailResult.data.productListUiModel.productList.isNotEmpty()) {
-            buyerOrderDetailResult.data.productListUiModel.productList[0].categoryId
-        } else "0"
+            buyerOrderDetailResult.data.productListUiModel.productList.map {
+                categoryIdMap.add(it.categoryId)
+            }
+            categoryIdMap.joinToString(separator = ",")
+        } else ""
     }
 
     fun getUserId(): String {

@@ -4,6 +4,7 @@ import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailParams
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -272,10 +273,50 @@ BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     }
 
     @Test
+    fun `getCategoryId should return unique category id when getBuyerOrderDetail result is success`() {
+        val anotherProduct = ProductListUiModel.ProductUiModel(
+                button = ActionButtonsUiModel.ActionButton(
+                        key = "test_buy_again_button_key",
+                        label = "Beli Lagi",
+                        popUp = ActionButtonsUiModel.ActionButton.PopUp(
+                                actionButton = emptyList(),
+                                body = "",
+                                title = ""
+                        ),
+                        variant = "ghost",
+                        type = "main",
+                        url = ""
+                ),
+                category = "Pakaian Atas",
+                categoryId = "13",
+                orderDetailId = "20531238",
+                orderStatusId = "220",
+                orderId = "166835036",
+                price = 500000.0,
+                priceText = "Rp500.000",
+                productId = "2147819914",
+                productName = "Hengpong jadul",
+                productNote = "Test product note",
+                productThumbnailUrl = "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/5/28/ab64b25e-a59f-4938-a08b-c49ec140eb43.jpg",
+                quantity = 1,
+                totalPrice = "500000",
+                totalPriceText = "Rp500.000",
+                isProcessing = false
+        )
+        val buyerOrderDetailResult = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
+            every { productListUiModel.productList } returns listOf(product, product, anotherProduct)
+        }
+
+        createSuccessBuyerOrderDetailResult(buyerOrderDetailResult)
+        val categoryId = viewModel.getCategoryId()
+        assert(categoryId == "13,10")
+    }
+
+    @Test
     fun `getCategoryId should return 0 shop type when getBuyerOrderDetail result is fail`() {
         createFailedBuyerOrderDetailResult()
         val categoryId = viewModel.getCategoryId()
-        assert(categoryId == "0")
+        assert(categoryId == "")
     }
 
     @Test
