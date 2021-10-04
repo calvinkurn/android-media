@@ -10,8 +10,8 @@
         android:id="@+id/goPayKtpBullet"
         android:layout_width="@dimen/unify_space_8"
         android:layout_height="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/go_pay_kyc_dp_6"
         android:scaleType="centerInside"
-        app:layout_constraintBottom_toBottomOf="@+id/goPayKycBulletInstruction"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/goPayKycBulletInstruction"
         app:srcCompat="@drawable/ic_gopay_bullet_dot_black"
@@ -28,7 +28,7 @@
         app:layout_constraintStart_toEndOf="@+id/goPayKtpBullet"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
-        tools:text="Gunakan KTP asli bukan hasil fotokopi." />
+        tools:text="Pastikan seluruh bagian wajah &amp; e-KTP kamu terlihat jelas dan tidak terpotong." />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

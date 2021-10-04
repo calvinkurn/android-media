@@ -55,6 +55,7 @@ class GoPayReviewAndUploadFragment : GoPayKycBaseFragment() {
     }
 
     private fun initViews() {
+        tncText.text = context?.let { getString(R.string.gopay_kyc_accept_tnc_text, "#03AC0E") }
         setImageFromFile(viewModel.ktpPath, ktpImage)
         setImageFromFile(viewModel.selfieKtpPath, ktpSelfieImage)
     }

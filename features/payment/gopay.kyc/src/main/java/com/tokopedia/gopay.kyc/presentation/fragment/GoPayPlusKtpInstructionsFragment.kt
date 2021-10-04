@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gopay.kyc.R
 import com.tokopedia.gopay.kyc.analytics.GoPayKycConstants
 import com.tokopedia.gopay.kyc.analytics.GoPayKycEvent
@@ -58,9 +58,9 @@ class GoPayPlusKtpInstructionsFragment : GoPayKycBaseFragment() {
             takePhotoButton.text = it.getString(R.string.gopay_kyc_take_ktp_text)
 
             goPayIdImage.setImageDrawable(
-                ContextCompat.getDrawable(
+                MethodChecker.getDrawable(
                     it,
-                    R.drawable.ic_gopay_kyc_upload_ktp
+                    R.drawable.ic_gopay_friends
                 )
             )
             for (instructionItem in instructionStringResList) {

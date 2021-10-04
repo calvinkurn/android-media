@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:background="@color/Unify_NN0">
+    android:background="@color/Unify_NN0"
+    android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -109,10 +109,12 @@
             android:id="@+id/goPayDoImage"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="@dimen/unify_space_0"
-            app:layout_constraintDimensionRatio="H,1:1"
-            android:scaleType="fitXY"
-            android:layout_marginEnd="@dimen/unify_space_4"
             android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginEnd="@dimen/unify_space_4"
+            android:scaleType="fitXY"
+            app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/saldo_img_empty_list.png"
+            app:imageDpiSupportType="singleDpi"
+            app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintEnd_toEndOf="@+id/midGuideline"
             app:layout_constraintStart_toStartOf="@id/goPayPhotoTitle"
             app:layout_constraintTop_toBottomOf="@id/goPayPhotoTitle" />
@@ -121,11 +123,13 @@
             android:id="@+id/goPayDontImage"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="@dimen/unify_space_0"
-            app:layout_constraintDimensionRatio="H,1:1"
-            android:scaleType="fitXY"
             android:layout_marginStart="@dimen/unify_space_4"
             android:layout_marginTop="@dimen/unify_space_12"
             android:layout_marginEnd="@dimen/unify_space_16"
+            android:scaleType="fitXY"
+            app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/saldo_img_empty_list.png"
+            app:imageDpiSupportType="singleDpi"
+            app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/midGuideline"
             app:layout_constraintTop_toBottomOf="@id/goPayPhotoTitle" />
