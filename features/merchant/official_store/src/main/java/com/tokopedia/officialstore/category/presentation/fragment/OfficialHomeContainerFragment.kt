@@ -271,7 +271,7 @@ class OfficialHomeContainerFragment
                     PerformanceCustomTrace.launchFunctionWithTrace(
                         {
                             populateCategoriesData(it.data)
-                        }
+                        }, "PopulateCategoriesData"
                     )
                 }
                 is Fail -> {
