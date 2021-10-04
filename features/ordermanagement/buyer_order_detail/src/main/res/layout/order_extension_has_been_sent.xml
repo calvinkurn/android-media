@@ -25,7 +25,7 @@
         android:text="@string/order_extension_desc_order_has_been_sent" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btnSomListBulkActionDialogPrimaryButton"
+        android:id="@+id/btnOrderExtensionHasBeenSentPrimaryButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/order_extension_order_cancelled"
