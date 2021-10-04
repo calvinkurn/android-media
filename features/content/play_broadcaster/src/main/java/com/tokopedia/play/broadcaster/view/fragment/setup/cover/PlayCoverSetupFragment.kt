@@ -21,6 +21,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
@@ -45,6 +46,7 @@ import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.NotChangeable
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
@@ -286,7 +288,7 @@ class PlayCoverSetupFragment @Inject constructor(
         }
     }
 
-    private fun onGetCoverFromProduct(productId: Long, imageUrl: String) {
+    private fun onGetCoverFromProduct(productId: String, imageUrl: String) {
         viewModel.setCroppingProductCover(productId, imageUrl)
     }
 
@@ -307,6 +309,34 @@ class PlayCoverSetupFragment @Inject constructor(
                 bottomSheetCoordinator.goBack()
             }
         })
+    }
+
+    private fun showErrorToaster(
+        err: Throwable,
+        customErrMessage: String? = null,
+        duration: Int = Toaster.LENGTH_LONG,
+        actionLabel: String = "",
+        actionListener: View.OnClickListener = View.OnClickListener {  }
+    ) {
+        val errMessage = if (customErrMessage == null) {
+            ErrorHandler.getErrorMessage(
+                context, err, ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
+        } else {
+            val (_, errCode) = ErrorHandler.getErrorMessagePair(
+                context, err, ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
+            getString(
+                commonR.string.play_custom_error_handler_msg,
+                customErrMessage,
+                errCode
+            )
+        }
+        showToaster(errMessage, Toaster.TYPE_ERROR, duration, actionLabel, actionListener)
     }
 
     private fun showToaster(message: String, type: Int = Toaster.TYPE_NORMAL, duration: Int = Toaster.LENGTH_SHORT, actionLabel: String = "", actionListener: View.OnClickListener = View.OnClickListener { }) {
@@ -389,7 +419,7 @@ class PlayCoverSetupFragment @Inject constructor(
                     context = requireContext(),
                     fragmentManager = childFragmentManager,
                     listener = object : CoverImagePickerHelper.OnChosenListener {
-                        override fun onGetFromProduct(productId: Long, imageUrl: String) {
+                        override fun onGetFromProduct(productId: String, imageUrl: String) {
                             onGetCoverFromProduct(productId, imageUrl)
                         }
 
@@ -478,10 +508,10 @@ class PlayCoverSetupFragment @Inject constructor(
                             override fun onLoadCleared(placeholder: Drawable?) {}
                         })
             } catch (e: Throwable) {
-                showToaster(
-                        message = e.localizedMessage,
-                        type = Toaster.TYPE_ERROR,
-                        duration = Toaster.LENGTH_LONG
+                showErrorToaster(
+                    err = e,
+                    customErrMessage = e.localizedMessage,
+                    duration = Toaster.LENGTH_LONG
                 )
             }
         }
@@ -501,10 +531,7 @@ class PlayCoverSetupFragment @Inject constructor(
         coverSetupView.setLoading(false)
         coverCropView.setLoading(false)
 
-        showToaster(
-                message = e.localizedMessage,
-                type = Toaster.TYPE_ERROR
-        )
+        showErrorToaster(e)
     }
 
     //region observe

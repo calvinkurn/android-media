@@ -6,10 +6,11 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.databinding.ItemParameterProtectedSectionBinding
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemProtectedParameterAdapter
 import com.tokopedia.shop.score.performance.presentation.adapter.ProtectedParameterListener
 import com.tokopedia.shop.score.performance.presentation.model.ProtectedParameterSectionUiModel
-import kotlinx.android.synthetic.main.item_parameter_protected_section.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 import timber.log.Timber
 
 class ItemProtectedParameterSectionViewHolder(
@@ -21,17 +22,18 @@ class ItemProtectedParameterSectionViewHolder(
         val LAYOUT = R.layout.item_parameter_protected_section
     }
 
+    private val binding: ItemParameterProtectedSectionBinding? by viewBinding()
     private var itemProtectedParameterAdapter: ItemProtectedParameterAdapter? = null
 
     override fun bind(element: ProtectedParameterSectionUiModel?) {
-        with(itemView) {
+        binding?.run {
             setCardItemProtectedBackground()
-            cardDescParameterRelief?.setOnClickListener {
+            cardDescParameterRelief.setOnClickListener {
                 protectedParameterListener.onProtectedParameterChevronClicked(
                     element?.protectedParameterDate.orEmpty()
                 )
             }
-            icDescParameterRelief?.setOnClickListener {
+            icDescParameterRelief.setOnClickListener {
                 protectedParameterListener.onProtectedParameterChevronClicked(
                     element?.protectedParameterDate.orEmpty()
                 )
@@ -42,10 +44,10 @@ class ItemProtectedParameterSectionViewHolder(
 
     private fun setCardItemProtectedBackground() {
         try {
-            with(itemView) {
-                context?.let {
-                    containerNewSellerParameterRelief?.background = ContextCompat.getDrawable(
-                        context,
+            binding?.run {
+                root.context?.let {
+                    containerNewSellerParameterRelief.background = ContextCompat.getDrawable(
+                        root.context,
                         R.drawable.corner_rounded_performance_list
                     )
                 }
@@ -56,9 +58,9 @@ class ItemProtectedParameterSectionViewHolder(
     }
 
     private fun setAdapterProtectedParameter(data: ProtectedParameterSectionUiModel?) {
-        with(itemView) {
+        binding?.run {
             itemProtectedParameterAdapter = ItemProtectedParameterAdapter()
-            rvParameterReliefDetail?.apply {
+            rvParameterReliefDetail.run {
                 layoutManager = LinearLayoutManager(context)
                 adapter = itemProtectedParameterAdapter
                 isNestedScrollingEnabled = false
