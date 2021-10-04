@@ -93,6 +93,14 @@
                     android:layout_marginTop="@dimen/spacing_lvl2"
                     app:layout_constraintTop_toBottomOf="@id/view_smart_bills_select_all_checkbox_container" />
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_smart_bills_accordion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
+                    app:layout_constraintTop_toBottomOf="@id/rv_smart_bills_items" />
+
                 <include
                     android:id="@+id/view_smart_bills_shimmering"
                     layout="@layout/view_smart_bills_shimmering"

@@ -79,7 +79,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         get() = setupDataStore.getSelectedProducts().map { ProductContentUiModel.createFromData(it, ::isProductSelected, ::isSelectable) }
 
     private val etalaseMap = mutableMapOf<String, EtalaseContentUiModel>()
-    private val productsMap = mutableMapOf<Long, ProductContentUiModel>()
+    private val productsMap = mutableMapOf<String, ProductContentUiModel>()
 
     private val productPreviewChannel = BroadcastChannel<String>(Channel.BUFFERED)
 
@@ -101,7 +101,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         }
     }
 
-    fun selectProduct(productId: Long, isSelected: Boolean) {
+    fun selectProduct(productId: String, isSelected: Boolean) {
         productsMap[productId]?.let {
             setupDataStore.selectProduct(it.extractData(), isSelected)
         }
@@ -158,7 +158,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         }
     }
 
-    private fun isProductSelected(productId: Long): Boolean {
+    private fun isProductSelected(productId: String): Boolean {
         return setupDataStore.isProductSelected(productId)
     }
 
