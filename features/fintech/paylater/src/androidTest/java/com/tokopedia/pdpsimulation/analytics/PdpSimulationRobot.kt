@@ -83,18 +83,7 @@ class PdpSimulationRobot {
 
 
     infix fun assertTest(action: PdpSimulationRobot.() -> Unit) = PdpSimulationRobot().apply(action)
-
-    fun validate(
-        gtmLogDbSource: GtmLogDBSource,
-        targetContext: Context,
-        fileName: String
-    ) {
-        ViewMatchers.assertThat(
-            getAnalyticsWithQuery(gtmLogDbSource, targetContext, fileName),
-            hasAllSuccess()
-        )
-    }
-
+    
     fun hasPassedAnalytics(rule: CassavaTestRule, path: String) {
         MatcherAssert.assertThat(rule.validate(path), hasAllSuccess())
     }
