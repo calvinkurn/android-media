@@ -156,15 +156,6 @@ class ReviewBasicInfoWidget : BaseCustomView {
         reviewerStats?.hide()
     }
 
-    fun setCountColorToGreen() {
-        reviewerStats?.setTextColor(
-            ContextCompat.getColor(
-                context,
-                com.tokopedia.unifyprinciples.R.color.Unify_G500
-            )
-        )
-    }
-
     fun setReviewerImage(imageUrl: String) {
         profilePicture?.apply {
             if (listener?.shouldShowCredibilityComponent() == true && isProductReview) {

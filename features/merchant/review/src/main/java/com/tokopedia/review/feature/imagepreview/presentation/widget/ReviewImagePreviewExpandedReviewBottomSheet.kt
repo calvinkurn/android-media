@@ -110,7 +110,6 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
             setStats(userStats)
             setListener(this@ReviewImagePreviewExpandedReviewBottomSheet)
             setReviewerImage(reviewerImage)
-            setCountColorToGreen()
         }
     }
 
