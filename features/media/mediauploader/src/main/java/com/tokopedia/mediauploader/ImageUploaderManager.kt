@@ -11,7 +11,7 @@ import com.tokopedia.mediauploader.domain.MediaUploaderUseCase
 import com.tokopedia.mediauploader.util.*
 import java.io.File
 
-class UploaderManager constructor(
+class ImageUploaderManager constructor(
     private val dataPolicyUseCase: DataPolicyUseCase,
     private val mediaUploaderUseCase: MediaUploaderUseCase
 ) {
@@ -21,7 +21,11 @@ class UploaderManager constructor(
         return ImagePolicyMapper.mapToSourcePolicy(policyData.dataPolicy)
     }
 
-    suspend fun post(fileToUpload: File, sourceId: String, policy: SourcePolicy): UploadResult {
+    suspend fun post(
+        fileToUpload: File,
+        sourceId: String,
+        policy: SourcePolicy
+    ): UploadResult {
         // media uploader
         val uploaderParams = MediaUploaderParam(
             uploadUrl = UrlBuilder.generate(policy.host, sourceId),

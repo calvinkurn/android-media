@@ -1,7 +1,7 @@
 package com.tokopedia.mediauploader.domain
 
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.mediauploader.UploaderManager
+import com.tokopedia.mediauploader.ImageUploaderManager
 import com.tokopedia.mediauploader.data.consts.NETWORK_ERROR
 import com.tokopedia.mediauploader.data.consts.TIMEOUT_ERROR
 import com.tokopedia.mediauploader.data.state.ProgressCallback
@@ -26,7 +26,7 @@ class UploaderUseCase @Inject constructor(
         mediaUploaderUseCase: MediaUploaderUseCase
 ) : CoroutineUseCase<RequestParams, UploadResult>(Dispatchers.IO) {
 
-    private val uploaderManager = UploaderManager(
+    private val uploaderManager = ImageUploaderManager(
         dataPolicyUseCase,
         mediaUploaderUseCase
     )

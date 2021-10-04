@@ -1,6 +1,6 @@
 package com.tokopedia.mediauploader.domain
 
-import com.tokopedia.mediauploader.data.FileUploadServices
+import com.tokopedia.mediauploader.data.UploadServices
 import com.tokopedia.mediauploader.data.entity.MediaUploader
 import com.tokopedia.mediauploader.data.params.MediaUploaderParam
 import com.tokopedia.mediauploader.stubUploadFileServices
@@ -12,7 +12,7 @@ import kotlin.test.assertFailsWith
 
 class MediaUploaderUseCaseTest {
 
-    private val services = mockk<FileUploadServices>()
+    private val services = mockk<UploadServices>()
     private val useCase = MediaUploaderUseCase(services)
     private var expectedValue = MediaUploader()
 
