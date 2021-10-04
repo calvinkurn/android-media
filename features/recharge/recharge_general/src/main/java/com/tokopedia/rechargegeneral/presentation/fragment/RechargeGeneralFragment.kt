@@ -742,12 +742,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun renderFooter(data: TopupBillsMenuDetail) {
         val promos = data.promos
-//        val recommendations = data.recommendations
-
-        val recommendations = listOf(TopupBillsRecommendation(
-            title = "test",
-            clientNumber = "0000000000"
-        ))
+        val recommendations = data.recommendations
 
         val listProductTab = mutableListOf<TopupBillsTabItem>()
         var recentTransactionFragment: RechargeGeneralRecentTransactionFragment? = null
