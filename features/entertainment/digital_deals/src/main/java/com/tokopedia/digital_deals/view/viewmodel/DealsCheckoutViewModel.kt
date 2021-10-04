@@ -152,6 +152,6 @@ class DealsCheckoutViewModel @Inject constructor(
 
       companion object {
             const val PARAM = "params"
-            const val DEFAULT_CHECKOUT_DATA_TYPE = "deals"
+            const val DEFAULT_CHECKOUT_DATA_TYPE = "foodvchr"
       }
 }
