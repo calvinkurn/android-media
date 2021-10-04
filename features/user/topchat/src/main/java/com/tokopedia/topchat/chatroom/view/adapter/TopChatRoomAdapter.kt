@@ -121,6 +121,16 @@ class TopChatRoomAdapter constructor(
         }
     }
 
+    fun getBubblePosition(localId: String): Int {
+        var position = RecyclerView.NO_POSITION
+        if (replyMap.contains(localId)) {
+            position = visitables.indexOfFirst {
+                it is BaseChatViewModel && it.localId == localId
+            }
+        }
+        return position
+    }
+
     override fun isOpposite(adapterPosition: Int, isSender: Boolean): Boolean {
         val nextItem = visitables.getOrNull(adapterPosition + 1)
         val nextItemIsSender: Boolean = when (nextItem) {
@@ -312,11 +322,7 @@ class TopChatRoomAdapter constructor(
     private fun mapListChat(listChat: List<Visitable<*>>) {
         listChat.filterIsInstance(BaseChatViewModel::class.java)
             .forEach {
-                val id = if (it.replyId.isNotEmpty()) {
-                    it.replyId
-                } else {
-                    it.localId
-                }
+                val id = it.localId
                 if (id.isEmpty()) return@forEach
                 replyMap[id] = it
             }

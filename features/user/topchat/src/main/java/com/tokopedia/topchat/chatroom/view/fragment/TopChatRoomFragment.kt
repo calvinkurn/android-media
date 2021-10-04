@@ -2359,6 +2359,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return presenter.roomMetaData.userIdMap[senderId]?.name ?: ""
     }
 
+    override fun goToBubble(localId: String, replyTime: String) {
+        val bubblePosition = adapter.getBubblePosition(localId)
+        if (bubblePosition != RecyclerView.NO_POSITION) {
+            rv?.scrollToPosition(bubblePosition)
+        } else {
+            // TODO: implement chat-search like feature
+        }
+    }
+
     companion object {
         const val PARAM_RATING = "rating"
         const val PARAM_UTM_SOURCE = "utmSource"
