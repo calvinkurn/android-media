@@ -575,6 +575,7 @@ open class TopChatRoomPresenter @Inject constructor(
         sendAttachments(sticker.intention)
         sendSticker(sticker, referredMsg)
         view?.clearAttachmentPreviews()
+        view?.clearReferredMsg()
     }
 
     override fun sendAttachmentsAndSrw(
