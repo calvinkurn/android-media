@@ -15,11 +15,13 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.pdpsimulation.test.R
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.unifycomponents.TabsUnify
+import org.hamcrest.MatcherAssert
 import org.hamcrest.core.AllOf
 
 class PdpSimulationRobot {
@@ -92,6 +94,11 @@ class PdpSimulationRobot {
             hasAllSuccess()
         )
     }
+
+    fun hasPassedAnalytics(rule: CassavaTestRule, path: String) {
+        MatcherAssert.assertThat(rule.validate(path), hasAllSuccess())
+    }
+
 
     private fun selectTabAtPosition(tabIndex: Int): ViewAction {
         return object : ViewAction {

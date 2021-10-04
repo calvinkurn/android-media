@@ -8,6 +8,7 @@ import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.pdpsimulation.TkpdIdlingResource
 import com.tokopedia.pdpsimulation.TkpdIdlingResourceProvider
 import com.tokopedia.pdpsimulation.analytics.actionTest
@@ -32,6 +33,10 @@ class PdpSimulationFragmentTest {
 
     @get:Rule
     val activityRule = ActivityTestRule(PdpSimulationActivity::class.java, false, false)
+
+
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
@@ -70,7 +75,7 @@ class PdpSimulationFragmentTest {
             clickPartnerFaq()
             clickPartnerFaqBottomSheet()
         } assertTest {
-            validate(gtmLogDBSource, context, PAY_LATER_PARTNER_BUTTON_CLICK)
+            hasPassedAnalytics(cassavaTestRule, PAY_LATER_PARTNER_BUTTON_CLICK)
             clearData()
         }
     }
