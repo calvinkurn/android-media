@@ -1,6 +1,7 @@
 package com.tokopedia.chat_common.data.parentreply
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 data class ParentReply(
     @SerializedName("attachment_id")
@@ -27,4 +28,11 @@ data class ParentReply(
     val isExpired: Boolean = false,
     @SerializedName("source")
     val source: String = "",
-)
+) {
+
+    val replyTimeMillisOffset: String get() {
+        val addOffsetTimeStamp = (replyTime.toLongOrZero() / 1_000_000) + 5000
+        return addOffsetTimeStamp.toString()
+    }
+
+}

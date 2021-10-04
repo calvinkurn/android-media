@@ -50,7 +50,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
 
     interface Listener {
         fun getUserName(senderId: String): String
-        fun goToBubble(localId: String, replyTime: String)
+        fun goToBubble(localId: String, replyTimeMillis: String)
     }
 
     private fun initLayout() {
@@ -89,7 +89,10 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
 
     private fun bindClick(parentReply: ParentReply) {
         setOnClickListener {
-            listener?.goToBubble(parentReply.localId, parentReply.replyTime)
+            listener?.goToBubble(
+                localId = parentReply.localId,
+                replyTimeMillis = parentReply.replyTimeMillisOffset
+            )
         }
     }
 

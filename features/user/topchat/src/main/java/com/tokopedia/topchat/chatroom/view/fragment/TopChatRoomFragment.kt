@@ -457,6 +457,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         presenter.getBackground()
     }
 
+    private fun setupBeforeReplyTime(replyTimeMillis: String) {
+        createTime = replyTimeMillis
+        setupBeforeReplyTime()
+    }
+
     private fun setupBeforeReplyTime() {
         if (createTime.isNotEmpty()) {
             presenter.setBeforeReplyTime(createTime)
@@ -2359,12 +2364,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return presenter.roomMetaData.userIdMap[senderId]?.name ?: ""
     }
 
-    override fun goToBubble(localId: String, replyTime: String) {
+    override fun goToBubble(localId: String, replyTimeMillis: String) {
         val bubblePosition = adapter.getBubblePosition(localId)
         if (bubblePosition != RecyclerView.NO_POSITION) {
-            rv?.scrollToPosition(bubblePosition)
+            rv?.smoothScrollToPosition(bubblePosition)
         } else {
-            // TODO: implement chat-search like feature
+            setupBeforeReplyTime(replyTimeMillis)
+            resetItemList()
+            loadInitialData()
         }
     }
 
