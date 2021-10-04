@@ -34,9 +34,13 @@ object GoldMerchantUtil {
             val simpleDateFormat =
                 SimpleDateFormat(PATTERN_DATE_SHOP_INFO, DateFormatUtils.DEFAULT_LOCALE)
             val calendar = Calendar.getInstance()
+            val calendarExistingSeller = Calendar.getInstance()
             simpleDateFormat.parse(dateString)?.let { calendar.time = it }
             calendar.add(Calendar.DATE, totalDays(dateString).toInt())
-            return calendar.get(Calendar.DAY_OF_WEEK) > Calendar.MONDAY
+            calendarExistingSeller.add(Calendar.DAY_OF_WEEK, NEW_SELLER_DAYS)
+            return calendarExistingSeller.get(Calendar.DAY_OF_WEEK) !in
+                    Calendar.TUESDAY..Calendar.SATURDAY &&
+                    calendar.get(Calendar.DAY_OF_WEEK) > Calendar.MONDAY
         } catch (e: Exception) {
             e.printStackTrace()
             false
