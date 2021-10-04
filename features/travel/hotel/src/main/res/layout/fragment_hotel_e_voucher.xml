@@ -105,6 +105,8 @@
                         android:gravity="center"
                         app:typographyType="body_3"
                         android:visibility="gone"
+                        android:lineSpacingExtra="@dimen/hotel_spacing_4"
+                        tools:visibility="visible"
                         tools:text="Hubungi untuk konfirmasi check-in:" />
                     
                     <com.tokopedia.unifycomponents.UnifyButton
