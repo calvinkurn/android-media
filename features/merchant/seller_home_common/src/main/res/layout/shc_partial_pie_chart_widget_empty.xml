@@ -5,80 +5,80 @@
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
     <androidx.constraintlayout.widget.Group
-        android:id="@+id/group_shc_pie_chart_empty"
+        android:id="@+id/groupShcPieChartEmpty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="iv_shc_pie_chart_empty, tv_shc_pie_chart_empty_title, tv_shc_pie_chart_empty_desc, btn_shc_pie_chart_empty"/>
+        app:constraint_referenced_ids="imgShcPieChartEmpty, tvShcPieChartEmptyTitle, tvShcPieChartEmptyDesc, btnShcPieChartEmpty" />
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iv_shc_pie_chart_empty"
+        android:id="@+id/imgShcPieChartEmpty"
         android:layout_width="@dimen/shc_dimen_140dp"
         android:layout_height="@dimen/shc_dimen_110dp"
         android:layout_marginTop="@dimen/layout_lvl3"
+        android:contentDescription="@string/shc_content_desc_image_pie_chart_empty"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/tv_shc_pie_chart_empty_title"
+        app:layout_constraintBottom_toTopOf="@+id/tvShcPieChartEmptyTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         tools:src="@drawable/unify_globalerrors_connection"
-        tools:visibility="visible"
-        android:contentDescription="@string/shc_content_desc_image_pie_chart_empty" />
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_shc_pie_chart_empty_title"
+        android:id="@+id/tvShcPieChartEmptyTitle"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl3"
         android:gravity="center_horizontal"
-        tools:text="@string/shc_empty_state_title"
         android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/fontSize_lvl3"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/tv_shc_pie_chart_empty_desc"
+        app:layout_constraintBottom_toTopOf="@id/tvShcPieChartEmptyDesc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_shc_pie_chart_empty"
+        app:layout_constraintTop_toBottomOf="@+id/imgShcPieChartEmpty"
         app:typographyWeight="bold"
+        tools:text="@string/shc_empty_state_title"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_shc_pie_chart_empty_desc"
+        android:id="@+id/tvShcPieChartEmptyDesc"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl3"
         android:gravity="center_horizontal"
-        tools:text="@string/shc_empty_state_description_post_list"
         android:textColor="@color/Unify_N700_68"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/btn_shc_pie_chart_empty"
+        app:layout_constraintBottom_toTopOf="@id/btnShcPieChartEmpty"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_shc_pie_chart_empty_title"
+        app:layout_constraintTop_toBottomOf="@+id/tvShcPieChartEmptyTitle"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
+        tools:text="@string/shc_empty_state_description_post_list"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btn_shc_pie_chart_empty"
+        android:id="@+id/btnShcPieChartEmpty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/layout_lvl3"
-        tools:text="@string/shc_empty_state_button_post_list"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_shc_pie_chart_empty_desc"
+        app:layout_constraintTop_toBottomOf="@id/tvShcPieChartEmptyDesc"
         app:unifyButtonSize="small"
+        tools:text="@string/shc_empty_state_button_post_list"
         tools:visibility="visible" />
 
 </merge>
