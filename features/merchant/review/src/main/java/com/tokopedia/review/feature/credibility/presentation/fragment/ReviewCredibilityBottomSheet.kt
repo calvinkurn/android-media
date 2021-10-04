@@ -265,6 +265,9 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
             }
         } else {
             dismiss()
+            if (applink.isNotEmpty()) {
+                RouteManager.route(context, applink)
+            }
         }
     }
 
