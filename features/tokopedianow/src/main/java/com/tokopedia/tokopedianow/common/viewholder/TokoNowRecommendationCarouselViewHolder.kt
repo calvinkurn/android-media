@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
@@ -162,7 +163,7 @@ class TokoNowRecommendationCarouselViewHolder(
     }
 
     override fun onWidgetFail(pageName: String, e: Throwable) {
-        //should implement remove widget to fragment
+        recommendationCarouselWidgetView.gone()
     }
 
     override fun onViewRecycled() {
