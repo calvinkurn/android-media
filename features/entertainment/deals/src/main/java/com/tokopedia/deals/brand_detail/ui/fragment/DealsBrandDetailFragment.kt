@@ -8,7 +8,6 @@ import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.deals.R
@@ -36,7 +35,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.lang.Math.abs
 import java.lang.ref.WeakReference
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -151,24 +149,24 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
                 setNavigationIcon(ContextCompat.getDrawable(context, com.tokopedia.abstraction.R.drawable.ic_action_back))
             }
             it.collapsingToolbarBrandDetail.title = ""
-            it.appBarLayoutBrandDetail.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
-                override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                    val toolbar = it.toolbarBrandDetail
-                    if (abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
-                        it.collapsingToolbarBrandDetail.title = title
-                        toolbar.menu.getItem(0).setIcon(com.tokopedia.deals.R.drawable.ic_deals_revamp_share_black)
-                        context?.let {
-                            setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-                        }
-                    } else if (verticalOffset == 0) {
-                        it.collapsingToolbarBrandDetail.title = ""
-                        toolbar.menu.getItem(0).setIcon(com.tokopedia.deals.R.drawable.ic_deals_revamp_share_white)
-                        context?.let {
-                            setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                        }
-                    }
-                }
-            })
+//            it.appBarLayoutBrandDetail.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
+//                override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
+//                    val toolbar = it.toolbarBrandDetail
+//                    if (abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
+//                        it.collapsingToolbarBrandDetail.title = title
+//                        toolbar.menu.getItem(0).setIcon(com.tokopedia.deals.R.drawable.ic_deals_revamp_share_black)
+//                        context?.let {
+//                            setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+//                        }
+//                    } else if (verticalOffset == 0) {
+//                        it.collapsingToolbarBrandDetail.title = ""
+//                        toolbar.menu.getItem(0).setIcon(com.tokopedia.deals.R.drawable.ic_deals_revamp_share_white)
+//                        context?.let {
+//                            setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+//                        }
+//                    }
+//                }
+//            })
         }
     }
 
