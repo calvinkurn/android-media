@@ -1388,6 +1388,9 @@ class PlayViewModel @Inject constructor(
                     _uiEvent.emit(PreloadLikeBubbleIconEvent(config.bubbleMap.keys))
                 }
             }
+            is UserWinnerStatus -> {
+
+            }
         }
     }
 
