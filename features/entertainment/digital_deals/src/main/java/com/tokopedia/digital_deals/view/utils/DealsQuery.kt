@@ -113,4 +113,81 @@ object DealsQuery {
             gateway_code
         }
     }"""
+
+    fun mutationDealsCheckoutV2()="""
+            mutation checkout_general_v2(${'$'}params:CheckoutGeneralV2Params!){
+        checkout_general_v2(params:${'$'}params) {
+            header {
+                process_time
+                reason
+                error_code
+            }
+            data {
+                success
+                error
+                error_state
+                message
+                data{
+                    callback_url
+                    parameter{
+                        amount
+                    }
+                    price_validation{
+                        is_updated
+                        message{
+                            action
+                            desc
+                            title
+                        }
+                    }
+                    product_list{
+                        id
+                        name
+                        price
+                        quantity
+                    }
+                    query_string
+                    redirect_url
+                }
+            }
+            status
+            error_reporter {
+                eligible
+            }
+        }
+    }"""
+
+    fun mutationDealsCheckoutInstant()="""
+        mutation checkout_general_v2_instant(${'$'}params: CheckoutGeneralV2InstantParams) {
+            checkout_general_v2_instant(params: ${'$'}params){
+                header {
+                    process_time
+                    reason
+                    messages
+                    error_code
+                 }
+                data {
+                    success
+                    error
+                    error_state
+                    message
+                    data {
+                        redirect_url
+                        method
+                        content_type
+                        payload
+                    }
+                }
+                status
+                error_reporter {
+                eligible
+                texts {
+                submit_title
+                submit_description
+                submit_button
+                cancel_button
+                  }
+             }
+             }
+        }"""
 }

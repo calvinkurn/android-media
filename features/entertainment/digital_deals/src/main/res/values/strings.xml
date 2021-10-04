@@ -69,4 +69,5 @@
     
     <string name="digital_deals_product_not_started">Masa penjualan produk belum dimulai</string>
     <string name="digital_deals_product_ended">Masa penjualan produk telah berakhir</string>
+    <string name="digital_deals_error_toaster">Ok</string>
 </resources>

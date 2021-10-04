@@ -1,54 +1,86 @@
 package com.tokopedia.digital_deals.view.viewmodel
 
-
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.digital_deals.data.ItemMapResponse
-import com.tokopedia.digital_deals.view.model.cart.CartItem
-import com.tokopedia.digital_deals.view.model.cart.CartItems
-import com.tokopedia.digital_deals.view.model.cart.Configuration
-import com.tokopedia.digital_deals.view.model.cart.MetaData
+import com.tokopedia.digital_deals.data.*
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse
+import com.tokopedia.digital_deals.view.utils.DealsQuery
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class DealsCheckoutViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val dispatcher: CoroutineDispatchers): BaseViewModel(dispatcher.io) {
 
+      private val errorGeneralValueMutable = MutableLiveData<Throwable>()
+      val errorGeneralValue: LiveData<Throwable>
+            get() = errorGeneralValueMutable
 
-      fun verifytoCartItemMapper(itemMap: ItemMapResponse, dealsDetailsResponse: DealsDetailsResponse, promoCode: String = ""): JsonObject {
-          val config = Configuration().apply {
-              price = itemMap.price
-          }
+      private val dealsCheckoutResponseMutable = MutableLiveData<DealsCheckoutResponse>()
+      val dealsCheckoutResponse: LiveData<DealsCheckoutResponse>
+            get() = dealsCheckoutResponseMutable
 
-          val metaData = MetaData().apply {
-              entityCategoryId = itemMap.categoryId.toInt()
-              entityProductId = itemMap.productId.toInt()
-              totalTicketCount = itemMap.quantity
-              totalTicketPrice = itemMap.totalPrice
-              entityStartTime = ""
-          }
+      private val dealsCheckoutInstantResponseMutable = MutableLiveData<DealsCheckoutInstantResponse>()
+      val dealsCheckoutInstantResponse: LiveData<DealsCheckoutInstantResponse>
+            get() = dealsCheckoutInstantResponseMutable
 
-          val cartItems = arrayListOf<CartItem>()
-          val cartItem = CartItem().apply {
-               setMetaData(metaData)
-               configuration = config
-               quantity = itemMap.quantity
-               productId = dealsDetailsResponse.catalog.digitalProductId
-          }
+      fun checkoutGeneral(checkoutParam: DealCheckoutGeneral) {
+            launchCatchError(block = {
+                  val params = mapOf(PARAM to checkoutParam)
+                  val data = withContext(dispatcher.io) {
+                        val graphqlRequest = GraphqlRequest(DealsQuery.mutationDealsCheckoutV2(), DealsCheckoutResponse::class.java, params)
+                        graphqlRepository.response(listOf(graphqlRequest))
+                  }.getSuccessData<DealsCheckoutResponse>()
 
-          cartItems.add(cartItem)
+                  dealsCheckoutResponseMutable.postValue(data)
+            }) {
+                  errorGeneralValueMutable.postValue(it)
+            }
+      }
 
-          val cart = CartItems().apply {
-              setCartItems(cartItems)
-              promocode = promoCode
-          }
+      fun checkoutGeneralInstant(checkoutParam: DealCheckoutGeneralInstant) {
+            launchCatchError(block = {
+                  val params = mapOf(PARAM to checkoutParam)
+                  val data = withContext(dispatcher.io) {
+                        val graphqlRequest = GraphqlRequest(DealsQuery.mutationDealsCheckoutInstant(), DealsCheckoutInstantResponse::class.java, params)
+                        graphqlRepository.response(listOf(graphqlRequest))
+                  }.getSuccessData<DealsCheckoutInstantResponse>()
 
-          val jsonElement = JsonParser().parse(Gson().toJson(cart))
-          return jsonElement.asJsonObject
+                  dealsCheckoutInstantResponseMutable.postValue(data)
+            }) {
+                  errorGeneralValueMutable.postValue(it)
+            }
+      }
+
+      fun mapCheckoutDeals(dealsDetail: DealsDetailsResponse, verify: EventVerifyResponse):
+              DealCheckoutGeneral {
+            val gson = Gson()
+            val checkoutGeneral = DealCheckoutGeneral()
+            val cartInfo = CartInfo(gson.toJson(verify.metadata), dealsDetail.checkoutDataType)
+            checkoutGeneral.carts.businessType = dealsDetail.checkoutBusinessType
+            checkoutGeneral.carts.cartInfo.add(0, cartInfo)
+            return checkoutGeneral
+      }
+
+      fun mapCheckoutDealsInstant(dealsDetail: DealsDetailsResponse, verify: EventVerifyResponse):
+              DealCheckoutGeneralInstant {
+            val gson = Gson()
+            val checkoutGeneral = DealCheckoutGeneralInstant()
+            val cartInfo = CartInfo(gson.toJson(verify.metadata), dealsDetail.checkoutDataType)
+            checkoutGeneral.carts.businessType = dealsDetail.checkoutBusinessType
+            checkoutGeneral.carts.cartInfo.add(0, cartInfo)
+            checkoutGeneral.gatewayCode = verify.gatewayCode
+            return checkoutGeneral
+      }
+
+      companion object {
+            const val PARAM = "params"
       }
 }
