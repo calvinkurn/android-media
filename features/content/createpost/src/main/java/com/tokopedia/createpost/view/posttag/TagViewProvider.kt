@@ -30,7 +30,7 @@ class TagViewProvider {
 
     companion object {
         private const val POINTER_HALF_DIMEN = 8
-        private const val POINTER_HEIGHT = 28
+        private const val POINTER_HEIGHT = 21
     }
 
 
@@ -254,14 +254,18 @@ class TagViewProvider {
             if (x2Diff < 0) {
                 xTapped += x2Diff
             }
-            val pointerView = child.findViewById<View>(R.id.topNotch)
-
             /*Handling for Y position*/
             var yTapped = feedXMediaTagging.Y!!
-            val y2Want: Float = yTapped + child.height.toFloat() + pointerView.height
-            val y2Diff = parent.bottom - y2Want
-            if (y2Diff < 0) {
-                yTapped += y2Diff
+            if (feedXMediaTagging.Y!! < (bitmapCurrentHeight) * 0.70 + greyAreaY) {
+                val y2Want: Float = yTapped + child.height.toFloat()
+                val y2Diff = parent.bottom - y2Want
+                if (y2Diff < 0) {
+                    yTapped += y2Diff
+                }
+            } else {
+                val y2Want: Float = yTapped - child.height.toFloat()
+                if (y2Want > greyAreaY)
+                    yTapped = y2Want
             }
 
             //Handling for negative X axis
