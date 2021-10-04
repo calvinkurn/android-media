@@ -12,9 +12,14 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.utils.TextHtmlUtils
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.data.HotelCancellationButtonEnum
+import com.tokopedia.hotel.cancellation.data.HotelCancellationError
 import com.tokopedia.hotel.cancellation.data.HotelCancellationModel
 import com.tokopedia.hotel.cancellation.data.HotelCancellationSubmitModel
 import com.tokopedia.hotel.cancellation.di.HotelCancellationComponent
@@ -113,13 +118,7 @@ class HotelCancellationFragment : HotelBaseFragment() {
                     hideLoadingState()
                 }
                 is Fail -> {
-                    when {
-                        ErrorHandlerHotel.isOrderNotFound(it.throwable) -> showErrorOrderNotFound()
-                        ErrorHandlerHotel.isOrderHasBeenCancelled(it.throwable) -> showErrorOrderHasBeenCancelled()
-                        else -> {
-                            showErrorView(it.throwable)
-                        }
-                    }
+                    convertDynamicError(it.throwable)
                 }
             }
         })
@@ -160,6 +159,32 @@ class HotelCancellationFragment : HotelBaseFragment() {
             listOf(HotelCancellationSubmitModel.ActionButton(getString(R.string.hotel_cancellation_fail_has_been_cancelled_cta),
                     HotelCancellationButtonEnum.SECONDARY.value, getString(R.string.hotel_cancellation_order_list_applink),
                     getString(R.string.hotel_cancellation_order_list_applink))))
+
+    private fun convertDynamicError(error: Throwable){
+        //testing-purpose-only
+        try {
+            val gson = Gson()
+            val itemType = object : TypeToken<HotelCancellationError>() {}.type
+            val errorData = gson.fromJson<HotelCancellationError>(error.message, itemType)
+            context?.run {
+                binding?.containerError?.globalError?.let {
+                    it.setType(GlobalError.SERVER_ERROR)
+                    it.errorTitle.text = errorData.propertyGetCancellation.content.title
+                    it.errorDescription.text = errorData.propertyGetCancellation.content.desc
+                    it.setActionClickListener {
+                        RouteManager.route(this,errorData.propertyGetCancellation.content.actionButton.firstOrNull()?.uri)
+                    }
+                   //for-each every value to see button.
+                }
+            }
+        }catch (throwable: Throwable){
+            showErrorView(throwable)
+        }
+    }
+
+    fun showDynamicError(errorData: HotelCancellationError){
+
+    }
 
     private fun initView(hotelCancellationModel: HotelCancellationModel) {
         hotelCancellationModel.property.let {
