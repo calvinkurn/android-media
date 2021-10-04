@@ -37,6 +37,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
 import com.tokopedia.product.util.ProductDetailTestUtil
 import com.tokopedia.product.util.ProductDetailTestUtil.generateMiniCartMock
+import com.tokopedia.product.util.ProductDetailTestUtil.generateNotifyMeMock
 import com.tokopedia.product.util.getOrAwaitValue
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
@@ -60,7 +61,7 @@ import org.mockito.Matchers.anyString
 import rx.Observable
 
 @ExperimentalCoroutinesApi
-class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
+open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     //region variable
     @Test
@@ -1006,7 +1007,10 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             val onError = lambda<(Throwable) -> Unit>()
             onError.invoke(Throwable(""))
 
-            ProductInfoP2UiData(miniCart = if (!hitMiniCart) mutableMapOf() else generateMiniCartMock(dataP1.layoutData.basic.productID).toMutableMap())
+            ProductInfoP2UiData(
+                    miniCart = if (!hitMiniCart) mutableMapOf()
+                    else generateMiniCartMock(dataP1.layoutData.basic.productID).toMutableMap(),
+                    upcomingCampaigns = generateNotifyMeMock())
         }
 
         coEvery {
