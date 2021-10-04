@@ -23,7 +23,7 @@ interface PlayBroadcastMapper {
 
     fun mapProductList(
             productsResponse: GetProductsByEtalaseResponse.GetProductListData,
-            isSelectedHandler: (Long) -> Boolean,
+            isSelectedHandler: (String) -> Boolean,
             isSelectableHandler: (Boolean) -> SelectableState
     ): List<ProductContentUiModel>
 

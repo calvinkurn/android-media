@@ -26,12 +26,20 @@ interface PlayEtalaseSetupCoordinator {
 
     fun showBottomAction(shouldShow: Boolean)
 
+    fun showErrorToaster(
+        err: Throwable,
+        customErrMessage: String? = null,
+        duration: Int = Toaster.LENGTH_LONG,
+        actionLabel: String = "",
+        actionListener: View.OnClickListener = View.OnClickListener { },
+    )
+
     fun showToaster(
-            message: String,
-            type: Int = Toaster.TYPE_NORMAL,
-            duration: Int = Toaster.LENGTH_SHORT,
-            actionLabel: String = "",
-            actionListener: View.OnClickListener = View.OnClickListener {  }
+        message: String,
+        type: Int = Toaster.TYPE_NORMAL,
+        duration: Int = Toaster.LENGTH_SHORT,
+        actionLabel: String = "",
+        actionListener: View.OnClickListener = View.OnClickListener { },
     )
 
     fun showGlobalError(errorType: Int, errorAction: () -> Unit)

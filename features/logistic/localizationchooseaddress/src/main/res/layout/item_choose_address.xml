@@ -121,7 +121,7 @@
             android:id="@+id/img_icon_tokonow"
             android:layout_width="@dimen/dp_14"
             android:layout_height="@dimen/dp_14"
-            app:srcCompat="@drawable/ic_badge_now_filled"
+            app:srcCompat="@drawable/ic_badge_tokomart"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginBottom="@dimen/unify_space_16"
             app:layout_constraintTop_toBottomOf="@id/address_district"
