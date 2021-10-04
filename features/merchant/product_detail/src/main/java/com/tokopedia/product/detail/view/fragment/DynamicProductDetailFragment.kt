@@ -1014,12 +1014,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun onRecomWidgetAlreadyInit(pageName: String) {
-        pdpUiUpdater?.updateRecommendationDataPageName(
-            pageName = pageName,
-            isForceRefresh = false,
-            productId = viewModel.getDynamicProductInfoP1?.parentProductId ?: ""
-        )
-        updateUi()
     }
 
     override fun onChipFilterClicked(recommendationDataModel: ProductRecommendationDataModel, annotationChip: AnnotationChip, position: Int, filterPosition: Int) {
@@ -1061,11 +1055,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun loadTopads(pageName: String) {
-        pdpUiUpdater?.updateRecommendationDataPageName(
-            pageName = pageName,
-            productId = viewModel.getDynamicProductInfoP1?.parentProductId ?: ""
-        )
-        updateUi()
+        viewModel.loadRecommendation(pageName)
     }
 
     /**

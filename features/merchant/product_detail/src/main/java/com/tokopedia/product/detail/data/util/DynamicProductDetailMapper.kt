@@ -61,18 +61,24 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(ProductMiniShopWidgetDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.PRODUCT_LIST -> {
-//                    when (component.componentName) {
-//                        PDP_7 ->
-                    listOfComponent.add(
-                        ProductRecomWidgetDataModel(
-                            type = component.type,
-                            name = component.componentName,
-                            position = index
-                        )
-                    )
-//                        else ->
-//                            listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
-//                    }
+                    when (component.componentName) {
+                        PDP_7 ->
+                            listOfComponent.add(
+                                ProductRecomWidgetDataModel(
+                                    type = component.type,
+                                    name = component.componentName,
+                                    position = index
+                                )
+                            )
+                        else ->
+                            listOfComponent.add(
+                                ProductRecommendationDataModel(
+                                    type = component.type,
+                                    name = component.componentName,
+                                    position = index
+                                )
+                            )
+                    }
                 }
                 ProductDetailConstant.VARIANT -> {
                     if (component.componentName == ProductDetailConstant.MINI_VARIANT_OPTIONS) {
