@@ -507,7 +507,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             playViewModel.uiState.withCache().collectLatest { (_, state) ->
-                renderLeaderboardView(state.winnerBadge.leaderboards)
+//                renderLeaderboardView(state.winnerBadge.leaderboards)
             }
         }
     }

@@ -178,7 +178,6 @@ class PlayViewModel @Inject constructor(
         _leaderboardInfo, _bottomInsets, _status, _channelDetail
     ) { leaderboardInfo, bottomInsets, status, channelDetail ->
         PlayWinnerBadgeUiState(
-            leaderboards = leaderboardInfo.leaderboardWinners,
             shouldShow = !bottomInsets.isAnyShown &&
                     status.isActive &&
                     leaderboardInfo.leaderboardWinners.isNotEmpty() &&
@@ -1389,7 +1388,20 @@ class PlayViewModel @Inject constructor(
                 }
             }
             is UserWinnerStatus -> {
+                val currentInteractiveId = repo.getActiveInteractiveId() ?: return@withContext
+                val isUserJoined = repo.hasJoined(currentInteractiveId)
 
+                if(result.interactiveId.toString() == currentInteractiveId && isUserJoined) {
+                    _uiEvent.emit(
+                        if(result.userId.toString() == userId)
+                            ShowWinningDialogEvent(result.imageUrl, result.winnerTitle, result.winnerText)
+                        else
+                            ShowCoachMarkWinnerEvent(result.loserTitle, result.loserText)
+                    )
+                    /**
+                     * TODO: should update uiState to
+                     */
+                }
             }
         }
     }
@@ -1470,21 +1482,73 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+//    private fun handleInteractiveOngoingFinished() {
+//        fun setInteractiveToFinished(interactiveId: String) {
+//            repo.setFinished(interactiveId)
+//
+//            _interactive.value = PlayInteractiveUiState.Finished(
+//                    info = R.string.play_interactive_finish_initial_text,
+//            )
+//        }
+//
+//        suspend fun fetchLeaderboard(
+//            channelId: String,
+//            interactive: PlayCurrentInteractiveModel,
+//            isUserJoined: Boolean
+//        ) = coroutineScope {
+//            _interactive.value = PlayInteractiveUiState.Finished(
+//                    info = R.string.play_interactive_finish_loading_winner_text,
+//            )
+//
+//            delay(interactive.endGameDelayInMs)
+//
+//            val deferredDelay = async { delay(INTERACTIVE_FINISH_MESSAGE_DELAY) }
+//            val deferredInteractiveLeaderboard = async { repo.getInteractiveLeaderboard(channelId) }
+//
+//            deferredDelay.await()
+//            val interactiveLeaderboard = deferredInteractiveLeaderboard.await()
+//
+//            val currentLeaderboard = interactiveLeaderboard.leaderboardWinners.first()
+//            val userInLeaderboard = currentLeaderboard.winners.firstOrNull()
+//
+//            _interactive.value = PlayInteractiveUiState.NoInteractive
+//            _leaderboardInfo.value = interactiveLeaderboard
+//
+//            if (userInLeaderboard != null && isUserJoined) {
+//                if (userInLeaderboard.id == userId) {
+//                    _uiEvent.emit(
+//                            ShowWinningDialogEvent(
+//                                    userInLeaderboard.imageUrl,
+//                                    interactiveLeaderboard.config.winnerMessage,
+//                                    interactiveLeaderboard.config.winnerDetail
+//                            )
+//                    )
+//                } else showCoachMark(interactiveLeaderboard.config.loserMessage, interactiveLeaderboard.config.loserDetail)
+//            }
+//        }
+//
+//        viewModelScope.launchCatchError(block = {
+//            val activeInteractiveId = repo.getActiveInteractiveId() ?: return@launchCatchError
+//            val isUserJoined = repo.hasJoined(activeInteractiveId)
+//            val activeInteractive = repo.getDetail(activeInteractiveId) ?: return@launchCatchError
+//
+//            setInteractiveToFinished(activeInteractiveId)
+//            delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
+//
+//            try {
+//                fetchLeaderboard(channelId, activeInteractive, isUserJoined)
+//            } catch (e: Throwable) {
+//                _interactive.value = PlayInteractiveUiState.NoInteractive
+//            }
+//        }) {}
+//    }
+
     private fun handleInteractiveOngoingFinished() {
         fun setInteractiveToFinished(interactiveId: String) {
             repo.setFinished(interactiveId)
 
             _interactive.value = PlayInteractiveUiState.Finished(
-                    info = R.string.play_interactive_finish_initial_text,
-            )
-        }
-
-        suspend fun showCoachMark(leaderboard: PlayLeaderboardInfoUiModel) {
-            _uiEvent.emit(
-                    ShowCoachMarkWinnerEvent(
-                            leaderboard.config.loserMessage,
-                            leaderboard.config.loserDetail
-                    )
+                info = R.string.play_interactive_finish_initial_text,
             )
         }
 
@@ -1494,7 +1558,7 @@ class PlayViewModel @Inject constructor(
             isUserJoined: Boolean
         ) = coroutineScope {
             _interactive.value = PlayInteractiveUiState.Finished(
-                    info = R.string.play_interactive_finish_loading_winner_text,
+                info = R.string.play_interactive_finish_loading_winner_text,
             )
 
             delay(interactive.endGameDelayInMs)
@@ -1514,28 +1578,36 @@ class PlayViewModel @Inject constructor(
             if (userInLeaderboard != null && isUserJoined) {
                 if (userInLeaderboard.id == userId) {
                     _uiEvent.emit(
-                            ShowWinningDialogEvent(
-                                    userInLeaderboard.imageUrl,
-                                    interactiveLeaderboard.config.winnerMessage,
-                                    interactiveLeaderboard.config.winnerDetail
-                            )
+                        ShowWinningDialogEvent(
+                            userInLeaderboard.imageUrl,
+                            interactiveLeaderboard.config.winnerMessage,
+                            interactiveLeaderboard.config.winnerDetail
+                        )
                     )
-                } else showCoachMark(interactiveLeaderboard)
+                } else ShowCoachMarkWinnerEvent(interactiveLeaderboard.config.loserMessage, interactiveLeaderboard.config.loserDetail)
             }
         }
 
         viewModelScope.launchCatchError(block = {
             val activeInteractiveId = repo.getActiveInteractiveId() ?: return@launchCatchError
-            val isUserJoined = repo.hasJoined(activeInteractiveId)
             val activeInteractive = repo.getDetail(activeInteractiveId) ?: return@launchCatchError
 
             setInteractiveToFinished(activeInteractiveId)
             delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
 
+            _interactive.value = PlayInteractiveUiState.Finished(
+                info = R.string.play_interactive_finish_loading_winner_text,
+            )
+            delay(activeInteractive.endGameDelayInMs)
+
             try {
-                fetchLeaderboard(channelId, activeInteractive, isUserJoined)
+                /**
+                 * TODO: should check if winner status already get from websocket or not.
+                 * if socket already get winner status -> doin nothin
+                 * else -> showing Pemenang Widget (without showing coachmark / winner dialog)
+                 */
             } catch (e: Throwable) {
-                _interactive.value = PlayInteractiveUiState.NoInteractive
+
             }
         }) {}
     }

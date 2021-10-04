@@ -55,8 +55,7 @@ data class PlayPartnerUiState(
 )
 
 data class PlayWinnerBadgeUiState(
-    val leaderboards: List<PlayLeaderboardUiModel>,
-    val shouldShow: Boolean,
+    val shouldShow: Boolean
 )
 
 enum class PlayLikeMode {
