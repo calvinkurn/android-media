@@ -273,6 +273,9 @@ class OfficialHomeContainerFragment
                             populateCategoriesData(it.data)
                         }, "PopulateCategoriesData"
                     )
+//                    PerformanceCustomTrace.beginMethodTracing("PopulateCategoriesData", 10)
+//                    populateCategoriesData(it.data)
+//                    PerformanceCustomTrace.endMethodTracing("PopulateCategoriesData", 10)
                 }
                 is Fail -> {
                     removeLoading()

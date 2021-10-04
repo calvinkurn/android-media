@@ -443,7 +443,9 @@ public class MainParentActivity extends BaseActivity implements
                     return HOME_MENU;
                 }
             }
-        } else if (getIntent().getData().getQueryParameter(ARGS_TAB_POSITION) != null) {
+        } else if (
+                getIntent().getData() != null &&
+                getIntent().getData().getQueryParameter(ARGS_TAB_POSITION) != null) {
             try {
                 String posString = getIntent().getData().getQueryParameter(ARGS_TAB_POSITION);
                 return Integer.parseInt(posString);
