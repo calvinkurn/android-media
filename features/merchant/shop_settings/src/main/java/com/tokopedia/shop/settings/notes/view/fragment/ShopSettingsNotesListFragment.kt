@@ -35,16 +35,10 @@ import javax.inject.Inject
 
 class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNoteFactory>(), ShopSettingNoteListPresenter.View,
         ShopNoteViewHolder.OnShopNoteViewHolderListener {
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(com.tokopedia.baselist.R.layout.fragment_base_list, container, false)
-    }
-
-    override fun getRecyclerViewResourceId() = com.tokopedia.baselist.R.id.recycler_view
-
-    override fun getSwipeRefreshLayoutResourceId() = com.tokopedia.baselist.R.id.swipe_refresh_layout
 
     @Inject
     lateinit var shopSettingNoteListPresenter: ShopSettingNoteListPresenter
+
     private var shopNoteModels: ArrayList<ShopNoteUiModel>? = null
     private var shopNoteAdapter: ShopNoteAdapter? = null
     private var progressDialog: ProgressDialog? = null
@@ -58,6 +52,14 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
     interface OnShopSettingsNoteFragmentListener {
         fun goToReorderFragment(shopNoteUiModels: ArrayList<ShopNoteUiModel>)
     }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_note_list, container, false)
+    }
+
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
+
+    override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
 
     override fun initInjector() {
         activity?.let {

@@ -11,10 +11,13 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
+import com.tokopedia.shop.settings.databinding.ActivityShopSettingsAddNewBinding
 import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesAddEditFragment
 
 class ShopSettingsNotesAddEditActivity: BaseSimpleActivity(), HasComponent<ShopSettingsComponent> {
+    var binding : ActivityShopSettingsAddNewBinding? = null
+
     private var isEdit = false
     private var isReturnablePolicy = false
     private var shopNote = ShopNoteUiModel()
@@ -59,6 +62,11 @@ class ShopSettingsNotesAddEditActivity: BaseSimpleActivity(), HasComponent<ShopS
         supportFragmentManager.beginTransaction()
                 .replace(R.id.parent_view, newFragment, tagFragment)
                 .commit()
+    }
+
+    override fun setupLayout(savedInstanceState: Bundle?) {
+        binding = ActivityShopSettingsAddNewBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
     }
 
     private fun setupToolbar() {
