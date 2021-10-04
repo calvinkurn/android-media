@@ -123,5 +123,15 @@
             app:unifyButtonType="alternate"
             app:unifyButtonVariant="ghost"
             tools:text="Ingatkan" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/calendar_button_tick"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="alternate"
+            android:visibility="gone"
+            app:unifyButtonVariant="ghost"
+            tools:text="Ingatkan" />
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

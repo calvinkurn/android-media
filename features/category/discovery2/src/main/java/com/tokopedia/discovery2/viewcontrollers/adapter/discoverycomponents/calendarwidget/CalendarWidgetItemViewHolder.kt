@@ -130,6 +130,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 calendarTitleImage.hide()
             }
             if (Utils.isSaleOver(endDate ?: "", TIMER_CALENDAR_DATE_FORMAT)) {
+                calendarButton.show()
                 calendarExpiredAlpha.show()
                 calendarButton.isEnabled = false
                 calendarButton.text =
@@ -140,6 +141,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                     calendarParent.setBackgroundColor(Color.parseColor(boxColor))
                 }
             } else {
+                calendarButton.show()
                 calendarExpiredAlpha.hide()
                 calendarButton.isEnabled = true
                 if (!boxColor.isNullOrEmpty() && boxColor != BLACK) {
@@ -212,20 +214,31 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun updateButton(isSubscribed: Boolean) {
-        itemView.findViewById<UnifyButton>(R.id.calendar_button).apply {
-            if (isSubscribed) {
-                text = itemView.context.getString(R.string.discovery_button_event_active)
-                setDrawable(MethodChecker.getDrawable(itemView.context, R.drawable.unify_check_ic))
-            } else {
-                text = itemView.context.getString(R.string.discovery_button_event_reminder)
-            }
-            setOnClickListener {
-                if (isSubscribed)
-                    calendarWidgetItemViewModel.unSubscribeUserForPushNotification(mNotifyCampaignId)
-                else
-                    calendarWidgetItemViewModel.subscribeUserForPushNotification(mNotifyCampaignId)
-            }
+        val button = itemView.findViewById<UnifyButton>(R.id.calendar_button)
+        val tickButton = itemView.findViewById<UnifyButton>(R.id.calendar_button_tick)
+        tickButton.setDrawable(MethodChecker.getDrawable(itemView.context, R.drawable.unify_check_ic))
+        if (isSubscribed) {
+            button.gone()
+            tickButton.show()
+            tickButton.text = itemView.context.getString(R.string.discovery_button_event_active)
+        } else {
+            tickButton.gone()
+            button.show()
+            button.text = itemView.context.getString(R.string.discovery_button_event_reminder)
         }
+        button.setOnClickListener {
+            setOnClick(isSubscribed)
+        }
+        tickButton.setOnClickListener {
+            setOnClick(isSubscribed)
+        }
+    }
+
+    private fun setOnClick(subscribed: Boolean) {
+        if (subscribed)
+            calendarWidgetItemViewModel.unSubscribeUserForPushNotification(mNotifyCampaignId)
+        else
+            calendarWidgetItemViewModel.subscribeUserForPushNotification(mNotifyCampaignId)
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
