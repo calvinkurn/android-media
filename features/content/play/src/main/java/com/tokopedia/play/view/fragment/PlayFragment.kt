@@ -163,7 +163,7 @@ class PlayFragment @Inject constructor(
     }
 
     override fun onDestroyView() {
-        getVideoScalingManager().onDestroy()
+        if (view != null) getVideoScalingManager().onDestroy()
         videoScalingManager = null
 
         destroyInsets(requireView())
@@ -253,11 +253,12 @@ class PlayFragment @Inject constructor(
     }
 
     fun onBottomInsetsViewShown(bottomMostBounds: Int) {
-        if (orientation.isLandscape) return
+        if (orientation.isLandscape || view == null) return
         getVideoScalingManager().onBottomInsetsShown(bottomMostBounds, playViewModel.videoPlayer, playViewModel.videoOrientation)
     }
 
     fun onBottomInsetsViewHidden() {
+        if (view == null) return
         getVideoScalingManager().onBottomInsetsHidden(playViewModel.videoPlayer)
     }
 
