@@ -1,41 +1,21 @@
 package com.tokopedia.attachinvoice.usecase
 
 import com.tokopedia.attachinvoice.data.GetInvoiceResponse
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class GetInvoiceUseCase @Inject constructor(
-        private val gqlUseCase: GraphqlUseCase<GetInvoiceResponse>
-) {
+    private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatcher
+): CoroutineUseCase<Map<String, Any>, GetInvoiceResponse>(dispatcher) {
 
     private val paramMsgId = "msgId"
     private val paramPage = "page"
-
-    fun getInvoices(
-            onSuccess: (GetInvoiceResponse) -> Unit,
-            onError: (Throwable) -> Unit,
-            msgId: Int,
-            page: Int
-    ) {
-        val params = generateParams(msgId, page)
-        gqlUseCase.apply {
-            setTypeClass(GetInvoiceResponse::class.java)
-            setRequestParams(params)
-            setGraphqlQuery(query)
-            execute({ result ->
-                onSuccess(result)
-            }, { error ->
-                onError(error)
-            })
-        }
-    }
-
-    private fun generateParams(msgId: Int, page: Int): Map<String, Any> {
-        return mapOf(
-                paramMsgId to msgId,
-                paramPage to page
-        )
-    }
 
     private val query = """
         query chatListInvoice($$paramMsgId: Int!, $$paramPage:Int!) {
@@ -59,4 +39,12 @@ class GetInvoiceUseCase @Inject constructor(
           }
         }
     """.trimIndent()
+
+    override fun graphqlQuery(): String {
+        return query
+    }
+
+    override suspend fun execute(params: Map<String, Any>): GetInvoiceResponse {
+        return repository.request(graphqlQuery(), params)
+    }
 }
