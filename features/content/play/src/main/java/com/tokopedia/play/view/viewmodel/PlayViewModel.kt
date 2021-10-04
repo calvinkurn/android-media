@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -1387,12 +1388,15 @@ class PlayViewModel @Inject constructor(
                 }
             }
             is UserWinnerStatus -> {
+                Log.d("<LOG>", "UserWinnerStatus socket")
                 val interactiveState = _interactiveUiState.firstOrNull() ?: return@withContext
 
                 val winnerStatus = playSocketToModelMapper.mapUserWinnerStatus(result)
                 _observableUserWinnerStatus.value = winnerStatus
 
+                Log.d("<LOG>", "interactive not null")
                 if(interactiveState.interactive is PlayInteractiveUiState.Finished) {
+                    Log.d("<LOG>", "interactive state : finished")
                     handleUserWinnerStatus(winnerStatus)
                 }
             }
@@ -1555,9 +1559,12 @@ class PlayViewModel @Inject constructor(
 
 
             _observableUserWinnerStatus.value?.let {
+                Log.d("<LOG>", "winnerStatus not null")
                 handleUserWinnerStatus(it)
             } ?: kotlin.run {
+                Log.d("<LOG>", "winnerStatus null")
                 delay(activeInteractive.endGameDelayInMs)
+                Log.d("<LOG>", "waitingDuration done")
                 /**
                  * TODO:
                  * Check if userwinner already emitted or not
@@ -1571,6 +1578,10 @@ class PlayViewModel @Inject constructor(
     private suspend fun handleUserWinnerStatus(winnerStatus: PlayUserWinnerStatusUiModel) {
         val currentInteractiveId = repo.getActiveInteractiveId() ?: return
         val isUserJoined = repo.hasJoined(currentInteractiveId)
+
+        Log.d("<LOG>", "socketInteractionId: ${winnerStatus.interactiveId}")
+        Log.d("<LOG>", "currentInteractionId: $currentInteractiveId")
+        Log.d("<LOG>", "isUserJoined: $isUserJoined")
 
         if(winnerStatus.interactiveId.toString() == currentInteractiveId && isUserJoined) {
             _uiEvent.emit(
