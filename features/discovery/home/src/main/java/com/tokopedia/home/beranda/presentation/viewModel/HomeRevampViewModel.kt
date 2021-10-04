@@ -1280,6 +1280,7 @@ open class HomeRevampViewModel @Inject constructor(
                     try {
                         isGopayEligible = getWalletEligibilityUseCase.get().executeOnBackground().isGoPointsEligible
                         val homeBalanceModel = HomeBalanceModel()
+                        homeBalanceModel.balanceDrawerItemModels = homeDataModel.homeBalanceModel.balanceDrawerItemModels
                         homeBalanceModel.balanceType = homeDataModel.homeBalanceModel.balanceType
                         homeBalanceModel.isGopayEligible = this@HomeRevampViewModel.isGopayEligible
                         homeBalanceModel.initBalanceModelByType()
@@ -1289,6 +1290,7 @@ open class HomeRevampViewModel @Inject constructor(
                     }
                 } else {
                     val homeBalanceModel = HomeBalanceModel()
+                    homeBalanceModel.balanceDrawerItemModels = homeDataModel.homeBalanceModel.balanceDrawerItemModels
                     homeBalanceModel.balanceType = homeDataModel.homeBalanceModel.balanceType
                     homeBalanceModel.isGopayEligible = this@HomeRevampViewModel.isGopayEligible
                     homeBalanceModel.initBalanceModelByType()
