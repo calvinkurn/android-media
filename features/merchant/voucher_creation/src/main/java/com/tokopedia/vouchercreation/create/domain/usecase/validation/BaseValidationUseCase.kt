@@ -17,7 +17,7 @@ abstract class BaseValidationUseCase<T : Validation> (private val gqlRepository:
 
     override suspend fun executeOnBackground(): T {
         val request = GraphqlRequest(queryString, VoucherValidationPartialResponse::class.java, params.parameters)
-        val response = gqlRepository.getReseponse(listOf(request))
+        val response = gqlRepository.response(listOf(request))
 
         val error = response.getError(VoucherValidationPartialResponse::class.java)
         if (error.isNullOrEmpty()) {

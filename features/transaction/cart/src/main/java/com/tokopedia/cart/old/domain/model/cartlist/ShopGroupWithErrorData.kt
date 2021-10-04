@@ -2,7 +2,7 @@ package com.tokopedia.cart.old.domain.model.cartlist
 
 import android.os.Parcelable
 import com.tokopedia.cart.old.view.uimodel.CartItemHolderData
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ShopGroupWithErrorData(

@@ -35,7 +35,7 @@ class GetCartRevampV3UseCase @Inject constructor(@ApplicationContext private val
         }
 
         val request = GraphqlRequest(getQueryCartRevampV3(), ShopGroupSimplifiedGqlResponse::class.java, params)
-        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<ShopGroupSimplifiedGqlResponse>()
+        val response = graphqlRepository.response(listOf(request)).getSuccessData<ShopGroupSimplifiedGqlResponse>()
 //        val response = Gson().fromJson(getJsonFromResource("cart_dummy.json"), ShopGroupSimplifiedGqlResponse::class.java)
 
         if (response.shopGroupSimplifiedResponse.status == "OK") {

@@ -27,7 +27,7 @@ class UndoDeleteCartUseCase @Inject constructor(@ApplicationContext private val 
         }
 
         val request = GraphqlRequest(MUTATION, UndoDeleteCartGqlResponse::class.java, params)
-        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<UndoDeleteCartGqlResponse>()
+        val response = graphqlRepository.response(listOf(request)).getSuccessData<UndoDeleteCartGqlResponse>()
 
         if (response.undoDeleteCartDataResponse.status == "OK" && response.undoDeleteCartDataResponse.data.success == 1) {
             return response.undoDeleteCartDataResponse

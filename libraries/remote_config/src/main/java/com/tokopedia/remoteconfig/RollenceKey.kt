@@ -21,21 +21,12 @@ object RollenceKey {
     const val PRODUCT_LIMITATION_AB_TEST_KEY = "product_limit"
     const val PRODUCT_TITLE_AB_TEST_KEY = "product_title"
 
-    const val KEY_NEW_NOTFICENTER = "NotifCenter_New"
-    const val VARIANT_OLD_NOTFICENTER = "NotifCenter_Old"
-    const val VARIANT_NEW_NOTFICENTER = "NotifCenter_New"
-
     const val KEY_AB_INBOX_REVAMP = "ReviewTab_NewInbox"
     const val VARIANT_OLD_INBOX = "ReviewTab_OldInbox"
     const val VARIANT_NEW_INBOX = "ReviewTab_NewInbox"
 
     // Merchant Voucher Creation
     const val BROADCAST_VOUCHER_AB_TEST_KEY = "broadcast_voucher"
-
-    //home
-    const val HOME_VARIANT_REVAMP = "home revamp"
-    const val HOME_VARIANT_OLD = "Existing Home"
-    const val HOME_EXP = "Home Revamp 2021"
 
     const val BALANCE_EXP = "Balance Widget"
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
@@ -53,10 +44,6 @@ object RollenceKey {
     const val HOME_COMPONENT_LEGO2BANNER_EXP = "lego2_bleeding"
     const val HOME_COMPONENT_LEGO2BANNER_OLD = "lego2_round"
     const val HOME_COMPONENT_LEGO2BANNER_VARIANT = "lego2_bleeding"
-    const val HOME_COMPONENT_CATEGORYWIDGET_EXP = "cat_test"
-    const val HOME_COMPONENT_CATEGORYWIDGET_OLD = "control"
-    const val HOME_COMPONENT_CATEGORYWIDGET_VARIANT_TEXT_INSIDE = "text_inside"
-    const val HOME_COMPONENT_CATEGORYWIDGET_VARIANT_TEXT_BOX = "text_box"
     // end of home component rollence section
 
     const val POWER_MERCHANT_PRO_POP_UP = "pm_pro"
@@ -79,4 +66,12 @@ object RollenceKey {
 
     //TAPCASH
     const val KEY_VARIANT_TAPCASH_GRADUAL = "BNI_Tap_cash_gradual"
+
+    //Home account
+    const val HOME_ACCOUNT_SHOW_VIEW_MORE_WALLET_TOGGLE = "akun_widget_button"
+
+    //Add Bills SBM
+    const val SBM_ADD_BILLS_KEY = "sbm_addbills2"
+    const val SBM_ADD_BILLS_FALSE = "sbm_addbills_False"
+    const val SBM_ADD_BILLS_TRUE = "sbm_addbills_True"
 }

@@ -19,7 +19,7 @@ import com.tokopedia.unifycomponents.dpToPx
  */
 class PlayVideoScalingManager(
         container: ViewGroup,
-        private val listener: Listener
+        listener: Listener,
 ) : VideoScalingManager {
 
     private val flInteraction: View = container.findViewById(R.id.fl_user_interaction)
@@ -30,6 +30,8 @@ class PlayVideoScalingManager(
     private val offset12 = container.resources.getDimensionPixelOffset(R.dimen.play_offset_12)
     private val offset16 = container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
 
+    private var mListener: Listener? = listener
+
     private var videoScaleAnimator: Animator = AnimatorSet()
     private val onBottomInsetsShownAnimatorListener = object : Animator.AnimatorListener {
         override fun onAnimationRepeat(animation: Animator?) {
@@ -39,7 +41,7 @@ class PlayVideoScalingManager(
             flVideo.isClickable = true
             flYouTube.isClickable = true
 
-            listener.onAnimationFinish(false)
+            mListener?.onAnimationFinish(false)
         }
 
         override fun onAnimationCancel(animation: Animator?) {
@@ -49,7 +51,7 @@ class PlayVideoScalingManager(
             flVideo.isClickable = false
             flYouTube.isClickable = false
 
-            listener.onAnimationStart(false)
+            mListener?.onAnimationStart(false)
         }
     }
     private val onBottomInsetsHiddenAnimatorListener = object : Animator.AnimatorListener {
@@ -60,7 +62,7 @@ class PlayVideoScalingManager(
             flVideo.isClickable = false
             flYouTube.isClickable = true
 
-            listener.onAnimationFinish(true)
+            mListener?.onAnimationFinish(true)
         }
 
         override fun onAnimationCancel(animation: Animator?) {
@@ -70,7 +72,7 @@ class PlayVideoScalingManager(
             flVideo.isClickable = false
             flYouTube.isClickable = false
 
-            listener.onAnimationStart(true)
+            mListener?.onAnimationStart(true)
         }
     }
 
@@ -106,6 +108,7 @@ class PlayVideoScalingManager(
     }
 
     override fun onDestroy() {
+        mListener = null
         videoScaleAnimator.cancel()
     }
 
@@ -153,7 +156,7 @@ class PlayVideoScalingManager(
         val visibleRect = view.globalVisibleRect
         val visibleRectF = RectF(visibleRect)
         matrix.mapRect(visibleRectF)
-        listener.onFinalBottomMostBoundsScalingCalculated(visibleRectF.bottom.toInt())
+        mListener?.onFinalBottomMostBoundsScalingCalculated(visibleRectF.bottom.toInt())
 
         animator.apply {
             removeAllListeners()

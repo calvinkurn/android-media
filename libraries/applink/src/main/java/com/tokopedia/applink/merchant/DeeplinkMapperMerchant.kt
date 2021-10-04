@@ -3,6 +3,7 @@ package com.tokopedia.applink.merchant
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.inbox.DeeplinkMapperInbox
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -249,7 +250,7 @@ object DeeplinkMapperMerchant {
                 if (GlobalConfig.isSellerApp()) {
                     ApplinkConst.SELLER_INFO
                 } else {
-                    ApplinkConstInternalMarketplace.NOTIFICATION_BUYER_INFO
+                    DeeplinkMapperInbox.getRegisteredNavigationNotifcenter()
                 }
             } else {
                 UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, url)

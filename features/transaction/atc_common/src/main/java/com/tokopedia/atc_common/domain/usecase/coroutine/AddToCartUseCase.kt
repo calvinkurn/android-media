@@ -52,7 +52,7 @@ class AddToCartUseCase @Inject constructor(@ApplicationContext private val graph
         }
 
         val request = GraphqlRequest(QUERY_ADD_TO_CART, AddToCartGqlResponse::class.java, getParams())
-        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<AddToCartGqlResponse>()
+        val response = graphqlRepository.response(listOf(request)).getSuccessData<AddToCartGqlResponse>()
 
         val result = addToCartDataMapper.mapAddToCartResponse(response)
         if (!result.isStatusError()) {

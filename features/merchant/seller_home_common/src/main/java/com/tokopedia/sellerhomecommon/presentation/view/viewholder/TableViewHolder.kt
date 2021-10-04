@@ -9,6 +9,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
@@ -16,9 +17,11 @@ import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
+import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_partial_post_list_widget.view.*
+import kotlinx.android.synthetic.main.shc_partial_progress_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_widget_table_loading.view.*
 import kotlinx.android.synthetic.main.shc_widget_table.view.*
 
@@ -46,6 +49,7 @@ class TableViewHolder(
         itemView.tvTableWidgetTitle.visible()
         itemView.commonWidgetErrorState.gone()
 
+        setTagNotification(element.tag)
         setupTooltip(element)
 
         val data: TableDataUiModel? = element.data
@@ -221,6 +225,20 @@ class TableViewHolder(
 
     private fun openAppLink(element: TableWidgetUiModel) {
         RouteManager.route(itemView.context, element.appLink)
+    }
+
+    private fun setTagNotification(tag: String) {
+        val isTagVisible = tag.isNotBlank()
+        with(itemView) {
+            notifTagTable.showWithCondition(isTagVisible)
+            if (isTagVisible) {
+                notifTagTable.setNotification(
+                    tag,
+                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COLOR_TEXT_TYPE
+                )
+            }
+        }
     }
 
     private fun setupTooltip(element: TableWidgetUiModel) = with(itemView) {

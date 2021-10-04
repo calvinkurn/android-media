@@ -67,7 +67,7 @@ class GetShipmentAddressFormV3UseCase @Inject constructor(@ApplicationContext pr
         }
 
         val request = GraphqlRequest(getQueryShipmentAddressFormV3(), ShipmentAddressFormGqlResponse::class.java, params)
-        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<ShipmentAddressFormGqlResponse>()
+        val response = graphqlRepository.response(listOf(request)).getSuccessData<ShipmentAddressFormGqlResponse>()
 //        val response = Gson().fromJson(getJsonFromResource("saf_dummy.json"), ShipmentAddressFormGqlResponse::class.java)
 
         if (response.shipmentAddressFormResponse.status == "OK") {

@@ -337,14 +337,11 @@ public class DeveloperOptionActivity extends BaseActivity {
         UnifyButton buttonResetOnboardingNavigation = findViewById(R.id.resetOnboardingNavigation);
         UnifyButton alwaysOldButton = findViewById(R.id.buttonAlwaysOldNavigation);
         UnifyButton alwaysNewNavigation = findViewById(R.id.buttonAlwaysNewNavigation);
-        UnifyButton alwaysOldHome = findViewById(R.id.buttonAlwaysOldHome);
-        UnifyButton alwaysNewHome = findViewById(R.id.buttonAlwaysNewHome);
         alwaysOldBalanceWidget = findViewById(R.id.buttonAlwaysOldBalanceWidget);
         System.out.println("++ line 332");
         UnifyButton alwaysNewBalanceWidget = findViewById(R.id.buttonAlwaysNewBalanceWidget);
 
         setupNewInboxAbButton();
-        setupNewNotifcenterAbButton();
 
         TextFieldUnify inputRollenceKey = findViewById(R.id.input_rollence_key);
         TextFieldUnify inputRollenceVariant = findViewById(R.id.input_rollence_variant);
@@ -385,10 +382,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         String VARIANT_OLD = RollenceKey.NAVIGATION_VARIANT_OLD;
         String VARIANT_REVAMP = RollenceKey.NAVIGATION_VARIANT_REVAMP;
 
-        String EXP_HOME = RollenceKey.HOME_EXP;
-        String HOME_VARIANT_OLD = RollenceKey.HOME_VARIANT_OLD;
-        String HOME_VARIANT_REVAMP = RollenceKey.HOME_VARIANT_REVAMP;
-
         String EXP_BALANCE_WIDGET = RollenceKey.BALANCE_EXP;
         String BALANCE_WIDGET_VARIANT_OLD = RollenceKey.BALANCE_VARIANT_OLD;
         String BALANCE_WIDGET_VARIANT_REVAMP = RollenceKey.BALANCE_VARIANT_NEW;
@@ -406,22 +399,6 @@ public class DeveloperOptionActivity extends BaseActivity {
             public void onClick(View view) {
                 RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_TOP_NAV, VARIANT_REVAMP);
                 Toast.makeText(DeveloperOptionActivity.this, "Navigation: Revamped", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        alwaysOldHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_HOME, HOME_VARIANT_OLD);
-                Toast.makeText(DeveloperOptionActivity.this, "Home: Old", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        alwaysNewHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_HOME, HOME_VARIANT_REVAMP);
-                Toast.makeText(DeveloperOptionActivity.this, "Home: Revamped", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -489,30 +466,6 @@ public class DeveloperOptionActivity extends BaseActivity {
                             RollenceKey.VARIANT_NEW_INBOX
                     );
             Toast.makeText(DeveloperOptionActivity.this, "Inbox: New", Toast.LENGTH_SHORT).show();
-        });
-    }
-
-    private void setupNewNotifcenterAbButton() {
-        UnifyButton oldInboxBtn = findViewById(R.id.btn_always_old_notifcenter);
-        UnifyButton newInboxBtn = findViewById(R.id.btn_always_new_notifcenter);
-
-        oldInboxBtn.setOnClickListener(v -> {
-            RemoteConfigInstance.getInstance()
-                    .getABTestPlatform()
-                    .setString(
-                            RollenceKey.KEY_NEW_NOTFICENTER,
-                            RollenceKey.VARIANT_OLD_NOTFICENTER
-                    );
-            Toast.makeText(DeveloperOptionActivity.this, "Notifcenter: Old", Toast.LENGTH_SHORT).show();
-        });
-        newInboxBtn.setOnClickListener(v -> {
-            RemoteConfigInstance.getInstance()
-                    .getABTestPlatform()
-                    .setString(
-                            RollenceKey.KEY_NEW_NOTFICENTER,
-                            RollenceKey.VARIANT_NEW_NOTFICENTER
-                    );
-            Toast.makeText(DeveloperOptionActivity.this, "Notifcenter: New", Toast.LENGTH_SHORT).show();
         });
     }
 

@@ -2101,7 +2101,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             promoCheckoutBtnCart.setOnClickListener {
                 dPresenter.doUpdateCartForPromo()
                 // analytics
-                PromoRevampAnalytics.eventCartClickPromoSection(listPromoApplied, false)
+                PromoRevampAnalytics.eventCartClickPromoSection(listPromoApplied, false, userSession.userId)
             }
         }
     }
@@ -2158,7 +2158,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             } else {
                 dPresenter.doUpdateCartForPromo()
                 // analytics
-                PromoRevampAnalytics.eventCartClickPromoSection(getAllPromosApplied(lastApplyData), isApplied)
+                PromoRevampAnalytics.eventCartClickPromoSection(getAllPromosApplied(lastApplyData), isApplied, userSession.userId)
             }
         }
         if (isApplied) {

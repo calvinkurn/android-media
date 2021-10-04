@@ -177,6 +177,10 @@ class EnhancedECommerceProductCartMapData {
         Product[KEY_CAMPAIGN_ID] = campaignId
     }
 
+    fun setPageSource(pageSource: String) {
+        Product[KEY_PAGE_SOURCE] = pageSource
+    }
+
     fun setDimension117(bundleType: String) {
         Product[KEY_DIMENSION117] = bundleType
     }
@@ -231,6 +235,7 @@ class EnhancedECommerceProductCartMapData {
         private const val KEY_PICTURE = "picture"
         private const val KEY_URL = "url"
         private const val KEY_CAMPAIGN_ID = "dimension104"
+        private const val KEY_PAGE_SOURCE = "dimension90"
         private const val KEY_DIMENSION117 = "dimension117"
         private const val KEY_DIMENSION118 = "dimension118"
         const val DEFAULT_VALUE_NONE_OTHER = "none/other"

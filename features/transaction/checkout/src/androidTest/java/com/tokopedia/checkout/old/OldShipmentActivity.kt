@@ -22,8 +22,9 @@ class OldShipmentActivity : BaseCheckoutActivity() {
     override fun getNewFragment(): Fragment? {
         val leasingId = intent.data?.getQueryParameter(CartConstant.CHECKOUT_LEASING_ID) ?: ""
         val isOneClickShipment = intent.getBooleanExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, false)
+        val pageSource = intent.getStringExtra(CheckoutConstant.EXTRA_CHECKOUT_PAGE_SOURCE) ?: CheckoutConstant.CHECKOUT_PAGE_SOURCE_PDP
         val bundle = intent.extras
-        oldShipmentFragment = ShipmentFragment.newInstance(isOneClickShipment, leasingId, bundle)
+        oldShipmentFragment = ShipmentFragment.newInstance(isOneClickShipment, leasingId, pageSource, bundle)
         return oldShipmentFragment
     }
 

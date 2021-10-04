@@ -53,7 +53,7 @@ class ShipmentMapper @Inject constructor() {
             isHidingCourier = shipmentAddressFormDataResponse.hideCourier
             isBlackbox = shipmentAddressFormDataResponse.isBlackbox == 1
             errorCode = shipmentAddressFormDataResponse.errorCode
-            isError = !isNullOrEmpty(shipmentAddressFormDataResponse.errors)
+            isError = shipmentAddressFormDataResponse.errors.isNotEmpty()
             errorMessage = convertToString(shipmentAddressFormDataResponse.errors)
             isShowOnboarding = shipmentAddressFormDataResponse.isShowOnboarding
             isIneligiblePromoDialogEnabled = shipmentAddressFormDataResponse.isIneligiblePromoDialogEnabled

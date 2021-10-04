@@ -1,20 +1,33 @@
 package com.tokopedia.pdpsimulation.common.presentation.activity
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.pdpsimulation.R
+import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_URL
 import com.tokopedia.pdpsimulation.common.constants.PRODUCT_PRICE
 import com.tokopedia.pdpsimulation.common.di.component.DaggerPdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.presentation.fragment.PdpSimulationFragment
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationComponent> {
 
     private lateinit var pdpSimulationComponent: PdpSimulationComponent
+    val REQUEST_CODE_LOGIN = 123
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
 
     override fun getScreenName(): String {
         return SCREEN_NAME
@@ -32,13 +45,21 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
     override fun getParentViewResourceID(): Int = R.id.pdpSimulationParentView
 
     override fun getNewFragment(): Fragment? {
-        val bundle = Bundle()
-        intent.data?.let {
-            bundle.putString(PRODUCT_PRICE, it.getQueryParameter(PRODUCT_PRICE))
-            bundle.putString(PARAM_PRODUCT_URL, it.getQueryParameter(PARAM_PRODUCT_URL))
+        userSession = UserSession(this)
+        return if (!userSession.isLoggedIn) {
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+            null
+        } else {
+            val bundle = Bundle()
+            intent.extras?.let {
+                bundle.putString(PRODUCT_PRICE, it.getString(PRODUCT_PRICE))
+                bundle.putString(PARAM_PRODUCT_URL, it.getString(PARAM_PRODUCT_URL))
+                bundle.putString(PARAM_PRODUCT_ID, it.getString(PARAM_PRODUCT_ID))
+            }
+           PdpSimulationFragment.newInstance(bundle)
         }
-        return PdpSimulationFragment.newInstance(bundle)
     }
+
 
     companion object {
         const val SCREEN_NAME = "PayLater & Cicilan"
@@ -47,8 +68,32 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
     override fun getComponent(): PdpSimulationComponent {
         if (!::pdpSimulationComponent.isInitialized)
             pdpSimulationComponent = DaggerPdpSimulationComponent.builder()
-                    .baseAppComponent((applicationContext as BaseMainApplication)
-                            .baseAppComponent).build()
+                .baseAppComponent(
+                    (applicationContext as BaseMainApplication)
+                        .baseAppComponent
+                ).build()
         return pdpSimulationComponent
+    }
+
+    /**
+     * This method is to restart the activity
+     */
+    private fun restartActivity()
+    {
+        val intent = intent
+        finish()
+        startActivity(intent)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when(requestCode) {
+            REQUEST_CODE_LOGIN -> {
+                if (userSession.isLoggedIn)
+                    restartActivity()
+                else
+                    finish()
+            }
+        }
     }
 }
