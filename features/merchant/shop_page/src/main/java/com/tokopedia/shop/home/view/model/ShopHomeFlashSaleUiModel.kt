@@ -8,7 +8,7 @@ class ShopHomeFlashSaleUiModel(
     override val name: String,
     override val type: String,
     override val header: BaseShopHomeWidgetUiModel.Header
-) : BaseShopHomeWidgetUiModel {
+) : BaseShopHomeWidgetUiModel() {
     override fun type(typeFactory: ShopHomeAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }

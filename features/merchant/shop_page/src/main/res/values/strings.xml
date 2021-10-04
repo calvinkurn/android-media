@@ -315,6 +315,7 @@
     <string name="shop_page_showcase_featured_product_count_text">%1$s Produk</string>
 
     <!-- flash sale -->
-    <string name="flash_sale_shop_page_label">Flash Sale Toko</string>
+    <string name="shop_page_label_flash_sale_toko">Flash Sale Toko</string>
+    <string name="shop_page_label_flash_sale">Flash Sale</string>
 
 </resources>

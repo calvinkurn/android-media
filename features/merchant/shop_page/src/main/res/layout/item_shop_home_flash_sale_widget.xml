@@ -5,10 +5,30 @@
     android:layout_height="match_parent">
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tgp_flash_sale_toko_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/flash_sale_shop_page_label"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:text="@string/shop_page_label_flash_sale_toko"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_marginStart="@dimen/dp_5.5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_information"
+        app:layout_constraintBottom_toBottomOf="@id/tgp_flash_sale_toko_title"
+        app:layout_constraintLeft_toRightOf="@id/tgp_flash_sale_toko_title"
+        app:layout_constraintTop_toTopOf="@id/tgp_flash_sale_toko_title" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        app:typographyType="body_3"
+        app:layout_constraintTop_toBottomOf="@id/tgp_flash_sale_toko_title"
+        app:layout_constraintLeft_toLeftOf="@id/tgp_flash_sale_toko_title"
+        android:text="@string/shop_page_label_flash_sale"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

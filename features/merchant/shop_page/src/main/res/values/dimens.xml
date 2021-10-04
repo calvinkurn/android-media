@@ -36,6 +36,7 @@
     <dimen name="shop_product_item_badge_deprecated_font">9sp</dimen>
     <dimen name="size_labelview">56sp</dimen>
     <dimen name="dp_4">4dp</dimen>
+    <dimen name="dp_5.5">5.5dp</dimen>
     <dimen name="dp_8">8dp</dimen>
     <dimen name="dp_32">32dp</dimen>
     <dimen name="dp_48">48dp</dimen>
