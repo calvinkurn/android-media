@@ -8,12 +8,18 @@ import kotlinx.coroutines.CoroutineDispatcher
 
 open class GetTroubleshootStatusUseCase constructor(
         private val repository: GraphqlRepository,
-        private val graphQuery: String,
         dispatcher: CoroutineDispatcher
 ) : CoroutineUseCase<Unit, NotificationTroubleshoot>(dispatcher) {
 
     override fun graphqlQuery(): String {
-        return graphQuery
+        return """
+            query {
+            	notifier_sendTroubleshooter(){
+            	  	is_success
+            	  	error_message
+            	}
+            }
+        """.trimIndent()
     }
 
     override suspend fun execute(params: Unit): NotificationTroubleshoot {
