@@ -31,19 +31,25 @@ class ShipmentActivity : BaseCheckoutActivity() {
     override fun getNewFragment(): Fragment? {
         val leasingId = intent.data?.getQueryParameter(CartConstant.CHECKOUT_LEASING_ID) ?: ""
         val isOneClickShipment = intent.getBooleanExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, false)
+        val pageSource = intent.getStringExtra(CheckoutConstant.EXTRA_CHECKOUT_PAGE_SOURCE)
+                ?: CheckoutConstant.CHECKOUT_PAGE_SOURCE_PDP
         val bundle = intent.extras
         isBundleToggleOn = Switch.isBundleToggleOn(this)
         if (isBundleToggleOn == true) {
             shipmentFragment = ShipmentFragment.newInstance(isOneClickShipment, leasingId, bundle)
             return shipmentFragment
         } else {
-            oldShipmentFragment = com.tokopedia.checkout.old.view.ShipmentFragment.newInstance(isOneClickShipment, leasingId, bundle)
+            oldShipmentFragment = com.tokopedia.checkout.old.view.ShipmentFragment.newInstance(isOneClickShipment, leasingId, pageSource, bundle)
             return oldShipmentFragment
         }
     }
 
     override fun onStart() {
         super.onStart()
+        validateRecreateCheckout()
+    }
+
+    private fun validateRecreateCheckout() {
         try {
             if (isBundleToggleOn != null && isBundleToggleOn != Switch.isBundleToggleOn(this)) {
                 recreate()

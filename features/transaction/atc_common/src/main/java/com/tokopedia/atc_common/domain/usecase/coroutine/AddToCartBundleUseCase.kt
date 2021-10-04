@@ -32,7 +32,7 @@ class AddToCartBundleUseCase @Inject constructor(@ApplicationContext private val
         }
 
         val request = GraphqlRequest(MUTATION_ADD_TO_CART_BUNDLE, AddToCartBundleGqlResponse::class.java, params)
-        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<AddToCartBundleGqlResponse>()
+        val response = graphqlRepository.response(listOf(request)).getSuccessData<AddToCartBundleGqlResponse>()
 
         return addToCartBundleDataMapper.mapAddToCartBundleResponse(response.addToCartBundle)
     }

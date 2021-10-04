@@ -349,7 +349,11 @@ public class MainParentActivity extends BaseActivity implements
             setDefaultShakeEnable();
             routeOnboarding();
         }
+        validateRecreateCart();
         pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_START_METRICS);
+    }
+
+    private void validateRecreateCart() {
         try {
             if (isBundleToggleOn != null && isBundleToggleOn != Switch.INSTANCE.isBundleToggleOn(this)) {
                 recreate();

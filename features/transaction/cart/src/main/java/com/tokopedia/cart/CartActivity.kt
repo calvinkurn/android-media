@@ -65,6 +65,10 @@ class CartActivity : BaseCheckoutActivity() {
 
     override fun onStart() {
         super.onStart()
+        validateRecreateCart()
+    }
+
+    private fun validateRecreateCart() {
         try {
             if (isBundleToggleOn != null && isBundleToggleOn != Switch.isBundleToggleOn(this)) {
                 recreate()

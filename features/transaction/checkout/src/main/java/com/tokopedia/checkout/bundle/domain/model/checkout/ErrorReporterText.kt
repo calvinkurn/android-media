@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.bundle.domain.model.checkout
 
 import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class ErrorReporterText(
