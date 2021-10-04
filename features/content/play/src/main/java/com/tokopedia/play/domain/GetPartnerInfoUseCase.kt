@@ -25,7 +25,7 @@ class GetPartnerInfoUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): ShopInfo {
         val gqlRequest = GraphqlRequest(GetPartnerInfoUseCaseQuery.GQL_QUERY, ShopInfo.Response::class.java, params.parameters)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
 
         val error = gqlResponse.getError(ShopInfo.Response::class.java)

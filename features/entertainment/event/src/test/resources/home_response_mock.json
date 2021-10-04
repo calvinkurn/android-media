@@ -208,7 +208,8 @@
               "url": "https://booking.tokopedia.com/v1/api/p/jakarta-toys-and-comics-fair-2020-25787?cities=",
               "is_liked": false,
               "is_promo": 0,
-              "seo_url": "jakarta-toys-and-comics-fair-2020-25787"
+              "seo_url": "jakarta-toys-and-comics-fair-2020-25787",
+              "min_start_date": "1622653260"
             },
             {
               "id": "26423",
@@ -226,7 +227,8 @@
               "url": "https://booking.tokopedia.com/v1/api/p/jakarta-sneaker-day-2020-26423?cities=",
               "is_liked": false,
               "is_promo": 0,
-              "seo_url": "jakarta-sneaker-day-2020-26423"
+              "seo_url": "jakarta-sneaker-day-2020-26423",
+              "min_start_date": "1622653260"
             },
             {
               "id": "26794",
@@ -244,7 +246,8 @@
               "url": "https://booking.tokopedia.com/v1/api/p/indofest-indofishing-2020-jakarta?cities=",
               "is_liked": false,
               "is_promo": 0,
-              "seo_url": "indofest-indofishing-2020-jakarta"
+              "seo_url": "indofest-indofishing-2020-jakarta",
+              "min_start_date": "1622653260"
             },
             {
               "id": "472",
@@ -262,7 +265,8 @@
               "url": "https://booking.tokopedia.com/v1/api/p/jungleland?cities=",
               "is_liked": false,
               "is_promo": 0,
-              "seo_url": "jungleland"
+              "seo_url": "jungleland",
+              "min_start_date": "1622653260"
             },
             {
               "id": "518",
@@ -280,7 +284,8 @@
               "url": "https://booking.tokopedia.com/v1/api/p/atlantis-water-adventure?cities=",
               "is_liked": false,
               "is_promo": 0,
-              "seo_url": "atlantis-water-adventure"
+              "seo_url": "atlantis-water-adventure",
+              "min_start_date": "1622653260"
             },
             {
               "id": "491",
@@ -298,7 +303,8 @@
               "url": "https://booking.tokopedia.com/v1/api/p/seaworld?cities=",
               "is_liked": false,
               "is_promo": 0,
-              "seo_url": "seaworld"
+              "seo_url": "seaworld",
+              "min_start_date": "1622653260"
             },
             {
               "id": "507",
@@ -316,7 +322,8 @@
               "url": "https://booking.tokopedia.com/v1/api/p/ocean-dream-samudra?cities=",
               "is_liked": false,
               "is_promo": 0,
-              "seo_url": "ocean-dream-samudra"
+              "seo_url": "ocean-dream-samudra",
+              "min_start_date": "1622653260"
             },
             {
               "id": "22281",
@@ -334,7 +341,8 @@
               "url": "https://booking.tokopedia.com/v1/api/p/pandora-experience-alam-sutera?cities=",
               "is_liked": false,
               "is_promo": 0,
-              "seo_url": "pandora-experience-alam-sutera"
+              "seo_url": "pandora-experience-alam-sutera",
+              "min_start_date": "1622653260"
             }
           ]
         },

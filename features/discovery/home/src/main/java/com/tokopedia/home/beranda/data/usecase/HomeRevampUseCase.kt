@@ -15,14 +15,18 @@ class HomeRevampUseCase @Inject constructor(
 ) {
     fun getHomeData(): Flow<HomeDataModel?> {
         var firstTimeDataHasBeenConsumed = false
+        var haveCacheData: Boolean = false
+
         return homeRepository.getHomeData().map { data ->
             if (!firstTimeDataHasBeenConsumed) {
                 //fetch new data
                 firstTimeDataHasBeenConsumed = true
-                homeDataMapper.mapToHomeRevampViewModel(data, true)
+                homeDataMapper.mapToHomeRevampViewModel(homeData = data, isCache = true, haveCachedData = haveCacheData)
             }
             //not first time, emit real data from network
-            else homeDataMapper.mapToHomeRevampViewModel(data, false)
+            else {
+                homeDataMapper.mapToHomeRevampViewModel(homeData = data, isCache = false, haveCachedData = haveCacheData)
+            }
         }
     }
 

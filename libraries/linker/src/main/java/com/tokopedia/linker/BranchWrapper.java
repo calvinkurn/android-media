@@ -98,9 +98,16 @@ public class BranchWrapper implements WrapperInterface {
     @Override
     public void createShareUrl(LinkerShareRequest linkerShareRequest, Context context) {
         if (linkerShareRequest != null && linkerShareRequest.getDataObj() != null && linkerShareRequest.getDataObj() instanceof LinkerShareData) {
-            generateBranchLink(((LinkerShareData) linkerShareRequest.getDataObj()).getLinkerData(),
-                    context, linkerShareRequest.getShareCallbackInterface(),
-                    ((LinkerShareData) linkerShareRequest.getDataObj()).getUserData());
+
+            if (isFDLActivated(context)){
+                generateFirebaseLink(((LinkerShareData) linkerShareRequest.getDataObj()).getLinkerData(),
+                        context, linkerShareRequest.getShareCallbackInterface(),
+                        ((LinkerShareData) linkerShareRequest.getDataObj()).getUserData());
+            }else {
+                generateBranchLink(((LinkerShareData) linkerShareRequest.getDataObj()).getLinkerData(),
+                        context, linkerShareRequest.getShareCallbackInterface(),
+                        ((LinkerShareData) linkerShareRequest.getDataObj()).getUserData());
+            }
         }
     }
 
@@ -108,6 +115,7 @@ public class BranchWrapper implements WrapperInterface {
     public void handleDefferedDeeplink(LinkerDeeplinkRequest linkerDeeplinkRequest, Context context) {
         Branch branch = Branch.getInstance();
         checkBranchLinkUTMParams(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity());
+        handleDeferredDeeplinkFDL(linkerDeeplinkRequest);
         if (branch == null) {
             if (linkerDeeplinkRequest != null && linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                 linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
@@ -138,6 +146,10 @@ public class BranchWrapper implements WrapperInterface {
                 }
             }
         }
+    }
+
+    private void handleDeferredDeeplinkFDL(LinkerDeeplinkRequest linkerDeeplinkRequest) {
+        new FirebaseDLWrapper().getFirebaseDynamicLink(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity(), ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity().getIntent());
     }
 
     private Branch.BranchReferralInitListener getBranchCallback(LinkerDeeplinkRequest linkerDeeplinkRequest, Context context) {
@@ -336,6 +348,12 @@ public class BranchWrapper implements WrapperInterface {
                 .setContentImageUrl(data.getImgUri())
                 .setContentIndexingMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC);
         return branchUniversalObject;
+    }
+
+    private void generateFirebaseLink(final LinkerData data, final Context context,
+                                      final ShareCallback shareCallback, final UserData userData) {
+        new FirebaseDLWrapper().createShortLink(shareCallback,data);
+
     }
 
     private void generateBranchLink(final LinkerData data, final Context context,
@@ -658,5 +676,10 @@ public class BranchWrapper implements WrapperInterface {
         if(handler != null){
             handler.removeCallbacksAndMessages(null);
         }
+    }
+
+    private Boolean isFDLActivated(Context context) {
+        return ((LinkerRouter) context.getApplicationContext()).
+                getBooleanRemoteConfig(LinkerConstants.FIREBASE_KEY_FDL_ENABLE, false);
     }
 }

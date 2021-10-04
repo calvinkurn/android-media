@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 class DeviceDiagParams {
     @SerializedName("ProductId")
-    var productId: Long = 0
+    var productId: String? = ""
 
     @SerializedName("DeviceId")
     var deviceId: String? = null

@@ -421,7 +421,6 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
         with(pmRegistrationFooterView) {
             val isHideCta = isRMNewSeller && isPmProSelected
-            if (isHideCta) hideCtaButton() else showCtaButton()
             if (shopInfo.kycStatusId == KYCStatusId.PENDING) gone() else visible()
             setCtaText(ctaText)
             if (isHideCta) {
@@ -452,6 +451,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
             setOnTncClickListener {
                 showPmTermAndCondition()
             }
+            if (isHideCta) hide() else show()
         }
     }
 

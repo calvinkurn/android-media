@@ -2,9 +2,12 @@ package com.tokopedia.topchat.chatroom.view.viewmodel
 
 import androidx.annotation.Keep
 import com.tokopedia.attachcommon.data.VoucherPreview
+import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER_ATTACHMENT
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
+import com.tokopedia.chat_common.data.attachment.AttachmentId
+import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -16,7 +19,7 @@ class SendableVoucherPreview(
         private val voucherPreview: VoucherPreview
 ) : SendablePreview {
 
-    val voucherViewModel = MerchantVoucherModel(
+    val voucher = MerchantVoucherModel(
             voucherPreview.voucherId,
             voucherPreview.voucherName,
             voucherPreview.voucherCode,
@@ -39,13 +42,18 @@ class SendableVoucherPreview(
         opponentId: String,
         message: String,
         listInterceptor: List<Interceptor>,
-        userLocationInfo: LocalCacheModel
+        userLocationInfo: LocalCacheModel,
+        localId: String
     ): Any {
-        val voucherPayload = generatePayload(messageId, opponentId)
+        val voucherPayload = generatePayload(messageId, opponentId, localId)
         return CommonUtil.toJson(voucherPayload)
     }
 
-    private fun generatePayload(messageId: String, opponentId: String): WebsocketAttachmentContract {
+    private fun generatePayload(
+        messageId: String,
+        opponentId: String,
+        localId: String
+    ): WebsocketAttachmentContract {
         val startTime = SendableViewModel.generateStartTime()
         val payload = WebsocketVoucherPayload(
                 voucherPreview.voucherId,
@@ -63,12 +71,13 @@ class SendableVoucherPreview(
                 voucherPreview.isPublic
         )
         val data = WebsocketAttachmentData(
-                messageId.toLongOrZero(),
-                getMessageFormat(),
-                "inbox",
-                TYPE_VOUCHER_ATTACHMENT,
-                startTime,
-                payload
+            message_id = messageId.toLongOrZero(),
+            local_id = localId,
+            message = getMessageFormat(),
+            source = "inbox",
+            attachment_type = TYPE_VOUCHER_ATTACHMENT,
+            start_time = startTime,
+            payload = payload
         )
         return WebsocketAttachmentContract(
                 EVENT_TOPCHAT_REPLY_MESSAGE,
@@ -84,6 +93,19 @@ class SendableVoucherPreview(
 
     override fun notEnoughRequiredData(): Boolean {
         return false
+    }
+
+    override fun generatePreviewMessage(
+        roomMetaData: RoomMetaData,
+        message: String
+    ): SendableViewModel {
+        return TopChatVoucherUiModel.Builder()
+            .withRoomMetaData(roomMetaData)
+            .withAttachmentId(AttachmentId.NOT_YET_GENERATED)
+            .withAttachmentType(AttachmentType.Companion.TYPE_VOUCHER)
+            .withVoucherModel(voucher)
+            .withIsPublic(voucherPreview.isPublic)
+            .build()
     }
 
     @Keep

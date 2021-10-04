@@ -68,7 +68,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllExpanded()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -85,7 +85,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllExpanded()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -101,7 +101,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllExpanded()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -117,7 +117,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllExpanded()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -133,7 +133,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllCollapsed()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -150,7 +150,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllCollapsed()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -166,7 +166,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllCollapsed()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -182,7 +182,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllCollapsed()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -198,7 +198,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllExpanded()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -214,7 +214,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessWithPreSelectedPromo()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -230,7 +230,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllEligible()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -247,7 +247,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllEligible()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -263,7 +263,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllEligible()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -279,7 +279,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllEligible()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -295,7 +295,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllIneligible()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -312,7 +312,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllIneligible()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -328,7 +328,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllIneligible()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -344,7 +344,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllIneligible()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -361,7 +361,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         viewModel.setPromoListValue(provideCurrentSelectedExpandedGlobalPromoData())
         val promoRequest = provideGetPromoListRequest()
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", promoRequest, "")
@@ -378,7 +378,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         viewModel.setPromoListValue(provideCurrentSelectedExpandedMerchantPromoData())
         val promoRequest = provideGetPromoListRequest()
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", promoRequest, "")
@@ -397,7 +397,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         viewModel.setPromoListValue(provideCurrentSelectedCollapsedGlobalPromoData())
         val promoRequest = provideGetPromoListRequest()
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", promoRequest, "")
@@ -414,7 +414,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         viewModel.setPromoListValue(provideCurrentSelectedCollapsedMerchantPromoData())
         val promoRequest = provideGetPromoListRequest()
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", promoRequest, "")
@@ -432,7 +432,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseError()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -448,7 +448,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseEmptyStateEmpty()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -465,7 +465,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         every { analytics.eventViewAvailablePromoListNoPromo(any()) } just Runs
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -482,7 +482,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         every { analytics.eventViewAvailablePromoListNoPromo(any()) } just Runs
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -498,7 +498,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseEmptyStateCouponListEmpty()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -515,7 +515,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         every { analytics.eventViewPhoneVerificationMessage(any()) } just Runs
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -532,7 +532,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         every { analytics.eventViewPhoneVerificationMessage(any()) } just Runs
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -549,7 +549,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         every { analytics.eventViewBlacklistErrorAfterApplyPromo(any()) } just Runs
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -566,7 +566,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
         every { analytics.eventViewBlacklistErrorAfterApplyPromo(any()) } just Runs
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -582,7 +582,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseEmptyStateUnknown()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -598,7 +598,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseEmptyStateUnknown()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")
@@ -614,7 +614,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseError()
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         viewModel.getPromoList("", PromoRequest(), "")
 
@@ -623,7 +623,7 @@ class PromoCheckoutViewModelGetPromoListTest {
         newResult[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllEligible()
         val newGqlResponse = GraphqlResponse(newResult, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns newGqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns newGqlResponse
 
         //when
         viewModel.getPromoList("", PromoRequest(), "")

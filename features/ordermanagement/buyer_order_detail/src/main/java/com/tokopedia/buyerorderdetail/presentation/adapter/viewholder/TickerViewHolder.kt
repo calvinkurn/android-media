@@ -34,7 +34,7 @@ class TickerViewHolder(
     }
 
     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-        navigator.openWebView(linkUrl.toString(), false)
+        navigator.openAppLink(linkUrl.toString(), false)
         if (element?.actionKey == BuyerOrderDetailMiscConstant.TICKER_KEY_SHIPPING_INFO) {
             listener.onClickShipmentInfoTnC()
         }

@@ -14,18 +14,21 @@ class GetRecentPurchaseUseCase @Inject constructor(
 ) {
 
     companion object {
-        private const val PARAM_WAREHOUSE_ID = "warehouseID"
+        const val PARAM_WAREHOUSE_ID = "warehouseID"
+        const val PARAM_QUERY_PARAM = "queryParam"
+        const val PARAM_CAT_ID = "catID"
     }
 
     private val graphql by lazy { GraphqlUseCase<GetRecentPurchaseResponse>(graphqlRepository) }
 
-    suspend fun execute(warehouseId: String): RecentPurchaseData {
+    suspend fun execute(warehouseId: String, queryParam: String = ""): RecentPurchaseData {
         graphql.apply {
             setGraphqlQuery(GetRecentPurchase.QUERY)
             setTypeClass(GetRecentPurchaseResponse::class.java)
 
             setRequestParams(RequestParams.create().apply {
                 putString(PARAM_WAREHOUSE_ID, warehouseId)
+                putString(PARAM_QUERY_PARAM, queryParam)
             }.parameters)
 
             val response = executeOnBackground().response
