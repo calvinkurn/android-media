@@ -15,7 +15,7 @@ import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.review.feature.credibility.presentation.activity.ReviewCredibilityActivity
 import com.tokopedia.review.feature.imagepreview.analytics.ReviewImagePreviewTracking
-import com.tokopedia.review.feature.reading.data.UserReviewStats
+import com.tokopedia.review.feature.imagepreview.presentation.uimodel.ReviewImagePreviewBottomSheetUiModel
 import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -28,46 +28,16 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
             "Review Gallery Expanded Review BottomSheet Tag"
 
         fun createInstance(
-            rating: Int, timeStamp: String, reviewerName: String,
-            reviewMessage: String, variantName: String = "",
-            userStats: List<UserReviewStats> = listOf(), userId: String = "",
-            isAnonymous: Boolean = false, isProductReview: Boolean = false, feedbackId: String = "",
-            productId: String = "", isFromGallery: Boolean, currentUserId: String,
-            reviewerImage: String
+            reviewImagePreviewBottomSheetUiModel: ReviewImagePreviewBottomSheetUiModel
         ): ReviewImagePreviewExpandedReviewBottomSheet {
             return ReviewImagePreviewExpandedReviewBottomSheet().apply {
-                this.rating = rating
-                this.timeStamp = timeStamp
-                this.reviewerName = reviewerName
-                this.reviewMessage = reviewMessage
-                this.variantName = variantName
-                this.userStats = userStats
-                this.userId = userId
-                this.isAnonymous = isAnonymous
-                this.isProductReview = isProductReview
-                this.feedbackId = feedbackId
-                this.productId = productId
-                this.isFromGallery = isFromGallery
-                this.currentUserId = currentUserId
-                this.reviewerImage = reviewerImage
+                this.uiModel = reviewImagePreviewBottomSheetUiModel
             }
         }
     }
 
-    private var rating: Int = 0
-    private var timeStamp = ""
-    private var reviewerName = ""
-    private var reviewMessage = ""
-    private var variantName = ""
-    private var userStats = listOf<UserReviewStats>()
-    private var userId = ""
-    private var isAnonymous = false
-    private var isProductReview = false
-    private var feedbackId = ""
-    private var productId = ""
-    private var isFromGallery = false
-    private var currentUserId = ""
-    private var reviewerImage = ""
+    private var uiModel: ReviewImagePreviewBottomSheetUiModel =
+        ReviewImagePreviewBottomSheetUiModel()
 
     private var basicInfoWidget: ReviewBasicInfoWidget? = null
     private var review: Typography? = null
@@ -97,25 +67,34 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
     }
 
     override fun trackOnUserInfoClicked(feedbackId: String, userId: String, statistics: String) {
-        ReviewImagePreviewTracking.trackClickReviewerName(isFromGallery, feedbackId, userId, statistics, productId, currentUserId)
+        ReviewImagePreviewTracking.trackClickReviewerName(
+            uiModel.isFromGallery,
+            feedbackId,
+            userId,
+            statistics,
+            uiModel.productId,
+            uiModel.currentUserId
+        )
     }
 
     private fun setBasicInfo() {
         basicInfoWidget?.apply {
-            setCredibilityData(isProductReview, isAnonymous, userId, feedbackId)
-            setRating(rating)
-            setCreateTime(timeStamp)
-            setReviewerName(reviewerName)
-            setVariantName(variantName)
-            setStats(userStats)
-            setListener(this@ReviewImagePreviewExpandedReviewBottomSheet)
-            setReviewerImage(reviewerImage)
+            with(uiModel) {
+                setCredibilityData(isProductReview, isAnonymous, userId, feedbackId)
+                setRating(rating)
+                setCreateTime(timeStamp)
+                setReviewerName(reviewerName)
+                setVariantName(variantName)
+                setStats(userStats)
+                setListener(this@ReviewImagePreviewExpandedReviewBottomSheet)
+                setReviewerImage(reviewerImage)
+            }
         }
     }
 
     private fun setReview() {
         review?.apply {
-            text = HtmlLinkHelper(context, reviewMessage).spannedString
+            text = HtmlLinkHelper(context, uiModel.reviewMessage).spannedString
             movementMethod = ScrollingMovementMethod()
             maxLines = Int.MAX_VALUE
         }
@@ -140,7 +119,8 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
                     ReadReviewFragment.READING_SOURCE
                 )
             ).buildUpon()
-                .appendQueryParameter(ReviewCredibilityActivity.PARAM_PRODUCT_ID, productId).build()
+                .appendQueryParameter(ReviewCredibilityActivity.PARAM_PRODUCT_ID, uiModel.productId)
+                .build()
                 .toString()
         )
     }

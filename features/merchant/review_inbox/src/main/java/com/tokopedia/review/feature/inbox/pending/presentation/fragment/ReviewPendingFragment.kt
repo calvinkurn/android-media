@@ -65,9 +65,11 @@ import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSucess
 
-class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendingAdapterTypeFactory>(),
-        ReviewPendingItemListener, HasComponent<ReviewPendingComponent>, ReviewPerformanceMonitoringContract,
-        IncentiveOvoListener {
+class ReviewPendingFragment :
+    BaseListFragment<ReviewPendingUiModel, ReviewPendingAdapterTypeFactory>(),
+    ReviewPendingItemListener, HasComponent<ReviewPendingComponent>,
+    ReviewPerformanceMonitoringContract,
+    IncentiveOvoListener {
 
     companion object {
         const val PARAM_RATING = "rating"
@@ -112,14 +114,38 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     override fun trackCardClicked(reputationId: String, productId: String, isEligible: Boolean) {
-        ReviewPendingTracking.eventClickCard(reputationId, productId, viewModel.getUserId(), isEligible, source)
+        ReviewPendingTracking.eventClickCard(
+            reputationId,
+            productId,
+            viewModel.getUserId(),
+            isEligible,
+            source
+        )
     }
 
-    override fun trackStarsClicked(reputationId: String, productId: String, rating: Int, isEligible: Boolean) {
-        ReviewPendingTracking.eventClickRatingStar(reputationId, productId, rating, viewModel.getUserId(), isEligible, source)
+    override fun trackStarsClicked(
+        reputationId: String,
+        productId: String,
+        rating: Int,
+        isEligible: Boolean
+    ) {
+        ReviewPendingTracking.eventClickRatingStar(
+            reputationId,
+            productId,
+            rating,
+            viewModel.getUserId(),
+            isEligible,
+            source
+        )
     }
 
-    override fun onStarsClicked(reputationId: String, productId: String, rating: Int, inboxReviewId: String, seen: Boolean) {
+    override fun onStarsClicked(
+        reputationId: String,
+        productId: String,
+        rating: Int,
+        inboxReviewId: String,
+        seen: Boolean
+    ) {
         if (!seen) {
             viewModel.markAsSeen(inboxReviewId)
             containerListener?.decreaseReviewUnreviewedCounter()
@@ -130,9 +156,9 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     override fun getComponent(): ReviewPendingComponent? {
         return activity?.run {
             DaggerReviewPendingComponent
-                    .builder()
-                    .reviewInboxComponent(ReviewInboxInstance.getComponent(application))
-                    .build()
+                .builder()
+                .reviewInboxComponent(ReviewInboxInstance.getComponent(application))
+                .build()
         }
     }
 
@@ -150,7 +176,8 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     override fun startRenderPerformanceMonitoring() {
         reviewPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
-        reviewPendingRecyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        reviewPendingRecyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 reviewPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
                 reviewPerformanceMonitoringListener?.stopPerformanceMonitoring()
@@ -169,14 +196,19 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        reviewPerformanceMonitoringListener = castContextToTalkPerformanceMonitoringListener(context)
+        reviewPerformanceMonitoringListener =
+            castContextToTalkPerformanceMonitoringListener(context)
     }
 
     override fun getRecyclerView(view: View?): RecyclerView {
         return reviewPendingRecyclerView
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_review_pending, container, false)
     }
 
@@ -225,7 +257,8 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         updateScrollListenerState(hasNextPage)
         isLoadingInitialData = false
         if (adapter.dataSize < minimumScrollableNumOfItems && isAutoLoadEnabled
-                && hasNextPage && endlessRecyclerViewScrollListener != null) {
+            && hasNextPage && endlessRecyclerViewScrollListener != null
+        ) {
             endlessRecyclerViewScrollListener.loadMoreNextPage()
         }
     }
@@ -237,8 +270,10 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
             if (resultCode == Activity.RESULT_OK) {
                 onSuccessCreateReview()
             } else if (resultCode == Activity.RESULT_FIRST_USER) {
-                onFailCreateReview(data?.getStringExtra(ReviewInboxConstants.CREATE_REVIEW_ERROR_MESSAGE)
-                        ?: getString(R.string.review_pending_invalid_to_review))
+                onFailCreateReview(
+                    data?.getStringExtra(ReviewInboxConstants.CREATE_REVIEW_ERROR_MESSAGE)
+                        ?: getString(R.string.review_pending_invalid_to_review)
+                )
             }
             loadInitialData()
         }
@@ -264,7 +299,10 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     override fun onDismissOvoIncentiveTicker(subtitle: String) {
-        ReviewTracking.onClickDismissIncentiveOvoTracker(subtitle, ReviewInboxTrackingConstants.PENDING_TAB)
+        ReviewTracking.onClickDismissIncentiveOvoTracker(
+            subtitle,
+            ReviewInboxTrackingConstants.PENDING_TAB
+        )
     }
 
     override fun onReviewCredibilityWidgetClicked() {
@@ -355,7 +393,15 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     private fun showErrorToaster(errorMessage: String, ctaText: String, action: () -> Unit = {}) {
         try {
-            view?.let { Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, View.OnClickListener { action() }).show() }
+            view?.let {
+                Toaster.build(
+                    it,
+                    errorMessage,
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    ctaText,
+                    View.OnClickListener { action() }).show()
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -363,7 +409,15 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     private fun showToaster(message: String, ctaText: String) {
         try {
-            view?.let { Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText).show() }
+            view?.let {
+                Toaster.build(
+                    it,
+                    message,
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    ctaText
+                ).show()
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -402,16 +456,15 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
                         }
                     }
                     if (it.data.list.isEmpty() && it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
-                        if (shouldShowCredibility()) {
-                            showCredibilityEmptyState(it.data.emptyState.imageURL, it.data.emptyState.labelTitle, it.data.emptyState.labelSubtitle)
-                            showList()
-                        } else {
-                            showEmptyState()
+                        with(it.data.emptyState) {
+                            handleEmptyState(imageURL, labelTitle, labelSubtitle)
                         }
                     } else {
-                        renderReviewData(ReviewPendingMapper.mapProductRevWaitForFeedbackResponseToReviewPendingUiModel(
+                        renderReviewData(
+                            ReviewPendingMapper.mapProductRevWaitForFeedbackResponseToReviewPendingUiModel(
                                 it.data.list
-                        ), it.data.hasNext)
+                            ), it.data.hasNext
+                        )
                     }
                     hideError()
                 }
@@ -427,7 +480,10 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
                         hideEmptyState()
                         hideList()
                     } else {
-                        showErrorToaster(getString(R.string.review_toaster_page_error), getString(R.string.review_refresh)) { getPendingReviewData(currentPage) }
+                        showErrorToaster(
+                            getString(R.string.review_toaster_page_error),
+                            getString(R.string.review_refresh)
+                        ) { getPendingReviewData(currentPage) }
                     }
                 }
             }
@@ -436,7 +492,11 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvoDomain?) {
         data?.productrevIncentiveOvo?.ticker?.let {
-            (adapter as? ReviewPendingAdapter)?.insertOvoIncentive(ReviewPendingOvoIncentiveUiModel((data)))
+            (adapter as? ReviewPendingAdapter)?.insertOvoIncentive(
+                ReviewPendingOvoIncentiveUiModel(
+                    (data)
+                )
+            )
         }
     }
 
@@ -446,16 +506,29 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     override fun onClickOvoIncentiveTickerDescription(productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain) {
         if (ovoIncentiveBottomSheet == null) {
-            ovoIncentiveBottomSheet = context?.let { IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(it, productRevIncentiveOvoDomain, this, ReviewInboxTrackingConstants.PENDING_TAB) }
+            ovoIncentiveBottomSheet = context?.let {
+                IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(
+                    it,
+                    productRevIncentiveOvoDomain,
+                    this,
+                    ReviewInboxTrackingConstants.PENDING_TAB
+                )
+            }
         }
         ovoIncentiveBottomSheet?.let { bottomSheet ->
             activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
-            ReviewTracking.onClickReadSkIncentiveOvoTracker(productRevIncentiveOvoDomain.productrevIncentiveOvo?.ticker?.subtitle, ReviewInboxTrackingConstants.PENDING_TAB)
+            ReviewTracking.onClickReadSkIncentiveOvoTracker(
+                productRevIncentiveOvoDomain.productrevIncentiveOvo?.ticker?.subtitle,
+                ReviewInboxTrackingConstants.PENDING_TAB
+            )
         }
     }
 
     private fun onSuccessCreateReview() {
-        showToaster(getString(R.string.review_create_success_toaster, viewModel.getUserName()), getString(R.string.review_oke))
+        showToaster(
+            getString(R.string.review_create_success_toaster, viewModel.getUserName()),
+            getString(R.string.review_oke)
+        )
     }
 
     private fun onFailCreateReview(errorMessage: String) {
@@ -468,27 +541,43 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         renderList(reviewData, hasNextPage)
     }
 
-    private fun goToCreateReviewActivity(reputationId: String, productId: String, rating: Int, inboxId: String) {
+    private fun goToCreateReviewActivity(
+        reputationId: String,
+        productId: String,
+        rating: Int,
+        inboxId: String
+    ) {
         context?.let {
-            val intent = RouteManager.getIntent(it,
-                    Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId))
-                            .buildUpon()
-                            .appendQueryParameter(PARAM_RATING, rating.toString())
-                            .build()
-                            .toString())
+            val intent = RouteManager.getIntent(
+                it,
+                Uri.parse(
+                    UriUtil.buildUri(
+                        ApplinkConstInternalMarketplace.CREATE_REVIEW,
+                        reputationId,
+                        productId
+                    )
+                )
+                    .buildUpon()
+                    .appendQueryParameter(PARAM_RATING, rating.toString())
+                    .build()
+                    .toString()
+            )
             startActivityForResult(intent, CREATE_REVIEW_REQUEST_CODE)
         }
     }
 
     private fun getSourceData() {
-        if(InboxUnifiedRemoteConfig.isInboxUnified()) {
+        if (InboxUnifiedRemoteConfig.isInboxUnified()) {
             source = containerListener?.getPageSource() ?: ReviewInboxConstants.DEFAULT_SOURCE
-            if(source.isBlank()) {
+            if (source.isBlank()) {
                 source = ReviewInboxConstants.DEFAULT_SOURCE
             }
             return
         }
-        source = arguments?.getString(ReviewInboxConstants.PARAM_SOURCE, ReviewInboxConstants.DEFAULT_SOURCE) ?: ReviewInboxConstants.DEFAULT_SOURCE
+        source = arguments?.getString(
+            ReviewInboxConstants.PARAM_SOURCE,
+            ReviewInboxConstants.DEFAULT_SOURCE
+        ) ?: ReviewInboxConstants.DEFAULT_SOURCE
     }
 
     private fun goToHome() {
@@ -505,7 +594,13 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     private fun addCredibilityWidget(imageUrl: String, title: String, subtitle: String) {
-        (adapter as? ReviewPendingAdapter)?.insertCredibilityWidget(ReviewPendingCredibilityUiModel(imageUrl, title, subtitle))
+        (adapter as? ReviewPendingAdapter)?.insertCredibilityWidget(
+            ReviewPendingCredibilityUiModel(
+                imageUrl,
+                title,
+                subtitle
+            )
+        )
     }
 
     private fun initSharedPrefs() {
@@ -518,14 +613,20 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
 
     private fun isNewCredibilityEnabled(): Boolean {
         getAbTestPlatform()?.let {
-            return it.getString(RollenceKey.EXPERIMENT_NAME_REVIEW_CREDIBILITY, RollenceKey.VARIANT_REVIEW_CREDIBILITY_WITHOUT_BOTTOM_SHEET) == RollenceKey.VARIANT_REVIEW_CREDIBILITY_WITH_BOTTOM_SHEET
+            return it.getString(
+                RollenceKey.EXPERIMENT_NAME_REVIEW_CREDIBILITY,
+                RollenceKey.VARIANT_REVIEW_CREDIBILITY_WITHOUT_BOTTOM_SHEET
+            ) == RollenceKey.VARIANT_REVIEW_CREDIBILITY_WITH_BOTTOM_SHEET
         }
         return false
     }
 
     private fun isNewReadingExperienceEnabled(): Boolean {
         getAbTestPlatform()?.let {
-            return it.getString(RollenceKey.EXPERIMENT_NAME_REVIEW_PRODUCT_READING, RollenceKey.VARIANT_OLD_REVIEW_PRODUCT_READING) == RollenceKey.VARIANT_NEW_REVIEW_PRODUCT_READING
+            return it.getString(
+                RollenceKey.EXPERIMENT_NAME_REVIEW_PRODUCT_READING,
+                RollenceKey.VARIANT_OLD_REVIEW_PRODUCT_READING
+            ) == RollenceKey.VARIANT_NEW_REVIEW_PRODUCT_READING
         }
         return false
     }
@@ -539,6 +640,21 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
     }
 
     private fun showCredibilityEmptyState(imageUrl: String, title: String, subtitle: String) {
-        (adapter as? ReviewPendingAdapter)?.insertEmptyModel(ReviewPendingEmptyUiModel(imageUrl, title, subtitle))
+        (adapter as? ReviewPendingAdapter)?.insertEmptyModel(
+            ReviewPendingEmptyUiModel(
+                imageUrl,
+                title,
+                subtitle
+            )
+        )
+    }
+
+    private fun handleEmptyState(emptyImageUrl: String, labelTitle: String, labelSubtitle: String) {
+        if (shouldShowCredibility()) {
+            showCredibilityEmptyState(emptyImageUrl, labelTitle, labelSubtitle)
+            showList()
+        } else {
+            showEmptyState()
+        }
     }
 }

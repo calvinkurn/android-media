@@ -42,6 +42,7 @@ import com.tokopedia.review.feature.imagepreview.presentation.adapter.ReviewImag
 import com.tokopedia.review.feature.imagepreview.presentation.di.DaggerReviewImagePreviewComponent
 import com.tokopedia.review.feature.imagepreview.presentation.di.ReviewImagePreviewComponent
 import com.tokopedia.review.feature.imagepreview.presentation.listener.*
+import com.tokopedia.review.feature.imagepreview.presentation.uimodel.ReviewImagePreviewBottomSheetUiModel
 import com.tokopedia.review.feature.imagepreview.presentation.uimodel.ReviewImagePreviewFinalLikeCount
 import com.tokopedia.review.feature.imagepreview.presentation.uimodel.ReviewImagePreviewUiModel
 import com.tokopedia.review.feature.imagepreview.presentation.viewmodel.ReviewImagePreviewViewModel
@@ -49,6 +50,7 @@ import com.tokopedia.review.feature.imagepreview.presentation.widget.ReviewImage
 import com.tokopedia.review.feature.imagepreview.presentation.widget.ReviewImagePreviewExpandedReviewBottomSheet
 import com.tokopedia.review.feature.reading.data.LikeDislike
 import com.tokopedia.review.feature.reading.data.ProductReview
+import com.tokopedia.review.feature.reading.data.UserReviewStats
 import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
@@ -481,7 +483,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     private fun updateLikeStatus(reviewId: String, likeStatus: Int) {
         if (isFromGallery) {
             galleryRoutingData.loadedReviews.forEach {
-                if (it.feedbackId == reviewId ) {
+                if (it.feedbackId == reviewId) {
                     it.isLiked = isLiked(likeStatus)
                 }
             }
@@ -532,40 +534,44 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             galleryRoutingData.getSelectedReview(currentRecyclerViewPosition)?.let {
                 expandedReviewBottomSheet =
                     ReviewImagePreviewExpandedReviewBottomSheet.createInstance(
-                        it.rating,
-                        it.reviewTime,
-                        it.reviewerName,
-                        it.review,
-                        it.variantName,
-                        it.userStats,
-                        it.userId,
-                        it.isAnonymous,
-                        isProductReview,
-                        it.feedbackId,
-                        viewModel.getProductId(),
-                        isFromGallery,
-                        viewModel.getUserId(),
-                        it.userImage
+                        getBottomSheetUiModel(
+                            it.rating,
+                            it.reviewTime,
+                            it.reviewerName,
+                            it.review,
+                            it.variantName,
+                            it.userStats,
+                            it.userId,
+                            it.isAnonymous,
+                            isProductReview,
+                            it.feedbackId,
+                            viewModel.getProductId(),
+                            isFromGallery,
+                            viewModel.getUserId(),
+                            it.userImage
+                        )
                     )
             }
         } else {
             with(productReview) {
                 expandedReviewBottomSheet =
                     ReviewImagePreviewExpandedReviewBottomSheet.createInstance(
-                        productRating,
-                        reviewCreateTimestamp,
-                        user.fullName,
-                        message,
-                        variantName,
-                        userReviewStats,
-                        user.userID,
-                        isAnonymous,
-                        isProductReview,
-                        feedbackID,
-                        productId,
-                        isFromGallery,
-                        viewModel.getUserId(),
-                        user.image
+                        getBottomSheetUiModel(
+                            productRating,
+                            reviewCreateTimestamp,
+                            user.fullName,
+                            message,
+                            variantName,
+                            userReviewStats,
+                            user.userID,
+                            isAnonymous,
+                            isProductReview,
+                            feedbackID,
+                            productId,
+                            isFromGallery,
+                            viewModel.getUserId(),
+                            user.image
+                        )
                     )
             }
         }
@@ -783,6 +789,32 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             ).buildUpon()
                 .appendQueryParameter(ReviewCredibilityActivity.PARAM_PRODUCT_ID, productId).build()
                 .toString()
+        )
+    }
+
+    private fun getBottomSheetUiModel(
+        rating: Int, timeStamp: String, reviewerName: String,
+        reviewMessage: String, variantName: String,
+        userStats: List<UserReviewStats>, userId: String,
+        isAnonymous: Boolean = false, isProductReview: Boolean = false, feedbackId: String = "",
+        productId: String, isFromGallery: Boolean, currentUserId: String,
+        reviewerImage: String
+    ): ReviewImagePreviewBottomSheetUiModel {
+        return ReviewImagePreviewBottomSheetUiModel(
+            rating,
+            timeStamp,
+            reviewerName,
+            reviewMessage,
+            variantName,
+            userStats,
+            userId,
+            isAnonymous,
+            isProductReview,
+            feedbackId,
+            productId,
+            isFromGallery,
+            currentUserId,
+            reviewerImage
         )
     }
 }
