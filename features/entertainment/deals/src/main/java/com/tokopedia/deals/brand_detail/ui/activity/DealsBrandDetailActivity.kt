@@ -1,7 +1,5 @@
 package com.tokopedia.deals.brand_detail.ui.activity
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import androidx.fragment.app.Fragment
@@ -45,10 +43,5 @@ class DealsBrandDetailActivity: BaseSimpleActivity(), HasComponent<DealsBrandDet
 
     companion object {
         const val EXTRA_SEO_URL = "EXTRA_SEO_URL"
-
-        fun getCallingIntent(context: Context, seoUrl: String? = null): Intent =
-                Intent(context, DealsBrandDetailActivity::class.java).apply {
-                    putExtra(EXTRA_SEO_URL, seoUrl)
-                }
     }
 }

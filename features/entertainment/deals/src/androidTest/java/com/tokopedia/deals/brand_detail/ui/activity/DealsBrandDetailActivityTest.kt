@@ -20,7 +20,7 @@ import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.*
 
-class  DealsBrandDetailActivityTest {
+class DealsBrandDetailActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
@@ -54,6 +54,7 @@ class  DealsBrandDetailActivityTest {
 
     @Test
     fun testBrandDetailFlow() {
+        Thread.sleep(3000)
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
         Espresso.onView(ViewMatchers.withText("KlikDokter ECG")).perform(ViewActions.click())
