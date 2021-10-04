@@ -239,7 +239,10 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
     }
 
     override fun trackOnUserInfoClicked(feedbackId: String, userId: String, statistics: String) {
-        // No Op
+        ReviewImagePreviewTracking.trackClickReviewerName(
+            isFromGallery, feedbackId, userId, statistics,
+            if (isFromGallery) viewModel.getProductId() else productId, viewModel.getUserId()
+        )
     }
 
     override fun onUserNameClicked(userId: String) {

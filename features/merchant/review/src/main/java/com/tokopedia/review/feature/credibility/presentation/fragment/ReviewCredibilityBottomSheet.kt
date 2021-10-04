@@ -263,6 +263,8 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
                 this.applink = applink
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), LOGIN_REQUEST_CODE)
             }
+        } else {
+            dismiss()
         }
     }
 

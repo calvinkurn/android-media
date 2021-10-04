@@ -17,8 +17,6 @@ class GetReviewerCredibilityUseCase @Inject constructor(gqlRepository: GraphqlRe
     companion object {
         const val PARAM_USER_ID = "userID"
         const val PARAM_ENTRY_POINT = "entrypoint"
-        const val PARAM_REVIEW_LIST = "review-list"
-        const val PARAM_INBOX = "inbox"
         const val REVIEW_CREDIBILITY_QUERY_CLASS_NAME = "ReviewerCredibilityQuery"
         const val REVIEW_CREDIBILITY_QUERY = """
                 query getReviewerCredibilityStats(${'$'}userID: String!, ${'$'}entrypoint: String) {
@@ -30,6 +28,7 @@ class GetReviewerCredibilityUseCase @Inject constructor(gqlRepository: GraphqlRe
                       footer
                       ctaText
                       infoText
+                      ctaApplink
                     }
                     stats {
                       key
