@@ -13,12 +13,12 @@ class DialogController(private val presenter: GratificationPresenter) {
     var job: Job? = null
 
     fun showGratifDialog(weakReference: WeakReference<Activity>,
-                         paymentId: Long,
+                         paymentIdStr: String,
                          gratifPopupCallback: GratificationPresenter.GratifPopupCallback,
                          screenName: String
     ): Job? {
         job = presenter.showGratificationInApp(weakActivity = weakReference,
-                paymentID = paymentId,
+                paymentID = paymentIdStr,
                 gratifPopupCallback = gratifPopupCallback,
                 notificationEntryType = NotificationEntryType.ORGANIC,
                 screenName = screenName,

@@ -214,7 +214,7 @@ class GratificationPresenter @Inject constructor(val context: Context,
                                @NotificationEntryType notificationEntryType: Int,
                                gratifPopupCallback: GratifPopupCallback,
                                screenName: String,
-                               paymentID: Long = 0L,
+                               paymentID: String = "",
                                timeout: Long = 0L,
                                closeCurrentActivity: Boolean = false,
                                inAppId: Long? = null
