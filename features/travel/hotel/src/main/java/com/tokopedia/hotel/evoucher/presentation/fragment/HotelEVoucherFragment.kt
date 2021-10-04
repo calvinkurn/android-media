@@ -336,7 +336,12 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
 
             if (propertyDetail.extraInfo.content.isEmpty() && propertyDetail.specialRequest.content.isEmpty()) binding?.hotelDetailSeperator?.hide()
 
-            if(data.hotelTransportDetails.tickerContactHotel.isEmpty()) binding?.tvOrderDetailNha?.gone() else binding?.tvOrderDetailNha?.show()
+            if(data.hotelTransportDetails.tickerContactHotel.isNotEmpty()) {
+                binding?.tvOrderDetailNha?.show()
+                binding?.tvOrderDetailNha?.text = data.hotelTransportDetails.tickerContactHotel
+            } else {
+                binding?.tvOrderDetailNha?.gone()
+            }
 
             if(data.hotelTransportDetails.contactInfo.isNotEmpty()){
                 val telNum: String = (data.hotelTransportDetails.contactInfo.firstOrNull()?.number ?: 0).toString()
