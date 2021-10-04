@@ -13,8 +13,8 @@ import javax.inject.Inject
 class InitiateVoucherUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) : BaseGqlUseCase<InitiateVoucherUiModel>() {
 
     companion object {
-        const val QUERY = "query InitiateVoucher(\$action: String){\n" +
-                "\tgetInitiateVoucherPage(Action: \$action){\n" +
+        const val QUERY = "query InitiateVoucher(\$action: String, \$targetBuyer: Int, \$couponType: String){\n" +
+                "\tgetInitiateVoucherPage(Action: \$action, TargetBuyer: \$targetBuyer ,CouponType: \$couponType){\n" +
                 "\t\theader{\n" +
                 "          process_time\n" +
                 "          messages\n" +
@@ -39,8 +39,15 @@ class InitiateVoucherUseCase @Inject constructor(private val gqlRepository: Grap
                 "    }\n" +
                 "}"
 
+        // keys
         private const val ACTION_KEY = "action"
+        private const val TARGET_BUYER_KEY = "targetBuyer"
+        private const val COUPON_TYPE_KEY = "couponType"
+
+        // values
         private const val ELIGIBLE_VALUE = 1
+        private const val ALL_USER = 0
+        private const val COUPON_TYPE_CASHBACK = "cashback"
 
         @JvmStatic
         fun createRequestParam(isUpdate: Boolean): RequestParams = RequestParams.create().apply {
@@ -51,6 +58,8 @@ class InitiateVoucherUseCase @Inject constructor(private val gqlRepository: Grap
                         InitiateAction.CREATE
                     }
             putString(ACTION_KEY, action)
+            putInt(TARGET_BUYER_KEY, ALL_USER)
+            putString(COUPON_TYPE_KEY, COUPON_TYPE_CASHBACK)
         }
     }
 
