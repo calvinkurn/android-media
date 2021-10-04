@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:background="@drawable/btn_plain"
     android:layout_height="match_parent">
 
@@ -17,22 +19,24 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/close_option_button"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:text="@string/title_close"
             android:gravity="center"
+            app:typographyType="body_2"
             android:background="@drawable/btn_plain"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/edit_option_button"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:text="@string/title_edit"
             android:gravity="center"
+            app:typographyType="body_2"
             android:background="@drawable/btn_plain"/>
 
     </LinearLayout>
