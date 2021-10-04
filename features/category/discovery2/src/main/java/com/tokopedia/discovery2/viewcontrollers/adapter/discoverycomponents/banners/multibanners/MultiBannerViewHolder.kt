@@ -121,7 +121,7 @@ class MultiBannerViewHolder(private val customItemView: View, val fragment: Frag
     private fun sendImpressionEventForBanners(data: List<DataItem>) {
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
             data,
-            multiBannerViewModel.getComponentPosition(),
+            null,
             Utils.getUserId(fragment.context)
         )
     }

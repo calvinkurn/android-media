@@ -25,13 +25,15 @@ import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
-import com.tokopedia.home.beranda.domain.model.walletapp.WalletAppData
+import com.tokopedia.navigation_common.usecase.pojo.walletapp.Balances
+import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
 import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeCoachmarkModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeNotifModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.BalanceDrawerItemModel.Companion.STATE_ERROR
@@ -59,6 +61,8 @@ import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
+import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
@@ -89,36 +93,37 @@ import javax.inject.Inject
 @SuppressLint("SyntheticAccessor")
 @ExperimentalCoroutinesApi
 open class HomeRevampViewModel @Inject constructor(
-        private val homeUseCase: Lazy<HomeRevampUseCase>,
-        private val userSession: Lazy<UserSessionInterface>,
-        private val closeChannelUseCase: Lazy<CloseChannelUseCase>,
-        private val dismissHomeReviewUseCase: Lazy<DismissHomeReviewUseCase>,
-        private val getAtcUseCase: Lazy<AddToCartOccMultiUseCase>,
-        private val getBusinessUnitDataUseCase: Lazy<GetBusinessUnitDataUseCase>,
-        private val getBusinessWidgetTab: Lazy<GetBusinessWidgetTab>,
-        private val getDisplayHeadlineAds: Lazy<GetDisplayHeadlineAds>,
-        private val getHomeReviewSuggestedUseCase: Lazy<GetHomeReviewSuggestedUseCase>,
-        private val getHomeTokopointsDataUseCase: Lazy<GetHomeTokopointsDataUseCase>,
-        private val getHomeTokopointsListDataUseCase: Lazy<GetHomeTokopointsListDataUseCase>,
-        private val getKeywordSearchUseCase: Lazy<GetKeywordSearchUseCase>,
-        private val getPendingCashbackUseCase: Lazy<GetCoroutinePendingCashbackUseCase>,
-        private val getPlayCardHomeUseCase: Lazy<GetPlayLiveDynamicUseCase>,
-        private val getRecommendationTabUseCase: Lazy<GetRecommendationTabUseCase>,
-        private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
-        private val getRecommendationFilterChips: Lazy<GetRecommendationFilterChips>,
-        private val getWalletBalanceUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
-        private val popularKeywordUseCase: Lazy<GetPopularKeywordUseCase>,
-        private val injectCouponTimeBasedUseCase: Lazy<InjectCouponTimeBasedUseCase>,
-        private val getRechargeRecommendationUseCase: Lazy<GetRechargeRecommendationUseCase>,
-        private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
-        private val getSalamWidgetUseCase: Lazy<GetSalamWidgetUseCase>,
-        private val declineSalamWidgetUseCase: Lazy<DeclineSalamWIdgetUseCase>,
-        private val getRechargeBUWidgetUseCase: Lazy<GetRechargeBUWidgetUseCase>,
-        private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
-        private val bestSellerMapper: Lazy<BestSellerMapper>,
-        private val homeDispatcher: Lazy<CoroutineDispatchers>,
-        private val playWidgetTools: Lazy<PlayWidgetTools>,
-        private val getWalletAppBalanceUseCase: Lazy<GetWalletAppBalanceUseCase>
+    private val homeUseCase: Lazy<HomeRevampUseCase>,
+    private val userSession: Lazy<UserSessionInterface>,
+    private val closeChannelUseCase: Lazy<CloseChannelUseCase>,
+    private val dismissHomeReviewUseCase: Lazy<DismissHomeReviewUseCase>,
+    private val getAtcUseCase: Lazy<AddToCartOccMultiUseCase>,
+    private val getBusinessUnitDataUseCase: Lazy<GetBusinessUnitDataUseCase>,
+    private val getBusinessWidgetTab: Lazy<GetBusinessWidgetTab>,
+    private val getDisplayHeadlineAds: Lazy<GetDisplayHeadlineAds>,
+    private val getHomeReviewSuggestedUseCase: Lazy<GetHomeReviewSuggestedUseCase>,
+    private val getHomeTokopointsDataUseCase: Lazy<GetHomeTokopointsDataUseCase>,
+    private val getHomeTokopointsListDataUseCase: Lazy<GetHomeTokopointsListDataUseCase>,
+    private val getKeywordSearchUseCase: Lazy<GetKeywordSearchUseCase>,
+    private val getPendingCashbackUseCase: Lazy<GetCoroutinePendingCashbackUseCase>,
+    private val getPlayCardHomeUseCase: Lazy<GetPlayLiveDynamicUseCase>,
+    private val getRecommendationTabUseCase: Lazy<GetRecommendationTabUseCase>,
+    private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
+    private val getRecommendationFilterChips: Lazy<GetRecommendationFilterChips>,
+    private val getWalletBalanceUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
+    private val popularKeywordUseCase: Lazy<GetPopularKeywordUseCase>,
+    private val injectCouponTimeBasedUseCase: Lazy<InjectCouponTimeBasedUseCase>,
+    private val getRechargeRecommendationUseCase: Lazy<GetRechargeRecommendationUseCase>,
+    private val declineRechargeRecommendationUseCase: Lazy<DeclineRechargeRecommendationUseCase>,
+    private val getSalamWidgetUseCase: Lazy<GetSalamWidgetUseCase>,
+    private val declineSalamWidgetUseCase: Lazy<DeclineSalamWIdgetUseCase>,
+    private val getRechargeBUWidgetUseCase: Lazy<GetRechargeBUWidgetUseCase>,
+    private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
+    private val bestSellerMapper: Lazy<BestSellerMapper>,
+    private val homeDispatcher: Lazy<CoroutineDispatchers>,
+    private val playWidgetTools: Lazy<PlayWidgetTools>,
+    private val getWalletAppBalanceUseCase: Lazy<GetWalletAppBalanceUseCase>,
+    private val getWalletEligibilityUseCase: Lazy<GetWalletEligibilityUseCase>
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -136,6 +141,9 @@ open class HomeRevampViewModel @Inject constructor(
         private const val TOP_ADS_HOME_SOURCE = "1"
     }
 
+    var isFirstLoad = true
+
+    private var isGopayEligible: Boolean = false
     val beautyFestLiveData: LiveData<Int>
         get() = _beautyFestLiveData
     private val _beautyFestLiveData : MutableLiveData<Int> = MutableLiveData()
@@ -209,6 +217,9 @@ open class HomeRevampViewModel @Inject constructor(
     private val _resetNestedScrolling = MutableLiveData<Event<Boolean>>()
     val resetNestedScrolling: LiveData<Event<Boolean>> get() = _resetNestedScrolling
 
+    private val _homeCoachmarkData = MutableLiveData<Event<HomeCoachmarkModel>>()
+    val homeCoachmarkData: LiveData<Event<HomeCoachmarkModel>> get() = _homeCoachmarkData
+
     /**
      * Variable list
      */
@@ -252,6 +263,7 @@ open class HomeRevampViewModel @Inject constructor(
     private var injectCouponTimeBasedJob: Job? = null
     private var getTopAdsBannerDataJob: Job? = null
     private var getTabRecommendationJob: Job? = null
+    private var getHeaderDataJob: Job? = null
 
     init {
         _isViewModelInitialized.value = Event(true)
@@ -266,21 +278,24 @@ open class HomeRevampViewModel @Inject constructor(
         super.onCleared()
     }
 
-    fun refresh(isFirstInstall: Boolean, forceRefresh: Boolean = false){
+    /**
+     * use this refresh mechanism only for conditional refresh (3 mins rule)
+     */
+    fun refresh(forceRefresh: Boolean = false){
         if ((forceRefresh && getHomeDataJob?.isActive == false) || (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY))) {
             refreshHomeData()
             _isNeedRefresh.value = Event(true)
+        } else {
+            getHeaderData()
         }
-        balanceRemoteConfigCondition(
-                isNewBalanceWidget = {
-                    getBalanceWidgetData()
-                },
-                isOldBalanceWidget = {
-                    getTokocashBalance()
-                    getTokopoint()
-                }
-        )
-        getSearchHint(isFirstInstall)
+    }
+
+    private fun showBalanceWidgetLoading() {
+        val loadingState = homeDataModel.homeBalanceModel.copy().apply {
+            setWalletBalanceState(state = STATE_LOADING)
+            setTokopointBalanceState(state = STATE_LOADING)
+        }
+        newUpdateHeaderViewModel(loadingState)
     }
 
     fun getRecommendationWidget(){
@@ -543,7 +558,10 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getRecommendationFeedSectionPosition() = homeDataModel.list.size -1
 
-    fun refreshHomeData() {
+    fun refreshHomeData(isFirstInstall: Boolean = false) {
+        getHeaderData()
+        getSearchHint(isFirstInstall)
+
         if (homeFlowDataCancelled) {
             initFlow()
             homeFlowDataCancelled = false
@@ -1072,7 +1090,7 @@ open class HomeRevampViewModel @Inject constructor(
         isUsingWalletApp: suspend () -> Unit,
         isUsingOldWallet: suspend () -> Unit
     ) {
-        if (useWalletApp) {
+        if (useWalletApp || isGopayEligible) {
             isUsingWalletApp.invoke()
         } else {
             isUsingOldWallet.invoke()
@@ -1201,7 +1219,7 @@ open class HomeRevampViewModel @Inject constructor(
         if(getTokopointJob?.isActive == true || !userSession.get().isLoggedIn) return
         getTokopointJob = if (navRollanceType.equals(RollenceKey.NAVIGATION_VARIANT_REVAMP)) {
             launchCatchError(coroutineContext, block = {
-                val data = getHomeTokopointsListDataUseCase.get().executeOnBackground()
+                val data = getTokopointListBasedOnElibility()
                 updateHeaderViewModel(
                         tokopointsDrawer = data.tokopointsDrawerList.drawerList.getDrawerListByType("Rewards")
                                 ?: data.tokopointsDrawerList.drawerList.getDrawerListByType("Coupon"),
@@ -1253,73 +1271,86 @@ open class HomeRevampViewModel @Inject constructor(
     private fun getBalanceWidgetData() {
         if (!userSession.get().isLoggedIn) return
 
-        if (homeDataModel.homeBalanceModel.balanceDrawerItemModels.isEmpty()) {
-            newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_LOADING))
-            newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setTokopointBalanceState(state = STATE_LOADING))
-        }
+        if (getHeaderDataJob == null || getHeaderDataJob?.isActive == false) {
+            getHeaderDataJob = launchCatchError(coroutineContext, block = {
+                var walletContent: HomeHeaderWalletAction? = null
+                var tokopointContent: TokopointsDrawerListHomeData? = null
+                var pendingCashback: PendingCashback? = null
+                var walletAppBalance: Balances? = null
 
-        launchCatchError(coroutineContext, block = {
-
-            var walletContent: HomeHeaderWalletAction? = null
-            var tokopointContent: TokopointsDrawerListHomeData? = null
-            var pendingCashback: PendingCashback? = null
-            var walletAppData: WalletAppData? = null
-
-            walletAppAbTestCondition(
-                isUsingWalletApp = {
-                    getHomeBalanceWalletAppData(updateView = false)
-                },
-                isUsingOldWallet = {
+                if (!isGopayEligible) {
                     try {
-                        walletContent = getWalletBalanceContent()
-
-                        walletContent?.let { walletContent ->
-                            if (!walletContent.isLinked) {
-                                try {
-                                    pendingCashback = getPendingTokoCashContent()
-                                    pendingCashback?.let { pendingData ->
-                                        homeDataModel.homeBalanceModel.mapBalanceData(
-                                            tokopointDrawerListHomeData = tokopointContent,
-                                            homeHeaderWalletAction = walletContent.copy(cashBalance = pendingData.amountText),
-                                            pendingCashBackData = PendingCashbackModel(
-                                                pendingCashback = pendingData,
-                                                labelActionButton = walletContent.labelActionButton,
-                                                labelTitle = walletContent.labelTitle,
-                                                walletType = walletContent.walletType
-                                            )
-                                        )
-                                    }
-                                } catch (e: Exception) {
-                                    homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
-                                    newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
-                                }
-                            } else {
-                                homeDataModel.homeBalanceModel.mapBalanceData(homeHeaderWalletAction = walletContent)
-                            }
-                        }
+                        isGopayEligible = getWalletEligibilityUseCase.get().executeOnBackground().isGoPointsEligible
+                        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().apply {
+                            isGopayEligible = this@HomeRevampViewModel.isGopayEligible
+                            initBalanceModelByType()
+                        })
                     } catch (e: Exception) {
-                        homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
-                        homeDataModel.homeBalanceModel.mapErrorWallet(isWalletApp = false)
-                        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
+                        e.printStackTrace()
                     }
+                } else {
+                    newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().apply { initBalanceModelByType() })
                 }
-            )
 
-            try {
-                tokopointContent = getTokopointBalanceContent()
-            } catch (e: Exception) {
-                homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
-                homeDataModel.homeBalanceModel.mapErrorTokopoints()
-                newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setTokopointBalanceState(state = STATE_ERROR))
+                walletAppAbTestCondition(
+                    isUsingWalletApp = {
+                        walletAppBalance = getHomeBalanceWalletAppData(updateView = false)
+                        _homeCoachmarkData.postValue(Event(
+                            HomeCoachmarkModel(
+                                isGopayActive = walletAppBalance?.isLinked?:false,
+                                isGopayEligible = isGopayEligible
+                            )))
+                    },
+                    isUsingOldWallet = {
+                        try {
+                            walletContent = getWalletBalanceContent()
+
+                            walletContent?.let { walletContent ->
+                                if (!walletContent.isLinked) {
+                                    try {
+                                        pendingCashback = getPendingTokoCashContent()
+                                        pendingCashback?.let { pendingData ->
+                                            homeDataModel.homeBalanceModel.mapBalanceData(
+                                                tokopointDrawerListHomeData = tokopointContent,
+                                                homeHeaderWalletAction = walletContent.copy(cashBalance = pendingData.amountText),
+                                                pendingCashBackData = PendingCashbackModel(
+                                                    pendingCashback = pendingData,
+                                                    labelActionButton = walletContent.labelActionButton,
+                                                    labelTitle = walletContent.labelTitle,
+                                                    walletType = walletContent.walletType
+                                                )
+                                            )
+                                        }
+                                    } catch (e: Exception) {
+                                        homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
+                                        homeDataModel.homeBalanceModel.mapErrorWallet(isWalletApp = false)
+                                    }
+                                } else {
+                                    homeDataModel.homeBalanceModel.mapBalanceData(homeHeaderWalletAction = walletContent)
+                                }
+                            }
+                        } catch (e: Exception) {
+                            homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
+                            homeDataModel.homeBalanceModel.mapErrorWallet(isWalletApp = false)
+                        }
+                    }
+                )
+
+                try {
+                    tokopointContent = getTokopointBalanceContent()
+                } catch (e: Exception) {
+                    homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
+                    homeDataModel.homeBalanceModel.mapErrorTokopoints()
+                }
+
+                tokopointContent?.let {
+                    homeDataModel.homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = tokopointContent)
+                }
+
+                newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy())
+            }) {
+
             }
-
-            tokopointContent?.let {
-                homeDataModel.homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = getTokopointBalanceContent())
-            }
-
-            newUpdateHeaderViewModel(homeDataModel.homeBalanceModel)
-        }) {
-
         }
     }
 
@@ -1328,7 +1359,7 @@ open class HomeRevampViewModel @Inject constructor(
         newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setTokopointBalanceState(state = STATE_LOADING))
 
         launchCatchError(coroutineContext, block = {
-            val tokopointsDrawerListHome = getHomeTokopointsListDataUseCase.get().executeOnBackground()
+            val tokopointsDrawerListHome = getTokopointListBasedOnElibility()
             homeDataModel.homeBalanceModel.mapBalanceData(tokopointDrawerListHomeData = tokopointsDrawerListHome)
             newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
         }) {
@@ -1370,11 +1401,16 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private suspend fun getTokopointBalanceContent(): TokopointsDrawerListHomeData? {
-        val tokopointsDrawerListHome = getHomeTokopointsListDataUseCase.get().executeOnBackground()
+        val tokopointsDrawerListHome = getTokopointListBasedOnElibility()
         if (tokopointsDrawerListHome.tokopointsDrawerList.drawerList.isEmpty()) {
             throw IllegalStateException("Tokopoints data is null")
         }
         return tokopointsDrawerListHome
+    }
+
+    private suspend fun getTokopointListBasedOnElibility(): TokopointsDrawerListHomeData {
+        getHomeTokopointsListDataUseCase.get().setParams(isGopayEligible)
+        return getHomeTokopointsListDataUseCase.get().executeOnBackground()
     }
 
     private suspend fun getWalletBalanceContent(): HomeHeaderWalletAction? {
@@ -1385,13 +1421,14 @@ open class HomeRevampViewModel @Inject constructor(
         return getWalletAppBalanceUseCase.get().executeOnBackground()
     }
 
-    private suspend fun getHomeBalanceWalletAppData(updateView: Boolean = false) {
+    private suspend fun getHomeBalanceWalletAppData(updateView: Boolean = false): Balances? {
         try {
             val walletAppData = getWalletAppData()
             walletAppData.let { walletContent ->
                 if (walletContent.walletappGetBalance.balances.isNotEmpty()) {
                     homeDataModel.homeBalanceModel.mapBalanceData(walletAppData = walletAppData)
-                    if (updateView) newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel)
+                    if (updateView) newUpdateHeaderViewModel(homeBalanceModel = homeDataModel.homeBalanceModel.copy())
+                    return walletAppData.walletappGetBalance.balances.getOrNull(0)
                 } else {
                     HomeServerLogger.logWarning(
                         type = HomeServerLogger.TYPE_WALLET_APP_ERROR,
@@ -1405,6 +1442,7 @@ open class HomeRevampViewModel @Inject constructor(
             homeDataModel.homeBalanceModel.isTokopointsOrOvoFailed = true
             homeDataModel.homeBalanceModel.mapErrorWallet(isWalletApp = true)
             newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().setWalletBalanceState(state = STATE_ERROR))
+            return null
         }
     }
 
@@ -1634,7 +1672,6 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun getExternalApi() {
         getPlayWidget()
-        getHeaderData()
         getReviewData()
         getPlayBanner()
         getPopularKeyword()

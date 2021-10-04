@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.home_account.data.model.MemberItemDataView
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
-import com.tokopedia.home_account.view.viewholder.MemberItemViewHolder
+import com.tokopedia.home_account.view.adapter.viewholder.MemberItemViewHolder
 
 /**
  * Created by Yoris Prayogo on 19/10/20.

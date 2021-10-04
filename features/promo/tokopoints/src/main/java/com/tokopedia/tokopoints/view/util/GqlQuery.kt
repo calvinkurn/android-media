@@ -48,3 +48,37 @@ const val TP_CATALOG_MVC_LIST_QUERY = """
 }
 
 """
+
+const val TP_STATUS_MATCHING_QUERY = """
+    query rewardsTickerList(${'$'}apiVersion: String!,${'$'}source: String!) {
+  rewardsTickerList:rewardsTickerList(apiVersion: ${'$'}apiVersion,source: ${'$'}source) {
+   resultStatus {
+       code
+       message
+     }
+   tickerList{
+      id
+      type
+      metadata{
+        image {
+          url
+        }
+        text {
+          content
+          color
+          format
+        }
+        link {
+          url
+          applink
+        }
+        backgroundImageURL
+        backgroundImageURLDesktop
+        timeRemainingSeconds
+        isShowTime
+      }
+    }
+  }
+}
+
+"""

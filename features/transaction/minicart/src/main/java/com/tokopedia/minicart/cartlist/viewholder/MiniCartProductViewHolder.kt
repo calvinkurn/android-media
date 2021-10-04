@@ -21,6 +21,7 @@ import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion
 import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_NOTES
 import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_SIMILARPRODUCT
 import com.tokopedia.minicart.databinding.ItemMiniCartProductBinding
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
@@ -115,7 +116,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
 
     private fun renderProductPrice(element: MiniCartProductUiModel) {
         with(viewBinding) {
-            textProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productPrice, false)
+            textProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productPrice, false).removeDecimalSuffix()
 
             val hasPriceOriginal = element.productOriginalPrice != 0L
             val hasWholesalePrice = element.productWholeSalePrice != 0L
@@ -153,16 +154,16 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
             val priceDropValue = element.productInitialPriceBeforeDrop
             val price = element.productPrice
             val originalPrice = if (priceDropValue > price) price else if (priceDropValue > price) priceDropValue else price
-            textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(originalPrice, false)
+            textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(originalPrice, false).removeDecimalSuffix()
             textSlashPrice.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_16), 0, 0, 0)
-            textProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productWholeSalePrice, false)
+            textProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productWholeSalePrice, false).removeDecimalSuffix()
             labelSlashPricePercentage.gone()
         }
     }
 
     private fun renderSlashPriceFromPriceDrop(element: MiniCartProductUiModel) {
         with(viewBinding) {
-            textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productInitialPriceBeforeDrop, false)
+            textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productInitialPriceBeforeDrop, false).removeDecimalSuffix()
             textSlashPrice.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_16), 0, 0, 0)
             labelSlashPricePercentage.gone()
         }
@@ -170,7 +171,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
 
     private fun renderSlashPriceFromCampaign(element: MiniCartProductUiModel) {
         with(viewBinding) {
-            textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productOriginalPrice, false)
+            textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productOriginalPrice, false).removeDecimalSuffix()
             labelSlashPricePercentage.text = element.productSlashPriceLabel
             labelSlashPricePercentage.show()
             textSlashPrice.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_4), 0, 0, 0)

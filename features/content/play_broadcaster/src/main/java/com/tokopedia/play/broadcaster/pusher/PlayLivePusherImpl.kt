@@ -10,6 +10,7 @@ import com.tokopedia.play.broadcaster.pusher.camera.CameraInfo
 import com.tokopedia.play.broadcaster.pusher.camera.CameraManager
 import com.tokopedia.play.broadcaster.pusher.camera.CameraType
 import com.tokopedia.play.broadcaster.util.deviceinfo.DeviceInfoUtil
+import com.tokopedia.play.broadcaster.util.extension.safeExecute
 import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
 import com.wmspanel.libstream.*
 import org.json.JSONObject
@@ -69,14 +70,14 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
     }
 
     override fun stopPreview() {
-        streamer?.stopAudioCapture()
-        streamer?.stopVideoCapture()
+        streamer?.safeExecute { stopAudioCapture() }
+        streamer?.safeExecute { stopVideoCapture() }
     }
 
     override fun switchCamera() {
         if (!isSwitchCameraSupported()) return
         pauseCalculateAdaptiveBitrate()
-        streamer?.flip()
+        streamer?.safeExecute { flip() }
 
         resumeCalculateAdaptiveBitrate()
     }
@@ -108,10 +109,11 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
     }
 
     override fun release() {
-        streamer?.release()
+        pauseCalculateAdaptiveBitrate()
+        cancelStatsJob()
+        streamer?.safeExecute { release() }
         mListener = null
         mBitrateAdapter = null
-        mHandler = null
         streamer = null
     }
 
@@ -265,8 +267,8 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
     }
 
     private fun configureStreamer(config: PlayLivePusherConfig) {
-        streamer?.changeAudioConfig(PlayLivePusherUtil.getAudioConfig(config))
-        streamer?.changeVideoConfig(PlayLivePusherUtil.getVideoConfig(config))
+        streamer?.safeExecute { changeAudioConfig(PlayLivePusherUtil.getAudioConfig(config)) }
+        streamer?.safeExecute { changeVideoConfig(PlayLivePusherUtil.getVideoConfig(config)) }
     }
 
     private fun getCameraConfig(cameraInfo: CameraInfo, cameraSize: Streamer.Size): CameraConfig {
@@ -284,8 +286,8 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
 
     private fun safeStartPreview() {
         Handler().postDelayed({
-            streamer?.startVideoCapture()
-            streamer?.startAudioCapture()
+            streamer?.safeExecute { startVideoCapture() }
+            streamer?.safeExecute { startAudioCapture() }
         }, SAFE_OPEN_CAMERA_DELAY)
     }
 
@@ -301,7 +303,7 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
 
     private fun stopStream() {
         try {
-            mConnection.connectionId?.let { id -> streamer?.releaseConnection(id) }
+            mConnection.connectionId?.let { id -> streamer?.safeExecute { releaseConnection(id) } }
         } catch (ignored: IllegalStateException) {}
 
         stopCalculateAdaptiveBitrate()

@@ -11,6 +11,7 @@ import com.tokopedia.play.model.PlayProductTagsModelBuilder
 import com.tokopedia.play.robot.Robot
 import com.tokopedia.play.robot.RobotWithValue
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
+import com.tokopedia.play.util.timer.TimerFactory
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
 import com.tokopedia.play.view.monitoring.PlayVideoLatencyPerformanceMonitoring
@@ -69,6 +70,7 @@ class PlayViewModelRobot(
         playChannelSSE: PlayChannelSSE,
         private val repo: PlayViewerRepository,
         playAnalytic: PlayNewAnalytic,
+        timerFactory: TimerFactory,
 ) : Robot {
 
     private val productTagBuilder = PlayProductTagsModelBuilder()
@@ -77,28 +79,29 @@ class PlayViewModelRobot(
 
     init {
         viewModel = PlayViewModel(
-                playVideoBuilder,
-                videoStateProcessorFactory,
-                channelStateProcessorFactory,
-                videoBufferGovernorFactory,
-                getChannelStatusUseCase,
-                getSocketCredentialUseCase,
-                getReportSummariesUseCase,
-                getProductTagItemsUseCase,
-                trackProductTagBroadcasterUseCase,
-                trackVisitChannelBroadcasterUseCase,
-                playChannelReminderUseCase,
-                playSocketToModelMapper,
-                playUiModelMapper,
-                userSession,
-                dispatchers,
-                remoteConfig,
-                playPreference,
-                videoLatencyPerformanceMonitoring,
-                playChannelWebSocket,
-                playChannelSSE,
-                repo,
-                playAnalytic
+            playVideoBuilder,
+            videoStateProcessorFactory,
+            channelStateProcessorFactory,
+            videoBufferGovernorFactory,
+            getChannelStatusUseCase,
+            getSocketCredentialUseCase,
+            getReportSummariesUseCase,
+            getProductTagItemsUseCase,
+            trackProductTagBroadcasterUseCase,
+            trackVisitChannelBroadcasterUseCase,
+            playChannelReminderUseCase,
+            playSocketToModelMapper,
+            playUiModelMapper,
+            userSession,
+            dispatchers,
+            remoteConfig,
+            playPreference,
+            videoLatencyPerformanceMonitoring,
+            playChannelWebSocket,
+            playChannelSSE,
+            repo,
+            playAnalytic,
+            timerFactory
         )
     }
 
@@ -248,32 +251,34 @@ fun givenPlayViewModelRobot(
         playChannelSSE: PlayChannelSSE = mockk(relaxed = true),
         repo: PlayViewerRepository = mockk(relaxed = true),
         playAnalytic: PlayNewAnalytic = mockk(relaxed = true),
+        timerFactory: TimerFactory = mockk(relaxed = true),
         fn: PlayViewModelRobot.() -> Unit = {}
 ): PlayViewModelRobot {
     return PlayViewModelRobot(
-            playVideoBuilder = playVideoBuilder,
-            videoStateProcessorFactory = videoStateProcessorFactory,
-            channelStateProcessorFactory = channelStateProcessorFactory,
-            videoBufferGovernorFactory = videoBufferGovernorFactory,
-            getChannelStatusUseCase = getChannelStatusUseCase,
-            getSocketCredentialUseCase = getSocketCredentialUseCase,
-            getReportSummariesUseCase = getReportSummariesUseCase,
-            getCartCountUseCase = getCartCountUseCase,
-            getProductTagItemsUseCase = getProductTagItemsUseCase,
-            trackProductTagBroadcasterUseCase = trackProductTagBroadcasterUseCase,
-            trackVisitChannelBroadcasterUseCase = trackVisitChannelBroadcasterUseCase,
-            playChannelReminderUseCase = playChannelReminderUseCase,
-            playSocketToModelMapper = playSocketToModelMapper,
-            playUiModelMapper = playUiModelMapper,
-            userSession = userSession,
-            dispatchers = dispatchers,
-            remoteConfig = remoteConfig,
-            playPreference = playPreference,
-            videoLatencyPerformanceMonitoring = videoLatencyPerformanceMonitoring,
-            playChannelWebSocket = playChannelWebSocket,
-            playChannelSSE = playChannelSSE,
-            repo = repo,
-            playAnalytic = playAnalytic
+        playVideoBuilder = playVideoBuilder,
+        videoStateProcessorFactory = videoStateProcessorFactory,
+        channelStateProcessorFactory = channelStateProcessorFactory,
+        videoBufferGovernorFactory = videoBufferGovernorFactory,
+        getChannelStatusUseCase = getChannelStatusUseCase,
+        getSocketCredentialUseCase = getSocketCredentialUseCase,
+        getReportSummariesUseCase = getReportSummariesUseCase,
+        getCartCountUseCase = getCartCountUseCase,
+        getProductTagItemsUseCase = getProductTagItemsUseCase,
+        trackProductTagBroadcasterUseCase = trackProductTagBroadcasterUseCase,
+        trackVisitChannelBroadcasterUseCase = trackVisitChannelBroadcasterUseCase,
+        playChannelReminderUseCase = playChannelReminderUseCase,
+        playSocketToModelMapper = playSocketToModelMapper,
+        playUiModelMapper = playUiModelMapper,
+        userSession = userSession,
+        dispatchers = dispatchers,
+        remoteConfig = remoteConfig,
+        playPreference = playPreference,
+        videoLatencyPerformanceMonitoring = videoLatencyPerformanceMonitoring,
+        playChannelWebSocket = playChannelWebSocket,
+        playChannelSSE = playChannelSSE,
+        repo = repo,
+        playAnalytic = playAnalytic,
+        timerFactory = timerFactory,
     ).apply(fn)
 }
 
