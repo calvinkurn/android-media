@@ -449,6 +449,8 @@ object HotelGqlQuery {
             hotelTransportDetails{
               paymentType
               isShowEVoucher
+              contactButtonWording
+              tickerContactHotel
               guestDetail{
                 title
                 content
