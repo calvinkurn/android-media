@@ -788,7 +788,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
                 })
                 product_view_pager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
-
                     override fun onPageSelected(position: Int) {
                         tab_layout.getUnifyTabLayout().getTabAt(position)?.let {
                             it.select()
