@@ -119,6 +119,7 @@ open class BaseChatViewModel constructor(
             withFraudStatus(reply.fraudStatus)
             withLabel(reply.label)
             withParentReply(reply.parentReply)
+            withOrGenerateLocalId("")
             return self()
         }
 
