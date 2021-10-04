@@ -73,7 +73,7 @@ class GetProductFeedbackDetailListUseCase @Inject constructor(
     @GqlQuery(GET_PRODUCT_FEEDBACK_LIST_DETAIL_QUERY_CLASS_NAME, GET_PRODUCT_FEEDBACK_LIST_DETAIL_QUERY)
     override suspend fun executeOnBackground(): ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct {
         val gqlRequest = GraphqlRequest(FeedbackDetailList.GQL_QUERY, ProductFeedbackDetailResponse::class.java, params)
-        val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = graphQlRepository.response(listOf(gqlRequest))
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error == null || error.isEmpty()) {
             return gqlResponse.getData<ProductFeedbackDetailResponse>(ProductFeedbackDetailResponse::class.java).productrevFeedbackDataPerProduct

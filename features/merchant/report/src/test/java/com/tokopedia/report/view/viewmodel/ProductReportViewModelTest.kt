@@ -42,17 +42,17 @@ class ProductReportViewModelTest : ProductReportViewModelTestFixture() {
     }
 
     private fun onGetReportReasonSuccess_thenReturn(graphqlResponse: GraphqlResponse) {
-        coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { graphqlResponse }
+        coEvery { graphqlRepository.response(any(), any()) } coAnswers { graphqlResponse }
     }
 
     private fun onGetReportReasonError_thenReturn(errorGql: GraphqlError) {
         val errors = HashMap<Type, List<GraphqlError>>()
         errors[ ProductReportReason.Response::class.java] = listOf(errorGql)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { GraphqlResponse(HashMap<Type, Any?>(), errors, false) }
+        coEvery { graphqlRepository.response(any(), any()) } coAnswers { GraphqlResponse(HashMap<Type, Any?>(), errors, false) }
     }
 
     private fun verifyUseCaseCalled() {
-        coVerify { graphqlRepository.getReseponse(any(), any()) }
+        coVerify { graphqlRepository.response(any(), any()) }
     }
 
     private fun verifyGetReportReasonSuccess(success: Success<List<ProductReportReason>>) {

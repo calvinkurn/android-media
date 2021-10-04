@@ -238,7 +238,7 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
         }
 
         private fun getBundleArguments() {
-            groupId = intent?.extras?.getInt(GROUP_ID)
+            groupId = intent?.extras?.getString(GROUP_ID)?.toInt()
             priceSpent = intent?.extras?.getString(TopAdsDashboardConstant.PRICE_SPEND)
         }
 

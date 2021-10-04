@@ -51,12 +51,6 @@ object HomeMockValueHelper {
                 RollenceKey.BALANCE_VARIANT_NEW
             )
         }
-        if (homeRollence) {
-            RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                RollenceKey.HOME_EXP,
-                RollenceKey.HOME_VARIANT_REVAMP
-            )
-        }
         if (walletAppRollence) {
             RemoteConfigInstance.getInstance().abTestPlatform.setString(
                 RollenceKey.HOME_WALLETAPP,

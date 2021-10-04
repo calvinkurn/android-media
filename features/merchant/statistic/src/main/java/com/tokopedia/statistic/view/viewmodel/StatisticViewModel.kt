@@ -128,7 +128,7 @@ class StatisticViewModel @Inject constructor(
         launchCatchError(block = {
             val result: Success<List<String>> = Success(withContext(dispatcher.io) {
                 getUserRoleUseCase.get().params =
-                    GetUserRoleUseCase.createParam(userSession.userId.toIntOrZero())
+                    GetUserRoleUseCase.createParam(userSession.userId)
                 return@withContext getUserRoleUseCase.get().executeOnBackground()
             })
             _userRole.postValue(result)

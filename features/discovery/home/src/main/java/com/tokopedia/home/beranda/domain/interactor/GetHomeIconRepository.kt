@@ -13,7 +13,7 @@ class GetHomeIconRepository @Inject constructor(
         private val graphqlRepository: GraphqlRepository
 ){
     suspend fun getIconData(param: String = "", locationParams: String = ""): HomeIconData {
-        val gqlResponse  = graphqlRepository.getReseponse(
+        val gqlResponse  = graphqlRepository.response(
                 listOf(buildRequest(param, locationParams)), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val errors = gqlResponse.getError(HomeIconData::class.java)

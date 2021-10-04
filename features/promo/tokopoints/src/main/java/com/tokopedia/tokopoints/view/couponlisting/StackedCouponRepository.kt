@@ -16,7 +16,7 @@ class StackedCouponRepository @Inject constructor(private val repository: Graphq
         variablesFilter.put(CommonConstant.GraphqlVariableKeys.SLUG, slug.toLowerCase());
         val filterRequest = GraphqlRequest(map[CommonConstant.GQLQuery.TP_GQL_COUPON_FILTER],
                 CouponFilterBase::class.java, variablesFilter, false)
-        repository.getReseponse(listOf(filterRequest))
+        repository.response(listOf(filterRequest))
     }
 
     internal suspend fun getCouponList(pageNumber: Int, category: Int) = withContext(Dispatchers.IO) {
@@ -29,7 +29,7 @@ class StackedCouponRepository @Inject constructor(private val repository: Graphq
         variablesMain[CommonConstant.GraphqlVariableKeys.APIVERSION] = CommonConstant.APIVERSION
 
         val graphqlRequestMain = GraphqlRequest(map[CommonConstant.GQLQuery.TP_GQL_COUPON_LISTING_STACK], TokoPointPromosEntity::class.java, variablesMain, false)
-        repository.getReseponse(listOf(graphqlRequestMain))
+        repository.response(listOf(graphqlRequestMain))
     }
 
     internal suspend fun getInStackedCouponList(stackId: String) = withContext(Dispatchers.IO) {
@@ -37,6 +37,6 @@ class StackedCouponRepository @Inject constructor(private val repository: Graphq
         val variablesMain = java.util.HashMap<String, Any>()
         variablesMain[CommonConstant.GraphqlVariableKeys.STACK_ID] = stackId
         val graphqlRequestMain = GraphqlRequest(map[CommonConstant.GQLQuery.TP_GQL_COUPON_IN_STACK], TokoPointPromosEntity::class.java, variablesMain, false)
-        repository.getReseponse(listOf(graphqlRequestMain))
+        repository.response(listOf(graphqlRequestMain))
     }
 }
