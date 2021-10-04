@@ -1,5 +1,6 @@
 package com.tokopedia.common_digital.atc.data.response
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -9,6 +10,7 @@ data class AttributesCart(
         @Expose
         var clientNumber: String? = null,
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
         var price: String? = null,

@@ -1,8 +1,13 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-parcelize'
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
 
 buildscript {
     repositories {
@@ -14,6 +19,12 @@ buildscript {
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
         classpath rootProject.ext.miscDependencies.androidjunit5
+    }
+}
+
+android {
+    buildFeatures{
+        viewBinding true
     }
 }
 
@@ -35,6 +46,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.dagger

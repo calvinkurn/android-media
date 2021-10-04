@@ -58,8 +58,8 @@ object RepurchaseLayoutMapper {
         add(RepurchaseLoadingUiModel)
     }
 
-    fun MutableList<Visitable<*>>.addEmptyStateNoHistory(@StringRes description: Int) {
-        add(RepurchaseEmptyStateNoHistoryUiModel(description))
+    fun MutableList<Visitable<*>>.addEmptyStateNoHistory(@StringRes title: Int, @StringRes description: Int) {
+        add(RepurchaseEmptyStateNoHistoryUiModel(title, description))
     }
 
     fun MutableList<Visitable<*>>.removeEmptyStateNoHistory() {
