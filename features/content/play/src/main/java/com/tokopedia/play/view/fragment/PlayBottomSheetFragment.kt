@@ -214,7 +214,7 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.submitAction(ClickCloseLeaderboardSheetAction)
     }
 
-    override fun onRefreshLeaderboard() {
+    override fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
         playViewModel.submitAction(RefreshLeaderboard)
     }
 

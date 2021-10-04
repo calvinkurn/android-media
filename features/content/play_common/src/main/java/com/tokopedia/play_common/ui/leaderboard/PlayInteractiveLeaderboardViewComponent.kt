@@ -33,7 +33,7 @@ class PlayInteractiveLeaderboardViewComponent(
 ) : ViewComponent(container, R.id.cl_leaderboard_sheet) {
 
     private val rvLeaderboard: RecyclerView = findViewById(R.id.rv_leaderboard)
-    private val globalErrorLeaderboard: GlobalError = findViewById(R.id.global_error_leaderboard)
+    private val errorView: ConstraintLayout = findViewById(R.id.cl_leaderboard_error)
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
@@ -69,26 +69,20 @@ class PlayInteractiveLeaderboardViewComponent(
         }
 
         registerAdapterObserver()
-
-        globalErrorLeaderboard.setActionClickListener {
-            listener.onRefreshLeaderboard()
-        }
     }
 
     fun setData(leaderboards: List<PlayLeaderboardUiModel>) {
+        errorView.hide()
         leaderboardAdapter.setItemsAndAnimateChanges(leaderboards)
     }
 
     fun setError(isConnectionError: Boolean) {
-        globalErrorLeaderboard.setType(
-            if (isConnectionError) GlobalError.NO_CONNECTION else GlobalError.SERVER_ERROR
-        )
-        globalErrorLeaderboard.show()
+        errorView.show()
         rvLeaderboard.hide()
     }
 
     fun setLoading() {
-        globalErrorLeaderboard.hide()
+        errorView.hide()
         rvLeaderboard.show()
         /**
          * TODO: update data with placeholder
@@ -143,9 +137,6 @@ class PlayInteractiveLeaderboardViewComponent(
             position: Int
         ) {
         }
-        fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
-        }
-
-        fun onRefreshLeaderboard()
+        fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent)
     }
 }
