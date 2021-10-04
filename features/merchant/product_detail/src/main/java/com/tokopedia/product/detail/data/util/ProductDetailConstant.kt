@@ -164,4 +164,7 @@ object ProductDetailConstant {
     const val TOOLBAR_ELEVATION = 10F
 
     const val DEFAULT_PRICE_MINIMUM_SHIPPING = 30000.0
+
+    const val REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING = "android_enable_pdp_custom_sharing"
+    const val REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING = true
 }

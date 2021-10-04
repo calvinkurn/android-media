@@ -10,9 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.databinding.FragmentSomDetailLogisticInfoBinding
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailLogisticInfoAdapter
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
-import kotlinx.android.synthetic.main.fragment_som_detail_logistic_info.*
+import com.tokopedia.utils.view.binding.noreflection.viewBinding
 
 class SomDetailLogisticInfoFragment : BaseDaggerFragment() {
 
@@ -30,6 +31,8 @@ class SomDetailLogisticInfoFragment : BaseDaggerFragment() {
 
     private var cacheManager: SaveInstanceCacheManager? = null
     private var cacheObjectId = ""
+
+    private val binding by viewBinding(FragmentSomDetailLogisticInfoBinding::bind)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +63,7 @@ class SomDetailLogisticInfoFragment : BaseDaggerFragment() {
     }
 
     private fun initView() {
-        rvLogisticInfo?.apply {
+        binding?.rvLogisticInfo?.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = logisticInfoAllList?.let { SomDetailLogisticInfoAdapter(it.logisticInfoAllList) }
         }
@@ -69,10 +72,10 @@ class SomDetailLogisticInfoFragment : BaseDaggerFragment() {
     private fun initToolbar() {
         activity?.run {
             (this as? AppCompatActivity)?.run {
-                setSupportActionBar(logistic_info_toolbar)
+                setSupportActionBar(binding?.logisticInfoToolbar)
                 supportActionBar?.setDisplayHomeAsUpEnabled(true)
                 supportActionBar?.setDisplayShowTitleEnabled(true)
-                logistic_info_toolbar?.title = getString(R.string.title_logistic_info)
+                binding?.logisticInfoToolbar?.title = getString(R.string.title_logistic_info)
             }
         }
     }

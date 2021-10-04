@@ -1,7 +1,7 @@
 package com.tokopedia.cart.old.domain.model.cartlist
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * @author by furqan on 17/02/2021

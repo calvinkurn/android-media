@@ -30,8 +30,10 @@ import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -127,7 +129,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
 
         // When
-        val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2")
+        val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2", "")
 
         // Then
         assert(enhancedEcommerceData != null)
@@ -144,7 +146,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
 
         // When
-        val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "3")
+        val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "3", "")
 
         // Then
         assert(enhancedEcommerceData != null)
@@ -161,7 +163,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
 
         // When
-        val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "4")
+        val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "4", "")
 
         // Then
         assert(enhancedEcommerceData != null)
@@ -180,7 +182,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
 
         // When
-        val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2")
+        val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2", "")
 
         // Then
         assert(enhancedEcommerceData != null)
@@ -197,7 +199,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
 
         // When
-        val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2")
+        val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2", "")
 
         // Then
         val checkoutData = enhancedEcommerceData[EnhancedECommerceCheckout.KEY_CHECKOUT] as Map<*, *>
@@ -225,7 +227,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
 
         // When
-        val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2")
+        val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2", "")
 
         // Then
         val checkoutData = enhancedEcommerceData[EnhancedECommerceCheckout.KEY_CHECKOUT] as Map<*, *>
@@ -253,7 +255,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         val checkoutRequest = presenter.generateCheckoutRequest(null, 0, "")
 
         // When
-        val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2")
+        val enhancedEcommerceData = presenter.generateCheckoutAnalyticsDataLayer(checkoutRequest, "2", "")
 
         // Then
         val checkoutData = enhancedEcommerceData[EnhancedECommerceCheckout.KEY_CHECKOUT] as Map<*, *>
@@ -279,7 +281,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         presenter.setCheckoutData(CheckoutData(transactionId = transactionId))
 
         // When
-        presenter.triggerSendEnhancedEcommerceCheckoutAnalytics(listOf(dataCheckoutRequest), tradeInCustomDimension, step, eventCategory, eventAction, eventLabel, "")
+        presenter.triggerSendEnhancedEcommerceCheckoutAnalytics(listOf(dataCheckoutRequest), tradeInCustomDimension, step, eventCategory, eventAction, eventLabel, "", "")
 
         // Then
         verify {

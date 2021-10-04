@@ -134,6 +134,12 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         }
     }
 
+    private val isSharingEnabled by lazy {
+        context?.let {
+            UniversalShareBottomSheet.isCustomSharingEnabled(it)
+        } == true
+    }
+
     @FragmentType
     private var currentFragmentType: Int = FragmentType.OTHER
 
@@ -171,6 +177,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         context?.let {
             viewHolder = OtherMenuViewHolder(view, it, this, userSession, this)
         }
+        viewHolder?.setInitialLayouts()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setStatusBar()
         }
@@ -343,17 +350,8 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     override fun onShareButtonClicked() {
         NewOtherMenuTracking.sendEventClickShareButton(userSession.shopId, userSession.userId)
-        val isSharingEnabled =
-            context?.let {
-                UniversalShareBottomSheet.isCustomSharingEnabled(it)
-            } == true
-        if (isSharingEnabled) {
-            saveImageToStorageBeforeShowBottomsheet()
-        }
+        saveImageToStorageBeforeShowBottomsheet()
     }
-
-    override fun getIsShopShareReady(): Boolean = shopShareInfo != null
-
 
     override fun onScrollToTop() {
         viewHolder?.scrollToTop()
@@ -500,24 +498,28 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     private fun observeSaldoBalance() {
         viewModel.balanceInfoLiveData.observe(viewLifecycleOwner) {
-            viewHolder?.setBalanceSaldoData(it)
-            if (it is SettingResponseState.SettingError) {
-                showErrorToaster(it.throwable) {
-                    onSaldoBalanceRefresh()
+            activity?.runOnUiThread {
+                viewHolder?.setBalanceSaldoData(it)
+                if (it is SettingResponseState.SettingError) {
+                    showErrorToaster(it.throwable) {
+                        onSaldoBalanceRefresh()
+                    }
+                    logHeaderError(it.throwable, OtherMenuFragment.SALDO_BALANCE)
                 }
-                logHeaderError(it.throwable, OtherMenuFragment.SALDO_BALANCE)
             }
         }
     }
 
     private fun observeKreditTopads() {
         viewModel.kreditTopAdsLiveData.observe(viewLifecycleOwner) {
-            viewHolder?.setBalanceTopadsData(it)
-            if (it is SettingResponseState.SettingError) {
-                showErrorToaster(it.throwable) {
-                    onKreditTopAdsRefresh()
+            activity?.runOnUiThread {
+                viewHolder?.setBalanceTopadsData(it)
+                if (it is SettingResponseState.SettingError) {
+                    showErrorToaster(it.throwable) {
+                        onKreditTopAdsRefresh()
+                    }
+                    logHeaderError(it.throwable, OtherMenuFragment.TOPADS_BALANCE)
                 }
-                logHeaderError(it.throwable, OtherMenuFragment.TOPADS_BALANCE)
             }
         }
     }
@@ -562,7 +564,9 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     private fun observeShopShareInfo() {
         viewModel.shopShareInfoLiveData.observe(viewLifecycleOwner) { shareInfo ->
-            animateShareButtonFromShareData(shareInfo)
+            if (isSharingEnabled) {
+                animateShareButtonFromShareData(shareInfo)
+            }
         }
     }
 
@@ -703,9 +707,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     private fun animateShareButtonFromShareData(shareInfo: OtherMenuShopShareData?) {
         if (shareInfo != null) {
-            if (shopShareInfo == null) {
-                viewHolder?.runShareButtonAnimation()
-            }
+            viewHolder?.runShareButtonAnimation()
             shopShareInfo = shareInfo
         }
     }
@@ -726,6 +728,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     private fun showUniversalShareBottomSheet(storageImageUrl: String) {
+        universalShareBottomSheet = null
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@OtherMenuFragment)
             setUtmCampaignData(
@@ -744,7 +747,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             activity?.supportFragmentManager?.let { fm ->
                 shareBottomSheet.run {
                     imageSaved(storageImageUrl)
-                    show(fm, this)
+                    show(fm, this@OtherMenuFragment)
 
                     NewOtherMenuTracking.sendEventImpressionViewOnSharingChannel(
                         userSession.shopId, userSession.userId

@@ -105,7 +105,6 @@
 /features/merchant/seller_feedback/                     @tokopedia/android-minionstuart-dev
 /libraries/kotlin_extensions/                           @tokopedia/android-minionstuart-dev
 
-/features/content/affiliate/            				@tokopedia/android-minionmark-dev
 /features/content/affiliate_common/     				@tokopedia/android-minionmark-dev
 /features/content/play/                                 @tokopedia/android-minionmark-dev
 /features/content/play_common/                          @tokopedia/android-minionmark-dev

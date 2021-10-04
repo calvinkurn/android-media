@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.old.view.subscriber
 
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.old.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.old.domain.model.cartshipmentform.GroupAddress
@@ -8,8 +7,8 @@ import com.tokopedia.checkout.old.view.ShipmentContract
 import com.tokopedia.checkout.old.view.ShipmentPresenter
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.utils.isNullOrEmpty
 import rx.Subscriber
 import timber.log.Timber
 
@@ -85,7 +84,7 @@ class GetShipmentAddressFormSubscriber(private val shipmentPresenter: ShipmentPr
                     view.updateLocalCacheAddressData(userAddress)
                     shipmentPresenter.initializePresenterData(cartShipmentAddressFormData)
                     view.renderCheckoutPage(!isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment)
-                    if (!isNullOrEmpty(cartShipmentAddressFormData.popUpMessage)) {
+                    if (cartShipmentAddressFormData.popUpMessage.isNotEmpty()) {
                         view.showToastNormal(cartShipmentAddressFormData.popUpMessage)
                     }
                 }

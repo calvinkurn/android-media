@@ -140,6 +140,24 @@ class ShopHomeViewModelTest {
             listOf()
     )
 
+    private val playWidgetMediumUiModelMockData = PlayWidgetUiModel.Medium(
+        "title",
+        "action title",
+        "applink",
+        true,
+        PlayWidgetConfigUiModel(
+            true,
+            1000,
+            true,
+            1,
+            1,
+            2,
+            1
+        ),
+        PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+        listOf()
+    )
+
 
     @Before
     fun setup() {
@@ -805,5 +823,76 @@ class ShopHomeViewModelTest {
         assert(viewModel.playWidgetObservable.value == null)
     }
 
+    @Test
+    fun `check if playWidgetObservableplay value is updated when isReminder is changes`() {
+        val playWidgetMock = PlayWidget()
+        val mockChannelId = "123"
+        val mockTotalView = "50"
+        val mockReminderType = PlayWidgetReminderType.Reminded
+        val playWidgetUiModelMockDataWithReminder = PlayWidgetUiModel.Medium(
+            "title",
+            "action title",
+            "applink",
+            true,
+            PlayWidgetConfigUiModel(
+                true,
+                1000,
+                true,
+                1,
+                1,
+                2,
+                1
+            ),
+            PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+            listOf(
+                PlayWidgetMediumChannelUiModel(
+                    mockChannelId,
+                    "",
+                    "",
+                    "",
+                    "",
+                    mockTotalView,
+                    true,
+                    PlayWidgetPromoType.Default(""),
+                    mockReminderType,
+                    PlayWidgetPartnerUiModel("", ""),
+                    PlayWidgetVideoUiModel("", false, "", ""),
+                    PlayWidgetChannelType.Upcoming,
+                    false,
+                    PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Upcoming, PlayWidgetChannelType.Upcoming),
+                    PlayWidgetShareUiModel("", false),
+                    "",
+                    false,
+                    ""
+                )
+            )
+        )
+        coEvery { getShopPageHomeLayoutUseCase.executeOnBackground() } returns ShopLayoutWidget(
+            listWidget = listOf(ShopLayoutWidget.Widget(type = "dynamic"))
+        )
+        coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
+        viewModel.getShopPageHomeData(mockShopId, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData)
+        coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
+        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetMediumUiModelMockData
+        viewModel.getPlayWidget(mockShopId)
+        coVerify { playWidgetTools.getWidgetFromNetwork(any(), any()) }
+        every {
+            playWidgetTools.updateActionReminder(playWidgetMediumUiModelMockData, mockChannelId, mockReminderType)
+        } returns playWidgetUiModelMockDataWithReminder
+        viewModel.updatePlayWidgetReminder(
+            mockChannelId,
+            true
+        )
+        val playWidgetUiModel = (viewModel.playWidgetObservable.value?.widgetUiModel as? PlayWidgetUiModel.Medium)
+        assert((playWidgetUiModel?.items?.first() as? PlayWidgetMediumChannelUiModel)?.reminderType == mockReminderType)
+    }
 
+    @Test
+    fun `calling updatePlayWidgetReminder(), check if playWidgetObservableplay value is null when channelId is null`() {
+        viewModel.updatePlayWidgetReminder(
+            null,
+            false
+        )
+        assert(viewModel.playWidgetObservable.value == null)
+    }
 }

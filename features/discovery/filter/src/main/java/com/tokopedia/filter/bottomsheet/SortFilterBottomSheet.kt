@@ -18,6 +18,8 @@ import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
 import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
 import com.tokopedia.filter.bottomsheet.filtercategorydetail.FilterCategoryDetailBottomSheet
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
+import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView
+import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterListener
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewListener
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceOptionViewModel
@@ -108,9 +110,29 @@ class SortFilterBottomSheet: BottomSheetUnify() {
             sortFilterBottomSheetViewModel?.onPriceTextOutOfFocus()
         }
     }
+
+    private val keywordFilterListener = object: KeywordFilterListener {
+        override fun scrollToPosition(position: Int) {
+            val layoutManager =
+                sortFilterBottomSheetView
+                    ?.recyclerViewSortFilterBottomSheet
+                    ?.layoutManager
+
+            if (layoutManager is LinearLayoutManager)
+                layoutManager.scrollToPositionWithOffset(position, 0)
+        }
+
+        override fun onChangeKeywordFilter(keywordFilterDataView: KeywordFilterDataView) {
+            sortFilterBottomSheetViewModel?.onChangeKeywordFilter(keywordFilterDataView)
+        }
+    }
+
     private val sortFilterBottomSheetAdapter = SortFilterBottomSheetAdapter(
             SortFilterBottomSheetTypeFactoryImpl(
-                    sortViewListener, filterViewListener, priceFilterListener
+                sortViewListener,
+                filterViewListener,
+                priceFilterListener,
+                keywordFilterListener,
             )
     )
 
@@ -118,7 +140,7 @@ class SortFilterBottomSheet: BottomSheetUnify() {
             fragmentManager: FragmentManager,
             mapParameter: Map<String, String>?,
             dynamicFilterModel: DynamicFilterModel?,
-            callback: Callback
+            callback: Callback,
     ) {
         if (mapParameter == null) return
 

@@ -7,7 +7,6 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.BANNER_CAROUSEL
@@ -18,7 +17,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RECENT_PURCHASE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
-import com.tokopedia.tokopedianow.common.model.TokoNowLayoutUiModel
+import com.tokopedia.tokopedianow.common.model.*
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
@@ -36,6 +35,10 @@ import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.getItemInde
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.updateItemById
 import com.tokopedia.tokopedianow.home.domain.model.GetRecentPurchaseResponse.RecentPurchaseData
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEmptyStateUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRecentPurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.RecentPurchaseMapper.mapToRecentPurchaseUiModel
@@ -79,10 +82,13 @@ object HomeLayoutMapper {
     }
 
     fun MutableList<HomeLayoutItemUiModel>.addEmptyStateIntoList(id: String) {
-        val chooseAddressUiModel = HomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
-        val homeEmptyStateUiModel = HomeEmptyStateUiModel(id = id)
+        val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
-        add(HomeLayoutItemUiModel(homeEmptyStateUiModel, HomeLayoutItemState.LOADED))
+        when (id) {
+            EMPTY_STATE_NO_ADDRESS -> add(HomeLayoutItemUiModel(TokoNowEmptyStateOocUiModel(id = id), HomeLayoutItemState.LOADED))
+            EMPTY_STATE_FAILED_TO_FETCH_DATA -> add(HomeLayoutItemUiModel(TokoNowServerErrorUiModel, HomeLayoutItemState.LOADED))
+            else -> add(HomeLayoutItemUiModel(HomeEmptyStateUiModel(id = id), HomeLayoutItemState.LOADED))
+        }
     }
 
     fun MutableList<HomeLayoutItemUiModel>.addProductRecomOoc(recommendationWidget: RecommendationWidget) {
@@ -95,7 +101,7 @@ object HomeLayoutMapper {
         hasTickerBeenRemoved: Boolean,
         hasSharingEducationBeenRemoved: Boolean
     ) {
-        val chooseAddressUiModel = HomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
+        val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
 
         if (!hasTickerBeenRemoved) {
@@ -178,16 +184,6 @@ object HomeLayoutMapper {
         updateItemById(item.visitableId) {
             val ticker = HomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = tickerData)
             HomeLayoutItemUiModel(ticker, HomeLayoutItemState.LOADED)
-        }
-    }
-
-    private fun MutableList<HomeLayoutItemUiModel>.mapProductRecomData(
-        item: HomeProductRecomUiModel,
-        recommendationWidget: RecommendationWidget
-    ) {
-        updateItemById(item.visitableId) {
-            val productRecom = HomeProductRecomUiModel(id = item.visitableId, recomWidget = recommendationWidget)
-            HomeLayoutItemUiModel(productRecom, HomeLayoutItemState.LOADED)
         }
     }
 
@@ -345,13 +341,24 @@ object HomeLayoutMapper {
         quantity: Int
     ) {
         filter { it.layout is HomeProductRecomUiModel }.forEach { homeLayoutItemUiModel ->
-            val uiModel = homeLayoutItemUiModel.layout as? HomeProductRecomUiModel
-            if (!uiModel?.recomWidget?.recommendationItemList.isNullOrEmpty()) {
-                val recom = uiModel?.recomWidget?.copy()
-                val recommendationItem = recom?.recommendationItemList?.firstOrNull { it.productId.toString() == productId }
-                recommendationItem?.let {
-                    it.quantity = quantity
-                    mapProductRecomData(uiModel, recom)
+            val layout = homeLayoutItemUiModel.layout
+            val uiModel = layout as HomeProductRecomUiModel
+            if (!uiModel.recomWidget.recommendationItemList.isNullOrEmpty()) {
+                val recom = uiModel.recomWidget
+                val recommendationItemList = recom.recommendationItemList.toMutableList()
+                val recommendationItem = recommendationItemList.firstOrNull {
+                    it.productId.toString() == productId
+                }
+                val index = recommendationItemList.indexOf(recommendationItem)
+
+                recommendationItemList.getOrNull(index)?.copy(quantity = quantity)?.let {
+                    recommendationItemList[index] = it
+                }
+
+                updateItemById(layout.getVisitableId()) {
+                    val updatedRecom = recom.copy(recommendationItemList = recommendationItemList)
+                    val updatedUiModel = uiModel.copy(recomWidget = updatedRecom)
+                    homeLayoutItemUiModel.copy(layout = updatedUiModel)
                 }
             }
         }

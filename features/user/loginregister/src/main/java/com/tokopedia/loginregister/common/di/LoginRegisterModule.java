@@ -14,7 +14,6 @@ import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics;
-import com.tokopedia.loginregister.common.data.LoginRegisterApi;
 import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAnalytics;
 import com.tokopedia.network.interceptor.DebugInterceptor;
@@ -104,12 +103,6 @@ public class LoginRegisterModule {
         return retrofitBuilder.baseUrl(LoginRegisterUrl.BASE_DOMAIN)
                 .client(okHttpClient)
                 .build();
-    }
-
-    @LoginRegisterScope
-    @Provides
-    LoginRegisterApi provideLoginRegisterApi(@LoginRegisterScope Retrofit retrofit) {
-        return retrofit.create(LoginRegisterApi.class);
     }
 
     @LoginRegisterScope

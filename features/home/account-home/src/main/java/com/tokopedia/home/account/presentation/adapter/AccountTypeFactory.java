@@ -19,6 +19,7 @@ import com.tokopedia.home.account.presentation.viewholder.MenuGridViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.MenuListViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.MenuTitleViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.RecommendationProductViewHolder;
+import com.tokopedia.home.account.presentation.viewholder.TdnBannerViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.TickerViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.TokopediaPayViewHolder;
 import com.tokopedia.home.account.presentation.viewholder.TopAdsHeadlineViewHolder;
@@ -30,6 +31,7 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuTitleViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.RecommendationProductViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.TdnBannerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TickerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TopadsHeadlineUiModel;
@@ -70,6 +72,8 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
             return new AccountRecommendationTitleViewHolder(parent);
         } else if (type == RecommendationProductViewHolder.Companion.getLAYOUT()) {
             return new RecommendationProductViewHolder(parent, listener);
+        }  else if (type == TdnBannerViewHolder.Companion.getLAYOUT()) {
+            return new TdnBannerViewHolder(parent);
         } else if (type == LoadingShimmeringListViewHolder.LAYOUT) {
             return new LoadingShimmeringListViewHolder(parent);
         } else if (type == AccountLoadingMoreViewHolder.LAYOUT) {
@@ -133,4 +137,9 @@ public class AccountTypeFactory extends BaseAdapterTypeFactory {
     public int type(TopadsHeadlineUiModel viewModel) {
         return TopAdsHeadlineViewHolder.Companion.getLAYOUT();
     }
+
+    public int type(TdnBannerViewModel viewModel) {
+        return TdnBannerViewHolder.Companion.getLAYOUT();
+    }
+
 }

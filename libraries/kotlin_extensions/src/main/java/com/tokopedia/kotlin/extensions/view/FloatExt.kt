@@ -15,3 +15,5 @@ fun Float?.toIntSafely(): Int {
 fun Float.toDp(): Float = this / Resources.getSystem().displayMetrics.density
 
 fun Float.toPx(): Float = this * Resources.getSystem().displayMetrics.density
+
+val Float.Companion.ZERO get() = 0f

@@ -33,7 +33,7 @@ class GetShopFilterProductCountUseCase @Inject constructor(
     override suspend fun executeOnBackground(): Int {
         val request = GraphqlRequest(ShopPageGqlQueryConstant.getShopFilterProductCountQuery(), ShopProduct.Response::class.java, params)
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-        val gqlResponse = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+        val gqlResponse = graphqlRepository.response(listOf(request), cacheStrategy)
         val error = gqlResponse.getError(ShopProduct.Response::class.java)
         if (error == null || error.isEmpty()) {
             return gqlResponse.getData<ShopProduct.Response>(ShopProduct.Response::class.java).getShopProduct.totalData

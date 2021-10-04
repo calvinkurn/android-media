@@ -68,6 +68,10 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
         activity?.intent?.getStringArrayExtra(CampaignStockActivity.PRODUCT_ID)
     }
 
+    private val isBundling by lazy {
+        activity?.intent?.getBooleanExtra(CampaignStockActivity.IS_BUNDLING, false) ?: false
+    }
+
     private val source by lazy {
         activity?.intent?.getStringExtra(EXTRA_SOURCE)?: DEFAULT_SOURCE
     }
@@ -193,7 +197,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
         shopId?.let { shopId ->
             productIds?.let { productIds ->
                 mViewModel.setShopId(shopId)
-                mViewModel.getStockAllocation(productIds.toList())
+                mViewModel.getStockAllocation(productIds.toList(), isBundling)
             }
         }
     }

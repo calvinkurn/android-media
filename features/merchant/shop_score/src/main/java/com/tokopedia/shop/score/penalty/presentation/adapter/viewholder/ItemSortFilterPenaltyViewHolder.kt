@@ -3,13 +3,13 @@ package com.tokopedia.shop.score.penalty.presentation.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.common.toggle
+import com.tokopedia.shop.score.databinding.ItemSortFilterPenaltyBinding
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemSortFilterPenaltyListener
 import com.tokopedia.shop.score.penalty.presentation.model.ItemSortFilterPenaltyUiModel
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
-import kotlinx.android.synthetic.main.item_sort_filter_penalty.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ItemSortFilterPenaltyViewHolder(
     view: View,
@@ -20,9 +20,11 @@ class ItemSortFilterPenaltyViewHolder(
         val LAYOUT = R.layout.item_sort_filter_penalty
     }
 
+    private val binding: ItemSortFilterPenaltyBinding? by viewBinding()
+
     override fun bind(element: ItemSortFilterPenaltyUiModel?) {
-        with(itemView) {
-            sortFilterDetailPenalty?.apply {
+        binding?.run {
+            sortFilterDetailPenalty.run {
                 sortFilterItems.removeAllViews()
                 indicatorCounter = 0
                 setupSortFilter(element?.itemSortFilterWrapperList)

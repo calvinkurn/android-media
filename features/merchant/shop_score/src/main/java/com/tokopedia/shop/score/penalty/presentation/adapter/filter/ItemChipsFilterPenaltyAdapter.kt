@@ -5,17 +5,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.databinding.ItemChipsPenaltyFilterBinding
 import com.tokopedia.shop.score.penalty.presentation.adapter.FilterPenaltyBottomSheetListener
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 import com.tokopedia.unifycomponents.ChipsUnify
-import kotlinx.android.synthetic.main.item_chips_penalty_filter.view.*
+import com.tokopedia.utils.view.binding.viewBinding
+
 
 class ItemChipsFilterPenaltyAdapter(
     private val filterPenaltyBottomSheetListener: FilterPenaltyBottomSheetListener,
     private val nameFilter: String
 ) : RecyclerView.Adapter<ItemChipsFilterPenaltyAdapter.ItemChipsFilterPenaltyViewHolder>() {
 
-    private var itemChipsFilterPenaltyList =
+    private val itemChipsFilterPenaltyList =
         mutableListOf<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>()
 
     fun setItemChipsFilterPenaltyList(data: List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>) {
@@ -44,10 +46,11 @@ class ItemChipsFilterPenaltyAdapter(
     override fun getItemCount(): Int = itemChipsFilterPenaltyList.size
 
     inner class ItemChipsFilterPenaltyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val binding: ItemChipsPenaltyFilterBinding? by viewBinding()
 
         fun bind(data: PenaltyFilterUiModel.ChipsFilterPenaltyUiModel) {
-            with(itemView) {
-                chipsItemPenalty?.apply {
+            binding?.run {
+                chipsItemPenalty.run {
                     centerText = true
                     chipText = data.title
                     chipSize = ChipsUnify.SIZE_MEDIUM

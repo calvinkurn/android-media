@@ -13,6 +13,7 @@ data class RecommendationWidgetUiModel(
         override val title: String,
         override val subtitle: String,
         override val tooltip: TooltipUiModel?,
+        override val tag: String,
         override val appLink: String,
         override val dataKey: String,
         override val ctaText: String,
@@ -31,7 +32,7 @@ data class RecommendationWidgetUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<RecommendationDataUiModel> {
-        return RecommendationWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, isLoaded, isLoading, isFromCache, emptyState, impressHolder, isNeedToBeRemoved)
+        return RecommendationWidgetUiModel(id, widgetType, title, subtitle, tooltip, tag, appLink, dataKey, ctaText, isShowEmpty, data, isLoaded, isLoading, isFromCache, emptyState, impressHolder, isNeedToBeRemoved)
     }
 
     override fun needToRefreshData(other: BaseWidgetUiModel<RecommendationDataUiModel>): Boolean {

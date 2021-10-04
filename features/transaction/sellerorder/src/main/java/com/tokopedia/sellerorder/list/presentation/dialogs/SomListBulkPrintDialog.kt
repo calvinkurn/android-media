@@ -1,24 +1,25 @@
 package com.tokopedia.sellerorder.list.presentation.dialogs
 
 import android.content.Context
-import android.view.View
+import android.view.LayoutInflater
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.sellerorder.analytics.SomAnalytics
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.sellerorder.databinding.DialogMultiPrintAwbBinding
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.dialog_multi_print_awb.*
 
 class SomListBulkPrintDialog(context: Context) {
 
     private var dialogUnify: DialogUnify? = null
-    private var childViews: View? = null
     private var listener: SomListBulkPrintDialogClickListener? = null
 
+    private var binding: DialogMultiPrintAwbBinding? = null
+
     init {
-        childViews = View.inflate(context, com.tokopedia.sellerorder.R.layout.dialog_multi_print_awb, null)
+        binding = DialogMultiPrintAwbBinding.inflate(LayoutInflater.from(context))
         dialogUnify = DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
             if (DeviceScreenInfo.isTablet(context)) {
                 dialogMaxWidth = getScreenWidth() / 2
@@ -30,13 +31,16 @@ class SomListBulkPrintDialog(context: Context) {
             setUnlockVersion()
             setOverlayClose(false)
             setCancelable(false)
-            setChild(childViews)
+            setChild(binding?.root)
+            setOnDismissListener {
+                binding = null
+            }
             setOnShowListener {
-                btnSomListBulkPrintDialogPrimaryButton?.setOnClickListener {
-                    listener?.onPrintButtonClicked(cbMarkAsPrinted?.isChecked ?: false)
+                binding?.btnSomListBulkPrintDialogPrimaryButton?.setOnClickListener {
+                    listener?.onPrintButtonClicked(binding?.cbMarkAsPrinted?.isChecked.orFalse())
                     dismiss()
                 }
-                btnSomListBulkPrintDialogSecondaryButton?.setOnClickListener {
+                binding?.btnSomListBulkPrintDialogSecondaryButton?.setOnClickListener {
                     val userSession = UserSession(context)
                     SomAnalytics.eventClickCancelOnBulkPrintAwb(userSession.userId)
                     dismiss()
@@ -46,7 +50,7 @@ class SomListBulkPrintDialog(context: Context) {
     }
 
     fun setTitle(title: String) {
-        childViews?.findViewById<Typography>(com.tokopedia.sellerorder.R.id.tvSomListBulkPrintDialogTitle)?.text = title
+        binding?.tvSomListBulkPrintDialogTitle?.text = title
     }
 
     fun setListener(listener: SomListBulkPrintDialogClickListener) {
