@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
+import com.tokopedia.shop.score.databinding.FragmentPenaltyPageBinding
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
 import com.tokopedia.shop.score.penalty.presentation.adapter.*
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyDateFilterBottomSheet
@@ -29,7 +30,7 @@ import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewMo
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_penalty_page.*
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapterFactory>(),
@@ -53,6 +54,8 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         )
     }
     private val penaltyPageAdapter by lazy { PenaltyPageAdapter(penaltyPageAdapterFactory) }
+
+    private val binding: FragmentPenaltyPageBinding? by viewBinding()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -132,7 +135,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
             penaltyFilterUiModelList.find { it.title == ShopScoreConstant.TITLE_SORT }?.chipsFilerList?.find { it.isSelected }?.value
                 ?: 0
         viewModelShopPenalty.setSortTypeFilterData(Pair(sortBy, typeId))
-        penaltyPageAdapter.apply {
+        penaltyPageAdapter.run {
             removePenaltyListData()
             refreshSticky()
             removeNotFoundPenalty()
@@ -160,7 +163,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         sortFilterItemPeriodWrapperList?.let { penaltyPageAdapter.updateChipsSelected(it) }
         val typeId = sortFilterItemPeriodWrapperList?.find { it.isSelected }?.idFilter ?: 0
         viewModelShopPenalty.setTypeFilterData(typeId)
-        penaltyPageAdapter.apply {
+        penaltyPageAdapter.run {
             removePenaltyListData()
             refreshSticky()
             removeNotFoundPenalty()
@@ -182,7 +185,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
             "${startDate.second} - ${endDate.second}"
         }
         viewModelShopPenalty.setDateFilterData(Pair(startDate.first, endDate.first))
-        penaltyPageAdapter.apply {
+        penaltyPageAdapter.run {
             removePenaltyListData()
             refreshSticky()
             removeNotFoundPenalty()
@@ -229,7 +232,8 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
             when (it) {
                 is Success -> {
                     val basePenaltyData =
-                        it.data.penaltyVisitableList.first.filterNot { visitable -> visitable is ItemPenaltyUiModel }
+                        it.data.penaltyVisitableList.first.filterNot {
+                                visitable -> visitable is ItemPenaltyUiModel }
                     val penaltyFilterDetailData =
                         it.data.penaltyVisitableList.first.filterIsInstance<ItemPenaltyUiModel>()
                     penaltyPageAdapter.setPenaltyData(basePenaltyData)
@@ -279,8 +283,8 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
     private fun setupActionBar() {
         (activity as? AppCompatActivity)?.run {
             supportActionBar?.hide()
-            setSupportActionBar(penalty_page_toolbar)
-            supportActionBar?.apply {
+            setSupportActionBar(binding?.penaltyPageToolbar)
+            supportActionBar?.run {
                 title = getString(R.string.title_penalty_shop_score)
             }
         }

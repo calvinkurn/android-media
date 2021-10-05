@@ -52,7 +52,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/background"
             app:layout_constraintVertical_chainStyle="spread"
-            app:typographyType="heading_3"
+            app:typographyType="heading_4"
             tools:text="Gratis Ongkir"
             tools:visibility="visible" />
 

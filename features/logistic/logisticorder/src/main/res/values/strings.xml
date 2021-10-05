@@ -30,6 +30,8 @@ setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
     <string name="rationale_barcode_permission">Aplikasi ini membutuhkan beberapa izin. Perbolehkan?</string>
     <string name="permission_denied">Akses tidak diberikan</string>
     <string name="label_image_preview">Gambar Bukti</string>
+    <string name="confirm_shipping_confirm_description">Biaya pergantian kurir sepenuhnya ditanggung Penjual</string>
+    <string name="confirm_shipping_confirm_button">Konfirmasi</string>
 
     <!--CONTENT DESC-->
 </resources>

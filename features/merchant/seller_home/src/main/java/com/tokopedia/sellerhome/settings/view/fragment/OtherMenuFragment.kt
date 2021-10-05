@@ -574,7 +574,9 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     private fun observeShopShareInfo() {
         viewModel.shopShareInfoLiveData.observe(viewLifecycleOwner) { shareInfo ->
-            animateShareButtonFromShareData(shareInfo)
+            if (isSharingEnabled) {
+                animateShareButtonFromShareData(shareInfo)
+            }
         }
     }
 
