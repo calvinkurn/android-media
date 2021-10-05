@@ -181,9 +181,9 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
             text = buttonText
             setOnClickListener {
                 if (isUsersOwnCredibility()) {
-                    ReviewCredibilityTracking.trackOnClickCTASelfCredibility(buttonText, userId)
+                    ReviewCredibilityTracking.trackOnClickCTASelfCredibility(buttonText, userId, source)
                 } else {
-                    ReviewCredibilityTracking.trackOnClickCTAOtherUserCredibility(buttonText, userId, productId)
+                    ReviewCredibilityTracking.trackOnClickCTAOtherUserCredibility(buttonText, userId, productId, source)
                 }
                 handleRouting(applink)
             }
@@ -265,7 +265,7 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
             }
         } else {
             dismiss()
-            if (applink.isNotEmpty()) {
+            if (applink != ApplinkConst.REPUTATION) {
                 RouteManager.route(context, applink)
             }
         }
