@@ -26,6 +26,8 @@ import com.tokopedia.deals.common.bottomsheet.DealsBottomSheetNoInternetConnecti
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.FragmentDealsBrandDetailBinding
 import com.tokopedia.deals.location_picker.model.response.Location
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.observe
@@ -153,34 +155,25 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
             it.collapsingToolbarBrandDetail.title = ""
             it.appBarLayoutBrandDetail.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
                 override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                    if (abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
-                        it.collapsingToolbarBrandDetail.title = title
-                        it.toolbarBrandDetail?.let { toolbar ->
-                            context?.let {
-//                                toolbar.menu.getItem(0).setIcon(getIconUnifyDrawable(
-//                                    context = it,
-//                                    iconId = IconUnify.SHARE_MOBILE,
-//                                    assetColor = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
-//                                ))
-
-                                setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-                            }
+                    context?.let { context ->
+                        var colorInt = 0
+                        if (abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
+                            it.collapsingToolbarBrandDetail.title = title
+                            colorInt = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+                        } else if (verticalOffset == 0) {
+                            it.collapsingToolbarBrandDetail.title = ""
+                            colorInt = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
                         }
-                    } else if (verticalOffset == 0) {
-                        it.collapsingToolbarBrandDetail.title = ""
-                        it.toolbarBrandDetail?.let { toolbar ->
-                            it.toolbarBrandDetail?.let { toolbar ->
-                                context?.let {
-//                                    toolbar.menu.getItem(0).setIcon(getIconUnifyDrawable(
-//                                            context = it,
-//                                            iconId = IconUnify.SHARE_MOBILE,
-//                                            assetColor = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-//                                    ))
 
-                                    setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                                }
-                            }
+                        it.toolbarBrandDetail?.let { toolbar ->
+                            setDrawableColorFilter(toolbar.getNavigationIcon(), colorInt)
                         }
+
+                        it.toolbarBrandDetail.menu.getItem(0).setIcon(getIconUnifyDrawable(
+                                context = context,
+                                iconId = IconUnify.SHARE_MOBILE,
+                                assetColor = colorInt)
+                        )
                     }
                 }
             })
