@@ -288,7 +288,6 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
                     budgetCost.setMessage(String.format(getString(R.string.topads_headline_max_budget_cost_error), MAX_DAILY_BUDGET))
                     btnNext.isEnabled = false
                 } else {
-                    stepperModel?.dailyBudget = number.toFloat()
                     btnNext.isEnabled = true
                     budgetCost.setMessage("")
                     budgetCost.setError(false)

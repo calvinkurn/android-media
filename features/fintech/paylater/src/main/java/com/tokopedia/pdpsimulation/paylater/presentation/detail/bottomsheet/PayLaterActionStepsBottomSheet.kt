@@ -121,7 +121,6 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
         showCloseIcon = true
         showHeader = true
         customPeekHeight = (getScreenHeight()).toDp()
-
     }
 
 
