@@ -21,10 +21,10 @@ class DealsBottomSheetNoInternetConnection {
         with(binding){
             geDealsNoConnection.setActionClickListener {
                 bottomSheet.dismiss()
-                listener.onClick()
             }
         }
         bottomSheet.setOnDismissListener {
+            bottomSheet.dismiss()
             listener.onDismissBottomsheet()
         }
         bottomSheet.setChild(binding.root)
@@ -32,7 +32,6 @@ class DealsBottomSheetNoInternetConnection {
     }
 
     interface DealsOnClickBottomSheetNoConnectionListener{
-        fun onClick()
         fun onDismissBottomsheet()
     }
 }

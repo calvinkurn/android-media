@@ -226,10 +226,6 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
                                 DealsBottomSheetNoInternetConnection().showErroNoConnection(context, it,
                                         object : DealsBottomSheetNoInternetConnection.
                                         DealsOnClickBottomSheetNoConnectionListener {
-                                            override fun onClick() {
-                                                reLoadData()
-                                            }
-
                                             override fun onDismissBottomsheet() {
                                                 reLoadData()
                                             }
