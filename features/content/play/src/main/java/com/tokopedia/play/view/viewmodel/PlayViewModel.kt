@@ -1578,10 +1578,10 @@ class PlayViewModel @Inject constructor(
                 repo.setFinished(activeInteractiveId)
 
                 _uiEvent.emit(
-                    if(winnerStatus.userId.toString() == userId)
+                    if(winnerStatus.userId.toString() == userId){
                         ShowWinningDialogEvent(winnerStatus.imageUrl, winnerStatus.winnerTitle, winnerStatus.winnerText)
+                    }
                     else {
-                        Log.d("<LOG>", "Loser")
                         ShowCoachMarkWinnerEvent(winnerStatus.loserTitle, winnerStatus.loserText)
                     }
                 )
