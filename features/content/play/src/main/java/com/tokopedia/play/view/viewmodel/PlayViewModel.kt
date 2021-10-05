@@ -1545,8 +1545,6 @@ class PlayViewModel @Inject constructor(
             val activeInteractiveId = repo.getActiveInteractiveId() ?: return@launchCatchError
             val activeInteractive = repo.getDetail(activeInteractiveId) ?: return@launchCatchError
 
-            repo.setFinished(activeInteractiveId)
-
             _interactive.value = PlayInteractiveUiState.Finished(
                 info = R.string.play_interactive_finish_initial_text,
             )
@@ -1564,6 +1562,7 @@ class PlayViewModel @Inject constructor(
             } ?: kotlin.run {
                 Log.d("<LOG>", "winnerStatus null")
                 delay(activeInteractive.endGameDelayInMs)
+                repo.setFinished(activeInteractiveId)
                 Log.d("<LOG>", "waitingDuration done")
                 /**
                  * TODO:
@@ -1576,14 +1575,15 @@ class PlayViewModel @Inject constructor(
     }
 
     private suspend fun handleUserWinnerStatus(winnerStatus: PlayUserWinnerStatusUiModel) {
-        val currentInteractiveId = repo.getActiveInteractiveId() ?: return
-        val isUserJoined = repo.hasJoined(currentInteractiveId)
+        val activeInteractiveId = repo.getActiveInteractiveId() ?: return
+        val isUserJoined = repo.hasJoined(activeInteractiveId)
 
         Log.d("<LOG>", "socketInteractionId: ${winnerStatus.interactiveId}")
-        Log.d("<LOG>", "currentInteractionId: $currentInteractiveId")
+        Log.d("<LOG>", "currentInteractionId: $activeInteractiveId")
         Log.d("<LOG>", "isUserJoined: $isUserJoined")
 
-        if(winnerStatus.interactiveId.toString() == currentInteractiveId && isUserJoined) {
+        if(winnerStatus.interactiveId.toString() == activeInteractiveId && isUserJoined) {
+            repo.setFinished(activeInteractiveId)
             _uiEvent.emit(
                 if(winnerStatus.userId.toString() == userId)
                     ShowWinningDialogEvent(winnerStatus.imageUrl, winnerStatus.winnerTitle, winnerStatus.winnerText)
