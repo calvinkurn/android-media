@@ -16,7 +16,7 @@ class WaitingPaymentOrderTipsTypeFactory : BaseAdapterTypeFactory() {
         return WaitingPaymentOrderTipsViewHolder.LAYOUT
     }
 
-    override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
+    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             WaitingPaymentOrderTipsViewHolder.LAYOUT -> WaitingPaymentOrderTipsViewHolder(parent)
             else -> super.createViewHolder(parent, type)

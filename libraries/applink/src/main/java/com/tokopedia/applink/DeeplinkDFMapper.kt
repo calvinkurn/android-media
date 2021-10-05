@@ -552,9 +552,19 @@ object DeeplinkDFMapper : CoroutineScope {
                 it.startsWith(TokopediaNow.HOME) ||
                     it.startsWith(TokopediaNow.CATEGORY) ||
                     it.startsWith(TokopediaNow.SEARCH) ||
+                    it.startsWith(TokopediaNow.REPURCHASE) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.HOME) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.CATEGORY) ||
-                    it.startsWith(ApplinkConstInternalTokopediaNow.SEARCH)
+                    it.startsWith(ApplinkConstInternalTokopediaNow.SEARCH) ||
+                    it.startsWith(ApplinkConstInternalTokopediaNow.REPURCHASE)
+            }, DF_TOKOPEDIA_NOW, R.string.title_tokopedia_now))
+
+            // TokoMart
+            add(DFP({
+                it.startsWith(TokoMart.HOME) ||
+                    it.startsWith(TokoMart.CATEGORY) ||
+                    it.startsWith(TokoMart.SEARCH) ||
+                    it.startsWith(TokoMart.REPURCHASE)
             }, DF_TOKOPEDIA_NOW, R.string.title_tokopedia_now))
 
             // Review Reminder

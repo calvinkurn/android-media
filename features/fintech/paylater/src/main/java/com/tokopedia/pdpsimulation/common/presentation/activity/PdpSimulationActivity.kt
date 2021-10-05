@@ -51,10 +51,10 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
             null
         } else {
             val bundle = Bundle()
-            intent.data?.let {
-                bundle.putString(PRODUCT_PRICE, it.getQueryParameter(PRODUCT_PRICE))
-                bundle.putString(PARAM_PRODUCT_URL, it.getQueryParameter(PARAM_PRODUCT_URL))
-                bundle.putString(PARAM_PRODUCT_ID, it.getQueryParameter(PARAM_PRODUCT_ID))
+            intent.extras?.let {
+                bundle.putString(PRODUCT_PRICE, it.getString(PRODUCT_PRICE))
+                bundle.putString(PARAM_PRODUCT_URL, it.getString(PARAM_PRODUCT_URL))
+                bundle.putString(PARAM_PRODUCT_ID, it.getString(PARAM_PRODUCT_ID))
             }
            PdpSimulationFragment.newInstance(bundle)
         }

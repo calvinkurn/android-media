@@ -32,6 +32,8 @@ import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
 
+import io.embrace.android.embracesdk.Embrace;
+
 /**
  * Created by ricoharisin on 11/22/16.
  */
@@ -68,6 +70,7 @@ public class ConsumerSplashScreen extends SplashScreen {
             @Override
             public Boolean execute() {
                 initializationNewRelic();
+                initializationEmbrace();
                 CMPushNotificationManager.getInstance()
                         .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(ConsumerSplashScreen.this.getApplicationContext()), false);
 
@@ -88,6 +91,10 @@ public class ConsumerSplashScreen extends SplashScreen {
         if (userSession.isLoggedIn()) {
             NewRelic.setUserId(userSession.getUserId());
         }
+    }
+
+    private void initializationEmbrace() {
+        Embrace.getInstance().start(this);
     }
 
     private void syncFcmToken() {

@@ -1,6 +1,7 @@
 package com.tokopedia.shop.score.penalty.presentation.adapter
 
 import android.os.Handler
+import android.os.Looper
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -122,7 +123,7 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
     }
 
     override fun onStickyHide() {
-        Handler().post {
+        Handler(Looper.getMainLooper()).post {
             penaltySortFilterPosition?.let { notifyItemChanged(it) }
         }
     }

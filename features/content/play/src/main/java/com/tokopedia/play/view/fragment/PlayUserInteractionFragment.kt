@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
@@ -71,6 +72,7 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.*
@@ -861,9 +863,43 @@ class PlayUserInteractionFragment @Inject constructor(
                         interactiveWinnerBadgeView?.hideCoachMark()
                     }
                     is OpenPageEvent -> {
-                        openPageByApplink(applink = event.applink, params = event.params.toTypedArray(), requestCode = event.requestCode, pipMode = event.pipMode)
+                        openPageByApplink(
+                            applink = event.applink,
+                            params = event.params.toTypedArray(),
+                            requestCode = event.requestCode,
+                            pipMode = event.pipMode
+                        )
                     }
-                    is ShowToasterEvent -> handleToasterEvent(event)
+                    is ShowInfoEvent -> {
+                        doShowToaster(
+                            toasterType = Toaster.TYPE_NORMAL,
+                            message = getTextFromUiString(event.message)
+                        )
+                    }
+                    is ShowErrorEvent -> {
+                        val errMessage = if (event.errMessage == null) {
+                            ErrorHandler.getErrorMessage(
+                                context, event.error, ErrorHandler.Builder()
+                                    .className(PlayViewModel::class.java.simpleName)
+                                    .build()
+                            )
+                        } else {
+                            val (_, errCode) = ErrorHandler.getErrorMessagePair(
+                                context, event.error, ErrorHandler.Builder()
+                                    .className(PlayViewModel::class.java.simpleName)
+                                    .build()
+                            )
+                            getString(
+                                commonR.string.play_custom_error_handler_msg,
+                                getTextFromUiString(event.errMessage),
+                                errCode
+                            )
+                        }
+                        doShowToaster(
+                            toasterType = Toaster.TYPE_ERROR,
+                            message = errMessage
+                        )
+                    }
                     is CopyToClipboardEvent -> copyToClipboard(event.content)
                     is ShowRealTimeNotificationEvent -> {
                         rtnView?.queueNotification(event.notification)
@@ -1462,17 +1498,6 @@ class PlayUserInteractionFragment @Inject constructor(
         else rtnView?.invisible()
     }
     //endregion
-
-    private fun handleToasterEvent(event: ShowToasterEvent) {
-        val text = getTextFromUiString(event.message)
-        doShowToaster(
-                toasterType = when (event) {
-                    is ShowToasterEvent.Info -> Toaster.TYPE_NORMAL
-                    is ShowToasterEvent.Error -> Toaster.TYPE_ERROR
-                },
-                message = text
-        )
-    }
 
     private fun getTextFromUiString(uiString: UiString): String {
         return when (uiString) {
