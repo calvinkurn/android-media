@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.imagepicker_insta.*
 import com.tokopedia.imagepicker_insta.activity.CameraActivity
-import com.tokopedia.imagepicker_insta.activity.DummyActivity
+//import com.tokopedia.imagepicker_insta.activity.DummyActivity
 import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity
 import com.tokopedia.imagepicker_insta.common.ImagePickerRouter.DEFAULT_MULTI_SELECT_LIMIT
 import com.tokopedia.imagepicker_insta.common.BundleData
@@ -590,6 +590,10 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     private fun handleSuccessSelectedUri(uris: List<Uri>) {
+//        if(true){
+//            startActivity(Intent(context,DummyActivity::class.java))
+//            return
+//        }
         if (!uris.isNullOrEmpty()) {
 
             val applink = (activity as? ImagePickerInstaActivity)?.applinkForGalleryProceed
