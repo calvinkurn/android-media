@@ -123,19 +123,16 @@ class RegisterPushNotifService : JobIntentService() {
     }
 
     companion object {
-
-        private const val JOB_ID = 34578
-
         private const val ANDROID_KEY_STORE = "AndroidKeyStore"
         private const val PUSH_NOTIF_ALIAS = "PushNotif"
         private const val SHA_256_WITH_RSA = "SHA256withRSA"
         private const val PUBLIC_KEY_PREFIX = "-----BEGIN PUBLIC KEY-----\n"
         private const val PUBLIC_KEY_SUFFIX = "\n-----END PUBLIC KEY-----"
 
-        fun startService(context: Context) {
+        fun startService(context: Context, jobId: Int) {
             try {
                 val intent = Intent(context, RegisterPushNotifService::class.java)
-                enqueueWork(context, RegisterPushNotifService::class.java, JOB_ID, intent)
+                enqueueWork(context, RegisterPushNotifService::class.java, jobId, intent)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

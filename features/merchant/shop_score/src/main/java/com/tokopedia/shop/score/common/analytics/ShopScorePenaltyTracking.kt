@@ -15,7 +15,6 @@ import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK_SHOP_SCORE
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK_WATCH_VIDEO
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK_YOUR_SHOP_GET_PM
-import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.COMMUNICATION_PERIOD_OLD_SHOP_SCORE
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CURRENT_SITE
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.FREE_SHIPPING
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.FREE_SHIPPING_IDENTIFIER

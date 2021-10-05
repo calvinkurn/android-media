@@ -504,23 +504,31 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     override fun onSortClicked(chipTitle: String) {
-        val sortOptions = readReviewFilterFactory.getSortOptions(
+        val listSortOptions = if (isProductReview) {
             listOf(
-                getString(R.string.review_reading_sort_most_helpful),
-                getString(R.string.review_reading_sort_latest),
-                getString(R.string.review_reading_sort_highest_rating),
-                getString(R.string.review_reading_sort_lowest_rating)
+                    getString(R.string.review_reading_sort_most_helpful),
+                    getString(R.string.review_reading_sort_latest),
+                    getString(R.string.review_reading_sort_highest_rating),
+                    getString(R.string.review_reading_sort_lowest_rating)
             )
-        )
+        } else {
+            listOf(
+                    getString(R.string.review_reading_sort_latest),
+                    getString(R.string.review_reading_sort_most_helpful),
+                    getString(R.string.review_reading_sort_highest_rating),
+                    getString(R.string.review_reading_sort_lowest_rating)
+            )
+        }
+        val sortOptions = readReviewFilterFactory.getSortOptions(listSortOptions)
         activity?.supportFragmentManager?.let {
             ReadReviewFilterBottomSheet.newInstance(
-                getString(R.string.review_reading_sort_title),
-                sortOptions,
-                this,
-                SortFilterBottomSheetType.SortBottomSheet,
-                setOf(),
-                chipTitle,
-                0
+                    getString(R.string.review_reading_sort_title),
+                    sortOptions,
+                    this,
+                    SortFilterBottomSheetType.SortBottomSheet,
+                    setOf(),
+                    chipTitle,
+                    0
             ).show(it, ReadReviewFilterBottomSheet.TAG)
         }
     }

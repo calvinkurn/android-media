@@ -14,8 +14,8 @@ data class TenorListData(
     val type: String = "",
     val bank: String = "",
     val desc: String = "",
-    val amount: Float = 0F,
-    val fee: Float = 0F,
-    val rate: Float = 0F,
+    val amount: Double = 0.0,
+    val fee: Double = 0.0,
+    val rate: Double = 0.0,
     val disable: Boolean = false
 )
