@@ -37,7 +37,7 @@ class BetaInterceptor(private val context: Context) : Interceptor {
         fun isBeta(context: Context): Boolean {
             val sharedPreferences = context
                     .getSharedPreferences(BETA_INTERCEPTOR_PREF_NAME, Context.MODE_PRIVATE)
-            return sharedPreferences.getBoolean(IS_BETA_TOKOPEDIA, false)
+            return true
         }
 
     }

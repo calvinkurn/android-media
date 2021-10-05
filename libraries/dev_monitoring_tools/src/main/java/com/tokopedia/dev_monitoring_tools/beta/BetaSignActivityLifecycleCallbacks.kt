@@ -16,10 +16,12 @@ class BetaSignActivityLifecycleCallbacks : Application.ActivityLifecycleCallback
     }
 
     override fun onActivityResumed(activity: Activity) {
-        val window = activity.window
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        window.statusBarColor = activity.resources.getColor(R.color.holo_red_dark)
+        if (Build.VERSION.SDK_INT >= 21 && isBeta(activity)) {
+            val window = activity.window
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            window.statusBarColor = activity.resources.getColor(R.color.holo_red_dark)
+        }
     }
 
     override fun onActivityPaused(activity: Activity) { // No-op
