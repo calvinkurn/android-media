@@ -23,6 +23,7 @@ import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.order.DeeplinkMapperOrder;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -301,23 +302,12 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     @Override
     public void goToApplinkActivity(Context context, String applink) {
-        DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
-        Intent intent = new Intent(context, DeepLinkHandlerActivity.class);
-        intent.setData(Uri.parse(applink));
-
-        if (context instanceof Activity) {
-            deepLinkDelegate.dispatchFrom((Activity) context, intent);
-        } else {
-            context.startActivity(intent);
-        }
+        RouteManager.route(context, applink);
     }
 
     @Override
     public Intent getApplinkIntent(Context context, String applink) {
-        Intent intent = new Intent(context, DeepLinkHandlerActivity.class);
-        intent.setData(Uri.parse(applink));
-
-        return intent;
+        return RouteManager.getIntent(context, applink);
     }
 
     @Override
@@ -369,19 +359,14 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     @Override
     public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
-        if (activity != null) {
-            DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
-            Intent intent = activity.getIntent();
-            intent.setData(Uri.parse(applink));
-            intent.putExtras(bundle);
-            deepLinkDelegate.dispatchFrom(activity, intent);
-        }
+        Intent intent = RouteManager.getIntent(activity, applink);
+        intent.putExtras(bundle);
+        activity.startActivity(intent);
     }
 
     @Override
     public boolean isSupportApplink(String appLink) {
-        DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
-        return deepLinkDelegate.supportsUri(appLink);
+        return false;
     }
 
     @Override

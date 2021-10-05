@@ -343,6 +343,10 @@ public interface ApplinkConst {
 
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
 
+    String HOME_CREDIT = "home-credit";
+    String FINTECH = "fintech";
+    String KTP = "ktp";
+    String SELFIE = "selfie";
     String HOME_CREDIT_KTP_WITHOUT_TYPE = "tokopedia://fintech/home-credit/ktp";
     String HOME_CREDIT_KTP_WITH_TYPE = "tokopedia://fintech/home-credit/ktp/{type}";
     String HOME_CREDIT_SELFIE_WITHOUT_TYPE = "tokopedia://fintech/home-credit/selfie";

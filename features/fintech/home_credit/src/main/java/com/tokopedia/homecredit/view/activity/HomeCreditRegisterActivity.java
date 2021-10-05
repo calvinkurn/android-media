@@ -29,25 +29,8 @@ public class HomeCreditRegisterActivity extends BaseSimpleActivity {
     public static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private List<String> permissionsToRequest;
     private boolean isPermissionGotDenied;
+    private boolean showKtp = false;
     protected static final int REQUEST_CAMERA_PERMISSIONS = 932;
-
-    @DeepLink({ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE, HOME_CREDIT_KTP_WITHOUT_TYPE})
-    public static Intent getHomeCreditKTPIntent(Context context, Bundle bundle) {
-        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-        bundle.putBoolean(SHOW_KTP, true);
-        return new Intent(context, HomeCreditRegisterActivity.class)
-                .setData(uri.build())
-                .putExtras(bundle);
-    }
-
-    @DeepLink({ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE, ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE})
-    public static Intent getHomeCreditSelfieIntent(Context context, Bundle bundle) {
-        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-        bundle.putBoolean(SHOW_KTP, false);
-        return new Intent(context, HomeCreditRegisterActivity.class)
-                .setData(uri.build())
-                .putExtras(bundle);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,28 +67,29 @@ public class HomeCreditRegisterActivity extends BaseSimpleActivity {
             finish();
             return;
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            String[] permissions;
-            permissions = new String[]{Manifest.permission.CAMERA};
-            permissionsToRequest = new ArrayList<>();
-            for (String permission : permissions) {
-                if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                    permissionsToRequest.add(permission);
-                }
+        String[] permissions;
+        permissions = new String[]{Manifest.permission.CAMERA};
+        permissionsToRequest = new ArrayList<>();
+        for (String permission : permissions) {
+            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                permissionsToRequest.add(permission);
             }
-            if (!permissionsToRequest.isEmpty()) {
-                ActivityCompat.requestPermissions(this,
-                        permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
-            }
+        }
+        if (!permissionsToRequest.isEmpty()) {
+            ActivityCompat.requestPermissions(this,
+                    permissionsToRequest.toArray(new String[permissionsToRequest.size()]), REQUEST_CAMERA_PERMISSIONS);
         }
     }
 
     @SuppressLint("MissingPermission")
     @Override
     protected Fragment getNewFragment() {
-        if (getIntent() != null &&
-                getIntent().getBooleanExtra(SHOW_KTP, false)) {
-
+        Intent intent = getIntent();
+        if (intent!= null) {
+            Uri uri = intent.getData();
+            showKtp = "true".equals(uri.getQueryParameter(SHOW_KTP));
+        }
+        if (showKtp) {
             return HomeCreditKTPFragment.createInstance();
         } else {
             return HomeCreditSelfieFragment.createInstance();

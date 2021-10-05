@@ -22,6 +22,7 @@ import com.tokopedia.applink.entertaiment.DeeplinkMapperEntertainment.getRegiste
 import com.tokopedia.applink.etalase.DeepLinkMapperEtalase
 import com.tokopedia.applink.feed.DeepLinkMapperFeed.getRegisteredFeed
 import com.tokopedia.applink.find.DeepLinkMapperFind.getRegisteredFind
+import com.tokopedia.applink.fintech.DeeplinkMapperFintech
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForFintech
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForLayanan
 import com.tokopedia.applink.gamification.DeeplinkMapperGamification
@@ -424,7 +425,9 @@ object DeeplinkMapper {
                 }),
             DLP.startWith(ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST) { _, _, deeplink, _ -> getContentCreatePostDeepLink(deeplink) },
             DLP.matchPattern(ApplinkConst.AFFILIATE_DRAFT_POST) { _, _, deeplink, _ -> getContentCreatePostDeepLink(deeplink) },
-            DLP.exact(ApplinkConst.REVIEW_REMINDER_PREVIOUS, ApplinkConstInternalSellerapp.REVIEW_REMINDER)
+            DLP.exact(ApplinkConst.REVIEW_REMINDER_PREVIOUS, ApplinkConstInternalSellerapp.REVIEW_REMINDER),
+            DLP(DLPLogic { _, uri, _ -> DeeplinkMapperFintech.isHomeCreditRegister(uri) },
+                targetDeeplink = { _, uri, _, _ -> DeeplinkMapperFintech.getRegisteredNavigationForHomeCreditRegister(uri) }),
         )
 
     fun getTokopediaSchemeList():List<DLP>{

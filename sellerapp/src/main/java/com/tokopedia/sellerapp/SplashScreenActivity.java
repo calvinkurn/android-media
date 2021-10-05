@@ -125,23 +125,7 @@ public class SplashScreenActivity extends SplashScreen {
         }
 
         if (userSession.hasShop()) {
-            if (getIntent().hasExtra(Constants.EXTRA_APPLINK)) {
-                String applinkUrl = getIntent().getStringExtra(Constants.EXTRA_APPLINK);
-                DeepLinkDelegate delegate = DeepLinkHandlerActivity.getDelegateInstance();
-                if (delegate.supportsUri(applinkUrl)) {
-                    Intent intent = getIntent();
-                    intent.setData(Uri.parse(applinkUrl));
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, true);
-                    intent.putExtras(bundle);
-                    delegate.dispatchFrom(this, intent);
-                } else {
-                    startActivity(SellerHomeActivity.createIntent(this));
-                }
-            } else {
-                // Means it is a Seller
-                startActivity(SellerHomeActivity.createIntent(this));
-            }
+            startActivity(SellerHomeActivity.createIntent(this));
         } else if (!TextUtils.isEmpty(userSession.getUserId())) {
             Intent intent = moveToCreateShop(this);
             startActivity(intent);
