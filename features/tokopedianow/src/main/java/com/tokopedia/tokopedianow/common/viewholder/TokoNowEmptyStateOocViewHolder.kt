@@ -32,10 +32,10 @@ class TokoNowEmptyStateOocViewHolder(
     }
 
     override fun bind(element: TokoNowEmptyStateOocUiModel?) {
-        showEmptyStateNoAddress()
+        showEmptyStateNoAddress(element?.eventCategory.orEmpty())
     }
 
-    private fun showEmptyStateNoAddress() {
+    private fun showEmptyStateNoAddress(eventCategory: String) {
         emptyStateAddressOoc?.actionListener = object : NoAddressEmptyStateView.ActionListener {
             override fun onChangeAddressClicked() {
                 showBottomSheetChooseAddress()
@@ -43,6 +43,10 @@ class TokoNowEmptyStateOocViewHolder(
 
             override fun onReturnClick() {
                 (itemView.context as? Activity)?.finish()
+            }
+
+            override fun onGetNoAddressEmptyStateEventCategoryTracker(): String {
+                return eventCategory
             }
         }
     }
