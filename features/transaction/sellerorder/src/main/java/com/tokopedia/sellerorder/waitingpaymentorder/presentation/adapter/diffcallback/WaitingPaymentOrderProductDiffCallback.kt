@@ -8,8 +8,8 @@ import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingP
  */
 
 class WaitingPaymentOrderProductDiffCallback(
-        private val oldList: List<WaitingPaymentOrderUiModel.ProductUiModel>,
-        private val newList: List<WaitingPaymentOrderUiModel.ProductUiModel>
+        private val oldList: List<WaitingPaymentOrderUiModel.BaseProductUiModel>,
+        private val newList: List<WaitingPaymentOrderUiModel.BaseProductUiModel>
 ) : DiffUtil.Callback() {
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         return oldList[oldItemPosition] == newList[newItemPosition]

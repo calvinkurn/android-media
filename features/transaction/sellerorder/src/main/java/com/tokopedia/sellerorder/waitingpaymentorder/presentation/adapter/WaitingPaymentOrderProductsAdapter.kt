@@ -14,7 +14,7 @@ class WaitingPaymentOrderProductsAdapter(
         adapterTypeFactory: WaitingPaymentOrderProductsAdapterTypeFactory
 ) : BaseListAdapter<WaitingPaymentOrderUiModel.ProductUiModel, WaitingPaymentOrderProductsAdapterTypeFactory>(adapterTypeFactory) {
 
-    fun updateProducts(items: List<WaitingPaymentOrderUiModel.ProductUiModel>) {
+    fun updateProducts(items: List<WaitingPaymentOrderUiModel.BaseProductUiModel>) {
         val diffCallback = WaitingPaymentOrderProductDiffCallback(data, items)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         visitables.clear()
