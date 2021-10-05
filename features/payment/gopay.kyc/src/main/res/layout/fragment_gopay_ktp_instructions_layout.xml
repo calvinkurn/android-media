@@ -52,17 +52,15 @@
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_3" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <com.tkpd.remoteresourcerequest.view.DeferredImageView
             android:id="@+id/goPayIdImage"
             android:layout_width="@dimen/go_pay_kyc_dp_56"
             android:layout_height="@dimen/go_pay_kyc_dp_56"
             android:layout_marginTop="@dimen/unify_space_8"
             android:scaleType="centerInside"
+            app:imageDpiSupportType="singleDpi"
             app:layout_constraintStart_toStartOf="@+id/goPayKtpStep1"
-            app:layout_constraintTop_toBottomOf="@id/goPayKtpStep1"
-            app:srcCompat="@drawable/ic_gopay_kyc_upload_ktp"
-            app:unify_image_corner_radius="0"
-            app:unify_image_type="rect" />
+            app:layout_constraintTop_toBottomOf="@id/goPayKtpStep1" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/goPayKycTypeTitle"
@@ -112,7 +110,6 @@
             android:layout_marginTop="@dimen/unify_space_12"
             android:layout_marginEnd="@dimen/unify_space_4"
             android:scaleType="fitXY"
-            app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/saldo_img_empty_list.png"
             app:imageDpiSupportType="singleDpi"
             app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintEnd_toEndOf="@+id/midGuideline"
@@ -127,7 +124,6 @@
             android:layout_marginTop="@dimen/unify_space_12"
             android:layout_marginEnd="@dimen/unify_space_16"
             android:scaleType="fitXY"
-            app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/saldo_img_empty_list.png"
             app:imageDpiSupportType="singleDpi"
             app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintEnd_toEndOf="parent"

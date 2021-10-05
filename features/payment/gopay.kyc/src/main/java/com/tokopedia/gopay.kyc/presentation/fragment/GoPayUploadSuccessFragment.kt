@@ -26,6 +26,7 @@ class GoPayUploadSuccessFragment : GoPayKycBaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         uploadStatusTitle.text = getString(R.string.gopay_kyc_upload_success_title_text)
         uploadStatusDescription.text = getString(R.string.gopay_kyc_upload_success_description_text)
+        deferredImage.loadRemoteImageDrawable(SUCCESS_IMAGE_NAME, SUCCESS_IMAGE_PATH)
         finishButton.setOnClickListener {
             sendAnalytics(
                 GoPayKycEvent.Click.SubmitOkEvent(
@@ -60,5 +61,8 @@ class GoPayUploadSuccessFragment : GoPayKycBaseFragment() {
 
     companion object {
         fun newInstance() = GoPayUploadSuccessFragment()
+        const val SUCCESS_IMAGE_NAME = "gopay_kyc_upload_success.png"
+        const val SUCCESS_IMAGE_PATH = "https://images.tokopedia.net/img/android/res/singleDpi/gopay_kyc_upload_success.png"
+
     }
 }

@@ -18,6 +18,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
+import kotlinx.android.synthetic.main.gopay_kyc_success_failed_empty_layout.*
 import kotlinx.android.synthetic.main.gopay_kyc_upload_failed_layout.*
 import java.lang.IllegalStateException
 import javax.inject.Inject
@@ -75,6 +76,7 @@ class GoPayKycUploadFailedBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sendImpressionEvent()
+        deferredImage.loadRemoteImageDrawable(FAILED_IMAGE_NAME, FAILED_IMAGE_PATH)
         retryUploadButton.setOnClickListener {
             sentRetryEvent()
             retryUploadButton.isLoading = true
@@ -124,6 +126,8 @@ class GoPayKycUploadFailedBottomSheet : BottomSheetUnify() {
         private const val TAG = "KycFailedBottomSheet"
         private const val KTP_PATH = "ktp_path"
         private const val SELFIE_KTP_PATH = "selfie_ktp_path"
+        const val FAILED_IMAGE_NAME = "gopay_kyc_upload_failed.png"
+        const val FAILED_IMAGE_PATH = "https://images.tokopedia.net/img/android/res/singleDpi/gopay_kyc_upload_failed.png"
 
         fun show(ktpPath: String, selfieKtpPath: String, childFragmentManager: FragmentManager) {
             val bundle = Bundle().apply {

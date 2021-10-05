@@ -12,8 +12,7 @@
         android:layout_height="@dimen/go_pay_kyc_dp_210"
         android:layout_gravity="center"
         android:scaleType="fitCenter"
-        app:imageDpiSupportType="singleDpi"
-        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/saldo_img_empty_list.png"/>
+        app:imageDpiSupportType="singleDpi"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/uploadStatusTitle"
