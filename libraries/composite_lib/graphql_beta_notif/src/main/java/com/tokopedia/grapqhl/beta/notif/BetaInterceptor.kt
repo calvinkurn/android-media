@@ -99,15 +99,18 @@ class BetaInterceptor(private val context: Context) : Interceptor {
                 when (GlobalConfig.APPLICATION_TYPE) {
                     GlobalConfig.CONSUMER_APPLICATION, GlobalConfig.SELLER_APPLICATION -> {
                         val get = headers.get(HEADER_ACCESS_CONTROL_ALLOW_ORIGIN)
-                        if (get.equals(URL_BETA)) {
-                            createNotif(context, appName) {
-                                saveBeta(it, true)
-                            }
-                        } else {
-                            cancelNotif {
-                                saveBeta(it, false)
-                            }
+                        createNotif(context, appName) {
+                            saveBeta(it, true)
                         }
+//                        if (get.equals(URL_BETA)) {
+//                            createNotif(context, appName) {
+//                                saveBeta(it, true)
+//                            }
+//                        } else {
+//                            cancelNotif {
+//                                saveBeta(it, false)
+//                            }
+//                        }
                     }
                     GlobalConfig.CONSUMER_PRO_APPLICATION -> {
                         val get = headers.get(HEADER_ACCESS_CONTROL_ALLOW_ORIGIN)
