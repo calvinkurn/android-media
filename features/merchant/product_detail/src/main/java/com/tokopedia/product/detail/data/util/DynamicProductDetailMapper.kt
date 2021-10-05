@@ -327,20 +327,4 @@ object DynamicProductDetailMapper {
             }
         }
     }
-
-    fun determineSelectedOptionIdsOldVariant(variantData: ProductVariant, selectedChild: VariantChild?): MutableMap<String, String> {
-        val isParent = selectedChild == null
-        return when {
-            isParent -> {
-                AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
-            }
-            else -> {
-                if (selectedChild == null || !selectedChild.isBuyable) {
-                    AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
-                } else {
-                    AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, selectedChild.optionIds)
-                }
-            }
-        }
-    }
 }

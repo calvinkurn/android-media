@@ -2288,10 +2288,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             val selectedChild = it.children.firstOrNull { it.productId == productId ?: "" }
 
             pdpUiUpdater?.productNewVariantDataModel?.apply {
-                mapOfSelectedVariant = DynamicProductDetailMapper.determineSelectedOptionIds(it, selectedChild)
+                mapOfSelectedVariant = AtcVariantMapper.mapVariantIdentifierToHashMap(it)
             }
             pdpUiUpdater?.productSingleVariant?.apply {
-                mapOfSelectedVariant = DynamicProductDetailMapper.determineSelectedOptionIdsOldVariant(it, selectedChild)
+                mapOfSelectedVariant = DynamicProductDetailMapper.determineSelectedOptionIds(it, selectedChild)
             }
         }
         return pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant
