@@ -2364,7 +2364,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         ) { _, _ ->
             replyCompose?.composeReplyData(msg, true)
         }
-        return bs.show(getSupportChildFragmentManager(), "CHAT_BUBBLE_MENU")
+        bs.show(childFragmentManager, "CHAT_BUBBLE_MENU")
     }
 
     override fun getUserName(senderId: String): String {
