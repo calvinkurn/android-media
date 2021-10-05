@@ -10,11 +10,13 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.presentation.model.RecomErrorModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.viewutil.asFail
 import com.tokopedia.recommendation_widget_common.viewutil.asSuccess
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.Job
 import javax.inject.Inject
 
@@ -29,9 +31,14 @@ class RecommendationViewModel @Inject constructor(
 
     private var getRecommendationJob: Job? = null
 
-    private val _getRecommendationLiveData = MutableLiveData<Result<RecommendationWidget>>()
+    private val _getRecommendationLiveData = SingleLiveEvent<Result<RecommendationWidget>>()
     val getRecommendationLiveData: LiveData<Result<RecommendationWidget>>
         get() = _getRecommendationLiveData
+
+    private val _errorGetRecommendation = SingleLiveEvent<RecomErrorModel>()
+    val errorGetRecommendation: LiveData<RecomErrorModel>
+        get() = _errorGetRecommendation
+
 
     fun loadRecommendationCarousel(
         pageNumber: Int = 1,
@@ -70,7 +77,12 @@ class RecommendationViewModel @Inject constructor(
 //                    }
                 }
             }) {
-                _getRecommendationLiveData.postValue(it.asFail())
+                _errorGetRecommendation.postValue(
+                    RecomErrorModel(
+                        pageName = pageName,
+                        throwable = it
+                    )
+                )
 //                onError.invoke(it)
             }
         }

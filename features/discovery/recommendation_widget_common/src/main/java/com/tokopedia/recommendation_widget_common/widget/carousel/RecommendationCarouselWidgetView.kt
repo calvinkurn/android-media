@@ -522,8 +522,14 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                         }
                     }
                 }, { throwable ->
-                    widgetListener?.onWidgetFail(pageName = pageName, throwable)
+                    widgetListener?.onWidgetFail(pageName = pageName, e = throwable)
                 })
+            })
+
+            viewModel?.errorGetRecommendation?.observe(owner, {
+                if (it.pageName == pageName) {
+                    widgetListener?.onWidgetFail(pageName = pageName, e = it.throwable)
+                }
             })
         }
     }
