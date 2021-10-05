@@ -70,7 +70,7 @@ internal fun View.showErrorToaster(
 
         if (showErrorCode) {
             context.getString(
-                commonR.string.play_custom_error_handler_msg_with_code,
+                commonR.string.play_custom_error_handler_msg,
                 finalErrMessage,
                 errCode
             )
