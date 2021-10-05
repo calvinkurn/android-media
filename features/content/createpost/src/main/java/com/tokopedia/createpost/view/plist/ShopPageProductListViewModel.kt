@@ -22,7 +22,7 @@ class ShopPageProductListViewModel @Inject constructor() : BaseViewModel(Dispatc
     private val gqlSort = MultiRequestGraphqlUseCase()
     private var shopId: String? = "-1"
     private var sort: Int? = 0
-    private var sortPosition: Int? = 0
+    private var sortPosition: Int? = -1
     private var soruce: String? = "shop_product"
 
     companion object {

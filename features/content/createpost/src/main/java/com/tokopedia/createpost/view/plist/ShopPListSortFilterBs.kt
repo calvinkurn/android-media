@@ -42,10 +42,14 @@ class ShopPListSortFilterBs(val vm: ShopPageProductListViewModel, val listener: 
          view?.rv_sort?.let {
              it.onLoadFinish {
                  sortListItems.forEachIndexed { index, shopPagePListSortItem ->
-                     if (shopPagePListSortItem.name.equals(DEFAULT_SORT_VALUE_NAME))
-                        positionSort = index
+                     if (shopPagePListSortItem.name == DEFAULT_SORT_VALUE_NAME)
+                         positionSort = index
                  }
-                 sortListItemUnify[positionSort].listRightRadiobtn?.isChecked = true
+
+                 if (vm.getSortPosition() == -1)
+                     sortListItemUnify[positionSort].listRightRadiobtn?.isChecked = true
+                 else
+                     it.setSelectedFilterOrSort(sortListItemUnify, vm.getSortPosition().orZero())
 
 
                  it.setOnItemClickListener { adapterView, view, index, l ->

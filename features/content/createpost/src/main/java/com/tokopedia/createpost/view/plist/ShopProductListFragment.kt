@@ -17,6 +17,7 @@ import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -80,6 +81,12 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
             shopName)
 
         view.sb_shop_product.searchBarPlaceholder = shopNamePlaceHolderText
+        view.cu_sort_chip.chip_container.setOnClickListener {
+            createPostAnalytics.eventClickOnSortButton()
+            getImeiBS = ShopPListSortFilterBs.newInstance(presenter, this, sortListItems)
+            fragmentManager?.let { fm -> getImeiBS?.show(fm, "") }
+        }
+        view.cu_sort_chip.chip_right_icon.visible()
         view.cu_sort_chip.setChevronClickListener {
             createPostAnalytics.eventClickOnSortButton()
             getImeiBS = ShopPListSortFilterBs.newInstance(presenter, this, sortListItems)

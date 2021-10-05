@@ -2,9 +2,11 @@ package com.tokopedia.createpost.common.domain.usecase
 
 import android.app.Application
 import android.content.ContentResolver
+import android.content.Context
 import android.net.Uri
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
 import com.tokopedia.createpost.common.data.pojo.uploadimage.UploadImageResponse
+import com.tokopedia.createpost.common.di.ActivityContext
 import com.tokopedia.createpost.common.view.util.FileUtil
 import com.tokopedia.createpost.common.view.util.PostUpdateProgressManager
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
@@ -24,6 +26,7 @@ import java.util.*
 import javax.inject.Inject
 
 class UploadMultipleImageUsecaseNew @Inject constructor(
+    @ActivityContext private val context: Context,
     private val uploadImageUseCase: UploadImageUseCase<UploadImageResponse>,
     private val uploadVideoUseCase: UploadVideoUseCase<DefaultUploadVideoResponse>,
     private val userSession: UserSessionInterface) : UseCase<List<SubmitPostMedium>>() {
@@ -49,7 +52,7 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
     }
 
     private fun handleUri(medium: SubmitPostMedium):String{
-       val filePath =  mContext?.let { FileUtil.createFilePathFromUri(it,Uri.parse(medium.mediaURL)) }
+       val filePath =  context?.let { FileUtil.createFilePathFromUri(it,Uri.parse(medium.mediaURL)) }
         if (filePath != null) {
             medium.mediaURL= filePath
         }
@@ -141,7 +144,7 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
         private const val RESOLUTION_500 = "500"
         private const val TEXT_PLAIN = "text/plain"
 
-        var mContext: Application? = null
+
 
         fun createRequestParams(mediumList: List<SubmitPostMedium>):
                 RequestParams {

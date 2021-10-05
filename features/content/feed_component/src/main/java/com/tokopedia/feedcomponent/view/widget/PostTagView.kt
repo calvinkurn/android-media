@@ -23,6 +23,7 @@ private const val PRODUCT_DOT_ONE_SEC = 1000L
 private const val POSITION_TOP = 1
 private const val POSITION_BOTTOM = 2
 private const val POINTER_HEIGHT = 8
+private const val POINTER_ACTUAL_WIDTH = 79
 private const val BUBBLE_HEIGHT = 52
 private const val DOT_HALF_DIMEN = 8
 private const val CENTER_POS_X = 0.5
@@ -125,13 +126,13 @@ class PostTagView @JvmOverloads constructor(
                     0)
             } else {
                 productTagExpandedView.setMargin(bubbleMarginStart,
-                    (dotMarginTop - DOT_HALF_DIMEN.toPx()) - BUBBLE_HEIGHT.toPx(),
+                    (dotMarginTop - POINTER_HEIGHT.toPx() - BUBBLE_HEIGHT.toPx()),
                     0,
                     0)
             }
 
             finalPointerView.setMargin(
-                dotMarginStart - DOT_HALF_DIMEN.toPx(),
+                dotMarginStart - POINTER_ACTUAL_WIDTH / 2,
                 0,
                 0,
                 0
@@ -156,8 +157,10 @@ class PostTagView @JvmOverloads constructor(
             if (position == POSITION_BOTTOM) {
                 params.setMargins(bubbleMarginStart, dotMarginTop + POINTER_HEIGHT.toPx(), 0, 0)
             } else {
-                params.setMargins(bubbleMarginStart, dotMarginTop - BUBBLE_HEIGHT.toPx(), 0, 0)
-
+                params.setMargins(bubbleMarginStart,
+                    dotMarginTop - POINTER_HEIGHT.toPx() - BUBBLE_HEIGHT.toPx(),
+                    0,
+                    0)
             }
             productTagExpandedView.layoutParams = params
             showBubbleViewWithAnimation(productTagExpandedView, position, finalPointerView)

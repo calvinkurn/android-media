@@ -12,7 +12,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/page_indicator"/>
+        />
 
     <com.tokopedia.unifycomponents.PageControl
         android:id="@+id/page_indicator"
@@ -24,14 +24,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/feed_content_carousel"
-        app:layout_constraintBottom_toTopOf="@id/image_position_text"/>
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/image_position_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/dp_32"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

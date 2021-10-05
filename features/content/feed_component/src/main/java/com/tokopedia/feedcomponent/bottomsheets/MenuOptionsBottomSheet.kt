@@ -71,6 +71,9 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
                 div2.show()
                 div0.show()
             }
+            if(edit.isVisible){
+                div0.show()
+            }
         }
 
         follow.setOnClickListener {
