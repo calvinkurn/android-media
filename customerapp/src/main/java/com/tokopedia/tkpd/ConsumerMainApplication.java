@@ -34,6 +34,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import io.embrace.android.embracesdk.Embrace;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
+import static com.tokopedia.tkpd.BetaBannerKt.showBanner;
 
 
 /**
@@ -76,6 +77,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         super.registerActivityLifecycleCallbacks();
         String versionName = BuildConfig.VERSION_NAME;
         if (versionName.endsWith("-alpha")) {
+            showBanner(getApplicationContext());
             registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.BottomSheetListener() {
                 @Override
                 public void onFeedbackClicked(Uri uri, String className, boolean isFromScreenshot) {
