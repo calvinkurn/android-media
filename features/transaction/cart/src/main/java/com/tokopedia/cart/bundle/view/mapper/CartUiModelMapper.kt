@@ -4,8 +4,8 @@ import android.content.Context
 import com.tokopedia.cart.R
 import com.tokopedia.cart.bundle.data.model.response.promo.*
 import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.*
-import com.tokopedia.cart.bundle.domain.model.cartlist.PromoSummaryData
-import com.tokopedia.cart.bundle.domain.model.cartlist.PromoSummaryDetailData
+import com.tokopedia.cart.bundle.view.uimodel.PromoSummaryData
+import com.tokopedia.cart.bundle.view.uimodel.PromoSummaryDetailData
 import com.tokopedia.cart.bundle.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.bundle.view.uimodel.*
 import com.tokopedia.purchase_platform.common.constant.CartConstant
