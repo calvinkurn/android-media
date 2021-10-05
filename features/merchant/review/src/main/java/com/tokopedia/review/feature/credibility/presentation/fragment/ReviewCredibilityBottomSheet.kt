@@ -264,10 +264,10 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), LOGIN_REQUEST_CODE)
             }
         } else {
-            if (applink != ApplinkConst.REPUTATION) {
+            dismiss()
+            if (applink.isNotEmpty()) {
                 RouteManager.route(context, applink)
             }
-            dismiss()
         }
     }
 
