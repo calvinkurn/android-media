@@ -30,6 +30,7 @@ import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.EntityAddress;
 import com.tokopedia.buyerorder.detail.data.Items;
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo;
+import com.tokopedia.buyerorder.detail.data.OrderCategory;
 import com.tokopedia.buyerorder.detail.data.OrderDetails;
 import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.view.activity.OrderListwebViewActivity;
@@ -38,7 +39,6 @@ import com.tokopedia.buyerorder.detail.view.customview.CustomTicketView;
 import com.tokopedia.buyerorder.detail.view.customview.RedeemVoucherView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
-import com.tokopedia.buyerorder.detail.data.OrderCategory;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.utils.view.DoubleTextView;
@@ -152,7 +152,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemViewType(int position) {
-        if (itemsList.get(position).getCategory().equalsIgnoreCase(categoryDeals) || itemsList.get(position).getCategoryID() == DEALS_CATEGORY_ID) {
+        //TODO CHECK DEALS MAKE SURE CATEGORY ID IS OK
+        if (itemsList.get(position).getCategory().equalsIgnoreCase(categoryDeals) || itemsList.get(position).getCategoryID() == DEALS_CATEGORY_ID ||
+                itemsList.get(position).getCategoryID() == 0) {
             if (isShortLayout)
                 return ITEM_DEALS_SHORT;
             else
@@ -310,15 +312,15 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             }
             if (metaDataInfo != null) {
                 if (itemType == ITEM_DEALS || itemType == ITEM_DEALS_SHORT) {
-                    if (TextUtils.isEmpty(metaDataInfo.getEntityImage())) {
+                    if (TextUtils.isEmpty(metaDataInfo.getProductImage())) {
                         ImageHandler.loadImage(context, dealImage, item.getImageUrl(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
                     } else {
-                        ImageHandler.loadImage(context, dealImage, metaDataInfo.getEntityImage(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
+                        ImageHandler.loadImage(context, dealImage, metaDataInfo.getProductImage(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
                     }
-                    if (TextUtils.isEmpty(metaDataInfo.getEntityProductName())) {
+                    if (TextUtils.isEmpty(metaDataInfo.getProductName())) {
                         dealsDetails.setText(item.getTitle());
                     } else {
-                        dealsDetails.setText(metaDataInfo.getEntityProductName());
+                        dealsDetails.setText(metaDataInfo.getProductName());
                     }
                 }
 
@@ -376,8 +378,16 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 if (itemType == ITEM_DEALS) {
                     setEventDetails.sendThankYouEvent(metaDataInfo, ITEM_DEALS, orderDetails);
                     final MetaDataInfo metaDataInfo1 = metaDataInfo;
-                    if (!TextUtils.isEmpty(metaDataInfo.getEndDate())) {
-                        validDate.setText(" ".concat(metaDataInfo.getEndDate()));
+
+                    if (!TextUtils.isEmpty(metaDataInfo.getLocationName())) {
+                        eventCity.setText(metaDataInfo.getLocationName());
+                    }
+                    if (!TextUtils.isEmpty(metaDataInfo.getLocationDesc())) {
+                        eventAddress.setText(metaDataInfo.getLocationDesc());
+                    }
+
+                    if (!TextUtils.isEmpty(metaDataInfo.getEndTime())) {
+                        validDate.setText(" ".concat(metaDataInfo.getEndTime()));
                         llValid.setVisibility(View.VISIBLE);
                     } else {
                         llValid.setVisibility(View.GONE);
