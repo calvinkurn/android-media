@@ -44,6 +44,10 @@ class ProductBundleActivity : BaseSimpleActivity() {
 
     private val entryPointFragment = EntrypointFragment()
 
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
