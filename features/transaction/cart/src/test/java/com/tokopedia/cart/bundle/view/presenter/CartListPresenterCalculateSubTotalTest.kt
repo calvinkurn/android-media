@@ -3,6 +3,7 @@ package com.tokopedia.cart.bundle.view.presenter
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.WholesalePrice
 import com.tokopedia.cart.bundle.domain.usecase.*
 import com.tokopedia.cart.bundle.view.CartListPresenter
 import com.tokopedia.cart.bundle.view.ICartListView
@@ -157,7 +158,6 @@ object CartListPresenterCalculateSubTotalTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-/*
         Scenario("no item selected") {
 
             Given("cart data list") {
@@ -403,7 +403,6 @@ object CartListPresenterCalculateSubTotalTest : Spek({
                 }
             }
         }
-*/
 
         Scenario("bundling item selected") {
 
