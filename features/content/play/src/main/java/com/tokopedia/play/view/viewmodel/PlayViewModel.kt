@@ -52,7 +52,7 @@ import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveMod
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play_common.model.dto.interactive.isScheduled
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
+import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.*
 import com.tokopedia.play_common.sse.model.SSEAction
@@ -146,7 +146,7 @@ class PlayViewModel @Inject constructor(
     private val _bottomInsets = MutableStateFlow(emptyMap<BottomInsetsType, BottomInsetsState>())
     private val _status = MutableStateFlow(PlayStatusType.Active)
     private val _interactive = MutableStateFlow<PlayInteractiveUiState>(PlayInteractiveUiState.NoInteractive)
-    private val _leaderboardInfo = MutableStateFlow(PlayLeaderboardInfoUiModel())
+    private val _leaderboardInfo: MutableStateFlow<PlayLeaderboardWrapperUiModel> = MutableStateFlow(PlayLeaderboardWrapperUiModel.Unknown)
     private val _leaderboardUserBadgeState = MutableStateFlow(false)
     private val _likeInfo = MutableStateFlow(PlayLikeInfoUiModel())
     private val _channelReport = MutableStateFlow(PlayChannelReportUiModel())
@@ -177,10 +177,10 @@ class PlayViewModel @Inject constructor(
         _leaderboardInfo, _bottomInsets, _status, _channelDetail, _leaderboardUserBadgeState
     ) { leaderboardInfo, bottomInsets, status, channelDetail, leaderboardUserBadgeState ->
         PlayWinnerBadgeUiState(
-            leaderboards = leaderboardInfo.leaderboardWinners,
+            leaderboards = leaderboardInfo,
             shouldShow = !bottomInsets.isAnyShown &&
                     status.isActive &&
-                    (leaderboardInfo.leaderboardWinners.isNotEmpty() || leaderboardUserBadgeState) &&
+                    leaderboardUserBadgeState &&
                     channelDetail.channelInfo.channelType.isLive,
         )
     }
@@ -989,7 +989,7 @@ class PlayViewModel @Inject constructor(
         _observableQuickReply.value = quickReplyInfo
     }
 
-    private fun handleLeaderboardInfo(leaderboardInfo: PlayLeaderboardInfoUiModel) {
+    private fun handleLeaderboardInfo(leaderboardInfo: PlayLeaderboardWrapperUiModel) {
         _leaderboardInfo.value = leaderboardInfo
     }
 
@@ -1147,9 +1147,17 @@ class PlayViewModel @Inject constructor(
     private fun checkLeaderboard(channelId: String) {
         if (!isInteractiveAllowed) return
         viewModelScope.launchCatchError(dispatchers.io, block = {
+            _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Loading
+
             val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
-            _leaderboardInfo.value = interactiveLeaderboard
-        }) {}
+            _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
+
+            if(interactiveLeaderboard.leaderboardWinners.isNotEmpty()) {
+                _leaderboardUserBadgeState.value = true
+            }
+        }) {
+            _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Error
+        }
     }
 
     private fun checkInteractive(channelId: String) {
@@ -1189,7 +1197,10 @@ class PlayViewModel @Inject constructor(
 
             try {
                 val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
-                _leaderboardInfo.value = interactiveLeaderboard
+                _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
+                if(interactiveLeaderboard.leaderboardWinners.isNotEmpty()) {
+                    _leaderboardUserBadgeState.value = true
+                }
                 _interactive.value = PlayInteractiveUiState.NoInteractive
             } catch (e: Throwable) {}
         }
@@ -1856,9 +1867,6 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleRefreshLeaderboard() {
-        /**
-         * TODO: update data with placeholder here
-         */
         checkLeaderboard(channelId)
     }
 

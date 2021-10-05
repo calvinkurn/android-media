@@ -43,8 +43,7 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
-import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
-import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
+import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 import com.tokopedia.play_common.ui.leaderboard.PlayInteractiveLeaderboardViewComponent
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -452,7 +451,6 @@ class PlayBottomSheetFragment @Inject constructor(
             it[BottomInsetsType.LeaderboardSheet]?.let { state ->
                 if (state is BottomInsetsState.Shown) {
                     leaderboardSheetView.showWithHeight(state.estimatedInsetsHeight)
-                    leaderboardSheetView.setLoading()
                     playViewModel.submitAction(RefreshLeaderboard)
                 }
                 else leaderboardSheetView.hide()
@@ -516,7 +514,15 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             playViewModel.uiState.withCache().collectLatest { (_, state) ->
-                renderLeaderboardView(state.winnerBadge.leaderboards)
+                when(state.winnerBadge.leaderboards) {
+                    is PlayLeaderboardWrapperUiModel.Success ->
+                        leaderboardSheetView.setData(state.winnerBadge.leaderboards.data.leaderboardWinners)
+                    PlayLeaderboardWrapperUiModel.Error ->
+                        leaderboardSheetView.setError()
+                    PlayLeaderboardWrapperUiModel.Loading ->
+                        leaderboardSheetView.setLoading()
+                    PlayLeaderboardWrapperUiModel.Unknown -> {}
+                }
             }
         }
     }
@@ -527,12 +533,5 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun trackImpressedVoucher(vouchers: List<MerchantVoucherUiModel> = productSheetView.getVisibleVouchers()) {
         if (playViewModel.bottomInsets.isProductSheetsShown) productAnalyticHelper.trackImpressedVouchers(vouchers)
-    }
-
-    /**
-     * View
-     */
-    private fun renderLeaderboardView(winnerLeaderboards: List<PlayLeaderboardUiModel>) {
-        leaderboardSheetView.setData(winnerLeaderboards)
     }
 }

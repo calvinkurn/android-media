@@ -80,7 +80,7 @@ class PlayInteractiveLeaderboardViewComponent(
         leaderboardAdapter.setItemsAndAnimateChanges(leaderboards)
     }
 
-    fun setError(isConnectionError: Boolean) {
+    fun setError() {
         errorView.show()
         rvLeaderboard.hide()
         llPlaceholder.hide()
