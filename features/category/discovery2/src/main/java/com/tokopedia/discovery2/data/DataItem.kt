@@ -116,6 +116,12 @@ data class DataItem(
         @SerializedName("start_date")
         val startDate: String? = "",
 
+        @SerializedName("start_time")
+        val startTime: String? = "",
+
+        @SerializedName("end_time")
+        val endTime: String? = "",
+
         @SerializedName("left_margin_mobile")
         val leftMarginMobile: String? = "0",
 
