@@ -948,7 +948,6 @@ class ShopScoreMapper @Inject constructor(
         }
     }
 
-
     private fun getIsShowPopupEndTenure(shopAge: Long, dateShopCreated: String): Boolean {
         return if (shopScorePrefManager.getIsShowPopupEndTenure()) {
             val calendar = Calendar.getInstance(getLocale())
@@ -957,35 +956,45 @@ class ShopScoreMapper @Inject constructor(
                 calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY
             ) {
                 true
-            }
-            else if (shopAge in SHOP_AGE_NINETY..SHOP_AGE_NINETY_SIX &&
-                GoldMerchantUtil.getIsExistingSellerStartMonday(dateShopCreated)
-            ) {
-                true
-            } else if (shopAge > SHOP_AGE_NINETY_SIX &&
-                shopAge <= (SHOP_AGE_NINETY_SIX + calendar.getNNextDaysPopupEndTenure())
-            ) {
-                calendar.getIsRangeCurrentWeekFromMonday()
+            } else if (shopAge >= SHOP_AGE_NINETY) {
+                getIsShowPopupCelebratoryEdgeCases(dateShopCreated)
             } else false
         } else false
     }
 
-    private fun Calendar.getIsRangeCurrentWeekFromMonday(): Boolean {
-        return if (this.get(Calendar.DAY_OF_WEEK) >= Calendar.MONDAY) {
-            this.get(Calendar.DAY_OF_WEEK) in Calendar.MONDAY..Calendar.SATURDAY
-        } else {
-            false
+    private fun getIsShowPopupCelebratoryEdgeCases(
+        dateShopCreated: String
+    ): Boolean {
+        val shopAge = GoldMerchantUtil.totalDays(dateShopCreated)
+        val isExistingSellerMoreThanMonday =
+            GoldMerchantUtil.getIsExistingSellerMoreThanMonday(dateShopCreated)
+        val firstMonday: Long
+        when (GoldMerchantUtil.getDayNameFromCreatedDate(dateShopCreated)) {
+            Calendar.TUESDAY -> {
+                firstMonday = shopAge + SIX_NUMBER
+            }
+            Calendar.WEDNESDAY -> {
+                firstMonday = shopAge + FIVE_NUMBER
+            }
+            Calendar.THURSDAY -> {
+                firstMonday = shopAge + FOUR_NUMBER
+            }
+            Calendar.FRIDAY -> {
+                firstMonday = shopAge + THREE_NUMBER
+            }
+            Calendar.SATURDAY -> {
+                firstMonday = shopAge + TWO_NUMBER
+            }
+            Calendar.SUNDAY -> {
+                firstMonday = shopAge + ONE_NUMBER
+            }
+            else -> firstMonday = shopAge
         }
-    }
 
-    private fun Calendar.getNNextDaysPopupEndTenure(): Int {
-        return when (this.get(Calendar.DAY_OF_WEEK)) {
-            Calendar.TUESDAY -> ONE_NUMBER
-            Calendar.WEDNESDAY -> TWO_NUMBER
-            Calendar.THURSDAY -> THREE_NUMBER
-            Calendar.FRIDAY -> FOUR_NUMBER
-            Calendar.SATURDAY -> FIVE_NUMBER
-            else -> ZERO_NUMBER
+        return if (isExistingSellerMoreThanMonday) {
+            shopAge in firstMonday..firstMonday + FIVE_NUMBER
+        } else {
+            shopAge <= shopAge + FIVE_NUMBER
         }
     }
 

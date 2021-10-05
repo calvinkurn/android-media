@@ -29,19 +29,29 @@ object GoldMerchantUtil {
         }
     }
 
-    fun getIsExistingSellerStartMonday(dateString: String): Boolean {
+    fun getDayNameFromCreatedDate(dateString: String): Int {
         return try {
             val simpleDateFormat =
                 SimpleDateFormat(PATTERN_DATE_SHOP_INFO, DateFormatUtils.DEFAULT_LOCALE)
             val calendar = Calendar.getInstance()
-            val calendarExistingSeller = Calendar.getInstance()
             simpleDateFormat.parse(dateString)?.let { calendar.time = it }
             calendar.add(Calendar.DATE, totalDays(dateString).toInt())
-            calendarExistingSeller.add(Calendar.DATE, NEW_SELLER_DAYS)
-            
-            return calendarExistingSeller.get(Calendar.DAY_OF_WEEK) !in
-                    Calendar.TUESDAY..Calendar.SATURDAY &&
-                    calendar.get(Calendar.DAY_OF_WEEK) > Calendar.MONDAY
+            return calendar.get(Calendar.DAY_OF_WEEK)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            0
+        }
+    }
+
+    fun getIsExistingSellerMoreThanMonday(dateString: String): Boolean {
+        return try {
+            val simpleDateFormat =
+                SimpleDateFormat(PATTERN_DATE_SHOP_INFO, DateFormatUtils.DEFAULT_LOCALE)
+            val calendar = Calendar.getInstance(DateFormatUtils.DEFAULT_LOCALE)
+            simpleDateFormat.parse(dateString)?.let { calendar.time = it }
+            calendar.add(Calendar.DATE, totalDays(dateString).toInt())
+            return calendar.get(Calendar.DAY_OF_WEEK) > Calendar.MONDAY ||
+                    calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
         } catch (e: Exception) {
             e.printStackTrace()
             false
