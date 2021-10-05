@@ -147,6 +147,7 @@ class PlayViewModel @Inject constructor(
     private val _status = MutableStateFlow(PlayStatusType.Active)
     private val _interactive = MutableStateFlow<PlayInteractiveUiState>(PlayInteractiveUiState.NoInteractive)
     private val _leaderboardInfo = MutableStateFlow(PlayLeaderboardInfoUiModel())
+    private val _leaderboardUserBadgeState = MutableStateFlow(false)
     private val _likeInfo = MutableStateFlow(PlayLikeInfoUiModel())
     private val _channelReport = MutableStateFlow(PlayChannelReportUiModel())
     private val _cartInfo = MutableStateFlow(PlayCartInfoUiModel())
@@ -173,12 +174,12 @@ class PlayViewModel @Inject constructor(
     }
 
     private val _winnerBadgeUiState = combine(
-        _leaderboardInfo, _bottomInsets, _status, _channelDetail
-    ) { leaderboardInfo, bottomInsets, status, channelDetail ->
+        _leaderboardInfo, _bottomInsets, _status, _channelDetail, _leaderboardUserBadgeState
+    ) { leaderboardInfo, bottomInsets, status, channelDetail, leaderboardUserBadgeState ->
         PlayWinnerBadgeUiState(
             shouldShow = !bottomInsets.isAnyShown &&
                     status.isActive &&
-                    leaderboardInfo.leaderboardWinners.isNotEmpty() &&
+                    (leaderboardInfo.leaderboardWinners.isNotEmpty() || leaderboardUserBadgeState) &&
                     channelDetail.channelInfo.channelType.isLive,
         )
     }
@@ -1388,15 +1389,12 @@ class PlayViewModel @Inject constructor(
                 }
             }
             is UserWinnerStatus -> {
-                Log.d("<LOG>", "UserWinnerStatus socket")
                 val interactiveState = _interactiveUiState.firstOrNull() ?: return@withContext
 
                 val winnerStatus = playSocketToModelMapper.mapUserWinnerStatus(result)
                 _observableUserWinnerStatus.value = winnerStatus
 
-                Log.d("<LOG>", "interactive not null")
                 if(interactiveState.interactive is PlayInteractiveUiState.Finished) {
-                    Log.d("<LOG>", "interactive state : finished")
                     handleUserWinnerStatus(winnerStatus)
                 }
             }
@@ -1555,42 +1553,35 @@ class PlayViewModel @Inject constructor(
             )
             delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
 
-
             _observableUserWinnerStatus.value?.let {
-                Log.d("<LOG>", "winnerStatus not null")
                 handleUserWinnerStatus(it)
             } ?: kotlin.run {
-                Log.d("<LOG>", "winnerStatus null")
                 delay(activeInteractive.endGameDelayInMs)
                 repo.setFinished(activeInteractiveId)
-                Log.d("<LOG>", "waitingDuration done")
-                /**
-                 * TODO:
-                 * Check if userwinner already emitted or not
-                 * if not -> show leaderboard badge
-                 * else -> doin nothing
-                 */
+                handleUserWinnerStatus(null)
             }
         }) {}
     }
 
-    private suspend fun handleUserWinnerStatus(winnerStatus: PlayUserWinnerStatusUiModel) {
-        val activeInteractiveId = repo.getActiveInteractiveId() ?: return
-        val isUserJoined = repo.hasJoined(activeInteractiveId)
+    private suspend fun handleUserWinnerStatus(winnerStatus: PlayUserWinnerStatusUiModel?) {
+        winnerStatus?.let {
+            val activeInteractiveId = repo.getActiveInteractiveId() ?: return
+            val isUserJoined = repo.hasJoined(activeInteractiveId)
 
-        Log.d("<LOG>", "socketInteractionId: ${winnerStatus.interactiveId}")
-        Log.d("<LOG>", "currentInteractionId: $activeInteractiveId")
-        Log.d("<LOG>", "isUserJoined: $isUserJoined")
+            if(winnerStatus.interactiveId.toString() == activeInteractiveId && isUserJoined) {
+                _interactive.value = PlayInteractiveUiState.NoInteractive
+                repo.setFinished(activeInteractiveId)
 
-        if(winnerStatus.interactiveId.toString() == activeInteractiveId && isUserJoined) {
-            repo.setFinished(activeInteractiveId)
-            _uiEvent.emit(
-                if(winnerStatus.userId.toString() == userId)
-                    ShowWinningDialogEvent(winnerStatus.imageUrl, winnerStatus.winnerTitle, winnerStatus.winnerText)
-                else
-                    ShowCoachMarkWinnerEvent(winnerStatus.loserTitle, winnerStatus.loserText)
-            )
+                _uiEvent.emit(
+                    if(winnerStatus.userId.toString() == userId)
+                        ShowWinningDialogEvent(winnerStatus.imageUrl, winnerStatus.winnerTitle, winnerStatus.winnerText)
+                    else
+                        ShowCoachMarkWinnerEvent(winnerStatus.loserTitle, winnerStatus.loserText)
+                )
+            }
         }
+
+        _leaderboardUserBadgeState.value = true
     }
 
     private fun handleWinnerBadgeClicked(height: Int) {
