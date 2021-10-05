@@ -8,8 +8,8 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.bundle.data.model.request.AddCartToWishlistRequest
 import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.CartData
-import com.tokopedia.cart.bundle.domain.model.cartlist.PromoSummaryData
-import com.tokopedia.cart.bundle.domain.model.cartlist.PromoSummaryDetailData
+import com.tokopedia.cart.bundle.view.uimodel.PromoSummaryData
+import com.tokopedia.cart.bundle.view.uimodel.PromoSummaryDetailData
 import com.tokopedia.cart.bundle.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.bundle.domain.model.updatecart.UpdateAndValidateUseData
 import com.tokopedia.cart.bundle.domain.usecase.*

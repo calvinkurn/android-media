@@ -36,7 +36,7 @@ class ShipmentActivity : BaseCheckoutActivity() {
         val bundle = intent.extras
         isBundleToggleOn = Switch.isBundleToggleOn(this)
         if (isBundleToggleOn == true) {
-            shipmentFragment = ShipmentFragment.newInstance(isOneClickShipment, leasingId, bundle)
+            shipmentFragment = ShipmentFragment.newInstance(isOneClickShipment, leasingId, pageSource, bundle)
             return shipmentFragment
         } else {
             oldShipmentFragment = com.tokopedia.checkout.old.view.ShipmentFragment.newInstance(isOneClickShipment, leasingId, pageSource, bundle)

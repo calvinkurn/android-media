@@ -44,15 +44,14 @@ import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.cart.CartActivity
+import com.tokopedia.cart.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.R
 import com.tokopedia.cart.bundle.data.model.response.promo.LastApplyPromo
 import com.tokopedia.cart.bundle.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.LocalizationChooseAddress
-import com.tokopedia.cart.databinding.FragmentCartBundleBinding
 import com.tokopedia.cart.bundle.domain.model.cartlist.*
-import com.tokopedia.cart.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.bundle.view.ICartListPresenter.Companion.GET_CART_STATE_AFTER_CHOOSE_ADDRESS
 import com.tokopedia.cart.bundle.view.ICartListPresenter.Companion.GET_CART_STATE_DEFAULT
 import com.tokopedia.cart.bundle.view.adapter.cart.CartAdapter
@@ -68,6 +67,7 @@ import com.tokopedia.cart.bundle.view.di.DaggerCartComponent
 import com.tokopedia.cart.bundle.view.mapper.*
 import com.tokopedia.cart.bundle.view.uimodel.*
 import com.tokopedia.cart.bundle.view.viewholder.CartRecommendationViewHolder
+import com.tokopedia.cart.databinding.FragmentCartBundleBinding
 import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_HOMEPAGE
 import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_RETRY
 import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_START_SHOPPING
@@ -598,6 +598,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun routeToCheckoutPage() {
         activity?.let {
             val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.CHECKOUT)
+            intent.putExtra(CheckoutConstant.EXTRA_CHECKOUT_PAGE_SOURCE, CheckoutConstant.CHECKOUT_PAGE_SOURCE_CART)
             startActivityForResult(intent, NAVIGATION_SHIPMENT)
         }
     }
