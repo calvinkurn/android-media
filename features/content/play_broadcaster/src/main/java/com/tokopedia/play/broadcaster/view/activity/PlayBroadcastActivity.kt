@@ -483,7 +483,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         val existingFragment = supportFragmentManager.findFragmentByTag(TERMS_AND_CONDITION_TAG)
 
         if (canStream) {
-            if (existingFragment is BottomSheetUnify && existingFragment.isVisible) existingFragment.dismiss()
+            if (existingFragment is BottomSheetUnify && existingFragment.isVisible) {
+                existingFragment.setOnDismissListener {  }
+                existingFragment.dismiss()
+            }
             return
         }
 
@@ -494,7 +497,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         } else {
             val bottomSheet = BottomSheetUnify().apply {
                 clearContentPadding = true
-                setOnDismissListener { finish() }
                 setTitle(this@PlayBroadcastActivity.getString(R.string.play_bro_tnc_title))
             }
 
@@ -514,6 +516,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         }
         if (!bottomSheet.isVisible) {
             view.setTermsAndConditions(tncList)
+            bottomSheet.setOnDismissListener { finish() }
             bottomSheet.show(supportFragmentManager, TERMS_AND_CONDITION_TAG)
         }
     }
