@@ -26,6 +26,7 @@ data class WaitingPaymentOrderUiModel(
 
     data class ProductBundlingUiModel(
         val name: String,
+        val iconUrl: String,
         val products: List<ProductUiModel>,
         override var height: Int = 0
     ): BaseProductUiModel {

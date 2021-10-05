@@ -32,64 +32,86 @@ class WaitingPaymentOrderViewModelTest {
         private val SUCCESS_PAGING_RESULT = Paging(nextPaymentDeadline = 123456)
 
         private val SUCCESS_WAITING_PAYMENT_ORDER_LIST_RESULT = listOf(
-                WaitingPaymentOrderUiModel(
-                        orderId = "166427360",
-                        paymentDeadline = "11 Sep, 17:44",
-                        buyerNameAndPlace = "N***********g (Kota Administrasi Jakarta Selatan)",
-                        productUiModels = listOf(
-                                WaitingPaymentOrderUiModel.ProductUiModel(
-                                        id = "15293732",
-                                        name = "Kaos Polos Aja",
-                                        picture = "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2019/10/29/5479999/5479999_fd571b4d-6f16-4805-84a0-3d02375f4f22_800_800",
-                                        quantity = 1,
-                                        price = "Rp 100"
-                                ),
-                                WaitingPaymentOrderUiModel.ProductUiModel(
-                                        id = "15332067",
-                                        name = "Kaos Polos Aja gimana coy",
-                                        picture = "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2019/10/29/5479999/5479999_fd571b4d-6f16-4805-84a0-3d02375f4f22_800_800",
-                                        quantity = 1,
-                                        price = "Rp 9.000"
-                                ),
-                                WaitingPaymentOrderUiModel.ProductUiModel(
-                                        id = "15359272",
-                                        name = "product 1",
-                                        picture = "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/4/8/5479999/5479999_0d445339-9e18-4994-9744-2a18deffd0f6_315_315",
-                                        quantity = 1,
-                                        price = "Rp 1.500"
-                                ),
-                                WaitingPaymentOrderUiModel.ProductUiModel(
-                                        id = "15379993",
-                                        name = "product 10",
-                                        picture = "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/6/8/5479999/5479999_3c9286e7-e942-4be6-bd23-c34999ae350b_315_315",
-                                        quantity = 1,
-                                        price = "Rp 10.000"
-                                ),
-                                WaitingPaymentOrderUiModel.ProductUiModel(
-                                        id = "15405840",
-                                        name = "abc",
-                                        picture = "https://ecs7.tokopedia.net/img/cache/100-square/hDjmkQ/2020/7/7/5b8cdb76-baaa-4541-bfa2-80e89fd31999.jpg",
-                                        quantity = 1,
-                                        price = "Rp 100"
-                                )
-                        ),
-                        isExpanded = false
+            WaitingPaymentOrderUiModel(
+                orderId = "166427360",
+                paymentDeadline = "11 Sep, 17:44",
+                buyerNameAndPlace = "N***********g (Kota Administrasi Jakarta Selatan)",
+                productUiModels = listOf(
+                    WaitingPaymentOrderUiModel.ProductUiModel(
+                        id = "15293732",
+                        name = "Kaos Polos Aja",
+                        picture = "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2019/10/29/5479999/5479999_fd571b4d-6f16-4805-84a0-3d02375f4f22_800_800",
+                        quantity = 1,
+                        price = "Rp 100"
+                    ),
+                    WaitingPaymentOrderUiModel.ProductUiModel(
+                        id = "15332067",
+                        name = "Kaos Polos Aja gimana coy",
+                        picture = "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2019/10/29/5479999/5479999_fd571b4d-6f16-4805-84a0-3d02375f4f22_800_800",
+                        quantity = 1,
+                        price = "Rp 9.000"
+                    ),
+                    WaitingPaymentOrderUiModel.ProductUiModel(
+                        id = "15359272",
+                        name = "product 1",
+                        picture = "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/4/8/5479999/5479999_0d445339-9e18-4994-9744-2a18deffd0f6_315_315",
+                        quantity = 1,
+                        price = "Rp 1.500"
+                    ),
+                    WaitingPaymentOrderUiModel.ProductUiModel(
+                        id = "15379993",
+                        name = "product 10",
+                        picture = "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/6/8/5479999/5479999_3c9286e7-e942-4be6-bd23-c34999ae350b_315_315",
+                        quantity = 1,
+                        price = "Rp 10.000"
+                    ),
+                    WaitingPaymentOrderUiModel.ProductUiModel(
+                        id = "15405840",
+                        name = "abc",
+                        picture = "https://ecs7.tokopedia.net/img/cache/100-square/hDjmkQ/2020/7/7/5b8cdb76-baaa-4541-bfa2-80e89fd31999.jpg",
+                        quantity = 1,
+                        price = "Rp 100"
+                    )
                 ),
-                WaitingPaymentOrderUiModel(
-                        orderId = "166426695",
-                        paymentDeadline = "11 Sep, 11:25",
-                        buyerNameAndPlace = "N***********g (Kota Administrasi Jakarta Selatan)",
-                        productUiModels = listOf(
-                                WaitingPaymentOrderUiModel.ProductUiModel(
-                                        id = "15359272",
-                                        name = "product 1",
-                                        picture = "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/4/8/5479999/5479999_0d445339-9e18-4994-9744-2a18deffd0f6_315_315",
-                                        quantity = 1,
-                                        price = "Rp 1.500"
-                                )
-                        ),
-                        isExpanded = false
-                )
+                haveProductBundling = false,
+                isExpanded = false
+            ),
+            WaitingPaymentOrderUiModel(
+                orderId = "166426695",
+                paymentDeadline = "11 Sep, 11:25",
+                buyerNameAndPlace = "N***********g (Kota Administrasi Jakarta Selatan)",
+                productUiModels = listOf(
+                    WaitingPaymentOrderUiModel.ProductUiModel(
+                        id = "15359272",
+                        name = "product 1",
+                        picture = "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/4/8/5479999/5479999_0d445339-9e18-4994-9744-2a18deffd0f6_315_315",
+                        quantity = 1,
+                        price = "Rp 1.500"
+                    ),
+                    WaitingPaymentOrderUiModel.ProductBundlingUiModel(
+                        name = "Bundling Spongebob Patrick",
+                        iconUrl = "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/4/8/5479999/5479999_0d445339-9e18-4994-9744-2a18deffd0f6_315_315",
+                        products = listOf(
+                            WaitingPaymentOrderUiModel.ProductUiModel(
+                                id = "123456789",
+                                name = "Spongebob",
+                                picture = "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/4/8/5479999/5479999_0d445339-9e18-4994-9744-2a18deffd0f6_315_315",
+                                quantity = 1,
+                                price = "Rp 1.500"
+                            ),
+                            WaitingPaymentOrderUiModel.ProductUiModel(
+                                id = "987654321",
+                                name = "Patrick",
+                                picture = "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/4/8/5479999/5479999_0d445339-9e18-4994-9744-2a18deffd0f6_315_315",
+                                quantity = 1,
+                                price = "Rp 1.500"
+                            )
+                        )
+                    )
+                ),
+                haveProductBundling = true,
+                isExpanded = false
+            )
         )
     }
 

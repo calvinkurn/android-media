@@ -52,6 +52,7 @@ class WaitingPaymentOrderResultMapper @Inject constructor() {
                 bundleDetail?.bundle?.map {
                     WaitingPaymentOrderUiModel.ProductBundlingUiModel(
                         name = it.name,
+                        iconUrl = bundleDetail.productBundlingIcon,
                         products = it.products.map {
                             WaitingPaymentOrderUiModel.ProductUiModel(
                                 id = it.id,

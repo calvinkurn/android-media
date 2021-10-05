@@ -29,29 +29,38 @@ class WaitingPaymentOrderProductBundlingViewHolder(
 
     override fun bind(element: WaitingPaymentOrderUiModel.ProductBundlingUiModel?) {
         element?.run {
-            binding?.run {
-                tvSomBundleName.text = name
-                rvSomProductBundling.run {
-                    if (adapter == null) {
-                        isNestedScrollingEnabled = false
-                        adapter = this@WaitingPaymentOrderProductBundlingViewHolder.adapter
-                    }
-                    if (itemDecorationCount == Int.ZERO) {
-                        val margins = getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
-                        addItemDecoration(
-                            RecyclerViewItemDivider(
-                                divider = MethodChecker.getDrawable(
-                                    context, R.drawable.som_detail_product_bundling_product_divider
-                                ),
-                                topMargin = margins,
-                                bottomMargin = margins,
-                                applyMarginAfterLastItem = true
-                            )
-                        )
-                    }
-                    this@WaitingPaymentOrderProductBundlingViewHolder.adapter.updateProducts(products)
-                }
+            setupProductBundlingHeader(name, iconUrl)
+            setupProductBundlingProducts(products)
+        }
+    }
+
+    private fun setupProductBundlingProducts(products: List<WaitingPaymentOrderUiModel.ProductUiModel>) {
+        binding?.rvSomProductBundling?.run {
+            if (adapter == null) {
+                isNestedScrollingEnabled = false
+                adapter = this@WaitingPaymentOrderProductBundlingViewHolder.adapter
             }
+            if (itemDecorationCount == Int.ZERO) {
+                val margins = getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+                addItemDecoration(
+                    RecyclerViewItemDivider(
+                        divider = MethodChecker.getDrawable(
+                            context, R.drawable.som_detail_product_bundling_product_divider
+                        ),
+                        topMargin = margins,
+                        bottomMargin = margins,
+                        applyMarginAfterLastItem = true
+                    )
+                )
+            }
+            this@WaitingPaymentOrderProductBundlingViewHolder.adapter.updateProducts(products)
+        }
+    }
+
+    private fun setupProductBundlingHeader(name: String, iconUrl: String) {
+        binding?.run {
+            tvSomBundleName.text = name
+            icSomProductBundling.setImageUrl(iconUrl)
         }
     }
 }

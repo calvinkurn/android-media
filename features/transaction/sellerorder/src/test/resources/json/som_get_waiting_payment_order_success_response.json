@@ -6,6 +6,7 @@
           "order_id": 166427360,
           "buyer_name": "N***********g (Kota Administrasi Jakarta Selatan)",
           "payment_deadline": "11 Sep, 17:44",
+          "have_product_bundle": false,
           "products": [
             {
               "product_id": 15293732,
@@ -42,12 +43,14 @@
               "product_qty": 1,
               "product_price": "Rp 100"
             }
-          ]
+          ],
+          "bundle_detail": null
         },
         {
           "order_id": 166426695,
           "buyer_name": "N***********g (Kota Administrasi Jakarta Selatan)",
           "payment_deadline": "11 Sep, 11:25",
+          "have_product_bundle": true,
           "products": [
             {
               "product_id": 15359272,
@@ -56,7 +59,40 @@
               "product_qty": 1,
               "product_price": "Rp 1.500"
             }
-          ]
+          ],
+          "bundle_detail": {
+            "product_bundling_icon": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/4/8/5479999/5479999_0d445339-9e18-4994-9744-2a18deffd0f6_315_315",
+            "bundle": [
+              {
+                "bundle_name": "Bundling Spongebob Patrick",
+                "order_detail": [
+                  {
+                    "product_id": 123456789,
+                    "product_name": "Spongebob",
+                    "product_picture": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/4/8/5479999/5479999_0d445339-9e18-4994-9744-2a18deffd0f6_315_315",
+                    "product_qty": 1,
+                    "product_price": "Rp 1.500"
+                  },
+                  {
+                    "product_id": 987654321,
+                    "product_name": "Patrick",
+                    "product_picture": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/4/8/5479999/5479999_0d445339-9e18-4994-9744-2a18deffd0f6_315_315",
+                    "product_qty": 1,
+                    "product_price": "Rp 1.500"
+                  }
+                ]
+              }
+            ],
+            "non_bundle": [
+              {
+                "product_id": 15359272,
+                "product_name": "product 1",
+                "product_picture": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/4/8/5479999/5479999_0d445339-9e18-4994-9744-2a18deffd0f6_315_315",
+                "product_qty": 1,
+                "product_price": "Rp 1.500"
+              }
+            ]
+          }
         }
       ],
       "cursor_payment_deadline": 123456,
