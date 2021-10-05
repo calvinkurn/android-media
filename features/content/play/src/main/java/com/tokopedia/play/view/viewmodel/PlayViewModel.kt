@@ -1587,7 +1587,7 @@ class PlayViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiEvent.emit(
-                    ShowToasterEvent.Info(message = UiString.Resource(R.string.play_interactive_follow_success))
+                ShowInfoEvent(message = UiString.Resource(R.string.play_interactive_follow_success))
             )
         }
 
@@ -1781,13 +1781,13 @@ class PlayViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiEvent.emit(
-                    CopyToClipboardEvent(shareInfo.content)
+                CopyToClipboardEvent(shareInfo.content)
             )
 
             _uiEvent.emit(
-                    ShowToasterEvent.Info(
-                            UiString.Resource(R.string.play_link_copied)
-                    )
+                ShowInfoEvent(
+                    UiString.Resource(R.string.play_link_copied)
+                )
             )
         }
     }
@@ -1809,10 +1809,10 @@ class PlayViewModel @Inject constructor(
         else {
             viewModelScope.launch {
                 _uiEvent.emit(
-                        OpenPageEvent(
-                                applink = ApplinkConst.LOGIN,
-                                requestCode = requestCode
-                        )
+                    OpenPageEvent(
+                        applink = ApplinkConst.LOGIN,
+                        requestCode = requestCode
+                    )
                 )
             }
         }
