@@ -166,7 +166,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             this.widgetListener = widgetListener
             this.scrollToPosition = scrollToPosition
             this.pageName = pageName
-
+            initVar()
             bindTemporaryHeader(tempHeaderName)
             bindWidgetWithPageName(
                 pageName = pageName,
