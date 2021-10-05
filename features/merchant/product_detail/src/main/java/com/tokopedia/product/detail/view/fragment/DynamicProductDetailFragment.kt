@@ -2288,8 +2288,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             val selectedChild = it.children.firstOrNull { it.productId == productId ?: "" }
             val mapOfSelectedVariant = DynamicProductDetailMapper.determineSelectedOptionIds(it, selectedChild)
 
-            pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant = mapOfSelectedVariant
-            pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant = mapOfSelectedVariant
+            pdpUiUpdater?.productNewVariantDataModel?.apply {
+                mapOfSelectedVariant = DynamicProductDetailMapper.determineSelectedOptionIds(it, selectedChild)
+            }
+            pdpUiUpdater?.productSingleVariant?.apply {
+                mapOfSelectedVariant = DynamicProductDetailMapper.determineSelectedOptionIdsOldVariant(it, selectedChild)
+            }
         }
         return pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant
                 ?: pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant ?: mutableMapOf()
@@ -2503,11 +2507,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun executeProductShare(productData: ProductData) {
         val enablePdpCustomSharing = remoteConfig()?.getBoolean(
-            REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING,
-            REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
+                REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING,
+                REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
         ) ?: REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
         if (UniversalShareBottomSheet.isCustomSharingEnabled(context) && enablePdpCustomSharing) {
-            val description = pdpUiUpdater?.productDetailInfoData?.getDescription()?.take(100)?.replace("(\r\n|\n)".toRegex(), " ") ?: ""
+            val description = pdpUiUpdater?.productDetailInfoData?.getDescription()?.take(100)?.replace("(\r\n|\n)".toRegex(), " ")
+                    ?: ""
             productData.productShareDescription = "$description..."
             executeUniversalShare(productData)
         } else {
