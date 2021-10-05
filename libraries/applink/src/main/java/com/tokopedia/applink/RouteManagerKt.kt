@@ -24,7 +24,7 @@ object RouteManagerKt {
         if (url.endsWith(".pl")) {
             return false
         }
-        if (!url.contains(DeepLinkChecker.WEB_HOST) && !isHostStaging(url)) {
+        if (!url.contains(DeepLinkChecker.WEB_HOST) && !UriUtil.isHostStaging(url)) {
             return false
         }
         val registeredNavigation = DeeplinkMapper.getRegisteredNavigationFromHttp(activity.applicationContext, Uri.parse(url), url)
@@ -105,8 +105,4 @@ object RouteManagerKt {
     private fun getLinkSegment(url: String): List<String> {
         return Uri.parse(url).pathSegments
     }
-
-    private fun isHostStaging(url: String) =
-        GlobalConfig.isAllowDebuggingTools() && url.contains(DeepLinkChecker.WEB_HOST_STAGING)
-
 }

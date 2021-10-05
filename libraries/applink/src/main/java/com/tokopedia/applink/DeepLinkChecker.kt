@@ -182,7 +182,7 @@ object DeepLinkChecker {
 
     private fun isHome(uriData: Uri): Boolean {
         return uriData.pathSegments.isEmpty() &&
-            (uriData.host?.contains(WEB_HOST) ?: false || uriData.host?.contains(WEB_HOST_STAGING) ?: false)
+            (uriData.host?.contains(WEB_HOST) ?: false || UriUtil.isHostStaging(uriData.host ?: ""))
     }
 
     @JvmStatic
