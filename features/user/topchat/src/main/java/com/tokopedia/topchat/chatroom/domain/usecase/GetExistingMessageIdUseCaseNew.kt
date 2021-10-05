@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.chatroom.domain.pojo.GetExistingMessageIdPojo
 import javax.inject.Inject
 
-class GetExistingMessageIdUseCaseNew @Inject constructor(
+open class GetExistingMessageIdUseCaseNew @Inject constructor(
     private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ): CoroutineUseCase<Map<String, Any>, GetExistingMessageIdPojo>(dispatcher.io) {

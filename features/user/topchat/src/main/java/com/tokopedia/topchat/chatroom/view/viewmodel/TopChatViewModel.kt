@@ -12,7 +12,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class TopChatViewModel @Inject constructor(
+open class TopChatViewModel @Inject constructor(
     private var getExistingMessageIdUseCase: GetExistingMessageIdUseCaseNew,
     private val dispatcher: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig
