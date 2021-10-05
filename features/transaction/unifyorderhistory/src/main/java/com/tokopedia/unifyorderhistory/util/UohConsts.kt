@@ -158,4 +158,7 @@ object UohConsts {
     const val PARAM_STATUS_ID = "status_id"
     const val PARAM_SOURCE_UOH = "source_uoh"
     const val PARAM_HELP_LINK_URL = "help_link_url"
+
+    const val DATE_FORMAT_DDMMMYYYY = "dd MMM yyyy"
+    const val DATE_FORMAT_YYYYMMDD = "yyyy-MM-dd"
 }

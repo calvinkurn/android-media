@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -138,7 +137,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyorderhistory.R
@@ -146,6 +144,7 @@ import com.tokopedia.unifyorderhistory.data.model.*
 import com.tokopedia.unifyorderhistory.databinding.FragmentUohListBinding
 import com.tokopedia.unifyorderhistory.di.UohListComponent
 import com.tokopedia.unifyorderhistory.util.UohConsts.ACTION_FINISH_ORDER
+import com.tokopedia.unifyorderhistory.util.UohConsts.DATE_FORMAT_YYYYMMDD
 import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_BOUGHT_DATE
 import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_HELP_LINK_URL
 import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_INVOICE
@@ -192,10 +191,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var responseLsPrintFinishOrder: LsPrintData.Data.Oiaction = LsPrintData.Data.Oiaction()
     private lateinit var uohBottomSheetOptionAdapter: UohBottomSheetOptionAdapter
     private lateinit var uohBottomSheetKebabMenuAdapter: UohBottomSheetKebabMenuAdapter
-    private var bottomSheetOption: BottomSheetUnify? = null
-    private var bottomSheetFinishOrder: BottomSheetUnify? = null
-    private var bottomSheetKebabMenu: BottomSheetUnify? = null
-    private var bottomSheetResendEmail: BottomSheetUnify? = null
     private var currFilterDateKey: String = ""
     private var currFilterStatusKey: String = ""
     private var currFilterCategoryKey: String = ""
@@ -573,7 +568,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun prepareLayout() {
         binding?.run {
-            refreshHandler = RefreshHandler(swipeRefreshLayout, UohListFragment)
+            refreshHandler = RefreshHandler(swipeRefreshLayout, this@UohListFragment)
             refreshHandler?.setPullEnabled(true)
             activityOrderHistory = arguments?.getString(PARAM_ACTIVITY_ORDER_HISTORY, "") as String
 
@@ -837,20 +832,17 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     is Success -> {
                         val flightEmailResponse = result.data.flightResendEmailV2
                         if (flightEmailResponse == null) {
-                            bottomSheetKebabMenu?.binding
-                            bottomSheetKebabMenu?.tf_email?.setError(true)
-                            bottomSheetKebabMenu?.tf_email?.setMessage(getString(R.string.toaster_failed_send_email))
+                            UohSendEmailBottomSheet().setLayoutError()
                         } else {
                             if (flightEmailResponse.meta.status.equals(FLIGHT_STATUS_OK, true)) {
-                                bottomSheetResendEmail?.dismiss()
-                                bottomSheetKebabMenu?.dismiss()
+                                UohSendEmailBottomSheet().doDismiss()
+                                UohKebabMenuBottomSheet().doDismiss()
                                 showToaster(getString(R.string.toaster_succeed_send_email), Toaster.TYPE_NORMAL)
                             }
                         }
                     }
                     is Fail -> {
-                        bottomSheetResendEmail?.tf_email?.setError(true)
-                        bottomSheetResendEmail?.tf_email?.setMessage(getString(R.string.toaster_failed_send_email))
+                        UohSendEmailBottomSheet().setLayoutError()
                     }
                 }
             })
@@ -863,19 +855,17 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 is Success -> {
                     val trainEmailResponse = it.data.trainResendBookingEmail
                     if (trainEmailResponse == null) {
-                        bottomSheetKebabMenu?.tf_email?.setError(true)
-                        bottomSheetKebabMenu?.tf_email?.setMessage(getString(R.string.toaster_failed_send_email))
+                        UohSendEmailBottomSheet().setLayoutError()
                     } else {
                         if (trainEmailResponse.success) {
-                            bottomSheetResendEmail?.dismiss()
-                            bottomSheetKebabMenu?.dismiss()
+                            UohSendEmailBottomSheet().doDismiss()
+                            UohKebabMenuBottomSheet().dismiss()
                             showToaster(getString(R.string.toaster_succeed_send_email), Toaster.TYPE_NORMAL)
                         }
                     }
                 }
                 is Fail -> {
-                    bottomSheetResendEmail?.tf_email?.setError(true)
-                    bottomSheetResendEmail?.tf_email?.setMessage(getString(R.string.toaster_failed_send_email))
+                    UohSendEmailBottomSheet().setLayoutError()
                 }
             }
         })
@@ -1067,23 +1057,25 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             chips.add(it)
         }
 
-        uoh_sort_filter?.addItem(chips)
-        uoh_sort_filter?.sortFilterPrefix?.setOnClickListener {
-            val limitDate = splitStringDateFormat.parse(orderList.dateLimit)
-            limitDate?.let { limitDate ->
-                val limitDateStr = monthStringDateFormat.format(limitDate)
-                view?.let { view ->
-                    context?.let { context -> UohUtils.hideKeyBoard(context, view) }
-                }
-                val resetMsg = activity?.resources?.getString(R.string.uoh_reset_filter_msg)?.replace(
-                    UohConsts.DATE_LIMIT, limitDateStr)
-                resetMsg?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
-            }
+        binding?.run {
+            uohSortFilter.run {
+                addItem(chips)
+                sortFilterPrefix.setOnClickListener {
+                    val limitDate = splitStringDateFormat.parse(orderList.dateLimit)
+                    val limitDateStr = monthStringDateFormat.format(limitDate)
+                    view?.let { view ->
+                        context?.let { context -> UohUtils.hideKeyBoard(context, view) }
+                    }
+                    val resetMsg = activity?.resources?.getString(R.string.uoh_reset_filter_msg)?.replace(
+                            UohConsts.DATE_LIMIT, limitDateStr)
+                    resetMsg?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
 
-            resetFilter()
-            refreshHandler?.startRefresh()
-            scrollRecommendationListener.resetState()
-            userSession.userId?.let { it1 -> UohAnalytics.clickXChipsToClearFilter(it1) }
+                    resetFilter()
+                    refreshHandler?.startRefresh()
+                    scrollRecommendationListener.resetState()
+                    userSession.userId?.let { it1 -> UohAnalytics.clickXChipsToClearFilter(it1) }
+                }
+            }
         }
     }
 
@@ -1091,8 +1083,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
         UohFilterOptionsBottomSheet().run {
             setActionListener(this@UohListFragment)
-            context?.let { context -> fragmentManager?.let { fm ->
-                show(context, fm, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_DATE) }}
+            context?.let { context -> show(context, parentFragmentManager, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_DATE) }
         }
 
         val arrayListDateFilterBundle = arrayListOf<UohFilterBundle>()
@@ -1107,56 +1098,57 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         if (tempFilterDateLabel.isEmpty()) tempFilterDateLabel = ALL_DATE
         if (tempFilterDateKey.isEmpty()) tempFilterDateKey = "0"
 
-        uohBottomSheetOptionAdapter.filterBundleList = arrayListDateFilterBundle
-        uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_DATE
-        uohBottomSheetOptionAdapter.selectedKey = currFilterDateKey
-        uohBottomSheetOptionAdapter.isReset = isReset
-        uohBottomSheetOptionAdapter.notifyDataSetChanged()
+        uohBottomSheetOptionAdapter.run {
+            filterBundleList = arrayListDateFilterBundle
+            filterType = UohConsts.TYPE_FILTER_DATE
+            selectedKey = currFilterDateKey
+            isReset = isReset
+            notifyDataSetChanged()
+        }
     }
 
     private fun onClickFilterStatus() {
         uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
         UohFilterOptionsBottomSheet().run {
             setActionListener(this@UohListFragment)
-            context?.let { context -> fragmentManager?.let { fm ->
-                show(context, fm, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_FILTERS) }}
+            context?.let { context -> show(context, parentFragmentManager, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_FILTERS) }
         }
 
         tempFilterType = UohConsts.TYPE_FILTER_STATUS
         if (tempFilterStatusLabel.isEmpty()) tempFilterStatusLabel = ALL_STATUS_TRANSACTION
         if (tempFilterStatusKey.isEmpty()) tempFilterStatusKey = ""
 
-        uohBottomSheetOptionAdapter.filterBundleList = _arrayListStatusFilterBundle
-        uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_STATUS
-        uohBottomSheetOptionAdapter.selectedKey = currFilterStatusKey
-        uohBottomSheetOptionAdapter.isReset = isReset
-        uohBottomSheetOptionAdapter.notifyDataSetChanged()
+        uohBottomSheetOptionAdapter.run {
+            filterBundleList = _arrayListStatusFilterBundle
+            filterType = UohConsts.TYPE_FILTER_STATUS
+            selectedKey = currFilterStatusKey
+            isReset = isReset
+            notifyDataSetChanged()
+        }
     }
 
     private fun onClickFilterCategoryProduct() {
         uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
         UohFilterOptionsBottomSheet().run {
             setActionListener(this@UohListFragment)
-            context?.let { context -> fragmentManager?.let { fm ->
-                show(context, fm, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_CATEGORIES) }}
+            context?.let { context -> show(context, parentFragmentManager, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_CATEGORIES) }
         }
 
-        uohBottomSheetOptionAdapter.filterBundleList = _arrayListCategoryProductFilterBundle
-        uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_CATEGORY
         tempFilterType = UohConsts.TYPE_FILTER_CATEGORY
         if (tempFilterCategoryLabel.isEmpty()) tempFilterCategoryLabel = ALL_PRODUCTS
         if (tempFilterCategoryKey.isEmpty()) tempFilterCategoryKey = ""
 
+        var selectedKey = ""
         if ((filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)
                         || filterStatus.equals(PARAM_UOH_WAITING_CONFIRMATION, true)
                         || filterStatus.equals(PARAM_UOH_PROCESSED, true)
                         || filterStatus.equals(PARAM_UOH_SENT, true)
                         || filterStatus.equals(PARAM_UOH_DELIVERED, true))
                 && !isReset) {
-            uohBottomSheetOptionAdapter.selectedKey = CATEGORIES_MP
+            selectedKey = CATEGORIES_MP
 
         } else if (filterStatus.equals(PARAM_DIGITAL, true) && !isReset) {
-            uohBottomSheetOptionAdapter.selectedKey = CATEGORIES_DIGITAL
+            selectedKey = CATEGORIES_DIGITAL
 
         } else if ((filterStatus.equals(PARAM_EVENTS, true)
                         || filterStatus.equals(PARAM_DEALS, true)
@@ -1165,18 +1157,24 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         || filterStatus.equals(PARAM_TRAIN, true)
                         || filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true))
                 && !isReset) {
-            uohBottomSheetOptionAdapter.selectedKey = CATEGORIES_TRAVELENT
+            selectedKey = CATEGORIES_TRAVELENT
 
         } else if ((filterStatus.equals(PARAM_GIFTCARDS, true)
                         || filterStatus.equals(PARAM_INSURANCE, true)
                         || filterStatus.equals(PARAM_MODALTOKO, true)) && !isReset) {
-            uohBottomSheetOptionAdapter.selectedKey = CATEGORIES_KEUANGAN
+            selectedKey = CATEGORIES_KEUANGAN
 
         } else {
-            uohBottomSheetOptionAdapter.selectedKey = currFilterCategoryKey
+            selectedKey = currFilterCategoryKey
         }
-        uohBottomSheetOptionAdapter.isReset = isReset
-        uohBottomSheetOptionAdapter.notifyDataSetChanged()
+
+        uohBottomSheetOptionAdapter.run {
+            filterBundleList = _arrayListCategoryProductFilterBundle
+            filterType = UohConsts.TYPE_FILTER_CATEGORY
+            selectedKey = selectedKey
+            isReset = isReset
+            notifyDataSetChanged()
+        }
     }
 
     private fun resetFilter() {
@@ -1202,7 +1200,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
         isFilterClicked = false
         isReset = true
-        uoh_sort_filter?.resetAllFilters()
+        binding?.run { uohSortFilter.resetAllFilters() }
         chipDate?.title = ALL_DATE
         chipStatus?.title = ALL_STATUS
         chipCategoryProduct?.title = ALL_PRODUCTS
@@ -1310,17 +1308,13 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 if (label.isNotEmpty()) {
                     when {
                         label.toInt() == LABEL_0 -> {
-                            bottomSheetOption?.apply {
-                                cl_choose_date?.gone()
-                            }
+                            UohFilterOptionsBottomSheet().hideChooseDate()
                             tempStartDate = ""
                             tempEndDate = ""
 
                         }
                         label.toInt() == LABEL_1 -> {
-                            bottomSheetOption?.apply {
-                                cl_choose_date?.gone()
-                            }
+                            UohFilterOptionsBottomSheet().hideChooseDate()
                             val startDate = getCalculatedFormattedDate("yyyy-MM-dd", MIN_30_DAYS)
                             val endDate = Date().toFormattedString("yyyy-MM-dd")
                             tempStartDate = startDate.toString()
@@ -1328,9 +1322,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
                         }
                         label.toInt() == LABEL_2 -> {
-                            bottomSheetOption?.apply {
-                                cl_choose_date?.gone()
-                            }
+                            UohFilterOptionsBottomSheet().hideChooseDate()
                             val startDate = getCalculatedFormattedDate("yyyy-MM-dd", MINUS_90)
                             val endDate = Date().toFormattedString("yyyy-MM-dd")
                             tempStartDate = startDate.toString()
@@ -1338,30 +1330,14 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
                         }
                         label.toInt() == LABEL_3 -> {
-                            bottomSheetOption?.apply {
-                                cl_choose_date?.visible()
-                                tempStartDate = chosenStartDate?.let { it -> calendarToStringFormat(it, "yyyy-MM-dd") }.toString()
-                                tempEndDate = chosenEndDate?.let { it -> calendarToStringFormat(it, "yyyy-MM-dd") }.toString()
-                                    tf_start_date?.textFieldInput?.setText(chosenStartDate?.let { it ->
-                                        calendarToStringFormat(
-                                            it, "dd MMM yyyy")
-                                    })
-                                    tf_start_date?.textFieldInput?.isFocusable = false
-                                    tf_start_date?.textFieldInput?.isClickable = true
-                                    tf_start_date?.textFieldInput?.setOnClickListener {
-                                        showDatePicker(START_DATE)
-                                    }
+                            var start = GregorianCalendar()
+                            var end = GregorianCalendar()
+                            chosenStartDate?.let { startDate -> start = startDate }
+                            chosenEndDate?.let { endDate -> end = endDate }
 
-                                    tf_end_date?.textFieldInput?.setText(chosenEndDate?.let { it ->
-                                        calendarToStringFormat(
-                                            it, "dd MMM yyyy")
-                                    })
-                                    tf_end_date?.textFieldInput?.isFocusable = false
-                                    tf_end_date?.textFieldInput?.isClickable = true
-                                    tf_end_date?.textFieldInput?.setOnClickListener {
-                                        showDatePicker(END_DATE)
-                                    }
-                            }
+                            tempStartDate = UohUtils.calendarToStringFormat(start, DATE_FORMAT_YYYYMMDD).toString()
+                            tempEndDate = UohUtils.calendarToStringFormat(end, DATE_FORMAT_YYYYMMDD).toString()
+                            UohFilterOptionsBottomSheet().showChooseDate(start, end)
                         }
                     }
                 }
@@ -1393,12 +1369,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         } else GregorianCalendar()
     }
 
-    private fun calendarToStringFormat(dateParam: GregorianCalendar, format: String) : CharSequence {
-        return DateFormat.format(format, dateParam.time)
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun showDatePicker(flag: String) {
+    override fun showDatePicker(flag: String) {
         context?.let { context ->
             var minDate = GregorianCalendar()
             var maxDate = GregorianCalendar()
@@ -1426,15 +1397,13 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
                     if (flag.equals(START_DATE, true)) {
                         chosenStartDate = resultDate as GregorianCalendar
-                        bottomSheetOption?.tf_start_date?.textFieldInput?.setText("${calendarToStringFormat(
-                            resultDate as GregorianCalendar, "dd MMM yyyy")}")
-                        tempStartDate = calendarToStringFormat(resultDate, "yyyy-MM-dd").toString()
+                        UohFilterOptionsBottomSheet().setStartDate(resultDate)
+                        tempStartDate = UohUtils.calendarToStringFormat(resultDate, DATE_FORMAT_YYYYMMDD).toString()
 
                     } else {
                         chosenEndDate = resultDate as GregorianCalendar
-                        bottomSheetOption?.tf_end_date?.textFieldInput?.setText("${calendarToStringFormat(
-                            resultDate as GregorianCalendar, "dd MMM yyyy")}")
-                        tempEndDate = calendarToStringFormat(resultDate, "yyyy-MM-dd").toString()
+                        UohFilterOptionsBottomSheet().setEndDate(resultDate)
+                        tempEndDate = UohUtils.calendarToStringFormat(resultDate, DATE_FORMAT_YYYYMMDD).toString()
                     }
                     dismiss()
                 }
@@ -1470,8 +1439,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     override fun onKebabMenuClicked(order: UohListOrder.Data.UohOrders.Order, orderIndex: Int) {
         uohBottomSheetKebabMenuAdapter._orderIndex = orderIndex
         uohBottomSheetKebabMenuAdapter.addList(order)
-        context?.let { context -> fragmentManager?.let { fm ->
-            UohKebabMenuBottomSheet().show(context, fm, uohBottomSheetKebabMenuAdapter) } }
+        context?.let { context -> UohKebabMenuBottomSheet().show(context, parentFragmentManager, uohBottomSheetKebabMenuAdapter) }
         userSession.userId?.let { UohAnalytics.clickThreeDotsMenu(order.verticalCategory, it) }
     }
 
@@ -1490,7 +1458,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             }
         } else if (dotMenu.actionType.equals(TYPE_ACTION_CANCEL_ORDER, true)) {
             if (dotMenu.appURL.contains(APPLINK_BASE)) {
-                bottomSheetKebabMenu?.dismiss()
+                UohKebabMenuBottomSheet().dismiss()
                 var helpLinkUrl = ""
                 currIndexNeedUpdate = index
                 orderIdNeedUpdated = orderData.orderUUID
@@ -1525,30 +1493,28 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         } else {
             when {
                 dotMenu.actionType.equals(GQL_FLIGHT_EMAIL, true) -> {
-                    context?.let { context -> fragmentManager?.let { fm ->
-                        UohSendEmailBottomSheet().run {
-                            setActionListener(this@UohListFragment)
-                            show(context, fm, GQL_FLIGHT_EMAIL, orderData) } } }
+                    UohSendEmailBottomSheet().run {
+                        setActionListener(this@UohListFragment)
+                        show(parentFragmentManager, GQL_FLIGHT_EMAIL, orderData) }
                 }
                 dotMenu.actionType.equals(GQL_TRAIN_EMAIL, true) -> {
-                    context?.let { context -> fragmentManager?.let { fm ->
-                        UohSendEmailBottomSheet().run {
-                            setActionListener(this@UohListFragment)
-                            show(context, fm, GQL_TRAIN_EMAIL, orderData) } } }
+                    UohSendEmailBottomSheet().run {
+                        setActionListener(this@UohListFragment)
+                        show(parentFragmentManager, GQL_TRAIN_EMAIL, orderData) }
                 }
                 dotMenu.actionType.equals(GQL_MP_CHAT, true) -> {
                     doChatSeller(dotMenu.appURL, orderData)
                 }
                 dotMenu.actionType.equals(GQL_ATC, true) -> {
-                    bottomSheetKebabMenu?.dismiss()
+                    UohKebabMenuBottomSheet().doDismiss()
                     atc(orderData)
                 }
                 dotMenu.actionType.equals(GQL_MP_FINISH, true) -> {
                     orderIdNeedUpdated = orderData.orderUUID
-                    context?.let { context -> fragmentManager?.let { fm ->
+                    context?.let { context ->
                         UohFinishOrderBottomSheet().run {
                             setActionListener(this@UohListFragment)
-                            show(context, fm, orderIndex, orderData.verticalID, orderData.verticalStatus) } } }
+                            show(context, parentFragmentManager, orderIndex, orderData.verticalID, orderData.verticalStatus) } }
                 }
                 dotMenu.actionType.equals(GQL_TRACK, true) -> {
                     val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, orderData.verticalID)
@@ -1612,10 +1578,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 when {
                     button.actionType.equals(GQL_FINISH_ORDER, true) -> {
                         orderIdNeedUpdated = order.orderUUID
-                        context?.let { context -> fragmentManager?.let { fm ->
-                            UohFinishOrderBottomSheet().run {
+                        context?.let { context -> UohFinishOrderBottomSheet().run {
                                 setActionListener(this@UohListFragment)
-                                show(context, fm, index, order.verticalID, order.verticalStatus) } } }
+                                show(context, parentFragmentManager, index, order.verticalID, order.verticalStatus) } }
                     }
                     button.actionType.equals(GQL_ATC, true) -> {
                         atc(order)
@@ -1626,10 +1591,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     }
                     button.actionType.equals(GQL_LS_FINISH, true) -> {
                         orderIdNeedUpdated = order.orderUUID
-                        context?.let { context -> fragmentManager?.let { fm ->
-                            UohLsFinishOrderBottomSheet().run {
+                        context?.let { context -> UohLsFinishOrderBottomSheet().run {
                                 setActionListener(this@UohListFragment)
-                                show(context, fm, index, order.verticalID) } } }
+                                show(context, parentFragmentManager, index, order.verticalID) } }
                     }
                     button.actionType.equals(GQL_LS_LACAK, true) -> {
                         val linkUrl = button.appURL
@@ -1846,8 +1810,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     override fun onClickFinishOrder(index: Int, status: String, orderId: String) {
-        bottomSheetKebabMenu?.dismiss()
-        bottomSheetFinishOrder?.dismiss()
+        UohKebabMenuBottomSheet().doDismiss()
+        UohFinishOrderBottomSheet().doDismiss()
         currIndexNeedUpdate = index
         uohItemAdapter.showLoaderAtIndex(index)
 
@@ -1948,7 +1912,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 userSession.userId?.let { it1 -> UohAnalytics.clickTerapkanOnCategoryFilterChips(labelTrackingCategory, it1) }
             }
         }
-        bottomSheetOption?.dismiss()
+        UohFilterOptionsBottomSheet().doDismiss()
         isFirstLoad = false
         refreshHandler?.startRefresh()
         scrollRecommendationListener.resetState()

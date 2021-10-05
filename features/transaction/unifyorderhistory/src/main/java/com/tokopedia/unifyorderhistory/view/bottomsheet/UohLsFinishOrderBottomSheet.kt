@@ -1,30 +1,38 @@
 package com.tokopedia.unifyorderhistory.view.bottomsheet
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.core.content.ContextCompat
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifyorderhistory.R
-import com.tokopedia.unifyorderhistory.databinding.BottomsheetFinishOrderUohBinding
 import com.tokopedia.unifyorderhistory.databinding.BottomsheetLsFinishOrderUohBinding
 import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
+import com.tokopedia.utils.lifecycle.autoCleared
 
 /**
  * Created by fwidjaja on 02/10/21.
  */
-class UohLsFinishOrderBottomSheet {
+class UohLsFinishOrderBottomSheet : BottomSheetUnify() {
     private var actionListener: ActionListener? = null
+    private var binding by autoCleared<BottomsheetLsFinishOrderUohBinding>()
 
-    fun show(context: Context,
-             fragmentManager: FragmentManager,
-             index: Int, orderId: String) {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initView()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun initView() {
+        binding = BottomsheetLsFinishOrderUohBinding.inflate(LayoutInflater.from(context), null, false)
+    }
+
+    fun show(context: Context, fragmentManager: FragmentManager, index: Int, orderId: String) {
         val bottomSheet = BottomSheetUnify()
         bottomSheet.showCloseIcon = true
         bottomSheet.showHeader = true
 
-        val binding = BottomsheetLsFinishOrderUohBinding.inflate(LayoutInflater.from(context))
         binding.run {
             btnLsFinishOrder.setOnClickListener {
                 bottomSheet.dismiss()

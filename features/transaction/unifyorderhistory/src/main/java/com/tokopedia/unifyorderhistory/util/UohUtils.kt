@@ -1,12 +1,14 @@
 package com.tokopedia.unifyorderhistory.util
 
 import android.content.Context
+import android.text.format.DateFormat
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import java.util.*
 
 /**
  * Created by fwidjaja on 10/07/20.
@@ -77,5 +79,9 @@ object UohUtils {
 
     fun isEmailValid(email: String): Boolean {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+
+    fun calendarToStringFormat(dateParam: GregorianCalendar, format: String) : CharSequence {
+        return DateFormat.format(format, dateParam.time)
     }
 }
