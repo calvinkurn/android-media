@@ -234,8 +234,11 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
                                         object : DealsBottomSheetNoInternetConnection.
                                         DealsOnClickBottomSheetNoConnectionListener {
                                             override fun onClick() {
-                                                showShimmering()
-                                                loadData()
+                                                reLoadData()
+                                            }
+
+                                            override fun onDismissBottomsheet() {
+                                                reLoadData()
                                             }
                                         })
                             }
@@ -246,6 +249,11 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
                 }
             }
         }
+    }
+
+    private fun reLoadData(){
+        showShimmering()
+        loadData()
     }
 
     private fun getBrandDetail() {
@@ -318,8 +326,7 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
             binding?.root?.let {
                 Toaster.build(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                         getString(R.string.deals_error_reload), View.OnClickListener {
-                    showShimmering()
-                    loadData()
+                    reLoadData()
                 }).show()
             }
         }
