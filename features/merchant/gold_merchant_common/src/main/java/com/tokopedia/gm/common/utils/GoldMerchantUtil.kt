@@ -37,7 +37,8 @@ object GoldMerchantUtil {
             val calendarExistingSeller = Calendar.getInstance()
             simpleDateFormat.parse(dateString)?.let { calendar.time = it }
             calendar.add(Calendar.DATE, totalDays(dateString).toInt())
-            calendarExistingSeller.add(Calendar.DAY_OF_WEEK, NEW_SELLER_DAYS)
+            calendarExistingSeller.add(Calendar.DATE, NEW_SELLER_DAYS)
+
             return calendarExistingSeller.get(Calendar.DAY_OF_WEEK) !in
                     Calendar.TUESDAY..Calendar.SATURDAY &&
                     calendar.get(Calendar.DAY_OF_WEEK) > Calendar.MONDAY
