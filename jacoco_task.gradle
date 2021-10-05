@@ -2,9 +2,9 @@ apply from: "$rootProject.projectDir/buildconfig/jacoco.gradle"
 
 def fileExecute = [
         '**/*ViewModel.*',
-        '**/*ViewModel$**.*',
+        '**/*ViewModel$*$**.*',
         '**/*Presenter.*',
-        '**/*Presenter$**.*'
+        '**/*Presenter$*$**.*'
 ]
 
 def javaClasses = fileTree(dir: "$project.buildDir/intermediates/javac/debug/classes", includes: fileExecute)
