@@ -55,6 +55,7 @@ data class PlayPartnerUiState(
 )
 
 data class PlayWinnerBadgeUiState(
+    val leaderboards: List<PlayLeaderboardUiModel>,
     val shouldShow: Boolean
 )
 

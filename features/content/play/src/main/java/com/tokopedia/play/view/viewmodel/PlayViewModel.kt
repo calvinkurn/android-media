@@ -177,6 +177,7 @@ class PlayViewModel @Inject constructor(
         _leaderboardInfo, _bottomInsets, _status, _channelDetail, _leaderboardUserBadgeState
     ) { leaderboardInfo, bottomInsets, status, channelDetail, leaderboardUserBadgeState ->
         PlayWinnerBadgeUiState(
+            leaderboards = leaderboardInfo.leaderboardWinners,
             shouldShow = !bottomInsets.isAnyShown &&
                     status.isActive &&
                     (leaderboardInfo.leaderboardWinners.isNotEmpty() || leaderboardUserBadgeState) &&

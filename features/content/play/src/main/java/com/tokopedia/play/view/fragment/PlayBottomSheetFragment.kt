@@ -452,6 +452,7 @@ class PlayBottomSheetFragment @Inject constructor(
             it[BottomInsetsType.LeaderboardSheet]?.let { state ->
                 if (state is BottomInsetsState.Shown) {
                     leaderboardSheetView.showWithHeight(state.estimatedInsetsHeight)
+                    leaderboardSheetView.setLoading()
                     playViewModel.submitAction(RefreshLeaderboard)
                 }
                 else leaderboardSheetView.hide()
@@ -515,7 +516,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             playViewModel.uiState.withCache().collectLatest { (_, state) ->
-//                renderLeaderboardView(state.winnerBadge.leaderboards)
+                renderLeaderboardView(state.winnerBadge.leaderboards)
             }
         }
     }

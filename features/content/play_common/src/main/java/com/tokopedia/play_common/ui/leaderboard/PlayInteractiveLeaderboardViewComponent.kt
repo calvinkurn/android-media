@@ -2,6 +2,7 @@ package com.tokopedia.play_common.ui.leaderboard
 
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -34,6 +35,7 @@ class PlayInteractiveLeaderboardViewComponent(
 
     private val rvLeaderboard: RecyclerView = findViewById(R.id.rv_leaderboard)
     private val errorView: ConstraintLayout = findViewById(R.id.cl_leaderboard_error)
+    private val llPlaceholder: LinearLayout = findViewById(R.id.ll_leaderboard_placeholder)
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
@@ -73,20 +75,21 @@ class PlayInteractiveLeaderboardViewComponent(
 
     fun setData(leaderboards: List<PlayLeaderboardUiModel>) {
         errorView.hide()
+        llPlaceholder.hide()
+        rvLeaderboard.show()
         leaderboardAdapter.setItemsAndAnimateChanges(leaderboards)
     }
 
     fun setError(isConnectionError: Boolean) {
         errorView.show()
         rvLeaderboard.hide()
+        llPlaceholder.hide()
     }
 
     fun setLoading() {
         errorView.hide()
-        rvLeaderboard.show()
-        /**
-         * TODO: update data with placeholder
-         */
+        rvLeaderboard.hide()
+        llPlaceholder.show()
     }
 
     fun showWithHeight(height: Int) {
