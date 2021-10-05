@@ -2,7 +2,9 @@ package com.tokopedia.home.account.presentation.fragment.setting
 
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -24,6 +26,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.appupdate.model.DataUpdateApp
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -90,10 +93,12 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     @Inject
     internal lateinit var settingsPresenter: SettingsPresenter
 
+    private var tempCountDarkModeToggle = 0
 
     private lateinit var loadingView: View
     private lateinit var baseSettingView: View
     private lateinit var updateButton: UnifyButton
+    private lateinit var localCacheHandler: LocalCacheHandler
 
     private lateinit var accountAnalytics: AccountAnalytics
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -102,10 +107,15 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(context) }
     private val reviewHelper by lazy { createReviewHelper(context?.applicationContext) }
 
+    private val sharedPreferences: SharedPreferences? by lazy {
+        context?.getSharedPreferences(KEY_GENERAL_SETTING_PREFERENCES, Context.MODE_PRIVATE)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         accountAnalytics = AccountAnalytics(activity)
         permissionCheckerHelper = PermissionCheckerHelper()
+        localCacheHandler = LocalCacheHandler(context, KEY_GENERAL_SETTING_PREFERENCES)
         context?.let {
             notifPreference = NotifPreference(it)
         }
@@ -173,7 +183,18 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         recyclerView.addItemDecoration(DividerItemDecoration(activity))
         val appVersion = view.findViewById<TextView>(R.id.text_view_app_version)
         updateButton = view.findViewById(R.id.force_update_button)
-        appVersion.text = getString(R.string.application_version_fmt, GlobalConfig.RAW_VERSION_NAME)
+        appVersion.run {
+            text = getString(R.string.application_version_fmt, GlobalConfig.RAW_VERSION_NAME)
+            setOnClickListener {
+                tempCountDarkModeToggle++
+                if (tempCountDarkModeToggle == 10) {
+                    localCacheHandler.apply {
+                        putBoolean(KEY_PREF_DARK_MODE_TOGGLE, true)
+                        applyEditor()
+                    }
+                }
+            }
+        }
         showForceUpdate()
     }
 
@@ -551,7 +572,9 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     }
 
     companion object {
-
+        private const val KEY_GENERAL_SETTING_PREFERENCES = "KEY_GENERAL_SETTING_PREFERENCES"
+        private const val KEY_PREF_DARK_MODE_TOGGLE = "KEY_PREF_DARK_MODE_TOGGLE"
+        private const val ENABLE_DARK_MODE_TOGGLE_COUNT = 10
         private val RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view"
 
         @JvmStatic
