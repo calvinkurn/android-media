@@ -132,15 +132,16 @@ class WaitingPaymentOrdersViewHolder(
     }
 
     private fun getRecyclerViewHeight(element: WaitingPaymentOrderUiModel): Int {
-        return if (element.isExpanded && element.expandedHeight != 0) {
-            element.expandedHeight
-        } else if (!element.isExpanded && element.collapsedHeight != 0) {
-            element.collapsedHeight
-        } else {
-            binding?.run {
-                rvWaitingPaymentOrderProducts.measure(View.MeasureSpec.makeMeasureSpec(root.measuredWidth, View.MeasureSpec.EXACTLY), View.MeasureSpec.UNSPECIFIED)
-                rvWaitingPaymentOrderProducts.measuredHeight
-            }.orZero()
+        return when {
+            element.isExpanded && element.expandedHeight != 0 -> element.expandedHeight
+            !element.isExpanded && element.collapsedHeight != 0 -> element.collapsedHeight
+            else -> {
+                binding?.run {
+                    rvWaitingPaymentOrderProducts.measure(View.MeasureSpec.makeMeasureSpec(
+                        root.measuredWidth, View.MeasureSpec.EXACTLY), View.MeasureSpec.UNSPECIFIED)
+                    rvWaitingPaymentOrderProducts.measuredHeight
+                }.orZero()
+            }
         }
     }
 
