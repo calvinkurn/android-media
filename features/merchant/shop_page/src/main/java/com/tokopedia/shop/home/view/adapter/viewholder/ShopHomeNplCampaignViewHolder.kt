@@ -200,9 +200,9 @@ class ShopHomeNplCampaignViewHolder(
     }
 
     private fun setRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
+        hideAllRemindMeLayout()
         isRemindMe = model.data?.firstOrNull()?.isRemindMe
         isRemindMe?.let {
-            hideAllRemindMeLayout()
             layoutRemindMe?.show()
             layoutRemindMe?.setOnClickListener {
                 if (loaderRemindMe?.isVisible == false) {
