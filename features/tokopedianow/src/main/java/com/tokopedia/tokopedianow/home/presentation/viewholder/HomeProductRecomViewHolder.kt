@@ -86,7 +86,7 @@ class HomeProductRecomViewHolder(
         itemPosition: Int,
         adapterPosition: Int
     ) {
-        listener?.onRecomProductCardClicked(recomItem, channelId, data.recommendationData.title, itemPosition.toString(), isOoc)
+        listener?.onRecomProductCardClicked(recomItem, channelId, data.recommendationData.title, itemPosition.toString(), isOoc, applink)
     }
 
     override fun onRecomProductCardAddToCartNonVariant(
@@ -125,7 +125,7 @@ class HomeProductRecomViewHolder(
     }
 
     interface HomeProductRecomListener {
-        fun onRecomProductCardClicked(recomItem: RecommendationItem, channelId: String, headerName: String, position: String, isOoc: Boolean)
+        fun onRecomProductCardClicked(recomItem: RecommendationItem, channelId: String, headerName: String, position: String, isOoc: Boolean, applink: String)
         fun onRecomProductCardImpressed(recomItems: List<RecommendationItem>, channelId: String, headerName: String, pageName: String, isOoc: Boolean)
         fun onSeeAllBannerClicked(channelId: String, headerName: String, isOoc: Boolean, applink: String)
         fun onProductRecomNonVariantClick(recomItem: RecommendationItem, quantity: Int, headerName: String, channelId: String, position: String)

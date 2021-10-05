@@ -1,6 +1,5 @@
 package com.tokopedia.imagepicker_insta.activity
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
@@ -10,17 +9,20 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.coroutineScope
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.fragment.CameraFragment
 import com.tokopedia.imagepicker_insta.fragment.NoPermissionFragment
 import com.tokopedia.imagepicker_insta.common.BundleData
+import com.tokopedia.imagepicker_insta.mediacapture.MediaRepository
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.util.PermissionUtil
 import com.tokopedia.imagepicker_insta.util.requestCameraAndMicPermission
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.coroutines.launch
 
 class CameraActivity : PermissionActivity() {
 
@@ -124,13 +126,14 @@ class CameraActivity : PermissionActivity() {
 
 
     fun exitActivityOnError() {
-        setResult(Activity.RESULT_CANCELED)
         finish()
     }
 
     fun exitActivityOnSuccess(uri: Uri) {
+        lifecycle.coroutineScope.launch {
+            MediaRepository.mediaAdded(uri)
+        }
         uriOfClickedMedias.add(0,uri)
-        setResult(Activity.RESULT_OK, CameraUtil.getIntentfromFileUris(uriOfClickedMedias))
         afterMediaIsCaptured(arrayListOf(uri))
     }
 

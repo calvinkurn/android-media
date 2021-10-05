@@ -3,7 +3,7 @@ package com.tokopedia.play.broadcaster.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.play.broadcaster.domain.model.GetPDPInfo
+import com.tokopedia.play.broadcaster.domain.model.GetProductV3Response
 import com.tokopedia.play.broadcaster.util.handler.DefaultUseCaseHandler
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -19,10 +19,13 @@ class GetOriginalProductImageUseCase @Inject constructor(
      * we only get the field that we need to reduce and optimize payload
      */
     private val query = """
-       query getPDPInfo(${'$'}productId: Int!){
-          getPDPInfo(productID: ${'$'}productId) {
-            media{
-              URLOriginal
+       query getPDPInfo(${'$'}$PARAMS_PRODUCT_ID: String!){
+          getProductV3(productID: ${'$'}$PARAMS_PRODUCT_ID, 
+            options: {
+              picture: true
+            }) {
+            pictures {
+              urlOriginal
             }
           }
         } 
@@ -33,12 +36,12 @@ class GetOriginalProductImageUseCase @Inject constructor(
         val gqlResponse = DefaultUseCaseHandler(
                 gqlRepository = graphqlRepository,
                 query = query,
-                typeOfT = GetPDPInfo.Response::class.java,
+                typeOfT = GetProductV3Response::class.java,
                 params = params,
                 gqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         ).executeWithRetry()
-        val response = gqlResponse.getData<GetPDPInfo.Response>(GetPDPInfo.Response::class.java)
-        return response.getPdpInfo.mediaList.map { mediaList ->
+        val response = gqlResponse.getData<GetProductV3Response>(GetProductV3Response::class.java)
+        return response.getProductV3.pictures.map { mediaList ->
             mediaList.urlOriginal
         }.toList()
     }
@@ -46,7 +49,7 @@ class GetOriginalProductImageUseCase @Inject constructor(
     companion object {
         private const val PARAMS_PRODUCT_ID = "productId"
 
-        fun createParams(productId: Long) =
+        fun createParams(productId: String) =
                 mapOf(PARAMS_PRODUCT_ID to productId)
     }
 }

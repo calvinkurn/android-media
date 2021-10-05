@@ -10,16 +10,16 @@ import com.tokopedia.play.view.uimodel.recom.PlayLikeBubbleConfig
 sealed class PlayViewerNewUiEvent
 
 data class ShowWinningDialogEvent(val userImageUrl: String, val dialogTitle: String, val dialogSubtitle: String) : PlayViewerNewUiEvent()
-data class ShowCoachMarkWinnerEvent(val title: String, val subtitle: String) : PlayViewerNewUiEvent()
-data class OpenPageEvent(val applink: String, val params: List<String> = emptyList(), val requestCode: Int? = null, val pipMode: Boolean = false) : PlayViewerNewUiEvent()
-sealed class ShowToasterEvent : PlayViewerNewUiEvent() {
-    abstract val message: UiString
 
-    data class Info(override val message: UiString) : ShowToasterEvent()
-    data class Error(override val message: UiString) : ShowToasterEvent()
-}
+data class ShowCoachMarkWinnerEvent(val title: String, val subtitle: String) : PlayViewerNewUiEvent()
 object HideCoachMarkWinnerEvent : PlayViewerNewUiEvent()
 data class RemindMeEvent(val message: UiString, val isSuccess: Boolean): PlayViewerNewUiEvent()
+
+data class OpenPageEvent(val applink: String, val params: List<String> = emptyList(), val requestCode: Int? = null, val pipMode: Boolean = false) : PlayViewerNewUiEvent()
+
+data class ShowInfoEvent(val message: UiString) : PlayViewerNewUiEvent()
+data class ShowErrorEvent(val error: Throwable, val errMessage: UiString? = null) : PlayViewerNewUiEvent()
+
 data class CopyToClipboardEvent(val content: String) : PlayViewerNewUiEvent()
 
 /**

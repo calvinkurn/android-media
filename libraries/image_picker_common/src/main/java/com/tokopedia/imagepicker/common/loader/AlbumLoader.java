@@ -12,6 +12,7 @@ import android.provider.MediaStore;
 import androidx.loader.content.CursorLoader;
 
 import com.tokopedia.imagepicker.common.GalleryType;
+import com.tokopedia.imagepicker.common.RemoteConfigInstance;
 import com.tokopedia.imagepicker.common.internal.entity.Album;
 import com.tokopedia.imagepicker.common.model.MimeType;
 
@@ -32,6 +33,7 @@ public class AlbumLoader extends CursorLoader {
     private static final String COLUMN_BUCKET_DISPLAY_NAME = "bucket_display_name";
     public static final String COLUMN_URI = "uri";
     public static final String COLUMN_COUNT = "count";
+    public static final String REMOTE_CONFIG_ALBUM_LOAD_NEW = "android_album_load_new";
     private static final Uri QUERY_URI = MediaStore.Files.getContentUri("external");
 
     private static final String[] COLUMNS = {
@@ -56,18 +58,22 @@ public class AlbumLoader extends CursorLoader {
             MediaStore.MediaColumns.MIME_TYPE};
 
     // === params for showSingleMediaType: false ===
+    private static final String SELECTION_NO_MEDIA =
+            MediaStore.MediaColumns.SIZE + ">0"
+                    + " AND " + AlbumMediaLoader.BUCKET_DISPLAY_NAME + " NOT LIKE '" + TOKOPEDIA_FOLDER_PREFIX + " %' "
+                    + ") GROUP BY (bucket_id";
     private static final String SELECTION =
             "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
                     + " OR "
                     + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?)"
-                    + " AND " + MediaStore.MediaColumns.SIZE + ">0"
-                    + " AND " + AlbumMediaLoader.BUCKET_DISPLAY_NAME + " NOT LIKE '"+TOKOPEDIA_FOLDER_PREFIX+" %' "
-                    + ") GROUP BY (bucket_id";
+                    + " AND " + SELECTION_NO_MEDIA;
+    private static final String SELECTION_29_NO_MEDIA =
+            MediaStore.MediaColumns.SIZE + ">0";
     private static final String SELECTION_29 =
             "(" + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
                     + " OR "
                     + MediaStore.Files.FileColumns.MEDIA_TYPE + "=?)"
-                    + " AND " + MediaStore.MediaColumns.SIZE + ">0";
+                    + " AND " + SELECTION_29_NO_MEDIA;
     private static final String[] SELECTION_ARGS = {
             String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE),
             String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO),
@@ -75,15 +81,19 @@ public class AlbumLoader extends CursorLoader {
     // =============================================
 
     // === params for showSingleMediaType: true ===
+    private static final String SELECTION_FOR_SINGLE_MEDIA_TYPE_NO_MEDIA =
+            MediaStore.MediaColumns.SIZE + ">0"
+                    + " AND " + AlbumMediaLoader.BUCKET_DISPLAY_NAME + " NOT LIKE '" + TOKOPEDIA_FOLDER_PREFIX + " %' "
+                    + ") GROUP BY (bucket_id";
     private static final String SELECTION_FOR_SINGLE_MEDIA_TYPE =
             MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                    + " AND " + MediaStore.MediaColumns.SIZE + ">0"
-                    + " AND " + AlbumMediaLoader.BUCKET_DISPLAY_NAME + " NOT LIKE '"+TOKOPEDIA_FOLDER_PREFIX+" %' "
-                    + ") GROUP BY (bucket_id";
+                    + " AND " + SELECTION_FOR_SINGLE_MEDIA_TYPE_NO_MEDIA;
+    private static final String SELECTION_FOR_SINGLE_MEDIA_TYPE_29_NO_MEDIA =
+            MediaStore.MediaColumns.SIZE + ">0"
+                    + " AND " + AlbumMediaLoader.BUCKET_DISPLAY_NAME + " NOT LIKE '" + TOKOPEDIA_FOLDER_PREFIX + " %' ";
     private static final String SELECTION_FOR_SINGLE_MEDIA_TYPE_29 =
             MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                    + " AND " + MediaStore.MediaColumns.SIZE + ">0"
-                    + " AND " + AlbumMediaLoader.BUCKET_DISPLAY_NAME + " NOT LIKE '"+TOKOPEDIA_FOLDER_PREFIX+" %' ";
+                    + " AND " + SELECTION_FOR_SINGLE_MEDIA_TYPE_29_NO_MEDIA;
 
     private static String[] getSelectionArgsForSingleMediaType(int mediaType) {
         return new String[]{String.valueOf(mediaType)};
@@ -91,17 +101,22 @@ public class AlbumLoader extends CursorLoader {
     // =============================================
 
     // === params for showSingleMediaType: true ===
+    private static final String SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE_NO_MEDIA =
+            MediaStore.MediaColumns.SIZE + ">0"
+                    + " AND " + MediaStore.MediaColumns.MIME_TYPE + "=?"
+                    + " AND " + AlbumMediaLoader.BUCKET_DISPLAY_NAME + " NOT LIKE '" + TOKOPEDIA_FOLDER_PREFIX + " %' "
+                    + ") GROUP BY (bucket_id";
     private static final String SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE =
             MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                    + " AND " + MediaStore.MediaColumns.SIZE + ">0"
+                    + " AND " + SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE_NO_MEDIA;
+    private static final String SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE_29_NO_MEDIA =
+            MediaStore.MediaColumns.SIZE + ">0"
                     + " AND " + MediaStore.MediaColumns.MIME_TYPE + "=?"
-                    + " AND " + AlbumMediaLoader.BUCKET_DISPLAY_NAME + " NOT LIKE '"+TOKOPEDIA_FOLDER_PREFIX+" %' "
-                    + ") GROUP BY (bucket_id";
+                    + " AND " + AlbumMediaLoader.BUCKET_DISPLAY_NAME + " NOT LIKE '" + TOKOPEDIA_FOLDER_PREFIX + " %' ";
+
     private static final String SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE_29 =
             MediaStore.Files.FileColumns.MEDIA_TYPE + "=?"
-                    + " AND " + MediaStore.MediaColumns.SIZE + ">0"
-                    + " AND " + MediaStore.MediaColumns.MIME_TYPE + "=?"
-                    + " AND " + AlbumMediaLoader.BUCKET_DISPLAY_NAME + " NOT LIKE '"+TOKOPEDIA_FOLDER_PREFIX+" %' ";
+                    + " AND " + SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE_29_NO_MEDIA;
 
     private static String[] getSelectionArgsForSingleMediaGifType(int mediaType) {
         return new String[]{String.valueOf(mediaType), "image/gif"};
@@ -110,10 +125,10 @@ public class AlbumLoader extends CursorLoader {
 
     private static final String BUCKET_ORDER_BY = "datetaken DESC";
 
-    public AlbumLoader(Context context, String selection, String[] selectionArgs) {
+    public AlbumLoader(Context context, Uri uri, String selection, String[] selectionArgs) {
         super(
                 context,
-                QUERY_URI,
+                uri,
                 beforeAndroidTen() ? PROJECTION : PROJECTION_29,
                 selection,
                 selectionArgs,
@@ -122,6 +137,15 @@ public class AlbumLoader extends CursorLoader {
     }
 
     public static CursorLoader newInstance(Context context, GalleryType galleryType) {
+        boolean useNewLogic = RemoteConfigInstance.INSTANCE.getRemoteConfig(context).getBoolean(REMOTE_CONFIG_ALBUM_LOAD_NEW, true);
+        if (useNewLogic) {
+            return newInstanceNew(context, galleryType);
+        } else {
+            return newInstanceOld(context, galleryType);
+        }
+    }
+
+    public static CursorLoader newInstanceOld(Context context, GalleryType galleryType) {
         String selection;
         String[] selectionArgs;
         if (galleryType == GalleryType.GIF_ONLY) {
@@ -143,9 +167,54 @@ public class AlbumLoader extends CursorLoader {
             selection = beforeAndroidTen() ? SELECTION : SELECTION_29;
             selectionArgs = SELECTION_ARGS;
         }
-        return new AlbumLoader(context, selection, selectionArgs);
+        return new AlbumLoader(context, QUERY_URI, selection, selectionArgs);
     }
 
+    public static CursorLoader newInstanceNew(Context context, GalleryType galleryType) {
+        String selection;
+        String[] selectionArgs;
+        Uri uri = QUERY_URI;
+        if (galleryType == GalleryType.GIF_ONLY) {
+            uri = getUriImageCheckOS();
+            selection = beforeAndroidTen()
+                    ? SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE_NO_MEDIA : SELECTION_FOR_SINGLE_MEDIA_GIF_TYPE_29_NO_MEDIA;
+            selectionArgs = new String[]{"image/gif"};
+        } else if (galleryType == GalleryType.IMAGE_ONLY) {
+            uri = getUriImageCheckOS();
+            selection = beforeAndroidTen()
+                    ? SELECTION_FOR_SINGLE_MEDIA_TYPE_NO_MEDIA : SELECTION_FOR_SINGLE_MEDIA_TYPE_29_NO_MEDIA;
+            selectionArgs = new String[]{};
+        } else if (galleryType == GalleryType.VIDEO_ONLY) {
+            selection = beforeAndroidTen()
+                    ? SELECTION_FOR_SINGLE_MEDIA_TYPE_NO_MEDIA : SELECTION_FOR_SINGLE_MEDIA_TYPE_29_NO_MEDIA;
+            selectionArgs = new String[]{};
+            uri = getUriVideoCheckOS();
+        } else {
+            selection = beforeAndroidTen() ? SELECTION : SELECTION_29;
+            selectionArgs = SELECTION_ARGS;
+        }
+        return new AlbumLoader(context, uri, selection, selectionArgs);
+    }
+
+    private static Uri getUriImageCheckOS() {
+        Uri uri;
+        if (beforeAndroidTen()) {
+            uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        } else {
+            uri = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+        }
+        return uri;
+    }
+
+    private static Uri getUriVideoCheckOS() {
+        Uri uri;
+        if (beforeAndroidTen()) {
+            uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+        } else {
+            uri = MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
+        }
+        return uri;
+    }
 
 
     @Override
@@ -269,8 +338,7 @@ public class AlbumLoader extends CursorLoader {
             contentUri = MediaStore.Files.getContentUri("external");
         }
 
-        Uri uri = ContentUris.withAppendedId(contentUri, id);
-        return uri;
+        return ContentUris.withAppendedId(contentUri, id);
     }
 
     @Override

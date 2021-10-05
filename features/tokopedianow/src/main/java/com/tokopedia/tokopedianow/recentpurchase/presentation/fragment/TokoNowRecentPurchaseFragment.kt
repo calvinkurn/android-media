@@ -60,7 +60,6 @@ import com.tokopedia.tokopedianow.recentpurchase.presentation.viewmodel.TokoNowR
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_tokopedianow_home.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.*
