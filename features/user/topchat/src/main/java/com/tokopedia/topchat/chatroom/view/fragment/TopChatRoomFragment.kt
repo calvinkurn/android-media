@@ -2364,7 +2364,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         ) { _, _ ->
             replyCompose?.composeReplyData(msg, true)
         }
-        bs.show(childFragmentManager, "CHAT_BUBBLE_MENU")
+        bs.show(childFragmentManager, BS_CHAT_BUBBLE_MENU)
     }
 
     override fun getUserName(senderId: String): String {
@@ -2387,6 +2387,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         const val PARAM_RATING = "rating"
         const val PARAM_UTM_SOURCE = "utmSource"
         const val REVIEW_SOURCE_TOPCHAT = "android_topchat"
+        const val BS_CHAT_BUBBLE_MENU = "CHAT_BUBBLE_MENU"
         private const val EXTRA_SOURCE_STOCK = "chat"
         private const val MAX_SIZE_IMAGE_PICKER = 20360
 
