@@ -34,7 +34,7 @@ abstract class BaseGqlUseCase<T : Any> : UseCase<T>() {
             .build()
     }
 
-    private fun getCacheOnlyCacheStrategy(): GraphqlCacheStrategy {
+    private fun getCacheFirstCacheStrategy(): GraphqlCacheStrategy {
         return GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
             .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
             .build()
@@ -42,7 +42,7 @@ abstract class BaseGqlUseCase<T : Any> : UseCase<T>() {
 
     fun getCacheStrategy(useCache: Boolean): GraphqlCacheStrategy {
         return if (useCache) {
-            getCacheOnlyCacheStrategy()
+            getCacheFirstCacheStrategy()
         } else {
             getAlwaysCloudCacheStrategy()
         }

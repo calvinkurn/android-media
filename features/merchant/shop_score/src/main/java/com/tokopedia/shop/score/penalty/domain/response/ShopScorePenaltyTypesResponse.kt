@@ -18,7 +18,7 @@ data class ShopScorePenaltyTypes(
         val description: String = "",
         @Expose
         @SerializedName("id")
-        val id: Int = 0,
+        val id: String = "0",
         @Expose
         @SerializedName("name")
         val name: String = "",

@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.ACTIVE_PENALTY_DETAIL
 import com.tokopedia.shop.score.common.ShopScoreConstant.FINISHED_IN
@@ -145,7 +146,7 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
     private fun mapToSortFilterPenalty(penaltyTypes: List<ShopScorePenaltyTypes.Result>, typeId: Int): List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper> {
         return mutableListOf<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>().apply {
             penaltyTypes.map {
-                add(ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper(title = it.name, isSelected = it.id == typeId, idFilter = it.id))
+                add(ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper(title = it.name, isSelected = it.id == typeId.toString(), idFilter = it.id.toIntOrZero()))
             }
         }
     }
@@ -262,7 +263,7 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
     private fun mapToChipsTypePenaltyFilter(penaltyTypes: List<ShopScorePenaltyTypes.Result>, typeId: Int): List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel> {
         return mutableListOf<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>().apply {
             penaltyTypes.map {
-                add(PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(it.name, isSelected = it.id == typeId, value = it.id))
+                add(PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(it.name, isSelected = it.id == typeId.toString(), value = it.id.toIntOrZero()))
             }
         }
     }
