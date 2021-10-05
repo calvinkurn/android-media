@@ -24,7 +24,6 @@ class DealsBottomSheetNoInternetConnection {
             }
         }
         bottomSheet.setOnDismissListener {
-            bottomSheet.dismiss()
             listener.onDismissBottomsheet()
         }
         bottomSheet.setChild(binding.root)
