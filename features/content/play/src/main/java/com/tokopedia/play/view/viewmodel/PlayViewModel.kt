@@ -1556,9 +1556,7 @@ class PlayViewModel @Inject constructor(
             _observableUserWinnerStatus.value?.let {
                 handleUserWinnerStatus(it)
             } ?: kotlin.run {
-                Log.d("<LOG>", "waitingDuration: ${activeInteractive.endGameDelayInMs}")
                 delay(activeInteractive.endGameDelayInMs)
-                Log.d("<LOG>", "done")
                 repo.setFinished(activeInteractiveId)
                 handleUserWinnerStatus(null)
             }
@@ -1566,6 +1564,11 @@ class PlayViewModel @Inject constructor(
     }
 
     private suspend fun handleUserWinnerStatus(winnerStatus: PlayUserWinnerStatusUiModel?) {
+        fun setNoInteractive() {
+            if(_interactive.value is PlayInteractiveUiState.Finished)
+                _interactive.value = PlayInteractiveUiState.NoInteractive
+        }
+
         winnerStatus?.let {
             val activeInteractiveId = repo.getActiveInteractiveId() ?: return
             val isUserJoined = repo.hasJoined(activeInteractiveId)
@@ -1577,13 +1580,17 @@ class PlayViewModel @Inject constructor(
                 _uiEvent.emit(
                     if(winnerStatus.userId.toString() == userId)
                         ShowWinningDialogEvent(winnerStatus.imageUrl, winnerStatus.winnerTitle, winnerStatus.winnerText)
-                    else
+                    else {
+                        Log.d("<LOG>", "Loser")
                         ShowCoachMarkWinnerEvent(winnerStatus.loserTitle, winnerStatus.loserText)
+                    }
                 )
             }
+            else {
+                setNoInteractive()
+            }
         } ?: kotlin.run {
-            if(_interactive.value is PlayInteractiveUiState.Finished)
-                _interactive.value = PlayInteractiveUiState.NoInteractive
+            setNoInteractive()
         }
 
         _leaderboardUserBadgeState.value = true
