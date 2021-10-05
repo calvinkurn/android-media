@@ -62,16 +62,16 @@ class RecommendationViewModel @Inject constructor(
                         ))
                 if (result.isNotEmpty()) {
                     val recomWidget = result[0]
-//                    _getRecommendationLiveData.postValue(recomWidget.asSuccess())
-                    if (recomWidget.recommendationItemList.isNotEmpty()) {
-                        onSuccess.invoke(recomWidget)
-                    } else {
-                        onError.invoke(MessageErrorException("empty list"))
-                    }
+                    _getRecommendationLiveData.postValue(recomWidget.asSuccess())
+//                    if (recomWidget.recommendationItemList.isNotEmpty()) {
+//                        onSuccess.invoke(recomWidget)
+//                    } else {
+//                        onError.invoke(MessageErrorException("empty list"))
+//                    }
                 }
             }) {
-//                _getRecommendationLiveData.postValue(it.asFail())
-                onError.invoke(it)
+                _getRecommendationLiveData.postValue(it.asFail())
+//                onError.invoke(it)
             }
         }
     }

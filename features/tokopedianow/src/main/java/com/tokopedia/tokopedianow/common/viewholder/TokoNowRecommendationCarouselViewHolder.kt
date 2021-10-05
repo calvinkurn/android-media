@@ -159,7 +159,7 @@ class TokoNowRecommendationCarouselViewHolder(
     }
 
     override fun onChannelWidgetEmpty() {
-
+        recommendationCarouselWidgetView.gone()
     }
 
     override fun onWidgetFail(pageName: String, e: Throwable) {

@@ -166,7 +166,6 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             this.widgetListener = widgetListener
             this.scrollToPosition = scrollToPosition
             this.pageName = pageName
-            initVar()
             bindTemporaryHeader(tempHeaderName)
             bindWidgetWithPageName(
                 pageName = pageName,
@@ -509,13 +508,21 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         lifecycleOwner?.let {owner ->
             viewModel?.getRecommendationLiveData?.observe(owner, Observer {
                 it.doSuccessOrFail({ recom ->
-                    bindWidgetWithData(RecommendationCarouselData(
-                            recommendationData = recom.data,
-                            state = STATE_READY,
-                            isUsingWidgetViewModel = true
-                    ))
+                    if (recom.data.pageName == pageName) {
+                        if (recom.data.recommendationItemList.isNotEmpty()) {
+                            bindWidgetWithData(
+                                RecommendationCarouselData(
+                                    recommendationData = recom.data,
+                                    state = STATE_READY,
+                                    isUsingWidgetViewModel = true
+                                )
+                            )
+                        } else {
+                            widgetListener?.onChannelWidgetEmpty()
+                        }
+                    }
                 }, { throwable ->
-                    widgetListener?.onWidgetFail(pageName = pageName, Exception(throwable))
+                    widgetListener?.onWidgetFail(pageName = pageName, throwable)
                 })
             })
         }
