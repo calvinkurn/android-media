@@ -9,7 +9,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
-class GetInvoiceUseCase @Inject constructor(
+class AttachInvoiceUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatcher
 ): CoroutineUseCase<Map<String, Any>, GetInvoiceResponse>(dispatcher) {

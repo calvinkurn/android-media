@@ -2,11 +2,11 @@ package com.tokopedia.attachinvoice.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.attachinvoice.data.GetInvoiceResponse
 import com.tokopedia.attachinvoice.data.Invoice
-import com.tokopedia.attachinvoice.usecase.GetInvoiceUseCase
+import com.tokopedia.attachinvoice.usecase.AttachInvoiceUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -15,9 +15,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class AttachInvoiceViewModel @Inject constructor(
-        private val getInvoiceUseCase: GetInvoiceUseCase,
-        private val dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+    private val attachInvoiceUseCase: AttachInvoiceUseCase,
+    dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.io) {
 
     companion object {
         private val paramMsgId = "msgId"
@@ -31,7 +31,7 @@ class AttachInvoiceViewModel @Inject constructor(
         if (messageId.isEmpty()) return
         launchCatchError(block = {
             val param = generateParams(msgId = messageId.toInt(), page = page)
-            val result = getInvoiceUseCase(param)
+            val result = attachInvoiceUseCase(param)
             onSuccessGetInvoice(result)
         }, onError = {
             onErrorGetInvoice(it)
