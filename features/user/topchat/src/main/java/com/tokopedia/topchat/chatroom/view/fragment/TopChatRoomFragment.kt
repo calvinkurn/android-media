@@ -95,6 +95,7 @@ import com.tokopedia.topchat.chatroom.view.activity.TopchatReportWebViewActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
+import com.tokopedia.topchat.chatroom.view.adapter.util.CenterSmoothScroller
 import com.tokopedia.topchat.chatroom.view.adapter.util.LoadMoreTopBottomScrollListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
@@ -209,6 +210,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var sendButtontextWatcher: SendButtonTextWatcher? = null
     protected var topchatViewState: TopChatViewStateImpl? = null
     private var uploadImageBroadcastReceiver: BroadcastReceiver? = null
+    private var smoothScroller: CenterSmoothScroller? = null
 
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var chatBoxPadding: View? = null
@@ -228,6 +230,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         presenter.attachView(this)
         initFireBase()
         registerUploadImageReceiver()
+        initSmoothScroller()
+    }
+
+    private fun initSmoothScroller() {
+        smoothScroller = CenterSmoothScroller(context)
     }
 
     override fun onCreateView(
@@ -2367,7 +2374,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun goToBubble(localId: String, replyTimeMillis: String) {
         val bubblePosition = adapter.getBubblePosition(localId)
         if (bubblePosition != RecyclerView.NO_POSITION) {
-            rv?.smoothScrollToPosition(bubblePosition)
+            smoothScroller?.targetPosition = bubblePosition
+            rvLayoutManager?.startSmoothScroll(smoothScroller)
         } else {
             setupBeforeReplyTime(replyTimeMillis)
             resetItemList()
