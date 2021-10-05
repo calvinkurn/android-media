@@ -158,10 +158,10 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
         })
     }
 
-    fun getUriOfSelectedMedia(imageSize: Int, map: Map<ImageAdapterData, ZoomInfo>) {
+    fun getUriOfSelectedMedia(imageSize: Int, pairList: List<Pair<ImageAdapterData, ZoomInfo>>) {
         launchCatchError(block = {
             selectedMediaUriLiveData.postValue(LiveDataResult.loading())
-            val uriList = cropUseCase.cropPhotos(app, imageSize, map)
+            val uriList = cropUseCase.cropPhotos(app, imageSize, pairList)
             selectedMediaUriLiveData.postValue(LiveDataResult.success(uriList))
         }, onError = {
             selectedMediaUriLiveData.postValue(LiveDataResult.error(it))

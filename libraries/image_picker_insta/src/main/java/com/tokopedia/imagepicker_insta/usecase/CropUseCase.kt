@@ -14,19 +14,19 @@ import kotlin.math.roundToInt
 
 class CropUseCase @Inject constructor() {
 
-    suspend fun cropPhotos(context: Context, imageSize: Int, map: Map<ImageAdapterData, ZoomInfo>) :List<Uri>{
+    suspend fun cropPhotos(context: Context, imageSize: Int, pairList: List<Pair<ImageAdapterData, ZoomInfo>>) :List<Uri>{
         val uriList = arrayListOf<Uri>()
-        map.forEach {
-            if (it.value.hasChanged()) {
-                val asset = it.key.asset
+        pairList.forEach {
+            if (it.second.hasChanged()) {
+                val asset = it.first.asset
                 if (asset is PhotosData) {
                     val drawable = Glide.with(context)
                         .asBitmap()
                         .load(asset.contentUri)
-                        .apply(RequestOptions().override(it.value.bmpWidth!!,it.value.bmpHeight!!))
+                        .apply(RequestOptions().override(it.second.bmpWidth!!,it.second.bmpHeight!!))
                         .submit()
                         .get()
-                    val bmp = createTempBitmap(drawable, it.value, imageSize)
+                    val bmp = createTempBitmap(drawable, it.second, imageSize)
                     val file = CameraUtil.createMediaFile(context, isImage = true, storeInCache = true)
                     val fos = file.outputStream()
                     bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos)
@@ -34,10 +34,10 @@ class CropUseCase @Inject constructor() {
                     fos.close()
                     uriList.add(Uri.fromFile(file))
                 } else {
-                    uriList.add(it.key.asset.contentUri)
+                    uriList.add(it.first.asset.contentUri)
                 }
             } else {
-                uriList.add(it.key.asset.contentUri)
+                uriList.add(it.first.asset.contentUri)
             }
         }
         return uriList

@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.imagepicker_insta.*
 import com.tokopedia.imagepicker_insta.activity.CameraActivity
+import com.tokopedia.imagepicker_insta.activity.DummyActivity
 import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity
 import com.tokopedia.imagepicker_insta.common.ImagePickerRouter.DEFAULT_MULTI_SELECT_LIMIT
 import com.tokopedia.imagepicker_insta.common.BundleData
@@ -105,20 +106,22 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     private fun proceedNextStep() {
-        val selectedUris = arrayListOf<Uri>()
+        val selectedImageAdapterData = arrayListOf<ImageAdapterData>()
         if (!imageAdapter.isSelectedPositionsEmpty()) {
             imageAdapter.selectedPositionMap.keys.forEach {
-                selectedUris.add(it.asset.contentUri)
+                selectedImageAdapterData.add(it)
             }
         } else if (selectedMediaView.imageAdapterData != null) {
-            selectedUris.add(selectedMediaView.imageAdapterData!!.asset.contentUri)
+            selectedImageAdapterData.add(selectedMediaView.imageAdapterData!!)
         }
 
-        if (!selectedUris.isNullOrEmpty()) {
-            val filteredResults = zoomImageAdapterDataMap.filter {
-                selectedUris.contains(it.key.asset.contentUri)
+        if (!selectedImageAdapterData.isNullOrEmpty()) {
+            val filteredResults = arrayListOf<Pair<ImageAdapterData,ZoomInfo>>()
+            selectedImageAdapterData.forEach {
+                if (zoomImageAdapterDataMap[it]!=null) {
+                    filteredResults.add(Pair(it,zoomImageAdapterDataMap[it]!!))
+                }
             }
-
             viewModel.getUriOfSelectedMedia(selectedMediaView.width, filteredResults)
         } else {
             showToast(getString(R.string.imagepicker_insta_samf), Toaster.TYPE_NORMAL)
