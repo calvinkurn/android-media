@@ -38,6 +38,7 @@ class UpgradePmProWidget(
     companion object {
         val RES_LAYOUT = R.layout.widget_upgrade_pm_pro
         private const val THIRTY_DAYS = 30
+        private const val ADD_UNTIL_TUESDAY = 1
     }
 
     private val binding: WidgetUpgradePmProBinding? by viewBinding()
@@ -62,14 +63,16 @@ class UpgradePmProWidget(
                         tvPmUpgradePmProDesc.hide()
                         tvPmUpgradeBenefitDescription.text =
                             MethodChecker.fromHtml(
-                                getString(R.string.pm_desc_new_seller_eligible_benefit_package))
+                                getString(R.string.pm_desc_new_seller_eligible_benefit_package)
+                            )
                     } else {
                         tvPmUpgradePmProTitle.text =
                             getString(R.string.pm_title_new_seller_not_eligible_after_30_days)
                         tvPmUpgradePmProDesc.hide()
                         tvPmUpgradeBenefitDescription.text =
                             MethodChecker.fromHtml(
-                                getString(R.string.pm_desc_new_seller_not_eligible_benefit_package))
+                                getString(R.string.pm_desc_new_seller_not_eligible_benefit_package)
+                            )
                         hidePmProUpgradeSection()
                     }
                 } else {
@@ -92,7 +95,8 @@ class UpgradePmProWidget(
         return try {
             val date = Calendar.getInstance(GoldMerchantUtil.getLocale())
             val diffDays = (THIRTY_DAYS - shopAge)
-            val targetDays = GoldMerchantUtil.getNNextDaysBasedOnFirstMonday(diffDays.toInt())
+            val targetDays =
+                GoldMerchantUtil.getNNextDaysBasedOnFirstMonday(diffDays.toInt()) + ADD_UNTIL_TUESDAY
             date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) + targetDays)
             GoldMerchantUtil.format(date.timeInMillis, PATTERN_DATE_TEXT)
         } catch (e: ParseException) {
