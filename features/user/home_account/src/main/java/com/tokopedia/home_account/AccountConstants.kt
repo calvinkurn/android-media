@@ -240,13 +240,11 @@ object AccountConstants {
         const val OVO = "ovo"
         const val GOPAY = "gopay"
         const val GOPAYLATER = "gopaylater"
-        const val GOPAYPOINTS = "gopaypoints"
         const val TOKOPOINT = "tokopoints"
         const val SALDO = "saldo"
         const val CO_BRAND_CC = "cobrandcc"
         const val REKSADANA = "reksadana"
         const val EMAS = "emas"
         const val PAYLATER = "paylater"
-        const val TOKOPEDIA_CARD = "tokopediacard"
     }
 }

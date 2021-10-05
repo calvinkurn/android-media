@@ -19,6 +19,7 @@ import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLI
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_QUICK_FILTER
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_SEARCH_BAR
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_SEMUA_KATEGORI
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_VIEW_ALL_ON_TOKONOW_CLP_RECOMMENDATION
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.IMPRESSION_BANNER
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.IMPRESSION_ON_PAST_PURCHASE_WIDGET
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.IMPRESSION_PRODUCT
@@ -109,6 +110,7 @@ object CategoryTracking {
         const val IMPRESSION_ON_PAST_PURCHASE_WIDGET = "impression on past purchase widget"
         const val CLICK_PRODUCT_ON_PAST_PURCHASE_WIDGET = "click product on past purchase widget"
         const val CLICK_ATC_ON_PAST_PURCHASE_WIDGET = "click atc on past purchase widget"
+        const val CLICK_VIEW_ALL_ON_TOKONOW_CLP_RECOMMENDATION = "click view all on tokonow clp recommendation"
     }
 
     object Category {
@@ -604,4 +606,18 @@ object CategoryTracking {
             it["shop_name"] = ""
             it["shop_type"] = ""
         }
+
+    fun sendRecommendationSeeAllClickEvent(categoryIdTracking: String) {
+        sendGeneralEvent(
+            DataLayer.mapOf(
+                EVENT, EVENT_CLICK_TOKONOW,
+                EVENT_ACTION, CLICK_VIEW_ALL_ON_TOKONOW_CLP_RECOMMENDATION,
+                EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
+                EVENT_LABEL, categoryIdTracking,
+                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+            )
+        )
+    }
+
 }

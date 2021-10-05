@@ -49,6 +49,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.*
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_TRADEIN_PDP
+import com.tokopedia.product.detail.common.bottomsheet.TokoMartEducationalInformationBottomSheet
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
@@ -910,7 +911,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                     ?: ""
 
             val bottomSheet = if (isTokoNow) {
-                ProductDetailCommonBottomSheetBuilder.getUspTokoNowBottomSheet(it)
+                TokoMartEducationalInformationBottomSheet()
             } else {
                 ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(it, boImageUrl, uspImageUrl)
             }

@@ -16,14 +16,12 @@ import com.tokopedia.pdpsimulation.common.di.component.DaggerPdpSimulationCompon
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.presentation.fragment.PdpSimulationFragment
 import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
 
 class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationComponent> {
 
     private  val pdpSimulationComponent: PdpSimulationComponent by lazy{ initInjector()}
     val REQUEST_CODE_LOGIN = 123
 
-    @Inject
     lateinit var userSession: UserSessionInterface
 
 
@@ -76,21 +74,27 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
     /**
      * This method is to restart the activity
      */
-    private fun restartActivity()
-    {
+    private fun restartActivity() {
         val intent = intent
         finish()
         startActivity(intent)
     }
 
+    fun handleActivityResult() {
+        if (!::userSession.isInitialized) {
+            userSession = UserSession(this)
+        }
+        if (userSession.isLoggedIn)
+            restartActivity()
+        else
+            finish()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when(requestCode) {
+        when (requestCode) {
             REQUEST_CODE_LOGIN -> {
-                if (userSession.isLoggedIn)
-                    restartActivity()
-                else
-                    finish()
+                handleActivityResult()
             }
         }
     }
