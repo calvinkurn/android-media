@@ -136,6 +136,8 @@ data class Child(
         @Expose val originalPrice: Double = 0.0,
         @SerializedName("stock")
         @Expose val stock: Int = 0,
+        @SerializedName("isBuyable")
+        @Expose val isBuyable: Boolean = false,
         @SerializedName("optionID")
         @Expose val optionIds: List<Long> = listOf()
 ): Parcelable
