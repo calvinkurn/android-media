@@ -106,7 +106,7 @@ class ShopSettingsNotesActivity : BaseSimpleActivity(),
         }
     }
 
-    fun showFragment(tag: String): Boolean {
+    private fun showFragment(tag: String): Boolean {
         val f = supportFragmentManager.findFragmentByTag(tag)
         if (f == null) {
             return false

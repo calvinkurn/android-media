@@ -23,6 +23,7 @@ import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.view.adapter.viewholder.MenuViewHolder
 import com.tokopedia.shop.settings.common.view.bottomsheet.MenuBottomSheet
+import com.tokopedia.shop.settings.databinding.FragmentNoteListBinding
 import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
 import com.tokopedia.shop.settings.notes.view.activity.ShopSettingsNotesAddEditActivity
 import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteAdapter
@@ -30,6 +31,7 @@ import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteFactory
 import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingNoteListPresenter
 import com.tokopedia.shop.settings.notes.view.viewholder.ShopNoteViewHolder
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 
@@ -38,6 +40,8 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
 
     @Inject
     lateinit var shopSettingNoteListPresenter: ShopSettingNoteListPresenter
+
+    private var binding by autoClearedNullable<FragmentNoteListBinding>()
 
     private var shopNoteModels: ArrayList<ShopNoteUiModel>? = null
     private var shopNoteAdapter: ShopNoteAdapter? = null
@@ -54,7 +58,8 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteUiModel, ShopNote
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_note_list, container, false)
+        binding = FragmentNoteListBinding.inflate(inflater, container, false)
+        return binding?.root as View
     }
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view

@@ -7,7 +7,6 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.header.HeaderUnify
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
@@ -16,8 +15,8 @@ import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesAddEditFragment
 
 class ShopSettingsNotesAddEditActivity: BaseSimpleActivity(), HasComponent<ShopSettingsComponent> {
-    var binding : ActivityShopSettingsAddNewBinding? = null
 
+    private var binding : ActivityShopSettingsAddNewBinding? = null
     private var isEdit = false
     private var isReturnablePolicy = false
     private var shopNote = ShopNoteUiModel()
@@ -54,8 +53,7 @@ class ShopSettingsNotesAddEditActivity: BaseSimpleActivity(), HasComponent<ShopS
 
     override fun getParentViewResourceID(): Int = R.id.parent_view
 
-    override fun getComponent() = DaggerShopSettingsComponent.builder().baseAppComponent(
-            (application as BaseMainApplication).getBaseAppComponent()).build()
+    override fun getComponent(): ShopSettingsComponent = DaggerShopSettingsComponent.builder().baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
 
     override fun inflateFragment() {
         val newFragment = newFragment ?: return
@@ -70,7 +68,7 @@ class ShopSettingsNotesAddEditActivity: BaseSimpleActivity(), HasComponent<ShopS
     }
 
     private fun setupToolbar() {
-        findViewById<HeaderUnify>(R.id.header)?.apply {
+        binding?.header?.apply {
             isShowShadow = true
             setSupportActionBar(this)
             actionTextView?.apply {
