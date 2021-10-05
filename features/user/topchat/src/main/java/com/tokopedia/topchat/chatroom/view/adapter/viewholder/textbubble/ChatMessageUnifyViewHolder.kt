@@ -99,9 +99,13 @@ class ChatMessageUnifyViewHolder(
     }
 
     private fun bindLongClick(msg: MessageViewModel) {
-        fxChat?.setOnLongClickListener {
-            commonListener.showMsgMenu(msg)
-            true
+        if (!msg.isBanned()) {
+            fxChat?.setOnLongClickListener {
+                commonListener.showMsgMenu(msg)
+                true
+            }
+        } else {
+            fxChat?.setOnClickListener(null)
         }
     }
 
