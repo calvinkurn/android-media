@@ -16,12 +16,15 @@ import com.tokopedia.pdpsimulation.common.di.component.DaggerPdpSimulationCompon
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.presentation.fragment.PdpSimulationFragment
 import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
+
 
 class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationComponent> {
 
-    private  val pdpSimulationComponent: PdpSimulationComponent by lazy{ initInjector()}
-    val REQUEST_CODE_LOGIN = 123
+    private val pdpSimulationComponent: PdpSimulationComponent by lazy { initInjector() }
+    private val REQUEST_CODE_LOGIN = 123
 
+    @Inject
     lateinit var userSession: UserSessionInterface
 
 
@@ -44,7 +47,10 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
     override fun getNewFragment(): Fragment? {
 
         return if (!userSession.isLoggedIn) {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+            startActivityForResult(
+                RouteManager.getIntent(this, ApplinkConst.LOGIN),
+                REQUEST_CODE_LOGIN
+            )
             null
         } else {
             val bundle = Bundle()
@@ -62,13 +68,12 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
         const val SCREEN_NAME = "PayLater & Cicilan"
     }
 
-     private fun  initInjector() =
-           DaggerPdpSimulationComponent.builder()
-                .baseAppComponent(
-                    (applicationContext as BaseMainApplication)
-                        .baseAppComponent
-                ).build()
-
+    private fun initInjector() =
+        DaggerPdpSimulationComponent.builder()
+            .baseAppComponent(
+                (applicationContext as BaseMainApplication)
+                    .baseAppComponent
+            ).build()
 
 
     /**
@@ -80,24 +85,17 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
         startActivity(intent)
     }
 
-    fun handleActivityResult() {
-        if (!::userSession.isInitialized) {
-            userSession = UserSession(this)
-        }
-        if (userSession.isLoggedIn)
-            restartActivity()
-        else
-            finish()
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_CODE_LOGIN -> {
-                handleActivityResult()
+                if (userSession.isLoggedIn)
+                    restartActivity()
+                else
+                    finish()
             }
         }
     }
 
-    override fun getComponent()= pdpSimulationComponent
+    override fun getComponent() = pdpSimulationComponent
 }
