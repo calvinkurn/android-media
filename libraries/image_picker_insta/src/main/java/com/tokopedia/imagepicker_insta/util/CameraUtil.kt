@@ -10,7 +10,6 @@ import com.tokopedia.imagepicker_insta.activity.CameraActivity
 import com.tokopedia.imagepicker_insta.common.BundleData
 import java.io.File
 import java.io.IOException
-import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -20,19 +19,12 @@ object CameraUtil {
         return "$mediaCount media"
     }
 
-    fun openCamera(weakFragment: WeakReference<Fragment?>?, applinkToNavigateAfterMediaCapture: String?): String? {
-        weakFragment?.get()?.let {
-            if (applinkToNavigateAfterMediaCapture.isNullOrEmpty()) {
-                it.startActivityForResult(
-                    CameraActivity.getIntent(it.requireContext(), applinkToNavigateAfterMediaCapture),
-                    CameraActivity.REQUEST_CODE
-                )
-            } else {
-                it.startActivity(CameraActivity.getIntent(it.requireContext(), applinkToNavigateAfterMediaCapture))
-            }
+    fun openCamera(fragment: Fragment, applinkToNavigateAfterMediaCapture: String?) {
+        if(fragment.context!=null){
+            fragment.startActivity(
+                CameraActivity.getIntent(fragment.requireContext(),
+                    applinkToNavigateAfterMediaCapture))
         }
-        return null
-
     }
 
     @Throws(IOException::class)

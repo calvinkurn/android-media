@@ -1,6 +1,7 @@
 package com.tokopedia.imagepicker_insta.fragment
 
 import android.app.Activity
+import android.content.ContentResolver
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -13,6 +14,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
@@ -26,6 +28,7 @@ import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
 import com.tokopedia.imagepicker_insta.menu.MenuManager
 import com.tokopedia.imagepicker_insta.models.*
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
+import com.tokopedia.imagepicker_insta.mediacapture.MediaRepository
 import com.tokopedia.imagepicker_insta.util.AlbumUtil
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.util.PermissionUtil
@@ -39,7 +42,8 @@ import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
-import java.lang.ref.WeakReference
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 
 class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentContract {
@@ -61,7 +65,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     val folders = arrayListOf<FolderData>()
     val zoomImageAdapterDataMap = mutableMapOf<ImageAdapterData, ZoomInfo>()
 
-    var cameraCaptureFilePath: String? = null
     var selectedFolderText: String? = null
     var mediaLoadingFailed = false
     lateinit var noMediaAvailableText: String
@@ -364,9 +367,8 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     private fun openCamera() {
-        cameraCaptureFilePath = null
-        cameraCaptureFilePath = CameraUtil.openCamera(
-            WeakReference(this),
+        CameraUtil.openCamera(
+            this,
             (activity as? ImagePickerInstaActivity)?.applinkToNavigateAfterMediaCapture
         )
     }
@@ -393,40 +395,50 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     private fun setObservers() {
         viewLifecycleOwner.lifecycle.addObserver(selectedMediaView)
 
+        viewLifecycleOwner.lifecycle.coroutineScope.launch {
+            MediaRepository.getMediaChangeFlow().collect {
+                viewModel.handleFileAddedEvent(arrayListOf(it))
+            }
+        }
+
+        viewLifecycleOwner.lifecycle.coroutineScope.launch {
+            viewModel.photosFlow.collect {
+                when (it.status) {
+                    LiveDataResult.STATUS.LOADING -> {
+                    }
+                    LiveDataResult.STATUS.SUCCESS -> {
+                        updateMediaToUi(it.data)
+                    }
+                    LiveDataResult.STATUS.ERROR -> {
+                        showToast(getString(R.string.imagepicker_insta_utlam), Toaster.TYPE_ERROR)
+                    }
+                }
+            }
+        }
+
+            viewModel.folderFlow.onEach {
+                when (it.status) {
+                    LiveDataResult.STATUS.LOADING -> {
+                    }
+
+                    LiveDataResult.STATUS.SUCCESS -> {
+                        updateFolders(it.data)
+                    }
+                    LiveDataResult.STATUS.ERROR -> {
+                        updateFolders(null)
+                    }
+                }
+            }.launchIn(viewLifecycleOwner.lifecycle.coroutineScope)
+
+
         imageMultiSelect.toggleCallback = { isMultiSelect ->
             if (isMultiSelect) {
                 imageFitCenter.visibility = View.GONE
                 selectedMediaView.lockAspectRatio()
+                ContentResolver.SCHEME_CONTENT
             } else {
                 imageFitCenter.visibility = View.VISIBLE
                 selectedMediaView.unLockAspectRatio()
-            }
-        }
-
-        viewModel.folderLiveData.observe(viewLifecycleOwner) {
-            when (it.status) {
-                LiveDataResult.STATUS.LOADING -> {
-                }
-
-                LiveDataResult.STATUS.SUCCESS -> {
-                    updateFolders(it.data)
-                }
-                LiveDataResult.STATUS.ERROR -> {
-                    updateFolders(null)
-                }
-            }
-        }
-
-        viewModel.photosLiveData.observe(viewLifecycleOwner) {
-            when (it.status) {
-                LiveDataResult.STATUS.LOADING -> {
-                }
-                LiveDataResult.STATUS.SUCCESS -> {
-                    updateMediaToUi(it.data)
-                }
-                LiveDataResult.STATUS.ERROR -> {
-                    showToast(getString(R.string.imagepicker_insta_utlam), Toaster.TYPE_ERROR)
-                }
             }
         }
 
@@ -462,7 +474,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                 }
             }
 
-        imageAdapter.onItemLongClick = { imageAdapterData: ImageAdapterData ->
+        imageAdapter.onItemLongClick = { _: ImageAdapterData ->
             if (!isMultiSelectEnable()) {
                 /**
                  * 1. tell adapter that multiselect is active by doing step 2

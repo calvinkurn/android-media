@@ -37,20 +37,21 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
     @Inject
     lateinit var workerDispatcher: CoroutineDispatcher
 
-    val photosLiveData: MutableLiveData<LiveDataResult<MediaVmMData>> = MutableLiveData()
+    val photosFlow: MutableStateFlow<LiveDataResult<MediaVmMData>> = MutableStateFlow(LiveDataResult.loading())
     val selectedMediaUriLiveData: MutableLiveData<LiveDataResult<List<Uri>>> = MutableLiveData()
+    val folderFlow :MutableStateFlow<LiveDataResult<List<FolderData>>> = MutableStateFlow(LiveDataResult.loading())
+    private val folderDataList = arrayListOf<FolderData>()
+    private val uriSet = HashSet<Uri>()
 
-    val folderDataList = arrayListOf<FolderData>()
-    val uriSet = HashSet<Uri>()
-    val folderLiveData = MutableLiveData<LiveDataResult<List<FolderData>>>()
 
     fun getFolderData() {
         launchCatchError(block = {
             val list = photosUseCase.getFolderData(app)
+            folderDataList.clear()
             folderDataList.addAll(list)
-            folderLiveData.postValue(LiveDataResult.success(folderDataList))
+            folderFlow.emit(LiveDataResult.success(folderDataList))
         }, onError = {
-            folderLiveData.postValue(LiveDataResult.error(it))
+            folderFlow.emit(LiveDataResult.error(it))
         })
     }
 
@@ -83,9 +84,9 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
             if (imageAdapterList.isNotEmpty()) {
                 updateMediaCountInFolders(imageAdapterList.first().asset.contentUri,imageAdapterList.size, AlbumUtil.RECENTS)
                 updateMediaCountInFolders(imageAdapterList.first().asset.contentUri,imageAdapterList.size, StorageUtil.INTERNAL_FOLDER_NAME)
-                folderLiveData.postValue(LiveDataResult.success(folderDataList))
+                folderFlow.emit(LiveDataResult.success(folderDataList))
                 withContext(Dispatchers.Main) {
-                    photosLiveData.value = (
+                    photosFlow.emit (
                             LiveDataResult.success(
                                 MediaVmMData(
                                     MediaUseCaseData(
@@ -132,42 +133,28 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
     fun getMediaByFolderName(folderName: String) {
 
         launchCatchError(block = {
-            withContext(Dispatchers.Main) {
-                photosLiveData.value = (LiveDataResult.loading())
-            }
+            photosFlow.emit(LiveDataResult.loading())
             photosUseCase.getMediaByFolderNameFlow(folderName, app)
                 .collect {
-                    withContext(Dispatchers.Main) {
-                        photosLiveData.value =
-                            (LiveDataResult.success(MediaVmMData(it, folderName)))
-                    }
+                    photosFlow.emit(LiveDataResult.success(MediaVmMData(it, folderName)))
                 }
         }, onError = {
-            withContext(Dispatchers.Main) {
-                photosLiveData.value = (LiveDataResult.error(Exception("Unknown error")))
-            }
-            Timber.e(it)
+                photosFlow.emit(LiveDataResult.error(Exception("Unknown error")))
         })
     }
 
     fun getPhotos() {
 
         launchCatchError(block = {
-            withContext(Dispatchers.Main) {
-                photosLiveData.value = (LiveDataResult.loading())
-            }
+            photosFlow.emit(LiveDataResult.loading())
+
             photosUseCase.getMediaByFolderNameFlow(AlbumUtil.RECENTS, app)
                 .collect {
                     uriSet.addAll(photosUseCase.getUriSetFromImageAdapterData(it.mediaImporterData.imageAdapterDataList))
-                    withContext(Dispatchers.Main) {
-                        photosLiveData.value = (LiveDataResult.success(MediaVmMData(it)))
-                    }
-
+                    photosFlow.emit(LiveDataResult.success(MediaVmMData(it)))
                 }
         }, onError = {
-            withContext(Dispatchers.Main) {
-                photosLiveData.value = (LiveDataResult.error(it))
-            }
+            photosFlow.emit(LiveDataResult.error(it))
         })
     }
 
