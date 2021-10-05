@@ -253,7 +253,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         val isForceDarkModeToggleVisible =
             localCacheHandler.getBoolean(KEY_PREF_DARK_MODE_TOGGLE, false)
 
-        if(isForceDarkModeToggleVisible) {
+        if(isShowDarkMode || isRollenceEnabledDarkMode || isForceDarkModeToggleVisible) {
             settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_DARK_MODE,
                     getString(R.string.title_dark_mode), getString(R.string.subtitle_dark_mode), false,
                     GeneralSettingMenuLabel.LABEL_BETA))
