@@ -56,7 +56,7 @@
     <string name="feed_content_post_tag_text">Lihat Produk</string>
     <string name="feed_content_tag_product_text">Tag Produk</string>
     <string name="feed_content_product_bottom_sheet_name">Yang ada di foto ini</string>
-    <string name="feed_content_caption_text">Tulis keterangan...</string>
+    <string name="feed_content_caption_text">Tulis deskripsi yang menarik, ya!</string>
     <string name="feed_content_post_sebagai">Post sebagai</string>
     <string name="feed_content_dialog_title">Yakin nggak lanjut tag produk?</string>
     <string name="feed_content_dialog_desc">Tag produk akan hilang jika kamu keluar dari halaman ini.</string>

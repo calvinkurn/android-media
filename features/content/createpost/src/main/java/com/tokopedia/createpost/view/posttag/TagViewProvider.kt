@@ -90,7 +90,7 @@ class TagViewProvider {
         parent: ConstraintLayout,
         feedXMediaTagging: FeedXMediaTagging,
         index: Int,
-        bitmap: Bitmap,
+        bitmap: Bitmap?,
         mediaIndex:Int
     ) {
         parent.addView(child)
@@ -284,7 +284,7 @@ class TagViewProvider {
                 else -> child.y = yTapped
             }
 
-            if (child.y < (bitmapCurrentHeight) * 0.70 + greyAreaY) {
+            if (feedXMediaTagging.Y!! < (bitmapCurrentHeight) * 0.70 + greyAreaY) {
                 productTopNotchVisible = true
                 productTagViewTopNotch.visibility = View.VISIBLE
                 productTagViewBottomNotch.visibility = View.GONE
@@ -334,19 +334,25 @@ class TagViewProvider {
     }
 
 
-    private fun calculateGreyAreaX(parent: ConstraintLayout, bitmap: Bitmap): Int {
-        return if (bitmap.width > bitmap.height) {
-            val newBitmapHeight = (parent.height * bitmap.height) / bitmap.width
-            (parent.height - newBitmapHeight) / 2
-        } else
-            0
+    private fun calculateGreyAreaX(parent: ConstraintLayout, bitmap: Bitmap?): Int {
+        bitmap?.let {
+            return if (bitmap.width > bitmap.height) {
+                val newBitmapHeight = (parent.height * bitmap.height) / bitmap.width
+                (parent.height - newBitmapHeight) / 2
+            } else
+                0
+        }
+        return 0
     }
 
-    private fun calculateGreyAreaY(parent: ConstraintLayout, bitmap: Bitmap): Int {
-        return if (bitmap.height > bitmap.width) {
-            val newBitmapHeight = (parent.width * bitmap.width) / bitmap.height
-            (parent.width - newBitmapHeight) / 2
-        } else
-            0
+    private fun calculateGreyAreaY(parent: ConstraintLayout, bitmap: Bitmap?): Int {
+        bitmap?.let {
+            return if (bitmap.height > bitmap.width) {
+                val newBitmapHeight = (parent.width * bitmap.width) / bitmap.height
+                (parent.width - newBitmapHeight) / 2
+            } else
+                0
+        }
+        return 0
     }
 }

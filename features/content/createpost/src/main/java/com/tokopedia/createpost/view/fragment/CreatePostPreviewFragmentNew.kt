@@ -602,7 +602,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                     if (view != null) {
                         try {
                             Handler().postDelayed(Runnable {
-                                val bitmap = postImage.drawable.toBitmap()
+                                val bitmap = postImage?.drawable?.toBitmap()
                                 tagViewProvider.addViewToParent(view,
                                     layout,
                                     feedXMediaTagging,
