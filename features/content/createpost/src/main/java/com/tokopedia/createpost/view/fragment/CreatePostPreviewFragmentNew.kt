@@ -28,7 +28,6 @@ import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
 import com.tokopedia.createpost.view.posttag.TagViewProvider
 import com.tokopedia.createpost.view.viewmodel.*
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
-import com.tokopedia.feedcomponent.util.util.doOnLayout
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.kotlin.extensions.view.*
@@ -394,12 +393,14 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         mediaType: String
     ) {
 
+        val currentImagePos = createPostModel.currentCorouselIndex
+        val position = findProductIndexByProductId(productId,currentImagePos)
+
         if(isDeletedFromBubble)
             createPostAnalytics.eventDeleteProductTagPost(mediaType, productId)
         else
             createPostAnalytics.eventDeleteProductTagBottomSheet(mediaType, productId)
 
-        val currentImagePos = createPostModel.currentCorouselIndex
         removeExtraTagListElement(createPostModel.completeImageList[currentImagePos])
         try {
             createPostModel.completeImageList[currentImagePos].products.removeAt(position)
@@ -439,6 +440,14 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL).show()
 
+
+    }
+    private fun findProductIndexByProductId(productId: String, currentImagePos: Int): Int {
+        createPostModel.completeImageList[currentImagePos].products.forEachIndexed { index, product ->
+            if (product.id == productId)
+                return index
+        }
+        return -1
 
     }
 
