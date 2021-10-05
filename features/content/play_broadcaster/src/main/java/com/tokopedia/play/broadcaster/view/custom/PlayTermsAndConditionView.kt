@@ -5,6 +5,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.ScrollView
+import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.broadcaster.R
@@ -18,24 +20,21 @@ import com.tokopedia.play.broadcaster.ui.viewholder.tnc.PlayTermsAndConditionBen
 /**
  * Created by jegul on 04/10/21
  */
-class PlayTermsAndConditionView : LinearLayout {
+class PlayTermsAndConditionView : NestedScrollView {
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
     )
 
-    constructor(
-        context: Context?,
-        attrs: AttributeSet?,
-        defStyleAttr: Int,
-        defStyleRes: Int
-    ) : super(context, attrs, defStyleAttr, defStyleRes)
-
-    private val binding: ViewPlayBroadcastTncBinding
+    private val binding: ViewPlayBroadcastTncBinding = ViewPlayBroadcastTncBinding.inflate(
+        LayoutInflater.from(context),
+        this,
+        true
+    )
 
     private val tncAdapter = PlayTermsAndConditionAdapter()
     private val tncBenefitAdapter = PlayTermsAndConditionBenefitAdapter()
@@ -43,12 +42,6 @@ class PlayTermsAndConditionView : LinearLayout {
     private var mListener: Listener? = null
 
     init {
-        binding = ViewPlayBroadcastTncBinding.inflate(
-            LayoutInflater.from(context),
-            this,
-            true
-        )
-
         setupView()
     }
 

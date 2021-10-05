@@ -182,7 +182,7 @@ class PlayBroadcastUiMapper(
                 default = config.scheduledTime.default.toDateWithFormat(DATE_FORMAT_RFC3339)
             ),
             tnc = config.tnc.map {
-                TermsAndConditionUiModel(desc = it.desc)
+                TermsAndConditionUiModel(desc = it.description)
             },
         )
     }
