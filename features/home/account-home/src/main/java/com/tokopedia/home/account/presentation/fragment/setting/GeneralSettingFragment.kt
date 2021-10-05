@@ -15,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -251,7 +252,9 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         val isForceDarkModeToggleVisible =
             localCacheHandler.getBoolean(KEY_PREF_DARK_MODE_TOGGLE, false)
 
-        if(false || isForceDarkModeToggleVisible) {
+        Toast.makeText(context, "isForceDarkMode: $isForceDarkModeToggleVisible", Toast.LENGTH_LONG).show()
+
+        if(isForceDarkModeToggleVisible) {
             settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_DARK_MODE,
                     getString(R.string.title_dark_mode), getString(R.string.subtitle_dark_mode), false,
                     GeneralSettingMenuLabel.LABEL_BETA))
