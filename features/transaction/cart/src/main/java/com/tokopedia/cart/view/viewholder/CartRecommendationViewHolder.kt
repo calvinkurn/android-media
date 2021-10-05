@@ -20,7 +20,7 @@ class CartRecommendationViewHolder(private val binding: ItemCartRecommendationBi
         val LAYOUT = R.layout.item_cart_recommendation
     }
 
-    var isTopAds = false
+    internal var isTopAds = false
 
     fun bind(element: CartRecommendationItemHolderData) {
         binding.productCardView.apply {

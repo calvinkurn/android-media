@@ -30,6 +30,7 @@ android {
 
     defaultConfig {
         multiDexEnabled true
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 
     viewBinding {
@@ -116,6 +117,11 @@ dependencies {
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
 
     implementation rootProject.ext.testDependencies.espressoIdlingResource
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
 }
 
 project.ext {
