@@ -12,11 +12,12 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AttachInvoiceViewModel @Inject constructor(
     private val attachInvoiceUseCase: AttachInvoiceUseCase,
-    dispatcher: CoroutineDispatchers
+    private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io) {
 
     companion object {
@@ -32,9 +33,13 @@ class AttachInvoiceViewModel @Inject constructor(
         launchCatchError(block = {
             val param = generateParams(msgId = messageId.toInt(), page = page)
             val result = attachInvoiceUseCase(param)
-            onSuccessGetInvoice(result)
+            withContext(dispatcher.main) {
+                onSuccessGetInvoice(result)
+            }
         }, onError = {
-            onErrorGetInvoice(it)
+            withContext(dispatcher.main) {
+                onErrorGetInvoice(it)
+            }
         })
     }
 
