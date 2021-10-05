@@ -1,0 +1,135 @@
+{
+  "status": "OK",
+  "chatReplies": {
+    "minReplyTime": "1593320444778",
+    "maxReplyTime": "1593320444778",
+    "block": {
+      "blockedUntil": "",
+      "isBlocked": false,
+      "isPromoBlocked": false
+    },
+    "hasNext": false,
+    "hasNextAfter": false,
+    "textareaReply": 1,
+    "replyIDsAttachment": "439369778,439369779,439369780",
+    "contacts": [
+      {
+        "role": "User",
+        "userId": 7977933,
+        "shopId": 5665147,
+        "interlocutor": false,
+        "name": "Buyer Testing",
+        "tag": "Penjual",
+        "thumbnail": "https://accounts.tokopedia.com/image/v1/u/7977933/user_thumbnail/desktop",
+        "domain": "",
+        "isOfficial": false,
+        "isGold": false,
+        "badge": "",
+        "status": {
+          "timestamp": 0,
+          "timestampStr": "",
+          "isOnline": false
+        }
+      },
+      {
+        "role": "Shop Owner",
+        "userId": 29240564,
+        "shopId": 5665147,
+        "interlocutor": true,
+        "name": "Seller Testing",
+        "tag": "Pengguna",
+        "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/5665147/shop_xs_thumbnail/desktop",
+        "domain": "lorealparis",
+        "isOfficial": true,
+        "isGold": true,
+        "badge": "https://ecs7.tokopedia.net/chat/tc_os_icon.png",
+        "status": {
+          "timestamp": 1607337686,
+          "timestampStr": "1607337686",
+          "isOnline": true
+        }
+      }
+    ],
+    "list": [
+      {
+        "date": "27 Jul 2021",
+        "chats": [
+          {
+            "time": "16:10",
+            "replies": [
+              {
+                "msgId": 1,
+                "replyId": "123",
+                "senderId": 7977933,
+                "senderName": "roro",
+                "role": "Shop Owner",
+                "msg": "Test reply bubble",
+                "fraudStatus": 0,
+                "replyTime": "1627377033992402000",
+                "status": 1,
+                "attachmentID": 0,
+                "isOpposite": false,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "chat",
+                "label": "",
+                "attachment": {
+                  "attributes": "",
+                  "fallback": {
+                    "html": "",
+                    "message": ""
+                  },
+                  "id": 0,
+                  "type": 0
+                }
+              },
+              {
+                "msgId": 1,
+                "replyId": "123",
+                "senderId": 7977933,
+                "senderName": "roro",
+                "role": "Shop Owner",
+                "msg": "Test reply bubble",
+                "fraudStatus": 0,
+                "replyTime": "1627377033992402000",
+                "status": 1,
+                "attachmentID": 0,
+                "isOpposite": false,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "chat",
+                "label": "",
+                "parentReply": {
+                  "attachment_id": 0,
+                  "attachment_type": 0,
+                  "name": "",
+                  "sender_id": 7977933,
+                  "reply_time": "1627377033992402000",
+                  "fraud_status": 0,
+                  "main_text": "Test reply bubble",
+                  "sub_text": "",
+                  "image_url": "",
+                  "local_id": "",
+                  "is_expired": false,
+                  "source": "chat"
+                },
+                "attachment": {
+                  "attributes": "",
+                  "fallback": {
+                    "html": "",
+                    "message": ""
+                  },
+                  "id": 0,
+                  "type": 0
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+

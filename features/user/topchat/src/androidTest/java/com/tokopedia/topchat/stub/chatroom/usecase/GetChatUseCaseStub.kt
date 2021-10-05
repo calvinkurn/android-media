@@ -22,6 +22,8 @@ class GetChatUseCaseStub @Inject constructor(
 
     private val changeAddressResponsePath =
         "success_get_chat_replies_with_srw_change_address.json"
+    private val replyBubbleResponsePath =
+        "success_get_chat_replies_with_reply_bubble.json"
     private val broadcastCampaignLabelPath =
         "success_get_chat_with_broadcast_campaign.json"
     private val chatWithSellerPath =
@@ -45,6 +47,18 @@ class GetChatUseCaseStub @Inject constructor(
             alterDateToToday(response)
         }
 
+
+    /**
+     * <!--- Start Reply bubble --->
+     */
+    val defaultReplyBubbleResponse: GetExistingChatPojo
+        get() = alterResponseOf(replyBubbleResponsePath) { response ->
+
+        }
+    /**
+     * <!--- End Reply bubble --->
+     */
+
     /**
      * <!--- Start Broadcast responses --->
      */
@@ -54,7 +68,7 @@ class GetChatUseCaseStub @Inject constructor(
             GetExistingChatPojo::class.java
         )
     /**
-     * <!--- Stop Broadcast responses --->
+     * <!--- End Broadcast responses --->
      */
 
     fun getBannerAttachmentId(response: GetExistingChatPojo): String {
@@ -132,7 +146,7 @@ class GetChatUseCaseStub @Inject constructor(
                 .remove(attachment)
         }
     /**
-     * <!--- Stop SRW responses --->
+     * <!--- End SRW responses --->
      */
 
     private val chatReplies = "chatReplies"

@@ -8,8 +8,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.idling.CountingIdlingResource
@@ -335,6 +334,14 @@ abstract class TopchatRoomTest {
         ).perform(click())
     }
 
+    protected fun longClickBubbleAt(position: Int) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.fxChat
+            )
+        ).perform(longClick())
+    }
+
     protected fun assertLabelOnProductCard(
         recyclerViewId: Int,
         atPosition: Int,
@@ -561,6 +568,12 @@ abstract class TopchatRoomTest {
     protected fun assertKeyboardIsNotVisible() {
         val isKeyboardOpened = isKeyboardOpened()
         assertThat(isKeyboardOpened, `is`(false))
+    }
+
+    protected fun assertLongClickMenu(matcher: Matcher<in View>) {
+        onView(withId(R.id.rvMenu)).check(
+            matches(matcher)
+        )
     }
 
     protected fun assertChatMenuVisibility(visibilityMatcher: Matcher<in View>) {
