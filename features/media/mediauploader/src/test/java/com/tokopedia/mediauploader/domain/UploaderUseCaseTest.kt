@@ -1,7 +1,12 @@
 package com.tokopedia.mediauploader.domain
 
-import com.tokopedia.mediauploader.data.entity.*
+import com.tokopedia.mediauploader.common.data.entity.*
 import com.tokopedia.mediauploader.data.state.UploadResult
+import com.tokopedia.mediauploader.image.data.entity.ImagePolicy
+import com.tokopedia.mediauploader.image.data.entity.ImageUploader
+import com.tokopedia.mediauploader.image.data.entity.UploadData
+import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
+import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -38,7 +43,7 @@ class UploaderUseCaseTest {
         coEvery {
             mediaUploaderUseCase(any())
         } answers {
-            MediaUploader(data = UploadData(uploadId))
+            ImageUploader(data = UploadData(uploadId))
         }
 
         // Then
@@ -87,7 +92,7 @@ class UploaderUseCaseTest {
         coEvery {
             mediaUploaderUseCase(any())
         } answers {
-            MediaUploader(data = UploadData(uploadId))
+            ImageUploader(data = UploadData(uploadId))
         }
 
         // Then
@@ -123,7 +128,7 @@ class UploaderUseCaseTest {
         coEvery {
             mediaUploaderUseCase(any())
         } answers {
-            MediaUploader(data = UploadData(uploadId))
+            ImageUploader(data = UploadData(uploadId))
         }
 
         // Then

@@ -2,6 +2,7 @@ package com.tokopedia.mediauploader.data
 
 import com.google.gson.Gson
 import com.tokopedia.mediauploader.MockUploaderResponse
+import com.tokopedia.mediauploader.image.data.ImageUploadServices
 import kotlinx.coroutines.runBlocking
 import okhttp3.MultipartBody
 import okhttp3.mockwebserver.MockResponse

@@ -1,7 +1,8 @@
 package com.tokopedia.mediauploader.data.mapper
 
-import com.tokopedia.mediauploader.data.entity.SourcePolicy
-import com.tokopedia.mediauploader.data.entity.UploaderPolicy
+import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
+import com.tokopedia.mediauploader.common.data.entity.UploaderPolicy
+import com.tokopedia.mediauploader.image.data.mapper.ImagePolicyMapper
 import org.junit.Test
 import kotlin.test.assertEquals
 

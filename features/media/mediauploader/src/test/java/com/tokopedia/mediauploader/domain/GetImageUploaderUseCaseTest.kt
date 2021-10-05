@@ -1,8 +1,9 @@
 package com.tokopedia.mediauploader.domain
 
-import com.tokopedia.mediauploader.data.ImageUploadServices
-import com.tokopedia.mediauploader.data.entity.MediaUploader
-import com.tokopedia.mediauploader.data.params.ImageUploaderParam
+import com.tokopedia.mediauploader.image.data.ImageUploadServices
+import com.tokopedia.mediauploader.image.data.entity.ImageUploader
+import com.tokopedia.mediauploader.image.data.params.ImageUploaderParam
+import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
 import com.tokopedia.mediauploader.stubUploadFileServices
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -14,7 +15,7 @@ class GetImageUploaderUseCaseTest {
 
     private val services = mockk<ImageUploadServices>()
     private val useCase = GetImageUploaderUseCase(services)
-    private var expectedValue = MediaUploader()
+    private var expectedValue = ImageUploader()
 
     @Test fun `It should be failed to upload image without params`() {
         runBlocking {

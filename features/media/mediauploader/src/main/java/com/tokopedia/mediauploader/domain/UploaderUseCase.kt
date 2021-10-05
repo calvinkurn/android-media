@@ -1,11 +1,13 @@
 package com.tokopedia.mediauploader.domain
 
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.mediauploader.ImageUploaderManager
-import com.tokopedia.mediauploader.data.consts.NETWORK_ERROR
-import com.tokopedia.mediauploader.data.consts.TIMEOUT_ERROR
+import com.tokopedia.mediauploader.image.ImageUploaderManager
+import com.tokopedia.mediauploader.common.data.consts.NETWORK_ERROR
+import com.tokopedia.mediauploader.common.data.consts.TIMEOUT_ERROR
 import com.tokopedia.mediauploader.data.state.ProgressCallback
 import com.tokopedia.mediauploader.data.state.UploadResult
+import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
+import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
 import com.tokopedia.mediauploader.util.ERROR_MAX_LENGTH
 import com.tokopedia.mediauploader.util.trackToTimber
 import com.tokopedia.usecase.RequestParams

@@ -3,15 +3,15 @@ package com.tokopedia.mediauploader
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.mediauploader.data.ImageUploadServices
-import com.tokopedia.mediauploader.data.entity.MediaUploader
+import com.tokopedia.mediauploader.image.data.ImageUploadServices
+import com.tokopedia.mediauploader.image.data.entity.ImageUploader
 import io.mockk.MockKAdditionalAnswerScope
 import io.mockk.coEvery
 import java.lang.reflect.Type
 
 fun ImageUploadServices.stubUploadFileServices(
-    expectedResult: MediaUploader
-): MockKAdditionalAnswerScope<MediaUploader, MediaUploader> {
+    expectedResult: ImageUploader
+): MockKAdditionalAnswerScope<ImageUploader, ImageUploader> {
     val it = this
     return coEvery {
         it.uploadImage(any(), any(), any())

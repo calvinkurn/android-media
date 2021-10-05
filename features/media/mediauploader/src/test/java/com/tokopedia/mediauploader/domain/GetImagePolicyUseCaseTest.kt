@@ -1,7 +1,8 @@
 package com.tokopedia.mediauploader.domain
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.mediauploader.data.entity.DataUploaderPolicy
+import com.tokopedia.mediauploader.common.data.entity.DataUploaderPolicy
+import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
 import com.tokopedia.mediauploader.stubRepository
 import com.tokopedia.mediauploader.stubRepositoryAsThrow
 import io.mockk.mockk
