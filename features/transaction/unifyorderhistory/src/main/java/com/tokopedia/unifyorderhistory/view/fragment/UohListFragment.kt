@@ -232,6 +232,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private lateinit var trackingQueue: TrackingQueue
     private var _arrayListStatusFilterBundle = arrayListOf<UohFilterBundle>()
     private var _arrayListCategoryProductFilterBundle = arrayListOf<UohFilterBundle>()
+    private var selectedKey = ""
 
     private var binding by autoClearedNullable<FragmentUohListBinding>()
 
@@ -620,7 +621,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             setActionListener(this@UohListFragment)
         }
 
-        uohBottomSheetKebabMenuAdapter = UohBottomSheetKebabMenuAdapter(this)
+        uohBottomSheetKebabMenuAdapter = UohBottomSheetKebabMenuAdapter().apply {
+            setActionListener(this@UohListFragment)
+        }
 
         addEndlessScrollListener()
     }
@@ -1080,7 +1083,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun onClickFilterDate() {
-        uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
+        uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter().apply {
+            setActionListener(this@UohListFragment)
+        }
         UohFilterOptionsBottomSheet().run {
             setActionListener(this@UohListFragment)
             context?.let { context -> show(context, parentFragmentManager, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_DATE) }
@@ -1108,7 +1113,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun onClickFilterStatus() {
-        uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
+        uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter().apply {
+            setActionListener(this@UohListFragment)
+        }
         UohFilterOptionsBottomSheet().run {
             setActionListener(this@UohListFragment)
             context?.let { context -> show(context, parentFragmentManager, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_FILTERS) }
@@ -1128,7 +1135,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun onClickFilterCategoryProduct() {
-        uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
+        uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter().apply {
+            setActionListener(this@UohListFragment)
+        }
         UohFilterOptionsBottomSheet().run {
             setActionListener(this@UohListFragment)
             context?.let { context -> show(context, parentFragmentManager, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_CATEGORIES) }
@@ -1138,7 +1147,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         if (tempFilterCategoryLabel.isEmpty()) tempFilterCategoryLabel = ALL_PRODUCTS
         if (tempFilterCategoryKey.isEmpty()) tempFilterCategoryKey = ""
 
-        var selectedKey = ""
         if ((filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)
                         || filterStatus.equals(PARAM_UOH_WAITING_CONFIRMATION, true)
                         || filterStatus.equals(PARAM_UOH_PROCESSED, true)
@@ -1171,8 +1179,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         uohBottomSheetOptionAdapter.run {
             filterBundleList = _arrayListCategoryProductFilterBundle
             filterType = UohConsts.TYPE_FILTER_CATEGORY
-            selectedKey = selectedKey
-            isReset = isReset
             notifyDataSetChanged()
         }
     }

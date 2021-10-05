@@ -1,16 +1,15 @@
 package com.tokopedia.unifyorderhistory.view.adapter.viewholder
 
-import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyorderhistory.data.model.UohTypeData
-import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
-import kotlinx.android.synthetic.main.uoh_loader_item.view.*
+import com.tokopedia.unifyorderhistory.databinding.UohLoaderItemBinding
 
 /**
  * Created by fwidjaja on 25/07/20.
  */
-class UohLoaderItemViewHolder(itemView: View) : UohItemAdapter.BaseViewHolder<UohTypeData>(itemView) {
-    override fun bind(item: UohTypeData, position: Int) {
-        itemView.cl_loader.visible()
+class UohLoaderItemViewHolder(private val binding: UohLoaderItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    fun bind(item: UohTypeData) {
+        binding.clLoader.visible()
     }
 }

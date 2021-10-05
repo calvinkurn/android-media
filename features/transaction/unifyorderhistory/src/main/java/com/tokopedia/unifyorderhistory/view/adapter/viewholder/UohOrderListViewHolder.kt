@@ -1,6 +1,6 @@
 package com.tokopedia.unifyorderhistory.view.adapter.viewholder
 
-import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.unifyorderhistory.util.UohUtils
@@ -14,33 +14,35 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifyorderhistory.R
+import com.tokopedia.unifyorderhistory.databinding.UohListItemBinding
 import com.tokopedia.unifyorderhistory.util.UohConsts.TICKER_LABEL
 import com.tokopedia.unifyorderhistory.util.UohConsts.TICKER_URL
-import kotlinx.android.synthetic.main.uoh_list_item.view.*
 
 /**
  * Created by fwidjaja on 25/07/20.
  */
-class UohOrderListViewHolder(itemView: View, private val actionListener: UohItemAdapter.ActionListener?) : UohItemAdapter.BaseViewHolder<UohTypeData>(itemView) {
-    override fun bind(item: UohTypeData, position: Int) {
+class UohOrderListViewHolder(private val binding: UohListItemBinding, private val actionListener: UohItemAdapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
+    fun bind(item: UohTypeData, position: Int) {
         if (item.dataObject is UohListOrder.Data.UohOrders.Order) {
-            itemView.cl_data_product.visible()
-            ImageHandler.loadImage(itemView.context, itemView.ic_uoh_vertical, item.dataObject.metadata.verticalLogo, null)
-            itemView.tv_uoh_categories?.text = item.dataObject.metadata.verticalLabel
-            itemView.tv_uoh_date?.text = item.dataObject.metadata.paymentDateStr
+            binding.clDataProduct.visible()
+            ImageHandler.loadImage(itemView.context, binding.icUohVertical, item.dataObject.metadata.verticalLogo, null)
+            binding.tvUohCategories.text = item.dataObject.metadata.verticalLabel
+            binding.tvUohDate.text = item.dataObject.metadata.paymentDateStr
 
             val textColorLabel = item.dataObject.metadata.status.textColor
             val bgColorLabel = item.dataObject.metadata.status.bgColor
 
-            itemView.label_uoh_order?.text = item.dataObject.metadata.status.label
+            binding.labelUohOrder.text = item.dataObject.metadata.status.label
             if (textColorLabel.isNotEmpty() && bgColorLabel.isNotEmpty()) {
-                itemView.label_uoh_order?.unlockFeature = true
-                itemView.label_uoh_order?.fontColorByPass = textColorLabel
-                itemView.label_uoh_order?.setLabelType(bgColorLabel)
+                binding.labelUohOrder.run {
+                    unlockFeature = true
+                    fontColorByPass = textColorLabel
+                    setLabelType(bgColorLabel)
+                }
             }
 
             if (item.dataObject.metadata.tickers.isNotEmpty()) {
-                itemView.ticker_info_inside_card?.visible()
+               binding.tickerInfoInsideCard.visible()
                 if (item.dataObject.metadata.tickers.size > 1) {
                     val listTickerData = arrayListOf<TickerData>()
                     item.dataObject.metadata.tickers.forEach {
@@ -59,81 +61,85 @@ class UohOrderListViewHolder(itemView: View, private val actionListener: UohItem
                                 actionListener?.onTickerDetailInfoClicked(linkUrl.toString())
                             }
                         })
-                        itemView.ticker_info_inside_card?.setDescriptionClickEvent(object: TickerCallback {
-                            override fun onDescriptionViewClick(linkUrl: CharSequence) {}
+                        binding.tickerInfoInsideCard.run {
+                            setDescriptionClickEvent(object: TickerCallback {
+                                override fun onDescriptionViewClick(linkUrl: CharSequence) {}
 
-                            override fun onDismiss() {
-                            }
-
-                        })
-                        itemView.ticker_info_inside_card?.addPagerView(adapter, listTickerData)
+                                override fun onDismiss() {
+                                }
+                            })
+                            addPagerView(adapter, listTickerData)
+                        }
                     }
                 } else {
-                    item.dataObject.metadata.tickers.first().let {
-                        itemView.ticker_info_inside_card?.tickerTitle = it.title
-                        var desc = it.text
-                        if (it.action.appUrl.isNotEmpty() && it.action.label.isNotEmpty()) {
+                    item.dataObject.metadata.tickers.first().let { ticker ->
+                        binding.tickerInfoInsideCard.tickerTitle = ticker.title
+                        var desc = ticker.text
+                        if (ticker.action.appUrl.isNotEmpty() && ticker.action.label.isNotEmpty()) {
                             desc += " ${itemView.context.getString(R.string.uoh_ticker_info_selengkapnya)
-                                    .replace(TICKER_URL, it.action.appUrl)
-                                    .replace(TICKER_LABEL, it.action.label)}"
+                                    .replace(TICKER_URL, ticker.action.appUrl)
+                                    .replace(TICKER_LABEL, ticker.action.label)}"
                         }
-                        itemView.ticker_info_inside_card?.setHtmlDescription(desc)
-                        itemView.ticker_info_inside_card?.tickerType = UohUtils.getTickerType(it.type)
-                        itemView.ticker_info_inside_card?.setDescriptionClickEvent(object : TickerCallback {
-                            override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                                actionListener?.onTickerDetailInfoClicked(linkUrl.toString())
-                            }
+                        binding.tickerInfoInsideCard.run {
+                            setHtmlDescription(desc)
+                            tickerType = UohUtils.getTickerType(ticker.type)
+                            setDescriptionClickEvent(object : TickerCallback {
+                                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                                    actionListener?.onTickerDetailInfoClicked(linkUrl.toString()) }
 
-                            override fun onDismiss() {
-                            }
-
-                        })
+                                override fun onDismiss() {}
+                            })
+                        }
                     }
                 }
             } else {
-                itemView.ticker_info_inside_card?.gone()
+                binding.tickerInfoInsideCard.gone()
             }
 
             if (item.dataObject.metadata.products.isNotEmpty()) {
-                itemView.tv_uoh_product_name?.text = item.dataObject.metadata.products.first().title
-                itemView.tv_uoh_product_desc?.text = item.dataObject.metadata.products.first().inline1.label
+                binding.tvUohProductName.text = item.dataObject.metadata.products.first().title
+                binding.tvUohProductDesc.text = item.dataObject.metadata.products.first().inline1.label
                 if (item.dataObject.metadata.products.first().imageURL.isNotEmpty()) {
-                    itemView.iv_uoh_product?.visible()
-                    ImageHandler.loadImageRounded2(itemView.context, itemView.iv_uoh_product, item.dataObject.metadata.products.first().imageURL, 6f.toPx())
+                    binding.ivUohProduct.visible()
+                    ImageHandler.loadImageRounded2(itemView.context, binding.ivUohProduct, item.dataObject.metadata.products.first().imageURL, 6f.toPx())
                 } else {
-                    itemView.iv_uoh_product?.gone()
+                    binding.ivUohProduct.gone()
                 }
             }
 
             if (item.dataObject.metadata.dotMenus.isNotEmpty()) {
-                itemView.iv_kebab_menu?.setOnClickListener {
+                binding.ivKebabMenu.setOnClickListener {
                     actionListener?.onKebabMenuClicked(item.dataObject, position)
                 }
             }
 
             if (item.dataObject.metadata.otherInfo.label.isNotEmpty()) {
-                itemView.label_other_info?.visible()
-                itemView.label_other_info?.text = item.dataObject.metadata.otherInfo.label
+                binding.labelOtherInfo.run {
+                    visible()
+                    text = item.dataObject.metadata.otherInfo.label
+                }
             } else {
-                itemView.label_other_info?.gone()
+                binding.labelOtherInfo.gone()
             }
 
-            itemView.tv_uoh_total_belanja?.text = item.dataObject.metadata.totalPrice.label
-            itemView.tv_uoh_total_belanja_value?.text = item.dataObject.metadata.totalPrice.value
+            binding.tvUohTotalBelanja.text = item.dataObject.metadata.totalPrice.label
+            binding.tvUohTotalBelanjaValue.text = item.dataObject.metadata.totalPrice.value
             if (item.dataObject.metadata.buttons.isNotEmpty()) {
-                itemView.uoh_btn_action?.visible()
-                itemView.uoh_btn_action?.text = item.dataObject.metadata.buttons[0].label
-                itemView.uoh_btn_action?.buttonType = UohUtils.getButtonType(item.dataObject.metadata.buttons[0].variantColor)
-                itemView.uoh_btn_action?.buttonVariant = UohUtils.getButtonVariant(item.dataObject.metadata.buttons[0].type)
+                binding.uohBtnAction.run {
+                    visible()
+                    text = item.dataObject.metadata.buttons[0].label
+                    buttonType = UohUtils.getButtonType(item.dataObject.metadata.buttons[0].variantColor)
+                    buttonVariant = UohUtils.getButtonVariant(item.dataObject.metadata.buttons[0].type)
+                }
             } else {
-                itemView.uoh_btn_action?.gone()
+                binding.uohBtnAction.gone()
             }
 
-            itemView.cl_data_product?.setOnClickListener {
+            binding.clDataProduct.setOnClickListener {
                 actionListener?.onListItemClicked(item.dataObject, position)
             }
 
-            itemView.uoh_btn_action?.setOnClickListener {
+            binding.uohBtnAction.setOnClickListener {
                 if (item.dataObject.metadata.buttons.isNotEmpty()) {
                     actionListener?.onActionButtonClicked(item.dataObject, position)
                 }

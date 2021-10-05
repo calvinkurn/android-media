@@ -17,13 +17,14 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.unifyorderhistory.R
+import com.tokopedia.unifyorderhistory.databinding.*
 import com.tokopedia.unifyorderhistory.view.adapter.viewholder.*
 import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
 
 /**
  * Created by fwidjaja on 22/07/20.
  */
-class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() {
+class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var listTypeData = mutableListOf<UohTypeData>()
     private var actionListener: ActionListener? = null
 
@@ -49,31 +50,31 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
         fun atcRecommendationItem(recommendationItem: RecommendationItem)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             LAYOUT_LOADER -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.uoh_loader_item, parent, false)
-                UohLoaderItemViewHolder(view)
+                val binding = UohLoaderItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                UohLoaderItemViewHolder(binding)
             }
             LAYOUT_TICKER -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.uoh_ticker_item, parent, false)
-                UohTickerItemViewHolder(view, actionListener)
+                val binding = UohTickerItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                UohTickerItemViewHolder(binding, actionListener)
             }
             LAYOUT_ORDER_LIST -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.uoh_list_item, parent, false)
-                UohOrderListViewHolder(view, actionListener)
+                val binding = UohListItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                UohOrderListViewHolder(binding, actionListener)
             }
             LAYOUT_EMPTY_STATE -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.uoh_empty_state, parent, false)
-                UohEmptyStateViewHolder(view, actionListener)
+                val binding = UohEmptyStateBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                UohEmptyStateViewHolder(binding, actionListener)
             }
             LAYOUT_RECOMMENDATION_TITLE -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.uoh_recommendation_title, parent, false)
-                UohRecommendationTitleViewHolder(view)
+                val binding = UohRecommendationTitleBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                UohRecommendationTitleViewHolder(binding)
             }
             LAYOUT_RECOMMENDATION_LIST -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.uoh_recommendation_item, parent, false)
-                UohRecommendationItemViewHolder(view, actionListener)
+                val binding = UohRecommendationItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                UohRecommendationItemViewHolder(binding, actionListener)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }
@@ -95,24 +96,25 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
         }
     }
 
-    abstract class BaseViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        abstract fun bind(item: T, position: Int)
-    }
 
-    override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val element = listTypeData[position]
         when (holder) {
+            is UohLoaderItemViewHolder -> {
+                holder.bind(element)
+            }
             is UohOrderListViewHolder -> {
                 holder.bind(element, holder.adapterPosition)
             }
             is UohTickerItemViewHolder -> {
-                holder.bind(element, holder.adapterPosition)
+                holder.bind(element)
             }
             is UohEmptyStateViewHolder -> {
-                holder.bind(element, holder.adapterPosition)
+                holder.bind(element)
             }
             is UohRecommendationTitleViewHolder -> {
-                holder.bind(element, holder.adapterPosition)
+                holder.bind(element)
             }
             is UohRecommendationItemViewHolder -> {
                 holder.bind(element, holder.adapterPosition)

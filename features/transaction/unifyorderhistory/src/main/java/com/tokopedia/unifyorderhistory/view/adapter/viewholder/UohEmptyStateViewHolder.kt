@@ -1,20 +1,19 @@
 package com.tokopedia.unifyorderhistory.view.adapter.viewholder
 
-import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifyorderhistory.data.model.UohEmptyState
 import com.tokopedia.unifyorderhistory.data.model.UohTypeData
 import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
 import com.tokopedia.unifyorderhistory.R
-import kotlinx.android.synthetic.main.uoh_empty_state.view.*
+import com.tokopedia.unifyorderhistory.databinding.UohEmptyStateBinding
 
 /**
  * Created by fwidjaja on 22/07/20.
  */
-class UohEmptyStateViewHolder(itemView: View, private val actionListener: UohItemAdapter.ActionListener?) : UohItemAdapter.BaseViewHolder<UohTypeData>(itemView) {
-
-    override fun bind(item: UohTypeData, position: Int) {
+class UohEmptyStateViewHolder(private val binding: UohEmptyStateBinding, private val actionListener: UohItemAdapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
+    fun bind(item: UohTypeData) {
         if (item.dataObject is UohEmptyState) {
-            itemView.uoh_empty_state?.apply {
+            binding.uohEmptyState.run {
                 setImageUrl(item.dataObject.imgUrl)
                 setTitle(item.dataObject.title)
                 setDescription(item.dataObject.desc)

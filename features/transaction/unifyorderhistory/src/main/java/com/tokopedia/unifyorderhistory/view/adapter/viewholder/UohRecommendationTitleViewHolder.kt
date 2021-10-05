@@ -1,18 +1,17 @@
 package com.tokopedia.unifyorderhistory.view.adapter.viewholder
 
-import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifyorderhistory.data.model.UohRecommendationTitle
 import com.tokopedia.unifyorderhistory.data.model.UohTypeData
-import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
-import kotlinx.android.synthetic.main.uoh_recommendation_title.view.*
+import com.tokopedia.unifyorderhistory.databinding.UohRecommendationTitleBinding
 
 /**
  * Created by fwidjaja on 25/07/20.
  */
-class UohRecommendationTitleViewHolder(itemView: View) : UohItemAdapter.BaseViewHolder<UohTypeData>(itemView) {
-    override fun bind(item: UohTypeData, position: Int) {
+class UohRecommendationTitleViewHolder(private val binding: UohRecommendationTitleBinding) : RecyclerView.ViewHolder(binding.root) {
+    fun bind(item: UohTypeData) {
         if (item.dataObject is UohRecommendationTitle) {
-            itemView.uoh_recommendation_title.text = item.dataObject.title
+            binding.uohRecommendationTitle.text = item.dataObject.title
         }
     }
 }

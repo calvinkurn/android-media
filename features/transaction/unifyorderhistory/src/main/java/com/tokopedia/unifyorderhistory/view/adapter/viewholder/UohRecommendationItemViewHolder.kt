@@ -1,6 +1,7 @@
 package com.tokopedia.unifyorderhistory.view.adapter.viewholder
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifyorderhistory.data.model.UohTypeData
 import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -8,15 +9,15 @@ import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.unifyorderhistory.R
+import com.tokopedia.unifyorderhistory.databinding.UohRecommendationItemBinding
 
 /**
  * Created by fwidjaja on 22/07/20.
  */
-class UohRecommendationItemViewHolder(itemView: View, private val actionListener: UohItemAdapter.ActionListener?) : UohItemAdapter.BaseViewHolder<UohTypeData>(itemView) {
-    private val productCardView: ProductCardGridView by lazy { itemView.findViewById<ProductCardGridView>(
-        R.id.uoh_product_item) }
+class UohRecommendationItemViewHolder(private val binding: UohRecommendationItemBinding, private val actionListener: UohItemAdapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
+    private val productCardView: ProductCardGridView by lazy { binding.uohProductItem }
 
-    override fun bind(item: UohTypeData, position: Int) {
+    fun bind(item: UohTypeData, position: Int) {
         if (item.dataObject is RecommendationItem) {
             productCardView.run {
                 setProductModel(
