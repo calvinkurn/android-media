@@ -1389,14 +1389,14 @@ class PlayViewModel @Inject constructor(
                 }
             }
             is UserWinnerStatus -> {
-                val interactiveState = _interactiveUiState.firstOrNull() ?: return@withContext
-
-                val winnerStatus = playSocketToModelMapper.mapUserWinnerStatus(result)
-                _observableUserWinnerStatus.value = winnerStatus
-
-                if(interactiveState.interactive is PlayInteractiveUiState.Finished) {
-                    handleUserWinnerStatus(winnerStatus)
-                }
+//                val interactiveState = _interactiveUiState.firstOrNull() ?: return@withContext
+//
+//                val winnerStatus = playSocketToModelMapper.mapUserWinnerStatus(result)
+//                _observableUserWinnerStatus.value = winnerStatus
+//
+//                if(interactiveState.interactive is PlayInteractiveUiState.Finished) {
+//                    handleUserWinnerStatus(winnerStatus)
+//                }
             }
         }
     }
@@ -1556,7 +1556,9 @@ class PlayViewModel @Inject constructor(
             _observableUserWinnerStatus.value?.let {
                 handleUserWinnerStatus(it)
             } ?: kotlin.run {
+                Log.d("<LOG>", "waitingDuration: ${activeInteractive.endGameDelayInMs}")
                 delay(activeInteractive.endGameDelayInMs)
+                Log.d("<LOG>", "done")
                 repo.setFinished(activeInteractiveId)
                 handleUserWinnerStatus(null)
             }
@@ -1579,6 +1581,9 @@ class PlayViewModel @Inject constructor(
                         ShowCoachMarkWinnerEvent(winnerStatus.loserTitle, winnerStatus.loserText)
                 )
             }
+        } ?: kotlin.run {
+            if(_interactive.value is PlayInteractiveUiState.Finished)
+                _interactive.value = PlayInteractiveUiState.NoInteractive
         }
 
         _leaderboardUserBadgeState.value = true
