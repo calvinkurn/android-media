@@ -26,8 +26,6 @@ import com.tokopedia.deals.common.bottomsheet.DealsBottomSheetNoInternetConnecti
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.FragmentDealsBrandDetailBinding
 import com.tokopedia.deals.location_picker.model.response.Location
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.observe
@@ -167,13 +165,8 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
 
                         it.toolbarBrandDetail?.let { toolbar ->
                             setDrawableColorFilter(toolbar.getNavigationIcon(), colorInt)
+                            setDrawableColorFilter(toolbar.menu.getItem(0).icon, colorInt)
                         }
-
-                        it.toolbarBrandDetail.menu.getItem(0).setIcon(getIconUnifyDrawable(
-                                context = context,
-                                iconId = IconUnify.SHARE_MOBILE,
-                                assetColor = colorInt)
-                        )
                     }
                 }
             })
