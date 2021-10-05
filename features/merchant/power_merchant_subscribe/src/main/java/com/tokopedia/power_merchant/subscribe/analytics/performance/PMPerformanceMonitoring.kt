@@ -20,12 +20,4 @@ class PMPerformanceMonitoring : LoadTimeMonitoring() {
         pageLoadTimePerformanceMonitoring?.startMonitoring(PerformanceMonitoringConst.POWER_MERCHANT_TRACE)
         pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
     }
-
-    fun getCustomMetricsDurationIfCompleted(key: String): Long {
-        return (pageLoadTimePerformanceMonitoring as? PageLoadTimePerformanceCallback)?.let { pltMonitoring ->
-            pltMonitoring.customMetric[key].takeIf {
-                pltMonitoring.isCustomMetricDone[key] == true
-            }
-        }.orZero()
-    }
 }

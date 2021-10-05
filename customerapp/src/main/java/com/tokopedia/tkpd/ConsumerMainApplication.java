@@ -10,6 +10,8 @@ import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.ProcessLifecycleOwner;
+import androidx.preference.PreferenceManager;
 
 import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.analytics.performance.util.AppStartPerformanceTracker;
@@ -24,9 +26,6 @@ import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.utils.permission.SlicePermission;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-
-import io.embrace.android.embracesdk.Embrace;
-
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -92,7 +91,6 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     @Override
     public void onCreate() {
         CheckAndTraceAppStartIfEnabled();
-        Embrace.getInstance().start(this);
         super.onCreate();
         setupAppScreenMode();
     }

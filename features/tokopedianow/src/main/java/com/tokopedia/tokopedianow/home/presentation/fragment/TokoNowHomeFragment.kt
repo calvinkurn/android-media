@@ -21,7 +21,6 @@ import com.tokopedia.applink.ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.home_component.listener.BannerComponentListener
@@ -36,6 +35,7 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -88,6 +88,11 @@ import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffe
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.util.SharedPreferencesUtil
+import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger
+import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.ATC_QUANTITY_ERROR
+import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.ErrorType.ERROR_CHOOSE_ADDRESS
+import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.ErrorType.ERROR_LAYOUT
+import com.tokopedia.tokopedianow.common.util.TokoMartHomeErrorLogger.LOAD_LAYOUT_ERROR
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
@@ -139,11 +144,11 @@ class TokoNowHomeFragment: Fragment(),
         const val SOURCE = "tokonow"
         const val SOURCE_TRACKING = "tokonow page"
         const val DEFAULT_QUANTITY = 0
-        const val SHARE_URL = "https://www.tokopedia.com/now"
-        const val THUMBNAIL_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/thumbnail_now_home.png"
-        const val OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/og_now_home.jpg"
-        const val PAGE_SHARE_NAME = "TokoNow"
+        const val SHARE_URL = "https://www.tokopedia.com/tokomart"
+        const val THUMBNAIL_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/tokomart/thumbnail_image_bottomsheet.png"
+        const val OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/tokomart/TokoMart_share.png"
         const val SHARE = "Share"
+        const val PAGE_SHARE_NAME = "TokoMart"
 
         fun newInstance() = TokoNowHomeFragment()
     }
@@ -530,10 +535,38 @@ class TokoNowHomeFragment: Fragment(),
         miniCartWidget?.hide()
         miniCartWidget?.hideCoachMark()
         setupPadding(false)
+        navToolbar?.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE)
     }
 
     private fun showFailedToFetchData() {
         showEmptyState(EMPTY_STATE_FAILED_TO_FETCH_DATA)
+    }
+
+    private fun logHomeLayoutError(throwable: Throwable) {
+        TokoMartHomeErrorLogger.logExceptionToScalyr(
+            throwable = throwable,
+            errorType = ERROR_LAYOUT,
+            deviceId = userSession.deviceId,
+            description = LOAD_LAYOUT_ERROR
+        )
+    }
+
+    private fun logATCQuantityError(throwable: Throwable) {
+        TokoMartHomeErrorLogger.logExceptionToScalyr(
+            throwable = throwable,
+            errorType = ERROR_LAYOUT,
+            deviceId = userSession.deviceId,
+            description = ATC_QUANTITY_ERROR
+        )
+    }
+
+    private fun logChooseAddressError(throwable: Throwable) {
+        TokoMartHomeErrorLogger.logExceptionToScalyr(
+            throwable = throwable,
+            errorType = ERROR_CHOOSE_ADDRESS,
+            deviceId = userSession.deviceId,
+            description = ERROR_CHOOSE_ADDRESS
+        )
     }
 
     private fun showEmptyStateNoAddress() {
@@ -547,6 +580,7 @@ class TokoNowHomeFragment: Fragment(),
     private fun showLayout() {
         getHomeLayout()
         getMiniCart()
+        navToolbar?.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH)
     }
 
     private fun stickyLoginSetup(){
@@ -644,6 +678,7 @@ class TokoNowHomeFragment: Fragment(),
             addNavBarScrollListener()
             activity?.let {
                 toolbar.setupToolbarWithStatusBar(it)
+                toolbar.setToolbarTitle(getString(R.string.tokopedianow_home_title))
             }
         }
     }
@@ -746,10 +781,14 @@ class TokoNowHomeFragment: Fragment(),
         observe(viewModelTokoNow.homeLayoutList) {
             removeAllScrollListener()
 
-            if (it is Success) {
-                loadHomeLayout(it.data)
-            } else {
-                showFailedToFetchData()
+            when(it) {
+                is Success -> {
+                    loadHomeLayout(it.data)
+                }
+                is Fail -> {
+                    showFailedToFetchData()
+                    logHomeLayoutError(it.throwable)
+                }
             }
 
             rvHome?.post {
@@ -759,9 +798,10 @@ class TokoNowHomeFragment: Fragment(),
             }
         }
 
-        observe(viewModelTokoNow.productAddToCartQuantity) {
-            if(it is Success) {
-                showHomeLayout(it.data)
+        observe(viewModelTokoNow.atcQuantity) {
+            when(it) {
+                is Success -> showHomeLayout(it.data)
+                is Fail -> logATCQuantityError(it.throwable)
             }
         }
 
@@ -773,27 +813,14 @@ class TokoNowHomeFragment: Fragment(),
         }
 
         observe(viewModelTokoNow.chooseAddress) {
-            if (it is Success) {
-                it.data.let { chooseAddressData ->
-                    ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                            context = requireContext(),
-                            addressId = chooseAddressData.data.addressId.toString(),
-                            cityId = chooseAddressData.data.cityId.toString(),
-                            districtId = chooseAddressData.data.districtId.toString(),
-                            lat = chooseAddressData.data.latitude,
-                            long = chooseAddressData.data.longitude,
-                            label = String.format("%s %s", chooseAddressData.data.addressName, chooseAddressData.data.receiverName),
-                            postalCode = chooseAddressData.data.postalCode,
-                            warehouseId = chooseAddressData.tokonow.warehouseId.toString(),
-                            shopId = chooseAddressData.tokonow.shopId.toString()
-                    )
+            when(it) {
+                is Success -> {
+                    setupChooseAddress(it.data)
                 }
-                checkIfChooseAddressWidgetDataUpdated()
-                checkStateNotInServiceArea(
-                        warehouseId = it.data.tokonow.warehouseId
-                )
-            } else {
-                showEmptyStateNoAddress()
+                is Fail -> {
+                    showEmptyStateNoAddress()
+                    logChooseAddressError(it.throwable)
+                }
             }
         }
 
@@ -861,6 +888,31 @@ class TokoNowHomeFragment: Fragment(),
                 )
             }
         }
+    }
+
+    private fun setupChooseAddress(data: GetStateChosenAddressResponse) {
+        data.let { chooseAddressData ->
+            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                context = requireContext(),
+                addressId = chooseAddressData.data.addressId.toString(),
+                cityId = chooseAddressData.data.cityId.toString(),
+                districtId = chooseAddressData.data.districtId.toString(),
+                lat = chooseAddressData.data.latitude,
+                long = chooseAddressData.data.longitude,
+                label = String.format(
+                    "%s %s",
+                    chooseAddressData.data.addressName,
+                    chooseAddressData.data.receiverName
+                ),
+                postalCode = chooseAddressData.data.postalCode,
+                warehouseId = chooseAddressData.tokonow.warehouseId.toString(),
+                shopId = chooseAddressData.tokonow.shopId.toString()
+            )
+        }
+        checkIfChooseAddressWidgetDataUpdated()
+        checkStateNotInServiceArea(
+            warehouseId = data.tokonow.warehouseId
+        )
     }
 
     private fun trackProductRecomAddToCart(quantity: Int, position: Int, cartId: String, productRecomModel: HomeProductRecomUiModel) {

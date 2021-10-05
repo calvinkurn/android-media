@@ -16,7 +16,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.security.*
 import javax.inject.Inject
 import javax.inject.Named
-import kotlin.random.Random
 
 /**
  * Created by Ade Fulki on 28/09/20.
@@ -130,11 +129,10 @@ class RegisterPushNotifService : JobIntentService() {
         private const val PUBLIC_KEY_PREFIX = "-----BEGIN PUBLIC KEY-----\n"
         private const val PUBLIC_KEY_SUFFIX = "\n-----END PUBLIC KEY-----"
 
-        fun startService(context: Context) {
+        fun startService(context: Context, jobId: Int) {
             try {
                 val intent = Intent(context, RegisterPushNotifService::class.java)
-                val randomValues = Random.nextInt(1000, 5000)
-                enqueueWork(context, RegisterPushNotifService::class.java, randomValues, intent)
+                enqueueWork(context, RegisterPushNotifService::class.java, jobId, intent)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

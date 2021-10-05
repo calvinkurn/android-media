@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Bundle;
@@ -118,6 +119,7 @@ import dagger.Lazy;
 import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE;
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE;
+import static com.tokopedia.utils.resources.DarkModeUtilsKt.isDarkMode;
 
 /**
  * Created by meta on 19/06/18.
@@ -166,10 +168,13 @@ public class MainParentActivity extends BaseActivity implements
     private static final String HOME_PERFORMANCE_MONITORING_PREPARE_METRICS = "home_plt_start_page_metrics";
     private static final String HOME_PERFORMANCE_MONITORING_NETWORK_METRICS = "home_plt_network_request_page_metrics";
     private static final String HOME_PERFORMANCE_MONITORING_RENDER_METRICS = "home_plt_render_page_metrics";
+    private static final String MAIN_PARENT_ON_CREATE_METRICS = "mp_main_parent_on_create_metrics";
+    private static final String MAIN_PARENT_ON_START_METRICS = "mp_main_parent_on_start_metrics";
+    private static final String MAIN_PARENT_ON_RESUME_METRICS = "mp_main_parent_on_resume_metrics";
 
-    private static final String HOME_PERFORMANCE_MONITORING_CACHE_ATTRIBUTION = "dataSource";
-    private static final String HOME_PERFORMANCE_MONITORING_CACHE_VALUE = "Cache";
-    private static final String HOME_PERFORMANCE_MONITORING_NETWORK_VALUE = "Network";
+    private static final String PERFORMANCE_MONITORING_CACHE_ATTRIBUTION = "dataSource";
+    private static final String PERFORMANCE_MONITORING_CACHE_VALUE = "Cache";
+    private static final String PERFORMANCE_MONITORING_NETWORK_VALUE = "Network";
 
     private static final String OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY = "mp_official_store";
     private static final String OFFICIAL_STORE_PERFORMANCE_MONITORING_PREPARE_METRICS = "official_store_plt_start_page_metrics";
@@ -177,6 +182,8 @@ public class MainParentActivity extends BaseActivity implements
     private static final String OFFICIAL_STORE_PERFORMANCE_MONITORING_RENDER_METRICS = "official_store_plt_render_page_metrics";
 
     private static final String MAIN_PARENT_PERFORMANCE_MONITORING_KEY = "mp_slow_rendering_perf";
+
+    private static final String MAIN_PARENT_LOAD_ON_RESUME = "main_parent_load_on_resume";
 
     private static final String ROLLANCE_EXP_NAME = RollenceKey.NAVIGATION_EXP_TOP_NAV;
     private static final String ROLLANCE_EXP_NAME2 = RollenceKey.NAVIGATION_EXP_TOP_NAV2;
@@ -230,6 +237,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private PageLoadTimePerformanceCallback pageLoadTimePerformanceCallback;
     private PageLoadTimePerformanceCallback officialStorePageLoadTimePerformanceCallback;
+    private PageLoadTimePerformanceCallback mainParentPageLoadTimePerformanceCallback;
 
     private boolean isNewNavigation;
 
@@ -256,6 +264,7 @@ public class MainParentActivity extends BaseActivity implements
         //changes for triggering unittest checker
         startSelectedPagePerformanceMonitoring();
         startMainParentPerformanceMonitoring();
+        pageLoadTimePerformanceCallback.startCustomMetric(MAIN_PARENT_ON_CREATE_METRICS);
 
         super.onCreate(savedInstanceState);
         initInjector();
@@ -277,6 +286,8 @@ public class MainParentActivity extends BaseActivity implements
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeEventsWeave, RemoteConfigKey.ENABLE_ASYNC_OPENHOME_EVENT, getContext());
         installDFonBackground();
         runRiskWorker();
+
+        pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_CREATE_METRICS);
     }
 
     private void runRiskWorker() {
@@ -328,10 +339,12 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onStart() {
         super.onStart();
+        pageLoadTimePerformanceCallback.startCustomMetric(MAIN_PARENT_ON_START_METRICS);
         if (isFirstTimeUser()) {
             setDefaultShakeEnable();
             routeOnboarding();
         }
+        pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_START_METRICS);
     }
 
     private void routeOnboarding() {
@@ -643,6 +656,9 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        if(!getIntent().getBooleanExtra(MAIN_PARENT_LOAD_ON_RESUME, false)) {
+            pageLoadTimePerformanceCallback.startCustomMetric(MAIN_PARENT_ON_RESUME_METRICS);
+        }
         // if user is downloading the update (in app update feature),
         // check if the download is finished or is in progress
         checkForInAppUpdateInProgressOrCompleted();
@@ -668,6 +684,10 @@ public class MainParentActivity extends BaseActivity implements
         if (currentFragment != null) {
             configureStatusBarBasedOnFragment(currentFragment);
             FragmentLifecycleObserver.INSTANCE.onFragmentSelected(currentFragment);
+        }
+        if(!getIntent().getBooleanExtra(MAIN_PARENT_LOAD_ON_RESUME, false)) {
+            pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_RESUME_METRICS);
+            getIntent().putExtra(MAIN_PARENT_LOAD_ON_RESUME, true);
         }
     }
 
@@ -1141,12 +1161,12 @@ public class MainParentActivity extends BaseActivity implements
         if (getPageLoadTimePerformanceInterface() != null) {
             if (isCache) {
                 getPageLoadTimePerformanceInterface().addAttribution(
-                        HOME_PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
-                        HOME_PERFORMANCE_MONITORING_CACHE_VALUE);
+                        PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
+                        PERFORMANCE_MONITORING_CACHE_VALUE);
             } else {
                 getPageLoadTimePerformanceInterface().addAttribution(
-                        HOME_PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
-                        HOME_PERFORMANCE_MONITORING_NETWORK_VALUE);
+                        PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
+                        PERFORMANCE_MONITORING_NETWORK_VALUE);
             }
             getPageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
             getPageLoadTimePerformanceInterface().stopMonitoring();
@@ -1190,8 +1210,17 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
-    public void stopOfficialStorePerformanceMonitoring() {
+    public void stopOfficialStorePerformanceMonitoring(boolean isCache) {
         if (officialStorePageLoadTimePerformanceCallback != null) {
+            if (isCache) {
+                officialStorePageLoadTimePerformanceCallback.addAttribution(
+                        PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
+                        PERFORMANCE_MONITORING_CACHE_VALUE);
+            } else {
+                officialStorePageLoadTimePerformanceCallback.addAttribution(
+                        PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
+                        PERFORMANCE_MONITORING_NETWORK_VALUE);
+            }
             officialStorePageLoadTimePerformanceCallback.stopRenderPerformanceMonitoring();
             officialStorePageLoadTimePerformanceCallback.stopMonitoring();
             officialStorePageLoadTimePerformanceCallback = null;
