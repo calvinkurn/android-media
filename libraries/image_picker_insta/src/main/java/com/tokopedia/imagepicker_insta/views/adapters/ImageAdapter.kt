@@ -28,6 +28,7 @@ class ImageAdapter(
      * Data and count
      * */
     val selectedPositionMap = mutableMapOf<ImageAdapterData, Int>()
+    var selectionOrder = SelectionOrder()
 
     fun isSelectedPositionsEmpty(): Boolean {
         return selectedPositionMap.isEmpty()
@@ -39,15 +40,18 @@ class ImageAdapter(
                 return false
             }
         }
+        selectionOrder.insert(dataList[position])
         selectedPositionMap[dataList[position]] = selectedPositionMap.size + 1
         return true
     }
 
     fun addSelectedItem(data: ImageAdapterData) {
+        selectionOrder.insert(data)
         selectedPositionMap[data] = selectedPositionMap.size + 1
     }
 
     fun clearSelectedItems() {
+        selectionOrder.clear()
         selectedPositionMap.clear()
     }
 
@@ -77,6 +81,8 @@ class ImageAdapter(
         } else if (holder is PhotosViewHolder) {
             val currentImageAdapterData = dataList[position]
             holder.setData(currentImageAdapterData, holder.itemView.layoutParams.height)
+            holder.updateMask(mainFragmentContract.isMultiSelectEnable(),
+                mainFragmentContract.getAssetInPreview() == currentImageAdapterData.asset)
             holder.setChecked(selectedPositionMap[currentImageAdapterData], mainFragmentContract.isMultiSelectEnable())
 
             holder.itemView.setOnClickListener {
@@ -84,26 +90,28 @@ class ImageAdapter(
             }
 
             holder.itemView.setOnLongClickListener {
-
-                if (!mainFragmentContract.isMultiSelectEnable()) {
-
-                    onItemLongClick?.invoke(currentImageAdapterData)
-
-                    //Remove previously selected items
-                    if (selectedPositionMap.isNotEmpty()) {
-                        val listOfIndexes = getListOfIndexWhichAreSelected()
-                        selectedPositionMap.clear()
-                        listOfIndexes.forEach {
-                            notifyItemChanged(it)
-                        }
-                    }
-                }
-
-                handleSelectionUnSelection(holder, position)
-
+                handleLongClick(currentImageAdapterData,holder,position)
                 return@setOnLongClickListener true
             }
         }
+    }
+
+    private fun handleLongClick(currentImageAdapterData:ImageAdapterData, holder: PhotosViewHolder, position: Int){
+        if (!mainFragmentContract.isMultiSelectEnable()) {
+
+            onItemLongClick?.invoke(currentImageAdapterData)
+
+            //Remove previously selected items
+            if (selectedPositionMap.isNotEmpty()) {
+                val listOfIndexes = getListOfIndexWhichAreSelected()
+                clearSelectedItems()
+                listOfIndexes.forEach {
+                    notifyItemChanged(it)
+                }
+            }
+        }
+
+        handleSelectionUnSelection(holder, position)
     }
 
     private fun handleSelectionUnSelection(holder: PhotosViewHolder, position: Int) {
@@ -112,12 +120,14 @@ class ImageAdapter(
 
             if (item.asset != mainFragmentContract.getAssetInPreview()) {
                 itemSelectCallback?.invoke(item, true)
+                selectionOrder.insert(item)
+                notifyItems()
             } else if (mainFragmentContract.isMultiSelectEnable()){
                 unSelectItem(position, holder)
             }
 
         } else {
-            selectItem(position, holder)
+            selectItem(position)
         }
     }
 
@@ -127,6 +137,7 @@ class ImageAdapter(
 
         val isSelectedNextItem = selectNextItem(circleCount)
 
+        selectionOrder.remove(item)
         selectedPositionMap.remove(item)
 
         //Notify items to update circle count
@@ -141,6 +152,7 @@ class ImageAdapter(
         //Logic to notify items
         notifyItems()
 
+        holder?.updateMask(mainFragmentContract.isMultiSelectEnable(), false)
         holder?.setChecked(null, mainFragmentContract.isMultiSelectEnable())
         if (!isSelectedNextItem) {
             itemSelectCallback?.invoke(dataList[position], false)
@@ -151,10 +163,7 @@ class ImageAdapter(
         val firstPos = Math.max(0, layoutManager.findFirstVisibleItemPosition())
         val lastPos = Math.min(layoutManager.findLastVisibleItemPosition(), dataList.size - 1)
         (firstPos..lastPos).forEach { index ->
-//            val isSelected = selectedPositionMap[dataList[index]]
-//            if (isSelected != null) {
-                notifyItemChanged(index)
-//            }
+            notifyItemChanged(index)
         }
     }
 
@@ -172,46 +181,15 @@ class ImageAdapter(
     }
 
     private fun selectNextItem(circleCount: Int?): Boolean {
-        if (mainFragmentContract.isMultiSelectEnable() && circleCount != null) {
-            val previousSelectedItem = findPreviousSelectedAdapterPosition(circleCount)
-            val nextSelectedItem = findNextSelectedAdapterPosition(circleCount)
-
-            if (nextSelectedItem != null) {
-                itemSelectCallback?.invoke(nextSelectedItem, true)
-                return true
-            } else if (previousSelectedItem != null) {
-                itemSelectCallback?.invoke(previousSelectedItem, true)
-                return true
-            }
+        val previousSelectedItem = selectionOrder.getPreviousSelectedItem()
+        if (mainFragmentContract.isMultiSelectEnable() && circleCount != null && previousSelectedItem!=null) {
+            itemSelectCallback?.invoke(previousSelectedItem, true)
+            return true
         }
         return false
     }
 
-    fun findPreviousSelectedAdapterPosition(circleCount: Int): ImageAdapterData? {
-        var tempLowCount = 0
-        var key: ImageAdapterData? = null
-        for ((k, v) in selectedPositionMap) {
-            if (v < circleCount && v > tempLowCount) {
-                tempLowCount = v
-                key = k
-            }
-        }
-        return key
-    }
-
-    fun findNextSelectedAdapterPosition(circleCount: Int): ImageAdapterData? {
-        var tempHighCount = selectedPositionMap.size + 1
-        var key: ImageAdapterData? = null
-        for ((k, v) in selectedPositionMap) {
-            if (v > circleCount && v < tempHighCount) {
-                tempHighCount = v
-                key = k
-            }
-        }
-        return key
-    }
-
-    private fun selectItem(position: Int, holder: PhotosViewHolder) {
+    private fun selectItem(position: Int) {
         if (dataList[position].asset is VideoData) {
             if (!(dataList[position].asset as VideoData).canBeSelected) {
                 mainFragmentContract.showToast("Video harus berdurasi maksimum ${VideoUtil.DURATION_MAX_LIMIT} detik.", Toaster.TYPE_ERROR)
@@ -223,13 +201,13 @@ class ImageAdapter(
             if (!mainFragmentContract.isMultiSelectEnable() && selectedPositionMap.isNotEmpty()) {
                 //Remove previously selected item
                 val rangeList = getListOfIndexWhichAreSelected()
-                selectedPositionMap.clear()
+                clearSelectedItems()
                 if (!rangeList.isNullOrEmpty()) {
                     notifyItemChanged(rangeList.first())
                 }
             }
             addSelectedItem(position)
-            holder.setChecked(selectedPositionMap.size, mainFragmentContract.isMultiSelectEnable())
+            notifyItems()
             itemSelectCallback?.invoke(dataList[position], true)
         } else {
             mainFragmentContract.showToast("Oops, maksimal upload $maxMultiSelectLimit media, Hapus salah satu media jika ingin menggantinya.", Toaster.TYPE_ERROR)
