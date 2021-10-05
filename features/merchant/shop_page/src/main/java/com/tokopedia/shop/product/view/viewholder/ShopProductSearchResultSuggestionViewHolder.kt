@@ -30,8 +30,9 @@ class ShopProductSearchResultSuggestionViewHolder(
         val LAYOUT = R.layout.item_shop_product_search_suggestion_view
 
         private const val KEYWORD_PARAMS = "q="
-        private const val QUERY_SPLIT_DELIMITER = "&"
+        private const val QUERY_SPLIT_DELIMITER = "&rf="
         private const val ENCODING_FORMAT = "UTF-8"
+        private const val DEFAULT_FIRST_INDEX = 0
     }
 
     private val suggestionTextView: Typography? = itemView.findViewById(R.id.suggestion_text)
@@ -71,12 +72,22 @@ class ShopProductSearchResultSuggestionViewHolder(
                 ds.typeface = Typeface.DEFAULT_BOLD
             }
         }
-        suggestionTextSpannedString.setSpan(
-                clickableSpan,
-                suggestionTextSpannedString.indexOf(keywordWithQuote),
-                ((suggestionTextSpannedString.indexOf(keywordWithQuote)) + keywordWithQuote.length),
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
+        val startClickedIndex = suggestionTextSpannedString.indexOf(keywordWithQuote).takeIf { it.isMoreThanZero() } ?: DEFAULT_FIRST_INDEX
+        if (startClickedIndex.isMoreThanZero()) {
+            suggestionTextSpannedString.setSpan(
+                    clickableSpan,
+                    startClickedIndex,
+                    ((suggestionTextSpannedString.indexOf(keywordWithQuote)) + keywordWithQuote.length),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        } else {
+            suggestionTextSpannedString.setSpan(
+                    clickableSpan,
+                    DEFAULT_FIRST_INDEX,
+                    suggestionTextSpannedString.lastIndex,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
         return suggestionTextSpannedString
     }
 
