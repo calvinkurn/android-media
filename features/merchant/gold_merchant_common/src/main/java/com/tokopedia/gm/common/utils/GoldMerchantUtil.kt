@@ -50,8 +50,7 @@ object GoldMerchantUtil {
             val calendar = Calendar.getInstance(DateFormatUtils.DEFAULT_LOCALE)
             simpleDateFormat.parse(dateString)?.let { calendar.time = it }
             calendar.add(Calendar.DATE, NEW_SELLER_DAYS)
-            return calendar.get(Calendar.DAY_OF_WEEK) > Calendar.MONDAY ||
-                    calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
+            return calendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY
         } catch (e: Exception) {
             e.printStackTrace()
             false
