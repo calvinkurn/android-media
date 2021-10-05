@@ -173,7 +173,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
                 link.text = text
                 link.setOnClickListener {
                     tracking.eventReportClickLink(text, trackingReasonLabel)
-                    RouteManager.route(binding.root.context, "${ApplinkConst.WEBVIEW}?url=$url")
+                    RouteManager.route(root.context, "${ApplinkConst.WEBVIEW}?url=$url")
                 }
             }
         }
