@@ -253,8 +253,6 @@ public class RemoteConfigKey {
     public static final String SETTING_SHOW_DARK_MODE_TOGGLE = "android_show_dark_mode_toggle";
     public static final String SETTING_SHOW_SCREEN_RECORDER = "android_enable_screen_recorder";
 
-    public static final String ENABLE_TOKOPEDIA_NOW = "android_main_app_enable_tokopedia_now";
-
     public static final String ENABLE_PEDULI_LINDUNGI_SCANQR = "android_customer_enable_peduli_lindungi_scanqr";
 
     public static final String FORCE_LIGHT_MODE = "android_force_light_mode";
