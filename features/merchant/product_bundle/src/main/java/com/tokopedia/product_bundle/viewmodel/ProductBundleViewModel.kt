@@ -12,9 +12,12 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product_bundle.common.data.model.request.InventoryDetail
 import com.tokopedia.product_bundle.common.data.model.request.ProductData
 import com.tokopedia.product_bundle.common.data.model.request.RequestData
+import com.tokopedia.product_bundle.common.data.model.request.UserLocation
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
 import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfoResponse
@@ -40,6 +43,7 @@ class ProductBundleViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getBundleInfoUseCase: GetBundleInfoUseCase,
     private val addToCartBundleUseCase: AddToCartBundleUseCase,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main) {
 
@@ -155,6 +159,7 @@ class ProductBundleViewModel @Inject constructor(
     }
 
     fun getBundleInfo(productId: Long) {
+        val chosenAddress = chosenAddressRequestHelper.getChosenAddress()
         mPageState.value = ProductBundleState.LOADING
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
@@ -165,9 +170,20 @@ class ProductBundleViewModel @Inject constructor(
                         variantDetail = true,
                         CheckCampaign = true,
                         BundleGroup = true,
-                        Preorder = true
+                        Preorder = true,
+                        inventoryDetail = InventoryDetail(
+                            required = true,
+                            userLocation = UserLocation(
+                                addressId = chosenAddress?.addressId.orEmpty(),
+                                districtID = chosenAddress?.districtId.orEmpty(),
+                                postalCode = chosenAddress?.postalCode.orEmpty(),
+                                latlon = chosenAddress?.geolocation.orEmpty()
+                            )
+                        )
                     ),
-                    productData = ProductData(productID = productId.toString())
+                    productData = ProductData(
+                        productID = productId.toString()
+                    )
                 )
                 getBundleInfoUseCase.executeOnBackground()
             }
