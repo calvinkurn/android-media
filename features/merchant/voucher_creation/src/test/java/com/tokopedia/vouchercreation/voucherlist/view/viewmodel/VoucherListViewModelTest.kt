@@ -49,6 +49,9 @@ class VoucherListViewModelTest {
     lateinit var getBroadCastMetaDataUseCase: GetBroadCastMetaDataUseCase
 
     @RelaxedMockK
+    lateinit var initiateVoucherUseCase: InitiateVoucherUseCase
+
+    @RelaxedMockK
     lateinit var voucherUiModel: VoucherUiModel
 
     @RelaxedMockK
@@ -79,6 +82,7 @@ class VoucherListViewModelTest {
                 shopBasicDataUseCase,
                 voucherDetailUseCase,
                 getBroadCastMetaDataUseCase,
+                initiateVoucherUseCase,
                 CoroutineTestDispatchersProvider
         )
 
