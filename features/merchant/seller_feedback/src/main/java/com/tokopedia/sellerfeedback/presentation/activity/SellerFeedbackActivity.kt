@@ -40,6 +40,8 @@ class SellerFeedbackActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment {
         val uri = intent.getParcelableExtra<Uri>(EXTRA_URI_IMAGE) ?: null
+        val fragment = SellerFeedbackFragment.createInstance(uri)
+        fragment.setHasOptionsMenu(true)
         return SellerFeedbackFragment.createInstance(uri)
     }
 }

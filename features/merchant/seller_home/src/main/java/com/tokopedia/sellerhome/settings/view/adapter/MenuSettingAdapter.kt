@@ -59,6 +59,9 @@ class MenuSettingAdapter(private val context: Context?,
             MenuItemUiModel(
                     context?.getString(R.string.setting_menu_review_app).orEmpty(),
                     settingTypeInfix = SettingTrackingConstant.APP_SETTING) { listener.onReviewApplication() },
+            MenuItemUiModel(
+                    context?.getString(R.string.setting_menu_give_feedback).orEmpty(),
+                    settingTypeInfix = SettingTrackingConstant.APP_SETTING) { listener.onGiveFeedback() },
             DividerUiModel(DividerType.THIN_INDENTED)
     )
 
@@ -157,12 +160,12 @@ class MenuSettingAdapter(private val context: Context?,
             listener.onNoAccess()
         }
     }
-    
+
     interface Listener {
         fun onAddOrChangePassword()
         fun onShareApplication()
         fun onReviewApplication()
+        fun onGiveFeedback()
         fun onNoAccess()
     }
-
 }

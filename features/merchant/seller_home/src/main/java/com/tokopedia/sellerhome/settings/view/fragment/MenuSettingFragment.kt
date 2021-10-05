@@ -20,6 +20,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracking
@@ -154,6 +155,10 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         reviewApplication()
     }
 
+    override fun onGiveFeedback() {
+        openGlobalFeedback()
+    }
+
     override fun onNoAccess() {
         showToasterError(context?.getString(R.string.seller_menu_admin_no_permission_oops).orEmpty())
     }
@@ -242,6 +247,12 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         } catch (e: ActivityNotFoundException) {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(URL_PLAY_STORE_HOST + activity?.application?.packageName)))
         }
+    }
+
+    private fun openGlobalFeedback() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_FEEDBACK)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
     }
 
     private fun showLogoutDialog() {

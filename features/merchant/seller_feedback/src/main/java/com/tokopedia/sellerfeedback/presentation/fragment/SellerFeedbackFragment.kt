@@ -7,9 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.FrameLayout
@@ -151,6 +149,22 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
                     .build()
         }
         component?.inject(this)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.seller_feedback_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.sellerFeedbackSettings -> showSettingsBottomSheet()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun showSettingsBottomSheet() {
+
     }
 
     private fun setupViewInteraction() {

@@ -30,6 +30,7 @@
     <string name="feedback_form_ticker_description">Form ini hanya untuk memberi masukan. Jika butuh bantuan langsung, hubungi  &lt;a href="#"&gt;Tokopedia Care&lt;/a&gt;</string>
     <string name="screenshot_seller_feedback_toaster_text">Screenshot terambil. Sekarang kamu bisa beri feedback tentang halaman ini.</string>
     <string name="screenshot_seller_feedback_toaster_cta_text">Beri</string>
+    <string name="feedback_form_settings">Pengaturan</string>
 
     <string-array name="feedback_pages">
         <item>Home</item>
