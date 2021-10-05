@@ -64,12 +64,16 @@ import com.tokopedia.home.account.presentation.presenter.SettingsPresenter
 import com.tokopedia.home.account.presentation.view.GeneralSettingMenuLabel
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel
+import com.tokopedia.home_account.view.fragment.HomeAccountUserFragment
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.util.initializeSellerMigrationAccountSettingTicker
 import com.tokopedia.sessioncommon.ErrorHandlerSession
@@ -99,6 +103,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     private lateinit var baseSettingView: View
     private lateinit var updateButton: UnifyButton
     private lateinit var localCacheHandler: LocalCacheHandler
+    private lateinit var remoteConfigInstance: RemoteConfigInstance
 
     private lateinit var accountAnalytics: AccountAnalytics
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -107,8 +112,11 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(context) }
     private val reviewHelper by lazy { createReviewHelper(context?.applicationContext) }
 
-    private val sharedPreferences: SharedPreferences? by lazy {
-        context?.getSharedPreferences(KEY_GENERAL_SETTING_PREFERENCES, Context.MODE_PRIVATE)
+    private fun getAbTestPlatform(): AbTestPlatform {
+        if (!::remoteConfigInstance.isInitialized) {
+            remoteConfigInstance = RemoteConfigInstance(activity?.application)
+        }
+        return remoteConfigInstance.abTestPlatform
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -187,7 +195,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             text = getString(R.string.application_version_fmt, GlobalConfig.RAW_VERSION_NAME)
             setOnClickListener {
                 tempCountDarkModeToggle++
-                if (tempCountDarkModeToggle == 10) {
+                if (tempCountDarkModeToggle == ENABLE_DARK_MODE_TOGGLE_COUNT) {
                     localCacheHandler.apply {
                         putBoolean(KEY_PREF_DARK_MODE_TOGGLE, true)
                         applyEditor()
@@ -237,8 +245,13 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
                     getString(R.string.title_safe_mode_setting), getString(R.string.subtitle_safe_mode_setting), true))
 
         val isShowDarkMode = remoteConfig.getBoolean(
-                RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
-        if(isShowDarkMode) {
+            RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
+        val isRollenceEnabledDarkMode = getAbTestPlatform().getBoolean(
+            RollenceKey.USER_DARK_MODE_TOGGLE, false)
+        val isForceDarkModeToggleVisible =
+            localCacheHandler.getBoolean(KEY_PREF_DARK_MODE_TOGGLE, false)
+
+        if(isShowDarkMode || isRollenceEnabledDarkMode || isForceDarkModeToggleVisible) {
             settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_DARK_MODE,
                     getString(R.string.title_dark_mode), getString(R.string.subtitle_dark_mode), false,
                     GeneralSettingMenuLabel.LABEL_BETA))

@@ -26,7 +26,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
@@ -92,7 +91,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -145,7 +143,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private lateinit var firebaseRemoteConfig: FirebaseRemoteConfigImpl
-    private lateinit var localCacheHandler: LocalCacheHandler
 
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(HomeAccountUserViewModel::class.java) }
@@ -187,10 +184,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         return getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_ACCOUNT_LINKING, true) && enableLinkingAccountRollout()
     }
 
-    private fun isDarkModeRollenceEnabled(): Boolean {
-        return getAbTestPlatform().getBoolean(RollenceKey.USER_DARK_MODE_TOGGLE, false)
-    }
-
     private fun getAbTestPlatform(): AbTestPlatform {
         if (!::remoteConfigInstance.isInitialized) {
             remoteConfigInstance = RemoteConfigInstance(activity?.application)
@@ -216,7 +209,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         context?.let {
             trackingQueue = TrackingQueue(it)
         }
-        localCacheHandler = LocalCacheHandler(context, KEY_GENERAL_SETTING_PREFERENCES)
     }
 
     override fun onAttach(context: Context) {
@@ -519,9 +511,9 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private fun fetchRemoteConfig() {
         context?.let {
             isShowHomeAccountTokopoints = getRemoteConfig().getBoolean(REMOTE_CONFIG_KEY_HOME_ACCOUNT_TOKOPOINTS, false)
-            isShowScreenRecorder = getRemoteConfig().getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
             isShowDarkModeToggle = getRemoteConfig().getBoolean(RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false) ||
-                    isDarkModeRollenceEnabled()
+                    Re
+            isShowScreenRecorder = getRemoteConfig().getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
         }
     }
 
@@ -891,7 +883,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun setupSettingList() {
         val userSettingsMenu = menuGenerator.generateUserSettingMenu()
-        var isForceDarkModeToggleVisible = localCacheHandler.getBoolean(KEY_PREF_DARK_MODE_TOGGLE, false)
         userSettingsMenu.items.forEach {
             if(it.id == AccountConstants.SettingCode.SETTING_LINK_ACCOUNT && !isEnableLinkAccount()) {
                 userSettingsMenu.items.remove(it)
@@ -899,9 +890,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         }
         addItem(userSettingsMenu, addSeparator = true)
         addItem(menuGenerator.generateApplicationSettingMenu(
-            accountPref, permissionChecker,
-            isShowDarkModeToggle || isForceDarkModeToggleVisible, isShowScreenRecorder),
-            addSeparator = true)
+                accountPref, permissionChecker, isShowDarkModeToggle, isShowScreenRecorder),
+                addSeparator = true)
         addItem(menuGenerator.generateAboutTokopediaSettingMenu(), addSeparator = true)
         if (GlobalConfig.isAllowDebuggingTools()) {
             addItem(menuGenerator.generateDeveloperOptionsSettingMenu(), addSeparator = true)
@@ -1517,9 +1507,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
         private const val REMOTE_CONFIG_KEY_ACCOUNT_LINKING = "android_user_link_account_entry_point"
         private const val LINK_STATUS_ROLLOUT = "goto_linking"
-
-        private const val KEY_GENERAL_SETTING_PREFERENCES = "KEY_GENERAL_SETTING_PREFERENCES"
-        private const val KEY_PREF_DARK_MODE_TOGGLE = "KEY_PREF_DARK_MODE_TOGGLE"
 
         fun newInstance(bundle: Bundle?): Fragment {
             return HomeAccountUserFragment().apply {
