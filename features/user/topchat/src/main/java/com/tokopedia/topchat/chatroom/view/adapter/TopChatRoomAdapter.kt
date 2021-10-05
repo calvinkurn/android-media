@@ -330,6 +330,7 @@ class TopChatRoomAdapter constructor(
 
     fun reset() {
         visitables.clear()
+        offsetUiModelMap.clear()
         bottomMostHeaderDate = null
         topMostHeaderDate = null
         topMostHeaderDateIndex = null
