@@ -123,10 +123,11 @@ class ReportFormAdapter(private val item: ProductReportReason,
 
     inner class SubmitViewHolder(view: View): RecyclerView.ViewHolder(view){
         private val binding = ItemSubmitFormBinding.bind(view)
+        private val context = binding.root.context
         init {
             with(binding){
                 footer.movementMethod = LinkMovementMethod.getInstance()
-                val spannable = MethodChecker.fromHtml(view.context.getString(R.string.product_report_see_all_types)) as Spannable
+                val spannable = MethodChecker.fromHtml(context.getString(R.string.product_report_see_all_types)) as Spannable
                 spannable.getSpans(0, spannable.length, URLSpan::class.java).forEach {
                     val start = spannable.getSpanStart(it)
                     val end = spannable.getSpanEnd(it)
@@ -135,7 +136,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
                         listener = object : WebViewURLSpan.OnClickListener {
                             override fun onClick(url: String) {
                                 tracking.eventReportLearnMore(item.value.toLowerCase(Locale.getDefault()))
-                                RouteManager.route(itemView.context, "${ApplinkConst.WEBVIEW}?url=${GeneralConstant.URL_REPORT_TYPE}")
+                                RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${GeneralConstant.URL_REPORT_TYPE}")
                             }
 
                             override fun showUnderline() = false
@@ -183,7 +184,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
         private var maxChar = -1
 
         private val binding = ItemTextareaFormBinding.bind(view)
-        private val context = view.context
+        private val context = binding.root.context
 
         override fun validate(): Boolean {
             return if (minChar == -1 && maxChar == -1) true
