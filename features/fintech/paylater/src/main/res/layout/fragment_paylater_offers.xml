@@ -5,9 +5,6 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,10 +15,9 @@
         <com.tokopedia.globalerror.GlobalError
             android:id="@+id/payLaterOffersGlobalError"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/unify_space_0"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.empty_state.EmptyStateUnify
@@ -167,6 +163,5 @@
                 />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-    </RelativeLayout>
 </androidx.core.widget.NestedScrollView>
 
