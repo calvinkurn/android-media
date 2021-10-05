@@ -2286,7 +2286,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         viewModel.variantData?.let {
             //Auto select variant will be execute when there is only 1 child left
             val selectedChild = it.children.firstOrNull { it.productId == productId ?: "" }
-            val mapOfSelectedVariant = DynamicProductDetailMapper.determineSelectedOptionIds(it, selectedChild)
 
             pdpUiUpdater?.productNewVariantDataModel?.apply {
                 mapOfSelectedVariant = DynamicProductDetailMapper.determineSelectedOptionIds(it, selectedChild)
