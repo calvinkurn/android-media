@@ -324,7 +324,7 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
         context?.let {
             val errorMessage = ErrorHandler.getErrorMessage(it, throwable)
             binding?.root?.let {
-                Toaster.build(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                Toaster.build(it, errorMessage, Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
                         getString(R.string.deals_error_reload), View.OnClickListener {
                     reLoadData()
                 }).show()
