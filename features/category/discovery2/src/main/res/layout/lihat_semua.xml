@@ -28,56 +28,72 @@
         android:scaleType="fitXY"
         tools:background="@color/green_300"
         app:layout_constraintStart_toEndOf="@+id/title_iv_parent"
-        app:layout_constraintEnd_toEndOf="@id/background_barrier"
-        app:layout_constraintTop_toTopOf="@+id/title_tv"
-        app:layout_constraintBottom_toBottomOf="@+id/sub_header_tv"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/title_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginEnd="@dimen/dp_20"
-        android:textColor="@color/Unify_N700_96"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/sub_header_tv"
-        app:layout_constraintEnd_toStartOf="@+id/lihat_semua_tv"
-        app:layout_constraintStart_toEndOf="@+id/title_iv_parent"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintHorizontal_bias="0"
-        app:typographyType="heading_4"
-        app:typographyWeight="bold"
-        tools:text="Title"
-        tools:visibility="visible" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/sub_header_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginEnd="@dimen/dp_20"
-        android:textColor="@color/Unify_N700_68"
-        android:visibility="gone"
-        app:layout_constraintEnd_toStartOf="@+id/timer_lihat_semua"
-        app:layout_constraintStart_toEndOf="@+id/title_iv_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_chainStyle = "packed"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintHorizontal_bias="0"
-        app:typographyType="body_3"
-        tools:text="Sub header"
-        tools:visibility="visible" />
-
-    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:id="@+id/timer_lihat_semua"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintEnd_toStartOf="@+id/lihat_semua_tv"
-        app:layout_constraintStart_toEndOf="@+id/sub_header_tv"
+        app:layout_constraintEnd_toEndOf="@id/data_parent"
+        app:layout_constraintTop_toTopOf="@+id/data_parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/data_parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@id/lihat_semua_tv"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/title_iv_parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/title_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginEnd="@dimen/dp_20"
+                android:textColor="@color/Unify_N700_96"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/sub_header_tv"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintHorizontal_bias="0"
+                app:typographyType="heading_4"
+                app:typographyWeight="bold"
+                tools:text="Title"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/sub_header_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:layout_marginEnd="@dimen/dp_20"
+                android:textColor="@color/Unify_N700_68"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@+id/timer_lihat_semua"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_chainStyle = "packed"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintHorizontal_bias="0"
+                app:typographyType="body_3"
+                tools:text="Sub header"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:id="@+id/timer_lihat_semua"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/sub_header_tv"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/lihat_semua_tv"
@@ -91,7 +107,7 @@
         android:text="@string/lihat_semua"
         android:textColor="@color/Unify_G500"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/sub_header_tv"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1"
@@ -99,13 +115,4 @@
         app:typographyWeight="bold"
         app:unifyButtonType="alternate"
         tools:visibility="visible" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/background_barrier"
-        app:barrierDirection="end"
-        app:barrierMargin="@dimen/dp_20"
-        app:constraint_referenced_ids="title_tv,sub_header_tv,timer_lihat_semua"
-        />
 </androidx.constraintlayout.widget.ConstraintLayout>

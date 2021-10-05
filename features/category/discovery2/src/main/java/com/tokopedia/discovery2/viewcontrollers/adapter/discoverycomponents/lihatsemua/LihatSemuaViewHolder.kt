@@ -84,14 +84,14 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
 
     private fun setupTextColours(backgroundPresent: Boolean) {
         fragment.context?.let {
-//            if (backgroundPresent) {
-////              Todo::  Change to dms_colour for dark mode plugin support
-//                lihatTitleTextView.setTextColor(MethodChecker.getColor(it,R.color.white))
-//                lihatSubTitleTextView.setTextColor(MethodChecker.getColor(it,R.color.white_95))
-//            } else {
-//                lihatTitleTextView.setTextColor(MethodChecker.getColor(it,R.color.Unify_N700_96))
-//                lihatSubTitleTextView.setTextColor(MethodChecker.getColor(it,R.color.Unify_N700_68))
-//            }
+            if (backgroundPresent) {
+//              Todo::  Change to dms_colour for dark mode plugin support
+                lihatTitleTextView.setTextColor(MethodChecker.getColor(it,R.color.white))
+                lihatSubTitleTextView.setTextColor(MethodChecker.getColor(it,R.color.white_95))
+            } else {
+                lihatTitleTextView.setTextColor(MethodChecker.getColor(it,R.color.Unify_N700_96))
+                lihatSubTitleTextView.setTextColor(MethodChecker.getColor(it,R.color.Unify_N700_68))
+            }
         }
     }
 
