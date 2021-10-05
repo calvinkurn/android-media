@@ -24,8 +24,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.explore.applink.ExploreApplinkModule;
-import com.tokopedia.explore.applink.ExploreApplinkModuleLoader;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.kyc.deeplink.OvoUpgradeDeeplinkModule;
@@ -66,7 +64,6 @@ import rx.schedulers.Schedulers;
         ConsumerDeeplinkModule.class,
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
-        ExploreApplinkModule.class,
         HomeCreditAppLinkModule.class
 })
 
@@ -85,7 +82,6 @@ DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCal
                     new ConsumerDeeplinkModuleLoader(),
                     new OvoUpgradeDeeplinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
-                    new ExploreApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader()
             );
         }

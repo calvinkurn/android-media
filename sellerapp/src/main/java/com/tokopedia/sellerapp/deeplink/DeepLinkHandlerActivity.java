@@ -23,8 +23,6 @@ import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.sellerapp.BuildConfig;
 import com.tokopedia.sellerapp.SplashScreenActivity;
 import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkAnalyticsImpl;
-import com.tokopedia.topads.applink.TopAdsApplinkModule;
-import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -38,7 +36,6 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
  * @author rizkyfadillah on 26/07/17.
  */
 @DeepLinkHandler({
-        TopAdsApplinkModule.class,
         HomeCreditAppLinkModule.class
 })
 /* **
@@ -54,7 +51,6 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
 
     public static DeepLinkDelegate getDelegateInstance() {
         return new DeepLinkDelegate(
-                new TopAdsApplinkModuleLoader(),
                 new HomeCreditAppLinkModuleLoader()
         );
     }
