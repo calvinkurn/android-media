@@ -79,7 +79,6 @@ class LottieBottomNavbar : LinearLayout {
                     resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2)
             )
             badgeText?.text = ""
-            //badgeText?.background = ContextCompat.getDrawable(context, R.drawable.bg_badge_circle)
         } else {
             badgeText?.layoutParams = badgeLayoutParam
             badgeText?.setPadding(
@@ -89,7 +88,6 @@ class LottieBottomNavbar : LinearLayout {
                     resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_2)
             )
 
-            //badgeText?.background = ContextCompat.getDrawable(context, R.drawable.bg_badge_circular)
             badgeText?.text = badgeValue.toString()
         }
 
