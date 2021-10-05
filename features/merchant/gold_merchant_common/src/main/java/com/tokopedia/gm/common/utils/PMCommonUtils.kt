@@ -27,8 +27,4 @@ object PMCommonUtils {
             else -> shopScore.toString()
         }
     }
-
-    fun getShopLevelFmt(shopLevel: Int): String {
-        return getShopScoreFmt(shopLevel)
-    }
 }
