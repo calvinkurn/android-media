@@ -10,10 +10,10 @@ import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-class DataPolicyUseCaseTest {
+class GetImagePolicyUseCaseTest {
 
     private val repository = mockk<GraphqlRepository>()
-    private val useCase = DataPolicyUseCase(repository)
+    private val useCase = GetImagePolicyUseCase(repository)
 
     private val mockPolicy = DataUploaderPolicy()
     private val mockSourceId = "WXjxja"

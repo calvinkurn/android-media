@@ -2,11 +2,25 @@ package com.tokopedia.mediauploader.data.consts
 
 object GraphQueryBuilder {
 
-    private const val paramSourceId = "\$source"
+    /**
+     * This is used for param of grqphql query
+     */
+    private const val queryParamSourceId = "\$source"
 
-    var mediaPolicy = """
-        query dataPolicyQuery($paramSourceId: String) {
-          uploadpedia_policy(source: $paramSourceId) {
+    /**
+     * This is used for param of query builder on each of use-case
+     * the source produce `$source`. we need to take out first character,
+     * so it should be return `source`.
+     */
+
+    // query param builder
+    fun setSourceId(sourceId: String) = mapOf(
+        queryParamSourceId.drop(1) to sourceId
+    )
+
+    var imagePolicy = """
+        query dataPolicyQuery($queryParamSourceId: String) {
+          uploadpedia_policy(source: $queryParamSourceId) {
             source_policy {
               host
               timeout
@@ -20,6 +34,21 @@ object GraphQueryBuilder {
                   w
                   h
                 }
+                allowed_ext
+              }
+            }
+          }
+        }
+    """.trimIndent()
+
+    var videoPolicy = """
+        query dataPolicyQuery($queryParamSourceId: String) {
+          uploadpedia_policy(source: $queryParamSourceId) {
+            source_policy {
+              host
+              timeout
+              vod_policy {
+                max_file_size
                 allowed_ext
               }
             }

@@ -1,23 +1,20 @@
 package com.tokopedia.mediauploader.data.params
 
+import com.tokopedia.mediauploader.data.consts.UrlBuilder
+import com.tokopedia.mediauploader.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.data.state.ProgressCallback
 import com.tokopedia.mediauploader.util.UploadRequestBody
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import java.io.File
 
-data class MediaUploaderParam(
-    var uploadUrl: String = "",
-    var filePath: String = "",
-    var timeOut: String = ""
-) {
+data class ImageUploaderParam(
+    override var uploadUrl: String = "",
+    override var filePath: String = "",
+    override var timeOut: String = ""
+) : CommonParam, ParamValidator() {
 
-    fun hasEmptyParams(): Boolean {
-        return uploadUrl.isEmpty() && filePath.isEmpty() && timeOut.isEmpty()
-    }
-
-    fun imageUploaderParam(
-        filePath: String,
+    fun imageBody(
         progressCallback: ProgressCallback?
     ): MultipartBody.Part {
         val file = File(filePath)
@@ -29,6 +26,17 @@ data class MediaUploaderParam(
     companion object {
         private const val BODY_FILE_UPLOAD = "file_upload"
         private const val SUPPORTED_CONTENT_TYPE = "image/*"
+
+        fun create(
+            fileToUpload: File,
+            policy: SourcePolicy,
+            sourceId: String
+        ) = ImageUploaderParam().apply {
+            uploadUrl = UrlBuilder.generate(policy.host, sourceId)
+            timeOut = policy.timeOut.toString()
+            filePath = fileToUpload.path
+        }
+
     }
 
 }

@@ -1,6 +1,6 @@
 package com.tokopedia.mediauploader.di
 
-import com.tokopedia.mediauploader.data.UploadServices
+import com.tokopedia.mediauploader.data.ImageUploadServices
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -21,8 +21,8 @@ class MediaUploaderNetworkModule {
     @Provides
     fun provideMediaUploaderServices(
         @MediaUploaderQualifier retrofit: Retrofit
-    ): UploadServices {
-        return retrofit.create(UploadServices::class.java)
+    ): ImageUploadServices {
+        return retrofit.create(ImageUploadServices::class.java)
     }
 
 }

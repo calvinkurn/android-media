@@ -12,8 +12,8 @@ import kotlin.test.assertTrue
 
 class UploaderUseCaseTest {
 
-    private val dataPolicyUseCase = mockk<DataPolicyUseCase>(relaxed = true)
-    private val mediaUploaderUseCase = mockk<MediaUploaderUseCase>()
+    private val dataPolicyUseCase = mockk<GetImagePolicyUseCase>(relaxed = true)
+    private val mediaUploaderUseCase = mockk<GetImageUploaderUseCase>()
     private val useCase = UploaderUseCase(dataPolicyUseCase, mediaUploaderUseCase)
 
     private val file = mockk<File>()
@@ -111,7 +111,7 @@ class UploaderUseCaseTest {
         coEvery {
             dataPolicyUseCase(any())
         } answers {
-            val policy = Policy(
+            val policy = ImagePolicy(
                 maxFileSize = 1000,
                 extension = ".jpg,.jpeg"
             )

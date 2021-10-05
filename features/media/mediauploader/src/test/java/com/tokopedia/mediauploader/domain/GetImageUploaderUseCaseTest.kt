@@ -1,8 +1,8 @@
 package com.tokopedia.mediauploader.domain
 
-import com.tokopedia.mediauploader.data.UploadServices
+import com.tokopedia.mediauploader.data.ImageUploadServices
 import com.tokopedia.mediauploader.data.entity.MediaUploader
-import com.tokopedia.mediauploader.data.params.MediaUploaderParam
+import com.tokopedia.mediauploader.data.params.ImageUploaderParam
 import com.tokopedia.mediauploader.stubUploadFileServices
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -10,16 +10,16 @@ import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-class MediaUploaderUseCaseTest {
+class GetImageUploaderUseCaseTest {
 
-    private val services = mockk<UploadServices>()
-    private val useCase = MediaUploaderUseCase(services)
+    private val services = mockk<ImageUploadServices>()
+    private val useCase = GetImageUploaderUseCase(services)
     private var expectedValue = MediaUploader()
 
     @Test fun `It should be failed to upload image without params`() {
         runBlocking {
             // Given
-            val params = MediaUploaderParam()
+            val params = ImageUploaderParam()
 
             // Then
             assertFailsWith<RuntimeException> {
@@ -31,7 +31,7 @@ class MediaUploaderUseCaseTest {
     @Test fun `It should success upload image and received uploadId correctly`() {
         runBlocking {
             // Given
-            val params = MediaUploaderParam(
+            val params = ImageUploaderParam(
                 uploadUrl = "/",
                 filePath = "image.jpg",
                 timeOut = "60",

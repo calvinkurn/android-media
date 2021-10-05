@@ -9,7 +9,7 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Url
 
-interface UploadServices {
+interface ImageUploadServices {
 
     @POST
     @Multipart
@@ -21,29 +21,9 @@ interface UploadServices {
 
         /*
         * file_upload:
-        * media blob (a file) to upload
+        * an multiple-form data to retrieve the data
         * */
-        @Part fileUpload: MultipartBody.Part,
-
-        /*
-        * change time out at runtime
-        * */
-        @Header(HEADER_TIMEOUT) timeOut: String
-    ) : MediaUploader
-
-    @POST
-    @Multipart
-    suspend fun uploadSingle(
-        /*
-        * get url from data policy
-        * */
-        @Url urlToUpload: String,
-
-        /*
-        * file_upload:
-        * media blob (a file) to upload
-        * */
-        @Part fileUpload: MultipartBody.Part,
+        @Part partBody: MultipartBody.Part,
 
         /*
         * change time out at runtime

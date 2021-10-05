@@ -3,9 +3,9 @@ package com.tokopedia.mediauploader.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.mediauploader.data.UploadServices
-import com.tokopedia.mediauploader.domain.DataPolicyUseCase
-import com.tokopedia.mediauploader.domain.MediaUploaderUseCase
+import com.tokopedia.mediauploader.data.ImageUploadServices
+import com.tokopedia.mediauploader.domain.GetImagePolicyUseCase
+import com.tokopedia.mediauploader.domain.GetImageUploaderUseCase
 import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -27,25 +27,25 @@ class MediaUploaderModule {
     @MediaUploaderQualifier
     fun provideDataPolicyUseCase(
             repository: GraphqlRepository
-    ): DataPolicyUseCase {
-        return DataPolicyUseCase(repository)
+    ): GetImagePolicyUseCase {
+        return GetImagePolicyUseCase(repository)
     }
 
     @Provides
     @MediaUploaderQualifier
     fun provideMediaUploaderUseCase(
-            services: UploadServices
-    ): MediaUploaderUseCase {
-        return MediaUploaderUseCase(services)
+            services: ImageUploadServices
+    ): GetImageUploaderUseCase {
+        return GetImageUploaderUseCase(services)
     }
 
     @Provides
     @MediaUploaderQualifier
     fun provideUploaderUseCase(
-            dataPolicyUseCase: DataPolicyUseCase,
-            mediaUploaderUseCase: MediaUploaderUseCase
+        imagePolicyUseCase: GetImagePolicyUseCase,
+        imageUploaderUseCase: GetImageUploaderUseCase
     ): UploaderUseCase {
-        return UploaderUseCase(dataPolicyUseCase, mediaUploaderUseCase)
+        return UploaderUseCase(imagePolicyUseCase, imageUploaderUseCase)
     }
 
 }

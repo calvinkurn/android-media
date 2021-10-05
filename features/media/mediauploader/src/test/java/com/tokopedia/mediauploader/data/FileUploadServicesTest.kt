@@ -25,7 +25,7 @@ class FileUploadServicesTest {
         .baseUrl(mockWebServer.url(url))
         .addConverterFactory(GsonConverterFactory.create(Gson()))
         .build()
-        .create(UploadServices::class.java)
+        .create(ImageUploadServices::class.java)
 
     @Before fun setUp() {
         try {

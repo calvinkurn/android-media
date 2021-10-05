@@ -22,13 +22,13 @@ import javax.inject.Inject
 import android.util.Log.getStackTraceString as getStackTraceMessage
 
 class UploaderUseCase @Inject constructor(
-        dataPolicyUseCase: DataPolicyUseCase,
-        mediaUploaderUseCase: MediaUploaderUseCase
+    imagePolicyUseCase: GetImagePolicyUseCase,
+    imageUploaderUseCase: GetImageUploaderUseCase
 ) : CoroutineUseCase<RequestParams, UploadResult>(Dispatchers.IO) {
 
     private val uploaderManager = ImageUploaderManager(
-        dataPolicyUseCase,
-        mediaUploaderUseCase
+        imagePolicyUseCase,
+        imageUploaderUseCase
     )
 
     private var progressUploader: ProgressCallback? = null
