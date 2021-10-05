@@ -51,7 +51,6 @@ import com.tokopedia.buyerorder.detail.view.adapter.GetCancelReasonBottomSheetAd
 import com.tokopedia.buyerorder.detail.view.adapter.GetCancelSubReasonBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.adapter.divider.BuyerBundlingProductItemDivider
 import com.tokopedia.buyerorder.detail.view.adapter.typefactory.BuyerProductBundlingAdapterFactory
-import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerProductBundlingUiModel
 import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerNormalProductUiModel
 import com.tokopedia.buyerorder.detail.view.viewmodel.BuyerCancellationViewModel
 import com.tokopedia.dialog.DialogUnify
@@ -845,9 +844,4 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         return distinctBy { it.productId to it.productPrice }
     }
 
-    private fun List<BuyerProductBundlingUiModel>.getTotalItems(): Int {
-        var totalItems = 0
-        forEach { totalItems += it.productList.size }
-        return totalItems
-    }
 }
