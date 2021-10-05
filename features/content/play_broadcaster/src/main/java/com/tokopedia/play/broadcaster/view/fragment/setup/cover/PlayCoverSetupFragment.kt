@@ -331,7 +331,7 @@ class PlayCoverSetupFragment @Inject constructor(
                     .build()
             )
             getString(
-                commonR.string.play_custom_error_handler_msg,
+                commonR.string.play_custom_error_handler_msg_with_code,
                 customErrMessage,
                 errCode
             )
