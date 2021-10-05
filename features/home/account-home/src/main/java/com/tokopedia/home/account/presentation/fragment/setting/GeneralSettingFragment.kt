@@ -192,6 +192,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         recyclerView.addItemDecoration(DividerItemDecoration(activity))
         val appVersion = view.findViewById<TextView>(R.id.text_view_app_version)
         updateButton = view.findViewById(R.id.force_update_button)
+        tempCountDarkModeToggle = 0
         appVersion.run {
             text = getString(R.string.application_version_fmt, GlobalConfig.RAW_VERSION_NAME)
             setOnClickListener {
@@ -251,8 +252,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             RollenceKey.USER_DARK_MODE_TOGGLE, false)
         val isForceDarkModeToggleVisible =
             localCacheHandler.getBoolean(KEY_PREF_DARK_MODE_TOGGLE, false)
-
-        Toast.makeText(context, "isForceDarkMode: $isForceDarkModeToggleVisible", Toast.LENGTH_LONG).show()
 
         if(isForceDarkModeToggleVisible) {
             settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_DARK_MODE,
