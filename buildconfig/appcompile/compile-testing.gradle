@@ -1,11 +1,2 @@
 // Sort alphabetically by name
-includeIfEnabled("testing:merchant:product_detail")
-
-includeIfEnabled("testing:transaction:atc_common")
-includeIfEnabled("testing:transaction:cart")
-includeIfEnabled("testing:transaction:checkout")
-includeIfEnabled("testing:transaction:oneclickcheckout")
-
-/********** JOINT TEST MODULES **********/
-includeIfEnabled("testing:joint:pdp_cart_checkout")
-includeIfEnabled("testing:joint:pdp_occ")
+includeIfEnabled("testing:joint:pdp_checkout")
