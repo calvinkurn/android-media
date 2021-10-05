@@ -991,6 +991,7 @@ class ShopScoreMapper @Inject constructor(
             else -> firstMonday = shopAge
         }
 
+
         return if (isExistingSellerMoreThanMonday) {
             shopAge in firstMonday..firstMonday + FIVE_NUMBER
         } else {

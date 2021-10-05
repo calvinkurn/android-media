@@ -49,7 +49,7 @@ object GoldMerchantUtil {
                 SimpleDateFormat(PATTERN_DATE_SHOP_INFO, DateFormatUtils.DEFAULT_LOCALE)
             val calendar = Calendar.getInstance(DateFormatUtils.DEFAULT_LOCALE)
             simpleDateFormat.parse(dateString)?.let { calendar.time = it }
-            calendar.add(Calendar.DATE, totalDays(dateString).toInt())
+            calendar.add(Calendar.DATE, NEW_SELLER_DAYS)
             return calendar.get(Calendar.DAY_OF_WEEK) > Calendar.MONDAY ||
                     calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
         } catch (e: Exception) {
