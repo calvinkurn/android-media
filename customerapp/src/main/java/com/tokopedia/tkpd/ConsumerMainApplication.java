@@ -34,7 +34,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import io.embrace.android.embracesdk.Embrace;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
-import static com.tokopedia.tkpd.BetaBannerKt.showBanner;
 
 
 /**
