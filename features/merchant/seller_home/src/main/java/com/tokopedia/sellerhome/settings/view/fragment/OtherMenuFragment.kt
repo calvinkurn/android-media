@@ -134,6 +134,12 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         }
     }
 
+    private val isSharingEnabled by lazy {
+        context?.let {
+            UniversalShareBottomSheet.isCustomSharingEnabled(it)
+        } == true
+    }
+
     @FragmentType
     private var currentFragmentType: Int = FragmentType.OTHER
 
@@ -344,13 +350,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     override fun onShareButtonClicked() {
         NewOtherMenuTracking.sendEventClickShareButton(userSession.shopId, userSession.userId)
-        val isSharingEnabled =
-            context?.let {
-                UniversalShareBottomSheet.isCustomSharingEnabled(it)
-            } == true
-        if (isSharingEnabled) {
-            saveImageToStorageBeforeShowBottomsheet()
-        }
+        saveImageToStorageBeforeShowBottomsheet()
     }
 
     override fun onScrollToTop() {
@@ -564,7 +564,9 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     private fun observeShopShareInfo() {
         viewModel.shopShareInfoLiveData.observe(viewLifecycleOwner) { shareInfo ->
-            animateShareButtonFromShareData(shareInfo)
+            if (isSharingEnabled) {
+                animateShareButtonFromShareData(shareInfo)
+            }
         }
     }
 

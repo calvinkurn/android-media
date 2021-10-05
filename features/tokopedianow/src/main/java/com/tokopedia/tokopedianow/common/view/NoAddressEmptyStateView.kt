@@ -63,6 +63,6 @@ class NoAddressEmptyStateView @JvmOverloads constructor(context: Context, attrs:
     }
 
     companion object {
-        private const val IMG_NO_ADDRESS = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_empty_state_no_address_560.png"
+        private const val IMG_NO_ADDRESS = "https://images.tokopedia.net/img/tokonow/tokonow_ic_empty_state_no_address_small.png"
     }
 }
