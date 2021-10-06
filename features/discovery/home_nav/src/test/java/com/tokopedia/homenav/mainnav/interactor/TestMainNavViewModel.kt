@@ -231,13 +231,13 @@ class TestMainNavViewModel {
 
         val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
 
-        val accountHeaderViewModel = visitableList.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
+        val accountHeaderDataModel = visitableList.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
         Assert.assertTrue(visitableList.isNotEmpty())
-        Assert.assertNotNull(accountHeaderViewModel)
+        Assert.assertNotNull(accountHeaderDataModel)
         Assert.assertTrue(
-                 accountHeaderViewModel.profileDataModel.userName == mainNavProfileCacheMock.profileName
-                && accountHeaderViewModel.profileDataModel.userImage == mainNavProfileCacheMock.profilePicUrl
-                && accountHeaderViewModel.profileMembershipDataModel.badge == mainNavProfileCacheMock.memberStatusIconUrl
+                 accountHeaderDataModel.profileDataModel.userName == mainNavProfileCacheMock.profileName
+                && accountHeaderDataModel.profileDataModel.userImage == mainNavProfileCacheMock.profilePicUrl
+                && accountHeaderDataModel.profileMembershipDataModel.badge == mainNavProfileCacheMock.memberStatusIconUrl
                 )
     }
 
