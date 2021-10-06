@@ -65,8 +65,9 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
 
     companion object {
         const val REPORT_REVIEW_ACTIVITY_CODE = 200
-        private const val DEFAULT_VALUE_INDEX = 0
         private const val POSITION_INDEX_COUNTER = 1
+        const val GALLERY_SOURCE_CREDIBILITY_SOURCE = "gallery"
+        const val READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE = "reading image preview"
         const val KEY_CACHE_ID = "cacheId"
         const val KEY_FINAL_LIKE_COUNT = "final like count"
         fun newInstance(
@@ -784,7 +785,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                 UriUtil.buildUri(
                     ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY,
                     userId,
-                    ReadReviewFragment.READING_SOURCE
+                    if (isFromGallery) GALLERY_SOURCE_CREDIBILITY_SOURCE else READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE
                 )
             ).buildUpon()
                 .appendQueryParameter(ReviewCredibilityActivity.PARAM_PRODUCT_ID, productId).build()

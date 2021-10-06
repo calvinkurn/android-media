@@ -89,7 +89,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         const val GALLERY_ACTIVITY_CODE = 420
         const val REPORT_REVIEW_ACTIVITY_CODE = 421
         const val PRODUCT_SATISFACTION_RATE = "% pembeli puas belanja barang ini"
-        const val READING_SOURCE = "review-list"
+        const val READING_SOURCE = "reading"
         fun createNewInstance(
             productId: String = "",
             shopId: String = "",

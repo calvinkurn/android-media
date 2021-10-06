@@ -1,7 +1,7 @@
 package com.tokopedia.review.feature.credibility.analytics
 
 import com.tokopedia.review.common.analytics.ReviewTrackingConstant
-import com.tokopedia.review.feature.inbox.pending.presentation.fragment.ReviewPendingFragment
+import com.tokopedia.review.feature.imagepreview.presentation.fragment.ReviewImagePreviewFragment
 import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFragment
 import com.tokopedia.track.TrackApp
 
@@ -43,10 +43,11 @@ object ReviewCredibilityTracking {
     }
 
     private fun getEventCategoryBasedOnSource(source: String): String {
-        return if (source == ReadReviewFragment.READING_SOURCE) {
-            ReviewCredibilityTrackingConstant.EVENT_CATEGORY_READING
-        } else {
-            ReviewPendingFragment.INBOX_SOURCE
+        return when (source) {
+            ReadReviewFragment.READING_SOURCE -> ReviewCredibilityTrackingConstant.EVENT_CATEGORY_READING
+            ReviewImagePreviewFragment.READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE ->ReviewCredibilityTrackingConstant.EVENT_CATEGORY_READING_IMAGE_PREVIEW
+            ReviewImagePreviewFragment.GALLERY_SOURCE_CREDIBILITY_SOURCE ->ReviewCredibilityTrackingConstant.EVENT_CATEGORY_GALLERY
+            else -> ReviewCredibilityTrackingConstant.EVENT_CATEGORY_INBOX
         }
     }
 }

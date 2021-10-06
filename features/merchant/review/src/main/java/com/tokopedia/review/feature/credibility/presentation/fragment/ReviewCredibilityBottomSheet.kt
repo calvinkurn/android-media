@@ -28,7 +28,7 @@ import com.tokopedia.review.feature.credibility.di.DaggerReviewCredibilityCompon
 import com.tokopedia.review.feature.credibility.di.ReviewCredibilityComponent
 import com.tokopedia.review.feature.credibility.presentation.viewmodel.ReviewCredibilityViewModel
 import com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredibilityStatisticBoxWidget
-import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFragment
+import com.tokopedia.review.feature.inbox.pending.presentation.fragment.ReviewPendingFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
@@ -42,7 +42,7 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
 
     companion object {
         const val LOGIN_REQUEST_CODE = 200
-
+        const val READING_SOURCE_PARAM = "review-list"
         fun newInstance(userId: String, source: String, productId: String) = ReviewCredibilityBottomSheet().apply {
             this.userId = userId
             this.source = source
@@ -123,7 +123,7 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
     }
 
     private fun getReviewerCredibility() {
-        viewModel.getReviewCredibility(source, userId)
+        viewModel.getReviewCredibility(mapSourceToParam(), userId)
     }
 
     private fun observeReviewerCredibility() {
@@ -255,7 +255,12 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
     }
 
     private fun handleRouting(applink: String) {
-        if (source == ReadReviewFragment.READING_SOURCE) {
+        if (isFromInbox()) {
+            if (applink != ApplinkConst.REPUTATION) {
+                RouteManager.route(context, applink)
+            }
+            dismiss()
+        } else {
             if (viewModel.isLoggedIn()) {
                 dismiss()
                 RouteManager.route(context, applink)
@@ -263,16 +268,19 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
                 this.applink = applink
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), LOGIN_REQUEST_CODE)
             }
-        } else {
-            if (applink != ApplinkConst.REPUTATION) {
-                RouteManager.route(context, applink)
-            }
-            dismiss()
         }
     }
 
     private fun isUsersOwnCredibility(): Boolean {
         return viewModel.isUsersOwnCredibility(userId)
+    }
+
+    private fun mapSourceToParam(): String {
+        return if (isFromInbox()) source else READING_SOURCE_PARAM
+    }
+
+    private fun isFromInbox(): Boolean {
+        return source == ReviewPendingFragment.INBOX_SOURCE
     }
 
 }
