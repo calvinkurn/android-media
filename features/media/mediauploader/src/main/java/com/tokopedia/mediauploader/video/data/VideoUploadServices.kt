@@ -27,7 +27,7 @@ interface VideoUploadServices {
         * video file name
         * @type: String
         * */
-        @Part fileName: RequestBody,
+        @Part(BODY_FILE_NAME) fileName: RequestBody,
 
         /*
         * change time out at runtime
@@ -35,5 +35,9 @@ interface VideoUploadServices {
         * */
         @Header(HEADER_TIMEOUT) timeOut: String
     ) : VideoUploader
+
+    companion object {
+        private const val BODY_FILE_NAME = "file_name"
+    }
 
 }

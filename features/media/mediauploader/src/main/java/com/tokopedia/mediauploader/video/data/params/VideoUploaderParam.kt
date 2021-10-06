@@ -30,7 +30,6 @@ data class VideoUploaderParam(
     }
 
     companion object {
-        private const val BODY_FILE_NAME = "file_name"
         private const val BODY_FILE_BLOB = "file"
 
         private const val SUPPORTED_CONTENT_TYPE = "video/*"
