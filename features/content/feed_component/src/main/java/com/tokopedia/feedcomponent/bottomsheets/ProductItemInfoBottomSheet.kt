@@ -78,8 +78,13 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     }
 
     private fun mapPostTag(postTagItemList: List<FeedXProduct>): MutableList<BasePostTagViewModel> {
+        var postDescription = ""
+        var desc = context?.getString(R.string.feed_share_default_text)
         val itemList: MutableList<BasePostTagViewModel> = ArrayList()
         for (postTagItem in postTagItemList) {
+            if (postTagItem.isTopads){
+                postDescription = desc?.replace("%s", postTagItem.authorName).toString()
+            }
             val item = ProductPostTagViewModelNew(
                 postTagItem.id,
                 postTagItem.name,
@@ -102,6 +107,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                 postTagItem.star,
                 postTagItem.mods,
                 shopId,
+                description = postDescription
             )
             item.feedType = "product"
             item.postId = postId

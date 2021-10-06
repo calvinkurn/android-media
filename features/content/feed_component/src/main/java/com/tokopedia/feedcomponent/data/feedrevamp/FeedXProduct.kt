@@ -48,7 +48,11 @@ data class FeedXProduct(
         var totalSold: Int = 0,
         @SerializedName("webLink")
         var webLink: String = "",
+
+        //TopadsHeadline
         var variant: Int = 1,
         var productName : String= "",
         val slashedPrice : String = "",
+        val authorName : String = "",
+        val isTopads: Boolean = false
         )

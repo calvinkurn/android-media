@@ -2151,7 +2151,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             onShareProduct(
                 item.id.toIntOrZero(),
                 item.text,
-                "",
+                item.description,
                 item.weblink,
                 item.imgUrl,
                 item.postId,

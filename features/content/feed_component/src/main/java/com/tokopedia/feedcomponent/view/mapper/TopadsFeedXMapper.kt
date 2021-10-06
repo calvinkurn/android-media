@@ -7,6 +7,7 @@ import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView
 
 object TopadsFeedXMapper {
+    var authorName = ""
     fun cpmModelToFeedXDataModel(impressHolder: ImpressHolder, cpmData: CpmModel , variant:Int): FeedXCard {
         val media = arrayListOf<FeedXMedia>()
         val data = cpmData.data[0]
@@ -35,13 +36,14 @@ object TopadsFeedXMapper {
 
         val image = "https://ecs7.tokopedia.net/img/cache/300/default_picture_user/default_toped-25.jpg"
         val listOf = arrayListOf("medias:layout_single")
+        authorName = TopAdsBannerView.escapeHTML(data.cpm.cpmShop.name)
         val feedXAuthor = FeedXAuthor(
             appLink = data.applinks,
             badgeURL = data.cpm.badges[0].imageUrl,
             description = data.cpm.decription,
             id = data.id,
             logoURL = data.cpm.cpmImage.fullEcs,
-            name = TopAdsBannerView.escapeHTML(data.cpm.cpmShop.name),
+            name = authorName,
             type = 2,
             webLink = data.applinks
         )
@@ -51,7 +53,7 @@ object TopadsFeedXMapper {
                 id = cpmData.data[0].id,
                 appLink = data.applinks,
                 webLink = data.applinks,
-                coverUrl = image,
+                coverUrl = data.cpm.cpmImage.fullUrl,
                 mods = listOf,
                 products = feedXProducts
             )
@@ -142,9 +144,11 @@ object TopadsFeedXMapper {
                 priceOriginalFmt = priceFormat,
                 priceFmt = priceFormat,
                 isDiscount = false,
-                coverURL = imageProduct.imageUrl,
+                coverURL = imageProduct.imageUrl.replaceFirst("images","ecs7"),
                 id = id,
-                webLink = applinks
+                webLink = applinks,
+                authorName = authorName,
+                isTopads = true
             )
         }
     }
