@@ -97,7 +97,7 @@
         android:id="@+id/icLoadMoreDropDown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_3"
+        android:layout_marginTop="3dp"
         android:contentDescription="@string/content_description_ic_load_more_product_drop_down_indicator"
         app:layout_constraintBottom_toBottomOf="@id/tvToggleCollapseMoreProducts"
         app:layout_constraintStart_toEndOf="@id/tvToggleCollapseMoreProducts"

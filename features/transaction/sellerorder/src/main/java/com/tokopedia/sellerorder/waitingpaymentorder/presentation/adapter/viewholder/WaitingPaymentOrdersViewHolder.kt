@@ -25,9 +25,12 @@ class WaitingPaymentOrdersViewHolder(
 ) : AbstractViewHolder<WaitingPaymentOrderUiModel>(itemView) {
 
     companion object {
+        private const val MAX_ORDER_WHEN_COLLAPSED = 1
+        private const val RECYCLER_VIEW_ANIMATION_DURATION = 300L
+        private const val EXPANDED_DROPDOWN_ICON_ROTATION = -180f
+        private const val COLLAPSED_DROPDOWN_ICON_ROTATION = 0f
+
         val LAYOUT = R.layout.item_waiting_payment_orders
-        const val MAX_ORDER_WHEN_COLLAPSED = 1
-        const val RECYCLER_VIEW_ANIMATION_DURATION = 300L
     }
 
     private val adapter: WaitingPaymentOrderProductsAdapter by lazy {
@@ -76,7 +79,8 @@ class WaitingPaymentOrdersViewHolder(
                 }
                 icLoadMoreDropDown.apply {
                     iconDropdownAnimator?.end()
-                    rotation = if (element.isExpanded) -180f else Float.ZERO
+                    rotation = if (element.isExpanded) EXPANDED_DROPDOWN_ICON_ROTATION
+                    else COLLAPSED_DROPDOWN_ICON_ROTATION
                     showWithCondition(element.productUiModels.size > MAX_ORDER_WHEN_COLLAPSED)
                 }
                 rvWaitingPaymentOrderProducts.apply {
@@ -133,8 +137,8 @@ class WaitingPaymentOrdersViewHolder(
 
     private fun getRecyclerViewHeight(element: WaitingPaymentOrderUiModel): Int {
         return when {
-            element.isExpanded && element.expandedHeight != 0 -> element.expandedHeight
-            !element.isExpanded && element.collapsedHeight != 0 -> element.collapsedHeight
+            element.isExpanded && element.expandedHeight != Int.ZERO -> element.expandedHeight
+            !element.isExpanded && element.collapsedHeight != Int.ZERO -> element.collapsedHeight
             else -> {
                 binding?.run {
                     rvWaitingPaymentOrderProducts.measure(View.MeasureSpec.makeMeasureSpec(
@@ -159,9 +163,9 @@ class WaitingPaymentOrdersViewHolder(
 
     private fun setupDropdownIconAnimator(isExpanded: Boolean) {
         if (isExpanded) {
-            setupDropdownIconAnimator(Float.ZERO, -180f)
+            setupDropdownIconAnimator(COLLAPSED_DROPDOWN_ICON_ROTATION, EXPANDED_DROPDOWN_ICON_ROTATION)
         } else {
-            setupDropdownIconAnimator(-180f, Float.ZERO)
+            setupDropdownIconAnimator(EXPANDED_DROPDOWN_ICON_ROTATION, COLLAPSED_DROPDOWN_ICON_ROTATION)
         }
     }
 

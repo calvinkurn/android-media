@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/unify_space_12"
-    android:layout_marginEnd="@dimen/unify_space_12">
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -13,19 +13,19 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/icSomProductBundling"
-            android:layout_width="@dimen/layout_lvl3"
-            android:layout_height="@dimen/layout_lvl3"
-            android:layout_marginStart="@dimen/layout_lvl2"
-            android:layout_marginTop="@dimen/waiting_order_recycler_margin_top"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="6dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_som_product_bundling" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvSomBundleName"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/waiting_order_recycler_margin_top"
+            android:layout_marginStart="6dp"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toBottomOf="@+id/icSomProductBundling"
             app:layout_constraintEnd_toEndOf="parent"
@@ -37,9 +37,9 @@
 
         <View
             android:id="@+id/horLineSomBundle1"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="1dp"
-            android:layout_marginTop="@dimen/waiting_order_recycler_margin_top"
+            android:layout_marginTop="6dp"
             android:background="@color/Unify_NN50"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +47,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvSomProductBundling"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +57,7 @@
 
         <View
             android:id="@+id/horLineSomBundle2"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="1dp"
             android:background="@color/Unify_NN50"
             app:layout_constraintEnd_toEndOf="parent"
@@ -68,8 +68,8 @@
             android:id="@+id/tvSomTotalPriceLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl2"
-            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:text="@string/som_total_price"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toStartOf="parent"
@@ -80,8 +80,8 @@
             android:id="@+id/tvSomTotalPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl2"
-            android:layout_marginBottom="@dimen/layout_lvl2"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

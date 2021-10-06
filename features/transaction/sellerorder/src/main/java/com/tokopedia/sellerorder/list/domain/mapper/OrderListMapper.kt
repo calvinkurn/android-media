@@ -9,8 +9,6 @@ import javax.inject.Inject
 class OrderListMapper @Inject constructor() {
     fun mapResponseToUiModel(orderList: List<SomListOrderListResponse.Data.OrderList.Order>, keyword: String): List<SomListOrderUiModel> {
         return orderList.map {
-            val deepList = listOf(listOf(1), listOf(2, 3), listOf(4, 5, 6))
-            println(deepList.flatten())
             SomListOrderUiModel(
                     cancelRequest = it.cancelRequest,
                     cancelRequestNote = it.cancelRequestNote,
