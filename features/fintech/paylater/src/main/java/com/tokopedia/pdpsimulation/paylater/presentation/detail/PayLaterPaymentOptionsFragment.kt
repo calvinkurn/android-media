@@ -23,6 +23,7 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.GatewayDetail
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterOfferDescriptionAdapter
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterActionStepsBottomSheet
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterFaqBottomSheet
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
@@ -175,6 +176,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             recommendationText.text = data.is_recommended_string ?: ""
         } else {
             recommendationText.gone()
+            paylaterPartnerCard.cardType = CardUnify.TYPE_SHADOW
         }
     }
 
