@@ -71,17 +71,19 @@ object GoldMerchantUtil {
         }
     }
 
-    fun getNNextDaysBasedOnFirstTuesday(totalRemainderDays: Int, isAddedWeek: Boolean = false): Int {
-        val calendar = Calendar.getInstance(getLocale())
-        calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + totalRemainderDays)
+    fun getNNextDaysBasedOnShopScoreCalculation(dateString: String): Int {
+        val calendar = Calendar.getInstance(DateFormatUtils.DEFAULT_LOCALE)
+        val simpleDateFormat =
+            SimpleDateFormat(PATTERN_DATE_SHOP_INFO, DateFormatUtils.DEFAULT_LOCALE)
+        simpleDateFormat.parse(dateString)?.let { calendar.time = it }
         return when (calendar.get(Calendar.DAY_OF_WEEK)) {
             Calendar.TUESDAY -> SIX_NUMBER
             Calendar.WEDNESDAY -> FIVE_NUMBER
             Calendar.THURSDAY -> FOUR_NUMBER
             Calendar.FRIDAY -> THREE_NUMBER
             Calendar.SATURDAY -> TWO_NUMBER
-            Calendar.SUNDAY -> if (isAddedWeek) ONE_NUMBER + SEVEN_NUMBER else ONE_NUMBER
-            Calendar.MONDAY -> if (isAddedWeek) SEVEN_NUMBER else ZERO_NUMBER
+            Calendar.SUNDAY -> ONE_NUMBER
+            Calendar.MONDAY -> ZERO_NUMBER
             else -> ZERO_NUMBER
         }
     }
