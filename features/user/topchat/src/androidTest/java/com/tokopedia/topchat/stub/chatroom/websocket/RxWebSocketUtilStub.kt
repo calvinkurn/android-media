@@ -104,62 +104,25 @@ class RxWebSocketUtilStub constructor(
         request: WebSocketResponse,
         room: GetExistingChatPojo
     ) {
-        val requestStartTime = request.jsonObject?.get("start_time")?.asString ?: ""
-        val requestMsg = request.jsonObject?.get("message")?.asString ?: ""
-        val localId = request.jsonObject?.get("local_id")?.asString ?: ""
         val requestAttachment = request.jsonObject?.get("product_profile")?.asJsonObject
         val requestProductProfile: ProductProfile = CommonUtil.fromJson(
             requestAttachment.toString(), ProductProfile::class.java
         )
         val requestProductId = request.jsonObject?.get("product_id")?.asString ?: ""
-        val requestTimeStamp = RfcDateTimeParser.parseDateString(
-            requestStartTime, arrayOf(START_TIME_FORMAT)
-        ).time
         val requestAttributes = ProductAttachmentAttributes(
             requestProductId, requestProductProfile
         )
-
-        val uiModel = mapper.map(room)
         val attachment = AttachmentPojo(
             id = requestProductId,
             type = AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT,
             attributes = JsonParser.parseString(gson.toJson(requestAttributes)).asJsonObject,
             fallbackAttachment = Fallback()
         )
-        val message = MessagePojo(
-            censoredReply = requestMsg,
-            originalReply = requestMsg,
-            timestamp = requestStartTime,
-            timestampFmt = requestStartTime,
-            timeStampUnixNano = (requestTimeStamp * 1_000_000).toString(),
-            timeStampUnix = requestTimeStamp.toString()
-        )
-        val chat = ChatSocketPojo(
-            msgId = TopchatRoomTest.MSG_ID.toLong(),
-            fromUid = session.userId,
-            from = uiModel.shopName,
-            fromRole = uiModel.role,
-            toUid = uiModel.headerModel.senderId.toLong(),
-            message = message,
-            startTime = requestStartTime,
-            imageUri = "",
-            attachment = attachment,
-            showRating = false,
-            ratingStatus = 0,
-            isOpposite = false,
-            blastId = 0,
-            source = "inbox",
-            label = "",
-            localId = localId
-        )
-        val chatElement = gson.toJsonTree(chat)
-        val response = WebSocketResponse(
-            "", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE, chatElement
-        )
-        simulateResponse(response)
+        simulateWsResponse(attachment, request, room)
     }
 
-    private fun simulateMessageResponse(
+    private fun simulateWsResponse(
+        attachment: AttachmentPojo?,
         request: WebSocketResponse,
         room: GetExistingChatPojo
     ) {
@@ -188,7 +151,7 @@ class RxWebSocketUtilStub constructor(
             message = message,
             startTime = requestStartTime,
             imageUri = "",
-            attachment = null,
+            attachment = attachment,
             showRating = false,
             ratingStatus = 0,
             isOpposite = false,
@@ -203,6 +166,13 @@ class RxWebSocketUtilStub constructor(
             "", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE, chatElement
         )
         simulateResponse(response)
+    }
+
+    private fun simulateMessageResponse(
+        request: WebSocketResponse,
+        room: GetExistingChatPojo
+    ) {
+        simulateWsResponse(null, request, room)
     }
 
     private fun generateParentReplyFrom(request: WebSocketResponse): ParentReply? {
@@ -230,9 +200,14 @@ class RxWebSocketUtilStub constructor(
     }
 
     private fun isProductAttachment(requestObj: WebSocketResponse): Boolean {
-        return hasAttachment(requestObj) && requestObj.jsonObject
+        return hasAttachment(requestObj) && getAttachmentType(
+            requestObj) == AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT
+    }
+
+    private fun getAttachmentType(requestObj: WebSocketResponse): String? {
+        return requestObj.jsonObject
             ?.get("attachment_type")
-            ?.asString == AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT
+            ?.asString
     }
 
     private fun hasAttachment(requestObj: WebSocketResponse): Boolean {
