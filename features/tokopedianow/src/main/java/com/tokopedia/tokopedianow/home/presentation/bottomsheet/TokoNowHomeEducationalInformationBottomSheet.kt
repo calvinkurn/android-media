@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -20,7 +21,7 @@ import com.tokopedia.unifyprinciples.Typography
 class TokoNowHomeEducationalInformationBottomSheet : BottomSheetUnify() {
 
     companion object {
-        private const val BACKGROUND_BOTTOMSHEET = "https://images.tokopedia.net/img/android/tokonow/tokopedianow_ic_bottom_background_bottomsheet.png"
+        private const val BACKGROUND_BOTTOMSHEET = "https://images.tokopedia.net/img/android/others/bg_bottomsheet_tokomart_educational_information.png"
         private val TAG = TokoNowHomeEducationalInformationBottomSheet::class.simpleName
 
         fun newInstance(): TokoNowHomeEducationalInformationBottomSheet {
@@ -61,9 +62,10 @@ class TokoNowHomeEducationalInformationBottomSheet : BottomSheetUnify() {
             val tpTwentyFourHours = findViewById<Typography>(R.id.tp_twenty_four_hours)
             val tpTermsAndConditions = findViewById<Typography>(R.id.tp_terms_and_conditions)
 
-            tpTwoHours.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_home_educational_information_two_hours_bottomsheet))
-            tpStockAvailable.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_home_educational_information_stock_available_bottomsheet))
-            tpGuaranteedQuality.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_home_educational_information_guaranteed_quality_bottomsheet))
+            val boldColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950).toString()
+            tpTwoHours.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_home_educational_information_two_hours_bottomsheet, boldColor, boldColor))
+            tpStockAvailable.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_home_educational_information_stock_available_bottomsheet, boldColor))
+            tpGuaranteedQuality.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_home_educational_information_guaranteed_quality_bottomsheet, boldColor))
 
             convertStringToLink(tpTwentyFourHours, context, R.string.tokopedianow_home_educational_information_twenty_four_hours_bottomsheet)
             convertStringToLink(tpTermsAndConditions, context, R.string.tokopedianow_home_educational_information_terms_and_conditions_bottomsheet)
@@ -75,7 +77,8 @@ class TokoNowHomeEducationalInformationBottomSheet : BottomSheetUnify() {
     }
 
     private fun convertStringToLink(typography: Typography, context: Context, stringRes: Int) {
-        val linkHelper = HtmlLinkHelper(context, getString(stringRes))
+        val greenColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500).toString()
+        val linkHelper = HtmlLinkHelper(context, getString(stringRes, greenColor))
         typography.text = linkHelper.spannedString
         typography.movementMethod = LinkMovementMethod.getInstance()
         linkHelper.urlList[0].let { link ->

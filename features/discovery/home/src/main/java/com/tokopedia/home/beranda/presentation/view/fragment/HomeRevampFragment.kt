@@ -102,6 +102,7 @@ import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.IS_SUCCESS_RESET
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
+import com.tokopedia.home.constant.HomePerformanceConstant
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.model.ChannelGrid
@@ -492,11 +493,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        getPageLoadTimeCallback()?.startCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_CREATE_HOME)
         beautyFestEvent = BEAUTY_FEST_NOT_SET
         fragmentCreatedForFirstTime = true
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
         startToTransitionOffset = resources.getDimensionPixelOffset(R.dimen.dp_1)
         registerBroadcastReceiverTokoCash()
+        getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_CREATE_HOME)
     }
 
     fun callSubordinateTasks() {
@@ -1254,6 +1257,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onResume() {
+        if(getHomeViewModel().isFirstLoad) {
+            getPageLoadTimeCallback()?.startCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_RESUME_HOME)
+        }
         startTokopointRotation()
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
@@ -1276,6 +1282,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         navAbTestCondition(
                 ifNavOld = { oldToolbar?.startHintAnimation() }
         )
+        if(getHomeViewModel().isFirstLoad) {
+            getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_RESUME_HOME)
+            getHomeViewModel().isFirstLoad = false
+        }
     }
 
     private fun startTokopointRotation(rotateNow: Boolean = false) {

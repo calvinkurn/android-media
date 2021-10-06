@@ -32,12 +32,6 @@ public interface CatalogListItemContract {
 
         int getCurrentSubCategoryId();
 
-        void showRedeemCouponDialog(String cta, String code, String title);
-
-        void showConfirmRedeemDialog(String cta, String code, String title);
-
-        void showValidationMessageDialog(CatalogsValueEntity item, String title, String message, int resCode);
-
         void onPreValidateError(String title, String message);
 
         void gotoSendGiftPage(int id, String title, String pointStr);
