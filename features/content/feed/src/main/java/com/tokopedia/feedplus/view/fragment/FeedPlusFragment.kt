@@ -2102,7 +2102,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         shopId: String,
         isTopads:Boolean = false
     ) {
-        var urlString=""
+        var urlString: String
         feedAnalytics.eventonShareProductClicked(
             activityId.toString(),
             id.toString(),
@@ -2124,8 +2124,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 .setDescription(description)
                 .setImgUri(imageUrl)
                 .setUri(urlString)
-                .setDeepLink(urlString)
+                .setDeepLink(url)
                 .setType(LinkerData.FEED_TYPE)
+                .setOgImageUrl(imageUrl)
+                .setDesktopUrl(urlString)
                 .build()
             val linkerShareData = DataMapper().getLinkerShareData(shareData)
             LinkerManager.getInstance().executeShareRequest(
