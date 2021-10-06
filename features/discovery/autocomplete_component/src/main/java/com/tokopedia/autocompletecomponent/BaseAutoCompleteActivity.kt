@@ -136,10 +136,8 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     }
 
     private fun initFragments() {
-        val baseAppComponent = getBaseAppComponent() ?: return
-
-        val initialStateComponent = createInitialStateComponent(baseAppComponent)
-        val suggestionComponent = createSuggestionComponent(baseAppComponent)
+        val initialStateComponent = createInitialStateComponent()
+        val suggestionComponent = createSuggestionComponent()
 
         initialStateFragment = InitialStateFragment.create(initialStateComponent)
         suggestionFragment = SuggestionFragment.create(suggestionComponent)
@@ -150,21 +148,23 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     protected open fun getBaseAppComponent(): BaseAppComponent? =
         (this.application as? BaseMainApplication)?.baseAppComponent
 
-    protected open fun createInitialStateComponent(
-        baseAppComponent: BaseAppComponent
-    ): InitialStateComponent =
+    protected open fun createInitialStateComponent(): InitialStateComponent =
         DaggerInitialStateComponent.builder()
-            .baseAppComponent(baseAppComponent)
-            .initialStateViewListenerModule(InitialStateViewListenerModule(this))
+            .baseAppComponent(getBaseAppComponent())
+            .initialStateViewListenerModule(getInitialStateViewListenerModule())
             .build()
 
-    protected open fun createSuggestionComponent(
-        baseAppComponent: BaseAppComponent
-    ): SuggestionComponent =
+    protected open fun getInitialStateViewListenerModule() =
+        InitialStateViewListenerModule(this)
+
+    protected open fun createSuggestionComponent(): SuggestionComponent =
         DaggerSuggestionComponent.builder()
-            .baseAppComponent(baseAppComponent)
-            .suggestionViewListenerModule(SuggestionViewListenerModule(this))
+            .baseAppComponent(getBaseAppComponent())
+            .suggestionViewListenerModule(getSuggestionViewListenerModule())
             .build()
+
+    protected open fun getSuggestionViewListenerModule() =
+        SuggestionViewListenerModule(this)
 
     private fun commitFragments() {
         val initialStateFragment = initialStateFragment ?: return

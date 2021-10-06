@@ -3,6 +3,9 @@ package com.tokopedia.autocompletecomponent
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.test.espresso.ViewInteraction
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -71,4 +74,8 @@ internal fun createFakeBaseAppComponent(context: Context) = object : BaseAppComp
     override fun graphqlInterface(): GraphqlUseCaseInterface {
         TODO("Not yet implemented")
     }
+}
+
+internal fun ViewInteraction.isDisplayed() {
+    this.check(matches(ViewMatchers.isDisplayed()))
 }

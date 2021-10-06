@@ -48,6 +48,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         const val REQUEST_VOICE = 9999
         private val TAG = SearchBarView::class.java.simpleName
         private const val LOCALE_INDONESIA = "in_ID"
+        const val SEARCH_BAR_DELAY_MS: Long = 200
     }
 
     private var mClearingFocus: Boolean = false
@@ -300,7 +301,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
                 }
             }
         })
-                .debounce(200, TimeUnit.MILLISECONDS)
+                .debounce(SEARCH_BAR_DELAY_MS, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
