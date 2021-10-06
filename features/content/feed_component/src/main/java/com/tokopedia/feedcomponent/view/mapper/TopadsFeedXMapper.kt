@@ -104,7 +104,7 @@ object TopadsFeedXMapper {
                 id = id,
                 type = "image",
                 appLink = applinks,
-                mediaUrl = image.m_url,
+                mediaUrl = image.m_url.replaceFirst("images","ecs7"),
                 tagging = arrayListOf(FeedXMediaTagging(index,0.5f,0.5f)),
                 isImageImpressedFirst = false,
                 productName = name,
