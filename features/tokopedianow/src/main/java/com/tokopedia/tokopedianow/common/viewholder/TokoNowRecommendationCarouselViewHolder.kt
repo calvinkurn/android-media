@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
@@ -139,7 +140,7 @@ class TokoNowRecommendationCarouselViewHolder(
     }
 
     override fun onSeeAllBannerClicked(data: RecommendationCarouselData, applink: String) {
-
+        recommendationCarouselListener?.onSeeMoreClick(data, applink)
     }
 
     override fun onRecomChannelImpressed(data: RecommendationCarouselData) {
@@ -210,6 +211,11 @@ class TokoNowRecommendationCarouselViewHolder(
             model: TokoNowRecommendationCarouselUiModel?,
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
+        )
+
+        fun onSeeMoreClick(
+            data: RecommendationCarouselData,
+            applink: String,
         )
 
         //lifecycle owner

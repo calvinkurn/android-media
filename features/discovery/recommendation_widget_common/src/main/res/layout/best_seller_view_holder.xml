@@ -38,7 +38,7 @@
         app:layout_constraintEnd_toStartOf="@+id/best_seller_see_more"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_3" />
+        app:typographyType="heading_4" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/best_seller_subtitle"
@@ -56,7 +56,7 @@
         app:layout_constraintEnd_toStartOf="@+id/best_seller_see_more"
         app:layout_constraintBottom_toTopOf="@+id/best_seller_chip_filter_recyclerview"
         app:layout_constraintStart_toStartOf="parent"
-        app:typographyType="body_2" />
+        app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/best_seller_see_more"

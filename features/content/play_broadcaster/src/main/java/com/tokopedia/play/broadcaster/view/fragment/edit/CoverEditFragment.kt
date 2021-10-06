@@ -129,7 +129,7 @@ class CoverEditFragment : TkpdBaseV4Fragment() {
                     context = requireContext(),
                     fragmentManager = childFragmentManager,
                     listener = object : CoverImagePickerHelper.OnChosenListener {
-                        override fun onGetFromProduct(productId: Long, imageUrl: String) {
+                        override fun onGetFromProduct(productId: String, imageUrl: String) {
                             viewModel.setCroppingProductCover(productId, imageUrl)
                             openCoverCropEditFragment()
                         }
