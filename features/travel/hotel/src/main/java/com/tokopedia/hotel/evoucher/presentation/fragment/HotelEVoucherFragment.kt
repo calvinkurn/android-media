@@ -336,7 +336,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
 
             if (propertyDetail.extraInfo.content.isEmpty() && propertyDetail.specialRequest.content.isEmpty()) binding?.hotelDetailSeperator?.hide()
 
-            if(data.hotelTransportDetails.tickerContactHotel.isNotEmpty()) {
+            if(data.hotelTransportDetails.tickerContactHotel.isNotEmpty() && data.hotelTransportDetails.contactInfo.isNotEmpty()) {
                 binding?.tvOrderDetailNha?.show()
                 binding?.tvOrderDetailNha?.text = data.hotelTransportDetails.tickerContactHotel
             } else {
