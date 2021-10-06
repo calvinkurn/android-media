@@ -223,23 +223,7 @@ class TestMainNavViewModel {
         val getProfileDataUseCase = mockk<GetProfileDataUseCase>()
         coEvery {
             getProfileDataUseCase.executeOnBackground()
-        } returns AccountHeaderDataModel(
-            profileDataModel = ProfileDataModel(
-                userName = profileName,
-                userImage = profilePicUrl
-            ),
-            profileOvoDataModel = ProfileOvoDataModel(
-                ovoSaldo = "Rp 100",
-                ovoPoint = "Rp 100"
-            ),
-            profileMembershipDataModel = ProfileMembershipDataModel(
-                badge = memberStatusIconUrl
-            ),
-            profileSellerDataModel = ProfileSellerDataModel(
-                shopName = "binatang",
-                shopId = "1234"
-            )
-        )
+        } throws MessageErrorException("")
 
         viewModel = createViewModel(getProfileDataUseCase = getProfileDataUseCase)
         viewModel.setProfileCache(mainNavProfileCacheMock)
@@ -250,20 +234,11 @@ class TestMainNavViewModel {
         val accountHeaderViewModel = visitableList.find { it is AccountHeaderDataModel } as AccountHeaderDataModel
         Assert.assertTrue(visitableList.isNotEmpty())
         Assert.assertNotNull(accountHeaderViewModel)
-        Assert.assertTrue(accountHeaderViewModel.profileDataModel.userName.isNotEmpty()
-                && accountHeaderViewModel.profileDataModel.userImage.isNotEmpty()
-                && accountHeaderViewModel.profileOvoDataModel.ovoSaldo.isNotEmpty()
-                && accountHeaderViewModel.profileOvoDataModel.ovoPoint.isNotEmpty()
-                && accountHeaderViewModel.profileMembershipDataModel.badge.isNotEmpty()
-                && accountHeaderViewModel.profileSellerDataModel.shopId.isNotEmpty()
-                && accountHeaderViewModel.profileSellerDataModel.shopName.isNotEmpty()
-                && accountHeaderViewModel.profileDataModel.userName == mainNavProfileCacheMock.profileName
+        Assert.assertTrue(
+                 accountHeaderViewModel.profileDataModel.userName == mainNavProfileCacheMock.profileName
                 && accountHeaderViewModel.profileDataModel.userImage == mainNavProfileCacheMock.profilePicUrl
-                && accountHeaderViewModel.profileOvoDataModel.ovoSaldo == "Rp 100"
-                && accountHeaderViewModel.profileOvoDataModel.ovoPoint == "Rp 100"
                 && accountHeaderViewModel.profileMembershipDataModel.badge == mainNavProfileCacheMock.memberStatusIconUrl
-                && accountHeaderViewModel.profileSellerDataModel.shopId == "1234"
-                && accountHeaderViewModel.profileSellerDataModel.shopName == "binatang")
+                )
     }
 
     //user menu section
