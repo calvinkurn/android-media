@@ -2,6 +2,7 @@ package com.tokopedia.homenav.mainnav.interactor
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
@@ -825,7 +826,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `test show error bu list then refresh bu list data will still show error bu list`() {
+    fun `test show error bu list then refresh bu list data will success delete error bu list`() {
         val getBuListUseCase = mockk<GetCategoryGroupUseCase>()
         // failed getBuListUseCase.executeOnBackground() will show ErrorStateBuViewHolder
         coEvery {
@@ -847,10 +848,14 @@ class TestMainNavViewModel {
         val errorStateBuDataModel = dataList.find { it is ErrorStateBuDataModel } as ErrorStateBuDataModel
         Assert.assertNotNull(errorStateBuDataModel) //error state bu data model existed
 
+        coEvery {
+            getBuListUseCase.executeOnBackground()
+        }.answers { listOf() }
+
         viewModel.refreshBuListdata()
         val dataListRefreshed = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-        val errorStateBuDataModelRefreshed = dataListRefreshed.find { it is ErrorStateBuDataModel } as ErrorStateBuDataModel
-        Assert.assertNotNull(errorStateBuDataModelRefreshed)
+        val errorStateBuDataModelRefreshed = dataListRefreshed.find { it is ErrorStateBuDataModel }
+        Assert.assertNull(errorStateBuDataModelRefreshed)
     }
 
 }
