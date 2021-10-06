@@ -10,6 +10,7 @@ const val GM_TITLE = "Power Merchant"
 const val PATTERN_DATE_SHOP_INFO = "yyyy-MM-dd"
 const val NEW_SELLER_DAYS = 90
 const val SHOP_AGE_NINETY_SIX = 96
+const val SHOP_AGE_NINETY_FOUR = 94
 const val START_TENURE_EIGHTY_THREE = 83
 const val TRANSITION_PERIOD = "transition_period"
 const val COMMUNICATION_PERIOD = "communication_period"
