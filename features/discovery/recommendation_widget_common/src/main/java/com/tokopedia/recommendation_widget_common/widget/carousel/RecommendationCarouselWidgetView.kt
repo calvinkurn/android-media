@@ -108,6 +108,10 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         const val NAME_CAMPAIGN_WIDGET = "Campaign-Widget"
     }
 
+    /*
+    * bind recom widget with data called from fragment
+    *
+     */
     fun bindRecomWithData(
         carouselData: RecommendationCarouselData = RecommendationCarouselData(),
         adapterPosition: Int = 0,
@@ -129,6 +133,13 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         }
     }
 
+    /*
+    * bind recom widget with some important params
+    * - pageName
+    * - categoryIds
+    *
+    * this function can be used for recommendation that only provide pageName and categoryids
+     */
     fun bindRecomCategoryIds(
         adapterPosition: Int = 0,
         widgetBindPageNameListener: RecommendationCarouselWidgetBindPageNameListener?,
@@ -157,6 +168,14 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         }
     }
 
+
+    /*
+    * bind recom widget with some important params
+    * - pageName
+    * - parentProductId
+    *
+    * this function can be used for PDP recom
+     */
     fun bindPdpRecom(
         adapterPosition: Int = 0,
         widgetBindPageNameListener: RecommendationCarouselWidgetBindPageNameListener?,
@@ -562,7 +581,14 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     }
 
     private fun observeLiveData() {
-        lifecycleOwner?.let {owner ->
+        /*
+        * observer with page name validation will only updated on designated widget
+        * since live data will broadcast data to all observer available on lifecycle
+        *
+        * only miniCartData not validated because its expected to update all recom widgets
+        * when minicart service called
+         */
+        lifecycleOwner?.let { owner ->
             viewModel?.getRecommendationLiveData?.observe(owner, Observer {
                 this.isForceRefresh = false
                 it.doSuccessOrFail({ recom ->
@@ -593,6 +619,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 }
             })
 
+            //will be updated to all recom widgets on same page (expected)
             viewModel?.miniCartData?.observe(owner, Observer {
                 it?.let { map ->
                     updateUiQuantity(map)
