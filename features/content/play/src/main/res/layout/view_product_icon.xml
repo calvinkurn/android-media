@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+
     >
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_play_featured_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:icon_color_night_enable="@color/Unify_NN700"
+        app:icon_color_light_enable="@color/Unify_NN700"
         app:icon_name="PRODUCT"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
