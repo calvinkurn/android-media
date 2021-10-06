@@ -237,7 +237,7 @@ class TagViewProvider {
                         posX = ceil((abs(feedXMediaTagging.X!!) / parent.width) * 1000) / 1000
                         posY = ceil((abs(feedXMediaTagging.Y!!) / parent.height) * 1000) / 1000
                     }
-                    listener?.updateTaggingInfoInViewModel(feedXMediaTagging, index, mediaIndex)
+                    listener?.updateTaggingInfoInViewModel(feedXMediaTagging)
                 }
             }
 
@@ -301,7 +301,7 @@ class TagViewProvider {
         }, 30)
 
 
-        listener?.updateTaggingInfoInViewModel(feedXMediaTagging, index, mediaIndex)
+        listener?.updateTaggingInfoInViewModel(feedXMediaTagging)
 
     }
 
