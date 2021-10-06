@@ -56,8 +56,8 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     companion object {
         private const val FIRST_TAB_INDEX = 0
         private const val TAB_LIMIT = 3
-        private const val TOAST_DURATION = 2000L
-        private const val TOAST_COUNT_DOWN_INTERVAL = 1000L
+        private const val TOAST_DURATION = 1000L
+        private const val TOAST_COUNT_DOWN_INTERVAL = 500L
         private const val MANAGE_SHOP_STATS_ROLE = "MANAGE_SHOPSTATS"
     }
 
