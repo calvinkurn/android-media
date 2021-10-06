@@ -5,12 +5,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.data.source.local.model.TickerUiModel
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.databinding.WidgetPmTickerBinding
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetTickerUiModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
-import kotlinx.android.synthetic.main.widget_pm_ticker.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created By @ilhamsuaib on 30/03/21
@@ -25,8 +26,10 @@ class TickerWidget(
         val RES_LAYOUT = R.layout.widget_pm_ticker
     }
 
+    private val binding: WidgetPmTickerBinding? by viewBinding()
+
     override fun bind(element: WidgetTickerUiModel) {
-        with(itemView.tickerPmWidget) {
+        binding?.tickerPmWidget?.run {
             val tickersData = element.tickers.map { ticker ->
                 val tickerType: Int = when (ticker.type) {
                     TickerUiModel.TYPE_ERROR -> Ticker.TYPE_ERROR

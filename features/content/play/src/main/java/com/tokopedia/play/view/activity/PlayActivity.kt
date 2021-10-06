@@ -1,5 +1,7 @@
 package com.tokopedia.play.view.activity
 
+import android.app.ActivityManager
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.media.AudioManager
@@ -37,7 +39,6 @@ import com.tokopedia.play_common.model.result.PageResultState
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
-import com.tokopedia.url.TokopediaUrl
 import javax.inject.Inject
 
 /**
@@ -269,11 +270,8 @@ class PlayActivity : BaseActivity(),
             if (!fragment.onBackPressed()) {
                 if (isSystemBack && orientation.isLandscape) onOrientationChanged(ScreenOrientation.Portrait, false)
                 else {
-                    if (isTaskRoot || viewModel.source.key == "") {
-                        val intent = RouteManager.getIntent(
-                            this,
-                            String.format("%s?url=%s", ApplinkConst.WEBVIEW, "${TokopediaUrl.getInstance().WEB}$PLAY_CHANNEL_LIST_PATH?$PLAY_CHANNEL_LIST_QUERY")
-                        )
+                    if (isCustomTaskRoot()) {
+                        val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
                         startActivity(intent)
                         finish()
                     } else {
@@ -282,9 +280,19 @@ class PlayActivity : BaseActivity(),
                     }
                 }
             }
-        } else {
-            super.onBackPressed()
+        } else super.onBackPressed()
+    }
+
+    private fun isCustomTaskRoot(): Boolean {
+        val activityManager = applicationContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val appTasks = activityManager.appTasks
+        for(task in appTasks) {
+            val baseIntent = task.taskInfo.baseIntent
+            val categories = baseIntent.categories ?: return true
+
+            return !categories.contains(Intent.CATEGORY_LAUNCHER)
         }
+        return true
     }
 
     override fun requestEnableNavigation() {
@@ -340,8 +348,6 @@ class PlayActivity : BaseActivity(),
     }
 
     companion object {
-        private const val PLAY_CHANNEL_LIST_PATH = "play/channels"
-        private const val PLAY_CHANNEL_LIST_QUERY = "pull_to_refresh=true&titlebar=false"
         private const val PLAY_FRAGMENT_TAG = "FRAGMENT_PLAY"
     }
 }

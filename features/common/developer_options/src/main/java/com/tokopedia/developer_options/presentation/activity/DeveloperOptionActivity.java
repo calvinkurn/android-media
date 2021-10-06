@@ -334,8 +334,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         UnifyButton buttonResetOnboardingNavigation = findViewById(R.id.resetOnboardingNavigation);
         UnifyButton alwaysOldButton = findViewById(R.id.buttonAlwaysOldNavigation);
         UnifyButton alwaysNewNavigation = findViewById(R.id.buttonAlwaysNewNavigation);
-        UnifyButton alwaysOldHome = findViewById(R.id.buttonAlwaysOldHome);
-        UnifyButton alwaysNewHome = findViewById(R.id.buttonAlwaysNewHome);
         alwaysOldBalanceWidget = findViewById(R.id.buttonAlwaysOldBalanceWidget);
         System.out.println("++ line 332");
         UnifyButton alwaysNewBalanceWidget = findViewById(R.id.buttonAlwaysNewBalanceWidget);
@@ -381,10 +379,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         String VARIANT_OLD = RollenceKey.NAVIGATION_VARIANT_OLD;
         String VARIANT_REVAMP = RollenceKey.NAVIGATION_VARIANT_REVAMP;
 
-        String EXP_HOME = RollenceKey.HOME_EXP;
-        String HOME_VARIANT_OLD = RollenceKey.HOME_VARIANT_OLD;
-        String HOME_VARIANT_REVAMP = RollenceKey.HOME_VARIANT_REVAMP;
-
         String EXP_BALANCE_WIDGET = RollenceKey.BALANCE_EXP;
         String BALANCE_WIDGET_VARIANT_OLD = RollenceKey.BALANCE_VARIANT_OLD;
         String BALANCE_WIDGET_VARIANT_REVAMP = RollenceKey.BALANCE_VARIANT_NEW;
@@ -402,22 +396,6 @@ public class DeveloperOptionActivity extends BaseActivity {
             public void onClick(View view) {
                 RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_TOP_NAV, VARIANT_REVAMP);
                 Toast.makeText(DeveloperOptionActivity.this, "Navigation: Revamped", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        alwaysOldHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_HOME, HOME_VARIANT_OLD);
-                Toast.makeText(DeveloperOptionActivity.this, "Home: Old", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        alwaysNewHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_HOME, HOME_VARIANT_REVAMP);
-                Toast.makeText(DeveloperOptionActivity.this, "Home: Revamped", Toast.LENGTH_SHORT).show();
             }
         });
 

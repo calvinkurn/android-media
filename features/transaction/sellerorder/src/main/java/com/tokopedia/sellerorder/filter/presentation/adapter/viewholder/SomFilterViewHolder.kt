@@ -7,16 +7,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
-import com.tokopedia.sellerorder.common.util.SomConsts
-import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_COURIER
-import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_LABEL
-import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ORDER
+import com.tokopedia.sellerorder.databinding.ItemSomFilterListBinding
 import com.tokopedia.sellerorder.filter.presentation.adapter.FilterItemDecoration
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterAdapter.Companion.PAYLOAD_CHIPS_FILTER
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterItemChipsAdapter
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterListener
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
-import kotlinx.android.synthetic.main.item_som_filter_list.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class SomFilterViewHolder(view: View, private val filterListener: SomFilterListener) : AbstractViewHolder<SomFilterUiModel>(view) {
 
@@ -25,10 +22,11 @@ class SomFilterViewHolder(view: View, private val filterListener: SomFilterListe
     }
 
     private var somFilterItemChipsAdapter: SomFilterItemChipsAdapter? = null
+    private val binding by viewBinding<ItemSomFilterListBinding>()
 
     override fun bind(element: SomFilterUiModel) {
         somFilterItemChipsAdapter = SomFilterItemChipsAdapter(filterListener)
-        with(itemView) {
+        binding?.run {
             tvTitleHeaderSomFilter.text = element.nameFilter
             tvHeaderSeeAll.apply {
                 if (element.canSelectMany) {
@@ -62,8 +60,8 @@ class SomFilterViewHolder(view: View, private val filterListener: SomFilterListe
     }
 
     private fun setupChipsAdapter(data: SomFilterUiModel) {
-        with(itemView) {
-            val layoutManagerChips = ChipsLayoutManager.newBuilder(context)
+        binding?.run {
+            val layoutManagerChips = ChipsLayoutManager.newBuilder(root.context)
                     .setOrientation(ChipsLayoutManager.HORIZONTAL)
                     .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                     .build()

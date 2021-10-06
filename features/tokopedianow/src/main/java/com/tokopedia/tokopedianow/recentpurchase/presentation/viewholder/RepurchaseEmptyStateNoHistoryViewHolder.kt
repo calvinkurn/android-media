@@ -19,8 +19,10 @@ class RepurchaseEmptyStateNoHistoryViewHolder (
     }
 
     override fun bind(element: RepurchaseEmptyStateNoHistoryUiModel) {
+        val tpTitle = itemView.findViewById<Typography>(R.id.tp_title)
         val tpDesc = itemView.findViewById<Typography>(R.id.tp_desc)
         val btnOpen = itemView.findViewById<UnifyButton>(R.id.btn_open_tokopedianow)
+        tpTitle.text = getString(element.title)
         tpDesc.text = getString(element.description)
         btnOpen.setOnClickListener {
             listener?.onClickEmptyStateNoHistoryBtn()

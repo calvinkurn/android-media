@@ -10,10 +10,10 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.seller_migration_common.R
+import com.tokopedia.seller_migration_common.databinding.SellerFeatureCarouselBinding
 import com.tokopedia.seller_migration_common.presentation.adapter.SellerFeatureAdapterTypeFactory
 import com.tokopedia.seller_migration_common.presentation.adapter.viewholder.CardSellerFeatureViewHolder
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
-import kotlinx.android.synthetic.main.seller_feature_carousel.view.*
 
 class SellerFeatureCarousel(context: Context, attrs: AttributeSet) : ConstraintLayout(context, attrs) {
 
@@ -21,23 +21,28 @@ class SellerFeatureCarousel(context: Context, attrs: AttributeSet) : ConstraintL
     private var recyclerViewListener: RecyclerViewListener? = null
     private var adapter: BaseAdapter<SellerFeatureAdapterTypeFactory>? = null
 
+    private var _binding: SellerFeatureCarouselBinding? = null
+    private val binding get() = _binding!!
+
     init {
-        inflate(context, R.layout.seller_feature_carousel, this)
+        inflate(context, R.layout.seller_feature_carousel, this).run {
+            _binding = SellerFeatureCarouselBinding.bind(this)
+        }
     }
 
     fun toggleTitle(show: Boolean) {
-        tvSellerFeatureCarousel.showWithCondition(show)
-        labelSellerFeatureCarousel.showWithCondition(show)
+        binding.tvSellerFeatureCarousel.showWithCondition(show)
+        binding.labelSellerFeatureCarousel.showWithCondition(show)
     }
 
     fun setItems(items: List<SellerFeatureUiModel>) {
         adapter = BaseAdapter(SellerFeatureAdapterTypeFactory(listener))
-        rvSellerMigrationProductFeatures.adapter = adapter
+        binding.rvSellerMigrationProductFeatures.adapter = adapter
         adapter?.setElements(items)
     }
 
     fun toggleDivider(show: Boolean) {
-        divider.showWithCondition(show)
+        binding.divider.showWithCondition(show)
     }
 
     fun setListener(listener: SellerFeatureClickListener?) {
@@ -46,24 +51,24 @@ class SellerFeatureCarousel(context: Context, attrs: AttributeSet) : ConstraintL
 
     fun setRecyclerViewListener(listener: RecyclerViewListener) {
         this.recyclerViewListener = listener
-        rvSellerMigrationProductFeatures.apply {
+        binding.rvSellerMigrationProductFeatures.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             viewTreeObserver.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     // all recyclerview item inflated
                     recyclerViewListener?.onRecyclerViewBindFinished()
-                    rvSellerMigrationProductFeatures.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    binding.rvSellerMigrationProductFeatures.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
             })
         }
     }
 
     fun setRecyclerViewLayoutManager(manager: RecyclerView.LayoutManager) {
-        rvSellerMigrationProductFeatures.layoutManager = manager
+        binding.rvSellerMigrationProductFeatures.layoutManager = manager
     }
 
     fun addItemDecoration() {
-        rvSellerMigrationProductFeatures.addItemDecoration(CardSellerFeatureViewHolder.ItemDecoration(getDimens(R.dimen.dp_12)))
+        binding.rvSellerMigrationProductFeatures.addItemDecoration(CardSellerFeatureViewHolder.ItemDecoration(getDimens(R.dimen.dp_12)))
     }
 
     interface SellerFeatureClickListener {
