@@ -27,7 +27,7 @@ interface VideoUploadServices {
         * video file name
         * @type: String
         * */
-        @Field(PARAM_FILE_NAME) fileName: String,
+        @Part fileName: RequestBody,
 
         /*
         * change time out at runtime
@@ -35,9 +35,5 @@ interface VideoUploadServices {
         * */
         @Header(HEADER_TIMEOUT) timeOut: String
     ) : VideoUploader
-
-    companion object {
-        private const val PARAM_FILE_NAME = "file_name"
-    }
 
 }

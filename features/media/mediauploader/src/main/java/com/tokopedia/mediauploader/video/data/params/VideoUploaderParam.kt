@@ -7,6 +7,7 @@ import com.tokopedia.mediauploader.common.util.UploadRequestBody
 import com.tokopedia.mediauploader.data.state.ProgressCallback
 import okhttp3.MediaType
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import java.io.File
 
 data class VideoUploaderParam(
@@ -18,7 +19,9 @@ data class VideoUploaderParam(
 
     private val file by lazy { File(filePath) }
 
-    fun videoFileName(): String = file.name
+    fun videoFileName(): RequestBody {
+        return RequestBody.create(MultipartBody.FORM, file.name)
+    }
 
     fun videoBody(progressCallback: ProgressCallback?): MultipartBody.Part {
         val contentType = MediaType.parse(SUPPORTED_CONTENT_TYPE)
