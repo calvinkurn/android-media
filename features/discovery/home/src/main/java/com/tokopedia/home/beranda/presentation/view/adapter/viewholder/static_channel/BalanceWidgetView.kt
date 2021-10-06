@@ -19,6 +19,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ho
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel.Companion.TYPE_STATE_2
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceAdapter
 import com.tokopedia.home.util.ViewUtils
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.layout_item_widget_balance_widget.view.*
 
 /**
@@ -102,7 +104,12 @@ class BalanceWidgetView: FrameLayout {
             rvBalance?.layoutManager = layoutManager
             rvBalance?.adapter = balanceAdapter
         }
-        balanceAdapter?.setItemMap(element)
+        if (element.balanceDrawerItemModels.isEmpty()) {
+            rvBalance?.gone()
+        } else {
+            balanceAdapter?.setItemMap(element)
+            rvBalance?.show()
+        }
     }
 
     private fun getLayoutManager(element: HomeBalanceModel): GridLayoutManager {
