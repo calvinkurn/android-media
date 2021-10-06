@@ -7,12 +7,14 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
 import androidx.annotation.RequiresApi
-import androidx.core.app.JobIntentService
+import androidx.core.app.BaseJobIntentService
 import com.tokopedia.loginregister.login.data.SignResult
 import com.tokopedia.loginregister.login.di.LoginComponentBuilder
+import com.tokopedia.loginregister.login.domain.RegisterPushNotifParamsModel
 import com.tokopedia.loginregister.login.domain.RegisterPushNotifUseCase
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.runBlocking
 import java.security.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -21,7 +23,7 @@ import javax.inject.Named
  * Created by Ade Fulki on 28/09/20.
  */
 
-class RegisterPushNotifService : JobIntentService() {
+class RegisterPushNotifService : BaseJobIntentService() {
 
     @field:Named(SessionModule.SESSION_MODULE)
     @Inject
@@ -43,20 +45,18 @@ class RegisterPushNotifService : JobIntentService() {
                 generateKey()
                 if (::keyPair.isInitialized) {
                     signData(userSession.userId, userSession.deviceId).let {
-                        registerPushNotifUseCase.executeCoroutines(
-                                it.publicKey,
-                                it.signature,
-                                it.datetime,
-                                { registerPushNotifData ->
-                                    registerPushNotifData.success
-                                },
-                                { throwable ->
-                                    throwable.printStackTrace()
-                                })
+                        runBlocking {
+                            registerPushNotifUseCase(RegisterPushNotifParamsModel(
+                                publicKey = it.publicKey,
+                                signature = it.signature,
+                                datetime = it.datetime
+                            ))
+                        }
                     }
                 }
             }
         } catch (e: Exception) {
+            logToCrashlytics("onHandleWork() -> catch()", e)
             e.printStackTrace()
         }
     }
@@ -72,7 +72,7 @@ class RegisterPushNotifService : JobIntentService() {
         val keyPairGenerator: KeyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, ANDROID_KEY_STORE)
 
         val parameterSpec: KeyGenParameterSpec = KeyGenParameterSpec.Builder(PUSH_NOTIF_ALIAS,
-                KeyProperties.PURPOSE_SIGN or KeyProperties.PURPOSE_VERIFY).run {
+            KeyProperties.PURPOSE_SIGN or KeyProperties.PURPOSE_VERIFY).run {
             setDigests(KeyProperties.DIGEST_SHA256)
             setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
             build()
@@ -111,6 +111,7 @@ class RegisterPushNotifService : JobIntentService() {
             }
 
         } catch (e: Exception) {
+            logToCrashlytics("singData()", e)
             e.printStackTrace()
         }
 
@@ -134,8 +135,10 @@ class RegisterPushNotifService : JobIntentService() {
                 val intent = Intent(context, RegisterPushNotifService::class.java)
                 enqueueWork(context, RegisterPushNotifService::class.java, jobId, intent)
             } catch (e: Exception) {
+                logToCrashlytics("startService() -> JOB_ID = $jobId", e)
                 e.printStackTrace()
             }
         }
+
     }
 }
