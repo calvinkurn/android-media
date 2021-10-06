@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.TaskStackBuilder;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
@@ -19,7 +18,6 @@ import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.TkpdApplinkDelegate;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.gcm.Constants;
@@ -39,7 +37,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
-import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.utils.uri.DeeplinkUtils;
 import com.tokopedia.weaver.WeaveInterface;
@@ -57,7 +54,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 @DeepLinkHandler({
-        ConsumerDeeplinkModule.class,
         LoyaltyAppLinkModule.class
 })
 
@@ -73,7 +69,6 @@ DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCal
     public static ApplinkDelegate getApplinkDelegateInstance() {
         if (applinkDelegate == null) {
             applinkDelegate = new TkpdApplinkDelegate(
-                    new ConsumerDeeplinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader()
             );
         }
@@ -95,29 +90,6 @@ DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCal
     private static boolean getAppLinkDelegate() {
         getApplinkDelegateInstance();
         return true;
-    }
-
-    @DeepLink({Constants.Applinks.SellerApp.SELLER_APP_HOME,
-            Constants.Applinks.SellerApp.TOPADS_DASHBOARD,
-            Constants.Applinks.SellerApp.SALES,
-            Constants.Applinks.SellerApp.TOPADS_CREDIT,
-            Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE,
-            Constants.Applinks.SellerApp.GOLD_MERCHANT,
-            Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL,
-            Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL_CONSTS,
-            Constants.Applinks.SellerApp.BROWSER})
-    public static Intent getIntentSellerApp(Context context, Bundle extras) {
-        Intent launchIntent = context.getPackageManager()
-                .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
-
-        if (launchIntent == null) {
-            return RedirectCreateShopActivity.getCallingIntent(context);
-        } else {
-            launchIntent.setData(Uri.parse(extras.getString(DeepLink.URI)));
-            launchIntent.putExtras(extras);
-            launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
-            return launchIntent;
-        }
     }
 
     @Override

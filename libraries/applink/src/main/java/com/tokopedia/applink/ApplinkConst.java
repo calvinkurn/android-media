@@ -226,6 +226,7 @@ public interface ApplinkConst {
 
     String TC_LANDING = "tokopedia://tc-landing";
 
+    String HOST_PLAY_NOTIF_VIDEO = "play-notif-video";
     String PLAY_NOTIFICATION_VIDEO = "tokopedia://play-notif-video";
     String INBOX_TICKET = "tokopedia://customercare";
     String TICKET_DETAIL = "tokopedia://customercare/{ticket_id}";

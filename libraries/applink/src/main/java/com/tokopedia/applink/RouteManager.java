@@ -1,5 +1,7 @@
 package com.tokopedia.applink;
 
+import static com.tokopedia.applink.constant.DeeplinkConstant.SCHEME_SELLERAPP;
+
 import android.app.Activity;
 import android.app.Service;
 import android.content.ActivityNotFoundException;
@@ -19,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.dev_monitoring_tools.userjourney.UserJourney;
 import com.tokopedia.logger.ServerLogger;
@@ -152,15 +155,21 @@ public class RouteManager {
             intent.setData(uri);
             return intent;
         } else {
-            return getIntentToPlayStore(SELLER_APP_PACKAGE_NAME);
+            return getIntentSellerappToPlayStore(context);
         }
     }
 
-    private static Intent getIntentToPlayStore(String packageName) {
-        try {
-            return new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName));
-        } catch (ActivityNotFoundException e) {
-            return new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + packageName));
+    private static Intent getIntentSellerappToPlayStore(Context context) {
+        Intent intent = buildInternalImplicitIntent(context, ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP, INTERNAL_VIEW);
+        List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentActivities(intent, 0);
+        if (resolveInfos.size() > 0) {
+            return intent;
+        } else {
+            try {
+                return new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + SELLER_APP_PACKAGE_NAME));
+            } catch (ActivityNotFoundException e) {
+                return new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + SELLER_APP_PACKAGE_NAME));
+            }
         }
     }
 
@@ -279,21 +288,33 @@ public class RouteManager {
         }
 
         if (intent != null && intent.resolveActivity(context.getPackageManager()) != null) {
-            if (queryParamBundle != null) {
-                intent.putExtras(queryParamBundle);
-            }
-            ApplinkLogger.getInstance(context).appendTrace("Starting activity:\n"
-                    + intent.resolveActivity(context.getPackageManager()).getClassName());
-            ApplinkLogger.getInstance(context).save();
-            context.startActivity(intent);
+            startActivityIntentWithBundle(context, intent, queryParamBundle);
             return true;
-        } else {
-            logErrorOpenDeeplink(context, uriString);
+        } else if (uriString.startsWith(SCHEME_SELLERAPP) && !GlobalConfig.isSellerApp()){
+            Uri uri = Uri.parse(mappedDeeplink);
+            String uriRedirect = uri.buildUpon().appendQueryParameter(KEY_REDIRECT_TO_SELLER_APP, "true").build().toString();
+            intent = buildInternalExplicitIntent(context, uriRedirect);
+            if (intent != null && intent.resolveActivity(context.getPackageManager()) != null) {
+                startActivityIntentWithBundle(context, intent, queryParamBundle);
+                return true;
+            }
         }
+
+        logErrorOpenDeeplink(context, uriString);
 
         ApplinkLogger.getInstance(context).appendTrace("Error: No destination activity found");
         ApplinkLogger.getInstance(context).save();
         return false;
+    }
+
+    private static void startActivityIntentWithBundle(Context context, Intent intent, Bundle queryParamBundle) {
+        if (queryParamBundle != null) {
+            intent.putExtras(queryParamBundle);
+        }
+        ApplinkLogger.getInstance(context).appendTrace("Starting activity:\n"
+                + intent.resolveActivity(context.getPackageManager()).getClassName());
+        ApplinkLogger.getInstance(context).save();
+        context.startActivity(intent);
     }
 
     private static void logErrorOpenDeeplink(Context context, String uriString) {
