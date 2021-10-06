@@ -107,7 +107,8 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                 postTagItem.star,
                 postTagItem.mods,
                 shopId,
-                description = postDescription
+                description = postDescription,
+                isTopads = postTagItem.isTopads
             )
             item.feedType = "product"
             item.postId = postId

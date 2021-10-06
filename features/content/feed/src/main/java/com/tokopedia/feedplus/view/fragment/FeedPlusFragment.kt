@@ -2099,8 +2099,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         activityId: Int,
         type: String,
         isFollowed: Boolean,
-        shopId: String
+        shopId: String,
+        isTopads:Boolean = false
     ) {
+        var urlString=""
         feedAnalytics.eventonShareProductClicked(
             activityId.toString(),
             id.toString(),
@@ -2111,13 +2113,18 @@ class FeedPlusFragment : BaseDaggerFragment(),
             productTagBS.dismissedByClosing = true
             productTagBS.dismiss()
         }
+        urlString = if (isTopads) {
+            String.format(getString(R.string.feed_share_weblink), id.toString())
+        } else{
+            url
+        }
         activity?.let {
             shareData = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
                 .setName(title)
                 .setDescription(description)
                 .setImgUri(imageUrl)
-                .setUri(url)
-                .setDeepLink(url)
+                .setUri(urlString)
+                .setDeepLink(urlString)
                 .setType(LinkerData.FEED_TYPE)
                 .build()
             val linkerShareData = DataMapper().getLinkerShareData(shareData)
@@ -2157,7 +2164,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 item.postId,
                 item.postType,
                 item.isFollowed,
-                item.shopId
+                item.shopId,
+                item.isTopads
             )
         }
         sheet.addToCartCB = {

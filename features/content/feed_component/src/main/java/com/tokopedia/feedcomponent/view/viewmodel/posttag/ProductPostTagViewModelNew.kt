@@ -30,7 +30,8 @@ data class ProductPostTagViewModelNew(
     override var postId: Int = 0,
     var postType: String = "",
     var isFollowed:Boolean = false,
-    var description:String = ""
+    var description:String = "",
+    var isTopads:Boolean = false
 ) : BasePostTagViewModel {
     override fun type(typeFactory: PostTagTypeFactory): Int {
         return typeFactory.type(this)
