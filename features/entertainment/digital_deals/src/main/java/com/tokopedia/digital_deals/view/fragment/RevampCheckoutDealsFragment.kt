@@ -224,14 +224,14 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
         //TODO PROMO TRACKER
 
         ll_select_payment_method?.setOnClickListener {
-            showProgressBar()
             if (verifyData.gatewayCode.isNullOrEmpty()) {
-                dealsAnalytics.sendEcommercePayment(dealsDetail.categoryId, dealsDetail.id, quantity, dealsDetail.salesPrice,
+                dealsAnalytics.sendEcommercePayment(dealsDetail.categoryId, dealsDetail.id, verifyData.metadata.quantity, dealsDetail.salesPrice,
                         dealsDetail.displayName, dealsDetail.brand.title, promoApplied)
                 viewModel.checkoutGeneral(viewModel.mapCheckoutDeals(dealsDetail, verifyData))
             } else {
                 viewModel.checkoutGeneralInstant(viewModel.mapCheckoutDealsInstant(dealsDetail, verifyData))
             }
+            showProgressBar()
         }
     }
 

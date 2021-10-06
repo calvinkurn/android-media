@@ -127,9 +127,9 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
         }
 
         tv_continue.setOnClickListener {
-            showProgress()
             dealsAnalytics.sendEcommerceQuantity(dealsDetail.id, currentQuantity, dealsDetail.salesPrice,
                     dealsDetail.displayName, dealsDetail.brand.title, dealsDetail.categoryId)
+            showProgress()
             verify()
         }
 
