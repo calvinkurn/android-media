@@ -55,19 +55,4 @@
         app:layout_constraintTop_toBottomOf="@id/ll_header"
         />
 
-<!--    <com.tokopedia.globalerror.GlobalError-->
-<!--        android:id="@+id/global_error_leaderboard"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="@dimen/layout_lvl0"-->
-<!--        android:clickable="true"-->
-<!--        android:focusable="true"-->
-<!--        android:gravity="center"-->
-<!--        android:visibility="gone"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/ll_header"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        tools:visibility="visible"-->
-<!--        />-->
-
 </androidx.constraintlayout.widget.ConstraintLayout>
