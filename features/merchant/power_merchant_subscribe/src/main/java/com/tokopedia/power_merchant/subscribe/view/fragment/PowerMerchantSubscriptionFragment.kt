@@ -32,6 +32,7 @@ import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTr
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantPrefManager
+import com.tokopedia.power_merchant.subscribe.databinding.FragmentPmPowerMerchantSubscriptionBinding
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.activity.SubscriptionActivityInterface
 import com.tokopedia.power_merchant.subscribe.view.adapter.WidgetAdapterFactoryImpl
@@ -44,8 +45,7 @@ import com.tokopedia.power_merchant.subscribe.view.viewmodel.PowerMerchantSubscr
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_pm_power_merchant_subscription.*
-import kotlinx.android.synthetic.main.fragment_pm_power_merchant_subscription.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
@@ -57,6 +57,8 @@ import javax.inject.Inject
 open class PowerMerchantSubscriptionFragment :
     BaseListFragment<BaseWidgetUiModel, WidgetAdapterFactoryImpl>(),
     PMWidgetListener {
+
+    protected val binding: FragmentPmPowerMerchantSubscriptionBinding? by viewBinding()
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -326,7 +328,7 @@ open class PowerMerchantSubscriptionFragment :
         bottomSheet.show(childFragmentManager)
     }
 
-    private fun setupView() = view?.run {
+    private fun setupView() = binding?.run {
         swipeRefreshPm.setOnRefreshListener {
             reloadPageContent()
         }
@@ -335,7 +337,7 @@ open class PowerMerchantSubscriptionFragment :
         setupPmProUpgradeView()
     }
 
-    private fun setupPmProUpgradeView() = view?.run {
+    private fun setupPmProUpgradeView() = binding?.run {
         viewPmUpgradePmPro.setOnClickListener {
             val layoutManager = recyclerView?.layoutManager as? LinearLayoutManager
             val indexOfUpgradePmProWidget =
@@ -345,7 +347,7 @@ open class PowerMerchantSubscriptionFragment :
         }
     }
 
-    private fun setupRecyclerView() = view?.run {
+    private fun setupRecyclerView() = binding?.run {
         val layManager = object : LinearLayoutManager(context) {
             override fun scrollVerticallyBy(
                 dy: Int,
@@ -484,7 +486,7 @@ open class PowerMerchantSubscriptionFragment :
         if (pmBasicInfo == null) {
             fetchPowerMerchantBasicInfo()
         } else {
-            view?.swipeRefreshPm?.isRefreshing = true
+            binding?.swipeRefreshPm?.isRefreshing = true
             fetchPageContent(false)
         }
     }
@@ -535,8 +537,7 @@ open class PowerMerchantSubscriptionFragment :
                 Toaster.build(
                     it, data.message, Toaster.LENGTH_LONG,
                     Toaster.TYPE_NORMAL, actionText
-                )
-                    .show()
+                ).show()
             }
 
             fetchPowerMerchantBasicInfo()
@@ -660,11 +661,11 @@ open class PowerMerchantSubscriptionFragment :
         val shouldShowView = pmBasicInfo?.pmStatus?.pmTier == PMConstant.PMTierType.POWER_MERCHANT
                 && pmBasicInfo?.pmStatus?.status == PMStatusConst.ACTIVE
                 && isNewSeller30FirstMonday && isAutoExtendEnabled
-        view?.viewPmUpgradePmPro?.isVisible = shouldShowView
+        binding?.viewPmUpgradePmPro?.isVisible = shouldShowView
     }
 
     private fun hideUpgradePmProStickyView() {
-        view?.viewPmUpgradePmPro?.gone()
+        binding?.viewPmUpgradePmPro?.gone()
     }
 
     private fun observeShopModerationStatus() {
@@ -749,7 +750,7 @@ open class PowerMerchantSubscriptionFragment :
     }
 
     protected fun hideSwipeRefreshLoading() {
-        view?.swipeRefreshPm?.isRefreshing = false
+        binding?.swipeRefreshPm?.isRefreshing = false
     }
 
     private fun getUpgradePmProWidget(): WidgetUpgradePmProUiModel? {
