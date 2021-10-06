@@ -29,6 +29,7 @@ import com.tokopedia.imagepicker_insta.activity.CameraActivity
 import com.tokopedia.imagepicker_insta.common.trackers.MediaType
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.imagepicker_insta.util.CameraUtil
+import com.tokopedia.imagepicker_insta.util.VideoUtil
 import com.tokopedia.imagepicker_insta.viewmodel.CameraViewModel
 import com.tokopedia.imagepicker_insta.views.CameraButton
 import com.tokopedia.imagepicker_insta.views.CameraButtonListener
@@ -55,12 +56,13 @@ class CameraFragment : Fragment() {
     val handler = Handler(Looper.getMainLooper())
     val timer = Timer()
     var isFlashOn = false
+    var maxDuration = VideoUtil.DEFAULT_DURATION_MAX_LIMIT
 
     val bitmapCallback = BitmapCallback {
         if (it != null) {
             cropBitmap(it)
         } else {
-            showToast("Something went wrong in taking photos", Toaster.TYPE_ERROR)
+            showToast(getString(R.string.imagepicker_smw_in_tak_pho), Toaster.TYPE_ERROR)
             (activity as? CameraActivity)?.exitActivityOnError()
         }
     }
@@ -88,7 +90,7 @@ class CameraFragment : Fragment() {
         override fun onCanceled() {
             handler.post {
                 loader.visibility = View.GONE
-                showToast("Cropping Video cancelled", Toaster.TYPE_ERROR)
+                showToast(getString(R.string.imagepicker_crop_vid_cancel), Toaster.TYPE_ERROR)
                 cameraButton.addTouchListener()
             }
             viewModel.deleteFile(sourceVideoFile)
@@ -98,7 +100,7 @@ class CameraFragment : Fragment() {
         override fun onFailed(exception: Exception?) {
             handler.post {
                 loader.visibility = View.GONE
-                showToast("Cropping Video exception", Toaster.TYPE_ERROR)
+                showToast(getString(R.string.imagepicker_crop_vid_excep), Toaster.TYPE_ERROR)
                 cameraButton.addTouchListener()
             }
 
@@ -127,11 +129,11 @@ class CameraFragment : Fragment() {
         return v
     }
 
-    fun initData() {
+    private fun initData() {
         viewModel = ViewModelProviders.of(this)[CameraViewModel::class.java]
     }
 
-    fun initViews(v: View) {
+    private fun initViews(v: View) {
         cameraView = v.findViewById(R.id.camera_view)
         cameraButton = v.findViewById(R.id.camera_button)
         imageFlash = v.findViewById(R.id.image_flash)
@@ -149,7 +151,11 @@ class CameraFragment : Fragment() {
         isFlashOn = false
 
         imageFlash.setImageResource(R.drawable.imagepicker_insta_flash_off)
-        cameraView.videoMaxDuration = CameraButton.MAX_VIDEO_RECORD_DURATION_IN_SECONDS * 1000
+        cameraView.videoMaxDuration = maxDuration.toInt() * 1000
+
+        if(activity is CameraActivity) {
+            cameraButton.maxDurationToRecord = (activity as CameraActivity).videoMaxDuration
+        }
     }
 
     fun showToast(message: String, toasterType: Int) {
@@ -168,7 +174,7 @@ class CameraFragment : Fragment() {
 
     private fun setListeners() {
 
-        viewModel.liveDataCropPhoto.observe(viewLifecycleOwner, {
+        viewModel.liveDataCropPhoto.observe(viewLifecycleOwner) {
             when (it.status) {
                 LiveDataResult.STATUS.LOADING -> {
                     loader.visibility = View.VISIBLE
@@ -180,18 +186,18 @@ class CameraFragment : Fragment() {
                         (activity as? CameraActivity)?.exitActivityOnSuccess(it.data)
                         cameraButton.addTouchListener()
                     } else {
-                        showToast("Something went wrong in getting uri", Toaster.TYPE_ERROR)
+                        showToast(getString(R.string.imagepicker_smw_in_getting_uri), Toaster.TYPE_ERROR)
                         (activity as? CameraActivity)?.exitActivityOnError()
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     loader.visibility = View.GONE
-                    showToast("Something went wrong in cropping", Toaster.TYPE_ERROR)
+                    showToast(getString(R.string.imagepicker_smw_in_crop), Toaster.TYPE_ERROR)
                     (activity as? CameraActivity)?.exitActivityOnError()
 
                 }
             }
-        })
+        }
         cameraButton.cameraButtonListener = object : CameraButtonListener {
             override fun onClick() {
                 cameraView.mode = Mode.PICTURE
@@ -245,14 +251,6 @@ class CameraFragment : Fragment() {
                 Timber.e(exception)
                 disableFlashTorch()
                 cameraButton.addTouchListener()
-            }
-
-            override fun onVideoRecordingStart() {
-                super.onVideoRecordingStart()
-            }
-
-            override fun onVideoRecordingEnd() {
-                super.onVideoRecordingEnd()
             }
         })
     }

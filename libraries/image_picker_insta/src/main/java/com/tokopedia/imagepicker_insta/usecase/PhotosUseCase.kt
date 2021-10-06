@@ -20,13 +20,13 @@ import kotlin.collections.HashSet
 class PhotosUseCase @Inject constructor() {
     private val photosImporter = PhotoImporter()
 
-    fun createAssetsFromFile(file: File, context: Context): Asset? {
+    fun createAssetsFromFile(file: File, context: Context, queryConfiguration: QueryConfiguration): Asset? {
         if (photosImporter.isImageFile(file.absolutePath)) {
             return photosImporter.createPhotosDataFromInternalFile(file)
         } else {
             val videoMetaData = photosImporter.getVideoMetaData(file.absolutePath, context)
             if (videoMetaData.isSupported) {
-                return photosImporter.createVideosDataFromInternalFile(file, videoMetaData.duration)
+                return photosImporter.createVideosDataFromInternalFile(file, videoMetaData.duration, queryConfiguration.videoMaxDuration)
             }
         }
         return null
@@ -96,11 +96,11 @@ class PhotosUseCase @Inject constructor() {
         })
     }
 
-    suspend fun getMediaByFolderNameFlow(folderName: String, context: Context): Flow<MediaUseCaseData> {
+    suspend fun getMediaByFolderNameFlow(folderName: String, context: Context, queryConfiguration: QueryConfiguration): Flow<MediaUseCaseData> {
         return flow {
 
             val internalAssets = if (folderName == StorageUtil.INTERNAL_FOLDER_NAME || folderName == AlbumUtil.RECENTS)
-                ArrayList(photosImporter.importMediaFromInternalDir(context))
+                ArrayList(photosImporter.importMediaFromInternalDir(context, queryConfiguration))
             else
                 ArrayList()
 
@@ -112,7 +112,7 @@ class PhotosUseCase @Inject constructor() {
              *      b. external_asset_list
              * 3. internal_file_index is negative - ignore sorting with internal_assets
              * */
-            photosImporter.importPhotoVideoFlow(context, folderName).collect { importedMediaMetaData ->
+            photosImporter.importPhotoVideoFlow(context, folderName, queryConfiguration).collect { importedMediaMetaData ->
 
                 if (internalAssets.isEmpty()) {
                     emit(MediaUseCaseData(importedMediaMetaData.mediaImporterData))

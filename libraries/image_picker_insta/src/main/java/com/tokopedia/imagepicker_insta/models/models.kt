@@ -53,3 +53,5 @@ data class ZoomInfo(
 }
 
 data class VideoMetaData(val isSupported: Boolean, val duration: Long)
+
+data class QueryConfiguration(val videoMaxDuration:Long)

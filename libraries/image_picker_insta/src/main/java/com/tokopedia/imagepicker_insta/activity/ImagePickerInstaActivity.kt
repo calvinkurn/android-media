@@ -8,6 +8,7 @@ import com.tokopedia.imagepicker_insta.common.ImagePickerRouter.DEFAULT_MULTI_SE
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.imagepicker_insta.fragment.ImagePickerInstaMainFragment
 import com.tokopedia.imagepicker_insta.util.PermissionUtil
+import com.tokopedia.imagepicker_insta.util.VideoUtil
 
 class ImagePickerInstaActivity : PermissionActivity() {
 
@@ -20,6 +21,7 @@ class ImagePickerInstaActivity : PermissionActivity() {
     var applinkToNavigateAfterMediaCapture = ""
     var applinkForGalleryProceed = ""
     var applinkForBackNavigation = ""
+    var videoMaxDurationInSeconds:Long = VideoUtil.DEFAULT_DURATION_MAX_LIMIT
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,6 +70,10 @@ class ImagePickerInstaActivity : PermissionActivity() {
         applinkForGalleryProceed = intent.extras?.getString(BundleData.APPLINK_FOR_GALLERY_PROCEED) ?: ""
         applinkForBackNavigation = intent.extras?.getString(BundleData.APPLINK_FOR_BACK_NAVIGATION) ?: ""
         toolbarIconUrl = intent.extras?.getString(BundleData.TOOLBAR_ICON_URL) ?: ""
+        videoMaxDurationInSeconds = intent.extras?.getLong(BundleData.VIDEO_MAX_SECONDS) ?: VideoUtil.DEFAULT_DURATION_MAX_LIMIT
+        if(videoMaxDurationInSeconds == 0L){
+            videoMaxDurationInSeconds = VideoUtil.DEFAULT_DURATION_MAX_LIMIT
+        }
     }
 
     override fun finish() {

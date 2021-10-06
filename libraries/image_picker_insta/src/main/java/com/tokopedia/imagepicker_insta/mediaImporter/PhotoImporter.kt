@@ -23,7 +23,7 @@ class PhotoImporter : MediaImporter {
     companion object {
         const val ALL = "Recents"
         const val INDEX_OF_RECENT_MEDIA_IN_FOLDER_LIST = 0
-        private val URI = MediaStore.Files.getContentUri("external") //TODO Rahul check for available volumes
+        private val URI = MediaStore.Files.getContentUri("external")
         private val BATCH_LIMIT = 1000
 
     }
@@ -157,7 +157,7 @@ class PhotoImporter : MediaImporter {
         return emptyList()
     }
 
-    suspend fun importPhotoVideoFlow(context: Context, folderName: String? = null): Flow<ImportedMediaMetaData> {
+    suspend fun importPhotoVideoFlow(context: Context, folderName: String? = null, queryConfiguration: QueryConfiguration): Flow<ImportedMediaMetaData> {
         return flow {
                 val imageAdapterDataList = ArrayList<ImageAdapterData>()
 
@@ -202,10 +202,7 @@ class PhotoImporter : MediaImporter {
                                     val mediaTypeIndex = cur.getColumnIndex(MediaStore.Files.FileColumns.MEDIA_TYPE)
 
                                     val index = cur.getLong(idIndex)
-                                    if (lastIndex != null && lastIndex < index) {
-                                        print(index)
-                                        print(index)
-                                    }
+
                                     lastIndex = index
 
                                     val dateAdded = cur.getLong(dateAddedIndex)
@@ -228,7 +225,7 @@ class PhotoImporter : MediaImporter {
                                                 ),
                                                 createdDate = dateAdded,
                                                 durationText = VideoUtil.getFormattedDurationText(duration),
-                                                canBeSelected = VideoUtil.isVideoWithinLimit(duration)
+                                                canBeSelected = VideoUtil.isVideoWithinLimit(duration, queryConfiguration.videoMaxDuration)
                                             )
                                         }
 

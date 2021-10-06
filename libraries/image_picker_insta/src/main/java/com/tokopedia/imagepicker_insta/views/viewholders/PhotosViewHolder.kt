@@ -31,6 +31,18 @@ open class PhotosViewHolder(photoView: View) : RecyclerView.ViewHolder(photoView
         }
     }
 
+    fun updateMask(isInMultiSelect:Boolean,isCurrentlySelected:Boolean){
+        if(isInMultiSelect){
+            if(isCurrentlySelected){
+                assetView.maskImageView.onDrawableId = R.drawable.imagepicker_insta_ic_grey_mask
+            }else{
+                assetView.maskImageView.onDrawableId = R.drawable.imagepicker_insta_rect_grey_empty
+            }
+        }else{
+            assetView.maskImageView.onDrawableId = R.drawable.imagepicker_insta_ic_grey_mask
+        }
+    }
+
     open fun setData(imageAdapterData: ImageAdapterData, contentHeight: Int) {
         assetView.loadAssetThumbnail(imageAdapterData.asset, contentHeight)
     }

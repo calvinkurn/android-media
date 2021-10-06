@@ -43,7 +43,7 @@ interface MediaImporter {
         return VideoMetaData(false, 0)
     }
 
-    suspend fun importMediaFromInternalDir(context: Context): List<Asset> {
+    suspend fun importMediaFromInternalDir(context: Context, queryConfiguration: QueryConfiguration): List<Asset> {
         val directory = File(context.filesDir, StorageUtil.INTERNAL_FOLDER_NAME)
         val photosDataList = arrayListOf<Asset>()
         if (directory.isDirectory) {
@@ -61,7 +61,7 @@ interface MediaImporter {
                     if (videoMetaData.isSupported) {
                         val duration = it.getMediaDuration(context)
                         if (duration != null && duration >= 1) {
-                            val videoData = createVideosDataFromInternalFile(it, videoMetaData.duration)
+                            val videoData = createVideosDataFromInternalFile(it, videoMetaData.duration, queryConfiguration.videoMaxDuration)
                             photosDataList.add(videoData)
                         }
                     }
@@ -72,13 +72,13 @@ interface MediaImporter {
     }
 
     @Throws(Exception::class)
-    fun createVideosDataFromInternalFile(file: File, duration: Long): VideoData {
+    fun createVideosDataFromInternalFile(file: File, duration: Long, maxDuration:Long): VideoData {
         if (file.isDirectory) throw Exception("Got folder instead of file")
         return VideoData(
             Uri.fromFile(file),
             getCreateAtForInternalFile(file),
             VideoUtil.getFormattedDurationText(duration),
-            VideoUtil.isVideoWithinLimit(duration)
+            VideoUtil.isVideoWithinLimit(duration, maxDuration)
         )
     }
 

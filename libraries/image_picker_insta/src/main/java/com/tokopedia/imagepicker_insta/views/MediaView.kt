@@ -43,10 +43,10 @@ class MediaView @JvmOverloads constructor(
             //Add logic for scaling in exoplayer as well
             if (value == MediaScaleType.MEDIA_CENTER_CROP) {
                 playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-                assetView.centerCrop()
+                assetView.centerCrop(true)
             } else {
                 playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-                assetView.centerInside()
+                assetView.centerInside(true)
             }
             field = value
         }

@@ -11,4 +11,5 @@ object BundleData {
     val APPLINK_FOR_GALLERY_PROCEED = "link_gall"
     val APPLINK_FOR_BACK_NAVIGATION = "link_back"
     val URIS = "ip_uris"
+    val VIDEO_MAX_SECONDS = "v_max_s"
 }

@@ -3,7 +3,7 @@ package com.tokopedia.imagepicker_insta.util
 import java.util.concurrent.TimeUnit
 
 object VideoUtil {
-    const val DURATION_MAX_LIMIT = 59
+    const val DEFAULT_DURATION_MAX_LIMIT:Long = 59
 
     fun getFormattedDurationText(durationInMillis: Long): String {
         val seconds = TimeUnit.MILLISECONDS.toSeconds(durationInMillis) % 60
@@ -13,8 +13,8 @@ object VideoUtil {
         return "$minuteText:$secondText"
     }
 
-    fun isVideoWithinLimit(durationInMillis: Long): Boolean {
-        return (durationInMillis / 1000) <= VideoUtil.DURATION_MAX_LIMIT
+    fun isVideoWithinLimit(durationInMillis: Long, maxDuration:Long): Boolean {
+        return (durationInMillis / 1000) <= maxDuration
     }
 
 }
