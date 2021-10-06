@@ -7,10 +7,10 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.view.WindowManager
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import com.tokopedia.config.GlobalConfig
 
 const val CHANNEL_ID = "alpha"
 const val NOTIFICATION_ID = 123 shr 5
@@ -23,6 +23,7 @@ class AlphaObserver : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityResumed(activity: Activity) {
+        setWindowAlpha(activity)
         showBanner(activity)
     }
 
@@ -60,6 +61,15 @@ class AlphaObserver : Application.ActivityLifecycleCallbacks {
                 .setColor(ContextCompat.getColor(context, android.R.color.holo_red_dark))
 
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build())
+    }
+
+    private fun setWindowAlpha(activity: Activity) {
+        if (Build.VERSION.SDK_INT >= 21) {
+            val window = activity.window
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            window.statusBarColor = ContextCompat.getColor(activity, android.R.color.holo_red_dark)
+        }
     }
 
 }
