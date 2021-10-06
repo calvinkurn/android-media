@@ -233,6 +233,19 @@ open class GetChatUseCase @Inject constructor(
                   blastId
                   source
                   label
+                  parentReply {
+                    attachmentID
+                    attachmentType
+                    senderID
+                    name
+                    fraudStatus
+                    replyTimeUnixNano
+                    source
+                    mainText
+                    subText
+                    imageURL
+                    isExpired
+                  }
                   attachment {
                     id
                     type
