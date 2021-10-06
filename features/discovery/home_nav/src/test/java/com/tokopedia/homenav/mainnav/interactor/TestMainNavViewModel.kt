@@ -383,14 +383,14 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `test when user not login first load init viewmodel data not null`() {
+    fun `test when user not login first load init viewmodel then menu not empty`() {
         val userSession = mockk<UserSessionInterface>()
         every { userSession.isLoggedIn() } returns false
         viewModel = createViewModel(userSession = userSession)
         viewModel.setInitialState()
 
         val visitableList = viewModel.mainNavLiveData.value?.dataList
-        Assert.assertNotNull(visitableList)
+        Assert.assertNotEquals(0, visitableList?.size)
     }
 
     @Test
