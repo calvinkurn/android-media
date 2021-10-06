@@ -208,7 +208,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 feedXCard.typename,
                 feedXCard.followers.isFollowed,
                 feedXCard.author.id,
-                isVideo(feedXCard.media.firstOrNull())
+                isVideo(feedXCard.media.firstOrNull()),
+                feedXCard.isTopAds
             )
         }
     }

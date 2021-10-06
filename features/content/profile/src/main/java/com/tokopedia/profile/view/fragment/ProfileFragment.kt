@@ -915,7 +915,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         type: String,
         isFollowed: Boolean,
         shopId: String,
-        video: Boolean
+        video: Boolean,
+        isTopads:Boolean
     ) {
         activity?.let {
             profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())

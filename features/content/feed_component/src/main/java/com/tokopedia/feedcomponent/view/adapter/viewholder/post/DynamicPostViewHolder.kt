@@ -663,7 +663,8 @@ open class DynamicPostViewHolder(v: View,
             type: String = "",
             isFollowed: Boolean = false,
             shopId: String = "",
-            video: Boolean
+            video: Boolean,
+            isTopads:Boolean = false
         )
 
         fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)

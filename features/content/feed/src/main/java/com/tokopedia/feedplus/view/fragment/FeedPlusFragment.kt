@@ -1681,16 +1681,18 @@ class FeedPlusFragment : BaseDaggerFragment(),
         type: String,
         isFollowed: Boolean,
         shopId: String,
-        video: Boolean
+        video: Boolean,
+        isTopads: Boolean
     ) {
         activity?.let {
             val urlString = if (typeASGC) {
                 String.format(getString(R.string.feed_share_asgc_weblink), id.toString())
-            } else {
-                String.format(getString(R.string.feed_share_weblink), id.toString())
-
             }
-            shareData = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
+            else {
+                String.format(getString(R.string.feed_share_weblink), id.toString())
+            }
+
+            val shareDataBuilder= LinkerData.Builder.getLinkerBuilder().setId(id.toString())
                 .setName(title)
                 .setDescription(description)
                 .setImgUri(imageUrl)
@@ -1698,7 +1700,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 .setDeepLink(url)
                 .setType(LinkerData.FEED_TYPE)
                 .setDesktopUrl(urlString)
-                .build()
+
+            if (isTopads) {
+                shareDataBuilder.apply {
+                    setOgImageUrl(imageUrl)
+                }
+            }
+            shareData = shareDataBuilder.build()
+
             val linkerShareData = DataMapper().getLinkerShareData(shareData)
             LinkerManager.getInstance().executeShareRequest(
                 LinkerUtils.createShareRequest(
@@ -2103,7 +2112,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         shopId: String,
         isTopads:Boolean = false
     ) {
-        var urlString: String
         feedAnalytics.eventonShareProductClicked(
             activityId.toString(),
             id.toString(),
@@ -2114,23 +2122,26 @@ class FeedPlusFragment : BaseDaggerFragment(),
             productTagBS.dismissedByClosing = true
             productTagBS.dismiss()
         }
-        urlString = if (isTopads) {
+        val urlString: String = if (isTopads) {
             shareBottomSheetProduct = true
             String.format(getString(R.string.feed_share_weblink), id.toString())
         } else{
             url
         }
         activity?.let {
-            shareData = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
+            val linkerBuilder = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
                 .setName(title)
                 .setDescription(description)
                 .setImgUri(imageUrl)
                 .setUri(urlString)
                 .setDeepLink(url)
                 .setType(LinkerData.FEED_TYPE)
-                .setOgImageUrl(imageUrl)
                 .setDesktopUrl(urlString)
-                .build()
+
+            if (isTopads) {
+                linkerBuilder.setOgImageUrl(imageUrl)
+            }
+            shareData = linkerBuilder.build()
             val linkerShareData = DataMapper().getLinkerShareData(shareData)
             LinkerManager.getInstance().executeShareRequest(
                 LinkerUtils.createShareRequest(

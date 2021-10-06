@@ -701,10 +701,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onShareClick(int positionInFeed, int id, @NotNull String title, @NotNull String description, @NotNull String url, @NotNull String imageUrl, boolean postTypeASGC, @NotNull String type, boolean isFollowed, @NotNull String shopId, boolean video) {
+    public void onShareClick(int positionInFeed, int id, @NotNull String title, @NotNull String description, @NotNull String url, @NotNull String imageUrl, boolean postTypeASGC, @NotNull String type, boolean isFollowed, @NotNull String shopId, boolean video , boolean isTopads) {
         if (getActivity() != null) {
             ShareBottomSheets.Companion.newInstance(packageName -> {
-
             }, "", imageUrl, url, description, title, "").show(getActivity().getSupportFragmentManager());
         }
     }
