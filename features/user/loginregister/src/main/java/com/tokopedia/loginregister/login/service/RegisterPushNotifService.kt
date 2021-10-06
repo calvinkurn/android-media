@@ -146,6 +146,8 @@ class RegisterPushNotifService : JobIntentService(), CoroutineScope {
         private const val PUBLIC_KEY_SUFFIX = "\n-----END PUBLIC KEY-----"
 
         private val ERROR_HEADER = "${RegisterPushNotifService::class.java.name} error on "
+        private const val TAG_SCALYR = "CRASH_REGISTER_PUSHNOTIF"
+        private const val MAX_LENGTH_ERROR = 1000
         private const val ON_HANDLE_WORK = "onHandlerWork()"
         private const val START_SERVICE = "startServices()"
         private const val SIGN_DATA = "signData()"
@@ -163,9 +165,9 @@ class RegisterPushNotifService : JobIntentService(), CoroutineScope {
         fun recordLog(type: String, message: String, throwable: Throwable) {
             val logMessage = if (message.isEmpty()) type else "$type | $message"
             sendLogToCrashlytics(logMessage, throwable)
-            ServerLogger.log(Priority.P2, RegisterPushNotifService::class.java.name, mapOf(
+            ServerLogger.log(Priority.P2, TAG_SCALYR, mapOf(
                 "type" to type,
-                "err" to throwable.toString())
+                "err" to throwable.toString().take(MAX_LENGTH_ERROR))
             )
         }
 
