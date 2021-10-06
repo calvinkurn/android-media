@@ -142,7 +142,9 @@ object TopadsFeedXMapper {
                 priceOriginalFmt = priceFormat,
                 priceFmt = priceFormat,
                 isDiscount = false,
-                coverURL = imageProduct.imageUrl
+                coverURL = imageProduct.imageUrl,
+                id = id,
+                webLink = applinks
             )
         }
     }

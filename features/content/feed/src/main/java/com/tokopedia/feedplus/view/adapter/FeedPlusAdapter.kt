@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineV2ViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory
@@ -58,10 +59,14 @@ class FeedPlusAdapter(
 
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder<Visitable<*>>) {
         super.onViewDetachedFromWindow(holder)
+
         if (holder is DynamicPostNewViewHolder && holder.adapterPosition < list.size && holder.adapterPosition != RecyclerView.NO_POSITION) {
             (holder as DynamicPostNewViewHolder).onItemDetach(
                 holder.itemView.context, list[holder.adapterPosition]
             )
+        }
+        if (holder is (TopAdsHeadlineV2ViewHolder) && holder.adapterPosition < list.size && holder.adapterPosition != RecyclerView.NO_POSITION) {
+            (holder as TopAdsHeadlineV2ViewHolder).onItemDetach()
         }
     }
 

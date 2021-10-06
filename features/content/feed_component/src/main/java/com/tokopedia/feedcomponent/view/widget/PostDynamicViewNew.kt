@@ -273,6 +273,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             followCount.text =
                 context.getString(R.string.feed_header_follow_count_less_text)
         }
+        if (isTopads){
+            followCount.text = context.getString(R.string.feeds_ads_text)
+        }
         followCount.showWithCondition(!isFollowed || followers.transitionFollow)
         shopImage.setImageUrl(author.logoURL)
         shopBadge.setImageUrl(author.badgeURL)

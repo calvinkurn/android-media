@@ -1,8 +1,11 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.topads
 
+import android.content.Context
 import android.view.View
 import android.widget.ViewFlipper
 import androidx.annotation.LayoutRes
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
@@ -10,12 +13,11 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAda
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.mapper.TopadsFeedXMapper.cpmModelToFeedXDataModel
+import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
-import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.feedcomponent.view.widget.PostDynamicViewNew
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
@@ -30,7 +32,7 @@ import com.tokopedia.user.session.UserSessionInterface
 const val TOPADS_VARIANT_EXPERIMENT_CLEAN = 1
 const val TOPADS_VARIANT_EXPERIMENT_INFO = 2
 
-class TopAdsHeadlineV2ViewHolder(
+open class TopAdsHeadlineV2ViewHolder(
     view: View, private val userSession: UserSessionInterface,
     private val topAdsHeadlineListener: TopAdsHeadlineListener?=null,
     private val dynamicPostListener: DynamicPostViewHolder.DynamicPostListener,
@@ -99,7 +101,7 @@ class TopAdsHeadlineV2ViewHolder(
         impressHolder = topadsHeadlineUiModel?.impressHolder
         hideHeadlineView()
         topadsHeadlineUiModel?.run {
-            if (cpmModel != null) {
+            if (cpmModel != null && !cpmModel?.data.isNullOrEmpty()) {
                 showHeadlineView(cpmModel)
             } else {
                 fetchTopadsHeadlineAds(topadsHeadlineUiModel?.topadsHeadLinePage ?: 0)
@@ -148,5 +150,9 @@ class TopAdsHeadlineV2ViewHolder(
 
     private fun hideTopadsView(){
         topAdsHeadlineListener?.hideTopadsView(adapterPosition)
+    }
+
+    fun onItemDetach() {
+        topadsPostDynamic?.detach(false)
     }
 }
