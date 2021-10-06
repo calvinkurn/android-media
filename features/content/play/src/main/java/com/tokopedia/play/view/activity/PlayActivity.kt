@@ -1,5 +1,7 @@
 package com.tokopedia.play.view.activity
 
+import android.app.ActivityManager
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.media.AudioManager
@@ -268,7 +270,7 @@ class PlayActivity : BaseActivity(),
             if (!fragment.onBackPressed()) {
                 if (isSystemBack && orientation.isLandscape) onOrientationChanged(ScreenOrientation.Portrait, false)
                 else {
-                    if (isTaskRoot) {
+                    if (isCustomTaskRoot()) {
                         val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
                         startActivity(intent)
                         finish()
@@ -279,6 +281,18 @@ class PlayActivity : BaseActivity(),
                 }
             }
         } else super.onBackPressed()
+    }
+
+    private fun isCustomTaskRoot(): Boolean {
+        val activityManager = applicationContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val appTasks = activityManager.appTasks
+        for(task in appTasks) {
+            val baseIntent = task.taskInfo.baseIntent
+            val categories = baseIntent.categories ?: return true
+
+            return !categories.contains(Intent.CATEGORY_LAUNCHER)
+        }
+        return true
     }
 
     override fun requestEnableNavigation() {

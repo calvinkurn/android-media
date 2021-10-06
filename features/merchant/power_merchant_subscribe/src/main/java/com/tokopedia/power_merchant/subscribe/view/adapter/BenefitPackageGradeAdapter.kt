@@ -1,7 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.view.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -9,9 +8,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.asCamelCase
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.databinding.ItemBenefitPackageSectionPmProBinding
 import com.tokopedia.power_merchant.subscribe.view.model.BenefitItem
 import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageGradeUiModel
-import kotlinx.android.synthetic.main.item_benefit_package_section_pm_pro.view.*
 
 class BenefitPackageGradeAdapter :
     RecyclerView.Adapter<BenefitPackageGradeAdapter.BenefitPackageGradeViewHolder>() {
@@ -29,9 +28,12 @@ class BenefitPackageGradeAdapter :
         parent: ViewGroup,
         viewType: Int
     ): BenefitPackageGradeViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_benefit_package_section_pm_pro, parent, false)
-        return BenefitPackageGradeViewHolder(view)
+        val binding = ItemBenefitPackageSectionPmProBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return BenefitPackageGradeViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: BenefitPackageGradeViewHolder, position: Int) {
@@ -41,18 +43,28 @@ class BenefitPackageGradeAdapter :
 
     override fun getItemCount(): Int = benefitPackageDataList.size
 
-    inner class BenefitPackageGradeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class BenefitPackageGradeViewHolder(
+        private val binding: ItemBenefitPackageSectionPmProBinding
+    ) :
+        RecyclerView.ViewHolder(binding.root) {
 
         private var benefitPackageItemAdapter: BenefitPackageItemAdapter? = null
 
         fun bind(data: BenefitPackageGradeUiModel) {
-            with(itemView) {
+            with(binding) {
                 bgBenefitPackage?.loadImage(data.backgroundUrl)
                 imgBenefitPackageSection?.loadImage(data.iconBenefitUrl)
-                tvTitleBenefitPackageSection?.text = context.getString(
-                    R.string.pm_title_benefit_package_section,
-                    data.gradeName.asCamelCase()
-                )
+                tvTitleBenefitPackageSection?.text = if (data.isDowngrade) {
+                    root.context.getString(
+                        R.string.pm_title_benefit_package_downgrade_section,
+                        data.gradeName.asCamelCase()
+                    )
+                } else {
+                    root.context.getString(
+                        R.string.pm_title_benefit_package_upgrade_section,
+                        data.gradeName.asCamelCase()
+                    )
+                }
                 tvDescBenefitPackageSection?.text = MethodChecker.fromHtml(data.descBenefit)
             }
             setItemBenefitAdapter(data.benefitItemList)
@@ -60,8 +72,8 @@ class BenefitPackageGradeAdapter :
 
         private fun setItemBenefitAdapter(benefitItemList: List<BenefitItem>) {
             benefitPackageItemAdapter = BenefitPackageItemAdapter()
-            with(itemView) {
-                rvBenefitPackageItem?.apply {
+            with(binding) {
+                rvBenefitPackageItem.run {
                     layoutManager = LinearLayoutManager(context)
                     adapter = benefitPackageItemAdapter
                 }

@@ -720,13 +720,16 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     fun generateChatViewModelWithImage(imageUrl: String): ImageUploadViewModel {
-        return ImageUploadViewModel(
-                messageId,
-                opponentId,
-                (System.currentTimeMillis() / ONE_SECOND_IN_MILLISECONDS).toString(),
-                imageUrl,
-                SendableViewModel.generateStartTime()
-        )
+        return ImageUploadViewModel.Builder()
+            .withMsgId(messageId)
+            .withFromUid(opponentId)
+            .withAttachmentId((System.currentTimeMillis() / ONE_SECOND_IN_MILLISECONDS).toString())
+            .withAttachmentType(AttachmentType.Companion.TYPE_IMAGE_UPLOAD)
+            .withReplyTime(SendableViewModel.SENDING_TEXT)
+            .withStartTime(SendableViewModel.generateStartTime())
+            .withIsDummy(true)
+            .withImageUrl(imageUrl)
+            .build()
     }
 
     private fun onSelectedInvoiceResult(resultCode: Int, data: Intent?) {
@@ -791,24 +794,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     Unit {
         return {
             (activity as Activity).run {
-                (viewState as ChatbotViewState).onSuccessSendRating(it, rating, element, this,
-                        onClickReasonRating(element.replyTimeNano.toString()))
+                (viewState as ChatbotViewState).onSuccessSendRating(it, rating, element, this)
             }
-        }
-    }
-
-    private fun onClickReasonRating(timestamp: String): (String) -> Unit {
-        return {
-            chatbotAnalytics.eventClick(ACTION_THUMBS_DOWN_REASON_BUTTON_CLICKED, it)
-            (viewState as ChatbotViewState).onClickReasonRating()
-            presenter.sendReasonRating(messageId, it, timestamp, onError(),
-                    onSuccessSendReasonRating())
-        }
-    }
-
-    private fun onSuccessSendReasonRating(): (String) -> Unit {
-        return {
-            Toaster.make(view!!, it, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
         }
     }
 
