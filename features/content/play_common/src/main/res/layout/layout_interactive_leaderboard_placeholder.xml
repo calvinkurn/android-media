@@ -27,4 +27,14 @@
 
     <include layout="@layout/item_play_interactive_leaderboard_winner_placeholder" />
 
+    <include layout="@layout/item_play_interactive_leaderboard_winner_placeholder" />
+
+    <include layout="@layout/item_play_interactive_leaderboard_winner_placeholder" />
+
+    <include layout="@layout/item_play_interactive_leaderboard_winner_placeholder" />
+
+    <include layout="@layout/item_play_interactive_leaderboard_winner_placeholder" />
+
+    <include layout="@layout/item_play_interactive_leaderboard_winner_placeholder" />
+
 </LinearLayout>
