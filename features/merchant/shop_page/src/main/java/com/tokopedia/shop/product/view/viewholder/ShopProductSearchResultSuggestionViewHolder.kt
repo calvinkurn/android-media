@@ -72,22 +72,19 @@ class ShopProductSearchResultSuggestionViewHolder(
                 ds.typeface = Typeface.DEFAULT_BOLD
             }
         }
-        val startClickedIndex = suggestionTextSpannedString.indexOf(keywordWithQuote).takeIf { it.isMoreThanZero() } ?: DEFAULT_FIRST_INDEX
-        if (startClickedIndex.isMoreThanZero()) {
-            suggestionTextSpannedString.setSpan(
-                    clickableSpan,
-                    startClickedIndex,
-                    ((suggestionTextSpannedString.indexOf(keywordWithQuote)) + keywordWithQuote.length),
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+        val indexOfKeyword = suggestionTextSpannedString.indexOf(keywordWithQuote)
+        val startClickedIndex = indexOfKeyword.takeIf { it.isMoreThanZero() } ?: DEFAULT_FIRST_INDEX
+        val endClickedIndex = if (indexOfKeyword.isMoreThanZero()) {
+            (indexOfKeyword + keywordWithQuote.length)
         } else {
-            suggestionTextSpannedString.setSpan(
-                    clickableSpan,
-                    DEFAULT_FIRST_INDEX,
-                    suggestionTextSpannedString.lastIndex,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+            suggestionTextSpannedString.lastIndex
         }
+        suggestionTextSpannedString.setSpan(
+                clickableSpan,
+                startClickedIndex,
+                endClickedIndex,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
         return suggestionTextSpannedString
     }
 
