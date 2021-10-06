@@ -26,9 +26,9 @@ object DeeplinkMapperFintech {
     // tokopedia://fintech/home-credit/selfie
     fun isHomeCreditRegister(uri: Uri): Boolean {
         val segments = uri.pathSegments
-        if (segments.size < 3 || segments.size > 4) return false
-        return segments[0].equals(FINTECH) && segments[1].equals(HOME_CREDIT) &&
-                (segments[2].equals(SELFIE) || segments[2].equals(KTP))
+        if (segments.size < 2 || segments.size > 3) return false
+        return uri.host == FINTECH && segments[0].equals(HOME_CREDIT) &&
+                (segments[1].equals(SELFIE) || segments[1].equals(KTP))
     }
 
     fun getRegisteredNavigationForHomeCreditRegister(uri: Uri): String {

@@ -24,8 +24,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.kyc.deeplink.OvoUpgradeDeeplinkModule;
-import com.tokopedia.kyc.deeplink.OvoUpgradeDeeplinkModuleLoader;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
 import com.tokopedia.linker.model.LinkerDeeplinkResult;
@@ -60,7 +58,6 @@ import rx.schedulers.Schedulers;
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
-        OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class
 })
 
@@ -77,7 +74,6 @@ DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCal
         if (applinkDelegate == null) {
             applinkDelegate = new TkpdApplinkDelegate(
                     new ConsumerDeeplinkModuleLoader(),
-                    new OvoUpgradeDeeplinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader()
             );
         }

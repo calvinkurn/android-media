@@ -35,6 +35,7 @@ import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHome
 import com.tokopedia.applink.inbox.DeeplinkMapperInbox
 import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.getDiscoveryDeeplink
+import com.tokopedia.applink.internal.ApplinkConstInternalOvo.STATUS
 import com.tokopedia.applink.marketplace.DeeplinkMapperLogistic
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getShopPageInternalAppLink
@@ -428,6 +429,12 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.REVIEW_REMINDER_PREVIOUS, ApplinkConstInternalSellerapp.REVIEW_REMINDER),
             DLP(DLPLogic { _, uri, _ -> DeeplinkMapperFintech.isHomeCreditRegister(uri) },
                 targetDeeplink = { _, uri, _, _ -> DeeplinkMapperFintech.getRegisteredNavigationForHomeCreditRegister(uri) }),
+            DLP.host(ApplinkConst.HOST_OVOUPGRADE) { _, _, _, _ -> ApplinkConstInternalOvo.OVO_UPGRADE },
+            DLP.matchPattern(ApplinkConst.OVOUPGRADE_STATUS, targetDeeplink = { _, _, _, idList ->
+                UriUtil.buildUriAppendParam(
+                    ApplinkConstInternalOvo.OVO_UPGRADE_STATUS,
+                    mapOf(STATUS to idList?.getOrNull(0), ApplinkConstInternalOvo.MESSAGE to idList?.getOrNull(1)))
+            }),
         )
 
     fun getTokopediaSchemeList():List<DLP>{
