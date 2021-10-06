@@ -1,9 +1,10 @@
 package com.tokopedia.topchat.chatroom.view.activity.robot
 
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.longClick
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.activity.robot.ReplyBubbleMatcher.matchReplyBoxChildWithId
 import com.tokopedia.topchat.matchers.withRecyclerView
 
 object ReplyBubbleRobot {
@@ -22,12 +23,18 @@ object ReplyBubbleRobot {
         clickLongClickMenuItemAt(position ?: REPLY_ITEM_MENU_POSITION)
     }
 
-    fun clickLongClickMenuItemAt(position: Int) {
+    fun clickReplyComposeCloseIcon() {
+        onView(
+            matchReplyBoxChildWithId(R.id.iv_rb_close)
+        ).perform(click())
+    }
+
+    private fun clickLongClickMenuItemAt(position: Int) {
         onView(
             withRecyclerView(R.id.rvMenu).atPositionOnView(
                 position, R.id.ll_long_click_menu_item
             )
-        ).perform(ViewActions.click())
+        ).perform(click())
     }
 
 }

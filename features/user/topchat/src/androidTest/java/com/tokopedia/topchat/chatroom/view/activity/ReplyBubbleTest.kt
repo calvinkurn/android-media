@@ -35,7 +35,21 @@ class ReplyBubbleTest : TopchatRoomTest() {
         ReplyBubbleResult.hasVisibleReplyCompose()
     }
 
-    // TODO: should hide or cancel reply compose when user click close icon
+    @Test
+    fun should_hide_or_cancel_reply_compose_when_user_click_close_icon() {
+        // Given
+        getChatUseCase.response = getChatUseCase.defaultReplyBubbleResponse
+        launchChatRoomActivity()
+
+        // When
+        ReplyBubbleRobot.longClickBubbleAt(1)
+        ReplyBubbleRobot.clickReplyItemMenu()
+        ReplyBubbleRobot.clickReplyComposeCloseIcon()
+
+        // Then
+        ReplyBubbleResult.hasNoVisibleReplyCompose()
+    }
+
     // TODO: should not sent closed reply compose to websocket
     // TODO: should go to specific bubble when reply compose is clicked
     // TODO: should sent and render reply bubble when user sent normal text

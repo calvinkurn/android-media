@@ -3,10 +3,11 @@ package com.tokopedia.topchat.chatroom.view.activity.robot
 import android.view.View
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.activity.robot.ReplyBubbleMatcher.matchReplyBoxChildWithId
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.not
 
 object ReplyBubbleResult {
 
@@ -16,6 +17,14 @@ object ReplyBubbleResult {
         assertReplyComposeTitle(isDisplayed())
         assertReplyComposeMsg(isDisplayed())
         assertReplyComposeCloseBtn(isDisplayed())
+    }
+
+    fun hasNoVisibleReplyCompose() {
+        assertReplyCompose(not(isDisplayed()))
+        assertReplyComposeIcon(not(isDisplayed()))
+        assertReplyComposeTitle(not(isDisplayed()))
+        assertReplyComposeMsg(not(isDisplayed()))
+        assertReplyComposeCloseBtn(not(isDisplayed()))
     }
 
     fun assertReplyCompose(matcher: Matcher<in View>) {
@@ -48,10 +57,4 @@ object ReplyBubbleResult {
         ).check(matches(matcher))
     }
 
-    private fun matchReplyBoxChildWithId(viewId: Int): Matcher<View> {
-        return allOf(
-            withId(viewId),
-            isDescendantOfA(withId(R.id.reply_box))
-        )
-    }
 }
