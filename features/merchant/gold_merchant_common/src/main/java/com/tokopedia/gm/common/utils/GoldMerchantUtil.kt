@@ -48,9 +48,11 @@ object GoldMerchantUtil {
             val simpleDateFormat =
                 SimpleDateFormat(PATTERN_DATE_SHOP_INFO, DateFormatUtils.DEFAULT_LOCALE)
             val calendar = Calendar.getInstance(DateFormatUtils.DEFAULT_LOCALE)
+            val shopAge = totalDays(dateString).toInt()
             simpleDateFormat.parse(dateString)?.let { calendar.time = it }
-            calendar.add(Calendar.DATE, NEW_SELLER_DAYS)
-            return calendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY
+            calendar.add(Calendar.DATE, shopAge)
+            return if (shopAge in NEW_SELLER_DAYS..SHOP_AGE_NINETY_SIX)
+                calendar.get(Calendar.DAY_OF_WEEK) > Calendar.MONDAY else false
         } catch (e: Exception) {
             e.printStackTrace()
             false
