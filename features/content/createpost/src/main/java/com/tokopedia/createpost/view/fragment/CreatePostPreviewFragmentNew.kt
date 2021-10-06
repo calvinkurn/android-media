@@ -113,18 +113,18 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         else
             enableProductIcon()
 
-        val mediaModel = createPostModel.completeImageList[createPostModel.currentCorouselIndex]
         product_tag_button.setOnClickListener {
-            setProductTagListener(mediaModel)
+            setProductTagListener()
         }
         content_tag_product_text.setOnClickListener {
-            setProductTagListener(mediaModel)
+            setProductTagListener()
         }
 
         updateCarouselView()
         feed_content_carousel?.activeIndex = createPostModel.currentCorouselIndex
     }
-    private fun setProductTagListener(mediaModel: MediaModel){
+    private fun setProductTagListener(){
+        val mediaModel = createPostModel.completeImageList[createPostModel.currentCorouselIndex]
 
         createPostAnalytics.eventClickTagProductIcon(mediaModel.type)
 
