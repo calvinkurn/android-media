@@ -2,7 +2,6 @@ package com.tokopedia.pdpsimulation.common.presentation.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -18,14 +17,12 @@ import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.presentation.fragment.PdpSimulationFragment
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
 
 class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationComponent> {
 
     private lateinit var pdpSimulationComponent: PdpSimulationComponent
     val REQUEST_CODE_LOGIN = 123
 
-    @Inject
     lateinit var userSession: UserSessionInterface
 
 
@@ -51,10 +48,10 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
             null
         } else {
             val bundle = Bundle()
-            intent.data?.let {
-                bundle.putString(PRODUCT_PRICE, it.getQueryParameter(PRODUCT_PRICE))
-                bundle.putString(PARAM_PRODUCT_URL, it.getQueryParameter(PARAM_PRODUCT_URL))
-                bundle.putString(PARAM_PRODUCT_ID, it.getQueryParameter(PARAM_PRODUCT_ID))
+            intent.extras?.let {
+                bundle.putString(PRODUCT_PRICE, it.getString(PRODUCT_PRICE))
+                bundle.putString(PARAM_PRODUCT_URL, it.getString(PARAM_PRODUCT_URL))
+                bundle.putString(PARAM_PRODUCT_ID, it.getString(PARAM_PRODUCT_ID))
             }
            PdpSimulationFragment.newInstance(bundle)
         }
@@ -78,21 +75,27 @@ class PdpSimulationActivity : BaseSimpleActivity(), HasComponent<PdpSimulationCo
     /**
      * This method is to restart the activity
      */
-    private fun restartActivity()
-    {
+    private fun restartActivity() {
         val intent = intent
         finish()
         startActivity(intent)
     }
 
+    fun handleActivityResult() {
+        if (!::userSession.isInitialized) {
+            userSession = UserSession(this)
+        }
+        if (userSession.isLoggedIn)
+            restartActivity()
+        else
+            finish()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when(requestCode) {
+        when (requestCode) {
             REQUEST_CODE_LOGIN -> {
-                if (userSession.isLoggedIn)
-                    restartActivity()
-                else
-                    finish()
+                handleActivityResult()
             }
         }
     }

@@ -54,11 +54,11 @@ class PlayBroadcastUiMapper(
 
     override fun mapProductList(
             productsResponse: GetProductsByEtalaseResponse.GetProductListData,
-            isSelectedHandler: (Long) -> Boolean,
+            isSelectedHandler: (String) -> Boolean,
             isSelectableHandler: (Boolean) -> SelectableState
     ) = productsResponse.data.map {
         ProductContentUiModel(
-                id = it.id.toLong(),
+                id = it.id,
                 name = it.name,
                 imageUrl = it.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
                 originalImageUrl = it.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
@@ -132,7 +132,7 @@ class PlayBroadcastUiMapper(
 
     override fun mapProductTag(productTag: ProductTagging): List<ProductData> = productTag.productList.map {
         ProductData(
-                id = it.id,
+                id = it.id.toString(),
                 name = it.name,
                 imageUrl = it.imageUrl,
                 originalImageUrl = it.imageUrl,
@@ -194,7 +194,7 @@ class PlayBroadcastUiMapper(
 
     override fun mapChannelProductTags(productTags: List<GetChannelResponse.ProductTag>) = productTags.map {
         ProductData(
-                id = it.productID.toLongOrZero(),
+                id = it.productID,
                 name = it.productName,
                 imageUrl = it.imageUrl,
                 originalImageUrl = it.imageUrl,

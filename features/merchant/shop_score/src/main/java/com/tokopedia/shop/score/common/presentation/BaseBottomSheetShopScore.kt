@@ -5,16 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.viewbinding.ViewBinding
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-abstract class BaseBottomSheetShopScore: BottomSheetUnify() {
+abstract class BaseBottomSheetShopScore<T: ViewBinding>: BottomSheetUnify() {
+
+    protected var binding: T? = null
 
     abstract fun getLayoutResId(): Int
 
     abstract fun getTitleBottomSheet(): String
 
     abstract fun show(fragmentManager: FragmentManager?)
+
+    abstract fun bind(view: View): T
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +48,7 @@ abstract class BaseBottomSheetShopScore: BottomSheetUnify() {
 
     private fun setChildView(inflater: LayoutInflater, container: ViewGroup?) {
         val view = inflater.inflate(getLayoutResId(), container, false)
+        binding = bind(view)
         setChild(view)
     }
 }
