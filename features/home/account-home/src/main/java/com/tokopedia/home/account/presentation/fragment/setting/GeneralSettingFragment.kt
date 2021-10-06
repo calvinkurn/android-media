@@ -99,6 +99,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     internal lateinit var settingsPresenter: SettingsPresenter
 
     private var tempCountDarkModeToggle = 0
+    private var isForceDarkModeToggleVisible = false
 
     private lateinit var loadingView: View
     private lateinit var baseSettingView: View
@@ -125,6 +126,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         accountAnalytics = AccountAnalytics(activity)
         permissionCheckerHelper = PermissionCheckerHelper()
         localCacheHandler = LocalCacheHandler(context, KEY_GENERAL_SETTING_PREFERENCES)
+        isForceDarkModeToggleVisible = localCacheHandler.getBoolean(KEY_PREF_DARK_MODE_TOGGLE, false)
         context?.let {
             notifPreference = NotifPreference(it)
         }
@@ -197,11 +199,13 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             text = getString(R.string.application_version_fmt, GlobalConfig.RAW_VERSION_NAME)
             setOnClickListener {
                 tempCountDarkModeToggle++
-                if (tempCountDarkModeToggle == ENABLE_DARK_MODE_TOGGLE_COUNT) {
+                if (!isForceDarkModeToggleVisible && tempCountDarkModeToggle == ENABLE_DARK_MODE_TOGGLE_COUNT) {
+                    isForceDarkModeToggleVisible = true
                     localCacheHandler.apply {
                         putBoolean(KEY_PREF_DARK_MODE_TOGGLE, true)
                         applyEditor()
                     }
+                    refreshSettingOptionsList()
                 }
             }
         }
@@ -250,8 +254,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
         val isRollenceEnabledDarkMode = getAbTestPlatform().getBoolean(
             RollenceKey.USER_DARK_MODE_TOGGLE, false)
-        val isForceDarkModeToggleVisible =
-            localCacheHandler.getBoolean(KEY_PREF_DARK_MODE_TOGGLE, false)
 
         if(isShowDarkMode || isRollenceEnabledDarkMode || isForceDarkModeToggleVisible) {
             settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_DARK_MODE,
