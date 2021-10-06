@@ -48,5 +48,7 @@
     <string name="order_extension_desc_confirmed_order_cancelled"><![CDATA[Pesanan tidak akan diproses oleh penjual, lho. Jika ingin menunggu, proses pesananmu akan diperpanjang hingga Senin, <font color="%1$s">%2$s</font>.]]></string>
     <string name="order_extension_order_cancelled">Batalkan Pesanan</string>
     <string name="order_extension_btn_secondary">Perpanjang Pesanan</string>
-
+    <string name="order_extension_title_submission_extends">Estimasi proses pesananmu akan diperpanjang 2x24 jam hari kerja. Barangmu tiba menyesuaikan durasi proses, ya.</string>
+    <string name="order_extension_reason_submission_extends">Alasan perpanjangan pesanan:</string>
+    <string name="order_extension_reason_submission_extends_value">" Kendala operasional "</string>
 </resources>
