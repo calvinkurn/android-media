@@ -94,6 +94,8 @@ object ChooseAddressUtils {
             if (latestChooseAddressData.long != localizingAddressStateData.long) validate = true
             if (latestChooseAddressData.label != localizingAddressStateData.label) validate = true
             if (latestChooseAddressData.postal_code != localizingAddressStateData.postal_code) validate = true
+            if (latestChooseAddressData.shop_id != localizingAddressStateData.shop_id) validate = true
+            if (latestChooseAddressData.warehouse_id != localizingAddressStateData.warehouse_id) validate = true
         }
         return validate
     }
