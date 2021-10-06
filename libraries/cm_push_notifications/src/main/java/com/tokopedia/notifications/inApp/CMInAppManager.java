@@ -2,13 +2,14 @@ package com.tokopedia.notifications.inApp;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.logger.ServerLogger;
@@ -23,13 +24,13 @@ import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataConsumer;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
 import com.tokopedia.notifications.inApp.ruleEngine.rulesinterpreter.RuleInterpreterImpl;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.DataConsumerImpl;
+import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.AmplificationCMInApp;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
 import com.tokopedia.notifications.inApp.viewEngine.CMActivityLifeCycle;
 import com.tokopedia.notifications.inApp.viewEngine.CMInAppController;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
 import com.tokopedia.notifications.inApp.viewEngine.ElementType;
-import com.tokopedia.notifications.utils.NotificationCancelManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,8 +40,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-
-import timber.log.Timber;
 
 import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
@@ -55,7 +54,8 @@ public class CMInAppManager implements CmInAppListener,
         DataProvider,
         CmActivityLifecycleHandler.CmActivityApplicationCallback,
         ShowInAppCallback,
-        SendPushContract, CmDialogVisibilityContract {
+        SendPushContract, CmDialogVisibilityContract,
+        CMInAppController.OnNewInAppDataStoreListener {
 
     private static final CMInAppManager inAppManager;
     private Application application;
@@ -73,6 +73,7 @@ public class CMInAppManager implements CmInAppListener,
     private CmDialogHandler cmDialogHandler;
     public CmDataConsumer cmDataConsumer;
     public DataConsumer dataConsumer;
+    private Boolean isCmInAppManagerInitialized = false;
 
     static {
         inAppManager = new CMInAppManager();
@@ -103,6 +104,7 @@ public class CMInAppManager implements CmInAppListener,
                 this,
                 this);
         initInAppManager();
+        isCmInAppManagerInitialized = true;
     }
 
     public static CmInAppListener getCmInAppListener() {
@@ -250,7 +252,7 @@ public class CMInAppManager implements CmInAppListener,
             if (null != cmInApp) {
                 if (application != null) {
                     sendEventInAppDelivered(cmInApp);
-                    new CMInAppController().downloadImagesAndUpdateDB(application, cmInApp);
+                    new CMInAppController(this).downloadImagesAndUpdateDB(application, cmInApp);
                 } else {
                     Map<String, String> messageMap = new HashMap<>();
                     messageMap.put("type", "validation");
@@ -278,6 +280,26 @@ public class CMInAppManager implements CmInAppListener,
                 messageMap.put("data", "");
                 ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
             }
+        }
+    }
+
+    public void handleAmplificationInAppData(String dataString) {
+        try {
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+            AmplificationCMInApp amplificationCMInApp = gson.fromJson(dataString, AmplificationCMInApp.class);
+            CMInApp cmInApp = CmInAppBundleConvertor.getCmInApp(amplificationCMInApp);
+            if (cmInApp != null) {
+                cmInApp.setAmplification(true);
+                IrisAnalyticsEvents.INSTANCE.sendAmplificationInAppEvent(application, IrisAnalyticsEvents.INAPP_DELIVERED, cmInApp);
+                new CMInAppController(this).downloadImagesAndUpdateDB(application, cmInApp);
+            }
+        } catch (Exception e) {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "exception");
+            messageMap.put("err", Log.getStackTraceString
+                    (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
+            messageMap.put("data", "");
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
         }
     }
 
@@ -376,5 +398,19 @@ public class CMInAppManager implements CmInAppListener,
     @Override
     public boolean isDialogVisible(@NotNull Activity activity) {
         return dialogIsShownMap.containsKey(activity) && dialogIsShownMap.get(activity);
+    }
+
+    @Override
+    public void onNewInAppDataStored() {
+        if (isCmInAppManagerInitialized) {
+            Activity currentActivity = activityLifecycleHandler.getCurrentActivity();
+            if (currentActivity != null) {
+                if (!pushIntentHandler.isHandledByPush()) {
+                    if (canShowDialog()) {
+                        showInAppForScreen(currentActivity.getClass().getName(), currentActivity.hashCode(), true);
+                    }
+                }
+            }
+        }
     }
 }
