@@ -788,7 +788,10 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                     if (isFromGallery) GALLERY_SOURCE_CREDIBILITY_SOURCE else READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE
                 )
             ).buildUpon()
-                .appendQueryParameter(ReviewCredibilityActivity.PARAM_PRODUCT_ID, productId).build()
+                .appendQueryParameter(
+                    ReviewCredibilityActivity.PARAM_PRODUCT_ID,
+                    if (isFromGallery) viewModel.getProductId() else productId
+                ).build()
                 .toString()
         )
     }
