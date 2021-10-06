@@ -485,7 +485,7 @@ class ShopScoreMapper @Inject constructor(
                     it.identifier == PENALTY_IDENTIFIER
                 }?.rawValue?.roundToLong().orZero()
 
-            this.isShowPopupEndTenure = getIsShowPopupEndTenure(shopAge, dateShopCreated)
+            this.isShowPopupEndTenure = getIsShowPopupEndTenure(dateShopCreated)
         }
         return headerShopPerformanceUiModel
     }
@@ -948,17 +948,9 @@ class ShopScoreMapper @Inject constructor(
         }
     }
 
-    private fun getIsShowPopupEndTenure(shopAge: Long, dateShopCreated: String): Boolean {
+    private fun getIsShowPopupEndTenure(dateShopCreated: String): Boolean {
         return if (shopScorePrefManager.getIsShowPopupEndTenure()) {
-            val calendar = Calendar.getInstance(getLocale())
-
-            if (shopAge in SHOP_AGE_NINETY..SHOP_AGE_NINETY_SIX &&
-                calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY
-            ) {
-                true
-            } else if (shopAge >= SHOP_AGE_NINETY) {
-                getIsShowPopupCelebratoryEdgeCases(dateShopCreated)
-            } else false
+            return getIsShowPopupCelebratoryEdgeCases(dateShopCreated)
         } else false
     }
 
@@ -966,41 +958,29 @@ class ShopScoreMapper @Inject constructor(
         dateShopCreated: String
     ): Boolean {
         val shopAge = GoldMerchantUtil.totalDays(dateShopCreated)
-        val isExistingSellerMoreThanMonday =
-            GoldMerchantUtil.getIsExistingSellerMoreThanMonday(dateShopCreated)
-        val firstMondayUntilSaturday: Long
-        when (GoldMerchantUtil.getDayNameFromCreatedDate(dateShopCreated)) {
+        return when (GoldMerchantUtil.getDayNameFromCreatedDate(dateShopCreated)) {
             Calendar.SUNDAY -> {
-                firstMondayUntilSaturday = ZERO_NUMBER.toLong()
+                false
             }
             Calendar.MONDAY -> {
-                firstMondayUntilSaturday = shopAge + FIVE_NUMBER
+                shopAge in SHOP_AGE_NINETY..SHOP_AGE_NINETY_SIX
             }
             Calendar.TUESDAY -> {
-                firstMondayUntilSaturday = shopAge + FOUR_NUMBER
+                shopAge in SHOP_AGE_NINETY_ONE..SHOP_AGE_NINETY_SEVEN
             }
             Calendar.WEDNESDAY -> {
-                firstMondayUntilSaturday = shopAge + THREE_NUMBER
+                shopAge in SHOP_AGE_NINETY_TWO..SHOP_AGE_NINETY_EIGHT
             }
             Calendar.THURSDAY -> {
-                firstMondayUntilSaturday = shopAge + TWO_NUMBER
+                shopAge in SHOP_AGE_NINETY_THREE..SHOP_AGE_NINETY_NINE
             }
             Calendar.FRIDAY -> {
-                firstMondayUntilSaturday = shopAge + ONE_NUMBER
+                shopAge in SHOP_AGE_NINETY_FOUR..SHOP_AGE_ONE_HUNDRED
             }
-            else -> firstMondayUntilSaturday = shopAge
-        }
-
-        return when {
-            firstMondayUntilSaturday == 0L -> {
-                false
+            Calendar.SATURDAY -> {
+                shopAge in SHOP_AGE_NINETY_FIVE..SHOP_AGE_ONE_HUNDRED_ONE
             }
-            isExistingSellerMoreThanMonday -> {
-                false
-            }
-            else -> {
-                shopAge <= firstMondayUntilSaturday
-            }
+            else -> false
         }
     }
 
