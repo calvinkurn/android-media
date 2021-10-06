@@ -180,10 +180,16 @@ android {
             debuggable = project.hasProperty('enableDebug') && enableDebug == "true"
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
 
-            minifyEnabled true
-            zipAlignEnabled true
-            shrinkResources true
+            if (isFirebasePerformanceLogEnabled().toBoolean()) {
+                minifyEnabled false
+            } else {
+                minifyEnabled true
+            }
 
+            zipAlignEnabled true
+            if (project.hasProperty("enable-shrinkresource")) {
+                shrinkResources true
+            }
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             buildConfigField "boolean", "IS_PREINSTALL", isPreInstall()
             buildConfigField "String", "PREINSTALL_NAME", "\"${getDynamicProperty("preInstallName")}\""
