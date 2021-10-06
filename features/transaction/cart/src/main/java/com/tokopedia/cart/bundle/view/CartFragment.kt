@@ -843,12 +843,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun initToolbar(view: View) {
         if (isNavToolbar) {
             initNavigationToolbar(view)
-            binding?.toolbar?.gone()
+            binding?.toolbarCart?.gone()
             binding?.navToolbar?.show()
         } else {
             initBasicToolbar(view)
             binding?.navToolbar?.gone()
-            binding?.toolbar?.show()
+            binding?.toolbarCart?.show()
         }
         setToolbarShadowVisibility(false)
     }
@@ -922,7 +922,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 isToolbarWithBackButton = false
             }
 
-            val appbar = binding?.toolbar
+            val appbar = binding?.toolbarCart
             val statusBarBackground = binding?.statusBarBg
             statusBarBackground?.layoutParams?.height = DisplayMetricUtils.getStatusBarHeight(it)
 
