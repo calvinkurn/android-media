@@ -33,6 +33,7 @@
     <string name="price_filter_min_value">1.000</string>
     <string name="price_filter_max_value">100.000.000</string>
     <string name="price_filter_chips_item">Rp350 rb - Rp750 rb</string>
+    <string name="price_filter_rp">Rp</string>
 
     <string name="keyword_filter_enter_keyword">Masukkan Kata Kunci</string>
     <string name="keyword_filter_max_count">Maksimal 5 kata kunci.</string>

@@ -14,7 +14,7 @@ data class MembershipQuests(
         val iconURL: String = "",
 
         @SerializedName("id")
-        val id: Int = 0,
+        val id: String = "",
 
         @SerializedName("questUserID")
         val questUserID: Int = 0,

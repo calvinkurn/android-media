@@ -90,6 +90,7 @@ class HomeAccountUserViewModelTest {
             centralizedUserAssetConfigUseCase,
             balanceAndPointUseCase,
             tokopointsBalanceAndPointUseCase,
+            saldoBalanceUseCase,
             coBrandCCBalanceAndPointUseCase,
             walletEligibleUseCase,
             getLinkStatusUseCase,
@@ -405,9 +406,37 @@ class HomeAccountUserViewModelTest {
     }
 
     @Test
+    fun `Success get saldo balance and point`() {
+        viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
+        coEvery { saldoBalanceUseCase(Unit) } returns successGetSaldoBalanceAndPointResponse
+
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.SALDO)
+
+        verify { balanceAndPointOvserver.onChanged(any<ResultBalanceAndPoint.Success<WalletappGetAccountBalance>>()) }
+        assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
+
+        val result = viewModel.balanceAndPoint.value as ResultBalanceAndPoint.Success<WalletappGetAccountBalance>
+        assert(result.data == successGetSaldoBalanceAndPointResponse.data)
+    }
+
+    @Test
+    fun `Failed get saldo balance and point`() {
+        viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
+        coEvery { saldoBalanceUseCase(Unit) } coAnswers { throw throwableResponse }
+
+        viewModel.getBalanceAndPoint(AccountConstants.WALLET.SALDO)
+
+        verify { balanceAndPointOvserver.onChanged(any()) }
+        assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Fail)
+
+        val result = viewModel.balanceAndPoint.value as ResultBalanceAndPoint.Fail
+        assertEquals(throwableResponse, result.throwable)
+    }
+
+    @Test
     fun `Success get co brand cc balance and point`() {
         viewModel.balanceAndPoint.observeForever(balanceAndPointOvserver)
-        coEvery { coBrandCCBalanceAndPointUseCase(Unit) } returns successGetBalanceAndPointResponse
+        coEvery { coBrandCCBalanceAndPointUseCase(Unit) } returns successGetCoBrandCCBalanceAndPointResponse
 
         viewModel.getBalanceAndPoint(AccountConstants.WALLET.CO_BRAND_CC)
 
@@ -415,7 +444,7 @@ class HomeAccountUserViewModelTest {
         assert(viewModel.balanceAndPoint.value is ResultBalanceAndPoint.Success)
 
         val result = viewModel.balanceAndPoint.value as ResultBalanceAndPoint.Success<WalletappGetAccountBalance>
-        assert(result.data == successGetBalanceAndPointResponse.data)
+        assert(result.data == successGetCoBrandCCBalanceAndPointResponse.data)
     }
 
     @Test
@@ -483,9 +512,17 @@ class HomeAccountUserViewModelTest {
             "/success_get_balance_and_point.json",
             BalanceAndPointDataModel::class.java
         )
+        private val successGetSaldoBalanceAndPointResponse: SaldoBalanceDataModel = FileUtil.parse(
+            "/success_get_saldo_balance_and_point.json",
+            SaldoBalanceDataModel::class.java
+        )
         private val successGetTokopointBalanceAndPointResponse: TokopointsBalanceDataModel = FileUtil.parse(
             "/success_get_tokopoint_balance_and_point.json",
             TokopointsBalanceDataModel::class.java
+        )
+        private val successGetCoBrandCCBalanceAndPointResponse: CoBrandCCBalanceDataModel = FileUtil.parse(
+            "/success_get_cobrandcc_balance_and_point.json",
+            CoBrandCCBalanceDataModel::class.java
         )
         private val successGetWalletEligibleResponse: WalletEligibleDataModel = FileUtil.parse(
             "/success_get_wallet_eligible.json",

@@ -252,19 +252,11 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         private var CATEGORIES_MP = "mp_pym,marketplace"
         private var CATEGORIES_TRAVELENT = "train,flight,hotel,deals,event"
         private var CATEGORIES_KEUANGAN = "mutual_fund,insr_tec,modal_toko,gold,insurance,gift_card"
-        private var CATEGORIES_HALAL_CORNER = "zakat_mal,donasi,umrah,zakat_fitrah,wakaf"
-        private var CATEGORIES_LANGSUNG_LAKU = "money_in"
-        private var CATEGORIES_LS_PRINT = "ls_print"
-        private var CATEGORIES_TOKONOW = "mp_pym_tokonow,tokonow"
 
         private val LABEL_MP = "Belanja"
         private val LABEL_DIGITAL = "Top-up & Tagihan"
         private val LABEL_TRAVELENT = "Travel & Entertainment"
         private val LABEL_KEUANGAN = "Keuangan"
-        private val LABEL_HALAL = "Halal Corner"
-        private val LABEL_LANGSUNG_LAKU = "Langsung Laku"
-        private val LABEL_LS_PRINT = "Tokopedia Print"
-        private val LABEL_TOKONOW = "Tokopedia NOW!"
 
         @JvmStatic
         fun newInstance(bundle: Bundle): UohListFragment {
@@ -928,9 +920,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun renderChipsFilterStatus(chips: ArrayList<SortFilterItem>) {
+        _arrayListStatusFilterBundle.clear()
         orderList.v2Filters.forEach { v2Filter ->
-            val type = if (v2Filter.isPrimary) 0
-            else 1
+            val type = if (v2Filter.isPrimary) 0 else 1
             _arrayListStatusFilterBundle.add(UohFilterBundle(key = v2Filter.value, value = v2Filter.label, type = type))
         }
 
@@ -962,9 +954,12 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun renderChipsFilterCategoryProducts(chips: ArrayList<SortFilterItem>) {
+        _arrayListCategoryProductFilterBundle.clear()
         _arrayListCategoryProductFilterBundle.add(UohFilterBundle(key = "", value = ALL_PRODUCTS, type = 0))
         orderList.categories.forEach { category ->
             _arrayListCategoryProductFilterBundle.add(UohFilterBundle(key = category.value, value = category.label, type = 0))
+
+            // update selected categories when one of uoh applink is opened
             when {
                 category.label.equals(LABEL_MP, true) -> {
                     CATEGORIES_MP = category.value
@@ -977,18 +972,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 }
                 category.label.equals(LABEL_KEUANGAN, true) -> {
                     CATEGORIES_KEUANGAN = category.value
-                }
-                category.label.equals(LABEL_HALAL, true) -> {
-                    CATEGORIES_HALAL_CORNER = category.value
-                }
-                category.label.equals(LABEL_LANGSUNG_LAKU, true) -> {
-                    CATEGORIES_LANGSUNG_LAKU = category.value
-                }
-                category.label.equals(LABEL_LS_PRINT, true) -> {
-                    CATEGORIES_LS_PRINT = category.value
-                }
-                category.label.equals(LABEL_TOKONOW, true) -> {
-                    CATEGORIES_TOKONOW = category.value
                 }
             }
         }
