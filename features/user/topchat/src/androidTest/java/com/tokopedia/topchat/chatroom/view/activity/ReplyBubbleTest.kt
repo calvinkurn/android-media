@@ -50,7 +50,24 @@ class ReplyBubbleTest : TopchatRoomTest() {
         ReplyBubbleResult.hasNoVisibleReplyCompose()
     }
 
-    // TODO: should not sent closed reply compose to websocket
+    @Test
+    fun should_not_sent_closed_reply_compose_to_websocket() {
+        // Given
+        getChatUseCase.response = getChatUseCase.defaultReplyBubbleResponse
+        launchChatRoomActivity()
+
+        // When
+        ReplyBubbleRobot.longClickBubbleAt(1)
+        ReplyBubbleRobot.clickReplyItemMenu()
+        ReplyBubbleRobot.clickReplyComposeCloseIcon()
+        clickComposeArea()
+        typeMessage("reply this")
+        clickSendBtn()
+
+        // Then
+        ReplyBubbleResult.hasNoVisibleReplyBubbleAt(0)
+    }
+
     // TODO: should go to specific bubble when reply compose is clicked
     // TODO: should sent and render reply bubble when user sent normal text
     // TODO: should show normal text reply bubble when parent reply is not null from GQL

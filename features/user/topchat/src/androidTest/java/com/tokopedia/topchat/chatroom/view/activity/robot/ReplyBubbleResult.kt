@@ -6,6 +6,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.robot.ReplyBubbleMatcher.matchReplyBoxChildWithId
+import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.not
 
@@ -25,6 +26,18 @@ object ReplyBubbleResult {
         assertReplyComposeTitle(not(isDisplayed()))
         assertReplyComposeMsg(not(isDisplayed()))
         assertReplyComposeCloseBtn(not(isDisplayed()))
+    }
+
+    fun hasNoVisibleReplyBubbleAt(position: Int) {
+        assertReplyBubbleAt(position, not(isDisplayed()))
+    }
+
+    private fun assertReplyBubbleAt(position: Int, matcher: Matcher<View>) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.cl_reply_container
+            )
+        ).check(matches(matcher))
     }
 
     fun assertReplyCompose(matcher: Matcher<in View>) {
