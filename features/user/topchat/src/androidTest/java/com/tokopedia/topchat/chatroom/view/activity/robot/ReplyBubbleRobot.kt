@@ -29,6 +29,12 @@ object ReplyBubbleRobot {
         ).perform(click())
     }
 
+    fun clickReplyCompose() {
+        onView(
+            matchReplyBoxChildWithId(R.id.trb_container)
+        ).perform(click())
+    }
+
     private fun clickLongClickMenuItemAt(position: Int) {
         onView(
             withRecyclerView(R.id.rvMenu).atPositionOnView(

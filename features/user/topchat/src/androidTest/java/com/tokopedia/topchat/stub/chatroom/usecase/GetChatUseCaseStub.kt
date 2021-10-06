@@ -52,9 +52,22 @@ class GetChatUseCaseStub @Inject constructor(
      * <!--- Start Reply bubble --->
      */
     val defaultReplyBubbleResponse: GetExistingChatPojo
-        get() = alterResponseOf(replyBubbleResponsePath) { response ->
+        get() = alterResponseOf(replyBubbleResponsePath) { }
 
+    val longReplyBubbleResponse: GetExistingChatPojo
+        get() = alterResponseOf(replyBubbleResponsePath) { response ->
+            val replies = response.getAsJsonObject(chatReplies)
+                .getAsJsonArray(list).get(0).asJsonObject
+                .getAsJsonArray(chats).get(0).asJsonObject
+                .getAsJsonArray(replies)
+            for (i in 0..10) {
+                val newReply = replies.first().deepCopy().asJsonObject
+                val newMsg = newReply.get(msg).asString + " $i"
+                newReply.addProperty(msg, newMsg)
+                replies.add(newReply)
+            }
         }
+
     /**
      * <!--- End Reply bubble --->
      */
@@ -149,10 +162,15 @@ class GetChatUseCaseStub @Inject constructor(
      * <!--- End SRW responses --->
      */
 
+    fun getLastIndexOf(response: GetExistingChatPojo): Int {
+        return response.chatReplies.list[0].chats[0].replies.lastIndex
+    }
+
     private val chatReplies = "chatReplies"
     private val list = "list"
     private val chats = "chats"
     private val replies = "replies"
+    private val msg = "msg"
     private val attachment = "attachment"
     private val attributes = "attributes"
     private val status = "status"

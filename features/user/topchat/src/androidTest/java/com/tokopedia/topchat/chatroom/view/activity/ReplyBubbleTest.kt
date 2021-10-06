@@ -68,7 +68,26 @@ class ReplyBubbleTest : TopchatRoomTest() {
         ReplyBubbleResult.hasNoVisibleReplyBubbleAt(0)
     }
 
-    // TODO: should go to specific bubble when reply compose is clicked
+    @Test
+    fun should_go_to_specific_bubble_when_reply_compose_is_clicked() {
+        // Given
+        val lastBubbleIndex = getChatUseCase.getLastIndexOf(
+            getChatUseCase.longReplyBubbleResponse
+        )
+        getChatUseCase.response = getChatUseCase.longReplyBubbleResponse
+        launchChatRoomActivity()
+
+        // When
+        scrollChatToPosition(lastBubbleIndex)
+        ReplyBubbleRobot.longClickBubbleAt(lastBubbleIndex)
+        ReplyBubbleRobot.clickReplyItemMenu()
+        scrollChatToPosition(0)
+        ReplyBubbleRobot.clickReplyCompose()
+
+        // Then
+        assertMsgBubbleAt(lastBubbleIndex, isDisplayed())
+    }
+
     // TODO: should sent and render reply bubble when user sent normal text
     // TODO: should show normal text reply bubble when parent reply is not null from GQL
     // TODO: should show text reply bubble when parent reply is not null from websocket
