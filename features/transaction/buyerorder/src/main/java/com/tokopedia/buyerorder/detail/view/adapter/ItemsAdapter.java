@@ -45,10 +45,13 @@ import com.tokopedia.utils.view.DoubleTextView;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OrderListDetailContract.ActionInterface, RedeemVoucherView.SetTapActionDeals {
 
@@ -317,10 +320,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     } else {
                         ImageHandler.loadImage(context, dealImage, metaDataInfo.getProductImage(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
                     }
-                    if (TextUtils.isEmpty(metaDataInfo.getProductName())) {
+                    if (TextUtils.isEmpty(metaDataInfo.getName())) {
                         dealsDetails.setText(item.getTitle());
                     } else {
-                        dealsDetails.setText(metaDataInfo.getProductName());
+                        dealsDetails.setText(metaDataInfo.getName());
                     }
                 }
 
@@ -387,7 +390,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
 
                     if (!TextUtils.isEmpty(metaDataInfo.getEndTime())) {
-                        validDate.setText(" ".concat(metaDataInfo.getEndTime()));
+                        validDate.setText(" ".concat(getDateMilis(metaDataInfo.getEndTime())));
                         llValid.setVisibility(View.VISIBLE);
                     } else {
                         llValid.setVisibility(View.GONE);
@@ -396,7 +399,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     if (item.getActionButtons() != null && item.getActionButtons().size() > 0) {
                         setEventDetails.setEventDetails(item.getActionButtons().get(0), item);
                     }
-                    brandName.setText(metaDataInfo.getEntityBrandName());
+                    brandName.setText(metaDataInfo.getProductName());
                     setEventDetails.setDetailTitle(context.getResources().getString(R.string.detail_label));
                     customTicketView1.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -458,29 +461,22 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             }
 
             if (itemType == ITEM_DEALS) {
-                if (item.getTapActions() != null && item.getTapActions().size() > 0 && !item.isTapActionsLoaded()) {
+                if (item.getActionButtons() != null || item.getActionButtons().size() > 0) {
+                    voucherCodeLayout.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.VISIBLE);
-                    tapActionLayoutDeals.setVisibility(View.GONE);
-                    customTicketView.setVisibility(View.GONE);
-                    if (context != null) {
-                        presenter.getActionButtonGql(GraphqlHelper.loadRawString(context.getResources(), R.raw.tapactions), item.getTapActions(), ItemsAdapter.this, getIndex(), true);
-                    }
-                } else if (item.getTapActions() == null || item.getTapActions().size() == 0) {
-                    if (!TextUtils.isEmpty(item.getTrackingNumber())) {
-                        String[] voucherCodes = item.getTrackingNumber().split(",");
-                        if (voucherCodes.length > 0) {
-                            voucherCodeLayout.setVisibility(View.VISIBLE);
-                            for (int i = 0; i < voucherCodes.length; i++) {
-                                BookingCodeView bookingCodeView = new BookingCodeView(context, voucherCodes[i], i, context.getResources().getString(R.string.voucher_code_title), voucherCodes.length);
-                                bookingCodeView.setBackground(null);
-                                voucherCodeLayout.addView(bookingCodeView);
-                            }
+                    for (int i = 0; i < item.getActionButtons().size(); i++) {
+                        ActionButton actionButton = item.getActionButtons().get(i);
+                        if (actionButton.getButtonType().equalsIgnoreCase(KEY_VOUCHER_CODE)){
+                            BookingCodeView bookingCodeView = new BookingCodeView(context, actionButton.getBody().getBody(), i, actionButton.getLabel(), 0);
+                            bookingCodeView.setBackground(null);
+                            voucherCodeLayout.addView(bookingCodeView);
                         }
-                    } else {
-                        progressBar.setVisibility(View.GONE);
-                        customTicketView.setVisibility(View.GONE);
-                        tapActionLayoutDeals.setVisibility(View.GONE);
                     }
+                    progressBar.setVisibility(View.GONE);
+                } else {
+                    progressBar.setVisibility(View.GONE);
+                    customTicketView.setVisibility(View.GONE);
+                    tapActionLayoutDeals.setVisibility(View.GONE);
                 }
                 if (item.isTapActionsLoaded()) {
                     progressBar.setVisibility(View.GONE);
@@ -658,6 +654,13 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         @Override
         public void onClick(View v) {
+        }
+
+        private String getDateMilis(String date){
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM YYYY hh:mm");
+            Date dateMilis = new Date(TimeUnit.SECONDS.toMillis(Long.parseLong(date)));
+            String dateResult = dateFormat.format(dateMilis).toString();
+            return dateResult;
         }
     }
 
