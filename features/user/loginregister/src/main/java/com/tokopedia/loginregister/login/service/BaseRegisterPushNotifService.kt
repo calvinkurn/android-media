@@ -17,8 +17,7 @@ abstract class BaseRegisterPushNotifService : JobIntentService() {
         try {
             return super.dequeueWork()
         } catch (e: SecurityException) {
-            logToCrashlytics("dequeueWork() - catch()", e)
-            ServerLogger.log(Priority.P2, "RegisterPushNotifService", mapOf("type" to "dequeueWork", "err" to e.toString()))
+            recordLog("dequeueWork()","", e)
         }
         return null
     }
@@ -26,7 +25,16 @@ abstract class BaseRegisterPushNotifService : JobIntentService() {
     companion object {
         private val ERROR_HEADER = "${RegisterPushNotifService::class.java.name} error on "
 
-        fun logToCrashlytics(message: String, throwable: Throwable) {
+        fun recordLog(type: String, message: String, throwable: Throwable) {
+            val logMessage = if (message.isEmpty()) type else "$type | $message"
+            sendLogToCrashlytics(logMessage, throwable)
+            ServerLogger.log(Priority.P2, RegisterPushNotifService::class.java.name, mapOf(
+                "type" to type,
+                "err" to throwable.toString())
+            )
+        }
+
+        private fun sendLogToCrashlytics(message: String, throwable: Throwable) {
             try {
                 val messageException = "$ERROR_HEADER $message : ${throwable.localizedMessage}"
                 FirebaseCrashlytics.getInstance().recordException(RuntimeException(messageException, throwable))

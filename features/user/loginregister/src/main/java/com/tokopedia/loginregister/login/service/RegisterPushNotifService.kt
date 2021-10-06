@@ -56,7 +56,7 @@ class RegisterPushNotifService : BaseRegisterPushNotifService() {
                 }
             }
         } catch (e: Exception) {
-            logToCrashlytics("onHandleWork() -> catch()", e)
+            recordLog("onHandleWork()", "", e)
             e.printStackTrace()
         }
     }
@@ -111,7 +111,7 @@ class RegisterPushNotifService : BaseRegisterPushNotifService() {
             }
 
         } catch (e: Exception) {
-            logToCrashlytics("singData()", e)
+            recordLog("singData()", "", e)
             e.printStackTrace()
         }
 
@@ -135,7 +135,7 @@ class RegisterPushNotifService : BaseRegisterPushNotifService() {
                 val intent = Intent(context, RegisterPushNotifService::class.java)
                 enqueueWork(context, RegisterPushNotifService::class.java, jobId, intent)
             } catch (e: Exception) {
-                logToCrashlytics("startService() -> JOB_ID = $jobId", e)
+                recordLog("startService()", "JOB_ID = $jobId",e)
                 e.printStackTrace()
             }
         }
