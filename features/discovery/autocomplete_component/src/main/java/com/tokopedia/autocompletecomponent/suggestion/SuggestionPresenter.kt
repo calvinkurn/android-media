@@ -28,6 +28,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class SuggestionPresenter @Inject constructor(
+    @Named(GET_SUGGESTION_USE_CASE)
     private val getSuggestionUseCase: UseCase<SuggestionUniverse>,
     @Named(SUGGESTION_TRACKER_USE_CASE)
     private val suggestionTrackerUseCase: UseCase<Void?>,

@@ -1,5 +1,6 @@
 package com.tokopedia.autocompletecomponent.suggestion
 
+const val GET_SUGGESTION_USE_CASE = "get_suggestion_use_case"
 const val SUGGESTION_TRACKER_USE_CASE = "suggestion_tracker_use_case"
 
 const val SUGGESTION_HEADER = "header"
