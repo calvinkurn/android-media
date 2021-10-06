@@ -55,7 +55,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface {
             AffiliateShareModel("Website/Blog", IconUnify.GLOBE,"website",11),
             AffiliateShareModel("WhatsApp", IconUnify.WHATSAPP,"whatsapp",12),
             AffiliateShareModel("Line", IconUnify.LINE,"line",4),
-            AffiliateShareModel("Lainnya",null,"others", null)
+            AffiliateShareModel("Lainnya",null,"others", 0)
     )
 
     @Inject
