@@ -11,7 +11,7 @@ import com.tokopedia.loginregister.login.service.RegisterPushNotifService
  * https://issuetracker.google.com/issues/63622293
  * Google should fix it!
  */
-abstract class BaseJobIntentService : JobIntentService() {
+abstract class BaseRegisterPushNotifService : JobIntentService() {
 
     internal override fun dequeueWork(): GenericWorkItem? {
         try {

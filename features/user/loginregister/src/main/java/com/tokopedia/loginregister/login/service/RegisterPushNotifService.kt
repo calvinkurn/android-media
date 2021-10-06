@@ -7,7 +7,7 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
 import androidx.annotation.RequiresApi
-import androidx.core.app.BaseJobIntentService
+import androidx.core.app.BaseRegisterPushNotifService
 import com.tokopedia.loginregister.login.data.SignResult
 import com.tokopedia.loginregister.login.di.LoginComponentBuilder
 import com.tokopedia.loginregister.login.domain.RegisterPushNotifParamsModel
@@ -23,7 +23,7 @@ import javax.inject.Named
  * Created by Ade Fulki on 28/09/20.
  */
 
-class RegisterPushNotifService : BaseJobIntentService() {
+class RegisterPushNotifService : BaseRegisterPushNotifService() {
 
     @field:Named(SessionModule.SESSION_MODULE)
     @Inject
