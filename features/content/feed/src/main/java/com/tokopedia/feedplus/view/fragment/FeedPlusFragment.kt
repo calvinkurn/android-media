@@ -1685,25 +1685,37 @@ class FeedPlusFragment : BaseDaggerFragment(),
         isTopads: Boolean
     ) {
         activity?.let {
-            val urlString = if (typeASGC) {
-                String.format(getString(R.string.feed_share_asgc_weblink), id.toString())
-            }
-            else {
-                String.format(getString(R.string.feed_share_weblink), id.toString())
+            val urlString = when {
+                typeASGC -> {
+                    String.format(getString(R.string.feed_share_asgc_weblink), id.toString())
+                }
+                isTopads -> {
+                    String.format(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, id.toString())
+                }
+                else -> {
+                    String.format(getString(R.string.feed_share_weblink), id.toString())
+                }
             }
 
-            val shareDataBuilder= LinkerData.Builder.getLinkerBuilder().setId(id.toString())
+            val shareDataBuilder = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
                 .setName(title)
                 .setDescription(description)
-                .setImgUri(imageUrl)
-                .setUri(urlString)
-                .setDeepLink(url)
-                .setType(LinkerData.FEED_TYPE)
                 .setDesktopUrl(urlString)
 
             if (isTopads) {
+                shareBottomSheetProduct = true
                 shareDataBuilder.apply {
                     setOgImageUrl(imageUrl)
+                    setUri(urlString)
+                    setDeepLink(urlString)
+                }
+            } else {
+                shareBottomSheetProduct = false
+                shareDataBuilder.apply {
+                    setImgUri(imageUrl)
+                    setUri(urlString)
+                    setDeepLink(url)
+                    setType(LinkerData.FEED_TYPE)
                 }
             }
             shareData = shareDataBuilder.build()
@@ -1719,6 +1731,23 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
         feedAnalytics.eventClickOpenShare(id.toString(), type, isFollowed, shopId, video)
     }
+/*
+    fun createShareDataBuilder(title: String="",
+                               description:String="",
+                               imageUrl:String="",
+                               url: String="",
+                               urlString:String="",
+                               ogImageUrl:String=""
+                               ):LinkerData.Builder{
+        val shareDataBuilder= LinkerData.Builder.getLinkerBuilder().setId(id.toString())
+            .setName(title)
+            .setDescription(description)
+            .setImgUri(imageUrl)
+            .setUri(urlString)
+            .setDeepLink(url)
+            .setType(LinkerData.FEED_TYPE)
+            .setDesktopUrl(urlString)
+    }*/
 
     override fun onStatsClick(
         title: String,
@@ -2124,7 +2153,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
         val urlString: String = if (isTopads) {
             shareBottomSheetProduct = true
-            String.format(getString(R.string.feed_share_weblink), id.toString())
+            String.format(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, id.toString())
         } else{
             url
         }
