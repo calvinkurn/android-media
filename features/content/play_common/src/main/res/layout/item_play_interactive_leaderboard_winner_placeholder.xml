@@ -18,10 +18,9 @@
         app:layout_constraintStart_toStartOf="parent"
         />
 
-    <androidx.cardview.widget.CardView
+    <View
         android:id="@+id/ph_play_leaderboard_avatar"
-        style="@style/PlayPlaceholder"
-        app:cardCornerRadius="@dimen/spacing_lvl8"
+        style="@style/PlayCirclePlaceholder"
         android:layout_width="@dimen/spacing_lvl6"
         android:layout_height="@dimen/spacing_lvl6"
         android:layout_marginStart="@dimen/spacing_lvl5"
