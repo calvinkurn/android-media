@@ -968,30 +968,39 @@ class ShopScoreMapper @Inject constructor(
         val shopAge = GoldMerchantUtil.totalDays(dateShopCreated)
         val isExistingSellerMoreThanMonday =
             GoldMerchantUtil.getIsExistingSellerMoreThanMonday(dateShopCreated)
-        val firstMonday: Long
+        val firstMondayUntilSaturday: Long
         when (GoldMerchantUtil.getDayNameFromCreatedDate(dateShopCreated)) {
+            Calendar.SUNDAY -> {
+                firstMondayUntilSaturday = ZERO_NUMBER.toLong()
+            }
             Calendar.MONDAY -> {
-                firstMonday = shopAge + FIVE_NUMBER
+                firstMondayUntilSaturday = shopAge + FIVE_NUMBER
             }
             Calendar.TUESDAY -> {
-                firstMonday = shopAge + FOUR_NUMBER
+                firstMondayUntilSaturday = shopAge + FOUR_NUMBER
             }
             Calendar.WEDNESDAY -> {
-                firstMonday = shopAge + THREE_NUMBER
+                firstMondayUntilSaturday = shopAge + THREE_NUMBER
             }
             Calendar.THURSDAY -> {
-                firstMonday = shopAge + TWO_NUMBER
+                firstMondayUntilSaturday = shopAge + TWO_NUMBER
             }
             Calendar.FRIDAY -> {
-                firstMonday = shopAge + ONE_NUMBER
+                firstMondayUntilSaturday = shopAge + ONE_NUMBER
             }
-            else -> firstMonday = shopAge
+            else -> firstMondayUntilSaturday = shopAge
         }
 
-        return if (isExistingSellerMoreThanMonday) {
-            false
-        } else {
-            shopAge <= firstMonday
+        return when {
+            firstMondayUntilSaturday == 0L -> {
+                false
+            }
+            isExistingSellerMoreThanMonday -> {
+                false
+            }
+            else -> {
+                shopAge <= firstMondayUntilSaturday
+            }
         }
     }
 
