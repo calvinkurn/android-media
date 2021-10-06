@@ -163,7 +163,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         //should delete this later
         val tempTokonowPdpRecom = TokoNowRecommendationCarouselUiModel(
             pageName = "pdp_1_tokonow",
-            isBindWithPageName = true
+            isBindWithPageName = true,
         )
         return listOf(
             createAisleDataView(),

@@ -946,15 +946,15 @@ abstract class BaseSearchCategoryViewModel(
             onViewReloadPage()
     }
 
-    protected open fun refreshMiniCart() {
+    open fun refreshMiniCart() {
         val shopId = shopIdLiveData.value ?: ""
         if (!shopId.isValidId()) return
 
         getMiniCartListSimplifiedUseCase.cancelJobs()
         getMiniCartListSimplifiedUseCase.setParams(listOf(shopId))
         getMiniCartListSimplifiedUseCase.execute(
-                ::onViewUpdateCartItems,
-                ::onGetMiniCartDataFailed,
+            ::onViewUpdateCartItems,
+            ::onGetMiniCartDataFailed,
         )
     }
 

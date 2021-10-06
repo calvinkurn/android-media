@@ -43,15 +43,15 @@ class SearchTypeFactoryImpl(
         recommendationCarouselListener: TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
         private val broadMatchListener: BroadMatchListener,
 ): BaseSearchCategoryTypeFactoryImpl(
-        chooseAddressListener,
-        titleListener,
-        bannerListener,
-        quickFilterListener,
-        categoryFilterListener,
-        productItemListener,
-        tokoNowEmptyStateNoResultListener,
-        outOfCoverageListener,
-        recommendationCarouselListener,
+    chooseAddressListener,
+    titleListener,
+    bannerListener,
+    quickFilterListener,
+    categoryFilterListener,
+    productItemListener,
+    tokoNowEmptyStateNoResultListener,
+    outOfCoverageListener,
+    recommendationCarouselListener, null
 ), SearchTypeFactory {
 
     override fun type(suggestionDataView: SuggestionDataView): Int {

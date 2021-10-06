@@ -54,6 +54,12 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.viewModelKtx
 
+    implementation projectOrAar(rootProject.ext.features.atc_common)
+    implementation projectOrAar(rootProject.ext.features.minicart)
+    implementation projectOrAar(rootProject.ext.features.cart_common)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
+
     // Unit test
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk

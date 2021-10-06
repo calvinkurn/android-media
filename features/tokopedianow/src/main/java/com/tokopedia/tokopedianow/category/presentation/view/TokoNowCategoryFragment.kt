@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.category.presentation.view
 
 import android.net.Uri
 import android.os.Bundle
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -11,6 +12,8 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking
@@ -108,6 +111,7 @@ class TokoNowCategoryFragment:
             recommendationCarouselListener = this,
             tokoNowCategoryGridListener = this,
             tokoNowProductCardListener = this,
+        recomWidgetBindPageNameListener = this
     )
 
     override fun getViewModel() = tokoNowCategoryViewModel
@@ -319,6 +323,34 @@ class TokoNowCategoryFragment:
         CategoryTracking.sendRecommendationSeeAllClickEvent(getViewModel().categoryIdTracking)
 
         RouteManager.route(context, modifySeeMoreRecomApplink(applink))
+    }
+
+    override fun onMiniCartUpdatedFromRecomWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        getViewModel().refreshMiniCart()
+    }
+
+    override fun onRecomTokonowAtcSuccess(message: String) {
+        showSuccessATCMessage(message)
+    }
+
+    override fun onRecomTokonowAtcFailed(throwable: Throwable) {
+        context?.let {
+            showErrorATCMessage(ErrorHandler.getErrorMessage(it, throwable))
+        }
+    }
+
+    override fun onRecomTokonowAtcNeedToSendTracker(recommendationItem: RecommendationItem) {
+    }
+
+    override fun onRecomTokonowDeleteNeedToSendTracker(recommendationItem: RecommendationItem) {
+    }
+
+    override fun onClickItemNonLoginState() {
+        goToLogin()
+    }
+
+    override fun setViewToLifecycleOwner(observer: LifecycleObserver) {
+        viewLifecycleOwner.lifecycle.addObserver(observer)
     }
 
     private fun modifySeeMoreRecomApplink(originalApplink: String): String {

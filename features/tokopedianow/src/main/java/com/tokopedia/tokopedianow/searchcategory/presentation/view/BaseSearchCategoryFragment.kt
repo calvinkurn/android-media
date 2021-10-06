@@ -91,21 +91,23 @@ abstract class BaseSearchCategoryFragment:
         ChooseAddressListener,
         BannerComponentListener,
         TitleListener,
-        CategoryFilterListener,
-        QuickFilterListener,
-        SortFilterBottomSheet.Callback,
-        CategoryChooserBottomSheet.Callback,
-        MiniCartWidgetListener,
-        ProductItemListener,
-        TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
-        ChooseAddressBottomSheetListener,
-        OutOfCoverageListener,
-        TokoNowProductCardListener,
-        TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener {
+    CategoryFilterListener,
+    QuickFilterListener,
+    SortFilterBottomSheet.Callback,
+    CategoryChooserBottomSheet.Callback,
+    MiniCartWidgetListener,
+    ProductItemListener,
+    TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
+    ChooseAddressBottomSheetListener,
+    OutOfCoverageListener,
+    TokoNowProductCardListener,
+    TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
+    TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener {
 
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
         protected const val OUT_OF_COVERAGE_CHOOSE_ADDRESS = "OUT_OF_COVERAGE_CHOOSE_ADDRESS"
+        protected const val REQUEST_CODE_LOGIN = 69
     }
 
     @Inject
@@ -886,10 +888,6 @@ abstract class BaseSearchCategoryFragment:
         openATCVariantBottomSheet(productId, shopId)
     }
 
-    override fun setViewToLifecycleOwner(observer: LifecycleObserver) {
-        viewLifecycleOwner.lifecycle.addObserver(observer)
-    }
-
     protected open fun sendAddToCartRecommendationTrackingEvent(
         atcTrackingData: Triple<Int, String, RecommendationItem>
     ) {
@@ -945,5 +943,14 @@ abstract class BaseSearchCategoryFragment:
         addToCartRepurchaseProductData: Triple<Int, String, TokoNowProductCardUiModel>
     ) {
 
+    }
+
+    fun goToLogin() {
+        activity?.let {
+            startActivityForResult(
+                RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                REQUEST_CODE_LOGIN
+            )
+        }
     }
 }

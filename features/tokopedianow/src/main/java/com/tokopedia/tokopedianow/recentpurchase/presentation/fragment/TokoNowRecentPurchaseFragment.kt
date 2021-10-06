@@ -302,10 +302,6 @@ class TokoNowRecentPurchaseFragment:
         // TO-DO: Implement see more click tracking
     }
 
-    override fun setViewToLifecycleOwner(observer: LifecycleObserver) {
-        viewLifecycleOwner.lifecycle.addObserver(observer)
-    }
-
     override fun onClickSortFilter() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalTokopediaNow.SORT_FILTER)
         val selectedFilter = viewModel.getSelectedSortFilter()

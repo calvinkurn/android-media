@@ -11,7 +11,8 @@ class TokoNowRecommendationCarouselUiModel(
     val pageName: String,
     var carouselData: RecommendationCarouselData = RecommendationCarouselData(state = STATE_LOADING),
     var isBindWithPageName: Boolean = false,
-    var categoryId: List<String> = listOf()
+    var categoryId: List<String> = listOf(),
+    var isFirstLoad: Boolean = true
 
 ): TokoNowLayoutUiModel(id) {
 
