@@ -131,8 +131,6 @@ class InboxPresenter @Inject constructor(
                 override fun onNext(recommendationWidgets: List<RecommendationWidget>) {
                     val visitables = ArrayList<Visitable<*>>()
                     val recommendationWidget = recommendationWidgets[0]
-//                    visitables.add(RecomTitle(recommendationWidget.title))
-//                    visitables.add(TopadsHeadlineUiModel())
                     visitables.addAll(getRecommendationVisitables(recommendationWidget))
                     inboxView?.hideLoadMoreLoading()
                     inboxView?.onRenderRecomInbox(visitables, RecomTitle(recommendationWidget.title))

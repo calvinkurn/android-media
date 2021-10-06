@@ -453,30 +453,27 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     @Override
     public void onRenderRecomInbox(List<Visitable> list, RecomTitle title) {
-//        this.visitables = list;
-//        adapter.addElement(list);'
+        if (headlineData == null
+                || headlineData.getData() == null
+                || headlineData.getData().get(0) == null
+                || headlineData.getData().get(0).getCpm() == null) {
+            this.visitables = list;
+            adapter.addElement(list);
+            return;
+        } else {
+            int absRecommPosition = headlineData.getData().get(0).getCpm().getPosition() + adapter.getList().size();
+            headlineData.getData().get(0).getCpm().setPosition(absRecommPosition);
+            adapter.addElement(list);
 
-        if (headlineData != null
-                && headlineData.getData() != null
-                && headlineData.getData().get(0) != null
-                && headlineData.getData().get(0).getCpm() != null) {
-            headlineData.getData().get(0).getCpm().setPosition(adapter.getList().size() + 12);
-        }
-
-        adapter.addElement(list);
-
-        if (headlineData != null
-                && headlineData.getData() != null
-                && headlineData.getData().get(0) != null
-                && headlineData.getData().get(0).getCpm() != null) {
-            if (headlineData.getData().get(0).getCpm().getPosition() <= adapter.getList().size() && !isAdded) {
-                adapter.addElement(headlineData.getData().get(0).getCpm().getPosition(), title);
-                adapter.addElement(headlineData.getData().get(0).getCpm().getPosition() + 1, new TopadsHeadlineUiModel(headlineData, 0));
+            if (absRecommPosition <= adapter.getList().size() && !isAdded) {
+                adapter.addElement(absRecommPosition, title);
+                adapter.addElement(absRecommPosition + 1, new TopadsHeadlineUiModel(headlineData, 0));
                 isAdded = true;
             }
+
+            this.visitables = list;
         }
 
-        this.visitables = list;
     }
 
     @Override
