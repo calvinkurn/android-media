@@ -35,6 +35,7 @@ class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBu
         const val VALUE_PRODUCT = "product"
         const val VALUE_ITEM = "10"
         const val VALUE_TEMPLATE_ID = "2%2C3%2C4"
+        const val PARAM_PRODUCT_IDS = "product_ids"
     }
 
     fun bind(data: CartTopAdsHeadlineData) {
@@ -63,7 +64,8 @@ class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBu
                 PARAM_ST to VALUE_PRODUCT,
                 PARAM_PAGE to 1,
                 PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
-                PARAM_USER_ID to userSession.userId
+                PARAM_USER_ID to userSession.userId,
+                PARAM_PRODUCT_IDS to (data?.cartProductIds?.joinToString(",") ?: "")
         ))
     }
 
