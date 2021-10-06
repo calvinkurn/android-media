@@ -32,6 +32,7 @@
         android:layout_marginTop="4dp"
         android:textAlignment="center"
         android:textColor="@color/Unify_N700_68"
+        android:minWidth="80dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/review_credibility_statistic_count"
