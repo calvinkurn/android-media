@@ -25,6 +25,7 @@ import com.tokopedia.digital_deals.view.activity.CheckoutActivity.EXTRA_DEALDETA
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity.EXTRA_VERIFY
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks
+import com.tokopedia.digital_deals.view.utils.DealsAnalytics
 import com.tokopedia.digital_deals.view.utils.Utils
 import com.tokopedia.digital_deals.view.viewmodel.DealsCheckoutViewModel
 import com.tokopedia.kotlin.extensions.view.*
@@ -40,6 +41,7 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
     private var verifyData: EventVerifyResponse = EventVerifyResponse()
     private var itemMap: ItemMapResponse = ItemMapResponse()
     private var quantity = 1
+    private var promoApplied = false
 
     private lateinit var fragmentCallbacks: DealFragmentCallbacks
 
@@ -48,6 +50,9 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModel: DealsCheckoutViewModel
+
+    @Inject
+    lateinit var dealsAnalytics: DealsAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -166,6 +171,7 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
     }
 
     private fun showLayout() {
+        dealsAnalytics.sendScreenNameEvent(SCREEN_NAME)
         quantity = dealsDetail.quantity
         image_view_brand?.loadImage(dealsDetail.imageWeb)
         tv_brand_name?.text = dealsDetail.brand.title
@@ -215,10 +221,13 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
         }
 
         ticker_promocode?.gone()
+        //TODO PROMO TRACKER
 
         ll_select_payment_method?.setOnClickListener {
             showProgressBar()
             if (verifyData.gatewayCode.isNullOrEmpty()) {
+                dealsAnalytics.sendEcommercePayment(dealsDetail.categoryId, dealsDetail.id, quantity, dealsDetail.salesPrice,
+                        dealsDetail.displayName, dealsDetail.brand.title, promoApplied)
                 viewModel.checkoutGeneral(viewModel.mapCheckoutDeals(dealsDetail, verifyData))
             } else {
                 viewModel.checkoutGeneralInstant(viewModel.mapCheckoutDealsInstant(dealsDetail, verifyData))
@@ -229,6 +238,7 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
     companion object {
 
         const val ORDER_LIST_DEALS = "/order-list"
+        const val SCREEN_NAME = "/digital/deals/checkout"
 
         fun createInstance(bundle: Bundle): RevampCheckoutDealsFragment {
             return RevampCheckoutDealsFragment().also {

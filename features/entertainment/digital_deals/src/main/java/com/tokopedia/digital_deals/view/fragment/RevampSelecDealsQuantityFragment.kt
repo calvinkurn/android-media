@@ -17,6 +17,7 @@ import com.tokopedia.digital_deals.view.activity.CheckoutActivity
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks
+import com.tokopedia.digital_deals.view.utils.DealsAnalytics
 import com.tokopedia.digital_deals.view.utils.Utils
 import com.tokopedia.digital_deals.view.viewmodel.DealsVerifyViewModel
 import com.tokopedia.kotlin.extensions.view.*
@@ -40,6 +41,9 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModel: DealsVerifyViewModel
+
+    @Inject
+    lateinit var dealsAnalytics: DealsAnalytics
 
     private var currentQuantity = 1
     private var minQuantity = 1
@@ -114,7 +118,6 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
         iv_add.setOnClickListener {
             if (currentQuantity < maxQuantity) {
                 currentQuantity++
-                currentQuantity++
                 context?.let {
                     tv_no_quantity.setText(String.format(it.resources.getString(R.string.quantity_of_deals), currentQuantity))
                 }
@@ -125,6 +128,8 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
 
         tv_continue.setOnClickListener {
             showProgress()
+            dealsAnalytics.sendEcommerceQuantity(dealsDetail.id, currentQuantity, dealsDetail.salesPrice,
+                    dealsDetail.displayName, dealsDetail.brand.title, dealsDetail.categoryId)
             verify()
         }
 
