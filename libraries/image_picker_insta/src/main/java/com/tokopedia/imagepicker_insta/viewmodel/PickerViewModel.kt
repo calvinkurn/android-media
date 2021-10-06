@@ -19,7 +19,6 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
-    val TAG = "CameraInsta"
 
     override val coroutineContext: CoroutineContext
         get() = super.coroutineContext + workerDispatcher + ceh
@@ -55,7 +54,7 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
         })
     }
 
-    fun handleFileAddedEvent(fileUriList: ArrayList<Uri>) {
+    fun handleFileAddedEvent(fileUriList: ArrayList<Uri>, queryConfiguration: QueryConfiguration) {
         launchCatchError(block = {
             val imageAdapterList = ArrayList<ImageAdapterData>()
 
@@ -65,7 +64,7 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
                     if (file.exists() && file.length() > 0) {
                         if (!uriSet.contains(fileUri)) {
                             val asset =
-                                photosUseCase.createAssetsFromFile(file, app.applicationContext)
+                                photosUseCase.createAssetsFromFile(file, app.applicationContext,queryConfiguration)
                             if (asset != null) {
 
                                 /**
@@ -104,7 +103,7 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
         }, onError = {})
     }
 
-    fun updateMediaCountInFolders(fileUri: Uri, mediaCount:Int, folderName: String) {
+    private fun updateMediaCountInFolders(fileUri: Uri, mediaCount:Int, folderName: String) {
         val internalFolderData: FolderData? = folderDataList.firstOrNull {
             it.folderTitle == folderName
         }
@@ -130,31 +129,43 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
         }
     }
 
-    fun getMediaByFolderName(folderName: String) {
+    fun getMediaByFolderName(folderName: String,queryConfiguration: QueryConfiguration) {
 
         launchCatchError(block = {
-            photosFlow.emit(LiveDataResult.loading())
-            photosUseCase.getMediaByFolderNameFlow(folderName, app)
+            withContext(Dispatchers.Main) {
+                photosFlow.emit(LiveDataResult.loading())
+            }
+            photosUseCase.getMediaByFolderNameFlow(folderName, app, queryConfiguration)
                 .collect {
-                    photosFlow.emit(LiveDataResult.success(MediaVmMData(it, folderName)))
+                    withContext(Dispatchers.Main){
+                        photosFlow.emit(LiveDataResult.success(MediaVmMData(it, folderName)))
+                    }
+
                 }
         }, onError = {
+            withContext(Dispatchers.Main){
                 photosFlow.emit(LiveDataResult.error(Exception("Unknown error")))
+            }
         })
     }
 
-    fun getPhotos() {
+    fun getPhotos(queryConfiguration: QueryConfiguration) {
 
         launchCatchError(block = {
-            photosFlow.emit(LiveDataResult.loading())
-
-            photosUseCase.getMediaByFolderNameFlow(AlbumUtil.RECENTS, app)
+            withContext(Dispatchers.Main) {
+                photosFlow.emit(LiveDataResult.loading())
+            }
+            photosUseCase.getMediaByFolderNameFlow(AlbumUtil.RECENTS, app, queryConfiguration)
                 .collect {
                     uriSet.addAll(photosUseCase.getUriSetFromImageAdapterData(it.mediaImporterData.imageAdapterDataList))
-                    photosFlow.emit(LiveDataResult.success(MediaVmMData(it)))
+                    withContext(Dispatchers.Main){
+                        photosFlow.emit(LiveDataResult.success(MediaVmMData(it)))
+                    }
                 }
         }, onError = {
-            photosFlow.emit(LiveDataResult.error(it))
+            withContext(Dispatchers.Main) {
+                photosFlow.emit(LiveDataResult.error(it))
+            }
         })
     }
 

@@ -19,6 +19,7 @@ import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.imagepicker_insta.mediacapture.MediaRepository
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.util.PermissionUtil
+import com.tokopedia.imagepicker_insta.util.VideoUtil
 import com.tokopedia.imagepicker_insta.util.requestCameraAndMicPermission
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
@@ -31,14 +32,15 @@ class CameraActivity : PermissionActivity() {
     lateinit var toolbarTitle: Typography
     lateinit var toolbarIcon: AppCompatImageView
     var applinkToNavigateAfterMediaCapture: String? = null
+    var videoMaxDuration:Long = VideoUtil.DEFAULT_DURATION_MAX_LIMIT
     val uriOfClickedMedias = arrayListOf<Uri>()
 
     companion object {
 
-        val REQUEST_CODE = 213
-        fun getIntent(context: Context, applinkToNavigateAfterMediaCapture: String?): Intent {
+        fun getIntent(context: Context, applinkToNavigateAfterMediaCapture: String?, videoMaxDuration:Long): Intent {
             val intent = Intent(context, CameraActivity::class.java)
             intent.putExtra(BundleData.APPLINK_AFTER_CAMERA_CAPTURE, applinkToNavigateAfterMediaCapture)
+            intent.putExtra(BundleData.VIDEO_MAX_SECONDS, videoMaxDuration)
             return intent
         }
     }
@@ -100,6 +102,10 @@ class CameraActivity : PermissionActivity() {
 
     private fun readIntentData() {
         applinkToNavigateAfterMediaCapture = intent.getStringExtra(BundleData.APPLINK_AFTER_CAMERA_CAPTURE)
+        videoMaxDuration = intent.getLongExtra(BundleData.VIDEO_MAX_SECONDS,VideoUtil.DEFAULT_DURATION_MAX_LIMIT)
+        if(videoMaxDuration ==null || videoMaxDuration == 0L){
+            videoMaxDuration = VideoUtil.DEFAULT_DURATION_MAX_LIMIT
+        }
     }
 
     private fun setToolbar() {

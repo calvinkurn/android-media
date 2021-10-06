@@ -14,25 +14,26 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProviders
-import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.imagepicker_insta.*
-import com.tokopedia.imagepicker_insta.activity.CameraActivity
-//import com.tokopedia.imagepicker_insta.activity.DummyActivity
+import com.tokopedia.imagepicker_insta.LiveDataResult
+import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity
-import com.tokopedia.imagepicker_insta.common.ImagePickerRouter.DEFAULT_MULTI_SELECT_LIMIT
 import com.tokopedia.imagepicker_insta.common.BundleData
+import com.tokopedia.imagepicker_insta.common.ImagePickerRouter.DEFAULT_MULTI_SELECT_LIMIT
+import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
 import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
+import com.tokopedia.imagepicker_insta.mediacapture.MediaRepository
 import com.tokopedia.imagepicker_insta.menu.MenuManager
 import com.tokopedia.imagepicker_insta.models.*
-import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
-import com.tokopedia.imagepicker_insta.mediacapture.MediaRepository
+import com.tokopedia.imagepicker_insta.toPx
 import com.tokopedia.imagepicker_insta.util.AlbumUtil
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import com.tokopedia.imagepicker_insta.util.PermissionUtil
+import com.tokopedia.imagepicker_insta.util.VideoUtil
 import com.tokopedia.imagepicker_insta.viewmodel.PickerViewModel
 import com.tokopedia.imagepicker_insta.views.FolderChooserView
 import com.tokopedia.imagepicker_insta.views.MediaView
@@ -43,7 +44,9 @@ import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 
@@ -70,6 +73,8 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     var mediaLoadingFailed = false
     lateinit var noMediaAvailableText: String
     lateinit var loadingMediaText: String
+    lateinit var queryConfiguration: QueryConfiguration
+    var maxMultiSelect: Int = DEFAULT_MULTI_SELECT_LIMIT
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -215,10 +220,25 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         imageMultiSelect.offDrawableId = R.drawable.imagepicker_insta_ic_select_multiple_off
 
         imageMultiSelect.toggle(false)
+        prepareDataFromActivity()
         setupRv()
 
         noMediaAvailableText = getString(R.string.imagepicker_insta_no_media_available)
         loadingMediaText = getString(R.string.imagepicker_insta_loading)
+
+    }
+
+    fun prepareDataFromActivity(){
+        var maxDuration = (activity as? ImagePickerInstaActivity)?.videoMaxDurationInSeconds?:VideoUtil.DEFAULT_DURATION_MAX_LIMIT
+        if(maxDuration == 0L){
+            maxDuration = VideoUtil.DEFAULT_DURATION_MAX_LIMIT
+        }
+
+        if ((activity as? ImagePickerInstaActivity)?.maxMultiSelectAllowed != null) {
+            maxMultiSelect = (activity as ImagePickerInstaActivity).maxMultiSelectAllowed
+        }
+
+        queryConfiguration  = QueryConfiguration(maxDuration)
     }
 
     fun setupToolbar(v: View) {
@@ -334,7 +354,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     private fun refreshImages(folderName: String) {
-        viewModel.getMediaByFolderName(folderName)
+        viewModel.getMediaByFolderName(folderName, queryConfiguration)
     }
 
     fun setupRv() {
@@ -344,11 +364,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         rv.layoutManager = lm
         val width = context?.resources?.displayMetrics?.widthPixels ?: 0
         val contentHeight = width / columnCount
-
-        var maxMultiSelect: Int = DEFAULT_MULTI_SELECT_LIMIT
-        if ((activity as? ImagePickerInstaActivity)?.maxMultiSelectAllowed != null) {
-            maxMultiSelect = (activity as ImagePickerInstaActivity).maxMultiSelectAllowed
-        }
 
         imageAdapter = ImageAdapter(imageDataList, contentHeight, this, maxMultiSelect, lm)
         rv.adapter = imageAdapter
@@ -372,7 +387,8 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     private fun openCamera() {
         CameraUtil.openCamera(
             this,
-            (activity as? ImagePickerInstaActivity)?.applinkToNavigateAfterMediaCapture
+            (activity as? ImagePickerInstaActivity)?.applinkToNavigateAfterMediaCapture,
+            queryConfiguration.videoMaxDuration
         )
     }
 
@@ -395,16 +411,24 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         return selectedMediaView.imageAdapterData?.asset
     }
 
+    override fun showErrorToast(@AdapterErrorType type: Int) {
+        when(type){
+            AdapterErrorType.MULTISELECT-> showToast(getString(R.string.imagepicker_max_limit_reached,maxMultiSelect), Toaster.TYPE_ERROR)
+            AdapterErrorType.VIDEO_DURATION-> showToast(getString(R.string.imagepicker_max_vid_dur,queryConfiguration.videoMaxDuration), Toaster.TYPE_ERROR)
+        }
+    }
+
     private fun setObservers() {
         viewLifecycleOwner.lifecycle.addObserver(selectedMediaView)
 
-        viewLifecycleOwner.lifecycle.coroutineScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             MediaRepository.getMediaChangeFlow().collect {
-                viewModel.handleFileAddedEvent(arrayListOf(it))
+                viewModel.handleFileAddedEvent(arrayListOf(it),queryConfiguration)
             }
         }
 
-        viewLifecycleOwner.lifecycle.coroutineScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
+
             viewModel.photosFlow.collect {
                 when (it.status) {
                     LiveDataResult.STATUS.LOADING -> {
@@ -431,7 +455,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                         updateFolders(null)
                     }
                 }
-            }.launchIn(viewLifecycleOwner.lifecycle.coroutineScope)
+            }.launchIn(viewLifecycleOwner.lifecycleScope)
 
 
         imageMultiSelect.toggleCallback = { isMultiSelect ->
@@ -622,20 +646,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     private fun getPhotos() {
         viewModel.getFolderData()
-        viewModel.getPhotos()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            CameraActivity.REQUEST_CODE -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    handleCameraSuccessResponse(data)
-                } else {
-                    handleCameraErrorResponse(data)
-                }
-            }
-        }
+        viewModel.getPhotos(queryConfiguration)
     }
 
     private fun handleCameraSuccessResponse(data: Intent?) {
@@ -644,7 +655,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             //Update current UI
             val uriList = data?.extras?.getParcelableArrayList<Uri>(BundleData.URIS)
             if (!uriList.isNullOrEmpty()) {
-                viewModel.handleFileAddedEvent(uriList)
+                viewModel.handleFileAddedEvent(uriList,queryConfiguration)
             }
         } else {
             activity?.setResult(Activity.RESULT_OK, data)

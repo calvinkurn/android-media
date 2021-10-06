@@ -19,11 +19,11 @@ object CameraUtil {
         return "$mediaCount media"
     }
 
-    fun openCamera(fragment: Fragment, applinkToNavigateAfterMediaCapture: String?) {
+    fun openCamera(fragment: Fragment, applinkToNavigateAfterMediaCapture: String?, videoMaxDuration:Long) {
         if(fragment.context!=null){
             fragment.startActivity(
                 CameraActivity.getIntent(fragment.requireContext(),
-                    applinkToNavigateAfterMediaCapture))
+                    applinkToNavigateAfterMediaCapture, videoMaxDuration))
         }
     }
 

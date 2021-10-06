@@ -16,7 +16,8 @@ import com.otaliastudios.zoom.ZoomEngine
 import com.otaliastudios.zoom.ZoomImageView
 import com.tokopedia.imagepicker_insta.models.Asset
 import com.tokopedia.imagepicker_insta.models.ZoomInfo
-import timber.log.Timber
+import kotlin.math.max
+import kotlin.math.min
 
 class ZoomAssetImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -28,6 +29,8 @@ class ZoomAssetImageView @JvmOverloads constructor(
 
     var zoomInfo: ZoomInfo? = null
     var mediaScaleTypeContract: MediaScaleTypeContract? = null
+    private val portraitAR = 4/5f
+    private val landscapeAR = 3/2f
 
     fun initListeners() {
         engine.addListener(object : ZoomEngine.Listener {
@@ -51,7 +54,7 @@ class ZoomAssetImageView @JvmOverloads constructor(
         })
     }
 
-    fun centerCrop() {
+    fun centerCrop(animate: Boolean) {
         val bmp = (drawable as? BitmapDrawable)?.bitmap
         if (bmp != null) {
 
@@ -72,12 +75,12 @@ class ZoomAssetImageView @JvmOverloads constructor(
                 dy = (vheight - dheight * scale) * 0.5f
             }
 
-            engine.moveTo(scale, dx / 2f, dy / 2f, true)
+            engine.moveTo(scale, dx / 2f, dy / 2f, animate)
         }
     }
 
-    fun centerInside() {
-        engine.moveTo(1f, 0f,0f,true)
+    fun centerInside(animate:Boolean) {
+        engine.moveTo(1f, 0f,0f,animate)
     }
     fun isValidGlideContext(context: Context):Boolean{
         if(context is Activity){
@@ -104,6 +107,7 @@ class ZoomAssetImageView @JvmOverloads constructor(
         }
 
         override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable?>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+            updateMinZoom(resource)
             post {
                 scaleBitmapOnLoad()
             }
@@ -111,13 +115,29 @@ class ZoomAssetImageView @JvmOverloads constructor(
         }
     }
 
+    fun updateMinZoom(resource: Drawable?){
+        val bmp = (resource as? BitmapDrawable)?.bitmap
+        if(bmp!=null){
+            val ar = bmp.width/bmp.height.toFloat()
+
+            val targetAR = if(ar>1){
+                max(landscapeAR * 1/ar,landscapeAR)
+            }else{
+                max(portraitAR * 1/ar,ar)
+            }
+            val maxZoom = engine.getMaxZoom()
+            val finalMinZoom = max(1f,targetAR)
+            setMinZoom(min(maxZoom,finalMinZoom))
+        }
+    }
+
     fun scaleBitmapOnLoad() {
         if (zoomInfo != null && zoomInfo!!.hasData()) {
             engine.moveTo(zoomInfo!!.scale!!,zoomInfo!!.panX!!,zoomInfo!!.panY!!,false)
         } else if (mediaScaleTypeContract?.getCurrentMediaScaleType() == MediaScaleType.MEDIA_CENTER_CROP) {
-            centerCrop()
+            centerCrop(false)
         } else if (mediaScaleTypeContract?.getCurrentMediaScaleType() == MediaScaleType.MEDIA_CENTER_INSIDE) {
-            centerInside()
+            centerInside(false)
         }
 
     }

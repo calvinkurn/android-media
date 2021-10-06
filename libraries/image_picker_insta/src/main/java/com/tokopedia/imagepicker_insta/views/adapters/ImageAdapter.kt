@@ -3,15 +3,14 @@ package com.tokopedia.imagepicker_insta.views.adapters
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.imagepicker_insta.fragment.AdapterErrorType
 import com.tokopedia.imagepicker_insta.fragment.ImagePickerFragmentContract
 import com.tokopedia.imagepicker_insta.models.Camera
 import com.tokopedia.imagepicker_insta.models.ImageAdapterData
 import com.tokopedia.imagepicker_insta.models.VideoData
-import com.tokopedia.imagepicker_insta.util.VideoUtil
 import com.tokopedia.imagepicker_insta.views.viewholders.CameraViewHolder
 import com.tokopedia.imagepicker_insta.views.viewholders.PhotosViewHolder
 import com.tokopedia.imagepicker_insta.views.viewholders.VideosViewHolder
-import com.tokopedia.unifycomponents.Toaster
 
 class ImageAdapter(
     val dataList: List<ImageAdapterData>,
@@ -192,7 +191,7 @@ class ImageAdapter(
     private fun selectItem(position: Int) {
         if (dataList[position].asset is VideoData) {
             if (!(dataList[position].asset as VideoData).canBeSelected) {
-                mainFragmentContract.showToast("Video harus berdurasi maksimum ${VideoUtil.DURATION_MAX_LIMIT} detik.", Toaster.TYPE_ERROR)
+                mainFragmentContract.showErrorToast(AdapterErrorType.VIDEO_DURATION)
                 return
             }
         }
@@ -210,7 +209,7 @@ class ImageAdapter(
             notifyItems()
             itemSelectCallback?.invoke(dataList[position], true)
         } else {
-            mainFragmentContract.showToast("Oops, maksimal upload $maxMultiSelectLimit media, Hapus salah satu media jika ingin menggantinya.", Toaster.TYPE_ERROR)
+            mainFragmentContract.showErrorToast(AdapterErrorType.MULTISELECT)
         }
     }
 

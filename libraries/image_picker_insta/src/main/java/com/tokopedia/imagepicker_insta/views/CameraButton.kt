@@ -13,8 +13,8 @@ import android.widget.FrameLayout
 import android.widget.ProgressBar
 import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.imagepicker_insta.R
+import com.tokopedia.imagepicker_insta.util.VideoUtil
 import com.tokopedia.unifycomponents.toPx
-import java.util.*
 
 @SuppressLint("ClickableViewAccessibility")
 class CameraButton @JvmOverloads constructor(
@@ -30,10 +30,7 @@ class CameraButton @JvmOverloads constructor(
     var cameraButtonListener: CameraButtonListener?=null
     var imageCaptureAction = MotionEvent.ACTION_CANCEL
     val ON_CLICK_TIME = 500L
-    companion object{
-        const val MAX_VIDEO_RECORD_DURATION_IN_SECONDS = 59
-    }
-
+    var maxDurationToRecord = VideoUtil.DEFAULT_DURATION_MAX_LIMIT
 
     private val cameraButtonTouchListener = OnTouchListener { _:View, event:MotionEvent ->
         when (event.action) {
@@ -143,7 +140,7 @@ class CameraButton @JvmOverloads constructor(
      * Start this timer when video recording is started
      * */
     private fun startCountDown() {
-        val totalSecondsMillis = MAX_VIDEO_RECORD_DURATION_IN_SECONDS * 1000L
+        val totalSecondsMillis = maxDurationToRecord * 1000L
         val interval = 1000L
         countDownTimer = object : CountDownTimer(totalSecondsMillis, interval) {
 
