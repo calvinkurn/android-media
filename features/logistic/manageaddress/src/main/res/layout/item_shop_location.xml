@@ -27,9 +27,10 @@
             android:layout_gravity="center_horizontal"
             android:orientation="horizontal">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/title"
                 style="@style/TextView.Title"
+                app:typographyType="body_1"
                 android:layout_width="0dp"
                 android:layout_marginEnd="@dimen/dp_32"
                 android:layout_marginRight="@dimen/dp_32"
@@ -47,22 +48,24 @@
 
         </LinearLayout>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/address_line_1"
             style="@style/TextView.Micro.BlackDisabled"
             android:layout_marginEnd="@dimen/dp_56"
             android:layout_marginRight="@dimen/dp_56"
             android:layout_marginTop="@dimen/dp_4"
             android:lineSpacingExtra="@dimen/sp_6"
+            app:typographyType="body_3"
             tools:text="Jl. Prof. DR. Satrio No.Kav 11, RT.3/RW.3, Karet Semanggi, Setia Budi" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/address_line_2"
             style="@style/TextView.Micro.BlackDisabled"
             android:layout_marginEnd="@dimen/dp_56"
             android:layout_marginRight="@dimen/dp_56"
             android:layout_marginTop="@dimen/dp_2"
             android:lineSpacingExtra="@dimen/sp_6"
+            app:typographyType="body_3"
             tools:text="Setiabudi, Jakarta Selatan, DKI Jakarta, Indonesia 12345" />
 
         <LinearLayout

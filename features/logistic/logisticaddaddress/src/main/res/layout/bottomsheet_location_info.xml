@@ -26,7 +26,7 @@
             android:contentDescription="@string/invalid_img_description"
             android:layout_gravity="center_horizontal"/>
         
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_25"
@@ -35,7 +35,8 @@
             android:layout_marginRight="@dimen/dp_25"
             android:layout_marginTop="@dimen/dp_16"
             android:text="@string/undetected_location_desc"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal"
+            app:typographyType="body_2" />
 
         <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/btn_activate_location"
