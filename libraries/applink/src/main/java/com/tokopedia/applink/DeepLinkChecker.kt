@@ -19,7 +19,7 @@ object DeepLinkChecker {
 
     const val WEB_HOST = "www.tokopedia.com"
     const val WEB_HOST_STAGING = "staging.tokopedia.com"
-    const val MOBILE_HOST = "m.tokopedia.com"  // not used anymore on WPE side
+    const val MOBILE_HOST = "m.tokopedia.com"
 
     const val OTHER = -1
     const val BROWSE = 0
@@ -182,7 +182,8 @@ object DeepLinkChecker {
 
     private fun isHome(uriData: Uri): Boolean {
         return uriData.pathSegments.isEmpty() &&
-            (uriData.host?.contains(WEB_HOST) ?: false || UriUtil.isHostStaging(uriData.host ?: ""))
+            (uriData.host?.contains(WEB_HOST) ?: false || uriData.host?.contains(MOBILE_HOST) ?: false
+                    || UriUtil.isHostStaging(uriData.host ?: ""))
     }
 
     @JvmStatic

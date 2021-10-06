@@ -398,6 +398,5 @@ object UriUtil {
         }
     }
 
-    fun isHostStaging(host: String) =
-        GlobalConfig.isAllowDebuggingTools() && host.contains(DeepLinkChecker.WEB_HOST_STAGING)
+    fun isHostStaging(host: String) = host.contains(DeepLinkChecker.WEB_HOST_STAGING)
 }

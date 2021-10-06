@@ -24,7 +24,8 @@ object RouteManagerKt {
         if (url.endsWith(".pl")) {
             return false
         }
-        if (!url.contains(DeepLinkChecker.WEB_HOST) && !UriUtil.isHostStaging(url)) {
+        if (!url.contains(DeepLinkChecker.WEB_HOST) && !url.contains(DeepLinkChecker.MOBILE_HOST)
+            && !UriUtil.isHostStaging(url)) {
             return false
         }
         val registeredNavigation = DeeplinkMapper.getRegisteredNavigationFromHttp(activity.applicationContext, Uri.parse(url), url)
