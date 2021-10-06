@@ -1,11 +1,9 @@
 package com.tokopedia.statistic.view.fragment
 
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.view.*
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -80,7 +78,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         private const val DEFAULT_START_DATE_REGULAR_MERCHANT = 7L
         private const val DEFAULT_END_DATE_NON_REGULAR_MERCHANT = 0L
         private const val DEFAULT_END_DATE_REGULAR_MERCHANT = 1L
-        private const val TOAST_COUNT_DOWN_INTERVAL = 1000L
         private const val TOAST_DURATION = 5000L
         private const val SCREEN_NAME = "statistic_page_fragment"
         private const val TAG_TOOLTIP = "statistic_tooltip"
@@ -184,7 +181,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         setDefaultDynamicParameter()
 
         observeWidgetLayoutLiveData()
-        observeUserRole()
         observeWidgetData(mViewModel.cardWidgetData, WidgetType.CARD)
         observeWidgetData(mViewModel.lineGraphWidgetData, WidgetType.LINE_GRAPH)
         observeWidgetData(mViewModel.multiLineGraphWidgetData, WidgetType.MULTI_LINE_GRAPH)
@@ -883,19 +879,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         setProgressBarVisibility(true)
     }
 
-    private fun observeUserRole() {
-        mViewModel.userRole.observe(viewLifecycleOwner, {
-            when (it) {
-                is Success -> checkUserRole(it.data)
-                is Fail -> StatisticLogger.logToCrashlytics(
-                    it.throwable,
-                    StatisticLogger.ERROR_SELLER_ROLE
-                )
-            }
-        })
-        mViewModel.getUserRole()
-    }
-
     private fun observeTickers() {
         statisticPage?.let {
             mViewModel.getTickers(it.tickerPageName)
@@ -926,33 +909,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             stopPLTPerformanceMonitoring()
             stopWidgetPerformanceMonitoring(type)
         })
-    }
-
-    private fun checkUserRole(roles: List<String>) {
-        val manageShopStatsRole = "MANAGE_SHOPSTATS"
-        if (!roles.contains(manageShopStatsRole)) {
-            showToaster()
-            activity?.finish()
-        }
-    }
-
-    private fun showToaster() = view?.run {
-        val toaster = Toast.makeText(
-            context,
-            context.getString(R.string.stc_you_havent_access_this_page),
-            Toast.LENGTH_LONG
-        )
-        val toastCountDown = object : CountDownTimer(TOAST_DURATION, TOAST_COUNT_DOWN_INTERVAL) {
-            override fun onTick(p0: Long) {
-                toaster.show()
-            }
-
-            override fun onFinish() {
-                toaster.cancel()
-            }
-        }
-        toaster.show()
-        toastCountDown.start()
     }
 
     private fun showTickers(tickers: List<TickerItemUiModel>) {

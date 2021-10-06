@@ -5,7 +5,9 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -27,6 +29,7 @@ import com.tokopedia.statistic.common.Const
 import com.tokopedia.statistic.common.StatisticPageHelper
 import com.tokopedia.statistic.common.utils.StatisticAppLinkHandler
 import com.tokopedia.statistic.common.utils.StatisticRemoteConfig
+import com.tokopedia.statistic.common.utils.logger.StatisticLogger
 import com.tokopedia.statistic.databinding.ActivityStcStatisticBinding
 import com.tokopedia.statistic.di.DaggerStatisticComponent
 import com.tokopedia.statistic.di.StatisticComponent
@@ -36,6 +39,7 @@ import com.tokopedia.statistic.view.viewhelper.FragmentListener
 import com.tokopedia.statistic.view.viewhelper.StatisticViewPagerAdapter
 import com.tokopedia.statistic.view.viewhelper.setOnTabSelectedListener
 import com.tokopedia.statistic.view.viewmodel.StatisticActivityViewModel
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -52,6 +56,9 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     companion object {
         private const val FIRST_TAB_INDEX = 0
         private const val TAB_LIMIT = 3
+        private const val TOAST_DURATION = 2000L
+        private const val TOAST_COUNT_DOWN_INTERVAL = 1000L
+        private const val MANAGE_SHOP_STATS_ROLE = "MANAGE_SHOPSTATS"
     }
 
     @Inject
@@ -92,6 +99,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         setWhiteStatusBar()
 
         observeWhiteListStatus()
+        observeUserRole()
     }
 
     override fun getComponent(): StatisticComponent {
@@ -208,6 +216,19 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
                 else -> setupViewPager(false)
             }
         }
+    }
+
+    private fun observeUserRole() {
+        viewModel.userRole.observe(this, {
+            when (it) {
+                is Success -> checkUserRole(it.data)
+                is Fail -> StatisticLogger.logToCrashlytics(
+                    it.throwable,
+                    StatisticLogger.ERROR_SELLER_ROLE
+                )
+            }
+        })
+        viewModel.getUserRole()
     }
 
     private fun setupTabs() = binding?.run {
@@ -358,5 +379,28 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
     private fun setCoachMarkHasShown(tag: String) {
         CoachMarkPreference.setShown(this, tag, true)
+    }
+
+    private fun checkUserRole(roles: List<String>) {
+        if (!roles.contains(MANAGE_SHOP_STATS_ROLE)) {
+            showToaster()
+        }
+    }
+
+    private fun showToaster() {
+        val toastCountDown = object : CountDownTimer(TOAST_DURATION, TOAST_COUNT_DOWN_INTERVAL) {
+            override fun onTick(p0: Long) {
+                Toast.makeText(
+                    this@StatisticActivity,
+                    getString(R.string.stc_you_havent_access_this_page),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+            override fun onFinish() {
+                finish()
+            }
+        }
+        toastCountDown.start()
     }
 }

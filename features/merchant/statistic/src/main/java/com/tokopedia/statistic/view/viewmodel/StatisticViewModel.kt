@@ -5,13 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
-import com.tokopedia.statistic.domain.usecase.GetUserRoleUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -28,7 +26,6 @@ import javax.inject.Inject
 class StatisticViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val getTickerUseCase: Lazy<GetTickerUseCase>,
-    private val getUserRoleUseCase: Lazy<GetUserRoleUseCase>,
     private val getLayoutUseCase: Lazy<GetLayoutUseCase>,
     private val getCardDataUseCase: Lazy<GetCardDataUseCase>,
     private val getLineGraphDataUseCase: Lazy<GetLineGraphDataUseCase>,
@@ -50,8 +47,6 @@ class StatisticViewModel @Inject constructor(
         get() = _widgetLayout
     val tickers: LiveData<Result<List<TickerItemUiModel>>>
         get() = _tickers
-    val userRole: LiveData<Result<List<String>>>
-        get() = _userRole
     val cardWidgetData: LiveData<Result<List<CardDataUiModel>>>
         get() = _cardWidgetData
     val lineGraphWidgetData: LiveData<Result<List<LineGraphDataUiModel>>>
@@ -74,7 +69,6 @@ class StatisticViewModel @Inject constructor(
     private val shopId by lazy { userSession.shopId }
     private val _widgetLayout = MutableLiveData<Result<List<BaseWidgetUiModel<*>>>>()
     private val _tickers = MutableLiveData<Result<List<TickerItemUiModel>>>()
-    private val _userRole = MutableLiveData<Result<List<String>>>()
     private val _cardWidgetData = MutableLiveData<Result<List<CardDataUiModel>>>()
     private val _lineGraphWidgetData = MutableLiveData<Result<List<LineGraphDataUiModel>>>()
     private val _multiLineGraphWidgetData =
@@ -121,19 +115,6 @@ class StatisticViewModel @Inject constructor(
             _tickers.postValue(result)
         }, onError = {
             _tickers.postValue(Fail(it))
-        })
-    }
-
-    fun getUserRole() {
-        launchCatchError(block = {
-            val result: Success<List<String>> = Success(withContext(dispatcher.io) {
-                getUserRoleUseCase.get().params =
-                    GetUserRoleUseCase.createParam(userSession.userId)
-                return@withContext getUserRoleUseCase.get().executeOnBackground()
-            })
-            _userRole.postValue(result)
-        }, onError = {
-            _userRole.postValue(Fail(it))
         })
     }
 
