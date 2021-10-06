@@ -168,9 +168,8 @@ data class GetBuyerOrderDetailResponse(
                     val categoryId: String = "0",
                     @SerializedName("notes")
                     val notes: String = "",
-                    @SuppressLint("Invalid Data Type")
                     @SerializedName("bundle_id")
-                    val bundleId: Long? = 0,
+                    val bundleId: String? = "0",
                     @SerializedName("order_detail_id")
                     val orderDetailId: String = "0",
                     @SuppressLint("Invalid Data Type")
@@ -203,9 +202,8 @@ data class GetBuyerOrderDetailResponse(
                     val nonBundleList: List<Product> = listOf()
             ) {
                 data class Bundle(
-                        @SuppressLint("Invalid Data Type")
                         @SerializedName("bundle_id")
-                        val bundleId: Long = 0,
+                        val bundleId: String = "0",
                         @SerializedName("bundle_name")
                         val bundleName: String = "",
                         @SerializedName("bundle_price")
