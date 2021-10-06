@@ -50,7 +50,8 @@ class TokoNowRecommendationCarouselViewHolder(
                 adapterPosition = adapterPosition,
                 scrollToPosition = scrollToPosition.orZero(),
                 tempHeaderName = TEXT_OTHER_RECOM,
-                isForceRefresh = element.isFirstLoad
+                isForceRefresh = element.isFirstLoad,
+                isTokonow = true
             )
             element.isFirstLoad = false
         } else {

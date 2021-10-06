@@ -136,9 +136,9 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         pageName: String,
         tempHeaderName: String = "",
         isForceRefresh: Boolean = false,
-        categoryIds: List<String>
+        categoryIds: List<String>,
+        isTokonow: Boolean = false
     ) {
-
         try {
             this.adapterPosition = adapterPosition
             this.widgetBindPageNameListener = widgetBindPageNameListener
@@ -146,20 +146,12 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             this.pageName = pageName
             this.isForceRefresh = isForceRefresh
             bindTemporaryHeader(tempHeaderName)
-            //need to delete later
-            if (pageName == "pdp_1_tokonow") {
-                bindWidgetWithPageName(
-                    pageName = pageName,
-                    isForceRefresh = isForceRefresh,
-                    parentProductId = "1925664649"
-                )
-            } else {
-                bindWidgetWithPageName(
-                    pageName = pageName,
-                    isForceRefresh = isForceRefresh,
-                    categoryIds = categoryIds
-                )
-            }
+            bindWidgetWithPageName(
+                pageName = pageName,
+                isForceRefresh = isForceRefresh,
+                categoryIds = categoryIds,
+                isTokonow = isTokonow
+            )
         } catch (e: Exception) {
             this.widgetBindPageNameListener?.onWidgetFail(pageName, e)
         }
@@ -172,7 +164,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         pageName: String = "",
         tempHeaderName: String = "",
         isForceRefresh: Boolean = false,
-        parentProductId: String
+        parentProductId: String,
+        isTokonow: Boolean = false
     ) {
         try {
             this.adapterPosition = adapterPosition
@@ -185,7 +178,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             bindWidgetWithPageName(
                 pageName = pageName,
                 isForceRefresh = isForceRefresh,
-                parentProductId = parentProductId
+                parentProductId = parentProductId,
+                isTokonow = isTokonow
             )
         } catch (e: Exception) {
             this.widgetBindPageNameListener?.onWidgetFail(pageName, e)
@@ -474,13 +468,13 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         }
     }
 
-
     //get data with network call
     private fun bindWidgetWithPageName(
         pageName: String,
         isForceRefresh: Boolean,
         parentProductId: String = "",
-        categoryIds: List<String> = listOf()
+        categoryIds: List<String> = listOf(),
+        isTokonow: Boolean = false
     ) {
         isRecomBindWithPageName = true
         if (carouselData == null || isForceRefresh) {
@@ -489,7 +483,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             viewModel?.loadRecommendationCarousel(
                 pageName = pageName,
                 productIds = listOf(parentProductId),
-                categoryIds = categoryIds
+                categoryIds = categoryIds,
+                isTokonow = isTokonow
             )
         } else {
             itemView.loadingRecom.gone()
@@ -582,16 +577,19 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                             )
                         } else {
                             widgetListener?.onChannelWidgetEmpty()
+                            widgetBindPageNameListener?.onChannelWidgetEmpty()
                         }
                     }
                 }, { throwable ->
                     widgetListener?.onWidgetFail(pageName = pageName, e = throwable)
+                    widgetBindPageNameListener?.onWidgetFail(pageName = pageName, e = throwable)
                 })
             })
 
             viewModel?.errorGetRecommendation?.observe(owner, {
                 if (it.pageName == pageName) {
                     widgetListener?.onWidgetFail(pageName = pageName, e = it.throwable)
+                    widgetBindPageNameListener?.onWidgetFail(pageName = pageName, e = it.throwable)
                 }
             })
 

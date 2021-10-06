@@ -106,6 +106,9 @@ class RecommendationViewModel @Inject constructor(
                         ))
                 if (result.isNotEmpty()) {
                     val recomWidget = result[0]
+                    if (isTokonow) {
+                        mappingMiniCartDataToRecommendation(recomWidget)
+                    }
                     _getRecommendationLiveData.postValue(recomWidget.asSuccess())
                 }
             }) {
@@ -120,7 +123,7 @@ class RecommendationViewModel @Inject constructor(
     }
 
 
-    private fun mappingMiniCartDataToRecommendation(recomWidget: RecommendationWidget): List<RecommendationItem> {
+    private fun mappingMiniCartDataToRecommendation(recomWidget: RecommendationWidget) {
         val recomItemList = mutableListOf<RecommendationItem>()
         recomWidget.recommendationItemList.forEach { item ->
             miniCartData.value?.let {
@@ -141,7 +144,7 @@ class RecommendationViewModel @Inject constructor(
             }
             recomItemList.add(item)
         }
-        return recomItemList
+        recomWidget.recommendationItemList = recomItemList
     }
 
     fun getMiniCart(shopId: String) {
