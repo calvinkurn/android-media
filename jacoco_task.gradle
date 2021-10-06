@@ -1,16 +1,16 @@
 apply from: "$rootProject.projectDir/buildconfig/jacoco.gradle"
 
-def kotlinFileExecute = [
-        '**/*ViewModel.*',
-        '**/*ViewModel$*$**.*',
-        '**/*Presenter.*',
-        '**/*Presenter$*$**.*'
-]
 def javaFileExecute = [
         '**/*ViewModel.*',
         '**/*ViewModel$*$**.*',
         '**/*Presenter.*',
         '**/*Presenter$**.*'
+]
+def kotlinFileExecute = [
+        '**/*ViewModel.*',
+        '**/*ViewModel$*$**.*',
+        '**/*Presenter.*',
+        '**/*Presenter$*$**.*'
 ]
 
 def javaClasses = fileTree(dir: "$project.buildDir/intermediates/javac/debug/classes", includes: javaFileExecute)
