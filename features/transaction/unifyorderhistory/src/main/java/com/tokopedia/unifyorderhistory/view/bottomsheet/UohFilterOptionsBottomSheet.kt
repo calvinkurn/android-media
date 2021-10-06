@@ -16,7 +16,7 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.DATE_FORMAT_DDMMMYYYY
 import com.tokopedia.unifyorderhistory.util.UohUtils
 import com.tokopedia.unifyorderhistory.view.adapter.UohBottomSheetOptionAdapter
 import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
-import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 
 /**
@@ -25,7 +25,7 @@ import java.util.*
 class UohFilterOptionsBottomSheet : BottomSheetUnify() {
     private var actionListener: ActionListener? = null
     private var bottomSheetFilterOptions : BottomSheetUnify? = null
-    private var binding by autoCleared<BottomsheetOptionUohBinding>()
+    private var binding by autoClearedNullable<BottomsheetOptionUohBinding>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initView()
@@ -38,7 +38,7 @@ class UohFilterOptionsBottomSheet : BottomSheetUnify() {
 
     fun show(context: Context, fragmentManager: FragmentManager, adapter: UohBottomSheetOptionAdapter, title: String){
         bottomSheetFilterOptions = BottomSheetUnify()
-        binding.run {
+        binding?.run {
             rvOption.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             rvOption.adapter = adapter
             btnApply.setOnClickListener { actionListener?.onClickApply() }
@@ -46,7 +46,7 @@ class UohFilterOptionsBottomSheet : BottomSheetUnify() {
         bottomSheetFilterOptions?.run {
             showCloseIcon = true
             showHeader = true
-            setChild(binding.root)
+            setChild(binding?.root)
             setTitle(title)
             setCloseClickListener { dismiss() }
         }
@@ -58,13 +58,13 @@ class UohFilterOptionsBottomSheet : BottomSheetUnify() {
     }
 
     fun hideChooseDate() {
-        binding.run {
+        binding?.run {
             clChooseDate.gone()
         }
     }
 
     fun showChooseDate(chosenStartDate: GregorianCalendar, chosenEndDate: GregorianCalendar) {
-        binding.run {
+        binding?.run {
             clChooseDate.visible()
             tfStartDate.textFieldInput.run {
                 setText(UohUtils.calendarToStringFormat(chosenStartDate, DATE_FORMAT_DDMMMYYYY))
@@ -82,13 +82,13 @@ class UohFilterOptionsBottomSheet : BottomSheetUnify() {
     }
 
     fun setStartDate(startDate: GregorianCalendar) {
-        binding.run {
+        binding?.run {
             tfStartDate.textFieldInput.setText(UohUtils.calendarToStringFormat(startDate, DATE_FORMAT_DDMMMYYYY))
         }
     }
 
     fun setEndDate(endDate: GregorianCalendar) {
-        binding.run {
+        binding?.run {
             tfEndDate.textFieldInput.setText(UohUtils.calendarToStringFormat(endDate, DATE_FORMAT_DDMMMYYYY))
         }
     }

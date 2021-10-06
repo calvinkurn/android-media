@@ -16,7 +16,6 @@ import com.tokopedia.unifyorderhistory.data.model.UohTypeData
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.unifyorderhistory.R
 import com.tokopedia.unifyorderhistory.databinding.*
 import com.tokopedia.unifyorderhistory.view.adapter.viewholder.*
 import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment

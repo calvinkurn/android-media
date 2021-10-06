@@ -11,13 +11,14 @@ import com.tokopedia.unifyorderhistory.databinding.BottomsheetLsFinishOrderUohBi
 import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
 import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
  * Created by fwidjaja on 02/10/21.
  */
 class UohLsFinishOrderBottomSheet : BottomSheetUnify() {
     private var actionListener: ActionListener? = null
-    private var binding by autoCleared<BottomsheetLsFinishOrderUohBinding>()
+    private var binding by autoClearedNullable<BottomsheetLsFinishOrderUohBinding>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initView()
@@ -33,14 +34,14 @@ class UohLsFinishOrderBottomSheet : BottomSheetUnify() {
         bottomSheet.showCloseIcon = true
         bottomSheet.showHeader = true
 
-        binding.run {
+        binding?.run {
             btnLsFinishOrder.setOnClickListener {
                 bottomSheet.dismiss()
                 actionListener?.onClickLsFinishOrder(index, orderId)
             }
             btnLsKembali.setOnClickListener { bottomSheet.dismiss() }
         }
-        bottomSheet.setChild(binding.root)
+        bottomSheet.setChild(binding?.root)
         bottomSheet.setTitle(UohConsts.FINISH_ORDER_BOTTOMSHEET_TITLE)
         bottomSheet.show(fragmentManager, "")
         bottomSheet.setCloseClickListener { bottomSheet.dismiss() }

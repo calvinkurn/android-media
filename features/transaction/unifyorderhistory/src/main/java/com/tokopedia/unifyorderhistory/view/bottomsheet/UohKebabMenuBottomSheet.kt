@@ -11,14 +11,14 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyorderhistory.databinding.BottomsheetKebabMenuUohBinding
 import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.unifyorderhistory.view.adapter.UohBottomSheetKebabMenuAdapter
-import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
  * Created by fwidjaja on 01/10/21.
  */
 class UohKebabMenuBottomSheet : BottomSheetUnify() {
     private var bottomSheetKebabMenu : BottomSheetUnify? = null
-    private var binding by autoCleared<BottomsheetKebabMenuUohBinding>()
+    private var binding by autoClearedNullable<BottomsheetKebabMenuUohBinding>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initView()
@@ -31,7 +31,7 @@ class UohKebabMenuBottomSheet : BottomSheetUnify() {
 
     fun show(context: Context, fragmentManager: FragmentManager, adapter: UohBottomSheetKebabMenuAdapter) {
         bottomSheetKebabMenu = BottomSheetUnify()
-        binding.run {
+        binding?.run {
             // make sure this one after another
             rvKebab.adapter = adapter
             rvKebab.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -39,7 +39,7 @@ class UohKebabMenuBottomSheet : BottomSheetUnify() {
         bottomSheetKebabMenu?.run {
             showCloseIcon = true
             showHeader = true
-            setChild(binding.root)
+            setChild(binding?.root)
             setTitle(UohConsts.OTHERS)
             setCloseClickListener { dismiss() }
         }

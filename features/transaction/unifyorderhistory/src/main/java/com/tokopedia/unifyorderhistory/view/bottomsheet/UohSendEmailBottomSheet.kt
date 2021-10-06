@@ -15,6 +15,7 @@ import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.unifyorderhistory.util.UohUtils
 import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
 import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
  * Created by fwidjaja on 02/10/21.
@@ -22,7 +23,7 @@ import com.tokopedia.utils.lifecycle.autoCleared
 class UohSendEmailBottomSheet : BottomSheetUnify() {
     private var actionListener: ActionListener? = null
     private var bottomSheetSendEmail : BottomSheetUnify? = null
-    private var binding by autoCleared<BottomsheetSendEmailBinding>()
+    private var binding by autoClearedNullable<BottomsheetSendEmailBinding>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initView()
@@ -35,7 +36,7 @@ class UohSendEmailBottomSheet : BottomSheetUnify() {
 
     fun show(fragmentManager: FragmentManager, gqlGroup: String, orderData: UohListOrder.Data.UohOrders.Order) {
         bottomSheetSendEmail = BottomSheetUnify()
-        binding.run {
+        binding?.run {
             tfEmail.textFieldInput.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                 }
@@ -70,7 +71,7 @@ class UohSendEmailBottomSheet : BottomSheetUnify() {
             showHeader = true
             isFullpage = false
             isKeyboardOverlap = false
-            setChild(binding.root)
+            setChild(binding?.root)
             setTitle(UohConsts.FINISH_ORDER_BOTTOMSHEET_TITLE)
             setCloseClickListener { dismiss() }
         }
@@ -86,7 +87,7 @@ class UohSendEmailBottomSheet : BottomSheetUnify() {
     }
 
     fun setLayoutError() {
-        binding.run {
+        binding?.run {
             tfEmail.run {
                 setError(true)
                 setMessage(getString(R.string.toaster_failed_send_email))

@@ -12,7 +12,7 @@ import com.tokopedia.unifyorderhistory.R
 import com.tokopedia.unifyorderhistory.databinding.BottomsheetFinishOrderUohBinding
 import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
-import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
  * Created by fwidjaja on 01/10/21.
@@ -20,7 +20,7 @@ import com.tokopedia.utils.lifecycle.autoCleared
 class UohFinishOrderBottomSheet : BottomSheetUnify() {
     private var actionListener: ActionListener? = null
     private var bottomSheetFinishOrder : BottomSheetUnify? = null
-    private var binding by autoCleared<BottomsheetFinishOrderUohBinding>()
+    private var binding by autoClearedNullable<BottomsheetFinishOrderUohBinding>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initView()
@@ -33,7 +33,7 @@ class UohFinishOrderBottomSheet : BottomSheetUnify() {
 
     fun show(context: Context, fragmentManager: FragmentManager, index: Int, status: String, orderId: String){
         bottomSheetFinishOrder = BottomSheetUnify()
-        binding.run {
+        binding?.run {
             icFinishDetail1.background = ContextCompat.getDrawable(context, R.drawable.ic_uoh_bound_icon)
             icFinishDetail2.background = ContextCompat.getDrawable(context, R.drawable.ic_uoh_bound_icon)
             btnFinishOrder.setOnClickListener {
@@ -47,7 +47,7 @@ class UohFinishOrderBottomSheet : BottomSheetUnify() {
         bottomSheetFinishOrder?.run {
             showCloseIcon = true
             showHeader = true
-            setChild(binding.root)
+            setChild(binding?.root)
             setTitle(UohConsts.FINISH_ORDER_BOTTOMSHEET_TITLE)
             setCloseClickListener { dismiss() }
         }
