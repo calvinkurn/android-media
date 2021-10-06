@@ -200,6 +200,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
             setOnClickListener {
                 tempCountDarkModeToggle++
                 if (!isForceDarkModeToggleVisible && tempCountDarkModeToggle == ENABLE_DARK_MODE_TOGGLE_COUNT) {
+                    Toast.makeText(context, "Sekarang anda bisa menggunakan Tokopedia Dark Mode", Toast.LENGTH_SHORT).show()
                     isForceDarkModeToggleVisible = true
                     localCacheHandler.apply {
                         putBoolean(KEY_PREF_DARK_MODE_TOGGLE, true)
@@ -255,7 +256,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         val isRollenceEnabledDarkMode = getAbTestPlatform().getBoolean(
             RollenceKey.USER_DARK_MODE_TOGGLE, false)
 
-        if(isShowDarkMode || isRollenceEnabledDarkMode || isForceDarkModeToggleVisible) {
+        if(isForceDarkModeToggleVisible) {
             settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_DARK_MODE,
                     getString(R.string.title_dark_mode), getString(R.string.subtitle_dark_mode), false,
                     GeneralSettingMenuLabel.LABEL_BETA))
