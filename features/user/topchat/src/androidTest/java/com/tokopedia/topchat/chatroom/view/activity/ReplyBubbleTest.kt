@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatroom.view.activity
 
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.ReplyBubbleRobot
 import org.junit.Test
 
 class ReplyBubbleTest : TopchatRoomTest() {
@@ -13,7 +14,7 @@ class ReplyBubbleTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        longClickBubbleAt(1)
+        ReplyBubbleRobot.longClickBubbleAt(1)
 
         // Then
         assertLongClickMenu(isDisplayed())

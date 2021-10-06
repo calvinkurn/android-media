@@ -334,14 +334,6 @@ abstract class TopchatRoomTest {
         ).perform(click())
     }
 
-    protected fun longClickBubbleAt(position: Int) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position, R.id.fxChat
-            )
-        ).perform(longClick())
-    }
-
     protected fun assertLabelOnProductCard(
         recyclerViewId: Int,
         atPosition: Int,
