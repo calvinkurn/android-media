@@ -147,7 +147,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         commitFragments()
     }
 
-    private fun getBaseAppComponent(): BaseAppComponent? =
+    protected open fun getBaseAppComponent(): BaseAppComponent? =
         (this.application as? BaseMainApplication)?.baseAppComponent
 
     protected open fun createInitialStateComponent(

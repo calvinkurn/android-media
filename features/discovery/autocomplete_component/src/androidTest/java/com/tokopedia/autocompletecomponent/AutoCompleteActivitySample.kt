@@ -24,5 +24,5 @@ class AutoCompleteActivitySample: BaseAutoCompleteActivity() {
             .suggestionViewListenerModule(SuggestionViewListenerModule(this))
             .build()
 
-    private fun getBaseAppComponent() = createFakeBaseAppComponent(this)
+    override fun getBaseAppComponent() = createFakeBaseAppComponent(this)
 }
