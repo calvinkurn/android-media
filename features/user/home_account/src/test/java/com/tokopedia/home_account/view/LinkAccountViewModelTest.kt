@@ -79,4 +79,14 @@ class LinkAccountViewModelTest {
         }
     }
 
+    @Test
+    fun `on Failed Get Link Status, with get profile` () {
+        coEvery { getLinkStatusUseCase.invoke(any()) } throws throwable
+        viewModel.getLinkStatus(true)
+
+        verify {
+            linkStatusResponse.onChanged(Fail(throwable))
+        }
+    }
+
 }

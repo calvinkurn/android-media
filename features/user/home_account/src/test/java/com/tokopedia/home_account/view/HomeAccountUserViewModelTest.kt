@@ -11,24 +11,30 @@ import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
 import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.linkaccount.domain.GetUserProfile
 import com.tokopedia.home_account.pref.AccountPreference
-import com.tokopedia.navigation_common.model.*
+import com.tokopedia.navigation_common.model.DebitInstantData
+import com.tokopedia.navigation_common.model.DebitInstantModel
+import com.tokopedia.navigation_common.model.ProfileModel
+import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.sessioncommon.data.profile.ProfileInfo
+import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import junit.framework.Assert.assertFalse
 import org.assertj.core.api.Assertions
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.lang.IllegalArgumentException
 import kotlin.test.assertEquals
 
 /**
@@ -76,6 +82,7 @@ class HomeAccountUserViewModelTest {
     private val shortcut = ShortcutResponse()
     private val responseResult = UserAccountDataModel()
     private val linkStatusResult = LinkStatusResponse()
+    private val profilePojo = ProfilePojo(profileInfo = ProfileInfo(phone = "089123456789"))
 
     @Before
     fun setUp() {
@@ -104,6 +111,28 @@ class HomeAccountUserViewModelTest {
     }
 
     @Test
+    fun `Execute refreshPhoneNo Success`() {
+        coEvery { getPhoneUseCase(Unit) } returns profilePojo
+
+        viewModel.refreshPhoneNo()
+
+        verify {
+            userSession.phoneNumber = profilePojo.profileInfo.phone
+        }
+        Assertions.assertThat(viewModel.phoneNo.value)
+            .isEqualTo(profilePojo.profileInfo.phone)
+    }
+
+    @Test
+    fun `Execute refreshPhoneNo Failed`() {
+        coEvery { getPhoneUseCase(Unit) } throws throwable.throwable
+
+        viewModel.refreshPhoneNo()
+
+        Assertions.assertThat(viewModel.phoneNo.value).isEqualTo("")
+    }
+
+    @Test
     fun `Execute getBuyerData Success`() {
         /* When */
         coEvery { homeAccountUserUsecase.executeOnBackground() } returns responseResult
@@ -111,6 +140,9 @@ class HomeAccountUserViewModelTest {
         coEvery { getLinkStatusUseCase.invoke(any()) } returns linkStatusResult
 
         viewModel.getBuyerData()
+
+        responseResult.linkStatus = linkStatusResult.response
+
         verify {
             viewModel.saveLocallyAttributes(responseResult)
         }
