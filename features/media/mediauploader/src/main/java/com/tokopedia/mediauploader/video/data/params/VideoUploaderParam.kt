@@ -18,18 +18,12 @@ data class VideoUploaderParam(
 
     private val file by lazy { File(filePath) }
 
-    fun videoBody(
-        progressCallback: ProgressCallback?
-    ): MultipartBody {
+    fun videoFileName(): String = file.name
 
-        val builder = MultipartBody.Builder().setType(MultipartBody.FORM)
+    fun videoBody(progressCallback: ProgressCallback?): MultipartBody.Part {
         val contentType = MediaType.parse(SUPPORTED_CONTENT_TYPE)
         val requestBody = UploadRequestBody(file, contentType, progressCallback)
-
-        builder.addFormDataPart(BODY_FILE_BLOB, file.name, requestBody)
-        builder.addFormDataPart(BODY_FILE_NAME, file.name, requestBody)
-
-        return builder.build()
+        return MultipartBody.Part.createFormData(BODY_FILE_BLOB, file.name, requestBody)
     }
 
     companion object {
