@@ -28,6 +28,10 @@ object ReplyBubbleResult {
         assertReplyComposeCloseBtn(not(isDisplayed()))
     }
 
+    fun hasVisibleReplyBubbleAt(position: Int) {
+        assertReplyBubbleAt(position, isDisplayed())
+    }
+
     fun hasNoVisibleReplyBubbleAt(position: Int) {
         assertReplyBubbleAt(position, not(isDisplayed()))
     }

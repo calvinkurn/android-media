@@ -88,7 +88,24 @@ class ReplyBubbleTest : TopchatRoomTest() {
         assertMsgBubbleAt(lastBubbleIndex, isDisplayed())
     }
 
-    // TODO: should sent and render reply bubble when user sent normal text
+    @Test
+    fun should_sent_and_render_reply_bubble_when_user_sent_normal_text() {
+        // Given
+        getChatUseCase.response = getChatUseCase.defaultReplyBubbleResponse
+        launchChatRoomActivity()
+
+        // When
+        ReplyBubbleRobot.longClickBubbleAt(1)
+        ReplyBubbleRobot.clickReplyItemMenu()
+        clickComposeArea()
+        typeMessage("reply this")
+        clickSendBtn()
+        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+
+        // Then
+        ReplyBubbleResult.hasVisibleReplyBubbleAt(0)
+    }
+
     // TODO: should show normal text reply bubble when parent reply is not null from GQL
     // TODO: should show text reply bubble when parent reply is not null from websocket
     // TODO: should sent and render reply bubble when user sent sticker

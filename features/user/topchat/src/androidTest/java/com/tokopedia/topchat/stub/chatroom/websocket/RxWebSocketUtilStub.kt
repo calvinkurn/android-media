@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
 import com.tokopedia.chat_common.data.AttachmentType
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.*
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductProfile
@@ -165,6 +166,7 @@ class RxWebSocketUtilStub constructor(
         val requestStartTime = request.jsonObject?.get("start_time")?.asString ?: ""
         val requestMsg = request.jsonObject?.get("message")?.asString ?: ""
         val localId = request.jsonObject?.get("local_id")?.asString ?: ""
+        val parentReply = generateParentReplyFrom(request)
         val uiModel = mapper.map(room)
         val timestamp = RfcDateTimeParser.parseDateString(
             requestStartTime, arrayOf(START_TIME_FORMAT)
@@ -193,13 +195,38 @@ class RxWebSocketUtilStub constructor(
             blastId = 0,
             source = "inbox",
             label = "",
-            localId = localId
+            localId = localId,
+            parentReply = parentReply
         )
         val chatElement = gson.toJsonTree(chat)
         val response = WebSocketResponse(
             "", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE, chatElement
         )
         simulateResponse(response)
+    }
+
+    private fun generateParentReplyFrom(request: WebSocketResponse): ParentReply? {
+        val parentReply = request.jsonObject?.get("parent_reply")?.asJsonObject ?: return null
+        val attachmentId = parentReply.get("attachment_id")
+        val attachmentType = parentReply.get("attachment_type")
+        val senderId = parentReply.get("sender_id")
+        val replyTime = parentReply.get("reply_time")
+        val mainText = parentReply.get("main_text")
+        val subText = parentReply.get("sub_text")
+        val imageUrl = parentReply.get("image_url")
+        val localId = parentReply.get("local_id")
+        val source = parentReply.get("source")
+        return ParentReply(
+            attachmentId = attachmentId.asString,
+            attachmentType = attachmentType.asString,
+            senderId = senderId.asString,
+            replyTime = replyTime.asString,
+            mainText = mainText.asString,
+            subText = subText.asString,
+            imageUrl = imageUrl.asString,
+            localId = localId.asString,
+            source = source.asString
+        )
     }
 
     private fun isProductAttachment(requestObj: WebSocketResponse): Boolean {
