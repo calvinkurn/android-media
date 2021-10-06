@@ -212,6 +212,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private lateinit var shareData: LinkerData
     private lateinit var reportBottomSheet: ReportBottomSheet
+    private var shareBottomSheetProduct = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -2114,6 +2115,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             productTagBS.dismiss()
         }
         urlString = if (isTopads) {
+            shareBottomSheetProduct = true
             String.format(getString(R.string.feed_share_weblink), id.toString())
         } else{
             url
@@ -3046,18 +3048,27 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun urlCreated(linkerShareData: LinkerShareResult?) {
-        val intent = getIntent()
+        val intent: Intent = if (shareBottomSheetProduct) {
+            getIntent(linkerShareData?.url ?: "")
+        } else {
+            getIntent()
+        }
         activity?.startActivity(Intent.createChooser(intent, shareData.name))
     }
 
-    private fun getIntent(): Intent {
+    private fun getIntent(shareUrl:String=""): Intent {
+        val shareUri: String = if (shareUrl.isNotEmpty()) {
+            shareUrl
+        } else {
+            shareData.uri
+        }
         return Intent().apply {
             action = Intent.ACTION_SEND
             type = TYPE
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             putExtra(Intent.EXTRA_TITLE, shareData.name)
             putExtra(Intent.EXTRA_SUBJECT, shareData.name)
-            putExtra(Intent.EXTRA_TEXT, shareData.description + "\n" + shareData.uri)
+            putExtra(Intent.EXTRA_TEXT, shareData.description + "\n" + shareUri)
         }
     }
 
