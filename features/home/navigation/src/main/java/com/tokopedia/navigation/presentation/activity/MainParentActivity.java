@@ -199,8 +199,8 @@ public class MainParentActivity extends BaseActivity implements
     public static final int RANK_DIGITAL_SHORTCUT = 2;
     public static final int RANK_WISHLIST_SHORTCUT = 1;
     public static final String UOH_SOURCE_FILTER_KEY = "source_filter";
-    public static final String PARAM_ACTIVITY_ORDER_HISTORY = "activity_order_history"
-    public static final String PARAM_HOME = "home"
+    public static final String PARAM_ACTIVITY_ORDER_HISTORY = "activity_order_history";
+    public static final String PARAM_HOME = "home";
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
