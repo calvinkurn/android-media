@@ -53,6 +53,7 @@ import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play_common.model.dto.interactive.isScheduled
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
+import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.*
@@ -148,7 +149,7 @@ class PlayViewModel @Inject constructor(
     private val _status = MutableStateFlow(PlayStatusType.Active)
     private val _interactive = MutableStateFlow<PlayInteractiveUiState>(PlayInteractiveUiState.NoInteractive)
     private val _leaderboardInfo: MutableStateFlow<PlayLeaderboardWrapperUiModel> = MutableStateFlow(PlayLeaderboardWrapperUiModel.Unknown)
-    private val _leaderboardUserBadgeState = MutableStateFlow(false)
+    private val _leaderboardUserBadgeState = MutableStateFlow(PlayLeaderboardBadgeUiState())
     private val _likeInfo = MutableStateFlow(PlayLikeInfoUiModel())
     private val _channelReport = MutableStateFlow(PlayChannelReportUiModel())
     private val _cartInfo = MutableStateFlow(PlayCartInfoUiModel())
@@ -181,7 +182,7 @@ class PlayViewModel @Inject constructor(
             leaderboards = leaderboardInfo,
             shouldShow = !bottomInsets.isAnyShown &&
                     status.isActive &&
-                    leaderboardUserBadgeState &&
+                    leaderboardUserBadgeState.showLeaderboard &&
                     channelDetail.channelInfo.channelType.isLive,
         )
     }
@@ -1150,8 +1151,6 @@ class PlayViewModel @Inject constructor(
     private fun checkLeaderboard(channelId: String) {
         if (!isInteractiveAllowed) return
         viewModelScope.launchCatchError(dispatchers.io, block = {
-            _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Loading
-            delay(3000)
             val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
             _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
 
@@ -1163,7 +1162,7 @@ class PlayViewModel @Inject constructor(
 
     private fun setLeaderboardBadgeState(leaderboardInfo: PlayLeaderboardInfoUiModel) {
         if(leaderboardInfo.leaderboardWinners.isNotEmpty()) {
-            _leaderboardUserBadgeState.value = true
+            _leaderboardUserBadgeState.value = _leaderboardUserBadgeState.value.copy(showLeaderboard = true)
         }
     }
 
@@ -1611,7 +1610,7 @@ class PlayViewModel @Inject constructor(
             setNoInteractive()
         }
 
-        _leaderboardUserBadgeState.value = true
+        _leaderboardUserBadgeState.value = _leaderboardUserBadgeState.value.copy(showLeaderboard = true, shouldRefreshData = true)
     }
 
     private fun handleWinnerBadgeClicked(height: Int) {
@@ -1873,6 +1872,14 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleRefreshLeaderboard() {
+        viewModelScope.launchCatchError(block = {
+            if(_leaderboardUserBadgeState.value.shouldRefreshData) {
+                _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Loading
+                _leaderboardUserBadgeState.value = _leaderboardUserBadgeState.value.copy(shouldRefreshData = false)
+                delay(3000)
+            }
+        }, onError = {})
+
         checkLeaderboard(channelId)
     }
 
