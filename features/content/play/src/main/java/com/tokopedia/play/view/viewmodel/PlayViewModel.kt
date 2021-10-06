@@ -52,6 +52,7 @@ import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveMod
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play_common.model.dto.interactive.isScheduled
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.*
@@ -991,6 +992,8 @@ class PlayViewModel @Inject constructor(
 
     private fun handleLeaderboardInfo(leaderboardInfo: PlayLeaderboardWrapperUiModel) {
         _leaderboardInfo.value = leaderboardInfo
+        if(leaderboardInfo is PlayLeaderboardWrapperUiModel.Success)
+            setLeaderboardBadgeState(leaderboardInfo.data)
     }
 
     /**
@@ -1152,11 +1155,15 @@ class PlayViewModel @Inject constructor(
             val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
             _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
 
-            if(interactiveLeaderboard.leaderboardWinners.isNotEmpty()) {
-                _leaderboardUserBadgeState.value = true
-            }
+            setLeaderboardBadgeState(interactiveLeaderboard)
         }) {
             _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Error
+        }
+    }
+
+    private fun setLeaderboardBadgeState(leaderboardInfo: PlayLeaderboardInfoUiModel) {
+        if(leaderboardInfo.leaderboardWinners.isNotEmpty()) {
+            _leaderboardUserBadgeState.value = true
         }
     }
 
@@ -1198,9 +1205,8 @@ class PlayViewModel @Inject constructor(
             try {
                 val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
                 _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
-                if(interactiveLeaderboard.leaderboardWinners.isNotEmpty()) {
-                    _leaderboardUserBadgeState.value = true
-                }
+                setLeaderboardBadgeState(interactiveLeaderboard)
+
                 _interactive.value = PlayInteractiveUiState.NoInteractive
             } catch (e: Throwable) {}
         }
