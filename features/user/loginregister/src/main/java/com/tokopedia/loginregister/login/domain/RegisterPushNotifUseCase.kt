@@ -1,11 +1,13 @@
 package com.tokopedia.loginregister.login.domain
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.loginregister.login.di.LoginModule.Companion.NAMED_DISPATCHERS_IO
 import com.tokopedia.loginregister.login.domain.pojo.RegisterPushNotifPojo
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Created by Ade Fulki on 17/09/20.
@@ -19,12 +21,9 @@ data class RegisterPushNotifParamsModel(
 
 class RegisterPushNotifUseCase @Inject constructor(
     val repository: GraphqlRepository,
-    coroutineDispatchers: CoroutineDispatchers
-) : CoroutineUseCase<RegisterPushNotifParamsModel, RegisterPushNotifPojo>(coroutineDispatchers.io) {
-
-    override fun graphqlQuery(): String {
-        return query
-    }
+    @Named(NAMED_DISPATCHERS_IO)
+    coroutineDispatcher: CoroutineDispatcher
+) : CoroutineUseCase<RegisterPushNotifParamsModel, RegisterPushNotifPojo>(coroutineDispatcher) {
 
     override suspend fun execute(params: RegisterPushNotifParamsModel): RegisterPushNotifPojo {
         return repository.request(graphqlQuery(), createParams(params))
@@ -36,23 +35,23 @@ class RegisterPushNotifUseCase @Inject constructor(
         PARAM_DATETIME to params.datetime
     )
 
+    override fun graphqlQuery(): String = """
+        query registerPushnotif(${'$'}publicKey : String!, ${'$'}signature : String!, ${'$'}datetime : String!) {
+          RegisterPushnotif(
+            publicKey: ${'$'}publicKey
+            signature: ${'$'}signature
+            datetime: ${'$'}datetime
+          ){
+            success
+            errorMessage
+            message
+          }
+        }
+    """.trimIndent()
+
     companion object {
         private const val PARAM_SIGNATURE = "signature"
         private const val PARAM_DATETIME = "datetime"
         private const val PARAM_PUBLIC_KEY = "publicKey"
-
-        var query = """
-            query registerPushnotif(${'$'}publicKey : String!,${'$'}signature : String!,${'$'}datetime : String!) {
-              RegisterPushnotif(
-                publicKey: ${'$'}publicKey
-                signature: ${'$'}signature
-                datetime: ${'$'}datetime
-              ){
-                success
-                errorMessage
-                message
-              }
-            }
-        """.trimIndent()
     }
 }
