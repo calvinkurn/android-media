@@ -14,7 +14,6 @@ import com.tokopedia.unifyorderhistory.databinding.BottomsheetSendEmailBinding
 import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.unifyorderhistory.util.UohUtils
 import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
-import com.tokopedia.utils.lifecycle.autoCleared
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**

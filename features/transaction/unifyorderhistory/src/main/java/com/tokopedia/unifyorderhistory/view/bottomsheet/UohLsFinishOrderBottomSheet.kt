@@ -10,7 +10,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyorderhistory.databinding.BottomsheetLsFinishOrderUohBinding
 import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
-import com.tokopedia.utils.lifecycle.autoCleared
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**

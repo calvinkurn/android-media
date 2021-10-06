@@ -24,6 +24,8 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.launch
+import rx.Subscriber
 import timber.log.Timber
 import javax.inject.Inject
 
