@@ -1151,7 +1151,7 @@ class PlayViewModel @Inject constructor(
         if (!isInteractiveAllowed) return
         viewModelScope.launchCatchError(dispatchers.io, block = {
             _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Loading
-
+            delay(3000)
             val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
             _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
 

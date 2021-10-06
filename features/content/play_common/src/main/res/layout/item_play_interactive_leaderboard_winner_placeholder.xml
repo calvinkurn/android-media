@@ -2,10 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="@dimen/spacing_lvl3"
-    android:paddingEnd="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/spacing_lvl3">
+    android:layout_height="wrap_content">
 
     <View
         android:id="@+id/ph_play_leaderboard_number"
@@ -21,7 +18,9 @@
         android:id="@+id/ph_play_leaderboard_avatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl5"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/ph_play_leaderboard_number"
         app:layout_constraintTop_toTopOf="parent">
@@ -40,9 +39,20 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ph_play_leaderboard_avatar"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/ph_play_leaderboard_divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/Unify_N75"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/ph_play_leaderboard_avatar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
