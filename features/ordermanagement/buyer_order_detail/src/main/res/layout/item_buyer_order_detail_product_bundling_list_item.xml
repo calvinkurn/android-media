@@ -5,8 +5,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:paddingBottom="@dimen/buyer_order_detail_bundling_card_padding_bottom"
-    android:paddingTop="@dimen/spacing_lvl4"
-    android:paddingHorizontal="@dimen/spacing_lvl4">
+    android:paddingTop="16dp"
+    android:paddingHorizontal="16dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_item_bom_detail_bundling_thumbnail"
@@ -17,7 +17,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_item_bom_detail_bundling_product_name"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/buyer_order_detail_bundling_info_margin"
         android:ellipsize="end"
@@ -33,7 +33,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_item_bom_detail_bundling_product_price_quantity"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
@@ -61,7 +61,7 @@
         android:id="@+id/btn_item_bom_detail_bundling_action"
         android:layout_width="@dimen/buyer_order_detail_bundling_button_width"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="8dp"
         android:text="@string/buy_again_label"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/tv_item_bom_detail_bundling_product_note"

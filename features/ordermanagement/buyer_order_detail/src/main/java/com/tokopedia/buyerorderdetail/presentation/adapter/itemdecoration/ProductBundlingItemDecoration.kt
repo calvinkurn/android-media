@@ -11,6 +11,11 @@ import com.tokopedia.kotlin.extensions.view.orZero
 
 class ProductBundlingItemDecoration(context: Context): RecyclerView.ItemDecoration() {
 
+    companion object {
+        private const val FIRST_INDEX = 0
+        private const val INDEX_FROM_LAST = 1
+    }
+
     private val divider = MethodChecker.getDrawable(context, R.drawable.bg_buyer_order_detail_bundling_dashed_divider)
     private val padding = context.resources.getDimension(com.tokopedia.unifycomponents.R.dimen.layout_lvl2).toInt()
 
@@ -18,7 +23,7 @@ class ProductBundlingItemDecoration(context: Context): RecyclerView.ItemDecorati
         val left = padding
         val right = parent.width - padding
         val childCount = parent.childCount
-        for (i in 0 until childCount - 1) {
+        for (i in FIRST_INDEX until childCount - INDEX_FROM_LAST) {
             val child = parent.getChildAt(i)
             val layoutParams = child.layoutParams as RecyclerView.LayoutParams
             val top = child.bottom + layoutParams.bottomMargin
