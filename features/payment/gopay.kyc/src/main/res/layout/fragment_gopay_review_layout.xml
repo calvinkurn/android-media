@@ -196,7 +196,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/unify_space_24"
         android:gravity="center"
-        tools:text="@string/gopay_kyc_accept_tnc_text"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/kycReviewTitle"
