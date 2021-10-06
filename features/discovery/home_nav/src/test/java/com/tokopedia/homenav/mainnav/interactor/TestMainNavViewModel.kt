@@ -119,7 +119,7 @@ class TestMainNavViewModel {
     }
 
     @Test
-    fun `test when nav page launched from wishlist page then do notshow back to home icon`() {
+    fun `test when nav page launched from wishlist page then do not show back to home icon`() {
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
         val pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST
         every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
