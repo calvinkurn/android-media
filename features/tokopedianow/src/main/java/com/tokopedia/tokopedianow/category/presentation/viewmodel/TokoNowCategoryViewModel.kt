@@ -160,9 +160,15 @@ class TokoNowCategoryViewModel @Inject constructor (
         val recomData =
             TokoNowRecommendationCarouselUiModel(pageName = TOKONOW_CLP, isBindWithPageName = true)
         recomData.categoryId = getRecomCategoryId(recomData)
+        //should delete this later
+        val tempTokonowPdpRecom = TokoNowRecommendationCarouselUiModel(
+            pageName = "pdp_1_tokonow",
+            isBindWithPageName = true
+        )
         return listOf(
             createAisleDataView(),
-            recomData
+            recomData,
+            tempTokonowPdpRecom
         )
     }
 
