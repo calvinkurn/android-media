@@ -139,12 +139,18 @@ class BalanceWidgetView: FrameLayout {
     }
 
     fun getGopayView(): View? {
-        gopayView = findViewById(R.id.home_coachmark_item_gopay)
-        return gopayView
+        if (balanceAdapter?.getItemMap()?.containsGopay() == true) {
+            gopayView = findViewById(R.id.home_coachmark_item_gopay)
+            return gopayView
+        }
+        return null
     }
 
     fun getGopayNewView(): View? {
-        gopayViewNew = findViewById(R.id.home_coachmark_item_gopay_new)
+        if (balanceAdapter?.getItemMap()?.containsGopay() == true) {
+            gopayViewNew = findViewById(R.id.home_coachmark_item_gopay_new)
+            return gopayViewNew
+        }
         return gopayViewNew
     }
 

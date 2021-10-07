@@ -260,6 +260,13 @@ data class HomeBalanceModel(
         return isContainsNewGopay && isContainsNewTokopoint
     }
 
+    fun containsGopay(): Boolean {
+        val isContainsNewGopay = (balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.drawerItemType == TYPE_WALLET_APP_LINKED
+                || balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.drawerItemType == TYPE_WALLET_APP_NOT_LINKED) &&
+                balanceDrawerItemModels[BALANCE_POSITION_FIRST]?.state == STATE_SUCCESS
+        return isContainsNewGopay
+    }
+
     fun getTokopointsBalanceCoachmark(): BalanceCoachmark? {
         val balanceItem = balanceDrawerItemModels[BALANCE_POSITION_SECOND]
         val isContainsNewTokopoint = balanceItem?.state == STATE_SUCCESS
