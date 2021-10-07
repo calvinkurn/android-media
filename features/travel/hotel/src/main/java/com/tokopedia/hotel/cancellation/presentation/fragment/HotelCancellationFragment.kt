@@ -32,10 +32,7 @@ import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.HotelTextHyperlinkUtil
 import com.tokopedia.hotel.databinding.FragmentHotelCancellationBinding
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -173,6 +170,14 @@ class HotelCancellationFragment : HotelBaseFragment() {
                     it.errorDescription.text = errorData.propertyGetCancellation.content.desc
                     it.setActionClickListener {
                         RouteManager.route(this,errorData.propertyGetCancellation.content.actionButton.firstOrNull()?.uri)
+                    }
+                    if(errorData.propertyGetCancellation.content.actionButton.isNotEmpty()){
+                        it.errorSecondaryAction.show()
+                        it.setSecondaryActionClickListener {
+                            RouteManager.route(this,errorData.propertyGetCancellation.content.actionButton.lastOrNull()?.uri)
+                        }
+                    }else{
+                        it.errorSecondaryAction.gone()
                     }
                    //for-each every value to see button.
                 }
