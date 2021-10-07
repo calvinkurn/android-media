@@ -4,9 +4,17 @@ apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
+
 android {
     androidExtensions {
         experimental = true
+    }
+    buildFeatures {
+        viewBinding true
     }
 }
 
@@ -39,6 +47,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.topAdsFreeClaim)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
