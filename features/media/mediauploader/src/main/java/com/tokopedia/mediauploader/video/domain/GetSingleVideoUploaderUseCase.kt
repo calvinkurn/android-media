@@ -18,14 +18,14 @@ class GetSingleVideoUploaderUseCase @Inject constructor(
         if (params.hasNoParams()) throw RuntimeException("No param found")
 
         val uploadParam = params.SingleUpload()
-        val videoFileBody = uploadParam.fileBlob(progressCallback)
-        val videoFileNameBody = uploadParam.fileName()
+        val videoFile = uploadParam.fileBlob(progressCallback)
+        val fileName = uploadParam.fileName()
 
         return services.simpleUpload(
             urlToUpload = params.uploadUrl,
             timeOut = params.timeOut,
-            videoFile = videoFileBody,
-            fileName = videoFileNameBody
+            videoFile = videoFile,
+            fileName = fileName
         )
     }
 

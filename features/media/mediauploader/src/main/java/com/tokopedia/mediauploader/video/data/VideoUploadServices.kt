@@ -41,6 +41,16 @@ interface VideoUploadServices {
         @Field(BODY_SOURCE_ID) sourceId: String
     ) : VideoLargeUploader
 
+    @Multipart
+    @POST suspend fun uploadLargeUpload(
+        @Url urlToUpload: String,
+        @Part(BODY_SOURCE_ID) sourceId: RequestBody,
+        @Part(BODY_UPLOAD_ID) uploadId: RequestBody,
+        @Part(BODY_PART_NUMBER) partNumber: RequestBody,
+        @Part videoFile: MultipartBody.Part,
+        @Header(HEADER_TIMEOUT) timeOut: String
+    ) : VideoLargeUploader
+
     @GET suspend fun isValidChunkLargeUpload(
         @Url urlToUpload: String,
         @Query(BODY_FILE_NAME) fileName: String,

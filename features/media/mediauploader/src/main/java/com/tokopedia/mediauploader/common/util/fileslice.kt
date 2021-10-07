@@ -1,9 +1,12 @@
 package com.tokopedia.mediauploader.common.util
 
+import com.tokopedia.utils.file.FileUtil
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import kotlin.math.ceil
+
+private const val VIDEO_PATH = "Tokopedia/"
 
 /**
  * This path generator consumed for generate video sliced path.
@@ -21,8 +24,7 @@ fun generateAbsolutePathOfVideo(file: File, counter: Int): String {
     val videoNameWithoutExtension = file.name.substring(0, file.name.lastIndexOf("."))
 
     // set destination directory to save
-    //TODO use FileUtil.getTokopediaInternalDirectory()
-    val dirResult = "/Users/nakama/Desktop/Tokopedia"
+    val dirResult = FileUtil.getTokopediaInternalDirectory(VIDEO_PATH)
     val dirSplitFileResult = File("$dirResult/$videoNameWithoutExtension")
 
     // create directory if not exist

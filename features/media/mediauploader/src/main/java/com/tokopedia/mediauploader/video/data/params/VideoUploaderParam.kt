@@ -34,7 +34,25 @@ data class VideoUploaderParam(
         }
     }
 
-    inner class LargeUpload {}
+    inner class LargeUpload {
+        fun sourceId(): RequestBody {
+            return RequestBody.create(MultipartBody.FORM, sourceId)
+        }
+
+        fun uploadId(): RequestBody {
+            return RequestBody.create(MultipartBody.FORM, uploadId)
+        }
+
+        fun partNumber(): RequestBody {
+            return RequestBody.create(MultipartBody.FORM, partNumber)
+        }
+
+        fun fileBlob(progressCallback: ProgressCallback?): MultipartBody.Part {
+            val contentType = MediaType.parse(SUPPORTED_CONTENT_TYPE)
+            val requestBody = UploadRequestBody(file, contentType, progressCallback)
+            return MultipartBody.Part.createFormData(BODY_FILE_BLOB, file.name, requestBody)
+        }
+    }
 
     companion object {
         private const val BODY_FILE_BLOB = "file"
@@ -42,7 +60,7 @@ data class VideoUploaderParam(
 
         private const val BASE_VOD_UPLOAD_URL = "https://vod.tokopedia.com/v2"
 
-        fun urlSimpleVideoUploadUrl(sourceId: String): String {
+        private fun urlSimpleVideoUploadUrl(sourceId: String): String {
             return "$BASE_VOD_UPLOAD_URL/video/upload/simple/$sourceId"
         }
 
@@ -50,23 +68,19 @@ data class VideoUploaderParam(
             return "$BASE_VOD_UPLOAD_URL/video/upload/init"
         }
 
-        fun urlCheckChunkLargeUploadUrl(): String {
+        fun urlChunkLargeUploadUrl(): String {
             return "$BASE_VOD_UPLOAD_URL/video/upload/part"
         }
 
-        fun create(
+        fun createSimpleUpload(
             fileToUpload: String = "",
             timeOutUpload: String = "",
             sourceIdUpload: String = "",
-            partNumberChunks: String = "",
-            currentUploadId: String = ""
         ) = VideoUploaderParam().apply {
             uploadUrl = urlSimpleVideoUploadUrl(sourceIdUpload)
             timeOut = timeOutUpload
             filePath = fileToUpload
             sourceId = sourceIdUpload
-            partNumber = partNumberChunks
-            uploadId = currentUploadId
         }
 
     }
