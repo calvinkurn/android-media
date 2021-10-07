@@ -273,6 +273,9 @@ internal class PlayBroadcastViewModel @Inject constructor(
             _observableConfigInfo.value = NetworkResult.Loading
 
             val configUiModel = channelRepo.getChannelConfiguration()
+            _observableConfigInfo.value = NetworkResult.Success(configUiModel)
+
+            if (!configUiModel.streamAllowed) return@launchCatchError
 
             setChannelId(configUiModel.channelId)
 
@@ -288,8 +291,6 @@ internal class PlayBroadcastViewModel @Inject constructor(
                     throw err
                 }
             }
-
-            _observableConfigInfo.value = NetworkResult.Success(configUiModel)
 
             setProductConfig(configUiModel.productTagConfig)
             setCoverConfig(configUiModel.coverConfig)
