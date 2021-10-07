@@ -5,7 +5,6 @@ import static com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.QUERY_PAR
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -20,7 +19,6 @@ import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
-import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
@@ -58,8 +56,6 @@ import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSell
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
-import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.fcm.di.DaggerGcmUpdateComponent;
 import com.tokopedia.sellerapp.fcm.di.GcmUpdateComponent;
@@ -367,11 +363,6 @@ public abstract class SellerRouterApplication extends MainApplication implements
     @Override
     public boolean isSupportApplink(String appLink) {
         return false;
-    }
-
-    @Override
-    public ApplinkDelegate applinkDelegate() {
-        return null;
     }
 
     @Override
