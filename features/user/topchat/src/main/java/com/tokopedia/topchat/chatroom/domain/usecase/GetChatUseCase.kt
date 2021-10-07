@@ -20,7 +20,7 @@ import kotlin.coroutines.CoroutineContext
 
 open class GetChatUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<GetExistingChatPojo>,
-        private val mapper: TopChatRoomGetExistingChatMapper,
+        protected val mapper: TopChatRoomGetExistingChatMapper,
         private var dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
 

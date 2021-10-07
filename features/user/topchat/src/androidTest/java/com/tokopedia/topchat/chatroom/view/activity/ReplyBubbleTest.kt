@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
+import android.util.Log
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.ReplyBubbleResult
@@ -143,13 +144,32 @@ class ReplyBubbleTest : TopchatRoomTest() {
         ReplyBubbleResult.hasVisibleReplyBubbleStickerAt(2)
     }
 
-    // TODO: should show image reply bubble when parent reply is not null from GQL
-    // TODO: should show image reply bubble when parent reply is not null from websocket
-    // TODO: should match the senderId name with contacts from chatReplies GQL
+    @Test
+    fun should_match_the_senderId_name_with_contacts_from_chatReplies_GQL() {
+        // Given
+        getChatUseCase.response = getChatUseCase.defaultReplyBubbleResponse
+        val roomMetaData = getChatUseCase.getCurrentRoomMetaData(MSG_ID)
+        launchChatRoomActivity()
+
+        // When
+        ReplyBubbleRobot.longClickBubbleAt(1)
+        ReplyBubbleRobot.clickReplyItemMenu()
+        clickComposeArea()
+        typeMessage("reply this")
+        clickSendBtn()
+        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+
+        // Then
+        ReplyBubbleResult.hasVisibleReplyBubbleAt(0)
+        ReplyBubbleResult.hasReplyBubbleTitleAt(0, roomMetaData.sender.name)
+    }
+
     // TODO: should go to specific bubble when msg bubble local id is exist
     // TODO: should reset chatroom page like chat search when click reply bubble from GQL (ioe, local id is not exist)
     // TODO: should able copy to clipboard msg bubble
     // TODO: should show expired toaster when user click expired reply bubble
     // TODO: should disable long click on fraud status msg true from ws
+    // TODO: should show image reply bubble when parent reply is not null from GQL
+    // TODO: should show image reply bubble when parent reply is not null from websocket
 
 }

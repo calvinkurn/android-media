@@ -4,6 +4,7 @@ import android.view.View
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.robot.ReplyBubbleMatcher.matchReplyBoxChildWithId
 import com.tokopedia.topchat.matchers.withRecyclerView
@@ -34,6 +35,10 @@ object ReplyBubbleResult {
 
     fun hasNoVisibleReplyBubbleAt(position: Int) {
         assertReplyBubbleAt(position, R.id.cl_reply_container, not(isDisplayed()))
+    }
+
+    fun hasReplyBubbleTitleAt(position: Int, text: String) {
+        assertReplyBubbleAt(position, R.id.tp_reply_from, withText(text))
     }
 
     fun hasVisibleReplyBubbleStickerAt(position: Int) {
