@@ -2,34 +2,22 @@ package com.tokopedia.review.common.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.review.common.data.ProductrevReviewAttachment
 import com.tokopedia.review.common.presentation.adapter.ReviewAttachedImagesAdapter
 import com.tokopedia.review.common.util.ReviewAttachedImagesClickListener
 import com.tokopedia.review.feature.inbox.history.presentation.util.ReviewHistoryItemListener
-import com.tokopedia.review.inbox.R
 import com.tokopedia.review.inbox.databinding.WidgetReviewAttachedImagesBinding
 import com.tokopedia.unifycomponents.BaseCustomView
 
 class ReviewAttachedImages : BaseCustomView {
 
-    constructor(context: Context): super(context) {
-        init()
-    }
-    constructor(context: Context, attrs: AttributeSet): super(context, attrs) {
-        init()
-    }
+    constructor(context: Context): super(context)
+    constructor(context: Context, attrs: AttributeSet): super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int): super(context, attrs, defStyleAttr)
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
-        init()
-    }
-
-    private var binding = WidgetReviewAttachedImagesBinding.bind(this)
-
-    private fun init() {
-        View.inflate(context, R.layout.widget_review_attached_images, this)
-    }
+    private var binding = WidgetReviewAttachedImagesBinding.inflate(LayoutInflater.from(context), this, true)
 
     fun setImages(attachedImages: List<ProductrevReviewAttachment>,
                   productName: String,

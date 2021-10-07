@@ -170,8 +170,9 @@ class SellerReviewDetailFragment :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_seller_review_detail, container, false)
+    ): View {
+        binding = FragmentSellerReviewDetailBinding.inflate(inflater, container, true)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

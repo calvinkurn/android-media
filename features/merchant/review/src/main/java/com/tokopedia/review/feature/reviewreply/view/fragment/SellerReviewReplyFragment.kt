@@ -113,8 +113,9 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_seller_review_reply, container, false)
+    ): View {
+        binding = FragmentSellerReviewReplyBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

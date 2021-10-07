@@ -213,8 +213,9 @@ class CreateReviewFragment : BaseDaggerFragment(),
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_create_review, container, false)
+    ): View {
+        binding = FragmentCreateReviewBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
