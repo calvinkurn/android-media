@@ -154,7 +154,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 app:typographyType="small"
-                android:text="@string/supervisedBy"
+                android:text="@string/pay_later_supervised_by"
                 />
             <ImageView
                 android:layout_width="61dp"
