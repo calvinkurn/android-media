@@ -85,7 +85,7 @@
                         app:layout_constraintTop_toBottomOf="@id/tvSmallSubTitlePaylaterPartner"
                         app:layout_constraintRight_toRightOf="parent"
                         app:typographyType="body_3"
-                        tools:text="Yukjdfgkjndfgk  djkfnbglkjsdfngjskldfg   sdjkfngjksdfngkjsdlfkarang!" />
+                        tools:text="Demo Subtitle Options Available" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tvSmallSubTitlePaylaterPartner"
