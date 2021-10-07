@@ -201,13 +201,13 @@ class TagViewProvider {
                     if (pointerPositionY  < (bitmapCurrentHeight) * 0.70 + greyAreaY) {
                         productTopNotchVisible = true
                         productTagViewTopNotch.visibility = View.VISIBLE
-                        productTagViewBottomNotch.visibility = View.GONE
+                        productTagViewBottomNotch.visibility = View.INVISIBLE
                         productTagNotchViewFinal = productTagViewTopNotch
 
                     } else {
                         productTopNotchVisible = false
                         productTagViewBottomNotch.visibility = View.VISIBLE
-                        productTagViewTopNotch.visibility = View.GONE
+                        productTagViewTopNotch.visibility = View.INVISIBLE
                         productTagNotchViewFinal = productTagViewBottomNotch
                     }
 
