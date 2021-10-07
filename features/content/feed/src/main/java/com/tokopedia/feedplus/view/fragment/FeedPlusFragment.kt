@@ -1688,36 +1688,29 @@ class FeedPlusFragment : BaseDaggerFragment(),
             val urlString = when {
                 typeASGC -> {
                     String.format(getString(R.string.feed_share_asgc_weblink), id.toString())
-                }
-                /*isTopads -> {
-                    String.format(getString(R.string.feed_share_pdp), id.toString())
-                }*/
-                else -> {
+                }else -> {
                     String.format(getString(R.string.feed_share_weblink), id.toString())
                 }
             }
 
             val shareDataBuilder = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
-                .setName(title)
-                .setDescription(description)
-                .setDesktopUrl(urlString)
-                .setType(LinkerData.FEED_TYPE)
-
+                    .setName(title)
+                    .setDescription(description)
+                    .setDesktopUrl(urlString)
+                    .setType(LinkerData.FEED_TYPE)
+                    .setImgUri(imageUrl)
+                    .setDeepLink(url)
 
             if (isTopads) {
                 shareBottomSheetProduct = true
                 shareDataBuilder.apply {
                     setOgImageUrl(imageUrl)
-                    setImgUri(imageUrl)
-                    setDeepLink(url)
                     setUri(url)
                 }
             } else {
                 shareBottomSheetProduct = false
                 shareDataBuilder.apply {
-                    setImgUri(imageUrl)
                     setUri(urlString)
-                    setDeepLink(url)
                 }
             }
             shareData = shareDataBuilder.build()

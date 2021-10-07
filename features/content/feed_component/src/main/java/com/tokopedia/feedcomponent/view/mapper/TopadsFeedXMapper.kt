@@ -35,7 +35,6 @@ object TopadsFeedXMapper {
             feedXProducts.add(cpmProductToFeedXProduct(it, merchantVouchers as ArrayList<String>))
         }
 
-        val image = "https://ecs7.tokopedia.net/img/cache/300/default_picture_user/default_toped-25.jpg"
         val listOf = arrayListOf("medias:layout_single")
         authorName = TopAdsBannerView.escapeHTML(data.cpm.cpmShop.name)
         val feedXAuthor = FeedXAuthor(
