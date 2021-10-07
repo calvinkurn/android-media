@@ -161,6 +161,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                     if (p1 == BottomSheetBehavior.STATE_HIDDEN) {
                         dismiss()
                     }
+                    if (p1 == BottomSheetBehavior.STATE_EXPANDED) {
+                        bottomSheetWrapper.invalidate()
+                        bottomSheetWrapper.requestLayout()
+                    }
                 }
             })
         }

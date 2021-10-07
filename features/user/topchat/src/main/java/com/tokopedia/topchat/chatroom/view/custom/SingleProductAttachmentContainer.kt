@@ -327,10 +327,6 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         showVariantLayout()
         if (product.hasColorVariant()) {
             ll_variant_color?.show()
-            val backgroundDrawable = ColorDrawableGenerator.generate(
-                    context, product.colorHexVariant
-            )
-            iv_variant_color?.background = backgroundDrawable
             tv_variant_color?.text = product.colorVariant
         } else {
             ll_variant_color?.hide()
@@ -588,14 +584,34 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private fun bindWishList(product: ProductAttachmentViewModel) {
         if (product.hasEmptyStock()) {
             btnWishList?.show()
-            btnWishList?.setOnClickListener {
-                listener?.onClickAddToWishList(product) {
-                    product.wishList = true
-                }
-            }
+            setupWishlistButton(product)
         } else {
             btnWishList?.hide()
         }
+    }
+
+    private fun setupWishlistButton(product: ProductAttachmentViewModel) {
+        if(product.wishList) {
+            setupAddedToWishlistButton()
+        } else {
+            setupAddToWishlistButton()
+        }
+        btnWishList?.setOnClickListener {
+            listener?.onClickAddToWishList(product) {
+                product.wishList = true
+                setupAddedToWishlistButton()
+            }
+        }
+    }
+
+    private fun setupAddedToWishlistButton() {
+        btnWishList?.buttonType = UnifyButton.Type.ALTERNATE
+        btnWishList?.text = context.getString(R.string.topchat_product_added_to_wishlist)
+    }
+
+    private fun setupAddToWishlistButton() {
+        btnWishList?.buttonType = UnifyButton.Type.MAIN
+        btnWishList?.text = context.getString(R.string.action_wishlist)
     }
 
     fun gravityRight() {

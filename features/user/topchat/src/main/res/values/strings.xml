@@ -142,12 +142,12 @@ yang ditemukan</string>
 
     <string name="title_topchat_empty_chat">Belum ada chat, nih</string>
     <string name="title_topchat_manage_product">Coba Iklan dan Promosi</string>
-    <string name="title_topchat_success_atw">Sukses menambah wishlist</string>
+    <string name="title_topchat_success_atw">Kamu akan dapat notifikasi ketika barang kembali tersedia. Bisa cek produknya di Wishlist, ya.</string>
     <string name="title_topchat_already_success_atw">Barang sudah di wishlist kamu</string>
     <string name="title_topchat_success_rfw">Anda berhasil menghapus wishlist</string>
     <string name="title_topchat_list_template">Daftar Template</string>
     <string name="action_atc">+ Keranjang</string>
-    <string name="action_wishlist">Tambah ke Wishlist</string>
+    <string name="action_wishlist">Ingatkan Saya</string>
     <string name="cta_topchat_success_atw">Lihat</string>
     <string name="title_topchat_empty_stock">Stok habis</string>
     <string name="title_topchat_pre_order">Preorder</string>
@@ -219,4 +219,5 @@ yang ditemukan</string>
     <string name="topchat_desc_empty_text_box">Oops, tulis pesan dulu ya sebelum kirim chat.</string>
     <string name="title_topchat_resend">Kirim ulang</string>
     <string name="title_topchat_delete">Hapus</string>
+    <string name="topchat_product_added_to_wishlist">Cek Wishlist Kamu</string>
 </resources>

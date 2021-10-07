@@ -12,7 +12,6 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.ColorDrawableGenerator
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.toPx
@@ -27,7 +26,6 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
 
     private val productVariantContainer = itemView.findViewById<LinearLayout>(R.id.ll_variant)
     private val productColorVariant = itemView.findViewById<LinearLayout>(R.id.ll_variant_color)
-    private val productColorVariantHex = itemView.findViewById<ImageView>(R.id.iv_variant_color)
     private val productColorVariantValue = itemView.findViewById<TextView>(R.id.tv_variant_color)
     private val productSizeVariant = itemView.findViewById<LinearLayout>(R.id.ll_variant_size)
     private val productSizeVariantValue = itemView.findViewById<TextView>(R.id.tv_variant_size)
@@ -72,10 +70,6 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
         productVariantContainer?.showWithCondition(model.hasVariant())
         if (model.hasColorVariant()) {
             productColorVariant.show()
-            val backgroundDrawable = ColorDrawableGenerator.generate(
-                    itemView.context, productPreview.colorHexVariant
-            )
-            productColorVariantHex?.background = backgroundDrawable
             productColorVariantValue?.text = productPreview.colorVariant
         } else {
             productColorVariant?.hide()

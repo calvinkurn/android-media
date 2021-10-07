@@ -66,6 +66,7 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_SOURCE
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_UPDATE_MESSAGE
@@ -1421,38 +1422,46 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
         analytics.eventClickBuyProductAttachment(element)
-        doBuyAndAtc(element) {
-            analytics.trackSuccessDoBuyAndAtc(
-                element, it,
-                topchatViewState?.chatRoomViewModel?.shopName ?: "",
-                element.getBuyEventAction()
-            )
-            RouteManager.route(context, ApplinkConst.CART)
+        if(element.variants.isNullOrEmpty()) {
+            doBuyAndAtc(element) {
+                analytics.trackSuccessDoBuyAndAtc(
+                    element, it,
+                    topchatViewState?.chatRoomViewModel?.shopName ?: "",
+                    element.getBuyEventAction()
+                )
+                RouteManager.route(context, ApplinkConst.CART)
+            }
+        } else {
+            showAtcVariantHelper(element.productId, element.shopId.toString())
         }
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
         analytics.eventClickAddToCartProductAttachment(element, session)
-        doBuyAndAtc(element) {
-            analytics.trackSuccessDoBuyAndAtc(
-                element, it,
-                topchatViewState?.chatRoomViewModel?.shopName ?: "",
-                element.getAtcEventAction()
-            )
-            val msg = it.message.getOrNull(0) ?: ""
-            rvContainer?.let { view ->
-                Toaster.build(
-                    view,
-                    msg,
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    view.context.getString(R.string.title_topchat_see_cart),
-                    View.OnClickListener {
-                        analytics.eventClickSeeButtonOnAtcSuccessToaster()
-                        RouteManager.route(context, ApplinkConst.CART)
-                    }
-                ).show()
+        if(element.variants.isNullOrEmpty()) {
+            doBuyAndAtc(element) {
+                analytics.trackSuccessDoBuyAndAtc(
+                    element, it,
+                    topchatViewState?.chatRoomViewModel?.shopName ?: "",
+                    element.getAtcEventAction()
+                )
+                val msg = it.message.getOrNull(0) ?: ""
+                rvContainer?.let { view ->
+                    Toaster.build(
+                        view,
+                        msg,
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        view.context.getString(R.string.title_topchat_see_cart),
+                        View.OnClickListener {
+                            analytics.eventClickSeeButtonOnAtcSuccessToaster()
+                            RouteManager.route(context, ApplinkConst.CART)
+                        }
+                    ).show()
+                }
             }
+        } else {
+            showAtcVariantHelper(element.productId, element.shopId.toString())
         }
     }
 
@@ -1466,6 +1475,24 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }, { msg ->
             showToasterError(msg)
         })
+    }
+
+    private fun showAtcVariantHelper(
+        productId: String,
+        shopId: String
+    ) {
+        context?.let { ctx ->
+            AtcVariantHelper.goToAtcVariant(
+                context = ctx,
+                productId = productId,
+                pageSource = ApplinkConst.Inbox.VALUE_PAGE_CHAT,
+                isTokoNow = false,
+                shopId = shopId,
+                startActivitResult = { intent, requestCode ->
+                    startActivityForResult(intent, requestCode)
+                }
+            )
+        }
     }
 
     private fun getAtcBuyParam(element: ProductAttachmentViewModel): RequestParams {
@@ -1794,11 +1821,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickAddToWishList(product: ProductAttachmentViewModel, success: () -> Unit) {
-        val productId = product.productId.toString()
-        analytics.eventClickAddToWishList(productId)
+        val productId = product.productId
         if (product.isWishListed()) {
-            showSuccessToastWishListCta(R.string.title_topchat_already_success_atw)
+            goToWishList()
         } else {
+            analytics.eventClickAddToWishList(productId)
             requestNetworkAddToWishList(productId, success)
         }
     }
@@ -1809,7 +1836,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             override fun onSuccessRemoveWishlist(productId: String?) {}
             override fun onSuccessAddWishlist(productId: String?) {
                 success()
-                showSuccessToastWishListCta(R.string.title_topchat_success_atw)
+                showSuccessToastWishList(R.string.title_topchat_success_atw)
             }
 
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
@@ -1821,18 +1848,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         })
     }
 
-    private fun showSuccessToastWishListCta(@StringRes successMessageRes: Int) {
+    private fun showSuccessToastWishList(@StringRes successMessageRes: Int) {
         view?.let {
             val successMessage = it.context.getString(successMessageRes)
-            val ctaText = it.context.getString(R.string.cta_topchat_success_atw)
-            Toaster.make(
+            Toaster.build(
                 it,
                 successMessage,
                 Toaster.LENGTH_SHORT,
-                Toaster.TYPE_NORMAL,
-                ctaText,
-                View.OnClickListener { goToWishList() }
-            )
+                Toaster.TYPE_NORMAL
+            ).show()
         }
     }
 

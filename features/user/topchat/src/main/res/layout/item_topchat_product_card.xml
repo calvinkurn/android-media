@@ -74,21 +74,12 @@
                 android:paddingStart="@dimen/spacing_lvl3"
                 android:paddingEnd="@dimen/spacing_lvl3">
 
-                <ImageView
-                    android:id="@+id/iv_variant_color"
-                    android:layout_width="@dimen/dp_topchat_6"
-                    android:layout_height="@dimen/dp_topchat_6"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="@dimen/spacing_lvl2"
-                    android:contentDescription="@null"
-                    tools:background="@color/Unify_N700" />
-
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_variant_color"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:textColor="@color/Unify_N200"
+                    android:textColor="@color/Unify_N700_68"
                     app:typographyType="small"
                     app:typographyWeight="bold"
                     tools:text="Hitam" />
@@ -110,7 +101,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:textColor="@color/Unify_N200"
+                    android:textColor="@color/Unify_N700_68"
                     app:typographyType="small"
                     app:typographyWeight="bold"
                     tools:text="Besar" />
