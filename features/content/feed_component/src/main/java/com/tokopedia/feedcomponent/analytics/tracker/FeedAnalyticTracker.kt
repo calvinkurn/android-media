@@ -633,12 +633,17 @@ class FeedAnalyticTracker
     )
 
 
-    fun eventImpressionProductASGC(
+    fun eventImpressionProduct(
         activityId: String,
         productId: String,
         products: List<FeedXProduct>,
         shopId: String,
     ) {
+        val type = if (productId == TYPE_FEED_X_CARD_PRODUCT_TOPADS) {
+            TOPADS
+        } else {
+            ASGC
+        }
         trackEnhancedEcommerceEventNew(
             PRODUCT_VIEW,
         CONTENT_FEED_TIMELINE,
@@ -646,7 +651,7 @@ class FeedAnalyticTracker
             FORMAT_THREE_PARAM,
             "impression",
             "product",
-            "asgc"
+            type
         ),
         String.format(
             FORMAT_THREE_PARAM,
@@ -656,7 +661,7 @@ class FeedAnalyticTracker
         ),
         DataLayer.mapOf(
             Product.CURRENCY_CODE, Product.CURRENCY_CODE_IDR,
-            "impressions", getProductItemASGC(products))
+            "impressions", getProductItemASGC(products,type))
     )
 
 }
@@ -968,14 +973,18 @@ class FeedAnalyticTracker
         isFollowed: Boolean,
         shopId: String,
     ) {
-
+        val followtext = if (isFollowed) {
+            "follow"
+        } else {
+            "unfollow"
+        }
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             KEY_EVENT_CATEGORY to Category.CONTENT_FEED_TIMELINE,
             KEY_EVENT_ACTION to String.format(
                 FORMAT_THREE_PARAM,
                 CLICK,
-                "follow",
+                followtext,
                 getPostType(type, isFollowed)
             ),
             KEY_EVENT_LABEL to String.format(
@@ -1012,10 +1021,10 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    private fun getProductItemASGC(feedXProduct: List<FeedXProduct>): List<Map<String, Any>> {
+    private fun getProductItemASGC(feedXProduct: List<FeedXProduct> , type: String): List<Map<String, Any>> {
         val list: MutableList<Map<String, Any>> = mutableListOf()
         for (i in feedXProduct) {
-            val map = createItemMapASGC(i, (feedXProduct.indexOf(i)+1).toString())
+            val map = createItemMapASGC(i, (feedXProduct.indexOf(i)+1).toString() ,type)
             list.add(map)
         }
         return list
@@ -1031,12 +1040,12 @@ class FeedAnalyticTracker
     private fun getSingleProductListASGC(feedXProduct: FeedXProduct, index : Int, type: String, isFollowed: Boolean): List<Map<String, Any>> {
         val list: MutableList<Map<String, Any>> = mutableListOf()
         val map = if (type == ASGC) createItemMapASGC(feedXProduct,
-            index.toString()) else createItemMapSGC(feedXProduct, index.toString(), type, isFollowed)
+            index.toString(),type) else createItemMapSGC(feedXProduct, index.toString(), type, isFollowed)
             list.add(map)
         return list
     }
 
-    private fun createItemMapASGC(feedXProduct: FeedXProduct, index: String): Map<String, Any> =
+    private fun createItemMapASGC(feedXProduct: FeedXProduct, index: String , type:String): Map<String, Any> =
         DataLayer.mapOf(
             Product.INDEX, index ,
             Product.BRAND, "",
@@ -1046,7 +1055,7 @@ class FeedAnalyticTracker
             Product.VARIANT, "",
             Product.PRICE,
             if (feedXProduct.isDiscount) feedXProduct.priceDiscount else feedXProduct.price,
-            "dimension39", "/feed - asgc detail"
+            "dimension39", "/feed - $type detail"
         )
     private fun createItemMapSGC(feedXProduct: FeedXProduct, index: String, type: String, isFollowed: Boolean): Map<String, Any> =
         DataLayer.mapOf(

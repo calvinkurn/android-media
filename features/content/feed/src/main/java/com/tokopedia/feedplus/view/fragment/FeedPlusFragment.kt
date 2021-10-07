@@ -48,6 +48,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
+import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE
 import com.tokopedia.feedcomponent.domain.mapper.TopAdsHeadlineActivityCounter
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
@@ -1863,7 +1864,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         shopId: String,
         productList: List<FeedXProduct>
     ) {
-        feedAnalytics.eventImpressionProductASGC(
+        feedAnalytics.eventImpressionProduct(
             activityId,
             productId,
             productList,
@@ -2643,6 +2644,17 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 topadsHeadlineUiModel.cpmModel?.data?.firstOrNull()?.cpm?.cpmShop?.isFollowed?.let {
                     topadsHeadlineUiModel.cpmModel?.data?.firstOrNull()?.cpm?.cpmShop?.isFollowed =
                         !it
+                }
+                val isFollowed = topadsHeadlineUiModel.cpmModel?.data?.firstOrNull()?.cpm?.cpmShop?.isFollowed
+                val id  = topadsHeadlineUiModel.cpmModel?.data?.get(0)?.id?:""
+                if (isFollowed != null) {
+                    feedAnalytics.eventClickFollowitem(
+                            id,
+                            adapterPosition,
+                            TYPE_TOPADS_HEADLINE,
+                            !isFollowed,
+                            id
+                    )
                 }
                 adapter.notifyItemChanged(rowNumber)
             }

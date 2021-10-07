@@ -38,6 +38,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.TagsItem
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
+import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE
 import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.util.util.doOnLayout
@@ -226,22 +227,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     private fun bindTracking(feedXCard: FeedXCard) {
-        if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_FEED_X_CARD_POST ) {
-            if (feedXCard.isTopAds) {
-                topadsHeadlineView.setTopAdsProductItemListsner(object : TopAdsItemImpressionListener() {
-                    override fun onImpressionProductAdsItem(position: Int, product: Product?, cpmData: CpmData) {
-                        product?.let {
-                            topAdsListener?.onTopAdsProductItemListsner(position, it, cpmData)
-                        }
-                    }
-                })
-            } else {
+        if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE ) {
                 addOnImpressionListener(feedXCard.impressHolder) {
                     listener?.onImpressionTracking(feedXCard, positionInFeed)
                 }
             }
         }
-    }
 
     fun bindLike(feedXCard: FeedXCard) {
         bindLike(
@@ -1009,7 +1000,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     }
                 }
             }
-
+            if (feedXCard.typename == TYPE_TOPADS_HEADLINE) {
+                impressProducts(feedXCard)
+            }
         } else {
             setGridASGCLayout(feedXCard)
         }
@@ -1186,7 +1179,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
         gridList.adapter = adapter
         setGridListPadding(feedXCard.products.size)
+        impressProducts(feedXCard)
+    }
 
+    private fun impressProducts(feedXCard: FeedXCard){
         val totalProducts = feedXCard.products.size
         var totalProductsImpressed = totalProducts
         if (totalProducts > MAX_FEED_SIZE) {
@@ -1198,11 +1194,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val listToBeImpressed = feedXCard.products.subList(0, totalProductsImpressed)
 
         imagePostListener.userProductImpression(
-            positionInFeed,
-            feedXCard.id,
-            feedXCard.typename,
-            feedXCard.author.id,
-            listToBeImpressed
+                positionInFeed,
+                feedXCard.id,
+                feedXCard.typename,
+                feedXCard.author.id,
+                listToBeImpressed
         )
     }
 
