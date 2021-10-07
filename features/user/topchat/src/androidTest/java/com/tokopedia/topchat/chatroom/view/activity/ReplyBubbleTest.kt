@@ -90,6 +90,30 @@ class ReplyBubbleTest : TopchatRoomTest() {
     }
 
     @Test
+    fun should_go_to_specific_bubble_when_msg_bubble_local_id_is_exist() {
+        // Given
+        val lastBubbleIndex = getChatUseCase.getLastIndexOf(
+            getChatUseCase.longReplyBubbleResponse
+        )
+        getChatUseCase.response = getChatUseCase.longReplyBubbleResponse
+        launchChatRoomActivity()
+
+        // When
+        scrollChatToPosition(lastBubbleIndex)
+        ReplyBubbleRobot.longClickBubbleAt(lastBubbleIndex)
+        ReplyBubbleRobot.clickReplyItemMenu()
+        scrollChatToPosition(0)
+        clickComposeArea()
+        typeMessage("reply this")
+        clickSendBtn()
+        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        ReplyBubbleRobot.clickReplyBubbleAt(0)
+
+        // Then
+        assertMsgBubbleAt(lastBubbleIndex + 1, isDisplayed())
+    }
+
+    @Test
     fun should_sent_and_render_reply_bubble_when_user_sent_normal_text() {
         // Given
         getChatUseCase.response = getChatUseCase.defaultReplyBubbleResponse
@@ -164,7 +188,6 @@ class ReplyBubbleTest : TopchatRoomTest() {
         ReplyBubbleResult.hasReplyBubbleTitleAt(0, roomMetaData.sender.name)
     }
 
-    // TODO: should go to specific bubble when msg bubble local id is exist
     // TODO: should reset chatroom page like chat search when click reply bubble from GQL (ioe, local id is not exist)
     // TODO: should able copy to clipboard msg bubble
     // TODO: should show expired toaster when user click expired reply bubble

@@ -60,6 +60,7 @@ class GetChatUseCaseStub @Inject constructor(
 
     val longReplyBubbleResponse: GetExistingChatPojo
         get() = alterResponseOf(replyBubbleResponsePath) { response ->
+            alterDateToToday(response)
             val replies = response.getAsJsonObject(chatReplies)
                 .getAsJsonArray(list).get(0).asJsonObject
                 .getAsJsonArray(chats).get(0).asJsonObject

@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.activity.robot
 
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.longClick
 import com.tokopedia.topchat.R
@@ -35,12 +36,28 @@ object ReplyBubbleRobot {
         ).perform(click())
     }
 
+    fun clickReplyBubbleAt(position: Int) {
+        doActionOnReplyBubbleAt(position, R.id.cl_reply_container, click())
+    }
+
     private fun clickLongClickMenuItemAt(position: Int) {
         onView(
             withRecyclerView(R.id.rvMenu).atPositionOnView(
                 position, R.id.ll_long_click_menu_item
             )
         ).perform(click())
+    }
+
+    private fun doActionOnReplyBubbleAt(
+        position: Int,
+        viewId: Int,
+        action: ViewAction
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, viewId
+            )
+        ).perform(action)
     }
 
 }
