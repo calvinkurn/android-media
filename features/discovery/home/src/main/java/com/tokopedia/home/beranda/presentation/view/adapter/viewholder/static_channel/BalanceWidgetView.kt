@@ -151,7 +151,7 @@ class BalanceWidgetView: FrameLayout {
             gopayViewNew = findViewById(R.id.home_coachmark_item_gopay_new)
             return gopayViewNew
         }
-        return gopayViewNew
+        return null
     }
 
     fun getGopayActivateNewView(): View? {
