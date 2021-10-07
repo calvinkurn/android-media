@@ -1,6 +1,7 @@
 package com.tokopedia.akamai_bot_lib.interceptor
 
 import android.content.Context
+import android.util.Log
 import com.akamai.botman.CYFMonitor
 import com.tokopedia.akamai_bot_lib.*
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
@@ -47,7 +48,6 @@ class AkamaiBotInterceptor(val context: Context) : Interceptor {
         var messageMap: Map<String, String>? = mapOf(
             "request_body" to chain.request().body().toString(),
             "user-agent" to chain.request().header("User-Agent").toString(),
-            "ipaddress" to getLocalIpAddress(),
             "response" to response.body().toString()
         )
         if (messageMap != null) {
@@ -55,6 +55,7 @@ class AkamaiBotInterceptor(val context: Context) : Interceptor {
         }
     }
 
+//This method can be used to obtain users IP address. But please before doing that refer to the Personal Data Protection Policy
     private fun getLocalIpAddress(): String {
         try {
             val en: Enumeration<NetworkInterface> = NetworkInterface.getNetworkInterfaces()
