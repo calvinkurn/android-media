@@ -203,10 +203,10 @@ class SingleProductBundleFragment(
                 intent.putExtra(ProductBundleConstants.EXTRA_IS_VARIANT_CHANGED,
                     it.responseResult.data.isNotEmpty()) // will empty if there is no GQL hit
                 activity?.setResult(Activity.RESULT_OK, intent)
+                activity?.finish()
             } else {
                 RouteManager.route(context, ApplinkConst.CART)
             }
-            activity?.finish()
         })
     }
 
