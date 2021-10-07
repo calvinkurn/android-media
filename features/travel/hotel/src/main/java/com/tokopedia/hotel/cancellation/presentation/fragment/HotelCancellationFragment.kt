@@ -34,6 +34,7 @@ import com.tokopedia.hotel.common.util.HotelTextHyperlinkUtil
 import com.tokopedia.hotel.databinding.FragmentHotelCancellationBinding
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
@@ -168,11 +169,13 @@ class HotelCancellationFragment : HotelBaseFragment() {
                     it.setType(GlobalError.SERVER_ERROR)
                     it.errorTitle.text = errorData.propertyGetCancellation.content.title
                     it.errorDescription.text = errorData.propertyGetCancellation.content.desc
+                    (it.errorAction as UnifyButton).buttonType = HotelCancellationButtonEnum.getEnumFromValue(errorData.propertyGetCancellation.content.actionButton.firstOrNull()?.buttonType ?: "").buttonType
                     it.setActionClickListener {
                         RouteManager.route(this,errorData.propertyGetCancellation.content.actionButton.firstOrNull()?.uri)
                     }
                     if(errorData.propertyGetCancellation.content.actionButton.isNotEmpty()){
                         it.errorSecondaryAction.show()
+                        (it.errorSecondaryAction as UnifyButton).buttonType = HotelCancellationButtonEnum.getEnumFromValue(errorData.propertyGetCancellation.content.actionButton.lastOrNull()?.buttonType ?: "").buttonType
                         it.setSecondaryActionClickListener {
                             RouteManager.route(this,errorData.propertyGetCancellation.content.actionButton.lastOrNull()?.uri)
                         }
