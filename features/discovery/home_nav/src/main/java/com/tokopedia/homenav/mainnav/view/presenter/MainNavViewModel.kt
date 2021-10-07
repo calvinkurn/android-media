@@ -620,14 +620,11 @@ class MainNavViewModel @Inject constructor(
         return Triple(adminRoleText, canGoToSellerAccount, isShopActive)
     }
 
-    fun findComplainModelPosition(): Int? {
+    fun findComplainModelPosition(): Int {
         val findComplainModel = _mainNavListVisitable.find {
             it is HomeNavMenuDataModel && it.id == ID_TOKOPEDIA_CARE
         }
-        findComplainModel?.let{
-            return _mainNavListVisitable.indexOf(it)
-        }
-        return null
+        return _mainNavListVisitable.indexOf(findComplainModel)
     }
 
 
