@@ -12,11 +12,12 @@ import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
+import com.tokopedia.seller.menu.databinding.FragmentSellerSettingsBinding
 import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapter
 import com.tokopedia.seller.menu.presentation.util.SellerSettingsList
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_seller_settings.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class SellerSettingsFragment: Fragment(), SettingTrackingListener {
@@ -26,13 +27,16 @@ class SellerSettingsFragment: Fragment(), SettingTrackingListener {
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    private var binding by autoClearedNullable<FragmentSellerSettingsBinding>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_seller_settings, container, false)
+        binding = FragmentSellerSettingsBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,7 +62,7 @@ class SellerSettingsFragment: Fragment(), SettingTrackingListener {
                 userSession = userSession
             ))
 
-            with(listSettings) {
+            binding?.listSettings?.run {
                 this.adapter = adapter
                 layoutManager = LinearLayoutManager(context)
             }
