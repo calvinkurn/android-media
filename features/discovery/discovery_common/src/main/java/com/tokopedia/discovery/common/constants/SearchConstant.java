@@ -205,4 +205,16 @@ public interface SearchConstant {
     interface CustomDimension {
         String DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL = "none.none.global_search.none";
     }
+
+    interface SaveLastFilter {
+        String LAST_FILTER = "last_filter";
+        String ACTION = "action";
+        String PARAM = "param";
+        String CATEGORY_ID_L2 = "category_id_l2";
+        String ACTION_CREATE = "create";
+        String ACTION_UPDATE = "update";
+        String ACTION_DELETE = "delete";
+        String INPUT_PARAMS = "input_params";
+        String SAVE_LAST_FILTER_USE_CASE = "save_last_filter_use_case";
+    }
 }
