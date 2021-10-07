@@ -16,7 +16,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginfingerprint.R
-import com.tokopedia.loginfingerprint.data.model.CheckFingerprintPojo
+import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintResult
 import com.tokopedia.loginfingerprint.di.LoginFingerprintComponent
 import com.tokopedia.loginfingerprint.listener.AuthenticationFingerprintCallback
@@ -24,7 +24,6 @@ import com.tokopedia.loginfingerprint.tracker.BiometricTracker
 import com.tokopedia.loginfingerprint.view.dialog.FingerprintDialogHelper
 import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
 import com.tokopedia.loginfingerprint.viewmodel.SettingFingerprintViewModel
-import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -45,9 +44,9 @@ class SettingFingerprintFragment(val listener: AuthenticationFingerprintCallback
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    @Inject
-    lateinit var fingerprintPreference: FingerprintPreference
-
+//    @Inject
+//    lateinit var fingerprintPreference: FingerprintPreference
+//
     @Inject
     lateinit var tracker: BiometricTracker
 
@@ -186,9 +185,9 @@ class SettingFingerprintFragment(val listener: AuthenticationFingerprintCallback
         showToaster(throwable.message)
     }
 
-    fun onSuccessGetFingerprintStatus(checkFingerprintResponse: CheckFingerprintPojo) {
+    fun onSuccessGetFingerprintStatus(checkFingerprintResponse: CheckFingerprintResult) {
         enableSwitch = false
-        fragment_fingerprint_setting_switch?.isChecked = checkFingerprintResponse.data.isRegistered
+        fragment_fingerprint_setting_switch?.isChecked = checkFingerprintResponse.isRegistered
         enableSwitch = true
     }
 
