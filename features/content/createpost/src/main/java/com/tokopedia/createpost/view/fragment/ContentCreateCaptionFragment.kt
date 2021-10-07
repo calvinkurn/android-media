@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.content_caption_page_preview.*
+import android.text.InputType
 
 class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
 
@@ -90,6 +91,9 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
     private fun updateCaption() {
         if (createPostModel.caption.isNotEmpty())
             caption.setText(createPostModel.caption)
+        if (createPostModel.caption.isEmpty())
+            caption.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+
 
         caption.afterTextChanged {
             createPostModel.caption = it
