@@ -133,7 +133,16 @@ class ReplyBubbleTest : TopchatRoomTest() {
         ReplyBubbleResult.hasVisibleReplyBubbleStickerAt(0)
     }
 
-    // TODO: should show sticker reply bubble when parent reply is not null from GQL
+    @Test
+    fun should_show_sticker_reply_bubble_when_parent_reply_is_not_null_from_GQL() {
+        // Given
+        getChatUseCase.response = getChatUseCase.defaultReplyBubbleResponse
+        launchChatRoomActivity()
+
+        // Then
+        ReplyBubbleResult.hasVisibleReplyBubbleStickerAt(2)
+    }
+
     // TODO: should show image reply bubble when parent reply is not null from GQL
     // TODO: should show image reply bubble when parent reply is not null from websocket
     // TODO: should match the senderId name with contacts from chatReplies GQL
