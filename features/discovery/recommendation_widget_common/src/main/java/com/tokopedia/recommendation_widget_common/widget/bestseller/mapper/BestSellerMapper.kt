@@ -1,7 +1,6 @@
 package com.tokopedia.recommendation_widget_common.widget.bestseller.mapper
 
 import android.content.Context
-import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.R
@@ -17,7 +16,7 @@ import kotlinx.coroutines.Dispatchers
 class BestSellerMapper (
         private val context: Context
 ){
-    suspend fun mappingRecommendationWidget(recommendationWidget: RecommendationWidget, channelModel: ChannelModel): BestSellerDataModel{
+    suspend fun mappingRecommendationWidget(recommendationWidget: RecommendationWidget): BestSellerDataModel{
         val productList = mappingProductCards(recommendationWidget.recommendationItemList)
         return BestSellerDataModel(
                 title = recommendationWidget.title,
@@ -27,8 +26,7 @@ class BestSellerMapper (
                 productCardModelList = productList,
                 recommendationItemList = recommendationWidget.recommendationItemList,
                 filterChip = recommendationWidget.recommendationFilterChips,
-                seeMoreAppLink = recommendationWidget.seeMoreAppLink,
-                channelModel = channelModel
+                seeMoreAppLink = recommendationWidget.seeMoreAppLink
         )
     }
 

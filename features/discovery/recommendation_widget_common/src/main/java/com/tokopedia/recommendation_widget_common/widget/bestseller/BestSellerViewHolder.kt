@@ -2,11 +2,9 @@ package com.tokopedia.recommendation_widget_common.widget.bestseller
 
 import android.os.Bundle
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home_component.customview.HeaderListener
-import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
@@ -28,9 +26,6 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendati
 import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendations.typefactory.RecommendationCarouselTypeFactoryImpl
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import kotlinx.android.synthetic.main.best_seller_view_holder.view.*
-import kotlinx.android.synthetic.main.best_seller_view_holder.view.home_component_divider_footer
-import kotlinx.android.synthetic.main.best_seller_view_holder.view.home_component_divider_header
-import kotlinx.android.synthetic.main.best_seller_view_holder.view.home_component_header_view
 
 /**
  * Created by Lukas on 05/11/20.
@@ -53,7 +48,6 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
         if(element.recommendationItemList.isNotEmpty()) {
             bestSellerDataModel = element
             initHeader(element)
-            setChannelDivider(element)
             initFilterChip(element)
             initRecommendation(element)
         }
@@ -65,7 +59,6 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
             if(bundle.containsKey(BEST_SELLER_UPDATE_RECOMMENDATION)){
                 bestSellerDataModel = element
                 initHeader(element)
-                setChannelDivider(element)
                 initFilterChip(element)
                 initRecommendation(element)
                 itemView.best_seller_loading_recommendation.hide()
@@ -78,16 +71,18 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
     }
 
     private fun initHeader(element: BestSellerDataModel){
-        itemView.home_component_header_view.setChannel(element.channelModel, object :
-            HeaderListener {
-            override fun onSeeAllClick(link: String) {
+        itemView.best_seller_title.shouldShowWithAction(element.title.isNotBlank()){
+            itemView.best_seller_title.text = element.title
+        }
+        itemView.best_seller_subtitle.shouldShowWithAction(element.subtitle.isNotBlank()){
+            itemView.best_seller_subtitle.text = element.subtitle
+            anchorSeeMoreButtonTo(R.id.best_seller_subtitle)
+        }
+        itemView.best_seller_see_more.shouldShowWithAction(element.seeMoreAppLink.isNotBlank()){
+            itemView.best_seller_see_more.setOnClickListener {
                 listener.onBestSellerSeeMoreTextClick(element, element.seeMoreAppLink, adapterPosition)
             }
-
-            override fun onChannelExpired(channelModel: ChannelModel) {
-
-            }
-        })
+        }
         itemView.container_best_seller_widget.show()
         itemView.show()
     }
@@ -130,6 +125,14 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
             itemView.best_seller_recommendation_recycler_view.layoutParams.height = element.height
             itemView.best_seller_recommendation_recycler_view.layoutManager?.scrollToPosition(0)
         }
+    }
+
+    private fun anchorSeeMoreButtonTo(anchorRef: Int) {
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(itemView.container_best_seller_widget)
+        constraintSet.connect(R.id.best_seller_see_more, ConstraintSet.TOP, anchorRef, ConstraintSet.TOP, 0)
+        constraintSet.connect(R.id.best_seller_see_more, ConstraintSet.BOTTOM, anchorRef, ConstraintSet.BOTTOM, 0)
+        constraintSet.applyTo(itemView.container_best_seller_widget)
     }
 
     override fun onFilterAnnotationClicked(annotationChip: RecommendationFilterChipsEntity.RecommendationFilterChip, position: Int) {
@@ -178,14 +181,6 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
     companion object{
         val LAYOUT = R.layout.best_seller_view_holder
         private const val CLASS_NAME = "com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder"
-    }
-
-    private fun setChannelDivider(element: BestSellerDataModel) {
-        ChannelWidgetUtil.validateHomeComponentDivider(
-            channelModel = element.channelModel,
-            dividerTop = itemView.home_component_divider_header,
-            dividerBottom = itemView.home_component_divider_footer
-        )
     }
 
 }
