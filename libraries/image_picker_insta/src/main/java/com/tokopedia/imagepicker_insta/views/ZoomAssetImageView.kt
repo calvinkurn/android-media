@@ -30,7 +30,7 @@ class ZoomAssetImageView @JvmOverloads constructor(
     var zoomInfo: ZoomInfo? = null
     var mediaScaleTypeContract: MediaScaleTypeContract? = null
     private val portraitAR = 4 / 5f
-    private val landscapeAR = 3 / 2f
+    private val landscapeAR = 16 / 9f
 
 //    private var isMinZoomLocked = false
 //    private var lockedMinZoom = 1f
