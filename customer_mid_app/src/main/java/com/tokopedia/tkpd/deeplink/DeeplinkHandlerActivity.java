@@ -42,8 +42,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class
-DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
+public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
 
     private static final String TOKOPEDIA_DOMAIN = "tokopedia";
     private static final String URL_QUERY_PARAM = "url";

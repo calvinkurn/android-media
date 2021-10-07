@@ -23,11 +23,6 @@ import com.tokopedia.user.session.UserSessionInterface;
 import java.util.HashMap;
 import java.util.Map;
 
-/* **
- * Navigation will via RouteManager -> manifest instead.
- * Put new Deeplink directly into the target activity
- */
-@Deprecated
 public class DeepLinkHandlerActivity extends AppCompatActivity {
 
     private static final String TOKOPEDIA_DOMAIN = "tokopedia";

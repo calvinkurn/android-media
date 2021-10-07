@@ -117,7 +117,8 @@ public class RouteManager {
             for (int i = resolveInfos.size() - 1; i >= 0; i--) {
                 ResolveInfo resolveInfo = resolveInfos.get(i);
                 String activityName = resolveInfo.activityInfo.name;
-                if (GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME.equals(activityName)) {
+                if (GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME.equals(activityName) ||
+                        GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME.equals(activityName)) {
                     resolveInfos.remove(i);
                 }
             }
