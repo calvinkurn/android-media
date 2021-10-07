@@ -90,7 +90,6 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         }
     }
 
-    //this function used to check keyword that come from https url
     private fun getSearchKeywordDataFromQueryParam(bundleExtra: Bundle?): String {
         return bundleExtra?.let {
             when {
