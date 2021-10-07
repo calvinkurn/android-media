@@ -58,13 +58,6 @@ open class TopAdsHeadlineV2ViewHolder(
         topadsContainer.displayedChild = SHOW_SHIMMER
         topadsHeadlineView.setTopAdsBannerClickListener(this)
         topadsHeadlineView.setFollowBtnClickListener(this)
-        topadsHeadlineView.setTopAdsProductItemListsner(object : TopAdsItemImpressionListener() {
-            override fun onImpressionProductAdsItem(position: Int, product: Product?, cpmData: CpmData) {
-                product?.let {
-                    topAdsHeadlineListener?.onTopAdsProductItemListsner(position, it, cpmData)
-                }
-            }
-        })
     }
 
     private fun fetchTopadsHeadlineAds(topadsHeadLinePage: Int) {
@@ -121,7 +114,7 @@ open class TopAdsHeadlineV2ViewHolder(
                     adapterPosition,
                     userSession,
                     cpmModelToFeedXDataModel(impressHolder ?: ImpressHolder(), it, layoutType ?: 0),
-                    imagePostListener
+                    imagePostListener, topAdsHeadlineListener
                 )
             }
             topadsHeadlineUiModel?.let { setImpressionListener(it) }

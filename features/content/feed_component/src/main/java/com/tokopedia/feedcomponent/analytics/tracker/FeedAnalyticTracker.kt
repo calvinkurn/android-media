@@ -63,7 +63,10 @@ class FeedAnalyticTracker
         private const val ASGC = "asgc"
         private const val VIDEO = "sgc video"
         private const val ASGC_RECOM = "asgc recom"
+        private const val TOPADS = "topads"
         private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT= "FeedXCardProductsHighlight"
+        private const val TYPE_FEED_X_CARD_PRODUCT_TOPADS= "topads_headline"
+
     }
 
     private object Event {
@@ -220,6 +223,8 @@ class FeedAnalyticTracker
             ASGC_RECOM
         else if (type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && isFollowed)
             ASGC
+        else if(type == TYPE_FEED_X_CARD_PRODUCT_TOPADS)
+            TOPADS
         else if (isVideo)
             VIDEO
         else if(type!= TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && !isFollowed)

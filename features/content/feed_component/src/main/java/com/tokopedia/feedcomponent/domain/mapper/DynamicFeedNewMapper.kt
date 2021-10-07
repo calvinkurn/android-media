@@ -16,7 +16,7 @@ private const val TYPE_FEED_X_CARD_PLACEHOLDER: String = "FeedXCardPlaceholder"
 private const val TYPE_FEED_X_CARD_BANNERS: String = "FeedXCardBanners"
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
 const val TYPE_FEED_X_CARD_POST: String = "FeedXCardPost"
-private const val TYPE_TOPADS_HEADLINE = "topads_headline"
+const val TYPE_TOPADS_HEADLINE = "topads_headline"
 private const val TYPE_CARD_PLAY_CAROUSEL = "play_carousel"
 
 const val TYPE_IMAGE = "image"

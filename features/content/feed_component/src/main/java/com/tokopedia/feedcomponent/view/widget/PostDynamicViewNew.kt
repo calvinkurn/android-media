@@ -49,11 +49,18 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TOPADS_VARIANT_EXPERIMENT_CLEAN
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TOPADS_VARIANT_EXPERIMENT_INFO
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineListener
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.Product
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
+import com.tokopedia.topads.sdk.listener.TopAdsListener
+import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.PageControl
@@ -127,11 +134,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private var videoListener: VideoViewHolder.VideoViewListener? = null
     private lateinit var gridPostListener: GridPostAdapter.GridItemListener
     private lateinit var imagePostListener: ImagePostViewHolder.ImagePostListener
+    private var topAdsListener:TopAdsHeadlineListener? = null
     private var positionInFeed: Int = 0
     var isMute = true
     private var videoPlayer: FeedExoPlayer? = null
     private var handlerAnim: Handler? = null
     private var handlerHide: Handler? = null
+    private var topadsHeadlineView = TopAdsHeadlineView(context)
 
     init {
         (context as LifecycleOwner).lifecycle.addObserver(this)
@@ -171,13 +180,15 @@ class PostDynamicViewNew @JvmOverloads constructor(
         adapterPosition: Int,
         userSession: UserSessionInterface,
         feedXCard: FeedXCard,
-        imagePostListener: ImagePostViewHolder.ImagePostListener
+        imagePostListener: ImagePostViewHolder.ImagePostListener,
+        topAdsListener: TopAdsHeadlineListener?= null
     ) {
         this.listener = dynamicPostListener
         this.gridPostListener = gridItemListener
         this.videoListener = videoListener
         this.positionInFeed = adapterPosition
         this.imagePostListener = imagePostListener
+        this.topAdsListener = topAdsListener
         bindFollow(feedXCard)
         bindItems(feedXCard)
         bindCaption(feedXCard)
@@ -215,9 +226,19 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     private fun bindTracking(feedXCard: FeedXCard) {
-        if (feedXCard.typename == TYPE_FEED_X_CARD_POST) {
-            addOnImpressionListener(feedXCard.impressHolder) {
-                listener?.onImpressionTracking(feedXCard, positionInFeed)
+        if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_FEED_X_CARD_POST ) {
+            if (feedXCard.isTopAds) {
+                topadsHeadlineView.setTopAdsProductItemListsner(object : TopAdsItemImpressionListener() {
+                    override fun onImpressionProductAdsItem(position: Int, product: Product?, cpmData: CpmData) {
+                        product?.let {
+                            topAdsListener?.onTopAdsProductItemListsner(position, it, cpmData)
+                        }
+                    }
+                })
+            } else {
+                addOnImpressionListener(feedXCard.impressHolder) {
+                    listener?.onImpressionTracking(feedXCard, positionInFeed)
+                }
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.tokopedia.feedcomponent.view.mapper
 
 import com.tokopedia.feedcomponent.data.feedrevamp.*
+import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.Product
@@ -66,7 +67,7 @@ object TopadsFeedXMapper {
         )
 
         return FeedXCard(
-            typename = "FeedXCardPost",
+            typename = TYPE_TOPADS_HEADLINE,
             id = cpmData.data[0].id,
             publishedAt = "",
             reportable = true,
