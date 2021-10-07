@@ -35,7 +35,7 @@ class DigitalRecommendationAnalytics {
             putString(DigitalRecommendationKeys.CURRENT_SITE, DigitalRecommendationValues.CURRENT_SITE)
             putParcelableArrayList(DigitalRecommendationKeys.ITEMS, arrayListOf(
                     Bundle().also {
-                        it.putInt(DigitalRecommendationKeys.INDEX, index)
+                        it.putInt(DigitalRecommendationKeys.INDEX, index + 1)
                         it.putString(DigitalRecommendationKeys.ITEM_BRAND, digitalRecommendationModel.tracking.productId)
                         it.putString(DigitalRecommendationKeys.ITEM_CATEGORY, digitalRecommendationModel.tracking.categoryId)
                         it.putString(DigitalRecommendationKeys.ITEM_ID, digitalRecommendationModel.tracking.productId)
@@ -75,7 +75,7 @@ class DigitalRecommendationAnalytics {
             putString(DigitalRecommendationKeys.CURRENT_SITE, DigitalRecommendationValues.CURRENT_SITE)
             putParcelableArrayList(DigitalRecommendationKeys.ITEMS, arrayListOf(
                     Bundle().also {
-                        it.putInt(DigitalRecommendationKeys.INDEX, index)
+                        it.putInt(DigitalRecommendationKeys.INDEX, index + 1)
                         it.putString(DigitalRecommendationKeys.ITEM_BRAND, digitalRecommendationModel.tracking.productId)
                         it.putString(DigitalRecommendationKeys.ITEM_CATEGORY, digitalRecommendationModel.tracking.categoryId)
                         it.putString(DigitalRecommendationKeys.ITEM_ID, digitalRecommendationModel.tracking.productId)
