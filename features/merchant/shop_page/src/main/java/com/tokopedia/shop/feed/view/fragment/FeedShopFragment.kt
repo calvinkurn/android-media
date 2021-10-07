@@ -1182,4 +1182,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onFollowClick(positionInFeed: Int, shopId: String, adId: String) {
 
     }
+
+    override fun onClickSekSekarang(postId: String, shopId: String, type: String, isFollowed: Boolean) {
+    }
 }
