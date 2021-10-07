@@ -330,7 +330,7 @@ open class HomeRevampViewModel @Inject constructor(
                     val recomWidget = recomData.first().copy(
                             recommendationFilterChips = recomFilterList
                     )
-                    val dataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget, bestSellerDataModel.channelModel)
+                    val dataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget)
                     updateWidget(dataModel.copy(
                             id = bestSellerDataModel.id,
                             pageName = dataModel.pageName,
@@ -358,7 +358,7 @@ open class HomeRevampViewModel @Inject constructor(
                     val recomWidget = recomData.first().copy(
                             recommendationFilterChips = bestSellerDataModel.filterChip
                     )
-                    val newBestSellerDataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget, bestSellerDataModel.channelModel)
+                    val newBestSellerDataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget)
                     val newModel = currentDataModel.copy(
                             seeMoreAppLink = newBestSellerDataModel.seeMoreAppLink,
                             recommendationItemList = newBestSellerDataModel.recommendationItemList,
