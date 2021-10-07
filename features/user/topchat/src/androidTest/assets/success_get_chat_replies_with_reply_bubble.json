@@ -57,7 +57,33 @@
           {
             "time": "16:10",
             "replies": [
-
+              {
+                "msgId": 1,
+                "replyId": "123",
+                "senderId": 7977933,
+                "senderName": "roro",
+                "role": "User",
+                "msg": "Test reply bubble",
+                "fraudStatus": 0,
+                "replyTime": "1627377033992402000",
+                "status": 1,
+                "attachmentID": 0,
+                "isOpposite": false,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "chat",
+                "label": "",
+                "attachment": {
+                  "attributes": "",
+                  "fallback": {
+                    "html": "",
+                    "message": ""
+                  },
+                  "id": 0,
+                  "type": 0
+                }
+              },
               {
                 "msgId": 1,
                 "replyId": "123",
