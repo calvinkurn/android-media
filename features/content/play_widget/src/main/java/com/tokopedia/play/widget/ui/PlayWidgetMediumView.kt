@@ -14,9 +14,6 @@ import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.home_component.customview.DynamicChannelHeaderView
-import com.tokopedia.home_component.customview.HeaderListener
-import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.toDp
@@ -36,6 +33,7 @@ import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.view.setGradientBackground
+import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.abs
 
 
@@ -49,13 +47,13 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    private val dynamicChannelHeaderView: DynamicChannelHeaderView
+    private val title: Typography
+    private val actionTitle: TextView
 
     private val itemContainer: FrameLayout
     private val overlay: FrameLayout
     private val overlayBackground: AppCompatImageView
     private val overlayImage: AppCompatImageView
-    private val overlayRecycler: FrameLayout
 
     private val recyclerViewItem: RecyclerView
 
@@ -107,6 +105,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             if (mWidgetListener != null
                     && (item.channelType == PlayWidgetChannelType.Live
                             || item.channelType == PlayWidgetChannelType.Vod
+                            || item.channelType == PlayWidgetChannelType.Upcoming
                             || GlobalConfig.isSellerApp())) {
                 mWidgetListener?.onWidgetOpenAppLink(view, item.appLink)
             } else {
@@ -150,18 +149,19 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
 
     private var mIsAutoPlay: Boolean = false
     private var mLastOverlayImageUrl: String? = null
-    private val spacing16 by lazy { resources.getDimensionPixelSize(R.dimen.dp_16) }
-    private val spacingPlay by lazy { resources.getDimensionPixelSize(R.dimen.play_widget_medium_overlay)}
+
+    private val spacing16 by lazy { resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).toDp().toInt() }
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.view_play_widget_medium, this)
-        dynamicChannelHeaderView = view.findViewById(R.id.home_component_header_view)
+
+        title = view.findViewById(R.id.play_widget_medium_title)
+        actionTitle = view.findViewById(R.id.play_widget_medium_action)
 
         itemContainer = view.findViewById(R.id.play_widget_container)
         overlay = view.findViewById(R.id.play_widget_overlay)
         overlayBackground = view.findViewById(R.id.play_widget_overlay_bg)
         overlayImage = view.findViewById(R.id.play_widget_overlay_image)
-        overlayRecycler = view.findViewById(R.id.play_widget_recycler)
 
         recyclerViewItem = view.findViewById(R.id.play_widget_recycler_view)
 
@@ -189,54 +189,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         recyclerViewItem.adapter = adapter
 
         snapHelper.attachToRecyclerView(recyclerViewItem)
-    }
 
-    fun setData(data: PlayWidgetUiModel.Medium) {
-        dynamicChannelHeaderView.setChannel(data.channelModel, object :
-            HeaderListener {
-            override fun onSeeAllClick(link: String) {
-                mAnalyticListener?.onClickViewAll(this@PlayWidgetMediumView)
-                RouteManager.route(context, data.actionAppLink)
-            }
-
-            override fun onChannelExpired(channelModel: ChannelModel) {
-
-            }
-        })
-
-        configureOverlay(data.background)
-
-        recyclerViewItem.addOneTimeGlobalLayoutListener {
-            mWidgetInternalListener?.onWidgetCardsScrollChanged(recyclerViewItem)
-        }
-
-        adapter.setItemsAndAnimateChanges(data.items)
-
-        mIsAutoPlay = data.config.autoPlay
-    }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        mWidgetInternalListener?.onWidgetAttached(recyclerViewItem)
-    }
-
-    /**
-     * Setup view
-     */
-    private fun configureOverlay(data: PlayWidgetBackgroundUiModel) {
-        if (shouldLoadOverlayImage(data.overlayImageUrl)) {
-            if (shouldScrollToLeftBanner()) recyclerViewItem.smoothScrollToPosition(LEFT_BANNER_POSITION)
-            overlayImage.loadImage(data.overlayImageUrl, overlayImageHandler(data))
-        } else {
-            overlayImage.setImageDrawable(null)
-            configureBackgroundOverlay(data)
-        }
-        recyclerViewItem.setMargin(
-                left = if (shouldAddSpacing(data)) 0 else spacingPlay,
-                top = if (shouldAddSpacing(data)) spacing16 else 0,
-                right = 0,
-                bottom = spacing16,
-        )
         recyclerViewItem.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -247,10 +200,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
                 firstView?.let {
                     val distanceFromLeft = it.left
                     val translateX = distanceFromLeft * 0.2f
-                    if (shouldAddSpacing(data)) {
-                        overlay.translationX = translateX
-                        overlayRecycler.translationX = -(translateX)
-                    }
+                    overlay.translationX = translateX
 
                     if (distanceFromLeft <= 0) {
                         val itemSize = it.width.toFloat()
@@ -268,6 +218,45 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
                 }
             }
         })
+    }
+
+    fun setData(data: PlayWidgetUiModel.Medium) {
+        title.text = data.title
+        actionTitle.visibility = if (data.isActionVisible) View.VISIBLE else View.GONE
+        actionTitle.text = data.actionTitle
+        actionTitle.setOnClickListener {
+            mAnalyticListener?.onClickViewAll(this)
+            RouteManager.route(context, data.actionAppLink)
+        }
+
+        configureOverlay(data.background)
+
+        recyclerViewItem.addOneTimeGlobalLayoutListener {
+            mWidgetInternalListener?.onWidgetCardsScrollChanged(recyclerViewItem)
+        }
+
+        adapter.setItemsAndAnimateChanges(data.items)
+
+        mIsAutoPlay = data.config.autoPlay
+    }
+
+    /**
+     * Setup view
+     */
+    private fun configureOverlay(data: PlayWidgetBackgroundUiModel) {
+        if (shouldLoadOverlayImage(data.overlayImageUrl)) {
+            if (shouldScrollToLeftBanner()) recyclerViewItem.smoothScrollToPosition(LEFT_BANNER_POSITION)
+            overlayImage.loadImage(data.overlayImageUrl, overlayImageHandler(data))
+        } else {
+            overlayImage.setImageDrawable(null)
+            configureBackgroundOverlay(data)
+        }
+        recyclerViewItem.setMargin(
+                left = 0,
+                top = if (shouldAddSpacing(data)) spacing16 else 0,
+                right = 0,
+                bottom = spacing16,
+        )
         mLastOverlayImageUrl = data.overlayImageUrl
     }
 

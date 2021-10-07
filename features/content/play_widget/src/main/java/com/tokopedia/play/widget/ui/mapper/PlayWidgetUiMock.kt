@@ -1,7 +1,5 @@
 package com.tokopedia.play.widget.ui.mapper
 
-import com.tokopedia.home_component.model.ChannelHeader
-import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
@@ -36,8 +34,7 @@ object PlayWidgetUiMock {
             isActionVisible = true,
             background = getPlayWidgetBackgroundUiModel(),
             config = getPlayWidgetConfigUiModel(),
-            items = getSampleMediumCardData(),
-            channelModel = ChannelModel("", "", channelHeader = ChannelHeader(name = "Yuk Nonton Sekarang!", subtitle = "Lihat semua", applink = "tokopedia://webview?titlebar=false\\u0026url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F"))
+            items = getSampleMediumCardData()
     )
 
     private fun getSampleSmallCardData(): List<PlayWidgetSmallItemUiModel> {
@@ -60,9 +57,11 @@ object PlayWidgetUiMock {
                 0 -> getSampleMediumCardOverlayBanner()
                 4 -> getSampleMediumCardBanner()
                 else -> {
-                    val channelType = when (cardItemTypeRandom.nextInt(0, 4)) {
+                    val channelType = when (cardItemTypeRandom.nextInt(0, 5)) {
                         0 -> PlayWidgetChannelType.Upcoming
                         1 -> PlayWidgetChannelType.Vod
+                        2 -> PlayWidgetChannelType.Transcoding
+                        3 -> PlayWidgetChannelType.FailedTranscoding
                         else -> PlayWidgetChannelType.Live
                     }
                     getSampleMediumChannelCardBanner(channelType)
@@ -88,7 +87,8 @@ object PlayWidgetUiMock {
             totalViewVisible = true,
             promoType = PlayWidgetPromoType.NoPromo,
             video = getVideoUiModel(channelType),
-            hasGiveaway = true
+            hasGiveaway = true,
+            poolType = "",
     )
 
     private fun getSampleMediumCardOverlayBanner() = PlayWidgetMediumOverlayUiModel(
@@ -124,7 +124,8 @@ object PlayWidgetUiMock {
                     isShow = true
             ),
             performanceSummaryLink = "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fshop%2Fituajakak%2Fstatistic%2F10734",
-            hasGiveaway = true
+            hasGiveaway = true,
+            poolType = "",
     )
 
     private fun getVideoUiModel(channelType: PlayWidgetChannelType) = PlayWidgetVideoUiModel(
