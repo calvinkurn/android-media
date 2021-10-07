@@ -17,7 +17,8 @@ data class VideoUploaderParam(
     override var filePath: String = "",
     override var timeOut: String = "",
     override var partNumber: String = "",
-    override var uploadId: String = ""
+    override var uploadId: String = "",
+    override var accessToken: String = ""
 ) : CommonParam, SourceIdParam, VideoLargeParam, ParamValidator() {
 
     val file by lazy { File(filePath) }
@@ -35,6 +36,10 @@ data class VideoUploaderParam(
     }
 
     inner class LargeUpload {
+        fun fileName(): RequestBody {
+            return RequestBody.create(MultipartBody.FORM, file.name)
+        }
+
         fun sourceId(): RequestBody {
             return RequestBody.create(MultipartBody.FORM, sourceId)
         }
@@ -45,6 +50,10 @@ data class VideoUploaderParam(
 
         fun partNumber(): RequestBody {
             return RequestBody.create(MultipartBody.FORM, partNumber)
+        }
+
+        fun accessToken(): String {
+            return accessToken
         }
 
         fun fileBlob(progressCallback: ProgressCallback?): MultipartBody.Part {
@@ -70,6 +79,10 @@ data class VideoUploaderParam(
 
         fun urlChunkLargeUploadUrl(): String {
             return "$BASE_VOD_UPLOAD_URL/video/upload/part"
+        }
+
+        fun urlCompleteLargeUploadUrl(): String {
+            return "$BASE_VOD_UPLOAD_URL/video/upload/complete"
         }
 
         fun createSimpleUpload(

@@ -12,6 +12,7 @@ interface SourceIdParam {
 interface VideoLargeParam {
     var partNumber: String
     var uploadId: String
+    var accessToken: String
 }
 
 interface CommonParam {

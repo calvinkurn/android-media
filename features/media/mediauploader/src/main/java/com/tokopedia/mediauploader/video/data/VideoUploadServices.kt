@@ -58,11 +58,21 @@ interface VideoUploadServices {
         @Query(BODY_PART_NUMBER) partNumber: String
     ) : VideoLargeUploader
 
+    @FormUrlEncoded
+    @POST suspend fun completeLargeUpload(
+        @Url urlToUpload: String,
+        @Field(BODY_FILE_NAME) fileName: String,
+        @Field(BODY_UPLOAD_ID) uploadId: String,
+        @Header(HEADER_AUTH) accessToken: String
+    ) : VideoLargeUploader
+
     companion object {
         private const val BODY_FILE_NAME = "file_name"
         private const val BODY_SOURCE_ID = "source_id"
         private const val BODY_UPLOAD_ID = "upload_id"
         private const val BODY_PART_NUMBER = "part_number"
+
+        private const val HEADER_AUTH = "Authorization"
     }
 
 }
