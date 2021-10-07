@@ -20,12 +20,7 @@ import com.tokopedia.unifyorderhistory.di.UohListModule
  */
 
 // Uoh = Unified Order History
-class UohListActivity: BaseSimpleActivity(), HasComponent<UohListComponent> {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        component.inject(this)
-    }
+class UohListActivity: BaseSimpleActivity() {
 
     override fun getLayoutRes() = R.layout.activity_uoh
 
@@ -51,12 +46,5 @@ class UohListActivity: BaseSimpleActivity(), HasComponent<UohListComponent> {
             val filterStatus = it.getQueryParameter(FILTER).toEmptyStringIfNull()
             intent.putExtra(SOURCE_FILTER, filterStatus)
         }
-    }
-
-    override fun getComponent(): UohListComponent {
-        return DaggerUohListComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .uohListModule(UohListModule(this))
-            .build()
     }
 }

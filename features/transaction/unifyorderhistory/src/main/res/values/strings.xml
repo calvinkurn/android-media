@@ -1,4 +1,5 @@
 <resources>
+    <string name="page_name_uoh">Transaksi</string>
     <string name="show_bottomsheet">Show Bottomsheet</string>
     <string name="error_message_minimum_search_keyword">Masukkan min. 3 karakter di kolom pencarian.</string>
     <string name="fail_cancellation">Terjadi kesalahan, mohon dicoba kembali</string>

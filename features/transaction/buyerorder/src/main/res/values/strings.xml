@@ -128,8 +128,6 @@
     <string name="review_create_invalid_to_review">Oops, kamu tidak bisa ulas barang ini karena sudah melebihi batas waktu.</string>
 
 
-    <string name="page_name_uoh">Transaksi</string>
-
     <string name="zero_rupiah">Rp0</string>
     <string name="free_rupiah">Gratis</string>
 </resources>

@@ -142,7 +142,8 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyorderhistory.R
 import com.tokopedia.unifyorderhistory.data.model.*
 import com.tokopedia.unifyorderhistory.databinding.FragmentUohListBinding
-import com.tokopedia.unifyorderhistory.di.UohListComponent
+import com.tokopedia.unifyorderhistory.di.DaggerUohListComponent
+import com.tokopedia.unifyorderhistory.di.UohListModule
 import com.tokopedia.unifyorderhistory.util.UohConsts.ACTION_FINISH_ORDER
 import com.tokopedia.unifyorderhistory.util.UohConsts.DATE_FORMAT_YYYYMMDD
 import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_BOUGHT_DATE
@@ -1272,14 +1273,13 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        /*activity?.let {
+        activity?.let { activity ->
             DaggerUohListComponent.builder()
                     .baseAppComponent(getBaseAppComponent())
-                    .uohListModule(context?.let { UohListModule(it) })
+                    .uohListModule(UohListModule(activity))
                     .build()
                     .inject(this)
-        }*/
-        getComponent(UohListComponent::class.java).inject(this)
+        }
     }
 
     private fun getBaseAppComponent(): BaseAppComponent {
