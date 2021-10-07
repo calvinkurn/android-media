@@ -2,7 +2,6 @@ package com.tokopedia.loyalty.view.activity;
 
 import android.app.Dialog;
 import android.app.IntentService;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,13 +12,10 @@ import android.view.View;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.Toolbar;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.loyalty.view.widget.TouchViewPager2;
 import com.tokopedia.device.info.DeviceConnectionInfo;
 import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.loyalty.R;
@@ -33,6 +29,7 @@ import com.tokopedia.loyalty.view.fragment.PromoListFragment;
 import com.tokopedia.loyalty.view.presenter.IPromoListActivityPresenter;
 import com.tokopedia.loyalty.view.util.PromoTrackingUtil;
 import com.tokopedia.loyalty.view.view.IPromoListActivityView;
+import com.tokopedia.loyalty.view.widget.TouchViewPager2;
 import com.tokopedia.track.TrackApp;
 
 import java.util.List;

@@ -8,11 +8,9 @@ import android.text.TextUtils;
 
 import androidx.fragment.app.Fragment;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.share.DefaultShare;
