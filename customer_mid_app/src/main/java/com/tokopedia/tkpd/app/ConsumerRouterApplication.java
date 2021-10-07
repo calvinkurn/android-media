@@ -151,7 +151,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         warmUpGQLClient();
         initIris();
         performLibraryInitialisation();
-        DeeplinkHandlerActivity.createApplinkDelegateInBackground(ConsumerRouterApplication.this);
         initResourceDownloadManager();
     }
 
@@ -397,17 +396,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public boolean isSupportApplink(String appLink) {
-        return DeeplinkHandlerActivity.getApplinkDelegateInstance().supportsUri(appLink);
+        return false;
     }
 
     @Override
     public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
         return new ApplinkUnsupportedImpl(activity);
-    }
-
-    @Override
-    public ApplinkDelegate applinkDelegate() {
-        return DeeplinkHandlerActivity.getApplinkDelegateInstance();
     }
 
     @Override
@@ -426,28 +420,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
         if (activity != null) {
-            ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
-            Intent intent = activity.getIntent();
-            intent.setData(Uri.parse(applink));
-            intent.putExtras(bundle);
-            deepLinkDelegate.dispatchFrom(activity, intent);
+            RouteManager.route(activity, bundle, applink);
         }
     }
 
     @Override
     public Intent getApplinkIntent(Context context, String applink) {
-        Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
-        intent.setData(Uri.parse(applink));
-
-        if (context instanceof Activity) {
-            try {
-                return DeeplinkHandlerActivity.getApplinkDelegateInstance().getIntent((Activity) context, applink);
-            } catch (Exception e) {
-
-            }
-        }
-
-        return intent;
+        return RouteManager.getIntent(context, applink);
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.penalty.DeepLinkMapperPenalty
@@ -637,7 +638,10 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check promo appLink then should return empty in customerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.PROMO, "")
+        val query = "?menuId=1&categoryId=2"
+        val expected = ApplinkConstInternalPromo.PROMO_LIST + query
+        assertEqualsDeepLinkMapper(ApplinkConst.PROMO + query, expected)
+        assertEqualsDeepLinkMapper(ApplinkConst.PROMO_LIST + query, expected)
     }
 
     @Test
@@ -647,7 +651,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check promo detail appLink then should return empty in customerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.PROMO_DETAIL, "")
+        assertEqualsDeepLinkMapper(ApplinkConst.PROMO_DETAIL, ApplinkConstInternalPromo.PROMO_LIST)
     }
 
     @Test
@@ -977,11 +981,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check events appLink then should return tokopedia internal events in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://event/home"
         assertEqualsDeepLinkMapper(ApplinkConst.EVENTS, expectedDeepLink)
-    }
-
-    @Test
-    fun `check promo native appLink then should return empty in customerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.PROMO_LIST, "")
     }
 
     @Test

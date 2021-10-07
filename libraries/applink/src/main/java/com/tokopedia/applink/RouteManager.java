@@ -117,8 +117,7 @@ public class RouteManager {
             for (int i = resolveInfos.size() - 1; i >= 0; i--) {
                 ResolveInfo resolveInfo = resolveInfos.get(i);
                 String activityName = resolveInfo.activityInfo.name;
-                if (GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME.equals(activityName) ||
-                        GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME.equals(activityName)) {
+                if (GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME.equals(activityName)) {
                     resolveInfos.remove(i);
                 }
             }
@@ -245,22 +244,6 @@ public class RouteManager {
         if (dynamicFeatureDeeplink != null) {
             ApplinkLogger.getInstance(context).appendTrace("Building DF intent");
             intent = buildInternalExplicitIntent(context, dynamicFeatureDeeplink);
-        } else if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(mappedDeeplink)) {
-            ApplinkLogger.getInstance(context).appendTrace("AirBnB deeplink supported, redirect to AirBnB deeplink handler");
-            ApplinkLogger.getInstance(context).save();
-
-            Uri uri = Uri.parse(mappedDeeplink);
-            boolean shouldRedirectToSellerApp = uri.getBooleanQueryParameter(KEY_REDIRECT_TO_SELLER_APP, false);
-            if (shouldRedirectToSellerApp && !GlobalConfig.isSellerApp()) { //create intent to redirect to sellerapp
-                intent = buildInternalExplicitIntent(context, mappedDeeplink);
-            } else {
-                if (context instanceof Activity) {
-                    ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity((Activity) context, mappedDeeplink, queryParamBundle);
-                } else {
-                    ((ApplinkRouter) context.getApplicationContext()).goToApplinkActivity(context, mappedDeeplink);
-                }
-                return true;
-            }
         } else if (URLUtil.isNetworkUrl(mappedDeeplink)) {
             ApplinkLogger.getInstance(context).appendTrace("Network url detected");
             intent = buildInternalImplicitIntent(context, mappedDeeplink, DEFAULT_VIEW);
