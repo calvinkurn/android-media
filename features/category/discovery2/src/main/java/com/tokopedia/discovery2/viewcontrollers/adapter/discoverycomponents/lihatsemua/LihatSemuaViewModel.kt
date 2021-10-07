@@ -5,16 +5,22 @@ import android.os.CountDownTimer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.Utils.Companion.TIMER_DATE_FORMAT
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import java.util.*
 
 class LihatSemuaViewModel(val application: Application, val component: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
     private val itemData: MutableLiveData<ComponentsItem> = MutableLiveData()
     var timerWithBannerCounter: CountDownTimer? = null
+    private val restartStoppedTimerEvent: SingleLiveEvent<Boolean> = SingleLiveEvent()
+    private var timerSetToZero:Boolean = false
+    private var isTimerStopped = false
 
     fun getComponentData(): LiveData<ComponentsItem> = itemData
+    fun getRestartTimerAction(): LiveData<Boolean> = restartStoppedTimerEvent
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
@@ -22,11 +28,15 @@ class LihatSemuaViewModel(val application: Application, val component: Component
     }
 
     fun startTimer(timerUnify: TimerUnifySingle) {
+        if(timerSetToZero){
+            timerSetToZero = false
+            return
+        }
         val futureSaleTab = Utils.isFutureSale(getStartDate())
         val timerData: String? = if (futureSaleTab) getStartDate() else getEndDate()
         if (!timerData.isNullOrEmpty()) {
             val currentSystemTime = Calendar.getInstance().time
-            val parsedEndDate = Utils.parseData(timerData)
+            val parsedEndDate = Utils.parseData(timerData,TIMER_DATE_FORMAT)
             parsedEndDate?.let { parsedDate ->
                 val saleTimeMillis = parsedDate.time - currentSystemTime.time
                 if (saleTimeMillis > 0) {
@@ -44,7 +54,11 @@ class LihatSemuaViewModel(val application: Application, val component: Component
                         }
                     }
                 } else {
-//                    TODO:: setup timer to 0:00
+//                    TODO:: setup timer to 0:00:00 and make sure to ignore this timer finish call
+                    timerSetToZero = true
+                    timerUnify.targetDate = Calendar.getInstance().apply {
+                        timeInMillis += 1000
+                    }
                 }
             }
         }
@@ -52,14 +66,43 @@ class LihatSemuaViewModel(val application: Application, val component: Component
 
     fun getStartDate(): String {
         if (!component.data.isNullOrEmpty()) {
-            return component.data?.firstOrNull()?.startTime ?: ""
+            return component.data?.firstOrNull()?.startDate ?: ""
         }
         return ""
     }
 
     fun getEndDate(): String {
         if (!component.data.isNullOrEmpty()) {
-            return component.data?.firstOrNull()?.endTime ?: ""
+            return component.data?.firstOrNull()?.endDate ?: ""
         }
         return ""
-    }}
+    }
+
+    override fun onStop() {
+        stopTimer()
+        isTimerStopped = true
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        stopTimer()
+        super.onDestroy()
+    }
+
+    override fun onResume() {
+        if (isTimerStopped) {
+            restartStoppedTimerEvent.setValue(true)
+            isTimerStopped = false
+        }
+        super.onResume()
+    }
+
+    override fun onDetachToViewHolder() {
+        stopTimer()
+    }
+
+    fun stopTimer() {
+        timerWithBannerCounter?.cancel()
+        timerWithBannerCounter = null
+    }
+}

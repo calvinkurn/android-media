@@ -28,17 +28,17 @@
         android:scaleType="fitXY"
         tools:background="@color/green_300"
         app:layout_constraintStart_toEndOf="@+id/title_iv_parent"
-        app:layout_constraintEnd_toEndOf="@id/data_parent"
-        app:layout_constraintTop_toTopOf="@+id/data_parent"
+        app:layout_constraintEnd_toEndOf="@id/text_data_parent"
+        app:layout_constraintTop_toTopOf="@+id/text_data_parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/data_parent"
+        android:id="@+id/text_data_parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constrainedWidth="true"
-        app:layout_constraintEnd_toStartOf="@id/lihat_semua_tv"
+        app:layout_constraintEnd_toEndOf="@id/lihat_semua_barrier"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/title_iv_parent">
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -50,10 +50,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_4"
-                android:layout_marginEnd="@dimen/dp_20"
                 android:textColor="@color/Unify_N700_96"
                 android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@id/sub_header_tv"
+                app:layout_constraintBottom_toBottomOf="@+id/horizontal_subtitle_barrier"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constrainedWidth="true"
@@ -63,13 +62,19 @@
                 tools:text="Title"
                 tools:visibility="visible" />
 
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/horizontal_subtitle_barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="top"
+                app:constraint_referenced_ids="timer_lihat_semua,sub_header_tv" />
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/sub_header_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_4"
                 android:layout_marginTop="@dimen/spacing_lvl2"
-                android:layout_marginEnd="@dimen/dp_20"
                 android:textColor="@color/Unify_N700_68"
                 android:visibility="gone"
                 app:layout_constraintEnd_toStartOf="@+id/timer_lihat_semua"
@@ -86,8 +91,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
+                tools:visibility="visible"
                 android:id="@+id/timer_lihat_semua"
                 app:layout_constraintHorizontal_bias="0"
+                app:timer_unify_single_type="hour"
+                android:layout_marginLeft="@dimen/dp_8"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/sub_header_tv"
                 app:layout_constraintBottom_toBottomOf="parent"/>
@@ -115,4 +123,25 @@
         app:typographyWeight="bold"
         app:unifyButtonType="alternate"
         tools:visibility="visible" />
+
+    <ImageView
+        android:layout_width="@dimen/dp_44"
+        android:layout_height="@dimen/dp_44"
+        android:id="@+id/lihat_semua_iv"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:scaleType="centerCrop"
+        app:srcCompat= "@drawable/ic_state_lihat_semua"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lihat_semua_barrier"
+        app:barrierDirection="start"
+        app:constraint_referenced_ids="lihat_semua_tv,lihat_semua_iv"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

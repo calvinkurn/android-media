@@ -3,14 +3,11 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lih
 import android.graphics.Color
 import android.graphics.Outline
 import android.os.Build
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
-import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -24,24 +21,28 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
-import com.tokopedia.unifycomponents.TimerUnify
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
-import java.lang.Exception
+import java.util.*
 
 class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
     private lateinit var lihatSemuaViewModel: LihatSemuaViewModel
     private var lihatTextView: Typography = itemView.findViewById(R.id.lihat_semua_tv)
+    private var lihatImageView: ImageView = itemView.findViewById(R.id.lihat_semua_iv)
     private var lihatTitleTextView: Typography = itemView.findViewById(R.id.title_tv)
     private var lihatSubTitleTextView: Typography = itemView.findViewById(R.id.sub_header_tv)
     private var backgroundImageView: ImageView = itemView.findViewById(R.id.bg_iv)
     private var titleImageView: ImageView = itemView.findViewById(R.id.title_iv)
     private var titleImageViewParent: ViewGroup = itemView.findViewById(R.id.title_iv_parent)
+    private var textTitleParent:ViewGroup = itemView.findViewById(R.id.text_data_parent)
     private var timer:TimerUnifySingle = itemView.findViewById(R.id.timer_lihat_semua)
     private var onLihatSemuaClickListener: OnLihatSemuaClickListener? = null
+
+    init {
+        TimeZone.setDefault(TimeZone.getTimeZone(Utils.TIME_ZONE))
+    }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         lihatSemuaViewModel = discoveryBaseViewModel as LihatSemuaViewModel
@@ -51,33 +52,56 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
             lihatSemuaViewModel.getComponentData().observe(it, Observer { componentItem ->
-            componentItem.data?.firstOrNull()?.let { data ->
-                lihatTitleTextView.setTextAndCheckShow(data.title)
-                lihatSubTitleTextView.setTextAndCheckShow(data.subtitle)
-                if (data.btnApplink.isNullOrEmpty()) {
-                    lihatTextView.hide()
-                } else {
-                    lihatTextView.show()
+                componentItem.data?.firstOrNull()?.let { data ->
+                    lihatTitleTextView.setTextAndCheckShow(data.title)
+                    lihatSubTitleTextView.setTextAndCheckShow(data.subtitle)
+                    setupTitleImage(data)
+                    setupBackgroundImage(data)
+                    setupLihat(data, componentItem, backgroundImageView.isVisible)
+                    setupTextColours(backgroundImageView.isVisible)
+                    setupTimer(data)
+                    setupPadding(backgroundImageView.isVisible, titleImageViewParent.isVisible)
                 }
-                setupTitleImage(data)
-                setupBackgroundImage(data)
-                setupTextColours(backgroundImageView.isVisible)
-                setupPaddingForTexts(backgroundImageView.isVisible,titleImageViewParent.isVisible)
-                setupTimer(data)
-                lihatTextView.setOnClickListener {
-                    navigateToAppLink(data)
-                    sendGtmEvent(componentItem)
+            })
+            lihatSemuaViewModel.getRestartTimerAction().observe(it, { shouldStartTimer ->
+                if (shouldStartTimer && lihatSemuaViewModel.getStartDate().isNotEmpty() && lihatSemuaViewModel.getEndDate().isNotEmpty()) {
+                    lihatSemuaViewModel.startTimer(timer)
                 }
-            }
-        })
+            })
         }
     }
 
+    private fun setupLihat(data: DataItem,componentsItem: ComponentsItem, backgroundPresent: Boolean) {
+        if (!data.btnApplink.isNullOrEmpty()) {
+            if(backgroundPresent) {
+                lihatImageView.show()
+                lihatTextView.hide()
+            }else{
+                lihatTextView.show()
+                lihatImageView.hide()
+            }
+        } else {
+            lihatImageView.hide()
+            lihatTextView.hide()
+        }
+        lihatTextView.setOnClickListener {
+            navigateLihat(data,componentsItem)
+        }
+        lihatImageView.setOnClickListener {
+            navigateLihat(data,componentsItem)
+        }
+    }
+
+    private fun navigateLihat(data: DataItem,componentsItem: ComponentsItem){
+        navigateToAppLink(data)
+        sendGtmEvent(componentsItem)
+    }
+
     private fun setupTimer(data: DataItem) {
-        if(!data.endTime.isNullOrEmpty()&&!data.startTime.isNullOrEmpty()){
+        if (!data.endDate.isNullOrEmpty() && !data.startDate.isNullOrEmpty()) {
             lihatSemuaViewModel.startTimer(timer)
             timer.show()
-        }else{
+        } else {
             timer.hide()
         }
     }
@@ -99,6 +123,7 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
             lihatSemuaViewModel.getComponentData().removeObservers(it)
+            lihatSemuaViewModel.getRestartTimerAction().removeObservers(it)
         }
     }
 
@@ -119,37 +144,38 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
         }
     }
 
-    private fun setupPaddingForTexts(isBackgroundPresent:Boolean,isTitleImagePresent:Boolean) {
+    private fun setupPadding(isBackgroundPresent:Boolean,isTitleImagePresent:Boolean) {
         fragment.context?.resources?.let {
-            if(isBackgroundPresent) {
-                lihatTitleTextView.setPadding(
-                        if (isTitleImagePresent) it.getDimensionPixelOffset(R.dimen.dp_12) else it.getDimensionPixelOffset(R.dimen.dp_16),
-                        it.getDimensionPixelOffset(R.dimen.dp_8),
-                        0,
-                        if (lihatSubTitleTextView.isVisible) 0 else it.getDimensionPixelOffset(R.dimen.dp_8))
-                lihatSubTitleTextView.setPadding(
-                        if (isTitleImagePresent) it.getDimensionPixelOffset(R.dimen.dp_12) else it.getDimensionPixelOffset(R.dimen.dp_16),
-                        0,
-                        0,
-                        it.getDimensionPixelOffset(R.dimen.dp_8))
-                lihatTextView.setPadding(0,0,0,it.getDimensionPixelOffset(R.dimen.dp_8))
-            }else{
-//              TODO:: Handle cases for non background case
-                lihatTitleTextView.setPadding(
-                        if (isTitleImagePresent) it.getDimensionPixelOffset(R.dimen.dp_4) else it.getDimensionPixelOffset(R.dimen.dp_16),
-                        if(isTitleImagePresent)it.getDimensionPixelOffset(R.dimen.dp_8) else 0,
-                        0,
-                        if (lihatSubTitleTextView.isVisible || !isTitleImagePresent) 0 else it.getDimensionPixelOffset(R.dimen.dp_8))
-                lihatSubTitleTextView.setPadding(
-                        if (isTitleImagePresent) it.getDimensionPixelOffset(R.dimen.dp_4) else it.getDimensionPixelOffset(R.dimen.dp_16),
-                        0,
-                        0,
-                        if(isTitleImagePresent) it.getDimensionPixelOffset(R.dimen.dp_8) else 0)
-//                Todo:: Bottom padding check
-                lihatTextView.setPadding(0,
-                        0,
-                        0,
-                        if (!isTitleImagePresent) 0 else it.getDimensionPixelOffset(R.dimen.dp_8))
+            if (isBackgroundPresent) {
+                textTitleParent.setPadding(
+                    if (isTitleImagePresent) it.getDimensionPixelOffset(R.dimen.dp_12) else it.getDimensionPixelOffset(
+                        R.dimen.dp_16
+                    ),
+                    it.getDimensionPixelOffset(R.dimen.dp_8),
+                    it.getDimensionPixelOffset(R.dimen.dp_20),
+                    it.getDimensionPixelOffset(R.dimen.dp_8)
+                )
+                lihatTextView.setPadding(
+                    0,
+                    0,
+                    0,
+                    it.getDimensionPixelOffset(R.dimen.dp_8)
+                )
+            } else {
+                textTitleParent.setPadding(
+                    if (isTitleImagePresent) it.getDimensionPixelOffset(R.dimen.dp_4) else it.getDimensionPixelOffset(
+                        R.dimen.dp_16
+                    ),
+                    if (isTitleImagePresent) it.getDimensionPixelOffset(R.dimen.dp_8) else 0,
+                    it.getDimensionPixelOffset(R.dimen.dp_20),
+                    if (isTitleImagePresent) it.getDimensionPixelOffset(R.dimen.dp_8) else 0
+                )
+                lihatTextView.setPadding(
+                    0,
+                    0,
+                    0,
+                    if (!isTitleImagePresent) 0 else it.getDimensionPixelOffset(R.dimen.dp_8)
+                )
             }
         }
 
@@ -202,9 +228,20 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
-        if(fragment is OnLihatSemuaClickListener){
+        if (fragment is OnLihatSemuaClickListener) {
             onLihatSemuaClickListener = fragment
         }
+        timer.onFinish = {
+            lihatSemuaViewModel.timerWithBannerCounter = null
+//            setTimerType()
+            lihatSemuaViewModel.startTimer(timer)
+        }
+    }
+
+    override fun onViewDetachedToWindow() {
+        super.onViewDetachedToWindow()
+        lihatSemuaViewModel.stopTimer()
+        timer.pause()
     }
 
     fun corners(view:View,leftOffset:Int, topOffset:Int, rightOffset:Int, bottomOffset:Int, radius:Float){
