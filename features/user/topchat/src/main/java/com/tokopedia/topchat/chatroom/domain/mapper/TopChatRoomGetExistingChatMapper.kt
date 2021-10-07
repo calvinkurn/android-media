@@ -339,8 +339,8 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         val userIdMap = mapUserId(chat.chatReplies.contacts)
         return RoomMetaData(
             _msgId = messageId,
-            sender = interlocutorMetaData,
-            receiver = senderMetaData,
+            sender = senderMetaData,
+            receiver = interlocutorMetaData,
             userIdMap = userIdMap
         )
     }
