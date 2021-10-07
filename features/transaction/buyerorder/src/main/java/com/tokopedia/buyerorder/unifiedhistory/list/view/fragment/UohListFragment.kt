@@ -104,6 +104,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.STATUS_DIKI
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.STATUS_DIPROSES
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.STATUS_MENUNGGU_KONFIRMASI
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.STATUS_TIBA_DI_TUJUAN
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TDN_INDEX
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TIBA_DI_TUJUAN
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TRANSAKSI_BERLANGSUNG
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_ACTION_BUTTON_LINK
@@ -179,6 +180,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_UOH
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlin.collections.ArrayList
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 
 /**
  * Created by fwidjaja on 29/06/20.
@@ -919,7 +921,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         chipStatus?.refChipUnify?.setChevronClickListener { onClickFilterStatus() }
         chipCategoryProduct?.refChipUnify?.setChevronClickListener { onClickFilterCategoryProduct() }
     }
-    
+
     private fun renderChipsFilterStatus(chips: ArrayList<SortFilterItem>) {
         _arrayListStatusFilterBundle.clear()
         orderList.v2Filters.forEach { v2Filter ->
@@ -1028,7 +1030,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
         chipCategoryProduct?.let { chips.add(it) }
     }
-    
+
     private fun renderChipsFilterDate(chips: ArrayList<SortFilterItem>) {
         val typeDate = if (isReset || isFirstLoad || filterStatus.equals(PARAM_UOH_ONGOING, true)) {
             ChipsUnify.TYPE_NORMAL
@@ -1243,8 +1245,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             }
             emptyStatus?.let { emptyState -> UohTypeData(emptyState, UohConsts.TYPE_EMPTY) }?.let { uohTypeData -> listRecomm.add(uohTypeData) }
             listRecomm.add(UohTypeData(getString(R.string.uoh_recommendation_title), UohConsts.TYPE_RECOMMENDATION_TITLE))
-            recommendationList.firstOrNull()?.recommendationItemList?.forEach {
-                listRecomm.add(UohTypeData(it, UohConsts.TYPE_RECOMMENDATION_ITEM))
+            recommendationList.firstOrNull()?.recommendationItemList?.forEachIndexed { index, recommendationItem ->
+                if (index == TDN_INDEX) listRecomm.add(UohTypeData(TopAdsImageViewModel(), UohConsts.TDN_BANNER))
+                listRecomm.add(UohTypeData(recommendationItem, UohConsts.TYPE_RECOMMENDATION_ITEM))
             }
             uohItemAdapter.addList(listRecomm)
         } else {
