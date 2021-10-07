@@ -4,8 +4,6 @@ import android.content.Context
 import com.tokopedia.cart.R
 import com.tokopedia.cart.bundle.data.model.response.promo.*
 import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.*
-import com.tokopedia.cart.bundle.view.uimodel.PromoSummaryData
-import com.tokopedia.cart.bundle.view.uimodel.PromoSummaryDetailData
 import com.tokopedia.cart.bundle.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.bundle.view.uimodel.*
 import com.tokopedia.purchase_platform.common.constant.CartConstant
@@ -325,7 +323,16 @@ object CartUiModelMapper {
                 isMultipleBundleProduct = cartDetail.products.size > 1
                 minOrder = cartDetail.bundleDetail.bundleMinOrder
                 maxOrder = min(cartDetail.bundleDetail.bundleMaxOrder, cartDetail.bundleDetail.bundleQuota)
-                quantity = product.productQuantity
+                quantity = if (cartDetail.bundleDetail.bundleQty > 0) {
+                    val tmpQty = product.productQuantity / cartDetail.bundleDetail.bundleQty
+                    if (tmpQty > 0) {
+                        tmpQty
+                    } else {
+                        1
+                    }
+                } else {
+                    1
+                }
                 bundleId = cartDetail.bundleDetail.bundleId
                 bundleType = cartDetail.bundleDetail.bundleType
                 bundleGroupId = cartDetail.bundleDetail.bundleGroupId
