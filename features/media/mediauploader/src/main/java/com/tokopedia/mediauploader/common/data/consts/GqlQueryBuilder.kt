@@ -1,6 +1,6 @@
 package com.tokopedia.mediauploader.common.data.consts
 
-object GraphQueryBuilder {
+object GqlQueryBuilder {
 
     /**
      * This is used for param of grqphql query
