@@ -115,7 +115,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
                 viewLifecycleOwner,
                 DigitalRecommendationAdditionalTrackingData(
                         userType = "",
-                        widgetPosition = 2,
+                        widgetPosition = "",
                         pgCategories = viewModel.getCategoryId()
                 ),
                 DigitalRecommendationPage.PHYSICAL_GOODS

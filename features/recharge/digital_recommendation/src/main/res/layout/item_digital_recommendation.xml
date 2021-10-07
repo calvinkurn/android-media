@@ -4,16 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/unify_space_4"
-    android:layout_marginEnd="@dimen/unify_space_4"
     android:elevation="@dimen/unify_space_4"
     app:card_type="shadow">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="@dimen/digital_recommendation_shimmering_card_size"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/digital_recommendation_card_width"
+        android:layout_height="@dimen/digital_recommendation_card_height"
         android:background="@drawable/bg_digital_recommendation_card"
-        android:minHeight="@dimen/digital_recommendation_card_min_height"
         android:padding="@dimen/unify_space_8">
 
         <com.tokopedia.unifyprinciples.Typography

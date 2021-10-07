@@ -3,8 +3,8 @@
     <item>
         <shape android:shape="rectangle">
             <size
-                android:width="@dimen/digital_recommendation_shimmering_card_size"
-                android:height="@dimen/digital_recommendation_shimmering_card_size" />
+                android:width="@dimen/digital_recommendation_card_width"
+                android:height="@dimen/digital_recommendation_card_width" />
             <solid android:color="@color/Unify_N0" />
             <corners android:radius="@dimen/unify_space_8" />
         </shape>
