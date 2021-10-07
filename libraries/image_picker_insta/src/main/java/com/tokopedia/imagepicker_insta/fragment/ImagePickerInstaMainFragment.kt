@@ -1,7 +1,6 @@
 package com.tokopedia.imagepicker_insta.fragment
 
 import android.app.Activity
-import android.content.ContentResolver
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -11,7 +10,6 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
@@ -24,10 +22,11 @@ import com.tokopedia.imagepicker_insta.activity.ImagePickerInstaActivity
 import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.imagepicker_insta.common.ImagePickerRouter.DEFAULT_MULTI_SELECT_LIMIT
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
+import com.tokopedia.imagepicker_insta.common.ui.toolbar.ImagePickerCommonToolbar
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
 import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
 import com.tokopedia.imagepicker_insta.mediacapture.MediaRepository
-import com.tokopedia.imagepicker_insta.menu.MenuManager
+import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
 import com.tokopedia.imagepicker_insta.models.*
 import com.tokopedia.imagepicker_insta.toPx
 import com.tokopedia.imagepicker_insta.util.AlbumUtil
@@ -43,7 +42,6 @@ import com.tokopedia.imagepicker_insta.views.adapters.ImageAdapter
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -83,9 +81,12 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        MenuManager.addCustomMenu(activity, hasReadPermission(), menu) {
-            proceedNextStep()
-            TrackerProvider.tracker?.onNextButtonClick()
+        val menuTitle = (activity as? ImagePickerInstaActivity)?.menuTitle ?: activity?.getString(R.string.imagepicker_insta_lanjut)
+        if(!menuTitle.isNullOrEmpty()) {
+            MenuManager.addCustomMenu(activity, menuTitle, hasReadPermission(), menu) {
+                proceedNextStep()
+                TrackerProvider.tracker?.onNextButtonClick()
+            }
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -106,7 +107,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                 return true
             }
         }
-
         return false
     }
 
@@ -242,21 +242,17 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     fun setupToolbar(v: View) {
-        val toolbar: Toolbar = v.findViewById(R.id.toolbar)
-        val toolbarIcon: AppCompatImageView = v.findViewById(R.id.toolbar_icon)
-        val toolbarTitle: Typography = v.findViewById(R.id.toolbar_title)
-        val toolbarSubtitle: Typography = v.findViewById(R.id.toolbar_subtitle)
-        val toolbarNavIcon: AppCompatImageView = v.findViewById(R.id.toolbar_nav_icon)
-        toolbarNavIcon.setOnClickListener {
+        val toolbarCommon: ImagePickerCommonToolbar = v.findViewById(R.id.toolbar_common)
+        toolbarCommon.toolbarNavIcon.setOnClickListener {
             TrackerProvider.tracker?.onBackButtonFromPicker()
             activity?.finish()
         }
 
         (activity as ImagePickerInstaActivity).run {
-            setSupportActionBar(toolbar)
-            setToolbarIcon(this, toolbarIcon)
-            toolbarTitle.text = this.toolbarTitle
-            toolbarSubtitle.text = this.toolbarSubTitle
+            setSupportActionBar(toolbarCommon)
+            setToolbarIcon(this, toolbarCommon.toolbarIcon)
+            toolbarCommon.toolbarTitle.text = this.toolbarTitle
+            toolbarCommon.toolbarSubtitle.text = this.toolbarSubTitle
         }
     }
 

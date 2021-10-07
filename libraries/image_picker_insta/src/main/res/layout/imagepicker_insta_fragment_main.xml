@@ -6,79 +6,13 @@
     android:layout_height="match_parent"
     android:background="@color/imagepicker_insta_empty_bg">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="0dp"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/Unify_Static_White"
-        android:theme="@style/ImagePickerInsta.ToolBarStyle"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
+    <com.tokopedia.imagepicker_insta.common.ui.toolbar.ImagePickerCommonToolbar
+        android:id="@+id/toolbar_common"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_height="@dimen/dp_56">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/toolbar_nav_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:paddingStart="@dimen/dp_14"
-                android:paddingEnd="@dimen/dp_11"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/imagepicker_insta_back_icon" />
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/toolbar_icon"
-                android:layout_width="@dimen/dp_32"
-                android:layout_height="@dimen/dp_32"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/toolbar_nav_icon"
-                app:layout_constraintTop_toTopOf="parent"
-                 />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginEnd="@dimen/dp_8"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/toolbar_icon"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/toolbar_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:lines="1"
-                    android:text="@string/imagepicker_insta_post_sebagai"
-                    android:textColor="@color/imagepicker_insta_toolbar_title"
-                    app:typographyType="body_3"
-                    app:typographyWeight="reguler" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/toolbar_subtitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/imagepicker_insta_dp_3_n"
-                    android:ellipsize="end"
-                    android:lines="1"
-                    android:text="@string/imagepicker_insta_fellow_official"
-                    app:typographyType="heading_4"
-                    app:typographyWeight="bold" />
-            </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.appcompat.widget.Toolbar>
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"/>
 
     <com.tokopedia.imagepicker_insta.views.NoPermissionsView
         android:id="@+id/no_permission_view"
@@ -96,7 +30,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_common"
         tools:context=".activity.ImagePickerInstaActivity">
 
         <com.tokopedia.imagepicker_insta.views.MediaView

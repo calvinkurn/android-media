@@ -40,7 +40,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/imagepicker_insta_back_icon"
+                app:srcCompat="@drawable/imagepicker_insta_com_back"
                 app:tint="@color/Unify_Static_White" />
 
 
