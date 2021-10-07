@@ -84,7 +84,7 @@ class MvcDetailView @JvmOverloads constructor(
         rv.layoutManager = LinearLayoutManager(context)
         rv.adapter = adapter
 
-         DaggerMvcComponent.builder().baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
+         DaggerMvcComponent.builder()
             .build().inject(this)
 
         if (context is AppCompatActivity) {

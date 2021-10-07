@@ -51,9 +51,4 @@
 
     <!--promo checkout-->
     <string name="title_promo_checkout">Promo Checkout</string>
-
-    <!--MVC-->
-    <string name="host_mvc">tokopoints</string>
-    <string name="path_mvc_merchant_couponlist">/kupon-toko</string>
-
 </resources>

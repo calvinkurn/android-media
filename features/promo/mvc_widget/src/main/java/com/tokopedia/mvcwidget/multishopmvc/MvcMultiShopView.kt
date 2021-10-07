@@ -33,7 +33,6 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 class MvcMultiShopView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
-    var view: View? = null
 
     private var ivShopIcon: AppCompatImageView? = null
     private var ivShopChevron: AppCompatImageView? = null
@@ -50,22 +49,21 @@ class MvcMultiShopView @JvmOverloads constructor(
     private var tvDealsCouponTwo: Typography? = null
 
     init {
-        view = View.inflate(context, R.layout.mvc_layout_mulitshop_item, this)
+        View.inflate(context, R.layout.mvc_layout_mulitshop_item, this)
 
-        ivShopIcon = view?.findViewById(R.id.iv_shop_icon)
-        ivShopChevron = view?.findViewById(R.id.iv_shop_arrow)
-        ivCouponOne = view?.findViewById(R.id.iv_coupon1)
-        ivCouponTwo = view?.findViewById(R.id.iv_coupon2)
-        productParentOne = view?.findViewById(R.id.container_coupon1)
-        productParentTwo = view?.findViewById(R.id.container_coupon2)
-        parentContainer = view?.findViewById(R.id.parent_container)
-        tvShopName = view?.findViewById(R.id.tv_shop_name)
-        tvCashBackTitle = view?.findViewById(R.id.tv_cashback_title)
-        tvCashBackValue = view?.findViewById(R.id.tv_cashback_value)
-        tvCouponCount = view?.findViewById(R.id.tv_coupon_count)
-        tvDealsCouponOne = view?.findViewById(R.id.tv_deals_coupon1)
-        tvDealsCouponTwo = view?.findViewById(R.id.tv_deals_coupon2)
-
+        ivShopIcon = findViewById(R.id.iv_shop_icon)
+        ivShopChevron = findViewById(R.id.iv_shop_arrow)
+        ivCouponOne = findViewById(R.id.iv_coupon1)
+        ivCouponTwo = findViewById(R.id.iv_coupon2)
+        productParentOne = findViewById(R.id.container_coupon1)
+        productParentTwo = findViewById(R.id.container_coupon2)
+        parentContainer = findViewById(R.id.parent_container)
+        tvShopName = findViewById(R.id.tv_shop_name)
+        tvCashBackTitle = findViewById(R.id.tv_cashback_title)
+        tvCashBackValue = findViewById(R.id.tv_cashback_value)
+        tvCouponCount = findViewById(R.id.tv_coupon_count)
+        tvDealsCouponOne = findViewById(R.id.tv_deals_coupon1)
+        tvDealsCouponTwo = findViewById(R.id.tv_deals_coupon2)
     }
 
     fun setMultiShopModel(item: MultiShopModel , @MvcSource source: Int) {
@@ -87,7 +85,7 @@ class MvcMultiShopView @JvmOverloads constructor(
                     tvDealsCouponOne?.show()
                     tvDealsCouponOne?.text = item.products[0]?.benefitLabel
                     if ((tvDealsCouponOne?.context).isDarkMode()) {
-                        setStrokeColor(ivCouponOne)
+                        setStrokeColor(tvDealsCouponOne)
                     }
                 } else {
                     tvDealsCouponOne?.hide()
@@ -248,7 +246,7 @@ class MvcMultiShopView @JvmOverloads constructor(
         )
     }
 
-    private fun setStrokeColor(view: View?) {
+    private fun setStrokeColor(view: Typography?) {
         val drawable = view?.background as GradientDrawable
         drawable.setStroke(
             view.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1)
@@ -258,7 +256,7 @@ class MvcMultiShopView @JvmOverloads constructor(
                 com.tokopedia.unifyprinciples.R.color.Unify_Static_White
             )
         )
-        (view as Typography).setTextColor(
+        view.setTextColor(
             ContextCompat.getColor(
                 view.context,
                 com.tokopedia.unifyprinciples.R.color.Unify_Static_White
