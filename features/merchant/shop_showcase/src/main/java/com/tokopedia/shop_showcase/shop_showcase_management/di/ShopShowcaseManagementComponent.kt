@@ -9,9 +9,7 @@ import dagger.Component
 interface ShopShowcaseManagementComponent {
 
     fun inject(view: ShopShowcaseListFragment)
-    fun inject(view: ShopShowcaseListFragmentOld)
     fun inject(view: ShopShowcaseListReorderFragment)
-    fun inject(view: ShopShowcaseListReorderFragmentOld)
     fun inject(view: ShopShowcasePickerFragment)
 
 }
