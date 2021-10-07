@@ -92,11 +92,7 @@ class UpgradePmProWidget(
 
     private fun getDaysDate(shopCreatedDate: String): String {
         return try {
-            val date = Calendar.getInstance(GoldMerchantUtil.getLocale())
-            val targetDays =
-                GoldMerchantUtil.getNNextDaysBasedOnShopScoreCalculation(shopCreatedDate) + THIRTY_DAYS
-            date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) + targetDays)
-            GoldMerchantUtil.format(date.timeInMillis, PATTERN_DATE_TEXT)
+            return GoldMerchantUtil.getNNextDaysBasedOnShopScoreCalculation(shopCreatedDate)
         } catch (e: ParseException) {
             e.printStackTrace()
             ""
