@@ -3,8 +3,7 @@ package com.tokopedia.review.common.presentation.widget
 import android.animation.Animator
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
-import android.view.animation.AlphaAnimation
+import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.kotlin.extensions.view.hide
@@ -17,17 +16,13 @@ import com.tokopedia.unifycomponents.BaseCustomView
 
 class ReviewSmileyWidget : BaseCustomView {
 
-    constructor(context: Context) : super(context) {
-        init()
-    }
+    constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init()
         setView(attrs)
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init()
         setView(attrs, defStyleAttr)
     }
 
@@ -43,7 +38,7 @@ class ReviewSmileyWidget : BaseCustomView {
     private var isActive = false
     private var score = 0
     
-    private val binding = WidgetReviewSmileyBinding.bind(this)
+    private val binding = WidgetReviewSmileyBinding.inflate(LayoutInflater.from(context), this, true)
 
     fun showActiveBad() {
         this.isActive = true
@@ -102,10 +97,6 @@ class ReviewSmileyWidget : BaseCustomView {
 
     fun setSmileyClickListener(reviewScoreClickListener: ReviewScoreClickListener) {
         setAnimations(reviewScoreClickListener)
-    }
-
-    private fun init() {
-        View.inflate(context, R.layout.widget_review_smiley, this)
     }
 
     private fun setView(attrs: AttributeSet, defStyleAttr: Int = 0) {

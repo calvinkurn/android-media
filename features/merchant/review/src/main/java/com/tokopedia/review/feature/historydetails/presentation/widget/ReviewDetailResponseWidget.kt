@@ -2,7 +2,7 @@ package com.tokopedia.review.feature.historydetails.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
@@ -13,22 +13,11 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 class ReviewDetailResponseWidget : BaseCustomView {
 
-    constructor(context: Context): super(context) {
-        init()
-    }
-    constructor(context: Context, attrs: AttributeSet): super(context, attrs) {
-        init()
-    }
+    constructor(context: Context): super(context)
+    constructor(context: Context, attrs: AttributeSet): super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int): super(context, attrs, defStyleAttr)
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
-        init()
-    }
-
-    private fun init() {
-        View.inflate(context, R.layout.widget_review_detail_response, this)
-    }
-
-    private val binding = WidgetReviewDetailResponseBinding.bind(this)
+    private val binding = WidgetReviewDetailResponseBinding.inflate(LayoutInflater.from(context), this, true)
 
     fun setContent(response: ProductrevGetReviewDetailResponse) {
         binding.reviewDetailResponseTab.background = ContextCompat.getDrawable(context, R.drawable.rectangle_8)

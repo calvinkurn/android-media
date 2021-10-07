@@ -5,8 +5,8 @@ import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.View
 import android.view.View.OnTouchListener
 import androidx.core.content.ContextCompat
 import com.tokopedia.review.R
@@ -28,7 +28,7 @@ class CreateReviewTextArea : BaseCustomView {
         init()
     }
 
-    private val binding = WidgetCreateReviewTextAreaBinding.bind(this)
+    private val binding = WidgetCreateReviewTextAreaBinding.inflate(LayoutInflater.from(context), this, true)
 
     override fun clearFocus() {
         binding.createReviewEditText.clearFocus()
@@ -36,7 +36,6 @@ class CreateReviewTextArea : BaseCustomView {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun init() {
-        View.inflate(context, R.layout.widget_create_review_text_area, this)
         binding.createReviewTextAreaContainer.setBackgroundResource(R.drawable.bg_review_create_text_area_default)
         binding.createReviewEditText.apply {
             setOnTouchListener(OnTouchListener { v, event ->

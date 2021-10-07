@@ -4,7 +4,7 @@ import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
@@ -17,27 +17,15 @@ import com.tokopedia.unifycomponents.BaseCustomView
 
 class ReviewReplyTextBox : BaseCustomView {
 
-    constructor(context: Context) : super(context) {
-        init()
-    }
-
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init()
-    }
-
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
-    ) {
-        init()
-    }
+    )
 
-    private val binding = WidgetReplyTextboxBinding.bind(this)
-
-    private fun init() {
-        View.inflate(context, R.layout.widget_reply_textbox, this)
-    }
+    private val binding = WidgetReplyTextboxBinding.inflate(LayoutInflater.from(context), this, true)
 
     fun setReplyAction() {
         binding.replyEditText.addTextChangedListener(object : TextWatcher {

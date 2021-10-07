@@ -2,7 +2,7 @@ package com.tokopedia.review.feature.reviewreply.view.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -34,23 +34,11 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
         ReviewReplyFeedbackImageAdapter(this)
     }
 
-    constructor(context: Context) : super(context) {
-        init()
-    }
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init()
-    }
-
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init()
-    }
-
-    private fun init() {
-        View.inflate(context, R.layout.widget_reply_feedback_item, this)
-    }
-
-    private val binding = WidgetReplyFeedbackItemBinding.bind(this)
+    private val binding = WidgetReplyFeedbackItemBinding.inflate(LayoutInflater.from(context), this, true)
 
     fun setData(data: FeedbackUiModel, productReplyUiModel: ProductReplyUiModel) {
         binding.ivRatingFeedback.setImageResource(getReviewStar(data.rating.orZero()))

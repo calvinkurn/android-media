@@ -2,7 +2,7 @@ package com.tokopedia.review.common.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
@@ -16,21 +16,13 @@ import com.tokopedia.unifycomponents.BaseCustomView
 
 class ReviewScoreWidget : BaseCustomView {
 
-    constructor(context: Context) : super(context) {
-        init()
-    }
-
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init()
-    }
-
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init()
-    }
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     private var currentScore = 0
 
-    private val binding = WidgetReviewDetailScoreBinding.bind(this)
+    private val binding = WidgetReviewDetailScoreBinding.inflate(LayoutInflater.from(context), this, true)
 
     fun setEditableScore(score: Int) {
         binding.apply {
@@ -186,10 +178,6 @@ class ReviewScoreWidget : BaseCustomView {
 
     private fun setEmptyScore() {
         binding.reviewDetailScoreTitle.text = context.getString(R.string.review_history_details_score_empty)
-    }
-
-    private fun init() {
-        View.inflate(context, R.layout.widget_review_detail_score, this)
     }
 
 }
