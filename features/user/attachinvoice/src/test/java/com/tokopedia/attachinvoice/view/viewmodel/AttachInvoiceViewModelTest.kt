@@ -32,9 +32,9 @@ class AttachInvoiceViewModelTest {
 
     lateinit var vm: AttachInvoiceViewModel
 
-    val exMsgId = "6696"
-    val exInvoiceResponse = GetInvoiceResponse()
-    val exErrorInvoiceResponse = Throwable("Dummy throwable")
+    private val exMsgId = "6696"
+    private val exInvoiceResponse = GetInvoiceResponse()
+    private val exErrorInvoiceResponse = Throwable("Dummy throwable")
 
     @Before
     fun before() {
