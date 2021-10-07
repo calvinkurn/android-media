@@ -3,7 +3,6 @@ package com.tokopedia.promocheckout.list.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
@@ -18,10 +17,8 @@ import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDigitalPresenter
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
-import kotlinx.android.synthetic.main.fragment_promo_checkout_list.view.*
 import javax.inject.Inject
 
 open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoCheckoutListContract.View {
@@ -84,11 +81,10 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
     }
 
     override fun loadData(page: Int) {
-        if(isABTestProduct(categoryId)){
-            showABTestPromo(page)
-        }else{
-            showPromo(page)
+        if (isCouponActive) {
+            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
         }
+        promoCheckoutListPresenter.getListLastSeen(listOf(categoryId), resources)
     }
 
     override fun initInjector() {
@@ -100,45 +96,10 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
         super.onDestroyView()
     }
 
-    private fun showABTestPromo(page: Int){
-        if (isCouponActive && isABTestPromo()) {
-            myCouponVisibility(true)
-            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
-        }else{
-            myCouponVisibility(false)
-            hideLoading()
-            promoCheckoutListPresenter.getListLastSeen(listOf(categoryId), resources)
-        }
-    }
-
-    private fun showPromo(page: Int){
-        if (isCouponActive) {
-            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
-        }
-        promoCheckoutListPresenter.getListLastSeen(listOf(categoryId), resources)
-    }
-
-    fun isABTestPromo(): Boolean = (RemoteConfigInstance.getInstance().abTestPlatform
-        .getString(PROMO_DIGITAL_AB_TEST_KEY, PROMO_DIGITAL_AB_TEST_COUPON)
-            == PROMO_DIGITAL_AB_TEST_COUPON)
-
-    private fun myCouponVisibility(visibility: Boolean){
-        view?.let {
-            it.txtPromoMyCoupon.visibility = if(visibility) View.VISIBLE else View.GONE
-        }
-    }
-
-    fun isABTestProduct(categoryId: Int): Boolean = (categoryId == CATEGORY_ID_LISTRIK || categoryId == CATEGORY_ID_TELCO_PULSA)
-
     companion object {
         const val EXTRA_PROMO_DIGITAL_MODEL = "EXTRA_PROMO_DIGITAL_MODEL"
 
         private val promoCheckoutAnalytics: PromoCheckoutAnalytics by lazy { PromoCheckoutAnalytics() }
-
-        private const val PROMO_DIGITAL_AB_TEST_KEY = "DG_Promo_v2"
-        private const val PROMO_DIGITAL_AB_TEST_COUPON = "control_variant"
-        private const val CATEGORY_ID_LISTRIK = 3
-        private const val CATEGORY_ID_TELCO_PULSA = 1
 
         fun createInstance(isCouponActive: Boolean?, promoCode: String?, promoDigitalModel: PromoDigitalModel, pageTracking: Int): PromoCheckoutListDigitalFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListDigitalFragment()

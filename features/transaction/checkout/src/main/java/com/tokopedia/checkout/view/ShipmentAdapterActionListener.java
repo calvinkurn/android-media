@@ -6,6 +6,7 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest;
 import com.tokopedia.promocheckout.common.domain.model.deals.CartItem;
@@ -67,7 +68,8 @@ public interface ShipmentAdapterActionListener {
 
     void onChangeShippingCourier(RecipientAddressModel recipientAddressModel,
                                  ShipmentCartItemModel shipmentCartItemModel,
-                                 int position);
+                                 int position,
+                                 List<ShippingCourierUiModel> selectedShippingCourierUiModels);
 
     void hideSoftKeyboard();
 

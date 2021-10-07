@@ -32,10 +32,10 @@ class GetPostDataUseCase(
     }
 
     override suspend fun executeOnBackground(): List<PostListDataUiModel> {
-        val dataKays: List<DataKeyModel> =
-            (params.getObject(DATA_KEYS) as? List<DataKeyModel>).orEmpty()
+        val dataKays: List<DataKeyModel> = (params.getObject(DATA_KEYS) as? List<DataKeyModel>)
+            .orEmpty()
         val gqlRequest = GraphqlRequest(QUERY, GetPostDataResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = graphqlRepository.getReseponse(
+        val gqlResponse: GraphqlResponse = graphqlRepository.response(
             listOf(gqlRequest), cacheStrategy
         )
 
@@ -83,6 +83,7 @@ class GetPostDataUseCase(
                     featuredMediaURL
                     stateMediaURL
                     stateText
+                    pinned
                   }
                   cta{
                     text

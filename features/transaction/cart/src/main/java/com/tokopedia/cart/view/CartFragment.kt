@@ -242,6 +242,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         const val WORDING_GO_TO_HOMEPAGE = "Kembali ke Homepage"
         const val TOOLBAR_VARIANT_BASIC = RollenceKey.NAVIGATION_VARIANT_OLD
         const val TOOLBAR_VARIANT_NAVIGATION = RollenceKey.NAVIGATION_VARIANT_REVAMP
+        const val TOOLBAR_VARIANT_NAVIGATION2 = RollenceKey.NAVIGATION_VARIANT_REVAMP2
         const val HEIGHT_DIFF_CONSTRAINT = 100
         const val DELAY_SHOW_PROMO_BUTTON_AFTER_SCROLL = 750L
         const val PROMO_ANIMATION_DURATION = 500L
@@ -481,10 +482,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun isNavRevamp(): Boolean {
         val EXP_NAME = RollenceKey.NAVIGATION_EXP_TOP_NAV
+        val EXP_NAME2 = RollenceKey.NAVIGATION_EXP_TOP_NAV2
         val fromActivity = arguments?.getBoolean(CartActivity.EXTRA_IS_FROM_CART_ACTIVITY, false)
                 ?: false
         if (fromActivity) {
-            return RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, TOOLBAR_VARIANT_BASIC) == TOOLBAR_VARIANT_NAVIGATION
+            return RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, TOOLBAR_VARIANT_BASIC) == TOOLBAR_VARIANT_NAVIGATION ||
+                RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME2, TOOLBAR_VARIANT_BASIC) == TOOLBAR_VARIANT_NAVIGATION2
         } else {
             return try {
                 return (context as? MainParentStateListener)?.isNavigationRevamp ?: false
@@ -577,6 +580,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun routeToCheckoutPage() {
         activity?.let {
             val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.CHECKOUT)
+            intent.putExtra(CheckoutConstant.EXTRA_CHECKOUT_PAGE_SOURCE, CheckoutConstant.CHECKOUT_PAGE_SOURCE_CART)
             startActivityForResult(intent, NAVIGATION_SHIPMENT)
         }
     }
@@ -821,12 +825,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun initToolbar(view: View) {
         if (isNavToolbar) {
             initNavigationToolbar(view)
-            binding?.toolbar?.gone()
+            binding?.toolbarCart?.gone()
             binding?.navToolbar?.show()
         } else {
             initBasicToolbar(view)
             binding?.navToolbar?.gone()
-            binding?.toolbar?.show()
+            binding?.toolbarCart?.show()
         }
         setToolbarShadowVisibility(false)
     }
@@ -900,7 +904,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 isToolbarWithBackButton = false
             }
 
-            val appbar = binding?.toolbar
+            val appbar = binding?.toolbarCart
             val statusBarBackground = binding?.statusBarBg
             statusBarBackground?.layoutParams?.height = DisplayMetricUtils.getStatusBarHeight(it)
 
@@ -2091,7 +2095,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             promoCheckoutBtnCart.setOnClickListener {
                 dPresenter.doUpdateCartForPromo()
                 // analytics
-                PromoRevampAnalytics.eventCartClickPromoSection(listPromoApplied, false)
+                PromoRevampAnalytics.eventCartClickPromoSection(listPromoApplied, false, userSession.userId)
             }
         }
     }
@@ -2148,7 +2152,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             } else {
                 dPresenter.doUpdateCartForPromo()
                 // analytics
-                PromoRevampAnalytics.eventCartClickPromoSection(getAllPromosApplied(lastApplyData), isApplied)
+                PromoRevampAnalytics.eventCartClickPromoSection(getAllPromosApplied(lastApplyData), isApplied, userSession.userId)
             }
         }
         if (isApplied) {

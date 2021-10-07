@@ -38,7 +38,10 @@ class GetOccCartMapper @Inject constructor() {
                 payment = mapOrderPayment(data),
                 prompt = mapPrompt(data.prompt),
                 errorCode = data.errorCode,
-                popUpMessage = data.popUpMessage)
+                popUpMessage = data.popUpMessage,
+                maxQty = data.maxQty,
+                totalProductPrice = data.totalProductPrice,
+                profileCode = data.paymentAdditionalData.profileCode)
     }
 
     private fun generateShopShipment(shopShipments: List<OccShopShipment>): ArrayList<ShopShipment> {
@@ -309,7 +312,11 @@ class GetOccCartMapper @Inject constructor() {
                 tncInfo = creditCard.tncInfo,
                 selectedTerm = availableTerms.firstOrNull { it.isSelected },
                 additionalData = mapPaymentCreditCardAdditionalData(data),
-                isDebit = payment.gatewayCode == OrderPaymentCreditCard.DEBIT_GATEWAY_CODE
+                isDebit = payment.gatewayCode == OrderPaymentCreditCard.DEBIT_GATEWAY_CODE,
+                isAfpb = creditCard.isAfpb,
+                unixTimestamp = creditCard.unixTimestamp,
+                tokenId = creditCard.tokenId,
+                tenorSignature = creditCard.tenorSignature
         )
     }
 
@@ -321,7 +328,7 @@ class GetOccCartMapper @Inject constructor() {
     private fun mapPaymentCreditCardAdditionalData(data: GetOccCartData): OrderPaymentCreditCardAdditionalData {
         return OrderPaymentCreditCardAdditionalData(data.customerData.id, data.customerData.name, data.customerData.email, data.customerData.msisdn,
                 data.paymentAdditionalData.merchantCode, data.paymentAdditionalData.profileCode, data.paymentAdditionalData.signature,
-                data.paymentAdditionalData.changeCcLink, data.paymentAdditionalData.callbackUrl)
+                data.paymentAdditionalData.changeCcLink, data.paymentAdditionalData.callbackUrl, data.totalProductPrice)
     }
 
     private fun mapPaymentInstallmentTerm(availableTerms: List<InstallmentTerm>): List<OrderPaymentInstallmentTerm> {

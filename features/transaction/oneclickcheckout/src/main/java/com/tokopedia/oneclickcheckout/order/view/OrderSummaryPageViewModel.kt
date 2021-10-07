@@ -29,6 +29,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
@@ -41,6 +42,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                                     private val logisticProcessor: OrderSummaryPageLogisticProcessor,
                                                     private val checkoutProcessor: OrderSummaryPageCheckoutProcessor,
                                                     private val promoProcessor: OrderSummaryPagePromoProcessor,
+                                                    val paymentProcessor: Lazy<OrderSummaryPagePaymentProcessor>,
                                                     private val calculator: OrderSummaryPageCalculator,
                                                     private val userSession: UserSessionInterface,
                                                     private val orderSummaryAnalytics: OrderSummaryAnalytics) : BaseViewModel(executorDispatchers.immediate) {
@@ -73,6 +75,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private var getCartJob: Job? = null
     private var debounceJob: Job? = null
     private var finalUpdateJob: Job? = null
+    private var afpbJob: Job? = null
 
     private var hasSentViewOspEe = false
 
@@ -258,7 +261,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         } else if (orderProfile.value.isDisableChangeCourierAndNeedPinpoint()) {
             logisticProcessor.generateNeedPinpointResultRates(orderProfile.value)
         } else {
-            val (orderCost, updatedProductIndex) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value, validateUsePromoRevampUiModel)
+            val (orderCost, updatedProductIndex) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value, validateUsePromoRevampUiModel, orderPayment.value)
             updateOrderProducts.value = updatedProductIndex
             logisticProcessor.getRates(orderCart, orderProfile.value, orderShipment.value, orderCost, orderShop.value.shopShipment)
         }
@@ -494,7 +497,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    fun chooseInstallment(selectedInstallmentTerm: OrderPaymentInstallmentTerm) {
+    fun chooseInstallment(selectedInstallmentTerm: OrderPaymentInstallmentTerm, installmentList: List<OrderPaymentInstallmentTerm>) {
         launch(executorDispatchers.immediate) {
             var param = cartProcessor.generateUpdateCartParam(orderCart, orderProfile.value, orderShipment.value, orderPayment.value)
             val creditCard = orderPayment.value.creditCard
@@ -520,12 +523,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             }
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {
-                val availableTerms = creditCard.availableTerms
-                availableTerms.forEach {
+                installmentList.forEach {
                     it.isSelected = it.term == selectedInstallmentTerm.term
                     it.isError = false
                 }
-                orderPayment.value = orderPayment.value.copy(creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = availableTerms))
+                orderPayment.value = orderPayment.value.copy(creditCard = creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = installmentList))
                 calculateTotal()
                 globalEvent.value = OccGlobalEvent.Normal
                 return@launch
@@ -639,10 +641,17 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     fun calculateTotal() {
-        launch(executorDispatchers.immediate) {
-            orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
-            calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
-                    validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
+        orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
+        if (orderPayment.value.creditCard.isAfpb) {
+            afpbJob?.cancel()
+            afpbJob = launch(executorDispatchers.immediate) {
+                adjustAdminFee()
+            }
+        } else {
+            launch(executorDispatchers.immediate) {
+                calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
+                        validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
+            }
         }
     }
 
@@ -743,10 +752,31 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
+    private suspend fun adjustAdminFee() {
+        val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value,
+                validateUsePromoRevampUiModel, orderPayment.value)
+        val installmentTermList = paymentProcessor.get().getAdminFee(orderPayment.value.creditCard, userSession.userId,
+                orderCost, orderCart)
+        if (installmentTermList == null) {
+            val newOrderPayment = orderPayment.value
+            orderPayment.value = newOrderPayment.copy(creditCard = newOrderPayment.creditCard.copy(selectedTerm = null, availableTerms = emptyList()))
+            globalEvent.value = OccGlobalEvent.AdjustAdminFeeError
+        } else {
+            val newOrderPayment = orderPayment.value
+            val selectedTerm = orderPayment.value.creditCard.selectedTerm?.term ?: -1
+            val selectedInstallmentTerm = installmentTermList.firstOrNull { it.term == selectedTerm }
+            selectedInstallmentTerm?.isSelected = true
+            orderPayment.value = newOrderPayment.copy(creditCard = newOrderPayment.creditCard.copy(selectedTerm = selectedInstallmentTerm, availableTerms = installmentTermList))
+        }
+        calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
+                validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
+    }
+
     override fun onCleared() {
         debounceJob?.cancel()
         finalUpdateJob?.cancel()
         getCartJob?.cancel()
+        afpbJob?.cancel()
         super.onCleared()
     }
 

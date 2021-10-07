@@ -27,9 +27,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.device.info.DevicePerformanceInfo
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.imagepicker.common.ImagePickerBuilder
-import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.imagepicker.common.*
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
@@ -156,6 +154,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private var incentiveHelper = ""
     private var isReviewIncomplete = false
     private var thankYouBottomSheetText = ""
+    private var imagesFedIntoPicker = arrayListOf<String>()
+    private var thankYouBottomSheetImage = ""
 
     override fun stopPreparePerfomancePageMonitoring() {
         reviewPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
@@ -402,15 +402,17 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     override fun onAddImageClick() {
         clearFocusAndHideSoftInput(view)
+        imagesFedIntoPicker = createReviewViewModel.getSelectedImagesUrl()
         context?.let {
             val builder = ImagePickerBuilder.getSquareImageBuilder(it)
                 .withSimpleEditor()
-                .withSimpleMultipleSelection(initialImagePathList = createReviewViewModel.getSelectedImagesUrl())
+                .withSimpleMultipleSelection(initialImagePathList = imagesFedIntoPicker)
                 .apply {
                     title = getString(R.string.image_picker_title)
                 }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
             intent.putImagePickerBuilder(builder)
+            intent.putParamPageSource(ImagePickerPageSource.REVIEW_PAGE)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
     }
@@ -497,7 +499,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val result = ImagePickerResultExtractor.extract(data)
                     val selectedImage = result.imageUrlOrPathList
-                    val imagesFedIntoPicker = result.imagesFedIntoPicker
                     createReviewViewModel.clearImageData()
 
                     CreateReviewTracking.reviewOnImageUploadTracker(
@@ -678,6 +679,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         }
         data?.productrevIncentiveOvo?.let {
             thankYouBottomSheetText = it.bottomSheetText
+            thankYouBottomSheetImage = it.thankYouImage
             it.ticker.let {
                 ovoPointsTicker?.apply {
                     visibility = View.VISIBLE
@@ -728,7 +730,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     data,
                     this@CreateReviewFragment,
                     getThankYouFormTrackerData(),
-                    thankYouBottomSheetText
+                    thankYouBottomSheetText,
+                    thankYouBottomSheetImage
                 )
             }
         }

@@ -154,8 +154,8 @@ abstract class TopchatRoomTest {
 
     @Before
     open fun before() {
-        setupResponse()
         setupDaggerComponent()
+        setupResponse()
         setupDefaultResponseWhenFirstOpenChatRoom()
         setupDummyImageChatService()
         setupKeyboardIdlingResource()
@@ -169,14 +169,8 @@ abstract class TopchatRoomTest {
     }
 
     protected open fun setupResponse() {
-        firstPageChatAsBuyer = AndroidFileUtil.parse(
-            "success_get_chat_first_page_as_buyer.json",
-            GetExistingChatPojo::class.java
-        )
-        firstPageChatAsSeller = AndroidFileUtil.parse(
-            "success_get_chat_first_page_as_seller.json",
-            GetExistingChatPojo::class.java
-        )
+        firstPageChatAsSeller = getChatUseCase.defaultChatWithSellerResponse
+        firstPageChatAsBuyer = getChatUseCase.defaultChatWithBuyerResponse
         chatAttachmentResponse = AndroidFileUtil.parse(
             "success_get_chat_attachments.json",
             ChatAttachmentResponse::class.java
@@ -484,6 +478,9 @@ abstract class TopchatRoomTest {
         ).check(matches(visibilityMatcher))
     }
 
+    /**
+     * assert unify snackbar/toaster
+     */
     protected fun assertSnackbarText(msg: String) {
         onView(withText(msg)).check(matches(isDisplayed()))
     }
@@ -590,6 +587,143 @@ abstract class TopchatRoomTest {
         onView(withId(R.id.new_comment)).check(
             matches(withText(msg))
         )
+    }
+
+    protected fun assertChatRoomList(matcher: Matcher<in View>) {
+        onView(withId(R.id.recycler_view_chatroom)).check(matches(matcher))
+    }
+
+    protected fun finishActivity() {
+        activityTestRule.finishActivity()
+    }
+
+    protected fun assertMsgHeaderContainer(
+        position: Int, matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.ll_msg_header
+            )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertDividerHeaderContainer(
+        position: Int, matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.v_header_divider
+            )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertHeaderTitleMsgAtBubblePosition(
+        position: Int, matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.tp_header_title
+            )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertCtaHeaderMsgAtBubblePosition(position: Int, matcher: Matcher<in View>) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.tp_header_cta
+            )
+        ).check(matches(matcher))
+    }
+
+    protected fun clickCtaHeaderMsgAtBubblePosition(position: Int) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.tp_header_cta
+            )
+        ).perform(click())
+    }
+
+    protected fun assertMsgBubbleAt(position: Int, matcher: Matcher<in View>) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
+                position, R.id.tvMessage
+            )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertChatRecyclerview(matcher: Matcher<in View>) {
+        onView(
+            withId(R.id.recycler_view_chatroom)
+        ).check(matches(matcher))
+    }
+
+    protected fun assertBroadcastCampaignLabelAt(
+        position: Int,
+        matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(
+                    position, R.id.broadcast_campaign_label
+                )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertBroadcastCampaignLabelDescAt(
+        position: Int,
+        matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(
+                    position, R.id.tp_broadcast_campaign_status
+                )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertBroadcastCampaignLabelCountdownAt(
+        position: Int,
+        matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(
+                    position, R.id.tu_bc_countdown
+                )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertBroadcastCampaignLabelStartDateIconAt(
+        position: Int,
+        matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(
+                    position, R.id.iu_broadcast_start_date
+                )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertBroadcastCampaignLabelStartDateTextAt(
+        position: Int,
+        matcher: Matcher<in View>
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(
+                    position, R.id.iu_broadcast_start_date
+                )
+        ).check(matches(matcher))
+    }
+
+    protected fun assertToolbarTitle(expectedTitle: String) {
+        onView(
+            Matchers.allOf(
+                withId(com.tokopedia.chat_common.R.id.title),
+                isDescendantOfA(withId(R.id.toolbar))
+            )
+        ).check(matches(withText(expectedTitle)))
     }
 
     protected fun isKeyboardOpened(): Boolean {

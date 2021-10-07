@@ -57,7 +57,8 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                         orderPromo = orderData.promo.copy(state = OccButtonState.NORMAL),
                         globalEvent = if (orderData.prompt.shouldShowPrompt()) OccGlobalEvent.Prompt(orderData.prompt) else null,
                         throwable = null,
-                        addressState = AddressState(orderData.errorCode, orderData.preference.address, orderData.popUpMessage)
+                        addressState = AddressState(orderData.errorCode, orderData.preference.address, orderData.popUpMessage),
+                        profileCode = orderData.profileCode
                 )
             } catch (t: Throwable) {
                 Timber.d(t)
@@ -69,7 +70,8 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                         orderPromo = OrderPromo(),
                         globalEvent = null,
                         throwable = t,
-                        addressState = AddressState()
+                        addressState = AddressState(),
+                        profileCode = ""
                 )
             }
         }
@@ -218,12 +220,13 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
 }
 
 class ResultGetOccCart(
-        val orderCart: OrderCart,
-        val orderPreference: OrderPreference,
-        val orderProfile: OrderProfile,
-        val orderPayment: OrderPayment,
-        val orderPromo: OrderPromo,
-        val globalEvent: OccGlobalEvent?,
-        val throwable: Throwable?,
-        val addressState: AddressState
+    val orderCart: OrderCart = OrderCart(),
+    val orderPreference: OrderPreference = OrderPreference(),
+    val orderProfile: OrderProfile = OrderProfile(),
+    val orderPayment: OrderPayment = OrderPayment(),
+    val orderPromo: OrderPromo = OrderPromo(),
+    val globalEvent: OccGlobalEvent? = null,
+    val throwable: Throwable? = null,
+    val addressState: AddressState = AddressState(),
+    val profileCode: String = ""
 )

@@ -55,7 +55,7 @@ class GetCategoryRecommendationUseCaseTest {
                 .categoryRecommendationDataModel)
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         every {
@@ -65,7 +65,7 @@ class GetCategoryRecommendationUseCaseTest {
         val result = usecase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         Assert.assertTrue(result.isNotEmpty())

@@ -16,6 +16,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cartcommon.domain.data.RemoveFromCartDomainModel
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -32,6 +35,8 @@ import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
@@ -71,6 +76,7 @@ class MiniCartWidget @JvmOverloads constructor(
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
     private var progressDialog: AlertDialog? = null
     private var miniCartChevronClickListener: OnClickListener? = null
+    private var coachMark: CoachMark2? = null
 
     private var viewModel: MiniCartViewModel? = null
 
@@ -272,7 +278,16 @@ class MiniCartWidget @JvmOverloads constructor(
         val intent = if (viewModel?.miniCartABTestData?.value?.isOCCFlow == true) {
             RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
         } else {
+            val pageName = viewModel?.currentPage?.value ?: MiniCartAnalytics.Page.HOME_PAGE
+            val pageSource = when (pageName) {
+                MiniCartAnalytics.Page.HOME_PAGE -> "$MINICART_PAGE_SOURCE - homepage"
+                MiniCartAnalytics.Page.SEARCH_PAGE -> "$MINICART_PAGE_SOURCE - search result"
+                MiniCartAnalytics.Page.CATEGORY_PAGE -> "$MINICART_PAGE_SOURCE category page"
+                MiniCartAnalytics.Page.DISCOVERY_PAGE -> "$MINICART_PAGE_SOURCE discovery page"
+                MiniCartAnalytics.Page.RECOMMENDATION_INFINITE -> "$MINICART_PAGE_SOURCE recommendation infinite page"
+            }
             RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
+                    .putExtra(CheckoutConstant.EXTRA_CHECKOUT_PAGE_SOURCE, pageSource)
         }
 
         context.startActivity(intent)
@@ -442,6 +457,7 @@ class MiniCartWidget @JvmOverloads constructor(
             renderUnavailableWidget(miniCartSimplifiedData)
         } else {
             renderAvailableWidget(miniCartSimplifiedData)
+            showOnBoarding()
         }
         setTotalAmountLoading(false)
         setAmountViewLayoutParams()
@@ -468,7 +484,7 @@ class MiniCartWidget @JvmOverloads constructor(
     private fun renderAvailableWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
         totalAmount?.apply {
             setLabelTitle(context.getString(R.string.mini_cart_widget_label_see_cart))
-            setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartSimplifiedData.miniCartWidgetData.totalProductPrice, false))
+            setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartSimplifiedData.miniCartWidgetData.totalProductPrice, false).removeDecimalSuffix())
             val ctaText = viewModel?.miniCartABTestData?.value?.buttonBuyWording
                     ?: context.getString(R.string.mini_cart_widget_cta_text_default)
             setCtaText("$ctaText (${miniCartSimplifiedData.miniCartWidgetData.totalProductCount})")
@@ -558,6 +574,41 @@ class MiniCartWidget @JvmOverloads constructor(
         context?.let {
             handleFailedGoToCheckout(toasterAnchorView, it, fragmentManager, globalEvent)
         }
+    }
+
+    private fun showOnBoarding() {
+        context?.let { context ->
+            if (!CoachMarkPreference.hasShown(context, COACH_MARK_TAG)) {
+                coachMark = CoachMark2(context)
+                this.totalAmount?.labelTitleView?.let { anchor ->
+                    coachMark?.let { coachMark2 ->
+                        anchor.post {
+                            val coachMarkItems: ArrayList<CoachMark2Item> = ArrayList()
+                            coachMarkItems.add(
+                                CoachMark2Item(
+                                    anchor,
+                                    context.getString(R.string.mini_cart_coachmark_title),
+                                    context.getString(R.string.mini_cart_coachmark_desc),
+                                    CoachMark2.POSITION_TOP
+                                )
+                            )
+                            coachMark2.showCoachMark(step = coachMarkItems)
+                            CoachMarkPreference.setShown(context, COACH_MARK_TAG, true)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun hideCoachMark() {
+        coachMark?.dismissCoachMark()
+    }
+
+    companion object {
+        private const val COACH_MARK_TAG = "coachmark_tokonow"
+
+        private const val MINICART_PAGE_SOURCE = "minicart - tokonow"
     }
 
 }

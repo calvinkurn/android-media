@@ -1,394 +1,293 @@
 package com.tokopedia.sellerhome.settings.view.viewmodel
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import com.tokopedia.gm.common.constant.END_PERIOD
-import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
-import com.tokopedia.seller.menu.common.domain.usecase.*
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
-import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
-import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.ShopOperationalUiModel
+import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
+import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
 import com.tokopedia.sellerhome.utils.observeAwaitValue
 import com.tokopedia.sellerhome.utils.observeOnce
 import com.tokopedia.sellerhome.utils.verifyStateErrorEquals
 import com.tokopedia.sellerhome.utils.verifyStateSuccessEquals
 import com.tokopedia.shop.common.data.source.cloud.model.FreeOngkir
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoFreeShipping
-import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
-import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
-import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
-import io.mockk.impl.annotations.RelaxedMockK
-import org.junit.Assert.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
+import org.junit.Assert
 import org.junit.Test
-import org.mockito.ArgumentMatchers.*
 
 @ExperimentalCoroutinesApi
-class OtherMenuViewModelTest {
+class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
-    @RelaxedMockK
-    lateinit var getShopFreeShippingInfoUseCase: GetShopFreeShippingInfoUseCase
+    @Test
+    fun `when onCheckDelayErrorResponseTrigger should alter toaster flag between true and false`() =
+        coroutineTestRule.runBlockingTest {
+            mViewModel.onCheckDelayErrorResponseTrigger()
 
-    @RelaxedMockK
-    lateinit var getShopInfoPeriodUseCase: GetShopInfoPeriodUseCase
+            mViewModel.isToasterAlreadyShown.observeOnce {
+                Assert.assertTrue(it)
+            }
 
-    @RelaxedMockK
-    lateinit var getShopOperationalUseCase: GetShopOperationalUseCase
+            advanceTimeBy(5000L)
 
-    @RelaxedMockK
-    lateinit var balanceInfoUseCase: BalanceInfoUseCase
+            mViewModel.isToasterAlreadyShown.observeOnce {
+                Assert.assertFalse(it)
+            }
+        }
 
-    @RelaxedMockK
-    lateinit var getShopBadgeUseCase: GetShopBadgeUseCase
+    @Test
+    fun `when getAllOtherMenuData called should get all other page data`() =
+        runBlocking {
+            onGetFreeShippingRemoteConfigDisabled_thenReturn(false)
+            mViewModel.getAllOtherMenuData()
 
-    @RelaxedMockK
-    lateinit var getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase
+            verifyGetShopBadgeCalled()
+            verifyGetShopTotalFollowersCalled()
+            verifyGetUserShopInfoCalled()
+            verifyGetFreeShippingCalled()
+            verifyGetShopOperationalCalled()
+            verifyGetBalanceCalled()
+            verifyGetTopAdsKreditCalled()
+            verifyGetFreeShippingCalled()
+        }
 
-    @RelaxedMockK
-    lateinit var getUserShopInfoUseCase: GetUserShopInfoUseCase
+    @Test
+    fun `when getAllOtherMenuData and two or more (but not all) data fails, should set show multiple error toaster live data true`() =
+        runBlocking {
+            onGetShopTotalFollowers_thenThrow()
+            onGetUserShopInfo_thenThrow()
+            onGetShopOperational_thenThrow()
+            onGetBalance_thenThrow()
+            onGetTopAdsKredit_thenThrow()
+            onGetFreeShipping_thenThrow()
+            onGetShopBadge_thenReturn("")
 
-    @RelaxedMockK
-    lateinit var topAdsAutoTopupUseCase: TopAdsAutoTopupUseCase
+            mViewModel.getAllOtherMenuData()
 
-    @RelaxedMockK
-    lateinit var topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase
+            assert(mViewModel.shouldShowMultipleErrorToaster.value == true)
+        }
 
-    @RelaxedMockK
-    lateinit var userSession: UserSessionInterface
+    @Test
+    fun `when reloadErrorData should reload data that was failed`() =
+        coroutineTestRule.runBlockingTest {
+            onGetShopBadge_thenThrow()
+            onGetShopTotalFollowers_thenThrow()
+            onGetUserShopInfo_thenThrow()
+            onGetShopOperational_thenThrow()
+            onGetBalance_thenThrow()
+            onGetTopAdsKredit_thenThrow()
+            onGetFreeShipping_thenThrow()
+            onGetFreeShippingRemoteConfigDisabled_thenReturn(false)
+            mViewModel.getAllOtherMenuData()
 
-    @RelaxedMockK
-    lateinit var remoteConfig: FirebaseRemoteConfigImpl
+            mViewModel.reloadErrorData()
+            mViewModel.onShownMultipleError()
 
-    @RelaxedMockK
-    lateinit var shopBadgeFollowersShimmerObserver: Observer<in Boolean>
+            verifyGetShopBadgeCalled(atLeast = 2)
+            verifyGetShopTotalFollowersCalled(atLeast = 2)
+            verifyGetShopOperationalCalled(atLeast = 2)
+            verifyGetUserShopInfoCalled(atLeast = 2)
+            verifyGetBalanceCalled(atLeast = 2)
+            verifyGetTopAdsKreditCalled(atLeast = 2)
+            verifyGetFreeShippingCalled(atLeast = 2)
+        }
 
-    @RelaxedMockK
-    lateinit var shouldShowAllErrorObserver: Observer<in Boolean>
+    @Test
+    fun `when reloadErrorData should not reload data that was success`() =
+        runBlocking {
+            onGetShopBadge_thenThrow()
+            onGetShopTotalFollowers_thenThrow()
+            onGetUserShopInfo_thenThrow()
+            onGetShopOperational_thenThrow()
+            onGetBalance_thenThrow()
+            onGetFreeShipping_thenThrow()
+            onGetTopAdsKredit_thenReturn(0F)
+            onGetFreeShippingRemoteConfigDisabled_thenReturn(false)
+            mViewModel.getAllOtherMenuData()
 
-    @RelaxedMockK
-    lateinit var shouldShowMultipleErrorObserver: Observer<in Boolean>
+            mViewModel.reloadErrorData()
 
-    @get:Rule
-    val rule = InstantTaskExecutorRule()
+            verifyGetShopBadgeCalled(atLeast = 2)
+            verifyGetShopTotalFollowersCalled(atLeast = 2)
+            verifyGetShopOperationalCalled(atLeast = 2)
+            verifyGetUserShopInfoCalled(atLeast = 2)
+            verifyGetBalanceCalled(atLeast = 2)
+            verifyGetFreeShippingCalled(atLeast = 2)
+            verifyGetTopAdsKreditCalled()
+        }
 
-    @get:Rule
-    val coroutineTestRule = CoroutineTestRule()
+    @Test
+    fun `when reloadErrorData and error state map hasn't been set, should not reload any data`() =
+        coroutineTestRule.runBlockingTest {
+            onGetShopBadge_thenThrow()
+            onGetShopTotalFollowers_thenThrow()
+            onGetUserShopInfo_thenThrow()
+            onGetShopOperational_thenThrow()
+            onGetBalance_thenThrow()
+            onGetFreeShipping_thenThrow()
+            onGetTopAdsKredit_thenThrow()
+            onGetFreeShippingRemoteConfigDisabled_thenReturn(false)
 
-    private lateinit var mViewModel: OtherMenuViewModel
+            mViewModel.reloadErrorData()
 
-    @Before
-    fun setup() {
-        MockKAnnotations.init(this)
+            verifyGetShopBadgeNotCalled()
+            verifyGetShopTotalFollowersNotCalled()
+            verifyGetShopOperationalNotCalled()
+            verifyGetUserShopInfoNotCalled()
+            verifyGetBalanceNotCalled()
+            verifyGetFreeShippingNotCalled()
+            verifyGetTopAdsKreditNotCalled()
+        }
 
-        mViewModel =
-                OtherMenuViewModel(
-                        coroutineTestRule.dispatchers,
-                        getShopFreeShippingInfoUseCase,
-                        getShopOperationalUseCase,
-                        getShopInfoPeriodUseCase,
-                        balanceInfoUseCase,
-                        getShopBadgeUseCase,
-                        getShopTotalFollowersUseCase,
-                        getUserShopInfoUseCase,
-                        topAdsAutoTopupUseCase,
-                        topAdsDashboardDepositUseCase,
-                        userSession,
-                        remoteConfig
+    @Test
+    fun `when getAllOtherMenuData and all secondary info success, should swipe with delay`() =
+        coroutineTestRule.runBlockingTest {
+            onGetShopBadge_thenReturn("")
+            onGetShopOperational_thenReturn(
+                ShopOperationalData(
+                    isShopOpen = true,
+                    isShopClosed = false,
+                    operationalIconType = IconUnify.RELOAD_24H,
+                    operationalIconColorRes = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
+                    timeDescriptionRes = R.string.shop_operational_hour_24_hour,
+                    timeDescription = "",
+                    shopSettingAccess = true
                 )
-        mViewModel.shopBadgeFollowersShimmerLiveData.observeForever(shopBadgeFollowersShimmerObserver)
-        mViewModel.shouldShowAllError.observeForever(shouldShowAllErrorObserver)
-        mViewModel.shouldShowMultipleErrorToaster.observeForever(shouldShowMultipleErrorObserver)
-    }
+            )
+            onGetUserShopInfo_thenReturn(UserShopInfoWrapper(null))
+            onGetShopTotalFollowers_thenReturn(100L)
+            onGetFreeShipping_thenReturn(
+                listOf(
+                    ShopInfoFreeShipping.FreeShippingInfo(
+                        FreeOngkir(
+                            isActive = true
+                        )
+                    )
+                )
+            )
+            onGetFreeShippingRemoteConfigDisabled_thenReturn(false)
 
-    @After
-    fun cleanup() {
-        mViewModel.shopBadgeFollowersShimmerLiveData.removeObserver(shopBadgeFollowersShimmerObserver)
-        mViewModel.shouldShowAllError.removeObserver(shouldShowAllErrorObserver)
-        mViewModel.shouldShowMultipleErrorToaster.removeObserver(shouldShowMultipleErrorObserver)
-    }
+            mViewModel.getAllOtherMenuData()
 
-    @Test
-    fun `when onCheckDelayErrorResponseTrigger should alter toaster flag between true and false`() = coroutineTestRule.runBlockingTest {
-        mViewModel.onCheckDelayErrorResponseTrigger()
+            mViewModel.shouldSwipeSecondaryInfo.observeOnce {
+                Assert.assertFalse(it)
+            }
 
-        mViewModel.isToasterAlreadyShown.observeOnce {
-            assertTrue(it)
+            advanceTimeBy(1000L)
+
+            mViewModel.shouldSwipeSecondaryInfo.observeOnce {
+                Assert.assertTrue(it)
+            }
         }
 
-        advanceTimeBy(5000L)
-
-        mViewModel.isToasterAlreadyShown.observeOnce {
-            assertFalse(it)
-        }
-    }
-
     @Test
-    fun `Setting status bar initial state should change the live data value`() {
+    fun `when getAllOtherMenuData but not all secondary info success, should not swipe gently`() =
+        coroutineTestRule.runBlockingTest {
+            onGetShopBadge_thenThrow()
+            onGetShopOperational_thenThrow()
+            onGetUserShopInfo_thenThrow()
+            onGetShopTotalFollowers_thenThrow()
+            onGetFreeShipping_thenThrow()
 
-        mViewModel.setIsStatusBarInitialState(isInitialState = true)
+            mViewModel.getAllOtherMenuData()
 
-        val isStatusBarInitialState = mViewModel.isStatusBarInitialState.value
-
-        assertNotNull(isStatusBarInitialState)
-        isStatusBarInitialState?.let {
-            assert(it)
+            assert(mViewModel.shouldSwipeSecondaryInfo.value == false)
         }
 
-    }
-
     @Test
-    fun `getFreeShippingStatus should return when free shipping feature disabled from remote config`() {
-        every {
-            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
-        } returns true
+    fun `when startToggleTopadsCredit and kredit topads is 0f, should toggle topads topup with delay`() =
+        coroutineTestRule.runBlockingTest {
+            onGetTopAdsKredit_thenReturn(0f)
 
-        mViewModel.getFreeShippingStatus()
+            mViewModel.getKreditTopAds()
 
-        coVerify(inverse = true) {
-            getShopFreeShippingInfoUseCase.execute(any())
+            mViewModel.startToggleTopadsCredit()
+
+            advanceTimeBy(2000L)
+
+            mViewModel.numberOfTopupToggleCounts.observeOnce {
+                Assert.assertTrue(it == 1)
+            }
+
+            mViewModel.startToggleTopadsCredit()
+
+            advanceTimeBy(1000L)
+
+            mViewModel.numberOfTopupToggleCounts.observeOnce {
+                Assert.assertTrue(it == 2)
+            }
         }
 
-        assert(mViewModel.isFreeShippingActive.observeAwaitValue() == null)
-    }
-
     @Test
-    fun `getFreeShippingStatus should return when free shipping in transition status is true from remote config`() {
-        every {
-            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
-        } returns false
+    fun `when startToggleTopadsCredit, kredit topads is 0f, and job is not completed yet, should not toggle topads topup`() =
+        coroutineTestRule.runBlockingTest {
+            onGetTopAdsKredit_thenReturn(0f)
+            mViewModel.getKreditTopAds()
+            mViewModel.startToggleTopadsCredit()
+            advanceTimeBy(100L)
 
-        every {
-            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
-        } returns true
+            mViewModel.startToggleTopadsCredit()
 
-        mViewModel.getFreeShippingStatus()
-
-        coVerify(inverse = true) {
-            getShopFreeShippingInfoUseCase.execute(any())
+            Assert.assertTrue(mViewModel.numberOfTopupToggleCounts.value == null)
         }
 
-        assert(mViewModel.isFreeShippingActive.observeAwaitValue() == null)
-    }
-
     @Test
-    fun `when getAllOtherMenuData called should get all other page data`() = runBlocking {
-        mViewModel.getAllOtherMenuData()
+    fun `when startToggleTopadsCredit, kredit topads is 0f, and job is completed, should toggle topads topup`() =
+        coroutineTestRule.runBlockingTest {
+            onGetTopAdsKredit_thenReturn(0f)
+            mViewModel.getKreditTopAds()
+            mViewModel.startToggleTopadsCredit()
+            advanceTimeBy(3000L)
 
-        verifyGetShopBadgeCalled()
-        verifyGetShopTotalFollowersCalled()
-        verifyGetUserShopInfoCalled()
-        verifyGetFreeShippingStatusCalled()
-        verifyGetShopOperationalCalled()
-        verifyGetBalanceCalled()
-        verifyGetTopAdsKreditCalled()
-        verifyGetTopAdsAutoTopupCalled()
-    }
+            mViewModel.startToggleTopadsCredit()
 
-    @Test
-    fun `when getAllOtherMenuData and all data fails, should set show all error live data true`() = runBlocking {
-        onGetShopBadge_thenThrow()
-        onGetShopTotalFollowers_thenThrow()
-        onGetUserShopInfo_thenThrow()
-        onGetShopOperational_thenThrow()
-        onGetBalance_thenThrow()
-        onGetTopAdsKredit_thenThrow()
-        onGetTopAdsAutoTopup_thenThrow()
-
-        mViewModel.getAllOtherMenuData()
-
-        assert(mViewModel.shouldShowAllError.value == true)
-    }
-
-    @Test
-    fun `when getAllOtherMenuData and two or more (but not all) data fails, should set show multiple error toaster live data true`() = runBlocking {
-        onGetShopTotalFollowers_thenThrow()
-        onGetUserShopInfo_thenThrow()
-        onGetShopOperational_thenThrow()
-        onGetBalance_thenThrow()
-        onGetTopAdsKredit_thenThrow()
-        onGetTopAdsAutoTopup_thenThrow()
-        onGetShopBadge_thenReturn("")
-
-        mViewModel.getAllOtherMenuData()
-
-        assert(mViewModel.shouldShowMultipleErrorToaster.value == true)
-    }
-
-    @Test
-    fun `when reloadErrorData should reload data that was failed`() = runBlocking {
-        onGetShopBadge_thenThrow()
-        onGetShopTotalFollowers_thenThrow()
-        onGetUserShopInfo_thenThrow()
-        onGetShopOperational_thenThrow()
-        onGetBalance_thenThrow()
-        onGetTopAdsKredit_thenThrow()
-        mViewModel.getAllOtherMenuData()
-
-        mViewModel.reloadErrorData()
-        mViewModel.onReloadErrorData()
-
-        verifyGetShopBadgeCalled(atLeast = 2)
-        verifyGetShopTotalFollowersCalled(atLeast = 2)
-        verifyGetShopOperationalCalled(atLeast = 2)
-        verifyGetUserShopInfoCalled(atLeast = 2)
-        verifyGetBalanceCalled(atLeast = 2)
-        verifyGetTopAdsKreditCalled(atLeast = 2)
-    }
-
-    @Test
-    fun `when reloadErrorData should not reload data that was success`() = runBlocking {
-        onGetShopBadge_thenThrow()
-        onGetShopTotalFollowers_thenThrow()
-        onGetUserShopInfo_thenThrow()
-        onGetShopOperational_thenThrow()
-        onGetBalance_thenThrow()
-        onGetTopAdsKredit_thenReturn(0F)
-        mViewModel.getAllOtherMenuData()
-
-        mViewModel.reloadErrorData()
-
-        verifyGetShopBadgeCalled(atLeast = 2)
-        verifyGetShopTotalFollowersCalled(atLeast = 2)
-        verifyGetShopOperationalCalled(atLeast = 2)
-        verifyGetUserShopInfoCalled(atLeast = 2)
-        verifyGetBalanceCalled(atLeast = 2)
-        verifyGetTopAdsKreditCalled()
-    }
-
-    @Test
-    fun `when reloadErrorData and error state map hasn't been set, should not reload any data`() = runBlocking {
-        onGetShopBadge_thenThrow()
-        onGetShopTotalFollowers_thenThrow()
-        onGetUserShopInfo_thenThrow()
-        onGetShopOperational_thenThrow()
-        onGetBalance_thenThrow()
-        onGetTopAdsKredit_thenThrow()
-
-        mViewModel.reloadErrorData()
-
-        verifyGetShopBadgeNotCalled()
-        verifyGetShopTotalFollowersNotCalled()
-        verifyGetShopOperationalNotCalled()
-        verifyGetUserShopInfoNotCalled()
-        verifyGetBalanceNotCalled()
-        verifyGetTopAdsKreditNotCalled()
-    }
-
-    @Test
-    fun `when getShopBadgeAndFollowers and all other menu data error, should reload all error data`() = runBlocking {
-        onGetShopBadge_thenThrow()
-        onGetShopTotalFollowers_thenThrow()
-        onGetUserShopInfo_thenThrow()
-        onGetShopOperational_thenThrow()
-        onGetBalance_thenThrow()
-        onGetTopAdsKredit_thenThrow()
-        mViewModel.getAllOtherMenuData()
-
-        mViewModel.getShopBadgeAndFollowers()
-
-        verifyGetShopBadgeCalled(atLeast = 2)
-        verifyGetShopTotalFollowersCalled(atLeast = 2)
-        verifyGetShopOperationalCalled(atLeast = 2)
-        verifyGetUserShopInfoCalled(atLeast = 2)
-        verifyGetBalanceCalled(atLeast = 2)
-        verifyGetTopAdsKreditCalled(atLeast = 2)
-    }
-
-    @Test
-    fun `when getShopBadgeAndFollowers and not all other menu data error, should reload badge and followers data only`() = runBlocking {
-        onGetShopBadge_thenThrow()
-        onGetShopTotalFollowers_thenThrow()
-        val userShopInfoWrapper = UserShopInfoWrapper(ShopType.OfficialStore)
-        onGetUserShopInfo_thenReturn(userShopInfoWrapper)
-        val shopOperationalUiModel = ShopOperationalUiModel(anyString(), anyInt(), anyInt(), anyInt(), anyInt(), anyBoolean())
-        onGetShopOperational_thenReturn(shopOperationalUiModel)
-        onGetBalance_thenReturn(OthersBalance())
-        onGetTopAdsKredit_thenReturn(0f)
-        mViewModel.getAllOtherMenuData()
-
-        mViewModel.getShopBadgeAndFollowers()
-
-        verifyGetShopBadgeCalled(atLeast = 2)
-        verifyGetShopTotalFollowersCalled(atLeast = 2)
-        verifyGetShopOperationalCalled(atLeast = 1)
-        verifyGetUserShopInfoCalled(atLeast = 1)
-        verifyGetBalanceCalled(atLeast = 1)
-        verifyGetTopAdsKreditCalled(atLeast = 1)
-    }
-
-    @Test
-    fun `when shop badge and followers data error, should set shopBadgeFollowersErrorLiveData to true`() = runBlocking {
-        onGetShopBadge_thenThrow()
-        onGetShopTotalFollowers_thenThrow()
-        val userShopInfoWrapper = UserShopInfoWrapper(ShopType.OfficialStore)
-        onGetUserShopInfo_thenReturn(userShopInfoWrapper)
-        val shopOperationalUiModel = ShopOperationalUiModel(anyString(), anyInt(), anyInt(), anyInt(), anyInt(), anyBoolean())
-        onGetShopOperational_thenReturn(shopOperationalUiModel)
-        onGetBalance_thenReturn(OthersBalance())
-        onGetTopAdsKredit_thenReturn(0f)
-
-        mViewModel.getAllOtherMenuData()
-
-        assert(mViewModel.shopBadgeFollowersErrorLiveData.value == true)
-    }
-
-    @Test
-    fun `when setErrorStateMapDefaultValue but errorStateMap has been set, should not set the value again`() = runBlocking {
-        onGetShopBadge_thenThrow()
-        onGetShopTotalFollowers_thenThrow()
-        onGetUserShopInfo_thenThrow()
-        onGetShopOperational_thenThrow()
-        onGetBalance_thenThrow()
-        onGetTopAdsKredit_thenThrow()
-        mViewModel.getAllOtherMenuData()
-
-        mViewModel.setErrorStateMapDefaultValue()
-
-        assert(mViewModel.shouldShowAllError.value == true)
-    }
-
-    @Test
-    fun `getFreeShippingStatus should success`() {
-        every {
-            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
-            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
-        } returns false
-
-        coEvery {
-            getShopFreeShippingInfoUseCase.execute(any())
-        } returns listOf(ShopInfoFreeShipping.FreeShippingInfo(FreeOngkir(isActive = true)))
-
-        mViewModel.getFreeShippingStatus()
-
-        coVerify {
-            getShopFreeShippingInfoUseCase.execute(any())
+            mViewModel.numberOfTopupToggleCounts.observeOnce {
+                Assert.assertTrue(it == 1)
+            }
         }
 
-        assert(mViewModel.isFreeShippingActive.observeAwaitValue() == true)
-    }
+    @Test
+    fun `when startToggleTopadsCredit and kredit topads is not 0f, should not toggle topads topup`() =
+        coroutineTestRule.runBlockingTest {
+            onGetTopAdsKredit_thenReturn(100f)
+            mViewModel.getKreditTopAds()
+            mViewModel.startToggleTopadsCredit()
+
+            Assert.assertTrue(mViewModel.numberOfTopupToggleCounts.value == null)
+        }
+
+    @Test
+    fun `when getAllOtherMenuData should cancel toggle topads job`() =
+        coroutineTestRule.runBlockingTest {
+            onGetTopAdsKredit_thenReturn(0f)
+            mViewModel.getKreditTopAds()
+            mViewModel.startToggleTopadsCredit()
+            advanceTimeBy(100L)
+
+            mViewModel.getAllOtherMenuData()
+            advanceTimeBy(3000L)
+
+            Assert.assertTrue(mViewModel.numberOfTopupToggleCounts.value == null)
+        }
 
     @Test
     fun `getShopPeriodType should success`() {
         val shopInfoPeriodUiModel = ShopInfoPeriodUiModel(periodType = END_PERIOD)
+
         coEvery {
             getShopInfoPeriodUseCase.executeOnBackground()
         } returns shopInfoPeriodUiModel
@@ -405,133 +304,171 @@ class OtherMenuViewModelTest {
     }
 
     @Test
-    fun `when getShopOperational success should set live data success`() {
-        val uiModel = ShopOperationalUiModel(
-            "00:00 - 23:59",
-            R.string.shop_operational_hour_24_hour,
-            R.string.settings_operational_hour_open,
-            R.drawable.ic_sah_clock,
-            Label.GENERAL_LIGHT_GREEN,
-            true
-        )
-
-        coEvery {
-            getShopOperationalUseCase.executeOnBackground()
-        } returns uiModel
-
-        mViewModel.setErrorStateMapDefaultValue()
-        mViewModel.getShopOperational()
-
-        val expectedResult = SettingResponseState.SettingSuccess(uiModel)
-
-        mViewModel.shopOperationalLiveData
-            .verifyStateSuccessEquals(expectedResult)
-    }
-
-    @Test
-    fun `when getShopOperational error should set live data fail`() {
+    fun `getShopPeriodType should error`() {
         val error = IllegalStateException()
 
         coEvery {
-            getShopOperationalUseCase.executeOnBackground()
+            getShopInfoPeriodUseCase.executeOnBackground()
         } throws error
 
-        mViewModel.setErrorStateMapDefaultValue()
-        mViewModel.getShopOperational()
+        mViewModel.getShopPeriodType()
 
-        val expectedResult = SettingResponseState.SettingError(error)
+        coVerify {
+            getShopInfoPeriodUseCase.executeOnBackground()
+        }
 
-        mViewModel.shopOperationalLiveData
-            .verifyStateErrorEquals(expectedResult)
+        assert(mViewModel.shopPeriodType.observeAwaitValue() is Fail)
     }
 
     @Test
-    fun `when getShopBadge success should set live data state success`() = runBlocking {
-        val badgeUrl = "www.abc.com"
-        onGetShopBadge_thenReturn(badgeUrl)
+    fun `when getShopOperational success should set live data success`() =
+        coroutineTestRule.runBlockingTest {
+            val uiModel = ShopOperationalData(
+                isShopOpen = true,
+                isShopClosed = false,
+                operationalIconType = IconUnify.RELOAD_24H,
+                operationalIconColorRes = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
+                timeDescriptionRes = R.string.shop_operational_hour_24_hour,
+                timeDescription = "",
+                shopSettingAccess = true
+            )
 
-        mViewModel.setErrorStateMapDefaultValue()
-        mViewModel.getShopBadge()
+            onGetShopOperational_thenReturn(uiModel)
 
-        verifyGetShopBadgeCalled()
-        val expectedResult = SettingResponseState.SettingSuccess(ShopBadgeUiModel(badgeUrl))
-        mViewModel.shopBadgeLiveData.verifyStateSuccessEquals(expectedResult)
+            mViewModel.getShopOperational()
+
+            val expectedResult = SettingResponseState.SettingSuccess(uiModel)
+
+            mViewModel.shopOperationalLiveData
+                .verifyStateSuccessEquals(expectedResult)
+        }
+
+    @Test
+    fun `when getShopOperational error should set live data fail`() =
+        coroutineTestRule.runBlockingTest {
+            val error = IllegalStateException()
+
+            onGetShopOperational_thenThrow(error)
+
+            mViewModel.getShopOperational()
+
+            val expectedResult = SettingResponseState.SettingError(error)
+
+            mViewModel.shopOperationalLiveData
+                .verifyStateErrorEquals(expectedResult)
+        }
+
+    @Test
+    fun `when getShopBadge success should set live data state success`() =
+        coroutineTestRule.runBlockingTest {
+            val badgeUrl = "www.abc.com"
+            onGetShopBadge_thenReturn(badgeUrl)
+
+            mViewModel.getShopBadge()
+
+            verifyGetShopBadgeCalled()
+            val expectedResult = SettingResponseState.SettingSuccess(badgeUrl)
+            mViewModel.shopBadgeLiveData.verifyStateSuccessEquals(expectedResult)
+        }
+
+    @Test
+    fun `when getShopBadge error should set live data state error`() =
+        coroutineTestRule.runBlockingTest {
+            val error = IllegalStateException()
+            onGetShopBadge_thenThrow(error)
+
+            mViewModel.getShopBadge()
+
+            verifyGetShopBadgeCalled()
+            val expectedResult = SettingResponseState.SettingError(error)
+            mViewModel.shopBadgeLiveData.verifyStateErrorEquals(expectedResult)
+        }
+
+    @Test
+    fun `when getShopFollowers success should set live data state success`() =
+        coroutineTestRule.runBlockingTest {
+            val shopFollowers = 10L
+            onGetShopTotalFollowers_thenReturn(shopFollowers)
+
+            mViewModel.getShopTotalFollowers()
+
+            verifyGetShopTotalFollowersCalled()
+            val expectedResult = SettingResponseState.SettingSuccess(shopFollowers.toString())
+            mViewModel.shopTotalFollowersLiveData.verifyStateSuccessEquals(expectedResult)
+        }
+
+    @Test
+    fun `when getShopFollowers success but result invalide should set live data state error`() =
+        coroutineTestRule.runBlockingTest {
+            val shopFollowers: Long = -1
+            onGetShopTotalFollowers_thenReturn(shopFollowers)
+
+            mViewModel.getShopTotalFollowers()
+
+            verifyGetShopTotalFollowersCalled()
+            assert(mViewModel.shopTotalFollowersLiveData.value is SettingResponseState.SettingError)
+        }
+
+    @Test
+    fun `when getShopFollowers error should set live data state error`() =
+        coroutineTestRule.runBlockingTest {
+            val error = IllegalStateException()
+            onGetShopTotalFollowers_thenThrow(error)
+
+            mViewModel.getShopTotalFollowers()
+
+            verifyGetShopTotalFollowersCalled()
+            val expectedResult = SettingResponseState.SettingError(error)
+            mViewModel.shopTotalFollowersLiveData.verifyStateErrorEquals(expectedResult)
+        }
+
+    @Test
+    fun `when getFreeShippingStatus disabled by remote config, should set live data false and empty`() {
+        coroutineTestRule.runBlockingTest {
+            onGetFreeShippingRemoteConfigDisabled_thenReturn(true)
+
+            mViewModel.getFreeShippingStatus()
+
+            verifyGetFreeShippingNotCalled()
+            val expectedResult = SettingResponseState.SettingSuccess(false to "")
+            mViewModel.freeShippingLiveData.verifyStateSuccessEquals(expectedResult)
+        }
     }
 
     @Test
-    fun `when getShopBadge error should set live data state error`() = runBlocking {
-        val error = IllegalStateException()
-        onGetShopBadge_thenThrow(error)
+    fun `when getUserShopInfo success should set live data state success`() =
+        coroutineTestRule.runBlockingTest {
+            val userShopInfoWrapper = UserShopInfoWrapper(ShopType.OfficialStore)
+            onGetUserShopInfo_thenReturn(userShopInfoWrapper)
 
-        mViewModel.setErrorStateMapDefaultValue()
-        mViewModel.getShopBadge()
+            mViewModel.getUserShopInfo()
 
-        verifyGetShopBadgeCalled()
-        val expectedResult = SettingResponseState.SettingError(error)
-        mViewModel.shopBadgeLiveData.verifyStateErrorEquals(expectedResult)
-    }
-
-    @Test
-    fun `when getShopFollowers success should set live data state success`() = runBlocking {
-        val shopFollowers = 10L
-        onGetShopTotalFollowers_thenReturn(shopFollowers)
-
-        mViewModel.setErrorStateMapDefaultValue()
-        mViewModel.getShopTotalFollowers()
-
-        verifyGetShopTotalFollowersCalled()
-        val expectedResult = SettingResponseState.SettingSuccess(ShopFollowersUiModel(shopFollowers))
-        mViewModel.shopTotalFollowersLiveData.verifyStateSuccessEquals(expectedResult)
-    }
+            verifyGetUserShopInfoCalled()
+            assert((mViewModel.userShopInfoLiveData.value as? SettingResponseState.SettingSuccess)?.data?.userShopInfoWrapper == userShopInfoWrapper)
+        }
 
     @Test
-    fun `when getShopFollowers error should set live data state error`() = runBlocking {
-        val error = IllegalStateException()
-        onGetShopTotalFollowers_thenThrow(error)
+    fun `when getUserShopInfo error should set live data state error`() =
+        coroutineTestRule.runBlockingTest {
+            val error = IllegalStateException()
+            onGetUserShopInfo_thenThrow(error)
 
-        mViewModel.setErrorStateMapDefaultValue()
-        mViewModel.getShopTotalFollowers()
+            mViewModel.getUserShopInfo()
 
-        verifyGetShopTotalFollowersCalled()
-        val expectedResult = SettingResponseState.SettingError(error)
-        mViewModel.shopTotalFollowersLiveData.verifyStateErrorEquals(expectedResult)
-    }
-
-    @Test
-    fun `when getUserShopInfo success should set live data state success`() = runBlocking {
-        val userShopInfoWrapper = UserShopInfoWrapper(ShopType.OfficialStore)
-        onGetUserShopInfo_thenReturn(userShopInfoWrapper)
-
-        mViewModel.setErrorStateMapDefaultValue()
-        mViewModel.getUserShopInfo()
-
-        verifyGetUserShopInfoCalled()
-        assert((mViewModel.userShopInfoLiveData.value as? SettingResponseState.SettingSuccess)?.data?.userShopInfoWrapper == userShopInfoWrapper)
-    }
-
-    @Test
-    fun `when getUserShopInfo error should set live data state error`() = runBlocking {
-        val error = IllegalStateException()
-        onGetUserShopInfo_thenThrow(error)
-
-        mViewModel.setErrorStateMapDefaultValue()
-        mViewModel.getUserShopInfo()
-
-        verifyGetUserShopInfoCalled()
-        val expectedResult = SettingResponseState.SettingError(error)
-        mViewModel.userShopInfoLiveData.verifyStateErrorEquals(expectedResult)
-    }
+            verifyGetUserShopInfoCalled()
+            val expectedResult = SettingResponseState.SettingError(error)
+            mViewModel.userShopInfoLiveData.verifyStateErrorEquals(expectedResult)
+        }
 
     @Test
     fun `when getBalanceInfo success should set live data state success`() = runBlocking {
         val uiModel = OthersBalance()
         onGetBalance_thenReturn(uiModel)
 
-        mViewModel.setErrorStateMapDefaultValue()
         mViewModel.getBalanceInfo()
 
         verifyGetBalanceCalled()
-        assert((mViewModel.balanceInfoLiveData.value as? SettingResponseState.SettingSuccess)?.data?.balanceValue == uiModel.totalBalance.orEmpty())
+        assert((mViewModel.balanceInfoLiveData.value as? SettingResponseState.SettingSuccess)?.data == uiModel.totalBalance.orEmpty())
     }
 
     @Test
@@ -539,7 +476,6 @@ class OtherMenuViewModelTest {
         val error = IllegalStateException()
         onGetBalance_thenThrow(error)
 
-        mViewModel.setErrorStateMapDefaultValue()
         mViewModel.getBalanceInfo()
 
         verifyGetBalanceCalled()
@@ -552,11 +488,10 @@ class OtherMenuViewModelTest {
         val topAdsKredit = 100f
         onGetTopAdsKredit_thenReturn(topAdsKredit)
 
-        mViewModel.setErrorStateMapDefaultValue()
         mViewModel.getKreditTopAds()
 
         verifyGetTopAdsKreditCalled()
-        assert((mViewModel.kreditTopAdsLiveData.value as? SettingResponseState.SettingSuccess)?.data?.balanceValue == topAdsKredit.getCurrencyFormatted())
+        assert((mViewModel.kreditTopAdsLiveData.value as? SettingResponseState.SettingSuccess)?.data == topAdsKredit.getCurrencyFormatted())
     }
 
     @Test
@@ -564,7 +499,6 @@ class OtherMenuViewModelTest {
         val error = IllegalStateException()
         onGetTopAdsKredit_thenThrow(error)
 
-        mViewModel.setErrorStateMapDefaultValue()
         mViewModel.getKreditTopAds()
 
         verifyGetTopAdsKreditCalled()
@@ -573,28 +507,83 @@ class OtherMenuViewModelTest {
     }
 
     @Test
-    fun `when getAllOtherMenuData top ads topup value success should set live data success`() = runBlocking {
-        val isTopAdsAutoTopup = true
-        onGetTopAdsAutoTopup_thenReturn(true)
+    fun `when getAllOtherMenuData top ads topup value success should set live data success`() =
+        runBlocking {
+            val isTopAdsAutoTopup = true
+            onGetTopAdsAutoTopup_thenReturn(true)
 
-        mViewModel.getAllOtherMenuData()
+            mViewModel.getAllOtherMenuData()
 
-        verifyGetTopAdsAutoTopupCalled()
-        val expectedResult = Success(isTopAdsAutoTopup)
-        mViewModel.isTopAdsAutoTopupLiveData.verifySuccessEquals(expectedResult)
-    }
+            verifyGetTopAdsAutoTopupCalled()
+            val expectedResult = Success(isTopAdsAutoTopup)
+            mViewModel.isTopAdsAutoTopupLiveData.verifySuccessEquals(expectedResult)
+        }
 
     @Test
-    fun `when getAllOtherMenuData top ads topup value error should set live data fail`() = runBlocking {
-        val error = IllegalStateException()
-        onGetTopAdsAutoTopup_thenThrow(error)
+    fun `when getAllOtherMenuData top ads topup value error should set live data fail`() =
+        runBlocking {
+            val error = IllegalStateException()
+            onGetTopAdsAutoTopup_thenThrow(error)
 
-        mViewModel.getAllOtherMenuData()
+            mViewModel.getAllOtherMenuData()
 
-        verifyGetTopAdsAutoTopupCalled()
-        val expectedResult = Fail(error)
-        mViewModel.isTopAdsAutoTopupLiveData.verifyErrorEquals(expectedResult)
-    }
+            verifyGetTopAdsAutoTopupCalled()
+            val expectedResult = Fail(error)
+            mViewModel.isTopAdsAutoTopupLiveData.verifyErrorEquals(expectedResult)
+        }
+
+    @Test
+    fun `when getShopShareInfoData shop share info value success should set live data success`() =
+        runBlocking {
+            val shopShareInfo = OtherMenuShopShareData()
+            onGetShareInfo_thenReturn(shopShareInfo)
+
+            mViewModel.getShopShareInfoData()
+
+            verifyGetShareInfoCalled()
+            assert(mViewModel.shopShareInfoLiveData.value == shopShareInfo)
+        }
+
+    @Test
+    fun `when getShopShareInfoData shop share info value error should set live data null`() =
+        runBlocking {
+            val error = IllegalStateException()
+            onGetShareInfo_thenThrow(error)
+
+            mViewModel.getShopShareInfoData()
+
+            verifyGetShareInfoCalled()
+            assert(mViewModel.shopShareInfoLiveData.value == null)
+        }
+
+    @Test
+    fun `when setErrorStateMapDefaultValue but errorStateMap is already set, should not set values again`() =
+        runBlocking {
+            onGetShopTotalFollowers_thenThrow()
+            onGetUserShopInfo_thenThrow()
+            onGetShopOperational_thenThrow()
+            onGetBalance_thenThrow()
+            onGetTopAdsKredit_thenThrow()
+            onGetFreeShipping_thenThrow()
+            onGetShopBadge_thenThrow()
+            mViewModel.getAllOtherMenuData()
+            val currentValue = mViewModel.shouldShowMultipleErrorToaster.value
+
+            mViewModel.setErrorStateMapDefaultValue()
+
+            Assert.assertTrue(mViewModel.shouldShowMultipleErrorToaster.value == currentValue)
+        }
+
+    @Test
+    fun `when setSuccessStateMapDefaultValue but _secondarySuccessStateMap is already set, should not set values again`() =
+        runBlocking {
+            mViewModel.setSuccessStateMapDefaultValue()
+            val currentValue = mViewModel.shouldSwipeSecondaryInfo.value
+
+            mViewModel.setSuccessStateMapDefaultValue()
+
+            Assert.assertTrue(mViewModel.shouldSwipeSecondaryInfo.value == currentValue)
+        }
 
     private suspend fun onGetShopBadge_thenReturn(shopBadge: String) {
         coEvery { getShopBadgeUseCase.executeOnBackground() } returns shopBadge
@@ -611,7 +600,6 @@ class OtherMenuViewModelTest {
     private suspend fun verifyGetShopBadgeNotCalled() {
         coVerify(exactly = 0) { getShopBadgeUseCase.executeOnBackground() }
     }
-
     private suspend fun onGetShopTotalFollowers_thenReturn(totalFollowers: Long) {
         coEvery { getShopTotalFollowersUseCase.executeOnBackground() } returns totalFollowers
     }
@@ -644,11 +632,7 @@ class OtherMenuViewModelTest {
         coVerify(exactly = 0) { getUserShopInfoUseCase.executeOnBackground() }
     }
 
-    private suspend fun verifyGetFreeShippingStatusCalled() {
-        coVerify { getShopFreeShippingInfoUseCase.execute(any()) }
-    }
-
-    private suspend fun onGetShopOperational_thenReturn(shopOperational: ShopOperationalUiModel) {
+    private suspend fun onGetShopOperational_thenReturn(shopOperational: ShopOperationalData) {
         coEvery { getShopOperationalUseCase.executeOnBackground() } returns shopOperational
     }
 
@@ -696,6 +680,22 @@ class OtherMenuViewModelTest {
         coVerify(exactly = 0) { topAdsDashboardDepositUseCase.executeOnBackground() }
     }
 
+    private suspend fun onGetFreeShipping_thenReturn(freeShippingInfo: List<ShopInfoFreeShipping.FreeShippingInfo>) {
+        coEvery { getShopFreeShippingInfoUseCase.execute(any()) } returns freeShippingInfo
+    }
+
+    private suspend fun onGetFreeShipping_thenThrow(exception: Exception = IllegalStateException()) {
+        coEvery { getShopFreeShippingInfoUseCase.execute(any()) } throws exception
+    }
+
+    private suspend fun verifyGetFreeShippingCalled(atLeast: Int = 1) {
+        coVerify(atLeast = atLeast) { getShopFreeShippingInfoUseCase.execute(any()) }
+    }
+
+    private suspend fun verifyGetFreeShippingNotCalled() {
+        coVerify(exactly = 0) { getShopFreeShippingInfoUseCase.executeOnBackground() }
+    }
+
     private suspend fun onGetTopAdsAutoTopup_thenReturn(isAutoTopup: Boolean) {
         coEvery { topAdsAutoTopupUseCase.executeOnBackground() } returns isAutoTopup
     }
@@ -706,6 +706,27 @@ class OtherMenuViewModelTest {
 
     private suspend fun verifyGetTopAdsAutoTopupCalled(atLeast: Int = 1) {
         coVerify(atLeast = atLeast) { topAdsAutoTopupUseCase.executeOnBackground() }
+    }
+
+    private suspend fun onGetShareInfo_thenReturn(shareData: OtherMenuShopShareData) {
+        coEvery { shopShareInfoUseCase.execute(any()) } returns shareData
+    }
+
+    private suspend fun onGetShareInfo_thenThrow(exception: Exception = IllegalStateException()) {
+        coEvery { shopShareInfoUseCase.execute(any()) } throws exception
+    }
+
+    private suspend fun verifyGetShareInfoCalled(atLeast: Int = 1) {
+        coVerify(atLeast = atLeast) { shopShareInfoUseCase.execute(any()) }
+    }
+
+    private fun onGetFreeShippingRemoteConfigDisabled_thenReturn(isDisabled: Boolean) {
+        every {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns isDisabled
+        every {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
+        } returns isDisabled
     }
 
 }

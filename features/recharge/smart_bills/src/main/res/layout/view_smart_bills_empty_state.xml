@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lvl4"
-        app:remoteFileName="ic_smartbills_emptystate.png"/>
+        app:completeUrl="@string/smart_bills_add_bills_empty_state_image"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
