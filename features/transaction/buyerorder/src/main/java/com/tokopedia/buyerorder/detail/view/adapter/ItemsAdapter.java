@@ -125,7 +125,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 break;
             case ITEM_DEALS_OMP:
                 v = inflater.inflate(R.layout.voucher_item_card_deals, parent, false);
-                holder = new DealsOMPViewHolder(setEventDetails, v, viewType);
+                holder = new DealsOMPViewHolder(setEventDetails, v, presenter, ItemsAdapter.this);
                 break;
             case ITEM_EVENTS:
                 v = inflater.inflate(R.layout.voucher_item_card_events, parent, false);
@@ -153,7 +153,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             ((ItemViewHolder) holder).setIndex(position);
             ((ItemViewHolder) holder).bindData(orderDetails,itemsList.get(position), holder.getItemViewType());
         } else if (holder instanceof DealsOMPViewHolder) {
-            ((DealsOMPViewHolder) holder).bind(orderDetails,itemsList.get(position));
+            ((DealsOMPViewHolder) holder).bind(orderDetails,itemsList.get(position), position);
         } else {
             ((DefaultViewHolder) holder).setIndex(position);
             ((DefaultViewHolder) holder).bindData(itemsList.get(position), holder.getItemViewType());

@@ -9,8 +9,11 @@ import com.tokopedia.buyerorder.detail.data.ActionButton
 import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo
 import com.tokopedia.buyerorder.detail.data.OrderDetails
+import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter.KEY_REDIRECT
 import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter.KEY_VOUCHER_CODE
 import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView
+import com.tokopedia.buyerorder.detail.view.customview.RedeemVoucherView
+import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
@@ -20,9 +23,12 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 
-class DealsOMPViewHolder(private val setEventDetails: ItemsAdapter.SetEventDetails, itemView: View, viewType: Int): RecyclerView.ViewHolder(itemView) {
+class DealsOMPViewHolder(private val setEventDetails: ItemsAdapter.SetEventDetails, itemView: View,
+                         private val presenter: OrderListDetailPresenter,
+                         private val setTapActionDeals: RedeemVoucherView.SetTapActionDeals):
+        RecyclerView.ViewHolder(itemView) {
 
-    fun bind(orderDetails: OrderDetails, item: Items){
+    fun bind(orderDetails: OrderDetails, item: Items, positionHolder: Int){
         val metadata = Gson().fromJson(item.metaData, MetaDataInfo::class.java)
 
         itemView?.apply {
@@ -58,10 +64,16 @@ class DealsOMPViewHolder(private val setEventDetails: ItemsAdapter.SetEventDetai
                 voucerCodeLayout.show()
                 for (i in 0 until item.actionButtons.size) {
                     val actionButton: ActionButton = item.actionButtons.get(i)
-                    if (actionButton.buttonType.equals(KEY_VOUCHER_CODE)) {
-                        val bookingCodeView = BookingCodeView(context, actionButton.getBody().getBody(), i, actionButton.getLabel(), 0)
+                    if (actionButton.control.equals(KEY_VOUCHER_CODE)) {
+                        val bookingCodeView = BookingCodeView(context, actionButton.body.body, i,
+                                actionButton.label, 0)
                         bookingCodeView.background = null
                         voucerCodeLayout.addView(bookingCodeView)
+                    } else if (actionButton.control.equals(KEY_REDIRECT)){
+                        val redeemVoucherView = RedeemVoucherView(context, i, actionButton, item,
+                                actionButton.body, presenter, positionHolder, setTapActionDeals,
+                                setEventDetails)
+                        voucerCodeLayout.addView(redeemVoucherView)
                     }
                 }
                 prog_bar.gone()
