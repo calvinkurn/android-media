@@ -32,6 +32,7 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEditProductViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -69,7 +70,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
     private var toasterBottomMargin = 0
 
     private val selectableProductAdapter = ProductSelectableAdapter(object : ProductSelectableViewHolder.Listener {
-        override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
+        override fun onProductSelectStateChanged(productId: String, isSelected: Boolean) {
             viewModel.selectProduct(productId, isSelected)
         }
 
@@ -194,22 +195,18 @@ class SimpleEditProductBottomSheet @Inject constructor(
 
     private fun onUploadFailed(e: Throwable) {
         btnAction.isLoading = false
-        showToaster(
-                message = e.localizedMessage,
-                type = Toaster.TYPE_ERROR
-        )
+        showErrorToaster(e)
     }
 
-    private fun showToaster(message: String, type: Int, duration: Int = Toaster.LENGTH_SHORT) {
+    private fun showErrorToaster(err: Throwable, duration: Int = Toaster.LENGTH_SHORT) {
         if (toasterBottomMargin == 0) {
             toasterBottomMargin = llBtnContainer.height
         }
 
-        coordinatorEdit.showToaster(
-                message = message,
-                type = type,
-                duration = duration,
-                bottomMargin = toasterBottomMargin
+        coordinatorEdit.showErrorToaster(
+            err = err,
+            duration = duration,
+            bottomMargin = toasterBottomMargin
         )
     }
 

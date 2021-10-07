@@ -33,6 +33,7 @@ object HomeScreenshotTestHelper {
                 ScreenshotModel(name = "RecommendationListCarousel"),
                 ScreenshotModel(name = "ProductHighlight"),
                 ScreenshotModel(name = "CategoryWidget"),
+                ScreenshotModel(name = "CategoryWidgetV2"),
                 ScreenshotModel(name = "LeftCarousel"),
                 ScreenshotModel(name = "TopCarousel"),
                 ScreenshotModel(name = "PopularKeyword"),

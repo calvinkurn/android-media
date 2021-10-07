@@ -5,8 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.databinding.ItemParameterProtectedDetailBinding
 import com.tokopedia.shop.score.performance.presentation.model.ItemProtectedParameterUiModel
-import kotlinx.android.synthetic.main.item_parameter_protected_detail.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ItemProtectedParameterAdapter :
     RecyclerView.Adapter<ItemProtectedParameterAdapter.ItemProtectedParameterViewHolder>() {
@@ -37,9 +38,10 @@ class ItemProtectedParameterAdapter :
     override fun getItemCount(): Int = itemProtectedParameterList.size
 
     inner class ItemProtectedParameterViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val binding: ItemParameterProtectedDetailBinding? by viewBinding()
         fun bind(data: ItemProtectedParameterUiModel) {
-            with(itemView) {
-                tvTitleParameterReliefDetail?.text = data.parameterTitle
+            binding?.run {
+                tvTitleParameterReliefDetail.text = data.parameterTitle
             }
         }
     }

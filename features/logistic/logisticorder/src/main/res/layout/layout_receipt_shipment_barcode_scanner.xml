@@ -19,15 +19,15 @@
         app:zxing_viewfinder_laser="@color/Unify_G400"
         app:zxing_viewfinder_mask="@color/zxing_custom_viewfinder_mask" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/zxing_status_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_margin="@dimen/dp_20"
+        app:typographyType="body_2"
         android:background="@color/zxing_transparent"
         android:gravity="center_horizontal"
         android:text="@string/zxing_msg_default_status"
         android:textColor="@color/zxing_status_text" />
-
 </merge>

@@ -25,7 +25,7 @@ class TopupBillsPromoListAdapter(val digitalPromoList: List<TopupBillsPromo>) :
         this.listener = listener
     }
 
-    fun resetPromoListSelected(promoId: Int) {
+    fun resetPromoListSelected(promoId: String) {
         for (i in digitalPromoList.indices) {
             if (digitalPromoList[i].voucherCodeCopied && digitalPromoList[i].id != promoId) {
                 digitalPromoList[i].voucherCodeCopied = false
@@ -106,7 +106,7 @@ class TopupBillsPromoListAdapter(val digitalPromoList: List<TopupBillsPromo>) :
     }
 
     interface ActionListener {
-        fun onClickPromoCode(promoId: Int, voucherCode: String)
+        fun onClickPromoCode(promoId: String, voucherCode: String)
 
         fun onClickPromoItem(topupBillsPromo: TopupBillsPromo, position: Int)
     }
