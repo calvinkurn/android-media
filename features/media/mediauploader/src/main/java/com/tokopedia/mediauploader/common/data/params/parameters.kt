@@ -9,6 +9,11 @@ interface SourceIdParam {
     var sourceId: String
 }
 
+interface VideoLargeParam {
+    var partNumber: String
+    var uploadId: String
+}
+
 interface CommonParam {
     // this is the common data needed
     var uploadUrl: String
@@ -18,7 +23,7 @@ interface CommonParam {
 
 abstract class ParamValidator : CommonParam {
 
-    fun hasNotParams(): Boolean {
+    fun hasNoParams(): Boolean {
         return uploadUrl.isEmpty() && filePath.isEmpty() && timeOut.isEmpty()
     }
 

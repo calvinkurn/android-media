@@ -15,7 +15,7 @@ open class GetImageUploaderUseCase @Inject constructor(
     var progressCallback: ProgressCallback? = null
 
     override suspend fun execute(params: ImageUploaderParam): ImageUploader {
-        if (params.hasNotParams()) throw RuntimeException("No param found")
+        if (params.hasNoParams()) throw RuntimeException("No param found")
 
         val multiPartBodyBuilder = params.imageBody(progressCallback)
 

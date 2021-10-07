@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.util
+package com.tokopedia.mediauploader.common.util
 
 import android.graphics.BitmapFactory
 import java.io.File

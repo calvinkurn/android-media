@@ -2,6 +2,7 @@ package com.tokopedia.mediauploader.image
 
 import com.tokopedia.mediauploader.common.data.consts.*
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
+import com.tokopedia.mediauploader.common.util.*
 import com.tokopedia.mediauploader.image.data.mapper.ImagePolicyMapper
 import com.tokopedia.mediauploader.image.data.params.ImageUploaderParam
 import com.tokopedia.mediauploader.data.state.ProgressCallback

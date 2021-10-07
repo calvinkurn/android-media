@@ -11,23 +11,10 @@ import retrofit2.http.Url
 
 interface ImageUploadServices {
 
-    @POST
     @Multipart
-    suspend fun uploadImage(
-        /*
-        * get url from data policy
-        * */
+    @POST suspend fun uploadImage(
         @Url urlToUpload: String,
-
-        /*
-        * file_upload:
-        * an multiple-form data to retrieve the data
-        * */
         @Part partBody: MultipartBody.Part,
-
-        /*
-        * change time out at runtime
-        * */
         @Header(HEADER_TIMEOUT) timeOut: String
     ) : ImageUploader
 

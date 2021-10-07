@@ -1,6 +1,5 @@
 package com.tokopedia.mediauploader.image.data.params
 
-import com.tokopedia.mediauploader.common.data.consts.UrlBuilder
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.common.data.params.CommonParam
 import com.tokopedia.mediauploader.common.data.params.ParamValidator
@@ -29,12 +28,16 @@ data class ImageUploaderParam(
         private const val BODY_FILE_UPLOAD = "file_upload"
         private const val SUPPORTED_CONTENT_TYPE = "image/*"
 
+        fun imageUploadUrl(baseUrl: String, sourceId: String): String {
+            return "$baseUrl/v1/upload/image/$sourceId"
+        }
+
         fun create(
             fileToUpload: File,
             policy: SourcePolicy,
             sourceId: String
         ) = ImageUploaderParam().apply {
-            uploadUrl = UrlBuilder.generate(policy.host, sourceId)
+            uploadUrl = imageUploadUrl(policy.host, sourceId)
             timeOut = policy.timeOut.toString()
             filePath = fileToUpload.path
         }

@@ -15,12 +15,13 @@ class GetSingleVideoUploaderUseCase @Inject constructor(
     var progressCallback: ProgressCallback? = null
 
     override suspend fun execute(params: VideoUploaderParam): VideoUploader {
-        if (params.hasNotParams()) throw RuntimeException("No param found")
+        if (params.hasNoParams()) throw RuntimeException("No param found")
 
-        val videoFileBody = params.videoBody(progressCallback)
-        val videoFileNameBody = params.videoFileName()
+        val uploadParam = params.SingleUpload()
+        val videoFileBody = uploadParam.fileBlob(progressCallback)
+        val videoFileNameBody = uploadParam.fileName()
 
-        return services.uploadSingleVideo(
+        return services.simpleUpload(
             urlToUpload = params.uploadUrl,
             timeOut = params.timeOut,
             videoFile = videoFileBody,
