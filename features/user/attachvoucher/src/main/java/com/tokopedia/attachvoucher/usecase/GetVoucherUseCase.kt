@@ -6,24 +6,24 @@ import com.tokopedia.attachvoucher.data.voucherv2.GetMerchantPromotionGetMVListR
 import com.tokopedia.attachvoucher.mapper.VoucherMapper
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class GetVoucherUseCase @Inject constructor(
-        private val gqlUseCase: GraphqlUseCase<GetMerchantPromotionGetMVListResponse>,
-        private val dispatchers: CoroutineDispatchers,
-        private val mapper: VoucherMapper
-) : CoroutineScope {
+    private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatcher,
+    private val mapper: VoucherMapper
+) : CoroutineUseCase<Map<String, Any>, GetMerchantPromotionGetMVListResponse>(dispatcher) {
 
     var hasNext = false
     var isLoading = false
 
     private var getVouchersJob: Job? = null
     private val paramFilter = "Filter"
-
-    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
     fun getVouchers(
             page: Int,
@@ -64,17 +64,11 @@ class GetVoucherUseCase @Inject constructor(
         isLoading = true
     }
 
-    fun cancelCurrentLoad() {
-        getVouchersJob?.cancel()
-        gqlUseCase.cancelJobs()
-        stopLoading()
-    }
-
-    fun safeCancel() {
-        if (coroutineContext.isActive) {
-            cancel()
-        }
-    }
+//    fun cancelCurrentLoad() {
+//        getVouchersJob?.cancel()
+//        gqlUseCase.cancelJobs()
+//        stopLoading()
+//    }
 
     private fun generateParams(page: Int, filter: Int): Map<String, Any> {
         val requestParam = ArrayMap<String, Any>()
@@ -182,5 +176,13 @@ class GetVoucherUseCase @Inject constructor(
             const val param = "per_page"
             const val default = 15
         }
+    }
+
+    override suspend fun execute(params: Map<String, Any>): GetMerchantPromotionGetMVListResponse {
+
+    }
+
+    override fun graphqlQuery(): String {
+        return privateVoucherQuery
     }
 }
