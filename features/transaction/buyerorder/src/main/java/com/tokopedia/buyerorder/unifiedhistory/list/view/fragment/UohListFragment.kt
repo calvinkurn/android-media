@@ -198,6 +198,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var paramUohOrder = UohListParam()
     private var orderList: UohListOrder.Data.UohOrders = UohListOrder.Data.UohOrders()
     private var recommendationList: List<RecommendationWidget> = listOf()
+    private var tdnBanner: TopAdsImageViewModel = TopAdsImageViewModel()
     private var responseFinishOrder: UohFinishOrder.Data.FinishOrderBuyer = UohFinishOrder.Data.FinishOrderBuyer()
     private var responseLsPrintFinishOrder: LsPrintData.Data.Oiaction = LsPrintData.Data.Oiaction()
     private lateinit var uohBottomSheetOptionAdapter: UohBottomSheetOptionAdapter
@@ -561,6 +562,19 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         observingAtcMulti()
         observingFlightResendEmail()
         observingTrainResendEmail()
+        observeTdnBanner()
+    }
+
+    private fun observeTdnBanner() {
+        uohListViewModel.tdnBannerResult.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    tdnBanner = it.data
+                }
+                is Fail -> {
+                }
+            }
+        })
     }
 
     private fun prepareLayout() {
@@ -728,6 +742,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                                 UohAnalytics.viewOrderListPage(trackingQueue, isLoggedIn, userId) } }
                     } else {
                         if (currPage == 1) {
+                            uohListViewModel.loadTdnBanner()
                             loadRecommendationList()
                         }
                     }
@@ -1246,7 +1261,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             emptyStatus?.let { emptyState -> UohTypeData(emptyState, UohConsts.TYPE_EMPTY) }?.let { uohTypeData -> listRecomm.add(uohTypeData) }
             listRecomm.add(UohTypeData(getString(R.string.uoh_recommendation_title), UohConsts.TYPE_RECOMMENDATION_TITLE))
             recommendationList.firstOrNull()?.recommendationItemList?.forEachIndexed { index, recommendationItem ->
-                if (index == TDN_INDEX) listRecomm.add(UohTypeData(TopAdsImageViewModel(), UohConsts.TDN_BANNER))
+                if (index == TDN_INDEX) listRecomm.add(UohTypeData(tdnBanner, UohConsts.TDN_BANNER))
                 listRecomm.add(UohTypeData(recommendationItem, UohConsts.TYPE_RECOMMENDATION_ITEM))
             }
             uohItemAdapter.addList(listRecomm)

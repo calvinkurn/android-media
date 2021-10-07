@@ -148,5 +148,6 @@ object UohConsts {
 
     const val TDN_INVENTORY_ID = "17"
     const val TDN_ADS_COUNT = 1
-    const val TDN_DIMEN_ID= 3
+    const val TDN_DIMEN_ID = 3
+    const val TDN_RADIUS = 16
 }
