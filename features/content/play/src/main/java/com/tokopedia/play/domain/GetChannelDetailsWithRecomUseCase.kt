@@ -1,5 +1,6 @@
 package com.tokopedia.play.domain
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -11,11 +12,37 @@ import javax.inject.Inject
 /**
  * Created by jegul on 20/01/21
  */
+/*
+multiple_like{
+  icon
+  background_color
+}
+ */
+@GqlQuery(GetChannelDetailsWithRecomUseCase.QUERY_NAME, GetChannelDetailsWithRecomUseCase.QUERY)
 class GetChannelDetailsWithRecomUseCase @Inject constructor(
         gqlRepository: GraphqlRepository
 ): GraphqlUseCase<ChannelDetailsWithRecomResponse>(gqlRepository) {
 
-    private val query = """
+    init {
+        setGraphqlQuery(GetChannelDetailsWithRecomUseCaseQuery.GQL_QUERY)
+        setCacheStrategy(GraphqlCacheStrategy
+                .Builder(CacheType.ALWAYS_CLOUD).build())
+        setTypeClass(ChannelDetailsWithRecomResponse::class.java)
+    }
+
+    sealed class ChannelDetailNextKey {
+
+        data class ChannelId(val channelId: String, val source: PlaySource) : ChannelDetailNextKey()
+        data class Cursor(val cursor: String) : ChannelDetailNextKey()
+    }
+
+    companion object {
+        private const val PARAM_CHANNEL_ID = "channelId"
+        private const val PARAM_SOURCE_TYPE = "sourceType"
+        private const val PARAM_SOURCE_ID = "sourceId"
+        private const val PARAM_CURSOR = "cursor"
+        const val QUERY_NAME = "GetChannelDetailsWithRecomUseCaseQuery"
+        const val QUERY = """
           query GetPlayChannelDetailWithRecom(${'$'}$PARAM_CHANNEL_ID: String, ${'$'}$PARAM_CURSOR: String, ${'$'}$PARAM_SOURCE_TYPE: String, ${'$'}$PARAM_SOURCE_ID: String){
               playGetChannelDetailsWithRecom(req: {
                 origin_id: ${'$'}$PARAM_CHANNEL_ID,
@@ -29,6 +56,8 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                 data {
                   id
                   title
+                  cover_url
+                  start_time
                   is_live
                   partner {
                     id
@@ -59,6 +88,15 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                   }
                   quick_replies
                   configurations {
+                    welcome_format{
+                        type
+                        copy
+                        background_color
+                        icon
+                    }
+                    real_time_notif {
+                        lifespan
+                    }
                     show_cart
                     show_pinned_product
                     ping_interval
@@ -96,6 +134,10 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                     room_background{
                       image_url
                     }
+                    multiple_like{
+                      icon
+                      background_color
+                    }
                   }
                   app_link
                   web_link
@@ -107,29 +149,11 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                     meta_description
                     is_show_button
                   }
+                  air_time
                 }
               }
             }
-        """.trimIndent()
-
-    init {
-        setGraphqlQuery(query)
-        setCacheStrategy(GraphqlCacheStrategy
-                .Builder(CacheType.ALWAYS_CLOUD).build())
-        setTypeClass(ChannelDetailsWithRecomResponse::class.java)
-    }
-
-    sealed class ChannelDetailNextKey {
-
-        data class ChannelId(val channelId: String, val source: PlaySource) : ChannelDetailNextKey()
-        data class Cursor(val cursor: String) : ChannelDetailNextKey()
-    }
-
-    companion object {
-        private const val PARAM_CHANNEL_ID = "channelId"
-        private const val PARAM_SOURCE_TYPE = "sourceType"
-        private const val PARAM_SOURCE_ID = "sourceId"
-        private const val PARAM_CURSOR = "cursor"
+        """
 
         fun createParams(nextKey: ChannelDetailNextKey): Map<String, Any> {
             return when (nextKey) {

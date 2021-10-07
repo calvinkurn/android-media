@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_sah_other_setting_balance"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools">
@@ -70,12 +71,11 @@
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/shimmer_shc_balance"
-            android:layout_width="@dimen/setting_zero_dp"
+            android:layout_width="@dimen/layout_lvl9"
             android:layout_height="@dimen/layout_lvl2"
             android:gravity="center_vertical"
             android:visibility="gone"
             app:corners="@integer/setting_shimmer_radius"
-            app:layout_constraintWidth_percent="0.38"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/guidelineVerticalRight"
@@ -86,14 +86,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.05"/>
+            app:layout_constraintGuide_begin="@dimen/spacing_lvl4"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guidelineVerticalRight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.95"/>
+            app:layout_constraintGuide_end="@dimen/spacing_lvl4"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

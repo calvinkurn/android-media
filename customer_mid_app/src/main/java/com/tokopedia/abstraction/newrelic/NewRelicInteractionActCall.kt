@@ -3,7 +3,6 @@ package com.tokopedia.abstraction.newrelic
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
-
 import com.newrelic.agent.android.NewRelic
 
 class NewRelicInteractionActCall : Application.ActivityLifecycleCallbacks {

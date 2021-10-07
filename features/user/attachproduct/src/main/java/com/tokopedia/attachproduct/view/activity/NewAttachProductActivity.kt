@@ -36,7 +36,7 @@ class NewAttachProductActivity : BaseSimpleActivity(), AttachProductContract.Act
     }
 
     private fun isUseNewFragment(): Boolean {
-        return remoteConfig.getBoolean(USE_NEW_FRAGMENT_REMOTE_CONFIG, true)
+        return remoteConfig.getBoolean(USE_NEW_FRAGMENT_REMOTE_CONFIG, false)
     }
 
     private fun setupParam() {

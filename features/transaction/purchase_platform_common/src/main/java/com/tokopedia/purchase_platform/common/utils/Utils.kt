@@ -73,8 +73,6 @@ fun convertToString(stringList: List<String>?): String {
 
 fun isNullOrEmpty(string: String?): Boolean = string.isNullOrEmpty()
 
-fun <T> isNullOrEmpty(list: List<T>?): Boolean = list.isNullOrEmpty()
-
 fun <T : Any> List<T>.each(action: T.() -> Unit) {
     for (item in this) {
         item.action()

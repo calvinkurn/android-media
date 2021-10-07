@@ -26,6 +26,19 @@ android {
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        consumerProguardFiles 'proguard-rules.pro'
+    }
+
+    buildTypes {
+        debug {
+            ext.enableHansel = project.hasProperty('hanselEnableDebug')
+            testCoverageEnabled (project.hasProperty('coverage'))
+        }
+        release {
+            ext.enableHansel = !project.hasProperty('hanselDisableRelease')
+            minifyEnabled false
+            consumerProguardFiles 'proguard-rules.pro'
+        }
     }
 
     androidExtensions {
@@ -44,7 +57,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
-    implementation projectOrAar(rootProject.ext.libraries.websocket)
     implementation projectOrAar(rootProject.ext.libraries.linker)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
@@ -62,6 +74,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+
+    implementation rootProject.ext.playServicesDependencies.core
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -99,15 +113,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.unifyDependencies.icons
 
-//    implementation 'com.alivc.component.encoder:AlivcCore:1.0'
-//    implementation 'com.aliyun.clientinforeport:AlivcReporter:1.0@aar'
-//    implementation ('com.alivc.videochat:live-pusher:1.0@aar') {
-//        exclude group: 'com.alivc'
-//    }
-
-    implementation rootProject.ext.tkpdInternalLibDependencies.alivcCorePusher
-    implementation rootProject.ext.tkpdInternalLibDependencies.alivcReporter
-    implementation rootProject.ext.tkpdInternalLibDependencies.livePusher
+    implementation rootProject.ext.tkpdInternalLibDependencies.larixBroadcaster
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.assertJCore

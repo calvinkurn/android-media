@@ -110,7 +110,12 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         BuyerOrderDetailBottomSheetManager(requireContext(), childFragmentManager)
     }
     private val stickyActionButtonHandler: BuyerOrderDetailStickyActionButtonHandler by lazy {
-        BuyerOrderDetailStickyActionButtonHandler(bottomSheetManager, cacheManager, getCartId(), navigator, viewModel)
+        BuyerOrderDetailStickyActionButtonHandler(
+            bottomSheetManager,
+            cacheManager,
+            navigator,
+            viewModel
+        )
     }
 
     // show this chat icon only if there's no `Tanya Penjual` button on the sticky button
@@ -182,15 +187,11 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         val productCopy = product.copy(isProcessing = true)
         adapter.updateItem(product, productCopy)
         viewModel.addSingleToCart(productCopy)
-        trackBuyAgainProduct(listOf(product))
+        trackBuyAgainProduct()
     }
 
     override fun onClickShipmentInfoTnC() {
         BuyerOrderDetailTracker.eventClickSeeShipmentInfoTNC(viewModel.getOrderStatusId(), viewModel.getOrderId())
-    }
-
-    private fun getCartId(): String {
-        return activity?.intent?.extras?.getString(BuyerOrderDetailIntentParamKey.PARAM_CART_STRING, "") ?: ""
     }
 
     private fun restoreFragmentState(savedInstanceState: Bundle) {
@@ -303,7 +304,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private fun observeAddSingleToCart() {
         viewModel.singleAtcResult.observe(viewLifecycleOwner) { result ->
             when (val requestResult = result.second) {
-                is Success -> onSuccessAddToCart(requestResult.data)
+                is Success -> {
+                    trackSuccessATC(listOf(result.first), requestResult.data)
+                    onSuccessAddToCart(requestResult.data)
+                }
                 is Fail -> onFailedAddToCart(requestResult.throwable)
             }
             adapter.updateItem(result.first, result.first.copy(isProcessing = false))
@@ -313,7 +317,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private fun observeAddMultipleToCart() {
         viewModel.multiAtcResult.observe(viewLifecycleOwner) { result ->
             when (result) {
-                is Success -> onSuccessAddToCart(result.data)
+                is Success -> {
+                    trackSuccessATC(viewModel.getProducts(), result.data)
+                    onSuccessAddToCart(result.data)
+                }
                 is Fail -> onFailedAddToCart(result.throwable)
             }
             stickyActionButton?.finishPrimaryActionButtonLoading()
@@ -488,14 +495,22 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         }
     }
 
-    private fun trackBuyAgainProduct(products: List<ProductListUiModel.ProductUiModel>) {
+    private fun trackBuyAgainProduct() {
         BuyerOrderDetailTracker.eventClickBuyAgain(
-                products,
-                viewModel.getOrderId(),
-                getCartId(),
-                viewModel.getShopId(),
-                viewModel.getShopName(),
-                viewModel.getShopType(),
-                viewModel.getUserId())
+            viewModel.getOrderId(),
+            viewModel.getUserId()
+        )
+    }
+
+    private fun trackSuccessATC(products: List<ProductListUiModel.ProductUiModel>, result: AtcMultiData) {
+        BuyerOrderDetailTracker.eventSuccessATC(
+            products,
+            result.atcMulti.buyAgainData.listProducts,
+            viewModel.getOrderId(),
+            viewModel.getShopId(),
+            viewModel.getShopName(),
+            viewModel.getShopType().toString(),
+            viewModel.getUserId()
+        )
     }
 }

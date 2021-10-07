@@ -2,7 +2,6 @@ package com.tokopedia.topupbills.telco.prepaid.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -138,6 +137,29 @@ class SharedTelcoPrepaidViewModelTest {
     }
 
     @Test
+    fun clearCatalogProductList() {
+        //given
+        val clientNumber = "08152832"
+        val multiTab = gson.fromJson(gson.JsonToString("multitab.json"), TelcoCatalogProductInputMultiTab::class.java)
+        val autoSelectProductId = 9
+
+        val result = HashMap<Type, Any>()
+        result[TelcoCatalogProductInputMultiTab::class.java] = multiTab
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
+        sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1", ArrayList(), autoSelectProductId, clientNumber)
+
+        // when
+        sharedTelcoPrepaidViewModel.clearCatalogProductList()
+
+        // then
+        val actualData = sharedTelcoPrepaidViewModel.productList.value
+        assert(actualData is Success)
+        assert((actualData as Success).data.isEmpty())
+
+    }
+
+    @Test
     fun getCatalogProductList_DataValid_SuccessGetData() {
         //given
         val clientNumber = "08152832"
@@ -147,7 +169,7 @@ class SharedTelcoPrepaidViewModelTest {
         val result = HashMap<Type, Any>()
         result[TelcoCatalogProductInputMultiTab::class.java] = multiTab
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1", ArrayList(), autoSelectProductId, clientNumber)
@@ -172,7 +194,7 @@ class SharedTelcoPrepaidViewModelTest {
         val errors = HashMap<Type, List<GraphqlError>>()
         errors[TelcoCatalogProductInputMultiTab::class.java] = listOf(errorGql)
         val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1", ArrayList(),clientNumber = clientNumber)

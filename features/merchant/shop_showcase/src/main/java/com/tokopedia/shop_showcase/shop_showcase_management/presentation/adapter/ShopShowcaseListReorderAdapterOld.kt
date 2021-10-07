@@ -1,6 +1,6 @@
 package com.tokopedia.shop_showcase.shop_showcase_management.presentation.adapter
 
-import android.content.Context
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -10,16 +10,14 @@ import androidx.core.view.MotionEventCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.touchhelper.ItemTouchHelperAdapter
 import com.tokopedia.design.touchhelper.OnStartDragListener
-import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
-import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.ShopShowcaseReorderListener
+import com.tokopedia.shop_showcase.databinding.ShopShowcaseItemReorderOldBinding
 
 class ShopShowcaseListReorderAdapterOld(
         val listener: ShopShowcaseReorderListener,
-        val onStartDragListener: OnStartDragListener?,
-        private val isMyShop: Boolean
+        val onStartDragListener: OnStartDragListener?
 ) : RecyclerView.Adapter<ShopShowcaseListReorderAdapterOld.ViewHolder>(), ItemTouchHelperAdapter {
 
     private var generatedSowcaseList: Int = 0
@@ -40,7 +38,12 @@ class ShopShowcaseListReorderAdapterOld(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(parent.inflateLayout(R.layout.shop_showcase_item_reorder_old))
+        val binding = ShopShowcaseItemReorderOldBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+        )
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -69,15 +72,15 @@ class ShopShowcaseListReorderAdapterOld(
         }
     }
 
-    inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        val context: Context
+    inner class ViewHolder(itemViewBinding: ShopShowcaseItemReorderOldBinding): RecyclerView.ViewHolder(itemViewBinding.root) {
         private var titleShowcase: TextView? = null
         private var buttonMove: ImageView? = null
 
         init {
-            context = itemView.context
-            titleShowcase = itemView.findViewById(R.id.tv_showcase_name)
-            buttonMove = itemView.findViewById(R.id.img_move)
+            itemViewBinding.apply {
+                titleShowcase = tvShowcaseName
+                buttonMove = imgMove
+            }
         }
 
         fun bindData(dataShowcase: ShopEtalaseModel, position: Int) {

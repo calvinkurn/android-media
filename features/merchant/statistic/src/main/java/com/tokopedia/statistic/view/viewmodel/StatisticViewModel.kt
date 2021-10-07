@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -124,7 +125,7 @@ class StatisticViewModel @Inject constructor(
     fun getUserRole() {
         launchCatchError(block = {
             val result: Success<List<String>> = Success(withContext(dispatcher.io) {
-                getUserRoleUseCase.get().params = GetUserRoleUseCase.createParam(userSession.userId.toIntOrZero())
+                getUserRoleUseCase.get().params = GetUserRoleUseCase.createParam(userSession.userId)
                 return@withContext getUserRoleUseCase.get().executeOnBackground()
             })
             _userRole.postValue(result)
@@ -182,7 +183,7 @@ class StatisticViewModel @Inject constructor(
         })
     }
 
-    fun getPostWidgetData(dataKeys: List<Pair<String, String>>) {
+    fun getPostWidgetData(dataKeys: List<TableAndPostDataKey>) {
         launchCatchError(block = {
             val result: Success<List<PostListDataUiModel>> = Success(withContext(dispatcher.io) {
                 getPostDataUseCase.get().params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -206,7 +207,7 @@ class StatisticViewModel @Inject constructor(
         })
     }
 
-    fun getTableWidgetData(dataKeys: List<Pair<String, String>>) {
+    fun getTableWidgetData(dataKeys: List<TableAndPostDataKey>) {
         launchCatchError(block = {
             val result: Success<List<TableDataUiModel>> = Success(withContext(dispatcher.io) {
                 getTableDataUseCase.get().params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)

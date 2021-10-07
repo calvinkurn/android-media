@@ -3,6 +3,8 @@ package com.tokopedia.topads.common.view.sheet
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
@@ -29,6 +31,11 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
     private var position = 0
     private var name = ""
     private var fromEdit = 99
+    private var fromDetail = false
+    private var fromRekomendasi = false
+    private var fromCreate = false
+    private var dailyBudget = ""
+    private var keywordBudget = ""
     private var userID: String = ""
     private var groupId: String = ""
     var onSaved: ((bid: String, pos: Int) -> Unit)? = null
@@ -46,24 +53,39 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
                 val result = number.toInt()
                 when {
                     result < minBid.toDouble() -> {
+                        min_suggested_bid.visibility = View.GONE
                         setMessageErrorField(getString(R.string.min_bid_error_new), minBid, true)
                     }
-                    result > maxBid.toDouble() -> {
-                        setMessageErrorField(getString(R.string.max_bid_error_new), maxBid, true)
-                    }
-
-                    result % 50 != 0 -> {
-                        setMessageErrorField(getString(R.string.topads_common_error_multiple_50), "50", true)
-                    }
-
-                    else -> {
+                    (result >= minBid.toDouble() && result < suggestedBid.toDouble()) -> {
                         budget.setError(false)
                         budget.setMessage("")
                         btnSave.isEnabled = true
+                        if(fromDetail)
+                           min_suggested_bid.visibility = View.VISIBLE
+                        checkResultIsMultipleOfFifty(result)
+                    }
+                    result > maxBid.toDouble() -> {
+                        min_suggested_bid.visibility = View.GONE
+                        setMessageErrorField(getString(R.string.max_bid_error_new), maxBid, true)
+                    }
+
+                    else -> {
+                        min_suggested_bid.visibility = View.GONE
+                        budget.setError(false)
+                        budget.setMessage("")
+                        btnSave.isEnabled = true
+                        checkResultIsMultipleOfFifty(result)
                     }
                 }
             }
         })
+    }
+
+    private fun checkResultIsMultipleOfFifty(result: Int) {
+        if(result % 50 != 0) {
+            min_suggested_bid.visibility = View.GONE
+            setMessageErrorField(getString(R.string.topads_common_error_multiple_50), "50", true)
+        }
     }
 
     private fun sendAnalyticsData() {
@@ -89,6 +111,12 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
         name = arguments?.getString(KEYWORD_NAME) ?: ""
         fromEdit = arguments?.getInt(FROM_EDIT) ?: 99
         groupId = arguments?.getString(GROUP_ID) ?: "0"
+        fromDetail = arguments?.getBoolean(FROM_DETAIL) ?: false
+        fromCreate = arguments?.getBoolean(FROM_CREATE) ?: false
+        fromRekomendasi = arguments?.getBoolean(FROM_REKOMENDASI) ?: false
+        dailyBudget = arguments?.getString(DAILY_BUDGET) ?: suggestedBid
+        keywordBudget = arguments?.getString(KEYWORD_BUDGET) ?: "0"
+
     }
 
     private fun setMessageErrorField(error: String, bid: String, bool: Boolean) {
@@ -99,6 +127,22 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
     }
 
     private fun initView() {
+        if(fromDetail) {
+            dailybudget_description.show()
+            if(fromRekomendasi) {
+                dailybudget_description.text = getString(R.string.topads_edit_bid_rekomendasi)
+            } else {
+                dailybudget_description.text = getString(R.string.topads_edit_bid_pencerian)
+            }
+            if(dailyBudget.toIntOrZero() < suggestedBid.toIntOrZero()) {
+                min_suggested_bid.visibility = View.VISIBLE
+            } else {
+                budget.setMessage("Rekomendasi Rp$suggestedBid")
+            }
+        } else {
+            budget.textFiedlLabelText.text = "Biaya Kata kunci"
+            dailybudget_description.hide()
+        }
         setCloseClickListener {
             dismiss()
         }
@@ -106,7 +150,11 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
             onSaved?.invoke(budget.textFieldInput.text.toString().removeCommaRawString(), position)
             dismiss()
         }
-        if(suggestedBid.toIntOrZero() < minBid.toIntOrZero()) {
+        if(fromDetail) {
+            budget.textFieldInput.setText(dailyBudget)
+        } else if(fromCreate) {
+            budget.textFieldInput.setText(keywordBudget)
+        } else if(suggestedBid.toIntOrZero() < minBid.toIntOrZero()) {
             budget.textFieldInput.setText(minBid)
         } else {
             budget.textFieldInput.setText(suggestedBid)
@@ -123,6 +171,11 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
         private const val ITEM_POSITION = "pos"
         private const val FROM_EDIT = "fromEdit"
         private const val GROUP_ID = "group_id"
+        private const val FROM_DETAIL = "fromDetail"
+        private const val FROM_CREATE = "fromCreate"
+        private const val FROM_REKOMENDASI = "fromRekomendasi"
+        private const val DAILY_BUDGET = "daily_budget"
+        private const val KEYWORD_BUDGET = "keywordBudget"
 
         fun createInstance(data: Bundle): TopAdsEditKeywordBidSheet {
             return TopAdsEditKeywordBidSheet().apply {
@@ -133,16 +186,26 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getDatafromArguments()
+        if(!fromDetail) {
+            setDefaultValues()
+        } else {
+            showHeader = true
+            showCloseIcon = true
+            isKeyboardOverlap = false
+        }
         initChildLayout()
         super.onCreate(savedInstanceState)
 
     }
 
-    private fun initChildLayout() {
-        contentView = View.inflate(context, R.layout.topads_common_edit_key_bid_sheet, null)
+    private fun setDefaultValues() {
         showHeader = false
         showCloseIcon = false
         isKeyboardOverlap = false
+    }
+
+    private fun initChildLayout() {
+        contentView = View.inflate(context, R.layout.topads_common_edit_key_bid_sheet, null)
         setChild(contentView)
     }
 }

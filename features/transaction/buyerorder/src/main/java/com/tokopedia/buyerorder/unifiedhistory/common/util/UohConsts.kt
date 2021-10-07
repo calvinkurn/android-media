@@ -58,6 +58,7 @@ object UohConsts {
     const val TYPE_RECOMMENDATION_ITEM = "recommendation"
 
     const val TYPE_ACTION_BUTTON_LINK = "link"
+    const val TYPE_ACTION_CANCEL_ORDER = "cancelOrder"
     const val GQL_FINISH_ORDER = "gql-mp-finish"
     const val GQL_ATC = "gql-mp-atc"
     const val GQL_TRACK = "gql-mp-track"
@@ -112,7 +113,6 @@ object UohConsts {
     const val E_TIKET = "E-tiket & E-voucher Aktif"
     const val DALAM_PROSES = "Dalam Proses"
     const val VERTICAL_CATEGORY_MP = "mp_pym,marketplace"
-    const val VERTICAL_CATEGORY_DIGITAL = "air_pdam,angsuran_kredit,belajar,biaya_pendidikan,bpjs,invoicing,samsat,gas_pgn,internet_tv_kabel,iuran_properti,tagihan_cc,kartu_prakerja,listrik_pln,m_tix,pajak,paket_data,pasca_bayar,penerimaan_negara,premi_asuransi,pulsa,retribusi,roaming,streaming,telkom,uang_elektronik,upgrade_internet_tv,voucher_game,bridestory_pay,ovo"
     const val VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT = "deals,event,flight,train,hotel"
     const val VERTICAL_CATEGORY_EVENTS = "event"
     const val VERTICAL_CATEGORY_DEALS = "deals"

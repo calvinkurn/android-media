@@ -9,7 +9,6 @@
         android:id="@+id/district_recommendation_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N0"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:orientation="vertical">
@@ -23,7 +22,7 @@
             android:descendantFocusability="beforeDescendants"
             android:focusableInTouchMode="true"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <include
                 android:id="@+id/card_address"

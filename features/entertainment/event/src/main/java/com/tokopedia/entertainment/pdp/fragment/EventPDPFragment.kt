@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -70,6 +69,7 @@ import kotlinx.android.synthetic.main.bottom_sheet_event_pdp_open_hour.view.*
 import kotlinx.android.synthetic.main.fragment_event_pdp.*
 import kotlinx.android.synthetic.main.partial_event_pdp_price.*
 import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.*
+import java.lang.ref.WeakReference
 import java.util.*
 import javax.inject.Inject
 
@@ -83,6 +83,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     var listHoliday: List<Legend> = arrayListOf()
     var productDetailData: ProductDetailData = ProductDetailData()
     var selectedDate = ""
+    private lateinit var eventShare: EventShare
 
     @Inject
     lateinit var eventPDPViewModel: EventPDPViewModel
@@ -230,7 +231,15 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     }
 
     private fun loadPrice(productDetailData: ProductDetailData) {
-        tg_event_pdp_price.text = CurrencyFormatter.getRupiahFormat(productDetailData.salesPrice.toInt())
+        val price = productDetailData.salesPrice.toInt()
+        tg_event_pdp_price.apply {
+            text = if(price != ZERO_PRICE) {
+                 CurrencyFormatter.getRupiahFormat(productDetailData.salesPrice.toInt())
+            } else {
+                 resources.getString(R.string.ent_free_price)
+            }
+        }
+
     }
 
     private fun renderScanner(isValidated: Boolean){
@@ -493,10 +502,10 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
     fun share(productDetailData: ProductDetailData) {
         activity?.let { activity ->
-            context?.let { context ->
-                val titleShare = getString(R.string.ent_pdp_share_title, productDetailData.title)
-                EventShare(activity).shareEvent(productDetailData, titleShare, { showShareLoading() }, { hideShareLoading() })
-            }
+            val context = WeakReference<Activity>(activity)
+            if(!::eventShare.isInitialized) eventShare = EventShare(context)
+            val titleShare = getString(R.string.ent_pdp_share_title, productDetailData.title)
+            eventShare.shareEvent(productDetailData, titleShare, { showShareLoading() }, { hideShareLoading() })
         }
     }
 
@@ -560,6 +569,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         const val REQUEST_CODE_LOGIN_WITHOUT_DATE = 101
 
         const val DATE_LONG_VALUE = 1000
+        const val ZERO_PRICE = 0
 
         fun newInstance(urlPDP: String) = EventPDPFragment().also {
             it.arguments = Bundle().apply {

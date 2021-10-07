@@ -39,6 +39,9 @@ object ApplinkConstInternalTopAds {
 
     const val TOPADS_AUTOADS_CREATE = "${INTERNAL_TOPADS}/create-autoads"
 
+
+    const val TOPADS_AUTOADS_CREATE_MANUAL_ADS = "${INTERNAL_TOPADS}/create-manual-ads"
+
     //onboarding
     const val TOPADS_CREATE_ADS = "${INTERNAL_TOPADS}/create-ads"
 

@@ -1,5 +1,7 @@
 package com.tokopedia.smartbills.util
 
+import android.net.Uri
+import android.os.Bundle
 import android.view.View
 import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.smartbills.data.RechargeBills
@@ -107,5 +109,22 @@ object RechargeSmartBillsMapper {
         }
 
         return section
+    }
+
+    fun parseQuery(textToFind: String, uriString: String?,
+                           bundle: Bundle?): String{
+        var text: String? = ""
+        var uri: Uri = Uri.EMPTY
+        if(bundle != null){
+            if(bundle.getString(textToFind) != null){
+                text= bundle.getString(textToFind, "")
+                return text
+            }
+        }
+
+        uri = Uri.parse(uriString)
+        text = uri.getQueryParameter(textToFind)
+
+        return text ?: ""
     }
 }

@@ -340,6 +340,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     shopName = shopInfo.shopCore.name
                     shopLocation = shopInfo.location
                     shopAva = shopInfo.shopAssets.avatar
+                    shopBadge = shopInfo.shopTierBadgeUrl
                 }
             }
 
@@ -371,9 +372,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
             updateData(ProductDetailConstant.MVC) {
                 mvcSummaryData?.run {
-                    title = it.merchantVoucherSummary.title.firstOrNull()?.text ?: ""
-                    subTitle = it.merchantVoucherSummary.subTitle
-                    imageURL = it.merchantVoucherSummary.imageURL
+                    animatedInfos = it.merchantVoucherSummary.animatedInfos
                     isShown = it.merchantVoucherSummary.isShown
                     shopId = it.shopInfo.shopCore.shopID
                 }
@@ -409,6 +408,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 productReviewMap?.run {
                     listOfReviews = it.helpfulReviews
                     imageReviews = it.imageReviews?.imageReviewItems
+                    formattedRating = it.rating.ratingScore
+                    totalRatingCount = it.rating.totalRating
+                    totalReviewCount = it.rating.totalReviewTextAndImage
                 }
             }
         }

@@ -24,6 +24,7 @@ import com.tokopedia.sellerhomecommon.utils.ChartXAxisLabelFormatter
 import com.tokopedia.sellerhomecommon.utils.ChartYAxisLabelFormatter
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
+import com.tokopedia.unifycomponents.NotificationUnify
 import kotlinx.android.synthetic.main.shc_multi_line_graph_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_partial_line_graph_state_empty.view.*
@@ -85,6 +86,20 @@ class MultiLineGraphViewHolder(
                 position.plus(1)
             }
             itemView.rvShcGraphMetrics?.smoothScrollToPosition(mPosition)
+        }
+    }
+
+    private fun setTagNotification(tag: String) {
+        val isTagVisible = tag.isNotBlank()
+        with(itemView) {
+            notifTagMultiLineGraph.showWithCondition(isTagVisible)
+            if (isTagVisible) {
+                notifTagMultiLineGraph.setNotification(
+                    tag,
+                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COLOR_TEXT_TYPE
+                )
+            }
         }
     }
 
@@ -182,6 +197,7 @@ class MultiLineGraphViewHolder(
             ImageHandler.loadImageWithId(imgWidgetOnError, com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
         }
 
+        setTagNotification(element.tag)
         setupTooltip(element)
     }
 
@@ -241,6 +257,7 @@ class MultiLineGraphViewHolder(
             scrollMetricToPosition(metricPosition)
 
             setupCta(element)
+            setTagNotification(element.tag)
             setupTooltip(element)
 
             addOnImpressionListener(element.impressHolder) {
@@ -384,9 +401,9 @@ class MultiLineGraphViewHolder(
 
         lineChartDataSets.forEach {
             if (lineChartData != it) {
-                val maxValueCurrent = lineChartData?.yAxisLabel?.maxBy { axis -> axis.value }?.value
+                val maxValueCurrent = lineChartData?.yAxisLabel?.maxByOrNull { axis -> axis.value }?.value
                         ?: 0f
-                val maxValue = it.yAxisLabel.maxBy { axis -> axis.value }?.value ?: 0f
+                val maxValue = it.yAxisLabel.maxByOrNull { axis -> axis.value }?.value ?: 0f
 
                 if (maxValue >= maxValueCurrent) {
                     lineChartData = it

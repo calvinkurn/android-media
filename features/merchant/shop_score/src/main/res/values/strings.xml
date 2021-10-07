@@ -42,26 +42,22 @@
 
     <string name="title_penalty_date_filter">Pilih tanggal</string>
 
-    <string name="desc_transition_period_relief">Hingga %s, Power Merchant-mu akan tetap aktif walaupun skor di bawah 60. Setelah itu, pertahankan skor min. 60 agar tetap aktif, ya!</string>
-
-
     <string name="title_header_pm_section">Status tokomu saat ini</string>
     <string name="title_content_pm_section">Nikmati berbagai keuntungan eksklusif dengan gabung PM PRO, yuk!</string>
-    <string name="desc_content_pm_section">Tingkatkan Performa min. 70 dengan memperhatikan tips untuk capai Performa maksimal dan daftar PM PRO, ya. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
-
+    <string name="desc_content_pm_not_eligible_pm_pro">Penuhi semua syarat untuk bergabung PM PRO dan dapatkan berbagai keuntungan eksklusifnya! &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
     <string name="title_header_rm_section">Selamat! Karena Performamu, kamu bisa daftar Power Merchant</string>
 
     <!--> PM Pro -->
     <string name="title_content_pm_pro_section">Kamu dapat menikmati berbagai keuntungan eksklusif Power Merchant PRO!</string>
-    <string name="desc_content_pm_pro_section">Pertahankan Performa min. 70 dengan memperhatikan tips untuk capai Performa maksimal, ya. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
+    <string name="desc_content_pm_pro_section">Pertahankan Performa min. 70 dengan memperhatikan tips untuk capai Performa maksimal, ya.</string>
+    <string name="desc_content_pm_to_pm_pro_section">Pertahankan Performa min. 70 dengan memperhatikan tips untuk capai Performa maksimal dan daftar PM PRO, ya.</string>
 
-    <string name="title_potential_pm_pro">Selamat, berdasarkan Performamu, kamu terpilih menjadi Power Merchant Pro!</string>
-    <string name="desc_potential_pm_pro">Hingga %s, Power Merchant akan tetap aktif walaupun skor di bawah 60, ya.</string>
+    <string name="title_potential_pm_pro">Selamat, berdasarkan Performamu, kamu terpilih menjadi Power Merchant PRO!</string>
 
     <string name="title_benefit_pm_pro">Toko dengan Power Merchant PRO punya keuntungan eksklusif:</string>
-    <string name="title_item_benefit_1_pm_pro">Bebas Ongkir dengan biaya lebih rendah</string>
-    <string name="title_item_benefit_2_pm_pro">Dapat badge Power Merchant Pro untuk tingkatkan kepercayaan pembeli</string>
-    <string name="title_item_benefit_3_pm_pro">Dapat prioritas dukungan marketing</string>
+    <string name="title_item_benefit_1_pm_pro">Bebas ongkir dengan biaya layanan lebih ringan</string>
+    <string name="title_item_benefit_2_pm_pro">Dapat badge Power Merchant PRO untuk tingkatkan kepercayaan pembeli</string>
+    <string name="title_item_benefit_3_pm_pro">Nikmati layanan prioritas Tokopedia Care</string>
 
     <!-- Example Text for display preview -->
     <string name="example_score_performance">80</string>
@@ -69,9 +65,8 @@
     <string name="example_title_detail_penalty">Manipulasi transaksi</string>
     <string name="example_date_penalty_detail">Tanggal pelanggaran 31 Des 2020</string>
     <string name="example_date_result_detail_penalty">Mulai aktif pada: 31 Des 2020</string>
-    <string name="example_regarding_penalty_pm_value">Power Merchant Gold</string>
+    <string name="example_regarding_penalty_pm_value">Power Merchant</string>
     <string name="example_content_penalty">Penalti adalah pengurangan nilai Performa karena pelanggaran dalam waktu tertentu. Pelajari Selengkapnya</string>
-    <string name="desc_non_eligible_power_merchant">Batas skor untuk bergabung adalah 60. Pelajari selengkapnya di pengaturan Power Merchant.</string>
     <string name="example_desc_pm_potential">Power Merchant berpotensi meningkatkan pesanan hingga 5 kali lipat</string>
     <string name="see_all_benefit">Lihat Semua Keuntungannya</string>
     <string name="title_non_eligible_status_power_merchant">Gabung Power Merchant untuk dapatkan berbagai keuntungan menarik!</string>
@@ -88,7 +83,6 @@
     <string name="start_date">Mulai dari</string>
     <string name="select_date">Pilih Tanggal</string>
     <string name="end_date">Sampai dengan</string>
-    <string name="title_transition_period_relief">Keringanan masa transisi</string>
     <string name="btn_show_penalty">Tampilkan Pelanggaran</string>
 
     <string name="btn_call_help_center">Hubungi Pusat Bantuan</string>
@@ -96,16 +90,15 @@
     <string name="ticker_deduction_point_penalty">Kamu punya %s poin penalti. Lihat detail &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
     <string name="content_penalty_label">Penalti adalah pengurangan nilai Performa karena pelanggaran dalam waktu tertentu. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
     <string name="desc_pm_potential">Power Merchant berpotensi meningkatkan pesanan hingga <![CDATA[<b>5 kali lipat</b>]]></string>
-    <string name="title_shop_pm_potential">Toko dengan Power Merchant berpotensi:</string>
     <string name="text_item_potential_pm_benefit_1">Menerima pesanan lebih banyak <![CDATA[<b>5 kali lipat</b>]]></string>
-    <string name="text_item_potential_pm_benefit_2">Meningkatkan penghasilan hingga <![CDATA[<b>5,5 kali lipat</b>]]></string>
-    <string name="text_item_potential_pm_benefit_3">Lebih sering dikunjungi pembeli hingga <![CDATA[<b>4,3 kali lipat</b>]]></string>
     <string name="title_calculation_shop_performance">Perhitungan</string>
     <string name="title_tips_shop_performance">Tips</string>
     <string name="desc_calculation_shop_performance">Skor melambangkan kualitas layanan dan produkmu. Target disesuaikan dengan levelmu.</string>
     <string name="update_calculation_shop_performance">Skor dihitung dari median Performa skor dalam 90 hari terakhir dan akan diperbarui setiap minggunya (Senin).</string>
     <string name="desc_calculation_success_order">Persentase jumlah pesanan berhasil dibanding total pesanan masuk.</string>
-    <string name="desc_calculation_speed_reply_chat">Waktu yang diperlukan Seller untuk membalas Chat dan diskusi.</string>
+    <string name="desc_calculation_speed_reply_chat">Waktu yang diperlukan Seller untuk membalas Chat dan diskusi.
+            &lt;br /&gt;&lt;br /&gt;Setting awal jam operasional Tokopedia adalah 09.00 - 18.00, namun jka toko sudah memiliki jam operasional, maka perhitungan chat dan diskusi akan mengikuti jam operasional toko. Untuk chat tetap memperhitungkan weekend, sementara diskusi yang masuk di weekend tidak diperhitungkan.
+    </string>
     <string name="desc_calculation_level_reply_chat">Persentase jumlah chat dan diskusi yang dibalas oleh Seller dibandingkan total chat (50%) dan diskusi (50%) yang masuk.</string>
     <string name="desc_calculation_speed_process_order">Waktu yang diperlukan Seller untuk memproses pesanan, dari waktu pesanan masuk hingga resi terkonfirmasi.</string>
     <string name="desc_calculation_review_product">Persentase ulasan dengan bintang 4+ dalam waktu 90 hari dibandingkan dengan total ulasan yang masuk.</string>
@@ -117,26 +110,23 @@
     <string name="title_due_to_violations">Akibat Pelanggaran</string>
 
     <string name="desc_tips_success_order">Pastikan informasi produk dan jumlah stok produkmu sesuai untuk menghindari pembatalan pesanan.</string>
-    <string name="desc_tips_speed_reply_chat">Berlaku untuk chat (40%) dan diskusi (60%).
-        &lt;br /&gt;&lt;br /&gt;Untuk perhitungan chat, setting awal jam operasional Tokopedia adalah 09.00 - 18.00 (termasuk weekend), namun jka toko sudah memiliki jam operasional, maka perhitungan chat akan mengikuti jam operasional toko.</string>
-    <string name="desc_tips_level_reply_chat">Pastikan Seller menjadi pihak terakhir yang membalas pesan, jika tidak, maka akan terhitung sebagai chat yang tidak dibalas.</string>
+    <string name="desc_tips_level_reply_chat">Pastikan Seller menjadi pihak terakhir yang membalas pesan, jika tidak, maka akan terhitung sebagai chat yang tidak dibalas. Pastikan diskusi dibalas selambat-lambatnya dalam waktu 7 hari semenjak diskusi diterima. Diskusi yang dibalas melebihi 7 hari akan dihitung sebagi diskusi yang tidak dibalas.</string>
     <string name="desc_tips_speed_process_order">Jam operasional berdasarkan pengiriman:
         &lt;br /&gt;Konvensional: 09.00 - 18.00 (tidak termasuk weekend)
         &lt;br /&gt;Instan: 09.00 - 17.00
         &lt;br /&gt;
         &lt;br /&gt;Tidak termasuk untuk produk pre-order, ya.</string>
-    <string name="desc_tips_review_product">Pastikan pembeli memberikan ulasan produk setelah transaksi selesai, ya.</string>
+    <string name="desc_tips_review_product">Pastikan pembeli memberikan ulasan produk setelah transaksi selesai, ya. Batas waktu perubahan ulasan yang diterima 3 hari sejak ulasan diberikan. Apabila pembeli merubah ulasan dalam waktu 3 hari maka ulasan terakhir yang akan diambil. Jika pembeli merubah ulasan diatas 3 hari, ulasan awal yang akan diambil.</string>
     <string name="desc_tips_total_buyer">Gunakan fitur TopAds dan Broadcast Chat untuk menarik pembeli berbelanja.</string>
-    <string name="desc_tips_open_seller_app">Dihitung per hari setiap Seller membuka Tokopedia Seller melalui Seller App (Android), Tokopedia App (iOS dan Android) atau website Tokopedia Seller. </string>
+    <string name="desc_tips_open_seller_app">Dihitung per hari setiap Seller membuka Tokopedia Seller melalui Seller App (Android) atau website Tokopedia Seller.</string>
 
     <string name="read_tips_more_info_performance_detail">Yuk, baca tips lebih lanjut &lt;a href="%s"&gt;di sini!&lt;/a&gt;</string>
     <string name="set_hour_operational_shop_performance_detail">Atur jam operasional tokomu &lt;a href="%s"&gt;di sini!&lt;/a&gt;</string>
     <string name="read_tips_for_send_fast_order">Yuk, baca tips untuk cepat kirim pesanan &lt;a href="%s"&gt;di sini!&lt;/a&gt;</string>
 
-
     <string name="title_income_information_level">Pendapatan:</string>
     <string name="title_product_sold_information_level">Produk Terjual:</string>
-
+    <string name="title_level_pop_up_end_tenure">Level %s</string>
     <string name="title_level_1">Level 1</string>
     <string name="title_level_2">Level 2</string>
     <string name="title_level_3">Level 3</string>
@@ -154,7 +144,7 @@
     <string name="desc_tenure_new_seller">Skor akan disesuaikan berdasarkan Performa setelah 90 hari. Tingkatkan Performa dengan baca tips, ya!</string>
 
     <string name="title_new_seller_level_0">Belum ada level &amp; skor untuk tokomu</string>
-    <string name="desc_new_seller_level_0">Level &amp; skor Performa Tokomu akan ditampilkan jika sudah 90 hari bergabung. Kamu akan dapat proyeksi skor di hari ke-60, pada %s, ya.</string>
+    <string name="desc_new_seller_level_0">Level dan skor Performa Toko akan ditampilkan di sini jika kamu sudah bergabung selama 90 hari. Namun, kamu akan dapat proyeksi skor di hari Senin pertama setelah bergabung, ya.</string>
     <string name="title_keep_up_level_1">Tingkatkan terus kualitas tokomu, yuk!</string>
     <string name="desc_keep_up_level_1">Ayo tingkatkan terus kualitas layanan dan penjualan tokomu dengan menggunakan berbagai fitur dan promosi!</string>
     <string name="title_good_level_1">Kualitas layanan tokomu sudah bagus!</string>
@@ -258,27 +248,26 @@
     <string name="score_parameter_shop_score_3">Max. -15</string>
 
     <!-- this is only for Existing & New Sellers -->
-    <string name="title_changes_shop_score_during_transition">Perubahan apa saja yang akan terjadi di toko saya pada masa transisi?</string>
-    <string name="desc_changes_shop_score_during_transition">Pada periode 90 hari masa transisi, beberapa perubahan sudah berlaku efektif. Namun Tokopedia juga menerapkan waktu penyesuaian untuk memastikan bahwa Seller terbiasa dengan skema yang baru terlebih dahulu, sebagai contohnya:
-        &lt;br /&gt;- Tidak adanya penurunan Power Merchant ke penonaktifan PM
-        &lt;br /&gt;- Tidak adanya penurunan grade Power Merchant
-        &lt;br /&gt;- Seller mendapatkan grade Power Merchant dari Reputasi
-    </string>
 
     <string name="title_calculate_shop_performance_if_parameter_value_missing">Bagaimana Tokopedia menghitung nilai skor Performa Toko jika nilai parameter saya tidak ada? (Misalnya: tidak ada chat masuk)</string>
     <string name="desc_calculate_shop_performance_if_parameter_value_missing">Seller akan mendapatkan nilai sementara yang dihitung berdasarkan korelasi dari parameternya yang lain. Oleh karena itu, nilai sementara yang akan didapatkan akan berbeda-beda nominalnya antara satu Seller dengan yang lainnya.</string>
 
     <string name="title_calculate_shop_performance_for_new_seller">Bagaimana perhitungan skor Performa Toko untuk Seller baru (toko di bawah 90 hari)?</string>
-    <string name="desc_calculate_shop_performance_for_new_seller">Seller baru tidak akan mendapatkan perhitungan Shop Score sampai usia toko >90 hari. Namun Seller baru tetap dapat mendaftarkan diri sebagai Power Merchant dengan hanya melakukan KYC.</string>
+    
+    <string name="title_shop_score_affect_os">Apakah Performa Toko mempengaruhi status keanggotaan Official Store?</string>
+    <string name="desc_shop_score_affect_os">Saat ini, Performa Toko tidak mempengaruhi status keanggotaan Official Store.</string>
 
     <string name="title_shop_performance_become_existing_seller">Performa Tokomu akan efektif berlaku setelah 90 hari bergabung, di %s</string>
+    <string name="desc_shop_performance_timer_after_first_monday_tenure">Kamu sudah dapat proyeksi Performa Toko dan akan efektif berlaku setelah 90 hari, di %s</string>
+    <string name="desc_shop_performance_timer_after_first_monday">Kamu sudah dapat proyeksi Performa Toko dan efektif berlaku setelah 90 hari, di %s. Pelajari dulu, yuk!</string>
 
-    <string name="shop_performance_learn">Pelajari Performa Toko</string>
+    <string name="shop_performance_learn">Pelajari Sekarang</string>
     <string name="title_tv_watch">Tonton Video</string>
     <string name="desc_tooltip_information_next_update">Level toko akan dinilai dari 90 hari terakhir dan akan di-update setiap bulan di hari Senin pertama.</string>
     <string name="item_detail_performance_value">%1s %2s</string>
     <string name="item_detail_performance_target">Target %s</string>
-    <string name="desc_potential_eligible_power_merchant">Hingga %s, Power Merchant akan tetap aktif walaupun skor di bawah 60, ya.</string>
+    <string name="desc_potential_eligible_power_merchant">Batas skor PM adalah 60. Daftar Power Merchant dan nikmati berbagai keuntungannya, yuk!</string>
+    <string name="desc_potential_rm_eligible_power_merchant_pro">Batas skor PM PRO adalah 70. Daftar PM PRO dan nikmati berbagai keuntungan eksklusifnya, ya!</string>
 
     <string name="shop_performance_level_header">Level %s</string>
     
@@ -293,14 +282,40 @@
     <string name="title_coachmark_shop_score_2">Pelajari Parameter Skornya, yuk!</string>
     <string name="desc_coachmark_shop_score_2">Parameter Skor akan memengaruhi skor tokomu dan akan diperbarui setiap minggu. Klik di setiap Parameter untuk lihat detailnya, ya.</string>
 
-    <string name="title_coachmark_shop_score_3">Lihat status tokomu dulu, yuk!</string>
+    <string name="title_coachmark_shop_score_3">Lihat status tokomu di sini!</string>
     <string name="desc_coachmark_shop_score_3">Kamu bisa cek status dan potensi grade Power Merchant untuk tokomu di sini, ya!</string>
     <string name="title_penalty_filter_bottom_sheet">Filter</string>
     <string name="reset_filter_penalty">Reset</string>
     <string name="close_youtube">Close</string>
-    <string name="desc_pm_section_new_seller">Pertahankan Performa Tokomu agar bisa memberikan yang terbaik untuk pembelimu!</string>
     <string name="title_header_rm_section_new_seller">Gabung ke Power Merchant untuk tarik banyak calon pembeli, yuk!</string>
     <string name="desc_potential_rm_section_new_seller"><![CDATA[Tingkatkan penjualan & kepercayaan pembeli dengan berbagai fitur untuk memaksimalkan bisnis.]]></string>
     <string name="text_see_all_benefit_pm_pro">Lihat Semua Keuntungannya</string>
 
+    <!-- RM not eligible for PM/PM PRO -->
+    <string name="desc_rm_not_eligible_all">Batas skor untuk bergabung Power Merchant adalah 60 dan Power Merchant PRO 70, ya.</string>
+    <string name="title_item_rm_section_not_eligible_all">Toko dengan Power Merchant punya keuntungan:</string>
+    <string name="title_item_rm_section_pm_benefit_1">Badge toko eksklusif Power Merchant atau Power Merchant PRO</string>
+    <string name="title_item_rm_section_pm_benefit_2">Bebas Ongkir dengan biaya layanan lebih ringan</string>
+    <string name="title_item_rm_section_pm_benefit_3">Akses fitur promosi eksklusif untuk tarik pembeli</string>
+    <string name="title_parameter_relief_new_seller">Keringanan parameter untuk Seller baru</string>
+    <string name="desc_new_seller_parameter_relief">Kamu akan mendapatkan keringanan untuk parameter ini selama 59 hari bergabung.</string>
+    <string name="title_new_seller_end_tenure_pop_up">Selamat, kamu sudah melewati 90 hari berjualan di Tokopedia!</string>
+    <string name="desc_result_new_seller_end_tenure_pop_up">Ini hasil level dan skor Performa Tokomu:</string>
+    <string name="title_tips_increase_performance">Pelajari dan tingkatkan Performa supaya menarik banyak calon pembeli, yuk!</string>
+
+    <!-- New Seller Shop Score -->
+    <string name="desc_calculate_shop_performance_for_new_seller">Seller baru akan mendapatkan proyeksi Performa Toko di Senin pertama setelah Seller membuka toko di Tokopedia dengan periode cut-off di hari Sabtu. Skor Performa Toko Seller akan aktif secara efektif setelah usia toko  lebih dari 90 hari.</string>
+
+    <string name="title_time_adjustment_what_relief_for_new_seller">Apa itu waktu penyesuaian (59 hari pertama) dan keringanan apa yang saya dapatkan?</string>
+    <string name="desc_time_adjustment_what_relief_for_new_seller">Terhitung 59 hari setelah pertama kali bergabung, Seller akan mendapatkan keringanan untuk penilaian 2 parameter skor, yaitu parameter “Jumlah Pembeli” dan “Membuka Tokopedia Seller selama 90 hari”. Untuk kedua parameter tersebut, Seller akan mendapatkan nilai keringanan berupa nilai tengah, di mana nilai tersebut tidak akan berubah selama 59 hari masa penyesuaian. Setelah 59 hari masa penyesuaian, nilai keringanan pada kedua parameter tersebut akan digantikan oleh nilai sebenarnya.</string>
+
+    <string name="title_relief_parameter_for_new_seller_bottom_sheet">Keringanan parameter untukmu</string>
+    <string name="desc_relief_parameter_for_new_seller_bottom_sheet">Selama 59 hari pertama berjualan, kamu akan mendapatkan keringanan berupa nilai dasar dari Tokopedia, khusus untuk parameter Jumlah Pembeli dan Membuka Tokopedia Seller.
+    &lt;br /&gt;&lt;br /&gt;Tokomu akan dapat keringanan hingga: %s</string>
+    <string name="title_oke_understand">Oke, Saya Mengerti</string>
+    <string name="title_score_new_seller_label">Skor:</string>
+    <string name="title_warning_new_seller_shop_score_pm_pro">Karena skormu di bawah 60, status Power Merchant PRO kamu nonaktif</string>
+    <string name="title_warning_new_seller_shop_score_pm">Karena skormu di bawah 60, status Power Merchant kamu nonaktif</string>
+    <string name="desc_warning_new_seller_shop_score_pm_pro">Tingkatkan kualitas toko untuk tetap jadi PM PRO, ya.</string>
+    <string name="desc_warning_new_seller_shop_score_pm">Tingkatkan kualitas toko untuk tetap jadi PM, ya.</string>
 </resources>

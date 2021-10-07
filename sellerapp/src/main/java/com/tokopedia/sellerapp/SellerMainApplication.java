@@ -43,6 +43,7 @@ import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
+import com.tokopedia.sellerapp.anr.AnrActivityLifecycleCallback;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
@@ -298,6 +299,7 @@ public class SellerMainApplication extends SellerRouterApplication implements
         registerActivityLifecycleCallbacks(new MediaLoaderActivityLifecycle(this));
         registerActivityLifecycleCallbacks(new PageInfoPusherSubscriber());
         registerActivityLifecycleCallbacks(new SellerFeedbackScreenshot(getApplicationContext()));
+        registerActivityLifecycleCallbacks(new AnrActivityLifecycleCallback());
     }
 
     @Override
@@ -366,12 +368,6 @@ public class SellerMainApplication extends SellerRouterApplication implements
     private Boolean getSliceRemoteConfig() {
         return remoteConfig != null
                 && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_SELLER, false);
-    }
-
-
-    @Override
-    public Class<?> getDeeplinkClass() {
-        return DeepLinkActivity.class;
     }
 
 }

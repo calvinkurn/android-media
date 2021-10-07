@@ -5,11 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.databinding.ItemLabelBinding
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
-import com.tokopedia.unifycomponents.Label
+import com.tokopedia.utils.view.binding.viewBinding
 
-class SomDetailLabelAdapter(private var labels: List<SomDetailOrder.Data.GetSomDetail.LabelInfo>) : RecyclerView.Adapter<SomDetailLabelAdapter.ViewHolder>() {
+class SomDetailLabelAdapter(private var labels: List<SomDetailOrder.Data.GetSomDetail.LabelInfo>) :
+    RecyclerView.Adapter<SomDetailLabelAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_label, parent, false)
         return ViewHolder(view)
@@ -27,13 +30,17 @@ class SomDetailLabelAdapter(private var labels: List<SomDetailOrder.Data.GetSomD
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        private val binding by viewBinding<ItemLabelBinding>()
+
         fun bind(label: SomDetailOrder.Data.GetSomDetail.LabelInfo?) {
-            if (label != null) {
-                with(itemView as Label) {
+            binding?.root?.run {
+                if (label != null) {
                     setLabel(label.flagName)
                     setLabelType(label.flagBg)
-                }
-            } else itemView.gone()
+                    show()
+                } else gone()
+            }
         }
     }
 }

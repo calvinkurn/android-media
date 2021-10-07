@@ -32,6 +32,8 @@ dependencies {
     } else {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
+    implementation rootProject.ext.firebase.dynamicLink
+    implementation projectOrAar(rootProject.ext.libraries.applink)
 }
 
 project.ext {

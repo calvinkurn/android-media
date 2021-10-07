@@ -90,6 +90,24 @@
     <string name="centralized_promo_bottomsheet_flexible">Penggunaan fleksibel</string>
     <string name="centralized_promo_bottomsheet_flexible_desc">Voucher berlaku untuk seluruh produkmu. Download &amp; bagikan ke sosial media.</string>
     <string name="centralized_promo_bottomsheet_free_delivery_info">Untuk Voucher Gratis Ongkir saat ini hanya tersedia di desktop</string>
+    
+    <!-- Other menu header revamp -->
+    <string name="sah_new_other_shop_open">Toko Buka</string>
+    <string name="sah_new_other_rm_joined_since">Sejak Bergabung</string>
+    <string name="sah_new_other_rm_since_june_fourteenth">Sejak 14 Juni 2021</string>
+    <string name="sah_new_other_rm_since_has_passed">Telah Melewati</string>
+    <string name="sah_new_other_rm_transaction_remaining">%s/100</string>
+    <string name="sah_new_other_rm_total_transaction">%s Transaksi</string>
+    <string name="sah_new_other_operational_shop_open">Toko Buka</string>
+    <string name="sah_new_other_operational_shop_off_hour">Toko Tutup</string>
+    <string name="sah_new_other_operational_shop_closed">Toko Libur</string>
+    <string name="sah_new_other_status_upgrade">Upgrade!</string>
+    <string name="sah_new_other_status_pm_pro_title">Power Merchant PRO</string>
+    <string name="sah_new_other_status_pm_pro_advanced">Advanced</string>
+    <string name="sah_new_other_status_pm_pro_expert">Expert</string>
+    <string name="sah_new_other_status_pm_pro_ultimate">Ultimate</string>
+    <string name="sah_new_other_topads_topup_now">Top up sekarang!</string>
+    <string name="sah_new_other_share_text">Semakin mudah belanja produk %1$s di Tokopedia. Cek aja, pasti ada yang kamu suka\n%2$s</string>
 
     <string name="seller_home_logout_title">Keluar dari Tokopedia</string>
     <string name="seller_home_logout_confirm">Apakah Anda ingin keluar?</string>
@@ -107,7 +125,7 @@
     <string name="sah_recommendation_coach_mark_title">Lihat Performa Toko di Home</string>
     <string name="sah_recommendation_coach_mark_description">Cek semua update dan kendala tokomu di sini dan baca tips untuk meningkatkan Performamu, ya!</string>
     <string name="sah_other_menu_coach_mark_title">Lihat detail Performamu di sini, ya!</string>
-    <string name="sah_other_menu_coach_mark_description">Cek level, skor, dan grade tokomu lebih lanjut dari menu Lainnya lalu pilih Performa Toko.</string>
+    <string name="sah_other_menu_coach_mark_description">Cek level, skor, dan status tokomu lebih lanjut dari menu Lainnya lalu pilih Performa Toko.</string>
     <string name="settings_shop_status_label">Status toko:</string>
     <string name="settings_operational_hour_open">BUKA</string>
     <string name="settings_operational_hour_closed">TUTUP</string>
@@ -115,4 +133,14 @@
     <string name="shop_operational_hour_24_hour">24 Jam</string>
     <string name="shop_operational_hour_set_operational_time">Atur jam buka toko</string>
     <string name="sah_content_desc_image_operational_hour">image operational hour</string>
+    <string name="sah_share_action_copy_success">Teks berhasil disalin</string>
+    <string name="sah_share_text_with_link">Semakin mudah belanja produk %1$s di Tokopedia. Cek aja, pasti ada yang kamu suka\n%2$s</string>
+    <string name="sah_share_to_social_media_text">Bagikan ke media sosial</string>
+    <string name="sah_empty_layout_message">Oops, kamu tidak punya izin untuk melihat konten di halaman Home</string>
+
+    <!-- Admin Restriction -->
+    <string name="sah_admin_restriction_label">Admin Restriction</string>
+    <string name="sah_admin_restriction_title">Oops, kamu nggak punya izin untuk mengakses fitur ini</string>
+    <string name="sah_admin_restriction_desc">Hubungi pemilik toko terlebih dulu untuk melanjutkan aktivitas, ya.</string>
+    <string name="sah_admin_restriction_button">Oke, Saya Mengerti</string>
 </resources>

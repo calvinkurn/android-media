@@ -32,6 +32,8 @@ import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
 
+import io.embrace.android.embracesdk.Embrace;
+
 /**
  * Created by ricoharisin on 11/22/16.
  */
@@ -40,36 +42,17 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     public static final String WARM_TRACE = "gl_warm_start";
     public static final String SPLASH_TRACE = "gl_splash_screen";
+    public static final int REGISTER_PUSH_NOTIF_SERVICE_JOB_ID = 3050;
 
     private PerformanceMonitoring warmTrace;
     private PerformanceMonitoring splashTrace;
     private boolean isApkTempered;
 
-    @DeepLink(ApplinkConst.CONSUMER_SPLASH_SCREEN)
-    public static Intent getCallingIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        Intent destination;
-        destination = new Intent(context, ConsumerSplashScreen.class)
-                .setData(uri.build())
-                .putExtras(extras);
-        return destination;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         SplashScreenPerformanceTracker.startMonitoring();
         super.onCreate(savedInstanceState);
-        NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA)
-                .start(this.getApplication());
-        setUserIdNewRelic();
         executeInBackground();
-    }
-
-    private void setUserIdNewRelic() {
-        UserSessionInterface userSession = new UserSession(this);
-        if (userSession.isLoggedIn()) {
-            NewRelic.setUserId(userSession.getUserId());
-        }
     }
 
     private void checkInstallReferrerInitialised() {
@@ -86,6 +69,8 @@ public class ConsumerSplashScreen extends SplashScreen {
             @NotNull
             @Override
             public Boolean execute() {
+                initializationNewRelic();
+                initializationEmbrace();
                 CMPushNotificationManager.getInstance()
                         .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(ConsumerSplashScreen.this.getApplicationContext()), false);
 
@@ -99,13 +84,26 @@ public class ConsumerSplashScreen extends SplashScreen {
                 RemoteConfigKey.ENABLE_SEQ4_ASYNC, ConsumerSplashScreen.this);
     }
 
+    private void initializationNewRelic() {
+        NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA)
+                .start(this.getApplication());
+        UserSessionInterface userSession = new UserSession(this);
+        if (userSession.isLoggedIn()) {
+            NewRelic.setUserId(userSession.getUserId());
+        }
+    }
+
+    private void initializationEmbrace() {
+        Embrace.getInstance().start(this);
+    }
+
     private void syncFcmToken() {
         SyncFcmTokenService.Companion.startService(this);
     }
 
     private void registerPushNotif() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            RegisterPushNotifService.Companion.startService(getApplicationContext());
+            RegisterPushNotifService.Companion.startService(getApplicationContext(), REGISTER_PUSH_NOTIF_SERVICE_JOB_ID);
         }
     }
 

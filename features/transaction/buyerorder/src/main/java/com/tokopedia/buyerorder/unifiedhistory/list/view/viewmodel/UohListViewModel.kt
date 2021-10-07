@@ -13,6 +13,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohIdlingResource
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils.asSuccess
+import com.tokopedia.buyerorder.unifiedhistory.list.analytics.UohAnalytics
+import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceAdd
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.*
 import com.tokopedia.buyerorder.unifiedhistory.list.domain.*
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -110,10 +112,30 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         }
     }
 
-    fun doAtcMulti(userId: String, atcMultiQuery: String, listParam: ArrayList<AddToCartMultiParam>) {
+    fun doAtcMulti(userId: String, atcMultiQuery: String, listParam: ArrayList<AddToCartMultiParam>, verticalCategory: String) {
         UohIdlingResource.increment()
         launch {
-            _atcMultiResult.value = (atcMultiProductsUseCase.execute(userId, atcMultiQuery, listParam))
+            val result = (atcMultiProductsUseCase.execute(userId, atcMultiQuery, listParam))
+            _atcMultiResult.value = result
+
+            // analytics
+            val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
+            listParam.forEachIndexed { index, product ->
+                arrayListProducts.add(
+                    ECommerceAdd.Add.Products(
+                    name = product.productName,
+                    id = product.productId.toString(),
+                    price = product.productPrice.toString(),
+                    quantity = product.qty.toString(),
+                    dimension79 = product.shopId.toString()
+                ))
+            }
+
+            if (result is Success) {
+                UohAnalytics.clickBeliLagiOnOrderCardMP("", userId, arrayListProducts,
+                    verticalCategory, result.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString())
+            }
+
             UohIdlingResource.decrement()
         }
     }

@@ -18,7 +18,7 @@ class GetHomeTickerRepository @Inject constructor(
     val gqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
     suspend fun getTickerData(locationParams: String = ""): HomeTickerData {
-        val gqlResponse = gqlRepository.getReseponse(
+        val gqlResponse = gqlRepository.response(
                 listOf(buildRequest(locationParams)), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val errors = gqlResponse.getError(HomeIconData::class.java)

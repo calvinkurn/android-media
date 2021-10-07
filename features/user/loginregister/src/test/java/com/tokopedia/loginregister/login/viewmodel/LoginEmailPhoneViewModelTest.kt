@@ -14,7 +14,8 @@ import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataMode
 import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
-import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
+import com.tokopedia.loginregister.discover.pojo.DiscoverData
+import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckFingerprintUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
@@ -22,7 +23,6 @@ import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprint
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprintResult
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
-import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
@@ -48,7 +48,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import rx.Subscriber
 
 class LoginEmailPhoneViewModelTest {
 
@@ -73,7 +72,7 @@ class LoginEmailPhoneViewModelTest {
     private var registerCheckObserver = mockk<Observer<Result<RegisterCheckData>>>(relaxed = true)
     private var registerCheckFingerprintObserver = mockk<Observer<Result<RegisterCheckFingerprint>>>(relaxed = true)
     private var activateUserObserver = mockk<Observer<Result<ActivateUserData>>>(relaxed = true)
-    private var discoverObserver = mockk<Observer<Result<DiscoverDataModel>>>(relaxed = true)
+    private var discoverObserver = mockk<Observer<Result<DiscoverData>>>(relaxed = true)
     private var getFacebookObserver = mockk<Observer<Result<FacebookCredentialData>>>(relaxed = true)
     private var showPopupErrorObserver = mockk<Observer<PopupError>>(relaxed = true)
     private var goToSecurityQuestionObserver = mockk<Observer<String>>(relaxed = true)
@@ -228,43 +227,25 @@ class LoginEmailPhoneViewModelTest {
     @Test
     fun `on Success Discover`() {
         /* When */
-        val discoverViewModel = DiscoverDataModel(arrayListOf(
-                DiscoverItemDataModel("123", "", "", "", "")
-        ), "")
+        val discoverPojo = DiscoverPojo()
 
-        every { discoverUseCase.execute(any(), any()) } answers {
-            secondArg<Subscriber<DiscoverDataModel>>().onNext(discoverViewModel)
-        }
+        coEvery { discoverUseCase(any()) } returns discoverPojo
 
         viewModel.discoverLogin()
 
         /* Then */
-        verify { discoverObserver.onChanged(Success(discoverViewModel)) }
-    }
-
-    @Test
-    fun `on Providers Empty Error`() {
-        /* When */
-        every { discoverUseCase.execute(any(), any()) } answers {
-            secondArg<Subscriber<DiscoverDataModel>>().onError(throwable)
-        }
-
-        viewModel.discoverLogin()
-
-        /* Then */
-        MatcherAssert.assertThat(viewModel.discoverResponse.value, CoreMatchers.instanceOf(Fail::class.java))
+        verify { discoverObserver.onChanged(Success(discoverPojo.data)) }
     }
 
     @Test
     fun `on Failed Discover`() {
         /* When */
-        every { discoverUseCase.execute(any(), any()) } answers {
-            secondArg<Subscriber<DiscoverDataModel>>().onError(throwable)
-        }
+        coEvery { discoverUseCase(any()) } throws throwable
 
         viewModel.discoverLogin()
 
         /* Then */
+        MatcherAssert.assertThat(viewModel.discoverResponse.value, CoreMatchers.instanceOf(Fail::class.java))
         verify { discoverObserver.onChanged(Fail(throwable)) }
     }
 
@@ -942,7 +923,6 @@ class LoginEmailPhoneViewModelTest {
         viewModel.clearBackgroundTask()
         verify {
             tickerInfoUseCase.unsubscribe()
-            discoverUseCase.unsubscribe()
             loginTokenUseCase.unsubscribe()
             getProfileUseCase.unsubscribe()
         }

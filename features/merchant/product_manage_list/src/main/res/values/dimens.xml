@@ -46,4 +46,7 @@
     <dimen name="divider_height">1dp</dimen>
     <dimen name="product_manage_sort_filter_shimmer_width">86dp</dimen>
     <dimen name="product_manage_sort_filter_shimmer_height">32dp</dimen>
+    <dimen name="product_manage_ongoing_campaign_item_height">54dp</dimen>
+    <dimen name="product_manage_ongoing_campaign_item_name_margin">26dp</dimen>
+    <dimen name="product_manage_ongoing_campaign_item_image_margin_end">6dp</dimen>
 </resources>

@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,6 +27,7 @@ import com.tokopedia.logisticorder.uimodel.TrackHistoryModel;
 import com.tokopedia.logisticorder.utils.DateUtil;
 import com.tokopedia.logisticorder.utils.TrackingPageUtil;
 import com.tokopedia.unifycomponents.ImageUnify;
+import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -78,16 +78,16 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
                 Html.fromHtml(trackingHistoryData.get(position).getStatus()) : "");
 
         if (position == 0) {
-            holder.dot.setColorFilter(holder.context.getResources().getColor(R.color.tracking_primary_color));
+            holder.dot.setColorFilter(holder.context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400));
             holder.dotTrail.setVisibility(View.VISIBLE);
-            holder.dotTrail.setBackgroundColor(holder.context.getResources().getColor(R.color.tracking_primary_color));
+            holder.dotTrail.setBackgroundColor(holder.context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400));
         } else if (position == trackingHistoryData.size() - 1) {
-            holder.dot.setColorFilter(holder.context.getResources().getColor(R.color.tracking_secondary_color));
+            holder.dot.setColorFilter(holder.context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N200));
             holder.dotTrail.setVisibility(View.GONE);
         } else {
-            holder.dot.setColorFilter(holder.context.getResources().getColor(R.color.tracking_secondary_color));
+            holder.dot.setColorFilter(holder.context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N200));
             holder.dotTrail.setVisibility(View.VISIBLE);
-            holder.dotTrail.setBackgroundColor(holder.context.getResources().getColor(R.color.tracking_secondary_color));
+            holder.dotTrail.setBackgroundColor(holder.context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N200));
         }
 
         if (trackingHistoryData.get(position).getProof().getImageId().isEmpty()) {
@@ -114,10 +114,10 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
 
     private void setTitleColor(TrackingHistoryViewHolder holder, int position) {
         if (position == 0) {
-            holder.title.setTextColor(holder.context.getResources().getColor(R.color.tracking_primary_color));
+            holder.title.setTextColor(holder.context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400));
         } else {
             holder.title.setTextColor(
-                    holder.context.getResources().getColor(com.tokopedia.design.R.color.black_70));
+                    holder.context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
         }
     }
 
@@ -130,11 +130,11 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
 
         private Context context;
 
-        private TextView title;
+        private Typography title;
 
-        private TextView time;
+        private Typography time;
 
-        private TextView description;
+        private Typography description;
 
         private ImageView dot;
 

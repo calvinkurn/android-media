@@ -17,11 +17,11 @@ import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_loading.view.*
-import kotlinx.android.synthetic.main.shc_partial_post_list_widget.view.*
 import kotlinx.android.synthetic.main.shc_pie_chart_widget.view.*
 
 /**
@@ -50,6 +50,7 @@ class PieChartViewHolder(
                 toggleWidgetHeight(true)
             }
             tvPieChartTitle.text = element.title
+            setTagNotification(element.tag)
             setupTooltip(element)
 
             observeState(element)
@@ -77,6 +78,20 @@ class PieChartViewHolder(
             tvPieChartValue.gone()
             tvPieChartSubValue.gone()
             emptyState?.gone()
+        }
+    }
+
+    private fun setTagNotification(tag: String) {
+        val isTagVisible = tag.isNotBlank()
+        with(itemView) {
+            notifTagPieChart.showWithCondition(isTagVisible)
+            if (isTagVisible) {
+                notifTagPieChart.setNotification(
+                    tag,
+                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COLOR_TEXT_TYPE
+                )
+            }
         }
     }
 
@@ -158,7 +173,37 @@ class PieChartViewHolder(
             pieChartShc.init(PieChartConfig.getDefaultConfig())
             pieChartShc.setData(getPieChartData(element))
             pieChartShc.invalidateChart()
+
+            setupSeeMoreCta(element)
         }
+    }
+
+    private fun setupSeeMoreCta(element: PieChartWidgetUiModel) {
+        with(itemView) {
+            val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank()
+            val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
+            btnShcPieChartSeeMore.visibility = ctaVisibility
+            icShcPieChartSeeMore.visibility = ctaVisibility
+            btnShcPieChartSeeMore.text = element.ctaText
+
+            if (isCtaVisible) {
+                btnShcPieChartSeeMore.setOnClickListener {
+                    onSeeMoreClicked(element)
+                }
+                icShcPieChartSeeMore.setOnClickListener {
+                    onSeeMoreClicked(element)
+                }
+            }
+        }
+    }
+
+    private fun onSeeMoreClicked(element: PieChartWidgetUiModel) {
+        listener.sendPieChartSeeMoreClickEvent(element)
+        openAppLink(element.appLink)
+    }
+
+    private fun openAppLink(appLink: String) {
+        RouteManager.route(itemView.context, appLink)
     }
 
     private fun showEmptyState(element: PieChartWidgetUiModel) {
@@ -193,6 +238,6 @@ class PieChartViewHolder(
 
         fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {}
         fun sendPieChartEmptyStateCtaClickEvent(element: PieChartWidgetUiModel) {}
-
+        fun sendPieChartSeeMoreClickEvent(model: PieChartWidgetUiModel) {}
     }
 }

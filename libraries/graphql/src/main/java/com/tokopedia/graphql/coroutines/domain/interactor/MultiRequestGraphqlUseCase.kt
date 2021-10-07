@@ -2,6 +2,7 @@ package com.tokopedia.graphql.coroutines.domain.interactor
 
 import com.tokopedia.graphql.FingerprintManager
 import com.tokopedia.graphql.GraphqlCacheManager
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.CacheType
@@ -14,18 +15,22 @@ import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 
-class MultiRequestGraphqlUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) : UseCase<GraphqlResponse>() {
+class MultiRequestGraphqlUseCase constructor(private val graphqlRepository: GraphqlRepository) :
+    UseCase<GraphqlResponse>() {
 
     private val requests = mutableListOf<GraphqlRequest>()
-    private var cacheStrategy: GraphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.NONE).build()
+    private var cacheStrategy: GraphqlCacheStrategy =
+        GraphqlCacheStrategy.Builder(CacheType.NONE).build()
     private var mCacheManager: GraphqlCacheManager? = null
     private var mFingerprintManager: FingerprintManager? = null
+
+    @Inject constructor() : this(GraphqlInteractor.getInstance().graphqlRepository) {}
 
     override suspend fun executeOnBackground(): GraphqlResponse {
         if (requests.isEmpty()) {
             throw RuntimeException("Please set valid request parameter before executing the use-case");
         }
-        return graphqlRepository.getReseponse(requests, cacheStrategy)
+        return graphqlRepository.response(requests, cacheStrategy)
     }
 
     fun addRequest(request: GraphqlRequest) {
@@ -47,9 +52,12 @@ class MultiRequestGraphqlUseCase @Inject constructor(private val graphqlReposito
             Observable.fromCallable {
                 initCacheManager()
                 requests.forEach {
-                    mCacheManager!!.delete(mFingerprintManager!!.generateFingerPrint(
+                    mCacheManager!!.delete(
+                        mFingerprintManager!!.generateFingerPrint(
                             it.toString(),
-                            cacheStrategy.isSessionIncluded))
+                            cacheStrategy.isSessionIncluded
+                        )
+                    )
                 }
             }.subscribeOn(Schedulers.io()).subscribe({
                 //no op

@@ -56,6 +56,7 @@ data class ProductCardModel (
         val isWideContent: Boolean = false,
         val variant: Variant? = null,
         val nonVariant: NonVariant? = null,
+        val hasSimilarProductButton: Boolean = false,
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
@@ -119,9 +120,15 @@ data class ProductCardModel (
 
     data class NonVariant(
             val quantity: Int = 0,
-            val minQuantity: Int = 0,
-            val maxQuantity: Int = 0,
-    )
+            private val minQuantity: Int = 0,
+            private val maxQuantity: Int = 0,
+    ) {
+        val minQuantityFinal = maxOf(minQuantity, MIN_QUANTITY_NON_VARIANT)
+        val maxQuantityFinal = maxOf(maxQuantity, this.minQuantityFinal)
+
+        val quantityRange: IntRange
+            get() = minQuantityFinal..maxQuantityFinal
+    }
 
     fun shouldShowAddToCartNonVariantQuantity(): Boolean {
         return nonVariant?.quantity == 0
@@ -165,6 +172,14 @@ data class ProductCardModel (
         return findLabelGroup(LABEL_BEST_SELLER)
     }
 
+    fun getLabelCategorySide(): LabelGroup? {
+        return findLabelGroup(LABEL_CATEGORY_SIDE)
+    }
+
+    fun getLabelCategoryBottom(): LabelGroup? {
+        return findLabelGroup(LABEL_CATEGORY_BOTTOM)
+    }
+
     fun getLabelETA(): LabelGroup? {
         return findLabelGroup(LABEL_ETA)
     }
@@ -202,6 +217,12 @@ data class ProductCardModel (
     fun isShowShopRating() = shopRating.isNotEmpty()
 
     fun isShowLabelBestSeller() = getLabelBestSeller()?.title?.isNotEmpty() == true
+
+    fun isShowLabelCategorySide() =
+        isShowLabelBestSeller() && getLabelCategorySide()?.title?.isNotEmpty() == true
+
+    fun isShowLabelCategoryBottom() =
+        isShowLabelBestSeller() && getLabelCategoryBottom()?.title?.isNotEmpty() == true
 
     fun isStockBarShown() = stockBarLabel.isNotEmpty() && !isOutOfStock
 

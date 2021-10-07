@@ -4,6 +4,7 @@ import android.content.Context
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
+import com.wmspanel.libstream.Streamer
 
 /**
  * Created by jegul on 26/05/20
@@ -49,4 +50,6 @@ internal fun sendCrashlyticsLog(throwable: Throwable) {
     }
 }
 
-class PlayBroadcasterException(message: String) : Throwable(message)
+internal fun <T> Streamer.safeExecute(fn: Streamer.() -> T): T? {
+    return try { fn() } catch(e: Throwable) { null }
+}

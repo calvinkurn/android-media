@@ -32,8 +32,23 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
+            android:name=".sharedpref.SharedPrefDetailFragmentActivity"
+            android:label="@string/shared_pref_title"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+
+        <activity
+            android:name=".sharedpref.SharedPrefActivity"
+            android:theme="@style/Theme.Green" />
+
+        <activity
             android:name=".ab_test_rollence.AbTestRollenceConfigFragmentActivity"
             android:label="@string/ab_test_rollence_title"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
+            android:name=".presentation.activity.ProductDetailDevActivity"
+            android:label="@string/pdp_dev_option_title"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <service

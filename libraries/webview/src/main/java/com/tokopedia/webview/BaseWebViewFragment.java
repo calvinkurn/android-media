@@ -102,6 +102,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String CLEAR_CACHE_PREFIX = "/clear-cache";
     private static final String KEY_CLEAR_CACHE = "android_webview_clear_cache";
     private static final String LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment";
+    private static final String GOJEK_APP_LINK = "https://gojek.link/goclub/membership?source=toko_status_match";
 
     String mJsHciCallbackFuncName;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
@@ -219,7 +220,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         webView.clearCache(true);
         webView.addJavascriptInterface(new WebToastInterface(getActivity()), "Android");
-        webView.setInitialScale(1);
         WebSettings webSettings = webView.getSettings();
         webSettings.setUserAgentString(webSettings.getUserAgentString() + " Mobile webview ");
         webSettings.setJavaScriptEnabled(true);
@@ -227,8 +227,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         webSettings.setDomStorageEnabled(true);
         webSettings.setBuiltInZoomControls(true);
         webSettings.setDisplayZoomControls(false);
-        webSettings.setLoadWithOverviewMode(true);
-        webSettings.setUseWideViewPort(true);
         webView.setWebChromeClient(new MyWebChromeClient());
         webView.setWebViewClient(new MyWebViewClient());
         webSettings.setMediaPlaybackRequiresUserGesture(false);
@@ -345,7 +343,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
 
         if (requestCode == REQUEST_CODE_LOGIN) {
-            webView.loadAuthUrl(getUrl(), userSession);
+            if(resultCode == RESULT_OK){
+                webView.loadAuthUrl(getUrl(), userSession);
+            }else {
+                if(getActivity() != null && getActivity() instanceof BaseSimpleWebViewActivity)
+                    ((BaseSimpleWebViewActivity) getActivity()).goPreviousActivity();
+            }
         } else if (requestCode == LOGIN_GPLUS) {
             String historyUrl = "";
             WebBackForwardList mWebBackForwardList = webView.copyBackForwardList();
@@ -765,7 +768,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return true;
         }
 
-        if (isLinkAjaAppLink(url)) {
+        if (isExternalAppLink(url)) {
             return redirectToExternalAppAndFinish(activity, uri);
         }
 
@@ -868,8 +871,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         return webHistoryItem.getUrl();
     }
 
-    private boolean isLinkAjaAppLink(String url) {
-        return url.contains(LINK_AJA_APP_LINK);
+    private boolean isExternalAppLink(String url) {
+        return url.contains(LINK_AJA_APP_LINK) || url.contains(GOJEK_APP_LINK);
     }
 
     // If back pressed is disabled and the webview has moved to a native page,

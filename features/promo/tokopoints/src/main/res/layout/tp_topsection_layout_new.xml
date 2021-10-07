@@ -89,12 +89,11 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ic_arrow_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_20"
-            android:layout_marginRight="@dimen/dp_20"
+            android:layout_marginEnd="@dimen/dp_16"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_targetText"
@@ -119,16 +118,27 @@
         <com.tokopedia.tokopoints.view.customview.DynamicItemActionView
             android:id="@+id/dynamic_widget"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_100" />
+            android:layout_height="@dimen/dp_110" />
 
     </com.tokopedia.unifycomponents.CardUnify>
+
+    <include
+        android:id="@+id/status_matching_container"
+        layout="@layout/tp_layout_stausmatching"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/card_point"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:visibility="gone" />
 
     <include
         layout="@layout/tp_layout_usersaving"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/card_point"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_below="@id/status_matching_container"
+        android:layout_marginTop="@dimen/dp_4"
         android:visibility="gone" />
 
 </RelativeLayout>

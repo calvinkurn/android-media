@@ -29,8 +29,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.design.component.ticker.TouchViewPager
 import com.tokopedia.design.list.adapter.TouchImageAdapter
-import com.tokopedia.imagepreview.ImagePreviewUtils.getUri
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.file.PublicFolderUtil
@@ -44,6 +45,7 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
     private var fileLocations: ArrayList<String>? = null
     private var imageDescriptions: ArrayList<String>? = null
     private var position = 0
+    private var disableDownload = false
 
     private val viewPager by lazy {
         findViewById<TouchViewPager>(R.id.viewPager)
@@ -69,6 +71,7 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
             fileLocations = extras.getStringArrayList(IMAGE_URIS)
             imageDescriptions = extras.getStringArrayList(IMAGE_DESC)
             position = extras.getInt(IMG_POSITION, 0)
+            disableDownload = extras.getBoolean(DISABLE_DOWNLOAD, false)
         } else {
             fileLocations = ArrayList()
         }
@@ -81,10 +84,7 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
         findViewById<TextView>(R.id.tvDescription)?.setTextAndCheckShow(description)
 
         findViewById<View>(R.id.ivClose).setOnClickListener { finish() }
-        findViewById<View>(R.id.ivDownload).setOnClickListener {
-            downloadImageCheckPermission()
-        }
-
+        setupDownloadButton()
         adapter?.SetonImageStateChangeListener(object : TouchImageAdapter.OnImageStateChange {
             override fun OnStateDefault() {
                 viewPager.SetAllowPageSwitching(true);
@@ -97,6 +97,18 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
         })
         viewPager.adapter = adapter
         viewPager.currentItem = position
+    }
+
+    private fun setupDownloadButton() {
+        val ivDownload = findViewById<View>(R.id.ivDownload)
+        if (disableDownload) {
+            ivDownload.hide()
+        } else {
+            ivDownload.show()
+            ivDownload.setOnClickListener {
+                downloadImageCheckPermission()
+            }
+        }
     }
 
     private fun downloadImageCheckPermission(){
@@ -235,6 +247,7 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
 
         const val IMAGE_URIS = "image_uris"
         const val IMG_POSITION = "img_pos"
+        const val DISABLE_DOWNLOAD = "disable_download"
         const val IMAGE_DESC = "image_desc"
         const val TITLE = "title"
         const val DESCRIPTION = "desc"
@@ -254,7 +267,8 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
                              imageDesc: ArrayList<String>? = null,
                              position: Int = 0,
                              title: String? = null,
-                             description: String? = null): Intent {
+                             description: String? = null,
+                             disableDownloadButton: Boolean = true): Intent {
             val intent = Intent(context, ImagePreviewActivity::class.java)
             val bundle = Bundle()
             bundle.putString(TITLE, title)
@@ -262,6 +276,7 @@ open class ImagePreviewActivity : BaseSimpleActivity() {
             bundle.putStringArrayList(IMAGE_URIS, imageUris)
             bundle.putStringArrayList(IMAGE_DESC, imageDesc)
             bundle.putInt(IMG_POSITION, position)
+            bundle.putBoolean(DISABLE_DOWNLOAD, disableDownloadButton)
             intent.putExtras(bundle)
             return intent
         }

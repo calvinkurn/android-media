@@ -21,7 +21,7 @@ class GetPMInterruptDataUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): PowerMerchantInterruptUiModel {
         val gqlRequest = GraphqlRequest(QUERY, PMInterruptDataResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val gqlErrors = gqlResponse.getError(PMInterruptDataResponse::class.java)
         if (gqlErrors.isNullOrEmpty()) {
@@ -45,6 +45,7 @@ class GetPMInterruptDataUseCase @Inject constructor(
                 data {
                   power_merchant {
                     status
+                    pm_tier
                   }
                   official_store {
                     status
@@ -53,6 +54,7 @@ class GetPMInterruptDataUseCase @Inject constructor(
               }
               goldGetPMSettingInfo(shopID: ${'$'}shopId, source:${'$'}source) {
                 period_type
+                period_start_date_time
               }
             }
         """.trimIndent()

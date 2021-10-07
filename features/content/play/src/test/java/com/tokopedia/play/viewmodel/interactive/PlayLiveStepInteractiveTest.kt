@@ -1,12 +1,14 @@
 package com.tokopedia.play.viewmodel.interactive
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
+import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayChannelInfoModelBuilder
-import com.tokopedia.play.robot.play.andThen
+import com.tokopedia.play.robot.andThen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
-import com.tokopedia.play.robot.play.thenVerify
+import com.tokopedia.play.robot.play.withState
+import com.tokopedia.play.robot.thenVerify
+import com.tokopedia.play.util.isEqualTo
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.action.InteractiveOngoingFinishedAction
 import com.tokopedia.play.view.uimodel.action.InteractivePreStartFinishedAction
@@ -40,10 +42,12 @@ class PlayLiveStepInteractiveTest {
     private val channelDataBuilder = PlayChannelDataModelBuilder()
     private val channelInfoBuilder = PlayChannelInfoModelBuilder()
     private val mockChannelData = channelDataBuilder.buildChannelData(
-            channelInfo = channelInfoBuilder.buildChannelInfo(channelType = PlayChannelType.Live)
+            channelDetail = channelInfoBuilder.buildChannelDetail(
+                    channelInfo = channelInfoBuilder.buildChannelInfo(channelType = PlayChannelType.Live),
+            ),
     )
 
-    private val interactiveRepo: PlayViewerInteractiveRepository = mockk(relaxed = true)
+    private val interactiveRepo: PlayViewerRepository = mockk(relaxed = true)
 
     @Before
     fun setUp() {
@@ -67,7 +71,7 @@ class PlayLiveStepInteractiveTest {
         )
 
         givenPlayViewModelRobot(
-                interactiveRepo = interactiveRepo,
+                repo = interactiveRepo,
                 dispatchers = testDispatcher
         ) {
             createPage(mockChannelData)
@@ -76,7 +80,7 @@ class PlayLiveStepInteractiveTest {
             viewModel.submitAction(InteractivePreStartFinishedAction)
         }.thenVerify {
             withState {
-                interactive.isEqualTo(
+                interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.Ongoing(durationTap)
                 )
             }
@@ -94,7 +98,7 @@ class PlayLiveStepInteractiveTest {
         )
 
         givenPlayViewModelRobot(
-                interactiveRepo = interactiveRepo,
+                repo = interactiveRepo,
                 dispatchers = testDispatcher
         ) {
             createPage(mockChannelData)
@@ -103,7 +107,7 @@ class PlayLiveStepInteractiveTest {
             viewModel.submitAction(InteractiveOngoingFinishedAction)
         }.thenVerify {
             withState {
-                interactive.isEqualTo(
+                interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.Finished(com.tokopedia.play.R.string.play_interactive_finish_initial_text)
                 )
             }

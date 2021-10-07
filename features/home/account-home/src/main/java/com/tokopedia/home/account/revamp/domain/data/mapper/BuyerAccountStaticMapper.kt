@@ -24,12 +24,12 @@ class BuyerAccountStaticMapper @Inject constructor(
         private val userSession: UserSession
 ) {
 
-    fun getStaticBuyerModel(useUoh: Boolean): BuyerViewModel {
+    fun getStaticBuyerModel(): BuyerViewModel {
         val items: ArrayList<ParcelableViewModel<*>> = ArrayList()
 
         val model = BuyerViewModel()
         items.add(getBuyerProfile())
-        items.addAll(getStaticModel(useUoh))
+        items.addAll(getStaticModel())
         model.items = items
 
         return model
@@ -50,7 +50,7 @@ class BuyerAccountStaticMapper @Inject constructor(
         return buyerCardViewModel
     }
 
-    private fun getStaticModel(isUseUoh: Boolean): List<ParcelableViewModel<*>> {
+    private fun getStaticModel(): List<ParcelableViewModel<*>> {
         val accountDataModel = AccountDataModel()
 
         val viewItems = arrayListOf<ParcelableViewModel<*>>()
@@ -59,38 +59,21 @@ class BuyerAccountStaticMapper @Inject constructor(
             title = context.getString(R.string.title_menu_transaction)
         })
 
-        if (isUseUoh) {
-            viewItems.add(MenuGridIconNotificationViewModel().apply {
-                items = getUohMenu(context, accountDataModel)
-            })
+        viewItems.add(MenuGridIconNotificationViewModel().apply {
+            items = getUohMenu(context, accountDataModel)
+        })
 
-            viewItems.add(MenuListViewModel().apply {
-                val menuEtiketUohTitle = accountDataModel.uohOrderCount.activeTicketsText
-                menu = if(menuEtiketUohTitle.isNullOrEmpty()) {
-                    AccountConstants.TITLE_UOH_ETICKET
-                } else menuEtiketUohTitle
-                menuDescription = context.getString(R.string.e_ticket_desc)
-                count = accountDataModel.uohOrderCount.activeTickets.toIntOrZero()
-                applink = ApplinkConstInternalOrder.UNIFY_ORDER_STATUS.replace(ApplinkConstInternalOrder.PARAM_CUSTOM_FILTER, ApplinkConstInternalOrder.PARAM_E_TIKET)
-                titleTrack = AccountConstants.Analytics.PEMBELI
-                sectionTrack = context.getString(R.string.title_menu_transaction)
-            })
-        } else {
-            viewItems.add(MenuListViewModel().apply {
-                menu = context.getString(R.string.title_menu_waiting_for_payment)
-                menuDescription = context.getString(R.string.label_menu_waiting_for_payment)
-                val paymentStatus = accountDataModel.notifications.buyerOrder?.paymentStatus?: "0"
-                count = if(paymentStatus.isNotEmpty()) { paymentStatus.toInt(10) } else { 0 }
-                applink = ApplinkConst.PMS
-                titleTrack = AccountConstants.Analytics.PEMBELI
-                sectionTrack = context.getString(R.string.title_menu_transaction)
-            })
-
-            viewItems.add(MenuGridViewModel().apply {
-                title = context.getString(R.string.title_menu_other_transaction)
-                items = getDigitalOrderMenu(context, remoteConfig)
-            })
-        }
+        viewItems.add(MenuListViewModel().apply {
+            val menuEtiketUohTitle = accountDataModel.uohOrderCount.activeTicketsText
+            menu = if(menuEtiketUohTitle.isNullOrEmpty()) {
+                AccountConstants.TITLE_UOH_ETICKET
+            } else menuEtiketUohTitle
+            menuDescription = context.getString(R.string.e_ticket_desc)
+            count = accountDataModel.uohOrderCount.activeTickets.toIntOrZero()
+            applink = ApplinkConstInternalOrder.UNIFY_ORDER_STATUS.replace(ApplinkConstInternalOrder.PARAM_CUSTOM_FILTER, ApplinkConstInternalOrder.PARAM_E_TIKET)
+            titleTrack = AccountConstants.Analytics.PEMBELI
+            sectionTrack = context.getString(R.string.title_menu_transaction)
+        })
 
         viewItems.add(MenuListViewModel().apply {
             menu = context.getString(R.string.ulasan)
@@ -112,6 +95,17 @@ class BuyerAccountStaticMapper @Inject constructor(
         viewItems.add(MenuTitleViewModel().apply {
             title = context.getString(R.string.title_menu_favorites)
         })
+
+        if (remoteConfig.getBoolean(RemoteConfigKey.APP_SHOW_AFFILIATES_BUTTON, true)) {
+            viewItems.add(MenuListViewModel().apply {
+                menu = context.getString(R.string.title_menu_tokopedia_affiliates)
+                menuDescription = context.getString(R.string.label_menu_tokopedia_affiliates)
+                titleTrack = AccountConstants.Analytics.PEMBELI
+                sectionTrack = context.getString(R.string.title_menu_favorites)
+                applink = ApplinkConst.AFFILIATE
+                isBeta = true
+            })
+        }
 
         if (remoteConfig.getBoolean("mainapp_enable_interest_pick", true)) {
             viewItems.add(MenuListViewModel().apply {

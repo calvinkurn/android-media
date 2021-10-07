@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
@@ -140,8 +141,8 @@ class ChatItemListViewHolder constructor(
                 bindMessageState(chat)
             }
         }
-
-        listener.chatItemClicked(chat, adapterPosition)
+        chat.markAsActive()
+        listener.chatItemClicked(chat, adapterPosition, Pair(chat, adapterPosition))
     }
 
     private fun showLongClickMenu(element: ItemChatListPojo) {
@@ -295,6 +296,15 @@ class ChatItemListViewHolder constructor(
         message.maxLines = 2
         message.setTypeface(null, NORMAL)
         message.setTextColor(MethodChecker.getColor(message.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+        if (chat.isActive) {
+            itemView.setBackgroundColor(
+                MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G100)
+            )
+        } else {
+            itemView.setBackgroundColor(
+                MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            )
+        }
     }
 
     private fun hideTyping() {
@@ -330,8 +340,10 @@ class ChatItemListViewHolder constructor(
         when (chatItem.attributes?.readStatus) {
             STATE_CHAT_UNREAD -> {
                 userName.setWeight(Typography.BOLD)
-                unreadCounter.text = chatItem.totalUnread
-                unreadCounter.show()
+                if(chatItem.totalUnread.toIntOrZero() > 0) {
+                    unreadCounter.text = chatItem.totalUnread
+                    unreadCounter.show()
+                }
             }
             STATE_CHAT_READ -> {
                 unreadCounter.hide()

@@ -16,12 +16,20 @@
         android:lineSpacingExtra="@dimen/spacing_lvl2"
         android:maxLines="1"
         android:textColor="@color/Unify_N700_96"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
         tools:text="Progress Title" />
+
+    <com.tokopedia.unifycomponents.NotificationUnify
+        android:id="@+id/notifTagProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        app:layout_constraintTop_toTopOf="@id/tvProgressTitle"
+        app:layout_constraintBottom_toBottomOf="@id/tvProgressTitle"
+        app:layout_constraintStart_toEndOf="@id/tvProgressTitle"/>
 
     <com.tokopedia.sellerhomecommon.presentation.view.customview.ShopScorePMWidget
         android:id="@+id/shopScoreProgress"
@@ -55,9 +63,7 @@
         android:gravity="end"
         android:maxLines="1"
         android:paddingStart="@dimen/layout_lvl0"
-        android:paddingLeft="@dimen/layout_lvl0"
         android:paddingEnd="@dimen/spacing_lvl2"
-        android:paddingRight="@dimen/spacing_lvl2"
         android:textColor="@color/Unify_G500"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/icProgressArrow"
@@ -66,15 +72,15 @@
         app:typographyWeight="reguler"
         tools:text="Selengkapnya" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/icProgressArrow"
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl1"
+        android:contentDescription="@string/shc_content_desc_button_lihat_selengkapnya"
         app:layout_constraintBottom_toBottomOf="@id/tvProgressSeeDetails"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tvProgressSeeDetails"
-        app:srcCompat="@drawable/ic_arrow_right_default"
-        android:contentDescription="@string/shc_content_desc_button_lihat_selengkapnya" />
+        app:srcCompat="@drawable/ic_arrow_right_default" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,8 +5,8 @@ import com.tokopedia.play.widget.data.*
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
-import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
+import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -85,7 +85,7 @@ class PlayWidgetMediumUiMapper @Inject constructor(
                 channelType = channelType,
                 appLink = item.appLink,
                 webLink = item.webLink,
-                startTime = item.startTime,
+                startTime = PlayDateTimeFormatter.formatDate(item.startTime),
                 totalView = item.stats.view.formatted,
                 totalViewVisible = item.video.isShowTotalView,
                 promoType = promoLabelMapper.mapWidgetPromoType(item.config.promoLabels),
@@ -96,7 +96,8 @@ class PlayWidgetMediumUiMapper @Inject constructor(
                 channelTypeTransition = PlayWidgetChannelTypeTransition(prevType = prevItem?.channelType, currentType = channelType),
                 share = mapWidgetShare(item.share),
                 performanceSummaryLink = item.performanceSummaryPageLink,
-                hasGiveaway = promoLabelMapper.mapWidgetHasGiveaway(item.config.promoLabels)
+                hasGiveaway = promoLabelMapper.mapWidgetHasGiveaway(item.config.promoLabels),
+                poolType = item.widgetSortingMethod,
         )
     }
 
@@ -115,7 +116,6 @@ class PlayWidgetMediumUiMapper @Inject constructor(
 
     private fun shouldHaveActionMenu(channelType: PlayWidgetChannelType, partnerId: String): Boolean {
         return channelType == PlayWidgetChannelType.Vod &&
-                GlobalConfig.isSellerApp() &&
                 userSession.shopId == partnerId
     }
 

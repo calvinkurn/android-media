@@ -6,10 +6,7 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.expandTouchArea
 import com.tokopedia.productcard.utils.getDimensionPixelSize
@@ -17,11 +14,13 @@ import com.tokopedia.productcard.utils.glideClear
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImage
 import com.tokopedia.productcard.utils.renderLabelBestSeller
+import com.tokopedia.productcard.utils.renderLabelBestSellerCategoryBottom
+import com.tokopedia.productcard.utils.renderLabelBestSellerCategorySide
 import com.tokopedia.productcard.utils.renderLabelCampaign
-import com.tokopedia.productcard.utils.renderStockBar
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
+import kotlinx.android.synthetic.main.product_card_footer_layout.view.*
 import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 
 class ProductCardGridView: BaseCustomView, IProductCardView {
@@ -56,9 +55,27 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         )
 
         val isShowBestSeller = productCardModel.isShowLabelBestSeller()
-        renderLabelBestSeller(isShowBestSeller, labelBestSeller, productCardModel)
+        renderLabelBestSeller(
+            isShowBestSeller,
+            labelBestSeller,
+            productCardModel
+        )
 
-        renderOutOfStockView(productCardModel)
+        val isShowCategorySide = productCardModel.isShowLabelCategorySide()
+        renderLabelBestSellerCategorySide(
+            isShowCategorySide,
+            textCategorySide,
+            productCardModel
+        )
+
+        val isShowCategoryBottom = productCardModel.isShowLabelCategoryBottom()
+        renderLabelBestSellerCategoryBottom(
+            isShowCategoryBottom,
+            textCategoryBottom,
+            productCardModel
+        )
+
+        outOfStockOverlay?.showWithCondition(productCardModel.isOutOfStock)
 
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
 
@@ -66,13 +83,11 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         renderProductCardContent(productCardModel, productCardModel.isWideContent)
 
-        renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
+        renderProductCardFooter(productCardModel, isProductCardList = false)
 
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
         cartExtension.setProductModel(productCardModel)
-
-        buttonNotify?.showWithCondition(productCardModel.hasNotifyMeButton)
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
@@ -98,6 +113,11 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
     fun setAddToCartNonVariantClickListener(addToCartNonVariantClickListener: ATCNonVariantListener) {
         cartExtension.addToCartNonVariantClickListener = addToCartNonVariantClickListener
+    }
+
+    fun setSimilarProductClickListener(similarProductClickListener: (View) -> Unit) {
+        val buttonSimilarProduct = findViewById<UnifyButton?>(R.id.buttonSeeSimilarProduct)
+        buttonSimilarProduct?.setOnClickListener(similarProductClickListener)
     }
 
     fun setAddVariantClickListener(addVariantClickListener: (View) -> Unit) {
@@ -127,16 +147,6 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         imageFreeOngkirPromo?.glideClear()
         labelCampaignBackground?.glideClear()
         cartExtension.clear()
-    }
-
-    private fun renderOutOfStockView(productCardModel: ProductCardModel) {
-        if (productCardModel.isOutOfStock) {
-            textViewStockLabel?.hide()
-            progressBarStock?.hide()
-            outOfStockOverlay?.visible()
-        } else {
-            outOfStockOverlay?.gone()
-        }
     }
 
     override fun getThreeDotsButton(): View? = imageThreeDots

@@ -24,10 +24,11 @@ class InboxActivityApplinkTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     private val inbox = "com.tokopedia.inbox.view.activity.InboxActivity"
-    private val oldNotifcenter = "com.tokopedia.notifcenter.presentation.activity.NotificationActivity"
+    private val sellerNotifCenter = "com.tokopedia.notifcenter.presentation.activity.NotificationSellerActivity"
 
     @Before
     fun setUp() {
+        GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
         forceAbNewInbox()
     }
 
@@ -127,11 +128,8 @@ class InboxActivityApplinkTest {
     }
 
     @Test
-    fun should_point_to_new_inbox_when_whitelisted_ab_old_to_new_notifcenter() {
+    fun should_point_to_new_inbox_when_using_old_notification_applink() {
         // Given
-        applyAbKeyValue(
-            RollenceKey.KEY_NEW_NOTFICENTER, RollenceKey.VARIANT_NEW_NOTFICENTER
-        )
         val applinkUri = Uri.parse(ApplinkConst.NOTIFICATION)
 
         // When
@@ -144,34 +142,16 @@ class InboxActivityApplinkTest {
     }
 
     @Test
-    fun should_point_to_old_inbox_when_not_whitelisted_ab_old_to_new_notifcenter() {
-        // Given
-        applyAbKeyValue(
-            RollenceKey.KEY_NEW_NOTFICENTER, RollenceKey.VARIANT_OLD_NOTFICENTER
-        )
-        val applinkUri = Uri.parse(ApplinkConst.NOTIFICATION)
-
-        // When
-        val intent = RouteManager.getIntent(context, applinkUri.toString())
-
-        // Then
-        assertThat(intent, isPointingTo(oldNotifcenter))
-    }
-
-    @Test
-    fun should_always_point_to_old_inbox_when_whitelisted_ab_old_to_new_notifcenter_on_sellerapp() {
+    fun should_always_point_to_seller_notification_when_using_old_notification_applink_in_sellerapp() {
         // Given
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
-        applyAbKeyValue(
-            RollenceKey.KEY_NEW_NOTFICENTER, RollenceKey.VARIANT_NEW_NOTFICENTER
-        )
         val applinkUri = Uri.parse(ApplinkConst.NOTIFICATION)
 
         // When
         val intent = RouteManager.getIntent(context, applinkUri.toString())
 
         // Then
-        assertThat(intent, isPointingTo(oldNotifcenter))
+        assertThat(intent, isPointingTo(sellerNotifCenter))
     }
 
     private fun applyAbKeyValue(key: String, value: String) {

@@ -12,11 +12,11 @@ import com.tokopedia.applink.startsWithPattern
 object DeeplinkMapperContent {
 
     fun getRegisteredNavigationContentFromHttp(uri: Uri, deepLink: String): String {
-        return when {
-            uri.host == ApplinkConstInternalContent.TOKOPEDIA_BYME -> handleNavigationByMe(deepLink)
-            uri.pathSegments.joinToString("/").startsWith(ApplinkConstInternalContent.PLAY_PATH_LITE, false) -> handleNavigationPlay(deepLink)
-            else -> ""
-        }
+        return if (uri.pathSegments
+                .joinToString("/")
+                .startsWith(ApplinkConstInternalContent.PLAY_PATH_LITE, false)) {
+            handleNavigationPlay(uri)
+        } else ""
     }
 
     /**
@@ -59,19 +59,7 @@ object DeeplinkMapperContent {
         return deepLink
     }
 
-    private fun handleNavigationPlay(deepLink: String): String {
-        return "${ApplinkConst.BROWSER}?url=$deepLink"
-    }
-
-    private fun handleNavigationByMe(deepLink: String): String {
-        return try {
-            if (deepLink.startsWithPattern(ApplinkConstInternalContent.TOKOPEDIA_BYME_HTTP) ||
-                    deepLink.startsWithPattern(ApplinkConstInternalContent.TOKOPEDIA_BYME_HTTPS)) {
-                val path = Uri.parse(deepLink).path?.removePrefix("/").orEmpty()
-                "${ApplinkConstInternalContent.AFFILIATE_BYME_TRACKING}$path"
-            } else deepLink
-        } catch (e: Throwable) {
-            deepLink
-        }
+    private fun handleNavigationPlay(uri: Uri): String {
+        return "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
     }
 }

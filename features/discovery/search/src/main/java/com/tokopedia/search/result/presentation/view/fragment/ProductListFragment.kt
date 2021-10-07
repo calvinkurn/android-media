@@ -31,6 +31,7 @@ import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.manager.ProductCardOptionsResult
@@ -572,7 +573,13 @@ class ProductListFragment: BaseDaggerFragment(),
         productItemDataViews.add(item)
 
         trackingQueue?.let {
-            SearchTracking.eventImpressionSearchResultProduct(it, dataLayerList, eventLabel, irisSessionId, userId)
+            SearchTracking.eventImpressionSearchResultProduct(
+                it,
+                dataLayerList,
+                eventLabel,
+                irisSessionId,
+                userId
+            )
         }
     }
 
@@ -733,16 +740,6 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onPause() {
         super.onPause()
 
-        val irisSessionId = irisSession?.getSessionId() ?: ""
-
-        TopAdsGtmTracker.getInstance().eventSearchResultProductView(
-                trackingQueue,
-                queryKey,
-                SCREEN_SEARCH_PAGE_PRODUCT_TAB,
-                irisSessionId,
-                getUserId(),
-        )
-
         trackingQueue?.sendAll()
     }
 
@@ -751,8 +748,21 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun sendTopAdsGTMTrackingProductImpression(item: ProductItemDataView) {
+        val trackingQueue = trackingQueue ?: return
         val product: Product = createTopAdsProductForTracking(item)
-        TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, item.position, item.dimension90)
+        val irisSessionId = irisSession?.getSessionId() ?: ""
+
+        TopAdsGtmTracker.getInstance().eventImpressionSearchResultProduct(
+            trackingQueue,
+            product,
+            item.position,
+            item.dimension90,
+            queryKey,
+            getUserId(),
+            irisSessionId,
+            item.topadsTag,
+            item.dimension115,
+        )
     }
 
     private fun createTopAdsProductForTracking(item: ProductItemDataView): Product {
@@ -823,6 +833,8 @@ class ProductListFragment: BaseDaggerFragment(),
                 item.position,
                 getUserId(),
                 item.dimension90,
+                item.topadsTag,
+                item.dimension115,
         )
     }
 
@@ -839,6 +851,7 @@ class ProductListFragment: BaseDaggerFragment(),
         SearchTracking.trackEventClickSearchResultProduct(
                 item.getProductAsObjectDataLayer(filterSortParams),
                 item.isOrganicAds,
+                item.topadsTag,
                 eventLabel,
                 filterSortParams,
                 userId,
@@ -935,30 +948,28 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun applyParamsFromTicker(tickerParams: HashMap<String?, String?>) {
-        val params = HashMap(filterController.getParameter())
+        val params = HashMap(filterController.getParameter().addFilterOrigin())
         params.putAll(tickerParams)
 
         refreshSearchParameter(params)
-        refreshFilterController(params)
 
         reloadData()
     }
 
-    private fun refreshSearchParameter(queryParams: Map<String, String>) {
-        searchParameter?.apply {
-            getSearchParameterHashMap().clear()
-            getSearchParameterHashMap().putAll(queryParams)
-            getSearchParameterHashMap()[SearchApiConst.ORIGIN_FILTER] =
-                    SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
+    private fun Map<String, String>.addFilterOrigin(): Map<String, String> =
+        toMutableMap().also {
+            it[SearchApiConst.ORIGIN_FILTER] = DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
         }
+
+    private fun refreshSearchParameter(queryParams: Map<String, String>) {
+        searchParameter?.resetParams(queryParams)
+        searchNavigationListener?.updateSearchParameter(searchParameter)
+        filterController.refreshMapParameter(queryParams)
     }
 
-    private fun refreshFilterController(queryParams: HashMap<String, String>) {
-        val params = HashMap(queryParams)
-        params[SearchApiConst.ORIGIN_FILTER] =
-                SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
-
-        filterController.refreshMapParameter(params)
+    private fun SearchParameter.resetParams(queryParams: Map<String, String>) {
+        getSearchParameterHashMap().clear()
+        getSearchParameterHashMap().putAll(queryParams)
     }
 
     override fun onTickerDismissed() {
@@ -1002,9 +1013,8 @@ class ProductListFragment: BaseDaggerFragment(),
         val isQuickFilterSelectedReversed = !isQuickFilterSelected(option)
         setFilterToQuickFilterController(option, isQuickFilterSelectedReversed)
 
-        val queryParams = filterController.getParameter()
+        val queryParams = filterController.getParameter().addFilterOrigin()
         refreshSearchParameter(queryParams)
-        refreshFilterController(HashMap(queryParams))
 
         reloadData()
 
@@ -1030,8 +1040,7 @@ class ProductListFragment: BaseDaggerFragment(),
         val option = generateOptionFromUniqueId(uniqueId)
 
         removeFilterFromFilterController(option)
-        refreshSearchParameter(filterController.getParameter())
-        refreshFilterController(HashMap(filterController.getParameter()))
+        refreshSearchParameter(filterController.getParameter().addFilterOrigin())
 
         reloadData()
     }
@@ -1134,8 +1143,6 @@ class ProductListFragment: BaseDaggerFragment(),
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_PRODUCT_TRACE)
         presenter?.loadData(searchParameter.getSearchParameterMap())
 
-        TopAdsGtmTracker.getInstance().clearDataLayerList()
-
         setSortFilterIndicatorCounter()
     }
 
@@ -1200,11 +1207,12 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun sendTrackingEventAppsFlyerViewListingSearch(
-            afProdIds: JSONArray?,
-            query: String?,
-            prodIdArray: ArrayList<String?>?,
+        afProdIds: JSONArray?,
+        query: String?,
+        prodIdArray: ArrayList<String?>?,
+        allProdIdArray: ArrayList<String?>?
     ) {
-        SearchTracking.eventAppsFlyerViewListingSearch(afProdIds!!, query!!, prodIdArray!!)
+        SearchTracking.eventAppsFlyerViewListingSearch(afProdIds!!, query!!, prodIdArray!!, allProdIdArray)
     }
 
     override fun sendTrackingEventMoEngageSearchAttempt(
@@ -1786,14 +1794,14 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun onApplySortFilter(applySortFilterModel: ApplySortFilterModel) {
+        presenter?.onApplySortFilter(applySortFilterModel.mapParameter)
+
         sortFilterBottomSheet = null
 
         applySort(applySortFilterModel)
         applyFilter(applySortFilterModel)
 
-        filterController.refreshMapParameter(applySortFilterModel.mapParameter)
-        searchParameter?.getSearchParameterHashMap()?.clear()
-        searchParameter?.getSearchParameterHashMap()?.putAll(applySortFilterModel.mapParameter)
+        refreshSearchParameter(applySortFilterModel.mapParameter)
 
         reloadData()
     }

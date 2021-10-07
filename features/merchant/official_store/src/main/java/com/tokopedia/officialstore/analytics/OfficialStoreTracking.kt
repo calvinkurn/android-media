@@ -335,16 +335,16 @@ class OfficialStoreTracking(context: Context) {
                 "click", DataLayer.mapOf(
                 "actionField", DataLayer.mapOf("list", "/official-store/$categoryName - flash sale - $campaignId - $headerName"),
                     "products", DataLayer.listOf(DataLayer.mapOf(
-                        "name", gridData.name,
-                        "id", gridData.id.toString(10),
-                        "price", gridData.price,
-                        "brand", "none",
-                        "category", "",
-                        "variant", "none",
-                        "list", "/official-store/$categoryName - flash sale - $campaignId - $headerName",
-                        "position", position,
-                        "attribution", gridData.attribution
-                ))
+                "name", gridData.name,
+                "id", gridData.id.toString(RADIX_10),
+                "price", gridData.price,
+                "brand", "none",
+                "category", "",
+                "variant", "none",
+                "list", "/official-store/$categoryName - flash sale - $campaignId - $headerName",
+                "position", position,
+                "attribution", gridData.attribution
+        ))
             )
         )
 
@@ -366,13 +366,13 @@ class OfficialStoreTracking(context: Context) {
             grid.run {
                 impressionBody.add(DataLayer.mapOf(
                         "name", name,
-                        "id", id.toString(10),
+                        "id", id.toString(RADIX_10),
                         "price", price,
                         "brand", "none",
                         "category", "",
                         "variant", "none",
                         "list", "/official-store/$categoryName - flash sale - $campaignId - $headerName",
-                        "position", (index + 1).toString(10),
+                        "position", (index + 1).toString(RADIX_10),
                         "attribution", attribution
                 ))
             }
@@ -424,7 +424,7 @@ class OfficialStoreTracking(context: Context) {
         val ecommerceBody = DataLayer.mapOf(
                 "promoClick", DataLayer.mapOf(
                 "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", gridData.id.toString(10),
+                "id", gridData.id.toString(RADIX_10),
                 "name", "/official-store/$categoryName - dynamic channel - $headerName",
                 "position", position,
                 "creative", gridData.attribution,
@@ -488,16 +488,16 @@ class OfficialStoreTracking(context: Context) {
                 "click", DataLayer.mapOf(
                     "actionField", DataLayer.mapOf("list", "/official-store/$categoryName - dynamic channel mix - $headerName"),
                     "products", DataLayer.listOf(DataLayer.mapOf(
-                        "name", gridData.name,
-                        "id", gridData.id.toString(10),
-                        "price", gridData.price,
-                        "brand", "none",
-                        "category", "",
-                        "variant", "none",
-                        "list", "/official-store/$categoryName - dynamic channel mix - ${gridData.id} - $campaignId - $headerName",
-                        "position", position,
-                        "attribution", gridData.attribution
-                ))
+                "name", gridData.name,
+                "id", gridData.id.toString(RADIX_10),
+                "price", gridData.price,
+                "brand", "none",
+                "category", "",
+                "variant", "none",
+                "list", "/official-store/$categoryName - dynamic channel mix - ${gridData.id} - $campaignId - $headerName",
+                "position", position,
+                "attribution", gridData.attribution
+        ))
             )
         )
 
@@ -519,13 +519,13 @@ class OfficialStoreTracking(context: Context) {
             grid?.run {
                 impressionBody.add(DataLayer.mapOf(
                         "name", name,
-                        "id", id.toString(10),
+                        "id", id.toString(RADIX_10),
                         "price", price,
                         "brand", "none",
                         "category", "",
                         "variant", "none",
                         "list", "/official-store/$categoryName - dynamic channel mix - $headerName",
-                        "position", (index + 1).toString(10),
+                        "position", (index + 1).toString(RADIX_10),
                         "attribution", attribution
                 ))
             }
@@ -547,14 +547,14 @@ class OfficialStoreTracking(context: Context) {
         val ecommerceBody = DataLayer.mapOf(
                 "promoClick", DataLayer.mapOf(
                     "promotions", DataLayer.listOf(DataLayer.mapOf(
-                        "id", bannerData.id.toString(10),
-                        "name", "/official-store/$categoryName - dynamic channel mix - $headerName",
-                        "position", "0",
-                        "creative", bannerData.attribution,
-                        "creative_url", bannerData.applink,
-                        "promo_id", null,
-                        "promo_code", null
-                ))
+                "id", bannerData.id.toString(RADIX_10),
+                "name", "/official-store/$categoryName - dynamic channel mix - $headerName",
+                "position", "0",
+                "creative", bannerData.attribution,
+                "creative_url", bannerData.applink,
+                "promo_id", null,
+                "promo_code", null
+        ))
             )
         )
 
@@ -640,9 +640,9 @@ class OfficialStoreTracking(context: Context) {
         channelData.grids?.forEachIndexed { index, grid ->
             grid?.run {
                 promotionBody.add(DataLayer.mapOf(
-                        "id", id.toString(10),
+                        "id", id.toString(RADIX_10),
                         "name", "/official-store/$categoryName - $channelType - $headerName",
-                        "position", (index + 1).toString(10),
+                        "position", (index + 1).toString(RADIX_10),
                         "creative", attribution,
                         "creative_url", applink,
                         "promo_id", null,
@@ -661,7 +661,7 @@ class OfficialStoreTracking(context: Context) {
                 promotionBody.add(DataLayer.mapOf(
                         "id", id,
                         "name", "/official-store/$categoryName - $channelType - $headerName",
-                        "position", (index + 1).toString(10),
+                        "position", (index + 1).toString(RADIX_10),
                         "creative", attribution,
                         "creative_url", applink,
                         "promo_id", null,
@@ -696,7 +696,7 @@ class OfficialStoreTracking(context: Context) {
         return "/official-store$stringIsLogin - rekomendasi untuk anda - $recommendationType$stringTopAds"
     }
 
-    fun eventClickWishlist(categoryName: String, isAddWishlist: Boolean, isLogin: Boolean, productId: Int, isTopAds: Boolean) {
+    fun eventClickWishlist(categoryName: String, isAddWishlist: Boolean, isLogin: Boolean, productId: Long, isTopAds: Boolean) {
         val action = if (isAddWishlist) "add" else "remove"
         val statusTopads = if (isTopAds) "topads" else  "general"
         var eventAction = "$action wishlist - product recommendation - ${if (isLogin) "login" else "non login"}"
@@ -1048,4 +1048,9 @@ class OfficialStoreTracking(context: Context) {
         promotion.putString("creative_url", creativeUrl)
         return arrayListOf(promotion)
     }
+
+    companion object {
+        private const val RADIX_10 = 10
+    }
+
 }
