@@ -2,6 +2,7 @@ package com.tokopedia.imagepicker_insta.views
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -50,20 +51,35 @@ class ZoomAssetImageView @JvmOverloads constructor(
 //        }
     }
 
+    fun updateZoomInfo(bmp: Bitmap?, engine: ZoomEngine){
+        if(bmp!=null){
+            zoomInfo?.let {
+                it.panX = engine.panX
+                it.panY = engine.panY
+                it.scale = engine.zoom
+                it.bmpHeight = bmp.height
+                it.bmpWidth = bmp.width
+            }
+        }
+    }
+
+    private fun updateZoomInfo(bmp: Bitmap?, scale: Float, panX:Float, panY:Float){
+        if(bmp!=null){
+            zoomInfo?.let {
+                it.panX = panX
+                it.panY = panY
+                it.scale = scale
+                it.bmpHeight = bmp.height
+                it.bmpWidth = bmp.width
+            }
+        }
+    }
+
     fun initListeners() {
         engine.addListener(object : ZoomEngine.Listener {
             override fun onIdle(engine: ZoomEngine) {
-
                 val bmp = (drawable as? BitmapDrawable)?.bitmap
-                if (bmp != null) {
-                    this@ZoomAssetImageView.zoomInfo?.let {
-                        it.panX = engine.panX
-                        it.panY = engine.panY
-                        it.scale = engine.zoom
-                        it.bmpHeight = bmp.height
-                        it.bmpWidth = bmp.width
-                    }
-                }
+                updateZoomInfo(bmp,engine)
             }
 
             override fun onUpdate(engine: ZoomEngine, matrix: Matrix) {
@@ -98,7 +114,10 @@ class ZoomAssetImageView @JvmOverloads constructor(
                 dy = (vheight - dheight * scale) * 0.5f
             }
 
-            engine.moveTo(scale, dx / 2f, dy / 2f, animate)
+            val panX = dx / 2f
+            val panY = dy / 2f
+            engine.moveTo(scale, panX, panY, animate)
+            updateZoomInfo(bmp,scale,panX,panY)
         }
     }
 
@@ -124,9 +143,13 @@ class ZoomAssetImageView @JvmOverloads constructor(
                 dy = (vheight - dheight * scale) * 0.5f
             }
 
-            engine.moveTo(scale, dx / 2f, dy / 2f, animate)
+            val panX = dx / 2f
+            val panY = dy / 2f
+            engine.moveTo(scale, panX, panY, animate)
+            updateZoomInfo(bmp,scale,panX,panY)
         }else{
             engine.moveTo(1f, 0f, 0f, animate)
+            updateZoomInfo(bmp,engine)
         }
     }
 
@@ -203,7 +226,6 @@ class ZoomAssetImageView @JvmOverloads constructor(
         } else if (mediaScaleTypeContract?.getCurrentMediaScaleType() == MediaScaleType.MEDIA_CENTER_INSIDE) {
             centerInside(false)
         }
-
     }
 
     fun removeAsset() {
