@@ -12,8 +12,8 @@ import timber.log.Timber;
 
 public class DeepLinkReceiver extends BroadcastReceiver {
 
-    private String EXTRA_SUCCESSFUL = "com.airbnb.deeplinkdispatch.EXTRA_SUCCESSFUL";
-    private String EXTRA_URI = "com.airbnb.deeplinkdispatch.EXTRA_URI";
+    private static final String EXTRA_SUCCESSFUL = "com.airbnb.deeplinkdispatch.EXTRA_SUCCESSFUL";
+    private static final String EXTRA_URI = "com.airbnb.deeplinkdispatch.EXTRA_URI";
 
     @Override
     public void onReceive(final Context context, Intent intent) {
