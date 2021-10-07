@@ -16,5 +16,7 @@ interface CreateContentPostCommonListener {
     fun updateTaggingInfoInViewModel(
         feedXMediaTagging: FeedXMediaTagging
     )
+    fun clickContinueOnTaggingPage()
+    fun postFeed()
 
 }

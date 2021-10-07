@@ -1,6 +1,7 @@
 package com.tokopedia.createpost.view.activity
 
 import android.app.Application
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -10,37 +11,35 @@ import android.webkit.MimeTypeMap
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
+import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
+import com.tokopedia.createpost.common.di.CreatePostCommonModule
+import com.tokopedia.createpost.common.view.service.SubmitPostServiceNew
+import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
+import com.tokopedia.createpost.common.view.viewmodel.MediaModel
+import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
-import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
 import com.tokopedia.createpost.domain.usecase.UploadMultipleImageUsecaseNew
+import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
 import com.tokopedia.createpost.view.fragment.ContentCreateCaptionFragment
 import com.tokopedia.createpost.view.fragment.CreatePostPreviewFragmentNew
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
-import com.tokopedia.createpost.common.view.service.SubmitPostServiceNew
-import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
-import com.tokopedia.createpost.common.view.viewmodel.MediaModel
-import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_create_post_new.*
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import android.content.ContentResolver
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
-import com.tokopedia.createpost.common.di.CreatePostCommonModule
-import com.tokopedia.imagepicker_insta.common.BundleData
-import java.util.*
 
 
 class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListener {
@@ -80,9 +79,10 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     }
 
     override fun updateHeader(header: HeaderViewModel) {
-        content_post_avatar.loadImageCircle(header.avatar)
-        content_post_avatar.showWithCondition(header.avatar.isNotBlank())
-        content_post_name.text = MethodChecker.fromHtml(header.title)
+        toolbar_common?.toolbarIcon?.loadImageCircle(header.avatar)
+        toolbar_common?.toolbarIcon?.showWithCondition(header.avatar.isNotBlank())
+        toolbar_common?.toolbarTitle?.text = getString(R.string.feed_content_post_sebagai)
+        toolbar_common?.toolbarSubtitle?.text = MethodChecker.fromHtml(header.title)
     }
 
     override fun openProductTaggingPageOnPreviewMediaClick(position: Int) {
@@ -91,7 +91,6 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             position
         isOpenedFromPreview = true
         intent.putExtra(PARAM_TYPE, TYPE_CONTENT_TAGGING_PAGE)
-        content_action_post_button?.text = getString(R.string.feed_content_text_lanjut)
         inflateFragment()
     }
 
@@ -170,13 +169,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             intent.putExtra(CreatePostViewModel.TAG, createPostViewModel)
             intent.putExtra(PARAM_TYPE, TYPE_CONTENT_TAGGING_PAGE)
 
-            content_action_post_button?.text = getString(R.string.feed_content_text_lanjut)
-            if (!create_post_toolbar.isVisible)
-                create_post_toolbar?.visibility = View.VISIBLE
-        } else if (intent.getStringExtra(PARAM_TYPE) == TYPE_CONTENT_PREVIEW_PAGE) {
-            content_action_post_button?.text = getString(R.string.feed_content_text_post)
         }
-
         return when (intent.extras?.get(PARAM_TYPE)) {
             TYPE_CONTENT_TAGGING_PAGE -> CreatePostPreviewFragmentNew.createInstance(intent.extras
                 ?: Bundle())
@@ -198,25 +191,18 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
 
     override fun setupLayout(savedInstanceState: Bundle?) {
         setContentView(layoutRes)
-        content_back_button.setOnClickListener {
-
-                onBackPressed()
+        toolbar_common?.toolbarNavIcon?.setOnClickListener {
+            onBackPressed()
         }
-        create_post_toolbar.visibility = View.VISIBLE
+        setSupportActionBar(toolbar_common)
 
-        content_action_post_button.setOnClickListener {
-            if (content_action_post_button?.text == getString(R.string.feed_content_text_lanjut)) {
-                createPostAnalytics.eventNextOnProductTaggingPage((fragment as BaseCreatePostFragmentNew).getLatestCreatePostData().completeImageList.size)
-                clickContinueOnTaggingPage()
-            } else if (content_action_post_button?.text == getString(R.string.feed_content_text_post)) {
-                postFeed()
-            }
-        }
+        toolbar_common.visibility = View.VISIBLE
+
 
     }
-    private fun clickContinueOnTaggingPage(){
+    override fun clickContinueOnTaggingPage(){
+        createPostAnalytics.eventNextOnProductTaggingPage((fragment as BaseCreatePostFragmentNew).getLatestCreatePostData().completeImageList.size)
         intent.putExtra(PARAM_TYPE, TYPE_CONTENT_PREVIEW_PAGE)
-        content_action_post_button?.text = getString(R.string.feed_content_text_post)
         inflateFragment()
     }
 
@@ -254,7 +240,6 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             dialog.show()
         } else {
             createPostAnalytics.eventClickBackOnPreviewPage()
-            content_action_post_button?.text = getString(R.string.feed_content_text_lanjut)
             intent.putExtra(PARAM_TYPE, TYPE_CONTENT_TAGGING_PAGE)
             inflateFragment()
 
@@ -262,7 +247,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
 
     }
 
-    private fun postFeed() {
+    override fun postFeed() {
         createPostAnalytics.eventClickPostOnPreviewPage()
         KeyboardHandler.hideSoftKeyboard(this)
         val cacheManager = SaveInstanceCacheManager(this, true)

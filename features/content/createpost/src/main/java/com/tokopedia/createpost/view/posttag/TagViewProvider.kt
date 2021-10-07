@@ -89,9 +89,7 @@ class TagViewProvider {
         child: View,
         parent: ConstraintLayout,
         feedXMediaTagging: FeedXMediaTagging,
-        index: Int,
         bitmap: Bitmap?,
-        mediaIndex:Int
     ) {
         parent.addView(child)
         val greyAreaX = calculateGreyAreaY(parent, bitmap)
