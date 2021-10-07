@@ -1872,13 +1872,10 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleRefreshLeaderboard() {
-        viewModelScope.launchCatchError(block = {
-            if(_leaderboardUserBadgeState.value.shouldRefreshData) {
-                _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Loading
-                _leaderboardUserBadgeState.value = _leaderboardUserBadgeState.value.copy(shouldRefreshData = false)
-                delay(3000)
-            }
-        }, onError = {})
+        if(_leaderboardUserBadgeState.value.shouldRefreshData) {
+            _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Loading
+            _leaderboardUserBadgeState.value = _leaderboardUserBadgeState.value.copy(shouldRefreshData = false)
+        }
 
         checkLeaderboard(channelId)
     }
