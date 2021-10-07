@@ -29,17 +29,25 @@ object ReplyBubbleResult {
     }
 
     fun hasVisibleReplyBubbleAt(position: Int) {
-        assertReplyBubbleAt(position, isDisplayed())
+        assertReplyBubbleAt(position, R.id.cl_reply_container, isDisplayed())
     }
 
     fun hasNoVisibleReplyBubbleAt(position: Int) {
-        assertReplyBubbleAt(position, not(isDisplayed()))
+        assertReplyBubbleAt(position, R.id.cl_reply_container, not(isDisplayed()))
     }
 
-    private fun assertReplyBubbleAt(position: Int, matcher: Matcher<View>) {
+    fun hasVisibleReplyBubbleStickerAt(position: Int) {
+        assertReplyBubbleAt(position, R.id.rba_sticker, isDisplayed())
+    }
+
+    private fun assertReplyBubbleAt(
+        position: Int,
+        viewId: Int,
+        matcher: Matcher<View>
+    ) {
         onView(
             withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position, R.id.cl_reply_container
+                position, viewId
             )
         ).check(matches(matcher))
     }

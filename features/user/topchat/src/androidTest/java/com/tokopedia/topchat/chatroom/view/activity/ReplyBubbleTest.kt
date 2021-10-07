@@ -116,10 +116,24 @@ class ReplyBubbleTest : TopchatRoomTest() {
         ReplyBubbleResult.hasVisibleReplyBubbleAt(0)
     }
 
-    // TODO: should show text reply bubble when parent reply is not null from websocket
-    // TODO: should sent and render reply bubble when user sent sticker
+    @Test
+    fun should_sent_and_render_reply_bubble_when_user_sent_sticker() {
+        // Given
+        getChatUseCase.response = getChatUseCase.defaultReplyBubbleResponse
+        launchChatRoomActivity()
+
+        // When
+        ReplyBubbleRobot.longClickBubbleAt(1)
+        ReplyBubbleRobot.clickReplyItemMenu()
+        clickStickerIconMenu()
+        clickStickerAtPosition(0)
+        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+
+        // Then
+        ReplyBubbleResult.hasVisibleReplyBubbleStickerAt(0)
+    }
+
     // TODO: should show sticker reply bubble when parent reply is not null from GQL
-    // TODO: should show sticker reply bubble when parent reply is not null from websocket
     // TODO: should show image reply bubble when parent reply is not null from GQL
     // TODO: should show image reply bubble when parent reply is not null from websocket
     // TODO: should match the senderId name with contacts from chatReplies GQL

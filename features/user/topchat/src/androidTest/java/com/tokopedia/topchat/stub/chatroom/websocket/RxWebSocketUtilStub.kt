@@ -13,6 +13,8 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.chatlist.data.ChatWebSocketConstant
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
+import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributesResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerProfile
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.time.RfcDateTimeParser
@@ -93,14 +95,19 @@ class RxWebSocketUtilStub constructor(
                 requestMsg, WebSocketResponse::class.java
             )
             when {
-                isProductAttachment(requestObj) -> simulateAttachmentResponse(requestObj, room)
+                isProductAttachment(requestObj) -> simulateProductAttachmentResponse(
+                    requestObj, room
+                )
+                isStickerAttachment(requestObj) -> simulateStickerAttachmentResponse(
+                    requestObj, room
+                )
                 isTextOnly(requestObj) -> simulateMessageResponse(requestObj, room)
                 else -> Log.d("NOT_HANDLED_WS_RESPONSE", requestMsg)
             }
         }
     }
 
-    private fun simulateAttachmentResponse(
+    private fun simulateProductAttachmentResponse(
         request: WebSocketResponse,
         room: GetExistingChatPojo
     ) {
@@ -115,6 +122,32 @@ class RxWebSocketUtilStub constructor(
         val attachment = AttachmentPojo(
             id = requestProductId,
             type = AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT,
+            attributes = JsonParser.parseString(gson.toJson(requestAttributes)).asJsonObject,
+            fallbackAttachment = Fallback()
+        )
+        simulateWsResponse(attachment, request, room)
+    }
+
+    private fun simulateStickerAttachmentResponse(
+        request: WebSocketResponse,
+        room: GetExistingChatPojo
+    ) {
+        val stickerPayload = request.jsonObject?.get("payload")?.asJsonObject
+        val groupId = stickerPayload?.get("group_id")?.asString ?: ""
+        val imageUrl = stickerPayload?.get("image_url")?.asString ?: ""
+        val intention = stickerPayload?.get("intention")?.asString ?: ""
+        val stickerId = stickerPayload?.get("sticker_id")?.asString ?: ""
+        val requestAttributes = StickerAttributesResponse(
+            stickerProfile = StickerProfile(
+                groupId = groupId,
+                imageUrl = imageUrl,
+                intention = intention,
+                stickerId = stickerId
+            )
+        )
+        val attachment = AttachmentPojo(
+            id = "1",
+            type = AttachmentType.Companion.TYPE_STICKER.toString(),
             attributes = JsonParser.parseString(gson.toJson(requestAttributes)).asJsonObject,
             fallbackAttachment = Fallback()
         )
@@ -197,6 +230,11 @@ class RxWebSocketUtilStub constructor(
             localId = localId.asString,
             source = source.asString
         )
+    }
+
+    private fun isStickerAttachment(requestObj: WebSocketResponse): Boolean {
+        return hasAttachment(requestObj) && getAttachmentType(
+            requestObj) == AttachmentType.Companion.TYPE_STICKER.toString()
     }
 
     private fun isProductAttachment(requestObj: WebSocketResponse): Boolean {
