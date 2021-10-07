@@ -138,7 +138,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                     posX = 0.5f,
                     posY = 0.5f,
                     X = imageWidth/ 2,
-                    Y = imageHeight / 2)
+                    Y = imageHeight / 2,
+                mediaIndex = createPostModel.currentCorouselIndex)
             )
             openProductTaggingScreen()
         } else {
@@ -229,7 +230,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                                             X = e?.x,
                                             Y = e?.y,
                                             rawX = e?.rawX,
-                                            rawY = e?.rawY)
+                                            rawY = e?.rawY,
+                                            mediaIndex = createPostModel.currentCorouselIndex)
                                     )
 
                                     if (getLatestTotalProductCount() < 5)
@@ -465,12 +467,10 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     override fun updateTaggingInfoInViewModel(
         feedXMediaTagging: FeedXMediaTagging,
-        index: Int,
-        mediaIndex: Int,
     ) {
         val tags = createPostModel.completeImageList[createPostModel.currentCorouselIndex].tags
-        if (tags.size > index) {
-            createPostModel.completeImageList[createPostModel.currentCorouselIndex].tags[index] =
+        if (tags.size > feedXMediaTagging.tagIndex) {
+            createPostModel.completeImageList[feedXMediaTagging.mediaIndex].tags[feedXMediaTagging.tagIndex] =
                 feedXMediaTagging
             updateResultIntent()
         }
@@ -617,7 +617,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                                     feedXMediaTagging,
                                     index,
                                     bitmap,
-                                    mediaIndex)
+                                    createPostModel.currentCorouselIndex)
                             }, 50)
                         } catch (e: Exception) {
                             Timber.e(e)

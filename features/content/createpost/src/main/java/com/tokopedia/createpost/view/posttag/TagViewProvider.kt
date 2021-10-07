@@ -132,6 +132,9 @@ class TagViewProvider {
                 MotionEvent.ACTION_MOVE -> {
 
                     isDrag = true
+                    resetPositionOfNotchToCenter(productTagNotchViewFinal, view.width.toFloat())
+                    val diff = view.x - motionEvent.rawX.plus(dX)
+
                     val gotoX: Float = when {
                         (motionEvent.rawX.plus(dX)
                             ?: 0f) + view.width > (parent.right - greyAreaX) -> {
@@ -168,6 +171,27 @@ class TagViewProvider {
                         .y(gotoY)
                         .setDuration(0)
                         .start()
+                    //corner cases when pointer needs to slide
+                    if (view.x <= greyAreaX) {
+                        var pointerXDiff = productTagNotchViewFinal.x.minus(diff)
+                        if (pointerXDiff < 20)
+                            pointerXDiff = 20f
+                        productTagNotchViewFinal.animate()
+                            .x(pointerXDiff)
+                            .y(productTagNotchViewFinal.y)
+                            .setDuration(0)
+                            .start()
+                    } else if (view.x + view.width >= (parent.right - greyAreaX)) {
+                        var pointerXDiff = productTagNotchViewFinal.x.minus(diff)
+                        if (pointerXDiff > (view.width - productTagNotchViewFinal.width - 20))
+                            pointerXDiff =
+                                (view.width - productTagNotchViewFinal.width - 20).toFloat()
+                        productTagNotchViewFinal.animate()
+                            .x(pointerXDiff)
+                            .y(productTagNotchViewFinal.y)
+                            .setDuration(0)
+                            .start()
+                    }
 
                     val location = IntArray(2)
                     val locationParent = IntArray(2)
@@ -200,6 +224,7 @@ class TagViewProvider {
                         mLongPressed)
 
                     var isRightClearIconVisible = false
+                    //clear tag icon visibility logic
                     if (!isDrag) {
                         if (productTagViewDeleteFinal.isVisible) {
                             productTagViewDeleteFinal.gone()
@@ -236,8 +261,9 @@ class TagViewProvider {
                                 ?: 0f
                         posX = ceil((abs(feedXMediaTagging.X!!) / parent.width) * 1000) / 1000
                         posY = ceil((abs(feedXMediaTagging.Y!!) / parent.height) * 1000) / 1000
+                        pointerPosition = productTagNotchViewFinal.x
                     }
-                    listener?.updateTaggingInfoInViewModel(feedXMediaTagging, index, mediaIndex)
+                    listener?.updateTaggingInfoInViewModel(feedXMediaTagging)
                 }
             }
 
@@ -257,13 +283,14 @@ class TagViewProvider {
             /*Handling for Y position*/
             var yTapped = feedXMediaTagging.Y!!
             if (feedXMediaTagging.Y!! < (bitmapCurrentHeight) * 0.70 + greyAreaY) {
-                val y2Want: Float = yTapped + child.height.toFloat()
+                val y2Want: Float = yTapped + (child.height.toFloat() - productTagNotchViewFinal.height)
                 val y2Diff = parent.bottom - y2Want
                 if (y2Diff < 0) {
                     yTapped += y2Diff
                 }
             } else {
-                val y2Want: Float = yTapped - child.height.toFloat()
+                val y2Want: Float =
+                    yTapped - (child.height.toFloat() - productTagNotchViewFinal.height)
                 if (y2Want > greyAreaY)
                     yTapped = y2Want
             }
@@ -286,23 +313,32 @@ class TagViewProvider {
 
             if (feedXMediaTagging.Y!! < (bitmapCurrentHeight) * 0.70 + greyAreaY) {
                 productTopNotchVisible = true
-                productTagViewTopNotch.visibility = View.VISIBLE
                 productTagViewBottomNotch.visibility = View.GONE
                 productTagNotchViewFinal = productTagViewTopNotch
 
             } else {
                 productTopNotchVisible = false
-                productTagViewBottomNotch.visibility = View.VISIBLE
                 productTagViewTopNotch.visibility = View.GONE
                 productTagNotchViewFinal = productTagViewBottomNotch
             }
+            //reposition the pointer on the view
+            if (feedXMediaTagging.pointerPosition != -1f) {
+                productTagNotchViewFinal.x = feedXMediaTagging.pointerPosition!!
+            } else {
+                productTagNotchViewFinal.x = ((child.width / 2) - (productTagNotchViewFinal.width / 2)).toFloat()
+            }
+            productTagNotchViewFinal.visible()
             child.visibility = View.VISIBLE
 
         }, 30)
 
 
-        listener?.updateTaggingInfoInViewModel(feedXMediaTagging, index, mediaIndex)
+        listener?.updateTaggingInfoInViewModel(feedXMediaTagging)
 
+    }
+
+    private fun resetPositionOfNotchToCenter(view: View, parentWidth: Float) {
+        view.x = parentWidth/2 - view.width/2
     }
 
     private fun scaleUp(view: View) {

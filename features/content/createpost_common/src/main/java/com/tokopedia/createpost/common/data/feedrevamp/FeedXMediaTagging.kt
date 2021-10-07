@@ -12,5 +12,7 @@ data class FeedXMediaTagging(
         var X: Float? = 0f,
         var Y: Float? = 0f,
         var rawX: Float? = 0f,
-        var rawY: Float? = 0f
+        var rawY: Float? = 0f,
+        var mediaIndex:Int,
+        var pointerPosition: Float? = -1f
 )

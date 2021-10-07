@@ -47,7 +47,7 @@ class SubmitPostServiceNew : JobIntentService() {
         private const val JOB_ID = 13131314
 
         fun startService(context: Context, draftId: String) {
-            val work = Intent(context, SubmitPostService::class.java).apply {
+            val work = Intent(context, SubmitPostServiceNew::class.java).apply {
                 putExtra(DRAFT_ID, draftId)
             }
             enqueueWork(context, SubmitPostServiceNew::class.java, JOB_ID, work)

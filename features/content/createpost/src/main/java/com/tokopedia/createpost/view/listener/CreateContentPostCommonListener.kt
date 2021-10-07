@@ -14,9 +14,7 @@ interface CreateContentPostCommonListener {
     fun openProductTaggingPageOnPreviewMediaClick(position: Int)
     fun clickProductTagBubbleAnalytics(mediaType: String, productId: String)
     fun updateTaggingInfoInViewModel(
-        feedXMediaTagging: FeedXMediaTagging,
-        index: Int,
-        mediaIndex: Int,
+        feedXMediaTagging: FeedXMediaTagging
     )
 
 }

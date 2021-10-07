@@ -99,11 +99,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         //DO nothing
     }
 
-    override fun updateTaggingInfoInViewModel(
-        feedXMediaTagging: FeedXMediaTagging,
-        index: Int,
-        mediaIndex: Int
-    ) {
+    override fun updateTaggingInfoInViewModel(feedXMediaTagging: FeedXMediaTagging) {
         //DO nothing
     }
 
