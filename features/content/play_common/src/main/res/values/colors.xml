@@ -25,6 +25,9 @@
     <color name="play_dms_interactive_common_bg_g1">#F52E4D</color>
     <color name="play_dms_interactive_common_bg_g2">#FF8215</color>
 
+    <color name="play_dms_leaderboard_winner_dark_color_1">#25292C</color>
+    <color name="play_dms_leaderboard_winner_dark_color_2">#33CC4C14</color>
+
     <color name="play_dms_winner_ring_g1">#EF7E08</color>
     <color name="play_dms_winner_ring_g2">#F1C53E</color>
 

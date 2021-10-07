@@ -3,6 +3,7 @@ package com.tokopedia.play_common.ui.leaderboard.viewholder
 import android.graphics.Color
 import android.view.View
 import android.widget.FrameLayout
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -13,6 +14,7 @@ import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.resources.isDarkMode
 
 
 /**
@@ -50,7 +52,23 @@ class PlayInteractiveWinnerViewHolder(itemView: View, private val listener: List
             ivCrown.show()
             borderIvWinner.show()
             lblWinner.show()
-            container.setContainerColor(ContainerUnify.YELLOW)
+
+            if (container.context.isDarkMode()) {
+                container.setCustomContainerColor(
+                    Pair(
+                        MethodChecker.getColor(
+                            container.context,
+                            R.color.play_dms_leaderboard_winner_dark_color_1
+                        ),
+                        MethodChecker.getColor(
+                            container.context,
+                            R.color.play_dms_leaderboard_winner_dark_color_2
+                        )
+                    )
+                )
+            } else {
+                container.setContainerColor(ContainerUnify.YELLOW)
+            }
         } else {
             ivCrown.hide()
             borderIvWinner.hide()
