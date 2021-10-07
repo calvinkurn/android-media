@@ -2,9 +2,8 @@ package com.tokopedia.digital.digital_recommendation.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.digital.digital_recommendation.domain.DigitalRecommendationUseCase
-import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
-import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationTrackingModel
-import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationType
+import com.tokopedia.digital.digital_recommendation.presentation.model.*
+import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -31,19 +30,26 @@ class DigitalRecommendationViewModelTest {
     private val digitalRecommendationUseCase: DigitalRecommendationUseCase = mockk()
     private val userSession: UserSessionInterface = mockk()
     private val dispatcher = CoroutineTestDispatchersProvider
+    private val digitalRecommendationData = DigitalRecommendationData(
+            mockk(),
+            mockk(),
+            DigitalRecommendationAdditionalTrackingData(),
+            DigitalRecommendationPage.DIGITAL_GOODS
+    )
 
     private lateinit var viewmodel: DigitalRecommendationViewModel
 
     @Before
     fun setUp() {
         viewmodel = DigitalRecommendationViewModel(digitalRecommendationUseCase, userSession, dispatcher)
+        viewmodel.digitalRecommendationData = digitalRecommendationData
     }
 
     @Test
     fun `Failed on fetch digital recommendation data`() {
         // given
         coEvery {
-            digitalRecommendationUseCase.execute()
+            digitalRecommendationUseCase.execute(any(), any(), any())
         } returns Fail(Throwable("Fetching Failed"))
 
         // when
@@ -59,7 +65,7 @@ class DigitalRecommendationViewModelTest {
     fun `Success on fetch digital recommendation data`() {
         // given
         coEvery {
-            digitalRecommendationUseCase.execute()
+            digitalRecommendationUseCase.execute(any(), any(), any())
         } returns Success(arrayListOf(
                 DigitalRecommendationModel(
                         "someurl.com",

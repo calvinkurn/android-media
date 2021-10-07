@@ -3,6 +3,7 @@ package com.tokopedia.digital.digital_recommendation.domain
 import com.tokopedia.digital.digital_recommendation.data.DigitalRecommendationQuery
 import com.tokopedia.digital.digital_recommendation.data.DigitalRecommendationResponse
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -21,13 +22,19 @@ class DigitalRecommendationUseCase @Inject constructor(
         private val multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase,
         private val userSession: UserSessionInterface
 ) {
-    suspend fun execute(): Result<List<DigitalRecommendationModel>> {
+    suspend fun execute(page: DigitalRecommendationPage,
+                        dgCategories: List<Int>,
+                        pgCategories: List<Int>)
+            : Result<List<DigitalRecommendationModel>> {
         val params = mapOf(
                 PARAM_INPUT to mapOf(
-                        PARAM_CHANNEL_NAME to DIGI_PERSO_CHANNEL_NAME,
+                        PARAM_CHANNEL_NAME to when (page) {
+                            DigitalRecommendationPage.DIGITAL_GOODS -> DG_PERSO_CHANNEL_NAME
+                            DigitalRecommendationPage.PHYSICAL_GOODS -> PG_PERSO_CHANNEL_NAME
+                        },
                         PARAM_CLIENT_NUMBERS to arrayListOf(userSession.phoneNumber),
-                        PARAM_DG_CATEGORY_IDS to emptyList<String>(),
-                        PARAM_PG_CATEGORY_IDS to emptyList<String>()
+                        PARAM_DG_CATEGORY_IDS to dgCategories,
+                        PARAM_PG_CATEGORY_IDS to pgCategories
                 )
         )
 
@@ -57,7 +64,8 @@ class DigitalRecommendationUseCase @Inject constructor(
     }
 
     companion object {
-        const val DIGI_PERSO_CHANNEL_NAME = "dg_order_detail_recommendation"
+        const val DG_PERSO_CHANNEL_NAME = "dg_order_detail"
+        const val PG_PERSO_CHANNEL_NAME = "dg_order_detail"
         const val PARAM_CHANNEL_NAME = "channelName"
         const val PARAM_CLIENT_NUMBERS = "clientNumbers"
         const val PARAM_DG_CATEGORY_IDS = "dgCategoryIDs"

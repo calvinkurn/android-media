@@ -4,6 +4,7 @@ import com.tokopedia.digital.digital_recommendation.data.DigitalRecommendationRe
 import com.tokopedia.digital.digital_recommendation.data.PersonalizedItems
 import com.tokopedia.digital.digital_recommendation.data.RecommendationItem
 import com.tokopedia.digital.digital_recommendation.data.TrackingData
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -38,6 +39,7 @@ class DigitalRecommendationUseCaseTest {
     @Test
     fun `Failed on fetch digital recommendation data and throw exception`() {
         // given
+        coEvery { multiRequestUseCase.setCacheStrategy(any()) } coAnswers {}
         coEvery { multiRequestUseCase.clearRequest() } coAnswers {}
         coEvery { multiRequestUseCase.addRequest(any()) } coAnswers {}
         coEvery {
@@ -49,11 +51,26 @@ class DigitalRecommendationUseCaseTest {
 
         runBlockingTest {
             // when
-            val data = usecase.execute()
+            val data = usecase.execute(
+                    DigitalRecommendationPage.DIGITAL_GOODS,
+                    emptyList(),
+                    emptyList()
+            )
 
             // then
             assert(data is Fail)
             assertEquals((data as Fail).throwable.message, "Error fetching")
+
+            // when
+            val data1 = usecase.execute(
+                    DigitalRecommendationPage.PHYSICAL_GOODS,
+                    emptyList(),
+                    emptyList()
+            )
+
+            // then
+            assert(data1 is Fail)
+            assertEquals((data1 as Fail).throwable.message, "Error fetching")
         }
     }
 
@@ -61,6 +78,7 @@ class DigitalRecommendationUseCaseTest {
     @Test
     fun `Failed on fetch digital recommendation data from response`() {
         // given
+        coEvery { multiRequestUseCase.setCacheStrategy(any()) } coAnswers {}
         coEvery { multiRequestUseCase.clearRequest() } coAnswers {}
         coEvery { multiRequestUseCase.addRequest(any()) } coAnswers {}
         coEvery {
@@ -81,13 +99,30 @@ class DigitalRecommendationUseCaseTest {
 
         runBlockingTest {
             // when
-            val data = usecase.execute()
+            val data = usecase.execute(
+                    DigitalRecommendationPage.DIGITAL_GOODS,
+                    emptyList(),
+                    emptyList()
+            )
 
             // then
             assert(data is Fail)
             assert((data as Fail).throwable is MessageErrorException)
             assertEquals((data.throwable as MessageErrorException).message, "This is Error")
             assertEquals((data.throwable as MessageErrorException).errorCode, "123")
+
+            // when
+            val data1 = usecase.execute(
+                    DigitalRecommendationPage.PHYSICAL_GOODS,
+                    emptyList(),
+                    emptyList()
+            )
+
+            // then
+            assert(data1 is Fail)
+            assert((data1 as Fail).throwable is MessageErrorException)
+            assertEquals((data1.throwable as MessageErrorException).message, "This is Error")
+            assertEquals((data1.throwable as MessageErrorException).errorCode, "123")
         }
     }
 
@@ -95,6 +130,7 @@ class DigitalRecommendationUseCaseTest {
     @Test
     fun `Success on fetch digital recommendation data`() {
         // given
+        coEvery { multiRequestUseCase.setCacheStrategy(any()) } coAnswers {}
         coEvery { multiRequestUseCase.clearRequest() } coAnswers {}
         coEvery { multiRequestUseCase.addRequest(any()) } coAnswers {}
         coEvery {
@@ -221,7 +257,11 @@ class DigitalRecommendationUseCaseTest {
 
         runBlockingTest {
             // when
-            val data = usecase.execute()
+            val data = usecase.execute(
+                    DigitalRecommendationPage.DIGITAL_GOODS,
+                    emptyList(),
+                    emptyList()
+            )
 
             // then
             assert(data is Success)
@@ -268,6 +308,59 @@ class DigitalRecommendationUseCaseTest {
             assertEquals(fourthData.price, "Rp10.000")
             assertEquals(fourthData.applink, "tokopediatest://dummy_product_applink")
             assertEquals(fourthData.categoryName, "")
+
+            // when
+            val data1 = usecase.execute(
+                    DigitalRecommendationPage.PHYSICAL_GOODS,
+                    emptyList(),
+                    emptyList()
+            )
+
+            // then
+            assert(data1 is Success)
+
+            val successData1 = (data1 as Success).data
+            assertEquals(successData1.size, 4)
+
+            // first data
+            val firstData1 = successData1[0]
+            assertEquals(firstData1.iconUrl, "www.mediaurl.com/gambar.png")
+            assertEquals(firstData1.productName, "Subtitle")
+            assertEquals(firstData1.discountTag, "Discount 20%")
+            assertEquals(firstData1.beforePrice, "Rp100.000")
+            assertEquals(firstData1.price, "Rp80.000")
+            assertEquals(firstData1.applink, "tokopediatest://dummy_product_applink")
+            assertEquals(firstData1.categoryName, "product title")
+
+            // second data
+            val secondData1 = successData1[1]
+            assertEquals(secondData1.iconUrl, "www.mediaurl.com/gambar.png")
+            assertEquals(secondData1.productName, "Subtitle")
+            assertEquals(secondData1.discountTag, "")
+            assertEquals(secondData1.beforePrice, "")
+            assertEquals(secondData1.price, "")
+            assertEquals(secondData1.applink, "tokopediatest://dummy_product_applink")
+            assertEquals(secondData1.categoryName, "category name")
+
+            // third data
+            val thirdData1 = successData1[2]
+            assertEquals(thirdData1.iconUrl, "www.mediaurl.com/gambar.png")
+            assertEquals(thirdData1.productName, "Subtitle")
+            assertEquals(thirdData1.discountTag, "Discount 30%")
+            assertEquals(thirdData1.beforePrice, "Rp100.000")
+            assertEquals(thirdData1.price, "Rp70.000")
+            assertEquals(thirdData1.applink, "tokopediatest://dummy_product_applink")
+            assertEquals(thirdData1.categoryName, "product title")
+
+            // fourth data
+            val fourthData1 = successData1[3]
+            assertEquals(fourthData1.iconUrl, "www.mediaurl.com/gambar.png")
+            assertEquals(fourthData1.productName, "Subtitle")
+            assertEquals(fourthData1.discountTag, "")
+            assertEquals(fourthData1.beforePrice, "")
+            assertEquals(fourthData1.price, "Rp10.000")
+            assertEquals(fourthData1.applink, "tokopediatest://dummy_product_applink")
+            assertEquals(fourthData1.categoryName, "")
         }
     }
 }
