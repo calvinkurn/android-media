@@ -5,8 +5,10 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.menu.common.constant.Constant
+import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.RmTransactionData
@@ -45,20 +47,16 @@ class RMTransactionViewHolder(itemView: View?,
         val title = getTransactionTitle(rmTransaction)
         val desc = getTransactionDesc(rmTransaction)
 
-        successGroup?.isVisible = !isPassTotalTransaction(rmTransaction.totalTransaction)
+        successGroup?.show()
         titleTextView?.text = title
         descTextView?.text = desc
         loadingLayout?.gone()
         errorLayout?.gone()
     }
 
-    private fun isPassTotalTransaction(totalTransaction: Long): Boolean {
-        return totalTransaction > Constant.ShopStatus.MAX_TRANSACTION
-    }
-
     private fun getTransactionTitle(rmTransaction: RmTransactionData): String {
         return when {
-            isPassTotalTransaction(rmTransaction.totalTransaction) ->
+            rmTransaction.totalTransaction > Constant.ShopStatus.MAX_TRANSACTION ->
                 getString(R.string.sah_new_other_rm_since_has_passed)
             rmTransaction.dateCreated.isBlank() ->
                 getString(R.string.sah_new_other_rm_since_june_fourteenth)
