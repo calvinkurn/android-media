@@ -20,7 +20,7 @@ class DigitalRecommendationAnalytics {
             putString(DigitalRecommendationKeys.EVENT_CATEGORY, DigitalRecommendationValues.CATEGORY_PURCHASE_LIST_MP)
             putString(
                     DigitalRecommendationKeys.EVENT_LABEL,
-                    String.format("%s - %s - %d - %d - %s - %s - %s - %s",
+                    String.format("%s - %s - %s - %d - %s - %s - %s - %s",
                             digitalRecommendationModel.tracking.itemType,
                             additionalTrackingData.userType,
                             additionalTrackingData.widgetPosition,
@@ -60,7 +60,7 @@ class DigitalRecommendationAnalytics {
             putString(DigitalRecommendationKeys.EVENT_CATEGORY, DigitalRecommendationValues.CATEGORY_PURCHASE_LIST_MP)
             putString(
                     DigitalRecommendationKeys.EVENT_LABEL,
-                    String.format("%s - %s - %d - %d - %s - %s - %s - %s",
+                    String.format("%s - %s - %s - %d - %s - %s - %s - %s",
                             digitalRecommendationModel.tracking.itemType,
                             additionalTrackingData.userType,
                             additionalTrackingData.widgetPosition,

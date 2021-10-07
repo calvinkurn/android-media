@@ -9,7 +9,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class DigitalRecommendationAdditionalTrackingData(
         var userType: String = "",
-        var widgetPosition: Int = 0,
+        var widgetPosition: String = "",
         var pgCategories: List<Int> = emptyList(),
         var dgCategories: List<Int> = emptyList()
 ) : Parcelable
