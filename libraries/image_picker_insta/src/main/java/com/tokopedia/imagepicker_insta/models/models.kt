@@ -55,3 +55,5 @@ data class ZoomInfo(
 data class VideoMetaData(val isSupported: Boolean, val duration: Long)
 
 data class QueryConfiguration(val videoMaxDuration:Long)
+
+data class LockedAspectRatio(val panX:Int,val panY:Int)

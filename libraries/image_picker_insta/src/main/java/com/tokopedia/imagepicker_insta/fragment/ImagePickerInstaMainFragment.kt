@@ -335,11 +335,13 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                     }
                 }
 
+                //Add selected item
                 imageAdapter.addSelectedItem(selectedMediaView.imageAdapterData!!)
                 imageAdapter.getListOfIndexWhichAreSelected().forEach {
                     imageAdapter.notifyItemChanged(it)
                 }
 
+                //update zoomMap
                 val zoomInfo = zoomImageAdapterDataMap[selectedMediaView.imageAdapterData!!]
                 zoomImageAdapterDataMap.clear()
                 if (zoomInfo != null) {
@@ -462,7 +464,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             if (isMultiSelect) {
                 imageFitCenter.visibility = View.GONE
                 selectedMediaView.lockAspectRatio()
-                ContentResolver.SCHEME_CONTENT
             } else {
                 imageFitCenter.visibility = View.VISIBLE
                 selectedMediaView.unLockAspectRatio()
