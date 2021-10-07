@@ -2,6 +2,7 @@ package com.tokopedia.feedcomponent.analytics.tracker
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Action.CLICK
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Action.CLICK_SEK_SEKARANG
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Action.FORMAT_THREE_PARAM
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Action.FORMAT_TWO_PARAM
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Category.CATEGORY_FEED_TIMELINE
@@ -131,6 +132,7 @@ class FeedAnalyticTracker
         const val CLICK_FEED_PRODUCT_DETAIL = "click - shop"
         const val CLICK_CONTENT_DETAIL_SHOP = "click - shop"
         const val CLICK_CONTENT_DETAIL_AFFILIATE = "click - user"
+        const val CLICK_SEK_SEKARANG = "cek sekarang"
 
         const val IMPRESSION_PRODUCT_RECOM = "impression product recommendation"
         const val IMPRESSION_CONTENT_RECOM = "impression content recommendation"
@@ -964,6 +966,26 @@ class FeedAnalyticTracker
         )
 
 
+    }
+
+    fun clickSekSekarang(postId: String, shopId: String, type: String,isFollowed: Boolean) {
+        var map = getCommonMap(CATEGORY_FEED_TIMELINE)
+        map = map.plus(
+                mutableMapOf(
+                        KEY_EVENT_ACTION to String.format(
+                                FORMAT_THREE_PARAM,
+                                CLICK,
+                                CLICK_SEK_SEKARANG,
+                                getPostType(type,isFollowed)
+                        ),
+                        KEY_EVENT_LABEL to String.format(
+                                FORMAT_TWO_PARAM,
+                                postId,
+                                shopId
+                        )
+                )
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
     fun eventClickFollowitem(

@@ -10,7 +10,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView.OnScrollListener.SCROLL_STATE_IDLE
 import android.widget.Toast
 import androidx.annotation.RestrictTo
 import androidx.fragment.app.FragmentActivity
@@ -3020,6 +3019,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         val eventAction = CLICK_FOLLOW_TOPADS
         analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
         feedViewModel.doToggleFavoriteShop(positionInFeed, 0, shopId)
+    }
+
+    override fun onClickSekSekarang(postId: String, shopId: String, type: String, isFollowed: Boolean) {
+        feedAnalytics?.clickSekSekarang(postId,shopId,type,isFollowed)
     }
 
     override fun onTopAdsHeadlineImpression(position: Int, cpmModel: CpmModel) {

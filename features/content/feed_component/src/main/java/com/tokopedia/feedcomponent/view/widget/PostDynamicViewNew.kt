@@ -19,7 +19,6 @@ import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -51,16 +50,11 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TOPADS_VARIANT_EXPERIMENT_CLEAN
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TOPADS_VARIANT_EXPERIMENT_INFO
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineListener
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.topads.sdk.domain.model.Product
-import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
-import com.tokopedia.topads.sdk.listener.TopAdsListener
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
@@ -798,6 +792,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 topAdsCard.show()
                                 topAdsCard.setOnClickListener {
                                     RouteManager.route(context,feedMedia.appLink)
+                                    listener?.onClickSekSekarang(feedXCard.id,feedXCard.shopId, TYPE_TOPADS_HEADLINE,feedXCard.followers.isFollowed)
                                 }
                                 if (feedMedia.variant == TOPADS_VARIANT_EXPERIMENT_CLEAN) {
                                    // group.hide()
@@ -829,6 +824,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         ConstraintSet.BOTTOM
                                     )
                                     constraintSet.applyTo(topAdsCard)
+
+
                                 } else if (feedMedia.variant == TOPADS_VARIANT_EXPERIMENT_INFO) {
                                    // group.show()
                                     topAdsProductName.displayTextOrHide(feedMedia.productName)
