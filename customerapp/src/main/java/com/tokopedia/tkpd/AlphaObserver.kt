@@ -60,7 +60,7 @@ class AlphaObserver : Application.ActivityLifecycleCallbacks {
         remoteView.setTextViewText(R.id.mynotifyexpnd, context.getString(R.string.tokopedia_alpha))
         val mBuilder =
             NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_icon_alert)
+                .setSmallIcon(R.drawable.alpha_logo)
                 .setCustomContentView(remoteView)
                 .setColor(ContextCompat.getColor(context, android.R.color.holo_red_dark))
 
