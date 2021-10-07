@@ -73,8 +73,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final int ITEM_EVENTS = 3;
     private static final int ITEM_DEFAULT = 4;
     private static final int ITEM_INSURANCE = 5;
+    public static final int ITEM_DEALS_OMP = 6;
     OrderListDetailPresenter presenter;
     public static String categoryDeals = "deal";
+    public static String categoryDealsOMP = "Food & Voucher";
     public static String categoryEvents = "event";
     private static final String CATEGORY_PRODUCT = "Kategori Produk";
     SetEventDetails setEventDetails;
@@ -84,8 +86,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final int TEXT_SIZE_LARGE = 14;
     private int totalTicketCount;
     private OrderDetails orderDetails;
+    private String upstream = "";
 
-    public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter, SetEventDetails setEventDetails, String orderId, OrderDetails orderDetails) {
+    public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter, SetEventDetails setEventDetails, String orderId, OrderDetails orderDetails, String upstream) {
         this.context = context;
         this.itemsList = itemsList;
         this.isShortLayout = isShortLayout;
@@ -93,6 +96,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         this.setEventDetails = setEventDetails;
         this.orderId = orderId;
         this.orderDetails = orderDetails;
+        this.upstream = upstream;
     }
 
     @Override
@@ -119,6 +123,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 v = inflater.inflate(R.layout.voucher_item_card_deals_short, parent, false);
                 holder = new ItemViewHolder(v, viewType);
                 break;
+            case ITEM_DEALS_OMP:
+                v = inflater.inflate(R.layout.voucher_item_card_deals, parent, false);
+                holder = new DealsOMPViewHolder(setEventDetails, v, viewType);
+                break;
             case ITEM_EVENTS:
                 v = inflater.inflate(R.layout.voucher_item_card_events, parent, false);
                 holder = new ItemViewHolder(v, viewType);
@@ -144,6 +152,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         if (holder instanceof ItemViewHolder) {
             ((ItemViewHolder) holder).setIndex(position);
             ((ItemViewHolder) holder).bindData(orderDetails,itemsList.get(position), holder.getItemViewType());
+        } else if (holder instanceof DealsOMPViewHolder) {
+            ((DealsOMPViewHolder) holder).bind(orderDetails,itemsList.get(position));
         } else {
             ((DefaultViewHolder) holder).setIndex(position);
             ((DefaultViewHolder) holder).bindData(itemsList.get(position), holder.getItemViewType());
@@ -152,9 +162,11 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemViewType(int position) {
-        if (itemsList.get(position).getCategory().equalsIgnoreCase(categoryDeals) || itemsList.get(position).getCategoryID() == DEALS_CATEGORY_ID) {
+        if (itemsList.get(position).getCategory().equalsIgnoreCase(categoryDeals) || itemsList.get(position).getCategory().equalsIgnoreCase(categoryDealsOMP) || itemsList.get(position).getCategoryID() == DEALS_CATEGORY_ID) {
             if (isShortLayout)
                 return ITEM_DEALS_SHORT;
+            else if (upstream != null && upstream.equalsIgnoreCase("ORDERINTERNAL"))
+                return ITEM_DEALS_OMP;
             else
                 return ITEM_DEALS;
         } else if (itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID_1 || itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID_2
