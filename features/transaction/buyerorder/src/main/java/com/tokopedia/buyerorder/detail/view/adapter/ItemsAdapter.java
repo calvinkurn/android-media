@@ -534,7 +534,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         setEventInfo(actionButton, totalTicketCount);
                     }
                 }
-            }
+             }
         }
 
         private void setEventInfo(ActionButton actionButton, int totalTicketCount) {
