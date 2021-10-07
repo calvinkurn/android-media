@@ -29,15 +29,33 @@ class ZoomAssetImageView @JvmOverloads constructor(
 
     var zoomInfo: ZoomInfo? = null
     var mediaScaleTypeContract: MediaScaleTypeContract? = null
-    private val portraitAR = 4/5f
-    private val landscapeAR = 3/2f
+    private val portraitAR = 4 / 5f
+    private val landscapeAR = 3 / 2f
+
+//    private var isMinZoomLocked = false
+//    private var lockedMinZoom = 1f
+
+    fun lockMinZoom() {
+//        isMinZoomLocked = true
+//        lockedMinZoom = engine.zoom
+//        setMinZoom(lockedMinZoom)
+    }
+
+    fun unLockMinZoom() {
+//        isMinZoomLocked = false
+//        if (drawable != null) {
+//            updateMinZoom(drawable)
+//        } else {
+//            setMinZoom(1f)
+//        }
+    }
 
     fun initListeners() {
         engine.addListener(object : ZoomEngine.Listener {
             override fun onIdle(engine: ZoomEngine) {
 
                 val bmp = (drawable as? BitmapDrawable)?.bitmap
-                if(bmp!=null){
+                if (bmp != null) {
                     this@ZoomAssetImageView.zoomInfo?.let {
                         it.panX = engine.panX
                         it.panY = engine.panY
@@ -64,14 +82,19 @@ class ZoomAssetImageView @JvmOverloads constructor(
             val vwidth = width - paddingLeft - paddingRight;
             val vheight = height - paddingTop - paddingBottom;
 
-            val scale: Float
+            var scale: Float
             var dx = 0f
             var dy = 0f
+
             if (dwidth * vheight > vwidth * dheight) {
+                //Landscape
                 scale = (vheight / dheight.toFloat())
+                scale = max(scale,engine.getMinZoom())
                 dx = (vwidth - dwidth * scale) * 0.5f
             } else {
+                //Portrait
                 scale = (vwidth / dwidth.toFloat())
+                scale = max(scale,engine.getMinZoom())
                 dy = (vheight - dheight * scale) * 0.5f
             }
 
@@ -79,20 +102,50 @@ class ZoomAssetImageView @JvmOverloads constructor(
         }
     }
 
-    fun centerInside(animate:Boolean) {
-        engine.moveTo(1f, 0f,0f,animate)
+    fun centerInside(animate: Boolean) {
+        val bmp = (drawable as? BitmapDrawable)?.bitmap
+        if (bmp != null) {
+
+            val dwidth = bmp.width
+            val dheight = bmp.height
+
+            val vwidth = width - paddingLeft - paddingRight;
+            val vheight = height - paddingTop - paddingBottom;
+
+            var dx = 0f
+            var dy = 0f
+            val scale = engine.getMinZoom()
+
+            if (dwidth * vheight > vwidth * dheight) {
+                //Landscape
+                dx = (vwidth - dwidth * scale) * 0.5f
+            } else {
+                //Portrait
+                dy = (vheight - dheight * scale) * 0.5f
+            }
+
+            engine.moveTo(scale, dx / 2f, dy / 2f, animate)
+        }else{
+            engine.moveTo(1f, 0f, 0f, animate)
+        }
     }
-    fun isValidGlideContext(context: Context):Boolean{
-        if(context is Activity){
+
+    private fun isValidGlideContext(context: Context): Boolean {
+        if (context is Activity) {
             return !(context.isFinishing || context.isDestroyed)
         }
         return false
     }
 
     fun loadAsset(asset: Asset, zoomInfo: ZoomInfo) {
-        this.zoomInfo = zoomInfo
+//        if (isMinZoomLocked) {
+//            this.zoomInfo = zoomInfo
+//            this.zoomInfo?.scale = lockedMinZoom
+//        } else {
+            this.zoomInfo = zoomInfo
+//        }
 
-        if(!isValidGlideContext(context)) return
+        if (!isValidGlideContext(context)) return
 
         Glide.with(this)
             .load(asset.contentUri)
@@ -102,11 +155,22 @@ class ZoomAssetImageView @JvmOverloads constructor(
     }
 
     val requestListener = object : RequestListener<Drawable?> {
-        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable?>?, isFirstResource: Boolean): Boolean {
+        override fun onLoadFailed(
+            e: GlideException?,
+            model: Any?,
+            target: Target<Drawable?>?,
+            isFirstResource: Boolean
+        ): Boolean {
             return false
         }
 
-        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable?>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+        override fun onResourceReady(
+            resource: Drawable?,
+            model: Any?,
+            target: Target<Drawable?>?,
+            dataSource: DataSource?,
+            isFirstResource: Boolean
+        ): Boolean {
             updateMinZoom(resource)
             post {
                 scaleBitmapOnLoad()
@@ -115,43 +179,31 @@ class ZoomAssetImageView @JvmOverloads constructor(
         }
     }
 
-    fun updateMinZoom(resource: Drawable?){
+    fun updateMinZoom(resource: Drawable?) {
         val bmp = (resource as? BitmapDrawable)?.bitmap
-        if(bmp!=null){
-            val ar = bmp.width/bmp.height.toFloat()
+        if (bmp != null) {
+            val ar = bmp.width / bmp.height.toFloat()
 
-            val targetAR = if(ar>1){
-                max(landscapeAR * 1/ar,landscapeAR)
-            }else{
-                max(portraitAR * 1/ar,ar)
+            val targetAR = if (ar > 1) {
+                max(landscapeAR * 1 / ar, landscapeAR)
+            } else {
+                max(portraitAR * 1 / ar, ar)
             }
             val maxZoom = engine.getMaxZoom()
-            val finalMinZoom = max(1f,targetAR)
-            setMinZoom(min(maxZoom,finalMinZoom))
+            val finalMinZoom = max(1f, targetAR)
+            setMinZoom(min(maxZoom, finalMinZoom))
         }
     }
 
     fun scaleBitmapOnLoad() {
         if (zoomInfo != null && zoomInfo!!.hasData()) {
-            engine.moveTo(zoomInfo!!.scale!!,zoomInfo!!.panX!!,zoomInfo!!.panY!!,false)
+            engine.moveTo(zoomInfo!!.scale!!, zoomInfo!!.panX!!, zoomInfo!!.panY!!, false)
         } else if (mediaScaleTypeContract?.getCurrentMediaScaleType() == MediaScaleType.MEDIA_CENTER_CROP) {
             centerCrop(false)
         } else if (mediaScaleTypeContract?.getCurrentMediaScaleType() == MediaScaleType.MEDIA_CENTER_INSIDE) {
             centerInside(false)
         }
 
-    }
-
-    fun loadUriThumbnail(uri: Uri) {
-        Glide.with(this)
-            .load(uri)
-            .thumbnail(0.33f)
-            .centerCrop()
-            .into(this)
-    }
-
-    fun loadAssetThumbnail(asset: Asset) {
-        loadUriThumbnail(asset.contentUri)
     }
 
     fun removeAsset() {

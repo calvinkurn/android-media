@@ -249,10 +249,10 @@ class MediaView @JvmOverloads constructor(
     }
 
     fun lockAspectRatio() {
-//        assetView.lockAspectRatio()
+        assetView.lockMinZoom()
     }
 
     fun unLockAspectRatio() {
-//        assetView.unLockAspectRatio()
+        assetView.unLockMinZoom()
     }
 }
