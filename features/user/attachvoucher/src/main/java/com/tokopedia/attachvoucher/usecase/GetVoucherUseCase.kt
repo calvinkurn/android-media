@@ -5,6 +5,7 @@ import com.tokopedia.attachvoucher.data.VoucherUiModel
 import com.tokopedia.attachvoucher.data.voucherv2.GetMerchantPromotionGetMVListResponse
 import com.tokopedia.attachvoucher.mapper.VoucherMapper
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
@@ -16,7 +17,6 @@ import kotlin.coroutines.CoroutineContext
 class GetVoucherUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatcher,
-    private val mapper: VoucherMapper
 ) : CoroutineUseCase<Map<String, Any>, GetMerchantPromotionGetMVListResponse>(dispatcher) {
 
     var hasNext = false
@@ -25,36 +25,36 @@ class GetVoucherUseCase @Inject constructor(
     private var getVouchersJob: Job? = null
     private val paramFilter = "Filter"
 
-    fun getVouchers(
-            page: Int,
-            filterVoucherType: Int,
-            onSuccess: (List<VoucherUiModel>) -> Unit,
-            onError: (Throwable) -> Unit
-    ) {
-        getVouchersJob = launchCatchError(dispatchers.io,
-                {
-                    startLoading()
-                    val params = generateParams(page, filterVoucherType)
-                    val response = gqlUseCase.apply {
-                        setTypeClass(GetMerchantPromotionGetMVListResponse::class.java)
-                        setRequestParams(params)
-                        setGraphqlQuery(privateVoucherQuery)
-                    }.executeOnBackground()
-                    hasNext = response.merchantPromotionGetMVList.data.paging.hasNext
-                    val vouchers = mapper.map(response)
-                    withContext(dispatchers.main) {
-                        onSuccess(vouchers)
-                        stopLoading()
-                    }
-                },
-                { exception ->
-                    withContext(dispatchers.main) {
-                        onError(exception)
-                        stopLoading()
-                    }
-                }
-        )
-    }
+//    fun getVouchers(
+//            page: Int,
+//            filterVoucherType: Int,
+//            onSuccess: (List<VoucherUiModel>) -> Unit,
+//            onError: (Throwable) -> Unit
+//    ) {
+//        getVouchersJob = launchCatchError(dispatchers.io,
+//                {
+//                    startLoading()
+//                    val params = generateParams(page, filterVoucherType)
+//                    val response = gqlUseCase.apply {
+//                        setTypeClass(GetMerchantPromotionGetMVListResponse::class.java)
+//                        setRequestParams(params)
+//                        setGraphqlQuery(privateVoucherQuery)
+//                    }.executeOnBackground()
+//                    hasNext = response.merchantPromotionGetMVList.data.paging.hasNext
+//                    val vouchers = mapper.map(response)
+//                    withContext(dispatchers.main) {
+//                        onSuccess(vouchers)
+//                        stopLoading()
+//                    }
+//                },
+//                { exception ->
+//                    withContext(dispatchers.main) {
+//                        onError(exception)
+//                        stopLoading()
+//                    }
+//                }
+//        )
+//    }
 
     private fun stopLoading() {
         isLoading = false
@@ -70,20 +70,7 @@ class GetVoucherUseCase @Inject constructor(
 //        stopLoading()
 //    }
 
-    private fun generateParams(page: Int, filter: Int): Map<String, Any> {
-        val requestParam = ArrayMap<String, Any>()
-        val paramMVFilter = ArrayMap<String, Any>().apply {
-            put(MVFilter.VoucherStatus.param, MVFilter.VoucherStatus.paramOnGoing)
-            put(MVFilter.PerPage.param, MVFilter.PerPage.default)
-            put(MVFilter.paramPage, page)
-        }
 
-        if (filter != MVFilter.VoucherType.noFilter) {
-            paramMVFilter[MVFilter.VoucherType.param] = filter
-        }
-        requestParam[paramFilter] = paramMVFilter
-        return requestParam
-    }
 
     private val privateVoucherQuery = """
         query MerchantPromotionGetMVListQuery($$paramFilter: MVFilter!){
@@ -179,7 +166,7 @@ class GetVoucherUseCase @Inject constructor(
     }
 
     override suspend fun execute(params: Map<String, Any>): GetMerchantPromotionGetMVListResponse {
-
+        return repository.request(graphqlQuery(), params)
     }
 
     override fun graphqlQuery(): String {
