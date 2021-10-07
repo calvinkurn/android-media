@@ -196,10 +196,10 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                     intent.putExtra(EXTRA_IS_VARIANT_CHANGED,
                         atcResult.responseResult.data.isNotEmpty()) // will empty if there is no GQL hit
                     activity?.setResult(Activity.RESULT_OK, intent)
+                    activity?.finish()
                 } else {
                     RouteManager.route(context, ApplinkConst.CART)
                 }
-                activity?.finish()
             }
         })
         // observe product bundle quota issue
