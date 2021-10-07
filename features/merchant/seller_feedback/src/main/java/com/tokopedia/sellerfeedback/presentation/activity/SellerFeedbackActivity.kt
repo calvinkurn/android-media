@@ -17,8 +17,8 @@ class SellerFeedbackActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val colorId = ContextCompat.getColor(
-                this@SellerFeedbackActivity,
-                com.tokopedia.unifyprinciples.R.color.Unify_N400
+            this@SellerFeedbackActivity,
+            com.tokopedia.unifyprinciples.R.color.Unify_N400
         )
 
         setupToolbar(colorId)
@@ -39,9 +39,7 @@ class SellerFeedbackActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment {
-        val uri = intent.getParcelableExtra<Uri>(EXTRA_URI_IMAGE) ?: null
-        val fragment = SellerFeedbackFragment.createInstance(uri)
-        fragment.setHasOptionsMenu(true)
+        val uri = intent.getParcelableExtra<Uri>(EXTRA_URI_IMAGE)
         return SellerFeedbackFragment.createInstance(uri)
     }
 }

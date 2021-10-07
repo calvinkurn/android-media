@@ -31,6 +31,9 @@
     <string name="screenshot_seller_feedback_toaster_text">Screenshot terambil. Sekarang kamu bisa beri feedback tentang halaman ini.</string>
     <string name="screenshot_seller_feedback_toaster_cta_text">Beri</string>
     <string name="feedback_form_settings">Pengaturan</string>
+    <string name="feedback_form_settings_title">Pengaturan Feedback</string>
+    <string name="feedback_from_feedback_trigger">Feedback Trigger</string>
+    <string name="feedback_form_feedback_trigger_desc">Form feedback bisa muncul setelah screenshot</string>
 
     <string-array name="feedback_pages">
         <item>Home</item>

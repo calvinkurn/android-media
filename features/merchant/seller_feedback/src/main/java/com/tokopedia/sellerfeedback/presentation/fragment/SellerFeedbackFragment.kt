@@ -33,6 +33,7 @@ import com.tokopedia.sellerfeedback.error.SellerFeedbackException
 import com.tokopedia.sellerfeedback.presentation.SellerFeedback
 import com.tokopedia.sellerfeedback.presentation.adapter.ImageFeedbackAdapter
 import com.tokopedia.sellerfeedback.presentation.bottomsheet.SellerFeedbackPageChooserBottomSheet
+import com.tokopedia.sellerfeedback.presentation.bottomsheet.SettingsBottomSheet
 import com.tokopedia.sellerfeedback.presentation.uimodel.BaseImageFeedbackUiModel
 import com.tokopedia.sellerfeedback.presentation.uimodel.ImageFeedbackUiModel
 import com.tokopedia.sellerfeedback.presentation.uimodel.Score
@@ -102,6 +103,7 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         viewModel = ViewModelProvider(this, viewModelFactory).get(SellerFeedbackViewModel::class.java)
         permissionCheckerHelper = PermissionCheckerHelper()
     }
@@ -164,7 +166,9 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
     }
 
     private fun showSettingsBottomSheet() {
-
+        if (childFragmentManager.isStateSaved) return
+        SettingsBottomSheet.createInstance()
+            .show(childFragmentManager)
     }
 
     private fun setupViewInteraction() {
@@ -359,10 +363,14 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
     }
 
     private fun attachScreenshot() {
-        val uriImage = arguments?.getParcelable<Uri>(EXTRA_URI_IMAGE) ?: return
-        val screenshotManager = ScreenshotManager(requireContext())
-        screenshotManager.getUiModel(uriImage)?.let {
-            viewModel?.setImages(listOf(it))
+        val uriImage = arguments?.getParcelable<Uri>(EXTRA_URI_IMAGE)
+        if (uriImage != null) {
+            val screenshotManager = ScreenshotManager(requireContext())
+            screenshotManager.getUiModel(uriImage)?.let {
+                viewModel?.setImages(listOf(it))
+            }
+        } else {
+            imageFeedbackAdapter.showAddImageFeedbackBtn()
         }
     }
 

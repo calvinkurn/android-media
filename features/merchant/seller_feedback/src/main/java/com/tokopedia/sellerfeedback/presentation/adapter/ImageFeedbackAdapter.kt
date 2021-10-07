@@ -40,9 +40,13 @@ class ImageFeedbackAdapter(private val imageClickListener: BaseImageFeedbackView
     private fun checkAddImageFeedback() {
         with(imageFeedbackData) {
             if (size < MAX_IMAGE && lastOrNull() !is AddImageFeedbackUiModel) {
-                imageFeedbackData.add(addImageFeedbackUiModel)
+                showAddImageFeedbackBtn()
             }
         }
+    }
+
+    fun showAddImageFeedbackBtn() {
+        imageFeedbackData.add(addImageFeedbackUiModel)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseImageFeedbackViewHolder<*> {
