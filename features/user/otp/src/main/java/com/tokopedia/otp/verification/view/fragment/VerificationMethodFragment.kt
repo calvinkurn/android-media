@@ -233,28 +233,14 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
 
     private fun setFooter(linkType: Int) {
         when (linkType) {
-            TYPE_CHANGE_PHONE_UPLOAD_KTP -> setAbTestFooter()
+            TYPE_CHANGE_PHONE_UPLOAD_KTP -> inactivePhoneFooter()
             TYPE_PROFILE_SETTING -> onProfileSettingType()
             else -> onTypeHideLink()
         }
-
     }
 
-    private fun setAbTestFooter() {
-        val abTestKeyInactivePhone1 = abTestPlatform.getString(AB_TEST_KEY_INACTIVE_PHONE_1, "")
-
-        if (abTestKeyInactivePhone1 == AB_TEST_KEY_INACTIVE_PHONE_1) {
-            onVariant1InactivePhone()
-        } else {
-            onInactivePhoneNumber(getString(R.string.my_phone_number_is_inactive))
-        }
-    }
-
-    private fun onVariant1InactivePhone() {
-        onInactivePhoneNumber(getString(R.string.cellphone_number_has_changed))
-    }
-
-    private fun onVariant2InactivePhone() {
+    private fun inactivePhoneFooterWithTicker() {
+        viewBound.phoneInactive?.hide()
         viewBound.phoneInactiveTicker?.visible()
         viewBound.phoneInactiveTicker?.setHtmlDescription(String.format(getString(R.string.change_inactive_phone_number_html), ""))
         viewBound.phoneInactiveTicker?.setDescriptionClickEvent(object : TickerCallback {
@@ -266,41 +252,33 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         })
     }
 
-    private fun onVariant3InactivePhone() {
-        val message = getString(R.string.change_inactive_phone_number)
-        val clickableMessage = getString(R.string.change_phone_number)
-        val spannable = SpannableString(message)
-        spannable.setSpan(
+    private fun inactivePhoneFooter() {
+        context?.let {
+            val message = getString(R.string.change_inactive_phone_number)
+            val clickableMessage = getString(R.string.change_phone_number)
+            val spannable = SpannableString(message)
+            spannable.setSpan(
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
                         onGoToInactivePhoneNumber()
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
+                        ds.color = MethodChecker.getColor(it, R.color.Unify_G500)
                     }
                 },
                 message.indexOf(clickableMessage),
                 message.indexOf(clickableMessage) + clickableMessage.length,
                 0)
-        viewBound.phoneInactive?.visible()
-        context?.let { ContextCompat.getColor(it, R.color.Unify_N700_68) }?.let {
-            viewBound.phoneInactive?.setTextColor(it)
+            viewBound.phoneInactive?.visible()
+            viewBound.phoneInactive?.setTextColor(ContextCompat.getColor(it, R.color.Unify_N700_68))
+            viewBound.phoneInactive?.movementMethod = LinkMovementMethod.getInstance()
+            viewBound.phoneInactive?.setText(spannable, TextView.BufferType.SPANNABLE)
         }
-        viewBound.phoneInactive?.movementMethod = LinkMovementMethod.getInstance()
-        viewBound.phoneInactive?.setText(spannable, TextView.BufferType.SPANNABLE)
     }
 
     private fun onTypeHideLink() {
         viewBound.phoneInactive?.hide()
-    }
-
-    private fun onInactivePhoneNumber(text: String) {
-        viewBound.phoneInactive?.visible()
-        viewBound.phoneInactive?.text = text
-        viewBound.phoneInactive?.setOnClickListener {
-            onGoToInactivePhoneNumber()
-        }
     }
 
     open fun onGoToInactivePhoneNumber() {
@@ -320,9 +298,10 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     }
 
     private fun onProfileSettingType() {
-        val message = getString(R.string.my_phone_inactive_change_at_setting)
-        val spannable = SpannableString(message)
-        spannable.setSpan(
+        context?.let {
+            val message = getString(R.string.my_phone_inactive_change_at_setting)
+            val spannable = SpannableString(message)
+            spannable.setSpan(
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
                         activity?.let {
@@ -339,13 +318,11 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
                 message.indexOf(getString(R.string.setting)),
                 message.indexOf(getString(R.string.setting)) + getString(R.string.setting).length,
                 0)
-        viewBound.phoneInactive?.visible()
-        context?.let { ContextCompat.getColor(it, R.color.Unify_N700_68) }?.let {
-            viewBound.phoneInactive?.setTextColor(it)
+            viewBound.phoneInactive?.visible()
+            viewBound.phoneInactive?.setTextColor(ContextCompat.getColor(it, R.color.Unify_N700_68))
+            viewBound.phoneInactive?.movementMethod = LinkMovementMethod.getInstance()
+            viewBound.phoneInactive?.setText(spannable, TextView.BufferType.SPANNABLE)
         }
-        viewBound.phoneInactive?.movementMethod = LinkMovementMethod.getInstance()
-        viewBound.phoneInactive?.setText(spannable, TextView.BufferType.SPANNABLE)
-
     }
 
     private fun loadTickerTrouble(otpModeListData: OtpModeListData) {
@@ -370,7 +347,6 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     companion object {
 
         private const val TITLE = "Verifikasi"
-        private const val AB_TEST_KEY_INACTIVE_PHONE_1 = "inactive_pn_11"
 
         private const val TYPE_HIDE_LINK = 0
         private const val TYPE_CHANGE_PHONE_UPLOAD_KTP = 1
