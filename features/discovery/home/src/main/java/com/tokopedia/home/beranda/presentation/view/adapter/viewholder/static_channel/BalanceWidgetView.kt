@@ -38,8 +38,6 @@ class BalanceWidgetView: FrameLayout {
 
     private var tokopointsView: View? = null
     private var tokopointsViewNew: View? = null
-    private var gopayView: View? = null
-    private var gopayViewNew: View? = null
     private var gopayActivateNewView: View? = null
 
     constructor(context: Context) : super(context)
@@ -140,7 +138,7 @@ class BalanceWidgetView: FrameLayout {
 
     fun getGopayView(): View? {
         if (balanceAdapter?.getItemMap()?.containsGopay() == true) {
-            gopayView = findViewById(R.id.home_coachmark_item_gopay)
+            val gopayView: View = findViewById(R.id.home_coachmark_item_gopay)
             return gopayView
         }
         return null
@@ -148,7 +146,7 @@ class BalanceWidgetView: FrameLayout {
 
     fun getGopayNewView(): View? {
         if (balanceAdapter?.getItemMap()?.containsGopay() == true) {
-            gopayViewNew = findViewById(R.id.home_coachmark_item_gopay_new)
+            val gopayViewNew: View = findViewById(R.id.home_coachmark_item_gopay_new)
             return gopayViewNew
         }
         return null
