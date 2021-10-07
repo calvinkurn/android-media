@@ -58,12 +58,12 @@ class GetPMShopInfoUseCase @Inject constructor(
               niv_one_month
               niv_pm_pro_threshold
             }
-            shopInfoByID(input: (
+            shopInfoByID(input: {
                 shopIDs: [${'$'}shop_id]
                 fields: ["create_info"]
                 domain: ""
                 source: "sellerapp"
-            ) {
+            }) {
                 result{
                   createInfo{
                     shopCreated
