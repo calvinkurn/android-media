@@ -6,34 +6,36 @@ import android.text.style.URLSpan
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.talk.R
+import com.tokopedia.talk.databinding.ItemTalkReplyHeaderBinding
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyHeaderModel
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnKebabClickedListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyHeaderListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyUnmaskCardListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.ThreadListener
-import com.tokopedia.talk.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.item_talk_reply_header.view.*
 
 class TalkReplyHeaderViewHolder(view: View,
                                 private val onKebabClickedListener: OnKebabClickedListener,
                                 private val talkReplyHeaderListener: TalkReplyHeaderListener,
-                                private val threadListener: ThreadListener) :
+                                private val threadListener: ThreadListener
+) :
         AbstractViewHolder<TalkReplyHeaderModel>(view), TalkReplyUnmaskCardListener {
 
     companion object {
         val LAYOUT = R.layout.item_talk_reply_header
     }
+
+    private val binding = ItemTalkReplyHeaderBinding.bind(view)
 
     override fun bind(element: TalkReplyHeaderModel) {
         with(element) {
@@ -44,9 +46,9 @@ class TalkReplyHeaderViewHolder(view: View,
             showHeaderDateWithCondition(date)
             showUserNameWithCondition(element.userName, element.isMyQuestion)
             showMaskingState(element.isMasked, element.allowUnmask, element.maskedContent)
-            itemView.apply {
-                replyHeaderDate.text = context.getString(R.string.reply_dot_builder, date)
-                replyHeaderTNC.text = HtmlLinkHelper(context, getString(R.string.reply_header_tnc)).spannedString
+            binding.apply {
+                replyHeaderDate.text = itemView.context.getString(R.string.reply_dot_builder, date)
+                replyHeaderTNC.text = HtmlLinkHelper(itemView.context, getString(R.string.reply_header_tnc)).spannedString
                 replyHeaderTNC.setCustomMovementMethod { talkReplyHeaderListener.onTermsAndConditionsClicked() }
             }
         }
@@ -60,18 +62,18 @@ class TalkReplyHeaderViewHolder(view: View,
         }
     }
 
-    private fun showHeaderDateWithCondition(date: String) = with(itemView) {
+    private fun showHeaderDateWithCondition(date: String) = with(binding) {
         if (date.isNotEmpty()) {
             replyHeaderDate.show()
-            replyHeaderDate.text = context.getString(R.string.reply_dot_builder, date)
+            replyHeaderDate.text = itemView.context.getString(R.string.reply_dot_builder, date)
         } else {
             replyHeaderDate.hide()
         }
     }
 
-    private fun showProfilePictureAndNameWithCondition(userThumbnail: String, userId: String) = with(itemView) {
-        replyUserImage?.shouldShowWithAction(userThumbnail.isNotEmpty()) {
-            replyUserImage?.apply {
+    private fun showProfilePictureAndNameWithCondition(userThumbnail: String, userId: String) = with(binding) {
+        replyUserImage.shouldShowWithAction(userThumbnail.isNotEmpty()) {
+            replyUserImage.apply {
                 loadImage(userThumbnail)
                 setOnClickListener {
                     threadListener.goToProfilePage(userId)
@@ -110,7 +112,7 @@ class TalkReplyHeaderViewHolder(view: View,
         }
     }
 
-    private fun showUserNameWithCondition(userName: String, isMyQuestion: Boolean) = with(itemView) {
+    private fun showUserNameWithCondition(userName: String, isMyQuestion: Boolean) = with(binding) {
         replyUserName.text = userName
         if (isMyQuestion) {
             labelMyQuestion.show()
@@ -120,7 +122,7 @@ class TalkReplyHeaderViewHolder(view: View,
     }
 
     private fun showQuestionWithCondition(isMasked: Boolean, question: String, maskedContent: String, allowUnmask: Boolean, isSeller: Boolean) {
-        itemView.replyHeaderMessage.apply {
+        binding.replyHeaderMessage.apply {
             if (isMasked) {
                 setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
                 if (allowUnmask && isSeller) {
@@ -144,20 +146,20 @@ class TalkReplyHeaderViewHolder(view: View,
 
     private fun showKebabWithConditions(allowReport: Boolean, allowDelete: Boolean, onKebabClickedListener: OnKebabClickedListener) {
         if (allowReport || allowDelete) {
-            itemView.replyHeaderKebab.apply {
+            binding.replyHeaderKebab.apply {
                 setOnClickListener {
                     onKebabClickedListener.onKebabClicked("", allowReport, allowDelete)
                 }
                 show()
             }
         } else {
-            itemView.replyHeaderKebab.hide()
+            binding.replyHeaderKebab.hide()
         }
     }
 
     private fun showFollowWithCondition(allowFollow: Boolean, isFollowed: Boolean, talkReplyHeaderListener: TalkReplyHeaderListener) {
         if (allowFollow) {
-            itemView.replyHeaderFollowButton.apply {
+            binding.replyHeaderFollowButton.apply {
                 setOnClickListener {
                     talkReplyHeaderListener.onFollowUnfollowButtonClicked()
                 }
@@ -171,27 +173,27 @@ class TalkReplyHeaderViewHolder(view: View,
                 show()
             }
         } else {
-            itemView.replyHeaderFollowButton.hide()
+            binding.replyHeaderFollowButton.hide()
         }
     }
 
     private fun showMaskingState(isMasked: Boolean, allowUnmask: Boolean, maskedContent: String) {
         if (isMasked) {
             if (allowUnmask) {
-                itemView.replyUnmaskCard.apply {
+                binding.replyUnmaskCard.apply {
                     show()
                     setListener(this@TalkReplyHeaderViewHolder, "")
                 }
             } else {
-                itemView.replyQuestionTicker.apply {
+                binding.replyQuestionTicker.apply {
                     show()
                     setTextDescription(maskedContent)
                 }
-                itemView.replyUnmaskCard.hide()
+                binding.replyUnmaskCard.hide()
             }
         } else {
-            itemView.replyQuestionTicker.hide()
-            itemView.replyUnmaskCard.hide()
+            binding.replyQuestionTicker.hide()
+            binding.replyUnmaskCard.hide()
         }
     }
 }

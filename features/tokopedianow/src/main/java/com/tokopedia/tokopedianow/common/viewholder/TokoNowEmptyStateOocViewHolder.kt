@@ -32,11 +32,10 @@ class TokoNowEmptyStateOocViewHolder(
     }
 
     override fun bind(element: TokoNowEmptyStateOocUiModel?) {
-        showEmptyStateNoAddress()
+        showEmptyStateNoAddress(element?.eventCategory.orEmpty())
     }
 
-    private fun showEmptyStateNoAddress() {
-        emptyStateAddressOoc?.setDescriptionCityName(itemView.context.getString(R.string.tokopedianow_city_name_empty_state_no_address))
+    private fun showEmptyStateNoAddress(eventCategory: String) {
         emptyStateAddressOoc?.actionListener = object : NoAddressEmptyStateView.ActionListener {
             override fun onChangeAddressClicked() {
                 showBottomSheetChooseAddress()
@@ -44,6 +43,10 @@ class TokoNowEmptyStateOocViewHolder(
 
             override fun onReturnClick() {
                 (itemView.context as? Activity)?.finish()
+            }
+
+            override fun onGetNoAddressEmptyStateEventCategoryTracker(): String {
+                return eventCategory
             }
         }
     }
