@@ -15,6 +15,7 @@ import com.tokopedia.digital.digital_recommendation.presentation.adapter.Digital
 import com.tokopedia.digital.digital_recommendation.presentation.adapter.viewholder.DigitalRecommendationViewHolder
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.digital.digital_recommendation.presentation.viewmodel.DigitalRecommendationViewModel
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
@@ -42,6 +43,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
     private lateinit var digitalRecommendationAnalytics: DigitalRecommendationAnalytics
 
     private var additionalTrackingData: DigitalRecommendationAdditionalTrackingData? = null
+    private var page: DigitalRecommendationPage? = null
 
     init {
         showLoading()
@@ -51,6 +53,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         super.onSaveInstanceState()
         return Bundle().apply {
             putParcelable(SAVED_ADDITIONAL_TRACK_DATA, additionalTrackingData)
+            putSerializable(SAVED_PAGE, page)
         }
     }
 
@@ -59,6 +62,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         state?.let {
             val bundle = it as Bundle
             additionalTrackingData = bundle.getParcelable(SAVED_ADDITIONAL_TRACK_DATA)
+            page = bundle.getSerializable(SAVED_PAGE) as DigitalRecommendationPage
         }
     }
 
@@ -92,6 +96,10 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         this.additionalTrackingData = additionalTrackingData
     }
 
+    fun setPage(page: DigitalRecommendationPage) {
+        this.page = page
+    }
+
     fun build() {
         if (!::viewModelFactory.isInitialized) {
             throw UninitializedPropertyAccessException("View Model Factory is not Initialized")
@@ -109,7 +117,11 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
 
         showLoading()
         observeLivedata()
-        digitalRecommendationViewModel.fetchDigitalRecommendation()
+        digitalRecommendationViewModel.fetchDigitalRecommendation(
+                page ?: DigitalRecommendationPage.DIGITAL_GOODS,
+                additionalTrackingData?.dgCategories ?: emptyList(),
+                additionalTrackingData?.pgCategories ?: emptyList()
+        )
     }
 
     fun showLoading() {
@@ -150,6 +162,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
 
     companion object {
         private const val SAVED_ADDITIONAL_TRACK_DATA = "SAVED_ADDITIONAL_TRACK_DATA"
+        private const val SAVED_PAGE = "SAVED_PAGE"
     }
 
 }

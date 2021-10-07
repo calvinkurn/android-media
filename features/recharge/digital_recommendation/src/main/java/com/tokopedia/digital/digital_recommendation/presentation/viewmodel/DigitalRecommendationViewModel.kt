@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.digital.digital_recommendation.domain.DigitalRecommendationUseCase
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
-import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.launch
@@ -26,15 +25,15 @@ class DigitalRecommendationViewModel @Inject constructor(
     val digitalRecommendationItems: LiveData<Result<List<DigitalRecommendationModel>>>
         get() = _digitalRecommendationItems
 
-    var digitalRecommendationData: DigitalRecommendationData? = null
-
-    fun fetchDigitalRecommendation() {
+    fun fetchDigitalRecommendation(page: DigitalRecommendationPage,
+                                   dgCategories: List<Int>,
+                                   pgCategories: List<Int>) {
         launch {
             _digitalRecommendationItems.postValue(
                     digitalRecommendationUseCase.execute(
-                            digitalRecommendationData?.page ?: DigitalRecommendationPage.DIGITAL_GOODS,
-                            digitalRecommendationData?.additionalTrackingData?.dgCategories ?: emptyList(),
-                            digitalRecommendationData?.additionalTrackingData?.pgCategories ?: emptyList()
+                            page,
+                            dgCategories,
+                            pgCategories
                     )
             )
         }

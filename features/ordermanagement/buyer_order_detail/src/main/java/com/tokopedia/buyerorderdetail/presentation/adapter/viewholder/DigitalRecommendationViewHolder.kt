@@ -20,6 +20,7 @@ class DigitalRecommendationViewHolder(itemView: View,
         dgRecommendation.setViewModelFactory(digitalRecommendationData.viewModelFactory)
         dgRecommendation.setLifecycleOwner(digitalRecommendationData.lifecycleOwner)
         dgRecommendation.setAdditionalData(digitalRecommendationData.additionalTrackingData)
+        dgRecommendation.setPage(digitalRecommendationData.page)
         dgRecommendation.listener = object : DigitalRecommendationWidget.Listener {
             override fun onFetchFailed(throwable: Throwable) {
                 // no op
