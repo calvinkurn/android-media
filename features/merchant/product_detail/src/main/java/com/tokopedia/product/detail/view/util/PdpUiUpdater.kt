@@ -340,6 +340,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     shopName = shopInfo.shopCore.name
                     shopLocation = shopInfo.location
                     shopAva = shopInfo.shopAssets.avatar
+                    shopBadge = shopInfo.shopTierBadgeUrl
                 }
             }
 
@@ -407,6 +408,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 productReviewMap?.run {
                     listOfReviews = it.helpfulReviews
                     imageReviews = it.imageReviews?.imageReviewItems
+                    formattedRating = it.rating.ratingScore
+                    totalRatingCount = it.rating.totalRating
+                    totalReviewCount = it.rating.totalReviewTextAndImage
                 }
             }
         }

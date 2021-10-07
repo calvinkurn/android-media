@@ -8,14 +8,14 @@ import androidx.lifecycle.asFlow
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
-import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
@@ -45,6 +45,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDa
 import com.tokopedia.product.detail.common.data.model.rates.ErrorBottomSheet
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
+import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequest
@@ -80,7 +81,6 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.variant_common.util.VariantCommonMapper
@@ -114,7 +114,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val updateCartCounterUseCase: Lazy<UpdateCartCounterUseCase>,
                                                              private val addToCartUseCase: Lazy<AddToCartUseCase>,
                                                              private val addToCartOcsUseCase: Lazy<AddToCartOcsUseCase>,
-                                                             private val addToCartOccUseCase: Lazy<AddToCartOccUseCase>,
+                                                             private val addToCartOccUseCase: Lazy<AddToCartOccMultiUseCase>,
                                                              private val toggleNotifyMeUseCase: Lazy<ToggleNotifyMeUseCase>,
                                                              private val discussionMostHelpfulUseCase: Lazy<DiscussionMostHelpfulUseCase>,
                                                              private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
@@ -548,8 +548,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 is AddToCartOcsRequestParams -> {
                     getAddToCartOcsUseCase(requestParams)
                 }
-                is AddToCartOccRequestParams -> {
-                    getAddToCartOccUseCase(requestParams)
+                is AddToCartOccMultiRequestParams -> {
+                    getAddToCartOccUseCase(atcParams)
                 }
             }
         }) {
@@ -595,9 +595,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private suspend fun getAddToCartOccUseCase(requestParams: RequestParams) {
+    private suspend fun getAddToCartOccUseCase(atcParams: AddToCartOccMultiRequestParams) {
         val result = withContext(dispatcher.io) {
-            addToCartOccUseCase.get().createObservable(requestParams).toBlocking().single()
+            addToCartOccUseCase.get().setParams(atcParams).executeOnBackground().mapToAddToCartDataModel()
         }
         if (result.isStatusError()) {
             val errorMessage = result.getAtcErrorMessage() ?: ""
@@ -1097,7 +1097,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             tradeInParams.deviceId = deviceId
             tradeInParams.userId = userId.toIntOrZero()
             tradeInParams.setPrice(it.data.price.value.roundToIntOrZero())
-            tradeInParams.productId = it.basic.getProductId()
+            tradeInParams.productId = it.basic.productID
             tradeInParams.shopId = it.basic.getShopId()
             tradeInParams.productName = it.getProductName
             tradeInParams.isPreorder = it.data.preOrder.isPreOrderActive()

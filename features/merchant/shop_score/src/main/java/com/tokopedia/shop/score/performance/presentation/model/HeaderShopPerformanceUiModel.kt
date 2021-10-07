@@ -1,5 +1,6 @@
 package com.tokopedia.shop.score.performance.presentation.model
 
+import com.tokopedia.shop.score.performance.domain.model.GoldGetPMOStatusResponse
 import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformanceAdapterTypeFactory
 
 data class HeaderShopPerformanceUiModel(
@@ -9,7 +10,9 @@ data class HeaderShopPerformanceUiModel(
     var shopAge: Long = 0,
     var titleHeaderShopService: String? = "",
     var descHeaderShopService: String? = "",
-    var showCardNewSeller: Boolean = false
+    var showCardNewSeller: Boolean = false,
+    var powerMerchantData: GoldGetPMOStatusResponse.GoldGetPMOSStatus.Data? = null,
+    var isShowPopupEndTenure: Boolean = false
 ) : BaseShopPerformance {
     override fun type(typeFactory: ShopPerformanceAdapterTypeFactory): Int {
         return typeFactory.type(this)

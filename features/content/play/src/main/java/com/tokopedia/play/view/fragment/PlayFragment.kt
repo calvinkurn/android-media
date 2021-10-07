@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -25,12 +26,11 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
-import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.extensions.isAnyBottomSheetsShown
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isKeyboardShown
-import com.tokopedia.play_common.util.KeyboardWatcher
 import com.tokopedia.play.util.observer.DistinctObserver
+import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNavigation
@@ -44,22 +44,22 @@ import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
-import com.tokopedia.play.view.viewcomponent.FragmentBottomSheetViewComponent
-import com.tokopedia.play.view.viewcomponent.FragmentUserInteractionViewComponent
-import com.tokopedia.play.view.viewcomponent.FragmentVideoViewComponent
-import com.tokopedia.play.view.viewcomponent.FragmentYouTubeViewComponent
+import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
+import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.play.util.withCache
-import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
+import com.tokopedia.play_common.util.KeyboardWatcher
+import com.tokopedia.play.view.uimodel.action.SetChannelActiveAction
 import com.tokopedia.play_common.util.event.EventObserver
+import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.play_common.util.extension.dismissToaster
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -89,6 +89,9 @@ class PlayFragment @Inject constructor(
     }
     private val fragmentYouTubeView by viewComponent {
         FragmentYouTubeViewComponent(channelId, it, R.id.fl_youtube, childFragmentManager, this)
+    }
+    private val fragmentUpcomingView by viewComponent {
+        FragmentUpcomingViewComponent(it, R.id.fl_upcoming, childFragmentManager)
     }
 
     private lateinit var playParentViewModel: PlayParentViewModel
@@ -161,7 +164,7 @@ class PlayFragment @Inject constructor(
     }
 
     override fun onDestroyView() {
-        getVideoScalingManager().onDestroy()
+        if (view != null) getVideoScalingManager().onDestroy()
         videoScalingManager = null
 
         destroyInsets(requireView())
@@ -230,21 +233,33 @@ class PlayFragment @Inject constructor(
 
     fun onFirstTopBoundsCalculated() {
         isFirstTopBoundsCalculated = true
-        if (playViewModel.videoPlayer.isYouTube) {
-            fragmentYouTubeView.safeInit()
-            fragmentYouTubeView.show()
-        } else {
-            fragmentVideoView.safeInit()
-            fragmentVideoView.show()
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            if(playViewModel.upcomingInfo?.isUpcoming == true) {
+                fragmentVideoView.safeRelease()
+                fragmentVideoView.hide()
+                fragmentYouTubeView.safeRelease()
+                fragmentYouTubeView.hide()
+                fragmentUserInteractionView.safeRelease()
+                fragmentUserInteractionView.hide()
+
+                fragmentUpcomingView.safeInit()
+            } else if (playViewModel.videoPlayer.isYouTube) {
+                fragmentYouTubeView.safeInit()
+                fragmentYouTubeView.show()
+            } else {
+                fragmentVideoView.safeInit()
+                fragmentVideoView.show()
+            }
         }
     }
 
     fun onBottomInsetsViewShown(bottomMostBounds: Int) {
-        if (orientation.isLandscape) return
+        if (orientation.isLandscape || view == null) return
         getVideoScalingManager().onBottomInsetsShown(bottomMostBounds, playViewModel.videoPlayer, playViewModel.videoOrientation)
     }
 
     fun onBottomInsetsViewHidden() {
+        if (view == null) return
         getVideoScalingManager().onBottomInsetsHidden(playViewModel.videoPlayer)
     }
 
@@ -253,6 +268,9 @@ class PlayFragment @Inject constructor(
             val totalView = playViewModel.totalView
             if (!totalView.isNullOrEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
             if (!channelId.isNullOrEmpty()) putExtra(EXTRA_CHANNEL_ID, channelId)
+            playViewModel.upcomingInfo?.let {
+                putExtra(EXTRA_IS_REMINDER, it.isReminderSet)
+            }
         })
     }
 
@@ -274,6 +292,21 @@ class PlayFragment @Inject constructor(
         }
     }
 
+    /**
+     * When viewpager is swiped to this fragment
+     */
+    fun setFragmentActive(position: Int) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            /**
+             * Workaround because the first UI load is slower,
+             * TODO("Maybe find a way to have this logic from viewModel")
+             */
+            if (position == 0) delay(FIRST_FRAGMENT_ACTIVE_DELAY)
+            viewLifecycleOwner.awaitResume()
+            playViewModel.submitAction(SetChannelActiveAction)
+        }
+    }
+
     private fun processChannelInfo() {
         try {
             playViewModel.createPage(playParentViewModel.getLatestChannelStorageData(channelId))
@@ -285,7 +318,7 @@ class PlayFragment @Inject constructor(
         try {
             val channelData = playParentViewModel.getLatestChannelStorageData(channelId)
             playViewModel.focusPage(channelData)
-            analytic.sendScreen(channelId, playViewModel.channelType, playParentViewModel.sourceType, channelName = channelData.channelInfo.title)
+            analytic.sendScreen(channelId, playViewModel.channelType, playParentViewModel.sourceType, channelName = channelData.channelDetail.channelInfo.title)
             sendSwipeRoomAnalytic()
         } catch (e: Throwable) {}
     }
@@ -360,7 +393,6 @@ class PlayFragment @Inject constructor(
     }
 
     private fun setupObserve() {
-        observeSocketInfo()
         observeStatusInfo()
         observeVideoMeta()
         observeChannelInfo()
@@ -375,18 +407,6 @@ class PlayFragment @Inject constructor(
     /**
      * Observe
      */
-
-    private fun observeSocketInfo() {
-        playViewModel.observableSocketInfo.observe(viewLifecycleOwner, DistinctObserver {
-            when(it) {
-                is PlaySocketInfo.Reconnect ->
-                    analytic.trackSocketError(getString(R.string.play_message_socket_reconnect))
-                is PlaySocketInfo.Error ->
-                    analytic.trackSocketError(it.throwable.localizedMessage.orEmpty())
-            }
-        })
-    }
-
     private fun observeStatusInfo() {
         playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
             if (it.statusType.isFreeze) {
@@ -458,7 +478,11 @@ class PlayFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             playViewModel.uiState.withCache().collectLatest { cachedState ->
                 val state = cachedState.value
-                if (cachedState.isValueChanged(PlayViewerNewUiState::showWinnerBadge) && state.showWinnerBadge) fragmentBottomSheetView.safeInit()
+                val prevState = cachedState.prevValue
+                if (
+                    prevState?.winnerBadge?.shouldShow != state.winnerBadge.shouldShow &&
+                    state.winnerBadge.shouldShow
+                ) fragmentBottomSheetView.safeInit()
             }
         }
     }
@@ -600,15 +624,17 @@ class PlayFragment @Inject constructor(
             videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
-        if (isFreezeOrBanned) {
-            fragmentYouTubeView.safeRelease()
-            fragmentYouTubeView.hide()
-            return
-        }
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            if (isFreezeOrBanned) {
+                fragmentYouTubeView.safeRelease()
+                fragmentYouTubeView.hide()
+                return@launchWhenResumed
+            }
 
-        if (videoPlayer.isYouTube && isFirstTopBoundsCalculated) {
-            fragmentYouTubeView.safeInit()
-            fragmentYouTubeView.show()
+            if (videoPlayer.isYouTube && isFirstTopBoundsCalculated) {
+                fragmentYouTubeView.safeInit()
+                fragmentYouTubeView.show()
+            }
         }
     }
     //endregion
@@ -616,7 +642,9 @@ class PlayFragment @Inject constructor(
     companion object {
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
+        private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
 
         private const val KEYBOARD_REGISTER_DELAY = 200L
+        private const val FIRST_FRAGMENT_ACTIVE_DELAY = 500L
     }
 }

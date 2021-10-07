@@ -15,8 +15,8 @@ import kotlinx.android.synthetic.main.view_stc_date_text_field.view.*
  */
 
 class DateTextFieldView(
-        context: Context?,
-        attrs: AttributeSet?
+    context: Context?,
+    attrs: AttributeSet?
 ) : LinearLayout(context, attrs) {
 
     init {
@@ -27,9 +27,9 @@ class DateTextFieldView(
         set(value) {
             field = value
             val color = if (value) {
-                context.getResColor(com.tokopedia.unifyprinciples.R.color.light_G400)
+                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)
             } else {
-                context.getResColor(com.tokopedia.unifyprinciples.R.color.Neutral_N150)
+                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N150)
             }
             horLineDtf.setBackgroundColor(color)
         }
@@ -40,18 +40,22 @@ class DateTextFieldView(
             tvStcDateLabel.text = value
         }
 
-    var hint: String = ""
+    var hint: String = tvStcDateText.text.toString()
         set(value) {
             field = value
             tvStcDateText.text = value
-            tvStcDateText.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
+            tvStcDateText.setTextColor(
+                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
+            )
         }
 
     var valueStr: String = ""
         set(value) {
             field = value
             tvStcDateText.text = value
-            tvStcDateText.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
+            tvStcDateText.setTextColor(
+                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+            )
         }
 
     var labelGravity: Int = Gravity.START

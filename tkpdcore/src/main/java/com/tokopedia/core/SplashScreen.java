@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -128,7 +129,7 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     public void finishSplashScreen() {
-        Intent intent = ((com.tokopedia.core.TkpdCoreRouter) getApplicationContext()).getHomeIntent(this);
+        Intent intent = RouteManager.getIntent(this, ApplinkConst.HOME);
         startActivity(intent);
         finish();
     }
@@ -160,7 +161,6 @@ public class SplashScreen extends AppCompatActivity {
     @NotNull
     private boolean getBranchDefferedDeeplink() {
         LinkerDeeplinkData linkerDeeplinkData = new LinkerDeeplinkData();
-        linkerDeeplinkData.setClientId(TrackingUtils.getClientID(SplashScreen.this));
         linkerDeeplinkData.setReferrable(SplashScreen.this.getIntent().getData());
         linkerDeeplinkData.setActivity(SplashScreen.this);
 

@@ -106,8 +106,6 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     }
 
     private fun initObserver() {
-        addStartSaveCouponObserver()
-        addRedeemCouponObserver()
         addLatestStatusObserver()
         addCatalogListObserver()
     }
@@ -132,23 +130,6 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
             refreshCatalog(it)
             stopRenderPerformanceMonitoring()
             stopPerformanceMonitoring()
-        }
-    })
-
-    private fun addRedeemCouponObserver() = viewModel.onRedeemCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-        it?.let { RouteManager.route(context, it) }
-    })
-
-    private fun addStartSaveCouponObserver() = viewModel.startSaveCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-        it?.let {
-            when (it) {
-                is Success -> showConfirmRedeemDialog(it.data.cta, it.data.code, it.data.title)
-                is ValidationError<*, *> -> {
-                    if (it.data is ValidateMessageDialog) {
-                        showValidationMessageDialog(it.data.item, it.data.title, it.data.desc, it.data.messageCode)
-                    }
-                }
-            }
         }
     })
 
@@ -203,177 +184,31 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     }
 
     override fun getActivityContext(): Context {
-        return activity!!
+        return requireActivity()
     }
 
     override fun getAppContext(): Context {
-        return context!!
+        return requireContext()
     }
 
     override fun getCurrentCategoryId(): Int {
         return if (arguments != null) {
-            arguments!!.getInt(CommonConstant.ARGS_CATEGORY_ID)
+            requireArguments().getInt(CommonConstant.ARGS_CATEGORY_ID)
         } else CommonConstant.DEFAULT_CATEGORY_TYPE
         // default category id
     }
 
     override fun getCurrentSubCategoryId(): Int {
         return if (arguments != null) {
-            arguments!!.getInt(CommonConstant.ARGS_SUB_CATEGORY_ID)
+            requireArguments().getInt(CommonConstant.ARGS_SUB_CATEGORY_ID)
         } else CommonConstant.DEFAULT_CATEGORY_TYPE
         // default category id
     }
 
     val pointsAvailability: Boolean
         get() = if (arguments != null) {
-            arguments!!.getBoolean(CommonConstant.ARGS_POINTS_AVAILABILITY, false)
+            requireArguments().getBoolean(CommonConstant.ARGS_POINTS_AVAILABILITY, false)
         } else false
-
-    override fun showRedeemCouponDialog(cta: String?, code: String?, title: String?) {
-        val adb = AlertDialog.Builder(activityContext)
-        adb.setTitle(R.string.tp_label_use_coupon)
-        val messageBuilder = StringBuilder()
-                .append(getString(R.string.tp_label_coupon))
-                .append(" ")
-                .append("<strong>")
-                .append(title)
-                .append("</strong>")
-                .append(" ")
-                .append(getString(R.string.tp_mes_coupon_part_2))
-        adb.setMessage(MethodChecker.fromHtml(messageBuilder.toString()))
-        val builder = adb.setPositiveButton(R.string.tp_label_use) { dialogInterface: DialogInterface?, i: Int ->
-            //Call api to validate the coupon
-            viewModel.redeemCoupon(code, cta)
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
-                    title)
-        }
-        adb.setNegativeButton(R.string.tp_label_later) { dialogInterface: DialogInterface?, i: Int ->
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
-                    title)
-        }
-        val dialog = adb.create()
-        dialog.show()
-        decorateDialog(dialog)
-    }
-
-    override fun showConfirmRedeemDialog(cta: String?, code: String?, title: String?) {
-        val adb = AlertDialog.Builder(activityContext)
-        adb.setNegativeButton(R.string.tp_label_use) { dialogInterface: DialogInterface?, i: Int ->
-            showRedeemCouponDialog(cta, code, title)
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
-                    title)
-        }
-        adb.setPositiveButton(R.string.tp_label_view_coupon) { dialogInterface: DialogInterface?, i: Int ->
-            startActivity(getCallingIntent(activityContext))
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_LIHAT_KUPON,
-                    "")
-        }
-        adb.setTitle(R.string.tp_label_successful_exchange)
-        val dialog = adb.create()
-        dialog.show()
-        decorateDialog(dialog)
-        AnalyticsTrackerUtil.sendEvent(context,
-                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_COUPON,
-                AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
-                AnalyticsTrackerUtil.ActionKeys.VIEW_REDEEM_SUCCESS,
-                title)
-    }
-
-    override fun showValidationMessageDialog(item: CatalogsValueEntity, title: String?, message: String, resCode: Int) {
-        val adb = AlertDialog.Builder(activityContext)
-        val labelPositive: String
-        var labelNegative: String? = null
-        when (resCode) {
-            CommonConstant.CouponRedemptionCode.LOW_POINT -> labelPositive = getString(R.string.tp_label_ok)
-            CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
-                labelPositive = getString(R.string.tp_label_complete_profile)
-                labelNegative = getString(R.string.tp_label_later)
-            }
-            CommonConstant.CouponRedemptionCode.SUCCESS -> {
-                labelPositive = getString(R.string.tp_label_exchange)
-                labelNegative = getString(R.string.tp_label_betal)
-            }
-            CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED -> labelPositive = getString(R.string.tp_label_ok)
-            else -> labelPositive = getString(R.string.tp_label_ok)
-        }
-        if (title == null || title.isEmpty()) {
-            adb.setTitle(R.string.tp_label_exchange_failed)
-        } else {
-            adb.setTitle(title)
-        }
-        adb.setMessage(MethodChecker.fromHtml(message))
-        if (labelNegative != null && !labelNegative.isEmpty()) {
-            adb.setNegativeButton(labelNegative) { dialogInterface: DialogInterface?, i: Int ->
-                when (resCode) {
-                    CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
-                            "")
-                    CommonConstant.CouponRedemptionCode.SUCCESS -> AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_BATAL,
-                            title)
-                    else -> {
-                    }
-                }
-            }
-        }
-        adb.setPositiveButton(labelPositive) { dialogInterface: DialogInterface, i: Int ->
-            when (resCode) {
-                CommonConstant.CouponRedemptionCode.LOW_POINT -> {
-                    dialogInterface.cancel()
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_POINT_TIDAK,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_BELANJA,
-                            "")
-                }
-                CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED -> {
-                    dialogInterface.cancel()
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KUOTA_HABIS,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_OK,
-                            "")
-                }
-                CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE -> {
-                    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PROFILE_COMPLETION)
-                    startActivity(intent)
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_INCOMPLETE_PROFILE,
-                            "")
-                }
-                CommonConstant.CouponRedemptionCode.SUCCESS -> {
-                    viewModel.startSaveCoupon(item)
-                    AnalyticsTrackerUtil.sendEvent(context,
-                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
-                            AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
-                            title)
-                }
-                else -> dialogInterface.cancel()
-            }
-        }
-        val dialog = adb.create()
-        dialog.show()
-        decorateDialog(dialog)
-    }
 
     fun getCatalogList(currentCategoryId: Int, currentSubCategoryId: Int) {
         viewModel.getCataloglistItem(currentCategoryId, currentSubCategoryId, viewModel.pointRange)
@@ -427,7 +262,9 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         mTimer?.schedule(object : TimerTask() {
             override fun run() {
                 if (mHandler != null) {
-                    mHandler!!.post(mRunnableUpdateCatalogStatus)
+                    mRunnableUpdateCatalogStatus?.let { it ->
+                        mHandler!!.post(it)
+                    }
                 }
             }
         }, 0, if (mRefreshTime > 0) mRefreshTime else CommonConstant.DEFAULT_AUTO_REFRESH_S.toLong())
@@ -435,7 +272,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
 
 
     private fun fetchRemoteConfig() {
-        mRefreshTime = instance(context!!).getLongRemoteConfig(CommonConstant.TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S.toLong())
+        mRefreshTime = instance(requireContext()).getLongRemoteConfig(CommonConstant.TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S.toLong())
     }
 
     override fun onDestroyView() {
@@ -445,7 +282,9 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
             mTimer = null
         }
         if (mHandler != null) {
-            mHandler!!.removeCallbacks(mRunnableUpdateCatalogStatus)
+            mRunnableUpdateCatalogStatus?.let { it ->
+                mHandler!!.removeCallbacks(it)
+            }
             mHandler = null
         }
         mRunnableUpdateCatalogStatus = null

@@ -2,7 +2,7 @@ package com.tokopedia.cart.domain.model.cartlist
 
 import android.os.Parcelable
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.util.*
 
 @Parcelize
@@ -10,7 +10,6 @@ data class ShopGroupAvailableData(
 
         var cartItemHolderDataList: MutableList<CartItemHolderData> = ArrayList(),
         var isChecked: Boolean = false,
-        var isError: Boolean = false,
         var errorTitle: String = "",
         var errorDescription: String = "",
         var isWarning: Boolean = false,
@@ -41,7 +40,9 @@ data class ShopGroupAvailableData(
         var shopTicker: String = "",
         var maximumWeightWording: String = "",
         var maximumShippingWeight: Double = 0.0,
-        var isTokoNow: Boolean = false
+        var isTokoNow: Boolean = false,
+        var isShowPin: Boolean = false,
+        var pinCoachmarkMessage: String = ""
 ) : Parcelable {
 
     val cartItemDataList: MutableList<CartItemHolderData>

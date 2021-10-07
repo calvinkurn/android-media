@@ -40,6 +40,16 @@ class FakeNotifOrderListUseCase(
             list.get(1).asJsonObject.addProperty(text, "Cache All")
         }
 
+    val fifteenOrderWidgetResponse: NotifOrderListResponse
+        get() = alterDefaultResponse {
+            val list = it.getAsJsonObject(notifcenter_notifOrderList)
+                .getAsJsonArray(list)
+            val secondItem = list.get(1).asJsonObject
+            for (i in 0 until 13) {
+                list.add(secondItem)
+            }
+        }
+
     private var notifcenter_notifOrderList = "notifcenter_notifOrderList"
     private var list = "list"
     private var text = "text"

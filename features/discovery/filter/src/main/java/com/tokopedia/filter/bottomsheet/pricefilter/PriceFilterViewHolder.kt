@@ -12,13 +12,16 @@ import com.tokopedia.filter.common.helper.ChipSpacingItemDecoration
 import com.tokopedia.filter.common.helper.addItemDecorationIfNotExists
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.utils.text.currency.AfterTextWatcher
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.sort_filter_bottom_sheet_chips_layout.view.*
 import kotlinx.android.synthetic.main.sort_filter_bottom_sheet_price_filter_view_holder.view.*
 
-internal class PriceFilterViewHolder(itemView: View, private val priceFilterViewListener: PriceFilterViewListener) : AbstractViewHolder<PriceFilterViewModel>(itemView) {
+internal class PriceFilterViewHolder(
+    itemView: View,
+    private val priceFilterViewListener: PriceFilterViewListener,
+) : AbstractViewHolder<PriceFilterViewModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.sort_filter_bottom_sheet_price_filter_view_holder
@@ -35,9 +38,23 @@ internal class PriceFilterViewHolder(itemView: View, private val priceFilterView
             itemView.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
     )
 
+    private var priceFilterViewModel: PriceFilterViewModel? = null
+
     init {
-        itemView.priceFilterMinValue?.addNumberTextChangedListener()
-        itemView.priceFilterMaxValue?.addNumberTextChangedListener()
+        itemView.priceFilterMinValue?.addNumberTextChangedListener {
+            val priceFilterViewModel = priceFilterViewModel ?: return@addNumberTextChangedListener
+            priceFilterViewListener.onMinPriceEditedFromTextInput(
+                priceFilterViewModel,
+                it.currencyToInt(),
+            )
+        }
+        itemView.priceFilterMaxValue?.addNumberTextChangedListener {
+            val priceFilterViewModel = priceFilterViewModel ?: return@addNumberTextChangedListener
+            priceFilterViewListener.onMaxPriceEditedFromTextInput(
+                priceFilterViewModel,
+                it.currencyToInt(),
+            )
+        }
         itemView.priceRangeFilterRecyclerView?.let {
             it.layoutManager = layoutManager
             it.isNestedScrollingEnabled = false
@@ -45,17 +62,20 @@ internal class PriceFilterViewHolder(itemView: View, private val priceFilterView
         }
     }
 
-    private fun TextFieldUnify.addNumberTextChangedListener() {
-        textFieldInput.run {
+    private fun TextFieldUnify2.addNumberTextChangedListener(onPriceEdited: (String) -> Unit) {
+        editText.run {
             addTextChangedListener(object: AfterTextWatcher() {
                 override fun afterTextChanged(s: Editable) {
-                    CurrencyFormatHelper.setToRupiahCheckPrefix(textFieldInput)
+                    CurrencyFormatHelper.setToRupiahCheckPrefix(editText)
+                    onPriceEdited(editText.text.toString())
                 }
             })
         }
     }
 
     override fun bind(element: PriceFilterViewModel) {
+        priceFilterViewModel = element
+
         bindTitle(element)
         bindMinMaxPriceValue(element)
         bindPriceRangeRecyclerView(element)
@@ -66,13 +86,13 @@ internal class PriceFilterViewHolder(itemView: View, private val priceFilterView
     }
 
     private fun bindMinMaxPriceValue(priceFilterViewModel: PriceFilterViewModel) {
-        itemView.priceFilterMinValue?.bindPriceFilterValue(priceFilterViewModel.minPriceFilterTitle, priceFilterViewModel.minPriceFilterValue) {
-            priceFilterViewListener.onMinPriceEditedFromTextInput(priceFilterViewModel, it.currencyToInt())
-        }
+        itemView.priceFilterMinValue?.bindPriceFilterValue(
+            priceFilterViewModel.minPriceFilterValue,
+        )
 
-        itemView.priceFilterMaxValue?.bindPriceFilterValue(priceFilterViewModel.maxPriceFilterTitle, priceFilterViewModel.maxPriceFilterValue) {
-            priceFilterViewListener.onMaxPriceEditedFromTextInput(priceFilterViewModel, it.currencyToInt())
-        }
+        itemView.priceFilterMaxValue?.bindPriceFilterValue(
+            priceFilterViewModel.maxPriceFilterValue,
+        )
     }
 
     private fun String.currencyToInt(): Int {
@@ -81,19 +101,23 @@ internal class PriceFilterViewHolder(itemView: View, private val priceFilterView
                 .toIntOrZero()
     }
 
-    private fun TextFieldUnify.bindPriceFilterValue(title: String, value: String, onFocusChange: (String) -> Unit) {
-        textFiedlLabelText.text = title
+    private fun TextFieldUnify2.bindPriceFilterValue(value: String) {
+        editText.run {
+            if (value != this.text.toString()) setText(value)
 
-        textFieldInput.run {
-            setText(value)
             setOnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) onFocusChange(text.toString())
+                if (!hasFocus) priceFilterViewListener.onPriceTextOutOfFocus()
             }
         }
     }
 
     private fun bindPriceRangeRecyclerView(element: PriceFilterViewModel) {
-        itemView.priceRangeFilterRecyclerView?.swapAdapter(PriceRangeOptionAdapter(element, priceFilterViewListener), false)
+        val priceRangeOptionAdapter = PriceRangeOptionAdapter(element, priceFilterViewListener)
+        val removeAndRecycleExistingViews = false
+
+        itemView
+            .priceRangeFilterRecyclerView
+            ?.swapAdapter(priceRangeOptionAdapter, removeAndRecycleExistingViews)
     }
 
     private class PriceRangeOptionAdapter(
@@ -102,7 +126,9 @@ internal class PriceFilterViewHolder(itemView: View, private val priceFilterView
     ): RecyclerView.Adapter<PriceRangeOptionViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PriceRangeOptionViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.sort_filter_bottom_sheet_chips_layout, parent, false)
+            val view = LayoutInflater
+                .from(parent.context)
+                .inflate(R.layout.sort_filter_bottom_sheet_chips_layout, parent, false)
             return PriceRangeOptionViewHolder(view, priceFilterViewModel, priceFilterViewListener)
         }
 

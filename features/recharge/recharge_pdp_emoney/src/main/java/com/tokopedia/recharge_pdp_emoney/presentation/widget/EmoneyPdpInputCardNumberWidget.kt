@@ -11,8 +11,8 @@ import android.view.LayoutInflater
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_pdp_emoney.R
+import com.tokopedia.recharge_pdp_emoney.databinding.WidgetEmoneyInputCardNumberBinding
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.widget_emoney_input_card_number.view.*
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -24,32 +24,33 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
     : BaseCustomView(context, attrs, defStyleAttr) {
 
     var listener: ActionListener? = null
+    val binding :WidgetEmoneyInputCardNumberBinding
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.widget_emoney_input_card_number, this, true)
+        binding = WidgetEmoneyInputCardNumberBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
     fun initView(actionListener: ActionListener) {
         listener = actionListener
 
-        emoneyPdpCardInputNumber.textFieldInput.isClickable = true
-        emoneyPdpCardInputNumber.textFieldInput.isFocusable = false
-        emoneyPdpCardInputNumber.textFieldInput.filters = arrayOf<InputFilter>(LengthFilter(MAX_CHAR_EMONEY_CARD_NUMBER_WITH_SPACES))
-        emoneyPdpCardInputNumber.textFieldInput.setOnClickListener { listener?.onClickInputView(getNumber()) }
-        emoneyPdpCardInputNumber.textFieldInput.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+        binding.emoneyPdpCardInputNumber.textFieldInput.isClickable = true
+        binding.emoneyPdpCardInputNumber.textFieldInput.isFocusable = false
+        binding.emoneyPdpCardInputNumber.textFieldInput.filters = arrayOf<InputFilter>(LengthFilter(MAX_CHAR_EMONEY_CARD_NUMBER_WITH_SPACES))
+        binding.emoneyPdpCardInputNumber.textFieldInput.setOnClickListener { listener?.onClickInputView(getNumber()) }
+        binding.emoneyPdpCardInputNumber.textFieldInput.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 
-        emoneyPdpCardInputNumber.getSecondIcon().setPadding(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2), resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2), resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2), resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2))
-        emoneyPdpCardInputNumber.getSecondIcon().setOnClickListener {
+        binding.emoneyPdpCardInputNumber.getSecondIcon().setPadding(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2), resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2), resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2), resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2))
+        binding.emoneyPdpCardInputNumber.getSecondIcon().setOnClickListener {
             clearNumberAndOperator()
             listener?.onRemoveNumberIconClick()
         }
-        emoneyPdpCardCameraIcon.setOnClickListener {
+        binding.emoneyPdpCardCameraIcon.setOnClickListener {
             listener?.onClickCameraIcon()
         }
 
-        emoneyPdpCardInputNumber.textFieldInput.addTextChangedListener(object : TextWatcher {
+        binding.emoneyPdpCardInputNumber.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                emoneyPdpCardInputNumber.getFirstIcon().hide()
+                binding.emoneyPdpCardInputNumber.getFirstIcon().hide()
                 listener?.onInputNumberChanged(getNumber())
             }
 
@@ -59,11 +60,11 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     fun renderError(errorMsg: String) {
-        emoneyPdpCardInputNumber.setError(errorMsg.isNotEmpty())
-        emoneyPdpCardInputNumber.setPadding(0, 0, 0,
+        binding.emoneyPdpCardInputNumber.setError(errorMsg.isNotEmpty())
+        binding.emoneyPdpCardInputNumber.setPadding(0, 0, 0,
                 if (errorMsg.isNotEmpty()) resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
                 else 0)
-        emoneyPdpCardInputNumber.setMessage(errorMsg)
+        binding.emoneyPdpCardInputNumber.setMessage(errorMsg)
     }
 
     fun setNumber(number: String) {
@@ -74,27 +75,27 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
             if (i > 0 && i % MAX_CHAR_EMONEY_CARD_NUMBER_BLOCK == 0) cardNumber += " "
             cardNumber += char
         }
-        emoneyPdpCardInputNumber.textFieldInput.setText(cardNumber)
+        binding.emoneyPdpCardInputNumber.textFieldInput.setText(cardNumber)
         if (number.isNotEmpty()) showClearIcon()
     }
 
-    fun getNumber(): String = emoneyPdpCardInputNumber.textFieldInput.text.toString().replace(" ", "")
+    fun getNumber(): String = binding.emoneyPdpCardInputNumber.textFieldInput.text.toString().replace(" ", "")
 
     fun setOperator(imageUrl: String) {
-        emoneyPdpCardInputNumber.setFirstIcon(imageUrl)
-        emoneyPdpCardInputNumber.getFirstIcon().show()
+        binding.emoneyPdpCardInputNumber.setFirstIcon(imageUrl)
+        binding.emoneyPdpCardInputNumber.getFirstIcon().show()
     }
 
     private fun clearNumberAndOperator() {
         renderError("")
-        emoneyPdpCardInputNumber.textFieldInput.setText("")
-        emoneyPdpCardInputNumber.getSecondIcon().hide()
-        emoneyPdpCardInputNumber.getFirstIcon().hide()
+        binding.emoneyPdpCardInputNumber.textFieldInput.setText("")
+        binding.emoneyPdpCardInputNumber.getSecondIcon().hide()
+        binding.emoneyPdpCardInputNumber.getFirstIcon().hide()
     }
 
     private fun showClearIcon() {
-        emoneyPdpCardInputNumber.setSecondIcon(com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_16)
-        emoneyPdpCardInputNumber.getSecondIcon().show()
+        binding.emoneyPdpCardInputNumber.setSecondIcon(com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_16)
+        binding.emoneyPdpCardInputNumber.getSecondIcon().show()
     }
 
     interface ActionListener {

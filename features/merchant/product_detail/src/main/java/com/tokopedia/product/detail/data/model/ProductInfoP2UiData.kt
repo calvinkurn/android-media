@@ -6,13 +6,14 @@ import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
+import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.merchantvouchersummary.MerchantVoucherSummary
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
-import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionInfoResponse
 import com.tokopedia.product.detail.data.model.review.ImageReview
+import com.tokopedia.product.detail.data.model.review.ProductRatingCount
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
@@ -48,7 +49,8 @@ data class ProductInfoP2UiData(
         var imageReviews: ImageReview? = null,
         var helpfulReviews: List<Review>? = null,
         var miniCart: MutableMap<String, MiniCartItem>? = null,
-        var alternateCopy: List<AlternateCopy> = listOf()
+        var alternateCopy: List<AlternateCopy> = listOf(),
+        var rating: ProductRatingCount = ProductRatingCount()
 ) {
     fun getTotalStockMiniCartByParentId(parentId: String): Int {
         if (parentId == "0" || parentId.isEmpty()) return 0

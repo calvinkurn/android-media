@@ -56,10 +56,12 @@
             </androidx.cardview.widget.CardView>
 
             <LinearLayout
+                android:layout_weight="1"
                 android:id="@+id/smart_bills_item_info_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/smart_bills_item_text_margin"
+                android:layout_marginRight="@dimen/spacing_lvl1"
                 android:orientation="vertical">
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -97,15 +99,45 @@
 
                 </LinearLayout>
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tv_smart_bills_item_price"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_lvl2"
-                    android:textColor="@color/Unify_Y500"
-                    app:typographyType="body_3"
-                    app:typographyWeight="bold"
-                    tools:text="Rp 200.000.000" />
+                    android:orientation="horizontal">
+
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tv_smart_bills_item_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_lvl2"
+                        android:layout_marginRight="@dimen/spacing_lvl2"
+                        android:textColor="@color/Unify_N700_96"
+                        app:typographyType="body_2"
+                        app:typographyWeight="bold"
+                        tools:text="Rp 200.000.000" />
+
+                    <com.tokopedia.unifycomponents.Label
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_smart_bills_percentage_label"
+                        tools:visibility="visible"
+                        app:labelType="general_light_red"
+                        android:layout_marginTop="@dimen/spacing_lvl2"
+                        android:layout_marginRight="@dimen/spacing_lvl2"
+                        />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tv_smart_bills_percentage_amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_lvl2"
+                        android:textColor="@color/Unify_N700_32"
+                        app:typographyType="body_3"
+                        app:typographyWeight="reguler"
+                        tools:visibility="visible"
+                        tools:text="Rp 200.000.000" />
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/view_urgency_label"
@@ -147,6 +179,14 @@
                     app:typographyType="small" />
 
             </LinearLayout>
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icon_menu_sbm_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:icon_name="MENU_KEBAB_VERTICAL"
+                android:visibility="invisible"
+                />
 
         </LinearLayout>
 

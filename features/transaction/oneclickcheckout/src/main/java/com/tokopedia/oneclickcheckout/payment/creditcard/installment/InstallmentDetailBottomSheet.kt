@@ -3,33 +3,38 @@ package com.tokopedia.oneclickcheckout.payment.creditcard.installment
 import android.content.Context
 import android.graphics.Color
 import android.util.Base64
-import android.view.View
-import android.webkit.WebView
-import android.widget.LinearLayout
+import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
+import com.tokopedia.oneclickcheckout.databinding.BottomSheetInstallmentBinding
+import com.tokopedia.oneclickcheckout.databinding.ItemInstallmentDetailBinding
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
-import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
+import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePaymentProcessor
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
-class InstallmentDetailBottomSheet {
+class InstallmentDetailBottomSheet(private var paymentProcessor: OrderSummaryPagePaymentProcessor) : CoroutineScope {
+
+    override val coroutineContext: CoroutineContext
+        get() = SupervisorJob() + Dispatchers.Main.immediate
 
     private lateinit var listener: InstallmentDetailBottomSheetListener
 
     private var bottomSheetUnify: BottomSheetUnify? = null
+    private var binding: BottomSheetInstallmentBinding? = null
 
-    fun show(fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard, listener: InstallmentDetailBottomSheetListener) {
+    fun show(fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard,
+             creditCardTenorListData: CreditCardTenorListData?, orderCart: OrderCart,
+             orderCost: OrderCost, userId: String, listener: InstallmentDetailBottomSheetListener) {
         val context: Context = fragment.activity ?: return
-        fragment.fragmentManager?.let {
+        fragment.parentFragmentManager.let {
             this.listener = listener
             bottomSheetUnify = BottomSheetUnify().apply {
                 isDragable = true
@@ -37,75 +42,96 @@ class InstallmentDetailBottomSheet {
                 showCloseIcon = true
                 showHeader = true
                 setTitle(fragment.getString(R.string.lbl_choose_installment_type))
-
-                val child = View.inflate(fragment.context, R.layout.bottom_sheet_installment, null)
-                setupChild(context, child, fragment, creditCard)
+                binding = BottomSheetInstallmentBinding.inflate(LayoutInflater.from(fragment.context))
+                setupChild(context, fragment, creditCard, orderCart, orderCost, userId)
                 fragment.view?.height?.div(2)?.let { height ->
                     customPeekHeight = height
                 }
-                setChild(child)
+                setChild(binding?.root)
+                setOnDismissListener {
+                    binding = null
+                    cancel()
+                }
                 show(it, null)
             }
         }
     }
 
-    private fun setupChild(context: Context, child: View, fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard) {
-        setupTerms(child, creditCard.tncInfo)
-        setupInstallments(context, child, fragment, creditCard.availableTerms)
+    private fun setupChild(context: Context, fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard,
+                           orderCart: OrderCart, orderCost: OrderCost, userId: String) {
+        setupTerms(creditCard.tncInfo)
+        if (creditCard.isAfpb && creditCard.availableTerms.isEmpty()) {
+            binding?.termsContent?.gone()
+            binding?.tvInstallmentMessage?.gone()
+            binding?.loaderInstallment?.visible()
+            launch {
+                val installmentTermList = paymentProcessor.getAdminFee(creditCard, userId, orderCost, orderCart)
+                if (installmentTermList != null) {
+                    setupInstallments(context, fragment, creditCard.copy(availableTerms = installmentTermList))
+                } else {
+                    dismiss()
+                    listener.onFailedLoadInstallment()
+                }
+            }
+        } else {
+            setupInstallments(context, fragment, creditCard)
+        }
     }
 
-    private fun setupInstallments(context: Context, child: View, fragment: OrderSummaryPageFragment, installmentDetails: List<OrderPaymentInstallmentTerm>) {
+    private fun setupInstallments(context: Context, fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard) {
         SplitCompat.installActivity(context)
-        val ll = child.findViewById<LinearLayout>(R.id.main_content)
+        binding?.loaderInstallment?.gone()
+        val inflater = LayoutInflater.from(fragment.context)
+        val installmentDetails = creditCard.availableTerms
         for (i in installmentDetails.lastIndex downTo 0) {
+            val viewInstallmentDetailItem = ItemInstallmentDetailBinding.inflate(inflater)
             val installment = installmentDetails[i]
-            val viewInstallmentDetailItem = View.inflate(fragment.context, R.layout.item_installment_detail, null)
-            val tvInstallmentDetailName = viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_name)
-            val tvInstallmentDetailFinalFee = viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_final_fee)
             if (installment.term > 0) {
-                tvInstallmentDetailName.text = "${installment.term}x Cicilan 0%"
-                tvInstallmentDetailFinalFee.text = context.getString(R.string.lbl_installment_payment_monthly, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.monthlyAmount, false).removeDecimalSuffix())
+                viewInstallmentDetailItem.tvInstallmentDetailName.text = "${installment.term}x Cicilan 0%"
+                viewInstallmentDetailItem.tvInstallmentDetailFinalFee.text = context.getString(R.string.lbl_installment_payment_monthly, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.monthlyAmount, false).removeDecimalSuffix())
             } else {
-                tvInstallmentDetailName.text = context.getString(R.string.lbl_installment_full_payment)
-                tvInstallmentDetailFinalFee.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.monthlyAmount, false).removeDecimalSuffix()
+                viewInstallmentDetailItem.tvInstallmentDetailName.text = context.getString(R.string.lbl_installment_full_payment)
+                viewInstallmentDetailItem.tvInstallmentDetailFinalFee.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.monthlyAmount, false).removeDecimalSuffix()
             }
-            val tvInstallmentDetailServiceFee = viewInstallmentDetailItem.findViewById<Typography>(R.id.tv_installment_detail_service_fee)
-            val rbInstallmentDetail = viewInstallmentDetailItem.findViewById<RadioButtonUnify>(R.id.rb_installment_detail)
             if (installment.isEnable) {
-                tvInstallmentDetailServiceFee.text = context.getString(R.string.lbl_installment_payment_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.fee, false).removeDecimalSuffix())
-                rbInstallmentDetail.isChecked = installment.isSelected
-                rbInstallmentDetail.setOnClickListener {
-                    listener.onSelectInstallment(installment)
+                viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = context.getString(R.string.lbl_installment_payment_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.fee, false).removeDecimalSuffix())
+                viewInstallmentDetailItem.rbInstallmentDetail.isChecked = installment.isSelected
+                viewInstallmentDetailItem.rbInstallmentDetail.setOnClickListener {
+                    listener.onSelectInstallment(installment, creditCard.availableTerms)
                     dismiss()
                 }
-                viewInstallmentDetailItem.alpha = 1.0f
+                viewInstallmentDetailItem.root.alpha = ENABLE_ALPHA
             } else {
-                tvInstallmentDetailServiceFee.text = context.getString(R.string.lbl_installment_payment_minimum_before_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.minAmount, false).removeDecimalSuffix())
-                rbInstallmentDetail.isChecked = installment.isSelected
-                rbInstallmentDetail.isEnabled = false
-                viewInstallmentDetailItem.alpha = 0.5f
+                if (installment.description.isNotEmpty()) {
+                    viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = installment.description
+                } else {
+                    viewInstallmentDetailItem.tvInstallmentDetailServiceFee.text = context.getString(R.string.lbl_installment_payment_minimum_before_fee, CurrencyFormatUtil.convertPriceValueToIdrFormat(installment.minAmount, false).removeDecimalSuffix())
+                }
+                viewInstallmentDetailItem.rbInstallmentDetail.isChecked = installment.isSelected
+                viewInstallmentDetailItem.rbInstallmentDetail.isEnabled = false
+                viewInstallmentDetailItem.root.alpha = DISABLE_ALPHA
             }
-            ll.addView(viewInstallmentDetailItem, 0)
+            binding?.mainContent?.addView(viewInstallmentDetailItem.root, 0)
         }
-        val installmentMessage = child.findViewById<Typography>(R.id.tv_installment_message)
         if (installmentDetails.size > 1) {
-            installmentMessage.gone()
+            binding?.tvInstallmentMessage?.gone()
         } else {
-            installmentMessage.visible()
+            binding?.tvInstallmentMessage?.visible()
         }
+        binding?.termsContent?.visible()
     }
 
     private fun generateColorRGBAString(colorInt: Int): String {
-        return "rgba(${Color.red(colorInt)},${Color.green(colorInt)},${Color.blue(colorInt)},${Color.alpha(colorInt).toFloat()/255})"
+        return "rgba(${Color.red(colorInt)},${Color.green(colorInt)},${Color.blue(colorInt)},${Color.alpha(colorInt).toFloat() / 255})"
     }
 
-    private fun setupTerms(child: View, tncInfo: String) {
-        val webView = child.findViewById<WebView>(R.id.web_view_terms)
-        val backgroundColor = generateColorRGBAString(ContextCompat.getColor(child.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        val headerColor = generateColorRGBAString(ContextCompat.getColor(child.context, com.tokopedia.unifyprinciples.R.color.Unify_N600))
-        val ulColor = generateColorRGBAString(ContextCompat.getColor(child.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
-        val pColor = generateColorRGBAString(ContextCompat.getColor(child.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
-        val htmlText = """
+    private fun setupTerms(tncInfo: String) {
+        binding?.run {
+            val backgroundColor = generateColorRGBAString(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            val headerColor = generateColorRGBAString(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N600))
+            val ulColor = generateColorRGBAString(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+            val pColor = generateColorRGBAString(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+            val htmlText = """
 <html>
 	<style>
     body {
@@ -147,15 +173,15 @@ class InstallmentDetailBottomSheet {
     </body>
 </html>
         """.trimIndent()
-        webView.loadData(Base64.encodeToString(htmlText.toByteArray(), Base64.DEFAULT), "text/html", "base64")
-        val ivExpandTerms = child.findViewById<ImageUnify>(R.id.iv_expand_terms)
-        ivExpandTerms.setOnClickListener {
-            val newRotation = if (ivExpandTerms.rotation == 0f) 180f else 0f
-            ivExpandTerms.rotation = newRotation
-            if (newRotation == 0f) {
-                webView.gone()
-            } else {
-                webView.visible()
+            webViewTerms.loadData(Base64.encodeToString(htmlText.toByteArray(), Base64.DEFAULT), "text/html", "base64")
+            ivExpandTerms.setOnClickListener {
+                val newRotation = if (binding?.ivExpandTerms?.rotation == ROTATION_DEFAULT) ROTATION_REVERSE else ROTATION_DEFAULT
+                binding?.ivExpandTerms?.rotation = newRotation
+                if (newRotation == 0f) {
+                    binding?.webViewTerms?.gone()
+                } else {
+                    binding?.webViewTerms?.visible()
+                }
             }
         }
     }
@@ -166,6 +192,16 @@ class InstallmentDetailBottomSheet {
 
     interface InstallmentDetailBottomSheetListener {
 
-        fun onSelectInstallment(installment: OrderPaymentInstallmentTerm)
+        fun onSelectInstallment(selectedInstallment: OrderPaymentInstallmentTerm, installmentList: List<OrderPaymentInstallmentTerm>)
+
+        fun onFailedLoadInstallment()
+    }
+
+    companion object {
+        private const val ENABLE_ALPHA = 1.0f
+        private const val DISABLE_ALPHA = 0.5f
+
+        private const val ROTATION_DEFAULT = 0f
+        private const val ROTATION_REVERSE = 180f
     }
 }

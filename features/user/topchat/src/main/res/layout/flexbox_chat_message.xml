@@ -2,7 +2,40 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:parentTag="android.widget.FrameLayout">
+    tools:parentTag="com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout">
+
+    <LinearLayout
+        android:id="@+id/ll_msg_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/unify_space_12"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tp_header_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="heading_4"
+            tools:text="Dikirim ke rumah saya" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tp_header_cta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_G500"
+            app:typographyType="body_1"
+            tools:text="Ubah Alamat" />
+
+        <View
+            android:id="@+id/v_header_divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_topchat_1"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:background="@color/Unify_N75" />
+    </LinearLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMessage"
@@ -42,6 +75,7 @@
             android:gravity="center_vertical"
             android:includeFontPadding="false"
             android:textColor="@color/Unify_N700_44"
+            android:textIsSelectable="false"
             app:typographyType="body_3"
             tools:text="11:00" />
     </LinearLayout>
@@ -53,7 +87,7 @@
         android:layout_gravity="bottom|start"
         android:layout_marginTop="@dimen/dp_topchat_6"
         android:textColor="@color/Unify_N700_44"
-        android:textIsSelectable="true"
+        android:textIsSelectable="false"
         android:visibility="gone"
         app:typographyType="body_3"
         tools:text="Pesan ini dibalas oleh sistem"

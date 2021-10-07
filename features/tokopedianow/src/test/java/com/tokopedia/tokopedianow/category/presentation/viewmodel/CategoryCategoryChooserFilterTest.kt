@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.searchcategory.CategoryChooserFilterTestHelper
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
@@ -63,5 +64,25 @@ class CategoryCategoryChooserFilterTest: CategoryTestFixtures(), CategoryChooser
     @Test
     fun `test dismiss category chooser`() {
         categoryChooserFilterPageTestHelper.`test dismiss category chooser`()
+    }
+
+    @Test
+    fun `test get filter count with exclude filter from category chooser`() {
+        `Given category view model`(
+            defaultCategoryL1,
+            "1333",
+            mapOf(SearchApiConst.SC to "1332")
+        )
+
+        categoryChooserFilterPageTestHelper = CategoryChooserFilterTestHelper(
+            tokoNowCategoryViewModel,
+            getProductCountUseCase,
+            this
+        )
+
+        val mandatoryParams = createMandatoryTokonowQueryParams()
+
+        categoryChooserFilterPageTestHelper.
+            `test get filter count with exclude filter from category chooser`(mandatoryParams)
     }
 }

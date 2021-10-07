@@ -1,0 +1,118 @@
+{
+  "status": "OK",
+  "chatReplies": {
+    "minReplyTime": "1601037219749",
+    "maxReplyTime": "1607755421576",
+    "block": {
+      "blockedUntil": "",
+      "isBlocked": false,
+      "isPromoBlocked": false
+    },
+    "hasNext": false,
+    "hasNextAfter": false,
+    "textareaReply": 1,
+    "replyIDsAttachment": "568891851,568891852,568891853,687963209,687963210,687963211",
+    "contacts": [
+      {
+        "role": "Shop Owner",
+        "userId": 17235411,
+        "shopId": 6115659,
+        "interlocutor": true,
+        "name": "Seller Testing",
+        "tag": "Penjual",
+        "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/6115659/shop_xs_thumbnail/desktop",
+        "domain": "list-vip",
+        "isOfficial": false,
+        "isGold": false,
+        "badge": "",
+        "status": {
+          "timestamp": 1602826246,
+          "timestampStr": "1602826246",
+          "isOnline": false
+        }
+      },
+      {
+        "role": "User",
+        "userId": 19016250,
+        "shopId": 6115659,
+        "interlocutor": false,
+        "name": "Buyer Testing",
+        "tag": "Pengguna",
+        "thumbnail": "https://accounts.tokopedia.com/image/v1/u/19016250/user_thumbnail/desktop",
+        "domain": "",
+        "isOfficial": false,
+        "isGold": false,
+        "badge": "",
+        "status": {
+          "timestamp": 0,
+          "timestampStr": "",
+          "isOnline": false
+        }
+      }
+    ],
+    "list": [
+      {
+        "date": "12 Dec 2020",
+        "chats": [
+          {
+            "time": "13:43",
+            "replies": [
+              {
+                "msgId": 1212437448,
+                "replyId": "10318466898",
+                "senderId": 582451,
+                "senderName": "CS",
+                "role": "Shop Owner",
+                "msg": "",
+                "fraudStatus": 0,
+                "replyTime": "1601037219749566000",
+                "status": 1,
+                "attachmentID": 568621359,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 395964,
+                "source": "blast_seller",
+                "attachment": {
+                  "id": 568621359,
+                  "type": 1,
+                  "attributes": "{\"is_hide_banner\":false, \"url\":\"https://images.tokopedia.net/img/cache/1208/NsjrJu/2021/8/23/a6ec05e5-039a-481a-b5c0-21a9a7281756.jpg.webp?ect=3g\",\"image_url\":\"https://images.tokopedia.net/img/cache/1208/NsjrJu/2021/8/23/a6ec05e5-039a-481a-b5c0-21a9a7281756.jpg.webp?ect=3g\",\"url_2\":\"https://images.tokopedia.net/img/cache/1208/NsjrJu/2021/8/23/a6ec05e5-039a-481a-b5c0-21a9a7281756.jpg.webp?ect=3g\",\"image_url_thumbnail\":\"https://images.tokopedia.net/img/cache/1208/NsjrJu/2021/8/23/a6ec05e5-039a-481a-b5c0-21a9a7281756.jpg.webp?ect=3g\"}",
+                  "fallback": {
+                    "message": "Tokopedia mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.18 untuk melihat gambar.",
+                    "html": "\u003cdiv\u003eTokopedia mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.18 untuk melihat gambar.\u003c/div\u003e"
+                  }
+                }
+              },
+              {
+                "msgId": 1212437448,
+                "replyId": "12143433579",
+                "senderId": 582451,
+                "senderName": "CS",
+                "role": "Shop Owner",
+                "msg": "End Campaign.",
+                "fraudStatus": 0,
+                "replyTime": "1607755421576945000",
+                "status": 1,
+                "attachmentID": 0,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 395964,
+                "source": "blast_seller",
+                "attachment": {
+                  "id": 0,
+                  "type": 0,
+                  "attributes": "",
+                  "fallback": {
+                    "message": "",
+                    "html": ""
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -5,6 +5,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.topads.common.data.model.DashGroupListResponse
 import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
+import com.tokopedia.topads.common.data.response.HeadlineInfoResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.ProductStatisticsResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
@@ -55,6 +56,7 @@ class GroupDetailViewModelTest {
     private val bidInfoUseCase: BidInfoUseCase = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
     private val topAdsCreateUseCase: TopAdsCreateUseCase = mockk(relaxed = true)
+    private val headlineInfoUseCase: GetHeadlineInfoUseCase = mockk(relaxed = true)
     private val res: Resources = mockk(relaxed = true)
 
 
@@ -70,6 +72,7 @@ class GroupDetailViewModelTest {
                 topAdsGetProductKeyCountUseCase,
                 topAdsGetProductStatisticsUseCase,
                 groupInfoUseCase,
+                headlineInfoUseCase,
                 bidInfoUseCase,
                 topAdsCreateUseCase,
                 userSession)
@@ -104,9 +107,24 @@ class GroupDetailViewModelTest {
     }
 
     @Test
-    fun `product stats success`() {
+    fun `get headline info success`() {
         val expected = 10
         var actual = 0
+        val data = HeadlineInfoResponse.TopAdsGetPromoHeadline.Data(priceBid = expected)
+        val onSuccess: (data: HeadlineInfoResponse.TopAdsGetPromoHeadline.Data) -> Unit = {
+            actual = it.priceBid
+        }
+        every { headlineInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
+            onSuccess.invoke(data)
+        }
+        viewModel.getHeadlineInfo(res, "", onSuccess)
+        Assert.assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `product stats success`() {
+        val expected = "10"
+        var actual = "0"
         val data = ProductStatisticsResponse(getDashboardProductStatistics = GetDashboardProductStatistics(listOf(WithoutGroupDataItem(adId = expected))))
         val onSuccess: (data: GetDashboardProductStatistics) -> Unit = {
             actual = it.data[0].adId

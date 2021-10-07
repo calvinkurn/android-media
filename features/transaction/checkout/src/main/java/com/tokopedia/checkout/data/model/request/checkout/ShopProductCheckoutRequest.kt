@@ -36,5 +36,6 @@ data class ShopProductCheckoutRequest(
         var isOrderPriority: Int = 0,
 
         // Additional data, won't be dispatched over network
-        var cartString: String? = ""
+        var cartString: String? = "",
+        var isTokoNow: Boolean = false
 ) : Parcelable

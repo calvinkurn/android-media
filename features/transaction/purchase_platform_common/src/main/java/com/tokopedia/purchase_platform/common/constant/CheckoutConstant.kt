@@ -21,11 +21,15 @@ class CheckoutConstant {
         const val EXTRA_IS_FROM_CHECKOUT_SNIPPET = "EXTRA_IS_FROM_CHECKOUT_SNIPPET"
         const val EXTRA_PREVIOUS_STATE_ADDRESS = "EXTRA_PREVIOUS_STATE_ADDRESS"
         const val EXTRA_CACHE_EXPIRED_ERROR_MESSAGE = "EXTRA_CACHE_EXPIRED_ERROR_MESSAGE"
+        const val EXTRA_CHECKOUT_PAGE_SOURCE = "EXTRA_CHECKOUT_PAGE_SOURCE"
+        const val CHECKOUT_PAGE_SOURCE_CART = "cart"
+        const val CHECKOUT_PAGE_SOURCE_PDP = "product detail page"
         const val STATE_RED = "red"
         const val TYPE_CASHBACK = "cashback"
         const val PARAM_DEFAULT = "default"
         const val PARAM_CHECKOUT = "checkout"
         const val PARAM_OCC = "occ"
+        const val PARAM_OCC_MULTI = "occmulti"
         const val RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT = 2
         const val RESULT_CODE_COUPON_STATE_CHANGED = 735
         const val KERO_TOKEN = "token"

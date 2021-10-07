@@ -24,15 +24,18 @@ import com.tokopedia.minicart.chatlist.adapter.MiniCartChatListAdapterTypeFactor
 import com.tokopedia.minicart.chatlist.adapter.MiniCartChatListAdapter
 import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatProductUiModel
 import com.tokopedia.minicart.chatlist.viewholder.MiniCartChatProductViewHolder
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.databinding.LayoutBottomsheetMiniCartChatListBinding
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.R
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
 
 class MiniCartChatListBottomSheet @Inject constructor(
-    private var miniCartChatProductDecoration: MiniCartChatListDecoration
+    private var miniCartChatProductDecoration: MiniCartChatListDecoration,
+    private var analytics: MiniCartAnalytics
 ) : MiniCartChatProductViewHolder.ChatProductListener {
 
     companion object {
@@ -57,6 +60,7 @@ class MiniCartChatListBottomSheet @Inject constructor(
         } else {
             updateDataWhenRemoving(element)
         }
+        analytics.eventClickTickBoxChatBottomSheet(isChecked)
     }
 
     fun show(context: Context?,
@@ -212,8 +216,10 @@ class MiniCartChatListBottomSheet @Inject constructor(
                 val shopId = viewModel?.currentShopIds?.value?.firstOrNull().orEmpty()
                 if (elements.isNullOrEmpty()) {
                     openChatPageWithoutProduct(shopId)
+                    analytics.eventClickBtnDirectChatBottomSheet()
                 } else {
                     openChatPage(shopId)
+                    analytics.eventClickBtnAskProductChatBottomSheet()
                 }
             }
             viewBinding.rvMiniCartChatList.setPadding(0, 0, 0, viewBinding.cardView.height)
@@ -232,10 +238,10 @@ class MiniCartChatListBottomSheet @Inject constructor(
                 id = element.productId,
                 imageUrl = element.productImageUrl,
                 name = element.productName,
-                price = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productPrice, false),
+                price = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productPrice, false).removeDecimalSuffix(),
                 dropPercentage = element.productSlashPriceLabel.removeSuffix("%"),
                 priceBeforeInt = element.productOriginalPrice.toDouble(),
-                priceBefore = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productOriginalPrice, false),
+                priceBefore = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productOriginalPrice, false).removeDecimalSuffix(),
             )
             productPreviews.add(productPreview)
         }

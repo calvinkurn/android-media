@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerShcMilestoneSuccess"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/layout_lvl2">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgShcBgMilestone"
+        android:layout_width="@dimen/shc_dimen_112dp"
+        android:layout_height="@dimen/shc_dimen_56dp"
+        android:adjustViewBounds="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_placeholder="@android:color/transparent"
+        tools:srcCompat="@drawable/unify_globalerrors_connection" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iconShcToggleMission"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:background="@drawable/bg_circle_toggle_milestone_widget"
+        app:icon_color_light_enable="@color/Unify_NN900"
+        app:icon_name="CHEVRON_DOWN"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTitleMilestoneWidget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:drawablePadding="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/iconShcToggleMission"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_5"
+        tools:text="Misi berjualan tokopedia" />
+
+    <com.tokopedia.unifycomponents.NotificationUnify
+        android:id="@+id/notifTagMilestone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        app:layout_constraintTop_toTopOf="@id/tvTitleMilestoneWidget"
+        app:layout_constraintBottom_toBottomOf="@id/tvTitleMilestoneWidget"
+        app:layout_constraintStart_toEndOf="@id/tvTitleMilestoneWidget"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDescMilestoneWidget"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitleMilestoneWidget"
+        app:typographyType="body_3"
+        tools:text="Sebelum mulai berjualan, selesaikan misi berikut agar tokomu jadi lebih tepercaya!" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvProgressTitleMilestoneWidget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvDescMilestoneWidget"
+        app:typographyType="body_3"
+        tools:text="@string/shc_title_progress_milestone_widget" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvProgressValueMilestoneWidget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvProgressTitleMilestoneWidget"
+        app:typographyType="body_3"
+        tools:text="3 dari 7 (42.86%)" />
+
+    <com.tokopedia.unifycomponents.ProgressBarUnify
+        android:id="@+id/progressBarShcMilestone"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvProgressTitleMilestoneWidget"
+        app:layout_constraintVertical_bias="1"
+        tools:layout_height="@dimen/layout_lvl2" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvShcMissionMilestone"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/progressBarShcMilestone"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/shc_item_mission_milestone_widget" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcMilestoneCta"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/layout_lvl1"
+        android:ellipsize="end"
+        android:gravity="end|center_vertical"
+        android:maxLines="1"
+        android:text="@string/shc_more"
+        android:textColor="@color/Unify_G500"
+        android:textSize="@dimen/fontSize_lvl3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rvShcMissionMilestone"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler" />
+</androidx.constraintlayout.widget.ConstraintLayout>

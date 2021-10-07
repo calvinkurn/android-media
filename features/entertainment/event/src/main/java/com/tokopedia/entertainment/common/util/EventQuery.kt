@@ -50,6 +50,7 @@ object EventQuery {
                     url
                     is_promo
                     seo_url
+                    min_start_date
                 }
             }
         }

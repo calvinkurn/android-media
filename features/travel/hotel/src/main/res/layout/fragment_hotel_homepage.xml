@@ -53,17 +53,14 @@
                     android:layout_height="wrap_content"
                     android:padding="@dimen/spacing_lvl4">
 
-                    <com.tokopedia.iconunify.IconUnify
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_hotel_homepage_location"
                         android:layout_width="@dimen/layout_lvl3"
                         android:layout_height="@dimen/layout_lvl3"
                         android:layout_gravity="center"
                         app:layout_constraintBottom_toBottomOf="@id/tv_hotel_homepage_destination"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/tv_hotel_homepage_destination"
-                        app:icon_name="LOCATION_FILLED"
-                        app:icon_color_light_enable="@color/hotel_dms_icon_color"
-                        app:icon_color_night_enable="@color/hotel_dms_icon_color"/>
+                        app:layout_constraintTop_toTopOf="@id/tv_hotel_homepage_destination" />
 
                     <com.tokopedia.unifycomponents.TextFieldUnify
                         android:id="@+id/tv_hotel_homepage_destination"

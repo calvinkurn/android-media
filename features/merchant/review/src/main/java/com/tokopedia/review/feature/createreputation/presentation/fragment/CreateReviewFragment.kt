@@ -27,9 +27,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.device.info.DevicePerformanceInfo
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.imagepicker.common.ImagePickerBuilder
-import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
-import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.imagepicker.common.*
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
@@ -37,6 +35,7 @@ import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
+import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.analytics.ReviewTracking
@@ -52,11 +51,11 @@ import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
 import com.tokopedia.review.feature.createreputation.model.Reputation
 import com.tokopedia.review.feature.createreputation.presentation.activity.CreateReviewActivity
 import com.tokopedia.review.feature.createreputation.presentation.adapter.ImageReviewAdapter
+import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.IncentiveOvoThankYouBottomSheetBuilder
 import com.tokopedia.review.feature.createreputation.presentation.listener.ImageClickListener
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextAreaBottomSheet
-import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.data.ThankYouBottomSheetTrackerData
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoBottomSheetBuilder
@@ -155,6 +154,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private var incentiveHelper = ""
     private var isReviewIncomplete = false
     private var thankYouBottomSheetText = ""
+    private var imagesFedIntoPicker = arrayListOf<String>()
+    private var thankYouBottomSheetImage = ""
 
     override fun stopPreparePerfomancePageMonitoring() {
         reviewPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
@@ -401,15 +402,17 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     override fun onAddImageClick() {
         clearFocusAndHideSoftInput(view)
+        imagesFedIntoPicker = createReviewViewModel.getSelectedImagesUrl()
         context?.let {
             val builder = ImagePickerBuilder.getSquareImageBuilder(it)
                 .withSimpleEditor()
-                .withSimpleMultipleSelection(initialImagePathList = createReviewViewModel.getSelectedImagesUrl())
+                .withSimpleMultipleSelection(initialImagePathList = imagesFedIntoPicker)
                 .apply {
                     title = getString(R.string.image_picker_title)
                 }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.IMAGE_PICKER)
             intent.putImagePickerBuilder(builder)
+            intent.putParamPageSource(ImagePickerPageSource.REVIEW_PAGE)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
     }
@@ -496,7 +499,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val result = ImagePickerResultExtractor.extract(data)
                     val selectedImage = result.imageUrlOrPathList
-                    val imagesFedIntoPicker = result.imagesFedIntoPicker
                     createReviewViewModel.clearImageData()
 
                     CreateReviewTracking.reviewOnImageUploadTracker(
@@ -677,6 +679,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         }
         data?.productrevIncentiveOvo?.let {
             thankYouBottomSheetText = it.bottomSheetText
+            thankYouBottomSheetImage = it.thankYouImage
             it.ticker.let {
                 ovoPointsTicker?.apply {
                     visibility = View.VISIBLE
@@ -722,12 +725,13 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun showThankYouBottomSheet(data: ProductRevIncentiveOvoDomain?) {
         if (thankYouBottomSheet == null) {
             thankYouBottomSheet = context?.let {
-                IncentiveOvoBottomSheetBuilder.getThankYouBottomSheet(
+                IncentiveOvoThankYouBottomSheetBuilder.getThankYouBottomSheet(
                     it,
                     data,
                     this@CreateReviewFragment,
                     getThankYouFormTrackerData(),
-                    thankYouBottomSheetText
+                    thankYouBottomSheetText,
+                    thankYouBottomSheetImage
                 )
             }
         }

@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.orderhistory.R
@@ -137,7 +138,7 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
                 productId = product.productId.toLong(),
                 shopId = product.shopId.toInt(),
                 quantity = product.minOrder,
-                atcFromExternalSource = AddToCartRequestParams.ATC_FROM_TOPCHAT
+                atcFromExternalSource = AtcFromExternalSource.ATC_FROM_TOPCHAT
         )
         return RequestParams.create().apply {
             putObject(

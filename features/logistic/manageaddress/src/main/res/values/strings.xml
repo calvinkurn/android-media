@@ -2,7 +2,6 @@
     <string name="app_name">manageaddress</string>
 
     <!--Manage Address-->
-    <string name="address_name">Rumah</string>
     <string name="image_desc">imageDesc</string>
     <string name="address_label">Alamat Utama</string>
     <string name="address_label_new">Utama</string>
@@ -33,7 +32,6 @@
 
     <!--Checkout Address-->
     <string name="checkout_module_title_activity_shipping_address">Alamat Pengiriman</string>
-    <string name="shipping_address">Alamat Pengiriman</string>
     <string name="change_address">Ubah Alamat</string>
     <string name="add_address">Tambah Alamat Baru</string>
     <string name="label_oops">Oopppsss..</string>
@@ -43,7 +41,6 @@
     <!--Content Description-->
     <string name="content_desc_rb_check_address">radio pilih alamat</string>
     <string name="content_desc_button_change_address">button ubah alamat</string>
-    <string name="content_desc_button_tkpd_corner">button tokopedia corner</string>
     <string name="content_desc_tv_button_add_new_address">button tambah alamat</string>
 
     <!--Shop Location-->

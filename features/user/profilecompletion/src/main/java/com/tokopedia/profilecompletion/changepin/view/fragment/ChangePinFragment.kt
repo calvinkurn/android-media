@@ -210,8 +210,8 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         changePinInput?.pinTextField?.let { view ->
             view.post {
                 if (view.requestFocus()) {
-                    val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_FORCED)
+                    val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+                    inputMethodManager?.showSoftInput(view, InputMethodManager.SHOW_FORCED)
                 }
             }
         }
@@ -309,6 +309,7 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     open fun goToSuccessPage() {
+
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN_COMPLETE).apply {
             flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
             if(source < 1) {
@@ -317,6 +318,7 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
             putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
             source = 0
         }
+
         startActivity(intent)
         activity?.finish()
     }

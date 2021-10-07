@@ -1,19 +1,17 @@
 package com.tokopedia.sellerorder.detail.presentation.bottomsheet
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.view.MotionEvent
 import android.view.View
+import androidx.viewbinding.ViewBinding
 import com.tokopedia.sellerorder.common.domain.model.SomRejectRequestParam
 import com.tokopedia.sellerorder.common.presenter.SomBottomSheet
-import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
 import com.tokopedia.unifycomponents.Toaster
 
-abstract class SomBaseRejectOrderBottomSheet(
-        context: Context,
-        childViewsLayoutResourceId: Int,
-        bottomSheetTitle: String
-) : SomBottomSheet(childViewsLayoutResourceId, true, true, false, bottomSheetTitle, context, true) {
+abstract class SomBaseRejectOrderBottomSheet<T : ViewBinding>(
+    context: Context,
+    childViewsLayoutResourceId: Int,
+    bottomSheetTitle: String
+) : SomBottomSheet<T>(childViewsLayoutResourceId, true, true, false, bottomSheetTitle, context, true) {
 
     protected fun checkReasonRejectIsNotEmpty(reason: String?): Boolean {
         var isNotEmpty = true

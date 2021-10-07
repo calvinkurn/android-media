@@ -68,14 +68,17 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
         }
 
         follow.setOnClickListener {
+            dismissedByClosing = true
             onFollow?.invoke()
             dismiss()
         }
         report.setOnClickListener {
+            dismissedByClosing = true
             onReport?.invoke()
             dismiss()
         }
         delete?.setOnClickListener {
+            dismissedByClosing = true
             onDelete?.invoke()
             dismiss()
         }

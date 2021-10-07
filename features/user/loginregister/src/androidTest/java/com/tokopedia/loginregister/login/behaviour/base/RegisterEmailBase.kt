@@ -11,7 +11,9 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
+import com.tokopedia.loginregister.discover.pojo.DiscoverData
+import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
+import com.tokopedia.loginregister.discover.pojo.ProviderData
 import com.tokopedia.loginregister.login.behaviour.activity.RegisterEmailActivityStub
 import com.tokopedia.loginregister.login.behaviour.data.DiscoverUseCaseStub
 import com.tokopedia.loginregister.login.behaviour.data.GraphqlUseCaseStub
@@ -21,7 +23,6 @@ import com.tokopedia.loginregister.login.behaviour.di.RegisterInitialComponentSt
 import com.tokopedia.loginregister.login.behaviour.di.modules.AppModuleStub
 import com.tokopedia.loginregister.login.behaviour.di.modules.DaggerMockLoginRegisterComponent
 import com.tokopedia.loginregister.login.idling.FragmentTransactionIdle
-import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
@@ -120,10 +121,10 @@ open class RegisterEmailBase: LoginRegisterBase() {
 
     protected fun setDefaultDiscover() {
         val mockProviders = arrayListOf(
-            DiscoverItemDataModel("gplus", "Google", "https://accounts.tokopedia.com/gplus-login", "", "#FFFFFF"),
-            DiscoverItemDataModel("facebook", "Facebook", "https://accounts.tokopedia.com/fb-login", "", "#FFFFFF")
+            ProviderData("gplus", "Google", "https://accounts.tokopedia.com/gplus-login", "", "#FFFFFF"),
+            ProviderData("facebook", "Facebook", "https://accounts.tokopedia.com/fb-login", "", "#FFFFFF")
         )
-        val response = DiscoverDataModel(mockProviders, "")
+        val response = DiscoverPojo(DiscoverData(mockProviders, ""))
         discoverUseCaseStub.response = response
     }
 
