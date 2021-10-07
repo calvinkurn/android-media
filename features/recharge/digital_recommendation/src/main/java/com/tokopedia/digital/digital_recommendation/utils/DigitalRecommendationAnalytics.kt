@@ -28,7 +28,7 @@ class DigitalRecommendationAnalytics {
                             digitalRecommendationModel.tracking.categoryId,
                             digitalRecommendationModel.tracking.operatorId,
                             digitalRecommendationModel.tracking.productId,
-                            additionalTrackingData.pgCategory
+                            additionalTrackingData.pgCategories.joinToString(separator = ",")
                     )
             )
             putString(DigitalRecommendationKeys.BUSINESS_UNIT, digitalRecommendationModel.tracking.businessUnit)
@@ -68,7 +68,7 @@ class DigitalRecommendationAnalytics {
                             digitalRecommendationModel.tracking.categoryId,
                             digitalRecommendationModel.tracking.operatorId,
                             digitalRecommendationModel.tracking.productId,
-                            additionalTrackingData.pgCategory
+                            additionalTrackingData.pgCategories.joinToString(separator = ",")
                     )
             )
             putString(DigitalRecommendationKeys.BUSINESS_UNIT, digitalRecommendationModel.tracking.businessUnit)

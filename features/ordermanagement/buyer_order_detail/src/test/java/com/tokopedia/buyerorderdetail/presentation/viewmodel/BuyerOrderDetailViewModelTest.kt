@@ -269,7 +269,8 @@ BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
 
         createSuccessBuyerOrderDetailResult(buyerOrderDetailResult)
         val categoryId = viewModel.getCategoryId()
-        assert(categoryId == "10")
+        assert(categoryId.size == 1)
+        assert(categoryId[0] == 10)
     }
 
     @Test
@@ -309,14 +310,16 @@ BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
 
         createSuccessBuyerOrderDetailResult(buyerOrderDetailResult)
         val categoryId = viewModel.getCategoryId()
-        assert(categoryId == "13,10")
+        assert(categoryId.size == 2)
+        assert(categoryId.contains(13))
+        assert(categoryId.contains(10))
     }
 
     @Test
     fun `getCategoryId should return 0 shop type when getBuyerOrderDetail result is fail`() {
         createFailedBuyerOrderDetailResult()
         val categoryId = viewModel.getCategoryId()
-        assert(categoryId == "")
+        assert(categoryId.size == 0)
     }
 
     @Test

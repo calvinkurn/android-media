@@ -39,6 +39,7 @@ import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailT
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
@@ -109,12 +110,16 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         BuyerOrderDetailNavigator(requireActivity(), this)
     }
     private val digitalRecommendationData: DigitalRecommendationData by lazy {
-        DigitalRecommendationData(viewModelFactory, viewLifecycleOwner,
+        DigitalRecommendationData(
+                viewModelFactory,
+                viewLifecycleOwner,
                 DigitalRecommendationAdditionalTrackingData(
                         userType = "",
                         widgetPosition = 2,
-                        pgCategory = viewModel.getCategoryId()
-                ))
+                        pgCategories = viewModel.getCategoryId()
+                ),
+                DigitalRecommendationPage.PHYSICAL_GOODS
+        )
     }
     private val bottomSheetManager: BuyerOrderDetailBottomSheetManager by lazy {
         BuyerOrderDetailBottomSheetManager(requireContext(), childFragmentManager)
