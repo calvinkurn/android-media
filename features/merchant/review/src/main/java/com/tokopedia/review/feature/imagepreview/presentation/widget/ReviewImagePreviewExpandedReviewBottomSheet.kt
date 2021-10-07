@@ -16,7 +16,6 @@ import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.review.feature.credibility.presentation.activity.ReviewCredibilityActivity
 import com.tokopedia.review.feature.imagepreview.analytics.ReviewImagePreviewTracking
 import com.tokopedia.review.feature.imagepreview.presentation.uimodel.ReviewImagePreviewBottomSheetUiModel
-import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
@@ -63,7 +62,7 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
 
     override fun onUserNameClicked(userId: String) {
         dismiss()
-        goToReviewCredibility(userId)
+        goToReviewCredibility(userId, uiModel.source)
     }
 
     override fun trackOnUserInfoClicked(feedbackId: String, userId: String, statistics: String) {
@@ -109,14 +108,14 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
         bottomSheetHeader.hide()
     }
 
-    private fun goToReviewCredibility(userId: String) {
+    private fun goToReviewCredibility(userId: String, source: String) {
         RouteManager.route(
             context,
             Uri.parse(
                 UriUtil.buildUri(
                     ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY,
                     userId,
-                    ReadReviewFragment.READING_SOURCE
+                    source
                 )
             ).buildUpon()
                 .appendQueryParameter(ReviewCredibilityActivity.PARAM_PRODUCT_ID, uiModel.productId)

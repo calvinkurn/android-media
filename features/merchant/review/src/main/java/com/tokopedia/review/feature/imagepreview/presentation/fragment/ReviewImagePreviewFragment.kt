@@ -762,13 +762,18 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                 totalLiked = this.totalLike,
                 review = this.review,
                 reviewTime = this.createTimestamp,
-                isReportable = this.isReportable
+                isReportable = this.isReportable,
+                userStats = this.userStats,
+                isAnonymous = this.isAnonymous,
+                userId = this.user.userId,
+                userImage = this.user.image
             )
         }
         detail.reviewGalleryImages.firstOrNull { it.attachmentId == attachmentId }?.apply {
             reviewGalleryUiModel = reviewGalleryUiModel.copy(
                 imageUrl = this.thumbnailURL,
-                fullImageUrl = this.fullsizeURL
+                fullImageUrl = this.fullsizeURL,
+                attachmentId = this.attachmentId
             )
         }
         reviewGalleryUiModel = reviewGalleryUiModel.copy(
@@ -785,7 +790,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                 UriUtil.buildUri(
                     ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY,
                     userId,
-                    if (isFromGallery) GALLERY_SOURCE_CREDIBILITY_SOURCE else READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE
+                    getCredibilitySource()
                 )
             ).buildUpon()
                 .appendQueryParameter(
@@ -818,7 +823,12 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             productId,
             isFromGallery,
             currentUserId,
-            reviewerImage
+            reviewerImage,
+            getCredibilitySource()
         )
+    }
+
+    private fun getCredibilitySource(): String {
+        return if (isFromGallery) GALLERY_SOURCE_CREDIBILITY_SOURCE else READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE
     }
 }

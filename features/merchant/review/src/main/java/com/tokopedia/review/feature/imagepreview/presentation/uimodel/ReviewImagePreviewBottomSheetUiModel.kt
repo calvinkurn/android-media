@@ -16,5 +16,6 @@ data class ReviewImagePreviewBottomSheetUiModel(
     val productId: String = "",
     val isFromGallery: Boolean = false,
     val currentUserId: String = "",
-    val reviewerImage: String = ""
+    val reviewerImage: String = "",
+    val source: String = ""
 )
