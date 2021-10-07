@@ -30,11 +30,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
-import com.tokopedia.review.common.util.ReviewConstants
-import com.tokopedia.review.common.util.ReviewUtil
-import com.tokopedia.review.common.util.getKeyByValue
-import com.tokopedia.review.common.util.setSelectedFilterOrSort
+import com.tokopedia.review.common.util.*
 import com.tokopedia.review.databinding.FragmentSellerReviewDetailBinding
+import com.tokopedia.review.databinding.ItemOverallReviewDetailBinding
 import com.tokopedia.review.feature.reviewdetail.analytics.ProductReviewDetailTracking
 import com.tokopedia.review.feature.reviewdetail.di.component.ReviewProductDetailComponent
 import com.tokopedia.review.feature.reviewdetail.util.mapper.SellerReviewProductDetailMapper
@@ -483,7 +481,7 @@ class SellerReviewDetailFragment :
         bottomSheetPeriodDetail?.apply {
             setTitle(title)
             setOnDismissListener {
-//                view.review_period_filter_button_detail.toggle()
+                ItemOverallReviewDetailBinding.bind(view).reviewPeriodFilterButtonDetail.toggle()
             }
             showCloseIcon = true
             setCloseClickListener {
