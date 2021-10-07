@@ -20,7 +20,7 @@
             android:id="@+id/tgCategoryDigitalRecommendation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_R400"
+            android:textColor="@color/Unify_TN500"
             android:textSize="@dimen/unify_font_10"
             app:layout_constraintBottom_toBottomOf="@id/ivIconDigitalRecommendation"
             app:layout_constraintLeft_toLeftOf="parent"
