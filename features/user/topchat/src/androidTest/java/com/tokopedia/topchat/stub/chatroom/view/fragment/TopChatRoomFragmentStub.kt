@@ -35,8 +35,8 @@ open class TopChatRoomFragmentStub : TopChatRoomFragment() {
         }
     }
 
-    override fun showMsgMenu(msg: BaseChatViewModel) {
-        super.showMsgMenu(msg)
+    override fun showMsgMenu(msg: BaseChatViewModel, text: CharSequence) {
+        super.showMsgMenu(msg, text)
         childFragmentManager.executePendingTransactions()
     }
 

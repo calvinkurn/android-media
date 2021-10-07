@@ -6,5 +6,5 @@ import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 interface CommonViewHolderListener {
     fun isSeller(): Boolean
     fun getAnalytic(): TopChatAnalytics
-    fun showMsgMenu(msg: BaseChatViewModel)
+    fun showMsgMenu(msg: BaseChatViewModel, text: CharSequence)
 }

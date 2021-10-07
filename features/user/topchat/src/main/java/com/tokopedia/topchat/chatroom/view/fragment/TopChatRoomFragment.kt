@@ -1,9 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.fragment
 
 import android.app.Activity.RESULT_OK
-import android.content.BroadcastReceiver
-import android.content.Intent
-import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -106,6 +103,8 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatPr
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder
+import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_COPY_TO_CLIPBOARD
+import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_REPLY
 import com.tokopedia.topchat.chatroom.view.custom.*
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
@@ -139,6 +138,14 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 import kotlin.math.abs
+import android.R.attr.label
+import android.app.Activity.CLIPBOARD_SERVICE
+import android.content.*
+import android.R.attr.label
+
+import android.content.ClipData
+import android.widget.TextView
+
 
 /**
  * @author : Steven 29/11/18
@@ -2358,13 +2365,25 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun showMsgMenu(msg: BaseChatViewModel) {
+    override fun showMsgMenu(msg: BaseChatViewModel, text: CharSequence) {
         val bs = TopchatBottomSheetBuilder.getLongClickBubbleMenuBs(
             context, msg
-        ) { _, _ ->
-            replyCompose?.composeReplyData(msg, true)
+        ) { id, msg ->
+            when (id) {
+                MENU_ID_REPLY -> replyCompose?.composeReplyData(msg, true)
+                MENU_ID_COPY_TO_CLIPBOARD -> copyToClipboard(text)
+            }
+
         }
         bs.show(childFragmentManager, BS_CHAT_BUBBLE_MENU)
+    }
+
+    private fun copyToClipboard(text: CharSequence) {
+        val clipboard = context?.getSystemService(
+            CLIPBOARD_SERVICE
+        ) as? ClipboardManager
+        val clip = ClipData.newPlainText("chat message", text)
+        clipboard?.setPrimaryClip(clip)
     }
 
     override fun getUserName(senderId: String): String {

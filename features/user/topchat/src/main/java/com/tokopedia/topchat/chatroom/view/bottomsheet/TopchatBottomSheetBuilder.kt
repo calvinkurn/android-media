@@ -44,7 +44,9 @@ object TopchatBottomSheetBuilder {
         onClick: (Int, BaseChatViewModel) -> Unit
     ): BottomSheetUnify {
         val longClickMenu = LongClickMenu()
+        val title = ctx?.getString(R.string.title_topchat_bubble_long_click_menu) ?: ""
         return longClickMenu.apply {
+            setTitle(title)
             setItemMenuList(createBubbleLongClickMenu(ctx))
             setOnItemMenuClickListener { itemMenus, _ ->
                 onClick(itemMenus.id, msg)
@@ -62,10 +64,17 @@ object TopchatBottomSheetBuilder {
             _icon = R.drawable.ic_topchat_reply_reference,
             _id = MENU_ID_REPLY
         )
+        val copyMenu = TopchatItemMenu(
+            _title = ctx?.getString(R.string.title_topchat_copy) ?: "",
+            _icon = com.tokopedia.iconunify.R.drawable.iconunify_copy,
+            _id = MENU_ID_COPY_TO_CLIPBOARD
+        )
         return menus.apply {
             add(replyMenu)
+            add(copyMenu)
         }
     }
 
     const val MENU_ID_REPLY = 1
+    const val MENU_ID_COPY_TO_CLIPBOARD = 2
 }
