@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -21,6 +20,7 @@ import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageT
 import com.tokopedia.product.manage.common.feature.list.constant.DRAFT_PRODUCT
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
+import com.tokopedia.product.manage.databinding.FragmentProductManageSellerBinding
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.BROADCAST_ADD_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_DRAFT_PRODUCT
@@ -28,10 +28,10 @@ import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductDraftListCountViewModel
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterMapper
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_product_manage.*
-import kotlinx.android.synthetic.main.fragment_product_manage_seller.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
 
@@ -59,7 +59,12 @@ class ProductManageSellerFragment : ProductManageFragment() {
     @Inject
     lateinit var productDraftListCountViewModel: ProductDraftListCountViewModel
 
+    private var binding by autoClearedNullable<FragmentProductManageSellerBinding>()
+
     private var alreadySendScreenNameAfterAddEditProduct: Boolean = false
+
+    private val tvDraftProduct: Typography?
+        get() = binding?.tvDraftProduct
 
     override fun getScreenName(): String = "/product list page"
 
@@ -75,7 +80,7 @@ class ProductManageSellerFragment : ProductManageFragment() {
         checkLogin()
         super.onViewCreated(view, savedInstanceState)
         activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        tvDraftProduct.visibility = View.GONE
+        tvDraftProduct?.visibility = View.GONE
         getDefaultKeywordOptionFromArguments()
         getDefaultFilterOptionsFromArguments()
         observeGetAllDraftCount()
@@ -141,21 +146,21 @@ class ProductManageSellerFragment : ProductManageFragment() {
 
     private fun onDraftCountLoaded(rowCount: Long) {
         if (rowCount == 0L) {
-            tvDraftProduct.visibility = View.GONE
+            tvDraftProduct?.visibility = View.GONE
         } else {
-            tvDraftProduct.text = MethodChecker.fromHtml(getString(R.string.product_manage_you_have_x_unfinished_product, rowCount))
-            tvDraftProduct.setOnClickListener {
+            tvDraftProduct?.text = MethodChecker.fromHtml(getString(R.string.product_manage_you_have_x_unfinished_product, rowCount))
+            tvDraftProduct?.setOnClickListener {
                 ProductManageTracking.eventDraftClick(DRAFT_PRODUCT)
                 val intent = RouteManager.getIntent(activity, ApplinkConstInternalMechant.MERCHANT_PRODUCT_DRAFT)
                 startActivityForResult(intent, REQUEST_CODE_DRAFT_PRODUCT)
             }
-            tvDraftProduct.visibility = View.VISIBLE
+            tvDraftProduct?.visibility = View.VISIBLE
         }
     }
 
     private fun onDraftCountLoadError() {
         productDraftListCountViewModel.clearAllDraft()
-        tvDraftProduct.visibility = View.GONE
+        tvDraftProduct?.visibility = View.GONE
     }
 
     private fun getDefaultKeywordOptionFromArguments() {

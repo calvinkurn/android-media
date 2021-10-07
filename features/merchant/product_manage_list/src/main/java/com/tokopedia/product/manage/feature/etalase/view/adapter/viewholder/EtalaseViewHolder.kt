@@ -4,8 +4,9 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.databinding.ItemProductManageEtalaseBinding
 import com.tokopedia.product.manage.feature.etalase.data.model.EtalaseViewModel
-import kotlinx.android.synthetic.main.item_product_manage_etalase.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class EtalaseViewHolder(
     itemVew: View,
@@ -17,12 +18,15 @@ class EtalaseViewHolder(
         val LAYOUT = R.layout.item_product_manage_etalase
     }
 
-    private val radioButtonEtalase by lazy { itemView.radioButtonEtalase }
+    private val binding by viewBinding<ItemProductManageEtalaseBinding>()
+
+    private val radioButtonEtalase
+        get() = binding?.radioButtonEtalase
 
     override fun bind(etalase: EtalaseViewModel) {
-        itemView.etalaseName.text = etalase.name
+        binding?.etalaseName?.text = etalase.name
 
-        radioButtonEtalase.setOnCheckedChangeListener { _, isSelected ->
+        radioButtonEtalase?.setOnCheckedChangeListener { _, isSelected ->
             listener.onClickEtalase(isSelected, etalase)
         }
 
@@ -30,12 +34,14 @@ class EtalaseViewHolder(
     }
 
     fun toggleEtalase(): Boolean {
-        radioButtonEtalase.apply { isChecked = !isChecked }
-        return radioButtonEtalase.isChecked
+        radioButtonEtalase?.run {
+            isChecked = !isChecked
+        }
+        return radioButtonEtalase?.isChecked == true
     }
 
     fun uncheckEtalase() {
-        radioButtonEtalase.isChecked = false
+        radioButtonEtalase?.isChecked = false
     }
 
     interface OnClickListener {

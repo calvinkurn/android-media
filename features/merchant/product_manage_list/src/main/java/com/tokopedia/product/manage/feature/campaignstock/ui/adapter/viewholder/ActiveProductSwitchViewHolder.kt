@@ -6,7 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ActiveProductSwitchUiModel
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
-import kotlinx.android.synthetic.main.item_campaign_stock_active_product_switch.view.*
+import com.tokopedia.product.manage.databinding.ItemCampaignStockActiveProductSwitchBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ActiveProductSwitchViewHolder(itemView: View?,
                                     private val onActiveStockChanged: (Boolean) -> Unit): AbstractViewHolder<ActiveProductSwitchUiModel>(itemView) {
@@ -16,8 +17,10 @@ class ActiveProductSwitchViewHolder(itemView: View?,
         val LAYOUT_RES = R.layout.item_campaign_stock_active_product_switch
     }
 
+    private val binding by viewBinding<ItemCampaignStockActiveProductSwitchBinding>()
+
     override fun bind(element: ActiveProductSwitchUiModel) {
-        itemView.switch_campaign_stock_active?.run {
+        binding?.switchCampaignStockActive?.run {
             isChecked = element.isActive
             setOnCheckedChangeListener { _, isChecked ->
                 onActiveStockChanged(isChecked)
