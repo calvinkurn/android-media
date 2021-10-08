@@ -1,11 +1,13 @@
 package com.tokopedia.layanan_finansial.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -18,12 +20,14 @@ import com.tokopedia.layanan_finansial.view.adapter.LayananViewHolderFactory
 import com.tokopedia.layanan_finansial.view.customview.LayananSectionView
 import com.tokopedia.layanan_finansial.view.models.LayananFinansialModel
 import com.tokopedia.layanan_finansial.view.models.LayananSectionModel
+import com.tokopedia.layanan_finansial.view.models.TopAdsImageModel
 import com.tokopedia.layanan_finansial.view.viewModel.LayananFinansialViewModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class LayananFragment : BaseListFragment<LayananSectionModel,LayananViewHolderFactory>() {
+class LayananFragment : BaseListFragment<Visitable<*>,LayananViewHolderFactory>() {
 
 
     @Inject
@@ -65,6 +69,9 @@ class LayananFragment : BaseListFragment<LayananSectionModel,LayananViewHolderFa
 
     private fun render(data: LayananFinansialModel) {
         renderList(data.sectionList ?: mutableListOf())
+       val adList: ArrayList<TopAdsImageModel> = ArrayList()
+        adList.add(TopAdsImageModel())
+        renderList(adList as List<Visitable<*>>)
     }
 
     override fun getScreenName(): String = this.javaClass.name
@@ -73,9 +80,6 @@ class LayananFragment : BaseListFragment<LayananSectionModel,LayananViewHolderFa
      getComponent(LayananComponent::class.java).inject(this)
     }
 
-    override fun onItemClicked(t: LayananSectionModel) {
-
-    }
 
     override fun loadData(page: Int) {
         performanceInterface.stopPreparePagePerformanceMonitoring()
@@ -97,5 +101,8 @@ class LayananFragment : BaseListFragment<LayananSectionModel,LayananViewHolderFa
        private const val LAYANAN_PLT_NETWORK_METRICS = "layanan_plt_network_metrics"
        private const val LAYANAN_PLT_RENDER_METRICS = "layanan_plt_render_metrics"
 
+    }
+
+    override fun onItemClicked(t: Visitable<*>?) {
     }
 }
