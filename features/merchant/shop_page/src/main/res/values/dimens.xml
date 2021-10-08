@@ -11,6 +11,7 @@
     <dimen name="dp_155">155dp</dimen>
     <dimen name="dp_140">140dp</dimen>
     <dimen name="dp_156">156dp</dimen>
+    <dimen name="dp_210">210dp</dimen>
     <dimen name="dp_68">68dp</dimen>
 
     <dimen name="shop_page_header_sub_info_min_height">58dp</dimen>
@@ -37,7 +38,10 @@
     <dimen name="size_labelview">56sp</dimen>
     <dimen name="dp_4">4dp</dimen>
     <dimen name="dp_5.5">5.5dp</dimen>
+    <dimen name="dp_6">6dp</dimen>
     <dimen name="dp_8">8dp</dimen>
+    <dimen name="dp_12">12dp</dimen>
+    <dimen name="dp_30">30dp</dimen>
     <dimen name="dp_32">32dp</dimen>
     <dimen name="dp_48">48dp</dimen>
     <dimen name="dp_18">18dp</dimen>

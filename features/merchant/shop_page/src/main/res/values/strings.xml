@@ -317,5 +317,13 @@
     <!-- flash sale -->
     <string name="shop_page_label_flash_sale_toko">Flash Sale Toko</string>
     <string name="shop_page_label_flash_sale">Flash Sale</string>
-
+    <string name="shop_page_label_see_all">Lihat Semua</string>
+    <string name="shop_page_label_started_in">Dimulai dalam</string>
+    <string name="shop_page_label_ends_in">Berakhir dalam</string>
+    <string name="shop_page_label_purchase_tnc">S&amp;K Pembelian</string>
+    <string name="shop_page_flash_sale_tnc_number_one">Hanya bisa bayar menggunakan VA, kartu kredit, kartu debit, GoPay, dan pembayaran instan lainnya.</string>
+    <string name="shop_page_flash_sale_tnc_number_two">Durasi pembayaran 5 menit. Jika melewati batas pembayaran, baran otomatis dikembalikan kke stok produk dan dapat dibeli pembeli lain.</string>
+    <string name="shop_page_flash_sale_tnc_number_three">Jika pembeli terbukti melakukan pembelian lain menggunakan akun yang berbeda, maka pembelian akan dibatalkan.</string>
+    <string name="shop_page_flash_sale_tnc_number_four">Pembeli hanya bisa melakukan 1 kali transaksi dalam campaign ini.</string>
+    <string name="shop_page_flash_sale_tnc_number_five">S&amp;K hanya berlaku untuk campaign ini.</string>
 </resources>

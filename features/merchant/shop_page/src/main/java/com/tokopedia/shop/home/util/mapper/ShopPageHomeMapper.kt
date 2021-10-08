@@ -4,6 +4,7 @@ import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
+import com.tokopedia.shop.home.WidgetName.FLASH_SALE_TOKO
 import com.tokopedia.shop.home.WidgetName.IS_SHOW_ETALASE_NAME
 import com.tokopedia.shop.home.WidgetName.PRODUCT
 import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_TWO_ROWS
@@ -235,6 +236,7 @@ object ShopPageHomeMapper {
                 mapToProductWidgetUiModel(widgetResponse, isMyOwnProduct)
             }
             CAMPAIGN.toLowerCase() -> {
+                // TODO: add new function mapToCampaignUIModel
                 mapToNewProductLaunchCampaignUiModel(widgetResponse, isLoggedIn)
             }
             DYNAMIC.toLowerCase(Locale.getDefault()) -> mapCarouselPlayWidget(widgetResponse)
@@ -269,6 +271,16 @@ object ShopPageHomeMapper {
             showcaseListItem = mapToShowcaseListItemUiModel(widgetResponse.data, widgetResponse.name, widgetResponse.header)
     )
 
+    private fun mapToCampaignUiModel(
+        widgetResponse: ShopLayoutWidget.Widget,
+        isLoggedIn: Boolean
+    ) {
+        when(widgetResponse.name) {
+            FLASH_SALE_TOKO -> {}
+            else -> {}
+        }
+    }
+
     private fun mapToNewProductLaunchCampaignUiModel(
             widgetResponse: ShopLayoutWidget.Widget,
             isLoggedIn: Boolean
@@ -280,6 +292,19 @@ object ShopPageHomeMapper {
                 widgetResponse.type,
                 mapToHeaderModel(widgetResponse.header),
                 mapToListNewProductLaunchCampaignItem(widgetResponse.data, isLoggedIn)
+        )
+    }
+
+    private fun mapToFlashSaleUiModel(
+        widgetResponse: ShopLayoutWidget.Widget
+    ): ShopHomeFlashSaleUiModel {
+        return ShopHomeFlashSaleUiModel(
+            widgetResponse.widgetID,
+            widgetResponse.layoutOrder,
+            widgetResponse.name,
+            widgetResponse.type,
+            mapToHeaderModel(widgetResponse.header),
+            mapToFlashSaleUiModelList(widgetResponse.data)
         )
     }
 
@@ -307,6 +332,24 @@ object ShopPageHomeMapper {
                     mapCampaignListBanner(it.listBanner),
                     mapCampaignListProduct(it.statusCampaign, it.listProduct),
                     isRemindMe
+            )
+        }
+    }
+
+    private fun mapToFlashSaleUiModelList(data: List<ShopLayoutWidget.Widget.Data>): List<ShopHomeFlashSaleUiModel.FlashSaleItem> {
+        return data.map {
+            ShopHomeFlashSaleUiModel.FlashSaleItem(
+                it.campaignId,
+                it.name,
+                it.description,
+                it.startDate,
+                it.endDate,
+                it.statusCampaign,
+                it.timeDescription,
+                it.timeCounter,
+                it.totalNotify,
+                it.totalNotifyWording,
+                mapCampaignListProduct(it.statusCampaign, it.listProduct),
             )
         }
     }
