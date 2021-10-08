@@ -68,8 +68,8 @@ class ProductTickerInfoViewHolder(private val view: View,
         yellowTicker?.tickerTitle = tickerResponse.title
         yellowTicker?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                listener.onTickerShopClicked(shop_ticker_info.tickerTitle.toString(),
-                        shop_ticker_info.tickerType,
+                listener.onTickerShopClicked(yellowTicker.tickerTitle.toString(),
+                        yellowTicker.tickerType,
                         componentTrackDataModel,
                         tickerResponse.message,
                         tickerResponse.actionLink,
