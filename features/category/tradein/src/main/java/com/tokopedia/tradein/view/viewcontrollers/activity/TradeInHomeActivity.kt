@@ -139,7 +139,11 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
         })
         viewModel.homeResultData.observe(this, Observer { homeResult: HomeResult ->
             if (!homeResult.isSuccess) {
-                setNotElligible(getString(R.string.not_elligible))
+                setNotElligible(
+                    if(homeResult.displayMessage.isNotEmpty())
+                        homeResult.displayMessage
+                    else
+                        getString(R.string.not_elligible))
             } else {
                 when (homeResult.priceStatus) {
                     PriceState.DIAGNOSED_INVALID -> {
