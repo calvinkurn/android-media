@@ -645,13 +645,17 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check promo with dash appLink then should return empty in customerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.PROMO_WITH_DASH, "")
+    fun `check promo with dash appLink then should return promo detail in customerapp`() {
+        val appLink = UriUtil.buildUri(ApplinkConst.PROMO_WITH_DASH, "abc")
+        val expected = UriUtil.buildUri(ApplinkConstInternalPromo.PROMO_DETAIL, "abc")
+        assertEqualsDeepLinkMapper(appLink, expected)
     }
 
     @Test
-    fun `check promo detail appLink then should return empty in customerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.PROMO_DETAIL, ApplinkConstInternalPromo.PROMO_LIST)
+    fun `check promo detail appLink then should return promo detail in customerapp`() {
+        val appLink = UriUtil.buildUri(ApplinkConst.PROMO_DETAIL, "abc")
+        val expected = UriUtil.buildUri(ApplinkConstInternalPromo.PROMO_DETAIL, "abc")
+        assertEqualsDeepLinkMapper(appLink, expected)
     }
 
     @Test
