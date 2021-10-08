@@ -10,26 +10,28 @@ import com.tokopedia.discovery.common.constants.SearchConstant.SaveLastFilter.CA
 import com.tokopedia.discovery.common.constants.SearchConstant.SaveLastFilter.LAST_FILTER
 import com.tokopedia.discovery.common.constants.SearchConstant.SaveLastFilter.PARAM
 import com.tokopedia.filter.common.data.SavedOption
+import com.tokopedia.search.utils.UrlParamUtils
 
 class SaveLastFilterInput(
     @SerializedName(LAST_FILTER)
     @Expose
     val lastFilter: List<SavedOption> = listOf(),
 
-    val action: Action = Create,
-
-    @SerializedName(PARAM)
-    @Expose
-    val param: String = "",
-
     @SerializedName(CATEGORY_ID_L2)
     @Expose
     val categoryIdL2: String = "",
+
+    action: Action = Create,
+    mapParameter: Map<String?, Any> = mapOf(),
 ) {
 
     @SerializedName(ACTION)
     @Expose
-    val actionString = action.toString()
+    val action = action.toString()
+
+    @SerializedName(PARAM)
+    @Expose
+    val param: String = UrlParamUtils.generateUrlParamString(mapParameter)
 
     sealed class Action
     object Create: Action() {

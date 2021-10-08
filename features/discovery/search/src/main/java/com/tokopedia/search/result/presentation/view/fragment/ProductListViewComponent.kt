@@ -8,6 +8,7 @@ import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFil
 import com.tokopedia.search.result.domain.usecase.getinspirationcarouselchips.GetInspirationCarouselChipsProductUseCaseModule
 import com.tokopedia.search.result.domain.usecase.getlocalsearchrecommendation.GetLocalSearchRecommendationUseCaseModule
 import com.tokopedia.search.result.domain.usecase.getproductcount.GetProductCountUseCaseModule
+import com.tokopedia.search.result.domain.usecase.savelastfilter.SaveLastFilterUseCaseModule
 import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductUseCaseModule
 import com.tokopedia.search.result.presentation.presenter.product.ProductListPresenterModule
 import com.tokopedia.search.utils.ProductionSchedulersProviderModule
@@ -30,6 +31,7 @@ import dagger.Component
     TopAdsUrlHitterModule::class,
     ProductionSchedulersProviderModule::class,
     GetInspirationCarouselChipsProductUseCaseModule::class,
+    SaveLastFilterUseCaseModule::class,
     ProductListPresenterModule::class
  ], dependencies = [BaseAppComponent::class])
 interface ProductListViewComponent {

@@ -42,6 +42,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val recommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
     protected val getLocalSearchRecommendationUseCase = mockk<UseCase<SearchProductModel>>(relaxed = true)
     protected val getInspirationCarouselChipsProductsUseCase = mockk<UseCase<InspirationCarouselChipsProductModel>>(relaxed = true)
+    protected val saveLastFilterUseCase = mockk<UseCase<Int>>(relaxed = true)
     protected val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
     protected val remoteConfig = mockk<RemoteConfig>()
@@ -58,18 +59,19 @@ internal open class ProductListPresenterTestFixtures {
     @Before
     open fun setUp() {
         productListPresenter = ProductListPresenter(
-                searchProductFirstPageUseCase,
-                searchProductLoadMoreUseCase,
-                recommendationUseCase,
-                userSession,
-                searchCoachMarkLocalCache,
-                { getDynamicFilterUseCase },
-                { getProductCountUseCase },
-                { getLocalSearchRecommendationUseCase },
-                { getInspirationCarouselChipsProductsUseCase },
-                topAdsUrlHitter,
-                testSchedulersProvider,
-                { remoteConfig }
+            searchProductFirstPageUseCase,
+            searchProductLoadMoreUseCase,
+            recommendationUseCase,
+            userSession,
+            searchCoachMarkLocalCache,
+            { getDynamicFilterUseCase },
+            { getProductCountUseCase },
+            { getLocalSearchRecommendationUseCase },
+            { getInspirationCarouselChipsProductsUseCase },
+            { saveLastFilterUseCase },
+            topAdsUrlHitter,
+            testSchedulersProvider,
+            { remoteConfig },
         )
         productListPresenter.attachView(productListView)
 

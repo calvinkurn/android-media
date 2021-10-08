@@ -1009,12 +1009,14 @@ class ProductListFragment: BaseDaggerFragment(),
         return filterController.getFilterViewState(option.uniqueId)
     }
 
-    override fun onQuickFilterSelected(option: Option) {
+    override fun onQuickFilterSelected(filter: Filter, option: Option) {
         val isQuickFilterSelectedReversed = !isQuickFilterSelected(option)
         setFilterToQuickFilterController(option, isQuickFilterSelectedReversed)
 
         val queryParams = filterController.getParameter().addFilterOrigin()
         refreshSearchParameter(queryParams)
+
+        updateLastFilter(filter, option, isQuickFilterSelectedReversed)
 
         reloadData()
 
@@ -1026,6 +1028,21 @@ class ProductListFragment: BaseDaggerFragment(),
             filterController.setFilter(option, isQuickFilterSelected, true)
         else
             filterController.setFilter(option, isQuickFilterSelected)
+    }
+
+    private fun updateLastFilter(
+        filter: Filter,
+        option: Option,
+        isQuickFilterSelectedReversed: Boolean,
+    ) {
+        val searchParameterMap = searchParameter?.getSearchParameterMap() ?: mapOf()
+
+        presenter?.updateLastFilter(
+            searchParameterMap,
+            filter,
+            option,
+            isQuickFilterSelectedReversed
+        )
     }
 
     private fun trackEventSearchResultQuickFilter(filterName: String, filterValue: String, isSelected: Boolean) {
@@ -1803,6 +1820,8 @@ class ProductListFragment: BaseDaggerFragment(),
 
         refreshSearchParameter(applySortFilterModel.mapParameter)
 
+        updateLastFilter()
+
         reloadData()
     }
 
@@ -1816,6 +1835,15 @@ class ProductListFragment: BaseDaggerFragment(),
     private fun applyFilter(applySortFilterModel: ApplySortFilterModel) {
         FilterTracking
                 .eventApplyFilter(filterTrackingData, screenName, applySortFilterModel.selectedFilterMapParameter)
+    }
+
+    private fun updateLastFilter() {
+        val mapParameter = searchParameter?.getSearchParameterMap() ?: mapOf()
+
+        presenter?.updateLastFilter(
+            mapParameter,
+            filterController.getActiveSavedOptionList(),
+        )
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {

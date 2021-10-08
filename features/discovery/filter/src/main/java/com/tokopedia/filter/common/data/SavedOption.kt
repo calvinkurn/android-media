@@ -3,7 +3,7 @@ package com.tokopedia.filter.common.data
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class SavedOption(
+data class SavedOption(
     @SerializedName("title")
     @Expose
     val title: String = "",

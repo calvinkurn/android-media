@@ -7,9 +7,18 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.constants.SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE
 import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.HEADLINE_ITEM_VALUE_FIRST_PAGE
 import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.HEADLINE_ITEM_VALUE_LOAD_MORE
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_INSPIRATION_CAROUSEL_KEYWORD
+import com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.LOCAL_CACHE_NAME
+import com.tokopedia.discovery.common.constants.SearchConstant.SaveLastFilter.INPUT_PARAMS
+import com.tokopedia.discovery.common.constants.SearchConstant.SaveLastFilter.SAVE_LAST_FILTER_USE_CASE
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.GET_PRODUCT_COUNT_USE_CASE
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_LOAD_MORE_USE_CASE
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartParams
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartResult
@@ -18,7 +27,9 @@ import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.data.SavedOption
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
@@ -37,6 +48,7 @@ import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelGroup
+import com.tokopedia.search.result.domain.usecase.savelastfilter.SaveLastFilterInput
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.mapper.InspirationCarouselProductDataViewMapper
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper
@@ -94,29 +106,33 @@ import org.json.JSONArray
 import rx.Observable
 import rx.Subscriber
 import rx.functions.Action1
+import rx.observers.Subscribers
 import rx.subscriptions.CompositeSubscription
+import rx.subscriptions.Subscriptions
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.math.max
 
 class ProductListPresenter @Inject constructor(
-        @param:Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
+        @param:Named(SEARCH_PRODUCT_FIRST_PAGE_USE_CASE)
         private val searchProductFirstPageUseCase: UseCase<SearchProductModel>,
-        @param:Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_LOAD_MORE_USE_CASE)
+        @param:Named(SEARCH_PRODUCT_LOAD_MORE_USE_CASE)
         private val searchProductLoadMoreUseCase: UseCase<SearchProductModel>,
         private val recommendationUseCase: GetRecommendationUseCase,
         private val userSession: UserSessionInterface,
-        @param:Named(SearchConstant.OnBoarding.LOCAL_CACHE_NAME)
+        @param:Named(LOCAL_CACHE_NAME)
         private val searchCoachMarkLocalCache: CoachMarkLocalCache,
-        @param:Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE)
+        @param:Named(GET_DYNAMIC_FILTER_USE_CASE)
         private val getDynamicFilterUseCase: Lazy<UseCase<DynamicFilterModel>>,
-        @param:Named(SearchConstant.SearchProduct.GET_PRODUCT_COUNT_USE_CASE)
+        @param:Named(GET_PRODUCT_COUNT_USE_CASE)
         private val getProductCountUseCase: Lazy<UseCase<String>>,
-        @param:Named(SearchConstant.SearchProduct.GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE)
+        @param:Named(GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE)
         private val getLocalSearchRecommendationUseCase: Lazy<UseCase<SearchProductModel>>,
-        @param:Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE)
+        @param:Named(SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE)
         private val getInspirationCarouselChipsUseCase: Lazy<UseCase<InspirationCarouselChipsProductModel>>,
+        @param:Named(SAVE_LAST_FILTER_USE_CASE)
+        private val saveLastFilterUseCase: Lazy<UseCase<Int>>,
         private val topAdsUrlHitter: TopAdsUrlHitter,
         private val schedulersProvider: SchedulersProvider,
         remoteConfig: Lazy<RemoteConfig>,
@@ -1532,7 +1548,7 @@ class ProductListPresenter @Inject constructor(
         quickFilterData.filter.forEach { filter ->
             val options = filter.options
             quickFilterOptionList.addAll(options)
-            sortFilterItems.addAll(convertToSortFilterItem(filter.title, options))
+            sortFilterItems.addAll(convertToSortFilterItem(filter, options))
         }
 
         if (sortFilterItems.isNotEmpty()) {
@@ -1541,14 +1557,14 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
-    private fun convertToSortFilterItem(title: String, options: List<Option>) =
+    private fun convertToSortFilterItem(filter: Filter, options: List<Option>) =
             options.map { option ->
-                createSortFilterItem(title, option)
+                createSortFilterItem(filter, option)
             }
 
-    private fun createSortFilterItem(title: String, option: Option): SortFilterItem {
-        val item = SortFilterItem(title) {
-            view.onQuickFilterSelected(option)
+    private fun createSortFilterItem(filter: Filter, option: Option): SortFilterItem {
+        val item = SortFilterItem(filter.title) {
+            view.onQuickFilterSelected(filter, option)
         }
 
         setSortFilterItemState(item, option)
@@ -2371,6 +2387,51 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
+    override fun updateLastFilter(
+        searchParameter: Map<String, Any>,
+        savedOptionList: List<SavedOption>,
+    ) {
+        saveLastFilter(
+            searchParameter,
+            SaveLastFilterInput.Update,
+            savedOptionList,
+        )
+    }
+
+    override fun updateLastFilter(
+        searchParameter: Map<String, Any>,
+        filter: Filter,
+        option: Option,
+        isFilterApplied: Boolean,
+    ) {
+        val action = if (isFilterApplied) SaveLastFilterInput.Create
+        else SaveLastFilterInput.Delete
+
+        saveLastFilter(
+            searchParameter,
+            action,
+            listOf(SavedOption.create(option, listOf(filter))),
+        )
+    }
+
+    private fun saveLastFilter(
+        searchParameter: Map<String, Any>,
+        action: SaveLastFilterInput.Action,
+        lastFilter: List<SavedOption>,
+    ) {
+        val saveLastFilterInput = SaveLastFilterInput(
+            action = action,
+            lastFilter = lastFilter,
+            mapParameter = createInitializeSearchParam(searchParameter).parameters,
+        )
+
+        val requestParams = RequestParams.create()
+        requestParams.putObject(INPUT_PARAMS, saveLastFilterInput)
+
+        saveLastFilterUseCase.get().unsubscribe()
+        saveLastFilterUseCase.get().execute(requestParams, Subscribers.empty())
+    }
+
     override fun detachView() {
         super.detachView()
 
@@ -2381,6 +2442,7 @@ class ProductListPresenter @Inject constructor(
         getProductCountUseCase.get()?.unsubscribe()
         getLocalSearchRecommendationUseCase.get()?.unsubscribe()
         getInspirationCarouselChipsUseCase.get()?.unsubscribe()
+        saveLastFilterUseCase.get()?.unsubscribe()
         if (compositeSubscription?.isUnsubscribed == true) unsubscribeCompositeSubscription()
     }
 
