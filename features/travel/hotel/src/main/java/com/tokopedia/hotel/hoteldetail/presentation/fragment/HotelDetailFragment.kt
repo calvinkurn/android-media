@@ -860,6 +860,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
         const val AB_TEST_KEY_NEARBY_LANDMARK = "hotel_nearlandmark"
         const val AB_TEST_HIDE_LANDMARK = "hide_nearby"
+        const val AB_TEST_SHOW_LANDMARK = "Show_nearby"
 
         fun getInstance(checkInDate: String, checkOutDate: String, propertyId: Long, roomCount: Int,
                         adultCount: Int, destinationType: String, destinationName: String,
