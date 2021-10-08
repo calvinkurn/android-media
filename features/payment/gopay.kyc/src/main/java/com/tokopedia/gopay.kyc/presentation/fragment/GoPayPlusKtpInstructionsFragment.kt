@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gopay.kyc.R
 import com.tokopedia.gopay.kyc.analytics.GoPayKycConstants
 import com.tokopedia.gopay.kyc.analytics.GoPayKycEvent
@@ -57,12 +57,6 @@ class GoPayPlusKtpInstructionsFragment : GoPayKycBaseFragment() {
             goPayPhotoTitle.text = it.getString(R.string.gopay_kyc_ktp_photo_front_text)
             takePhotoButton.text = it.getString(R.string.gopay_kyc_take_ktp_text)
 
-            goPayIdImage.setImageDrawable(
-                ContextCompat.getDrawable(
-                    it,
-                    R.drawable.ic_gopay_kyc_upload_ktp
-                )
-            )
             for (instructionItem in instructionStringResList) {
                 instructionLL.addView(
                     GoPayKycInstructionItemViewHolder(
@@ -72,6 +66,10 @@ class GoPayPlusKtpInstructionsFragment : GoPayKycBaseFragment() {
                 )
             }
         }
+        goPayIdImage.loadRemoteImageDrawable(INSTRUCTION_IMAGE_NAME, INSTRUCTION_IMAGE_PATH)
+        goPayDoImage.loadRemoteImageDrawable(CORRECT_IMAGE_NAME, CORRECT_IMAGE_PATH)
+        goPayDontImage.loadRemoteImageDrawable(INCORRECT_IMAGE_NAME, INCORRECT_IMAGE_PATH)
+
     }
 
     private fun openKtpCamera() {
@@ -101,5 +99,15 @@ class GoPayPlusKtpInstructionsFragment : GoPayKycBaseFragment() {
 
     companion object {
         fun newInstance() = GoPayPlusKtpInstructionsFragment()
+        const val INSTRUCTION_IMAGE_NAME = "gopay_kyc_ktp_instruction_step.png"
+        const val CORRECT_IMAGE_NAME = "gopay_kyc_ktp_correct_instruction.png"
+        const val INCORRECT_IMAGE_NAME = "gopay_kyc_ktp_incorrect_instruction.png"
+        const val INSTRUCTION_IMAGE_PATH =
+            "https://images.tokopedia.net/img/android/res/singleDpi/gopay_kyc_ktp_instruction_step.png"
+
+        const val CORRECT_IMAGE_PATH =
+            "https://images.tokopedia.net/img/android/res/singleDpi/gopay_kyc_ktp_correct_instruction.png"
+        const val INCORRECT_IMAGE_PATH =
+            "https://images.tokopedia.net/img/android/res/singleDpi/gopay_kyc_ktp_incorrect_instruction.png"
     }
 }

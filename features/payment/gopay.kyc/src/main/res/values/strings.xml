@@ -28,7 +28,7 @@
     <string name="gopay_ktp_instruction_1">Gunakan e-KTP asli bukan hasil fotokopi.</string>
     <string name="gopay_ktp_instruction_2">Pastikan foto e-KTP berada dalam bingkai.</string>
     <string name="gopay_ktp_instruction_3">Pastikan foto e-KTP terlihat terang dan jelas.</string>
-    <string name="gopay_selfie_ktp_instruction_1">Cari pencahayaan yang cukup</string>
+    <string name="gopay_selfie_ktp_instruction_1">Cari pencahayaan yang cukup.</string>
     <string name="gopay_selfie_ktp_instruction_2">Ambil selfie dengan posisikan e-KTP di bawah dagu. </string>
     <string name="gopay_selfie_ktp_instruction_3">Pastikan seluruh bagian wajah &amp; e-KTP kamu terlihat jelas dan tidak terpotong.</string>
     <string name="gopay_kyc_step_1">1.</string>
@@ -51,7 +51,7 @@
     <string name="gopay_kyc_review_title_text">Periksa lagi datamu dan pastikan semua informasi sudah benar.</string>
     <string name="gopay_kyc_privacy_bank_text">GoPay diawasi oleh Bank Indonesia</string>
     <string name="gopay_kyc_privacy_policy_gojek_text">Data hanya digunakan pihak GoPay untuk verifikasi.</string>
-    <string name="gopay_kyc_accept_tnc_text">Dengan klik “Kirim”, kamu menyetujui <font color="#03AC0E"><b>Syarat &amp; Ketentuan</b></font></string>
+    <string name="gopay_kyc_accept_tnc_text">Dengan klik “Kirim”, kamu menyetujui <![CDATA[<"font color='#03AC0E'><b>syarat &amp; ketentuan</b></font>]]></string>
     <string name="gopay_kyc_submit_button_text">Kirim</string>
 
     <string name="gopay_kyc_upload_success_title_text">Upgrade lagi diproses</string>

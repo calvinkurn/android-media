@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gopay.kyc.R
 import com.tokopedia.gopay.kyc.domain.data.GoPayPlusBenefit
 import kotlinx.android.synthetic.main.gopay_kyc_general_item_layout.view.*
@@ -17,7 +18,7 @@ class GoPayPlusBenefitItemViewHolder(val context: Context, private val layoutPar
         val benefitView = LayoutInflater.from(context).inflate(getLayout(), null)
         benefitView.apply {
             layoutParams = this@GoPayPlusBenefitItemViewHolder.layoutParams
-            goPayPlusBenefitImage.setImageDrawable(ContextCompat.getDrawable(context, benefit.iconDrawable))
+            goPayPlusBenefitImage.setImageDrawable(MethodChecker.getDrawable(context, benefit.iconDrawable))
             goPayItemBenefitTitle.text = benefit.benefitTitle
             goPayItemBenefitDescription.text = benefit.benefitDescription
         }

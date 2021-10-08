@@ -21,6 +21,7 @@ import com.tokopedia.gopay.kyc.presentation.listener.GoPayKycNavigationListener
 import com.tokopedia.gopay.kyc.presentation.listener.GoPayKycReviewResultListener
 import com.tokopedia.gopay.kyc.utils.ReviewCancelDialog
 import com.tokopedia.gopay.kyc.viewmodel.GoPayKycImageUploadViewModel
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_gopay_review_layout.*
@@ -55,6 +56,7 @@ class GoPayReviewAndUploadFragment : GoPayKycBaseFragment() {
     }
 
     private fun initViews() {
+        tncText.text = getString(R.string.gopay_kyc_accept_tnc_text).parseAsHtml()
         setImageFromFile(viewModel.ktpPath, ktpImage)
         setImageFromFile(viewModel.selfieKtpPath, ktpSelfieImage)
     }
