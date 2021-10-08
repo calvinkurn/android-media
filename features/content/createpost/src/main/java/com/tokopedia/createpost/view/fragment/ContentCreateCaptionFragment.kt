@@ -3,25 +3,23 @@ package com.tokopedia.createpost.view.fragment
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.text.InputType
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
+import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.view.adapter.CaptionPagePreviewImageAdapter
-import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
+import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.content_caption_page_preview.*
-import android.text.InputType
 
 class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
 
@@ -64,8 +62,28 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
             createContentPostViewModel.setNewContentData(it)
             createPostModel = it
         }
+        setHasOptionsMenu(true)
         initVar()
         initView()
+    }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        val menuTitle = activity?.getString(R.string.feed_content_text_post)
+        if (!menuTitle.isNullOrEmpty()) {
+            MenuManager.addCustomMenu(activity, menuTitle, true, menu) {
+                activityListener?.postFeed()
+            }
+        }
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            MenuManager.MENU_ITEM_ID -> {
+                activityListener?.postFeed()
+                return true
+            }
+        }
+        return false
     }
 
     private fun initVar() {

@@ -30,6 +30,7 @@ import com.tokopedia.createpost.view.viewmodel.*
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
+import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -89,6 +90,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
         initVar()
         initView()
     }
@@ -96,6 +98,24 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     private fun initVar() {
         createPostModel = arguments?.getParcelable(CreatePostViewModel.TAG) ?: CreatePostViewModel()
 
+    }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        val menuTitle =  activity?.getString(R.string.feed_content_text_lanjut)
+        if(!menuTitle.isNullOrEmpty()) {
+            MenuManager.addCustomMenu(activity, menuTitle, true, menu) {
+                activityListener?.clickContinueOnTaggingPage()
+            }
+        }
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            MenuManager.MENU_ITEM_ID -> {
+                activityListener?.clickContinueOnTaggingPage()
+                return true
+            }
+        }
+        return false
     }
 
     private fun initView() {
@@ -454,11 +474,11 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     }
 
     override fun updateHeader(header: HeaderViewModel) {
-        TODO("Not yet implemented")
+
     }
 
     override fun openProductTaggingPageOnPreviewMediaClick(position: Int) {
-        TODO("Not yet implemented")
+
     }
 
     override fun clickProductTagBubbleAnalytics(mediaType: String, productId: String) {
@@ -474,6 +494,14 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                 feedXMediaTagging
             updateResultIntent()
         }
+    }
+
+    override fun clickContinueOnTaggingPage() {
+
+    }
+
+    override fun postFeed() {
+        TODO("Not yet implemented")
     }
 
     private fun openProductTaggingScreen() {
@@ -615,9 +643,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                                 tagViewProvider.addViewToParent(view,
                                     layout,
                                     feedXMediaTagging,
-                                    index,
-                                    bitmap,
-                                    createPostModel.currentCorouselIndex)
+                                    bitmap)
                             }, 50)
                         } catch (e: Exception) {
                             Timber.e(e)

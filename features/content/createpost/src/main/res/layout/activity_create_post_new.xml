@@ -7,78 +7,10 @@
     android:clipToPadding="false"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/create_post_toolbar"
+    <com.tokopedia.imagepicker_insta.common.ui.toolbar.ImagePickerCommonToolbar
+        android:id="@+id/toolbar_common"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/content_back_button"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingStart="@dimen/dp_14"
-            android:paddingEnd="@dimen/dp_11"
-            app:srcCompat="@drawable/create_post_activty_back_button" />
-
-        <ImageView
-            android:id="@+id/content_post_avatar"
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_32"
-            android:layout_marginTop="@dimen/dp_6"
-            android:layout_marginBottom="@dimen/dp_6"
-            tools:ignore="ContentDescription"
-            tools:src="@tools:sample/avatars" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginBottom="@dimen/dp_4"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/post_header_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:gravity="center_vertical"
-                android:includeFontPadding="false"
-                android:text="@string/feed_content_post_sebagai"
-                android:lines="1"
-                android:textColor="@color/Unify_NN600"
-                app:typographyType="body_3"
-                tools:text="Post Sebagai" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/content_post_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:lines="1"
-                android:includeFontPadding="false"
-                android:textColor="@color/Unify_NN950"
-                app:typographyType="heading_4"
-                app:typographyWeight="bold"
-                tools:text="Fellow Official" />
-
-        </LinearLayout>
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/content_action_post_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/Unify_GN500"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            app:typographyWeight="bold"
-            android:text="@string/feed_content_text_lanjut"
-            app:typographyType="heading_5" />
-
-    </LinearLayout>
+        android:layout_height="?attr/actionBarSize"/>
 
     <FrameLayout
         android:id="@+id/content_parent_view"
