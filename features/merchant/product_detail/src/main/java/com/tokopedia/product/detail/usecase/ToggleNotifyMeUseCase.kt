@@ -16,10 +16,10 @@ class ToggleNotifyMeUseCase @Inject constructor(private val graphqlRepository: G
 
     companion object {
         val QUERY = """
-          mutation checkCampaignNotifyMe(${'$'}campaignId:Int!, ${'$'}productId:Int!, ${'$'}action:Action!, ${'$'}source:String!){
+          mutation checkCampaignNotifyMe(${'$'}campaignId:Int!, ${'$'}product_id_64:Int64, ${'$'}action:Action!, ${'$'}source:String!){
               checkCampaignNotifyMe(params: {
                 campaign_id: ${'$'}campaignId,
-                product_id: ${'$'}productId,
+                product_id_64: ${'$'}productId,
                 action: ${'$'}action,
                 source: ${'$'}source
               }) {
