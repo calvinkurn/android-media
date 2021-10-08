@@ -41,7 +41,7 @@ import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactoryIm
 import com.tokopedia.product.info.view.adapter.diffutil.ProductDetailInfoDiffUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
 import java.util.concurrent.Executors
 import javax.inject.Inject
@@ -63,7 +63,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     private var currentList: List<ProductDetailInfoVisitable>? = null
     private var listener: ProductDetailBottomSheetListener? = null
 
-    private var binding by autoCleared<BottomSheetProductDetailInfoBinding>()
+    private var binding by autoClearedNullable<BottomSheetProductDetailInfoBinding>()
 
     companion object {
         const val PRODUCT_DETAIL_INFO_PARCEL_KEY = "parcelId"
@@ -115,11 +115,11 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
             val height = displayMetrics.heightPixels
 
             if (isFullScreen) {
-                binding.bsProductInfoContainer.setPadding(0, 0, 0, 20.dpToPx(displayMetrics))
-                binding.bsProductInfoContainer.layoutParams?.height = height - bottomSheetHeader.height - (bottomSheetHeader.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin - bottomSheetWrapper.paddingTop
+                binding?.bsProductInfoContainer?.setPadding(0, 0, 0, 20.dpToPx(displayMetrics))
+                binding?.bsProductInfoContainer?.layoutParams?.height = height - bottomSheetHeader.height - (bottomSheetHeader.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin - bottomSheetWrapper.paddingTop
             } else {
-                binding.bsProductInfoContainer.setPadding(0, 0, 0, 6.dpToPx(displayMetrics))
-                binding.bsProductInfoContainer.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                binding?.bsProductInfoContainer?.setPadding(0, 0, 0, 6.dpToPx(displayMetrics))
+                binding?.bsProductInfoContainer?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
         } catch (e: Throwable) {
         }
@@ -205,7 +205,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
             } else {
                 try {
                     startActivity(Intent(Intent.ACTION_VIEW,
-                            Uri.parse("https://www.youtube.com/watch?v=" + url[index])));
+                            Uri.parse("https://www.youtube.com/watch?v=" + url[index])))
                 } catch (e: Throwable) {
                     Timber.d(e)
                 }
