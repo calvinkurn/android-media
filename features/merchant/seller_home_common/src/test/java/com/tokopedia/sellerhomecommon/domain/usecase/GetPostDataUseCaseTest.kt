@@ -57,13 +57,13 @@ class GetPostDataUseCaseTest {
         val successResponse = TestHelper.createSuccessResponse<GetPostDataResponse>(SUCCESS_RESPONSE)
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         val result = getPostDataUseCase.executeOnBackground()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertTrue(!result.isNullOrEmpty())
@@ -75,14 +75,14 @@ class GetPostDataUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<GetPostDataResponse>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
         val result = getPostDataUseCase.executeOnBackground()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertTrue(result.isNullOrEmpty())

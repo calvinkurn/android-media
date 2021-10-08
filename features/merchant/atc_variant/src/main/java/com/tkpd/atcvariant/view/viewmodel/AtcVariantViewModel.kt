@@ -107,6 +107,10 @@ class AtcVariantViewModel @Inject constructor(
     val ratesLiveData: LiveData<Result<P2RatesEstimate>>
         get() = _ratesLiveData
 
+    private val _stockCopy = MutableLiveData<String>()
+    val stockCopy: LiveData<String>
+        get() = _stockCopy
+
     private var isShopOwner: Boolean = false
 
     fun getActivityResultData(): ProductVariantResult = variantActivityResult
@@ -160,6 +164,7 @@ class AtcVariantViewModel @Inject constructor(
                 // if user only select 1 of 2 variant, no need to update the button
                 // this validation only be execute when user clicked variant and fully clicked 2 of 2 variant or 1 of 1
                 _buttonData.postValue(cartData.asSuccess())
+                _stockCopy.postValue(selectedVariantChild?.stock?.stockCopy ?: "")
 
                 //generate restriction data (shop followers or exclusive campaign)
                 assignReData(aggregatorData?.reData, selectedVariantChild?.productId ?: "")
@@ -266,6 +271,7 @@ class AtcVariantViewModel @Inject constructor(
             assignReData(aggregatorData?.reData, selectedChild?.productId ?: "")
             assignRatesData(selectedChild?.productId ?: "")
             _buttonData.postValue(cartData.asSuccess())
+            _stockCopy.postValue(selectedChild?.stock?.stockCopy ?: "")
         }) {
             _buttonData.postValue(it.asFail())
             _initialData.postValue(it.asFail())

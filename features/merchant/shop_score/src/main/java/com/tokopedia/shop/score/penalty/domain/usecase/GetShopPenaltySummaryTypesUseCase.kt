@@ -86,7 +86,7 @@ class GetShopPenaltySummaryTypesUseCase @Inject constructor(
         val shopPenaltySummaryTypeWrapper = ShopPenaltySummaryTypeWrapper()
 
         try {
-            val gqlResponse = gqlRepository.getReseponse(requests)
+            val gqlResponse = gqlRepository.response(requests)
             if (gqlResponse.getError(ShopScorePenaltySummaryResponse::class.java).isNullOrEmpty()) {
                 val penaltySummaryData = gqlResponse.getData<ShopScorePenaltySummaryResponse>(
                     ShopScorePenaltySummaryResponse::class.java

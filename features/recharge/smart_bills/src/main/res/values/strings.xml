@@ -18,9 +18,9 @@
     <string name="smart_bills_item_detail_label_1">Nomor Pelanggan</string>
     <string name="smart_bills_item_detail_label_2">Nama Tagihan</string>
     <string name="smart_bills_item_detail_label_3">Total Tagihan</string>
-    <string name="smart_bills_empty_state_title">Belum ada transaksi yang ditemukan</string>
-    <string name="smart_bills_empty_state_description">Tagihan yang pernah dibayar akan muncul di sini dan kamu bisa bayar lagi sekaligus.</string>
-    <string name="smart_bills_empty_state_button_label">Mulai Bayar Tagihan</string>
+    <string name="smart_bills_empty_state_title">Sekali bayar, semuanya lunas!</string>
+    <string name="smart_bills_empty_state_description">Biar makin gampang, kamu bisa bayar berbagai tagihan bersamaan di sini.</string>
+    <string name="smart_bills_empty_state_button_label">Tambah Tagihan</string>
     <string name="smart_bills_data_error">Terdapat kesalahan pada pengambilan data</string>
     <string name="smart_bills_checkout_view_button_label">Bayar</string>
     <string name="smart_bills_no_item_price">Rp -</string>
@@ -44,4 +44,31 @@
     <string name="smart_bills_clustering_local_load_title">Bagian ini gagal ditampilkan</string>
     <string name="smart_bills_clustering_local_load_desc">Klik ikon di samping untuk coba lagi.</string>
     <string name="smart_bills_clustering_price">-</string>
+
+    <string name="smart_bills_add_bills_title">Tambah Tagihan</string>
+    <string name="smart_bills_add_bills_title_bottom_sheet_catalog">Mau tambah tagihan apa?</string>
+    <string name="smart_bills_add_bills_title_bottom_sheet_inquiry">Detail tagihan</string>
+    <string name="smart_bills_add_bills_bottom_sheet_catalog_empty">Maaf, katalog produk sedang kosong</string>
+    <string name="smart_bills_add_bills_empty_state_image">https://images.tokopedia.net/img/android/recharge/smart_bills/ic_smartbills_addbills.png</string>
+    <string name="smart_bills_add_bills_product_label">Produk Tagihan</string>
+    <string name="smart_bills_add_bills_product_number_label">Nomor HP</string>
+    <string name="smart_bills_add_bills_product_nominal_label">Nominal</string>
+    <string name="smart_bills_add_bills_product_button_label">Tambah Tagihan</string>
+    <string name="smart_bills_add_bills_product_button_inquiry">Tambah Tagihan Ini</string>
+    <string name="smart_bills_add_bills_product_nominal_bottom_sheet_title">Mau pilih nominal berapa?</string>
+    <string name="smart_bills_add_bills_product_nominal_bottom_sheet_empty">Maaf, nggak ada produk yang tersedia buat nomor ini</string>
+    <string name="smart_bills_add_bills_product_nominal_bottom_sheet_empty_desc">Coba masukkan nomor lain, ya.</string>
+    <string name="smart_bills_add_bills_product_nominal_bottom_sheet_empty_btn">Kembali</string>
+    <string name="smart_bills_add_bills_product_placeholder_pulsa">Pulsa</string>
+    <string name="smart_bills_add_bills_product_placeholder_data">Paket Data</string>
+    <string name="smart_bills_add_bills_nominal_error">Oops, nominal tidak boleh kosong</string>
+    <string name="smart_bills_add_bills_number_not_found">Maaf, nomor tidak ditemukan</string>
+    <string name="smart_bills_add_bills_ticker_desc">Tagihan baru akan otomatis terhapus pada 00:00 WIB malam ini kalau belum dibayar.</string>
+    <string name="smart_bills_add_bills_packet_data">Produk Paket Data</string>
+
+    <string name="smart_bills_delete_bills">Hapus Tagihan</string>
+    <string name="smart_bills_delete_dialog_title">Hapus tagihan ini?</string>
+    <string name="smart_bills_delete_dialog_desc">Kamu bisa tambah tagihan ini lagi lain kali.</string>
+    <string name="smart_bills_delete_dialog_yes">Hapus</string>
+    <string name="smart_bills_delete_dialog_no">Batal</string>
 </resources>

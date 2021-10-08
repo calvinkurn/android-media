@@ -554,7 +554,7 @@ class ShopHomeViewModel @Inject constructor(
         if (carouselPlayWidgetUiModel !is CarouselPlayWidgetUiModel) return
         launchCatchError(block = {
             val response = playWidgetTools.getWidgetFromNetwork(
-                    if (GlobalConfig.isSellerApp()) PlayWidgetUseCase.WidgetType.SellerApp(shopId) else PlayWidgetUseCase.WidgetType.ShopPage(shopId),
+                    if (shopId == userSessionShopId) PlayWidgetUseCase.WidgetType.SellerApp(shopId) else PlayWidgetUseCase.WidgetType.ShopPage(shopId),
                     dispatcherProvider.io
             )
             val widgetUiModel = playWidgetTools.mapWidgetToModel(widgetResponse = response, prevModel = _playWidgetObservable.value?.widgetUiModel)
@@ -572,6 +572,15 @@ class ShopHomeViewModel @Inject constructor(
 
         updateWidget {
             it.copy(widgetUiModel = playWidgetTools.updateTotalView(it.widgetUiModel, channelId, totalView))
+        }
+    }
+
+    fun updatePlayWidgetReminder(channelId: String?, isReminder: Boolean) {
+        if (channelId == null) return
+
+        updateWidget {
+            val reminderType = if(isReminder) PlayWidgetReminderType.Reminded else PlayWidgetReminderType.NotReminded
+            it.copy(widgetUiModel = playWidgetTools.updateActionReminder(it.widgetUiModel, channelId, reminderType))
         }
     }
 

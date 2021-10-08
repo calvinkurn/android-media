@@ -14,7 +14,7 @@ import com.tokopedia.topads.dashboard.view.adapter.non_group_item.viewmodel.NonG
 class NonGroupItemsAdapterTypeFactoryImpl(var selectMode: ((select: Boolean) -> Unit),
                                           var actionDelete: ((pos: Int) -> Unit),
                                           var actionStatusChange: ((pos: Int, status: Int) -> Unit),
-                                          var onEditGroup: ((groupId: Int, priceBid: Int) -> Unit)) : NonGroupItemsAdapterTypeFactory {
+                                          var onEditGroup: ((groupId: String, priceBid: Int) -> Unit)) : NonGroupItemsAdapterTypeFactory {
 
     override fun type(model: NonGroupItemsEmptyModel): Int = NonGroupItemsEmptyViewHolder.LAYOUT
 
