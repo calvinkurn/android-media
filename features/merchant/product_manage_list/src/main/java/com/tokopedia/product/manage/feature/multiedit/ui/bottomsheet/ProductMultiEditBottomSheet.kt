@@ -6,20 +6,17 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.databinding.BottomSheetProductManageBinding
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductMultiEditAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.MultiEditViewHolder.MenuClickListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottom_sheet_product_manage.view.*
 
 class ProductMultiEditBottomSheet(
-    container: View?,
     private val listener: MultiEditListener,
     private val fm: FragmentManager?
 ): BottomSheetUnify() {
 
     companion object {
-        @LayoutRes
-        private val LAYOUT = R.layout.bottom_sheet_product_manage
         private val TAG: String = ProductMultiEditBottomSheet::class.java.simpleName
     }
 
@@ -30,16 +27,18 @@ class ProductMultiEditBottomSheet(
     )
 
     init {
-        val itemView = LayoutInflater.from(container?.context)
-            .inflate(LAYOUT, (container as ViewGroup), false)
-
+        val binding = BottomSheetProductManageBinding.inflate(
+            LayoutInflater.from(context),
+            null,
+            false
+        )
         val adapter = ProductMultiEditAdapter(menuClickListener())
-        itemView.menuList.adapter = adapter
+        binding.menuList.adapter = adapter
         adapter.menuList = menuList
 
         showHeader = false
         showCloseIcon = false
-        setChild(itemView)
+        setChild(binding.root)
     }
 
     private fun menuClickListener(): MenuClickListener {

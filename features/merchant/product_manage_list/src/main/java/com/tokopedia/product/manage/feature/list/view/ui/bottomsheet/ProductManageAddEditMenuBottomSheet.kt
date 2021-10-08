@@ -4,15 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.databinding.BottomSheetProductManageAddEditMenuBinding
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottom_sheet_product_manage_add_edit_menu.view.*
 
 class ProductManageAddEditMenuBottomSheet(
         container: View? = null,
@@ -22,8 +20,6 @@ class ProductManageAddEditMenuBottomSheet(
 ) : BottomSheetUnify() {
 
     companion object {
-        @LayoutRes
-        private val LAYOUT = R.layout.bottom_sheet_product_manage_add_edit_menu
         private val TAG: String = ProductManageAddEditMenuBottomSheet::class.java.simpleName
     }
 
@@ -31,12 +27,13 @@ class ProductManageAddEditMenuBottomSheet(
 
     init {
         if (container != null && fm != null) {
-            val itemView = LayoutInflater.from(container.context)
-                    .inflate(LAYOUT, (container as ViewGroup), false)
+            val binding = BottomSheetProductManageAddEditMenuBinding.inflate(
+                LayoutInflater.from(context),
+                container as ViewGroup,
+                false
+            )
 
-            setChild(itemView)
-
-            sellerFeatureCarousel = itemView.sellerFeatureCarousel
+            sellerFeatureCarousel = binding.sellerFeatureCarousel
 
             sellerFeatureCarousel?.run {
                 if (!GlobalConfig.isSellerApp()) {
@@ -46,8 +43,11 @@ class ProductManageAddEditMenuBottomSheet(
                 }
             }
 
-            itemView.containerAddProductWithNoVariant.setOnClickListener { listener.onAddProductWithNoVariantClicked() }
+            binding.containerAddProductWithNoVariant.setOnClickListener {
+                listener.onAddProductWithNoVariantClicked()
+            }
 
+            setChild(binding.root)
             clearContentPadding = true
         }
     }
