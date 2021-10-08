@@ -98,12 +98,9 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     @Inject
     internal lateinit var settingsPresenter: SettingsPresenter
 
-    private var isForceDarkModeToggleVisible = false
-
     private lateinit var loadingView: View
     private lateinit var baseSettingView: View
     private lateinit var updateButton: UnifyButton
-    private lateinit var localCacheHandler: LocalCacheHandler
     private lateinit var remoteConfigInstance: RemoteConfigInstance
 
     private lateinit var accountAnalytics: AccountAnalytics
@@ -124,8 +121,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         super.onCreate(savedInstanceState)
         accountAnalytics = AccountAnalytics(activity)
         permissionCheckerHelper = PermissionCheckerHelper()
-        localCacheHandler = LocalCacheHandler(context, KEY_GENERAL_SETTING_PREFERENCES)
-        isForceDarkModeToggleVisible = localCacheHandler.getBoolean(KEY_PREF_DARK_MODE_TOGGLE, false)
         context?.let {
             notifPreference = NotifPreference(it)
         }
@@ -239,7 +234,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         val isRollenceEnabledDarkMode = getAbTestPlatform().getBoolean(
             RollenceKey.USER_DARK_MODE_TOGGLE, false)
 
-        if(isForceDarkModeToggleVisible) {
+        if(isShowDarkMode || isRollenceEnabledDarkMode) {
             settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_DARK_MODE,
                     getString(R.string.title_dark_mode), getString(R.string.subtitle_dark_mode), false,
                     GeneralSettingMenuLabel.LABEL_BETA))
