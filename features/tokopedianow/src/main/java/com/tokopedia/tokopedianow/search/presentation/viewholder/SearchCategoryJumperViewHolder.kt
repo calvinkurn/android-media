@@ -9,10 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategoryJumperBinding
 import com.tokopedia.tokopedianow.search.presentation.listener.CategoryJumperListener
 import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataView
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 class SearchCategoryJumperViewHolder(
         itemView: View,
@@ -25,16 +27,18 @@ class SearchCategoryJumperViewHolder(
         val LAYOUT = R.layout.item_tokopedianow_search_category_jumper
     }
 
+    private var binding: ItemTokopedianowSearchCategoryJumperBinding? by viewBinding()
+
     private val titleTypography: Typography? by lazy {
-        itemView.findViewById(R.id.tokoNowSearchCategoryJumperTitle)
+        binding?.tokoNowSearchCategoryJumperTitle
     }
 
     private val seeAllCategoryTypography: Typography? by lazy {
-        itemView.findViewById(R.id.tokoNowSearchCategoryJumperSeeAll)
+        binding?.tokoNowSearchCategoryJumperSeeAll
     }
 
     private val recyclerView: RecyclerView? by lazy {
-        itemView.findViewById(R.id.tokoNowSearchCategoryJumperRecyclerView)
+        binding?.tokoNowSearchCategoryJumperRecyclerView
     }
 
     private val layoutManager = ChipsLayoutManager
