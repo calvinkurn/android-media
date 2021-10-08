@@ -2373,7 +2373,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 MENU_ID_REPLY -> replyCompose?.composeReplyData(msg, true)
                 MENU_ID_COPY_TO_CLIPBOARD -> copyToClipboard(text)
             }
-
         }
         bs.show(childFragmentManager, BS_CHAT_BUBBLE_MENU)
     }
@@ -2396,8 +2395,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             smoothScroller?.targetPosition = bubblePosition
             rvLayoutManager?.startSmoothScroll(smoothScroller)
         } else {
-            setupBeforeReplyTime(replyTimeMillis)
             resetItemList()
+            setupBeforeReplyTime(replyTimeMillis)
             loadInitialData()
         }
     }
