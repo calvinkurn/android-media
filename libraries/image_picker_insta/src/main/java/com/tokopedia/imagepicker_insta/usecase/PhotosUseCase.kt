@@ -157,6 +157,7 @@ class PhotosUseCase @Inject constructor() {
                         sortAdapterDataList(finalList)
                     } else {
                         finalList.addAll(0, internalAdapterList)
+                        sortAdapterDataList(finalList)
                     }
                     internalAssetsIndex = -1
                     emit(MediaUseCaseData(MediaImporterData(finalList)))
