@@ -40,8 +40,6 @@ import com.tokopedia.otp.verification.view.adapter.VerificationMethodAdapter
 import com.tokopedia.otp.verification.view.viewbinding.VerificationMethodViewBinding
 import com.tokopedia.otp.verification.viewmodel.VerificationViewModel
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -76,10 +74,6 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
 
     protected val viewmodel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(VerificationViewModel::class.java)
-    }
-
-    private val abTestPlatform by lazy {
-        RemoteConfigInstance.getInstance().abTestPlatform
     }
 
     override var viewBound = VerificationMethodViewBinding()
@@ -254,26 +248,19 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
 
     private fun inactivePhoneFooter() {
         context?.let {
-            val message = getString(R.string.change_inactive_phone_number)
-            val clickableMessage = getString(R.string.change_phone_number)
-            val spannable = SpannableString(message)
-            spannable.setSpan(
-                object : ClickableSpan() {
-                    override fun onClick(view: View) {
-                        onGoToInactivePhoneNumber()
-                    }
-
-                    override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(it, R.color.Unify_G500)
-                    }
-                },
-                message.indexOf(clickableMessage),
-                message.indexOf(clickableMessage) + clickableMessage.length,
-                0)
-            viewBound.phoneInactive?.visible()
-            viewBound.phoneInactive?.setTextColor(ContextCompat.getColor(it, R.color.Unify_N700_68))
-            viewBound.phoneInactive?.movementMethod = LinkMovementMethod.getInstance()
+            val message = getString(R.string.change_inactive_phone_number).orEmpty()
+            val clickableMessage = getString(R.string.otp_change_phone_number).orEmpty()
+            val spannable = SpannableString(message).apply {
+                setSpan(clickableSpan { onGoToInactivePhoneNumber() },
+                    message.indexOf(clickableMessage),
+                    message.indexOf(clickableMessage) + clickableMessage.length,
+                    0
+                )
+            }
+            viewBound.phoneInactive?.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             viewBound.phoneInactive?.setText(spannable, TextView.BufferType.SPANNABLE)
+            viewBound.phoneInactive?.movementMethod = LinkMovementMethod.getInstance()
+            viewBound.phoneInactive?.visible()
         }
     }
 
@@ -299,29 +286,27 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
 
     private fun onProfileSettingType() {
         context?.let {
-            val message = getString(R.string.my_phone_inactive_change_at_setting)
-            val spannable = SpannableString(message)
-            spannable.setSpan(
-                object : ClickableSpan() {
-                    override fun onClick(view: View) {
-                        activity?.let {
-                            val intent = RouteManager.getIntent(it, ApplinkConst.SETTING_PROFILE)
-                            startActivity(intent)
-                            it.finish()
-                        }
-                    }
-
-                    override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
-                    }
-                },
-                message.indexOf(getString(R.string.setting)),
-                message.indexOf(getString(R.string.setting)) + getString(R.string.setting).length,
-                0)
-            viewBound.phoneInactive?.visible()
-            viewBound.phoneInactive?.setTextColor(ContextCompat.getColor(it, R.color.Unify_N700_68))
+            val message = getString(R.string.my_phone_inactive_change_at_setting).orEmpty()
+            val clickableMessage = getString(R.string.setting).orEmpty()
+            val spannable = SpannableString(message).apply {
+                setSpan(clickableSpan { gotoSettingProfile() },
+                    message.indexOf(clickableMessage),
+                    message.indexOf(clickableMessage) + clickableMessage.length,
+                    0
+                )
+            }
+            viewBound.phoneInactive?.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             viewBound.phoneInactive?.movementMethod = LinkMovementMethod.getInstance()
             viewBound.phoneInactive?.setText(spannable, TextView.BufferType.SPANNABLE)
+            viewBound.phoneInactive?.visible()
+        }
+    }
+
+    private fun gotoSettingProfile() {
+        activity?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConst.SETTING_PROFILE)
+            startActivity(intent)
+            it.finish()
         }
     }
 
@@ -331,6 +316,25 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
             viewBound.ticker?.setHtmlDescription(otpModeListData.tickerTrouble)
         } else {
             viewBound.ticker?.hide()
+        }
+    }
+
+    private fun clickableSpan(callback: () -> Unit): ClickableSpan {
+        return object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                callback.invoke()
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                context?.let {
+                    ds.isUnderlineText = false
+                    ds.color = MethodChecker.getColor(
+                        it,
+                        com.tokopedia.unifyprinciples.R.color.Unify_G400
+                    )
+                }
+            }
         }
     }
 
