@@ -22,8 +22,8 @@
         </activity>
         <activity
             android:name=".presentation.activity.BuyerOrderExtensionActivity"
-            android:label=""
-            android:theme=""
+            android:label="@string/buyer_order_extension_label"
+            android:theme="@style/BuyerOrderExtensionTheme.Transparent"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -32,8 +32,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_sellerapp"
-                    android:path=""
+                    android:host="@string/host_marketplace"
+                    android:path="@string/path_buyer_order_detail_extension"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
