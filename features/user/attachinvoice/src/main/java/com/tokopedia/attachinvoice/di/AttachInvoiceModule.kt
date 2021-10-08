@@ -16,16 +16,16 @@ class AttachInvoiceModule {
 
     @AttachInvoiceScope
     @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @AttachInvoiceScope
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
-    @AttachInvoiceScope
-    @Provides
-    fun provideUseCase(repository: GraphqlRepository): CoroutineUseCase<Map<String, Any>, GetInvoiceResponse> {
-        return AttachInvoiceUseCase(repository, Dispatchers.IO)
-    }
+//    @AttachInvoiceScope
+//    @Provides
+//    fun provideUseCase(repository: GraphqlRepository): CoroutineUseCase<Map<String, Any>, GetInvoiceResponse> {
+//        return AttachInvoiceUseCase(repository, Dispatchers.IO)
+//    }
 
 }

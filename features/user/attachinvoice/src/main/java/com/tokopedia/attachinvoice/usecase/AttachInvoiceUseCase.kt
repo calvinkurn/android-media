@@ -1,10 +1,14 @@
 package com.tokopedia.attachinvoice.usecase
 
+import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.attachinvoice.data.GetInvoiceResponse
+import com.tokopedia.attachinvoice.data.ParamInvoice
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.graphql.util.toMap
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import javax.inject.Inject
@@ -12,7 +16,7 @@ import javax.inject.Inject
 class AttachInvoiceUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatcher
-): CoroutineUseCase<Map<String, Any>, GetInvoiceResponse>(dispatcher) {
+): CoroutineUseCase<ParamInvoice, GetInvoiceResponse>(dispatcher) {
 
     private val paramMsgId = "msgId"
     private val paramPage = "page"
@@ -44,7 +48,13 @@ class AttachInvoiceUseCase @Inject constructor(
         return query
     }
 
-    override suspend fun execute(params: Map<String, Any>): GetInvoiceResponse {
+    override suspend fun execute(params: ParamInvoice): GetInvoiceResponse {
         return repository.request(graphqlQuery(), params)
+    }
+
+    private fun getParams(param: ParamInvoice): Map<String, Any> {
+        val msgId = "msgId"
+        val page = "page"
+        return mapOf(msgId to param.msgId, page to param.page)
     }
 }

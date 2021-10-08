@@ -1,5 +1,6 @@
 package com.tokopedia.graphql.coroutines.data.extensions
 
+import com.google.gson.JsonSyntaxException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.MockUtil
 import com.tokopedia.graphql.domain.example.FooModel
@@ -11,6 +12,7 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import java.util.*
 
 @ExperimentalCoroutinesApi
 class ExtKtTest {
@@ -54,7 +56,16 @@ class ExtKtTest {
         }
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
+    fun `given data class param should returns as expected`() {
+        runBlockingTest {
+            val param = FooModel(1, "")
+            val actual = repository.request<FooModel, FooModel>("", param)
+            assertEquals(case, actual)
+        }
+    }
+
+    @Test(expected = JsonSyntaxException::class)
     fun `given map of arbitrary type should throw exception`() {
         runBlockingTest {
             repository.request<String, FooModel>("", "foo")

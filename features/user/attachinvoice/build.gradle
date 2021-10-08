@@ -88,6 +88,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.testDependencies.junit
+
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
