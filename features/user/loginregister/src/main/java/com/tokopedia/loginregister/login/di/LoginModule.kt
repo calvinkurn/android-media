@@ -4,6 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreferenceManager
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -33,6 +35,9 @@ open class LoginModule {
     fun provideSocmedBottomSheet(@ApplicationContext context: Context): SocmedBottomSheet {
         return SocmedBottomSheet(context)
     }
+
+    @Provides
+    fun provideFingerprintPreferenceManager(@ApplicationContext context: Context): FingerprintPreference = FingerprintPreferenceManager(context)
 
     companion object {
         const val LOGIN_CACHE = "LOGIN_CACHE"

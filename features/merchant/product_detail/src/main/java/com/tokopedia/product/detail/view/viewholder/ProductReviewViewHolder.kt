@@ -166,7 +166,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
             if(formattingResult.second) {
                 setOnClickListener {
                     maxLines = Integer.MAX_VALUE
-                    text = reviewData.message
+                    text = HtmlLinkHelper(context, reviewData.message).spannedString
                 }
             }
             show()

@@ -42,6 +42,7 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     public static final String WARM_TRACE = "gl_warm_start";
     public static final String SPLASH_TRACE = "gl_splash_screen";
+    public static final int REGISTER_PUSH_NOTIF_SERVICE_JOB_ID = 3050;
 
     private PerformanceMonitoring warmTrace;
     private PerformanceMonitoring splashTrace;
@@ -102,7 +103,7 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     private void registerPushNotif() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            RegisterPushNotifService.Companion.startService(getApplicationContext());
+            RegisterPushNotifService.Companion.startService(getApplicationContext(), REGISTER_PUSH_NOTIF_SERVICE_JOB_ID);
         }
     }
 

@@ -495,7 +495,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             balanceAndPointUiModel.isActive,
             balanceAndPointUiModel.isFailed
         )
-        if (balanceAndPointUiModel.isFailed && balanceAndPointUiModel.id != AccountConstants.WALLET.SALDO) {
+        if (balanceAndPointUiModel.isFailed) {
             balanceAndPointAdapter?.changeItemToShimmer(
                 UiModelMapper.getBalanceAndPointShimmerUiModel(
                     balanceAndPointUiModel
@@ -605,15 +605,11 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private fun onSuccessGetCentralizedAssetConfig(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
         if (centralizedUserAssetConfig.assetConfig.isNotEmpty()) {
             centralizedUserAssetConfig.assetConfig.forEach {
-                if (it.id == AccountConstants.WALLET.SALDO) {
-                    balanceAndPointAdapter?.addItemWallet(UiModelMapper.getBalanceAndPointUiModel(it))
-                } else {
-                    balanceAndPointAdapter?.addItemWallet(
-                        UiModelMapper.getBalanceAndPointShimmerUiModel(
-                            it
-                        )
+                balanceAndPointAdapter?.addItemWallet(
+                    UiModelMapper.getBalanceAndPointShimmerUiModel(
+                        it
                     )
-                }
+                )
             }
         }
         adapter?.notifyItemChanged(0)
@@ -623,8 +619,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun getBalanceAndPoints(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
         centralizedUserAssetConfig.assetConfig.forEach {
-            if (it.id != AccountConstants.WALLET.GOPAY &&
-                it.id != AccountConstants.WALLET.SALDO
+            if (it.id != AccountConstants.WALLET.GOPAY
             ) {
                 viewModel.getBalanceAndPoint(it.id)
             }
