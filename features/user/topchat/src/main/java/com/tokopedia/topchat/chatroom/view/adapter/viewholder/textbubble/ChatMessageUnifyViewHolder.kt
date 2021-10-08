@@ -21,6 +21,8 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterList
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder.generateLeftBg
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder.generateRightBg
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getOppositeMargin
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout
@@ -55,8 +57,8 @@ class ChatMessageUnifyViewHolder(
         com.tokopedia.unifyprinciples.R.dimen.unify_space_12
     ) ?: 0f
 
-    private val bgLeft = generateLeftBg()
-    private val bgRight = generateRightBg()
+    private val bgLeft = generateLeftBg(fxChat)
+    private val bgRight = generateRightBg(fxChat)
 
     override fun bind(msg: MessageViewModel, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
@@ -107,62 +109,6 @@ class ChatMessageUnifyViewHolder(
         } else {
             fxChat?.setOnClickListener(null)
         }
-    }
-
-    private fun generateRightBg(): Drawable? {
-        val pressedBackground = ViewUtil.generateBackgroundWithShadow(
-            view = fxChat,
-            backgroundColor = R.color.topchat_dms_right_button_pressed,
-            topLeftRadius = R.dimen.dp_topchat_20,
-            topRightRadius = R.dimen.dp_topchat_0,
-            bottomLeftRadius = R.dimen.dp_topchat_20,
-            bottomRightRadius = R.dimen.dp_topchat_20,
-            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            elevation = R.dimen.dp_topchat_2,
-            shadowRadius = R.dimen.dp_topchat_1,
-            shadowGravity = Gravity.CENTER
-        )
-        return ViewUtil.generateBackgroundWithShadow(
-            view = fxChat,
-            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_G200,
-            topLeftRadius = R.dimen.dp_topchat_20,
-            topRightRadius = R.dimen.dp_topchat_0,
-            bottomLeftRadius = R.dimen.dp_topchat_20,
-            bottomRightRadius = R.dimen.dp_topchat_20,
-            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            elevation = R.dimen.dp_topchat_2,
-            shadowRadius = R.dimen.dp_topchat_1,
-            shadowGravity = Gravity.CENTER,
-            pressedDrawable = pressedBackground
-        )
-    }
-
-    private fun generateLeftBg(): Drawable? {
-        val pressedBackground = ViewUtil.generateBackgroundWithShadow(
-            view = fxChat,
-            backgroundColor = R.color.topchat_dms_left_button_pressed,
-            topLeftRadius = R.dimen.dp_topchat_0,
-            topRightRadius = R.dimen.dp_topchat_20,
-            bottomLeftRadius = R.dimen.dp_topchat_20,
-            bottomRightRadius = R.dimen.dp_topchat_20,
-            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            elevation = R.dimen.dp_topchat_2,
-            shadowRadius = R.dimen.dp_topchat_1,
-            shadowGravity = Gravity.CENTER
-        )
-        return ViewUtil.generateBackgroundWithShadow(
-            view = fxChat,
-            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
-            topLeftRadius = R.dimen.dp_topchat_0,
-            topRightRadius = R.dimen.dp_topchat_20,
-            bottomLeftRadius = R.dimen.dp_topchat_20,
-            bottomRightRadius = R.dimen.dp_topchat_20,
-            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            elevation = R.dimen.dp_topchat_2,
-            shadowRadius = R.dimen.dp_topchat_1,
-            shadowGravity = Gravity.CENTER,
-            pressedDrawable = pressedBackground
-        )
     }
 
     private fun bindMsgGravity(gravity: Int) {
@@ -328,8 +274,6 @@ class ChatMessageUnifyViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_topchat_chat_bubble_unify
-        const val TYPE_LEFT = 0
-        const val TYPE_RIGHT = 1
-        const val TYPE_RIGHT_BANNED = 2
+        const val TYPE_BANNED = 2
     }
 }
