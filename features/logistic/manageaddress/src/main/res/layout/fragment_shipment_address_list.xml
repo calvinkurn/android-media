@@ -55,18 +55,19 @@
                     app:srcCompat="@drawable/ic_empty_search"
                     tools:ignore="ContentDescription" />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="25dp"
                     android:fontFamily="sans-serif-medium"
                     android:lineSpacingExtra="0sp"
                     android:text="@string/label_oops"
+                    app:typographyType="heading_4"
                     android:textColor="@color/Unify_N700_44"
                     android:textSize="16sp"
                     android:textStyle="normal" />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="7dp"
@@ -75,14 +76,14 @@
                     android:text="@string/message_address_not_found"
                     android:textColor="@color/Unify_N700_32"
                     android:textSize="14sp"
+                    app:typographyType="body_2"
                     android:textStyle="normal" />
 
-                <Button
+                <com.tokopedia.unifycomponents.UnifyButton
                     android:id="@+id/bt_change_search"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
-                    android:background="@drawable/bg_button_green_enabled"
                     android:fontFamily="sans-serif-medium"
                     android:lineSpacingExtra="0sp"
                     android:paddingLeft="27dp"

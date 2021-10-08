@@ -95,7 +95,7 @@
                     android:textSize="@dimen/sp_14" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/address_label_watcher"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -106,7 +106,7 @@
                 android:paddingRight="@dimen/dp_4"
                 android:paddingBottom="@dimen/dp_8"
                 android:text="@string/minimal_karakter"
-                android:textSize="@dimen/sp_12" />
+                app:typographyType="body_3"/>
 
             <!-- District Recommendation -->
 
@@ -156,12 +156,12 @@
             android:padding="@dimen/dp_10"
             android:visibility="gone">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_province"
                 android:textColor="@color/Unify_N300"
-                android:textSize="@dimen/sp_14" />
+                app:typographyType="body_2"/>
 
             <Spinner
                 android:id="@+id/provinsi"
@@ -170,14 +170,14 @@
                 android:layout_marginBottom="@dimen/dp_10"
                 android:inputType="text" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/province_error"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/error_province"
                 android:textColor="@color/Unify_R600"
-                android:textSize="@dimen/sp_12"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:typographyType="body_3"/>
 
             <TextView
                 android:id="@+id/regency_title"
@@ -202,14 +202,14 @@
                 android:inputType="text"
                 android:visibility="gone" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/regency_error"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/error_regency"
                 android:textColor="@color/Unify_R600"
-                android:textSize="@dimen/sp_12"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:typographyType="body_3"/>
 
             <TextView
                 android:id="@+id/district_title"
@@ -234,13 +234,13 @@
                 android:inputType="text"
                 android:visibility="gone" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/sub_district_error"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/error_sub_district"
                 android:textColor="@color/Unify_R600"
-                android:textSize="@dimen/sp_12"
+                app:typographyType="body_3"
                 android:visibility="gone" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -294,12 +294,12 @@
             android:orientation="vertical"
             android:padding="@dimen/dp_10">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_delivery_location_pickup"
                 android:textColor="@color/Unify_N300"
-                android:textSize="@dimen/sp_14" />
+                app:typographyType="body_2" />
 
             <RelativeLayout
                 android:id="@+id/layout_value_location"
@@ -337,27 +337,24 @@
 
             </RelativeLayout>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/desc_delivery_location"
                 android:textColor="@color/Unify_N300"
-                android:textSize="@dimen/sp_12" />
+                app:typographyType="body_3"/>
 
         </LinearLayout>
 
-        <TextView
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/save_button"
             android:contentDescription="@string/content_desc_save_button"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_44"
             android:layout_marginTop="@dimen/dp_10"
-            android:background="@drawable/bg_button_green"
             android:gravity="center"
             android:padding="@dimen/dp_8"
-            android:text="@string/title_save"
-            android:textColor="@color/Unify_N0"
-            android:textStyle="bold" />
+            android:text="@string/title_save" />
     </LinearLayout>
 
 </ScrollView>

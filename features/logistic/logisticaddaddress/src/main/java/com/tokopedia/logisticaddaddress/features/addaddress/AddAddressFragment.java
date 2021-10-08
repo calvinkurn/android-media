@@ -48,6 +48,8 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsMultipl
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.ITransactionAnalyticsAddAddress;
 import com.tokopedia.unifycomponents.Toaster;
+import com.tokopedia.unifycomponents.UnifyButton;
+import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -99,8 +101,8 @@ public class AddAddressFragment extends BaseDaggerFragment
     private EditText receiverPhoneEditText;
     private View chooseLocation;
     private EditText locationEditText;
-    private TextView saveButton;
-    private TextView addressLabel;
+    private UnifyButton saveButton;
+    private Typography addressLabel;
     private TextInputLayout districtLayout;
     private EditText districtEditText;
     private TextInputLayout zipCodeLayout;
@@ -108,11 +110,11 @@ public class AddAddressFragment extends BaseDaggerFragment
     private TextInputLayout postCodeLayout;
     private EditText postCodeEditText;
     private Spinner spinnerProvince;
-    private TextView provinceError;
+    private Typography provinceError;
     private Spinner spinnerRegency;
-    private TextView regencyError;
+    private Typography regencyError;
     private Spinner spinnerSubDistrict;
-    private TextView subDistrictError;
+    private Typography subDistrictError;
     private ProgressBar mProgressBar;
 
     private List<String> zipCodes = new ArrayList<>();
