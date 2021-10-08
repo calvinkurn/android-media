@@ -48,6 +48,7 @@ import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutM
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addLoading
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addProduct
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addProductRecom
+import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addRecomWidget
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addServerErrorState
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addSortFilter
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.removeAllProduct
@@ -578,7 +579,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
                 layoutList.clear()
                 layoutList.addChooseAddress()
                 layoutList.addEmptyStateOoc()
-                getProductRecomAsync(PAGE_NAME_RECOMMENDATION_OOC_PARAM).await()
+                layoutList.addRecomWidget(PAGE_NAME_RECOMMENDATION_OOC_PARAM)
             }
             ERROR_STATE_FAILED_TO_FETCH_DATA -> {
                 layoutList.clear()
@@ -589,7 +590,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
                 layoutList.addChooseAddress()
                 layoutList.addEmptyStateNoResult()
                 getCategoryGridAsync().await()
-                getProductRecomAsync(PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM).await()
+                layoutList.addRecomWidget(PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM)
             }
         }
     }
