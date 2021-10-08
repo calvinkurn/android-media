@@ -69,7 +69,7 @@ class HotelDetailViewModelTest {
                 false)
 
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returnsMany listOf(graphqlSuccessResponse, graphqlSuccessResponse1)
 
         coEvery {
@@ -104,7 +104,7 @@ class HotelDetailViewModelTest {
                 false)
 
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returnsMany listOf(graphqlResponse, graphqlResponse1)
 
         coEvery {
@@ -139,7 +139,7 @@ class HotelDetailViewModelTest {
                 false)
 
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returnsMany listOf(graphqlResponse, graphqlResponse1)
 
         coEvery {
@@ -174,7 +174,7 @@ class HotelDetailViewModelTest {
                 false)
 
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returnsMany listOf(graphqlResponse, graphqlResponse1)
 
         coEvery {
@@ -204,7 +204,7 @@ class HotelDetailViewModelTest {
                 false)
 
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returnsMany listOf(graphqlSuccessResponse, graphqlSuccessResponse1)
 
         //when
