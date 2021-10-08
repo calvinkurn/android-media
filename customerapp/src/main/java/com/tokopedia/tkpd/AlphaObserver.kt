@@ -108,5 +108,4 @@ class AlphaObserver : Application.ActivityLifecycleCallbacks {
         dipsMap[dp] = value
         return value
     }
-
 }

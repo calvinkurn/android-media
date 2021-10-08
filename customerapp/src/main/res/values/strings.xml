@@ -209,8 +209,6 @@
     <string name="tokopedia_alpha">Tokopedia Alpha</string>
 
 
-
-
     <!-- Travel slice custom query -->
     <string-array name="HotelSliceCustomQuery">
         <item>(find)? (search)? (a)? hotel(s)? in $city1</item>
