@@ -25,7 +25,7 @@ class MerchantCouponActivity : BaseSimpleActivity() , HasComponent<MvcComponent>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         toolbar.hide()
-        updateTitle(getString(R.string.tp_kupon_toko))
+        updateTitle(getString(R.string.mvc_kupon_toko))
     }
 
     companion object{

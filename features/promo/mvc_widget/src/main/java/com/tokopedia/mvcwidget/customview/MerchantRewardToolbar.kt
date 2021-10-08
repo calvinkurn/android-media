@@ -83,9 +83,9 @@ class MerchantRewardToolbar @JvmOverloads constructor(
     }
 
     override fun setTitle(title: CharSequence) {
-        if (title == resources.getString(R.string.tp_kupon_toko)) return
-        super.setTitle(resources.getString(R.string.tp_kupon_toko))
-        tvToolbarTitle?.text = resources.getString(R.string.tp_kupon_toko)
+        if (title == resources.getString(R.string.mvc_kupon_toko)) return
+        super.setTitle(resources.getString(R.string.mvc_kupon_toko))
+        tvToolbarTitle?.text = resources.getString(R.string.mvc_kupon_toko)
     }
 
 }

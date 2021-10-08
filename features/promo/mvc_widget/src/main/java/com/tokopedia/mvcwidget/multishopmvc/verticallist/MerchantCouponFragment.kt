@@ -86,7 +86,7 @@ class MerchantCouponFragment : BaseDaggerFragment(), MvcPerformanceMonitoringLis
             showLoader()
             mCouponAdapter.loadData(1)
         }
-        merchantRewardToolbar?.setTitle(R.string.tp_kupon_toko)
+        merchantRewardToolbar?.setTitle(R.string.mvc_kupon_toko)
 
         mViewModel.couponData.value = LiveDataResult.loading()
     }
