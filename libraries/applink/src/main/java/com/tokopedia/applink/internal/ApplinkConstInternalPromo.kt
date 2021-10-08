@@ -35,7 +35,7 @@ object ApplinkConstInternalPromo {
     const val PROMO_DETAIL_MARKETPLACE = "${INTERNAL_PROMO}/detail/marketplace"
 
     const val PROMO_LIST = "${INTERNAL_PROMO}/promo-list"
-    const val PROMO_DETAIL = "${INTERNAL_PROMO}/promo-detail?slugId={slugId}"
+    const val PROMO_DETAIL = "${INTERNAL_PROMO}/promo-detail?slug={slug}"
 
     const val PROMO_CHECKOUT_MARKETPLACE = "${INTERNAL_PROMO}/checkout-marketplace"
 

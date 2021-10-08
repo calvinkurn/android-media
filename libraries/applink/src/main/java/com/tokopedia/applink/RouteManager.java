@@ -181,7 +181,7 @@ public class RouteManager {
      * @return
      */
     public static Fragment instantiateFragment(@NonNull AppCompatActivity activity, @NonNull String className, @Nullable Bundle extras) {
-        if(isClassExist(className)) {
+        if (isClassExist(className)) {
             Fragment fragment = activity.getSupportFragmentManager().getFragmentFactory().instantiate(ClassLoader.getSystemClassLoader(), className);
             if (extras != null) {
                 fragment.setArguments(extras);
@@ -202,10 +202,10 @@ public class RouteManager {
     }
 
     private static boolean isClassExist(String className) {
-        try  {
+        try {
             Class.forName(className);
             return true;
-        }  catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             return false;
         }
     }
@@ -274,7 +274,7 @@ public class RouteManager {
         if (intent != null && intent.resolveActivity(context.getPackageManager()) != null) {
             startActivityIntentWithBundle(context, intent, queryParamBundle);
             return true;
-        } else if (uriString.startsWith(SCHEME_SELLERAPP) && !GlobalConfig.isSellerApp()){
+        } else if (uriString.startsWith(SCHEME_SELLERAPP) && !GlobalConfig.isSellerApp()) {
             Uri uri = Uri.parse(mappedDeeplink);
             String uriRedirect = uri.buildUpon().appendQueryParameter(KEY_REDIRECT_TO_SELLER_APP, "true").build().toString();
             intent = buildInternalExplicitIntent(context, uriRedirect);
@@ -408,13 +408,6 @@ public class RouteManager {
             ApplinkLogger.getInstance(context).save();
             return dfIntent;
         }
-        if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(mappedDeeplink)) {
-            ApplinkLogger.getInstance(context).appendTrace("AirBnB deeplink supported, redirect to AirBnB deeplink handler");
-            Intent intent = ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent(context, mappedDeeplink);
-            ApplinkLogger.getInstance(context).appendTrace("Returning AirBnB intent:\n" + (intent != null ? intent.toString() : ""));
-            ApplinkLogger.getInstance(context).save();
-            return intent;
-        }
         if (URLUtil.isNetworkUrl(mappedDeeplink)) {
             ApplinkLogger.getInstance(context).appendTrace("Network url detected");
             Intent intent = buildInternalImplicitIntent(context, mappedDeeplink, DEFAULT_VIEW);
@@ -429,9 +422,25 @@ public class RouteManager {
             return webIntent;
         }
         Intent intent = buildInternalExplicitIntent(context, mappedDeeplink);
+
+        Intent resultIntent = intent;
+        if (checkSellerappIntent(context, intent, deeplink)) {
+            Uri uri = Uri.parse(mappedDeeplink);
+            String uriRedirect = uri.buildUpon().appendQueryParameter(KEY_REDIRECT_TO_SELLER_APP, "true").build().toString();
+            Intent redirectIntent = buildInternalExplicitIntent(context, uriRedirect);
+            if (intent != null && intent.resolveActivity(context.getPackageManager()) != null) {
+                resultIntent = redirectIntent;
+            }
+        }
         ApplinkLogger.getInstance(context).appendTrace("Returning intent:\n" + (intent != null ? intent.toString() : ""));
         ApplinkLogger.getInstance(context).save();
-        return intent;
+        return resultIntent;
+    }
+
+    private static boolean checkSellerappIntent(Context context, Intent intent, String deeplink){
+        return (intent == null || intent.resolveActivity(context.getPackageManager()) == null)
+                &&
+                (!GlobalConfig.isSellerApp() && deeplink.startsWith(SCHEME_SELLERAPP));
     }
 
     /**
@@ -472,7 +481,7 @@ public class RouteManager {
         }
     }
 
-    public static Intent getSplashScreenIntent(Context context){
+    public static Intent getSplashScreenIntent(Context context) {
         PackageManager pm = context.getPackageManager();
         return pm.getLaunchIntentForPackage(context.getPackageName());
     }
