@@ -1,6 +1,6 @@
 package com.tokopedia.broadcaster.tracker
 
-import com.tokopedia.broadcaster.chucker.ui.uimodel.ChuckerLogUIModel
+import com.tokopedia.broadcaster.uimodel.LoggerUIModel
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import kotlinx.coroutines.*
@@ -11,13 +11,13 @@ import kotlin.coroutines.CoroutineContext
 interface BroadcasterTracker {
     fun priority(): Priority
     fun tag(): String
-    fun track(data: ChuckerLogUIModel)
+    fun track(data: LoggerUIModel)
     fun stopTrack()
 }
 
 class BroadcasterTrackerImpl : BroadcasterTracker, CoroutineScope {
 
-    private val mTrackerData = mutableListOf<ChuckerLogUIModel>()
+    private val mTrackerData = mutableListOf<LoggerUIModel>()
     private var trackerTimer: Timer? = null
 
     override val coroutineContext: CoroutineContext
@@ -27,7 +27,7 @@ class BroadcasterTrackerImpl : BroadcasterTracker, CoroutineScope {
 
     override fun tag() = TAG
 
-    override fun track(data: ChuckerLogUIModel) {
+    override fun track(data: LoggerUIModel) {
         if (data.url.isEmpty()) return
 
         mTrackerData.add(data)
@@ -70,7 +70,7 @@ class BroadcasterTrackerImpl : BroadcasterTracker, CoroutineScope {
         }
     }
 
-    private fun ChuckerLogUIModel.toMap(): Map<String, String> {
+    private fun LoggerUIModel.toMap(): Map<String, String> {
         return mapOf(
             "url" to url,
             "connectionId" to connectionId.toString(),

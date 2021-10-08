@@ -8,7 +8,6 @@ import com.tokopedia.broadcaster.bitrate.BitrateAdapter
 import com.tokopedia.broadcaster.camera.CameraInfo
 import com.tokopedia.broadcaster.camera.CameraManager
 import com.tokopedia.broadcaster.camera.CameraType
-import com.tokopedia.broadcaster.chucker.ui.notification.ChuckerNotification
 import com.tokopedia.broadcaster.data.BitrateMode
 import com.tokopedia.broadcaster.data.BroadcasterConfig
 import com.tokopedia.broadcaster.data.BroadcasterConnection
@@ -20,7 +19,6 @@ import com.tokopedia.broadcaster.utils.BroadcasterUtil
 import com.tokopedia.broadcaster.utils.DeviceInfo
 import com.tokopedia.broadcaster.utils.retry
 import com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.wmspanel.libstream.CameraConfig
 import com.wmspanel.libstream.Streamer
@@ -118,13 +116,6 @@ class LiveBroadcasterManager constructor(
             throw IllegalAccessException("you have to initialize first with call init()")
         }
 
-        // showing debug notification for tracking chucker of live broadcaster
-        if (GlobalConfig.DEBUG) {
-            mContext?.let {
-                ChuckerNotification.build(it, url)
-            }
-        }
-
         broadcastState(BroadcasterState.Connecting)
         mConnection.uri = url
         mConfig.ingestUrl = url
@@ -196,7 +187,12 @@ class LiveBroadcasterManager constructor(
                 broadcastState(BroadcasterState.Connecting)
             }
             Streamer.CONNECTION_STATE.CONNECTED -> {
-                logger.init(streamer, connectionId)
+                logger.init(
+                    mContext,
+                    mConfig.ingestUrl,
+                    streamer,
+                    connectionId
+                )
             }
             Streamer.CONNECTION_STATE.RECORD -> {
                 when {
