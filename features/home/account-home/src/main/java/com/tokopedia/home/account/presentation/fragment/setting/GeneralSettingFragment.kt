@@ -562,9 +562,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     }
 
     companion object {
-        private const val KEY_GENERAL_SETTING_PREFERENCES = "KEY_GENERAL_SETTING_PREFERENCES"
-        private const val KEY_PREF_DARK_MODE_TOGGLE = "KEY_PREF_DARK_MODE_TOGGLE"
-        private const val ENABLE_DARK_MODE_TOGGLE_COUNT = 10
         private val RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view"
 
         @JvmStatic
