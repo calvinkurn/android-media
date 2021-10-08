@@ -34,7 +34,7 @@ class PdpOccJourneyTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @get:Rule
-    var cassavaRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = false)
+    var cassavaRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = true)
 
     private val productDetailInterceptor = ProductDetailInterceptor()
     private var idlingResource: IdlingResource? = null
@@ -54,7 +54,7 @@ class PdpOccJourneyTest {
     }
 
     @Test
-    fun loadCartAndGoToShipment_PassedAnalyticsTest() {
+    fun openPdpAndGoToOcc_PassedAnalyticsTest() {
         activityRule.launchActivity(ProductDetailActivity.createIntent(context, 123))
 
         ProductDetailRobot().apply {

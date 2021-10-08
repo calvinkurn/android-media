@@ -29,7 +29,7 @@ class PdpCartCheckoutJourneyTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @get:Rule
-    var cassavaRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = false)
+    var cassavaRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = true)
 
     private val productDetailInterceptor = ProductDetailInterceptor()
 
@@ -57,7 +57,7 @@ class PdpCartCheckoutJourneyTest {
     }
 
     @Test
-    fun loadCartAndGoToShipment_PassedAnalyticsTest() {
+    fun openPdpAndGoToShipment_PassedAnalyticsTest() {
         activityRule.launchActivity(ProductDetailActivity.createIntent(context, 123))
 
         ProductDetailRobot().apply {
