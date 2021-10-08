@@ -86,9 +86,10 @@ class ProductTickerInfoViewHolder(private val view: View,
 
     private fun renderBlueTicker(generalTickerData: List<TickerDataResponse>) {
         val tickerData = generalTickerData.map {
+            val title = if (it.title != "") it.title else null
             TickerData(description = it.message,
                     type = Ticker.TYPE_ANNOUNCEMENT,
-                    title = null, isFromHtml = true)
+                    title = title, isFromHtml = true)
         }
         val tickerViewPager = TickerPagerAdapter(view.context, tickerData)
 
