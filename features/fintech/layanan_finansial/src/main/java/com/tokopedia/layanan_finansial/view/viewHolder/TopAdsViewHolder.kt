@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.layanan_finansial.R
 import com.tokopedia.layanan_finansial.view.adapter.TopAdsAdapter
 import com.tokopedia.layanan_finansial.view.models.TopAdsImageModel
@@ -53,7 +54,13 @@ class TopAdsViewHolder(val view: View): AbstractViewHolder<Visitable<*>>(view) {
     private fun generateAdsCarousal(imageList: ArrayList<TopAdsImageModel>) {
         displayRecycler.layoutManager =
             LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
-        val topAdsAdapter = TopAdsAdapter(imageList)
+        val topAdsAdapter = TopAdsAdapter(imageList, ::onClick)
         displayRecycler.adapter = topAdsAdapter
+    }
+
+    private fun onClick(appLink: String) {
+        view.context?.let {
+            RouteManager.route(it, appLink)
+        }
     }
 }

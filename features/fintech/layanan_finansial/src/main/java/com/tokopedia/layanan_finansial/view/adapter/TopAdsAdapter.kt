@@ -7,26 +7,53 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.layanan_finansial.R
 import com.tokopedia.layanan_finansial.view.models.TopAdsImageModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.widget.TopAdsImageView
+import com.tokopedia.unifycomponents.toPx
 
-class TopAdsAdapter(private val topAdsModelList: List<TopAdsImageModel>):  RecyclerView.Adapter<TopAdsAdapter.TopAdsViewHolder>()  {
-    class TopAdsViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        val imageModel = itemView.findViewById<TopAdsImageView>(R.id.topAdsBanner)
-    }
+class TopAdsAdapter(
+    private val topAdsModelList: List<TopAdsImageModel>,
+    private val onclick: (appLink: String) -> Unit
+) : RecyclerView.Adapter<TopAdsViewHolder>() {
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopAdsViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.layout_topads_sdk, parent, false)
-        return TopAdsViewHolder(view)
+        val layoutParams = view.layoutParams
+        layoutParams.width = parent.width - 16.toPx()
+        return TopAdsViewHolder(view, onclick)
     }
 
     override fun onBindViewHolder(holder: TopAdsViewHolder, position: Int) {
-       holder.imageModel.loadImage(topAdsModelList[position] as TopAdsImageViewModel)
+        holder.bind(topAdsModelList[position] as TopAdsImageViewModel)
+
     }
 
     override fun getItemCount(): Int {
-       return topAdsModelList.size
+        return topAdsModelList.size
     }
+
+
+}
+
+
+class TopAdsViewHolder(itemView: View, val onclick: (appLink: String) -> Unit) :
+    RecyclerView.ViewHolder(itemView) {
+    fun bind(topAdsImageViewModel: TopAdsImageViewModel) {
+        imageModel.setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
+            override fun onTopAdsImageViewClicked(applink: String?) {
+                applink?.let {
+                    onclick(it)
+                }
+
+            }
+
+        })
+        imageModel.loadImage(topAdsImageViewModel)
+    }
+
+    private val imageModel = itemView.findViewById<TopAdsImageView>(R.id.topAdsBanner)
 
 
 }
