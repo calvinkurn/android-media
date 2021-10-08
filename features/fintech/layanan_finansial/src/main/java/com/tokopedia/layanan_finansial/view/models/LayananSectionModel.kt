@@ -2,7 +2,6 @@ package com.tokopedia.layanan_finansial.view.models
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.layanan_finansial.view.adapter.LayananViewHolderFactory
 import com.tokopedia.layanan_finansial.view.utils.ViewType
 
 data class LayananSectionModel (

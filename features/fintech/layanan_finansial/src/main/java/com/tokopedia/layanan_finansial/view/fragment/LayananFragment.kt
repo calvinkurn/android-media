@@ -1,33 +1,24 @@
 package com.tokopedia.layanan_finansial.view.fragment
 
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.abstraction.common.di.component.DaggerBaseAppComponent
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
-import com.tokopedia.layanan_finansial.R
 import com.tokopedia.layanan_finansial.di.LayananComponent
-import com.tokopedia.layanan_finansial.view.adapter.LayananViewHolderFactory
-import com.tokopedia.layanan_finansial.view.customview.LayananSectionView
+import com.tokopedia.layanan_finansial.view.viewHolder.LayananViewHolderFactory
 import com.tokopedia.layanan_finansial.view.models.LayananFinansialModel
-import com.tokopedia.layanan_finansial.view.models.LayananSectionModel
 import com.tokopedia.layanan_finansial.view.models.TopAdsImageModel
 import com.tokopedia.layanan_finansial.view.viewModel.LayananFinansialViewModel
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class LayananFragment : BaseListFragment<Visitable<*>,LayananViewHolderFactory>() {
+class LayananFragment : BaseListFragment<Visitable<*>, LayananViewHolderFactory>() {
 
 
     @Inject

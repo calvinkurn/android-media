@@ -1,4 +1,4 @@
-package com.tokopedia.layanan_finansial.view.adapter
+package com.tokopedia.layanan_finansial.view.viewHolder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
