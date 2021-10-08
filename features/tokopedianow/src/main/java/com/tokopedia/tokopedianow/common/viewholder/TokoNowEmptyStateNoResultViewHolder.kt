@@ -14,9 +14,9 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategoryEmptyProductBinding
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowEmptyStateNoResultViewHolder(
         itemView: View,
@@ -28,21 +28,7 @@ class TokoNowEmptyStateNoResultViewHolder(
         val LAYOUT = R.layout.item_tokopedianow_search_category_empty_product
     }
 
-    private val titleTextView: Typography? = itemView.findViewById(
-            R.id.tokonowEmptyProductTitle
-    )
-    private val descriptionTextView: Typography? = itemView.findViewById(
-            R.id.tokonowEmptyProductDescription
-    )
-    private val filterList: RecyclerView? = itemView.findViewById(
-            R.id.tokonowEmptyProductFilterList
-    )
-    private val globalSearchButton: UnifyButton? = itemView.findViewById(
-            R.id.tokonowEmptyProductGlobalSearchButton
-    )
-    private val exploreTokopediaNowButton: UnifyButton? = itemView.findViewById(
-            R.id.tokonowEmptyProductExploreTokopediaNow
-    )
+    private var binding: ItemTokopedianowSearchCategoryEmptyProductBinding? by viewBinding()
 
     private val layoutManager = ChipsLayoutManager
             .newBuilder(itemView.context)
@@ -73,7 +59,7 @@ class TokoNowEmptyStateNoResultViewHolder(
             else -> getString(R.string.tokopedianow_empty_product_title)
         }
 
-        titleTextView?.text = title
+        binding?.tokonowEmptyProductTitle?.text = title
     }
 
     private fun bindDescription(hasActiveFilter: Boolean, element: TokoNowEmptyStateNoResultUiModel) {
@@ -87,11 +73,11 @@ class TokoNowEmptyStateNoResultViewHolder(
             else -> getString(R.string.tokopedianow_empty_product_description)
         }
 
-        descriptionTextView?.text = description
+        binding?.tokonowEmptyProductDescription?.text = description
     }
 
     private fun bindFilterList(hasActiveFilter: Boolean, element: TokoNowEmptyStateNoResultUiModel) {
-        val filterList = filterList ?: return
+        val filterList = binding?.tokonowEmptyProductFilterList ?: return
 
         filterList.shouldShowWithAction(hasActiveFilter) {
             val optionList = combinePriceFilterIfExists(
@@ -114,21 +100,21 @@ class TokoNowEmptyStateNoResultViewHolder(
         element: TokoNowEmptyStateNoResultUiModel
     ) {
         bindGlobalSearchBtnText(element)
-        globalSearchButton?.showWithCondition(!hasActiveFilter)
-        globalSearchButton?.setOnClickListener {
+        binding?.tokonowEmptyProductGlobalSearchButton?.showWithCondition(!hasActiveFilter)
+        binding?.tokonowEmptyProductGlobalSearchButton?.setOnClickListener {
             tokoNowEmptyStateNoResultListener?.onFindInTokopediaClick()
         }
     }
 
     private fun bindGlobalSearchBtnText(element: TokoNowEmptyStateNoResultUiModel) {
         element.globalSearchBtnTextResId?.let {
-            globalSearchButton?.text = getString(it)
+            binding?.tokonowEmptyProductGlobalSearchButton?.text = getString(it)
         }
     }
 
     private fun bindChangeKeywordButton(hasActiveFilter: Boolean) {
-        exploreTokopediaNowButton?.showWithCondition(!hasActiveFilter)
-        exploreTokopediaNowButton?.setOnClickListener {
+        binding?.tokonowEmptyProductExploreTokopediaNow?.showWithCondition(!hasActiveFilter)
+        binding?.tokonowEmptyProductExploreTokopediaNow?.setOnClickListener {
             tokoNowEmptyStateNoResultListener?.goToTokopediaNowHome()
         }
     }

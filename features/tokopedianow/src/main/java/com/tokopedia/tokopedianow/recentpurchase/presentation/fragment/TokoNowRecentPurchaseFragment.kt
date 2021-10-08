@@ -303,7 +303,7 @@ class TokoNowRecentPurchaseFragment:
     }
 
     override fun onSeeMoreClick(data: RecommendationCarouselData, applink: String) {
-        // TO-DO: Implement see more click tracking
+        RouteManager.route(context, applink)
     }
 
     override fun onClickSortFilter() {

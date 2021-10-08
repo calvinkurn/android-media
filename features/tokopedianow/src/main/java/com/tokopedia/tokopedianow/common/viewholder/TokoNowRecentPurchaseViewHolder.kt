@@ -20,7 +20,10 @@ import com.tokopedia.tokopedianow.common.adapter.TokoNowProductCardAdapter.*
 import com.tokopedia.tokopedianow.common.model.TokoNowRecentPurchaseUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.*
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductListCarouselBinding
+import com.tokopedia.tokopedianow.databinding.PartialTokopedianowViewStubDcTitleBinding
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowRecentPurchaseViewHolder(
     itemView: View,
@@ -33,6 +36,13 @@ class TokoNowRecentPurchaseViewHolder(
         val LAYOUT = R.layout.item_tokopedianow_product_list_carousel
     }
 
+    private val adapter by lazy {
+        TokoNowProductCardAdapter(TokoNowProductCardAdapterTypeFactory(productCardListener))
+    }
+
+    private var binding: ItemTokopedianowProductListCarouselBinding? by viewBinding()
+    private var stubBinding: PartialTokopedianowViewStubDcTitleBinding? by viewBinding()
+
     private var vsTitle: ViewStub? = null
     private var tvTitle: Typography? = null
     private var tvSeeAll: Typography? = null
@@ -40,16 +50,16 @@ class TokoNowRecentPurchaseViewHolder(
     private var rvProduct: RecyclerView? = null
     private var linearLayoutManager: LinearLayoutManager? = null
 
-    private val adapter by lazy {
-        TokoNowProductCardAdapter(TokoNowProductCardAdapterTypeFactory(productCardListener))
-    }
-
     init {
-        vsTitle = itemView.findViewById(R.id.vsTitle)
-        tvTitle = vsTitle?.inflate()?.findViewById(R.id.channel_title)
-        tvSeeAll = itemView.findViewById(R.id.tv_see_all)
-        layoutShimmering = itemView.findViewById(R.id.layoutShimmering)
-        rvProduct = itemView.findViewById(R.id.rvProduct)
+        vsTitle = binding?.vsTitle
+        vsTitle?.setOnInflateListener { _, inflated ->
+            stubBinding = PartialTokopedianowViewStubDcTitleBinding.bind(inflated)
+        }
+        vsTitle?.inflate()
+        tvTitle = stubBinding?.channelTitle
+        tvSeeAll = binding?.tvSeeAll
+        layoutShimmering = binding?.carouselShimmering?.carouselShimmeringLayout
+        rvProduct = binding?.rvProduct
     }
 
     override fun bind(data: TokoNowRecentPurchaseUiModel) {
