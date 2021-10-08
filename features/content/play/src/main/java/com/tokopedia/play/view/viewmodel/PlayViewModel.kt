@@ -6,7 +6,6 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
-import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastStateListener
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
@@ -545,6 +544,7 @@ class PlayViewModel @Inject constructor(
         videoStateProcessor.removeStateListener(videoPerformanceListener)
         channelStateProcessor.removeStateListener(channelStateListener)
         removeCastSessionListener()
+        removeCastStateListener()
     }
     //endregion
 
@@ -776,7 +776,7 @@ class PlayViewModel @Inject constructor(
         handleLeaderboardInfo(channelData.leaderboardInfo)
     }
 
-    fun focusPage(channelData: PlayChannelData, castContext: CastContext) {
+    fun focusPage(channelData: PlayChannelData) {
         isActive.compareAndSet(false, true)
 
         _observableUpcomingInfo.value = channelData.upcomingInfo
@@ -792,16 +792,16 @@ class PlayViewModel @Inject constructor(
             prepareSelfLikeBubbleIcon()
             checkLikeReminderTimer()
 
-            addCastStateListener(castContext)
+            addCastStateListener()
 
-            setCastState(castPlayerHelper.mapCastState(castContext.castState))
+            setCastState(castPlayerHelper.mapCastState(castPlayerHelper.castContext.castState))
         }
 
         updateChannelInfo(channelData)
         trackVisitChannel(channelData.id)
     }
 
-    fun defocusPage(shouldPauseVideo: Boolean, castContext: CastContext) {
+    fun defocusPage(shouldPauseVideo: Boolean) {
         isActive.compareAndSet(true, false)
 
         defocusVideoPlayer(shouldPauseVideo)
@@ -813,7 +813,7 @@ class PlayViewModel @Inject constructor(
         stopSSE()
 
         removeCastSessionListener()
-        removeCastStateListener(castContext)
+        removeCastStateListener()
     }
 
     private fun focusVideoPlayer(channelData: PlayChannelData) {
@@ -1916,12 +1916,12 @@ class PlayViewModel @Inject constructor(
         setCastState(castPlayerHelper.mapCastState(it))
     }
 
-    fun addCastStateListener(castContext: CastContext) {
-        castContext.addCastStateListener(castStateListener)
+    private fun addCastStateListener() {
+        castPlayerHelper.addCastStateListener(castStateListener)
     }
 
-    fun removeCastStateListener(castContext: CastContext) {
-        castContext.removeCastStateListener(castStateListener)
+    private fun removeCastStateListener() {
+        castPlayerHelper.removeCastStateListener(castStateListener)
     }
 
     private fun setCastState(castState: PlayCastState) {

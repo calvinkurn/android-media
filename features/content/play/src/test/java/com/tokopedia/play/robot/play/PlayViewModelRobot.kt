@@ -113,12 +113,12 @@ class PlayViewModelRobot(
         viewModel.createPage(channelData)
     }
 
-    fun focusPage(channelData: PlayChannelData, castContext: CastContext = mockk(relaxed = true)) {
-        viewModel.focusPage(channelData, castContext)
+    fun focusPage(channelData: PlayChannelData) {
+        viewModel.focusPage(channelData)
     }
 
-    fun defocusPage(shouldPauseVideo: Boolean, castContext: CastContext = mockk(relaxed = true)) {
-        viewModel.defocusPage(shouldPauseVideo, castContext)
+    fun defocusPage(shouldPauseVideo: Boolean) {
+        viewModel.defocusPage(shouldPauseVideo)
     }
 
     fun setMockResponseReportSummaries(response: ReportSummaries) {

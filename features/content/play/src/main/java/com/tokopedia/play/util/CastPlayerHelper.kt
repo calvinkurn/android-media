@@ -9,6 +9,7 @@ import com.google.android.gms.cast.MediaMetadata
 import com.google.android.gms.cast.MediaQueueItem
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.CastState
+import com.google.android.gms.cast.framework.CastStateListener
 import com.google.android.gms.common.images.WebImage
 import com.tokopedia.play.di.PlayScope
 import com.tokopedia.play.view.uimodel.PlayCastState
@@ -19,7 +20,7 @@ import javax.inject.Inject
  */
 @PlayScope
 class CastPlayerHelper @Inject constructor(
-        private val castContext: CastContext,
+        val castContext: CastContext,
         val player: CastPlayer
 ) {
 
@@ -82,6 +83,14 @@ class CastPlayerHelper @Inject constructor(
             CastState.NO_DEVICES_AVAILABLE -> PlayCastState.NO_DEVICE_AVAILABLE
             else -> PlayCastState.NO_DEVICE_AVAILABLE
         }
+    }
+
+    fun addCastStateListener(castStateListener: CastStateListener) {
+        castContext.addCastStateListener(castStateListener)
+    }
+
+    fun removeCastStateListener(castStateListener: CastStateListener) {
+        castContext.removeCastStateListener(castStateListener)
     }
 
     companion object {
