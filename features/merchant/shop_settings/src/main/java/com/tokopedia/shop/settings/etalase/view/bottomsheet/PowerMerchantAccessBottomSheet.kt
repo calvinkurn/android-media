@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.shop.settings.databinding.FragmentPowerMerchantAccessBinding
 import com.tokopedia.shop.settings.etalase.data.PowerMerchantAccessModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -25,7 +26,8 @@ class PowerMerchantAccessBottomSheet: BottomSheetUnify() {
         }
     }
 
-    private var binding: FragmentPowerMerchantAccessBinding? = null
+    private var binding by autoClearedNullable<FragmentPowerMerchantAccessBinding>()
+
     private var listener: BottomSheetListener? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
