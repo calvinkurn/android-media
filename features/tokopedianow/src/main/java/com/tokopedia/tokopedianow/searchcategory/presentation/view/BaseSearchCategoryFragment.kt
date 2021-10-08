@@ -47,6 +47,7 @@ import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.recommendation_widget_common.presentation.model.RecomItemTrackingMetadata
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
@@ -907,6 +908,51 @@ abstract class BaseSearchCategoryFragment:
                 listValue = getListValue(false, recommendationItem),
             )
         )
+    }
+
+    override fun onMiniCartUpdatedFromRecomWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        getViewModel().refreshMiniCart()
+    }
+
+    override fun onRecomTokonowAtcSuccess(message: String) {
+        showSuccessATCMessage(message)
+    }
+
+    override fun onRecomTokonowAtcFailed(throwable: Throwable) {
+        context?.let {
+            showErrorATCMessage(ErrorHandler.getErrorMessage(it, throwable))
+        }
+    }
+
+    override fun onRecomTokonowAtcNeedToSendTracker(
+        recommendationItem: RecommendationItem,
+        recomItemTrackingMetadata: RecomItemTrackingMetadata
+    ) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            ProductRecommendationTracking.getAddToCartClickProductTracking(
+                recommendationItem = recommendationItem,
+                position = recommendationItem.position,
+                isLoggedIn = userSession.isLoggedIn,
+                userId = userSession.userId,
+                eventLabel = getEventLabel(false),
+                headerTitle = "",
+                quantity = recommendationItem.quantity,
+                cartId = recommendationItem.cartId,
+                eventAction = getAtcEventAction(false),
+                eventCategory = getEventCategory(false),
+                listValue = getListValue(false, recommendationItem),
+            )
+        )
+    }
+
+    override fun onRecomTokonowDeleteNeedToSendTracker(
+        recommendationItem: RecommendationItem,
+        recomItemTrackingMetadata: RecomItemTrackingMetadata
+    ) {
+    }
+
+    override fun onClickItemNonLoginState() {
+        goToLogin()
     }
 
     abstract fun getListValue(isOOC: Boolean, recommendationItem: RecommendationItem): String

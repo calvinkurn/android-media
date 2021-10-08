@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
@@ -12,16 +11,13 @@ import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.dispatcher.RecomWidgetDispatcher
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.*
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TEXT_ERROR
-import com.tokopedia.recommendation_widget_common.viewutil.asFail
 import com.tokopedia.recommendation_widget_common.viewutil.asSuccess
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
@@ -78,6 +74,9 @@ class RecommendationViewModel @Inject constructor(
 
     private val _refreshMiniCartDataTriggerByPageName = MutableLiveData<String>()
     val refreshMiniCartDataTriggerByPageName: LiveData<String> get() = _refreshMiniCartDataTriggerByPageName
+
+    private val _refreshUIMiniCartData = MutableLiveData<RecomMinicartWrapperData>()
+    val refreshUIMiniCartData: LiveData<RecomMinicartWrapperData> get() = _refreshUIMiniCartData
 
     fun loadRecommendationCarousel(
         pageNumber: Int = 1,
@@ -146,7 +145,7 @@ class RecommendationViewModel @Inject constructor(
         recomWidget.recommendationItemList = recomItemList
     }
 
-    fun getMiniCart(shopId: String) {
+    fun getMiniCart(shopId: String, pageName: String) {
         launchCatchError(dispatcher.getIODispatcher(), block = {
             miniCartListSimplifiedUseCase.get().setParams(listOf(shopId))
             val result = miniCartListSimplifiedUseCase.get().executeOnBackground()
@@ -154,6 +153,7 @@ class RecommendationViewModel @Inject constructor(
                 it
             }
             _miniCartData.postValue(data.toMutableMap())
+            _refreshUIMiniCartData.postValue(RecomMinicartWrapperData(pageName, result))
         }) {
             _minicartError.postValue(it)
         }
@@ -269,16 +269,23 @@ class RecommendationViewModel @Inject constructor(
         isDeleteCart: Boolean = false,
         recomItem: RecommendationItem = RecommendationItem()
     ) {
-        _atcRecomTokonow.postValue(
-            RecomAtcTokonowResponse(
-                message = message,
-                recomItem = recomItem
-            )
-        )
         if (isAtc) {
             _atcRecomTokonowSendTracker.postValue(recomItem.asSuccess())
-        } else if (isDeleteCart)
+            _atcRecomTokonow.postValue(
+                RecomAtcTokonowResponse(
+                    message = message,
+                    recomItem = recomItem
+                )
+            )
+        } else if (isDeleteCart) {
             _deleteCartRecomTokonowSendTracker.postValue(recomItem.asSuccess())
+            _atcRecomTokonow.postValue(
+                RecomAtcTokonowResponse(
+                    message = message,
+                    recomItem = recomItem
+                )
+            )
+        }
         _refreshMiniCartDataTriggerByPageName.postValue(recomItem.pageName)
     }
 

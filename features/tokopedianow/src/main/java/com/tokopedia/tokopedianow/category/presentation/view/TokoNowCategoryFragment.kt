@@ -14,7 +14,9 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.recommendation_widget_common.presentation.model.RecomItemTrackingMetadata
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_ATC_CLP_PRODUCT_TOKONOW
@@ -39,7 +41,6 @@ import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackin
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
-import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CLP
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import javax.inject.Inject
 
@@ -325,34 +326,6 @@ class TokoNowCategoryFragment:
         RouteManager.route(context, modifySeeMoreRecomApplink(applink))
     }
 
-    override fun onMiniCartUpdatedFromRecomWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        getViewModel().refreshMiniCart()
-    }
-
-    override fun onRecomTokonowAtcSuccess(message: String) {
-        showSuccessATCMessage(message)
-    }
-
-    override fun onRecomTokonowAtcFailed(throwable: Throwable) {
-        context?.let {
-            showErrorATCMessage(ErrorHandler.getErrorMessage(it, throwable))
-        }
-    }
-
-    override fun onRecomTokonowAtcNeedToSendTracker(recommendationItem: RecommendationItem) {
-    }
-
-    override fun onRecomTokonowDeleteNeedToSendTracker(recommendationItem: RecommendationItem) {
-    }
-
-    override fun onClickItemNonLoginState() {
-        goToLogin()
-    }
-
-    override fun setViewToLifecycleOwner(observer: LifecycleObserver) {
-        viewLifecycleOwner.lifecycle.addObserver(observer)
-    }
-
     private fun modifySeeMoreRecomApplink(originalApplink: String): String {
         val uri = Uri.parse(originalApplink)
         val queryParamsMap = UrlParamUtils.getParamMap(uri.query ?: "")
@@ -366,11 +339,15 @@ class TokoNowCategoryFragment:
             }
 
             "${uri.scheme}://" +
-                "${uri.host}/" +
-                "${uri.path}?" +
-                UrlParamUtils.generateUrlParamString(queryParamsMap)
+                    "${uri.host}/" +
+                    "${uri.path}?" +
+                    UrlParamUtils.generateUrlParamString(queryParamsMap)
         } else {
             originalApplink
         }
+    }
+
+    override fun setViewToLifecycleOwner(observer: LifecycleObserver) {
+        viewLifecycleOwner.lifecycle.addObserver(observer)
     }
 }

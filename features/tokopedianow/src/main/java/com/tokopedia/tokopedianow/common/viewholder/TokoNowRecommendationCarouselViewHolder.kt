@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.recommendation_widget_common.presentation.model.RecomItemTrackingMetadata
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetBindPageNameListener
@@ -43,16 +44,40 @@ class TokoNowRecommendationCarouselViewHolder(
             recommendationCarouselListener?.onGetCarouselScrollPosition(adapterPosition)
         if (element.isBindWithPageName) {
             recommendationCarouselWidgetBindPageNameListener?.setViewToLifecycleOwner(recomWidget)
-            recomWidget.bindRecomCategoryIds(
-                pageName = element.pageName,
-                categoryIds = element.categoryId,
-                widgetBindPageNameListener = this,
-                adapterPosition = adapterPosition,
-                scrollToPosition = scrollToPosition.orZero(),
-                tempHeaderName = TEXT_OTHER_RECOM,
-                isForceRefresh = element.isFirstLoad,
-                isTokonow = true
-            )
+            if (element.keywords.isNotEmpty()) {
+                recomWidget.bindRecomSearchWithKeyword(
+                    pageName = element.pageName,
+                    keyword = element.keywords,
+                    widgetBindPageNameListener = this,
+                    adapterPosition = adapterPosition,
+                    scrollToPosition = scrollToPosition.orZero(),
+                    tempHeaderName = TEXT_OTHER_RECOM,
+                    isForceRefresh = element.isFirstLoad,
+                    isTokonow = true
+                )
+            } else if (element.categoryId.isNotEmpty()) {
+                //to load category page with categoryId or empty category with only pagename tokonow_no_result
+                recomWidget.bindRecomCategoryIds(
+                    pageName = element.pageName,
+                    categoryIds = element.categoryId,
+                    widgetBindPageNameListener = this,
+                    adapterPosition = adapterPosition,
+                    scrollToPosition = scrollToPosition.orZero(),
+                    tempHeaderName = TEXT_OTHER_RECOM,
+                    isForceRefresh = element.isFirstLoad,
+                    isTokonow = true
+                )
+            } else {
+                recomWidget.bindRecomWithPageName(
+                    pageName = element.pageName,
+                    widgetBindPageNameListener = this,
+                    adapterPosition = adapterPosition,
+                    scrollToPosition = scrollToPosition.orZero(),
+                    tempHeaderName = TEXT_OTHER_RECOM,
+                    isForceRefresh = element.isFirstLoad,
+                    isTokonow = true
+                )
+            }
             element.isFirstLoad = false
         } else {
             recomWidget.bindRecomWithData(
@@ -110,15 +135,21 @@ class TokoNowRecommendationCarouselViewHolder(
         recommendationCarouselWidgetBindPageNameListener?.onRecomTokonowAtcFailed(throwable)
     }
 
-    override fun onRecomTokonowAtcNeedToSendTracker(recommendationItem: RecommendationItem) {
+    override fun onRecomTokonowAtcNeedToSendTracker(
+        recommendationItem: RecommendationItem,
+        recomItemTrackingMetadata: RecomItemTrackingMetadata
+    ) {
         recommendationCarouselWidgetBindPageNameListener?.onRecomTokonowAtcNeedToSendTracker(
-            recommendationItem
+            recommendationItem, recomItemTrackingMetadata
         )
     }
 
-    override fun onRecomTokonowDeleteNeedToSendTracker(recommendationItem: RecommendationItem) {
+    override fun onRecomTokonowDeleteNeedToSendTracker(
+        recommendationItem: RecommendationItem,
+        recomItemTrackingMetadata: RecomItemTrackingMetadata
+    ) {
         recommendationCarouselWidgetBindPageNameListener?.onRecomTokonowDeleteNeedToSendTracker(
-            recommendationItem
+            recommendationItem, recomItemTrackingMetadata
         )
     }
 
@@ -263,9 +294,15 @@ class TokoNowRecommendationCarouselViewHolder(
 
         fun onRecomTokonowAtcFailed(throwable: Throwable)
 
-        fun onRecomTokonowAtcNeedToSendTracker(recommendationItem: RecommendationItem)
+        fun onRecomTokonowAtcNeedToSendTracker(
+            recommendationItem: RecommendationItem,
+            recomItemTrackingMetadata: RecomItemTrackingMetadata
+        )
 
-        fun onRecomTokonowDeleteNeedToSendTracker(recommendationItem: RecommendationItem)
+        fun onRecomTokonowDeleteNeedToSendTracker(
+            recommendationItem: RecommendationItem,
+            recomItemTrackingMetadata: RecomItemTrackingMetadata
+        )
 
         fun onClickItemNonLoginState()
 

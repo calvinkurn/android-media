@@ -27,6 +27,7 @@ import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.di.recomwidget.DaggerRecommendationComponent
 import com.tokopedia.recommendation_widget_common.di.recomwidget.RecommendationWidgetModule
+import com.tokopedia.recommendation_widget_common.presentation.model.RecomItemTrackingMetadata
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.presenter.RecommendationViewModel
@@ -42,7 +43,6 @@ import com.tokopedia.recommendation_widget_common.widget.productcard.carousel.mo
 import com.tokopedia.recommendation_widget_common.widget.productcard.carousel.model.RecomCarouselSeeMoreDataModel
 import com.tokopedia.recommendation_widget_common.widget.productcard.common.RecomCommonProductCardListener
 import com.tokopedia.recommendation_widget_common.widget.tokonowutil.TokonowQuantityUpdater
-import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.layout_widget_recommendation_carousel.view.*
@@ -50,7 +50,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import java.util.HashMap
 import javax.inject.Inject
 
 /**
@@ -84,6 +83,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     private var isForceRefresh = false
     private var isRecomBindWithPageName = false
     private var userSession: UserSessionInterface? = null
+    private lateinit var recomItemTrackingMetadata: RecomItemTrackingMetadata
 
     private var lifecycleOwner: LifecycleOwner? = null
 
@@ -134,11 +134,11 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     }
 
     /*
+    * this function can be used for category recommendation that only provide pageName and categoryids
     * bind recom widget with some important params
     * - pageName
     * - categoryIds
-    *
-    * this function can be used for recommendation that only provide pageName and categoryids
+    * - isTokonow
      */
     fun bindRecomCategoryIds(
         adapterPosition: Int = 0,
@@ -156,11 +156,81 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             this.scrollToPosition = scrollToPosition
             this.pageName = pageName
             this.isForceRefresh = isForceRefresh
+            recomItemTrackingMetadata = RecomItemTrackingMetadata(categoryIds = categoryIds)
             bindTemporaryHeader(tempHeaderName)
             bindWidgetWithPageName(
                 pageName = pageName,
                 isForceRefresh = isForceRefresh,
                 categoryIds = categoryIds,
+                isTokonow = isTokonow
+            )
+        } catch (e: Exception) {
+            this.widgetBindPageNameListener?.onWidgetFail(pageName, e)
+        }
+    }
+
+    /*
+    *this function can be used for search recommendation that only provide pageName and keyword
+    * bind recom widget with some important params
+    * - pageName
+    * - keyword
+    * - isTokonow
+     */
+    fun bindRecomSearchWithKeyword(
+        adapterPosition: Int = 0,
+        widgetBindPageNameListener: RecommendationCarouselWidgetBindPageNameListener?,
+        scrollToPosition: Int = 0,
+        pageName: String,
+        tempHeaderName: String = "",
+        isForceRefresh: Boolean = false,
+        keyword: String,
+        isTokonow: Boolean = false
+    ) {
+        try {
+            this.adapterPosition = adapterPosition
+            this.widgetBindPageNameListener = widgetBindPageNameListener
+            this.scrollToPosition = scrollToPosition
+            this.pageName = pageName
+            this.isForceRefresh = isForceRefresh
+            recomItemTrackingMetadata = RecomItemTrackingMetadata(keyword = keyword)
+            bindTemporaryHeader(tempHeaderName)
+            bindWidgetWithPageName(
+                pageName = pageName,
+                isForceRefresh = isForceRefresh,
+                keyword = keyword,
+                isTokonow = isTokonow
+            )
+        } catch (e: Exception) {
+            this.widgetBindPageNameListener?.onWidgetFail(pageName, e)
+        }
+    }
+
+    /*
+    *this function can be used for search recommendation that only provide pageName
+    * bind recom widget with some important params
+    * - pageName
+    * - isTokonow
+     */
+    fun bindRecomWithPageName(
+        adapterPosition: Int = 0,
+        widgetBindPageNameListener: RecommendationCarouselWidgetBindPageNameListener?,
+        scrollToPosition: Int = 0,
+        pageName: String,
+        tempHeaderName: String = "",
+        isForceRefresh: Boolean = false,
+        isTokonow: Boolean = false
+    ) {
+        try {
+            this.adapterPosition = adapterPosition
+            this.widgetBindPageNameListener = widgetBindPageNameListener
+            this.scrollToPosition = scrollToPosition
+            this.pageName = pageName
+            this.isForceRefresh = isForceRefresh
+            recomItemTrackingMetadata = RecomItemTrackingMetadata()
+            bindTemporaryHeader(tempHeaderName)
+            bindWidgetWithPageName(
+                pageName = pageName,
+                isForceRefresh = isForceRefresh,
                 isTokonow = isTokonow
             )
         } catch (e: Exception) {
@@ -526,6 +596,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         isForceRefresh: Boolean,
         parentProductId: String = "",
         categoryIds: List<String> = listOf(),
+        keyword: String = "",
         isTokonow: Boolean = false
     ) {
         isRecomBindWithPageName = true
@@ -537,6 +608,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 pageName = pageName,
                 productIds = listOf(parentProductId),
                 categoryIds = categoryIds,
+                keywords = listOf(keyword),
                 isTokonow = isTokonow
             )
         } else {
@@ -612,6 +684,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             viewModel?.deleteCartRecomTokonowSendTracker?.removeObservers(it)
             viewModel?.minicartError?.removeObservers(it)
             viewModel?.miniCartData?.removeObservers(it)
+            viewModel?.refreshUIMiniCartData?.removeObservers(it)
         }
     }
 
@@ -675,12 +748,18 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             })
             viewModel?.atcRecomTokonowSendTracker?.observe(owner, Observer { data ->
                 data.doSuccessOrFail({
-                    widgetBindPageNameListener?.onRecomTokonowAtcNeedToSendTracker(it.data)
+                    widgetBindPageNameListener?.onRecomTokonowAtcNeedToSendTracker(
+                        it.data,
+                        recomItemTrackingMetadata
+                    )
                 }, {})
             })
             viewModel?.deleteCartRecomTokonowSendTracker?.observe(owner, Observer { data ->
                 data.doSuccessOrFail({
-                    widgetBindPageNameListener?.onRecomTokonowDeleteNeedToSendTracker(it.data)
+                    widgetBindPageNameListener?.onRecomTokonowDeleteNeedToSendTracker(
+                        it.data,
+                        recomItemTrackingMetadata
+                    )
                 }, {})
             })
             viewModel?.atcRecomTokonowResetCard?.observe(owner, Observer { recomItem ->
@@ -705,6 +784,11 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                     getMiniCartData()
                 }
             })
+            viewModel?.refreshUIMiniCartData?.observe(owner, {
+                if (it.pageName == pageName) {
+                    widgetBindPageNameListener?.onMiniCartUpdatedFromRecomWidget(it.miniCartSimplifiedData)
+                }
+            })
             viewModel?.minicartError?.observe(owner, Observer {
 //                RecomServerLogger.logWarning(RecomServerLogger.TYPE_ERROR_GET_MINICART, it)
             })
@@ -722,7 +806,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         userSession?.let {
             if (it.isLoggedIn) {
                 val localAddress = ChooseAddressUtils.getLocalizingAddressData(itemContext)
-                viewModel?.getMiniCart(localAddress?.shop_id ?: "")
+                viewModel?.getMiniCart(localAddress?.shop_id ?: "", pageName)
             }
         }
     }

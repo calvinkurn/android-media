@@ -10,6 +10,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail
@@ -37,9 +39,7 @@ import com.tokopedia.tokopedianow.searchcategory.utils.*
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_LIST_DEPTH
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CATEGORY
-import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CLP
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
-import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_NO_RESULT
 import com.tokopedia.tokopedianow.searchcategory.utils.WAREHOUSE_ID
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase

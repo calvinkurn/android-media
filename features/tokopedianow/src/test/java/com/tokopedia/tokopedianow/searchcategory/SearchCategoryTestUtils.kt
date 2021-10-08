@@ -6,6 +6,8 @@ import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAGE_NUMBER_RECOM_WIDGET
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.RECOM_WIDGET
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
@@ -20,8 +22,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.OutOfCoverag
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
-import com.tokopedia.tokopedianow.searchcategory.utils.PAGE_NUMBER_RECOM_WIDGET
-import com.tokopedia.tokopedianow.searchcategory.utils.RECOM_WIDGET
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.CoreMatchers.nullValue

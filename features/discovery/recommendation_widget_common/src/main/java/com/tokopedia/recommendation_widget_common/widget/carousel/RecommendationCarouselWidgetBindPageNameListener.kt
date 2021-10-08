@@ -1,6 +1,7 @@
 package com.tokopedia.recommendation_widget_common.widget.carousel
 
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.recommendation_widget_common.presentation.model.RecomItemTrackingMetadata
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 /**
@@ -18,10 +19,16 @@ interface RecommendationCarouselWidgetBindPageNameListener : RecomCarouselWidget
     fun onRecomTokonowAtcFailed(throwable: Throwable)
 
     //leave this empty if your widget doesn't implement tokonow
-    fun onRecomTokonowAtcNeedToSendTracker(recommendationItem: RecommendationItem)
+    fun onRecomTokonowAtcNeedToSendTracker(
+        recommendationItem: RecommendationItem,
+        recomItemTrackingMetadata: RecomItemTrackingMetadata
+    )
 
     //leave this empty if your widget doesn't implement tokonow
-    fun onRecomTokonowDeleteNeedToSendTracker(recommendationItem: RecommendationItem)
+    fun onRecomTokonowDeleteNeedToSendTracker(
+        recommendationItem: RecommendationItem,
+        recomItemTrackingMetadata: RecomItemTrackingMetadata
+    )
 
     fun onClickItemNonLoginState()
 
