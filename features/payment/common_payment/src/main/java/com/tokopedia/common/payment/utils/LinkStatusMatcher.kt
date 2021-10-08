@@ -1,4 +1,4 @@
-package com.tokopedia.payment.utils
+package com.tokopedia.common.payment.utils
 
 /**
  * Created by Yoris on 01/10/21.
@@ -21,3 +21,6 @@ object LinkStatusMatcher {
         }
     }
 }
+
+const val LINK_ACCOUNT_BACK_BUTTON_APPLINK = "tokopedia://back"
+const val LINK_ACCOUNT_SOURCE_PAYMENT = "app_payment"
