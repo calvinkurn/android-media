@@ -2341,7 +2341,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             data.dataList = feedOnBoardingData
             adapter.addItem(data)
             parentFragment?.let {
-                (it as FeedPlusContainerFragment).hideAllFab(true)
+                (it as FeedPlusContainerFragment).hideAllFab()
             }
             swipe_refresh_layout.isRefreshing = false
             swipe_refresh_layout.isEnabled = false

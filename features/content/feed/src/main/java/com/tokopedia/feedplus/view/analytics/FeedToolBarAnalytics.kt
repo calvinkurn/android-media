@@ -56,18 +56,4 @@ class FeedToolBarAnalytics @Inject constructor() {
             )
         )
     }
-
-    fun sendClickBuatFeedPostEvent(userId: String, shopId: String) {
-        getTracker().sendGeneralEvent(
-            DataLayer.mapOf(
-                EVENT_NAME, EVENT_CLICK_FEED,
-                EVENT_CATEGORY, CONTENT_FEED_TIMELINE,
-                EVENT_ACTION, CLICK_BUAT_POST,
-                EVENT_LABEL, String.format(FORMAT_TWO_PARAM,
-                    userId, shopId),
-                EVENT_BUSINESSUNIT, CONTENT,
-                EVENT_CURRENTSITE, MARKETPLACE
-            )
-        )
-    }
 }
