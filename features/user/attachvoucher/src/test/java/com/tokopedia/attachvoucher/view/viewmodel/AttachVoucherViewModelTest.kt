@@ -2,6 +2,7 @@ package com.tokopedia.attachvoucher.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.attachvoucher.FileUtil
 import com.tokopedia.attachvoucher.data.VoucherUiModel
 import com.tokopedia.attachvoucher.data.voucherv2.GetMerchantPromotionGetMVListResponse
@@ -13,6 +14,7 @@ import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.Assert.assertFalse
 import junit.framework.Assert.assertTrue
+import kotlinx.coroutines.Dispatchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -32,6 +34,11 @@ class AttachVoucherViewModelTest {
     @RelaxedMockK
     lateinit var filterObserver: Observer<Int>
 
+    @RelaxedMockK
+    lateinit var errorObserver: Observer<Throwable>
+
+    private val mapper = VoucherMapper()
+
     lateinit var viewModel: AttachVoucherViewModel
 
     object Dummy {
@@ -49,53 +56,51 @@ class AttachVoucherViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = AttachVoucherViewModel(getVoucherUseCase)
+        viewModel = AttachVoucherViewModel(getVoucherUseCase, CoroutineDispatchersProvider, mapper)
+        viewModel.voucher.observeForever(voucherObservers)
+        viewModel.filter.observeForever(filterObserver)
+        viewModel.error.observeForever(errorObserver)
+
     }
 
 
     @Test
     fun `Vouchers list changed on success`() {
         // Given
-        every {
-            getVoucherUseCase.getVouchers(Dummy.firstPage, Dummy.noFilterVoucherType, captureLambda(), any())
-        } answers {
-            val onSuccess = lambda<(List<VoucherUiModel>) -> Unit>()
-            onSuccess.invoke(Dummy.exVouchers)
-        }
+        coEvery {
+            getVoucherUseCase(any())
+        } returns Dummy.exVouchersGetResponse
 
         // When
-        viewModel.voucher.observeForever(voucherObservers)
         viewModel.loadVouchers(Dummy.firstPage)
 
         // Then
         verify { voucherObservers.onChanged(Dummy.exVouchers) }
+
     }
 
     @Test
     fun `Cancel previous load voucher`() {
         // Given
-        every { getVoucherUseCase.isLoading } returns true
-        every {
-            getVoucherUseCase.getVouchers(any(), any(), any(), any())
-        } just Runs
+        viewModel.isLoading = true
+        coEvery {
+            getVoucherUseCase(any())
+        } returns Dummy.exVouchersGetResponse
 
         // When
         viewModel.loadVouchers(Dummy.firstPage)
 
         // Then
-        verify { getVoucherUseCase.cancelCurrentLoad() }
+        verify { viewModel.cancelCurrentLoad() }
     }
 
 
     @Test
     fun `Filter cashback clicked`() {
         // Given
-        viewModel.filter.observeForever(filterObserver)
-        every {
-            getVoucherUseCase.getVouchers(Dummy.firstPage, any(), any(), any())
-        } just Runs
-
-        assertTrue(viewModel.hasNoFilter())
+        coEvery {
+            getVoucherUseCase(any())
+        } returns Dummy.exVouchersGetResponse
 
         // When
         viewModel.toggleFilter(VoucherType.paramCashback)
@@ -108,13 +113,9 @@ class AttachVoucherViewModelTest {
 
     @Test
     fun `Filter cashback clicked twice`() {
-        // Given
-        viewModel.filter.observeForever(filterObserver)
-
         // When
         viewModel.toggleFilter(VoucherType.paramCashback)
         viewModel.toggleFilter(VoucherType.paramCashback)
-        viewModel.loadVouchers(Dummy.firstPage)
 
         // Then
         verify { filterObserver.onChanged(NO_FILTER) }
@@ -122,13 +123,9 @@ class AttachVoucherViewModelTest {
 
     @Test
     fun `Filter cashback clicked then click free-ongkir filter`() {
-        //  Given
-        viewModel.filter.observeForever(filterObserver)
-
         // When
         viewModel.toggleFilter(VoucherType.paramCashback)
         viewModel.toggleFilter(VoucherType.paramFreeOngkir)
-        viewModel.loadVouchers(Dummy.firstPage)
 
         // Then
         verify { filterObserver.onChanged(VoucherType.paramFreeOngkir) }
@@ -137,14 +134,11 @@ class AttachVoucherViewModelTest {
     @Test
     fun `Error value changed on error`() {
         // Given
-        val errorObserver = mockk<Observer<Throwable>>(relaxed = true)
-        every { getVoucherUseCase.getVouchers(Dummy.firstPage, any(), any(), captureLambda()) } answers {
-            val onError = lambda<(Throwable) -> Unit>()
-            onError.invoke(Dummy.exThrowable)
-        }
+        coEvery {
+            getVoucherUseCase(any())
+        } returns Dummy.exVouchersGetResponse
 
         // When
-        viewModel.error.observeForever(errorObserver)
         viewModel.loadVouchers(Dummy.firstPage)
 
         // Then
@@ -154,10 +148,13 @@ class AttachVoucherViewModelTest {
     @Test
     fun `hasNext get from use case`() {
         // Given
-        every { getVoucherUseCase.hasNext } returns true
+        viewModel.hasNext = true
+        coEvery {
+            getVoucherUseCase(any())
+        } just Runs
 
         // When
-        viewModel.hasNext
+        viewModel.loadVouchers(Dummy.firstPage)
 
         // Then
         assertTrue(viewModel.hasNext)

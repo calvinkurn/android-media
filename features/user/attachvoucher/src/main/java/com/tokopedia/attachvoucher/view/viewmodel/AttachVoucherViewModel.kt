@@ -10,6 +10,8 @@ import com.tokopedia.attachvoucher.data.VoucherUiModel
 import com.tokopedia.attachvoucher.mapper.VoucherMapper
 import com.tokopedia.attachvoucher.usecase.GetVoucherUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -19,7 +21,8 @@ class AttachVoucherViewModel @Inject constructor(
         private val mapper: VoucherMapper
 ) : BaseViewModel(dispatcher.io) {
 
-    val hasNext: Boolean get() = getVouchersUseCase.hasNext
+    var hasNext = false
+    var isLoading = false
     var currentPage = 0
 
     private var _filter: MutableLiveData<Int> = MutableLiveData()
@@ -41,18 +44,28 @@ class AttachVoucherViewModel @Inject constructor(
     }
 
     fun loadVouchers(page: Int) {
-        launchCatchError(block = {
+        startLoading()
+        currentPage = page
+        if (isLoading) {
+            cancelCurrentLoad()
+        }
+
+        val jobs = launchCatchError(block = {
             val param = generateParams(page, filter.value ?: NO_FILTER)
             val response = getVouchersUseCase(param)
             val vouchers = mapper.map(response)
             withContext(dispatcher.main) {
+                hasNext = response.merchantPromotionGetMVList.data.paging.hasNext
                 onSuccessGetVouchers(vouchers)
+                stopLoading()
             }
         }, onError = {
             withContext(dispatcher.main) {
                 onErrorGetVouchers(it)
+                stopLoading()
             }
         })
+
 //        currentPage = page
 //        if (getVouchersUseCase.isLoading) {
 //            getVouchersUseCase.cancelCurrentLoad()
@@ -63,6 +76,19 @@ class AttachVoucherViewModel @Inject constructor(
 //                ::onSuccessGetVouchers,
 //                ::onErrorGetVouchers
 //        )
+    }
+
+    private fun stopLoading() {
+        isLoading = false
+    }
+
+    private fun startLoading() {
+        isLoading = true
+    }
+
+    fun cancelCurrentLoad() {
+        cancel()
+        stopLoading()
     }
 
     private fun generateParams(page: Int, filter: Int): Map<String, Any> {

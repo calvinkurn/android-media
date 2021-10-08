@@ -19,9 +19,6 @@ class GetVoucherUseCase @Inject constructor(
     dispatcher: CoroutineDispatcher,
 ) : CoroutineUseCase<Map<String, Any>, GetMerchantPromotionGetMVListResponse>(dispatcher) {
 
-    var hasNext = false
-    var isLoading = false
-
     private var getVouchersJob: Job? = null
     private val paramFilter = "Filter"
 
@@ -56,13 +53,7 @@ class GetVoucherUseCase @Inject constructor(
 //        )
 //    }
 
-    private fun stopLoading() {
-        isLoading = false
-    }
 
-    private fun startLoading() {
-        isLoading = true
-    }
 
 //    fun cancelCurrentLoad() {
 //        getVouchersJob?.cancel()
