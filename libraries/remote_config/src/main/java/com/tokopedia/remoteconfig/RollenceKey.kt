@@ -17,7 +17,6 @@ object RollenceKey {
     const val NEW_REVIEW_SHOP = "new_review_shop"
 
     //    Add Edit Product
-    const val HAMPERS_AB_TEST_KEY = "hampers_android"
     const val PRODUCT_LIMITATION_AB_TEST_KEY = "product_limit"
     const val PRODUCT_TITLE_AB_TEST_KEY = "product_title"
 
