@@ -5,20 +5,26 @@ import android.app.Instrumentation
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.intent.matcher.IntentMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
+import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.matchers.withTotalItem
+import kotlinx.android.synthetic.main.item_topchat_product_card.view.*
 import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Test
@@ -26,6 +32,8 @@ import org.junit.Test
 class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
     lateinit var productPreview: ProductPreview
+    private val testVariantSize = "S"
+    private val testVariantColor = "Putih"
 
     @Before
     override fun before() {
@@ -36,10 +44,10 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
             ProductPreviewAttribute.productName,
             "Rp 23.000.000",
             "",
+            testVariantColor,
             "",
             "",
-            "",
-            "",
+            testVariantSize,
             "tokopedia://product/1111",
             false,
             "",
@@ -213,6 +221,76 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         assertTemplateChatVisibility(isDisplayed())
     }
 
+    @Test
+    fun user_can_see_preview_product_variant() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+
+        //When
+        scrollChatToPosition(0)
+
+        // Then
+        assertVariantProductPreview()
+    }
+
+    @Test
+    fun user_can_see_attached_product_variants() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        launchChatRoomActivity()
+
+        //When
+        scrollChatToPosition(0)
+
+        // Then
+        assertVariant()
+    }
+
+    @Test
+    fun user_open_bottomsheet_when_click_beli_in_attached_product_variants() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        launchChatRoomActivity()
+
+        //When
+        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        scrollChatToPosition(0)
+        onView(withRecyclerView(R.id.recycler_view_chatroom)
+            .atPositionOnView(1, R.id.tv_buy)).perform(click())
+
+        // Then
+        val intent = RouteManager.getIntent(context,
+            ApplinkConstInternalMarketplace.ATC_VARIANT,
+            "1160424090", "6115659", "chat", "false", "") //Product from firstPageChatAsBuyer
+        intended(hasData(intent.data))
+    }
+
+    @Test
+    fun user_open_bottomsheet_when_click_keranjang_in_attached_product_variants() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        launchChatRoomActivity()
+
+        //When
+        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        scrollChatToPosition(0)
+        onView(withRecyclerView(R.id.recycler_view_chatroom)
+            .atPositionOnView(1, R.id.tv_atc)).perform(click())
+
+        // Then
+        val intent = RouteManager.getIntent(context,
+            ApplinkConstInternalMarketplace.ATC_VARIANT,
+            "1160424090", "6115659", "chat", "false", "") //Product from firstPageChatAsBuyer
+        intended(hasData(intent.data))
+    }
+
     // TODO: assert attach product, stock info seller, and tokocabang is not displayed on buyer side
 
     private fun putProductAttachmentIntent(intent: Intent) {
@@ -221,4 +299,21 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
     }
 
+    private fun assertVariant() {
+        onView(withRecyclerView(R.id.recycler_view_chatroom)
+            .atPositionOnView(1, R.id.tv_variant_color))
+            .check(matches(withText(testVariantColor)))
+        onView(withRecyclerView(R.id.recycler_view_chatroom)
+            .atPositionOnView(1, R.id.tv_variant_size))
+            .check(matches(withText(testVariantSize)))
+    }
+
+    private fun assertVariantProductPreview() {
+        onView(withRecyclerView(R.id.rv_attachment_preview)
+            .atPositionOnView(0, R.id.tv_variant_color))
+            .check(matches(withText(testVariantColor)))
+        onView(withRecyclerView(R.id.rv_attachment_preview)
+            .atPositionOnView(0, R.id.tv_variant_size))
+            .check(matches(withText(testVariantSize)))
+    }
 }

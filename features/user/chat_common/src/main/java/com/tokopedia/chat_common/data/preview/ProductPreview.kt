@@ -34,7 +34,7 @@ open class ProductPreview constructor(
         return colorVariant.isEmpty() && sizeVariant.isEmpty()
     }
 
-    fun hasColorVariant(): Boolean = colorVariant.isNotEmpty() && colorHexVariant.isNotEmpty()
+    fun hasColorVariant(): Boolean = colorVariant.isNotEmpty()
 
     fun hasSizeVariant(): Boolean = sizeVariant.isNotEmpty()
 
