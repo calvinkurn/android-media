@@ -60,7 +60,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
-import com.tokopedia.feedcomponent.view.widget.PostTagView
 
 
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
@@ -694,6 +693,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     val tags = feedMedia.tagging
                     val tagProducts = mutableListOf<FeedXProduct>()
                     tags.map {
+                        if (!ifProductAlreadyPresent(globalCardProductList[it.tagIndex],
+                                tagProducts))
                         tagProducts.add(globalCardProductList[it.tagIndex])
                     }
 
@@ -962,6 +963,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val postProductList = feedXCard.tags
         val tagProducts = mutableListOf<FeedXProduct>()
         tags.map {
+            if (!ifProductAlreadyPresent(postProductList[it.tagIndex], tagProducts))
             tagProducts.add(postProductList[it.tagIndex])
         }
         videoItem?.run {
@@ -1177,6 +1179,17 @@ class PostDynamicViewNew @JvmOverloads constructor(
             mutableListOf()
         }
     }
+    private fun ifProductAlreadyPresent(
+        product: FeedXProduct,
+        tagList: List<FeedXProduct>,
+    ): Boolean {
+        tagList.forEachIndexed { index, feedXProduct ->
+            if (feedXProduct.id == product.id)
+                return true
+        }
+        return false
+    }
+
 
     private fun bindPublishedAt(publishedAt: String, subTitle: String) {
         val avatarDate = TimeConverter.generateTimeNew(context, publishedAt)
@@ -1268,6 +1281,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val tags = media.tagging
         val tagProducts = mutableListOf<FeedXProduct>()
         tags.map {
+            if(!ifProductAlreadyPresent(cardProducts[it.tagIndex],tagProducts))
             tagProducts.add(cardProducts[it.tagIndex])
         }
         imageItem?.run {
