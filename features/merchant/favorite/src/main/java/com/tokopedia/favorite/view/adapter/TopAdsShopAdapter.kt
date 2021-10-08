@@ -40,6 +40,15 @@ class TopAdsShopAdapter(
 
     companion object {
         private const val className = "com.tokopedia.favorite.view.adapter.TopAdsShopAdapter"
+        private const val SHOP_COVER_WIDTH = 375
+        private const val SHOP_COVER_HEIGHT = 97
+        private const val FROM_X_VALUE = 1f
+        private const val TO_X_VALUE = 1.25f
+        private const val FROM_Y_VALUE = 1f
+        private const val TO_Y_VALUE = 1.25f
+        private const val PIVOT_X_VALUE = 0.2f
+        private const val PIVOT_Y_VALUE = 0.2f
+        private const val ANIMATION_DURATION = 250L
 
         fun mainContentDescription(position: Int): String {
             return "top-ads-item-main-content-$position"
@@ -104,7 +113,7 @@ class TopAdsShopAdapter(
                     .error(com.tokopedia.topads.sdk.R.drawable.error_drawable)
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .override(375, 97)
+                    .override(SHOP_COVER_WIDTH, SHOP_COVER_HEIGHT)
                     .listener(object : RequestListener<Drawable?> {
                         override fun onLoadFailed(e: GlideException?, model: Any, target: Target<Drawable?>, isFirstResource: Boolean): Boolean {
                             return false
@@ -151,10 +160,10 @@ class TopAdsShopAdapter(
     }
 
     private fun createScaleAnimation() {
-        anim = ScaleAnimation(1f, 1.25f, 1f, 1.25f,
+        anim = ScaleAnimation(FROM_X_VALUE, TO_X_VALUE, FROM_Y_VALUE, TO_Y_VALUE,
                 Animation.RELATIVE_TO_SELF,
-                0.2.toFloat(), Animation.RELATIVE_TO_SELF, 0.2.toFloat())
-        anim!!.duration = 250
+                PIVOT_X_VALUE, Animation.RELATIVE_TO_SELF, PIVOT_Y_VALUE)
+        anim!!.duration = ANIMATION_DURATION
         anim!!.repeatCount = Animation.INFINITE
         anim!!.repeatMode = Animation.REVERSE
         anim!!.fillAfter = false

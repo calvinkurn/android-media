@@ -18,7 +18,6 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import kotlinx.android.synthetic.main.item_ticker_info_view_holder.view.*
 
 /**
  * Created by Yehezkiel on 08/06/20
