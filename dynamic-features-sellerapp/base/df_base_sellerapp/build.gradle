@@ -119,4 +119,5 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)
 
     implementation projectOrAar(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imagePickerInsta)
 }
