@@ -26,6 +26,7 @@ object ViewUtil {
 
     private const val ELEVATION_VALUE_DIVIDER = 3f
     private const val FIVE_MARGIN = 5
+    private const val ELLIPSIZE = "..."
 
     @Suppress("MagicNumber")
     fun generateBackgroundWithShadow(
@@ -238,5 +239,17 @@ object ViewUtil {
 
     fun convertToPx(dp: Int): Int {
         return (dp * getSystem().displayMetrics.density).toInt()
+    }
+
+    fun ellipsizeLongText(text: String, maxChar: Int): String {
+        var resultText = text
+        if(text.length > maxChar) {
+            resultText = resultText.substring(0, maxChar)
+            if(resultText[maxChar-1].toString() == " ") { //Remove if last char is whitespace
+                resultText = resultText.substring(0, maxChar-1)
+            }
+            resultText += ELLIPSIZE
+        }
+        return resultText
     }
 }

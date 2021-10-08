@@ -29,6 +29,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatProductAttachmentListener
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.util.ViewUtil
+import com.tokopedia.topchat.common.util.ViewUtil.ellipsizeLongText
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -327,14 +328,16 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         showVariantLayout()
         if (product.hasColorVariant()) {
             ll_variant_color?.show()
-            tv_variant_color?.text = product.colorVariant
+            tv_variant_color?.text = ellipsizeLongText(
+                product.colorVariant, 6)
         } else {
             ll_variant_color?.hide()
         }
 
         if (product.hasSizeVariant()) {
             ll_variant_size?.show()
-            tv_variant_size?.text = product.sizeVariant
+            tv_variant_size?.text = ellipsizeLongText(
+                product.sizeVariant, 6)
         } else {
             ll_variant_size?.hide()
         }
