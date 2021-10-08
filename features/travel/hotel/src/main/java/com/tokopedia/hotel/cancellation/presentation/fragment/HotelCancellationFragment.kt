@@ -159,7 +159,6 @@ class HotelCancellationFragment : HotelBaseFragment() {
                     getString(R.string.hotel_cancellation_order_list_applink))))
 
     private fun convertDynamicError(error: Throwable){
-        //testing-purpose-only
         try {
             val gson = Gson()
             val itemType = object : TypeToken<HotelCancellationError>() {}.type
@@ -182,16 +181,11 @@ class HotelCancellationFragment : HotelBaseFragment() {
                     }else{
                         it.errorSecondaryAction.gone()
                     }
-                   //for-each every value to see button.
                 }
             }
         }catch (throwable: Throwable){
             showErrorView(throwable)
         }
-    }
-
-    fun showDynamicError(errorData: HotelCancellationError){
-
     }
 
     private fun initView(hotelCancellationModel: HotelCancellationModel) {
