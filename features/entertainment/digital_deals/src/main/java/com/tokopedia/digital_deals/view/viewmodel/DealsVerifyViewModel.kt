@@ -16,6 +16,9 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class DealsVerifyViewModel @Inject constructor(
@@ -64,8 +67,8 @@ class DealsVerifyViewModel @Inject constructor(
                                         productName = dealsResponse.displayName,
                                         providerId = dealsResponse.providerId.toString(),
                                         categoryId = dealsResponse.categoryId.toString(),
-                                        startTime = dealsResponse.minStartDate.toString(),
-                                        endTime = dealsResponse.maxEndDate.toString(),
+                                        startTime = getDateMilis(dealsResponse.minStartDate.toString()),
+                                        endTime = getDateMilis(dealsResponse.maxEndDate.toString()),
                                         price = dealsResponse.salesPrice,
                                         quantity = currentQuantity,
                                         totalPrice = currentQuantity * dealsResponse.salesPrice,
@@ -77,6 +80,16 @@ class DealsVerifyViewModel @Inject constructor(
                     )
                 )
         )
+    }
+
+    private fun getDateMilis(date: String): String {
+        try {
+            val dateFormat = SimpleDateFormat(" dd MMM YYYY hh:mm")
+            val dateMilis = Date(TimeUnit.SECONDS.toMillis(date.toLong()))
+            return dateFormat.format(dateMilis).toString()
+        } catch (e: Exception){
+            return date
+        }
     }
 
     companion object {
