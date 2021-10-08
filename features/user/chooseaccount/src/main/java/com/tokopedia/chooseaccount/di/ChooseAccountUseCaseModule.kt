@@ -1,10 +1,11 @@
 package com.tokopedia.chooseaccount.di
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.chooseaccount.data.AccountsDataModel
 import com.tokopedia.chooseaccount.domain.usecase.GetAccountListUseCase
+import com.tokopedia.chooseaccount.domain.usecase.GetFingerprintAccountListUseCase
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import dagger.Module
 import dagger.Provides
 
@@ -26,4 +27,9 @@ class ChooseAccountUseCaseModule{
         return GetAccountListUseCase(useCase, dispatchers)
     }
 
+    @Provides
+    fun provideGetFingerprintAccountListUseCase(graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers): GetFingerprintAccountListUseCase {
+        val useCase = GraphqlUseCase<AccountsDataModel>(graphqlRepository)
+        return GetFingerprintAccountListUseCase(useCase, dispatchers)
+    }
 }

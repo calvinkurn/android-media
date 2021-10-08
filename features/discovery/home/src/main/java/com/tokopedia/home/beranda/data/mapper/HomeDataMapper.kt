@@ -26,25 +26,6 @@ class HomeDataMapper(
         private const val SHIMMERING_CHANNEL_ID_1 = "1"
     }
 
-    fun mapToHomeViewModel(homeData: HomeData?, isCache: Boolean): HomeDataModel{
-        BenchmarkHelper.beginSystraceSection(TRACE_MAP_TO_HOME_VIEWMODEL)
-        if (homeData == null) return HomeDataModel(isCache = isCache)
-        val addLoadingMore = homeData.token.isNotEmpty()
-        val factory: HomeVisitableFactory = homeVisitableFactory.buildVisitableList(
-                homeData, isCache, trackingQueue, context, homeDynamicChannelDataMapper)
-                .addBannerVisitable()
-                .addTickerVisitable()
-                .addUserWalletVisitable()
-                .addDynamicIconVisitable()
-
-
-        factory.addDynamicChannelVisitable(addLoadingMore, true)
-                .build()
-
-        BenchmarkHelper.endSystraceSection()
-        return HomeDataModel(homeData.homeFlag, factory.build(), isCache, addLoadingMore)
-    }
-
     fun mapToHomeRevampViewModel(homeData: HomeData?, isCache: Boolean, addShimmeringChannel: Boolean = false, isLoadingAtf: Boolean = false, haveCachedData: Boolean = false): HomeDataModel{
         BenchmarkHelper.beginSystraceSection(TRACE_MAP_TO_HOME_VIEWMODEL_REVAMP)
         if (homeData == null) return HomeDataModel(isCache = isCache)

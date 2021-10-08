@@ -327,6 +327,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     shopName = shopInfo.shopCore.name
                     shopLocation = shopInfo.location
                     shopAva = shopInfo.shopAssets.avatar
+                    shopBadge = shopInfo.shopTierBadgeUrl
                 }
             }
 

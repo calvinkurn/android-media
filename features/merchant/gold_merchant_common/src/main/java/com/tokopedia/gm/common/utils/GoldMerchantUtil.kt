@@ -29,15 +29,14 @@ object GoldMerchantUtil {
         }
     }
 
-
-    fun getIsExistingSellerPastMonday(dateString: String): Boolean {
+    fun getIsExistingSellerPastMonday(dateString: String, shopAge: Long): Boolean {
         return try {
             val simpleDateFormat =
                 SimpleDateFormat(PATTERN_DATE_SHOP_INFO, DateFormatUtils.DEFAULT_LOCALE)
             val calendar = Calendar.getInstance()
             simpleDateFormat.parse(dateString)?.let { calendar.time = it }
             calendar.add(Calendar.DATE, NEW_SELLER_DAYS)
-            return calendar.get(Calendar.DAY_OF_WEEK) > Calendar.MONDAY
+            return calendar.get(Calendar.DAY_OF_WEEK) > Calendar.MONDAY && shopAge == NEW_SELLER_DAYS.toLong()
         } catch (e: Exception) {
             e.printStackTrace()
             false

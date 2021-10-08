@@ -43,12 +43,12 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
 
     override fun mapProductList(
         productsResponse: GetProductsByEtalaseResponse.GetProductListData,
-        isSelectedHandler: (Long) -> Boolean,
+        isSelectedHandler: (String) -> Boolean,
         isSelectableHandler: (Boolean) -> SelectableState
     ): List<ProductContentUiModel> {
         return List(6) {
             ProductContentUiModel(
-                    id = 12345L + it,
+                    id = (12345L + it).toString(),
                     name = "Product ${it + 1}",
                     imageUrl = when (it) {
                         1 -> "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,b_rgb:f5f5f5/oyhemtbkghuegy9gpo0i/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
