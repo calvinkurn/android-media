@@ -37,6 +37,9 @@ import com.tokopedia.authentication.*
 import com.tokopedia.authentication.AuthKey.Companion.KEY_WSV4
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.common.payment.utils.LINK_ACCOUNT_BACK_BUTTON_APPLINK
+import com.tokopedia.common.payment.utils.LINK_ACCOUNT_SOURCE_PAYMENT
+import com.tokopedia.common.payment.utils.LinkStatusMatcher
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.fingerprint.util.FingerprintConstant
 import com.tokopedia.logger.ServerLogger
@@ -483,15 +486,12 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     private inner class TopPayWebViewClient : WebViewClient() {
 
-        private val BACK_BUTTON_APPLINK = "tokopedia://back"
-        private val SOURCE_PAYMENT = "app_payment"
-
         fun gotoLinkAccount() {
             showFullLoading()
             reloadUrl = scroogeWebView?.url ?: ""
             val intent = RouteManager.getIntent(this@TopPayActivity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_LD, BACK_BUTTON_APPLINK)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_PAYMENT)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_LD, LINK_ACCOUNT_BACK_BUTTON_APPLINK)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, LINK_ACCOUNT_SOURCE_PAYMENT)
             startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
         }
 
