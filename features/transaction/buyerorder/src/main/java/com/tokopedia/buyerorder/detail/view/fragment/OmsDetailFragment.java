@@ -278,7 +278,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         setPaymentData(details.paymentData(), isCategoryEvent);
         setContactUs(details.contactUs(), details.getHelpLink());
 
-        if (details.getItems() != null && details.getItems().size() > 0 && details.getItems().get(0).getCategory().equalsIgnoreCase(OrderCategory.EVENT)) {
+        if (details.getItems() != null && details.getItems().size() > 0
+                && (details.getItems().get(0).getCategory().equalsIgnoreCase(OrderCategory.EVENT)
+                || details.getItems().get(0).getCategory().equalsIgnoreCase(OrderCategory.DEALS))) {
             setActionButtonsVisibility(View.GONE, View.GONE);
         } else {
             if (details.actionButtons().size() == 2) {
