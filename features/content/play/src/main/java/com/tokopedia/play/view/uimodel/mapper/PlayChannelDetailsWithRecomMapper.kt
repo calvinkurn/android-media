@@ -261,7 +261,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         videoPlayer = PlayVideoPlayerUiModel.Unknown,
         videoStream = PlayVideoStreamUiModel(
             id = "",
-            orientation = VideoOrientation.Unknown
+            orientation = VideoOrientation.Unknown,
+            title = ""
         )
     )
 
