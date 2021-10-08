@@ -5,6 +5,11 @@ import com.tokopedia.broadcaster.data.AudioType
 import com.tokopedia.broadcaster.data.BitrateMode
 import kotlinx.android.parcel.Parcelize
 
+/*
+* This class are used on stats nerd and for logging
+* that's why we need this uiModel on production
+* */
+
 @Parcelize
 data class LoggerUIModel(
     var id: Int = 0,

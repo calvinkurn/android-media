@@ -2,7 +2,7 @@ package com.tokopedia.broadcaster.statsnerd.data
 
 import android.annotation.SuppressLint
 import android.content.Context
-import com.tokopedia.broadcaster.statsnerd.data.entity.ChuckerLog
+import com.tokopedia.broadcaster.statsnerd.data.entity.StatsNerdLog
 import com.tokopedia.broadcaster.statsnerd.data.repository.ChuckerLogRepository
 import com.tokopedia.broadcaster.statsnerd.data.repository.ChuckerLogRepositoryImpl
 import kotlinx.coroutines.CoroutineScope
@@ -11,7 +11,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class ChuckerDataSource(
+class StatsNerdDataSource(
     private val context: Context
 ) : ChuckerLogRepository, CoroutineScope {
 
@@ -24,11 +24,11 @@ class ChuckerDataSource(
         ChuckerLogRepositoryImpl(dbDao)
     }
 
-    override fun chuckers(): List<ChuckerLog> {
+    override fun chuckers(): List<StatsNerdLog> {
         return dataSource.chuckers()
     }
 
-    override fun logChucker(log: ChuckerLog) {
+    override fun logChucker(log: StatsNerdLog) {
         launch { dataSource.logChucker(log) }
     }
 
@@ -38,11 +38,11 @@ class ChuckerDataSource(
 
     companion object {
         @SuppressLint("StaticFieldLeak")
-        @Volatile private var instance: ChuckerDataSource? = null
+        @Volatile private var instance: StatsNerdDataSource? = null
 
-        fun instance(context: Context): ChuckerDataSource {
-            return instance ?: synchronized(ChuckerDataSource::class) {
-                ChuckerDataSource(context).also {
+        fun instance(context: Context): StatsNerdDataSource {
+            return instance ?: synchronized(StatsNerdDataSource::class) {
+                StatsNerdDataSource(context).also {
                     instance = it
                 }
             }

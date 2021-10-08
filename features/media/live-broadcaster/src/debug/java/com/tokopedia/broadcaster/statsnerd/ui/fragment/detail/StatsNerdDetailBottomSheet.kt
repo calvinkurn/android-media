@@ -16,7 +16,7 @@ import com.tokopedia.broadcaster.uimodel.LoggerUIModel
 import com.tokopedia.broadcaster.databinding.DialogBroadcasterChuckerDetailBinding
 import com.tokopedia.utils.htmltags.HtmlUtil
 
-class ChuckerDetailBottomSheet : BottomSheetDialogFragment() {
+class StatsNerdDetailBottomSheet : BottomSheetDialogFragment() {
 
     private var binding: DialogBroadcasterChuckerDetailBinding? = null
     private lateinit var detailModel: LoggerUIModel
@@ -98,11 +98,11 @@ class ChuckerDetailBottomSheet : BottomSheetDialogFragment() {
                 putParcelable(BUNDLE_CHUCKER_LOG_KEY, model)
             }
 
-            ChuckerDetailBottomSheet().apply {
+            StatsNerdDetailBottomSheet().apply {
                 arguments = bundle
             }.show(
                 fragmentManager,
-                ChuckerDetailBottomSheet::class.java.canonicalName
+                StatsNerdDetailBottomSheet::class.java.canonicalName
             )
         }
     }

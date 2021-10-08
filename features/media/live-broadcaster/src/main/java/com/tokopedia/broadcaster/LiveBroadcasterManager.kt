@@ -14,11 +14,13 @@ import com.tokopedia.broadcaster.data.BroadcasterConnection
 import com.tokopedia.broadcaster.listener.BroadcasterListener
 import com.tokopedia.broadcaster.state.BroadcasterState
 import com.tokopedia.broadcaster.state.isError
+import com.tokopedia.broadcaster.statsnerd.ui.notification.LogDebugNotification
 import com.tokopedia.broadcaster.tracker.LiveBroadcasterLogger
 import com.tokopedia.broadcaster.utils.BroadcasterUtil
 import com.tokopedia.broadcaster.utils.DeviceInfo
 import com.tokopedia.broadcaster.utils.retry
 import com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.wmspanel.libstream.CameraConfig
 import com.wmspanel.libstream.Streamer
@@ -116,6 +118,12 @@ class LiveBroadcasterManager constructor(
             throw IllegalAccessException("you have to initialize first with call init()")
         }
 
+        if (GlobalConfig.DEBUG) {
+            mContext?.let {
+                LogDebugNotification.build(it, url)
+            }
+        }
+
         broadcastState(BroadcasterState.Connecting)
         mConnection.uri = url
         mConfig.ingestUrl = url
@@ -187,12 +195,7 @@ class LiveBroadcasterManager constructor(
                 broadcastState(BroadcasterState.Connecting)
             }
             Streamer.CONNECTION_STATE.CONNECTED -> {
-                logger.init(
-                    mContext,
-                    mConfig.ingestUrl,
-                    streamer,
-                    connectionId
-                )
+                logger.init(streamer, connectionId)
             }
             Streamer.CONNECTION_STATE.RECORD -> {
                 when {

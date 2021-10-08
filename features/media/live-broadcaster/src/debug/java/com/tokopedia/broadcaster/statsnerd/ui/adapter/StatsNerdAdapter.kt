@@ -8,13 +8,13 @@ import com.tokopedia.broadcaster.uimodel.LoggerUIModel
 import com.tokopedia.broadcaster.statsnerd.util.timeFormat
 import com.tokopedia.broadcaster.databinding.ItemChuckerLogBinding
 
-interface ChuckerItemListener {
+interface StatsNerdItemListener {
     fun onLogClicked(model: LoggerUIModel)
 }
 
 class ChuckerAdapter constructor(
     private var logs: MutableList<LoggerUIModel> = mutableListOf(),
-    private val listener: ChuckerItemListener
+    private val listener: StatsNerdItemListener
 ) : RecyclerView.Adapter<ChuckerAdapter.ChuckerViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChuckerViewHolder {
@@ -31,7 +31,7 @@ class ChuckerAdapter constructor(
 
     fun updateItems(models: MutableList<LoggerUIModel>) {
         val diff = DiffUtil.calculateDiff(
-            ChuckerLogDiffUtilCallback(logs, models)
+            StatsNerdDiffUtilCallback(logs, models)
         )
 
         logs.clear()
@@ -41,7 +41,7 @@ class ChuckerAdapter constructor(
 
     class ChuckerViewHolder(
         private val binding: ItemChuckerLogBinding,
-        private val listener: ChuckerItemListener
+        private val listener: StatsNerdItemListener
     ): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(model: LoggerUIModel) {
@@ -55,7 +55,7 @@ class ChuckerAdapter constructor(
         }
 
         companion object {
-            fun create(parent: ViewGroup, listener: ChuckerItemListener): ChuckerViewHolder {
+            fun create(parent: ViewGroup, listener: StatsNerdItemListener): ChuckerViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val inflate = ItemChuckerLogBinding.inflate(layoutInflater, parent, false)
                 return ChuckerViewHolder(inflate, listener)

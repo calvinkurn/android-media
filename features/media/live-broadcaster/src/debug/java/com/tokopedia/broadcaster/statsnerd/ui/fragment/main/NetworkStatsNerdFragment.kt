@@ -1,4 +1,4 @@
-package com.tokopedia.broadcaster.statsnerd.ui.fragment.chucker
+package com.tokopedia.broadcaster.statsnerd.ui.fragment.main
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,18 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.broadcaster.statsnerd.di.DaggerChuckerComponent
-import com.tokopedia.broadcaster.statsnerd.di.module.ChuckerModule
+import com.tokopedia.broadcaster.statsnerd.di.DaggerStatsNerdComponent
+import com.tokopedia.broadcaster.statsnerd.di.module.StatsNerdModule
 import com.tokopedia.broadcaster.statsnerd.ui.adapter.ChuckerAdapter
-import com.tokopedia.broadcaster.statsnerd.ui.adapter.ChuckerItemListener
-import com.tokopedia.broadcaster.statsnerd.ui.fragment.detail.ChuckerDetailBottomSheet
+import com.tokopedia.broadcaster.statsnerd.ui.adapter.StatsNerdItemListener
+import com.tokopedia.broadcaster.statsnerd.ui.fragment.detail.StatsNerdDetailBottomSheet
 import com.tokopedia.broadcaster.uimodel.LoggerUIModel
-import com.tokopedia.broadcaster.statsnerd.ui.viewmodel.NetworkChuckerViewModel
+import com.tokopedia.broadcaster.statsnerd.ui.viewmodel.NetworkStatsNerdViewModel
 import com.tokopedia.broadcaster.databinding.FragmentChuckerBroadcasterBinding
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-class NetworkChuckerFragment : BaseDaggerFragment(), ChuckerItemListener {
+class NetworkStatsNerdFragment : BaseDaggerFragment(), StatsNerdItemListener {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -27,7 +27,7 @@ class NetworkChuckerFragment : BaseDaggerFragment(), ChuckerItemListener {
         ViewModelProvider(
             this,
             viewModelFactory
-        ).get(NetworkChuckerViewModel::class.java)
+        ).get(NetworkStatsNerdViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -59,12 +59,12 @@ class NetworkChuckerFragment : BaseDaggerFragment(), ChuckerItemListener {
     }
 
     override fun onLogClicked(model: LoggerUIModel) {
-        ChuckerDetailBottomSheet.create(childFragmentManager, model)
+        StatsNerdDetailBottomSheet.create(childFragmentManager, model)
     }
 
     override fun initInjector() {
-        DaggerChuckerComponent.builder()
-            .chuckerModule(ChuckerModule(requireContext()))
+        DaggerStatsNerdComponent.builder()
+            .chuckerModule(StatsNerdModule(requireContext()))
             .build()
             .inject(this)
     }

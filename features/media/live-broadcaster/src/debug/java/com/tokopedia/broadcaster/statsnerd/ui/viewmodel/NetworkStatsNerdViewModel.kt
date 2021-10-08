@@ -11,9 +11,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class NetworkChuckerViewModel @Inject constructor(
+class NetworkStatsNerdViewModel @Inject constructor(
     private val repository: ChuckerLogRepository,
-    private val dispatcher: CoroutineDispatcher
+    dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher), LifecycleObserver {
 
     private val _chuckers = MutableLiveData<MutableList<LoggerUIModel>>()

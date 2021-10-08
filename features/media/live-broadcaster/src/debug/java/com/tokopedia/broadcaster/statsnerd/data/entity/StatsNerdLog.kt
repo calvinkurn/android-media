@@ -7,7 +7,7 @@ import com.tokopedia.broadcaster.data.AudioType
 import com.tokopedia.broadcaster.data.BitrateMode
 
 @Entity(tableName = "ChuckerLog")
-data class ChuckerLog(
+data class StatsNerdLog(
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")

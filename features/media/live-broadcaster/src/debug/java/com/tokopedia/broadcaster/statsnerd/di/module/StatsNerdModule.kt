@@ -2,10 +2,10 @@ package com.tokopedia.broadcaster.statsnerd.di.module
 
 import android.content.Context
 import com.tokopedia.broadcaster.statsnerd.data.BroadcasterChuckerDb
-import com.tokopedia.broadcaster.statsnerd.data.dao.ChuckerDao
+import com.tokopedia.broadcaster.statsnerd.data.dao.StatsNerdDao
 import com.tokopedia.broadcaster.statsnerd.data.repository.ChuckerLogRepository
 import com.tokopedia.broadcaster.statsnerd.data.repository.ChuckerLogRepositoryImpl
-import com.tokopedia.broadcaster.statsnerd.di.scope.ChuckerScope
+import com.tokopedia.broadcaster.statsnerd.di.scope.StatsNerdScope
 import com.tokopedia.broadcaster.statsnerd.di.scope.FeatureContext
 import dagger.Module
 import dagger.Provides
@@ -13,7 +13,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @Module
-class ChuckerModule constructor(
+class StatsNerdModule constructor(
     private val context: Context
 ) {
 
@@ -24,7 +24,7 @@ class ChuckerModule constructor(
     }
 
     @Provides
-    @ChuckerScope
+    @StatsNerdScope
     fun provideDbBuilder(
         @FeatureContext context: Context
     ): BroadcasterChuckerDb {
@@ -32,23 +32,23 @@ class ChuckerModule constructor(
     }
 
     @Provides
-    @ChuckerScope
+    @StatsNerdScope
     fun provideDbDao(
         db: BroadcasterChuckerDb
-    ): ChuckerDao {
+    ): StatsNerdDao {
         return db.chuckerDao()
     }
 
     @Provides
-    @ChuckerScope
+    @StatsNerdScope
     fun provideChuckerRepository(
-        dbDao: ChuckerDao
+        dbDao: StatsNerdDao
     ): ChuckerLogRepository {
         return ChuckerLogRepositoryImpl(dbDao)
     }
 
     @Provides
-    @ChuckerScope
+    @StatsNerdScope
     fun provideDispatcher(): CoroutineDispatcher {
         return Dispatchers.IO
     }

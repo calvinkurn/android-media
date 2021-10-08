@@ -1,9 +1,9 @@
 package com.tokopedia.broadcaster.statsnerd.data.mapper
 
-import com.tokopedia.broadcaster.statsnerd.data.entity.ChuckerLog
+import com.tokopedia.broadcaster.statsnerd.data.entity.StatsNerdLog
 import com.tokopedia.broadcaster.uimodel.LoggerUIModel
 
-fun List<ChuckerLog>.mapToUI(): MutableList<LoggerUIModel> {
+fun List<StatsNerdLog>.mapToUI(): MutableList<LoggerUIModel> {
     return map {
         LoggerUIModel(
             id = it.id,
@@ -28,8 +28,8 @@ fun List<ChuckerLog>.mapToUI(): MutableList<LoggerUIModel> {
     }.toMutableList()
 }
 
-fun LoggerUIModel.mapToData(): ChuckerLog {
-    return ChuckerLog(
+fun LoggerUIModel.mapToData(): StatsNerdLog {
+    return StatsNerdLog(
         url = url,
         connectionId = connectionId,
         fps = fps,

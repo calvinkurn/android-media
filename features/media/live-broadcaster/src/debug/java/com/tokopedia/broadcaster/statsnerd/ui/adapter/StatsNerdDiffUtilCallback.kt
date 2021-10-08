@@ -3,7 +3,7 @@ package com.tokopedia.broadcaster.statsnerd.ui.adapter
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.broadcaster.uimodel.LoggerUIModel
 
-class ChuckerLogDiffUtilCallback constructor(
+class StatsNerdDiffUtilCallback constructor(
     private val oldData: MutableList<LoggerUIModel>,
     private val newData: MutableList<LoggerUIModel>
 ) : DiffUtil.Callback() {

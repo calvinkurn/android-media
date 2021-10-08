@@ -2,11 +2,10 @@ package com.tokopedia.broadcaster.tracker
 
 import android.content.Context
 import com.tokopedia.broadcaster.LibStreamerGL
-import com.tokopedia.broadcaster.statsnerd.data.ChuckerDataSource
+import com.tokopedia.broadcaster.statsnerd.data.StatsNerdDataSource
 import com.tokopedia.broadcaster.statsnerd.data.mapper.mapToData
 import com.tokopedia.broadcaster.uimodel.LoggerUIModel
 import com.tokopedia.broadcaster.data.BroadcasterConfig
-import com.tokopedia.broadcaster.statsnerd.ui.notification.ChuckerNotification
 import com.tokopedia.config.GlobalConfig
 import java.util.*
 import kotlin.math.ceil
@@ -39,13 +38,7 @@ class LiveBroadcasterLogger constructor(
         return this
     }
 
-    fun init(context: Context?, ingestUrl: String, streamer: LibStreamerGL?, connectionId: Int?) {
-        if (GlobalConfig.DEBUG) {
-            context?.let {
-                ChuckerNotification.build(it, ingestUrl)
-            }
-        }
-
+    fun init(streamer: LibStreamerGL?, connectionId: Int?) {
         mStreamer = streamer
         mConnectionId = connectionId
 
@@ -124,7 +117,7 @@ class LiveBroadcasterLogger constructor(
         )
 
         if (GlobalConfig.DEBUG) {
-            ChuckerDataSource
+            StatsNerdDataSource
                 .instance(context)
                 .logChucker(dataUIModel.mapToData())
         }

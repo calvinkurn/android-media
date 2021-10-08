@@ -9,9 +9,9 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.tokopedia.broadcaster.R
-import com.tokopedia.broadcaster.statsnerd.ui.activity.NetworkChuckerActivity
+import com.tokopedia.broadcaster.statsnerd.ui.activity.StatsNerdActivity
 
-object ChuckerNotification {
+object LogDebugNotification {
 
     private const val NOTIFICATION_ID = 990
     private const val CHANNEL_NAME = "Live Broadcaster Chucker"
@@ -30,7 +30,7 @@ object ChuckerNotification {
     fun build(context: Context, content: String) {
         createNotificationChannel(context)
 
-        val intent = Intent(context, NetworkChuckerActivity::class.java).apply {
+        val intent = Intent(context, StatsNerdActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)

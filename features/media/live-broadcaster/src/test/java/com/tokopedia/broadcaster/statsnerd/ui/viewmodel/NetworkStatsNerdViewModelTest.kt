@@ -1,7 +1,7 @@
 package com.tokopedia.broadcaster.statsnerd.ui.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.broadcaster.statsnerd.data.entity.ChuckerLog
+import com.tokopedia.broadcaster.statsnerd.data.entity.StatsNerdLog
 import com.tokopedia.broadcaster.statsnerd.data.repository.ChuckerLogRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -21,13 +21,13 @@ import org.junit.Test
 import kotlin.test.assertTrue
 
 @ExperimentalCoroutinesApi
-class NetworkChuckerViewModelTest {
+class NetworkStatsNerdViewModelTest {
 
     @get:Rule val rule = InstantTaskExecutorRule()
 
     private val repository = mockk<ChuckerLogRepository>(relaxed = true)
     private val dispatcher = TestCoroutineDispatcher()
-    private val viewModel = NetworkChuckerViewModel(
+    private val viewModel = NetworkStatsNerdViewModel(
         repository,
         dispatcher
     )
@@ -41,7 +41,7 @@ class NetworkChuckerViewModelTest {
         // Given
         val givenUrl = "https://ingest.tokopedia.net/live/isfa"
         every { repository.chuckers() } returns mutableListOf(
-            ChuckerLog(url = givenUrl)
+            StatsNerdLog(url = givenUrl)
         )
 
         // When

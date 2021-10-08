@@ -7,11 +7,11 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.tokopedia.broadcaster.statsnerd.data.converter.AudioTypeConverter
 import com.tokopedia.broadcaster.statsnerd.data.converter.BitrateModeConverter
-import com.tokopedia.broadcaster.statsnerd.data.dao.ChuckerDao
-import com.tokopedia.broadcaster.statsnerd.data.entity.ChuckerLog
+import com.tokopedia.broadcaster.statsnerd.data.dao.StatsNerdDao
+import com.tokopedia.broadcaster.statsnerd.data.entity.StatsNerdLog
 
 @Database(entities = [
-    ChuckerLog::class
+    StatsNerdLog::class
 ], version = 1)
 @TypeConverters(
     AudioTypeConverter::class,
@@ -19,7 +19,7 @@ import com.tokopedia.broadcaster.statsnerd.data.entity.ChuckerLog
 )
 abstract class BroadcasterChuckerDb : RoomDatabase() {
 
-    abstract fun chuckerDao(): ChuckerDao
+    abstract fun chuckerDao(): StatsNerdDao
 
     companion object {
         private const val DATABASE_NAME = "internal_broadcaster"

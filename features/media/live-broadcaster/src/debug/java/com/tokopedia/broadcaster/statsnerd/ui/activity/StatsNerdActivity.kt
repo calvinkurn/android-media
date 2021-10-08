@@ -4,17 +4,17 @@ import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.broadcaster.statsnerd.ui.fragment.chucker.NetworkChuckerFragment
+import com.tokopedia.broadcaster.statsnerd.ui.fragment.main.NetworkStatsNerdFragment
 
-class NetworkChuckerActivity : BaseSimpleActivity() {
+class StatsNerdActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment {
-        return NetworkChuckerFragment()
+        return NetworkStatsNerdFragment()
     }
 
     companion object {
         fun route(context: Context) {
-            context.startActivity(Intent(context, NetworkChuckerActivity::class.java))
+            context.startActivity(Intent(context, StatsNerdActivity::class.java))
         }
     }
 
