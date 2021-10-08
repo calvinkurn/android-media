@@ -8,7 +8,7 @@ import com.tokopedia.product.detail.databinding.BsProductSpecificationBinding
 import com.tokopedia.product.info.model.productdetail.uidata.AnnotationValueDataModel
 import com.tokopedia.product.info.view.adapter.ProductAnnotationAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
  * Created by Yehezkiel on 21/10/20
@@ -18,7 +18,7 @@ class ProductAnnotationBottomSheet : BottomSheetUnify() {
     private val adapter: ProductAnnotationAdapter = ProductAnnotationAdapter()
     private var annotation: List<ProductDetailInfoContent> = listOf()
 
-    private var binding by autoCleared<BsProductSpecificationBinding>()
+    private var binding by autoClearedNullable<BsProductSpecificationBinding>()
 
     fun getData(listOfData: List<ProductDetailInfoContent>) {
         this.annotation = listOfData
@@ -51,6 +51,6 @@ class ProductAnnotationBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupRecyclerView() {
-        binding.rvProductSpecificationBs.adapter = adapter
+        binding?.rvProductSpecificationBs?.adapter = adapter
     }
 }
