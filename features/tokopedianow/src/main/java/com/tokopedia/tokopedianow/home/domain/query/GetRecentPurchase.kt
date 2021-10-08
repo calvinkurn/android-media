@@ -3,8 +3,8 @@ package com.tokopedia.tokopedianow.home.domain.query
 internal object GetRecentPurchase {
 
     val QUERY = """
-        query TokonowRepurchaseWidget(${'$'}warehouseID: String!) {
-            TokonowRepurchaseWidget(warehouseID:${'$'}warehouseID) {
+        query TokonowRepurchaseWidget(${'$'}warehouseID: String!, ${'$'}queryParam: String!) {
+            TokonowRepurchaseWidget(warehouseID:${'$'}warehouseID, queryParam:${'$'}queryParam) {
                 header {
                     process_time
                     messages
@@ -27,6 +27,7 @@ internal object GetRecentPurchase {
                         countReview
                         minOrder
                         maxOrder
+                        stock
                         category
                         labelGroup{
                             position

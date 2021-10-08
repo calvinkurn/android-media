@@ -57,6 +57,9 @@ class ProductContentViewHolder(private val view: View,
                 header?.renderFreeOngkir(element.freeOngkirImgUrl)
             }
         }
+        view.addOnImpressionListener(element.impressHolder) {
+            listener.onImpressComponent(getComponentTrackData(element))
+        }
     }
 
     private fun initializeClickListener(element: ProductContentDataModel?) = with(view) {

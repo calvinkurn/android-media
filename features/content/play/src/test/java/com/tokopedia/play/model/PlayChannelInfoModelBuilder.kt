@@ -31,10 +31,12 @@ class PlayChannelInfoModelBuilder {
     )
 
     fun buildChannelInfo(
+            id: String = "1",
             channelType: PlayChannelType = PlayChannelType.Live,
             backgroundUrl: String = "https://www.tokopedia.com",
             title: String = ""
     ) = PlayChannelInfoUiModel(
+            id = id,
             channelType = channelType,
             backgroundUrl = backgroundUrl,
             title = title

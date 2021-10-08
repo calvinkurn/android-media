@@ -9,6 +9,7 @@ object EmoneyPdpAnalyticsConst {
         const val DIGITAL_GENERAL_EVENT = "digitalGeneralEvent"
         const val CLICK_EMONEY = "clickEmoney"
         const val CLICK_DIGITAL_NATIVE = "clickDigitalNative"
+        const val CLICK_DIGITAL_EVENT = "clickDigitalEvent"
     }
 
     object Category {

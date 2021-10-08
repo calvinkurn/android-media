@@ -1,6 +1,7 @@
 package com.tokopedia.home_recom.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.home_recom.view.fragment.InfiniteTokonowRecomFragment
 import com.tokopedia.home_recom.view.fragment.RecommendationFragment
 import com.tokopedia.home_recom.view.fragment.SimilarProductRecommendationFragment
 import com.tokopedia.recommendation_widget_common.di.RecommendationCoroutineModule
@@ -20,4 +21,5 @@ import dagger.Component
 interface HomeRecommendationComponent{
     fun inject(fragment: RecommendationFragment)
     fun inject(fragment: SimilarProductRecommendationFragment)
+    fun inject(fragment: InfiniteTokonowRecomFragment)
 }

@@ -6,5 +6,5 @@ import com.google.gson.annotations.SerializedName
 data class SetUserProfileSettingResponse(
         @SerializedName("userProfileSettingUpdate")
         @Expose
-        val userProfileSettingUpdate: SetUserProfileSetting
+        val userProfileSettingUpdate: SetUserProfileSetting = SetUserProfileSetting()
 )

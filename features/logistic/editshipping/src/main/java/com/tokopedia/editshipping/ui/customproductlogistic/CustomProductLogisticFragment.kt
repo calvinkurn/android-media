@@ -163,7 +163,6 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
                 cplItemConventionalAdapter.setProductIdsActivated(data.cplProduct[0])
             }
         }
-        updateLayoutShipment()
     }
 
     private fun populateShipperData(data: CustomProductLogisticModel, shipperCase: Int) {
@@ -178,20 +177,6 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
                 cplItemOnDemandAdapter.addData(data.shipperList[0].shipper)
                 cplItemConventionalAdapter.addData(data.shipperList[1].shipper)
             }
-        }
-    }
-
-    private fun updateLayoutShipment() {
-        if (cplItemOnDemandAdapter.checkActivatedSpIds().isEmpty()) {
-            binding.shippingEditorLayoutOndemand.gone()
-        } else {
-            binding.shippingEditorLayoutOndemand.visible()
-        }
-
-        if (cplItemConventionalAdapter.checkActivatedSpIds().isEmpty()) {
-            binding.shippingEditorLayoutConventional.gone()
-        } else {
-            binding.shippingEditorLayoutConventional.visible()
         }
     }
 

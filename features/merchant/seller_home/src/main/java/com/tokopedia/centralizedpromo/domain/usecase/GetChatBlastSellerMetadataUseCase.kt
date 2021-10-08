@@ -15,7 +15,7 @@ class GetChatBlastSellerMetadataUseCase @Inject constructor(
 ) : BaseGqlUseCase<ChatBlastSellerMetadataUiModel>() {
     override suspend fun executeOnBackground(): ChatBlastSellerMetadataUiModel {
         val gqlRequest = GraphqlRequest(QUERY, ChatBlastSellerMetadataResponse::class.java)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest))
 
         val errors = gqlResponse.getError(ChatBlastSellerMetadataResponse::class.java)
         if (errors.isNullOrEmpty()) {

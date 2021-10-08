@@ -19,7 +19,7 @@ class GetNameRecommendationUseCase @Inject constructor(
     override suspend fun executeOnBackground(): List<String> {
 
         val gqlRequest = GraphqlRequest(QUERY, UniverseSearchResponse::class.java, requestParams)
-        val gqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse: GraphqlResponse = graphqlRepository.response(listOf(gqlRequest))
 
         val errors: List<GraphqlError>? = gqlResponse.getError(UniverseSearchResponse::class.java)
         if (errors.isNullOrEmpty()) {
