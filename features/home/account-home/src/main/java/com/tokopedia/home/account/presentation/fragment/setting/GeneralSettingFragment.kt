@@ -98,7 +98,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     @Inject
     internal lateinit var settingsPresenter: SettingsPresenter
 
-    private var tempCountDarkModeToggle = 0
     private var isForceDarkModeToggleVisible = false
 
     private lateinit var loadingView: View
@@ -194,22 +193,6 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         recyclerView.addItemDecoration(DividerItemDecoration(activity))
         val appVersion = view.findViewById<TextView>(R.id.text_view_app_version)
         updateButton = view.findViewById(R.id.force_update_button)
-        tempCountDarkModeToggle = 0
-        appVersion.run {
-            text = getString(R.string.application_version_fmt, GlobalConfig.RAW_VERSION_NAME)
-            setOnClickListener {
-                tempCountDarkModeToggle++
-                if (!isForceDarkModeToggleVisible && tempCountDarkModeToggle == ENABLE_DARK_MODE_TOGGLE_COUNT) {
-                    Toast.makeText(context, "Sekarang anda bisa menggunakan Tokopedia Dark Mode", Toast.LENGTH_SHORT).show()
-                    isForceDarkModeToggleVisible = true
-                    localCacheHandler.apply {
-                        putBoolean(KEY_PREF_DARK_MODE_TOGGLE, true)
-                        applyEditor()
-                    }
-                    refreshSettingOptionsList()
-                }
-            }
-        }
         showForceUpdate()
     }
 
