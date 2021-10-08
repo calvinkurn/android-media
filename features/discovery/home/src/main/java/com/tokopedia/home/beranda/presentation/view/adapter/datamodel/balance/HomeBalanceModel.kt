@@ -77,7 +77,7 @@ data class HomeBalanceModel(
 
     //call to init balance widget data
     fun initBalanceModelByType() {
-        if (isGopayEligible != null && isGopayEligible != null) {
+        if (isGopayEligible != null) {
             when (balanceType) {
                 TYPE_STATE_1 -> {
                     balanceDrawerItemModels.remove(BALANCE_POSITION_FOURTH)
@@ -444,45 +444,47 @@ data class HomeBalanceModel(
         itemType: Int,
         action: (pos: Int) -> Unit
     ) {
-        when (balanceType) {
-            TYPE_STATE_1 -> {
-                itemTypeCondition(
-                    itemType,
-                    typeWalletCondition = { action.invoke(BALANCE_POSITION_FIRST) },
-                    typeCouponCondition = { action.invoke(BALANCE_POSITION_SECOND) },
-                    typeRewardsCondition = { action.invoke(BALANCE_POSITION_SECOND) },
-                    typeFreeOngkirCondition = { action.invoke(BALANCE_POSITION_THIRD) }
-                )
-            }
-            TYPE_STATE_2 -> {
-                if (isGopayEligible != null && isGopayEligible == true) {
+        if (isGopayEligible != null) {
+            when (balanceType) {
+                TYPE_STATE_1 -> {
                     itemTypeCondition(
                         itemType,
                         typeWalletCondition = { action.invoke(BALANCE_POSITION_FIRST) },
-                        typeTokopointCondition = { action.invoke(BALANCE_POSITION_SECOND) },
-                        typeFreeOngkirCondition = { action.invoke(BALANCE_POSITION_SECOND) },
                         typeCouponCondition = { action.invoke(BALANCE_POSITION_SECOND) },
-                        typeRewardsCondition = { action.invoke(BALANCE_POSITION_SECOND) }
-                    )
-                } else {
-                    itemTypeCondition(
-                        itemType,
-                        typeWalletCondition = { action.invoke(BALANCE_POSITION_FIRST) },
-                        typeFreeOngkirCondition = { action.invoke(BALANCE_POSITION_SECOND) },
-                        typeTokopointCondition = { action.invoke(BALANCE_POSITION_THIRD) },
-                        typeCouponCondition = { action.invoke(BALANCE_POSITION_FOURTH) },
-                        typeRewardsCondition = { action.invoke(BALANCE_POSITION_FOURTH) }
+                        typeRewardsCondition = { action.invoke(BALANCE_POSITION_SECOND) },
+                        typeFreeOngkirCondition = { action.invoke(BALANCE_POSITION_THIRD) }
                     )
                 }
-            }
-            TYPE_STATE_3 -> {
-                itemTypeCondition(
-                    itemType,
-                    typeTokopointCondition = { action.invoke(BALANCE_POSITION_FIRST) },
-                    typeCouponCondition = { action.invoke(BALANCE_POSITION_SECOND) },
-                    typeRewardsCondition = { action.invoke(BALANCE_POSITION_SECOND) },
-                    typeFreeOngkirCondition = { action.invoke(BALANCE_POSITION_THIRD) }
-                )
+                TYPE_STATE_2 -> {
+                    if (isGopayEligible != null && isGopayEligible == true) {
+                        itemTypeCondition(
+                            itemType,
+                            typeWalletCondition = { action.invoke(BALANCE_POSITION_FIRST) },
+                            typeTokopointCondition = { action.invoke(BALANCE_POSITION_SECOND) },
+                            typeFreeOngkirCondition = { action.invoke(BALANCE_POSITION_SECOND) },
+                            typeCouponCondition = { action.invoke(BALANCE_POSITION_SECOND) },
+                            typeRewardsCondition = { action.invoke(BALANCE_POSITION_SECOND) }
+                        )
+                    } else {
+                        itemTypeCondition(
+                            itemType,
+                            typeWalletCondition = { action.invoke(BALANCE_POSITION_FIRST) },
+                            typeFreeOngkirCondition = { action.invoke(BALANCE_POSITION_SECOND) },
+                            typeTokopointCondition = { action.invoke(BALANCE_POSITION_THIRD) },
+                            typeCouponCondition = { action.invoke(BALANCE_POSITION_FOURTH) },
+                            typeRewardsCondition = { action.invoke(BALANCE_POSITION_FOURTH) }
+                        )
+                    }
+                }
+                TYPE_STATE_3 -> {
+                    itemTypeCondition(
+                        itemType,
+                        typeTokopointCondition = { action.invoke(BALANCE_POSITION_FIRST) },
+                        typeCouponCondition = { action.invoke(BALANCE_POSITION_SECOND) },
+                        typeRewardsCondition = { action.invoke(BALANCE_POSITION_SECOND) },
+                        typeFreeOngkirCondition = { action.invoke(BALANCE_POSITION_THIRD) }
+                    )
+                }
             }
         }
     }
