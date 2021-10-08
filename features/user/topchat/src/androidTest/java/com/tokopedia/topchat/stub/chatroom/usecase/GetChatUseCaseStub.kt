@@ -81,6 +81,18 @@ class GetChatUseCaseStub @Inject constructor(
             chatReplies.addProperty("hasNextAfter", true)
         }
 
+    val expiredReplyBubbleResponse: GetExistingChatPojo
+        get() = alterResponseOf(replyBubbleResponsePath) { response ->
+            alterDateToToday(response)
+            val chatReplies = response.getAsJsonObject(chatReplies)
+                .getAsJsonArray(list).get(0).asJsonObject
+                .getAsJsonArray(chats).get(0).asJsonObject
+                .getAsJsonArray(replies)
+            val lastReplyParentReply = chatReplies.last().asJsonObject
+                .getAsJsonObject(parentReply)
+            lastReplyParentReply.addProperty(isExpired, true)
+        }
+
     /**
      * <!--- End Reply bubble --->
      */
@@ -202,6 +214,8 @@ class GetChatUseCaseStub @Inject constructor(
     private val isOpposite = "isOpposite"
     private val cta_button = "cta_button"
     private val date = "date"
+    private val isExpired = "isExpired"
+    private val parentReply = "parentReply"
 
     private fun alterDateToToday(response: JsonObject) {
         val list = response.getAsJsonObject(chatReplies)

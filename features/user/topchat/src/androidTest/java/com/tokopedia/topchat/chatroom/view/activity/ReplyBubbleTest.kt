@@ -7,6 +7,7 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.ReplyBubbleResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.ReplyBubbleRobot
 import org.hamcrest.Matchers.`is`
 import org.junit.Test
+import com.tokopedia.topchat.R
 
 class ReplyBubbleTest : TopchatRoomTest() {
 
@@ -203,10 +204,22 @@ class ReplyBubbleTest : TopchatRoomTest() {
         assertThat(getChatUseCase.isInTheMiddleOfThePage(), `is`(true))
     }
 
-    // TODO: should able copy to clipboard msg bubble
-    // TODO: should show expired toaster when user click expired reply bubble
-    // TODO: should disable long click on fraud status msg true from ws
+    @Test
+    fun should_show_expired_toaster_when_user_click_expired_reply_bubble() {
+        // Given
+        getChatUseCase.response = getChatUseCase.expiredReplyBubbleResponse
+        launchChatRoomActivity()
+
+        // When
+        ReplyBubbleRobot.clickReplyBubbleAt(0)
+
+        // Then
+        assertSnackbarText(context.getString(R.string.title_topchat_reply_bubble_expired))
+    }
+
     // TODO: should show image reply bubble when parent reply is not null from GQL
     // TODO: should show image reply bubble when parent reply is not null from websocket
+
+    // TODO: should able copy to clipboard msg bubble
 
 }
