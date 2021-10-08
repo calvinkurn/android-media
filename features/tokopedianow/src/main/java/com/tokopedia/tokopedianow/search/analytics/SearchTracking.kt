@@ -26,9 +26,11 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_P
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_QUICK_FILTER
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_REMOVE_QUANTITY
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_TAMBAH_KE_KERANJANG
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_VIEW_ALL_ON_TOKONOW_RECOMMENDATION
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_BANNER
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_BROADMATCH
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.IMPRESSION_PRODUCT
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_EMPTY_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_NO_SEARCH_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_SEARCH_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_BROAD_MATCH
@@ -94,6 +96,7 @@ object SearchTracking {
         const val IMPRESSION_BROADMATCH = "impression - broad match"
         const val CLICK_BROADMATCH = "click - broad match"
         const val CLICK_BROADMATCH_LIHAT_SEMUA = "click - broad match lihat semua"
+        const val CLICK_VIEW_ALL_ON_TOKONOW_RECOMMENDATION = "click view all on tokonow recommendation"
     }
 
     object Category {
@@ -607,5 +610,18 @@ object SearchTracking {
                 "category_id", SearchCategoryTrackingConst.Misc.NONE_OTHER,
             ))
         }
+    }
+
+    fun sendRecommendationSeeAllClickEvent(keyword: String) {
+        sendGeneralEvent(
+            DataLayer.mapOf(
+                EVENT, EVENT_CLICK_TOKONOW,
+                EVENT_ACTION, CLICK_VIEW_ALL_ON_TOKONOW_RECOMMENDATION,
+                EVENT_CATEGORY, TOKONOW_EMPTY_RESULT,
+                EVENT_LABEL, keyword,
+                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+            )
+        )
     }
 }
