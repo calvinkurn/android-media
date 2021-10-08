@@ -21,10 +21,8 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.data.HotelCancellationButtonEnum
 import com.tokopedia.hotel.cancellation.data.HotelCancellationError
 import com.tokopedia.hotel.cancellation.data.HotelCancellationModel
-import com.tokopedia.hotel.cancellation.data.HotelCancellationSubmitModel
 import com.tokopedia.hotel.cancellation.di.HotelCancellationComponent
 import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationActivity
-import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationConfirmationActivity
 import com.tokopedia.hotel.cancellation.presentation.viewmodel.HotelCancellationViewModel
 import com.tokopedia.hotel.cancellation.presentation.widget.HotelCancellationRefundDetailWidget
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
@@ -133,30 +131,6 @@ class HotelCancellationFragment : HotelBaseFragment() {
             }
         }
     }
-
-    private fun showErrorOrderNotFound() {
-        startActivity(HotelCancellationConfirmationActivity.getCallingIntent(requireContext(), getErrorOrderNotFoundModel(), true))
-        activity?.finish()
-    }
-
-    private fun showErrorOrderHasBeenCancelled() {
-        startActivity(HotelCancellationConfirmationActivity.getCallingIntent(requireContext(), getErrorOrderHasBeenCancelled(), false))
-        activity?.finish()
-    }
-
-    private fun getErrorOrderNotFoundModel(): HotelCancellationSubmitModel = HotelCancellationSubmitModel(false,
-            getString(R.string.hotel_cancellation_fail_order_not_found_title),
-            getString(R.string.hotel_cancellation_fail_order_not_found_description),
-            listOf(HotelCancellationSubmitModel.ActionButton(getString(R.string.hotel_cancellation_fail_order_not_found_cta),
-                    HotelCancellationButtonEnum.SECONDARY.value, getString(R.string.hotel_cancellation_order_list_applink),
-                    getString(R.string.hotel_cancellation_order_list_applink))))
-
-    private fun getErrorOrderHasBeenCancelled(): HotelCancellationSubmitModel = HotelCancellationSubmitModel(false,
-            getString(R.string.hotel_cancellation_fail_has_been_cancelled_title),
-            getString(R.string.hotel_cancellation_fail_has_been_cancelled_description),
-            listOf(HotelCancellationSubmitModel.ActionButton(getString(R.string.hotel_cancellation_fail_has_been_cancelled_cta),
-                    HotelCancellationButtonEnum.SECONDARY.value, getString(R.string.hotel_cancellation_order_list_applink),
-                    getString(R.string.hotel_cancellation_order_list_applink))))
 
     private fun convertDynamicError(error: Throwable){
         try {
