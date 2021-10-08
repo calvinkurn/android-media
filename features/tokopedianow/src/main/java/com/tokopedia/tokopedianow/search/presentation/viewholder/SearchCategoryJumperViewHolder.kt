@@ -10,6 +10,7 @@ import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategoryJumperBinding
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategoryJumperChipsBinding
 import com.tokopedia.tokopedianow.search.presentation.listener.CategoryJumperListener
 import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataView
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -136,16 +137,16 @@ class SearchCategoryJumperViewHolder(
             val LAYOUT = R.layout.item_tokopedianow_search_category_jumper_chips
         }
 
-        private val chips: ChipsUnify? by lazy {
-            itemView.findViewById(R.id.tokoNowSearchCategoryJumperChips)
-        }
+        private var binding: ItemTokopedianowSearchCategoryJumperChipsBinding? by viewBinding()
 
         fun bind(item: CategoryJumperDataView.Item) {
-            chips?.chipText = item.title
-            chips?.chipType = ChipsUnify.TYPE_ALTERNATE
-            chips?.chipSize = ChipsUnify.SIZE_SMALL
-            chips?.setOnClickListener {
-                categoryJumperListener.onCategoryJumperItemClick(item)
+            binding?.tokoNowSearchCategoryJumperChips?.apply {
+                chipText = item.title
+                chipType = ChipsUnify.TYPE_ALTERNATE
+                chipSize = ChipsUnify.SIZE_SMALL
+                setOnClickListener {
+                    categoryJumperListener.onCategoryJumperItemClick(item)
+                }
             }
         }
     }

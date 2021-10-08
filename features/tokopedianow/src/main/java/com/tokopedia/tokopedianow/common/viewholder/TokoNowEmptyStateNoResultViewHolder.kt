@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategoryEmptyProductBinding
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategoryEmptyStateChipBinding
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -150,14 +151,16 @@ class TokoNowEmptyStateNoResultViewHolder(
             val LAYOUT = R.layout.item_tokopedianow_search_category_empty_state_chip
         }
 
-        private val chip: ChipsUnify? = itemView.findViewById(R.id.tokonowSearchCategoryEmptyStateFilterChip)
+        private var binding: ItemTokopedianowSearchCategoryEmptyStateChipBinding? by viewBinding()
 
         fun bind(option: Option) {
-            chip?.chipText = option.name
-            chip?.chipType = ChipsUnify.TYPE_SELECTED
-            chip?.chipSize = ChipsUnify.SIZE_SMALL
-            chip?.setOnClickListener {
-                tokoNowEmptyStateNoResultListener?.onRemoveFilterClick(option)
+            binding?.tokonowSearchCategoryEmptyStateFilterChip?.apply {
+                chipText = option.name
+                chipType = ChipsUnify.TYPE_SELECTED
+                chipSize = ChipsUnify.SIZE_SMALL
+                setOnClickListener {
+                    tokoNowEmptyStateNoResultListener?.onRemoveFilterClick(option)
+                }
             }
         }
     }
