@@ -9,6 +9,7 @@ import android.util.Base64
 import androidx.annotation.RequiresApi
 import androidx.core.app.JobIntentService
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.loginregister.login.data.SignResult
@@ -57,13 +58,7 @@ class RegisterPushNotifService : JobIntentService(), CoroutineScope {
                 generateKey()
                 if (::keyPair.isInitialized) {
                     signData(userSession.userId, userSession.deviceId).let {
-                        launch {
-                            registerPushNotifUseCase(RegisterPushNotifParamsModel(
-                                publicKey = it.publicKey,
-                                signature = it.signature,
-                                datetime = it.datetime
-                            ))
-                        }
+                        doRegisterPushNotif(it)
                     }
                 }
             }
@@ -77,6 +72,18 @@ class RegisterPushNotifService : JobIntentService(), CoroutineScope {
         application?.let {
             LoginComponentBuilder.getComponent(it).inject(this)
         }
+    }
+
+    private fun doRegisterPushNotif(signResult: SignResult) {
+        launchCatchError(coroutineContext, {
+            registerPushNotifUseCase(RegisterPushNotifParamsModel(
+                publicKey = signResult.publicKey,
+                signature = signResult.signature,
+                datetime = signResult.datetime
+            ))
+        }, {
+            recordLog(DO_REGISTER_PUSH_NOTIF, "", it)
+        })
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -151,6 +158,7 @@ class RegisterPushNotifService : JobIntentService(), CoroutineScope {
         private const val ON_HANDLE_WORK = "onHandlerWork()"
         private const val START_SERVICE = "startServices()"
         private const val SIGN_DATA = "signData()"
+        private const val DO_REGISTER_PUSH_NOTIF = "doRegisterPushNotif()"
 
         fun startService(context: Context, jobId: Int) {
             try {
