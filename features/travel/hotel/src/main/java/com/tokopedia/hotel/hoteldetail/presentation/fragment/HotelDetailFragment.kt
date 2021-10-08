@@ -252,7 +252,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         observeABTestNearbyLandmarks()
     }
     fun observeABTestNearbyLandmarks(){
-        if(isABTestNearbyLandmarks()) {
+        if(!isABTestNearbyLandmarks()) {
             detailViewModel.hotelNearbyLandmarks.observe(viewLifecycleOwner, {
                 when (it) {
                     is Success -> {
@@ -838,7 +838,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
     fun isABTestNearbyLandmarks(): Boolean = (RemoteConfigInstance.getInstance().abTestPlatform
         .getString(AB_TEST_KEY_NEARBY_LANDMARK, AB_TEST_SHOW_LANDMARK)
-            == AB_TEST_SHOW_LANDMARK)
+            == AB_TEST_HIDE_LANDMARK)
     companion object {
 
         const val REQUEST_CODE_GLOBAL_SEARCH = 103
@@ -859,7 +859,6 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         const val IMAGE_COUNTER_THIRD = 3
 
         const val AB_TEST_KEY_NEARBY_LANDMARK = "hotel_nearlandmark"
-        const val AB_TEST_SHOW_LANDMARK = "Show_nearby"
         const val AB_TEST_HIDE_LANDMARK = "hide_nearby"
 
         fun getInstance(checkInDate: String, checkOutDate: String, propertyId: Long, roomCount: Int,
