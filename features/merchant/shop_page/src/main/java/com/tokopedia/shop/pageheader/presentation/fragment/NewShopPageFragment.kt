@@ -146,6 +146,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -174,7 +175,8 @@ class NewShopPageFragment :
         ShopHeaderPlayWidgetViewHolder.Listener,
         ShopPerformanceWidgetImageTextComponentViewHolder.Listener,
         ShareBottomsheetListener,
-        ScreenShotListener
+        ScreenShotListener,
+        PermissionListener
 {
 
     companion object {
@@ -909,7 +911,12 @@ class NewShopPageFragment :
             }
         }
         context?.let {
-           screenShotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this)
+           screenShotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+                   it,
+                   this,
+                   this,
+                   permissionListener = this
+           )
         }
     }
 
@@ -2510,5 +2517,9 @@ class NewShopPageFragment :
 
     fun hideShopPageFab() {
         shopPageFab?.hide()
+    }
+
+    override fun permissionAction(action: String, label: String) {
+        shopPageTracking?.clickUniversalSharingPermission(action, label, shopId, userId)
     }
 }
