@@ -5,7 +5,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@color/Unify_N0"
-    android:paddingTop="@dimen/unify_space_12"
     android:paddingBottom="@dimen/unify_space_12">
 
     <com.tokopedia.unifyprinciples.Typography
