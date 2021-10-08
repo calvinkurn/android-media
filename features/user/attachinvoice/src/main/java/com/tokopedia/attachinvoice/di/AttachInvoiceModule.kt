@@ -22,10 +22,4 @@ class AttachInvoiceModule {
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
-//    @AttachInvoiceScope
-//    @Provides
-//    fun provideUseCase(repository: GraphqlRepository): CoroutineUseCase<Map<String, Any>, GetInvoiceResponse> {
-//        return AttachInvoiceUseCase(repository, Dispatchers.IO)
-//    }
-
 }

@@ -51,10 +51,4 @@ class AttachInvoiceUseCase @Inject constructor(
     override suspend fun execute(params: ParamInvoice): GetInvoiceResponse {
         return repository.request(graphqlQuery(), params)
     }
-
-    private fun getParams(param: ParamInvoice): Map<String, Any> {
-        val msgId = "msgId"
-        val page = "page"
-        return mapOf(msgId to param.msgId, page to param.page)
-    }
 }
