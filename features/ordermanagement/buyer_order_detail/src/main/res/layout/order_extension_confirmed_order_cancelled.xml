@@ -31,7 +31,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl6" />
+        android:layout_marginTop="@dimen/spacing_lvl6"
+        tools:text="Batalkan Pesanan"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnOrderExtensionDialogSecondaryButton"
@@ -41,6 +42,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl4"
-        app:unifyButtonVariant="text" />
+        app:unifyButtonVariant="text"
+        tools:text="Perpanjang Pesanan"/>
 
 </LinearLayout>

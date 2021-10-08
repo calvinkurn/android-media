@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailExtensionViewModel
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import dagger.Binds
 import dagger.Module
@@ -19,4 +20,9 @@ abstract class BuyerOrderDetailViewModelModule {
     @IntoMap
     @ViewModelKey(BuyerOrderDetailViewModel::class)
     internal abstract fun provideBuyerOrderDetailViewModel(viewModel: BuyerOrderDetailViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(BuyerOrderDetailExtensionViewModel::class)
+    internal abstract fun provideOrderDetailExtensionViewModel(viewModel: BuyerOrderDetailExtensionViewModel): ViewModel
 }
