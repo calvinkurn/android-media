@@ -37,7 +37,7 @@ class DigitalRecommendationAnalytics {
                     Bundle().also {
                         it.putInt(DigitalRecommendationKeys.INDEX, index + 1)
                         it.putString(DigitalRecommendationKeys.ITEM_BRAND, digitalRecommendationModel.tracking.productId)
-                        it.putString(DigitalRecommendationKeys.ITEM_CATEGORY, digitalRecommendationModel.tracking.categoryId)
+                        it.putString(DigitalRecommendationKeys.ITEM_CATEGORY, "${digitalRecommendationModel.tracking.categoryId} - ${digitalRecommendationModel.tracking.categoryName}")
                         it.putString(DigitalRecommendationKeys.ITEM_ID, digitalRecommendationModel.tracking.productId)
                         it.putString(DigitalRecommendationKeys.ITEM_NAME, digitalRecommendationModel.productName)
                         it.putString(DigitalRecommendationKeys.ITEM_VARIANT, digitalRecommendationModel.tracking.itemType)
@@ -77,7 +77,7 @@ class DigitalRecommendationAnalytics {
                     Bundle().also {
                         it.putInt(DigitalRecommendationKeys.INDEX, index + 1)
                         it.putString(DigitalRecommendationKeys.ITEM_BRAND, digitalRecommendationModel.tracking.productId)
-                        it.putString(DigitalRecommendationKeys.ITEM_CATEGORY, digitalRecommendationModel.tracking.categoryId)
+                        it.putString(DigitalRecommendationKeys.ITEM_CATEGORY, "${digitalRecommendationModel.tracking.categoryId} - ${digitalRecommendationModel.tracking.categoryName}")
                         it.putString(DigitalRecommendationKeys.ITEM_ID, digitalRecommendationModel.tracking.productId)
                         it.putString(DigitalRecommendationKeys.ITEM_NAME, digitalRecommendationModel.productName)
                         it.putString(DigitalRecommendationKeys.ITEM_VARIANT, digitalRecommendationModel.tracking.itemType)
