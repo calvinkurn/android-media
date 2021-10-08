@@ -2,7 +2,9 @@ package com.tokopedia.layanan_finansial.view.viewHolder
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
@@ -56,6 +58,8 @@ class TopAdsViewHolder(val view: View): AbstractViewHolder<Visitable<*>>(view) {
             LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
         val topAdsAdapter = TopAdsAdapter(imageList, ::onClick)
         displayRecycler.adapter = topAdsAdapter
+        val snapHelper = LinearSnapHelper()
+        snapHelper.attachToRecyclerView(displayRecycler)
     }
 
     private fun onClick(appLink: String) {

@@ -9,7 +9,6 @@ import com.tokopedia.layanan_finansial.view.models.TopAdsImageModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.widget.TopAdsImageView
-import com.tokopedia.unifycomponents.toPx
 
 class TopAdsAdapter(
     private val topAdsModelList: List<TopAdsImageModel>,
@@ -20,8 +19,6 @@ class TopAdsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopAdsViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.layout_topads_sdk, parent, false)
-        val layoutParams = view.layoutParams
-        layoutParams.width = parent.width - 16.toPx()
         return TopAdsViewHolder(view, onclick)
     }
 
