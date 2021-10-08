@@ -19,6 +19,7 @@ import com.daasuu.mp4compose.FillModeCustomItem
 import com.daasuu.mp4compose.composer.Mp4Composer
 import com.daasuu.mp4compose.logger.Logger
 import com.otaliastudios.cameraview.*
+import com.otaliastudios.cameraview.controls.Facing
 import com.otaliastudios.cameraview.controls.Flash
 import com.otaliastudios.cameraview.controls.Mode
 import com.otaliastudios.cameraview.controls.PictureFormat
@@ -28,7 +29,9 @@ import com.tokopedia.imagepicker_insta.R
 import com.tokopedia.imagepicker_insta.activity.CameraActivity
 import com.tokopedia.imagepicker_insta.common.trackers.MediaType
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
+import com.tokopedia.imagepicker_insta.util.CameraFacing
 import com.tokopedia.imagepicker_insta.util.CameraUtil
+import com.tokopedia.imagepicker_insta.util.Prefs
 import com.tokopedia.imagepicker_insta.util.VideoUtil
 import com.tokopedia.imagepicker_insta.viewmodel.CameraViewModel
 import com.tokopedia.imagepicker_insta.views.CameraButton
@@ -121,7 +124,11 @@ class CameraFragment : Fragment() {
 
     fun getLayout() = R.layout.imagepicker_insta_camera_fragment
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val v = LayoutInflater.from(context).inflate(getLayout(), container, false)
         initViews(v)
         initData()
@@ -147,14 +154,25 @@ class CameraFragment : Fragment() {
         cameraView.pictureFormat = PictureFormat.JPEG
         cameraView.mode = Mode.PICTURE
 
+        setCameraFacing()
+
         cameraView.flash = Flash.OFF
         isFlashOn = false
 
         imageFlash.setImageResource(R.drawable.imagepicker_insta_flash_off)
         cameraView.videoMaxDuration = maxDuration.toInt() * 1000
 
-        if(activity is CameraActivity) {
+        if (activity is CameraActivity) {
             cameraButton.maxDurationToRecord = (activity as CameraActivity).videoMaxDuration
+        }
+    }
+
+    private fun setCameraFacing(){
+        if(context!=null){
+            when(Prefs.getCameraFacing(requireContext())){
+                CameraFacing.FRONT-> cameraView.facing = Facing.FRONT
+                CameraFacing.BACK-> cameraView.facing = Facing.BACK
+            }
         }
     }
 
@@ -186,7 +204,10 @@ class CameraFragment : Fragment() {
                         (activity as? CameraActivity)?.exitActivityOnSuccess(it.data)
                         cameraButton.addTouchListener()
                     } else {
-                        showToast(getString(R.string.imagepicker_smw_in_getting_uri), Toaster.TYPE_ERROR)
+                        showToast(
+                            getString(R.string.imagepicker_smw_in_getting_uri),
+                            Toaster.TYPE_ERROR
+                        )
                         (activity as? CameraActivity)?.exitActivityOnError()
                     }
                 }
@@ -220,6 +241,7 @@ class CameraFragment : Fragment() {
 
         imageSelfieCamera.setOnClickListener {
             cameraView.toggleFacing()
+            saveCameraPref()
         }
 
         imageFlash.setOnClickListener {
@@ -255,6 +277,13 @@ class CameraFragment : Fragment() {
         })
     }
 
+    private fun saveCameraPref(){
+        when (cameraView.facing) {
+            Facing.FRONT -> Prefs.saveCameraFacing(requireContext(), CameraFacing.FRONT)
+            Facing.BACK -> Prefs.saveCameraFacing(requireContext(), CameraFacing.BACK)
+        }
+    }
+
     /**
      * TODO Rahul Ensure second recording will only start when mp4Composer is finished
      * */
@@ -275,12 +304,13 @@ class CameraFragment : Fragment() {
             )
             sourceVideoFile = result.file
 
-            mp4Composer = Mp4Composer(Uri.fromFile(result.file), destinationPath, ctx, mp4ComposerLogger)
-                .size(cameraView.width, cameraView.width)
-                .fillMode(FillMode.CUSTOM)
-                .customFillMode(fillModeCustomItem)
-                .listener(mp4ComposerListener)
-                .start()
+            mp4Composer =
+                Mp4Composer(Uri.fromFile(result.file), destinationPath, ctx, mp4ComposerLogger)
+                    .size(cameraView.width, cameraView.width)
+                    .fillMode(FillMode.CUSTOM)
+                    .customFillMode(fillModeCustomItem)
+                    .listener(mp4ComposerListener)
+                    .start()
         }
     }
 
@@ -338,7 +368,8 @@ class CameraFragment : Fragment() {
     }
 
     fun enableFlashTorch() {
-        val isSupportFlashTorch = cameraView.cameraOptions?.supportedFlash?.contains(Flash.TORCH) == true
+        val isSupportFlashTorch =
+            cameraView.cameraOptions?.supportedFlash?.contains(Flash.TORCH) == true
         if (isSupportFlashTorch) {
             cameraView.flash = Flash.TORCH
         }
@@ -369,7 +400,7 @@ class CameraFragment : Fragment() {
     private fun cropBitmap(srcBitmap: Bitmap) {
         context?.let {
             val file = CameraUtil.createMediaFile(it)
-            val yOffset = srcBitmap.height/2 - srcBitmap.width/2
+            val yOffset = srcBitmap.height / 2 - srcBitmap.width / 2
             viewModel.cropPhoto(srcBitmap, yOffset, srcBitmap.width, file)
         }
     }
