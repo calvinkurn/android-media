@@ -72,7 +72,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
-import com.tokopedia.shop.analytic.model.TrackShopTypeDef
+import com.tokopedia.shop.common.constant.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopModerateRequestStatusCode
 import com.tokopedia.shop.common.constant.ShopPageConstant
@@ -87,8 +87,6 @@ import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
 import com.tokopedia.shop.common.util.ShopUtil.isExceptionIgnored
-import com.tokopedia.shop.common.util.ShopUtil.isShouldCheckShopType
-import com.tokopedia.shop.common.util.ShopUtil.isNotRegularMerchant
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
 import com.tokopedia.shop.common.view.ShopPageCountDrawable
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
@@ -134,7 +132,6 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidge
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.review.shop.view.ReviewShopFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
-import com.tokopedia.shop.setting.view.activity.ShopPageSettingActivity
 import com.tokopedia.shop.showcase.presentation.fragment.ShopPageShowcaseFragment
 import com.tokopedia.stickylogin.common.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginAction
@@ -149,6 +146,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -177,7 +175,8 @@ class NewShopPageFragment :
         ShopHeaderPlayWidgetViewHolder.Listener,
         ShopPerformanceWidgetImageTextComponentViewHolder.Listener,
         ShareBottomsheetListener,
-        ScreenShotListener
+        ScreenShotListener,
+        PermissionListener
 {
 
     companion object {
@@ -213,7 +212,6 @@ class NewShopPageFragment :
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
         private const val START_PAGE = 1
         private const val IS_FIRST_TIME_VISIT = "isFirstTimeVisit"
-        private const val IS_FIRST_TIME_SHOW_TAB_LABEL = "isFirstTimeShowTabLabel"
         private const val SOURCE = "shop page"
 
         private const val REQUEST_CODE_START_LIVE_STREAMING = 7621
@@ -274,8 +272,6 @@ class NewShopPageFragment :
         get() = R.drawable.ic_shop_tab_showcase_inactive.takeIf {
             isUsingNewNavigation()
         } ?: R.drawable.ic_shop_tab_showcase_inactive_old
-    private val iconTabShowcaseWithLabelInactive: Int
-        get() = R.drawable.ic_shop_tab_showcase_with_label_inactive
     private val iconTabShowcaseActive: Int
         get() = R.drawable.ic_shop_tab_showcase_active
     private val iconTabFeedInactive: Int
@@ -915,7 +911,12 @@ class NewShopPageFragment :
             }
         }
         context?.let {
-           screenShotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this)
+           screenShotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+                   it,
+                   this,
+                   this,
+                   permissionListener = this
+           )
         }
     }
 
@@ -1287,7 +1288,7 @@ class NewShopPageFragment :
             if (GlobalConfig.isSellerApp()) {
                 RouteManager.route(context, ApplinkConstInternalSellerapp.MENU_SETTING)
             } else {
-                startActivity(ShopPageSettingActivity.createIntent(context, shopId))
+                RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID, shopId)
             }
         }
     }
@@ -1394,16 +1395,6 @@ class NewShopPageFragment :
         shopShareBottomSheet?.dismiss()
     }
 
-    private fun saveFirstShowTabLabel() {
-        sharedPreferences?.edit()?.run {
-            putBoolean(IS_FIRST_TIME_SHOW_TAB_LABEL, true)
-        }?.apply()
-    }
-
-    private fun isFirstTimeShowTabLabel(): Boolean? {
-        return sharedPreferences?.getBoolean(IS_FIRST_TIME_SHOW_TAB_LABEL, false)
-    }
-
     private fun setupTabs() {
         listShopPageTabModel = (createListShopPageTabModel() as? List<ShopPageTabModel>) ?: listOf()
         configureTab(listShopPageTabModel.size)
@@ -1442,12 +1433,6 @@ class NewShopPageFragment :
                 viewPager?.setCurrentItem(position, false)
                 tabLayout?.getTabAt(position)?.let{
                     viewPagerAdapter?.handleSelectedTab(it, true)
-                    listShopPageTabModel[tab.position].apply {
-                        if (tabFragment is ShopPageShowcaseFragment && isUsingNewNavigation()) {
-                            tabIconInactive = iconTabShowcaseInactive
-                            saveFirstShowTabLabel()
-                        }
-                    }
                 }
                 if(isTabClickByUser) {
                     shopPageTracking?.clickTab(
@@ -1593,43 +1578,18 @@ class NewShopPageFragment :
                 shopPageProductFragment
         ))
 
-        if (isShouldCheckShopType()) {
-            if (isNotRegularMerchant(shopPageHeaderDataModel)) {
-                listShopPageTabModel.add(ShopPageTabModel(
-                        getString(R.string.shop_info_title_tab_showcase),
-                        if (isFirstTimeShowTabLabel() == false && isUsingNewNavigation()) {
-                            iconTabShowcaseWithLabelInactive
-                        } else {
-                            iconTabShowcaseInactive
-                        },
-                        iconTabShowcaseActive,
-                        ShopPageShowcaseFragment.createInstance(
-                                shopId,
-                                shopRef,
-                                shopAttribution,
-                                shopPageHeaderDataModel?.isOfficial ?: false,
-                                shopPageHeaderDataModel?.isGoldMerchant ?: false,
-                        )
-                ))
-            }
-        } else {
-            listShopPageTabModel.add(ShopPageTabModel(
-                    getString(R.string.shop_info_title_tab_showcase),
-                    if (isFirstTimeShowTabLabel() == false && isUsingNewNavigation()) {
-                        iconTabShowcaseWithLabelInactive
-                    } else {
-                        iconTabShowcaseInactive
-                    },
-                    iconTabShowcaseActive,
-                    ShopPageShowcaseFragment.createInstance(
-                            shopId,
-                            shopRef,
-                            shopAttribution,
-                            shopPageHeaderDataModel?.isOfficial ?: false,
-                            shopPageHeaderDataModel?.isGoldMerchant ?: false,
-                    )
-            ))
-        }
+        listShopPageTabModel.add(ShopPageTabModel(
+                getString(R.string.shop_info_title_tab_showcase),
+                iconTabShowcaseInactive,
+                iconTabShowcaseActive,
+                ShopPageShowcaseFragment.createInstance(
+                        shopId,
+                        shopRef,
+                        shopAttribution,
+                        shopPageHeaderDataModel?.isOfficial ?: false,
+                        shopPageHeaderDataModel?.isGoldMerchant ?: false,
+                )
+        ))
 
         if (isShowFeed) {
             val feedFragment = FeedShopFragment.createInstance(
@@ -2557,5 +2517,9 @@ class NewShopPageFragment :
 
     fun hideShopPageFab() {
         shopPageFab?.hide()
+    }
+
+    override fun permissionAction(action: String, label: String) {
+        shopPageTracking?.clickUniversalSharingPermission(action, label, shopId, userId)
     }
 }

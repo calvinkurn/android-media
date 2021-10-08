@@ -8,7 +8,7 @@
       "eventAction":"impression on engagement button",
       "eventLabel":"\\d+ - (vod|live)",
       "businessUnit":"play",
-      "currentSite":"tokopediamarketplace",
+      "currentSite":"(tokopediamarketplace|tokopediaseller)",
       "sessionIris":".*",
       "userId": ".*",
       "shopId": ".*"
@@ -19,7 +19,7 @@
       "eventAction":"click engagement button",
       "eventLabel":"\\d+ - (vod|live)",
       "businessUnit":"play",
-      "currentSite":"tokopediamarketplace",
+      "currentSite":"(tokopediamarketplace|tokopediaseller)",
       "sessionIris":".*",
       "userId": ".*",
       "shopId": ".*"
@@ -30,7 +30,7 @@
       "eventAction":"click terapkan & mulai button",
       "eventLabel":"\\d+ - (vod|live) - \\d+ - .+ - \\d+",
       "businessUnit":"play",
-      "currentSite":"tokopediamarketplace",
+      "currentSite":"(tokopediamarketplace|tokopediaseller)",
       "sessionIris":".*",
       "userId": ".*",
       "shopId": ".*"
@@ -41,7 +41,7 @@
       "eventAction":"impression on winner list",
       "eventLabel":"\\d+ - (vod|live) - \\d+ - .+",
       "businessUnit":"play",
-      "currentSite":"tokopediamarketplace",
+      "currentSite":"(tokopediamarketplace|tokopediaseller)",
       "sessionIris":".*",
       "userId": ".*",
       "shopId": ".*"
@@ -52,7 +52,7 @@
       "eventAction":"click winner list",
       "eventLabel":"\\d+ - (vod|live) - \\d+ - .+",
       "businessUnit":"play",
-      "currentSite":"tokopediamarketplace",
+      "currentSite":"(tokopediamarketplace|tokopediaseller)",
       "sessionIris":".*",
       "userId": ".*",
       "shopId": ".*"
@@ -63,7 +63,7 @@
       "eventAction":"click chat in bottom sheet",
       "eventLabel":"\\d+ - (vod|live) - \\d+ - .+",
       "businessUnit":"play",
-      "currentSite":"tokopediamarketplace",
+      "currentSite":"(tokopediamarketplace|tokopediaseller)",
       "sessionIris":".*",
       "userId": ".*",
       "shopId": ".*"

@@ -154,8 +154,8 @@ abstract class TopchatRoomTest {
 
     @Before
     open fun before() {
-        setupResponse()
         setupDaggerComponent()
+        setupResponse()
         setupDefaultResponseWhenFirstOpenChatRoom()
         setupDummyImageChatService()
         setupKeyboardIdlingResource()
@@ -169,14 +169,8 @@ abstract class TopchatRoomTest {
     }
 
     protected open fun setupResponse() {
-        firstPageChatAsBuyer = AndroidFileUtil.parse(
-            "success_get_chat_first_page_as_buyer.json",
-            GetExistingChatPojo::class.java
-        )
-        firstPageChatAsSeller = AndroidFileUtil.parse(
-            "success_get_chat_first_page_as_seller.json",
-            GetExistingChatPojo::class.java
-        )
+        firstPageChatAsSeller = getChatUseCase.defaultChatWithSellerResponse
+        firstPageChatAsBuyer = getChatUseCase.defaultChatWithBuyerResponse
         chatAttachmentResponse = AndroidFileUtil.parse(
             "success_get_chat_attachments.json",
             ChatAttachmentResponse::class.java
@@ -721,6 +715,15 @@ abstract class TopchatRoomTest {
                     position, R.id.iu_broadcast_start_date
                 )
         ).check(matches(matcher))
+    }
+
+    protected fun assertToolbarTitle(expectedTitle: String) {
+        onView(
+            Matchers.allOf(
+                withId(com.tokopedia.chat_common.R.id.title),
+                isDescendantOfA(withId(R.id.toolbar))
+            )
+        ).check(matches(withText(expectedTitle)))
     }
 
     protected fun isKeyboardOpened(): Boolean {

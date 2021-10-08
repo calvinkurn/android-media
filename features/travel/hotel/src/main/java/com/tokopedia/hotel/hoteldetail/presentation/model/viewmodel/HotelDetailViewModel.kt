@@ -81,7 +81,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
             val hotelInfoData = async {
                 val response = withContext(dispatcher.main) {
                     val detailRequest = GraphqlRequest(rawQuery, TYPE_HOTEL_INFO, detailParams)
-                    graphqlRepository.getReseponse(listOf(detailRequest))
+                    graphqlRepository.response(listOf(detailRequest))
                             .getSuccessData<PropertyDetailData.Response>()
                 }
                 response
@@ -108,7 +108,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
             val hotelReviewData = async {
                 val response = withContext(dispatcher.main) {
                     val reviewRequest = GraphqlRequest(rawQuery, TYPE_HOTEL_REVIEW, reviewParams)
-                    graphqlRepository.getReseponse(listOf(reviewRequest))
+                    graphqlRepository.response(listOf(reviewRequest))
                             .getSuccessData<HotelReview.Response>()
                 }
                 response

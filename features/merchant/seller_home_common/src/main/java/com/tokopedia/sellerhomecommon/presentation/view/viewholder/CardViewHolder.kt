@@ -5,7 +5,9 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.customview.CardValueCountdownView
 import com.tokopedia.unifycomponents.NotificationUnify
@@ -119,6 +121,20 @@ class CardViewHolder(
                         listener.sendCardClickTracking(element)
                     }
                 }
+            }
+
+            showCardState(element.data)
+        }
+    }
+
+    private fun showCardState(data: CardDataUiModel?) {
+        with(itemView.imgShcCardState) {
+            when (data?.state) {
+                CardDataUiModel.State.WARNING, CardDataUiModel.State.DANGER -> {
+                    visible()
+                    loadImage(R.drawable.bg_shc_card_stata_warning)
+                }
+                CardDataUiModel.State.NORMAL -> gone()
             }
         }
     }

@@ -130,7 +130,7 @@ class PlayLivePusherMediator(
             PlayLivePusherState.Recovered -> PlayLivePusherMediatorState.Recovered
             PlayLivePusherState.Resumed -> PlayLivePusherMediatorState.Resume(true)
             PlayLivePusherState.Started -> PlayLivePusherMediatorState.Started
-            PlayLivePusherState.Idle,
+            PlayLivePusherState.Idle -> PlayLivePusherMediatorState.Idle
             PlayLivePusherState.Stopped -> PlayLivePusherMediatorState.Stopped
         }
     }

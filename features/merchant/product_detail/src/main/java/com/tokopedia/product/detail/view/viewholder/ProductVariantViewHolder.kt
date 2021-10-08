@@ -3,11 +3,13 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.views.VariantItemDecorator
 import com.tokopedia.product.detail.common.view.AtcVariantListener
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -44,7 +46,9 @@ class ProductVariantViewHolder(val view: View,
                     containerAdapter?.setData(it)
                 }
             }
-
+            addOnImpressionListener(element.impressHolder) {
+                pdpListener.onImpressComponent(getComponentTrackData(element))
+            }
         }
     }
 
@@ -77,4 +81,8 @@ class ProductVariantViewHolder(val view: View,
         rvContainerVariant.show()
         variant_local_load.hide()
     }
+
+    private fun getComponentTrackData(
+        element: VariantDataModel
+    ) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
 }

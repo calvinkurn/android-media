@@ -2,7 +2,6 @@ package com.tokopedia.home_recom.view.fragment
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -26,12 +25,14 @@ import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.*
 import com.tokopedia.home_recom.util.*
+import com.tokopedia.home_recom.util.RecomPageConstant.SAVED_PRODUCT_ID
+import com.tokopedia.home_recom.util.RecomPageConstant.SAVED_QUERY_PARAM
+import com.tokopedia.home_recom.util.RecomPageConstant.SAVED_REF
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationAdapter
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.PDP_EXTRA_PRODUCT_ID
 import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.PDP_EXTRA_UPDATED_POSITION
 import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.REQUEST_FROM_PDP
-import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.SAVED_PRODUCT_ID
 import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.SHARE_PRODUCT_TITLE
 import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.SPAN_COUNT
 import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.WIHSLIST_STATUS_IS_WISHLIST
@@ -99,9 +100,6 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     companion object{
         private const val className = "com.tokopedia.home_recom.view.fragment.RecommendationFragment"
         private const val SPAN_COUNT = 2
-        private const val SAVED_PRODUCT_ID = "saved_product_id"
-        private const val SAVED_REF = "saved_ref"
-        private const val SAVED_QUERY_PARAM = "saved_query_param"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
@@ -390,6 +388,10 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
      */
     override fun onCloseRecommendation() {
         this.activity?.finish()
+    }
+
+    override fun onShowSnackbarError(throwable: Throwable) {
+        showToastError(throwable)
     }
 
     /**

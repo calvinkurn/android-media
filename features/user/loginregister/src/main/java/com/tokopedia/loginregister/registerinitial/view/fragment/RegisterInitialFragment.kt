@@ -18,6 +18,7 @@ import android.view.*
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
+import androidx.lifecycle.Observer
 import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -62,7 +63,8 @@ import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
 import com.tokopedia.loginregister.common.view.dialog.ProceedWithPhoneDialog
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
-import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
+import com.tokopedia.loginregister.discover.pojo.DiscoverData
+import com.tokopedia.loginregister.discover.pojo.ProviderData
 import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants
 import com.tokopedia.loginregister.external_register.base.data.ExternalRegisterPreference
 import com.tokopedia.loginregister.external_register.base.listener.BaseDialogConnectAccListener
@@ -108,6 +110,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.fragment_initial_register.*
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -559,7 +562,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         doRegisterCheck()
     }
 
-    private fun onSuccessGetProvider(discoverItems: ArrayList<DiscoverItemDataModel>) {
+    private fun onSuccessGetProvider(discoverData: DiscoverData) {
         dismissLoadingDiscover()
 
         val layoutParams = LinearLayout.LayoutParams(
@@ -569,8 +572,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
         socmedButtonsContainer?.removeAllViews()
 
-        for (i in discoverItems.indices) {
-            val item = discoverItems[i]
+        for (i in discoverData.providers.indices) {
+            val item = discoverData.providers[i]
             if (item.id != PHONE_NUMBER) {
                 context?.let {
                     val loginTextView = LoginTextView(it, MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
@@ -1110,8 +1113,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         }
     }
 
-    private fun setDiscoverOnClickListener(discoverItemDataModel: DiscoverItemDataModel, loginTextView: LoginTextView) {
-        when (discoverItemDataModel.id.toLowerCase()) {
+    private fun setDiscoverOnClickListener(provider: ProviderData, loginTextView: LoginTextView) {
+        when (provider.id.lowercase(Locale.getDefault())) {
             LoginConstants.DiscoverLoginId.FACEBOOK -> loginTextView.setOnClickListener { onRegisterFacebookClick() }
             LoginConstants.DiscoverLoginId.GPLUS -> loginTextView.setOnClickListener { onRegisterGoogleClick() }
         }
@@ -1462,7 +1465,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private fun registerPushNotif() {
         if (isHitRegisterPushNotif && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             activity?.let {
-                RegisterPushNotifService.startService(it.applicationContext)
+                RegisterPushNotifService.startService(it.applicationContext, REGISTER_PUSH_NOTIF_SERVICE_JOB_ID)
             }
         }
     }
@@ -1546,6 +1549,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         private const val TERM_AND_COND_END_SIZE = 54
         private const val PRIVACY_POLICY_START_SIZE = 61
         private const val PRIVACY_POLICY_END_SIZE = 78
+        private const val REGISTER_PUSH_NOTIF_SERVICE_JOB_ID = 3047
 
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 
