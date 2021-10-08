@@ -8,7 +8,7 @@ import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRe
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
-import java.util.*
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * @author by furqan on 17/09/2021
@@ -48,11 +48,8 @@ class DigitalRecommendationViewHolder(private val binding: ItemDigitalRecommenda
             binding.tgCategoryDigitalRecommendation.hide()
         } else {
             binding.tgCategoryDigitalRecommendation.show()
-            binding.tgCategoryDigitalRecommendation.text = element.categoryName.trim()
-                    .replaceFirstChar {
-                        if (it.isLowerCase()) it.titlecase(Locale.getDefault())
-                        else it.toString()
-                    }
+            binding.tgCategoryDigitalRecommendation.text = element.categoryName.trim().uppercase()
+            binding.tgCategoryDigitalRecommendation.weightType = Typography.REGULAR
         }
     }
 

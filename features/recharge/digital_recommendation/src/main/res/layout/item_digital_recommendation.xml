@@ -27,6 +27,7 @@
             app:layout_constraintRight_toLeftOf="@id/ivIconDigitalRecommendation"
             app:layout_constraintTop_toTopOf="@id/ivIconDigitalRecommendation"
             app:typographyType="heading_6"
+            app:typographyWeight="reguler"
             tools:text="INTERNET &amp; TV KABEL" />
 
         <com.tokopedia.unifycomponents.ImageUnify
