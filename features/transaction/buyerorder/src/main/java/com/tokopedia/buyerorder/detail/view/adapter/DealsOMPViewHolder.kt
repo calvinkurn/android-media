@@ -9,8 +9,7 @@ import com.tokopedia.buyerorder.detail.data.ActionButton
 import com.tokopedia.buyerorder.detail.data.Items
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo
 import com.tokopedia.buyerorder.detail.data.OrderDetails
-import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter.KEY_REDIRECT
-import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter.KEY_VOUCHER_CODE
+import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter.*
 import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView
 import com.tokopedia.buyerorder.detail.view.customview.RedeemVoucherView
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter
@@ -23,7 +22,9 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 
-class DealsOMPViewHolder(private val setEventDetails: ItemsAdapter.SetEventDetails, itemView: View,
+class DealsOMPViewHolder(private val setEventDetails: ItemsAdapter.SetEventDetails,
+                         private val adapter: ItemsAdapter,
+                         itemView: View,
                          private val presenter: OrderListDetailPresenter,
                          private val setTapActionDeals: RedeemVoucherView.SetTapActionDeals):
         RecyclerView.ViewHolder(itemView) {
@@ -74,6 +75,12 @@ class DealsOMPViewHolder(private val setEventDetails: ItemsAdapter.SetEventDetai
                                 actionButton.body, presenter, positionHolder, setTapActionDeals,
                                 setEventDetails)
                         voucerCodeLayout.addView(redeemVoucherView)
+                    } else if (actionButton.control.equals(KEY_POPUP)){
+                        val actionTextButton = adapter.renderActionButtons(i, actionButton, item)
+                        voucerCodeLayout.addView(actionTextButton)
+                        actionTextButton.setOnClickListener {
+                            setEventDetails.openShowQRFragment(actionButton, item)
+                        }
                     }
                 }
                 prog_bar.gone()
