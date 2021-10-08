@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.telco.data.TelcoAttributesProduct
 import com.tokopedia.topupbills.telco.data.TelcoCatalogDataCollection
 import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
@@ -76,7 +77,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
             val gridLayout = GridLayoutManager(context, PRODUCT_GRID_SPAN_LAYOUT, RecyclerView.VERTICAL, false)
             gridLayout.spanSizeLookup = object : SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
-                    return if (hasMccmProduct && position == 0) PRODUCT_GRID_SPAN_LAYOUT else SINGLE_PRODUCT_GRID_SPAN_LAYOUT
+                    return if (hasMccmProduct && position <= 1) PRODUCT_GRID_SPAN_LAYOUT else SINGLE_PRODUCT_GRID_SPAN_LAYOUT
                 }
             }
             recyclerView.layoutManager = gridLayout

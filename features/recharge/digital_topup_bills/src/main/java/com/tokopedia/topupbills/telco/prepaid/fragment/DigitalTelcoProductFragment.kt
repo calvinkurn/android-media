@@ -317,7 +317,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
                     emptyStateProductView.hide()
                     telcoTelcoProductView.show()
 
-                    val hasTitle = it.product.dataCollections.size > 1 && it.label != TelcoComponentName.PRODUCT_PULSA
+                    val hasTitle = it.product.dataCollections.size > 1
                     val showTitle = hasTitle && !telcoFilterData.isFilterSelected()
 
                     renderSortFilter(it.product.id, it.filterTagComponents)
