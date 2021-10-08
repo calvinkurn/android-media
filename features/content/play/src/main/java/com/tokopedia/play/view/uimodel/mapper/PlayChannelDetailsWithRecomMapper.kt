@@ -47,7 +47,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     cartInfo = mapCartInfo(it.config),
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
                     quickReplyInfo = mapQuickReply(it.quickReplies),
-                    videoMetaInfo = mapVideoMeta(it.video, it.id, it.title, extraParams),
+                    videoMetaInfo = if(it.airTime == PlayUpcomingUiModel.COMING_SOON) emptyVideoMetaInfo() else mapVideoMeta(it.video, it.id, it.title, extraParams),
                     statusInfo = mapChannelStatusInfo(it.config, it.title),
                     leaderboardInfo = mapLeaderboardInfo(),
                     upcomingInfo = mapUpcoming(it.title, it.airTime, it.config.reminder.isSet, it.coverUrl, it.startTime)
@@ -182,11 +182,11 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     private fun mapVideoPlayer(videoResponse: ChannelDetailsWithRecomResponse.Video, channelId: String, extraParams: ExtraParams) = when (videoResponse.type) {
         "live", "vod" -> PlayVideoPlayerUiModel.General.Incomplete(
-                params = PlayGeneralVideoPlayerParams(
-                        videoUrl = videoResponse.streamSource,
-                        buffer = mapVideoBufferControl(videoResponse.bufferControl),
-                        lastMillis = if (channelId == extraParams.channelId && videoResponse.type == "vod") extraParams.videoStartMillis else null
-                )
+            params = PlayGeneralVideoPlayerParams(
+                videoUrl = videoResponse.streamSource,
+                buffer = mapVideoBufferControl(videoResponse.bufferControl),
+                lastMillis = if (channelId == extraParams.channelId && videoResponse.type == "vod") extraParams.videoStartMillis else null
+            )
         )
         "youtube" -> PlayVideoPlayerUiModel.YouTube(videoResponse.streamSource)
         else -> PlayVideoPlayerUiModel.Unknown
@@ -256,6 +256,14 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             startTime = startTime,
             isAlreadyLive = false
         )
+
+    private fun emptyVideoMetaInfo() = PlayVideoMetaInfoUiModel(
+        videoPlayer = PlayVideoPlayerUiModel.Unknown,
+        videoStream = PlayVideoStreamUiModel(
+            id = "",
+            orientation = VideoOrientation.Unknown
+        )
+    )
 
     companion object {
         private const val MS_PER_SECOND = 1000
