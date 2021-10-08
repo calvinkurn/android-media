@@ -31,7 +31,7 @@ data class ParentReply(
 ) {
 
     val replyTimeMillisOffset: String get() {
-        val addOffsetTimeStamp = (replyTime.toLongOrZero() / 1_000_000) + 5000
+        val addOffsetTimeStamp = (replyTime.toLongOrZero() / 1_000_000)
         return addOffsetTimeStamp.toString()
     }
 
