@@ -59,6 +59,8 @@ open class BaseLiveBroadcasterManagerTest {
         justRun {
             broadcaster.logger.init(
                 any(),
+                any(),
+                any(),
                 any()
             )
         }
@@ -229,6 +231,8 @@ open class BaseLiveBroadcasterManagerTest {
     fun `Then data log is succeed to init`() {
         verify(exactly = 1) {
             broadcaster.logger.init(
+                any(),
+                any(),
                 any(),
                 any()
             )

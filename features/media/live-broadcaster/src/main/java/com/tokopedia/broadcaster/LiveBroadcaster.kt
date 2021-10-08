@@ -15,7 +15,7 @@ interface LiveBroadcaster {
     val connection: BroadcasterConnection
 
     fun init(context: Context, handler: Handler)
-    fun prepare(config: BroadcasterConfig.() -> Unit)
+    fun prepare(config: BroadcasterConfig?)
     fun setListener(listener: BroadcasterListener)
     fun startPreview(surfaceView: SurfaceAspectRatioView)
     fun stopPreview()

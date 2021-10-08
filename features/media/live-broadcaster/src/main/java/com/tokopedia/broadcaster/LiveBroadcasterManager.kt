@@ -80,10 +80,10 @@ class LiveBroadcasterManager constructor(
         }
     }
 
-    override fun prepare(config: BroadcasterConfig.() -> Unit) {
+    override fun prepare(config: BroadcasterConfig?) {
         if (hasPrepared) error("the streamer already prepared")
 
-        mConfig = BroadcasterConfig().apply(config)
+        mConfig = config ?: BroadcasterConfig()
         configureStreamer(mConfig)
 
         hasPrepared = true
