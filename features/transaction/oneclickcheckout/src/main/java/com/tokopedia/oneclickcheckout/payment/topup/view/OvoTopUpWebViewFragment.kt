@@ -24,6 +24,7 @@ import com.tokopedia.oneclickcheckout.databinding.FragmentPaymentWebViewBinding
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentOvoCustomerData
 import com.tokopedia.oneclickcheckout.payment.di.PaymentComponent
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -34,6 +35,9 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val viewModel: OvoTopUpWebViewViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[OvoTopUpWebViewViewModel::class.java]
@@ -109,7 +113,7 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
                         handleError(failure.throwable)
                     }
                 }
-                is OccState.Loading -> {
+                else -> {
                     binding?.apply {
                         progressBar.visible()
                         globalError.gone()
@@ -123,7 +127,7 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
     private fun loadWebView(url: String) {
         binding?.apply {
             val newUrl = Uri.parse(url).buildUpon().appendQueryParameter(QUERY_IS_HIDE_DIGITAL, isHideDigital()).build().toString()
-            webView.loadUrl(newUrl)
+            webView.loadAuthUrl(newUrl, userSession)
             webView.visible()
             globalError.gone()
         }

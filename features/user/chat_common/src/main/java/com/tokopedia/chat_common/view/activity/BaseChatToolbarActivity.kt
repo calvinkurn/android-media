@@ -46,8 +46,8 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
             val upArrow = MethodChecker.getDrawable(applicationContext, R.drawable.ic_action_back)
             if (upArrow != null) {
                 upArrow.setColorFilter(
-                        MethodChecker.getColor(this@BaseChatToolbarActivity, com.tokopedia.unifyprinciples.R.color.Unify_N500),
-                        PorterDuff.Mode.SRC_ATOP
+                    MethodChecker.getColor(this@BaseChatToolbarActivity, com.tokopedia.unifyprinciples.R.color.Unify_N500),
+                    PorterDuff.Mode.SRC_ATOP
                 )
                 this.setHomeAsUpIndicator(upArrow)
             }

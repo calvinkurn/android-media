@@ -931,13 +931,13 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         incentivesHelperText?.apply {
             incentiveHelper = when {
                 textLength >= CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD -> {
-                    context?.getString(R.string.review_create_text_area_eligible) ?: ""
+                    context?.getString(R.string.review_create_bottom_sheet_text_area_eligible) ?: ""
                 }
                 textLength < CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD && textLength != 0 -> {
-                    context?.getString(R.string.review_create_text_area_partial) ?: ""
+                    context?.getString(R.string.review_create_bottom_sheet_text_area_partial) ?: ""
                 }
                 else -> {
-                    context?.getString(R.string.review_create_text_area_empty) ?: ""
+                    context?.getString(R.string.review_create_bottom_sheet_text_area_empty) ?: ""
                 }
             }
             text = incentiveHelper
