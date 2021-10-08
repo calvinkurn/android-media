@@ -50,6 +50,7 @@ import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.mapviewer.activity.MapViewerActivity
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -248,16 +249,21 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             }
         })
 
-        detailViewModel.hotelNearbyLandmarks.observe(viewLifecycleOwner,{
-            when(it){
-                is Success->{
-                    setupLayoutNearbyLandmarks(it.data)
+        observeABTestNearbyLandmarks()
+    }
+    fun observeABTestNearbyLandmarks(){
+        if(isABTestNearbyLandmarks()) {
+            detailViewModel.hotelNearbyLandmarks.observe(viewLifecycleOwner, {
+                when (it) {
+                    is Success -> {
+                        setupLayoutNearbyLandmarks(it.data)
+                    }
+                    is Fail -> {
+                        hideNearbyLandmarks()
+                    }
                 }
-                is Fail->{
-                    hideNearbyLandmarks()
-                }
-            }
-        })
+            })
+        }
     }
 
     private fun hideTickerView() {
@@ -829,6 +835,10 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             }
         }
     }
+
+    fun isABTestNearbyLandmarks(): Boolean = (RemoteConfigInstance.getInstance().abTestPlatform
+        .getString(AB_TEST_KEY_NEARBY_LANDMARK, AB_TEST_SHOW_LANDMARK)
+            == AB_TEST_SHOW_LANDMARK)
     companion object {
 
         const val REQUEST_CODE_GLOBAL_SEARCH = 103
@@ -847,6 +857,10 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         const val IMAGE_COUNTER_FIRST = 1
         const val IMAGE_COUNTER_SECOND = 2
         const val IMAGE_COUNTER_THIRD = 3
+
+        const val AB_TEST_KEY_NEARBY_LANDMARK = "hotel_nearlandmark"
+        const val AB_TEST_SHOW_LANDMARK = "Show_nearby"
+        const val AB_TEST_HIDE_LANDMARK = "hide_nearby"
 
         fun getInstance(checkInDate: String, checkOutDate: String, propertyId: Long, roomCount: Int,
                         adultCount: Int, destinationType: String, destinationName: String,
