@@ -237,12 +237,21 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         position: Int
     ) {
         carouselData?.let {
-            widgetListener?.onRecomProductCardImpressed(
-                data = it,
-                recomItem = recomItem,
-                itemPosition = position,
-                adapterPosition = adapterPosition
-            )
+            if (isRecomBindWithPageName) {
+                widgetBindPageNameListener?.onRecomProductCardImpressed(
+                    data = it,
+                    recomItem = recomItem,
+                    itemPosition = position,
+                    adapterPosition = adapterPosition
+                )
+            } else {
+                widgetListener?.onRecomProductCardImpressed(
+                    data = it,
+                    recomItem = recomItem,
+                    itemPosition = position,
+                    adapterPosition = adapterPosition
+                )
+            }
         }
     }
 
@@ -253,13 +262,23 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         applink: String
     ) {
         carouselData?.let {
-            widgetListener?.onRecomProductCardClicked(
-                data = it,
-                recomItem = recomItem,
-                applink = applink,
-                itemPosition = position,
-                adapterPosition = adapterPosition
-            )
+            if (isRecomBindWithPageName) {
+                widgetBindPageNameListener?.onRecomProductCardClicked(
+                    data = it,
+                    recomItem = recomItem,
+                    applink = applink,
+                    itemPosition = position,
+                    adapterPosition = adapterPosition
+                )
+            } else {
+                widgetListener?.onRecomProductCardClicked(
+                    data = it,
+                    recomItem = recomItem,
+                    applink = applink,
+                    itemPosition = position,
+                    adapterPosition = adapterPosition
+                )
+            }
         }
     }
 
@@ -400,7 +419,11 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
 
     private fun impressChannel(carouselData: RecommendationCarouselData) {
         itemView.addOnImpressionListener(carouselData) {
-            widgetListener?.onRecomBannerImpressed(carouselData, adapterPosition)
+            if (isRecomBindWithPageName) {
+                widgetBindPageNameListener?.onRecomBannerImpressed(carouselData, adapterPosition)
+            } else {
+                widgetListener?.onRecomBannerImpressed(carouselData, adapterPosition)
+            }
         }
     }
 
@@ -433,7 +456,9 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 }
             }
         } else {
-            widgetListener?.onChannelWidgetEmpty()
+            if (isRecomBindWithPageName) {
+                widgetBindPageNameListener?.onChannelWidgetEmpty()
+            } else widgetListener?.onChannelWidgetEmpty()
         }
     }
 
@@ -455,11 +480,19 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     private fun setHeaderComponent(carouselData: RecommendationCarouselData) {
         itemView.recommendation_header_view.bindData(data = carouselData.recommendationData, listener = object : RecommendationHeaderListener {
             override fun onSeeAllClick(link: String) {
-                widgetListener?.onSeeAllBannerClicked(carouselData, link)
+                if (isRecomBindWithPageName) widgetBindPageNameListener?.onSeeAllBannerClicked(
+                    carouselData,
+                    link
+                )
+                else widgetListener?.onSeeAllBannerClicked(carouselData, link)
             }
 
             override fun onChannelExpired(widget: RecommendationWidget) {
-                widgetListener?.onChannelExpired(carouselData, adapterPosition)
+                if (isRecomBindWithPageName) widgetBindPageNameListener?.onChannelExpired(
+                    carouselData,
+                    adapterPosition
+                )
+                else widgetListener?.onChannelExpired(carouselData, adapterPosition)
             }
         })
     }
@@ -604,20 +637,27 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                                 )
                             )
                         } else {
-                            widgetListener?.onChannelWidgetEmpty()
-                            widgetBindPageNameListener?.onChannelWidgetEmpty()
+                            if (isRecomBindWithPageName) widgetBindPageNameListener?.onChannelWidgetEmpty()
+                            else widgetListener?.onChannelWidgetEmpty()
                         }
                     }
                 }, { throwable ->
-                    widgetListener?.onWidgetFail(pageName = pageName, e = throwable)
-                    widgetBindPageNameListener?.onWidgetFail(pageName = pageName, e = throwable)
+                    if (isRecomBindWithPageName) widgetBindPageNameListener?.onWidgetFail(
+                        pageName = pageName,
+                        e = throwable
+                    )
+                    else widgetListener?.onWidgetFail(pageName = pageName, e = throwable)
+
                 })
             })
 
             viewModel?.errorGetRecommendation?.observe(owner, {
                 if (it.pageName == pageName) {
-                    widgetListener?.onWidgetFail(pageName = pageName, e = it.throwable)
-                    widgetBindPageNameListener?.onWidgetFail(pageName = pageName, e = it.throwable)
+                    if (isRecomBindWithPageName) widgetBindPageNameListener?.onWidgetFail(
+                        pageName = pageName,
+                        e = it.throwable
+                    )
+                    else widgetListener?.onWidgetFail(pageName = pageName, e = it.throwable)
                 }
             })
 
