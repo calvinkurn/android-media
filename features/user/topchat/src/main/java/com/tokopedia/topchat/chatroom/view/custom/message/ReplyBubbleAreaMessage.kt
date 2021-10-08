@@ -15,6 +15,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout.Companion.DEFAULT_MSG_ORIENTATION
 import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout.Companion.LEFT_MSG_ORIENTATION
 import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout.Companion.RIGHT_MSG_ORIENTATION
+import com.tokopedia.unifycomponents.Toaster
 
 class ReplyBubbleAreaMessage : ConstraintLayout {
 
@@ -89,10 +90,21 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
 
     private fun bindClick(parentReply: ParentReply) {
         setOnClickListener {
-            listener?.goToBubble(
-                localId = parentReply.localId,
-                replyTimeMillis = parentReply.replyTimeMillisOffset
-            )
+            if (!parentReply.isExpired) {
+                listener?.goToBubble(
+                    localId = parentReply.localId,
+                    replyTimeMillis = parentReply.replyTimeMillisOffset
+                )
+            } else {
+                val msg = context.getString(R.string.title_topchat_reply_bubble_expired)
+                Toaster.build(
+                    view = this,
+                    text = msg,
+                    duration = Toaster.LENGTH_SHORT,
+                    type = Toaster.TYPE_ERROR,
+                    actionText = "OK"
+                ).show()
+            }
         }
     }
 
