@@ -134,7 +134,7 @@ internal class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneral
     private fun setActionResetVisibility(isVisible: Boolean) {
         bottomSheetAction.shouldShowWithAction(isVisible) {
             bottomSheetAction.text = getString(R.string.filter_button_reset_text)
-            bottomSheetAction.setOnClickListener(this@FilterGeneralDetailBottomSheet::onResetFilter)
+            bottomSheetAction.setOnClickListener(this::onResetFilter)
         }
     }
 
