@@ -1118,7 +1118,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val allCartItemDataList = cartAdapter.allCartItemData
         val toBeDeletedProducts = mutableListOf<CartItemHolderData>()
         if (cartItemHolderData.isBundlingItem) {
-            val cartShopHolderData = cartAdapter.getCartShopHolderDataByCartString(cartItemHolderData.cartString)
+            val cartShopHolderData = cartAdapter.getCartShopHolderDataByCartItemHolderData(cartItemHolderData)
             cartShopHolderData?.let {
                 it.productUiModelList.forEach { product ->
                     if (product.isBundlingItem && product.bundleId == cartItemHolderData.bundleId && product.bundleGroupId == cartItemHolderData.bundleGroupId) {
@@ -1700,7 +1700,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData) {
-        val cartShopHolderData = cartAdapter.getCartShopHolderDataByCartString(cartItemHolderData.cartString)
+        val cartShopHolderData = cartAdapter.getCartShopHolderDataByCartItemHolderData(cartItemHolderData)
         cartShopHolderData?.let {
             it.productUiModelList.forEachIndexed { index, data ->
                 if (data.isBundlingItem && data.bundleId == cartItemHolderData.bundleId && data.bundleGroupId == cartItemHolderData.bundleGroupId) {
@@ -3191,7 +3191,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onCartItemQuantityChanged(cartItemHolderData: CartItemHolderData, newQuantity: Int) {
         if (cartItemHolderData.isBundlingItem) {
-            val cartShopHolderData = cartAdapter.getCartShopHolderDataByCartString(cartItemHolderData.cartString)
+            val cartShopHolderData = cartAdapter.getCartShopHolderDataByCartItemHolderData(cartItemHolderData)
             cartShopHolderData?.let {
                 it.productUiModelList.forEach {
                     if (it.isBundlingItem && it.bundleId == cartItemHolderData.bundleId && it.bundleGroupId == cartItemHolderData.bundleGroupId) {
