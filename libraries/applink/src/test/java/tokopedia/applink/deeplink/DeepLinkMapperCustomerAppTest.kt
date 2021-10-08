@@ -903,13 +903,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check home credit register selfie query then should return tokopedia internal`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://fintech/home-credit-register"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://fintech/home-credit-register?show_ktp=false"
         assertEqualsDeepLinkMapper(ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE, expectedDeepLink)
     }
 
     @Test
     fun `check home credit register selfie with type query then should return tokopedia internal`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://fintech/home-credit-register"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://fintech/home-credit-register?show_ktp=false"
         assertEqualsDeepLinkMapper(ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE, expectedDeepLink)
     }
 
@@ -1650,21 +1650,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check home credit ktp without type appLink then should return empty in customerapp`() {
         assertEqualsDeepLinkMapper(ApplinkConst.HOME_CREDIT_KTP_WITHOUT_TYPE, "")
-    }
-
-    @Test
-    fun `check home credit ktp with type appLink then should return empty in customerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE, "")
-    }
-
-    @Test
-    fun `check home credit selfie without type appLink then should return empty in customerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE, "")
-    }
-
-    @Test
-    fun `check home credit selfie with type appLink then should return empty in customerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE, "")
     }
 
     @Test
