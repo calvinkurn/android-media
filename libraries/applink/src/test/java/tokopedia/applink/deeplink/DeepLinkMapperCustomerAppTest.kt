@@ -1648,11 +1648,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check home credit ktp without type appLink then should return empty in customerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.HOME_CREDIT_KTP_WITHOUT_TYPE, "")
-    }
-
-    @Test
     fun `check smc referral appLink then should return empty in customerapp`() {
         assertEqualsDeepLinkMapper(ApplinkConst.SMC_REFERRAL, "")
     }
