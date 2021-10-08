@@ -64,7 +64,7 @@ class NetworkStatsNerdFragment : BaseDaggerFragment(), StatsNerdItemListener {
 
     override fun initInjector() {
         DaggerStatsNerdComponent.builder()
-            .chuckerModule(StatsNerdModule(requireContext()))
+            .statsNerdModule(StatsNerdModule(requireContext()))
             .build()
             .inject(this)
     }
