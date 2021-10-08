@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.storage
 
+import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 
@@ -33,4 +34,5 @@ data class PlayChannelData(
         val videoMetaInfo: PlayVideoMetaInfoUiModel,
         val statusInfo: PlayStatusInfoUiModel,
         val leaderboardInfo: PlayLeaderboardInfoUiModel,
+        val upcomingInfo: PlayUpcomingUiModel
 )

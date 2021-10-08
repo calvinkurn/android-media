@@ -77,6 +77,12 @@ class GetChatUseCaseStub @Inject constructor(
      * <!--- End Reply bubble --->
      */
 
+    var isError = false
+        set(value) {
+            gqlUseCase.isError = value
+            field = value
+        }
+
     /**
      * <!--- Start Broadcast responses --->
      */

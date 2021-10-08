@@ -722,6 +722,15 @@ abstract class TopchatRoomTest {
         ).check(matches(matcher))
     }
 
+    protected fun assertToolbarTitle(expectedTitle: String) {
+        onView(
+            Matchers.allOf(
+                withId(com.tokopedia.chat_common.R.id.title),
+                isDescendantOfA(withId(R.id.toolbar))
+            )
+        ).check(matches(withText(expectedTitle)))
+    }
+
     protected fun isKeyboardOpened(): Boolean {
         val rootView = activity.findViewById<View>(R.id.main)
         return isKeyboardOpened(rootView)

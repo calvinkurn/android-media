@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.chatlist.uimodel.MiniCartChatProductUiModel
 import com.tokopedia.minicart.databinding.ItemMiniCartChatProductBinding
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class MiniCartChatProductViewHolder(
@@ -32,7 +33,7 @@ class MiniCartChatProductViewHolder(
             setCheckBox(element)
             setContainer(element)
             tpTitle.text = element.productName
-            tpPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productPrice, false)
+            tpPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productPrice, false).removeDecimalSuffix()
         }
     }
 

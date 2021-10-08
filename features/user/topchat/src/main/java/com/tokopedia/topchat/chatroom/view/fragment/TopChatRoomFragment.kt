@@ -485,7 +485,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun initLoadMoreListener() {
         rvScrollListener = object : LoadMoreTopBottomScrollListener(rvLayoutManager) {
             override fun loadMoreTop() {
-                showTopLoading()
+                rv?.post {
+                    showTopLoading()
+                }
                 presenter.loadTopChat(messageId, ::onErrorGetTopChat, ::onSuccessGetTopChat)
             }
 

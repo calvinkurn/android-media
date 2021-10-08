@@ -34,6 +34,9 @@ data class PageInfo(
         @SerializedName("show_choose_address")
         val showChooseAddress: Boolean = false,
 
+        @SerializedName("tokonow_has_mini_cart_active")
+        val tokonowMiniCartActive : Boolean = false,
+
         var additionalInfo: AdditionalInfo? = null,
 
         var redirectionUrl: String? = null,

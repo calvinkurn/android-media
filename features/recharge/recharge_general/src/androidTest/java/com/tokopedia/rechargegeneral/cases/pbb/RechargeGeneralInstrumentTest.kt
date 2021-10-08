@@ -14,13 +14,13 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.tokopedia.rechargegeneral.R
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsRecentNumbersAdapter
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
+import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.RechargeGeneralMockResponseConfig
 import com.tokopedia.rechargegeneral.cases.RechargeGeneralProduct
 import com.tokopedia.rechargegeneral.presentation.activity.RechargeGeneralActivity
@@ -68,7 +68,7 @@ class RechargeGeneralInstrumentTest {
 
     @Test
     fun validate_non_login() {
-        Thread.sleep(1000)
+        Thread.sleep(4000)
         validate_initial_state()
         validate_select_operator_cluster()
         validate_select_operator()

@@ -1,15 +1,16 @@
 package com.tokopedia.sellerorder.detail.presentation.bottomsheet
 
 import android.content.Context
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.SomBottomSheet
+import com.tokopedia.sellerorder.databinding.BottomsheetSecondaryActionListBinding
 
 class SomDetailSecondaryActionBottomSheet(
         context: Context,
         private val listener: SomBottomSheetRejectOrderAdapter.ActionListener
-) : SomBottomSheet(LAYOUT, true, true, false, context.getString(R.string.som_detail_other_bottomsheet_title), context, true) {
+) : SomBottomSheet<BottomsheetSecondaryActionListBinding>(LAYOUT, true, true, false, context.getString(R.string.som_detail_other_bottomsheet_title), context, true) {
 
     companion object {
         private val LAYOUT = R.layout.bottomsheet_secondary_action_list
@@ -17,9 +18,13 @@ class SomDetailSecondaryActionBottomSheet(
 
     private var secondaryActionAdapter: SomBottomSheetRejectOrderAdapter? = null
 
+    override fun bind(view: View): BottomsheetSecondaryActionListBinding {
+        return BottomsheetSecondaryActionListBinding.bind(view)
+    }
+
     override fun setupChildView() {
         secondaryActionAdapter = SomBottomSheetRejectOrderAdapter(listener, false)
-        childViews?.findViewById<RecyclerView>(R.id.rvBottomSheetActionList)?.run {
+        binding?.rvBottomSheetActionList?.run {
             layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
             adapter = secondaryActionAdapter
         }
