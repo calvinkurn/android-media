@@ -122,7 +122,6 @@ class RecommendationViewModel @Inject constructor(
         }
     }
 
-
     private fun mappingMiniCartDataToRecommendation(recomWidget: RecommendationWidget) {
         val recomItemList = mutableListOf<RecommendationItem>()
         recomWidget.recommendationItemList.forEach { item ->

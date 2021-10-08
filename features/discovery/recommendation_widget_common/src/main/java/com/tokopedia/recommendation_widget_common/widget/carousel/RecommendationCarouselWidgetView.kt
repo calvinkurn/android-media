@@ -496,6 +496,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         isTokonow: Boolean = false
     ) {
         isRecomBindWithPageName = true
+        getMiniCartData()
         if (carouselData == null || isForceRefresh) {
             adapter?.clearAllElements()
             itemView.loadingRecom.visible()
@@ -558,6 +559,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     private fun resumeEvent() {
+        getMiniCartData()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
