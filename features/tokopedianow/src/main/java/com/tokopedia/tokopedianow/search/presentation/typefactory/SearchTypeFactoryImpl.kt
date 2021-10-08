@@ -29,19 +29,20 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSe
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BaseChooseAddressViewHolder
 
 class SearchTypeFactoryImpl(
-        chooseAddressListener: ChooseAddressListener,
-        titleListener: TitleListener,
-        bannerListener: BannerComponentListener,
-        quickFilterListener: QuickFilterListener,
-        categoryFilterListener: CategoryFilterListener,
-        productItemListener: ProductItemListener,
-        tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
-        private val suggestionListener: SuggestionListener,
-        outOfCoverageListener: OutOfCoverageListener,
-        private val categoryJumperListener: CategoryJumperListener,
-        private val ctaTokoNowHomeListener: CTATokoNowHomeListener,
-        recommendationCarouselListener: TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
-        private val broadMatchListener: BroadMatchListener,
+    chooseAddressListener: ChooseAddressListener,
+    titleListener: TitleListener,
+    bannerListener: BannerComponentListener,
+    quickFilterListener: QuickFilterListener,
+    categoryFilterListener: CategoryFilterListener,
+    productItemListener: ProductItemListener,
+    tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
+    private val suggestionListener: SuggestionListener,
+    outOfCoverageListener: OutOfCoverageListener,
+    private val categoryJumperListener: CategoryJumperListener,
+    private val ctaTokoNowHomeListener: CTATokoNowHomeListener,
+    recommendationCarouselListener: TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
+    private val recomWidgetBindPageNameListener: TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener?,
+    private val broadMatchListener: BroadMatchListener,
 ): BaseSearchCategoryTypeFactoryImpl(
     chooseAddressListener,
     titleListener,
@@ -51,7 +52,8 @@ class SearchTypeFactoryImpl(
     productItemListener,
     tokoNowEmptyStateNoResultListener,
     outOfCoverageListener,
-    recommendationCarouselListener, null
+    recommendationCarouselListener,
+    recomWidgetBindPageNameListener,
 ), SearchTypeFactory {
 
     override fun type(suggestionDataView: SuggestionDataView): Int {

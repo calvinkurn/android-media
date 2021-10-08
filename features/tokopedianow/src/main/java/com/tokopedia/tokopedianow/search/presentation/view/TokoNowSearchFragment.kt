@@ -17,8 +17,6 @@ import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.recommendation_widget_common.presentation.model.RecomItemTrackingMetadata
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.data.HintData
@@ -51,12 +49,12 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCat
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
 import javax.inject.Inject
 
-class TokoNowSearchFragment:
-        BaseSearchCategoryFragment(),
-        SuggestionListener,
-        CategoryJumperListener,
-        CTATokoNowHomeListener,
-        BroadMatchListener {
+class TokoNowSearchFragment :
+    BaseSearchCategoryFragment(),
+    SuggestionListener,
+    CategoryJumperListener,
+    CTATokoNowHomeListener,
+    BroadMatchListener {
 
     companion object {
         @JvmStatic
@@ -149,6 +147,7 @@ class TokoNowSearchFragment:
             ctaTokoNowHomeListener = this,
             recommendationCarouselListener = this,
             broadMatchListener = this,
+        recomWidgetBindPageNameListener = this
     )
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
