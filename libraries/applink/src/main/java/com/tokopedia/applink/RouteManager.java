@@ -277,9 +277,9 @@ public class RouteManager {
         } else if (uriString.startsWith(SCHEME_SELLERAPP) && !GlobalConfig.isSellerApp()) {
             Uri uri = Uri.parse(mappedDeeplink);
             String uriRedirect = uri.buildUpon().appendQueryParameter(KEY_REDIRECT_TO_SELLER_APP, "true").build().toString();
-            intent = buildInternalExplicitIntent(context, uriRedirect);
-            if (intent != null && intent.resolveActivity(context.getPackageManager()) != null) {
-                startActivityIntentWithBundle(context, intent, queryParamBundle);
+            Intent redirectIntent = buildInternalExplicitIntent(context, uriRedirect);
+            if (redirectIntent != null && redirectIntent.resolveActivity(context.getPackageManager()) != null) {
+                startActivityIntentWithBundle(context, redirectIntent, queryParamBundle);
                 return true;
             }
         }
@@ -428,7 +428,7 @@ public class RouteManager {
             Uri uri = Uri.parse(mappedDeeplink);
             String uriRedirect = uri.buildUpon().appendQueryParameter(KEY_REDIRECT_TO_SELLER_APP, "true").build().toString();
             Intent redirectIntent = buildInternalExplicitIntent(context, uriRedirect);
-            if (intent != null && intent.resolveActivity(context.getPackageManager()) != null) {
+            if (redirectIntent != null && redirectIntent.resolveActivity(context.getPackageManager()) != null) {
                 resultIntent = redirectIntent;
             }
         }
