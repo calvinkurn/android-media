@@ -33,42 +33,12 @@ class ZoomAssetImageView @JvmOverloads constructor(
     private val portraitAR = 4 / 5f
     private val landscapeAR = 16 / 9f
 
-    private var isMinZoomLocked = false
-
     fun lockMinZoom() {
-        isMinZoomLocked = true
-
-        val updateParams = !(engine.panX<=0 && engine.panY<=0)
-
-        if(engine.panX>0){
-            layoutParams.width = (width - (2*engine.scaledPanX)).toInt()
-            requestLayout()
-        }else if (engine.panY>0){
-            layoutParams.height = (height - (2*engine.scaledPanY)).toInt()
-        }
-        if(updateParams){
-            requestLayout()
-        }
+        //Do nothing
     }
 
     fun unLockMinZoom() {
-        val updateParams = !(width==ViewGroup.LayoutParams.MATCH_PARENT && height==ViewGroup.LayoutParams.MATCH_PARENT)
-
-        if (width!=ViewGroup.LayoutParams.MATCH_PARENT){
-            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-        }else if (height!=ViewGroup.LayoutParams.MATCH_PARENT){
-            layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-        }
-        if(updateParams) {
-            requestLayout()
-        }
-        isMinZoomLocked = false
-
-        if (drawable != null) {
-            updateMinZoom(drawable)
-        } else {
-            setMinZoom(1f)
-        }
+        //Do nothing
     }
 
     fun updateZoomInfo(bmp: Bitmap?, engine: ZoomEngine){
@@ -138,10 +108,6 @@ class ZoomAssetImageView @JvmOverloads constructor(
             val panY = dy / 2f
             engine.moveTo(scale, panX, panY, animate)
             updateZoomInfo(bmp,scale,panX,panY)
-
-            if(isMinZoomLocked) {
-                setMinZoom(scale)
-            }
         }
     }
 
@@ -240,7 +206,7 @@ class ZoomAssetImageView @JvmOverloads constructor(
     fun scaleBitmapOnLoad() {
         if (zoomInfo != null && zoomInfo!!.hasData()) {
             engine.moveTo(zoomInfo!!.scale!!, zoomInfo!!.panX!!, zoomInfo!!.panY!!, false)
-        } else if (mediaScaleTypeContract?.getCurrentMediaScaleType() == MediaScaleType.MEDIA_CENTER_CROP || isMinZoomLocked) {
+        } else if (mediaScaleTypeContract?.getCurrentMediaScaleType() == MediaScaleType.MEDIA_CENTER_CROP) {
             centerCrop(false)
         } else if (mediaScaleTypeContract?.getCurrentMediaScaleType() == MediaScaleType.MEDIA_CENTER_INSIDE) {
             centerInside(false)
