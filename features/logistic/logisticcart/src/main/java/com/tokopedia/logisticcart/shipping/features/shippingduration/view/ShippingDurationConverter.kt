@@ -136,13 +136,14 @@ class ShippingDurationConverter @Inject constructor() {
     private fun convertToPromoModel(promo: PromoStacking?): LogisticPromoUiModel? {
         if (promo == null || promo.isPromo != 1) return null
         val applied = promo.isApplied == 1
+        val chosenCourierTitle = "${promo.texts.chosenCourier} ${promo.texts.strikethroughPrice}"
         return LogisticPromoUiModel(
                 promo.promoCode, promo.title, promo.benefitDesc,
                 promo.shipperName, promo.serviceId, promo.shipperId,
                 promo.shipperProductId, promo.shipperDesc, promo.shipperDisableText,
                 promo.promoTncHtml, applied, promo.imageUrl, promo.discontedRate,
                 promo.shippingRate, promo.benefitAmount, promo.isDisabled, promo.isHideShipperName,
-                promo.cod, promo.eta, promo.isBebasOngkirExtra)
+                promo.cod, promo.eta, chosenCourierTitle, promo.isBebasOngkirExtra)
     }
 
     private fun convertToPreOrderModel(preOrder: PreOrder?): PreOrderModel? {

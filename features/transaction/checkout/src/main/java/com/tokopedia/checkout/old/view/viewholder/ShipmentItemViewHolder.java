@@ -34,7 +34,6 @@ import com.tokopedia.checkout.old.utils.WeightFormatterUtil;
 import com.tokopedia.checkout.old.view.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.old.view.adapter.ShipmentInnerProductListAdapter;
 import com.tokopedia.checkout.old.view.converter.RatesDataConverter;
-import com.tokopedia.checkout.old.view.viewholder.ShipmentCartItemViewHolder;
 import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.kotlin.extensions.view.TextViewExtKt;
 import com.tokopedia.logisticCommon.data.constant.CourierConstant;
@@ -51,6 +50,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiMode
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.unifycomponents.CardUnify;
+import com.tokopedia.unifycomponents.HtmlLinkHelper;
 import com.tokopedia.unifycomponents.ImageUnify;
 import com.tokopedia.unifycomponents.Label;
 import com.tokopedia.unifycomponents.TextFieldUnify;
@@ -892,57 +892,64 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             labelFreeShippingCourierName.setVisibility(View.VISIBLE);
         }
 
-        /*With ETA*/
         if (selectedCourierItemData.getEtaErrorCode() == 0) {
-            labelSelectedFreeShipping.setText(selectedCourierItemData.getPromoTitle());
-            if (selectedCourierItemData.getDiscountedRate() == 0) {
-                // Free Shipping Price
-                labelFreeShippingOriginalPrice.setVisibility(View.GONE);
-                labelFreeShippingDiscountedPrice.setVisibility(View.GONE);
-            } else if (selectedCourierItemData.getDiscountedRate() > 0) {
-                // Discounted Shipping Price
-                labelFreeShippingOriginalEtaPrice.setVisibility(View.VISIBLE);
-                String originalEtaPrice = "(" + Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
-                        selectedCourierItemData.getShippingRate(), false
-                ));
-                labelFreeShippingOriginalEtaPrice.setText(originalEtaPrice);
-                labelFreeShippingOriginalPrice.setVisibility(View.GONE);
-                labelFreeShippingOriginalEtaPrice.setPaintFlags(labelFreeShippingOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                String DiscountedEtaPrice = Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
-                        selectedCourierItemData.getDiscountedRate(), false
-                )) + ")";
-                labelFreeShippingDiscountedEtaPrice.setText(DiscountedEtaPrice);
-                labelFreeShippingDiscountedPrice.setVisibility(View.GONE);
-            }
-            labelFreeShippingEtaText.setVisibility(View.VISIBLE);
-            if (!selectedCourierItemData.getEtaText().isEmpty()) {
-                labelFreeShippingEtaText.setText(selectedCourierItemData.getEtaText());
-            } else {
-                labelFreeShippingEtaText.setText(R.string.estimasi_tidak_tersedia);
-            }
-
-            /*Without ETA*/
+            renderFreeShippingWithEta(selectedCourierItemData);
         } else {
-            // Change duration to promo title after promo is applied
-            labelSelectedFreeShipping.setText(selectedCourierItemData.getPromoTitle());
-            if (selectedCourierItemData.getDiscountedRate() == 0) {
-                // Free Shipping Price
-                labelFreeShippingEtaText.setVisibility(View.GONE);
-                labelFreeShippingOriginalPrice.setVisibility(View.GONE);
-                labelFreeShippingDiscountedPrice.setVisibility(View.GONE);
-            } else if (selectedCourierItemData.getDiscountedRate() > 0) {
-                // Discounted Shipping Price
-                labelFreeShippingOriginalPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
-                        selectedCourierItemData.getShippingRate(), false
-                )));
-                labelFreeShippingOriginalPrice.setPaintFlags(labelFreeShippingOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                labelFreeShippingDiscountedPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
-                        selectedCourierItemData.getDiscountedRate(), false
-                )));
-                labelFreeShippingOriginalPrice.setVisibility(View.VISIBLE);
-                labelFreeShippingDiscountedPrice.setVisibility(View.VISIBLE);
-                labelFreeShippingEtaText.setVisibility(View.GONE);
-            }
+            renderFreeShippingWithoutEta(selectedCourierItemData);
+        }
+    }
+
+    private void renderFreeShippingWithoutEta(CourierItemData selectedCourierItemData) {
+        // Change duration to promo title after promo is applied
+        HtmlLinkHelper formattedFreeShippingChosenCourierTitle = new HtmlLinkHelper(labelSelectedFreeShipping.getContext(), selectedCourierItemData.getFreeShippingChosenCourierTitle());
+        labelSelectedFreeShipping.setText(formattedFreeShippingChosenCourierTitle.getSpannedString());
+        if (selectedCourierItemData.getDiscountedRate() == 0) {
+            // Free Shipping Price
+            labelFreeShippingEtaText.setVisibility(View.GONE);
+            labelFreeShippingOriginalPrice.setVisibility(View.GONE);
+            labelFreeShippingDiscountedPrice.setVisibility(View.GONE);
+        } else if (selectedCourierItemData.getDiscountedRate() > 0) {
+            // Discounted Shipping Price
+            labelFreeShippingOriginalPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
+                    selectedCourierItemData.getShippingRate(), false
+            )));
+            labelFreeShippingOriginalPrice.setPaintFlags(labelFreeShippingOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            labelFreeShippingDiscountedPrice.setText(Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
+                    selectedCourierItemData.getDiscountedRate(), false
+            )));
+            labelFreeShippingOriginalPrice.setVisibility(View.VISIBLE);
+            labelFreeShippingDiscountedPrice.setVisibility(View.VISIBLE);
+            labelFreeShippingEtaText.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderFreeShippingWithEta(CourierItemData selectedCourierItemData) {
+        HtmlLinkHelper formattedFreeShippingChosenCourierTitle = new HtmlLinkHelper(labelSelectedFreeShipping.getContext(), selectedCourierItemData.getFreeShippingChosenCourierTitle());
+        labelSelectedFreeShipping.setText(formattedFreeShippingChosenCourierTitle.getSpannedString());
+        if (selectedCourierItemData.getDiscountedRate() == 0) {
+            // Free Shipping Price
+            labelFreeShippingOriginalPrice.setVisibility(View.GONE);
+            labelFreeShippingDiscountedPrice.setVisibility(View.GONE);
+        } else if (selectedCourierItemData.getDiscountedRate() > 0) {
+            // Discounted Shipping Price
+            labelFreeShippingOriginalEtaPrice.setVisibility(View.VISIBLE);
+            String originalEtaPrice = "(" + Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
+                    selectedCourierItemData.getShippingRate(), false
+            ));
+            labelFreeShippingOriginalEtaPrice.setText(originalEtaPrice);
+            labelFreeShippingOriginalPrice.setVisibility(View.GONE);
+            labelFreeShippingOriginalEtaPrice.setPaintFlags(labelFreeShippingOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            String DiscountedEtaPrice = Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
+                    selectedCourierItemData.getDiscountedRate(), false
+            )) + ")";
+            labelFreeShippingDiscountedEtaPrice.setText(DiscountedEtaPrice);
+            labelFreeShippingDiscountedPrice.setVisibility(View.GONE);
+        }
+        labelFreeShippingEtaText.setVisibility(View.VISIBLE);
+        if (!selectedCourierItemData.getEtaText().isEmpty()) {
+            labelFreeShippingEtaText.setText(selectedCourierItemData.getEtaText());
+        } else {
+            labelFreeShippingEtaText.setText(R.string.estimasi_tidak_tersedia);
         }
     }
 
