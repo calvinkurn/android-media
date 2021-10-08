@@ -85,5 +85,5 @@ object RollenceKey {
     const val SBM_ADD_BILLS_TRUE = "sbm_addbills_True"
 
     //User
-    const val USER_DARK_MODE_TOGGLE = "dark_mode_nakamabase"
+    const val USER_DARK_MODE_TOGGLE = "dark_mode_nakama_v2"
 }
