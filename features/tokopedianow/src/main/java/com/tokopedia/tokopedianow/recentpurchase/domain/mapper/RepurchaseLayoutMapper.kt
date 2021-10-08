@@ -246,7 +246,7 @@ object RepurchaseLayoutMapper {
                 miniCartItem.quantity
             }
             updateProductQuantity(productId, quantity)
-            updateProductRecomQuantity(productId, quantity)
+//            updateProductRecomQuantity(productId, quantity)
         }
     }
 
