@@ -66,8 +66,8 @@ class BetaInterceptor(private val context: Context) : Interceptor {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 mNotificationManager.createNotificationChannel(
                         NotificationChannel(CHANNEL_ID,
-                            context.getString(R.string.beta_notification_category),
-                            NotificationManager.IMPORTANCE_LOW))
+                                context.getString(R.string.beta_notification_category),
+                                NotificationManager.IMPORTANCE_LOW))
             }
 
             determineShowNotif(GlobalConfig.APPLICATION_TYPE, context) { appName: String, appType: Int, context: Context ->
@@ -80,9 +80,9 @@ class BetaInterceptor(private val context: Context) : Interceptor {
                             remoteView.setTextViewText(R.id.mynotifyexpnd, appName)
                             val mBuilder =
                                     NotificationCompat.Builder(context, CHANNEL_ID)
-                                        .setSmallIcon(R.drawable.beta_icon)
-                                        .setCustomContentView(remoteView)
-                                        .setColor(ContextCompat.getColor(context, android.R.color.holo_red_dark))
+                                            .setSmallIcon(R.drawable.beta_icon)
+                                            .setCustomContentView(remoteView)
+                                            .setColor(ContextCompat.getColor(context, android.R.color.holo_red_dark))
 
                             mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build())
                         }
