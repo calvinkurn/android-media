@@ -51,7 +51,7 @@ class MerchantRewardToolbar @JvmOverloads constructor(
     }
 
     private fun initDrawableResources() {
-        backArrowWhite = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_action_back)
+        backArrowWhite = getBitmapDrawableFromVectorDrawable(mContext, com.tokopedia.abstraction.R.drawable.ic_action_back)
         backArrowWhite?.setColorFilter(
             context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N400),
             PorterDuff.Mode.SRC_ATOP
