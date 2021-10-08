@@ -14,7 +14,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.const.LoginConstants
-import com.tokopedia.loginregister.login.service.RegisterPushNotifService
+import com.tokopedia.loginregister.login.service.RegisterPushNotificationWorker
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import java.net.URLDecoder
@@ -49,8 +49,8 @@ open class ExternalRegisterInitialFragment: BaseDaggerFragment() {
 
     private fun registerPushNotif() {
         if (isHitRegisterPushNotif && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            activity?.let {
-                RegisterPushNotifService.startService(it.applicationContext, REGISTER_PUSH_NOTIF_SERVICE_JOB_ID)
+            context?.let {
+                RegisterPushNotificationWorker.scheduleWorker(it, true)
             }
         }
     }

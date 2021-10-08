@@ -72,7 +72,7 @@ import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAn
 import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.view.dialog.OvoAccountDialog
 import com.tokopedia.loginregister.login.const.LoginConstants
-import com.tokopedia.loginregister.login.service.RegisterPushNotifService
+import com.tokopedia.loginregister.login.service.RegisterPushNotificationWorker
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
@@ -1464,8 +1464,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     private fun registerPushNotif() {
         if (isHitRegisterPushNotif && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            activity?.let {
-                RegisterPushNotifService.startService(it.applicationContext, REGISTER_PUSH_NOTIF_SERVICE_JOB_ID)
+            context?.let {
+                RegisterPushNotificationWorker.scheduleWorker(it, true)
             }
         }
     }
