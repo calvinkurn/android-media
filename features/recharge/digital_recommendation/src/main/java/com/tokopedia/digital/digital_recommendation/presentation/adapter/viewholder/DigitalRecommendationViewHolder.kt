@@ -71,6 +71,7 @@ class DigitalRecommendationViewHolder(private val binding: ItemDigitalRecommenda
             // render price
             if (element.price.isNotEmpty()) {
                 tgPriceDigitalRecommendation.text = element.price
+                tgPriceDigitalRecommendation.weightType = Typography.REGULAR
                 tgPriceDigitalRecommendation.show()
             } else {
                 tgPriceDigitalRecommendation.hide()
@@ -79,6 +80,7 @@ class DigitalRecommendationViewHolder(private val binding: ItemDigitalRecommenda
             // render real price
             if (element.beforePrice.isNotEmpty()) {
                 tgRealPriceDigitalRecommendation.text = element.beforePrice
+                tgRealPriceDigitalRecommendation.weightType = Typography.REGULAR
                 tgRealPriceDigitalRecommendation.show()
             } else {
                 tgRealPriceDigitalRecommendation.hide()
@@ -87,6 +89,7 @@ class DigitalRecommendationViewHolder(private val binding: ItemDigitalRecommenda
             // render discount tag
             if (element.discountTag.isNotEmpty()) {
                 tgDiscountPercentageDigitalRecommendation.text = element.discountTag
+                tgDiscountPercentageDigitalRecommendation.weightType = Typography.REGULAR
                 tgDiscountPercentageDigitalRecommendation.show()
             } else {
                 tgDiscountPercentageDigitalRecommendation.hide()

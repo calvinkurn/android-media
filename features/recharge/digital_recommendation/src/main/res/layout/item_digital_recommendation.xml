@@ -62,11 +62,12 @@
             android:paddingRight="@dimen/unify_space_4"
             android:paddingBottom="@dimen/unify_space_2"
             android:textColor="@color/Unify_R500"
+            android:textSize="@dimen/unify_font_10"
             android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@id/tgPriceDigitalRecommendation"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:typographyType="small"
-            app:typographyWeight="bold"
+            app:typographyType="heading_6"
+            app:typographyWeight="reguler"
             tools:text="20%" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -75,11 +76,13 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/unify_space_4"
             android:textColor="@color/Unify_N700_32"
+            android:textSize="@dimen/unify_font_10"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@id/tgDiscountPercentageDigitalRecommendation"
             app:layout_constraintLeft_toRightOf="@id/tgDiscountPercentageDigitalRecommendation"
             app:layout_constraintTop_toTopOf="@id/tgDiscountPercentageDigitalRecommendation"
-            app:typographyType="small"
+            app:typographyType="heading_6"
+            app:typographyWeight="reguler"
             tools:text="Rp150.000" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -93,6 +96,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:typographyType="heading_6"
+            app:typographyWeight="reguler"
             tools:text="Rp100.000" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
