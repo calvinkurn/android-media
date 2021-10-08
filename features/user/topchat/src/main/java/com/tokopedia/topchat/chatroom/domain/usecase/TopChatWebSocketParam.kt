@@ -94,7 +94,7 @@ object TopChatWebSocketParam {
             sub_text = parentReply.subText,
             image_url = parentReply.imageUrl,
             local_id = parentReply.localId,
-            source = "chat"
+            source = "inbox"
         )
         return gson.toJsonTree(requestContract)
     }
