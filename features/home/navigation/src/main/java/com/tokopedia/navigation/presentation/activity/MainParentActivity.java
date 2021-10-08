@@ -349,7 +349,7 @@ public class MainParentActivity extends BaseActivity implements
             setDefaultShakeEnable();
             routeOnboarding();
         }
-        validateRecreateCart();
+//        validateRecreateCart();
         pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_START_METRICS);
     }
 
