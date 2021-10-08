@@ -183,17 +183,15 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     }
 
     fun loadTdnBanner(){
-        UohIdlingResource.increment()
         launch {
             try {
                 val params = topAdsImageViewUseCase.getQueryMap("", TDN_INVENTORY_ID, "", TDN_ADS_COUNT, TDN_DIMEN_ID, "", "", "")
                 val tdnData = topAdsImageViewUseCase.getImageData(params)
-                _tdnBannerResult.value = (tdnData[0].asSuccess())
+                if (tdnData.isNotEmpty()) _tdnBannerResult.value = (tdnData[0].asSuccess())
             } catch (e: Exception) {
                 Timber.d(e)
                 _recommendationListResult.value = Fail(e.fillInStackTrace())
             }
-            UohIdlingResource.decrement()
         }
     }
 
