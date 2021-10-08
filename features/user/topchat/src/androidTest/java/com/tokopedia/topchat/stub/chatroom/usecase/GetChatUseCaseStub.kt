@@ -73,6 +73,14 @@ class GetChatUseCaseStub @Inject constructor(
             }
         }
 
+    val inTheMiddleReplyBubbleResponse: GetExistingChatPojo
+        get() = alterResponseOf(replyBubbleResponsePath) { response ->
+            alterDateToToday(response)
+            val chatReplies = response.getAsJsonObject(chatReplies)
+            chatReplies.addProperty("hasNext", true)
+            chatReplies.addProperty("hasNextAfter", true)
+        }
+
     /**
      * <!--- End Reply bubble --->
      */

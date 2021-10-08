@@ -1,10 +1,11 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
-import android.util.Log
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.ReplyBubbleResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.ReplyBubbleRobot
+import org.hamcrest.Matchers.`is`
 import org.junit.Test
 
 class ReplyBubbleTest : TopchatRoomTest() {
@@ -188,7 +189,20 @@ class ReplyBubbleTest : TopchatRoomTest() {
         ReplyBubbleResult.hasReplyBubbleTitleAt(0, roomMetaData.sender.name)
     }
 
-    // TODO: should reset chatroom page like chat search when click reply bubble from GQL (ioe, local id is not exist)
+    @Test
+    fun should_reset_chatroom_page_like_chat_search_when_click_reply_bubble_from_GQL() {
+        // Given
+        getChatUseCase.response = getChatUseCase.defaultReplyBubbleResponse
+        launchChatRoomActivity()
+
+        // When
+        getChatUseCase.response = getChatUseCase.inTheMiddleReplyBubbleResponse
+        ReplyBubbleRobot.clickReplyBubbleAt(0)
+
+        // Then
+        assertThat(getChatUseCase.isInTheMiddleOfThePage(), `is`(true))
+    }
+
     // TODO: should able copy to clipboard msg bubble
     // TODO: should show expired toaster when user click expired reply bubble
     // TODO: should disable long click on fraud status msg true from ws
