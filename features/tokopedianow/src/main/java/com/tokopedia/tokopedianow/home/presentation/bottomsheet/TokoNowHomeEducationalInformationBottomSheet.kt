@@ -17,6 +17,7 @@ import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowEducational
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class TokoNowHomeEducationalInformationBottomSheet : BottomSheetUnify() {
 
@@ -29,7 +30,7 @@ class TokoNowHomeEducationalInformationBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private var binding : BottomsheetTokopedianowEducationalInformationBinding? = null
+    private var binding by autoClearedNullable<BottomsheetTokopedianowEducationalInformationBinding>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initView()

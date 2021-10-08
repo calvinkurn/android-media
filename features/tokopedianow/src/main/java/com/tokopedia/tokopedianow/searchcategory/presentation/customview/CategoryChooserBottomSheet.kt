@@ -19,18 +19,17 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowCategoryChooserBinding
-import com.tokopedia.tokopedianow.databinding.ChipTokopedianowCategoryFilterBinding
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryChooserBinding
-import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRepurchaseEmptyStateNoHistoryBinding
 import com.tokopedia.tokopedianow.searchcategory.utils.copyParcelable
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.view.binding.viewBinding
 
 class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
 
-    private var binding: BottomsheetTokopedianowCategoryChooserBinding? = null
+    private var binding by autoClearedNullable<BottomsheetTokopedianowCategoryChooserBinding>()
 
     private var filter: Filter? = null
     private var callback: Callback? = null

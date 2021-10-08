@@ -25,6 +25,7 @@ import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowCategoryFil
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class TokoNowCategoryFilterBottomSheet : BottomSheetUnify() {
@@ -48,7 +49,7 @@ class TokoNowCategoryFilterBottomSheet : BottomSheetUnify() {
     @Inject
     lateinit var viewModel:  TokoNowCategoryFilterViewModel
 
-    private var binding : BottomsheetTokopedianowCategoryFilterBinding? = null
+    private var binding by autoClearedNullable<BottomsheetTokopedianowCategoryFilterBinding>()
 
     private var filterChipViewList = mutableListOf<CategoryFilterChipView>()
     private var accordionFilter: AccordionUnify? = null

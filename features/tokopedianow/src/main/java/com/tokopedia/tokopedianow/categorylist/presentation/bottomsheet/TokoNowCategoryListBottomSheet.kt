@@ -38,6 +38,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.UnknownHostException
 import javax.inject.Inject
 
@@ -62,7 +63,7 @@ class TokoNowCategoryListBottomSheet : BottomSheetUnify() {
     @Inject
     lateinit var analytics: CategoryListAnalytics
 
-    private var binding : BottomsheetTokopedianowCategoryListBinding? = null
+    private var binding by autoClearedNullable<BottomsheetTokopedianowCategoryListBinding>()
 
     private var accordionCategoryList: AccordionUnify? = null
     private var loader: View? = null

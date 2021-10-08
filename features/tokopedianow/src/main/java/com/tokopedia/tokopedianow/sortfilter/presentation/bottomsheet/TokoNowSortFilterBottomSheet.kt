@@ -20,6 +20,7 @@ import com.tokopedia.tokopedianow.sortfilter.presentation.uimodel.SortFilterUiMo
 import com.tokopedia.tokopedianow.sortfilter.presentation.viewholder.SortFilterViewHolder.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class TokoNowSortFilterBottomSheet :
     BottomSheetUnify(),
@@ -35,7 +36,7 @@ class TokoNowSortFilterBottomSheet :
         }
     }
 
-    private var binding : BottomsheetTokopedianowSortFilterBinding? = null
+    private var binding by autoClearedNullable<BottomsheetTokopedianowSortFilterBinding>()
 
     private var rvSort: RecyclerView? = null
     private var btnApplyFilter: UnifyButton? = null
