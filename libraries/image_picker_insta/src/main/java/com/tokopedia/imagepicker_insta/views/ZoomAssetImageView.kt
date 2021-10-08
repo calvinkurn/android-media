@@ -6,8 +6,8 @@ import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.util.AttributeSet
+import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -33,22 +33,42 @@ class ZoomAssetImageView @JvmOverloads constructor(
     private val portraitAR = 4 / 5f
     private val landscapeAR = 16 / 9f
 
-//    private var isMinZoomLocked = false
-//    private var lockedMinZoom = 1f
+    private var isMinZoomLocked = false
 
     fun lockMinZoom() {
-//        isMinZoomLocked = true
-//        lockedMinZoom = engine.zoom
-//        setMinZoom(lockedMinZoom)
+        isMinZoomLocked = true
+
+        val updateParams = !(engine.panX<=0 && engine.panY<=0)
+
+        if(engine.panX>0){
+            layoutParams.width = (width - (2*engine.scaledPanX)).toInt()
+            requestLayout()
+        }else if (engine.panY>0){
+            layoutParams.height = (height - (2*engine.scaledPanY)).toInt()
+        }
+        if(updateParams){
+            requestLayout()
+        }
     }
 
     fun unLockMinZoom() {
-//        isMinZoomLocked = false
-//        if (drawable != null) {
-//            updateMinZoom(drawable)
-//        } else {
-//            setMinZoom(1f)
-//        }
+        val updateParams = !(width==ViewGroup.LayoutParams.MATCH_PARENT && height==ViewGroup.LayoutParams.MATCH_PARENT)
+
+        if (width!=ViewGroup.LayoutParams.MATCH_PARENT){
+            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+        }else if (height!=ViewGroup.LayoutParams.MATCH_PARENT){
+            layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+        }
+        if(updateParams) {
+            requestLayout()
+        }
+        isMinZoomLocked = false
+
+        if (drawable != null) {
+            updateMinZoom(drawable)
+        } else {
+            setMinZoom(1f)
+        }
     }
 
     fun updateZoomInfo(bmp: Bitmap?, engine: ZoomEngine){
@@ -118,6 +138,10 @@ class ZoomAssetImageView @JvmOverloads constructor(
             val panY = dy / 2f
             engine.moveTo(scale, panX, panY, animate)
             updateZoomInfo(bmp,scale,panX,panY)
+
+            if(isMinZoomLocked) {
+                setMinZoom(scale)
+            }
         }
     }
 
@@ -161,12 +185,7 @@ class ZoomAssetImageView @JvmOverloads constructor(
     }
 
     fun loadAsset(asset: Asset, zoomInfo: ZoomInfo) {
-//        if (isMinZoomLocked) {
-//            this.zoomInfo = zoomInfo
-//            this.zoomInfo?.scale = lockedMinZoom
-//        } else {
-            this.zoomInfo = zoomInfo
-//        }
+        this.zoomInfo = zoomInfo
 
         if (!isValidGlideContext(context)) return
 
@@ -221,7 +240,7 @@ class ZoomAssetImageView @JvmOverloads constructor(
     fun scaleBitmapOnLoad() {
         if (zoomInfo != null && zoomInfo!!.hasData()) {
             engine.moveTo(zoomInfo!!.scale!!, zoomInfo!!.panX!!, zoomInfo!!.panY!!, false)
-        } else if (mediaScaleTypeContract?.getCurrentMediaScaleType() == MediaScaleType.MEDIA_CENTER_CROP) {
+        } else if (mediaScaleTypeContract?.getCurrentMediaScaleType() == MediaScaleType.MEDIA_CENTER_CROP || isMinZoomLocked) {
             centerCrop(false)
         } else if (mediaScaleTypeContract?.getCurrentMediaScaleType() == MediaScaleType.MEDIA_CENTER_INSIDE) {
             centerInside(false)
