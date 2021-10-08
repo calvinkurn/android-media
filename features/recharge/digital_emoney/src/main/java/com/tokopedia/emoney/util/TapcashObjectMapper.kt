@@ -9,7 +9,7 @@ import com.tokopedia.emoney.data.BalanceTapcash
 object TapcashObjectMapper {
 
     fun mapTapcashtoEmoney(tapcash: BalanceTapcash, balance: String = "",
-                           isCheckBalanceTapcash: Boolean = false): EmoneyInquiry {
+                           isCheckBalanceTapcash: Boolean = false, issuerTapcash: Int = 3): EmoneyInquiry {
         val attributes = tapcash.rechargeUpdateBalance.attributes
         val error = tapcash.rechargeUpdateBalance.error
         val emoneyInquiry =  EmoneyInquiry(
@@ -21,6 +21,7 @@ object TapcashObjectMapper {
                         "",
                         1,
                         NFCUtils.formatCardUID(attributes.cardNumber),
+                        issuer_id = issuerTapcash,
                         pendingBalance = 0,
                 ),
                 error = EmoneyInquiryError(

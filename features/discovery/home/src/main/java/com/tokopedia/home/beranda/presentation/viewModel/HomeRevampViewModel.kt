@@ -1281,15 +1281,22 @@ open class HomeRevampViewModel @Inject constructor(
                 if (!isGopayEligible) {
                     try {
                         isGopayEligible = getWalletEligibilityUseCase.get().executeOnBackground().isGoPointsEligible
-                        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().apply {
-                            isGopayEligible = this@HomeRevampViewModel.isGopayEligible
-                            initBalanceModelByType()
-                        })
+                        val homeBalanceModel = HomeBalanceModel()
+                        homeBalanceModel.balanceDrawerItemModels = homeDataModel.homeBalanceModel.balanceDrawerItemModels
+                        homeBalanceModel.balanceType = homeDataModel.homeBalanceModel.balanceType
+                        homeBalanceModel.isGopayEligible = this@HomeRevampViewModel.isGopayEligible
+                        homeBalanceModel.initBalanceModelByType()
+                        newUpdateHeaderViewModel(homeBalanceModel)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
                 } else {
-                    newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().apply { initBalanceModelByType() })
+                    val homeBalanceModel = HomeBalanceModel()
+                    homeBalanceModel.balanceDrawerItemModels = homeDataModel.homeBalanceModel.balanceDrawerItemModels
+                    homeBalanceModel.balanceType = homeDataModel.homeBalanceModel.balanceType
+                    homeBalanceModel.isGopayEligible = this@HomeRevampViewModel.isGopayEligible
+                    homeBalanceModel.initBalanceModelByType()
+                    newUpdateHeaderViewModel(homeBalanceModel)
                 }
 
                 walletAppAbTestCondition(

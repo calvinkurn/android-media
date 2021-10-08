@@ -640,21 +640,21 @@ class AddEditProductShipmentFragment:
 
     private fun updateShipmentDataCustom(data: CustomProductLogisticModel) {
         if (data.shipperList.isNotEmpty() && data.cplProduct.isNotEmpty()) {
-            when (data.shipperList.first().header) {
-                ON_DEMAND_VALIDATION -> {
-                    shipmentOnDemandAdapter.updateData(data.shipperList.first().shipper)
-                    shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct.first())
-                }
-                CONVENTIONAL_VALIDATION -> {
-                    shipmentConventionalAdapter.updateData(data.shipperList.first().shipper)
-                    shipmentConventionalAdapter.setProductIdsActivated(data.cplProduct.first())
-                }
-                else -> {
-                    shipmentOnDemandAdapter.updateData(data.shipperList.first().shipper)
-                    shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct.first())
-                    if (data.shipperList.size >= CPL_THRESHOLD_SIZE)
-                        shipmentConventionalAdapter.updateData(data.shipperList.last().shipper)
-                    shipmentConventionalAdapter.setProductIdsActivated(data.cplProduct.first())
+            if (data.shipperList.size >= CPL_THRESHOLD_SIZE) {
+                shipmentOnDemandAdapter.updateData(data.shipperList.first().shipper)
+                shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct.first())
+                shipmentConventionalAdapter.updateData(data.shipperList.last().shipper)
+                shipmentConventionalAdapter.setProductIdsActivated(data.cplProduct.first())
+            } else {
+                when (data.shipperList.first().header) {
+                    ON_DEMAND_VALIDATION -> {
+                        shipmentOnDemandAdapter.updateData(data.shipperList.first().shipper)
+                        shipmentOnDemandAdapter.setProductIdsActivated(data.cplProduct.first())
+                    }
+                    CONVENTIONAL_VALIDATION -> {
+                        shipmentConventionalAdapter.updateData(data.shipperList.first().shipper)
+                        shipmentConventionalAdapter.setProductIdsActivated(data.cplProduct.first())
+                    }
                 }
             }
         }
