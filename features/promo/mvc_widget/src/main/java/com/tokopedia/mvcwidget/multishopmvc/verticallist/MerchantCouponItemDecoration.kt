@@ -1,4 +1,4 @@
-package com.tokopedia.tokopoints.view.adapter
+package com.tokopedia.mvcwidget.multishopmvc.verticallist
 
 import android.graphics.Rect
 import android.view.View
