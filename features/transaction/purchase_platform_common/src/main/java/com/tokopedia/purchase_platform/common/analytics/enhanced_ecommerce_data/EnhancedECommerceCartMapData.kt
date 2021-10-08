@@ -1,52 +1,48 @@
-package com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data;
+package com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*
 
 /**
  * @author anggaprasetiyo on 05/06/18.
  */
-public class EnhancedECommerceCartMapData {
-    public static final String VALUE_CURRENCY_IDR = "IDR";
+class EnhancedECommerceCartMapData {
+    private val cart: MutableMap<String, Any> = HashMap()
+    private val act: MutableMap<String, Any> = HashMap()
+    private val listProducts: MutableList<Any> = ArrayList()
+    private val listImpressions: MutableList<Any> = ArrayList()
 
-    public static final String ADD_ACTION = "add";
-    public static final String REMOVE_ACTION = "remove";
-
-    private static final String KEY_CURRENCY = "currencyCode";
-    public static final String KEY_PRODUCTS = "products";
-    public static final String KEY_IMPRESSIONS = "impressions";
-    public static final String KEY_CLICK = "click";
-
-    private Map<String, Object> cart = new HashMap<>();
-    private Map<String, Object> act = new HashMap<>();
-    private List<Object> listProducts = new ArrayList<>();
-    private List<Object> listImpressions = new ArrayList<>();
-
-    public void setCurrencyCode(String currencyCode) {
-        cart.put(KEY_CURRENCY, currencyCode);
+    fun setCurrencyCode(currencyCode: String) {
+        cart[KEY_CURRENCY] = currencyCode
     }
 
-    public void addProduct(Map<String, Object> Product) {
-        listProducts.add(Product);
+    fun addProduct(Product: Map<String, Any>) {
+        listProducts.add(Product)
     }
 
-    public void setAction(String action) {
-        act.put(KEY_PRODUCTS, listProducts);
-        cart.put(action, act);
+    fun setAction(action: String) {
+        act[KEY_PRODUCTS] = listProducts
+        cart[action] = act
     }
 
-    public void addImpression(Map<String, Object> Impression) {
-        listImpressions.add(Impression);
-        cart.put(KEY_IMPRESSIONS, listImpressions);
+    fun addImpression(Impression: Map<String, Any>) {
+        listImpressions.add(Impression)
+        cart[KEY_IMPRESSIONS] = listImpressions
     }
 
-    public void addClick(Map<String, Object> Click) {
-        cart.put(KEY_CLICK, Click);
+    fun addClick(Click: Map<String?, Any?>) {
+        cart[KEY_CLICK] = Click
     }
 
-    public Map<String, Object> getCartMap() {
-        return cart;
+    val cartMap: Map<String, Any>
+        get() = cart
+
+    companion object {
+        const val VALUE_CURRENCY_IDR = "IDR"
+        const val ADD_ACTION = "add"
+        const val REMOVE_ACTION = "remove"
+        private const val KEY_CURRENCY = "currencyCode"
+        const val KEY_PRODUCTS = "products"
+        const val KEY_IMPRESSIONS = "impressions"
+        const val KEY_CLICK = "click"
     }
 }

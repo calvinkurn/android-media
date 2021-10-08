@@ -766,7 +766,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             setPosition(position.toString())
         }
         val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
-            setActionField(enhancedECommerceActionField.actionFieldMap)
+            setActionField(enhancedECommerceActionField.getActionFieldMap())
             addProduct(enhancedECommerceProductCartMapData.getProduct())
         }
         stringObjectMap["currencyCode"] = "IDR"
@@ -810,7 +810,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             setPosition(position.toString())
         }
         val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
-            setActionField(enhancedECommerceActionField.actionFieldMap)
+            setActionField(enhancedECommerceActionField.getActionFieldMap())
             addProduct(enhancedECommerceProductCartMapData.getProduct())
         }
         stringObjectMap["currencyCode"] = "IDR"
@@ -856,9 +856,9 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 addProduct(enhancedECommerceProductCartMapData.getProduct())
             }
             setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR)
-            setActionField(enhancedECommerceActionField.actionFieldMap)
+            setActionField(enhancedECommerceActionField.getActionFieldMap())
         }
-        checkoutMapData[EnhancedECommerceCheckout.KEY_CHECKOUT] = enhancedECommerceCheckout.checkoutMap
+        checkoutMapData[EnhancedECommerceCheckout.KEY_CHECKOUT] = enhancedECommerceCheckout.getCheckoutMap()
         return checkoutMapData
     }
 
@@ -932,7 +932,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             setVariant("")
         }
         val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
-            setActionField(enhancedECommerceActionField.actionFieldMap)
+            setActionField(enhancedECommerceActionField.getActionFieldMap())
             addProduct(enhancedECommerceProductCartMapData.getProduct())
         }
         stringObjectMap["currencyCode"] = "IDR"
@@ -960,7 +960,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
         }
         val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
-            setActionField(enhancedECommerceActionField.actionFieldMap)
+            setActionField(enhancedECommerceActionField.getActionFieldMap())
             addProduct(enhancedECommerceProductCartMapData.getProduct())
         }
         stringObjectMap["currencyCode"] = "IDR"
@@ -1001,7 +1001,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         }
 
         val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
-            setActionField(enhancedECommerceActionField.actionFieldMap)
+            setActionField(enhancedECommerceActionField.getActionFieldMap())
             addProduct(enhancedECommerceProductCartMapData.getProduct())
         }
         stringObjectMap["currencyCode"] = "IDR"

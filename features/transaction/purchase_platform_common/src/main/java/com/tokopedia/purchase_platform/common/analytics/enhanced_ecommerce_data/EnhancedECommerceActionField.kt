@@ -1,54 +1,53 @@
-package com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data;
+package com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*
 
 /**
  * @author anggaprasetiyo on 31/07/18.
  */
-public class EnhancedECommerceActionField {
+class EnhancedECommerceActionField {
+    private val actionFieldMap: MutableMap<String, String> = HashMap()
 
-    public static final String STEP_0 = "0";
-    public static final String STEP_1 = "1";
-    public static final String STEP_2 = "2";
-    public static final String STEP_3 = "3";
-    public static final String STEP_4 = "4";
-    public static final String STEP_0_OPTION_VIEW_CART_PAGE = "view cart page";
-    public static final String STEP_1_OPTION_CART_PAGE_LOADED = "cart page loaded";
-    public static final String STEP_2_OPTION_CHECKOUT_PAGE_LOADED = "checkout page loaded";
-    public static final String STEP_3_OPTION_DATA_VALIDATION = "data validation";
-    public static final String STEP_4_OPTION_CLICK_PAYMENT_OPTION_BUTTON = "click_payment option button";
-    public static final String OPTION_CLICK_PAYMENT_OPTION_BUTTON = "click payment option button";
-    public static final String OPTION_CLICK_CHECKOUT = "click checkout";
-    public static final String OPTION_CLICK_BAYAR = "click bayar";
-    public static final String LIST_WISHLIST = "/cart - wishlist";
-    public static final String LIST_WISHLIST_ON_EMPTY_CART = "/cart empty - wishlist";
-    public static final String LIST_RECENT_VIEW = "/cart - recent view";
-    public static final String LIST_RECENT_VIEW_ON_EMPTY_CART = "/cart empty - recent view";
-    public static final String LIST_RECOMMENDATION = "/recommendation - primary product";
-    public static final String LIST_CART_RECOMMENDATION = "/cart - rekomendasi untuk anda - ";
-    public static final String LIST_CART_RECOMMENDATION_ON_EMPTY_CART = "/cart - rekomendasi untuk anda - empty_cart - ";
-    public static final String LIST_CART_RECOMMENDATION_TOPADS_TYPE = " - product topads";
-
-    private static final String KEY_STEP = "step";
-    private static final String KEY_OPTION = "option";
-    public static final String KEY_LIST = "list";
-
-    private Map<String, String> actionFieldMap = new HashMap<>();
-
-    public void setStep(String step) {
-        actionFieldMap.put(KEY_STEP, step);
+    fun setStep(step: String) {
+        actionFieldMap[KEY_STEP] = step
     }
 
-    public void setOption(String option) {
-        actionFieldMap.put(KEY_OPTION, option);
+    fun setOption(option: String) {
+        actionFieldMap[KEY_OPTION] = option
     }
 
-    public void setList(String list) {
-        actionFieldMap.put(KEY_LIST, list);
+    fun setList(list: String) {
+        actionFieldMap[KEY_LIST] = list
     }
 
-    public Map<String, String> getActionFieldMap() {
-        return actionFieldMap;
+    fun getActionFieldMap(): Map<String, String> {
+        return actionFieldMap
+    }
+
+    companion object {
+        const val STEP_0 = "0"
+        const val STEP_1 = "1"
+        const val STEP_2 = "2"
+        const val STEP_3 = "3"
+        const val STEP_4 = "4"
+        const val STEP_0_OPTION_VIEW_CART_PAGE = "view cart page"
+        const val STEP_1_OPTION_CART_PAGE_LOADED = "cart page loaded"
+        const val STEP_2_OPTION_CHECKOUT_PAGE_LOADED = "checkout page loaded"
+        const val STEP_3_OPTION_DATA_VALIDATION = "data validation"
+        const val STEP_4_OPTION_CLICK_PAYMENT_OPTION_BUTTON = "click_payment option button"
+        const val OPTION_CLICK_PAYMENT_OPTION_BUTTON = "click payment option button"
+        const val OPTION_CLICK_CHECKOUT = "click checkout"
+        const val OPTION_CLICK_BAYAR = "click bayar"
+        const val LIST_WISHLIST = "/cart - wishlist"
+        const val LIST_WISHLIST_ON_EMPTY_CART = "/cart empty - wishlist"
+        const val LIST_RECENT_VIEW = "/cart - recent view"
+        const val LIST_RECENT_VIEW_ON_EMPTY_CART = "/cart empty - recent view"
+        const val LIST_RECOMMENDATION = "/recommendation - primary product"
+        const val LIST_CART_RECOMMENDATION = "/cart - rekomendasi untuk anda - "
+        const val LIST_CART_RECOMMENDATION_ON_EMPTY_CART = "/cart - rekomendasi untuk anda - empty_cart - "
+        const val LIST_CART_RECOMMENDATION_TOPADS_TYPE = " - product topads"
+        private const val KEY_STEP = "step"
+        private const val KEY_OPTION = "option"
+        const val KEY_LIST = "list"
     }
 }
