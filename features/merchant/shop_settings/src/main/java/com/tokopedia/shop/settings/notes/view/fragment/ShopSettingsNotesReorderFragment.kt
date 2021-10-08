@@ -8,8 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -27,20 +25,23 @@ import com.tokopedia.shop.settings.common.util.FORMAT_DATE_TIME
 import com.tokopedia.shop.settings.common.util.OnStartDragListener
 import com.tokopedia.shop.settings.common.util.SimpleItemTouchHelperCallback
 import com.tokopedia.shop.settings.common.util.toReadableString
+import com.tokopedia.shop.settings.databinding.FragmentNoteReorderListBinding
 import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
 import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteReorderAdapter
 import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteReorderFactory
 import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingNoteListReorderPresenter
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
-
 
 class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopNoteReorderFactory>(), ShopSettingNoteListReorderPresenter.View, OnStartDragListener {
 
     @Inject
     lateinit var shopSettingNoteListReorderPresenter: ShopSettingNoteListReorderPresenter
+
+    private var binding by autoClearedNullable<FragmentNoteReorderListBinding>()
+
     private var shopNoteModels: ArrayList<ShopNoteUiModel>? = null
     private var shopNoteModelsWithoutTerms: List<ShopNoteUiModel>? = null
     private var progressDialog: ProgressDialog? = null
@@ -79,8 +80,9 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopN
         adapterTerms = ShopNoteReorderAdapter(ShopNoteReorderFactory(null))
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_note_reorder_list, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = FragmentNoteReorderListBinding.inflate(inflater, container, false)
+        return binding?.root as View
     }
 
     override fun getScreenName(): String? {
@@ -88,8 +90,8 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopN
     }
 
     override fun getRecyclerView(view: View): RecyclerView {
-        recyclerView = view.findViewById<View>(R.id.recycler_view) as RecyclerView?
-        return view.findViewById<View>(R.id.recycler_view) as RecyclerView
+        recyclerView = binding?.recyclerView
+        return recyclerView as RecyclerView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -104,11 +106,11 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopN
     override fun loadData(page: Int) {
         if (shopNoteModels != null && shopNoteModels?.size.toZeroIfNull() > 0) {
             shopNoteModels?.get(0)?.apply {
-                val itemNoteReorder = view?.findViewById<LinearLayout>(R.id.item_note_reorder)
-                val tpNoteName = view?.findViewById<Typography>(R.id.tvNoteName)
-                val tpNoteLastUpdated = view?.findViewById<Typography>(R.id.tvLastUpdate)
-                val ivReorder = view?.findViewById<ImageView>(R.id.ivReorder)
-                val divider = view?.findViewById<View>(R.id.divider)
+                val itemNoteReorder = binding?.itemNote?.itemNoteReorder
+                val tpNoteName = binding?.itemNote?.tvNoteName
+                val tpNoteLastUpdated = binding?.itemNote?.tvLastUpdate
+                val ivReorder = binding?.itemNote?.ivReorder
+                val divider = binding?.divider
                 itemNoteReorder?.background = context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N700_20)
 
                 if (terms) {

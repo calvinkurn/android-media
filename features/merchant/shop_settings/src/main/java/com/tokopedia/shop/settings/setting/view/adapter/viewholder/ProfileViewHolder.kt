@@ -1,26 +1,20 @@
 package com.tokopedia.shop.settings.setting.view.adapter.viewholder
 
 import android.view.View
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.shop.settings.R
+import com.tokopedia.shop.settings.databinding.ItemShopPageSettingProfileBinding
 import com.tokopedia.shop.settings.setting.view.adapter.ShopPageSettingAdapter
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ProfileViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    private var changeProfileView: TextView? = null
-    private var changeNoteView: TextView? = null
-    private var editSchedulerView: TextView? = null
-
-    init {
-        changeProfileView = itemView.findViewById(R.id.tv_change_profile)
-        changeNoteView = itemView.findViewById(R.id.tv_change_note)
-        editSchedulerView = itemView.findViewById(R.id.tv_edit_schedule)
-    }
+    private val binding: ItemShopPageSettingProfileBinding? by viewBinding()
 
     fun bind(clickListener: ShopPageSettingAdapter.ProfileItemClickListener) {
-        changeProfileView?.setOnClickListener{clickListener.onChangeProfileClicked()}
-        changeNoteView?.setOnClickListener{clickListener.onChangeShopNoteClicked()}
-        editSchedulerView?.setOnClickListener{clickListener.onEditShopScheduleClicked()}
+        binding?.apply {
+            tvChangeProfile.setOnClickListener{clickListener.onChangeProfileClicked()}
+            tvChangeNote.setOnClickListener{clickListener.onChangeShopNoteClicked()}
+            tvEditSchedule.setOnClickListener{clickListener.onEditShopScheduleClicked()}
+        }
     }
 }
