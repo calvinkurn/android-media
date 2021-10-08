@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.viewutil.ChannelWidgetUtil
 import com.tokopedia.recommendation_widget_common.widget.bestseller.annotationfilter.AnnotationChipFilterAdapter
 import com.tokopedia.recommendation_widget_common.widget.bestseller.annotationfilter.AnnotationChipListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.decoration.CommonMarginStartDecoration
@@ -50,6 +51,7 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
             initHeader(element)
             initFilterChip(element)
             initRecommendation(element)
+            setChannelDivider(element)
         }
     }
 
@@ -183,4 +185,11 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
         private const val CLASS_NAME = "com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder"
     }
 
+    private fun setChannelDivider(element: BestSellerDataModel) {
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            dividerType = element.dividerType,
+            dividerTop = itemView.home_component_divider_header,
+            dividerBottom = itemView.home_component_divider_footer
+        )
+    }
 }
