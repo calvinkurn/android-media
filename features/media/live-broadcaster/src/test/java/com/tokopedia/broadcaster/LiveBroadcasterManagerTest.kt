@@ -229,15 +229,6 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
     }
 
     @Test
-    fun `Should be able to release the live stream`() {
-        // When
-        broadcaster.release()
-
-        // Then
-        `Then the streamer is released`()
-    }
-
-    @Test
     fun `Should be connection state changed return as Idle when streamer is Idle`() {
         // Given
         val connectionId = 123
