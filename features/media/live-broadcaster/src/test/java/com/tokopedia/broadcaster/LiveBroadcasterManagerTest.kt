@@ -226,6 +226,14 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
 
         // Then
         `Then the state should be expected with actual`(BroadcasterState.Stop)
+    }
+
+    @Test
+    fun `Should be able to release the live stream`() {
+        // When
+        broadcaster.release()
+
+        // Then
         `Then the streamer is released`()
     }
 

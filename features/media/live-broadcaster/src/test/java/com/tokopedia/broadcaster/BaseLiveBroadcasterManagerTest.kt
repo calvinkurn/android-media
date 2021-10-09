@@ -166,7 +166,7 @@ open class BaseLiveBroadcasterManagerTest {
     }
 
     fun `Then stop audio capture is called`() {
-        verify(exactly = 1) { broadcaster.streamer?.stopAudioCapture() }
+        verify(atLeast = 1) { broadcaster.streamer?.stopAudioCapture() }
     }
 
     fun `Then changeAudioConfig of streamer is called`() {
