@@ -32,4 +32,5 @@ data class RecommendationErrorDataModel(
 interface RecommendationErrorListener{
     fun onRefreshRecommendation()
     fun onCloseRecommendation()
+    fun onShowSnackbarError(throwable: Throwable)
 }

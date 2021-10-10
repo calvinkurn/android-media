@@ -12,8 +12,8 @@ import com.tokopedia.mvcwidget.multishopmvc.MvcMultiShopView
 import com.tokopedia.mvcwidget.multishopmvc.data.*
 import com.tokopedia.mvcwidget.trackers.MvcTracker
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import java.util.*
 import kotlin.collections.HashMap
+import kotlin.collections.HashSet
 
 class MerchantCouponListAdapter(
     val viewmodel: MerchantCouponViewModel,
@@ -22,6 +22,7 @@ class MerchantCouponListAdapter(
     var source: Int
 ) : BaseAdapter<CatalogMVCWithProductsListItem>(callback) {
     private var mRecyclerView: RecyclerView? = null
+    private val eventSet = HashSet<String?>()
 
     inner class CouponListViewHolder(view: View) : BaseVH(view) {
         var multiShopView: MvcMultiShopView = view.findViewById(R.id.mvc_multishop)
@@ -66,9 +67,10 @@ class MerchantCouponListAdapter(
     }
 
     private fun sendTopadsImpression(context: Context, adInfo: AdInfo?) {
-        if (!adImpression.contains(adInfo?.AdID)) {
+        if (!eventSet.contains(adInfo?.AdID) && !adImpression.contains(adInfo?.AdID)) {
+            eventSet.add(adInfo?.AdID)
             TopAdsUrlHitter(context).hitImpressionUrl(
-                packageName,
+                className,
                 adInfo?.AdViewUrl,
                 "",
                 "",
@@ -90,13 +92,13 @@ class MerchantCouponListAdapter(
             item["creative_name"] = title
             item["item_id"] = shopInfo?.id
             val promotions = HashMap<String, Any>()
-            promotions["promotions"] = Arrays.asList<Map<String, Any?>>(item)
+            promotions["promotions"] = listOf<Map<String, Any?>>(item)
             sendTopadsImpression(holder.itemView.context, items[holder.adapterPosition].AdInfo)
             MvcTracker().viewMVCCoupon(eventLabel, promotions ,source)
         }
     }
 
     companion object {
-        val packageName = MerchantCouponListAdapter::class.java.`package`.toString()
+        const val className = "com.tokopedia.mvcwidget.multishopmvc.verticallist.MerchantCouponListAdapter"
     }
 }

@@ -17,7 +17,7 @@ import javax.inject.Inject
  * Copyright (c) 2019 PT. Tokopedia All rights reserved.
  */
 
-class HomeAccountUserUsecase @Inject constructor(
+open class HomeAccountUserUsecase @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val rawQueries: Map<String, String>
 ): GraphqlUseCase<UserAccountDataModel>(graphqlRepository) {

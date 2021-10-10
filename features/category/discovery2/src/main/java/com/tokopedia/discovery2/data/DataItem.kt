@@ -385,6 +385,20 @@ data class DataItem(
         @SerializedName("badges")
         var badges: List<Badges?>? = null,
 
+        @SerializedName("hasAddToCartButton")
+        var hasATC: Boolean = false,
+
+        @SerializedName("parent_id")
+        var parentProductId: String? = "",
+
+        @SerializedName("max_order")
+        var maxQuantity: Int = 0,
+
+        @SerializedName("min_order")
+        var minQuantity: Int = 0,
+
+        var quantity: Int = 0,
+
         @field:SerializedName("products")
         val products: List<ProductsItem?>? = null,
 
@@ -393,7 +407,6 @@ data class DataItem(
 
         @field:SerializedName("shopInfo")
         val shopInfo: ShopInfo? = null,
-
 
         var shopAdsClickURL: String? = "",
 

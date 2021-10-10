@@ -1,5 +1,6 @@
 package com.tokopedia.seller_migration_common.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
@@ -16,12 +17,13 @@ import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.seller_migration_common.R
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
+import com.tokopedia.seller_migration_common.databinding.FragmentSellerMigrationBinding
 import com.tokopedia.seller_migration_common.presentation.adapter.SellerFeatureFragmentAdapter
 import com.tokopedia.seller_migration_common.presentation.util.touchlistener.SellerMigrationTouchListener
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.fragment_seller_migration.*
+import com.tokopedia.utils.view.binding.noreflection.viewBinding
 
 class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewListener {
 
@@ -51,23 +53,25 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
     private val tabList = ArrayList<SellerFeatureFragmentAdapter.SellerFeatureFragmentItem>()
     private var lastTabPosition = -1
     private val viewPagerOnTabSelectedListener by lazy {
-        object : TabLayout.TabLayoutOnPageChangeListener(tabSellerMigration.getUnifyTabLayout()) {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                val view = fragmentAdapter?.getItem(position)?.view
-                view?.post {
-                    val wMeasureSpec = View.MeasureSpec.makeMeasureSpec(view.width, View.MeasureSpec.EXACTLY)
-                    val hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-                    view.measure(wMeasureSpec, hMeasureSpec)
+        binding?.run {
+            object : TabLayout.TabLayoutOnPageChangeListener(tabSellerMigration.getUnifyTabLayout()) {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    val view = fragmentAdapter?.getItem(position)?.view
+                    view?.post {
+                        val wMeasureSpec = View.MeasureSpec.makeMeasureSpec(view.width, View.MeasureSpec.EXACTLY)
+                        val hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                        view.measure(wMeasureSpec, hMeasureSpec)
 
-                    if (viewPagerSellerMigration.layoutParams.height != view.measuredHeight) {
-                        viewPagerSellerMigration.layoutParams = (viewPagerSellerMigration.layoutParams as LinearLayout.LayoutParams)
+                        if (viewPagerSellerMigration.layoutParams.height != view.measuredHeight) {
+                            viewPagerSellerMigration.layoutParams = (viewPagerSellerMigration.layoutParams as LinearLayout.LayoutParams)
                                 .also { lp -> lp.height = view.measuredHeight }
+                        }
                     }
-                }
-                if (position != lastTabPosition) {
-                    lastTabPosition = position
-                    SellerMigrationTracking.eventClickSellerFeatureTab(tabList[position].tabName, SCREEN_NAME, userSession.userId)
+                    if (position != lastTabPosition) {
+                        lastTabPosition = position
+                        SellerMigrationTracking.eventClickSellerFeatureTab(tabList[position].tabName, SCREEN_NAME, userSession.userId)
+                    }
                 }
             }
         }
@@ -76,6 +80,8 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
     private var featureName: String = ""
     private var fragmentAdapter: SellerFeatureFragmentAdapter? = null
     private val userSession by lazy { UserSession(context) }
+
+    private val binding by viewBinding(FragmentSellerMigrationBinding::bind)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,22 +117,31 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
         selectTab()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun initFooter() {
-        sellerMigrationButton.setOnClickListener { goToPlayStore() }
-        sellerMigrationLink?.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_fragment_footer)).spannedString }
-        sellerMigrationLink?.setOnTouchListener(SellerMigrationTouchListener {
-            goToInformationWebview(it)
-        })
+        binding?.run {
+            sellerMigrationButton.setOnClickListener { goToPlayStore() }
+            sellerMigrationLink.text = context?.let { HtmlLinkHelper(it, getString(R.string.seller_migration_fragment_footer)).spannedString }
+            sellerMigrationLink.setOnTouchListener(SellerMigrationTouchListener {
+                goToInformationWebview(it)
+            })
+        }
     }
 
     override fun onRecyclerViewBindFinished() {
-        viewPagerOnTabSelectedListener.onPageSelected(viewPagerSellerMigration.currentItem)
+        binding?.run {
+            viewPagerOnTabSelectedListener?.onPageSelected(viewPagerSellerMigration.currentItem)
+        }
     }
 
     private fun initViewPager() {
-        val tabLayout = tabSellerMigration.getUnifyTabLayout()
-        tabLayout.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(viewPagerSellerMigration))
-        viewPagerSellerMigration.addOnPageChangeListener(viewPagerOnTabSelectedListener)
+        binding?.run {
+            val tabLayout = tabSellerMigration.getUnifyTabLayout()
+            tabLayout.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(viewPagerSellerMigration))
+            viewPagerOnTabSelectedListener?.run {
+                viewPagerSellerMigration.addOnPageChangeListener(this)
+            }
+        }
     }
 
     private fun initTabs() {
@@ -134,7 +149,7 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
 
         fragmentAdapter = SellerFeatureFragmentAdapter(childFragmentManager)
         fragmentAdapter?.setItemList(tabList)
-        viewPagerSellerMigration.adapter = fragmentAdapter
+        binding?.viewPagerSellerMigration?.adapter = fragmentAdapter
     }
 
     private fun selectTab() {
@@ -172,11 +187,11 @@ class SellerMigrationFragment : Fragment(), SellerFeatureCarousel.RecyclerViewLi
                 PRODUCT_TAB
             }
         }
-        viewPagerOnTabSelectedListener.onPageSelected(position)
+        viewPagerOnTabSelectedListener?.onPageSelected(position)
     }
 
     private fun initImage() {
-        ivSellerMigration.urlSrc = SellerMigrationConstants.SELLER_MIGRATION_FRAGMENT_BANNER_LINK
+        binding?.ivSellerMigration?.urlSrc = SellerMigrationConstants.SELLER_MIGRATION_FRAGMENT_BANNER_LINK
     }
 
     private fun addTabFragments() {

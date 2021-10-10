@@ -66,7 +66,7 @@ data class BaseNotificationModel(
         @ColumnInfo(name = "channelName")
         var channelName: String? = null,
 
-        @Embedded(prefix = "persist")
+        @ColumnInfo(name = "persistButton")
         var persistentButtonList: ArrayList<PersistentButton>? = null,
 
         @ColumnInfo(name = "videoPush")

@@ -46,5 +46,7 @@ internal val live = Url(
         WS_PLAY = "wss://groupchat.tokopedia.com",
         HUB = "https://hub.tokopedia.com/",
         PCIDSS_CREDIT_CARD = "https://pay.tokopedia.id/",
+        GOJEK_OTP = "https://accounts.gojek.com/",
+        GOPAY_PIN = "https://merchants-gws-app.gopayapi.com/",
         SSE = "https://sse.tokopedia.com/"
 )

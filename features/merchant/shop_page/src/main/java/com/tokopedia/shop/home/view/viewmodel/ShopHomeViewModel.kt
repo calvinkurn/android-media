@@ -554,7 +554,7 @@ class ShopHomeViewModel @Inject constructor(
         if (carouselPlayWidgetUiModel !is CarouselPlayWidgetUiModel) return
         launchCatchError(block = {
             val response = playWidgetTools.getWidgetFromNetwork(
-                    if (GlobalConfig.isSellerApp()) PlayWidgetUseCase.WidgetType.SellerApp(shopId) else PlayWidgetUseCase.WidgetType.ShopPage(shopId),
+                    if (shopId == userSessionShopId) PlayWidgetUseCase.WidgetType.SellerApp(shopId) else PlayWidgetUseCase.WidgetType.ShopPage(shopId),
                     dispatcherProvider.io
             )
             val widgetUiModel = playWidgetTools.mapWidgetToModel(widgetResponse = response, prevModel = _playWidgetObservable.value?.widgetUiModel)

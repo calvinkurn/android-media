@@ -51,7 +51,7 @@ class MerchantRewardToolbar @JvmOverloads constructor(
     }
 
     private fun initDrawableResources() {
-        backArrowWhite = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_action_back)
+        backArrowWhite = getBitmapDrawableFromVectorDrawable(mContext, com.tokopedia.abstraction.R.drawable.ic_action_back)
         backArrowWhite?.setColorFilter(
             context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N400),
             PorterDuff.Mode.SRC_ATOP
@@ -83,9 +83,9 @@ class MerchantRewardToolbar @JvmOverloads constructor(
     }
 
     override fun setTitle(title: CharSequence) {
-        if (title == resources.getString(R.string.tp_kupon_toko)) return
-        super.setTitle(resources.getString(R.string.tp_kupon_toko))
-        tvToolbarTitle?.text = resources.getString(R.string.tp_kupon_toko)
+        if (title == resources.getString(R.string.mvc_kupon_toko)) return
+        super.setTitle(resources.getString(R.string.mvc_kupon_toko))
+        tvToolbarTitle?.text = resources.getString(R.string.mvc_kupon_toko)
     }
 
 }

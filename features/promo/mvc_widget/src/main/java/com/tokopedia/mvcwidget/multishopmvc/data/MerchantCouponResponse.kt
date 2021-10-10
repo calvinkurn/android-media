@@ -132,11 +132,11 @@ data class TokopointsPaging(
 data class AdInfo(
 
         @SerializedName("AdID")
-        val AdID: String? = null,
+        val AdID: String? = "",
 
         @SerializedName("AdViewUrl")
-        val AdViewUrl: String? = null,
+        val AdViewUrl: String? = "",
 
         @SerializedName("AdClickUrl")
-        val AdClickUrl: String? = null,
+        val AdClickUrl: String? = "",
 )

@@ -17,7 +17,7 @@ class MerchantCouponViewModel @Inject constructor(private val usecase: MerchantC
             val data = usecase.getResponse(usecase.getQueryParams(page))
             data?.let {
                 couponData.value = LiveDataResult.success(MerchantCouponData(data))
-            } ?: NullPointerException()
+            }
         }) {
             couponData.value = LiveDataResult.error(it)
         }

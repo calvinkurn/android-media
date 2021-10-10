@@ -17,7 +17,7 @@ import javax.inject.Inject
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class HomeAccountShortcutUseCase @Inject constructor(
+open class HomeAccountShortcutUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val rawQueries: Map<String, String>
 ): GraphqlUseCase<ShortcutResponse>(graphqlRepository) {
