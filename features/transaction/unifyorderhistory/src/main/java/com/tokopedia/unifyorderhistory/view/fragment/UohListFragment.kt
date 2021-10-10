@@ -1067,14 +1067,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun onClickFilterDate() {
-        uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter().apply {
-            setActionListener(this@UohListFragment)
-        }
-        UohFilterOptionsBottomSheet().run {
-            setActionListener(this@UohListFragment)
-            context?.let { context -> show(context, parentFragmentManager, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_DATE) }
-        }
-
         val arrayListDateFilterBundle = arrayListOf<UohFilterBundle>()
         arrayFilterDate?.let {
             if (it.isNotEmpty()) {
@@ -1083,49 +1075,55 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 }
             }
         }
+
+        uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter()
+        uohBottomSheetOptionAdapter.setActionListener(this@UohListFragment)
+        uohBottomSheetOptionAdapter.filterBundleList = arrayListDateFilterBundle
+        uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_DATE
+        uohBottomSheetOptionAdapter.selectedKey = selectedKey
+        uohBottomSheetOptionAdapter.isReset = isReset
+        uohBottomSheetOptionAdapter.notifyDataSetChanged()
+
         tempFilterType = UohConsts.TYPE_FILTER_DATE
         if (tempFilterDateLabel.isEmpty()) tempFilterDateLabel = ALL_DATE
         if (tempFilterDateKey.isEmpty()) tempFilterDateKey = "0"
 
-        uohBottomSheetOptionAdapter.run {
-            filterBundleList = arrayListDateFilterBundle
-            filterType = UohConsts.TYPE_FILTER_DATE
-            selectedKey = currFilterDateKey
-            isReset = isReset
-            notifyDataSetChanged()
-        }
+        val filterDateBottomSheet = UohFilterOptionsBottomSheet()
+        filterDateBottomSheet.setActionListener(this@UohListFragment)
+        context?.let { filterDateBottomSheet.show(it, parentFragmentManager, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_DATE) }
     }
 
     private fun onClickFilterStatus() {
-        uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter().apply {
-            setActionListener(this@UohListFragment)
-        }
-        UohFilterOptionsBottomSheet().run {
-            setActionListener(this@UohListFragment)
-            context?.let { context -> show(context, parentFragmentManager, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_FILTERS) }
-        }
+        uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter()
+        uohBottomSheetOptionAdapter.setActionListener(this@UohListFragment)
+        uohBottomSheetOptionAdapter.filterBundleList = _arrayListStatusFilterBundle
+        uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_STATUS
+        uohBottomSheetOptionAdapter.selectedKey = selectedKey
+        uohBottomSheetOptionAdapter.isReset = isReset
+        uohBottomSheetOptionAdapter.notifyDataSetChanged()
 
         tempFilterType = UohConsts.TYPE_FILTER_STATUS
         if (tempFilterStatusLabel.isEmpty()) tempFilterStatusLabel = ALL_STATUS_TRANSACTION
         if (tempFilterStatusKey.isEmpty()) tempFilterStatusKey = ""
 
-        uohBottomSheetOptionAdapter.run {
-            filterBundleList = _arrayListStatusFilterBundle
-            filterType = UohConsts.TYPE_FILTER_STATUS
-            selectedKey = currFilterStatusKey
-            isReset = isReset
-            notifyDataSetChanged()
-        }
+        selectedKey = currFilterStatusKey
+        val filterStatusBottomSheet = UohFilterOptionsBottomSheet()
+        filterStatusBottomSheet.setActionListener(this@UohListFragment)
+        context?.let { filterStatusBottomSheet.show(it, parentFragmentManager, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_FILTERS) }
     }
 
     private fun onClickFilterCategoryProduct() {
-        uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter().apply {
-            setActionListener(this@UohListFragment)
-        }
-        UohFilterOptionsBottomSheet().run {
-            setActionListener(this@UohListFragment)
-            context?.let { context -> show(context, parentFragmentManager, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_CATEGORIES) }
-        }
+        uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter()
+        uohBottomSheetOptionAdapter.setActionListener(this@UohListFragment)
+        uohBottomSheetOptionAdapter.filterBundleList = _arrayListCategoryProductFilterBundle
+        uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_CATEGORY
+        uohBottomSheetOptionAdapter.selectedKey = selectedKey
+        uohBottomSheetOptionAdapter.isReset = isReset
+        uohBottomSheetOptionAdapter.notifyDataSetChanged()
+
+        val filterCategoryBottomSheet = UohFilterOptionsBottomSheet()
+        filterCategoryBottomSheet.setActionListener(this@UohListFragment)
+        context?.let { context -> filterCategoryBottomSheet.show(context, parentFragmentManager, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_CATEGORIES) }
 
         tempFilterType = UohConsts.TYPE_FILTER_CATEGORY
         if (tempFilterCategoryLabel.isEmpty()) tempFilterCategoryLabel = ALL_PRODUCTS
@@ -1158,12 +1156,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
         } else {
             selectedKey = currFilterCategoryKey
-        }
-
-        uohBottomSheetOptionAdapter.run {
-            filterBundleList = _arrayListCategoryProductFilterBundle
-            filterType = UohConsts.TYPE_FILTER_CATEGORY
-            notifyDataSetChanged()
         }
     }
 
@@ -1901,6 +1893,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 userSession.userId?.let { it1 -> UohAnalytics.clickTerapkanOnCategoryFilterChips(labelTrackingCategory, it1) }
             }
         }
+        // kemungkinan ini mesti balik lagi jadi public variable?
         UohFilterOptionsBottomSheet().doDismiss()
         isFirstLoad = false
         refreshHandler?.startRefresh()

@@ -27,20 +27,14 @@ class UohFilterOptionsBottomSheet : BottomSheetUnify() {
     private var bottomSheetFilterOptions : BottomSheetUnify? = null
     private var binding by autoClearedNullable<BottomsheetOptionUohBinding>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initView()
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    private fun initView() {
-        binding = BottomsheetOptionUohBinding.inflate(LayoutInflater.from(context), null, false)
-    }
-
-    fun show(context: Context, fragmentManager: FragmentManager, adapter: UohBottomSheetOptionAdapter, title: String){
+    fun show(context: Context, fragmentManager: FragmentManager, adapterBottomSheet: UohBottomSheetOptionAdapter, title: String){
         bottomSheetFilterOptions = BottomSheetUnify()
+        binding = BottomsheetOptionUohBinding.inflate(LayoutInflater.from(context), null, false)
         binding?.run {
-            rvOption.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            rvOption.adapter = adapter
+            rvOption.apply {
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                adapter = adapterBottomSheet
+            }
             btnApply.setOnClickListener { actionListener?.onClickApply() }
         }
         bottomSheetFilterOptions?.run {

@@ -26,15 +26,14 @@ class UohKebabMenuBottomSheet : BottomSheetUnify() {
     }
 
     private fun initView() {
-        binding = BottomsheetKebabMenuUohBinding.inflate(LayoutInflater.from(context), null, false)
     }
 
     fun show(context: Context, fragmentManager: FragmentManager, adapter: UohBottomSheetKebabMenuAdapter) {
         bottomSheetKebabMenu = BottomSheetUnify()
+        binding = BottomsheetKebabMenuUohBinding.inflate(LayoutInflater.from(context), null, false)
         binding?.run {
-            // make sure this one after another
-            rvKebab.adapter = adapter
             rvKebab.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            rvKebab.adapter = adapter
         }
         bottomSheetKebabMenu?.run {
             showCloseIcon = true

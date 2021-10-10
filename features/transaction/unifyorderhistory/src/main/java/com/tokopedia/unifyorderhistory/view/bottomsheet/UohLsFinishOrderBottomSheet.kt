@@ -25,7 +25,6 @@ class UohLsFinishOrderBottomSheet : BottomSheetUnify() {
     }
 
     private fun initView() {
-        binding = BottomsheetLsFinishOrderUohBinding.inflate(LayoutInflater.from(context), null, false)
     }
 
     fun show(context: Context, fragmentManager: FragmentManager, index: Int, orderId: String) {
@@ -33,6 +32,7 @@ class UohLsFinishOrderBottomSheet : BottomSheetUnify() {
         bottomSheet.showCloseIcon = true
         bottomSheet.showHeader = true
 
+        binding = BottomsheetLsFinishOrderUohBinding.inflate(LayoutInflater.from(context), null, false)
         binding?.run {
             btnLsFinishOrder.setOnClickListener {
                 bottomSheet.dismiss()

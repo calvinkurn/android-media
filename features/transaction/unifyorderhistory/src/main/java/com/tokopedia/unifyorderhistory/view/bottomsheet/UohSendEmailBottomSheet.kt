@@ -24,17 +24,9 @@ class UohSendEmailBottomSheet : BottomSheetUnify() {
     private var bottomSheetSendEmail : BottomSheetUnify? = null
     private var binding by autoClearedNullable<BottomsheetSendEmailBinding>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initView()
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    private fun initView() {
-        binding = BottomsheetSendEmailBinding.inflate(LayoutInflater.from(context), null, false)
-    }
-
     fun show(fragmentManager: FragmentManager, gqlGroup: String, orderData: UohListOrder.Data.UohOrders.Order) {
         bottomSheetSendEmail = BottomSheetUnify()
+        binding = BottomsheetSendEmailBinding.inflate(LayoutInflater.from(context), null, false)
         binding?.run {
             tfEmail.textFieldInput.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {

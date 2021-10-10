@@ -22,17 +22,9 @@ class UohFinishOrderBottomSheet : BottomSheetUnify() {
     private var bottomSheetFinishOrder : BottomSheetUnify? = null
     private var binding by autoClearedNullable<BottomsheetFinishOrderUohBinding>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initView()
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    private fun initView() {
-        binding = BottomsheetFinishOrderUohBinding.inflate(LayoutInflater.from(context), null, false)
-    }
-
     fun show(context: Context, fragmentManager: FragmentManager, index: Int, status: String, orderId: String){
         bottomSheetFinishOrder = BottomSheetUnify()
+        binding = BottomsheetFinishOrderUohBinding.inflate(LayoutInflater.from(context), null, false)
         binding?.run {
             icFinishDetail1.background = ContextCompat.getDrawable(context, R.drawable.ic_uoh_bound_icon)
             icFinishDetail2.background = ContextCompat.getDrawable(context, R.drawable.ic_uoh_bound_icon)
