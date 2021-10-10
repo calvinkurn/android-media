@@ -1383,6 +1383,7 @@ class PlayViewModel @Inject constructor(
                 }
             }
             is ChannelInteractiveStatus -> {
+                Log.d("<INTERACTIVE>", "socket - ChannelInteractiveStatus: ${result.isExist}")
                 if (result.isExist) checkInteractive(channelId)
             }
             is ChannelInteractive -> {
@@ -1406,12 +1407,15 @@ class PlayViewModel @Inject constructor(
                 }
             }
             is UserWinnerStatus -> {
+                Log.d("<INTERACTIVE>", "socket - Socket WinnerStatus")
                 val interactiveState = _interactiveUiState.firstOrNull() ?: return@withContext
+                Log.d("<INTERACTIVE>", "socket - interactiveUiState is not null")
 
                 val winnerStatus = playSocketToModelMapper.mapUserWinnerStatus(result)
                 _observableUserWinnerStatus.value = winnerStatus
 
                 if(interactiveState.interactive is PlayInteractiveUiState.Finished) {
+                    Log.d("<INTERACTIVE>", "socket - interactive already finished, then it should emit")
                     handleUserWinnerStatus(winnerStatus)
                 }
             }
@@ -1576,13 +1580,17 @@ class PlayViewModel @Inject constructor(
             )
             delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
 
+            Log.d("<INTERACTIVE>", "handleInteractiveongoingFinished")
+
             _observableUserWinnerStatus.value?.let {
-                Log.d("<LOG>", "observable interactive Id : ${it.interactiveId}")
-                Log.d("<LOG>", "active interactive Id : ${activeInteractiveId}")
-                Log.d("<LOG>", "delay : ${activeInteractive.endGameDelayInMs}")
+                Log.d("<INTERACTIVE>", "handleInteractiveOngoingFinished - observable interactive Id : ${it.interactiveId}")
+                Log.d("<INTERACTIVE>", "handleInteractiveOngoingFinished - active interactive Id : ${activeInteractiveId}")
+                Log.d("<INTERACTIVE>", "handleInteractiveOngoingFinished - delay : ${activeInteractive.endGameDelayInMs}")
                 if(it.interactiveId.toString() == activeInteractiveId) handleUserWinnerStatus(it)
                 else waitingForSocketOrDuration(activeInteractive, activeInteractiveId)
             } ?: kotlin.run {
+                Log.d("<INTERACTIVE>", "handleInteractiveOngoingFinished - observableWinnerStatus == null")
+                Log.d("<INTERACTIVE>", "handleInteractiveOngoingFinished - delay : ${activeInteractive.endGameDelayInMs}")
                 waitingForSocketOrDuration(activeInteractive, activeInteractiveId)
             }
         }) {}
@@ -1596,11 +1604,19 @@ class PlayViewModel @Inject constructor(
 
         _leaderboardUserBadgeState.value = _leaderboardUserBadgeState.value.copy(showLeaderboard = true, shouldRefreshData = true)
 
+        Log.d("<INTERACTIVE>", "handleUserWinnerStatus - winnerStatus: ${winnerStatus?.interactiveId}")
+        Log.d("<INTERACTIVE>", "handleUserWinnerStatus - winnerStatus: ${winnerStatus?.interactiveId}")
+
         winnerStatus?.let {
+            Log.d("<INTERACTIVE>", "handleUserWinnerStatus - winnerStatus not null")
             val activeInteractiveId = repo.getActiveInteractiveId() ?: return
+            Log.d("<INTERACTIVE>", "handleUserWinnerStatus - activeInteractiveId: $activeInteractiveId")
             val isUserJoined = repo.hasJoined(activeInteractiveId)
 
+            Log.d("<INTERACTIVE>", "handleUserWinnerStatus - userJoined: $isUserJoined")
             if(winnerStatus.interactiveId.toString() == activeInteractiveId && isUserJoined) {
+                Log.d("<INTERACTIVE>", "handleUserWinnerStatus - userJoined: $isUserJoined")
+                Log.d("<INTERACTIVE>", "handleUserWinnerStatus - interactive Status: ${_interactive.value}")
                 setNoInteractive()
                 repo.setFinished(activeInteractiveId)
 
