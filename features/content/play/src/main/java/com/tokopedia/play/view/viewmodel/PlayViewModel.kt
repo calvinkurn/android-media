@@ -1577,6 +1577,9 @@ class PlayViewModel @Inject constructor(
             delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
 
             _observableUserWinnerStatus.value?.let {
+                Log.d("<LOG>", "observable interactive Id : ${it.interactiveId}")
+                Log.d("<LOG>", "active interactive Id : ${activeInteractiveId}")
+                Log.d("<LOG>", "delay : ${activeInteractive.endGameDelayInMs}")
                 if(it.interactiveId.toString() == activeInteractiveId) handleUserWinnerStatus(it)
                 else waitingForSocketOrDuration(activeInteractive, activeInteractiveId)
             } ?: kotlin.run {
