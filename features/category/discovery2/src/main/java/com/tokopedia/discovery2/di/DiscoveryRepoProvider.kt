@@ -58,4 +58,5 @@ class DiscoveryRepoProvider : RepositoryProvider {
     override fun provideTopAdsHeadlineRepository(): TopAdsHeadlineRepository {
         return DiscoveryTopAdsHeadlineRepository()
     }
+
 }
