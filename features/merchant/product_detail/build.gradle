@@ -96,7 +96,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.cart_common)
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.features.carouselProductCard)
-    implementation projectOrAar(rootProject.ext.features.chatcommon)
+    implementation projectOrAar(rootProject.ext.features.attachcommon)
     implementation projectOrAar(rootProject.ext.features.variantCommon)
     implementation rootProject.ext.miscDependencies.viewPager2
     implementation projectOrAar(rootProject.ext.libraries.analyticAnnotationCentral)
