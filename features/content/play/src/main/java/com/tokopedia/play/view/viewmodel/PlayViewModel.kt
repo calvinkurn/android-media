@@ -1586,12 +1586,14 @@ class PlayViewModel @Inject constructor(
                 _interactive.value = PlayInteractiveUiState.NoInteractive
         }
 
+        _leaderboardUserBadgeState.value = _leaderboardUserBadgeState.value.copy(showLeaderboard = true, shouldRefreshData = true)
+
         winnerStatus?.let {
             val activeInteractiveId = repo.getActiveInteractiveId() ?: return
             val isUserJoined = repo.hasJoined(activeInteractiveId)
 
             if(winnerStatus.interactiveId.toString() == activeInteractiveId && isUserJoined) {
-                _interactive.value = PlayInteractiveUiState.NoInteractive
+                setNoInteractive()
                 repo.setFinished(activeInteractiveId)
 
                 _uiEvent.emit(
@@ -1609,8 +1611,6 @@ class PlayViewModel @Inject constructor(
         } ?: kotlin.run {
             setNoInteractive()
         }
-
-        _leaderboardUserBadgeState.value = _leaderboardUserBadgeState.value.copy(showLeaderboard = true, shouldRefreshData = true)
     }
 
     private fun handleWinnerBadgeClicked(height: Int) {
