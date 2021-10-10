@@ -1556,6 +1556,12 @@ class PlayViewModel @Inject constructor(
 //    }
 
     private fun handleInteractiveOngoingFinished() {
+        suspend fun waitingForSocketOrDuration(activeInteractive: PlayCurrentInteractiveModel, activeInteractiveId: String) {
+            delay(activeInteractive.endGameDelayInMs)
+            repo.setFinished(activeInteractiveId)
+            handleUserWinnerStatus(null)
+        }
+
         viewModelScope.launchCatchError(block = {
             val activeInteractiveId = repo.getActiveInteractiveId() ?: return@launchCatchError
             val activeInteractive = repo.getDetail(activeInteractiveId) ?: return@launchCatchError
@@ -1571,11 +1577,10 @@ class PlayViewModel @Inject constructor(
             delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
 
             _observableUserWinnerStatus.value?.let {
-                handleUserWinnerStatus(it)
+                if(it.interactiveId.toString() == activeInteractiveId) handleUserWinnerStatus(it)
+                else waitingForSocketOrDuration(activeInteractive, activeInteractiveId)
             } ?: kotlin.run {
-                delay(activeInteractive.endGameDelayInMs)
-                repo.setFinished(activeInteractiveId)
-                handleUserWinnerStatus(null)
+                waitingForSocketOrDuration(activeInteractive, activeInteractiveId)
             }
         }) {}
     }
