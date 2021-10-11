@@ -14,6 +14,7 @@ import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Base64
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
@@ -159,16 +160,25 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     }
 
     private fun initView() {
-        setContentView(R.layout.activity_top_pay_payment_module)
-        tvTitle = findViewById(R.id.tv_title)
-        btnBack = findViewById(R.id.btn_back)
-        scroogeWebView = findViewById(R.id.scrooge_webview)
-        progressBar = findViewById(R.id.progressbar)
-        progressDialog = ProgressDialog(this)
-        progressDialog?.setMessage(getString(R.string.title_loading))
-        tvTitle?.text = getString(R.string.toppay_title)
-        val currentTransactionId = paymentPassData?.transactionId ?: ""
-        tvTitle?.contentDescription = getString(R.string.toppay_title_content_desc, currentTransactionId)
+        try {
+            setContentView(R.layout.activity_top_pay_payment_module)
+            tvTitle = findViewById(R.id.tv_title)
+            btnBack = findViewById(R.id.btn_back)
+            scroogeWebView = findViewById(R.id.scrooge_webview)
+            progressBar = findViewById(R.id.progressbar)
+            progressDialog = ProgressDialog(this)
+            progressDialog?.setMessage(getString(R.string.title_loading))
+            tvTitle?.text = getString(R.string.toppay_title)
+            val currentTransactionId = paymentPassData?.transactionId ?: ""
+            tvTitle?.contentDescription =
+                getString(R.string.toppay_title_content_desc, currentTransactionId)
+        } catch (e: Exception) {
+            ServerLogger.log(Priority.P1, "WEBVIEW_ERROR",
+                mapOf("type" to "exception",
+                    "err" to Log.getStackTraceString(e).take(LOG_TIMEOUT),
+                    "data" to ""))
+            finish()
+        }
     }
 
     private fun initVar() {
@@ -732,6 +742,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
         const val HCI_CAMERA_REQUEST_CODE = 978
         const val FORCE_TIMEOUT = 90000L
+        const val LOG_TIMEOUT = 1000
 
         private const val IMAGE_COMPRESS_QUALITY = 60
 

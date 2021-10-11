@@ -13,6 +13,8 @@ import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.ProcessLifecycleOwner;
+import androidx.preference.PreferenceManager;
 
 import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.analytics.performance.util.AppStartPerformanceTracker;
@@ -115,7 +117,6 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     @Override
     public void onCreate() {
         CheckAndTraceAppStartIfEnabled();
-        Embrace.getInstance().start(this);
         super.onCreate();
         setupAppScreenMode();
     }

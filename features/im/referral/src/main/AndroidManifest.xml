@@ -1,5 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.referral">
+    <queries>
+        <package android:name="com.google.android.gm"/>
+        <package android:name="com.whatsapp"/>
+        <package android:name="com.instagram.android"/>
+        <package android:name="com.facebook.katana"/>
+        <package android:name="com.twitter.android"/>
+        <package android:name="com.google.android.apps.messaging"/>
+        <package android:name="com.pinterest"/>
+    </queries>
     <application>
         <activity android:name=".view.activity.ReferralActivity"
             android:theme="@style/Theme.White">

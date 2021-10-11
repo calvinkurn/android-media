@@ -152,6 +152,7 @@ class PlayViewModel @Inject constructor(
     private val _likeInfo = MutableStateFlow(PlayLikeInfoUiModel())
     private val _channelReport = MutableStateFlow(PlayChannelReportUiModel())
     private val _cartInfo = MutableStateFlow(PlayCartInfoUiModel())
+    private val _upcomingInfo = MutableStateFlow<PlayUpcomingUiModel?>(null)
 
     private val _interactiveUiState = combine(
         _interactive, _bottomInsets, _status
@@ -207,19 +208,21 @@ class PlayViewModel @Inject constructor(
     }
 
     private val _shareUiState = combine(
-        _channelDetail, _bottomInsets, _status
-    ) { channelDetail, bottomInsets, status ->
+        _channelDetail, _bottomInsets, _status, _upcomingInfo
+    ) { channelDetail, bottomInsets, status, upcomingInfo ->
         PlayShareUiState(shouldShow = channelDetail.shareInfo.shouldShow &&
                 !bottomInsets.isAnyShown &&
-                (status.isActive || (upcomingInfo != null && upcomingInfo?.isUpcoming == true))
+                (status.isActive || upcomingInfo?.isUpcoming == true)
         )
     }
 
-    private val _cartUiState = combine(_cartInfo, _bottomInsets) { cartInfo, bottomInsets ->
+    private val _cartUiState = combine(
+        _cartInfo, _bottomInsets, _upcomingInfo
+    ) { cartInfo, bottomInsets, upcomingInfo ->
         PlayCartUiState(
             shouldShow = cartInfo.shouldShow &&
                     !bottomInsets.isAnyShown &&
-                    (upcomingInfo != null && upcomingInfo?.isUpcoming == false),
+                    (upcomingInfo == null || !upcomingInfo.isUpcoming),
             count = if (cartInfo.itemCount > 0) {
                 val countText = if (cartInfo.itemCount > MAX_CART_COUNT) "${MAX_CART_COUNT}+"
                 else cartInfo.itemCount.toString()
@@ -423,6 +426,9 @@ class PlayViewModel @Inject constructor(
             viewModelScope.launch {
                 if (insets.isAnyShown) _uiEvent.emit(HideCoachMarkWinnerEvent)
             }
+        }
+        addSource(_observableUpcomingInfo) {
+            _upcomingInfo.value = it
         }
     }
 
@@ -1581,7 +1587,7 @@ class PlayViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiEvent.emit(
-                    ShowToasterEvent.Info(message = UiString.Resource(R.string.play_interactive_follow_success))
+                ShowInfoEvent(message = UiString.Resource(R.string.play_interactive_follow_success))
             )
         }
 
@@ -1653,9 +1659,9 @@ class PlayViewModel @Inject constructor(
         when (requestCode) {
             REQUEST_CODE_LOGIN_FOLLOW -> handleClickFollow(isFromLogin = true)
             REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE -> handleClickFollowInteractive()
+            REQUEST_CODE_LOGIN_REMIND_ME -> handleRemindMeUpcomingChannel(userClick = false)
             REQUEST_CODE_LOGIN_LIKE -> handleClickLike(isFromLogin = true)
             REQUEST_CODE_LOGIN_CART_PAGE -> handleClickCart(isFromLogin = true)
-            REQUEST_CODE_LOGIN_REMIND_ME -> handleRemindMeUpcomingChannel(userClick = false)
             else -> {}
         }
     }
@@ -1667,9 +1673,8 @@ class PlayViewModel @Inject constructor(
             val currentTotalLikeFmt = _channelReport.value.totalLikeFmt
             return if (!hasWordsOrDotsRegex.containsMatchIn(currentTotalLikeFmt)) {
                 val totalLike =
-                    (_channelReport.value.totalLike + (if (status == PlayLikeStatus.Liked) 1 else -1)).coerceAtLeast(
-                        0
-                    )
+                    (_channelReport.value.totalLike + (if (status == PlayLikeStatus.Liked) 1 else -1))
+                        .coerceAtLeast(0)
                 val fmt = totalLike.toAmountString(amountStringStepArray, separator = ".")
                 totalLike to fmt
             } else {
@@ -1776,13 +1781,13 @@ class PlayViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiEvent.emit(
-                    CopyToClipboardEvent(shareInfo.content)
+                CopyToClipboardEvent(shareInfo.content)
             )
 
             _uiEvent.emit(
-                    ShowToasterEvent.Info(
-                            UiString.Resource(R.string.play_link_copied)
-                    )
+                ShowInfoEvent(
+                    UiString.Resource(R.string.play_link_copied)
+                )
             )
         }
     }
@@ -1804,10 +1809,10 @@ class PlayViewModel @Inject constructor(
         else {
             viewModelScope.launch {
                 _uiEvent.emit(
-                        OpenPageEvent(
-                                applink = ApplinkConst.LOGIN,
-                                requestCode = requestCode
-                        )
+                    OpenPageEvent(
+                        applink = ApplinkConst.LOGIN,
+                        requestCode = requestCode
+                    )
                 )
             }
         }
@@ -1829,7 +1834,7 @@ class PlayViewModel @Inject constructor(
         private const val REQUEST_CODE_LOGIN_FOLLOW = 571
         private const val REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE = 572
         private const val REQUEST_CODE_LOGIN_LIKE = 573
-        private const val REQUEST_CODE_LOGIN_CART_PAGE = 574
-        private const val REQUEST_CODE_LOGIN_REMIND_ME = 575
+        private const val REQUEST_CODE_LOGIN_REMIND_ME = 574
+        private const val REQUEST_CODE_LOGIN_CART_PAGE = 575
     }
 }

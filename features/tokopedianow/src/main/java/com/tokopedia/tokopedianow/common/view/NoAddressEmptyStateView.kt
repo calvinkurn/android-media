@@ -3,7 +3,6 @@ package com.tokopedia.tokopedianow.common.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.TextView
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
@@ -17,8 +16,8 @@ class NoAddressEmptyStateView @JvmOverloads constructor(context: Context, attrs:
 
     init {
         LayoutInflater.from(context).inflate(R.layout.layout_tokopedianow_empty_state_no_address, this, true)
-        changeAddressButton = findViewById<UnifyButton>(R.id.tokonowEmptyStateButtonChangeAddress)
-        returnButton = findViewById<UnifyButton>(R.id.tokonowEmptyStateButtonReturn)
+        changeAddressButton = findViewById(R.id.tokonowEmptyStateButtonChangeAddress)
+        returnButton = findViewById(R.id.tokonowEmptyStateButtonReturn)
         initRemoteView()
     }
 
@@ -36,17 +35,12 @@ class NoAddressEmptyStateView @JvmOverloads constructor(context: Context, attrs:
         imgNoAddress.setImageUrl(IMG_NO_ADDRESS)
     }
 
-    fun setDescriptionCityName(city: String) {
-        val tvDescription = findViewById<TextView?>(R.id.tokonowEmptyStateDesc2)
-        tvDescription?.text = context.getString(R.string.tokopedianow_common_empty_state_desc_2, city)
-    }
-
     interface ActionListener {
         fun onChangeAddressClicked()
         fun onReturnClick()
     }
 
     companion object {
-        private const val IMG_NO_ADDRESS = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_empty_state_no_address_560.png"
+        private const val IMG_NO_ADDRESS = "https://images.tokopedia.net/img/tokonow/tokonow_ic_empty_state_no_address_small.png"
     }
 }
