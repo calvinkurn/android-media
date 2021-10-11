@@ -44,18 +44,17 @@ public class HomeCreditKTPFragment extends HomeCreditBaseCameraFragment {
         initViewListeners();
     }
 
-    private void setCameraOverlayImage(ImageView cameraOverlayImg){
+    private void setCameraOverlayImage(ImageView cameraOverlayImg) {
         Intent intent = getActivity().getIntent();
         Uri uri = intent.getData();
         String cameraType = getCameraType(uri);
         String cutOutImgUrl = intent.getStringExtra(Constants.CUST_OVERLAY_URL);
         String customHeaderText = intent.getStringExtra(Constants.CUST_HEADER);
-        if(!TextUtils.isEmpty(customHeaderText))
+        if (headerText != null && !TextUtils.isEmpty(customHeaderText))
             headerText.setText(customHeaderText);
-        if(!TextUtils.isEmpty(cameraType) && Constants.KTP_NO_OVERLAY.equalsIgnoreCase(cameraType)){
+        if (!TextUtils.isEmpty(cameraType) && Constants.KTP_NO_OVERLAY.equalsIgnoreCase(cameraType)) {
             cameraOverlayImg.setVisibility(View.GONE);
-        }
-        else if(!TextUtils.isEmpty(cutOutImgUrl)){
+        } else if (!TextUtils.isEmpty(cutOutImgUrl)) {
             ImageHandler.loadImageAndCache(cameraOverlayImg, cutOutImgUrl);
         }
     }
@@ -71,7 +70,7 @@ public class HomeCreditKTPFragment extends HomeCreditBaseCameraFragment {
         continueUpload = view.findViewById(R.id.continue_upload);
         captureImage = view.findViewById(R.id.iv_capture_image);
         reverseCamera = view.findViewById(R.id.iv_reverse_camera);
-        if(!Utils.isFrontCameraAvailable()){
+        if (!Utils.isFrontCameraAvailable()) {
             reverseCamera.setVisibility(View.GONE);
         }
         cameraLayout = view.findViewById(R.id.hc_camera_layout);
