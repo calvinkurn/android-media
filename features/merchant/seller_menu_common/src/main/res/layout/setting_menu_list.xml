@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/setting_menu_list_height"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="?attr/selectableItemBackground">
 
     <com.tokopedia.iconunify.IconUnify
@@ -16,7 +17,8 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/settingMenuTitle"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="wrap_content"
+        app:layout_constraintHorizontal_bias="0"
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
@@ -27,7 +29,20 @@
         app:layout_constraintStart_toEndOf="@id/settingMenuIcon"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
+        tools:text="Pengaturan"
         app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifycomponents.NotificationUnify
+        android:id="@+id/settingMenuTag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        app:layout_constraintBottom_toBottomOf="@+id/settingMenuTitle"
+        app:layout_constraintEnd_toStartOf="@+id/settingMenuCounterIcon"
+        app:layout_constraintHorizontal_bias="0"
+        tools:text="baru"
+        app:layout_constraintStart_toEndOf="@+id/settingMenuTitle"
+        app:layout_constraintTop_toTopOf="@+id/settingMenuTitle" />
 
     <com.tokopedia.unifycomponents.NotificationUnify
         android:id="@+id/settingMenuCounterIcon"

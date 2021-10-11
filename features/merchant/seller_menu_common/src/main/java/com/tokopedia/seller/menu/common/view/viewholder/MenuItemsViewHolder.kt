@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.*
@@ -17,6 +18,8 @@ import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.setting_menu_list.view.*
+import kotlinx.android.synthetic.main.setting_menu_list.view.settingMenuCounterIcon
+import kotlinx.android.synthetic.main.setting_menu_list.view.settingMenuTitle
 
 class MenuItemsViewHolder(
     itemView: View,
@@ -61,7 +64,14 @@ class MenuItemsViewHolder(
                     }
                 }
             }
+            setupTag(element.tag)
         }
+    }
+
+    private fun setupTag(tag: String) {
+        val settingMenuTag = itemView.findViewById<NotificationUnify>(R.id.settingMenuTag)
+        settingMenuTag?.isVisible = tag.isNotBlank()
+        settingMenuTag?.text = tag
     }
 
     private fun bindNotificationCounter(notificationCount: Int) {
