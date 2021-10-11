@@ -41,7 +41,6 @@ public class HomeCreditSelfieFragment extends HomeCreditBaseCameraFragment {
         initViews(view);
         initListeners();
         initViewListeners();
-        Toaster.build(view, "Selfie page open", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
     }
 
     private void initViews(View view) {

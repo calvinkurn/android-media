@@ -43,7 +43,6 @@ public class HomeCreditKTPFragment extends HomeCreditBaseCameraFragment {
         initViews(view);
         initListeners();
         initViewListeners();
-        Toaster.build(view, "Ktp page open", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
     }
 
     private void setCameraOverlayImage(ImageView cameraOverlayImg){
