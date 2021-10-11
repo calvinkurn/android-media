@@ -65,7 +65,7 @@ class CartActivity : BaseCheckoutActivity() {
 
     override fun onStart() {
         super.onStart()
-//        validateRecreateCart()
+        validateRecreateCart()
     }
 
     private fun validateRecreateCart() {

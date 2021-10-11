@@ -46,7 +46,7 @@ class ShipmentActivity : BaseCheckoutActivity() {
 
     override fun onStart() {
         super.onStart()
-//        validateRecreateCheckout()
+        validateRecreateCheckout()
     }
 
     private fun validateRecreateCheckout() {
