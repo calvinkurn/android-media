@@ -239,6 +239,9 @@ data class DataItem(
         @SerializedName("subtitle")
         val subtitle: String? = "",
 
+        @SerializedName("subtitle_1")
+        val subtitle_1: String? = "",
+
         @SerializedName("thumbnail_url")
         val thumbnailUrl: String? = "",
 

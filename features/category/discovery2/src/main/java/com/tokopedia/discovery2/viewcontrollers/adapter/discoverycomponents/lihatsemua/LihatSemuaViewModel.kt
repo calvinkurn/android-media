@@ -32,7 +32,7 @@ class LihatSemuaViewModel(val application: Application, val component: Component
             timerSetToZero = false
             return
         }
-        val futureSaleTab = Utils.isFutureSale(getStartDate())
+        val futureSaleTab = Utils.isFutureSale(getStartDate(),TIMER_DATE_FORMAT)
         val timerData: String? = if (futureSaleTab) getStartDate() else getEndDate()
         if (!timerData.isNullOrEmpty()) {
             val currentSystemTime = Calendar.getInstance().time
@@ -57,7 +57,7 @@ class LihatSemuaViewModel(val application: Application, val component: Component
 //                    TODO:: setup timer to 0:00:00 and make sure to ignore this timer finish call
                     timerSetToZero = true
                     timerUnify.targetDate = Calendar.getInstance().apply {
-                        timeInMillis += 1000
+                        timeInMillis += 500
                     }
                 }
             }

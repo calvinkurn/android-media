@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.Utils.Companion.TIMER_DATE_FORMAT
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -54,7 +55,7 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
             lihatSemuaViewModel.getComponentData().observe(it, Observer { componentItem ->
                 componentItem.data?.firstOrNull()?.let { data ->
                     lihatTitleTextView.setTextAndCheckShow(data.title)
-                    lihatSubTitleTextView.setTextAndCheckShow(data.subtitle)
+                    setupSubtitle(data)
                     setupTitleImage(data)
                     setupBackgroundImage(data)
                     setupLihat(data, componentItem, backgroundImageView.isVisible)
@@ -98,7 +99,7 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
     }
 
     private fun setupTimer(data: DataItem) {
-        if (!data.endDate.isNullOrEmpty() && !data.startDate.isNullOrEmpty()) {
+        if (!data.endDate.isNullOrEmpty() || !data.startDate.isNullOrEmpty()) {
             lihatSemuaViewModel.startTimer(timer)
             timer.show()
         } else {
@@ -106,12 +107,21 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
         }
     }
 
+    private fun setupSubtitle(data: DataItem){
+        var subtitle = data.subtitle
+        if(!data.endDate.isNullOrEmpty() || !data.startDate.isNullOrEmpty()){
+            if(!Utils.isFutureSale(data.startDate?:"",TIMER_DATE_FORMAT) && !data.subtitle_1.isNullOrEmpty()){
+                subtitle = data.subtitle_1
+            }
+        }
+        lihatSubTitleTextView.setTextAndCheckShow(subtitle)
+    }
+
     private fun setupTextColours(backgroundPresent: Boolean) {
         fragment.context?.let {
             if (backgroundPresent) {
-//              Todo::  Change to dms_colour for dark mode plugin support
-                lihatTitleTextView.setTextColor(MethodChecker.getColor(it,R.color.white))
-                lihatSubTitleTextView.setTextColor(MethodChecker.getColor(it,R.color.white_95))
+                lihatTitleTextView.setTextColor(MethodChecker.getColor(it,R.color.discovery2_dms_white))
+                lihatSubTitleTextView.setTextColor(MethodChecker.getColor(it,R.color.discovery2_dms_white_95))
             } else {
                 lihatTitleTextView.setTextColor(MethodChecker.getColor(it,R.color.Unify_N700_96))
                 lihatSubTitleTextView.setTextColor(MethodChecker.getColor(it,R.color.Unify_N700_68))
@@ -233,7 +243,9 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
         }
         timer.onFinish = {
             lihatSemuaViewModel.timerWithBannerCounter = null
-//            setTimerType()
+            lihatSemuaViewModel.component.data?.firstOrNull()?.let {
+                setupSubtitle(it)
+            }
             lihatSemuaViewModel.startTimer(timer)
         }
     }

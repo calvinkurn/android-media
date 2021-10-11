@@ -191,10 +191,10 @@ class Utils {
             return addressQueryParameterMap
         }
 
-        fun isFutureSale(saleStartDate: String): Boolean {
+        fun isFutureSale(saleStartDate: String, timerFormat: String = TIMER_SPRINT_SALE_DATE_FORMAT): Boolean {
             if (saleStartDate.isEmpty()) return false
             val currentSystemTime = Calendar.getInstance().time
-            val parsedDate = parseData(saleStartDate)
+            val parsedDate = parseData(saleStartDate,timerFormat)
             return if (parsedDate != null) {
                 currentSystemTime.time < parsedDate.time
             } else {
