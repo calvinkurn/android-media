@@ -20,6 +20,10 @@ class TopAdsAdapter(
     private val recyclerView: RecyclerView
 ) : RecyclerView.Adapter<TopAdsViewHolder>() {
 
+    /**
+     * Additional recycler view width is calculated as we have to show a small part of the ads which is on the right side of the view
+     */
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopAdsViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.layout_topads_sdk, parent, false)
@@ -47,6 +51,8 @@ class TopAdsAdapter(
 
 class TopAdsViewHolder(itemView: View, val onclick: (appLink: String) -> Unit) :
     RecyclerView.ViewHolder(itemView) {
+
+
     fun bind(topAdsImageViewModel: TopAdsImageViewModel) {
         imageModel.setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
             override fun onTopAdsImageViewClicked(applink: String?) {

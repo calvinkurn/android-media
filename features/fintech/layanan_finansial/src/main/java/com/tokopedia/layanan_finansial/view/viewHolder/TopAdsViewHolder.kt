@@ -15,9 +15,9 @@ import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
 import com.tokopedia.topads.sdk.widget.TopAdsImageView
 import com.tokopedia.unifyprinciples.Typography
 
-class TopAdsViewHolder(val view: View): AbstractViewHolder<Visitable<*>>(view) {
+class TopAdsViewHolder(val view: View) : AbstractViewHolder<Visitable<*>>(view) {
 
-  val topAdsImageView = TopAdsImageView(view.context)
+    private val topAdsImageView = TopAdsImageView(view.context)
 
     private val displayRecycler: RecyclerView by lazy {
         itemView.findViewById(
@@ -26,22 +26,21 @@ class TopAdsViewHolder(val view: View): AbstractViewHolder<Visitable<*>>(view) {
     }
     private val recommendedText: Typography by lazy { itemView.findViewById(R.id.recommendedText) }
 
-    companion object{
-        val LAYOUT:Int = R.layout.layout_topads_view
+    companion object {
+        val LAYOUT: Int = R.layout.layout_topads_view
     }
 
 
     override fun bind(element: Visitable<*>?) {
-        var element  = element as TopAdsImageModel
+        var element = element as TopAdsImageModel
         if (element.imageUrl?.isEmpty() == true) {
             topAdsImageView.getImageData(source = "17", adsCount = 3, dimenId = 3)
         }
 
         topAdsImageView.setApiResponseListener(object : TopAdsImageVieWApiResponseListener {
             override fun onImageViewResponse(imageDataList: ArrayList<TopAdsImageViewModel>) {
-                val imageList= imageDataList as ArrayList<TopAdsImageModel>
-                if (imageDataList.isNotEmpty())
-                {
+                val imageList = imageDataList as ArrayList<TopAdsImageModel>
+                if (imageDataList.isNotEmpty()) {
                     recommendedText.visibility = View.VISIBLE
                     generateAdsCarousal(imageList)
                 }
@@ -55,6 +54,11 @@ class TopAdsViewHolder(val view: View): AbstractViewHolder<Visitable<*>>(view) {
 
     }
 
+    /**
+     * This method pass list to adapter
+     * @param imageList list of image we have to show in the carousel for the ads
+     */
+
     private fun generateAdsCarousal(imageList: ArrayList<TopAdsImageModel>) {
         displayRecycler.layoutManager =
             LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
@@ -63,6 +67,10 @@ class TopAdsViewHolder(val view: View): AbstractViewHolder<Visitable<*>>(view) {
         PagerSnapHelper().attachToRecyclerView(displayRecycler)
     }
 
+    /**
+     * This method handle the click logic to any of the topads
+     * @param appLink Applink we have to open on click of the ads
+     */
     private fun onClick(appLink: String) {
         view.context?.let {
             RouteManager.route(it, appLink)
