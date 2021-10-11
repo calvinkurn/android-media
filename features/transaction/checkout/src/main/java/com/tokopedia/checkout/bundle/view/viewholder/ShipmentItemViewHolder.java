@@ -933,6 +933,18 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     getAdapterPosition());
         }
 
+        renderFreeShippingCourierVisibility(selectedCourierItemData);
+        renderFreeShippingTitle(selectedCourierItemData);
+        renderFreeShippingEta(selectedCourierItemData);
+    }
+
+    private void renderFreeShippingTitle(CourierItemData selectedCourierItemData) {
+        // Change duration to promo title after promo is applied
+        HtmlLinkHelper htmlLinkHelper = new HtmlLinkHelper(labelSelectedFreeShipping.getContext(), selectedCourierItemData.getFreeShippingChosenCourierTitle());
+        labelSelectedFreeShipping.setText(htmlLinkHelper.getSpannedString());
+    }
+
+    private void renderFreeShippingCourierVisibility(CourierItemData selectedCourierItemData){
         if (selectedCourierItemData.isHideShipperName()) {
             // Hide shipper name
             labelFreeShippingCourierName.setVisibility(View.GONE);
@@ -940,11 +952,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             // Show shipper name
             labelFreeShippingCourierName.setVisibility(View.VISIBLE);
         }
-
-        // Change duration to promo title after promo is applied
-        HtmlLinkHelper htmlLinkHelper = new HtmlLinkHelper(labelSelectedFreeShipping.getContext(), selectedCourierItemData.getFreeShippingChosenCourierTitle());
-        labelSelectedFreeShipping.setText(htmlLinkHelper.getSpannedString());
-        renderFreeShippingEta(selectedCourierItemData);
     }
 
     private void renderFreeShippingEta(CourierItemData selectedCourierItemData) {
