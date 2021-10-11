@@ -80,12 +80,12 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
         basicInfoWidget?.apply {
             with(uiModel) {
                 setCredibilityData(isProductReview, isAnonymous, userId, feedbackId)
+                setListener(this@ReviewImagePreviewExpandedReviewBottomSheet)
                 setRating(rating)
                 setCreateTime(timeStamp)
                 setReviewerName(reviewerName)
                 setVariantName(variantName)
                 setStats(userStats)
-                setListener(this@ReviewImagePreviewExpandedReviewBottomSheet)
                 setReviewerImage(reviewerImage)
             }
         }

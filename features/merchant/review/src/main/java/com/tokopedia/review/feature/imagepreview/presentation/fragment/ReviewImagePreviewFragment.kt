@@ -43,7 +43,6 @@ import com.tokopedia.review.feature.imagepreview.presentation.di.DaggerReviewIma
 import com.tokopedia.review.feature.imagepreview.presentation.di.ReviewImagePreviewComponent
 import com.tokopedia.review.feature.imagepreview.presentation.listener.*
 import com.tokopedia.review.feature.imagepreview.presentation.uimodel.ReviewImagePreviewBottomSheetUiModel
-import com.tokopedia.review.feature.imagepreview.presentation.uimodel.ReviewImagePreviewFinalLikeCount
 import com.tokopedia.review.feature.imagepreview.presentation.uimodel.ReviewImagePreviewUiModel
 import com.tokopedia.review.feature.imagepreview.presentation.viewmodel.ReviewImagePreviewViewModel
 import com.tokopedia.review.feature.imagepreview.presentation.widget.ReviewImagePreviewDetailWidget
@@ -597,23 +596,9 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
 
     private fun finishActivity() {
         activity?.apply {
-            if (isLikeValueChange) setActivityResult()
+            if (isLikeValueChange) activity?.setResult(Activity.RESULT_OK)
             finish()
         }
-    }
-
-    private fun setActivityResult() {
-        activity?.setResult(Activity.RESULT_OK, Intent().apply {
-            val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
-            with(productReview.likeDislike) {
-                cacheManager?.put(
-                    KEY_FINAL_LIKE_COUNT, ReviewImagePreviewFinalLikeCount(
-                        totalLike, likeStatus
-                    )
-                )
-            }
-            putExtra(KEY_CACHE_ID, cacheManager?.id)
-        })
     }
 
     private fun showErrorToaster(
