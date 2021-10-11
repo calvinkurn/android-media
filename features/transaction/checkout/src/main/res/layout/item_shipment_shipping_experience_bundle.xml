@@ -231,7 +231,7 @@
                 app:layout_constraintCircleRadius="@dimen/dp_4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="gone">
+                tools:visibility="visible">
 
                 <RelativeLayout
                     android:layout_width="0dp"
@@ -245,31 +245,8 @@
                         android:id="@+id/label_selected_free_shipping"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:typographyType="heading_6"
-                        app:typographyWeight="bold"
-                        tools:text="Pengiriman Bebas Ongkir (2-3 Hari)" />
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/label_free_shipping_original_price_eta_partial"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_4"
-                        android:layout_toEndOf="@id/label_selected_free_shipping"
                         app:typographyType="body_3"
-                        app:typographyWeight="reguler"
-                        tools:text="Rp40.000"
-                        tools:visibility="gone" />
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/label_free_shipping_discounted_price_eta_partial"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_4"
-                        android:layout_toEndOf="@+id/label_free_shipping_original_price_eta_partial"
-                        app:typographyType="heading_6"
-                        app:typographyWeight="bold"
-                        tools:text="Rp20.000"
-                        tools:visibility="gone" />
+                        tools:text="Pengiriman Bebas Ongkir (2-3 Hari)" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/label_free_shipping_eta"
@@ -292,30 +269,6 @@
                         app:typographyWeight="reguler"
                         tools:text="SiCepat"
                         tools:visibility="visible" />
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/label_free_shipping_original_price"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/label_free_shipping_courier_name"
-                        android:textColor="@color/Unify_N700_68"
-                        app:typographyType="body_3"
-                        app:typographyWeight="reguler"
-                        tools:text="Rp40.000"
-                        tools:visibility="visible" />
-
-                    <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/label_free_shipping_discounted_price"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/label_free_shipping_courier_name"
-                        android:layout_marginStart="@dimen/dp_8"
-                        android:layout_toEndOf="@+id/label_free_shipping_original_price"
-                        android:textColor="@color/Unify_N700_68"
-                        app:typographyType="body_3"
-                        app:typographyWeight="reguler"
-                        tools:text="Rp20.000"
-                        tools:visibility="gone" />
 
                 </RelativeLayout>
 
@@ -466,7 +419,7 @@
                 app:layout_constraintCircleRadius="@dimen/dp_4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_failed_shipping_title"
