@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -29,14 +30,17 @@ import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTrackingConstants
 import com.tokopedia.review.feature.createreputation.di.DaggerCreateReviewComponent
+import com.tokopedia.review.feature.createreputation.model.BadRatingCategory
 import com.tokopedia.review.feature.createreputation.model.BaseImageReviewUiModel
 import com.tokopedia.review.feature.createreputation.model.ProductData
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
 import com.tokopedia.review.feature.createreputation.presentation.activity.CreateReviewActivity
 import com.tokopedia.review.feature.createreputation.presentation.adapter.ImageReviewAdapter
+import com.tokopedia.review.feature.createreputation.presentation.adapter.ReviewBadRatingCategoriesAdapter
 import com.tokopedia.review.feature.createreputation.presentation.adapter.ReviewTemplatesAdapter
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
 import com.tokopedia.review.feature.createreputation.presentation.listener.ImageClickListener
+import com.tokopedia.review.feature.createreputation.presentation.listener.ReviewBadRatingCategoryListener
 import com.tokopedia.review.feature.createreputation.presentation.listener.ReviewTemplateListener
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewDialogType
@@ -58,7 +62,7 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAreaListener,
-    ImageClickListener, ReviewTemplateListener {
+    ImageClickListener, ReviewTemplateListener, ReviewBadRatingCategoryListener {
 
     companion object {
         const val GOOD_RATING_THRESHOLD = 2
@@ -100,6 +104,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private var loadingView: View? = null
     private var ovoIncentiveBottomSheet: BottomSheetUnify? = null
     private var thankYouBottomSheet: BottomSheetUnify? = null
+    private var badRatingCategoryRecyclerView: RecyclerView? = null
 
     private var rating: Int = 0
     private var productId: String = ""
@@ -120,6 +125,10 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private val templatesAdapter: ReviewTemplatesAdapter by lazy {
         ReviewTemplatesAdapter(this)
+    }
+
+    private val badRatingCategoriesAdapter: ReviewBadRatingCategoriesAdapter by lazy {
+        ReviewBadRatingCategoriesAdapter(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -150,6 +159,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         setRatingInitialState()
         setOnTouchListenerToHideKeyboard()
         setOnTouchOutsideListener()
+        setUpBadRatingCategoriesRecyclerView()
         observeLiveDatas()
     }
 
@@ -279,6 +289,14 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         handleOnBackPressed()
     }
 
+    override fun onBadRatingCategoryClicked(
+        title: String,
+        isSelectedBoolean: Boolean,
+        badRatingCategoryId: Int
+    ) {
+        // Handle Click
+    }
+
     private fun initInjector() {
         activity?.let {
             DaggerCreateReviewComponent
@@ -304,6 +322,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         progressBar = view?.findViewById(R.id.review_form_progress_bar_widget)
         submitButton = view?.findViewById(R.id.review_form_submit_button)
         loadingView = view?.findViewById(R.id.shimmering_create_review_form)
+        badRatingCategoryRecyclerView = view?.findViewById(R.id.review_form_bad_rating_categories_rv)
     }
 
     private fun setRatingClickListener() {
@@ -347,6 +366,10 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun getTemplates() {
         createReviewViewModel.getReviewTemplates(productId)
+    }
+
+    private fun getBadRatingCategories() {
+        createReviewViewModel.getBadRatingCategories()
     }
 
     private fun observeGetForm() =
@@ -401,6 +424,15 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private fun observeProgressBarState() {
         createReviewViewModel.progressBarState.observe(this, {
             progressBar?.setProgressBarValue(it)
+        })
+    }
+
+    private fun observeBadRatingCategories() {
+        createReviewViewModel.badRatingCategories.observe(this, {
+            when (it) {
+                is Success -> onSuccessGetBadRatingCategories(it.data)
+                is Fail -> onFailGetBadRatingCategories(it.throwable)
+            }
         })
     }
 
@@ -537,6 +569,15 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private fun onFailGetTemplate(throwable: Throwable) {
         logToCrashlytics(throwable)
         hideTemplates()
+    }
+
+    private fun onSuccessGetBadRatingCategories(categories: List<BadRatingCategory>) {
+        badRatingCategoriesAdapter.setData(categories)
+    }
+
+    private fun onFailGetBadRatingCategories(throwable: Throwable) {
+        logToCrashlytics(throwable)
+        badRatingCategoryRecyclerView?.hide()
     }
 
     private fun setProductDetail(data: ProductData) {
@@ -1011,12 +1052,14 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         observeTemplates()
         observeButtonState()
         observeProgressBarState()
+        observeBadRatingCategories()
     }
 
     private fun getData() {
         getForm()
         getIncentiveOvoData(productId, reputationId)
         getTemplates()
+        getBadRatingCategories()
     }
 
     private fun setOnTouchListenerToHideKeyboard() {
@@ -1132,6 +1175,13 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             showTemplates()
         } else {
             hideTemplates()
+        }
+    }
+
+    private fun setUpBadRatingCategoriesRecyclerView() {
+        badRatingCategoryRecyclerView?.apply {
+            layoutManager = GridLayoutManager(context, 2, RecyclerView.VERTICAL, false)
+            adapter = badRatingCategoriesAdapter
         }
     }
 }

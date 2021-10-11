@@ -10,14 +10,8 @@ import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.review.common.data.*
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
-import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
-import com.tokopedia.review.feature.createreputation.domain.usecase.GetReviewTemplatesUseCase
-import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevEditReviewUseCase
-import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevSubmitReviewUseCase
-import com.tokopedia.review.feature.createreputation.model.BaseImageReviewUiModel
-import com.tokopedia.review.feature.createreputation.model.DefaultImageReviewUiModel
-import com.tokopedia.review.feature.createreputation.model.ImageReviewUiModel
-import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
+import com.tokopedia.review.feature.createreputation.domain.usecase.*
+import com.tokopedia.review.feature.createreputation.model.*
 import com.tokopedia.review.feature.createreputation.presentation.mapper.CreateReviewImageMapper
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewProgressBarState
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
@@ -39,7 +33,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                                                 private val uploaderUseCase: UploaderUseCase,
                                                 private val editReviewUseCase: ProductrevEditReviewUseCase,
                                                 private val userSessionInterface: UserSessionInterface,
-                                                private val getReviewTemplatesUseCase: GetReviewTemplatesUseCase
+                                                private val getReviewTemplatesUseCase: GetReviewTemplatesUseCase,
+                                                private val getBadRatingCategoryUseCase: GetBadRatingCategoryUseCase
 ) : BaseViewModel(coroutineDispatcherProvider.io) {
 
     companion object {
@@ -80,6 +75,10 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     private val _progressBarState = MutableLiveData<CreateReviewProgressBarState>(CreateReviewProgressBarState())
     val progressBarState: LiveData<CreateReviewProgressBarState>
         get() = _progressBarState
+
+    private var _badRatingCategories = MutableLiveData<Result<List<BadRatingCategory>>>()
+    val badRatingCategories: LiveData<Result<List<BadRatingCategory>>>
+        get() = _badRatingCategories
 
     fun submitReview(rating: Int, reviewText: String, reputationScore: Int, isAnonymous: Boolean, utmSource: String) {
         (reputationDataForm.value as? CoroutineSuccess)?.data?.productrevGetForm?.let {
@@ -260,6 +259,17 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
 
     fun getImageCount(): Int {
         return imageData.count { it is ImageReviewUiModel }
+    }
+
+    fun getBadRatingCategories() {
+        launchCatchError(block = {
+            val data = withContext(coroutineDispatcherProvider.io) {
+                getBadRatingCategoryUseCase.executeOnBackground()
+            }
+            _badRatingCategories.postValue(CoroutineSuccess(data.productrevGetBadRatingCategory.list))
+        }) {
+            _badRatingCategories.postValue(CoroutineFail(it))
+        }
     }
 
     private fun sendReviewWithoutImage(reputationId: String, productId: String, shopId: String, reputationScore: Int, rating: Int,
