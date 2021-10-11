@@ -132,7 +132,7 @@ public class RouteManager {
                 activityIntent.setData(uri);
 
                 // copy the query Parameter to bundle
-                UrlQuerySanitizer sanitizer = new UrlQuerySanitizer(uri.toString());
+                UrlQuerySanitizer sanitizer = new UrlQuerySanitizer(deeplink);
                 List<UrlQuerySanitizer.ParameterValuePair> sanitizerParameterList = sanitizer.getParameterList();
                 for (UrlQuerySanitizer.ParameterValuePair valuePair : sanitizerParameterList) {
                     activityIntent.putExtra(valuePair.mParameter, valuePair.mValue);
