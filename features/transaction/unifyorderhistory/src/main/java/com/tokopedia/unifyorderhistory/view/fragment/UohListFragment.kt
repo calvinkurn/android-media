@@ -233,7 +233,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private lateinit var trackingQueue: TrackingQueue
     private var _arrayListStatusFilterBundle = arrayListOf<UohFilterBundle>()
     private var _arrayListCategoryProductFilterBundle = arrayListOf<UohFilterBundle>()
-    private var selectedKey = ""
+    private var filterOptionBottomSheet: UohFilterOptionsBottomSheet? = null
 
     private var binding by autoClearedNullable<FragmentUohListBinding>()
 
@@ -1080,7 +1080,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         uohBottomSheetOptionAdapter.setActionListener(this@UohListFragment)
         uohBottomSheetOptionAdapter.filterBundleList = arrayListDateFilterBundle
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_DATE
-        uohBottomSheetOptionAdapter.selectedKey = selectedKey
+        uohBottomSheetOptionAdapter.selectedKey = currFilterDateKey
         uohBottomSheetOptionAdapter.isReset = isReset
         uohBottomSheetOptionAdapter.notifyDataSetChanged()
 
@@ -1088,9 +1088,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         if (tempFilterDateLabel.isEmpty()) tempFilterDateLabel = ALL_DATE
         if (tempFilterDateKey.isEmpty()) tempFilterDateKey = "0"
 
-        val filterDateBottomSheet = UohFilterOptionsBottomSheet()
-        filterDateBottomSheet.setActionListener(this@UohListFragment)
-        context?.let { filterDateBottomSheet.show(it, parentFragmentManager, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_DATE) }
+        filterOptionBottomSheet = UohFilterOptionsBottomSheet()
+        filterOptionBottomSheet?.setActionListener(this@UohListFragment)
+        context?.let { filterOptionBottomSheet?.show(it, parentFragmentManager, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_DATE) }
     }
 
     private fun onClickFilterStatus() {
@@ -1098,7 +1098,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         uohBottomSheetOptionAdapter.setActionListener(this@UohListFragment)
         uohBottomSheetOptionAdapter.filterBundleList = _arrayListStatusFilterBundle
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_STATUS
-        uohBottomSheetOptionAdapter.selectedKey = selectedKey
+        uohBottomSheetOptionAdapter.selectedKey = currFilterStatusKey
         uohBottomSheetOptionAdapter.isReset = isReset
         uohBottomSheetOptionAdapter.notifyDataSetChanged()
 
@@ -1106,10 +1106,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         if (tempFilterStatusLabel.isEmpty()) tempFilterStatusLabel = ALL_STATUS_TRANSACTION
         if (tempFilterStatusKey.isEmpty()) tempFilterStatusKey = ""
 
-        selectedKey = currFilterStatusKey
-        val filterStatusBottomSheet = UohFilterOptionsBottomSheet()
-        filterStatusBottomSheet.setActionListener(this@UohListFragment)
-        context?.let { filterStatusBottomSheet.show(it, parentFragmentManager, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_FILTERS) }
+        filterOptionBottomSheet = UohFilterOptionsBottomSheet()
+        filterOptionBottomSheet?.setActionListener(this@UohListFragment)
+        context?.let { filterOptionBottomSheet?.show(it, parentFragmentManager, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_FILTERS) }
     }
 
     private fun onClickFilterCategoryProduct() {
@@ -1117,13 +1116,13 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         uohBottomSheetOptionAdapter.setActionListener(this@UohListFragment)
         uohBottomSheetOptionAdapter.filterBundleList = _arrayListCategoryProductFilterBundle
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_CATEGORY
-        uohBottomSheetOptionAdapter.selectedKey = selectedKey
+        uohBottomSheetOptionAdapter.selectedKey = currFilterCategoryKey
         uohBottomSheetOptionAdapter.isReset = isReset
         uohBottomSheetOptionAdapter.notifyDataSetChanged()
 
-        val filterCategoryBottomSheet = UohFilterOptionsBottomSheet()
-        filterCategoryBottomSheet.setActionListener(this@UohListFragment)
-        context?.let { context -> filterCategoryBottomSheet.show(context, parentFragmentManager, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_CATEGORIES) }
+        filterOptionBottomSheet = UohFilterOptionsBottomSheet()
+        filterOptionBottomSheet?.setActionListener(this@UohListFragment)
+        context?.let { context -> filterOptionBottomSheet?.show(context, parentFragmentManager, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_CATEGORIES) }
 
         tempFilterType = UohConsts.TYPE_FILTER_CATEGORY
         if (tempFilterCategoryLabel.isEmpty()) tempFilterCategoryLabel = ALL_PRODUCTS
@@ -1135,10 +1134,10 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         || filterStatus.equals(PARAM_UOH_SENT, true)
                         || filterStatus.equals(PARAM_UOH_DELIVERED, true))
                 && !isReset) {
-            selectedKey = CATEGORIES_MP
+            uohBottomSheetOptionAdapter.selectedKey = CATEGORIES_MP
 
         } else if (filterStatus.equals(PARAM_DIGITAL, true) && !isReset) {
-            selectedKey = CATEGORIES_DIGITAL
+            uohBottomSheetOptionAdapter.selectedKey = CATEGORIES_DIGITAL
 
         } else if ((filterStatus.equals(PARAM_EVENTS, true)
                         || filterStatus.equals(PARAM_DEALS, true)
@@ -1147,15 +1146,15 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         || filterStatus.equals(PARAM_TRAIN, true)
                         || filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true))
                 && !isReset) {
-            selectedKey = CATEGORIES_TRAVELENT
+            uohBottomSheetOptionAdapter.selectedKey = CATEGORIES_TRAVELENT
 
         } else if ((filterStatus.equals(PARAM_GIFTCARDS, true)
                         || filterStatus.equals(PARAM_INSURANCE, true)
                         || filterStatus.equals(PARAM_MODALTOKO, true)) && !isReset) {
-            selectedKey = CATEGORIES_KEUANGAN
+            uohBottomSheetOptionAdapter.selectedKey = CATEGORIES_KEUANGAN
 
         } else {
-            selectedKey = currFilterCategoryKey
+            uohBottomSheetOptionAdapter.selectedKey = currFilterCategoryKey
         }
     }
 
@@ -1289,13 +1288,13 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 if (label.isNotEmpty()) {
                     when {
                         label.toInt() == LABEL_0 -> {
-                            UohFilterOptionsBottomSheet().hideChooseDate()
+                            filterOptionBottomSheet?.hideChooseDate()
                             tempStartDate = ""
                             tempEndDate = ""
 
                         }
                         label.toInt() == LABEL_1 -> {
-                            UohFilterOptionsBottomSheet().hideChooseDate()
+                            filterOptionBottomSheet?.hideChooseDate()
                             val startDate = getCalculatedFormattedDate("yyyy-MM-dd", MIN_30_DAYS)
                             val endDate = Date().toFormattedString("yyyy-MM-dd")
                             tempStartDate = startDate.toString()
@@ -1303,7 +1302,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
                         }
                         label.toInt() == LABEL_2 -> {
-                            UohFilterOptionsBottomSheet().hideChooseDate()
+                            filterOptionBottomSheet?.hideChooseDate()
                             val startDate = getCalculatedFormattedDate("yyyy-MM-dd", MINUS_90)
                             val endDate = Date().toFormattedString("yyyy-MM-dd")
                             tempStartDate = startDate.toString()
@@ -1318,7 +1317,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
                             tempStartDate = UohUtils.calendarToStringFormat(start, DATE_FORMAT_YYYYMMDD).toString()
                             tempEndDate = UohUtils.calendarToStringFormat(end, DATE_FORMAT_YYYYMMDD).toString()
-                            UohFilterOptionsBottomSheet().showChooseDate(start, end)
+                            filterOptionBottomSheet?.showChooseDate(start, end)
                         }
                     }
                 }
@@ -1378,12 +1377,12 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
                     if (flag.equals(START_DATE, true)) {
                         chosenStartDate = resultDate as GregorianCalendar
-                        UohFilterOptionsBottomSheet().setStartDate(resultDate)
+                        filterOptionBottomSheet?.setStartDate(resultDate)
                         tempStartDate = UohUtils.calendarToStringFormat(resultDate, DATE_FORMAT_YYYYMMDD).toString()
 
                     } else {
                         chosenEndDate = resultDate as GregorianCalendar
-                        UohFilterOptionsBottomSheet().setEndDate(resultDate)
+                        filterOptionBottomSheet?.setEndDate(resultDate)
                         tempEndDate = UohUtils.calendarToStringFormat(resultDate, DATE_FORMAT_YYYYMMDD).toString()
                     }
                     dismiss()
@@ -1894,7 +1893,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             }
         }
         // kemungkinan ini mesti balik lagi jadi public variable?
-        UohFilterOptionsBottomSheet().doDismiss()
+        filterOptionBottomSheet?.doDismiss()
         isFirstLoad = false
         refreshHandler?.startRefresh()
         scrollRecommendationListener.resetState()
