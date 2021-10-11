@@ -24,6 +24,7 @@ class SettingsBottomSheet : BottomSheetUnify() {
             showKnob = true
             showCloseIcon = false
             isDragable = true
+            isHideable = true
         }
     }
 

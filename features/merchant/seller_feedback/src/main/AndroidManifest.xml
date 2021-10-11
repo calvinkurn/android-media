@@ -7,6 +7,7 @@
             android:name=".presentation.activity.SellerFeedbackActivity"
             android:exported="true"
             android:label="@string/title_seller_feedback"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.SellerFeedback">
             <intent-filter>

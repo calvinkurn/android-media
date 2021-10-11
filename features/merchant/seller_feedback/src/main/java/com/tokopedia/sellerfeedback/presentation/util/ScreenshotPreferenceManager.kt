@@ -8,6 +8,7 @@ class ScreenshotPreferenceManager(private val context: Context) {
         private const val SHARED_PREF_NAME = "seller_feedback_toaster_pref"
         private const val HAS_DATE_TOASTER = "seller_feedback_date_toaster"
         private const val SCREEN_SHOOT_TRIGGER_ENABLED = "screen_shoot_trigger_enabled"
+        private const val FEEDBACK_FORM_SAVED_STATUS = "feedback_form_saved_status"
     }
 
     private val sharedPref by lazy {
@@ -20,6 +21,14 @@ class ScreenshotPreferenceManager(private val context: Context) {
 
     fun isScreenShootTriggerEnabled(): Boolean {
         return getBoolean(SCREEN_SHOOT_TRIGGER_ENABLED, false)
+    }
+
+    fun isFeedbackFormSavedSuccess(): Boolean {
+        return getBoolean(FEEDBACK_FORM_SAVED_STATUS, false)
+    }
+
+    fun setFeedbackFormSavedStatus(isSuccess: Boolean) {
+        putBoolean(FEEDBACK_FORM_SAVED_STATUS, isSuccess)
     }
 
     fun setDateToaster(value: String) {
