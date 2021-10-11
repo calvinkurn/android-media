@@ -79,10 +79,13 @@ public class HomeCreditSelfieFragment extends HomeCreditBaseCameraFragment {
         String cameraType = getActivity().getIntent().getStringExtra(Constants.CAMERA_TYPE);
         String cutOutImgUrl = getActivity().getIntent().getStringExtra(Constants.CUST_OVERLAY_URL);
         String customHeader = getActivity().getIntent().getStringExtra(Constants.CUST_HEADER);
-        Toaster.build(cameraOverlayImg, "Selfie page -> " + customHeader, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show();
 
-        if(!TextUtils.isEmpty(customHeader))
+        if(!TextUtils.isEmpty(customHeader)) {
             headerText.setText(customHeader);
+            Toaster.build(cameraOverlayImg, "Selfie page -> " + customHeader, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show();
+        } else {
+            Toaster.build(cameraOverlayImg, "Selfie page -> header empty", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show();
+        }
         if(Constants.SLFE_NO_OVERLAY.equalsIgnoreCase(cameraType)){
             cameraOverlayImg.setVisibility(View.GONE);
         }

@@ -50,10 +50,13 @@ public class HomeCreditKTPFragment extends HomeCreditBaseCameraFragment {
         String cameraType = getActivity().getIntent().getStringExtra(Constants.CAMERA_TYPE);
         String cutOutImgUrl = getActivity().getIntent().getStringExtra(Constants.CUST_OVERLAY_URL);
         String customHeaderText = getActivity().getIntent().getStringExtra(Constants.CUST_HEADER);
-        Toaster.build(cameraOverlayImg, "Ktp page -> " + customHeaderText, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show();
 
-        if(!TextUtils.isEmpty(customHeaderText))
+        if(!TextUtils.isEmpty(customHeaderText)) {
+            Toaster.build(cameraOverlayImg, "Ktp page -> " + customHeaderText, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show();
             headerText.setText(customHeaderText);
+        } else {
+            Toaster.build(cameraOverlayImg, "Ktp page -> header empty", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show();
+        }
         if(!TextUtils.isEmpty(cameraType) && Constants.KTP_NO_OVERLAY.equalsIgnoreCase(cameraType)){
             cameraOverlayImg.setVisibility(View.GONE);
         }
