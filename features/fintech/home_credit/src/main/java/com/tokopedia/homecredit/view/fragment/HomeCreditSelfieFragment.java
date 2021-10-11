@@ -19,6 +19,7 @@ import com.otaliastudios.cameraview.controls.Facing;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.homecredit.R;
 import com.tokopedia.homecredit.applink.Constants;
+import com.tokopedia.unifycomponents.Toaster;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.homecredit.view.activity.HomeCreditRegisterActivity.HCI_KTP_IMAGE_PATH;
@@ -40,6 +41,7 @@ public class HomeCreditSelfieFragment extends HomeCreditBaseCameraFragment {
         initViews(view);
         initListeners();
         initViewListeners();
+        Toaster.build(view, "Selfie page open", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL);
     }
 
     private void initViews(View view) {
@@ -77,6 +79,8 @@ public class HomeCreditSelfieFragment extends HomeCreditBaseCameraFragment {
         String cameraType = getActivity().getIntent().getStringExtra(Constants.CAMERA_TYPE);
         String cutOutImgUrl = getActivity().getIntent().getStringExtra(Constants.CUST_OVERLAY_URL);
         String customHeader = getActivity().getIntent().getStringExtra(Constants.CUST_HEADER);
+        Toaster.build(cameraOverlayImg, "Selfie page -> " + customHeaderText, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL);
+
         if(!TextUtils.isEmpty(customHeader))
             headerText.setText(customHeader);
         if(Constants.SLFE_NO_OVERLAY.equalsIgnoreCase(cameraType)){

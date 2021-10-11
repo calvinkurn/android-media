@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +21,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.homecredit.R;
 import com.tokopedia.homecredit.applink.Constants;
 import com.tokopedia.homecredit.view.Utils;
+import com.tokopedia.unifycomponents.Toaster;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.homecredit.view.activity.HomeCreditRegisterActivity.HCI_KTP_IMAGE_PATH;
@@ -41,12 +43,15 @@ public class HomeCreditKTPFragment extends HomeCreditBaseCameraFragment {
         initViews(view);
         initListeners();
         initViewListeners();
+        Toaster.build(view, "Ktp page open", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL);
     }
 
     private void setCameraOverlayImage(ImageView cameraOverlayImg){
         String cameraType = getActivity().getIntent().getStringExtra(Constants.CAMERA_TYPE);
         String cutOutImgUrl = getActivity().getIntent().getStringExtra(Constants.CUST_OVERLAY_URL);
         String customHeaderText = getActivity().getIntent().getStringExtra(Constants.CUST_HEADER);
+        Toaster.build(cameraOverlayImg, "Ktp page -> " + customHeaderText, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL);
+
         if(!TextUtils.isEmpty(customHeaderText))
             headerText.setText(customHeaderText);
         if(!TextUtils.isEmpty(cameraType) && Constants.KTP_NO_OVERLAY.equalsIgnoreCase(cameraType)){
