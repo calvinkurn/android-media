@@ -60,8 +60,17 @@
             android:layout_height="@dimen/play_metrics_height"
             app:layout_constraintStart_toStartOf="@id/chat_list"
             app:layout_constraintEnd_toEndOf="@id/chat_list"
-            app:layout_constraintBottom_toTopOf="@id/chat_list"
+            app:layout_constraintBottom_toTopOf="@id/pinned_msg_view"
             android:layout_marginBottom="@dimen/spacing_lvl4"
+            />
+
+        <com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
+            android:id="@+id/pinned_msg_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/chat_list"
+            app:layout_constraintEnd_toEndOf="@id/chat_list"
+            app:layout_constraintBottom_toTopOf="@id/chat_list"
             />
 
         <include

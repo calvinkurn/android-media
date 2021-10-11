@@ -196,4 +196,7 @@
     <string name="play_interactive_broadcast_create_fail">Oops, ada gangguan yang perlu kami bereskan. Balik lagi nanti, ya</string>
 
     <string name="play_interactive_leaderboard_default">0</string>
+
+    <!--Pinned Message-->
+    <string name="play_bro_create_pinned_msg">Buat Pin Chat</string>
 </resources>
