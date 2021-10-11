@@ -6,10 +6,13 @@ import android.content.res.Resources
 import android.net.Uri
 import android.os.Build
 import android.provider.ContactsContract
+import android.view.View
+import android.view.ViewTreeObserver
 import androidx.annotation.ColorRes
 import com.tokopedia.common.topupbills.view.model.DigitalContactData
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
+import kotlin.coroutines.resume
 import kotlin.experimental.and
 
 /**
@@ -45,5 +48,4 @@ private fun md5(s: String): String {
         e.printStackTrace()
         return ""
     }
-
 }
