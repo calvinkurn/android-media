@@ -45,6 +45,10 @@ object ReplyBubbleResult {
         assertReplyBubbleAt(position, R.id.rba_sticker, isDisplayed())
     }
 
+    fun hasVisibleReplyBubbleImageAt(position: Int) {
+        assertReplyBubbleAt(position, R.id.rba_image, isDisplayed())
+    }
+
     private fun assertReplyBubbleAt(
         position: Int,
         viewId: Int,

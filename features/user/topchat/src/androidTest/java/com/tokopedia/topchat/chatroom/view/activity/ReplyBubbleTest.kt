@@ -217,7 +217,16 @@ class ReplyBubbleTest : TopchatRoomTest() {
         assertSnackbarText(context.getString(R.string.title_topchat_reply_bubble_expired))
     }
 
-    // TODO: should show image reply bubble when parent reply is not null from GQL
+    @Test
+    fun should_show_image_reply_bubble_when_parent_reply_is_not_null_from_GQL() {
+        // Given
+        getChatUseCase.response = getChatUseCase.defaultReplyBubbleResponse
+        launchChatRoomActivity()
+
+        // Then
+        ReplyBubbleResult.hasVisibleReplyBubbleImageAt(2)
+    }
+
     // TODO: should show image reply bubble when parent reply is not null from websocket
 
     // TODO: should able copy to clipboard msg bubble

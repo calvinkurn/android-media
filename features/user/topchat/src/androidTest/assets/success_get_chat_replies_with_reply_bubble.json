@@ -142,6 +142,47 @@
                 "blastId": 0,
                 "source": "chat",
                 "label": "",
+                "parentReply": {
+                  "attachmentID": 0,
+                  "attachmentType": 0,
+                  "name": "",
+                  "senderID": 7977933,
+                  "replyTimeUnixNano": "1627377033992402000",
+                  "fraudStatus": 0,
+                  "mainText": "Test reply bubble",
+                  "subText": "",
+                  "imageURL": "",
+                  "localID": "",
+                  "isExpired": false,
+                  "source": "chat"
+                },
+                "attachment": {
+                  "attributes": "{\"image_url\":\"https://images.tokopedia.net/img/LUZQDL/2021/10/1/b7482a84-2505-4744-b5ef-03ffec47b6fb.jpg\",\"image_url_thumbnail\":\"https://images.tokopedia.net/img/cache/100-square/LUZQDL/2021/10/1/b7482a84-2505-4744-b5ef-03ffec47b6fb.jpg\"}",
+                  "fallback": {
+                    "html": "<div>Pengguna ini mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.19 untuk melihat gambar.</div>",
+                    "message": "Pengguna ini mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.19 untuk melihat gambar."
+                  },
+                  "id": 1271058856,
+                  "type": 2
+                }
+              },
+              {
+                "msgId": 1,
+                "replyId": "123",
+                "senderId": 7977933,
+                "senderName": "roro",
+                "role": "User",
+                "msg": "Test reply bubble",
+                "fraudStatus": 0,
+                "replyTime": "1627377033992402000",
+                "status": 1,
+                "attachmentID": 0,
+                "isOpposite": false,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "chat",
+                "label": "",
                 "attachment": {
                   "attributes": "",
                   "fallback": {
