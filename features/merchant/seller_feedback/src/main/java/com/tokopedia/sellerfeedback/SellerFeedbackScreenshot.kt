@@ -32,8 +32,6 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
         private const val TOASTER_DELAY = 1000L
     }
 
-    private var lastTimeUpdate = 0L
-
     private var remoteConfig: FirebaseRemoteConfigImpl? = null
     private var currentActivity: WeakReference<Activity>? = null
     private var onResumeCounter = ACTIVITY_STATUS_PAUSED
@@ -78,7 +76,6 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     private fun triggerScreenShotTaken(uri: Uri) {
         SellerFeedbackTracking.Impression.eventViewHomepage()
         super.onScreenShotTaken(uri)
-        lastTimeUpdate = System.currentTimeMillis()
     }
 
     private fun openFeedbackForm(uri: Uri, currentActivity: Activity) {
