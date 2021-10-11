@@ -20,7 +20,7 @@ import com.tokopedia.installreferral.InstallReferral;
 import com.tokopedia.installreferral.InstallReferralKt;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
-import com.tokopedia.loginregister.login.service.RegisterPushNotifService;
+import com.tokopedia.loginregister.login.service.RegisterPushNotificationWorker;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -42,7 +42,6 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     public static final String WARM_TRACE = "gl_warm_start";
     public static final String SPLASH_TRACE = "gl_splash_screen";
-    public static final int REGISTER_PUSH_NOTIF_SERVICE_JOB_ID = 3050;
 
     private PerformanceMonitoring warmTrace;
     private PerformanceMonitoring splashTrace;
@@ -103,7 +102,7 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     private void registerPushNotif() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            RegisterPushNotificationWorker.Companion.scheduleWorker(getApplicationContext(), true);
+            RegisterPushNotificationWorker.Companion.scheduleWorker(ConsumerSplashScreen.this.getApplicationContext(), true);
         }
     }
 

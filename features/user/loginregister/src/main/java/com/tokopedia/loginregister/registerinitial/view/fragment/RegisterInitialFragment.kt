@@ -1549,7 +1549,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         private const val TERM_AND_COND_END_SIZE = 54
         private const val PRIVACY_POLICY_START_SIZE = 61
         private const val PRIVACY_POLICY_END_SIZE = 78
-        private const val REGISTER_PUSH_NOTIF_SERVICE_JOB_ID = 3047
 
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 

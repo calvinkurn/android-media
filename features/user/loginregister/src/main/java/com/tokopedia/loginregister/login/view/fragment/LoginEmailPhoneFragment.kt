@@ -2002,7 +2002,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         private const val SOCMED_BUTTON_CORNER_SIZE = 10
 
         private const val OS_11 = 30
-        private const val REGISTER_PUSH_NOTIF_SERVICE_JOB_ID = 3049
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = LoginEmailPhoneFragment()
