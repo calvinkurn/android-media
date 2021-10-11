@@ -38,7 +38,9 @@ data class Config(
         @SerializedName("complete_draft")
         val completeDraft: Boolean = false,
         @SerializedName("scheduled_time")
-        val scheduledTime: ScheduledTime = ScheduledTime()
+        val scheduledTime: ScheduledTime = ScheduledTime(),
+        @SerializedName("tnc")
+        val tnc: List<GetBroadcasterShopConfigResponse.TermsAndCondition> = emptyList(),
 ) {
         data class ScheduledTime(
                 @SerializedName("minimum")

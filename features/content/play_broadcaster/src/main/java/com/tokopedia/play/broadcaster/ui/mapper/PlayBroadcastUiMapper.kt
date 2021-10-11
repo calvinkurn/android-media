@@ -156,30 +156,34 @@ class PlayBroadcastUiMapper(
         }
 
         return ConfigurationUiModel(
-                streamAllowed = config.streamAllowed,
-                channelId = channelStatus.first,
-                channelType =  channelStatus.second,
-                remainingTime = remainingTime,
-                durationConfig = DurationConfigUiModel(
-                        duration = maxDuration,
-                        maxDurationDesc = config.maxDurationDesc,
-                        pauseDuration = TimeUnit.SECONDS.toMillis(config.maxPauseDuration),
-                        errorMessage = config.maxDurationDesc),
-                productTagConfig = ProductTagConfigUiModel(
-                        maxProduct = config.maxTaggedProduct,
-                        minProduct = config.minTaggedProduct,
-                        maxProductDesc = config.maxTaggedProductDesc,
-                        errorMessage = config.maxTaggedProductDesc
-                ),
-                coverConfig = CoverConfigUiModel(
-                        maxChars = config.maxTitleLength
-                ),
-                countDown = config.countdownSec,
-                scheduleConfig = BroadcastScheduleConfigUiModel(
-                        minimum = config.scheduledTime.minimum.toDateWithFormat(DATE_FORMAT_RFC3339),
-                        maximum = config.scheduledTime.maximum.toDateWithFormat(DATE_FORMAT_RFC3339),
-                        default = config.scheduledTime.default.toDateWithFormat(DATE_FORMAT_RFC3339)
-                )
+            streamAllowed = config.streamAllowed,
+            channelId = channelStatus.first,
+            channelType = channelStatus.second,
+            remainingTime = remainingTime,
+            durationConfig = DurationConfigUiModel(
+                duration = maxDuration,
+                maxDurationDesc = config.maxDurationDesc,
+                pauseDuration = TimeUnit.SECONDS.toMillis(config.maxPauseDuration),
+                errorMessage = config.maxDurationDesc
+            ),
+            productTagConfig = ProductTagConfigUiModel(
+                maxProduct = config.maxTaggedProduct,
+                minProduct = config.minTaggedProduct,
+                maxProductDesc = config.maxTaggedProductDesc,
+                errorMessage = config.maxTaggedProductDesc
+            ),
+            coverConfig = CoverConfigUiModel(
+                maxChars = config.maxTitleLength
+            ),
+            countDown = config.countdownSec,
+            scheduleConfig = BroadcastScheduleConfigUiModel(
+                minimum = config.scheduledTime.minimum.toDateWithFormat(DATE_FORMAT_RFC3339),
+                maximum = config.scheduledTime.maximum.toDateWithFormat(DATE_FORMAT_RFC3339),
+                default = config.scheduledTime.default.toDateWithFormat(DATE_FORMAT_RFC3339)
+            ),
+            tnc = config.tnc.map {
+                TermsAndConditionUiModel(desc = it.description)
+            },
         )
     }
 
