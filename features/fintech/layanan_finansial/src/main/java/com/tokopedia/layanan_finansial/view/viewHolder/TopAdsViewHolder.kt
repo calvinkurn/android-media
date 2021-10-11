@@ -20,7 +20,7 @@ class TopAdsViewHolder(val view: View): AbstractViewHolder<Visitable<*>>(view) {
   val topAdsImageView = TopAdsImageView(view.context)
 
     private val displayRecycler: RecyclerView by lazy {
-        itemView.findViewById<RecyclerView>(
+        itemView.findViewById(
             R.id.topAdsImagesRecycler
         )
     }
@@ -58,7 +58,7 @@ class TopAdsViewHolder(val view: View): AbstractViewHolder<Visitable<*>>(view) {
     private fun generateAdsCarousal(imageList: ArrayList<TopAdsImageModel>) {
         displayRecycler.layoutManager =
             LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
-        val topAdsAdapter = TopAdsAdapter(imageList, ::onClick)
+        val topAdsAdapter = TopAdsAdapter(imageList, ::onClick, displayRecycler)
         displayRecycler.adapter = topAdsAdapter
         PagerSnapHelper().attachToRecyclerView(displayRecycler)
     }

@@ -10,15 +10,25 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.widget.TopAdsImageView
 
+/**
+ * @param recyclerView is passed as argument so that we can calculate the width of recycler view in onCreate
+ */
+
 class TopAdsAdapter(
     private val topAdsModelList: List<TopAdsImageModel>,
-    private val onclick: (appLink: String) -> Unit
+    private val onclick: (appLink: String) -> Unit,
+    private val recyclerView: RecyclerView
 ) : RecyclerView.Adapter<TopAdsViewHolder>() {
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopAdsViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.layout_topads_sdk, parent, false)
+
+        val width: Int = recyclerView.width
+        val params = view.layoutParams
+        params.width = (width * 0.96).toInt()
+        view.layoutParams = params
+
         return TopAdsViewHolder(view, onclick)
     }
 
@@ -47,7 +57,7 @@ class TopAdsViewHolder(itemView: View, val onclick: (appLink: String) -> Unit) :
             }
 
         })
-        imageModel.loadImage(topAdsImageViewModel)
+        imageModel.loadImage(topAdsImageViewModel, 8)
     }
 
     private val imageModel = itemView.findViewById<TopAdsImageView>(R.id.topAdsBanner)
