@@ -7,7 +7,6 @@ import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.DialogFragment
@@ -39,7 +38,6 @@ import com.tokopedia.product.manage.common.feature.quickedit.stock.di.ProductMan
 import com.tokopedia.product.manage.common.feature.quickedit.stock.presentation.viewmodel.ProductManageQuickEditStockViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
@@ -83,8 +81,6 @@ class ProductManageQuickEditStockFragment(
     private var binding: FragmentQuickEditStockBinding? = null
 
     private var firstStateChecked = false
-
-    private var ongoingCampaignTypeText: Typography? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -258,8 +254,7 @@ class ProductManageQuickEditStockFragment(
     }
 
     private fun setupCampaignInfo(view: View) {
-        ongoingCampaignTypeText = view.findViewById(R.id.tv_product_manage_single_stock_count_variant)
-        ongoingCampaignTypeText?.run {
+        binding?.tvProductManageSingleStockCountVariant?.run {
             product?.campaignTypeList?.let { campaignList ->
                 text = String.format(getString(R.string.product_manage_campaign_count), campaignList.count().orZero())
                 setOnClickListener {

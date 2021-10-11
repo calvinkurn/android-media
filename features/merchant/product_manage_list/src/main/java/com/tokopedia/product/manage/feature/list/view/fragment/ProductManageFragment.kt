@@ -79,6 +79,7 @@ import com.tokopedia.product.manage.common.feature.variant.presentation.ui.Quick
 import com.tokopedia.product.manage.common.session.ProductManageSession
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.common.view.ongoingpromotion.bottomsheet.OngoingPromotionBottomSheet
+import com.tokopedia.product.manage.databinding.DialogProductAddBinding
 import com.tokopedia.product.manage.databinding.FragmentProductManageBinding
 import com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
@@ -335,7 +336,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     private fun initView(view: View) {
         setupInterceptor()
-        setupSearchBar(view)
+        setupSearchBar()
         setupProductList()
         setupProgressDialogVariant()
         setupFiltersTab()
@@ -783,8 +784,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         }
     }
 
-    private fun setupSearchBar(view: View) {
-        searchBar = view.findViewById(R.id.search_bar_product_manage)
+    private fun setupSearchBar() {
+        searchBar = binding?.searchBarProductManage
         searchBar?.run {
             clearFocus()
 
@@ -1298,18 +1299,19 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
             activity?.let { activity ->
                 val dialog = DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
                 dialog.setCancelable(false)
-                dialog.setContentView(R.layout.dialog_product_add)
+                val dialogBinding = DialogProductAddBinding.inflate(
+                    LayoutInflater.from(context),
+                    null,
+                    false
+                )
+                dialog.setContentView(dialogBinding.root)
 
-                val btnSubmit: UnifyButton = dialog.findViewById(R.id.filterSubmitButton)
-                val btnGoToPdp: UnifyButton = dialog.findViewById(R.id.btn_product_list)
-                val txtTipsTrick: Typography = dialog.findViewById(R.id.txt_tips_trick)
-
-                btnSubmit.setOnClickListener {
+                dialogBinding.filterSubmitButton.setOnClickListener {
                     RouteManager.route(context, ApplinkConst.SELLER_SHIPPING_EDITOR)
                     activity.finish()
                 }
 
-                btnGoToPdp.setOnClickListener {
+                dialogBinding.btnProductList.setOnClickListener {
                     goToPDP(productId)
                     dialog.dismiss()
                 }
@@ -1328,8 +1330,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                     }
                 }
                 spanText.setSpan(cs, START_SPAN_INDEX, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                txtTipsTrick.movementMethod = LinkMovementMethod.getInstance()
-                txtTipsTrick.text = spanText
+                dialogBinding.txtTipsTrick.movementMethod = LinkMovementMethod.getInstance()
+                dialogBinding.txtTipsTrick.text = spanText
                 return dialog
             }
         }

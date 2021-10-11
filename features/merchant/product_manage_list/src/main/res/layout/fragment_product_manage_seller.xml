@@ -21,6 +21,8 @@
         tools:text="@string/product_manage_you_have_x_unfinished_product"
         tools:targetApi="m" />
 
-    <include layout="@layout/fragment_product_manage" />
+    <include
+        android:id="@+id/layout_fragment_product_manage"
+        layout="@layout/fragment_product_manage" />
 </LinearLayout>
 

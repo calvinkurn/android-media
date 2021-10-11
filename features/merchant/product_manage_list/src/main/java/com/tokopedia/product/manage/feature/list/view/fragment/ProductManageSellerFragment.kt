@@ -73,7 +73,7 @@ class ProductManageSellerFragment : ProductManageFragment() {
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
-        return view?.findViewById(R.id.swipe_refresh_layout)
+        return binding?.layoutFragmentProductManage?.root?.swipeRefreshLayout
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

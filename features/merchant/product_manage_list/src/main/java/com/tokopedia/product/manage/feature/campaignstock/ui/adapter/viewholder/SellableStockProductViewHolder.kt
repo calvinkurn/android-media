@@ -15,7 +15,6 @@ import com.tokopedia.product.manage.databinding.ItemCampaignStockVariantEditorBi
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.QuantityEditorUnify
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
 class SellableStockProductViewHolder (itemView: View?,
@@ -38,8 +37,6 @@ class SellableStockProductViewHolder (itemView: View?,
 
     private var stockEditTextWatcher: TextWatcher? = null
 
-    private val ongoingPromotionCountText: Typography? = itemView?.findViewById(R.id.tv_campaign_stock_count_variant)
-
     override fun onViewRecycled() {
         removeListeners()
         super.onViewRecycled()
@@ -50,7 +47,7 @@ class SellableStockProductViewHolder (itemView: View?,
             tvCampaignStockVariantEditorName.text = element.productName
             qteCampaignStockVariantEditor.setElement(element)
             labelCampaignStockInactive.visibleWithCondition(!element.isActive)
-            ongoingPromotionCountText?.run {
+            tvCampaignStockCountVariant?.run {
                 visibleWithCondition(element.isCampaign)
                 if (element.isCampaign) {
                     element.campaignTypeList?.let { campaignList ->
