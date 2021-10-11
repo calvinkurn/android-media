@@ -18,7 +18,6 @@
         android:id="@+id/review_shimmering"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/review_separator"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -75,7 +74,6 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/review_rating"
         app:layout_constraintLeft_toRightOf="@+id/review_rating"
-        app:layout_constraintTop_toTopOf="@+id/review_rating"
         app:typographyType="body_3"
         tools:visibility="visible"
         tools:text="dari 1205 ulasan" />
@@ -98,6 +96,7 @@
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/dp_12"
         android:visibility="gone"
+        android:contentDescription="@null"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/image_review_list"
         tools:srcCompat="@drawable/ic_rating_star_five"

@@ -16,7 +16,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
@@ -33,6 +33,7 @@ import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSh
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.MatcherAssert
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
 import org.junit.Before
@@ -47,6 +48,9 @@ class RechargeGeneralLoginInstrumentTest {
 
     @get:Rule
     var mActivityRule = ActivityTestRule(RechargeGeneralActivity::class.java, false, false)
+
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
 
     @Before
     fun stubAllExternalIntents() {
@@ -72,8 +76,10 @@ class RechargeGeneralLoginInstrumentTest {
         validate_recent_number()
         validate_promo()
 
-        ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_LOGIN),
-                hasAllSuccess())
+        MatcherAssert.assertThat(
+                cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_LOGIN),
+                hasAllSuccess()
+        )
     }
 
     private fun validate_recent_number() {

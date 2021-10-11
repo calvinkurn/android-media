@@ -1,5 +1,6 @@
 package com.tokopedia.gm.common.data.source.cloud.model
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -39,19 +40,6 @@ data class PmGradeWithBenefitsModel(
         val benefits: List<PMGradeBenefitModel>? = null
 )
 
-data class PotentialPmGradeModel(
-        @SerializedName("shop_level_current")
-        val shopLevelCurrent: Int? = 0,
-        @SerializedName("shop_score_current")
-        val shopScoreCurrent: Int? = 0,
-        @SerializedName("grade_name")
-        val gradeName: String? = "",
-        @SerializedName("image_badge_url")
-        val imgBadgeUrl: String? = "",
-        @SerializedName("image_badge_background_mobile_url")
-        val backgroundUrl: String? = ""
-)
-
 data class NextPMGradeModel(
         @SerializedName("shop_level")
         val shopLevel: Int? = 0,
@@ -73,7 +61,10 @@ data class CurrentPmGradeModel(
         @SerializedName("image_badge_url")
         val imgBadgeUrl: String? = "",
         @SerializedName("image_badge_background_mobile_url")
-        val backgroundUrl: String? = ""
+        val backgroundUrl: String? = "",
+        @Expose
+        @SerializedName("shop_level")
+        val shopLevel: String? = ""
 )
 
 data class PMGradeBenefitModel(

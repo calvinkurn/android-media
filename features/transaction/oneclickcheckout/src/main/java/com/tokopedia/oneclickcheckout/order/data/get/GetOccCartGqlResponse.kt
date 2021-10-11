@@ -2,7 +2,7 @@ package com.tokopedia.oneclickcheckout.order.data.get
 
 import com.google.gson.annotations.SerializedName
 
-data class GetOccCartGqlResponse(
-        @SerializedName("get_occ_cart_page")
+class GetOccCartGqlResponse(
+        @SerializedName("get_occ_multi")
         val response: GetOccCartResponse = GetOccCartResponse()
 )

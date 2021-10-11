@@ -9,13 +9,14 @@ import com.tokopedia.devicefingerprint.appauth.usecase.AppAuthUseCase
 import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
 import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule
 import com.tokopedia.encryption.security.sha256
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -33,16 +34,19 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
 
     override suspend fun doWork(): Result {
         if (isRunning) {
+            sendLog("isRunning")
             return Result.failure()
         }
         isRunning = true
         if (runAttemptCount > MAX_RUN_ATTEMPT) {
+            sendLog("runAttemptCount")
             return Result.failure()
         }
         return withContext(Dispatchers.IO) {
             val result = try {
                 val userSession = getUserSession(appContext)
                 if (userSession.userId.isEmpty()) {
+                    sendLog("userIdEmpty")
                     Result.success()
                 } else {
                     val encd = Base64.GetDecoder(appContext).trim()
@@ -53,14 +57,15 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
                     val contentSha = content.sha256()
                     val objResult = appAuthUseCase.execute(contentSha)
                     if (objResult.mutationSignDvc.isSuccess) {
-                        setAlreadySuccessSend(appContext, 1)
+                        setAlreadySuccessSend(appContext)
                         Result.success()
                     } else {
+                        sendLogMessage("gqlFailure", objResult.mutationSignDvc.errorMessage)
                         Result.retry()
                     }
                 }
             } catch (e: Exception) {
-                Timber.w(e.toString())
+                sendLog("doWork", e)
                 Result.retry()
             }
             isRunning = false
@@ -72,16 +77,30 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
         const val WORKER_NAME = "APP_AUTH_WORKER"
         const val MAX_RUN_ATTEMPT = 3
         const val LIMIT_PER_THRES = 3
+        const val LOG_TAG = "ERROR_RISK_AUTH"
         val THRES_TS = TimeUnit.DAYS.toMillis(1)
 
         var hasSuccessSendInt = 0 // 1 assumed it already running, means this feature is disabled.
-        var PREF = "app_auth"
+        var lastSuccessTimestamp = -1L
+        const val THRES_TOKEN_VALID = 2_592_000_000 // 1 month to submit new device data
+        var PREF = "app_sec"
         var KEY_SUCCESS = "scs"
+        var KEY_SUCCESS_TS = "ts_scs"
         var KEY_TS = "ts"
         var KEY_TS_TRIES = "ts_tries"
 
         var isRunning = false
         var userSession: UserSessionInterface? = null
+
+        private fun sendLog(type: String = "", throwable: Throwable? = null) {
+            sendLogMessage(type, (throwable?.stackTraceToString() ?: ""))
+        }
+
+        private fun sendLogMessage(type: String = "", errorMessage: String?) {
+            ServerLogger.log(
+                Priority.P1, LOG_TAG,
+                mapOf("type" to type, "err" to (errorMessage?: "")))
+        }
 
         private fun alreadySuccessSend(context: Context): Boolean {
             if (hasSuccessSendInt == 0) {
@@ -91,19 +110,30 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
             return hasSuccessSendInt == 1
         }
 
-        private fun setAlreadySuccessSend(context: Context, successSend: Int) {
+        private fun isTokenAgeValid(context: Context): Boolean {
+            if (lastSuccessTimestamp == -1L) {
+                val sp = context.getSharedPreferences(PREF, Context.MODE_PRIVATE)
+                lastSuccessTimestamp = sp.getLong(KEY_SUCCESS_TS, 0)
+            }
+            return (System.currentTimeMillis() - lastSuccessTimestamp) < THRES_TOKEN_VALID
+        }
+
+        private fun setAlreadySuccessSend(context: Context) {
+            val now = System.currentTimeMillis()
             val sp = context.getSharedPreferences(PREF, Context.MODE_PRIVATE)
-            sp.edit().putInt(KEY_SUCCESS, successSend).apply()
-            hasSuccessSendInt = successSend
+            sp.edit().putInt(KEY_SUCCESS, 1).apply()
+            sp.edit().putLong(KEY_SUCCESS_TS, now).apply()
+            hasSuccessSendInt = 1
+            lastSuccessTimestamp = now
         }
 
         private fun checkTimestamp(context: Context): Boolean {
             val sp = context.getSharedPreferences(PREF, Context.MODE_PRIVATE)
-            val lastTs = sp.getLong(KEY_TS, 0)
+            val lastRunTs = sp.getLong(KEY_TS, 0)
             val now = System.currentTimeMillis()
             // we check the timestamp the worker last run.
             // If the worker last run is more than 1 day, run the worker again
-            if (now - lastTs > THRES_TS) {
+            if (now - lastRunTs > THRES_TS) {
                 sp.edit().putLong(KEY_TS, now).putInt(KEY_TS_TRIES, 0).apply()
                 return true
             } else {
@@ -143,6 +173,9 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
                     if (isRunning) {
                         return@launch
                     }
+                    if (isTokenAgeValid(context)) {
+                        return@launch
+                    }
                     val userSession = getUserSession(context)
                     if (!userSession.isLoggedIn) {
                         return@launch
@@ -160,7 +193,7 @@ class AppAuthWorker(val appContext: Context, params: WorkerParameters) : Corouti
                                             .build())
                                     .build())
                 } catch (ex: Exception) {
-                    Timber.w(ex.toString())
+                    sendLog("Schedule", ex)
                 }
             }
         }

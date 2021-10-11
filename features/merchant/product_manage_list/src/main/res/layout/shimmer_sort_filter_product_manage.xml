@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/product_manage_horizontal_spacing"
+    android:paddingRight="@dimen/product_manage_horizontal_spacing"
+    android:paddingBottom="@dimen/spacing_lvl3"
+    android:layout_marginTop="@dimen/spacing_lvl2"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/sortFilterShimmer1"
+        android:layout_width="@dimen/product_manage_sort_filter_shimmer_width"
+        android:layout_height="@dimen/product_manage_sort_filter_shimmer_height"
+        app:corners="32"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/sortFilterShimmer2"
+        android:layout_width="@dimen/product_manage_sort_filter_shimmer_width"
+        android:layout_height="@dimen/product_manage_sort_filter_shimmer_height"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        app:corners="32"
+        app:layout_constraintStart_toEndOf="@id/sortFilterShimmer1"
+        app:layout_constraintTop_toTopOf="@id/sortFilterShimmer1" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/sortFilterShimmer3"
+        android:layout_width="@dimen/product_manage_sort_filter_shimmer_width"
+        android:layout_height="@dimen/product_manage_sort_filter_shimmer_height"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        app:corners="32"
+        app:layout_constraintStart_toEndOf="@id/sortFilterShimmer2"
+        app:layout_constraintTop_toTopOf="@id/sortFilterShimmer1" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/sortFilterShimmer4"
+        android:layout_width="@dimen/product_manage_sort_filter_shimmer_width"
+        android:layout_height="@dimen/product_manage_sort_filter_shimmer_height"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        app:corners="32"
+        app:layout_constraintStart_toEndOf="@id/sortFilterShimmer3"
+        app:layout_constraintTop_toTopOf="@id/sortFilterShimmer1" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/sortFilterShimmer5"
+        android:layout_width="@dimen/product_manage_sort_filter_shimmer_width"
+        android:layout_height="@dimen/product_manage_sort_filter_shimmer_height"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        app:corners="32"
+        app:layout_constraintStart_toEndOf="@id/sortFilterShimmer4"
+        app:layout_constraintTop_toTopOf="@id/sortFilterShimmer1" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

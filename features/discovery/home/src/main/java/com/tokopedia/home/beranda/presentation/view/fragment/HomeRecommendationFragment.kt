@@ -58,7 +58,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -130,7 +130,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_FROM_PDP && data != null && data.hasExtra(WIHSLIST_STATUS_IS_WISHLIST)) {
-            val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID)
+            val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID) ?: ""
             val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST, false)
             val position = data.getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1)
             updateWishlist(id, wishlistStatusFromPdp, position)
@@ -346,13 +346,13 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         val pmProAbTestValue =
                 try {
                     remoteConfigInstance?.abTestPlatform?.getString(
-                            AbTestPlatform.POWER_MERCHANT_PRO_POP_UP)
+                            RollenceKey.POWER_MERCHANT_PRO_POP_UP)
                 } catch (e: Exception) {
                     false
                 }
 
         val isPmProRollenceActive =
-                pmProAbTestValue == AbTestPlatform.POWER_MERCHANT_PRO_POP_UP
+                pmProAbTestValue == RollenceKey.POWER_MERCHANT_PRO_POP_UP
 
         return if (pmProCoachmark == null && isPmProRollenceActive) {
             coachmarkLocalCache?.shouldShowHomePMProCoachMark()?: false
@@ -464,8 +464,10 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     }
 
     fun hidePmProCoachmark() {
-        pmProCoachmark?.hideCoachMark()
-        pmProCoachmarkIsShowing = false
+        if (activity?.isFinishing == false && pmProCoachmark?.isShowing == true && pmProCoachmarkIsShowing) {
+            pmProCoachmark?.hideCoachMark()
+            pmProCoachmarkIsShowing = false
+        }
     }
 
     fun scrollToTop() {

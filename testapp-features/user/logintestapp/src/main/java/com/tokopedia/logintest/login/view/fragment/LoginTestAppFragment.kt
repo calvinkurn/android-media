@@ -56,6 +56,8 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.sessioncommon.data.LoginTokenPojo
+import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.network.TokenErrorException
@@ -569,6 +571,18 @@ class LoginTestAppFragment : BaseDaggerFragment(), LoginTestAppContract.View {
                 }
             }
         }
+    }
+
+    override fun onShowPopupError(pojo: LoginTokenPojo?, pojo2: LoginToken?) {
+        onErrorLogin("Error: " + pojo?.loginToken?.errors + " " + pojo2?.errors)
+    }
+
+    override fun onGoToActivationPage(errorMessage: MessageErrorException) {
+        onErrorLogin("This account has not yet activated: " + errorMessage.errorCode + " " + errorMessage.message)
+    }
+
+    override fun onGoToSecurityQuestion()  {
+        onErrorLogin("This account has OTP request but testapp login doesn't have OTP module, please use full login module or contact backend to bypass OTP for this account")
     }
 
     private fun loginEmail(email: String, password: String, useHash: Boolean = false) {

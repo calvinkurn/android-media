@@ -14,7 +14,6 @@ object ApplinkConstInternalEntertainment {
     const val EVENT_FAVORITE = "$INTERNAL_EVENT/favorite"
     const val EVENT_CATEGORY = "$INTERNAL_EVENT/category?category_id={category_id}&id_city={id_city}&query_text={query_text}"
     const val EVENT_SEARCH = "$INTERNAL_EVENT/search"
-    const val EVENT_LOCATION = "$INTERNAL_EVENT/location"
     const val EVENT_PDP = "$INTERNAL_EVENT/detail"
     const val EVENT_FORM = "$INTERNAL_EVENT/form"
     const val EVENT_PACKAGE = "$INTERNAL_EVENT/choose-package"

@@ -13,7 +13,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopRequestUnmoderateBottomSheetAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopRequestUnmoderateBottomsheetViewHolderListener
-import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentHeaderViewHolder
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentViewHolderListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify

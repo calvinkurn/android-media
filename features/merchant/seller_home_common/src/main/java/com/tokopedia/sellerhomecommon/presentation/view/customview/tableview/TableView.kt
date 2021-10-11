@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.adapter.TablePageAdapter
 import com.tokopedia.sellerhomecommon.presentation.model.TablePageUiModel
@@ -18,10 +19,12 @@ import kotlinx.android.synthetic.main.shc_table_view.view.*
 
 class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context, attrs) {
 
+    private var onSwipeListener: ((position: Int, maxPosition: Int, isEmpty: Boolean) -> Unit)? = null
     private var slideImpressionListener: ((position: Int, maxPosition: Int, isEmpty: Boolean) -> Unit)? = null
     private var htmlClickListener: ((url: String, isEmpty: Boolean) -> Unit)? = null
     private val mTablePageAdapter by lazy { TablePageAdapter() }
     private var alreadyAttachToSnapHelper = false
+    private var highestHeight = 0
 
     init {
         View.inflate(context, R.layout.shc_table_view, this)
@@ -42,11 +45,14 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     val position = mLayoutManager.findFirstCompletelyVisibleItemPosition()
-                    if (position != RecyclerView.NO_POSITION) {
+                    if (position != RecyclerView.NO_POSITION && items.size > 1) {
                         mLayoutManager.findViewByPosition(position)?.let { view ->
                             refreshTableHeight(view)
                         }
                         this@TableView.tableViewPageControl.setCurrentIndicator(position)
+                        val item = items.getOrNull(position)
+                        val isEmpty = item?.rows?.isEmpty().orTrue()
+                        onSwipeListener?.invoke(position, items.size, isEmpty)
                     }
                 }
             })
@@ -67,7 +73,11 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
     }
 
     fun addOnSlideImpressionListener(onView: (position: Int, maxPosition: Int, isEmpty: Boolean) -> Unit) {
-         this.slideImpressionListener = onView
+        this.slideImpressionListener = onView
+    }
+
+    fun setOnSwipeListener(onSwipe: (position: Int, maxPosition: Int, isEmpty: Boolean) -> Unit) {
+        this.onSwipeListener = onSwipe
     }
 
     fun addOnHtmlClickListener(onClick: (url: String, isEmpty: Boolean) -> Unit) {
@@ -84,7 +94,12 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
 
         if (rvTableViewPage?.layoutParams?.height != view.measuredHeight) {
             rvTableViewPage?.layoutParams = (rvTableViewPage?.layoutParams as? LayoutParams)
-                    ?.also { lp -> lp.height = view.measuredHeight }
+                    ?.also { lp ->
+                        if (view.measuredHeight > highestHeight) {
+                            highestHeight = view.measuredHeight
+                            lp.height = view.measuredHeight
+                        }
+                    }
         }
     }
 }

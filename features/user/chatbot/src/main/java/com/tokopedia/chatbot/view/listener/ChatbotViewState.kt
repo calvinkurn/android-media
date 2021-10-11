@@ -34,8 +34,7 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun onSuccessSendRating(element: SendRatingPojo, rating: Int,
                             chatRatingViewModel : ChatRatingViewModel,
-                            activity: Activity,
-                            onClickReasonRating: (String) -> Unit)
+                            activity: Activity)
 
     fun onClickReasonRating()
 
@@ -66,5 +65,13 @@ interface ChatbotViewState : BaseChatViewState {
     fun hideInvoiceList()
 
     fun hideHelpfullOptions()
+
+    fun clearChatOnLoadChatHistory()
+
+    fun clearDuplicate(list: List<Visitable<*>>):ArrayList<Visitable<*>>
+
+    fun handleReplyBox(isEnable: Boolean)
+
+
 
 }

@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.exception.UserNotLoginException
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
@@ -26,6 +27,7 @@ import com.tokopedia.shop.common.di.GqlGetShopInfoUseCaseCoreAndAssetsQualifier
 import com.tokopedia.shop.common.domain.interactor.*
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_ALLOW_MANAGE
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_ASSETS
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_BRANCH_LINK
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_CLOSED_INFO
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_CORE
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.FIELD_CREATE_INFO
@@ -332,9 +334,16 @@ class NewShopPageViewModel @Inject constructor(
         return broadcasterConfig
     }
 
-    fun getFollowStatusData(shopId: String) {
+    fun getFollowStatusData(shopId: String, followButtonVariantType: String) {
         launchCatchError(dispatcherProvider.io, block = {
-            getFollowStatusUseCase.get().params = GetFollowStatusUseCase.createParams(shopId, SOURCE_SHOP_PAGE)
+            val pageSource = when (followButtonVariantType) {
+                RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL, RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG -> {
+                    // set empty page source to get voucher icon white color
+                    ""
+                }
+                else -> SOURCE_SHOP_PAGE
+            }
+            getFollowStatusUseCase.get().params = GetFollowStatusUseCase.createParams(shopId, pageSource)
             _followStatusData.postValue(Success(getFollowStatusUseCase.get().executeOnBackground()))
         }, onError = {
             _followStatusData.postValue(Fail(it))
@@ -396,7 +405,8 @@ class NewShopPageViewModel @Inject constructor(
                         FIELD_IS_OPEN,
                         FIELD_CLOSED_INFO,
                         FIELD_CREATE_INFO,
-                        FIELD_SHOP_SNIPPET
+                        FIELD_SHOP_SNIPPET,
+                        FIELD_BRANCH_LINK
                 )
         )
         return gqlGetShopInfoForHeaderUseCase.get().executeOnBackground()

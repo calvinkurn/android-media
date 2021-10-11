@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/telco_layout_content_product"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,21 +13,24 @@
         android:id="@+id/telco_sort_filter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"/>
+        android:paddingTop="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/unify_space_12"
+        android:paddingHorizontal="@dimen/spacing_lvl2" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/telco_title_filter_result"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/telco_sort_filter"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginBottom="@dimen/layout_lvl1"
-        android:layout_marginLeft="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"
+        android:paddingTop="@dimen/spacing_lvl3"
+        android:paddingBottom="@dimen/layout_lvl1"
+        android:paddingLeft="@dimen/spacing_lvl2"
+        android:paddingRight="@dimen/spacing_lvl2"
         android:lines="1"
         android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_4"
         android:visibility="gone"
+        tools:visibility="visible"
         android:text="@string/telco_title_filter_result" />
 
     <com.tokopedia.topupbills.telco.prepaid.widget.DigitalTelcoProductWidget

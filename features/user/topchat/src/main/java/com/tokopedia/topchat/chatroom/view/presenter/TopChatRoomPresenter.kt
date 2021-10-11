@@ -7,25 +7,30 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.BaseChatViewModel.Builder.Companion.generateCurrentReplyTime
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_API
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_WEBSOCKET
-import com.tokopedia.chat_common.data.preview.ProductPreview
+import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
+import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.chat_common.network.ChatUrl.Companion.CHAT_WEBSOCKET_DOMAIN
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
+import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -35,30 +40,33 @@ import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatroom.data.UploadImageDummy
 import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
-import com.tokopedia.topchat.chatroom.domain.subscriber.DeleteMessageAllSubscriber
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
-import com.tokopedia.topchat.common.mapper.ImageUploadMapper
+import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.data.Resource
+import com.tokopedia.topchat.common.data.Status
+import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
+import com.tokopedia.topchat.common.mapper.ImageUploadMapper
+import com.tokopedia.topchat.common.util.AddressUtil
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -72,12 +80,13 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.WebSocket
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
-import java.lang.Exception
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -86,42 +95,47 @@ import kotlin.coroutines.CoroutineContext
  */
 
 open class TopChatRoomPresenter @Inject constructor(
-        tkpdAuthInterceptor: TkpdAuthInterceptor,
-        fingerprintInterceptor: FingerprintInterceptor,
-        userSession: UserSessionInterface,
-        protected val webSocketUtil: RxWebSocketUtil,
-        private var getChatUseCase: GetChatUseCase,
-        private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
-        private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
-        private var replyChatUseCase: ReplyChatUseCase,
-        private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
-        private var deleteMessageListUseCase: DeleteMessageListUseCase,
-        private var getShopFollowingUseCase: GetShopFollowingUseCase,
-        private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
-        private var addToCartUseCase: AddToCartUseCase,
-        private var compressImageUseCase: CompressImageUseCase,
-        private var seamlessLoginUsecase: SeamlessLoginUsecase,
-        private var getChatRoomSettingUseCase: GetChatRoomSettingUseCase,
-        private var addWishListUseCase: AddWishListUseCase,
-        private var removeWishListUseCase: RemoveWishListUseCase,
-        private var uploadImageUseCase: TopchatUploadImageUseCase,
-        private var orderProgressUseCase: OrderProgressUseCase,
-        private val groupStickerUseCase: ChatListGroupStickerUseCase,
-        private val chatAttachmentUseCase: ChatAttachmentUseCase,
-        private val chatToggleBlockChat: ChatToggleBlockChatUseCase,
-        private val chatBackgroundUseCase: ChatBackgroundUseCase,
-        private val chatSrwUseCase: SmartReplyQuestionUseCase,
-        private val sharedPref: SharedPreferences,
-        private val dispatchers: CoroutineDispatchers,
-        private val remoteConfig: RemoteConfig
+    tkpdAuthInterceptor: TkpdAuthInterceptor,
+    fingerprintInterceptor: FingerprintInterceptor,
+    userSession: UserSessionInterface,
+    protected val webSocketUtil: RxWebSocketUtil,
+    private var getChatUseCase: GetChatUseCase,
+    private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
+    private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
+    private var replyChatUseCase: ReplyChatUseCase,
+    private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
+    private var getShopFollowingUseCase: GetShopFollowingUseCase,
+    private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
+    private var addToCartUseCase: AddToCartUseCase,
+    private var compressImageUseCase: CompressImageUseCase,
+    private var seamlessLoginUsecase: SeamlessLoginUsecase,
+    private var getChatRoomSettingUseCase: GetChatRoomSettingUseCase,
+    private var addWishListUseCase: AddWishListUseCase,
+    private var removeWishListUseCase: RemoveWishListUseCase,
+    private var uploadImageUseCase: TopchatUploadImageUseCase,
+    private var orderProgressUseCase: OrderProgressUseCase,
+    private val groupStickerUseCase: ChatListGroupStickerUseCase,
+    private val chatAttachmentUseCase: ChatAttachmentUseCase,
+    private val chatToggleBlockChat: ChatToggleBlockChatUseCase,
+    private val chatBackgroundUseCase: ChatBackgroundUseCase,
+    private val chatSrwUseCase: SmartReplyQuestionUseCase,
+    private val tokoNowWHUsecase: ChatTokoNowWarehouseUseCase,
+    private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
+    private val sharedPref: SharedPreferences,
+    private val dispatchers: CoroutineDispatchers,
+    private val remoteConfig: RemoteConfig
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
-        TopChatContract.Presenter, CoroutineScope {
+    TopChatContract.Presenter, CoroutineScope {
 
     var autoRetryConnectWs = true
     var newUnreadMessage = 0
+        private set
     var thisMessageId: String = ""
+        private set
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
     val onGoingStockUpdate: ArrayMap<String, UpdateProductStockResult> = ArrayMap()
+    var attachProductWarehouseId = "0"
+        private set
     private var userLocationInfo = LocalCacheModel()
 
     private lateinit var webSocketUrl: String
@@ -130,6 +144,8 @@ open class TopChatRoomPresenter @Inject constructor(
     private var compressImageSubscription: CompositeSubscription
     private var listInterceptor: ArrayList<Interceptor>
     private var dummyList: ArrayList<Visitable<*>>
+    var roomMetaData: RoomMetaData = RoomMetaData()
+        private set
 
     private val _srw = MutableLiveData<Resource<ChatSmartReplyQuestionResponse>>()
     val srw: LiveData<Resource<ChatSmartReplyQuestionResponse>>
@@ -146,6 +162,7 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override fun connectWebSocket(messageId: String) {
         thisMessageId = messageId
+        roomMetaData.updateMessageId(messageId)
         webSocketUrl = CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
                 "?os_type=1" +
                 "&device_id=" + userSession.deviceId +
@@ -198,15 +215,42 @@ open class TopChatRoomPresenter @Inject constructor(
     override fun initUserLocation(userLocation: LocalCacheModel?) {
         userLocation ?: return
         this.userLocationInfo = userLocation
+        this.attachProductWarehouseId = userLocation.warehouse_id
     }
 
     override fun getProductIdPreview(): List<String> {
         return attachmentsPreview.filterIsInstance<SendableProductPreview>()
-                .map { it.productId }
+            .map { it.productId }
+    }
+
+    override fun getAttachmentsPreview(): List<SendablePreview> {
+        return attachmentsPreview
+    }
+
+    override fun adjustInterlocutorWarehouseId(msgId: String) {
+        attachProductWarehouseId = "0"
+        launchCatchError(
+            block = {
+                tokoNowWHUsecase.getWarehouseId(msgId)
+                    .flowOn(dispatchers.io)
+                    .collect {
+                        if (it.status == Status.SUCCESS) {
+                            attachProductWarehouseId = it.data
+                                ?.chatTokoNowWarehouse
+                                ?.warehouseId ?: "0"
+                        }
+                    }
+            },
+            onError = {
+                it.printStackTrace()
+            }
+        )
     }
 
     override fun mappingEvent(webSocketResponse: WebSocketResponse, messageId: String) {
-        val pojo: ChatSocketPojo = topChatRoomWebSocketMessageMapper.parseResponse(webSocketResponse)
+        val pojo: ChatSocketPojo = topChatRoomWebSocketMessageMapper.parseResponse(
+            webSocketResponse
+        )
         if (pojo.msgId.toString() != messageId) return
         when (webSocketResponse.code) {
             EVENT_TOPCHAT_TYPING -> {
@@ -241,56 +285,85 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun onReplyMessage(pojo: ChatSocketPojo) {
-        val temp = mapToVisitable(pojo)
-        view?.onReceiveMessageEvent(temp)
+        val uiModel = mapToVisitable(pojo)
+        view?.onReceiveMessageEvent(uiModel)
+        handleSrwBubbleState(pojo, uiModel)
         if (!pojo.isOpposite) {
-            checkDummyAndRemove(temp)
+            checkDummyAndRemove(uiModel)
         } else {
             readMessage()
         }
     }
 
-    override fun getExistingChat(
-            messageId: String,
-            onError: (Throwable) -> Unit,
-            onSuccessGetExistingMessage: (ChatroomViewModel, ChatReplies) -> Unit) {
-        if (messageId.isNotEmpty()) {
-            getChatUseCase.getFirstPageChat(
-                    messageId = messageId,
-                    onSuccess = onSuccessGetExistingMessage,
-                    onErrorGetChat = onError
-            )
+    private fun handleSrwBubbleState(pojo: ChatSocketPojo, uiModel: Visitable<*>) {
+        when (pojo.attachment?.type) {
+            AttachmentType.Companion.TYPE_INVOICE_SEND,
+            AttachmentType.Companion.TYPE_IMAGE_UPLOAD,
+            AttachmentType.Companion.TYPE_VOUCHER -> view?.removeSrwBubble()
+            AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT -> {
+                if (uiModel is ProductAttachmentViewModel) {
+                    view?.removeSrwBubble(uiModel.productId)
+                }
+            }
         }
     }
 
-    override fun getMessageId(toUserId: String,
-                              toShopId: String,
-                              source: String,
-                              onError: (Throwable) -> Unit,
-                              onSuccessGetMessageId: (String) -> Unit) {
+    private fun handleSrwBubbleState(previewToSent: SendablePreview) {
+        when (previewToSent) {
+            is InvoicePreviewUiModel -> view?.removeSrwBubble()
+        }
+    }
+
+    override fun getExistingChat(
+        messageId: String,
+        onError: (Throwable) -> Unit,
+        onSuccessGetExistingMessage: (ChatroomViewModel, ChatReplies) -> Unit
+    ) {
+        if (messageId.isNotEmpty()) {
+            getChatUseCase.getFirstPageChat(
+                messageId = messageId,
+                onSuccess = onSuccessGetExistingMessage,
+                onErrorGetChat = onError
+            ) {
+                updateRoomMetaData(it)
+            }
+        }
+    }
+
+    private fun updateRoomMetaData(roomMetaData: RoomMetaData) {
+        this.roomMetaData = roomMetaData
+    }
+
+    override fun getMessageId(
+        toUserId: String,
+        toShopId: String,
+        source: String,
+        onError: (Throwable) -> Unit,
+        onSuccessGetMessageId: (String) -> Unit
+    ) {
         getExistingMessageIdUseCase.getMessageId(
-                toShopId, toUserId, source, onSuccessGetMessageId, onError
+            toShopId, toUserId, source, onSuccessGetMessageId, onError
         )
     }
 
     override fun loadTopChat(
-            messageId: String,
-            onError: (Throwable) -> Unit,
-            onSuccessGetPreviousChat: (ChatroomViewModel, ChatReplies) -> Unit
+        messageId: String,
+        onError: (Throwable) -> Unit,
+        onSuccessGetPreviousChat: (ChatroomViewModel, ChatReplies) -> Unit
     ) {
         if (messageId.isNotEmpty()) {
             getChatUseCase.getTopChat(
-                    messageId = messageId,
-                    onSuccess = onSuccessGetPreviousChat,
-                    onErrorGetChat = onError
+                messageId = messageId,
+                onSuccess = onSuccessGetPreviousChat,
+                onErrorGetChat = onError
             )
         }
     }
 
     override fun loadBottomChat(
-            messageId: String,
-            onError: (Throwable) -> Unit,
-            onsuccess: (ChatroomViewModel, ChatReplies) -> Unit
+        messageId: String,
+        onError: (Throwable) -> Unit,
+        onsuccess: (ChatroomViewModel, ChatReplies) -> Unit
     ) {
         if (messageId.isNotEmpty()) {
             getChatUseCase.getBottomChat(messageId, onsuccess, onError)
@@ -299,29 +372,29 @@ open class TopChatRoomPresenter @Inject constructor(
 
     fun getTemplate(isSeller: Boolean) {
         getTemplateChatRoomUseCase.execute(
-                GetTemplateChatRoomUseCase.generateParam(isSeller),
-                object : Subscriber<GetTemplateUiModel>() {
-                    override fun onNext(t: GetTemplateUiModel?) {
-                        val templateList = arrayListOf<Visitable<Any>>()
-                        t?.let {
-                            if (t.isEnabled) {
-                                t.listTemplate?.let {
-                                    templateList.addAll(it)
-                                }
+            GetTemplateChatRoomUseCase.generateParam(isSeller),
+            object : Subscriber<GetTemplateUiModel>() {
+                override fun onNext(templateUiModel: GetTemplateUiModel?) {
+                    val templateList = arrayListOf<Visitable<Any>>()
+                    if (templateUiModel != null) {
+                        if (templateUiModel.isEnabled) {
+                            templateUiModel.listTemplate?.let {
+                                templateList.addAll(it)
                             }
                         }
-                        view?.onSuccessGetTemplate(templateList)
                     }
+                    view?.onSuccessGetTemplate(templateList)
+                }
 
-                    override fun onCompleted() {
-
-                    }
-
-                    override fun onError(e: Throwable?) {
-                        view?.onErrorGetTemplate()
-                    }
+                override fun onCompleted() {
 
                 }
+
+                override fun onError(e: Throwable?) {
+                    view?.onErrorGetTemplate()
+                }
+
+            }
         )
     }
 
@@ -334,19 +407,19 @@ open class TopChatRoomPresenter @Inject constructor(
         if (isValidImage.first) {
             it.imageUrl?.let { it1 ->
                 val subscription = compressImageUseCase.compressImage(it1)
-                        .subscribe(object : Subscriber<String>() {
-                            override fun onNext(compressedImageUrl: String?) {
-                                it.imageUrl = compressedImageUrl
-                                startUploadImages(it)
-                            }
+                    .subscribe(object : Subscriber<String>() {
+                        override fun onNext(compressedImageUrl: String?) {
+                            it.imageUrl = compressedImageUrl
+                            startUploadImages(it)
+                        }
 
-                            override fun onCompleted() {
-                            }
+                        override fun onCompleted() {
+                        }
 
-                            override fun onError(e: Throwable?) {
-                                showErrorSnackbar(R.string.error_compress_image)
-                            }
-                        })
+                        override fun onError(e: Throwable?) {
+                            showErrorSnackbar(R.string.error_compress_image)
+                        }
+                    })
                 compressImageSubscription?.clear()
                 compressImageSubscription?.add(subscription)
             }
@@ -359,7 +432,8 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun startUploadImages(image: ImageUploadViewModel) {
-        if(isEnableUploadImageService()) {
+        view?.removeSrwBubble()
+        if (isEnableUploadImageService()) {
             addDummyToService(image)
             startUploadImageWithService(image)
         } else {
@@ -368,14 +442,22 @@ open class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-    private fun addDummyToService(image: ImageUploadViewModel) {
+    protected open fun addDummyToService(image: ImageUploadViewModel) {
+        val dummyPosition = UploadImageChatService.findDummy(image)
+        if (dummyPosition == null) {
+            val uploadImageDummy = UploadImageDummy(messageId = thisMessageId, visitable = image)
+            UploadImageChatService.dummyMap.add(uploadImageDummy)
+        }
         view?.addDummyMessage(image)
-        val uploadImageDummy = UploadImageDummy(messageId = thisMessageId, visitable = image)
-        UploadImageChatService.dummyMap.add(uploadImageDummy)
+
     }
 
-    private fun startUploadImageWithService(image: ImageUploadViewModel) {
-        UploadImageChatService.enqueueWork(view.context, ImageUploadMapper.mapToImageUploadServer(image), thisMessageId)
+    protected open fun startUploadImageWithService(image: ImageUploadViewModel) {
+        UploadImageChatService.enqueueWork(
+            view.context,
+            ImageUploadMapper.mapToImageUploadServer(image),
+            thisMessageId
+        )
     }
 
     private fun onSuccessUploadImage(uploadId: String, image: ImageUploadViewModel) {
@@ -390,7 +472,8 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun sendImageByWebSocket(uploadId: String, image: ImageUploadViewModel) {
-        val requestParams = TopChatWebSocketParam.generateParamSendImage(thisMessageId, uploadId, image.startTime)
+        val requestParams =
+            TopChatWebSocketParam.generateParamSendImage(thisMessageId, uploadId, image.startTime)
         sendMessageWebSocket(requestParams)
     }
 
@@ -413,7 +496,8 @@ open class TopChatRoomPresenter @Inject constructor(
             for (i in 0 until dummyList.size) {
                 val temp = (dummyList[i] as SendableViewModel)
                 if (temp.startTime == (visitable as SendableViewModel).startTime
-                        && temp.messageId == (visitable as SendableViewModel).messageId) {
+                    && temp.messageId == (visitable as SendableViewModel).messageId
+                ) {
                     return dummyList[i]
                 }
             }
@@ -467,11 +551,11 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun sendAttachmentsAndMessage(
-            messageId: String,
-            sendMessage: String,
-            startTime: String,
-            opponentId: String,
-            onSendingMessage: () -> Unit
+        messageId: String,
+        sendMessage: String,
+        startTime: String,
+        opponentId: String,
+        onSendingMessage: () -> Unit
     ) {
         if (isValidReply(sendMessage)) {
             sendAttachments(messageId, opponentId, sendMessage)
@@ -481,11 +565,11 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun sendAttachmentsAndSticker(
-            messageId: String,
-            sticker: Sticker,
-            startTime: String,
-            opponentId: String,
-            onSendingMessage: () -> Unit
+        messageId: String,
+        sticker: Sticker,
+        startTime: String,
+        opponentId: String,
+        onSendingMessage: () -> Unit
     ) {
         sendAttachments(messageId, opponentId, sticker.intention)
         sendSticker(messageId, sticker, startTime, opponentId, onSendingMessage)
@@ -493,73 +577,122 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun sendAttachmentsAndSrw(
-            messageId: String,
-            question: QuestionUiModel,
-            startTime: String,
-            opponentId: String,
-            onSendingMessage: () -> Unit
+        messageId: String,
+        question: QuestionUiModel,
+        startTime: String,
+        opponentId: String,
+        onSendingMessage: () -> Unit
     ) {
+        onSendingMessage.invoke()
         sendAttachments(messageId, opponentId, question.content)
-        sendMessage(messageId, question.content, startTime, opponentId, question.intent)
+        topchatSendMessageWithWebsocket(
+            messageId, question.content, startTime, opponentId, question.intent, null
+        )
         view?.clearAttachmentPreviews()
     }
 
-    /**
-     * sendMessage but with param [intention]
-     * make sure the [sendMessage] is valid before sending msg
-     */
-    private fun sendMessage(
-            messageId: String,
-            sendMessage: String,
-            startTime: String,
-            opponentId: String,
-            intention: String? = null
+    override fun sendSrwFrom(
+        attachment: HeaderCtaButtonAttachment,
+        opponentId: String
+    ) {
+        val startTime = SendableViewModel.generateStartTime()
+        val addressMasking = AddressUtil.getAddressMasking(userLocationInfo.label)
+        val ctaButton = attachment.ctaButton
+        val productName = ctaButton.productName
+        val srwMessage = "Ubah alamat pengiriman \"$productName\" ke $addressMasking"
+        val question = QuestionUiModel(srwMessage, ctaButton.extras.intent)
+        val products = ctaButton.generateSendableProductPreview()
+        topchatSendMessageWithWebsocket(
+            thisMessageId, question.content, startTime,
+            opponentId, question.intent, products
+        )
+    }
+
+    override fun sendSrwBubble(
+        messageId: String, question: QuestionUiModel,
+        products: List<SendablePreview>, opponentId: String,
+        onSendingMessage: () -> Unit
     ) {
         if (networkMode == MODE_WEBSOCKET) {
+            val startTime = SendableViewModel.generateStartTime()
             topchatSendMessageWithWebsocket(
-                    messageId, sendMessage, startTime, opponentId, intention
+                messageId, question.content, startTime,
+                opponentId, question.intent, products
             )
         }
     }
 
+    override fun sendMessageWithWebsocket(
+        messageId: String, sendMessage: String,
+        startTime: String, opponentId: String
+    ) {
+        topchatSendMessageWithWebsocket(
+            messageId, sendMessage, startTime, opponentId, null, null
+        )
+    }
 
     /**
      * send with websocket but with param [intention]
      */
     private fun topchatSendMessageWithWebsocket(
-            messageId: String, sendMessage: String,
-            startTime: String, opponentId: String,
-            intention: String?
+        messageId: String, sendMessage: String,
+        startTime: String, opponentId: String,
+        intention: String?, products: List<SendablePreview>?
     ) {
-        processDummyMessage(mapToDummyMessage(thisMessageId, sendMessage, startTime))
-        sendMessageWebSocket(
-                TopChatWebSocketParam.generateParamSendMessage(
-                        messageId, sendMessage, startTime,
-                        attachmentsPreview, intention, userLocationInfo
-                )
+        val previewMsg = generatePreviewMessage(thisMessageId, sendMessage, startTime)
+        val requestParams = TopChatWebSocketParam.generateParamSendMessage(
+            thisMessageId = messageId,
+            messageText = sendMessage,
+            startTime = startTime,
+            attachments = products ?: attachmentsPreview,
+            localId = previewMsg.localId,
+            intention = intention,
+            userLocationInfo = userLocationInfo
         )
-        sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
+        sendWs(requestParams, previewMsg)
     }
 
-    /**
-     * recommended to use [topchatSendMessageWithWebsocket] instead
-     */
-    override fun sendMessageWithWebsocket(
-            messageId: String, sendMessage: String,
-            startTime: String, opponentId: String
+    private fun sendWs(
+        request: String,
+        preview: SendableViewModel
     ) {
-        processDummyMessage(mapToDummyMessage(thisMessageId, sendMessage, startTime))
-        sendMessageWebSocket(TopChatWebSocketParam.generateParamSendMessage(
-                messageId, sendMessage, startTime, attachmentsPreview)
-        )
-        sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
+        processPreviewMessage(preview)
+        sendMessageWebSocket(request)
+        sendWsStopTyping()
+    }
+
+    private fun sendWsStopTyping() {
+        val request = TopChatWebSocketParam.generateParamStopTyping(roomMetaData.msgId)
+        sendMessageWebSocket(request)
+    }
+
+    private fun processPreviewMessage(previewMsg: SendableViewModel) {
+        view?.showPreviewMsg(previewMsg)
+    }
+
+    private fun generatePreviewMessage(
+        messageId: String, messageText: String, startTime: String
+    ): SendableViewModel {
+        val localId = IdentifierUtil.generateLocalId()
+        return MessageViewModel.Builder()
+            .withMsgId(messageId)
+            .withFromUid(userSession.userId)
+            .withFrom(userSession.name)
+            .withReplyTime(generateCurrentReplyTime())
+            .withStartTime(startTime)
+            .withMsg(messageText)
+            .withLocalId(localId)
+            .withIsDummy(true)
+            .withIsSender(true)
+            .withIsRead(false)
+            .build()
     }
 
     private fun mapToDummyMessage(
-            messageId: String, messageText: String, startTime: String
+        messageId: String, messageText: String, startTime: String
     ): Visitable<*> {
         return topChatRoomWebSocketMessageMapper.mapToDummyMessage(
-                messageId, userSession.userId, userSession.name, startTime, messageText
+            messageId, userSession.userId, userSession.name, startTime, messageText
         )
     }
 
@@ -570,42 +703,44 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun sendSticker(
-            messageId: String,
-            sticker: Sticker,
-            startTime: String,
-            opponentId: String,
-            onSendingMessage: () -> Unit
+        messageId: String,
+        sticker: Sticker,
+        startTime: String,
+        opponentId: String,
+        onSendingMessage: () -> Unit
     ) {
         onSendingMessage()
-        processDummyMessage(mapToDummySticker(messageId, sticker, startTime))
         sendStickerWithWebSocket(messageId, sticker, opponentId, startTime)
     }
 
-    private fun mapToDummySticker(
-            messageId: String, sticker: Sticker, startTime: String
-    ): Visitable<*> {
-        return StickerUiModel(
-                messageId, userSession.userId, userSession.name, startTime, sticker.generateStickerProfile()
-        )
-    }
-
     private fun sendStickerWithWebSocket(
-            messageId: String,
-            sticker: Sticker,
-            opponentId: String,
-            startTime: String
+        messageId: String,
+        sticker: Sticker,
+        opponentId: String,
+        startTime: String
     ) {
-        val stickerContract = sticker.generateWebSocketPayload(messageId, opponentId, startTime, attachmentsPreview)
-        val stringContract = CommonUtil.toJson(stickerContract)
-        sendMessageWebSocket(stringContract)
+        val previewSticker = StickerUiModel.generatePreviewMessage(
+            roomMetaData, sticker
+        )
+        val stickerContract = sticker.generateWebSocketPayload(
+            messageId, opponentId, startTime, attachmentsPreview, previewSticker.localId
+        )
+        val request = CommonUtil.toJson(stickerContract)
+        sendWs(request, previewSticker)
     }
 
     private fun sendAttachments(messageId: String, opponentId: String, message: String) {
         if (attachmentsPreview.isEmpty()) return
         attachmentsPreview.forEach { attachment ->
-            val wsMsgPayload = attachment.generateMsgObj(
-                    messageId, opponentId, message, listInterceptor, userLocationInfo
+            handleSrwBubbleState(attachment)
+            val previewMsg = attachment.generatePreviewMessage(
+                roomMetaData, message
             )
+            val wsMsgPayload = attachment.generateMsgObj(
+                messageId, opponentId, message, listInterceptor,
+                userLocationInfo, previewMsg.localId
+            )
+            processPreviewMessage(previewMsg)
             sendWebSocketAttachmentPayload(wsMsgPayload)
             view?.sendAnalyticAttachmentSent(attachment)
         }
@@ -618,15 +753,32 @@ open class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-    override fun deleteChat(messageId: String, onError: (Throwable) -> Unit, onSuccessDeleteConversation: () -> Unit) {
-        deleteMessageListUseCase.execute(DeleteMessageListUseCase.generateParam(messageId),
-                DeleteMessageAllSubscriber(onError, onSuccessDeleteConversation))
+    override fun deleteChat(
+        messageId: String,
+        onError: (Throwable) -> Unit,
+        onSuccessDeleteConversation: () -> Unit
+    ) {
+        launch {
+            try {
+                val result = moveChatToTrashUseCase.execute(messageId)
+                if (result.chatMoveToTrash.list.isNotEmpty()) {
+                    val deletedChat = result.chatMoveToTrash.list.first()
+                    if (deletedChat.isSuccess == Constant.INT_STATUS_TRUE) {
+                        onSuccessDeleteConversation()
+                    } else {
+                        onError(Throwable(deletedChat.detailResponse))
+                    }
+                }
+            } catch (throwable: Throwable) {
+                onError(throwable)
+            }
+        }
     }
 
     override fun getShopFollowingStatus(
-            shopId: Long,
-            onError: (Throwable) -> Unit,
-            onSuccessGetShopFollowingStatus: (Boolean) -> Unit
+        shopId: Long,
+        onError: (Throwable) -> Unit,
+        onSuccessGetShopFollowingStatus: (Boolean) -> Unit
     ) {
         getShopFollowingUseCase.getStatus(shopId, onError, onSuccessGetShopFollowingStatus)
     }
@@ -636,7 +788,6 @@ open class TopChatRoomPresenter @Inject constructor(
         getChatUseCase.unsubscribe()
         getTemplateChatRoomUseCase.unsubscribe()
         replyChatUseCase.unsubscribe()
-        deleteMessageListUseCase.unsubscribe()
         getShopFollowingUseCase.safeCancel()
         addToCartUseCase.unsubscribe()
         compressImageSubscription.unsubscribe()
@@ -653,15 +804,11 @@ open class TopChatRoomPresenter @Inject constructor(
         sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(thisMessageId))
     }
 
-    override fun copyVoucherCode(fromUid: String?, replyId: String, blastId: String, attachmentId: String, replyTime: String?) {
-        sendMessageWebSocket(TopChatWebSocketParam.generateParamCopyVoucherCode(thisMessageId, replyId, blastId, attachmentId, replyTime, fromUid))
-    }
-
     override fun followUnfollowShop(
-            shopId: String,
-            onError: (Throwable) -> Unit,
-            onSuccess: (isSuccess: Boolean) -> Unit,
-            action: ToggleFavouriteShopUseCase.Action?
+        shopId: String,
+        onError: (Throwable) -> Unit,
+        onSuccess: (isSuccess: Boolean) -> Unit,
+        action: ToggleFavouriteShopUseCase.Action?
     ) {
         val param = if (action != null) {
             ToggleFavouriteShopUseCase.createRequestParam(shopId, action)
@@ -669,18 +816,18 @@ open class TopChatRoomPresenter @Inject constructor(
             ToggleFavouriteShopUseCase.createRequestParam(shopId)
         }
         toggleFavouriteShopUseCase.execute(
-                param,
-                object : Subscriber<Boolean>() {
-                    override fun onCompleted() {}
+            param,
+            object : Subscriber<Boolean>() {
+                override fun onCompleted() {}
 
-                    override fun onError(e: Throwable) {
-                        onError(e)
-                    }
+                override fun onError(e: Throwable) {
+                    onError(e)
+                }
 
-                    override fun onNext(success: Boolean) {
-                        onSuccess(success)
-                    }
-                })
+                override fun onNext(success: Boolean) {
+                    onSuccess(success)
+                }
+            })
     }
 
     override fun addAttachmentPreview(sendablePreview: SendablePreview) {
@@ -693,10 +840,12 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override fun initAttachmentPreview() {
         if (attachmentsPreview.isEmpty()) return
-        view?.showAttachmentPreview(attachmentsPreview)
-        view?.updateSrwState()
-        if (view?.hasProductPreviewShown() == false) {
-            view?.focusOnReply()
+        view?.let {
+            it.showAttachmentPreview(attachmentsPreview)
+            it.updateSrwPreviewState()
+            if (!it.hasProductPreviewShown()) {
+                it.focusOnReply()
+            }
         }
     }
 
@@ -708,11 +857,17 @@ open class TopChatRoomPresenter @Inject constructor(
         if (resultProducts.isNotEmpty()) clearAttachmentPreview()
         for (resultProduct in resultProducts) {
             val productPreview = ProductPreview(
-                    id = resultProduct.productId.toString(),
-                    imageUrl = resultProduct.productImageThumbnail,
-                    name = resultProduct.name,
-                    price = resultProduct.price,
-                    url = resultProduct.productUrl
+                id = resultProduct.productId.toString(),
+                imageUrl = resultProduct.productImageThumbnail,
+                name = resultProduct.name,
+                price = resultProduct.price,
+                url = resultProduct.productUrl,
+                priceBefore = resultProduct.priceBefore,
+                dropPercentage = resultProduct.dropPercentage,
+                productFsIsActive = resultProduct.isFreeOngkirActive,
+                productFsImageUrl = resultProduct.imgUrlFreeOngkir,
+                remainingStock = resultProduct.stock
+
             )
             if (productPreview.notEnoughRequiredData()) continue
             val sendAbleProductPreview = SendableProductPreview(productPreview)
@@ -739,22 +894,22 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun loadChatRoomSettings(
-            messageId: String,
-            onSuccess: (List<Visitable<TopChatTypeFactory>>) -> Unit
+        messageId: String,
+        onSuccess: (List<Visitable<TopChatTypeFactory>>) -> Unit
     ) {
         getChatRoomSettingUseCase.execute(messageId, onSuccess)
     }
 
     override fun addToWishList(
-            productId: String,
-            userId: String,
-            wishlistActionListener: WishListActionListener
+        productId: String,
+        userId: String,
+        wishlistActionListener: WishListActionListener
     ) {
         addWishListUseCase.createObservable(productId, userId, wishlistActionListener)
     }
 
     override fun removeFromWishList(
-            productId: String, userId: String, wishListActionListener: WishListActionListener
+        productId: String, userId: String, wishListActionListener: WishListActionListener
     ) {
         removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
     }
@@ -763,24 +918,22 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override fun getOrderProgress(messageId: String) {
         orderProgressUseCase.getOrderProgress(
-                messageId,
-                ::onSuccessGetOrderProgress,
-                ::onErrorGetOrderProgress
-        )
+            messageId,
+            ::onSuccessGetOrderProgress
+        ) {}
     }
 
     override fun getStickerGroupList(chatRoom: ChatroomViewModel) {
         groupStickerUseCase.getStickerGroup(
-                chatRoom.isSeller(), ::onLoadingStickerGroup, ::onSuccessGetStickerGroup,
-                ::onErrorGetStickerGroup
-        )
+            chatRoom.isSeller(), ::onLoadingStickerGroup, ::onSuccessGetStickerGroup,
+        ) {}
     }
 
     override fun loadAttachmentData(msgId: Long, chatRoom: ChatroomViewModel) {
         if (chatRoom.hasAttachment() && msgId != 0L) {
             chatAttachmentUseCase.getAttachments(
-                    msgId, chatRoom.attachmentIds, userLocationInfo,
-                    ::onSuccessGetAttachments, ::onErrorGetAttachments
+                msgId, chatRoom.replyIDs, userLocationInfo,
+                ::onSuccessGetAttachments, ::onErrorGetAttachments
             )
         }
     }
@@ -801,61 +954,77 @@ open class TopChatRoomPresenter @Inject constructor(
         newUnreadMessage = 0
     }
 
-    override fun requestBlockPromo(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit) {
+    override fun requestBlockPromo(
+        messageId: String,
+        onSuccess: (ChatSettingsResponse) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
         chatToggleBlockChat.blockPromo(messageId, onSuccess, onError)
     }
 
-    override fun requestAllowPromo(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit) {
+    override fun requestAllowPromo(
+        messageId: String,
+        onSuccess: (ChatSettingsResponse) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
         chatToggleBlockChat.allowPromo(messageId, onSuccess, onError)
     }
 
-    override fun blockChat(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit) {
+    override fun blockChat(
+        messageId: String,
+        onSuccess: (ChatSettingsResponse) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
         chatToggleBlockChat.blockChat(messageId, onSuccess, onError)
     }
 
-    override fun unBlockChat(messageId: String, onSuccess: (ChatSettingsResponse) -> Unit, onError: (Throwable) -> Unit) {
+    override fun unBlockChat(
+        messageId: String,
+        onSuccess: (ChatSettingsResponse) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
         chatToggleBlockChat.unBlockChat(messageId, onSuccess, onError)
     }
 
     override fun getBackground() {
         chatBackgroundUseCase.getBackground(
-                ::onLoadBackgroundFromCache, ::onSuccessLoadBackground, ::onErrorLoadBackground
-        )
+            ::onLoadBackgroundFromCache, ::onSuccessLoadBackground
+        ) {}
     }
 
     override fun addProductToCart(
-            requestParams: RequestParams,
-            onSuccessAddToCart: (data: DataModel) -> Unit,
-            onError: (msg: String) -> Unit
+        requestParams: RequestParams,
+        onSuccessAddToCart: (data: DataModel) -> Unit,
+        onError: (msg: String) -> Unit
     ) {
         launchCatchError(
-                dispatchers.io,
-                block = {
-                    val atcResponse = addToCartUseCase.createObservable(requestParams)
-                            .toBlocking()
-                            .single().data
-                    withContext(dispatchers.main) {
-                        if (atcResponse.success == 1) {
-                            onSuccessAddToCart(atcResponse)
-                        } else {
-                            onError(atcResponse.message.getOrNull(0) ?: "")
-                        }
-                    }
-                },
-                onError = {
-                    withContext(dispatchers.main) {
-                        it.message?.let { errorMsg ->
-                            onError(errorMsg)
-                        }
+            dispatchers.io,
+            block = {
+                val atcResponse = addToCartUseCase.createObservable(requestParams)
+                    .toBlocking()
+                    .single().data
+                withContext(dispatchers.main) {
+                    if (atcResponse.success == 1) {
+                        onSuccessAddToCart(atcResponse)
+                    } else {
+                        onError(atcResponse.message.getOrNull(0) ?: "")
                     }
                 }
+            },
+            onError = {
+                withContext(dispatchers.main) {
+                    it.message?.let { errorMsg ->
+                        onError(errorMsg)
+                    }
+                }
+            }
         )
     }
 
     override fun addOngoingUpdateProductStock(
-            productId: String,
-            product: ProductAttachmentViewModel, adapterPosition: Int,
-            parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
+        productId: String,
+        product: ProductAttachmentViewModel, adapterPosition: Int,
+        parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
     ) {
         val result = UpdateProductStockResult(product, adapterPosition, parentMetaData)
         onGoingStockUpdate[productId] = result
@@ -863,14 +1032,14 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override fun getSmartReplyWidget(msgId: String) {
         launchCatchError(dispatchers.io,
-                {
-                    chatSrwUseCase.getSrwList(msgId).collect {
-                        _srw.postValue(it)
-                    }
-                },
-                {
-                    _srw.postValue(Resource.error(it, null))
+            {
+                chatSrwUseCase.getSrwList(msgId).collect {
+                    _srw.postValue(it)
                 }
+            },
+            {
+                _srw.postValue(Resource.error(it, null))
+            }
         )
     }
 
@@ -884,17 +1053,13 @@ open class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-    private fun onErrorLoadBackground(throwable: Throwable) {
-        throwable.printStackTrace()
-    }
-
     private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {
         this.attachments.putAll(attachments.toMap())
         view?.updateAttachmentsView(this.attachments)
     }
 
     private fun onErrorGetAttachments(
-            throwable: Throwable, errorAttachment: ArrayMap<String, Attachment>
+        throwable: Throwable, errorAttachment: ArrayMap<String, Attachment>
     ) {
         this.attachments.putAll(errorAttachment.toMap())
         view?.updateAttachmentsView(this.attachments)
@@ -903,34 +1068,35 @@ open class TopChatRoomPresenter @Inject constructor(
 
     private fun onLoadingStickerGroup(response: ChatListGroupStickerResponse) {
         view?.getChatMenuView()?.stickerMenu
-                ?.updateStickers(response.chatListGroupSticker.list)
+            ?.updateStickers(response.chatListGroupSticker.list)
     }
 
     private fun onSuccessGetStickerGroup(
-            response: ChatListGroupStickerResponse,
-            needToUpdate: List<StickerGroup>
+        response: ChatListGroupStickerResponse,
+        needToUpdate: List<StickerGroup>
     ) {
         view?.getChatMenuView()?.stickerMenu
-                ?.updateStickers(response.chatListGroupSticker.list, needToUpdate)
+            ?.updateStickers(response.chatListGroupSticker.list, needToUpdate)
     }
 
     private fun onSuccessGetOrderProgress(orderProgressResponse: OrderProgressResponse) {
         view?.renderOrderProgress(orderProgressResponse.chatOrderProgress)
     }
 
-    private fun isEnableUploadImageService(): Boolean {
+    protected open fun isEnableUploadImageService(): Boolean {
         return try {
-            remoteConfig.getBoolean(ENABLE_UPLOAD_IMAGE_SERVICE, false)
+            remoteConfig.getBoolean(ENABLE_UPLOAD_IMAGE_SERVICE, false) && !isProblematicDevice()
         } catch (ex: Exception) {
             false
         }
     }
 
-    private fun onErrorGetOrderProgress(throwable: Throwable) {}
-
-    private fun onErrorGetStickerGroup(throwable: Throwable) {}
+    private fun isProblematicDevice(): Boolean {
+        return PROBLEMATIC_DEVICE.contains(DeviceInfo.getModelName().toLowerCase())
+    }
 
     companion object {
         const val ENABLE_UPLOAD_IMAGE_SERVICE = "android_enable_topchat_upload_image_service"
+        private val PROBLEMATIC_DEVICE = listOf("iris88", "iris88_lite", "lenovo k9")
     }
 }

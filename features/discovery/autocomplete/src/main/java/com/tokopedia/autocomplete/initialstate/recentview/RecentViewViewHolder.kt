@@ -72,11 +72,7 @@ class RecentViewViewHolder(
             fun bind(item: BaseItemInitialStateSearch) {
                 itemView.autocompleteRecentViewItem?.loadImageCircle(itemView.context, item.imageUrl)
                 itemView.autocompleteRecentViewItem?.setOnClickListener {
-                    AutocompleteTracking.eventClickRecentView(
-                            (adapterPosition + 1).toString(),
-                            item
-                    )
-                    clickListener.onItemClicked(item.applink, item.url)
+                    clickListener.onRecentViewClicked(item)
                 }
             }
 

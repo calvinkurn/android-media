@@ -31,8 +31,6 @@ public interface CouponCatalogContract {
 
         void redeemCoupon(String cta, String code, String title, String description , String redeemMessage);
 
-        void checkValidation(CatalogsValueEntity item, String title, String message, int resCode);
-
         void onRealCodeReFresh(String realCode);
 
         void onRealCodeReFreshError();

@@ -2,7 +2,6 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.*
 import com.tokopedia.search.TestException
 import com.tokopedia.search.jsonToObject

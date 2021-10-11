@@ -40,7 +40,7 @@ internal class OnSuggestionLocalItemClickTest: SuggestionPresenterTestFixtures()
         val userId = "0"
 
         verify {
-            suggestionView.trackEventClickLocalKeyword(expectedEventLabel, userId)
+            suggestionView.trackEventClickLocalKeyword(expectedEventLabel, userId, item.dimension90)
             suggestionView.onClickSuggestion(item.applink)
         }
     }
@@ -63,7 +63,7 @@ internal class OnSuggestionLocalItemClickTest: SuggestionPresenterTestFixtures()
         val userId = "0"
 
         verify {
-            suggestionView.trackEventClickGlobalKeyword(expectedEventLabel, userId)
+            suggestionView.trackEventClickGlobalKeyword(expectedEventLabel, userId, item.dimension90)
             suggestionView.onClickSuggestion(item.applink)
         }
     }
@@ -79,7 +79,14 @@ internal class OnSuggestionLocalItemClickTest: SuggestionPresenterTestFixtures()
     }
 
     private fun `then verify view tracking click item product line is correct`(item: BaseSuggestionDataView) {
+        val expectedEventLabel =
+            "keyword: ${item.title} " +
+                    "- value: $keywordLocalGlobalTypedByUser " +
+                    "- applink: ${item.applink}"
+        val userId = "0"
+
         verify {
+            suggestionView.trackEventClickProductLine(item, expectedEventLabel, userId)
             suggestionView.onClickSuggestion(item.applink)
         }
     }

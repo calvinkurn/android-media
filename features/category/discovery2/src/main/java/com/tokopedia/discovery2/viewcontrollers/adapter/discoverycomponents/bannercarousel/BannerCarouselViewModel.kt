@@ -8,19 +8,19 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 
-class BannerCarouselViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class BannerCarouselViewModel(val application: Application, val component: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
     private val bannerCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val title: MutableLiveData<String> = MutableLiveData()
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
 
     init {
-        componentData.value = components
-        components.data?.let {
+        componentData.value = component
+        component.data?.let {
             if (it.isNotEmpty()) {
                 bannerCarouselList.value = DiscoveryDataMapper.mapListToComponentList(it, ComponentNames.BannerCarouselItemView.componentName,
-                        components.name, position, components.properties?.design
+                        component.name, position, component.properties?.design
                         ?: "")
-                title.value = components.properties?.bannerTitle ?: ""
+                title.value = component.properties?.bannerTitle ?: ""
             }
         }
     }
@@ -30,7 +30,7 @@ class BannerCarouselViewModel(val application: Application, val components: Comp
     fun getComponents(): LiveData<ComponentsItem> = componentData
 
     fun getLihatUrl(): String {
-        components.properties?.let {
+        component.properties?.let {
             return it.ctaApp ?: ""
         }
         return ""

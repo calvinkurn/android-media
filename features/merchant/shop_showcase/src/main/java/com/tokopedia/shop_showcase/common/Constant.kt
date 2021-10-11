@@ -59,5 +59,5 @@ object PageType {
 const val TOTAL_GENERATED_ID: Int = 10
 const val MAX_TOTAL_SHOWCASE_REGULAR_MERCHANT = 10
 const val MAX_TOTAL_SHOWCASE_PM_AND_OS = 200
-
-const val AB_TEST_ROLLOUT_ETALASE_REVAMP = "etalase_revamp_new"
+const val CARD_HEADER_ELEVATION = 16.0f
+const val CARD_HEADER_NO_ELEVATION = 0f

@@ -50,5 +50,14 @@ data class LocalizationChooseAddress(
         @SerializedName("state")
         val state: Int = 0,
         @SerializedName("state_detail")
-        val stateDetail: String = ""
+        val stateDetail: String = "",
+        @SerializedName("tokonow")
+        val tokoNow: LocalizationChooseAddressTokoNow = LocalizationChooseAddressTokoNow()
+)
+
+data class LocalizationChooseAddressTokoNow(
+        @SerializedName("shop_id")
+        val shopId: String = "",
+        @SerializedName("warehouse_id")
+        val warehouseId: String = ""
 )

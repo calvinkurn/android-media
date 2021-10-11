@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalAndMerchantRequestInvalid
 import com.tokopedia.promocheckoutmarketplace.ClearPromoDataProvider.provideClearPromoResponseFailed
 import com.tokopedia.promocheckoutmarketplace.ClearPromoDataProvider.provideClearPromoResponseSuccess
@@ -13,9 +14,7 @@ import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCu
 import com.tokopedia.promocheckoutmarketplace.data.response.ClearPromoResponse
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
-import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.spyk
@@ -58,7 +57,7 @@ class PromoCheckoutViewModelClearPromoTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         viewModel.setPromoListValue(provideCurrentUnSelectedExpandedGlobalAndMerchantPromoData())
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.clearPromo("", ValidateUsePromoRequest(), ArrayList())
@@ -76,7 +75,7 @@ class PromoCheckoutViewModelClearPromoTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         viewModel.setPromoListValue(provideCurrentUnSelectedExpandedGlobalAndMerchantPromoData())
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.clearPromo("", validateUseRequest, ArrayList())
@@ -93,7 +92,7 @@ class PromoCheckoutViewModelClearPromoTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         viewModel.setPromoListValue(provideCurrentUnSelectedCollapsedGlobalAndMerchantPromoData())
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.clearPromo("", ValidateUsePromoRequest(), ArrayList())
@@ -110,7 +109,7 @@ class PromoCheckoutViewModelClearPromoTest {
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
         viewModel.setPromoListValue(provideCurrentUnSelectedCollapsedGlobalAndMerchantPromoData())
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.clearPromo("", ValidateUsePromoRequest(), ArrayList())

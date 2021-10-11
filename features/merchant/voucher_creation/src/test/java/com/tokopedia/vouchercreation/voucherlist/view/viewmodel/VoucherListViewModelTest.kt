@@ -9,10 +9,12 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchercreation.detail.domain.usecase.VoucherDetailUseCase
+import com.tokopedia.vouchercreation.common.domain.usecase.InitiateVoucherUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetBroadCastMetaDataUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetVoucherListUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ShopBasicDataUseCase
+import com.tokopedia.vouchercreation.voucherlist.model.remote.ChatBlastSellerMetadata
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
@@ -24,6 +26,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.*
+import java.util.*
 
 @ExperimentalCoroutinesApi
 class VoucherListViewModelTest {
@@ -45,6 +48,9 @@ class VoucherListViewModelTest {
 
     @RelaxedMockK
     lateinit var getBroadCastMetaDataUseCase: GetBroadCastMetaDataUseCase
+
+    @RelaxedMockK
+    lateinit var initiateVoucherUseCase: InitiateVoucherUseCase
 
     @RelaxedMockK
     lateinit var voucherUiModel: VoucherUiModel
@@ -77,6 +83,7 @@ class VoucherListViewModelTest {
                 shopBasicDataUseCase,
                 voucherDetailUseCase,
                 getBroadCastMetaDataUseCase,
+                initiateVoucherUseCase,
                 CoroutineTestDispatchersProvider
         )
 
@@ -403,5 +410,62 @@ class VoucherListViewModelTest {
             assert(successVoucherLiveData.value is Fail)
         }
     }
+
+    @Test
+    fun `success getBroadCastMetaData`() = runBlocking {
+        with(mViewModel) {
+            coEvery {
+                getBroadCastMetaDataUseCase.executeOnBackground()
+            } returns ChatBlastSellerMetadata()
+            getBroadCastMetaData()
+            coVerify {
+                getBroadCastMetaDataUseCase.executeOnBackground()
+            }
+
+            assert(broadCastMetadata.value is Success)
+        }
+    }
+
+    @Test
+    fun `fail getBroadCastMetaData`() = runBlocking {
+        with(mViewModel) {
+            val dummyThrowable = MessageErrorException("")
+
+            coEvery {
+                getBroadCastMetaDataUseCase.executeOnBackground()
+            } throws dummyThrowable
+
+            getBroadCastMetaData()
+
+            coVerify {
+                getBroadCastMetaDataUseCase.executeOnBackground()
+            }
+
+            assert(broadCastMetadata.value is Fail)
+        }
+    }
+
+    @Test
+    fun `check whether showBroadCastChatTicker value is true after set to true`() {
+        with(mViewModel) {
+            setShowBroadCastChatTicker(true)
+            assert(getShowBroadCastChatTicker())
+        }
+    }
+
+    @Test
+    fun `check whether broadcast chat ticker is expired if given timestamp is already expired`() {
+        with(mViewModel) {
+            assert(isBroadCastChatTickerExpired(1524017252L))
+        }
+    }
+
+    @Test
+    fun `check whether broadcast chat ticker is not expired if given timestamp is not expired`() {
+        with(mViewModel) {
+            assert(!isBroadCastChatTickerExpired(Date().time))
+        }
+    }
+
 
 }

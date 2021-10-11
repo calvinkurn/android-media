@@ -6,14 +6,19 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.databinding.ItemListEmptyBinding
 import com.tokopedia.sellerorder.list.presentation.models.SomListEmptyStateUiModel
-import kotlinx.android.synthetic.main.item_list_empty.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class SomListOrderEmptyViewHolder(
-        itemView: View?,
-        private val listener: SomListEmptyStateListener
+    itemView: View,
+    private val listener: SomListEmptyStateListener
 ) : AbstractViewHolder<SomListEmptyStateUiModel>(itemView) {
 
     companion object {
@@ -27,9 +32,7 @@ class SomListOrderEmptyViewHolder(
         const val PAYLOAD_SHOW_BUTTON_CHANGES = "payload_show_button_changes"
     }
 
-    init {
-        itemView?.somEmptyStateContainer?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
-    }
+    private val binding by viewBinding<ItemListEmptyBinding>()
 
     @Suppress("NAME_SHADOWING")
     override fun bind(element: SomListEmptyStateUiModel?) {
@@ -40,9 +43,9 @@ class SomListOrderEmptyViewHolder(
             if (element.showButton) {
                 setButtonText(element.buttonText)
                 setButtonAppLink(element.buttonAppLink)
-                itemView.btnEmptyState.show()
+                binding?.btnEmptyState?.show()
             } else {
-                itemView.btnEmptyState.gone()
+                binding?.btnEmptyState?.gone()
             }
         }
     }
@@ -51,17 +54,19 @@ class SomListOrderEmptyViewHolder(
         if (payloads.isNotEmpty()) {
             val changes = payloads.firstOrNull()
             if (changes is Bundle) {
+                binding?.somEmptyStateContainer?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
                 if (changes.containsKey(PAYLOAD_TITLE_CHANGES)) setTitle(changes.getString(PAYLOAD_TITLE_CHANGES, ""))
                 if (changes.containsKey(PAYLOAD_DESCRIPTION_CHANGES)) setDescription(changes.getString(PAYLOAD_DESCRIPTION_CHANGES, ""))
                 if (changes.containsKey(PAYLOAD_ILLUSTRATION_CHANGES)) setIllustration(changes.getString(PAYLOAD_ILLUSTRATION_CHANGES, ""))
                 if ((changes.containsKey(PAYLOAD_SHOW_BUTTON_CHANGES) && changes.getBoolean(PAYLOAD_SHOW_BUTTON_CHANGES, false)) ||
-                        (!changes.containsKey(PAYLOAD_SHOW_BUTTON_CHANGES) && itemView.btnEmptyState.isVisible)) {
-                    itemView.btnEmptyState.show()
+                        (!changes.containsKey(PAYLOAD_SHOW_BUTTON_CHANGES) && binding?.btnEmptyState?.isVisible.orFalse())) {
+                    binding?.btnEmptyState?.show()
                     if (changes.containsKey(PAYLOAD_BUTTON_TEXT_CHANGES)) setButtonText(changes.getString(PAYLOAD_BUTTON_TEXT_CHANGES, ""))
                     if (changes.containsKey(PAYLOAD_BUTTON_APPLINK_CHANGES)) setButtonAppLink(changes.getString(PAYLOAD_BUTTON_APPLINK_CHANGES, ""))
                 } else {
-                    itemView.btnEmptyState.gone()
+                    binding?.btnEmptyState?.gone()
                 }
+                binding?.somEmptyStateContainer?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
                 return
             }
         }
@@ -69,25 +74,23 @@ class SomListOrderEmptyViewHolder(
     }
 
     private fun setIllustration(imageUrl: String) {
-        itemView.ivSomListEmptyStateIllustration.loadImage(imageUrl)
+        binding?.ivSomListEmptyStateIllustration?.loadImage(imageUrl)
     }
 
     private fun setTitle(title: String) {
-        itemView.tvEmptyStateTitle.text = title
+        binding?.tvEmptyStateTitle?.text = title
     }
 
     private fun setDescription(description: String) {
-        itemView.tvEmptyStateDescription.text = description
+        binding?.tvEmptyStateDescription?.text = description
     }
 
     private fun setButtonText(text: String) {
-        itemView.btnEmptyState.text = text
+        binding?.btnEmptyState?.text = text
     }
 
     private fun setButtonAppLink(appLink: String) {
-        with(itemView) {
-            btnEmptyState.setOnClickListener { context?.let { openAppLink(it, appLink) } }
-        }
+        binding?.btnEmptyState?.setOnClickListener { it?.context?.let { openAppLink(it, appLink) } }
     }
 
     private fun openAppLink(context: Context, appLink: String) {

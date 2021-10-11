@@ -109,10 +109,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return if(dynamicIconSectionDataModel.dynamicIconWrap) DynamicIconTwoRowsSectionViewHolder.LAYOUT else DynamicIconSectionViewHolder.LAYOUT
     }
 
-    override fun type(sellDataModel: SellDataModel): Int {
-        return SellViewHolder.LAYOUT
-    }
-
     override fun type(headerDataModel: HeaderDataModel): Int {
         return if (headerDataModel.isUserLogin)
             OvoViewHolder.LAYOUT
@@ -268,6 +264,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return HomeAtfErrorViewHolder.LAYOUT
     }
 
+    override fun type(featuredBrandDataModel: FeaturedBrandDataModel): Int {
+        return 0
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -290,6 +290,12 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
              * used by category widget
              */
             DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> CategoryWidgetViewHolder.LAYOUT
+
+            /**
+             * refer to 1 grid item layout {@link com.tokopedia.home.R.layout#home_dc_category_widget_v2}
+             * used by category widget v2
+             */
+            DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET_V2 -> CategoryWidgetV2ViewHolder.LAYOUT
 
             /**
              * refer to sprint product item layout {@link com.tokopedia.home.R.layout#layout_sprint_product_item}
@@ -334,7 +340,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             UseCaseIconSectionViewHolder.LAYOUT -> viewHolder = UseCaseIconSectionViewHolder(view, listener)
             DynamicIconSectionViewHolder.LAYOUT -> viewHolder = DynamicIconSectionViewHolder(view, listener)
             DynamicIconTwoRowsSectionViewHolder.LAYOUT -> viewHolder = DynamicIconTwoRowsSectionViewHolder(view, listener)
-            SellViewHolder.LAYOUT -> viewHolder = SellViewHolder(view, listener)
             OvoViewHolder.LAYOUT, OvoViewHolder.NON_LOGIN_LAYOUT -> viewHolder = OvoViewHolder(view, listener)
             RetryViewHolder.LAYOUT -> viewHolder = RetryViewHolder(view, homeFeedsListener)
             SprintSaleCarouselViewHolder.LAYOUT -> viewHolder = SprintSaleCarouselViewHolder(view, listener)
@@ -349,6 +354,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             ErrorPromptViewHolder.LAYOUT -> viewHolder = ErrorPromptViewHolder(view, listener)
             PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener)
             CategoryWidgetViewHolder.LAYOUT -> viewHolder = CategoryWidgetViewHolder(view, listener)
+            CategoryWidgetV2ViewHolder.LAYOUT -> viewHolder = CategoryWidgetV2ViewHolder(view, listener)
             BestSellerViewHolder.LAYOUT -> viewHolder = BestSellerViewHolder(view, bestSellerListener)
             ProductHighlightComponentViewHolder.LAYOUT -> viewHolder = ProductHighlightComponentViewHolder(
                     view,

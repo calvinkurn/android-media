@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBanner
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlert
+import com.tokopedia.topchat.chatroom.domain.pojo.srw.SrwBubbleUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.uimodel.*
@@ -45,5 +46,6 @@ interface TopChatTypeFactory {
     fun type(broadCastUiModel: BroadCastUiModel): Int
 
     fun type(reviewUiModel: ReviewUiModel): Int
+    fun type(srwBubbleUiModel: SrwBubbleUiModel): Int
 
 }

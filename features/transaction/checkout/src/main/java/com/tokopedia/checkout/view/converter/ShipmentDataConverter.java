@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.view.converter;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData;
@@ -171,7 +173,7 @@ public class ShipmentDataConverter {
             ShipmentCartItemModel shipmentCartItemModel = new ShipmentCartItemModel();
             shipmentCartItemModel.setDropshipperDisable(cartShipmentAddressFormData.isDropshipperDisable());
             shipmentCartItemModel.setOrderPrioritasDisable(cartShipmentAddressFormData.isOrderPrioritasDisable());
-            shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.isBlackbox());
+            shipmentCartItemModel.setBlackbox(cartShipmentAddressFormData.isBlackbox());
             shipmentCartItemModel.setHidingCourier(cartShipmentAddressFormData.isHidingCourier());
             shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
                     .get(0).getUserAddress().getAddressId());
@@ -190,6 +192,12 @@ public class ShipmentDataConverter {
             }
             setCartItemModelError(shipmentCartItemModel);
             shipmentCartItemModel.setEligibleNewShippingExperience(cartShipmentAddressFormData.isEligibleNewShippingExperience());
+            shipmentCartItemModel.setDisableChangeCourier(groupShop.isDisableChangeCourier());
+            shipmentCartItemModel.setAutoCourierSelection(groupShop.getAutoCourierSelection());
+            shipmentCartItemModel.setHasGeolocation(!TextUtils.isEmpty(userAddress.getLongitude()) && !TextUtils.isEmpty(userAddress.getLatitude()));
+            shipmentCartItemModel.setCourierSelectionErrorTitle(groupShop.getCourierSelectionErrorData().getTitle());
+            shipmentCartItemModel.setCourierSelectionErrorDescription(groupShop.getCourierSelectionErrorData().getDescription());
+            shipmentCartItemModel.setTokoNow(groupShop.getShop().isTokoNow());
             shipmentCartItemModels.add(shipmentCartItemModel);
         }
 
@@ -200,6 +208,7 @@ public class ShipmentDataConverter {
         if (shipmentCartItemModel.isAllItemError()) {
             for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
                 cartItemModel.setError(true);
+                cartItemModel.setShopError(true);
             }
         }
     }
@@ -213,7 +222,10 @@ public class ShipmentDataConverter {
         if (shipmentCartItemModel.isError()) {
             shipmentCartItemModel.setAllItemError(true);
         }
+        shipmentCartItemModel.setHasUnblockingError(groupShop.getHasUnblockingError());
+        shipmentCartItemModel.setUnblockingErrorMessage(groupShop.getUnblockingErrorMessage());
         shipmentCartItemModel.setErrorTitle(groupShop.getErrorMessage());
+        shipmentCartItemModel.setFirstProductErrorIndex(groupShop.getFirstProductErrorIndex());
         if (orderIndex > 0) {
             shipmentCartItemModel.setOrderNumber(orderIndex);
         }
@@ -245,7 +257,7 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setInsurance(groupShop.isUseInsurance());
         shipmentCartItemModel.setHasPromoList(groupShop.isHasPromoList());
         shipmentCartItemModel.setSaveStateFlag(groupShop.isSaveStateFlag());
-        shipmentCartItemModel.setIsLeasingProduct(groupShop.isLeasingProduct());
+        shipmentCartItemModel.setLeasingProduct(groupShop.isLeasingProduct());
         shipmentCartItemModel.setBookingFee(groupShop.getBookingFee());
         shipmentCartItemModel.setListPromoCodes(groupShop.getListPromoCodes());
 
@@ -293,6 +305,7 @@ public class ShipmentDataConverter {
         cartItemModel.setQuantity(product.getProductQuantity());
         cartItemModel.setWeight(product.getProductWeight());
         cartItemModel.setWeightFmt(product.getProductWeightFmt());
+        cartItemModel.setWeightActual(product.getProductWeightActual());
         cartItemModel.setNoteToSeller(product.getProductNotes());
         cartItemModel.setPreOrder(product.isProductIsPreorder());
         cartItemModel.setPreOrderInfo(product.getProductPreOrderInfo());

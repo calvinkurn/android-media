@@ -12,9 +12,11 @@ public class GlobalNavConstant {
     public class Analytics {
 
         static final String CLICK_HOMEPAGE = "clickHomepage";
-        static final String CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer";
+        static final String CLICK_NAVIGATION_MENU = "clickNavigationMenu";
 
         static final String HOME_PAGE = "homepage";
+
+        public static final String BOTTOM_NAV = "bottom nav";
 
         public static final String BOTTOM = "bottom";
 
@@ -52,6 +54,8 @@ public class GlobalNavConstant {
         public static final String EVENT_CURRENTSITE = "currentsite";
         public static final String EVENT_BUSINESSUNIT = "businessUnit";
         public static final String EVENT_USERID = "userId";
+        public static final String EVENT_PAGE_SOURCE = "pageSource";
+        public static final String VALUE_PAGE_SOURCE_HOME = "null.%s.null.null";
 
         public static final String EVENT_CURRENTSITE_VALUE = "tokopediamarketplace";
         public static final String EVENT_BUSINESSUNIT_VALUE = "home & browse";

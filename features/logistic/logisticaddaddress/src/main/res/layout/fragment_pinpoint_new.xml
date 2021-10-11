@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/rl_map_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/dp_80">
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/map_views"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:id="@+id/pointer_0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/pointer" />
+
+            <ImageView
+                android:id="@+id/icon_pointer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/pointer_0"
+                android:layout_centerHorizontal="true"
+                android:contentDescription="@string/pointer"
+                app:srcCompat="@drawable/ic_green_pointer" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/maps_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/layout_botoomsheet_loc">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/img_maps_empty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="null"/>
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/ic_location"
+                android:layout_width="@dimen/unify_space_32"
+                android:layout_height="@dimen/unify_space_40"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                app:icon_name="LOCATION_FILLED"/>
+
+        </RelativeLayout>
+
+
+
+        <LinearLayout
+            android:id="@+id/btn_horizonal_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            android:orientation="horizontal"
+            android:layout_above="@id/layout_botoomsheet_loc"
+            android:visibility="visible">
+
+            <com.tokopedia.unifycomponents.ChipsUnify
+                android:id="@+id/chips_current_loc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/unify_space_12"
+                app:centerText="true"
+                app:chipSize="medium"
+                app:chipText="Gunakan Lokasi Saat Ini"
+                app:chipType="normal" />
+
+            <com.tokopedia.unifycomponents.ChipsUnify
+                android:id="@+id/chips_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginEnd="@dimen/unify_space_12"
+                app:centerText="true"
+                app:chipSize="medium"
+                app:chipText="Cari Ulang"
+                app:chipType="normal" />
+
+        </LinearLayout>
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/layout_botoomsheet_loc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+            <include
+                android:id="@+id/bottomsheet_location"
+                layout="@layout/bottomsheet_choose_location" />
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    </RelativeLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

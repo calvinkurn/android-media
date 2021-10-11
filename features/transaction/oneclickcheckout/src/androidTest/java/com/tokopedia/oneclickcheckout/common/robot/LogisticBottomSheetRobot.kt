@@ -9,7 +9,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.oneclickcheckout.R
-import com.tokopedia.oneclickcheckout.preference.edit.view.address.AddressListItemViewHolder
+import com.tokopedia.oneclickcheckout.address.AddressListItemViewHolder
 import org.hamcrest.Matcher
 
 class AddressBottomSheetRobot {
@@ -24,6 +24,8 @@ class AddressBottomSheetRobot {
                 view.performClick()
             }
         }))
+        // Wait for bottom sheet to close
+        Thread.sleep(1000)
     }
 }
 
@@ -31,6 +33,8 @@ class CourierBottomSheetRobot {
 
     fun chooseCourierWithText(text: String) {
         onView(withText(text)).perform(click())
+        // Wait for bottom sheet to close
+        Thread.sleep(1000)
     }
 }
 
@@ -38,5 +42,7 @@ class DurationBottomSheetRobot {
 
     fun chooseDurationWithText(text: String) {
         onView(withText(text)).perform(click())
+        // Wait for bottom sheet to close
+        Thread.sleep(1000)
     }
 }

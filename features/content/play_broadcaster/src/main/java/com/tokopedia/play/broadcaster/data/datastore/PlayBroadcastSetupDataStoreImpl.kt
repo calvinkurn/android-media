@@ -20,6 +20,7 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
         private val titleDataStore: TitleDataStore,
         private val tagsDataStore: TagsDataStore,
         private val scheduleDataStore: BroadcastScheduleDataStore,
+        private val interactiveDataStore: InteractiveDataStore
 ) : PlayBroadcastSetupDataStore, TitleDataStore by titleDataStore, TagsDataStore by tagsDataStore {
 
     override fun overwrite(dataStore: PlayBroadcastSetupDataStore, modeExclusion: List<OverwriteMode>) {
@@ -52,6 +53,10 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
 
     override fun getBroadcastScheduleDataStore(): BroadcastScheduleDataStore {
         return scheduleDataStore
+    }
+
+    override fun getInteractiveDataStore(): InteractiveDataStore {
+        return interactiveDataStore
     }
 
     private fun overwriteProductDataStore(dataStore: ProductDataStore) {
@@ -91,7 +96,7 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
         productDataStore.selectProduct(product, isSelected)
     }
 
-    override fun isProductSelected(productId: Long): Boolean {
+    override fun isProductSelected(productId: String): Boolean {
         return productDataStore.isProductSelected(productId)
     }
 
@@ -101,7 +106,6 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
 
     override suspend fun uploadSelectedProducts(channelId: String): NetworkResult<Unit> {
         val uploadResult = productDataStore.uploadSelectedProducts(channelId)
-                .map { Unit }
         if (uploadResult is NetworkResult.Success) validateCover()
         return uploadResult
     }
@@ -177,5 +181,44 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
 
     override suspend fun deleteBroadcastSchedule(channelId: String): NetworkResult<Unit> {
         return scheduleDataStore.deleteBroadcastSchedule(channelId)
+    }
+
+    /**
+     * Interactive
+     */
+    override fun getInteractiveId(): String {
+        return interactiveDataStore.getInteractiveId()
+    }
+
+    override fun getInteractiveTitle(): String {
+        return interactiveDataStore.getInteractiveTitle()
+    }
+
+    override fun getSelectedInteractiveDuration(): Long {
+        return interactiveDataStore.getSelectedInteractiveDuration()
+    }
+
+    override fun getInteractiveDurations(): List<Long> {
+        return interactiveDataStore.getInteractiveDurations()
+    }
+
+    override fun setInteractiveId(id: String) {
+        interactiveDataStore.setInteractiveId(id)
+    }
+
+    override fun setInteractiveTitle(title: String) {
+        interactiveDataStore.setInteractiveTitle(title)
+    }
+
+    override fun setSelectedInteractiveDuration(durationInMs: Long) {
+        interactiveDataStore.setSelectedInteractiveDuration(durationInMs)
+    }
+
+    override fun setRemainingLiveDuration(durationInMs: Long) {
+        interactiveDataStore.setRemainingLiveDuration(durationInMs)
+    }
+
+    override fun setInteractiveDurations(durations: List<Long>) {
+        interactiveDataStore.setInteractiveDurations(durations)
     }
 }

@@ -77,71 +77,6 @@ class CatalogListItemViewModelTest {
         }
     }
 
-
-    @Test
-    fun `start Validate Coupon success case`() {
-        val observer = mockk<Observer<ValidateMessageDialog>>()
-        val item = mockk<CatalogsValueEntity> {
-            every { id } returns 1
-        }
-
-        val couponEntity = mockk<ValidateCouponEntity> {
-            every { messageSuccess } returns "success message"
-            every { messageTitle } returns "success title"
-        }
-        coEvery { repository.startValidateCoupon(1) } returns mockk {
-            every { validateCoupon } returns couponEntity
-        }
-        viewModel.startValidateCouponLiveData.observeForever(observer)
-        viewModel.startValidateCoupon(item)
-
-        verify(exactly = 1) {
-            observer.onChanged(any())
-        }
-
-        assert(couponEntity.messageSuccess == viewModel.startValidateCouponLiveData.value?.desc)
-        assert(couponEntity.messageTitle == viewModel.startValidateCouponLiveData.value?.title)
-    }
-
-    @Test
-    fun `start Validate Coupon error case`() {
-        val observer = mockk<Observer<ValidateMessageDialog>>()
-        val item = mockk<CatalogsValueEntity> {
-            every { id } returns 1
-        }
-
-        coEvery { repository.startValidateCoupon(1) } throws mockk<MessageErrorException> {
-            every { message } returns "success title|success message|300"
-        }
-        viewModel.startValidateCouponLiveData.observeForever(observer)
-        viewModel.startValidateCoupon(item)
-
-        verify(exactly = 1) {
-            observer.onChanged(any())
-        }
-
-        assert("success message" == viewModel.startValidateCouponLiveData.value?.desc)
-        assert("success title" == viewModel.startValidateCouponLiveData.value?.title)
-    }
-
-    @Test
-    fun `start Validate Coupon error case with wrong message`() {
-        val observer = mockk<Observer<ValidateMessageDialog>>()
-        val item = mockk<CatalogsValueEntity> {
-            every { id } returns 1
-        }
-
-        coEvery { repository.startValidateCoupon(1) } throws mockk<MessageErrorException> {
-            every { message } returns "success title|success message"
-        }
-        viewModel.startValidateCouponLiveData.observeForever(observer)
-        viewModel.startValidateCoupon(item)
-
-        verify(exactly = 0) {
-            observer.onChanged(any())
-        }
-    }
-
     @Test
     fun `redeem Coupon success`() {
         val observer = mockk<Observer<String>>()
@@ -175,16 +110,10 @@ class CatalogListItemViewModelTest {
         val item = mockk<CatalogsValueEntity>() {
             every { id } returns 1
         }
-        val data = mockk<RedeemCouponEntity> {
-            every { coupons?.get(0) } returns mockk {
-                every { code } returns "200"
-                every { cta } returns "cta"
-                every { title } returns "title"
-                every { description } returns "description"
-
-            }
-            every { redeemMessage } returns "claim success"
-        }
+        val dummyCouponData = ArrayList<CouponDetailEntity>()
+        val couponDetailEntity = CouponDetailEntity(code = "200",cta = "cta" ,title = "title" , description = "description")
+        dummyCouponData.add(couponDetailEntity)
+        val data = RedeemCouponEntity(coupons=dummyCouponData,redeemMessage = "claim success")
         coEvery { repository.startSaveCoupon(1) } returns mockk {
             every { hachikoRedeem } returns data
         }
@@ -208,8 +137,11 @@ class CatalogListItemViewModelTest {
             every { id } returns 1
         }
 
-        coEvery { repository.startSaveCoupon(1) } throws mockk<MessageErrorException> {
-            every { message } returns "title|message|300"
+        coEvery { repository.startSaveCoupon(1) } throws mockk<CatalogGqlError> {
+            every { messageErrorException } returns  mockk{
+                every { message } returns "message"
+            }
+            every { developerMessage } returns  "title|message|300"
         }
         viewModel.startSaveCouponLiveData.observeForever(observer)
         viewModel.startSaveCoupon(item)
@@ -218,9 +150,7 @@ class CatalogListItemViewModelTest {
 
         val result = (viewModel.startSaveCouponLiveData.value as ValidationError<*, *>).data as ValidateMessageDialog
         assert(result.desc == "message")
-        assert(result.item == item)
         assert(result.messageCode == 300)
-        assert(result.title == "title")
     }
 
     @Test

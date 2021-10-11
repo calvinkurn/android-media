@@ -106,7 +106,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 id = index.toString(),
                 uiData = PromoListItemUiModel.UiData().apply {
                     uniqueId = couponItem.uniqueId
-                    shopId = couponItem.shopId
+                    shopId = couponItem.shopId.toInt()
                     title = couponItem.title
                     subTitle = couponItem.expiryInfo
                     benefitAmount = couponItem.benefitAmount
@@ -149,6 +149,18 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     isAttempted = couponItem.isAttempted
                     isCausingOtherPromoClash = false
                 }
+        )
+    }
+
+    fun mapErrorState(errorPage: ErrorPage): PromoErrorStateUiModel {
+        return PromoErrorStateUiModel(
+            uiData = PromoErrorStateUiModel.UiData().apply {
+                imageUrl = errorPage.img
+                title = errorPage.title
+                description = errorPage.desc
+                buttonText = errorPage.button.text
+                buttonDestination = errorPage.button.destination
+            }
         )
     }
 

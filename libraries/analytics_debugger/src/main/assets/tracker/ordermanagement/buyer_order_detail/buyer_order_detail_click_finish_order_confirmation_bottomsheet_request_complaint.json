@@ -1,0 +1,15 @@
+{
+  "readme": "Revamped Buyer Order Detail - click on \"Ajukan Komplain\" action button on finish order confirmation bottomsheet",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickPurchaseList",
+      "eventAction": "click ajukan komplain on finished order confirmation",
+      "eventCategory": "my purchase list detail - mp",
+      "eventLabel": "\\d{1,} - \\d{1,}",
+      "businessUnit": "Seller Order Management",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".{1,}"
+    }
+  ]
+}

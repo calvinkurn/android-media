@@ -24,9 +24,7 @@ object GMParamTracker {
     const val LABEL_SHOP_INFO_LEARN_MORE= "shop info - learn more"
 
     object ScreenName {
-        const val PM_UPGRADE_SHOP = "Power Merchant - Upgrade Tokomu"
-        const val PM_CANCEL_QUESTIONNAIRE = "Power Merchant Questionnaire Q"
-        const val PM_TERMS_AND_CONDITION_PAGE = "Power Merchant - T&C Page"
+        const val PM_SUBSCRIBE = "Power Merchant Subscribe"
     }
 
     object Category {

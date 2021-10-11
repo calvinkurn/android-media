@@ -15,11 +15,6 @@ object Constant {
         const val RECTANGLE_DESIGN = "v2"
     }
 
-    object BADGE_URL {
-        const val OFFICIAL_STORE_URL =  "https://ecs7.tokopedia.net/img/official_store_badge.png"
-        const val POWER_MERCHANT_URL = "https://ecs7.tokopedia.net/img/power_merchant_badge.png"
-    }
-
     object TOP_NAV_BUTTON {
         const val BACK_BUTTON = "Back Button"
         const val SEARCH_BAR = "Search Bar"
@@ -31,10 +26,6 @@ object Constant {
     object ProductTemplate {
         const val GRID =  "grid"
         const val LIST = "list"
-    }
-
-    object StaticFontColor{
-        const val FONT_COLOR =  "#03AC0E"
     }
 
     object ProductCardModel{
@@ -63,11 +54,15 @@ object Constant {
         const val RPC_USER_LAT = "rpc_UserLat"
         const val RPC_USER_LONG = "rpc_UserLong"
         const val RPC_USER_POST_CODE = "rpc_UserPostCode"
+        const val RPC_USER_WAREHOUSE_ID = "rpc_UserWarehouseId"
     }
 
     object ChooseAddressGTMSSource{
         const val HOST_SOURCE = "discovery"
         const val HOST_TRACKING_SOURCE = "discovery page"
+
+        const val CATEGORY_HOST_SOURCE = "category"
+        const val CATEGORY_HOST_TRACKING_SOURCE = "category page"
     }
 
     const val LABEL_FULFILLMENT = "fulfillment"

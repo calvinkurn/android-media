@@ -21,6 +21,7 @@ import com.tokopedia.unifycomponents.TabsUnify
 
 private const val TAB_START_PADDING = 20
 private const val SHOULD_HIDE_L1 = false
+private const val SOURCE = "best-seller"
 
 class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         AbstractViewHolder(itemView, fragment.viewLifecycleOwner),
@@ -86,7 +87,8 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
                     .getTabItemData(it)?.filterValue ?: "",
                     this,
                     this,
-                    SHOULD_HIDE_L1)
+                    SHOULD_HIDE_L1,
+                    source = SOURCE)
                     .show(fragment.childFragmentManager, "")
         }
     }

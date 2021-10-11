@@ -5,12 +5,14 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
+import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.smartbills.analytics.SmartBillsAnalytics
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -60,6 +62,12 @@ class SmartBillsModule {
         return SmartBillsAnalytics()
     }
 
+    @SmartBillsScope
+    @Provides
+    fun provideAnalyticsCommon(): CommonTopupBillsAnalytics {
+        return CommonTopupBillsAnalytics()
+    }
+
     @Provides
     @SmartBillsScope
     fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
@@ -74,11 +82,11 @@ class SmartBillsModule {
                             chuckerInterceptor: ChuckerInterceptor): MutableList<Interceptor> {
         val listInterceptor = mutableListOf<Interceptor>()
         listInterceptor.add(fingerprintInterceptor)
-        listInterceptor.add(httpLoggingInterceptor)
         listInterceptor.add(digitalInterceptor)
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             listInterceptor.add(chuckerInterceptor)
+            listInterceptor.add(httpLoggingInterceptor)
         }
         return listInterceptor
     }
@@ -90,5 +98,11 @@ class SmartBillsModule {
         return RestRequestInteractor.getInstance().restRepository.apply {
             updateInterceptors(interceptors, context)
         }
+    }
+
+    @Provides
+    @SmartBillsScope
+    fun provideRemoteConfig(@ApplicationContext context: Context): FirebaseRemoteConfigImpl {
+        return FirebaseRemoteConfigImpl(context)
     }
 }

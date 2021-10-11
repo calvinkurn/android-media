@@ -15,6 +15,7 @@ final public class GraphqlResponseInternal {
     private ArrayList<Integer> indexOfEmptyCached;
     private String mBeCache;
     private String queryHash;
+    private int httpStatusCode;
 
     public GraphqlResponseInternal(JsonArray originalResponse, boolean isCached) {
         this.originalResponse = originalResponse;
@@ -43,6 +44,14 @@ final public class GraphqlResponseInternal {
 
     public JsonArray getOriginalResponse() {
         return originalResponse;
+    }
+
+    public int getHttpStatusCode() {
+        return httpStatusCode;
+    }
+
+    public void setHttpStatusCode(int httpStatusCode) {
+        this.httpStatusCode = httpStatusCode;
     }
 
     public boolean isCached() {

@@ -48,10 +48,13 @@ class WidgetRecommendationItemAdapter(
                 } else {
                     val dp24 = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
                     tvShcRecommendationItem.setUnifyDrawableEnd(IconUnify.CHEVRON_RIGHT, width = dp24, height = dp24)
-                    setOnClickListener {
+                }
+
+                setOnClickListener {
+                    if (item.appLink.isNotBlank()) {
                         RouteManager.route(context, item.appLink)
-                        onItemClick(item)
                     }
+                    onItemClick(item)
                 }
             }
         }
@@ -59,19 +62,19 @@ class WidgetRecommendationItemAdapter(
         private fun setupIconType(item: RecommendationItemUiModel) = with(itemView) {
             when (item.type) {
                 RecommendationItemUiModel.TYPE_POSITIVE -> {
-                    val iconColor = context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)
+                    val iconColor = context.getResColor(R.color.shc_static_g400_dms)
                     icShcRecommendationItemType.setImage(newIconId = IconUnify.CHECK, newLightEnable = iconColor)
                     icShcRecommendationItemType.setBackgroundResource(R.drawable.bg_recommendation_positive)
                 }
                 RecommendationItemUiModel.TYPE_NEGATIVE -> {
-                    val iconColor = context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_R500)
+                    val iconColor = context.getResColor(R.color.shc_static_r500_dms)
                     icShcRecommendationItemType.setImage(newIconId = IconUnify.WARNING, newLightEnable = iconColor)
                     icShcRecommendationItemType.setBackgroundResource(R.drawable.bg_recommendation_negative)
                     val padding = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
                     icShcRecommendationItemType.setPadding(padding, padding, padding, padding)
                 }
                 else -> {
-                    val iconColor = context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                    val iconColor = context.getResColor(R.color.shc_static_n700_68_dms)
                     icShcRecommendationItemType.setImage(newIconId = IconUnify.INFORMATION, newLightEnable = iconColor)
                     icShcRecommendationItemType.setBackgroundResource(R.drawable.bg_recommendation_no_data)
                     val padding = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)

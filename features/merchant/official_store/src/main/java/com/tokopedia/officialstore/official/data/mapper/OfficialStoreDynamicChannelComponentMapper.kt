@@ -13,18 +13,20 @@ object OfficialStoreDynamicChannelComponentMapper {
                 style = ChannelStyle.ChannelOS,
                 name = channel.name,
                 layout = channel.layout,
+                widgetParam = channel.widgetParam,
+                contextualInfo = channel.contextualInfo,
                 verticalPosition = verticalPosition,
                 channelHeader = ChannelHeader(
                         channel.header?.id.toString(),
                         channel.header?.name?:"",
-                        "",
+                        channel.header?.subtitle?:"",
                         channel.header?.expiredTime?:"",
                         channel.header?.serverTime?:0,
                         channel.header?.applink?:"",
                         channel.header?.url?:"",
                         channel.header?.backColor?:"",
                         channel.header?.backImage?:"",
-                        ""
+                        channel.header?.textColor?:""
                 ),
                 channelBanner = ChannelBanner(
                         id = channel.banner?.id.toString(),
@@ -84,7 +86,10 @@ object OfficialStoreDynamicChannelComponentMapper {
                                         type = label.type,
                                         url = label.imageUrl
                                 )
-                            }
+                            },
+                            backColor = it.backColor,
+                            productImageUrl = it.productImageUrl,
+                            benefit = ChannelBenefit(it.benefit.type, it.benefit.value)
                     )
                 }
         )

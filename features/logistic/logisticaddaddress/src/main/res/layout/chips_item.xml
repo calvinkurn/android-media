@@ -13,6 +13,7 @@
         android:paddingBottom="@dimen/dp_10"
         android:paddingStart="@dimen/dp_12"
         android:paddingEnd="@dimen/dp_8"
+        android:layout_marginStart="@dimen/unify_space_12"
         android:background="@drawable/bg_chips_item_layout" />
 
 </RelativeLayout>

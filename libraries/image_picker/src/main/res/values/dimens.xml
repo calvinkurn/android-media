@@ -4,6 +4,8 @@
     <dimen name="image_picker_thumbnail_inner_width">72dp</dimen>
     <dimen name="image_picker_thumbnail_outer_width">80dp</dimen>
 
+    <dimen name="image_editor_rounded">8dp</dimen>
+
     <dimen name="image_editor_main_height">64dp</dimen>
     <dimen name="image_editor_thumbnail_width">72dp</dimen>
     <dimen name="image_editor_control_height">80dp</dimen>

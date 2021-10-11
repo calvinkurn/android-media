@@ -942,7 +942,73 @@ class LoginRegisterAnalytics @Inject constructor(
         ))
     }
 
+    fun eventSuccessLoginFromChooseAccount(actionLoginMethod: String, isFromRegister: Boolean) {
+        if (isFromRegister) {
+            if (actionLoginMethod == UserSessionInterface.LOGIN_METHOD_FACEBOOK) {
+                TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                        Event.CLICK_REGISTER,
+                        Category.REGISTER_PAGE,
+                        Action.CLICK_ON_BUTTON_FACEBOOK,
+                        Label.REGISTER_SUCCESS))
+            }
+        } else {
+            // old tracker from choose account flow
+            TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                    EVENT_CLICK_LOGIN,
+                    Category.LOGIN_WITH_PHONE,
+                    Action.LOGIN_SUCCESS,
+                    Label.TOKOCASH
+            ))
+        }
+    }
+
+    /* Tracker no.9 */
+    fun trackClickBiometricLoginBtn(){
+        val data = TrackAppUtils.gtmData(
+            EVENT_CLICK_LOGIN,
+            CATEGORY_LOGIN_PAGE,
+            ACTION_CLICK_LOGIN_FINGERPRINT,
+            "click")
+
+        data[KEY_BUSINESS_UNIT] = BUSSINESS_UNIT
+        data[KEY_CURRENT_SITE] = CURRENT_SITE
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    /* Tracker no.5 */
+    fun trackOnLoginFingerprintSuccess(){
+        val data = TrackAppUtils.gtmData(
+            EVENT_CLICK_LOGIN,
+            CATEGORY_LOGIN_PAGE,
+            ACTION_CLICK_LOGIN_FINGERPRINT,
+            LABEL_SUCCESS)
+
+        data[KEY_BUSINESS_UNIT] = BUSSINESS_UNIT
+        data[KEY_CURRENT_SITE] = CURRENT_SITE
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    /* Tracker no.1 - Failed */
+    fun trackOnLoginFingerprintFailed(errMsg: String){
+        val data = TrackAppUtils.gtmData(
+            EVENT_CLICK_LOGIN,
+            CATEGORY_LOGIN_PAGE,
+            ACTION_CLICK_LOGIN_FINGERPRINT,
+            "$LABEL_FAILED - $errMsg")
+
+        data[KEY_BUSINESS_UNIT] = BUSSINESS_UNIT
+        data[KEY_CURRENT_SITE] = CURRENT_SITE
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
     companion object {
+
+        private const val KEY_BUSINESS_UNIT = "businessUnit"
+        private const val KEY_CURRENT_SITE = "currentSite"
+
+        private const val BUSSINESS_UNIT = "user platform"
+        private const val CURRENT_SITE = "tokopediamarketplace"
+
 
         val SCREEN_LOGIN = "Login page"
         val SCREEN_ACCOUNT_ACTIVATION = "Account Activation Page"
@@ -970,6 +1036,7 @@ class LoginRegisterAnalytics @Inject constructor(
         private val CATEGORY_LOGIN_PAGE = "login page"
         private val CATEGORY_LOGIN_PAGE_SMART_LOCK = "login page smart lock"
 
+        const val ACTION_CLICK_LOGIN_FINGERPRINT = "click on masuk dengan fingerprint"
 
         private val ACTION_REGISTER = "Register"
         private val ACTION_LOGIN_ERROR = "Login Error"
@@ -1005,8 +1072,28 @@ class LoginRegisterAnalytics @Inject constructor(
         private val LABEL_BEBAS_ONGKIR = "bebas ongkir"
         private val LABEL_LOGIN_SUCCESS = "login success"
         private val LABEL_FAILED = "failed - "
+        private val LABEL_SUCCESS = "success"
 
         val GOOGLE = "google"
         val FACEBOOK = "facebook"
+
+        object Event {
+            const val CLICK_REGISTER = "clickRegister"
+        }
+
+        object Category {
+            const val LOGIN_WITH_PHONE = "login with phone"
+            const val REGISTER_PAGE = "register page"
+        }
+
+        object Action {
+            const val LOGIN_SUCCESS = "login success"
+            const val CLICK_ON_BUTTON_FACEBOOK = "click on button facebook"
+        }
+
+        object Label {
+            const val TOKOCASH = "Tokocash"
+            const val REGISTER_SUCCESS = "register success"
+        }
     }
 }

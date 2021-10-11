@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailMotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/containerBuyerOrderDetail"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layoutDescription="@xml/fragment_buyer_order_detail_scene">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderBuyerOrderDetail"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:alpha="0"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbarBuyerOrderDetail" />
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/toolbarBuyerOrderDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_title="@string/buyer_order_detail_toolbar_title" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/globalErrorBuyerOrderDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent" />
+
+    <com.tokopedia.empty_state.EmptyStateUnify
+        android:id="@+id/emptyStateBuyerOrderDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshBuyerOrderDetail"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl0"
+        android:alpha="0"
+        app:layout_constraintBottom_toTopOf="@id/containerActionButtons"
+        app:layout_constraintTop_toBottomOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvBuyerOrderDetail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            android:paddingBottom="14dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailStickyActionButton
+        android:id="@+id/containerActionButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:alpha="0"
+        app:layout_constraintTop_toBottomOf="parent" />
+
+</com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailMotionLayout>

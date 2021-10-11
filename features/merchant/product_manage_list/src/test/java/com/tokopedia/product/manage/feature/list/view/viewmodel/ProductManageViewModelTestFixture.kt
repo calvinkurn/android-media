@@ -12,6 +12,7 @@ import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCas
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
@@ -106,5 +107,13 @@ open class ProductManageViewModelTestFixture {
                 getAdminInfoShopLocationUseCase,
                 CoroutineTestDispatchersProvider
         )
+    }
+
+    protected fun createFilterOptions(page: Int): MutableList<FilterOption> {
+        val selectedFilter = viewModel.selectedFilterAndSort.value
+        val filterOptions = selectedFilter?.filterOptions.orEmpty().toMutableList()
+
+        filterOptions.add(FilterOption.FilterByPage(page))
+        return filterOptions
     }
 }

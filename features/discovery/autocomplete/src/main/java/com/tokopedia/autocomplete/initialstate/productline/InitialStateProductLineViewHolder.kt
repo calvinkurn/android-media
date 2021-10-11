@@ -118,7 +118,7 @@ class InitialStateProductLineViewHolder(
 
     private fun setListener(item: BaseItemInitialStateSearch) {
         itemView.autocompleteProductItem?.setOnClickListener {
-            clickListener.onItemClicked(item.applink, item.url)
+            clickListener.onProductLineClicked(item)
         }
     }
 }

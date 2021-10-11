@@ -12,10 +12,13 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.LocalLoad
 
@@ -28,9 +31,10 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     private lateinit var mProductCarouselComponentViewModel: ProductCardCarouselViewModel
     private val carouselRecyclerViewDecorator = CarouselProductCardItemDecorator()
     private var carouselEmptyState: LocalLoad? = null
+    private var errorHolder: FrameLayout = itemView.findViewById(R.id.filter_error_view)
 
     init {
-        linearLayoutManager.initialPrefetchItemCount = 4
+        linearLayoutManager.initialPrefetchItemCount = PREFETCH_ITEM_COUNT
         mProductCarouselRecyclerView.layoutManager = linearLayoutManager
         mDiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment)
         mDiscoveryRecycleAdapter.setHasStableIds(true)
@@ -41,7 +45,12 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mProductCarouselComponentViewModel = discoveryBaseViewModel as ProductCardCarouselViewModel
         getSubComponent().inject(mProductCarouselComponentViewModel)
-        addShimmer()
+        if (mDiscoveryRecycleAdapter.itemCount == 0 || mProductCarouselComponentViewModel.getProductList().isNullOrEmpty()) {
+            addShimmer()
+        }
+        mProductCarouselRecyclerView.show()
+        carouselEmptyState?.hide()
+        errorHolder.gone()
         addDefaultItemDecorator()
         handleCarouselPagination()
     }
@@ -103,6 +112,15 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
             mProductCarouselComponentViewModel.getProductLoadState().observe(lifecycle, {
                 if (it) handleErrorState()
             })
+            mProductCarouselComponentViewModel.atcFailed.observe(lifecycle, { position ->
+                if (position >= 0) {
+                    mDiscoveryRecycleAdapter.getViewModelAtPosition(position)?.let { discoveryBaseViewModel ->
+                        if (discoveryBaseViewModel is MasterProductCardItemViewModel) {
+                            discoveryBaseViewModel.handleATCFailed()
+                        }
+                    }
+                }
+            })
         }
     }
 
@@ -119,6 +137,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
             mProductCarouselComponentViewModel.getProductCardMaxHeight().removeObservers(it)
             mProductCarouselComponentViewModel.getProductLoadState().removeObservers(it)
             mProductCarouselComponentViewModel.getProductCardHeaderData().removeObservers(it)
+            mProductCarouselComponentViewModel.atcFailed.removeObservers(it)
         }
     }
 
@@ -135,13 +154,30 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         if (mHeaderView.childCount > 0)
             mHeaderView.removeAllViews()
 
-        carouselEmptyState?.run {
-            title?.text = context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
-            description?.text = context?.getString(R.string.discovery_product_empty_state_description).orEmpty()
-            refreshBtn?.setOnClickListener {
-                reloadComponent()
+        if (mProductCarouselComponentViewModel.getProductList() == null) {
+            carouselEmptyState?.run {
+                title?.text = context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
+                description?.text = context?.getString(R.string.discovery_product_empty_state_description).orEmpty()
+                refreshBtn?.setOnClickListener {
+                    reloadComponent()
+                }
+                carouselEmptyState?.visible()
+                mProductCarouselRecyclerView.gone()
+                errorHolder.gone()
             }
-            carouselEmptyState?.visible()
+        } else if (mProductCarouselComponentViewModel.getProductList()?.isEmpty() == true
+            && mProductCarouselComponentViewModel.areFitterApplied()) {
+            if (errorHolder.childCount > 0) {
+                errorHolder.removeAllViews()
+            }
+            errorHolder.addView(
+                CustomViewCreator.getCustomViewObject(
+                    itemView.context, ComponentsList.ProductListEmptyState,
+                    mProductCarouselComponentViewModel.getErrorStateComponent(), fragment
+                )
+            )
+            errorHolder.show()
+            carouselEmptyState?.gone()
             mProductCarouselRecyclerView.gone()
         }
     }
@@ -149,10 +185,15 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     private fun reloadComponent() {
         mProductCarouselRecyclerView.visible()
         carouselEmptyState?.gone()
+        mProductCarouselComponentViewModel.resetComponent()
         mProductCarouselComponentViewModel.fetchProductCarouselData()
     }
 
     override fun getInnerRecycleView(): RecyclerView {
         return mProductCarouselRecyclerView
+    }
+
+    companion object{
+        const val PREFETCH_ITEM_COUNT = 4
     }
 }

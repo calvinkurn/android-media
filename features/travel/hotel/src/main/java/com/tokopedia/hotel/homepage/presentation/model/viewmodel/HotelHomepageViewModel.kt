@@ -3,6 +3,7 @@ package com.tokopedia.hotel.homepage.presentation.model.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.travel.constant.TravelType
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
@@ -11,7 +12,6 @@ import com.tokopedia.common.travel.ticker.TravelTickerHotelPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -101,7 +101,7 @@ class HotelHomepageViewModel @Inject constructor(
             val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, HotelPropertyDefaultHome.Response::class.java)
                 var graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
+                graphqlRepository.response(listOf(graphqlRequest), graphQlCacheStrategy)
             }.getSuccessData<HotelPropertyDefaultHome.Response>().response.data
 
             mutableHomepageDefaultParam.postValue(data)
@@ -122,7 +122,7 @@ class HotelHomepageViewModel @Inject constructor(
             val data = withContext(dispatcher.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, HotelDeleteRecentSearchEntity.Response::class.java)
                 var graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
+                graphqlRepository.response(listOf(graphqlRequest), graphQlCacheStrategy)
             }.getSuccessData<HotelDeleteRecentSearchEntity.Response>()
 
             mutableDeleteRecentSearch.postValue(Success(data.travelRecentSearchHotelDelete.result))

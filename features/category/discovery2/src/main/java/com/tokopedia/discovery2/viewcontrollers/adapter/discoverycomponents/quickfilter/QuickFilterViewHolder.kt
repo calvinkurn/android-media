@@ -26,6 +26,12 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     private var dynamicFilterModel: DynamicFilterModel? = null
     private var componentName: String? = null
 
+    init {
+        quickSortFilter.dismissListener = {
+            quickFilterViewModel.clearQuickFilters()
+        }
+    }
+
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         quickFilterViewModel = discoveryBaseViewModel as QuickFilterViewModel
         getSubComponent().inject(quickFilterViewModel)
@@ -84,6 +90,9 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
             sortFilterItems.add(createSortFilterItem(option))
         }
         quickSortFilter.let {
+            it.filterType = quickFilterViewModel.components.properties?.let { prop->
+                if(prop.filter || prop.sort)  SortFilter.TYPE_ADVANCED else SortFilter.TYPE_QUICK
+            }?: SortFilter.TYPE_ADVANCED
             it.sortFilterItems.removeAllViews()
             it.addItem(sortFilterItems)
             it.textView?.text = fragment.getString(R.string.filter)
@@ -99,7 +108,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
                 icon = getIconUnifyDrawable(itemView.context, IconUnify.BADGE_OS_FILLED)
             }
             "4 Keatas" -> {
-                icon = getIconUnifyDrawable(itemView.context, IconUnify.STAR_FILLED, MethodChecker.getColor(itemView.context, R.color.discovery2_5_star))
+                icon = getIconUnifyDrawable(itemView.context, IconUnify.STAR_FILLED, MethodChecker.getColor(itemView.context, R.color.discovery2_dms_5_star))
             }
         }
         val item = SortFilterItem(option.name, icon)

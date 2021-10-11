@@ -7,7 +7,8 @@ import com.tokopedia.power_merchant.subscribe.view.adapter.ExpandableAdapterFact
  */
 
 class ExpandableSectionUiModel(
-        override val text: String
+        override val text: String,
+        val shouldShowTopSeparator: Boolean = true
 ) : BaseExpandableItemUiModel {
 
     override fun type(typeFactory: ExpandableAdapterFactory): Int {

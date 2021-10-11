@@ -209,6 +209,32 @@
             "type": "mvc"
           },
           {
+            "name" : "best_seller",
+            "type": "one_liners",
+            "data": [
+              {
+                "productID" : 1060957410,
+                "oneLinerContent": "di Tokopedia!",
+                "linkText": "Terlaris #1",
+                "color":"",
+                "applink": "tokopedia.link/aufheiauhfueaf",
+                "separator": "top",
+                "icon": "",
+                "isVisible":true
+              },
+              {
+                "productID" : 1060957408,
+                "oneLinerContent": "Terlaris #99 - <b>Tidak laris bro<b>",
+                "linkText": "",
+                "color":"",
+                "applink": "tokopedia.link/aufheiauhfueaf",
+                "separator": "none",
+                "icon": "",
+                "isVisible":false
+              }
+            ]
+          },
+          {
             "data": [
               {
                 "children": [

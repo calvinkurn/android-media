@@ -48,7 +48,7 @@ class ProductFeedbackDetailViewHolder(private val view: View,
 
         setFeedbackReply(element)
         setupVariant(element.variantName ?: "")
-        setupFeedbackReview(element.reviewText ?: "", element.feedbackID.toString())
+        setupFeedbackReview(element.reviewText ?: "", element.feedbackID)
         setImageAttachment(element)
         showLabelKejarUlasan(element.isKejarUlasan)
     }
@@ -126,7 +126,7 @@ class ProductFeedbackDetailViewHolder(private val view: View,
                 rvItemAttachmentFeedback?.hide()
             } else {
                 reviewDetailFeedbackImageAdapter?.setAttachmentUiData(element.attachments)
-                reviewDetailFeedbackImageAdapter?.setFeedbackId(element.feedbackID.toString())
+                reviewDetailFeedbackImageAdapter?.setFeedbackId(element.feedbackID)
                 reviewDetailFeedbackImageAdapter?.submitList(element.attachments)
                 rvItemAttachmentFeedback?.show()
             }

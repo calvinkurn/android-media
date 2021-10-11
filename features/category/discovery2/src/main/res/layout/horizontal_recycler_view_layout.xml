@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/sp_20"
         android:visibility="gone"
         app:layout_constraintLeft_toRightOf="parent"

@@ -20,7 +20,7 @@ object PowerMerchantDateFormatter {
         val cancellationHour = DateFormatUtils.formatDate(Constant.DATE_FORMAT_EXPIRED,
                 Constant.DATE_FORMAT_HH_MM, expiredDate)
         val warningText = context.getString(warningTextFormat, cancellationDate, cancellationHour)
-        val highlightTextColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+        val highlightTextColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_96)
 
         return PowerMerchantSpannableUtil.createSpannableString(warningText, cancellationDate, highlightTextColor, true)
     }

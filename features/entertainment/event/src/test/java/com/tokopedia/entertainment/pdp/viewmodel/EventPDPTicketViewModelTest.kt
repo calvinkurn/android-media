@@ -89,6 +89,7 @@ class EventPDPTicketViewModelTest {
         assertEquals(eventPDPTicketViewModel.recommendationList, recommendationPackages)
         assertEquals(eventPDPTicketViewModel.recommendationTicketModel.value, eventPDPTicketViewModel.recommendationList)
         assertNotNull(eventPDPTicketViewModel.eventHoliday.value)
+        assertNotNull(eventPDPTicketViewModel.productDetailEntity.value)
     }
 
     @Test
@@ -110,7 +111,7 @@ class EventPDPTicketViewModelTest {
 
         //then
         assertNull(eventPDPTicketViewModel.ticketModel.value)
-        assertEquals(eventPDPTicketViewModel.error.value, error.message)
+        assertEquals((eventPDPTicketViewModel.error.value as Throwable).message, error.message)
         assertNotNull(eventPDPTicketViewModel.eventHoliday.value)
     }
 
@@ -132,7 +133,7 @@ class EventPDPTicketViewModelTest {
         //then
         assertNull(eventPDPTicketViewModel.ticketModel.value)
         assertNotNull(eventPDPTicketViewModel.error.value)
-        assertEquals(eventPDPTicketViewModel.error.value, error.message)
+        assertEquals((eventPDPTicketViewModel.error.value as Throwable).message, error.message)
         assert(eventPDPTicketViewModel.eventHoliday.value == arrayListOf<Legend>())
     }
 
@@ -145,7 +146,7 @@ class EventPDPTicketViewModelTest {
         result[EventVerifyResponseV2::class.java] = verifyMock
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         eventPDPTicketViewModel.verify("", VerifyRequest())
 
@@ -158,13 +159,13 @@ class EventPDPTicketViewModelTest {
     fun `VerifyData_FailVerify_ShouldFailVerify`() {
         //given
         val error = Throwable("Error Verify")
-        coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw error }
+        coEvery { graphqlRepository.response(any(), any()) } coAnswers { throw error }
 
         //when
         eventPDPTicketViewModel.verify("", VerifyRequest())
 
         //then
-        assertEquals(eventPDPTicketViewModel.error.value, error.message)
+        assertEquals((eventPDPTicketViewModel.errorVerify.value as Throwable).message, error.message)
 
     }
 
@@ -190,5 +191,17 @@ class EventPDPTicketViewModelTest {
 
         //when
         assertEquals(eventPDPTicketViewModel.lists, listTicket)
+    }
+
+    @Test
+    fun recommendationList_SetRecommendationList_setEmptyRecommendationList() {
+        //given
+        val recommendationList = mutableListOf<EventPDPTicketModel>()
+
+        //then
+        eventPDPTicketViewModel.recommendationList = recommendationList
+
+        //when
+        assertEquals(eventPDPTicketViewModel.recommendationList, recommendationList)
     }
 }

@@ -60,8 +60,7 @@
                         android:layout_gravity="center"
                         app:layout_constraintBottom_toBottomOf="@id/tv_hotel_homepage_destination"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/tv_hotel_homepage_destination"
-                        app:srcCompat="@drawable/ic_hotel_location" />
+                        app:layout_constraintTop_toTopOf="@id/tv_hotel_homepage_destination" />
 
                     <com.tokopedia.unifycomponents.TextFieldUnify
                         android:id="@+id/tv_hotel_homepage_destination"
@@ -201,7 +200,7 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_hotel_last_search_title"
-                    android:layout_width="@dimen/layout_lvl0"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/hotel_homepage_last_search_title"
@@ -242,7 +241,7 @@
                 android:paddingRight="@dimen/layout_lvl2">
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:layout_width="@dimen/layout_lvl0"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/hotel_homepage_promo_title"

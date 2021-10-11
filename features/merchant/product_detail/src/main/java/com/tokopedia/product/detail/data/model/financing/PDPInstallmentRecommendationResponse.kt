@@ -9,10 +9,10 @@ data class PDPInstallmentRecommendationData(
 
 data class PDPInstallmentRecommendation(
         @SerializedName("monthly_price")
-        val monthlyPrice: Float = 0f,
+        val monthlyPrice: Double = 0.0,
 
         @SerializedName("os_monthly_price")
-        val osMonthlyPrice: Float = 0f,
+        val osMonthlyPrice: Double = 0.0,
 
         @SerializedName("partner_code")
         val partnerCode: String = "",

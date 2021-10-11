@@ -22,10 +22,10 @@ class GetProductFeedbackDetailListUseCase @Inject constructor(
 
         const val GET_PRODUCT_FEEDBACK_LIST_DETAIL_QUERY_CLASS_NAME = "FeedbackDetailList"
         const val GET_PRODUCT_FEEDBACK_LIST_DETAIL_QUERY = """
-        query get_product_feedback_detail(${'$'}productID: Int!, ${'$'}sortBy: String!, ${'$'}filterBy: String!, ${'$'}limit: Int!, ${'$'}page: Int!) {
-            productrevFeedbackDataPerProduct(productID: ${'$'}productID, sortBy: ${'$'}sortBy, filterBy: ${'$'}filterBy, limit: ${'$'}limit, page: ${'$'}page) {
+        query get_product_feedback_detail(${'$'}productID: String!, ${'$'}sortBy: String!, ${'$'}filterBy: String!, ${'$'}limit: Int!, ${'$'}page: Int!) {
+            productrevFeedbackDataPerProductV2(productID: ${'$'}productID, sortBy: ${'$'}sortBy, filterBy: ${'$'}filterBy, limit: ${'$'}limit, page: ${'$'}page) {
                 list {
-                    feedbackID
+                    feedbackIDStr
                     rating
                     reviewText
                     reviewTime
@@ -60,7 +60,7 @@ class GetProductFeedbackDetailListUseCase @Inject constructor(
         """
 
         @JvmStatic
-        fun createParams(productID: Int, sortBy: String, filterBy: String, limit: Int, page: Int): Map<String, Any> =
+        fun createParams(productID: String, sortBy: String, filterBy: String, limit: Int, page: Int): Map<String, Any> =
                 mapOf(PRODUCT_ID to productID,
                         SORT_BY to sortBy,
                         FILTER_BY to filterBy,
@@ -73,7 +73,7 @@ class GetProductFeedbackDetailListUseCase @Inject constructor(
     @GqlQuery(GET_PRODUCT_FEEDBACK_LIST_DETAIL_QUERY_CLASS_NAME, GET_PRODUCT_FEEDBACK_LIST_DETAIL_QUERY)
     override suspend fun executeOnBackground(): ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct {
         val gqlRequest = GraphqlRequest(FeedbackDetailList.GQL_QUERY, ProductFeedbackDetailResponse::class.java, params)
-        val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = graphQlRepository.response(listOf(gqlRequest))
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error == null || error.isEmpty()) {
             return gqlResponse.getData<ProductFeedbackDetailResponse>(ProductFeedbackDetailResponse::class.java).productrevFeedbackDataPerProduct

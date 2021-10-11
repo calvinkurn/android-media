@@ -2,16 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/anchor_label"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/dp_24"
-        android:layout_marginStart="@dimen/dp_24"
-        android:fontFamily="sans-serif-medium"
-        android:textColor="@color/colorPrimary"
-        android:textSize="@dimen/sp_12"
-        android:textStyle="normal" />
+        android:layout_marginStart="@dimen/unify_space_24"
+        android:textColor="@color/Unify_G500"
+        app:typographyType="body_3" />
 </LinearLayout>

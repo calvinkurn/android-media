@@ -8,7 +8,7 @@ import com.tokopedia.notifcenter.data.state.Resource
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class NotifcenterFilterV2UseCase @Inject constructor(
+open class NotifcenterFilterV2UseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<NotifcenterFilterResponse>,
         private val cacheManager: NotifcenterCacheManager
 ) {

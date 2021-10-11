@@ -56,7 +56,7 @@ object PayloadConverter {
         if (actionButtonList != null)
             model.actionButton = actionButtonList
         model.persistentButtonList = getPersistentNotificationData(data)
-        model.videoPushModel = getVideoNotificationData(data)
+        model.videoPushModel = data.getString(VIDEO_DATA, "")
         model.customValues = data.getString(CUSTOM_VALUE, "")
         val carouselList = getCarouselList(data)
         if (carouselList != null) {
@@ -142,7 +142,7 @@ object PayloadConverter {
             }
             model.persistentButtonList = persButtonList
         }
-        model.videoPushModel = data.videoPushModel?.let { JSONObject(it) }
+        model.videoPushModel = data.videoPushModel ?: ""
         model.customValues = data.customValues
         data.carouselList?.let {
             val carouselList = ArrayList<Carousel>()

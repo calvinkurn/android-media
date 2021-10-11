@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.flight.cancellation.presentation.adapter.viewholder.FlightCancellationReviewEstimationNotesViewHolder
+import com.tokopedia.flight.databinding.ItemFlightCancellationEstimationNotesBinding
 
 /**
  * @author by furqan on 11/08/2020
@@ -13,8 +14,9 @@ class FlightCancellationReviewEstimationNotesAdapter : RecyclerView.Adapter<Flig
     private val estimationNotes: MutableList<String> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FlightCancellationReviewEstimationNotesViewHolder =
-            FlightCancellationReviewEstimationNotesViewHolder(LayoutInflater.from(parent.context)
-                    .inflate(FlightCancellationReviewEstimationNotesViewHolder.LAYOUT, parent, false))
+            FlightCancellationReviewEstimationNotesViewHolder(
+                ItemFlightCancellationEstimationNotesBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            )
 
     override fun getItemCount(): Int = estimationNotes.size
 

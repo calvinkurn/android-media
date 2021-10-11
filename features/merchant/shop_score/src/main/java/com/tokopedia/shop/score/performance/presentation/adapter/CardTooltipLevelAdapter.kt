@@ -9,12 +9,14 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.databinding.ItemCardLevelInformationBinding
 import com.tokopedia.shop.score.performance.presentation.model.CardTooltipLevelUiModel
-import kotlinx.android.synthetic.main.item_card_level_information.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
-class CardTooltipLevelAdapter: RecyclerView.Adapter<CardTooltipLevelAdapter.CardTooltipLevelViewHolder>() {
+class CardTooltipLevelAdapter :
+    RecyclerView.Adapter<CardTooltipLevelAdapter.CardTooltipLevelViewHolder>() {
 
-    private var cardToolTipLevelList = mutableListOf<CardTooltipLevelUiModel>()
+    private val cardToolTipLevelList = mutableListOf<CardTooltipLevelUiModel>()
 
     fun setCardToolTipLevelList(cardToolTipLevelList: List<CardTooltipLevelUiModel>) {
         if (cardToolTipLevelList.isNullOrEmpty()) return
@@ -24,7 +26,8 @@ class CardTooltipLevelAdapter: RecyclerView.Adapter<CardTooltipLevelAdapter.Card
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardTooltipLevelViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_card_level_information, parent,false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_card_level_information, parent, false)
         return CardTooltipLevelViewHolder(view)
     }
 
@@ -35,18 +38,31 @@ class CardTooltipLevelAdapter: RecyclerView.Adapter<CardTooltipLevelAdapter.Card
 
     override fun getItemCount(): Int = cardToolTipLevelList.size
 
-    inner class CardTooltipLevelViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    inner class CardTooltipLevelViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
+        private val binding : ItemCardLevelInformationBinding? by viewBinding()
 
         fun bind(data: CardTooltipLevelUiModel) {
-            with(itemView) {
-                tv_title_level_card?.text = data.title?.let { context.getString(it) }
-                tv_description_level_card?.text = MethodChecker.fromHtml(data.desc?.let { context.getString(it) })
+            binding?.run {
+                tvTitleLevelCard.text = data.title?.let { root.context.getString(it) }
+                tvDescriptionLevelCard.text =
+                    MethodChecker.fromHtml(data.desc?.let { root.context.getString(it) })
                 if (data.isMyShop) {
-                    cardLevelInformation?.setCardBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G200))
-                    levelLabel?.show()
+                    cardLevelInformation.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            root.context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_G200
+                        )
+                    )
+                    levelLabel.show()
                 } else {
-                    cardLevelInformation?.setCardBackgroundColor(ContextCompat.getColor(context, R.color.shop_score_dms_card_level))
-                    levelLabel?.hide()
+                    cardLevelInformation.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            root.context,
+                            R.color.shop_score_dms_card_level
+                        )
+                    )
+                    levelLabel.hide()
                 }
             }
         }

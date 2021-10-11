@@ -11,6 +11,7 @@ import android.text.Spanned
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
@@ -134,6 +135,14 @@ object Utils {
             MethodChecker.fromHtml("$subDescription...")
         } else {
             MethodChecker.fromHtml(this)
+        }
+    }
+
+    fun View?.hideKeyboard() {
+        this?.rootView?.let { view ->
+            if (view.context != null) {
+                KeyboardHandler.DropKeyboard(view.context, view)
+            }
         }
     }
 

@@ -11,19 +11,21 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraUtils
 import com.otaliastudios.cameraview.PictureResult
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.rechargeocr.analytics.RechargeCameraAnalytics
 import com.tokopedia.rechargeocr.di.RechargeCameraInstance
 import com.tokopedia.rechargeocr.util.RechargeOcrGqlQuery
 import com.tokopedia.rechargeocr.viewmodel.RechargeUploadImageViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.fragment_recharge_camera.*
@@ -51,7 +53,7 @@ class RechargeCameraFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(it, viewModelFactory)
             uploadImageviewModel = viewModelProvider.get(RechargeUploadImageViewModel::class.java)
         }
     }
@@ -66,21 +68,27 @@ class RechargeCameraFragment : BaseDaggerFragment() {
         super.onActivityCreated(savedInstanceState)
 
         uploadImageviewModel.resultDataOcr.observe(viewLifecycleOwner, Observer { ocrData ->
-            hideLoading()
-            rechargeCameraAnalytics.scanIdCard(VALUE_TRACKING_OCR_SUCCESS)
-            activity?.let {
-                val intentReturn = Intent()
-                intentReturn.putExtra(EXTRA_NUMBER_FROM_CAMERA_OCR, ocrData)
-                it.setResult(Activity.RESULT_OK, intentReturn)
-                it.finish()
-            }
-        })
+            when (ocrData) {
+                is Success -> {
+                    hideLoading()
+                    rechargeCameraAnalytics.scanIdCard(VALUE_TRACKING_OCR_SUCCESS)
+                    activity?.let {
+                        val intentReturn = Intent()
+                        intentReturn.putExtra(EXTRA_NUMBER_FROM_CAMERA_OCR, ocrData.data)
+                        it.setResult(Activity.RESULT_OK, intentReturn)
+                        it.finish()
+                    }
+                }
 
-        uploadImageviewModel.errorActionOcr.observe(viewLifecycleOwner, Observer {
-            hideLoading()
-            showCameraView()
-            rechargeCameraAnalytics.scanIdCard(it.message ?: "")
-            Toaster.build(layout_container, ErrorHandler.getErrorMessage(requireContext(), it), Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                is Fail -> {
+                    hideLoading()
+                    showCameraView()
+                    val throwableMessage = ErrorHandler.getErrorMessage(requireContext(), ocrData.throwable)
+                    rechargeCameraAnalytics.scanIdCard(throwableMessage)
+                    Toaster.build(layout_container, throwableMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                }
+            }
+
         })
     }
 
@@ -165,7 +173,8 @@ class RechargeCameraFragment : BaseDaggerFragment() {
             uploadImageviewModel.uploadImageRecharge(imagePath,
                     RechargeOcrGqlQuery.rechargeCameraRecognition)
         } else {
-            Toast.makeText(context, getString(R.string.ocr_default_error_message), Toast
+            val throwableMessage = MessageErrorException(getString(R.string.ocr_default_error_message))
+            Toast.makeText(context, ErrorHandler.getErrorMessage(requireContext(), throwableMessage), Toast
                     .LENGTH_LONG).show()
         }
     }

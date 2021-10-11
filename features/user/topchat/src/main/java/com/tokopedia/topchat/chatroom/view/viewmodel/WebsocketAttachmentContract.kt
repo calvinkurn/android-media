@@ -14,7 +14,8 @@ open class WebsocketAttachmentContract (
 
 @Keep
 open class WebsocketAttachmentData (
-        val message_id: Int,
+        val message_id: Long,
+        val local_id: String,
         val message: String,
         val source: String,
         val attachment_type: Int,

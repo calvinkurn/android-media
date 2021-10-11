@@ -404,10 +404,11 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                 ShopLocationResponse("1", MAIN_LOCATION),
                 ShopLocationResponse("2", OTHER_LOCATION)
             )
+            val paramsProductList = createFilterOptions(1)
             onGetWarehouseId_thenReturn(locationList)
             onGetProductList_thenReturn(productListData)
 
-            viewModel.getProductList(shopId)
+            viewModel.getProductList(shopId, filterOptions = paramsProductList)
 
             val topAdsInfo = TopAdsInfo(isTopAds = false, isAutoAds = false)
             val productViewModelList = listOf(createProductUiModel(
@@ -420,7 +421,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                 .verifySuccessEquals(expectedProductList)
 
             viewModel.showStockTicker
-                .verifyValueEquals(false)
+                .verifyValueEquals(null)
 
             verifyHideProgressBar()
         }
@@ -460,6 +461,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
             val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
             val productListData = ProductListData(ProductList(header = null, data = productList))
+            val paramsProductList = createFilterOptions(1)
 
             val locationList = listOf(
                 ShopLocationResponse("2", OTHER_LOCATION)
@@ -467,7 +469,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             onGetWarehouseId_thenReturn(locationList)
             onGetProductList_thenReturn(productListData)
 
-            viewModel.getProductList(shopId)
+            viewModel.getProductList(shopId, filterOptions = paramsProductList)
 
             val topAdsInfo = TopAdsInfo(isTopAds = false, isAutoAds = false)
             val productViewModelList = listOf(createProductUiModel(
@@ -480,7 +482,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                 .verifySuccessEquals(expectedProductList)
 
             viewModel.showStockTicker
-                .verifyValueEquals(false)
+                .verifyValueEquals(null)
 
             verifyHideProgressBar()
         }
@@ -494,6 +496,8 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val shopId = "1500"
             val pictures = listOf(Picture("imageUrl"))
 
+            val paramsProductList = createFilterOptions(1)
+
             val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
             val productListData = ProductListData(ProductList(header = null, data = productList))
 
@@ -505,8 +509,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             onGetProductList_thenReturn(productListData)
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
 
-            viewModel.getProductList(shopId)
-            viewModel.getProductList(shopId)
+            viewModel.getProductList(shopId, paramsProductList)
 
             viewModel.showStockTicker
                 .verifyValueEquals(true)
@@ -514,7 +517,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `given multi location shop and hideStockTicker called when getProductList again should set showStockTicker FALSE`() {
+    fun `given multi location shop and hideStockTicker called when getProductList again should set showStockTicker TRUE`() {
         runBlocking {
             val isMultiLocationShop = true
 
@@ -537,7 +540,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             viewModel.getProductList(shopId)
 
             viewModel.showStockTicker
-                .verifyValueEquals(false)
+                .verifyValueEquals(true)
         }
     }
 
@@ -547,6 +550,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             val isMultiLocationShop = true
             val shopId = "1500"
             val pictures = listOf(Picture("imageUrl"))
+            val paramsProductList = createFilterOptions(1)
 
             val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
             val productListData = ProductListData(ProductList(header = null, data = productList))
@@ -559,7 +563,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             onGetIsMultiLocationShop_thenReturn(isMultiLocationShop)
             onGetProductList_thenReturn(productListData)
 
-            viewModel.getProductList(shopId)
+            viewModel.getProductList(shopId, filterOptions = paramsProductList)
 
             verifyGetWarehouseIdCalled()
             verifyShowStockTicker()

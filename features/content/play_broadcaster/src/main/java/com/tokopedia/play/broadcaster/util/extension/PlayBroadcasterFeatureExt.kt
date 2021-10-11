@@ -8,7 +8,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestListener
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.unifycomponents.Toaster
 import java.text.SimpleDateFormat
 import java.util.*
@@ -36,6 +38,43 @@ internal fun GlobalError.channelNotFound(onAction: () -> Unit) {
     this.errorDescription.setTextColor(ContextCompat.getColor(this.context, R.color.play_dms_white_68))
     this.setType(GlobalError.PAGE_NOT_FOUND)
     this.setActionClickListener { onAction() }
+}
+
+internal fun View.showErrorToaster(
+    err: Throwable,
+    customErrMessage: String? = null,
+    className: String = "",
+    duration: Int = Toaster.LENGTH_LONG,
+    actionLabel: String = "",
+    actionListener: View.OnClickListener = View.OnClickListener {  },
+    bottomMargin: Int? = null,
+) {
+    val errMessage = if (customErrMessage == null) {
+        ErrorHandler.getErrorMessage(
+            context, err, ErrorHandler.Builder()
+                .className(className)
+                .build()
+        )
+    } else {
+        val (_, errCode) = ErrorHandler.getErrorMessagePair(
+            context, err, ErrorHandler.Builder()
+                .className(className)
+                .build()
+        )
+        context.getString(
+            commonR.string.play_custom_error_handler_msg,
+            customErrMessage,
+            errCode
+        )
+    }
+    showToaster(
+        errMessage,
+        Toaster.TYPE_ERROR,
+        duration = duration,
+        actionLabel = actionLabel,
+        actionListener = actionListener,
+        bottomMargin = bottomMargin,
+    )
 }
 
 internal fun View.showToaster(
@@ -66,15 +105,10 @@ internal fun ImageView.loadImageFromUrl(url: String, requestListener: RequestLis
             .into(this)
 }
 
-internal fun Long.convertMillisToMinuteSecond(): String = String.format("%02d:%02d",
-        this.convertMillisToMinute(),
-        this.convertMillisToSecond()
-)
+internal fun Long.millisToMinutes() = TimeUnit.MILLISECONDS.toMinutes(this)
 
-internal fun Long.convertMillisToMinute() = TimeUnit.MILLISECONDS.toMinutes(this)
-
-internal fun Long.convertMillisToSecond() = TimeUnit.MILLISECONDS.toSeconds(this) -
-        TimeUnit.MINUTES.toSeconds(this.convertMillisToMinute())
+internal fun Long.millisToRemainingSeconds() =
+    TimeUnit.MILLISECONDS.toSeconds(this) % TimeUnit.MINUTES.toSeconds(1)
 
 internal fun Date.dayLater(amount: Int): Date {
     val calendar = Calendar.getInstance()

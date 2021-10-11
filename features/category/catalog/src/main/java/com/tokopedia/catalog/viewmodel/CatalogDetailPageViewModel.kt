@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class CatalogDetailPageViewModel @Inject constructor(private var catalogDetailUseCase: CatalogDetailUseCase) : ViewModel() {
 
-    private val catalogDetailDataModel = MutableLiveData<Result<CatalogDetailDataModel>>()
+    val catalogDetailDataModel = MutableLiveData<Result<CatalogDetailDataModel>>()
 
     fun getProductCatalog(catalogId: String, userId : String, device : String) {
         viewModelScope.launchCatchError(

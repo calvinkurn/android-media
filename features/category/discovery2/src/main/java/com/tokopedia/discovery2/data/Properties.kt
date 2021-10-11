@@ -50,6 +50,16 @@ data class Properties(
         val timerStyle: String? = null,
 
         @SerializedName("category_detail")
-        val categoryDetail: Boolean = false
+        val categoryDetail: Boolean = false,
+
+        @SerializedName("filter")
+        val filter:Boolean = true,
+
+        @SerializedName("sort")
+        val sort:Boolean = true,
+
+        @SerializedName("tokonow_add_to_cart_active")
+        val tokonowATCActive : Boolean = false,
+
 
 )

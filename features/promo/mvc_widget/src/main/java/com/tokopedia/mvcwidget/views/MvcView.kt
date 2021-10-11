@@ -1,37 +1,44 @@
 package com.tokopedia.mvcwidget.views
 
-import android.app.Activity
+import android.app.Application
 import android.content.Context
-import android.os.Build
-import android.text.Html
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
-import com.bumptech.glide.Glide
-import com.tokopedia.mvcwidget.MvcData
-import com.tokopedia.mvcwidget.MvcSource
-import com.tokopedia.mvcwidget.R
-import com.tokopedia.mvcwidget.Tracker
+import com.tokopedia.mvcwidget.*
+import com.tokopedia.mvcwidget.trackers.DefaultMvcTrackerImpl
+import com.tokopedia.mvcwidget.trackers.MvcSource
+import com.tokopedia.mvcwidget.trackers.MvcTracker
+import com.tokopedia.mvcwidget.trackers.MvcTrackerImpl
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.utils.htmltags.HtmlUtil
-import kotlinx.coroutines.Runnable
+import java.lang.ref.WeakReference
 
 
 /*
 * 1. It has internal Padding of 6dp to render its shadows
-* 2. isMainContainerSetFitsSystemWindows must be true if activity/fragment layout is setFitsSystemWindows(false) or setFitsSystemWindows = false
 * */
 class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr) {
-    lateinit var tvTitle: Typography
-    lateinit var tvSubTitle: Typography
+    companion object {
+        const val REQUEST_CODE = 121
+        const val RESULT_CODE_OK = 1
+    }
+
     lateinit var imageChevron: AppCompatImageView
-    lateinit var imageCoupon: AppCompatImageView
+    lateinit var mvcTextContainerFirst: MvcTextContainer
+    lateinit var mvcTextContainerSecond: MvcTextContainer
     lateinit var mvcContainer: View
+
+    var mvcAnimationHandler: MvcAnimationHandler
+    private var startActivityForResultFunction: (() -> Unit)? = null
+    private val mvcActivityCallbacks = MVCActivityCallbacks()
+
     var shopId: String = ""
-    var isMainContainerSetFitsSystemWindows = false
+    var isTokomember = false
+    val mvcTracker = MvcTracker()
+
     @MvcSource
     var source: Int = MvcSource.SHOP
 
@@ -39,44 +46,84 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
         View.inflate(context, R.layout.mvc_entry_view, this)
         initViews()
         setClicks()
+
+        mvcAnimationHandler = MvcAnimationHandler(WeakReference(mvcTextContainerFirst), WeakReference(mvcTextContainerSecond))
+        mvcAnimationHandler.checkToCancelTimer()
     }
 
     private fun initViews() {
-        tvTitle = this.findViewById(R.id.tvTitle)
-        tvSubTitle = this.findViewById(R.id.tvSubTitle)
         imageChevron = this.findViewById(R.id.image_chevron)
-        imageCoupon = this.findViewById(R.id.image_coupon)
         mvcContainer = this.findViewById(R.id.mvc_container)
+        mvcTextContainerFirst = this.findViewById(R.id.mvc_text_container_first)
+        mvcTextContainerSecond = this.findViewById(R.id.mvc_text_container_second)
     }
 
     private fun setClicks() {
         mvcContainer.setOnClickListener {
-            context.startActivity(TransParentActivity.getIntent(context, shopId, this.source))
-            Tracker.userClickEntryPoints(shopId,UserSession(context).userId,this.source)
+            (context.applicationContext as Application).let {
+                it.unregisterActivityLifecycleCallbacks(mvcActivityCallbacks)
+                it.registerActivityLifecycleCallbacks(mvcActivityCallbacks)
+            }
+            if (startActivityForResultFunction != null) {
+                startActivityForResultFunction?.invoke()
+            } else {
+                if (context is AppCompatActivity) {
+                    (context as AppCompatActivity).startActivityForResult(TransParentActivity.getIntent(context, shopId, this.source,hashCode = mvcActivityCallbacks.hashCodeForMVC), REQUEST_CODE)
+                } else {
+                    (context).startActivity(TransParentActivity.getIntent(context, shopId, this.source,hashCode = mvcActivityCallbacks.hashCodeForMVC))
+                }
+            }
+
+            mvcTracker.userClickEntryPoints(shopId, UserSession(context).userId, this.source, isTokomember)
         }
     }
 
-    fun setData(mvcData: MvcData, shopId: String, isMainContainerSetFitsSystemWindows: Boolean = false, @MvcSource source: Int) {
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        (context.applicationContext as Application).unregisterActivityLifecycleCallbacks(mvcActivityCallbacks)
+    }
+
+    fun setData(mvcData: MvcData,
+                shopId: String,
+                @MvcSource source: Int,
+                startActivityForResultFunction: (() -> Unit)? = null,
+                mvcTrackerImpl: MvcTrackerImpl = DefaultMvcTrackerImpl()
+    ) {
         this.source = source
-        this.isMainContainerSetFitsSystemWindows = isMainContainerSetFitsSystemWindows
         this.shopId = shopId
-        setMVCData(mvcData.title, mvcData.subTitle, mvcData.imageUrl)
+        this.startActivityForResultFunction = startActivityForResultFunction
+        this.mvcTracker.trackerImpl = mvcTrackerImpl
+        mvcActivityCallbacks.mvcTrackerImpl = mvcTrackerImpl
+        mvcActivityCallbacks.hashCodeForMVC = mvcData.hashCode()
+        setMVCData(mvcData.animatedInfoList)
     }
 
-    private fun setMVCData(titles:String, subTitle:String,imageUrl:String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            tvTitle.text = HtmlUtil.fromHtml(titles).trim()
-        } else {
-            tvTitle.text = Html.fromHtml(titles).trim()
-        }
-        tvSubTitle.text = subTitle
+    private fun setMVCData(animatedInfos: List<AnimatedInfos?>?) {
+        mvcAnimationHandler.stopAnimation()
 
-        if (!(context as Activity).isFinishing) {
-            Glide.with(imageCoupon.context)
-                .load(imageUrl)
-                .dontAnimate()
-                .into(imageCoupon)
+        if (!animatedInfos.isNullOrEmpty()) {
+            mvcAnimationHandler.animatedInfoList = animatedInfos
+
+            if (animatedInfos.size == 1) {
+                isTokomember = false
+                mvcAnimationHandler.isTokomember = isTokomember
+                val animatedInfo = animatedInfos.first()
+                animatedInfo?.let {
+                    mvcTextContainerFirst.setData(it.title ?: "", it.subTitle ?: "", it.iconURL ?: "")
+                }
+            } else {
+                isTokomember = true
+                mvcAnimationHandler.isTokomember = isTokomember
+                mvcAnimationHandler.startTimer()
+            }
         }
     }
 
+    fun sendImpressionTrackerForPdp(){
+        if(this.shopId.isNotEmpty()){
+            if(isTokomember){
+                mvcTracker.tokomemberImpressionOnPdp(this.shopId,UserSession(context).userId)
+            }
+        }
+    }
 }

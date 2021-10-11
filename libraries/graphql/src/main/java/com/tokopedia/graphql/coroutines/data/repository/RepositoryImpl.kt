@@ -9,6 +9,8 @@ import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.*
 import com.tokopedia.graphql.util.CacheHelper
+import com.tokopedia.graphql.util.Const
+import com.tokopedia.graphql.util.LoggingUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import timber.log.Timber
@@ -20,7 +22,7 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                                               private val graphqlCacheDataStore: GraphqlCacheDataStore) : GraphqlRepository {
 
 
-    override suspend fun getReseponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy)
+    override suspend fun response(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy)
             : GraphqlResponse {
         val results = mutableMapOf<Type, Any>()
         val refreshRequests = mutableListOf<GraphqlRequest>()
@@ -95,12 +97,9 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                 if (error != null && !error.isJsonNull) {
                     errors[typeOfT] = CommonUtils.fromJson(error, Array<GraphqlError>::class.java).toList()
                 }
+                LoggingUtils.logGqlParseSuccess("kt", requests.toString())
             } catch (jse: JsonSyntaxException) {
-                ServerLogger.log(Priority.P1, "GQL_PARSE_ERROR",
-                        mapOf("type" to "json",
-                                "err" to Log.getStackTraceString(jse),
-                                "req" to requests.toString()
-                        ))
+                LoggingUtils.logGqlParseError("json", Log.getStackTraceString(jse), requests.toString())
                 jse.printStackTrace()
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -154,12 +153,9 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
 
                 Timber.d("Android CLC - Request served from cache " + CacheHelper.getQueryName(copyRequests[i].query) + " KEY: " + copyRequests[i].cacheKey())
             }
+            LoggingUtils.logGqlParseSuccess("kt", requests.toString())
         } catch (jse: JsonSyntaxException) {
-            ServerLogger.log(Priority.P1, "GQL_PARSE_ERROR",
-                    mapOf("type" to "json",
-                            "err" to Log.getStackTraceString(jse),
-                            "req" to requests.toString()
-                    ))
+            LoggingUtils.logGqlParseError("json", Log.getStackTraceString(jse), requests.toString())
             jse.printStackTrace()
         } catch (e: Exception) {
             e.printStackTrace()

@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.common.ProductManageCommonInstance
 import com.tokopedia.product.manage.common.R
@@ -31,6 +32,7 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
 
     protected companion object {
         const val EXTRA_PRODUCT_ID = "extra_product_id"
+        const val EXTRA_IS_BUNDLING = "extra_is_bundling"
     }
 
     @Inject
@@ -51,17 +53,18 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val productId = arguments?.getString(EXTRA_PRODUCT_ID).orEmpty()
+        val isBundling = arguments?.getBoolean(EXTRA_IS_BUNDLING).orFalse()
 
         setupSaveBtn()
         setupVariantList()
         setupBottomSheet()
-        setupErrorView(productId)
+        setupErrorView(productId, isBundling)
 
         observeGetVariant()
         observeClickSaveBtn()
         observeViewState()
 
-        getData(productId)
+        getData(productId, isBundling)
     }
 
     override fun onAttach(context: Context) {
@@ -99,7 +102,7 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
 
     private fun setupVariantList() {
         adapter = createAdapter()
-        variantList.apply {
+        variantList?.apply {
             adapter = this@QuickEditVariantBottomSheet.adapter
             layoutManager = LinearLayoutManager(this@QuickEditVariantBottomSheet.context)
             itemAnimator = null
@@ -114,21 +117,21 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
         bottomSheetWrapper.setPadding(0, 0, 0, 0)
     }
 
-    private fun setupErrorView(productId: String) {
-        errorView.setType(GlobalError.NO_CONNECTION)
-        errorView.setActionClickListener { getData(productId) }
-        errorView.errorDescription.text = getString(R.string.product_manage_error_description)
-        errorView.errorTitle.hide()
+    private fun setupErrorView(productId: String, isBundle: Boolean) {
+        errorView?.setType(GlobalError.NO_CONNECTION)
+        errorView?.setActionClickListener { getData(productId, isBundle) }
+        errorView?.errorDescription?.text = getString(R.string.product_manage_error_description)
+        errorView?.errorTitle?.hide()
     }
 
     private fun setupSaveBtn() {
-        btnSave.setOnClickListener {
+        btnSave?.setOnClickListener {
             viewModel.saveVariants()
         }
     }
 
-    private fun getData(productId: String) {
-        viewModel.getData(productId)
+    private fun getData(productId: String, isBundle: Boolean) {
+        viewModel.getData(productId, isBundle)
     }
 
     private fun observeGetVariant() {
@@ -147,20 +150,20 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
 
     private fun observeViewState() {
         observe(viewModel.showProgressBar) { showProgressBar ->
-            progressBar.showWithCondition(showProgressBar)
+            progressBar?.showWithCondition(showProgressBar)
         }
 
         observe(viewModel.showErrorView) { showErrorView ->
             if(showErrorView) {
                 expandBottomSheet()
-                errorViewContainer.show()
+                errorViewContainer?.show()
             } else {
-                errorViewContainer.hide()
+                errorViewContainer?.hide()
             }
         }
 
         observe(viewModel.showSaveBtn) {
-            btnSave.showWithCondition(it)
+            btnSave?.showWithCondition(it)
         }
     }
 

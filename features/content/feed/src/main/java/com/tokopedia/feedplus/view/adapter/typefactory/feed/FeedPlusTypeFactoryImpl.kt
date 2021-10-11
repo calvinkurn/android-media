@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.view.adapter.typefactory.feed
 
 import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -9,6 +10,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
@@ -17,15 +19,18 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.FeedRecommendationViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.shimmer.ShimmerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
+import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
@@ -144,50 +149,80 @@ class FeedPlusTypeFactoryImpl(
         return CarouselPlayCardViewHolder.LAYOUT
     }
 
+    override fun type(shimmerUiModel: ShimmerUiModel): Int {
+        return ShimmerViewHolder.LAYOUT
+    }
+
+    override fun type(dynamicPostUiModel: DynamicPostUiModel): Int {
+        return DynamicPostNewViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
 
         val viewHolder: AbstractViewHolder<*>
 
-        if (type == EmptyFeedViewHolder.LAYOUT)
-            viewHolder = EmptyFeedViewHolder(view, emptyFeedViewHolderListener)
-        else if (type == RetryViewHolder.LAYOUT)
-            viewHolder = RetryViewHolder(view, retryViewHolderListener)
-        else if (type == EmptyFeedBeforeLoginViewHolder.LAYOUT)
-            viewHolder = EmptyFeedBeforeLoginViewHolder(view, emptyFeedBeforeLoginListener)
-        else if (type == DynamicPostViewHolder.LAYOUT) {
-            viewHolder = DynamicPostViewHolder(
+        when (type) {
+            EmptyFeedViewHolder.LAYOUT -> viewHolder = EmptyFeedViewHolder(view, emptyFeedViewHolderListener)
+            RetryViewHolder.LAYOUT -> viewHolder = RetryViewHolder(view, retryViewHolderListener)
+            EmptyFeedBeforeLoginViewHolder.LAYOUT -> viewHolder = EmptyFeedBeforeLoginViewHolder(view, emptyFeedBeforeLoginListener)
+            DynamicPostViewHolder.LAYOUT -> {
+                viewHolder = DynamicPostViewHolder(
+                        view,
+                        dynamicPostListener,
+                        cardTitleListener,
+                        imagePostListener,
+                        youtubePostListener,
+                        pollOptionListener,
+                        gridItemListener,
+                        videoViewListener,
+                        feedMultipleImageViewListener,
+                        userSession
+                )
+            }
+            FeedRecommendationViewHolder.LAYOUT -> {
+                viewHolder = FeedRecommendationViewHolder(view, recommendationCardListener, cardTitleListener)
+            }
+            BannerViewHolder.LAYOUT -> {
+                viewHolder = BannerViewHolder(view, bannerListener, cardTitleListener)
+            }
+            TopadsShopViewHolder.LAYOUT -> {
+                viewHolder = TopadsShopViewHolder(view, topadsShopListener, cardTitleListener)
+            }
+            TopAdsHeadlineViewHolder.LAYOUT -> {
+                viewHolder = TopAdsHeadlineViewHolder(view, userSession, topAdsHeadlineListener)
+            }
+            OnboardingViewHolder.LAYOUT -> {
+                viewHolder = OnboardingViewHolder(view, userSession, interestPickItemListener)
+            }
+            TopAdsBannerViewHolder.LAYOUT -> {
+                viewHolder = TopAdsBannerViewHolder(view, topAdsBannerListener, cardTitleListener)
+            }
+            CarouselPlayCardViewHolder.LAYOUT -> {
+                viewHolder = CarouselPlayCardViewHolder(
+                        PlayWidgetViewHolder(
+                                itemView = view,
+                                coordinator = playWidgetCoordinator
+                        )
+                )
+            }
+            ShimmerViewHolder.LAYOUT -> {
+                viewHolder = ShimmerViewHolder(view)
+            }
+            DynamicPostNewViewHolder.LAYOUT -> {
+                viewHolder = DynamicPostNewViewHolder(
                     view,
+                    userSession,
                     dynamicPostListener,
-                    cardTitleListener,
-                    imagePostListener,
-                    youtubePostListener,
-                    pollOptionListener,
-                    gridItemListener,
                     videoViewListener,
-                    feedMultipleImageViewListener,
-                    userSession
-            )
-        } else if (type == FeedRecommendationViewHolder.LAYOUT) {
-            viewHolder = FeedRecommendationViewHolder(view, recommendationCardListener, cardTitleListener)
-        } else if (type == BannerViewHolder.LAYOUT) {
-            viewHolder = BannerViewHolder(view, bannerListener, cardTitleListener)
-        } else if (type == TopadsShopViewHolder.LAYOUT) {
-            viewHolder = TopadsShopViewHolder(view, topadsShopListener, cardTitleListener)
-        } else if (type == TopAdsHeadlineViewHolder.LAYOUT) {
-            viewHolder = TopAdsHeadlineViewHolder(view, userSession, topAdsHeadlineListener)
-        } else if (type == OnboardingViewHolder.LAYOUT){
-            viewHolder = OnboardingViewHolder(view, userSession, interestPickItemListener)
-        } else if (type == TopAdsBannerViewHolder.LAYOUT){
-            viewHolder = TopAdsBannerViewHolder(view, topAdsBannerListener, cardTitleListener)
-        } else if (type == CarouselPlayCardViewHolder.LAYOUT){
-            viewHolder = CarouselPlayCardViewHolder(
-                    PlayWidgetViewHolder(
-                            itemView = view,
-                            coordinator = playWidgetCoordinator
-                    )
-            )
-        } else
-            viewHolder = super.createViewHolder(view, type)
+                    gridItemListener,
+                    imagePostListener
+                )
+            }
+            HighlightViewHolder.LAYOUT -> {
+                viewHolder = HighlightViewHolder(view, highlightListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
+            }
+            else -> viewHolder = super.createViewHolder(view, type)
+        }
         return viewHolder
     }
 }

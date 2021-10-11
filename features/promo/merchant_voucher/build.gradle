@@ -4,6 +4,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
@@ -13,17 +14,17 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.libraries.tkpddesign)
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.baseList)
-    implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.features.shopCommon)
-    implementation project(rootProject.ext.features.promoCheckoutCommon)
-    implementation project(rootProject.ext.features.purchase_platform_common)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.linker)
+    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.baseList)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.features.shopCommon)
+    implementation projectOrAar(rootProject.ext.features.promoCheckoutCommon)
+    implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.linker)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -31,7 +32,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation project(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 

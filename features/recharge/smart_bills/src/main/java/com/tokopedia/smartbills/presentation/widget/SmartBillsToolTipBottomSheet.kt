@@ -4,14 +4,17 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.smartbills.R
-import com.tokopedia.smartbills.presentation.fragment.SmartBillsFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottomsheet_smartbills_tooltip.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.UnifyButton
 
 class SmartBillsToolTipBottomSheet : BottomSheetUnify() {
     lateinit var tooltipListener: Listener
+
+    var buttonClickToolTip: UnifyButton? = null
+    var imgSbmToolTip: ImageUnify? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -22,16 +25,21 @@ class SmartBillsToolTipBottomSheet : BottomSheetUnify() {
         show(fragmentManager, TAG)
     }
 
-    private fun initView(view: View) {
-        with(view) {
-            btn_tooltip_sbm.setOnClickListener {
+    private fun initView(view: View?) {
+        view?.let {
+         buttonClickToolTip = view.findViewById(R.id.btn_tooltip_sbm)
+         imgSbmToolTip = view.findViewById(R.id.img_sbm_tooltip)
+         buttonClickToolTip?.setOnClickListener {
                 tooltipListener.onClickMoreLearn()
             }
+
+         imgSbmToolTip?.loadImage(IMAGE_URL)
         }
     }
 
     companion object {
         private const val TAG = "SmartBillsToolTipBottomSheet"
+        private const val IMAGE_URL = "https://images.tokopedia.net/img/tooltips_image_sbm.png"
 
         @JvmStatic
         fun newInstance(context: Context, listener: SmartBillsToolTipBottomSheet.Listener): SmartBillsToolTipBottomSheet {

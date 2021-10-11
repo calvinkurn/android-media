@@ -8,6 +8,8 @@ import com.tokopedia.rechargeocr.RechargeCameraUtil
 import com.tokopedia.rechargeocr.data.RechargeOcrResponse
 import com.tokopedia.rechargeocr.data.RechargeUploadImageResponse
 import com.tokopedia.rechargeocr.data.ResultOcr
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
@@ -57,13 +59,14 @@ class RechargeUploadImageViewModelTest {
         result[objectType] = RechargeOcrResponse(ResultOcr(expectedData))
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         //when
         rechargeUploadImageViewModel.uploadImageRecharge("", "")
 
         //then
-        val actualData = rechargeUploadImageViewModel.resultDataOcr.value
+        assert(rechargeUploadImageViewModel.resultDataOcr.value is Success)
+        val actualData = (rechargeUploadImageViewModel.resultDataOcr.value as Success).data
         assertNotNull(actualData)
         assertEquals(expectedData, actualData)
     }
@@ -79,9 +82,10 @@ class RechargeUploadImageViewModelTest {
         rechargeUploadImageViewModel.uploadImageRecharge("", "")
 
         //then
-        val actualData = rechargeUploadImageViewModel.errorActionOcr.value
+        assert(rechargeUploadImageViewModel.resultDataOcr.value is Fail)
+        val actualData = (rechargeUploadImageViewModel.resultDataOcr.value as Fail).throwable.message
         assertNotNull(actualData)
-        assertEquals(errorThrowable.message, actualData?.message)
+        assertEquals(errorThrowable.message, actualData)
     }
 
     @Test
@@ -105,14 +109,15 @@ class RechargeUploadImageViewModelTest {
         errors[objectType] = listOf(errorGql)
 
         val gqlResponseFail = GraphqlResponse(result, errors, false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
 
         // when
         rechargeUploadImageViewModel.uploadImageRecharge("", "")
 
         // then the result should be success
-        val actualData = rechargeUploadImageViewModel.errorActionOcr.value
+        assert(rechargeUploadImageViewModel.resultDataOcr.value is Fail)
+        val actualData = (rechargeUploadImageViewModel.resultDataOcr.value as Fail).throwable.message
         assertNotNull(actualData)
-        assertEquals(errorMessage, actualData?.message)
+        assertEquals(errorMessage, actualData)
     }
 }

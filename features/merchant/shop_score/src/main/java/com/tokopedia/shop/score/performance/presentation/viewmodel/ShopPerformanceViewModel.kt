@@ -21,16 +21,17 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ShopPerformanceViewModel @Inject constructor(
-        private val dispatchers: CoroutineDispatchers,
-        private val shopScoreMapper: ShopScoreMapper,
-        val userSession: UserSessionInterface,
-        private val shopInfoPeriodUseCase: GetShopInfoPeriodUseCase,
-        private val getShopPerformanceUseCase: GetShopPerformanceUseCase
+    private val dispatchers: CoroutineDispatchers,
+    private val shopScoreMapper: ShopScoreMapper,
+    val userSession: UserSessionInterface,
+    private val shopInfoPeriodUseCase: Lazy<GetShopInfoPeriodUseCase>,
+    private val getShopPerformanceUseCase: Lazy<GetShopPerformanceUseCase>
 ) : BaseViewModel(dispatchers.main) {
 
     val shopInfoLevel: LiveData<ShopInfoLevelUiModel>
@@ -45,7 +46,8 @@ class ShopPerformanceViewModel @Inject constructor(
     val shopInfoPeriod: LiveData<Result<ShopInfoPeriodUiModel>>
         get() = _shopInfoPeriod
 
-    private val _shopPerformancePage = MutableLiveData<Result<Pair<List<BaseShopPerformance>, ShopScoreWrapperResponse>>>()
+    private val _shopPerformancePage =
+        MutableLiveData<Result<Pair<List<BaseShopPerformance>, ShopScoreWrapperResponse>>>()
 
     private val _shopInfoLevel = MutableLiveData<ShopInfoLevelUiModel>()
     private val _shopPerformanceDetail = MutableLiveData<ShopPerformanceDetailUiModel>()
@@ -55,38 +57,49 @@ class ShopPerformanceViewModel @Inject constructor(
     fun getShopInfoPeriod() {
         launchCatchError(block = {
             val dataShopInfo = withContext(dispatchers.io) {
-                shopInfoPeriodUseCase.requestParams = GetShopInfoPeriodUseCase.createParams(userSession.shopId.toLongOrZero())
-                shopInfoPeriodUseCase.executeOnBackground()
+                shopInfoPeriodUseCase.get().requestParams =
+                    GetShopInfoPeriodUseCase.createParams(userSession.shopId.toLongOrZero())
+                shopInfoPeriodUseCase.get().executeOnBackground()
             }
-            _shopInfoPeriod.postValue(Success(dataShopInfo))
+            _shopInfoPeriod.value = Success(dataShopInfo)
         }, onError = {
-            _shopInfoPeriod.postValue(Fail(it))
+            _shopInfoPeriod.value = Fail(it)
         })
     }
 
     fun getShopScoreLevel(shopInfoPeriodUiModel: ShopInfoPeriodUiModel) {
         launchCatchError(block = {
             val shopScoreLevelResponse = withContext(dispatchers.io) {
-                getShopPerformanceUseCase.requestParams = GetShopPerformanceUseCase.createParams(
-                        userSession.shopId.toIntOrZero(), ShopScoreLevelParam(shopID = userSession.shopId),
-                        ShopLevelTooltipParam(shopID = userSession.shopId)
+                getShopPerformanceUseCase.get().requestParams = GetShopPerformanceUseCase.createParams(
+                    userSession.shopId.toLongOrZero(),
+                    ShopScoreLevelParam(shopID = userSession.shopId),
+                    ShopLevelTooltipParam(shopID = userSession.shopId)
                 )
-                getShopPerformanceUseCase.executeOnBackground()
+                getShopPerformanceUseCase.get().executeOnBackground()
             }
-            val shopScoreLevelData = shopScoreMapper.mapToShopPerformanceVisitable(shopScoreLevelResponse, shopInfoPeriodUiModel)
-            _shopPerformancePage.postValue(Success(Pair(shopScoreLevelData, shopScoreLevelResponse)))
+            val shopScoreLevelData = shopScoreMapper.mapToShopPerformanceVisitable(
+                shopScoreLevelResponse,
+                shopInfoPeriodUiModel
+            )
+            _shopPerformancePage.value = Success(
+                    Pair(
+                        shopScoreLevelData,
+                        shopScoreLevelResponse
+                    )
+                )
         }, onError = {
-            _shopPerformancePage.postValue(Fail(it))
+            _shopPerformancePage.value = Fail(it)
         })
     }
 
     fun getShopPerformanceDetail(identifierPerformance: String) {
         launch {
-            _shopPerformanceDetail.value = shopScoreMapper.mapToShopPerformanceDetail(identifierPerformance)
+            _shopPerformanceDetail.value =
+                shopScoreMapper.mapToShopPerformanceDetail(identifierPerformance)
         }
     }
 
-    fun getShopInfoLevel(level: Int) {
+    fun getShopInfoLevel(level: Long) {
         launch {
             _shopInfoLevel.value = shopScoreMapper.mapToShopInfoLevelUiModel(level)
         }

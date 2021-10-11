@@ -4,8 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.util.Log
 import com.github.anrwatchdog.ANRWatchDog
-import com.github.moduth.blockcanary.BlockCanary
-import com.github.moduth.blockcanary.BlockCanaryContext
 import com.gu.toolargetool.TooLargeTool
 import com.tokopedia.dev_monitoring_tools.anr.ANRListener
 import com.tokopedia.dev_monitoring_tools.config.DevMonitoringToolsConfig
@@ -42,10 +40,6 @@ class DevMonitoring(private var context: Context) {
     fun initTooLargeTool(application: Application) {
         val minSizeLog = devMonitoringToolsConfig.tooLargeToolMinSizeLog
         TooLargeTool.startLogging(application, TooLargeToolFormatter(minSizeLog, devMonitoringToolsConfig.userJourneySize), TooLargeToolLogger())
-    }
-
-    fun initBlockCanary() {
-        BlockCanary.install(context, BlockCanaryContext()).start()
     }
 
     fun initLeakCanary(enable: Boolean = true) {

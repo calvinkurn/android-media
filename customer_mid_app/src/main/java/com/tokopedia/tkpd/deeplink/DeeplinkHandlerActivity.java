@@ -12,7 +12,6 @@ import androidx.core.app.TaskStackBuilder;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
-import com.appsflyer.AppsFlyerLib;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
@@ -22,6 +21,7 @@ import com.tokopedia.applink.TkpdApplinkDelegate;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.explore.applink.ExploreApplinkModule;
@@ -50,8 +50,6 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.utils.uri.DeeplinkUtils;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
-import com.tokopedia.webview.WebViewApplinkModule;
-import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -63,18 +61,17 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
         ExploreApplinkModule.class,
-        HomeCreditAppLinkModule.class,
-        WebViewApplinkModule.class,
+        HomeCreditAppLinkModule.class
 })
 
-public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
+public class
+DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
 
     private static final String ENABLE_ASYNC_APPLINK_DELEGATE_CREATION = "android_async_applink_delegate_creation";
     private static final String TOKOPEDIA_DOMAIN = "tokopedia";
@@ -89,8 +86,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new OvoUpgradeDeeplinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
-                    new HomeCreditAppLinkModuleLoader(),
-                    new WebViewApplinkModuleLoader()
+                    new HomeCreditAppLinkModuleLoader()
             );
         }
 
@@ -141,10 +137,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         GratificationSubscriber.addActivityNameToExclude(getClass().getCanonicalName());
         super.onCreate(savedInstanceState);
         ApplinkDelegate deepLinkDelegate = getApplinkDelegateInstance();
-
-        if (!GlobalConfig.isSellerApp()) {
-            AppsFlyerLib.getInstance().sendDeepLinkData(this);
-        }
 
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null && getIntent().getData()!= null) {
@@ -295,8 +287,18 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     private void iniBranchIO(Context context) {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_BRANCH_INIT_DEEPLINKHANDLER)) {
-            LinkerManager.getInstance().initSession();
+            LinkerManager.getInstance().initSession(this, uriHaveCampaignData());
         }
+    }
+
+    private boolean uriHaveCampaignData(){
+        boolean uriHaveCampaignData = false;
+        if (getIntent() != null && getIntent().getData()!= null) {
+            String applinkString = getIntent().getData().toString().replaceAll("%", "%25");
+            Uri applink = Uri.parse(applinkString);
+            uriHaveCampaignData = DeeplinkUTMUtils.isValidCampaignUrl(applink);
+        }
+        return uriHaveCampaignData;
     }
 
     private void logDeeplink() {

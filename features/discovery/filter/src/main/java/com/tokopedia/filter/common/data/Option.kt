@@ -3,6 +3,7 @@ package com.tokopedia.filter.common.data
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -32,7 +33,7 @@ class Option(@SerializedName("name")
 
              @SerializedName(value = "total_data", alternate = ["totalData"])
              @Expose
-             private var totalData: String = "",
+             var totalData: String = "",
 
              @SerializedName(value = "val_min", alternate = ["valMin"])
              @Expose
@@ -62,7 +63,25 @@ class Option(@SerializedName("name")
              @Expose
              var levelTwoCategoryList: List<LevelTwoCategory> = listOf(),
 
-             var inputState: String = "") : Parcelable {
+             var inputState: String = "") : Parcelable, Cloneable {
+
+    public override fun clone(): Option {
+        return Option(
+                name = name,
+                key = key,
+                value = value,
+                inputType = inputType,
+                hexColor = hexColor,
+                metric = metric,
+                totalData = totalData,
+                valMin = valMin,
+                iconUrl = iconUrl,
+                description = description,
+                isPopular = isPopular,
+                isNew = isNew,
+                inputState = inputState
+        )
+    }
 
     val isAnnotation: Boolean
         get() = KEY_ANNOTATION_ID.equals(key)
@@ -124,6 +143,8 @@ class Option(@SerializedName("name")
         const val KEY_OFFICIAL = "official"
         const val KEY_RATING = "rt"
         const val KEY_ANNOTATION_ID = "annotation_id"
+        const val KEY_MAIN_KEYWORD = "main_keyword"
+        const val KEY_NEGATIVE_KEYWORD = "negative_keyword"
 
         const val INPUT_TYPE_TEXTBOX = "textbox"
         const val INPUT_TYPE_CHECKBOX = "checkbox"

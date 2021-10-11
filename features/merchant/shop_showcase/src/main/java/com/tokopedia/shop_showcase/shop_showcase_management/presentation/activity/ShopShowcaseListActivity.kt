@@ -1,6 +1,8 @@
 package com.tokopedia.shop_showcase.shop_showcase_management.presentation.activity
 
 import android.os.Bundle
+import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.etalase.DeepLinkMapperEtalase
@@ -12,8 +14,6 @@ import com.tokopedia.shop_showcase.common.PageNameConstant
 import com.tokopedia.shop_showcase.common.ShopShowcaseFragmentNavigation
 import com.tokopedia.shop_showcase.common.ShopShowcaseListParam
 import com.tokopedia.shop_showcase.common.ShopType
-import com.tokopedia.shop_showcase.common.util.ShopShowcaseAbTestUtil.isNotRegularMerchant
-import com.tokopedia.shop_showcase.common.util.ShopShowcaseAbTestUtil.isShouldCheckShopType
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.fragment.*
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -23,7 +23,10 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
     companion object {
         const val REQUEST_CODE_ADD_ETALASE = 289
 
+        @LayoutRes
         val ACTIVITY_LAYOUT = R.layout.activity_shop_showcase_list_container
+
+        @IdRes
         val PARENT_VIEW_ACTIVITY = R.id.parent_view
     }
 
@@ -37,6 +40,7 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
     private var isShowZeroProduct: Boolean = true
     private var shopType = ShopType.REGULAR
     private var isNeedToGoToAddShowcase: Boolean = false
+    private var isNeedToOpenCreateShowcase: Boolean = false
     private var isNeedToOpenShowcasePicker: String = ""
     private var isNeedToOpenReorder: Boolean = false
     private var isSellerNeedToHideShowcaseGroupValue: Boolean = false
@@ -55,6 +59,7 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
             isShowZeroProduct = bundle.getBoolean(ShopShowcaseParamConstant.EXTRA_IS_SHOW_ZERO_PRODUCT, true)
             isSellerNeedToHideShowcaseGroupValue = bundle.getBoolean(ShopShowcaseParamConstant.EXTRA_IS_SELLER_NEED_TO_HIDE_SHOWCASE_GROUP_VALUE, false)
             isNeedToGoToAddShowcase = bundle.getBoolean(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE, false)
+            isNeedToGoToAddShowcase = bundle.getBoolean(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_OPEN_CREATE_SHOWCASE, false)
             isNeedToOpenShowcasePicker = bundle.getString(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_OPEN_SHOWCASE_PICKER, "")
             preSelectedShowcaseListPicker = bundle.getParcelableArrayList(ShopShowcaseParamConstant.EXTRA_PRE_SELECTED_SHOWCASE_PICKER)
             productId = bundle.getString(ShopShowcaseParamConstant.EXTRA_PICKER_PRODUCT_ID, "")
@@ -85,17 +90,7 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
 
     override fun getNewFragment(): Fragment? {
         return when {
-            isNeedToOpenShowcasePicker.isNotEmpty() -> {
-                ShopShowcasePickerFragment.createInstance(
-                        shopId,
-                        isMyShop(),
-                        shopType,
-                        isNeedToOpenShowcasePicker,
-                        preSelectedShowcaseListPicker,
-                        productId,
-                        productName
-                )
-            }
+            isNeedToOpenShowcasePicker.isNotEmpty() -> getShowcasePickerFragment()
             isNeedToOpenReorder -> getShowcaseListReorderFragment()
             else -> getShowcaseListFragment()
         }
@@ -117,63 +112,33 @@ class ShopShowcaseListActivity : BaseSimpleActivity(), ShopShowcaseFragmentNavig
         }
     }
 
+    private fun getShowcasePickerFragment(): Fragment {
+        return ShopShowcasePickerFragment.createInstance(
+                shopId,
+                isMyShop(),
+                shopType,
+                isNeedToOpenShowcasePicker,
+                preSelectedShowcaseListPicker,
+                productId,
+                productName
+        )
+    }
+
     private fun getShowcaseListReorderFragment(): Fragment {
-        return if (isShouldCheckShopType()) {
-            // if ab test on, check shop type
-            if (isNotRegularMerchant(shopType)) {
-                // return new revamped showcase reorder list
-                ShopShowcaseListReorderFragment.createInstance(shopType, listShowcase, isMyShop())
-            } else {
-                // return old showcase reorder list
-                ShopShowcaseListReorderFragmentOld.createInstance(shopType, listShowcase, isMyShop())
-            }
-        } else {
-            // if ab test is off, by default its return new revamped showcase reorder list
-            ShopShowcaseListReorderFragment.createInstance(shopType, listShowcase, isMyShop())
-        }
+        return ShopShowcaseListReorderFragment.createInstance(shopType, listShowcase, isMyShop())
     }
 
     private fun getShowcaseListFragment(): Fragment {
-        return if (isShouldCheckShopType()) {
-            // if ab test on, check shop type
-            if (isNotRegularMerchant(shopType)) {
-                // return new revamped showcase list
-                ShopShowcaseListFragment.createInstance(
-                        shopType = shopType,
-                        shopId = shopId,
-                        selectedEtalaseId = selectedEtalaseId,
-                        isShowDefault = isShowDefault,
-                        isShowZeroProduct = isShowZeroProduct,
-                        isMyShop = isMyShop(),
-                        isNeedToGoToAddShowcase = isNeedToGoToAddShowcase,
-                        isSellerNeedToHideShowcaseGroupValue = isSellerNeedToHideShowcaseGroupValue
-                )
-            } else {
-                // return old showcase list
-                ShopShowcaseListFragmentOld.createInstance(
-                        shopType = shopType,
-                        shopId = shopId,
-                        selectedEtalaseId = selectedEtalaseId,
-                        isShowDefault = isShowDefault,
-                        isShowZeroProduct = isShowZeroProduct,
-                        isMyShop = isMyShop(),
-                        isNeedToGoToAddShowcase = isNeedToGoToAddShowcase,
-                        isSellerNeedToHideShowcaseGroupValue = isSellerNeedToHideShowcaseGroupValue
-                )
-            }
-        } else {
-            // if ab test is off, by default its return new revamped showcase list
-            ShopShowcaseListFragment.createInstance(
-                    shopType = shopType,
-                    shopId = shopId,
-                    selectedEtalaseId = selectedEtalaseId,
-                    isShowDefault = isShowDefault,
-                    isShowZeroProduct = isShowZeroProduct,
-                    isMyShop = isMyShop(),
-                    isNeedToGoToAddShowcase = isNeedToGoToAddShowcase,
-                    isSellerNeedToHideShowcaseGroupValue = isSellerNeedToHideShowcaseGroupValue
-            )
-        }
+        return ShopShowcaseListFragment.createInstance(
+                shopType = shopType,
+                shopId = shopId,
+                selectedEtalaseId = selectedEtalaseId,
+                isShowDefault = isShowDefault,
+                isShowZeroProduct = isShowZeroProduct,
+                isMyShop = isMyShop(),
+                isNeedToGoToAddShowcase = isNeedToGoToAddShowcase,
+                isSellerNeedToHideShowcaseGroupValue = isSellerNeedToHideShowcaseGroupValue
+        )
     }
 
     /**

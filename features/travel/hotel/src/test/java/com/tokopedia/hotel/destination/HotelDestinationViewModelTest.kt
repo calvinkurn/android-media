@@ -1,7 +1,6 @@
 package com.tokopedia.hotel.destination
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -14,6 +13,7 @@ import com.tokopedia.hotel.destination.usecase.GetPropertyPopularUseCase
 import com.tokopedia.hotel.destination.view.viewmodel.HotelDestinationViewModel
 import com.tokopedia.hotel.destination.view.viewmodel.Loaded
 import com.tokopedia.locationmanager.DeviceLocation
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -186,7 +186,7 @@ class HotelDestinationViewModelTest {
                 mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlSuccessResponse
 
         //when
@@ -205,7 +205,7 @@ class HotelDestinationViewModelTest {
                 mapOf<Type, List<GraphqlError>>(HotelSuggestion.Response::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlErrorResponse
 
         //when
@@ -224,7 +224,7 @@ class HotelDestinationViewModelTest {
                 mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlSuccessResponse
 
         coEvery {
@@ -246,7 +246,7 @@ class HotelDestinationViewModelTest {
                 mapOf<Type, List<GraphqlError>>(RecentSearch.DeleteResponse::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlErrorResponse
 
         coEvery {

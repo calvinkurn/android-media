@@ -62,10 +62,13 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
     }
 
     override fun getItemId(position: Int): Long {
-        if (componentList.isNullOrEmpty() || position >= componentList.size || componentList[position].data.isNullOrEmpty()) {
+        if (componentList.isNullOrEmpty() || position >= componentList.size ||
+            componentList[position].data.isNullOrEmpty()
+        ) {
             return super.getItemId(position)
         }
-        return componentList[position].data?.get(0)?.productId?.toLong()!!
+        return componentList[position].data?.firstOrNull()?.productId?.toLongOrNull()
+            ?: super.getItemId(position)
     }
 
     fun addDataList(dataList: List<ComponentsItem>) {
@@ -131,6 +134,6 @@ class ComponentsDiffCallBacks : DiffUtil.ItemCallback<ComponentsItem>() {
     }
 
     override fun areContentsTheSame(oldItem: ComponentsItem, newItem: ComponentsItem): Boolean {
-        return newItem == oldItem
+        return newItem == oldItem && oldItem.shouldRefreshComponent?.equals(false)?:true
     }
 }

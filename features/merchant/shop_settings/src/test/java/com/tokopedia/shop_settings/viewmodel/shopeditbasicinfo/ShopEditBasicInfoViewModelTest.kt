@@ -103,8 +103,6 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
             verifySuccessValidateShopNameRequestParamsCalled(shopName)
 
-            Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())
-
             verifySuccessValidateShopNameCalled()
 
             Assert.assertTrue(shopEditBasicInfoViewModel.validateShopName.value is Success)
@@ -124,8 +122,6 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
             advanceTimeBy(2000)
 
             verifySuccessValidateDomainNameRequestParamsCalled(domainName)
-
-            Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())
 
             verifySuccessValidateDomainNameCalled()
 
@@ -154,25 +150,17 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
     }
 
     @Test
-    fun `when validate shop name but must return cause shop name is the same as current shop name`() {
+    fun `when set shop data and shop name should be the same`() {
         val shopBasicDataModel = ShopBasicDataModel().apply {
             name = "shop"
         }
-        val shopName = "shop"
-        shopEditBasicInfoViewModel.setCurrentShopData(shopBasicDataModel)
-        shopEditBasicInfoViewModel.validateShopName(shopName)
-        assertTrue((privateCurrentShopField.get(shopEditBasicInfoViewModel) as ShopBasicDataModel).name == shopName)
-    }
 
-    @Test
-    fun `when validate domain name but must return cause domain name is the same as current domain name`() {
-        val shopBasicDataModel = ShopBasicDataModel().apply {
-            domain = "domain"
-        }
-        val shopDomain = "domain"
+        val shopName = "shop"
+        shopEditBasicInfoViewModel.setShopName(shopName)
         shopEditBasicInfoViewModel.setCurrentShopData(shopBasicDataModel)
-        shopEditBasicInfoViewModel.validateShopDomain(shopDomain)
-        assertTrue((privateCurrentShopField.get(shopEditBasicInfoViewModel) as ShopBasicDataModel).domain == shopDomain)
+
+        assertTrue((privateCurrentShopNameField).get(shopEditBasicInfoViewModel) == shopName)
+        assertTrue((privateCurrentShopField.get(shopEditBasicInfoViewModel) as ShopBasicDataModel).name == shopName)
     }
 
     @Test

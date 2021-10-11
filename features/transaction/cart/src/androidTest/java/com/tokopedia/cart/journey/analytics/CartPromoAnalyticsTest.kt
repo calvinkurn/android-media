@@ -6,10 +6,10 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cart.robot.cartPage
 import com.tokopedia.cart.test.R
 import com.tokopedia.cart.view.CartActivity
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
@@ -31,11 +31,11 @@ class CartPromoAnalyticsTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private val gtmLogDBSource = GtmLogDBSource(context)
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
 
     @Before
     fun setup() {
-        gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse {
             addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.cart_analytics_promo_response), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(UPDATE_CART_KEY, InstrumentationMockHelper.getRawString(context, R.raw.update_cart_response), MockModelConfig.FIND_BY_CONTAINS)
@@ -52,7 +52,7 @@ class CartPromoAnalyticsTest {
             waitForData()
             clickPromoButton()
         } validateAnalytics {
-            hasPassedAnalytics(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
         }
 
         // Prevent glide crash
@@ -61,7 +61,6 @@ class CartPromoAnalyticsTest {
 
     @After
     fun cleanup() {
-        gtmLogDBSource.deleteAll().subscribe()
         if (activityRule.activity?.isDestroyed == false) activityRule.finishActivity()
     }
 

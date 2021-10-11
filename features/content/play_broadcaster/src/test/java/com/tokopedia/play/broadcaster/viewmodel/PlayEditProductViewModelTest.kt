@@ -37,6 +37,7 @@ class PlayEditProductViewModelTest {
     private lateinit var mockSetupDataStore: MockSetupDataStore
     private lateinit var titleDataStore: TitleDataStore
     private lateinit var tagsDataStore: TagsDataStore
+    private lateinit var interactiveDataStore: InteractiveDataStore
 
     private lateinit var viewModel: PlayEditProductViewModel
 
@@ -45,8 +46,12 @@ class PlayEditProductViewModelTest {
     private val channelId = "12345"
 
     private val productDataList = List(3) {
-        modelBuilder.buildProductData(id = it.toLong() + 1)
+        modelBuilder.buildProductData(id = (it + 1).toString())
     }
+
+    val productId1 = 1.toString()
+    val productId2 = 2.toString()
+    val productId3 = 3.toString()
 
     @Before
     fun setUp() {
@@ -57,7 +62,8 @@ class PlayEditProductViewModelTest {
         broadcastScheduleDataStore = BroadcastScheduleDataStoreImpl(dispatcherProvider, mockk())
         titleDataStore = TitleDataStoreImpl(dispatcherProvider, mockk(), mockk())
         tagsDataStore = TagsDataStoreImpl(dispatcherProvider, mockk())
-        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore, broadcastScheduleDataStore, titleDataStore, tagsDataStore)
+        interactiveDataStore = InteractiveDataStoreImpl()
+        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore, broadcastScheduleDataStore, titleDataStore, tagsDataStore, interactiveDataStore)
 
         productDataStore.setSelectedProducts(productDataList)
 
@@ -73,50 +79,50 @@ class PlayEditProductViewModelTest {
     @Test
     fun `when unselect product, then the product should be selected`() {
         Assertions
-                .assertThat(productDataStore.isProductSelected(1))
+                .assertThat(productDataStore.isProductSelected(productId1))
                 .isEqualTo(true)
 
-        viewModel.selectProduct(1, false)
+        viewModel.selectProduct(productId1, false)
 
         Assertions
-                .assertThat(productDataStore.isProductSelected(1))
+                .assertThat(productDataStore.isProductSelected(productId1))
                 .isEqualTo(false)
 
         Assertions
                 .assertThat(productDataStore.selectedProductsId)
-                .containsExactlyInAnyOrder(2, 3)
+                .containsExactlyInAnyOrder(productId2, productId3)
 
-        viewModel.selectProduct(2, false)
+        viewModel.selectProduct(productId2, false)
 
         Assertions
                 .assertThat(productDataStore.selectedProductsId)
-                .containsExactlyInAnyOrder(3)
+                .containsExactlyInAnyOrder(productId3)
     }
 
     @Test
     fun `when un-select product and then select it, then the product should be selected`() {
-        viewModel.selectProduct(1, false)
+        viewModel.selectProduct(productId1, false)
 
         Assertions
-                .assertThat(productDataStore.isProductSelected(1))
+                .assertThat(productDataStore.isProductSelected(productId1))
                 .isEqualTo(false)
 
-        viewModel.selectProduct(1, true)
+        viewModel.selectProduct(productId1, true)
 
         Assertions
-                .assertThat(productDataStore.isProductSelected(1))
+                .assertThat(productDataStore.isProductSelected(productId1))
                 .isEqualTo(true)
 
         Assertions
                 .assertThat(productDataStore.selectedProductsId)
-                .containsExactlyInAnyOrder(1, 2, 3)
+                .containsExactlyInAnyOrder(productId1, productId2, productId3)
     }
 
     @Test
     fun `when select product that is not selected before, then it should throw exception`() {
         Assertions
                 .assertThatIllegalStateException()
-                .isThrownBy { viewModel.selectProduct(5, true) }
+                .isThrownBy { viewModel.selectProduct(5.toString(), true) }
     }
 
     @Test
@@ -151,7 +157,7 @@ class PlayEditProductViewModelTest {
 
         Assertions
                 .assertThat(viewModel.selectedProducts.map { it.id })
-                .containsExactlyInAnyOrder(1, 2, 3)
+                .containsExactlyInAnyOrder(productId1, productId2, productId3)
     }
 
     @Test
@@ -160,13 +166,13 @@ class PlayEditProductViewModelTest {
                 .assertThat(viewModel.observableSelectedProducts.getOrAwaitValue())
                 .hasSize(3)
 
-        viewModel.selectProduct(1, false)
+        viewModel.selectProduct(productId1, false)
 
         Assertions
                 .assertThat(viewModel.observableSelectedProducts.getOrAwaitValue())
                 .hasSize(2)
 
-        viewModel.selectProduct(1, true)
+        viewModel.selectProduct(productId1, true)
 
         Assertions
                 .assertThat(viewModel.observableSelectedProducts.getOrAwaitValue())

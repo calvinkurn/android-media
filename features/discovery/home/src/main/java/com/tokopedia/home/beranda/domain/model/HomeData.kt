@@ -19,6 +19,12 @@ data class HomeData(
     var homeFlag: HomeFlag = HomeFlag(),
     var token: String = "",
     var atfData: HomeAtfData? = HomeAtfData(),
-    var atfErrorString: String = "",
+    /**
+     * is processing dynamic channel means home still getting dynamic channel from repository
+     * and no dynamic channel provided yet.
+     *
+     * Note that dynamic channel is different with ATF data
+     *
+     */
     var isProcessingDynamicChannel: Boolean = false
 )

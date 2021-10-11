@@ -13,5 +13,5 @@
   
   <stroke
     android:width="@dimen/spacing_lvl1"
-    android:color="#A6FFFFFF" />
+    android:color="@color/Unify_N0_68" />
 </shape>

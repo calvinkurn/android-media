@@ -157,7 +157,7 @@ class ManageAddressViewModelTest {
 
     @Test
     fun `Get Chosen Address Success`() {
-        coEvery { chooseAddressRepo.getStateChosenAddress(any()) } returns GetStateChosenAddressQglResponse()
+        coEvery { chooseAddressRepo.getStateChosenAddress(any(), any()) } returns GetStateChosenAddressQglResponse()
         manageAddressViewModel.getStateChosenAddress("address")
         verify { chosenAddressObserver.onChanged(match { it is Success }) }
     }
@@ -165,7 +165,7 @@ class ManageAddressViewModelTest {
 
     @Test
     fun `Get Chosen Address Fail`() {
-        coEvery { chooseAddressRepo.getStateChosenAddress(any()) } throws Throwable("test error")
+        coEvery { chooseAddressRepo.getStateChosenAddress(any(), any()) } throws Throwable("test error")
         manageAddressViewModel.getStateChosenAddress("address")
         verify { chosenAddressObserver.onChanged(match { it is Fail }) }
     }

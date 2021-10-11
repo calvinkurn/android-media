@@ -27,12 +27,15 @@ import kotlinx.android.synthetic.main.topads_dash_item_with_group_card.view.*
  */
 
 private const val CLICK_ATUR_IKLAN = "click - atur iklan"
-
+private const val CLICK_IMG_MENU = "click - edit group button"
+private const val CLICK_NON_AKTIFKAN = "click - nonaktifkan group ads"
+private const val CLICK_UHBAH = "click - ubah iklan group ads"
+private const val CLICK_HAPUS = "click - hapus iklan group ads"
 class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean) -> Unit),
                                var actionDelete: ((pos: Int) -> Unit),
                                var actionStatusChange: ((pos: Int, status: Int) -> Unit),
-                               private var editDone: ((groupId: Int, strategy: String) -> Unit),
-                               private var onClickItem: ((id: Int, priceSpent: String, groupName: String) -> Unit)) : GroupItemsViewHolder<GroupItemsItemModel>(view) {
+                               private var editDone: ((groupId: String, strategy: String) -> Unit),
+                               private var onClickItem: ((id: String, priceSpent: String, groupName: String) -> Unit)) : GroupItemsViewHolder<GroupItemsItemModel>(view) {
 
     companion object {
         @LayoutRes
@@ -121,8 +124,10 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
         }
 
         view.img_menu.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_IMG_MENU, "")
             sheet?.show(((view.context as FragmentActivity).supportFragmentManager), item.data.groupStatus, item.data.groupName, item.data.groupId)
             sheet?.onEditAction = {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_UHBAH, "")
                 if(item.data.strategies.size > 0 && item.data.strategies.isNotEmpty()) {
                     editDone.invoke(item.data.groupId, item.data.strategies[0])
                 } else {
@@ -131,10 +136,13 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_ATUR_IKLAN, "")
             }
             sheet?.onDeleteClick = {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_HAPUS, "")
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionDelete(adapterPosition)
             }
             sheet?.changeStatus = {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(
+                    CLICK_NON_AKTIFKAN, "")
                 if (adapterPosition != RecyclerView.NO_POSITION)
                     actionStatusChange(adapterPosition, it)
             }

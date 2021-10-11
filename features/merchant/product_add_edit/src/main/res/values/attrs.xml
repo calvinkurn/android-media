@@ -8,4 +8,7 @@
         <attr name="textDescription" format="string" />
         <attr name="textTitleDescription" format="string" />
     </declare-styleable>
+    <declare-styleable name="TitleCorrectionView">
+        <attr name="title" format="string" />
+    </declare-styleable>
 </resources>

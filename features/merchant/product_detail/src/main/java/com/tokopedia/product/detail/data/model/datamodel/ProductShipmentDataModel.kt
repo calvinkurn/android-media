@@ -2,8 +2,8 @@ package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
-import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 /**
@@ -19,11 +19,12 @@ data class ProductShipmentDataModel(
         var tokoCabangIconUrl: String = "",
         var isCod: Boolean = false,
         var shouldShowShipmentError: Boolean = false,
-        var localDestination: String = ""
+        var localDestination: String = "",
+        var isTokoNow: Boolean = false
 ) : DynamicPdpDataModel {
 
     fun isBoeType(): Boolean {
-        return freeOngkirType == ProductDetailConstant.BEBAS_ONGKIR_EXTRA
+        return freeOngkirType == ProductDetailCommonConstant.BEBAS_ONGKIR_EXTRA
     }
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {

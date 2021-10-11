@@ -15,11 +15,11 @@ import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataMode
 import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
-import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
+import com.tokopedia.loginregister.discover.pojo.DiscoverData
+import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.domain.usecase.CheckHasOvoAccUseCase
-import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
@@ -44,13 +44,14 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import junit.framework.TestCase.assertEquals
+import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.MatcherAssert
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import rx.Subscriber
-import java.util.*
 
 class RegisterInitialViewModelTest {
 
@@ -70,14 +71,14 @@ class RegisterInitialViewModelTest {
 
     val userSession = mockk<UserSessionInterface>(relaxed = true)
     val rawQueries = mapOf(
-            RegisterInitialQueryConstant.MUTATION_REGISTER_CHECK to "test",
+            RegisterInitialQueryConstant.MUTATION_REGISTER_CHECK to "test2",
             RegisterInitialQueryConstant.MUTATION_REGISTER_REQUEST to "test"
     )
 
     private var registerCheckObserver = mockk<Observer<Result<RegisterCheckData>>>(relaxed = true)
     private var registerRequestObserver = mockk<Observer<Result<RegisterRequestData>>>(relaxed = true)
     private var activateUserObserver = mockk<Observer<Result<ActivateUserData>>>(relaxed = true)
-    private var discoverObserver = mockk<Observer<Result<ArrayList<DiscoverItemDataModel>>>>(relaxed = true)
+    private var discoverObserver = mockk<Observer<Result<DiscoverData>>>(relaxed = true)
     private var getFacebookObserver = mockk<Observer<Result<FacebookCredentialData>>>(relaxed = true)
     private var showPopupErrorObserver = mockk<Observer<PopupError>>(relaxed = true)
     private var goToActivationPageObserver = mockk<Observer<MessageErrorException>>(relaxed = true)
@@ -159,9 +160,7 @@ class RegisterInitialViewModelTest {
         val responseData = RegisterCheckData()
         val response = RegisterCheckPojo(data = responseData)
 
-        every { registerCheckUseCase.execute(any(), any()) } answers {
-            firstArg<(RegisterCheckPojo) -> Unit>().invoke(response)
-        }
+        coEvery { registerCheckUseCase.executeOnBackground() } returns response
 
         viewModel.registerCheck(testId)
 
@@ -173,9 +172,7 @@ class RegisterInitialViewModelTest {
     fun `on Failed Register Check`() {
         val testId = "123456"
 
-        every { registerCheckUseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(throwable)
-        }
+        coEvery { registerCheckUseCase.executeOnBackground() } throws throwable
 
         viewModel.registerCheck(testId)
 
@@ -189,9 +186,7 @@ class RegisterInitialViewModelTest {
         val responseData = RegisterRequestData(accessToken = "asda", refreshToken = "asdasd", tokenType = "kfkfk")
         val response = RegisterRequestPojo(data = responseData)
 
-        every { registerRequestUseCase.execute(any(), any()) } answers {
-            firstArg<(RegisterRequestPojo) -> Unit>().invoke(response)
-        }
+        coEvery { registerRequestUseCase.executeOnBackground() } returns response
 
         viewModel.registerRequest("", "", "", "")
 
@@ -234,9 +229,8 @@ class RegisterInitialViewModelTest {
 
     @Test
     fun `on Failed Register Request`() {
-        every { registerRequestUseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(throwable)
-        }
+
+        coEvery { registerRequestUseCase.executeOnBackground() } throws throwable
 
         viewModel.registerRequest("", "", "", "")
 
@@ -339,43 +333,25 @@ class RegisterInitialViewModelTest {
     @Test
     fun `on Success Discover`() {
         /* When */
-        val discoverViewModel = DiscoverDataModel(arrayListOf(
-                DiscoverItemDataModel("123", "", "", "", "")
-        ), "")
+        val discoverPojo = DiscoverPojo()
 
-        every { discoverUseCase.execute(any(), any()) } answers {
-            secondArg<Subscriber<DiscoverDataModel>>().onNext(discoverViewModel)
-        }
+        coEvery { discoverUseCase(any()) } returns discoverPojo
 
         viewModel.getProvider()
 
         /* Then */
-        verify { discoverObserver.onChanged(Success(discoverViewModel.providers)) }
-    }
-
-    @Test
-    fun `on Providers Empty Error`() {
-        /* When */
-        every { discoverUseCase.execute(any(), any()) } answers {
-            secondArg<Subscriber<DiscoverDataModel>>().onError(throwable)
-        }
-
-        viewModel.getProvider()
-
-        /* Then */
-        assertThat(viewModel.getProviderResponse.value, instanceOf(Fail::class.java))
+        verify { discoverObserver.onChanged(Success(discoverPojo.data)) }
     }
 
     @Test
     fun `on Failed Discover`() {
         /* When */
-        every { discoverUseCase.execute(any(), any()) } answers {
-            secondArg<Subscriber<DiscoverDataModel>>().onError(throwable)
-        }
+        coEvery { discoverUseCase(any()) } throws throwable
 
         viewModel.getProvider()
 
         /* Then */
+        MatcherAssert.assertThat(viewModel.getProviderResponse.value, CoreMatchers.instanceOf(Fail::class.java))
         verify { discoverObserver.onChanged(Fail(throwable)) }
     }
 
@@ -881,7 +857,6 @@ class RegisterInitialViewModelTest {
             registerRequestUseCase.cancelJobs()
             registerCheckUseCase.cancelJobs()
             tickerInfoUseCase.unsubscribe()
-            discoverUseCase.unsubscribe()
             loginTokenUseCase.unsubscribe()
             getProfileUseCase.unsubscribe()
         }

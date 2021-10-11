@@ -7,7 +7,7 @@ import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetail
 /**
  * @author by nisie on 5/18/17.
  */
-class FeedDetailItemModel(var productId: Int,
+class FeedDetailItemModel(var productId: String,
                           var name: String,
                           var price: String,
                           var priceOriginal: String,
@@ -17,7 +17,10 @@ class FeedDetailItemModel(var productId: Int,
                           var isWishlist: Boolean,
                           var tags: List<TagsItem>,
                           val rating: Double,
-                          var countReview: String) : Visitable<FeedPlusDetailTypeFactory> {
+                          var countReview: String,
+                          var shopId: String = "",
+                          var activityId: String = ""
+      ) : Visitable<FeedPlusDetailTypeFactory> {
     override fun type(typeFactory: FeedPlusDetailTypeFactory): Int {
         return typeFactory.type(this)
     }

@@ -10,10 +10,10 @@
         <activity
             android:name="com.tokopedia.sellerhome.view.activity.SellerHomeActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustNothing"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/SellerHomeTheme">
+            android:theme="@style/SellerHomeTheme"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -110,6 +110,23 @@
                 <data
                     android:host="@string/host_sellerapp"
                     android:path="@string/path_centralized_promo_first_voucher"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".adminrestriction.view.activity.AdminRestrictionActivity"
+            android:label="@string/sah_admin_restriction_label"
+            android:theme="@style/SellerHomeTheme.Transparent"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_sellerapp"
+                    android:path="@string/path_admin_restriction"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

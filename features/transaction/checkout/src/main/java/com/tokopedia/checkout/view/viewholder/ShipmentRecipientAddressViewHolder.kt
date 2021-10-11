@@ -1,11 +1,13 @@
 package com.tokopedia.checkout.view.viewholder
 
+import android.annotation.SuppressLint
 import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.Space
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
@@ -57,12 +59,16 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
         LocalCacheHandler(itemView.context, KEY_ONBOARDING_CHECKOUT_ADDRESS)
     }
 
+    @SuppressLint("NewApi")
     fun bindViewHolder(recipientAddress: RecipientAddressModel, isShowOnboarding: Boolean) {
         renderChangeAddress(recipientAddress)
         if (recipientAddress.isTradeIn) {
             renderTradeInAddressWithTabs(recipientAddress)
         } else {
             renderNormalAddress(recipientAddress)
+        }
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            rlRecipientAddressLayout.foreground = ContextCompat.getDrawable(rlRecipientAddressLayout.context, com.tokopedia.purchase_platform.common.R.drawable.fg_enabled_item)
         }
         showOnboarding(isShowOnboarding)
     }
@@ -73,7 +79,9 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
         tvShipmentAddress.setType(HEADING_5)
         imgButtonTradeInInfo.visibility = View.VISIBLE
         separator.visibility = View.GONE
-        imgButtonTradeInInfo.setOnClickListener { v: View? -> shipmentAdapterActionListener.onClickTradeInInfo() }
+        imgButtonTradeInInfo.setOnClickListener {
+            shipmentAdapterActionListener.onClickTradeInInfo()
+        }
         if (tabUnifyTradeInAddress.getUnifyTabLayout().tabCount == 0) {
             tabUnifyTradeInAddress.addNewTab(tabUnifyTradeInAddress.context.getString(R.string.label_tab_trade_in_address_deliver))
             tabUnifyTradeInAddress.addNewTab(tabUnifyTradeInAddress.context.getString(R.string.label_tab_trade_in_address_pickup))
@@ -96,7 +104,9 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
             override fun onTabUnselected(tab: TabLayout.Tab) {}
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
-        tvChangeDropOff.setOnClickListener { view: View? -> shipmentAdapterActionListener.onChangeTradeInDropOffClicked() }
+        tvChangeDropOff.setOnClickListener {
+            shipmentAdapterActionListener.onChangeTradeInDropOffClicked()
+        }
     }
 
     private fun renderDisabledTab(recipientAddress: RecipientAddressModel) {
@@ -237,7 +247,9 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
         space.visibility = View.VISIBLE
         if (recipientAddress.selectedTabIndex == 0) {
             tvChangeAddressTop.visibility = View.VISIBLE
-            tvChangeAddressTop.setOnClickListener { v: View? -> shipmentAdapterActionListener.onChangeAddress() }
+            tvChangeAddressTop.setOnClickListener {
+                shipmentAdapterActionListener.onChangeAddress()
+            }
         } else {
             tvChangeAddressTop.visibility = View.GONE
         }

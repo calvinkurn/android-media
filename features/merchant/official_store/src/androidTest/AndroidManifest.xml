@@ -8,7 +8,10 @@
         android:label="Official Store Test"
         tools:replace="android:label">
         <activity
-            android:theme="@style/Theme.AppCompat"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:name=".environment.InstrumentationOfficialStoreTestActivity"/>
+        <activity
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:name=".environment.InstrumentationOfficialStoreTestFullActivity"/>
     </application>
 </manifest>

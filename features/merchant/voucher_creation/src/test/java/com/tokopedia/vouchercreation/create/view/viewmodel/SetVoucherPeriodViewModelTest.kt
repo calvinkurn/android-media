@@ -91,6 +91,32 @@ class SetVoucherPeriodViewModelTest {
     }
 
     @Test
+    fun `check if periodValidationLiveData value is null if end date is null`() = runBlocking {
+        with(mViewModel) {
+            val dummySuccessPeriodValidation = PeriodValidation()
+
+            coEvery {
+                periodValidationUseCase.executeOnBackground()
+            } returns dummySuccessPeriodValidation
+
+            setStartDateCalendar(DUMMY_CALENDAR)
+
+            validateVoucherPeriod()
+
+            assert(periodValidationLiveData.value == null)
+        }
+    }
+
+    @Test
+    fun `check if periodValidationLiveData value is null if start and end date is null`() = runBlocking {
+        with(mViewModel) {
+            validateVoucherPeriod()
+            assert(periodValidationLiveData.value == null)
+        }
+    }
+
+
+    @Test
     fun `fail validating voucher period`() = runBlocking {
         with(mViewModel) {
             val dummyThrowable = MessageErrorException("")

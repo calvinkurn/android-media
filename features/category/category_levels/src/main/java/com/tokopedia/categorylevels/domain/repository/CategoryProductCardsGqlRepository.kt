@@ -5,6 +5,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.LihatSemua
+import com.tokopedia.discovery2.data.productcarditem.Badges
 import com.tokopedia.discovery2.data.productcarditem.FreeOngkir
 import com.tokopedia.discovery2.data.productcarditem.LabelsGroup
 import com.tokopedia.discovery2.datamapper.getComponent
@@ -25,9 +26,9 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
         private const val RPC_PAGE_NUMBER = "rpc_page_number"
     }
 
-    override suspend fun getProducts(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): ArrayList<ComponentsItem> {
+    override suspend fun getProducts(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): Pair<ArrayList<ComponentsItem>,String?> {
         val page = queryParamterMap[RPC_PAGE_NUMBER] as String
-        return if(productComponentName  == ComponentNames.CategoryBestSeller.componentName){
+        val list =  if(productComponentName  == ComponentNames.CategoryBestSeller.componentName){
             val recommendationData =
                     recommendationUseCase.getData(getRecommendationRequestParam(page, getPageInfo(pageEndPoint).id.toString(), true))
             mapRecommendationToDiscoveryResponse(componentId, recommendationData, productComponentName)
@@ -36,6 +37,7 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
                     recommendationUseCase.getData(createRequestParams(page, getPageInfo(pageEndPoint).id.toString(), getComponent(componentId, pageEndPoint)))
             mapRecommendationToDiscoveryResponse(componentId, recommendationData, productComponentName)
         }
+        return Pair(list,null)
     }
 
     private fun getRecommendationRequestParam(page: String, componentId: String, isBestSeller : Boolean, queryParam : String = ""): GetRecommendationRequestParam {
@@ -106,6 +108,9 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
             dataItem.goldMerchant = it.isGold
             dataItem.officialStore = it.isOfficial
             dataItem.labelsGroupList = labelsGroupList
+            dataItem.badges = it.badgesUrl.map {
+                Badges("", image_url = it)
+            }
             dataItems.add(dataItem)
             componentsItem.id = it.productId.toString()
             componentsItem.data = dataItems

@@ -7,7 +7,7 @@ package com.tokopedia.digital_checkout.data
 object DigitalCheckoutQueries {
 
     fun getGetCartQuery() = """
-        query (${'$'}categoryId: Int!) {
+        query rechargeGetCart(${'$'}categoryId: Int!) {
           rechargeGetCart(CategoryID: ${'$'}categoryId) {
             id
             product_id
@@ -55,6 +55,7 @@ object DigitalCheckoutQueries {
                 code
               is_coupon
               discount_amount
+              discount_amount_label
               discount_price
               discounted_amount
               discounted_price

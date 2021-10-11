@@ -1,10 +1,12 @@
 package com.tokopedia.buyerorder.unifiedhistory.list.view.activity
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.FILTER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
+import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 
@@ -15,6 +17,10 @@ import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 // Uoh = Unified Order History
 class UohListActivity: BaseSimpleActivity() {
 
+    override fun getLayoutRes() = R.layout.activity_uoh
+
+    override fun getParentViewResourceID() = R.id.parent_view
+
     override fun getNewFragment(): UohListFragment {
         val bundle = Bundle()
         scanPathQuery(intent.data)
@@ -22,6 +28,12 @@ class UohListActivity: BaseSimpleActivity() {
             bundle.putAll(intent.extras)
         }
         return UohListFragment.newInstance(bundle)
+    }
+
+    override fun onNewIntent(newIntent: Intent?) {
+        super.onNewIntent(newIntent)
+        this.intent = newIntent
+        inflateFragment()
     }
 
     private fun scanPathQuery(data: Uri?) {

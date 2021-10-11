@@ -7,7 +7,7 @@ data class ResponseProductList(
         val result: Result = Result()
 ) {
     data class Result(
-            @SerializedName("topadsGetListProduct")
+            @SerializedName("topadsGetListProductV2")
             val topadsGetListProduct: TopadsGetListProduct = TopadsGetListProduct()
     ) {
         data class TopadsGetListProduct(

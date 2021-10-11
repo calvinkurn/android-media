@@ -10,10 +10,8 @@ import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder.Companion.TYPE_VIEW_ITEM_CART
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder.ViewHolderListener
-import rx.subscriptions.CompositeSubscription
 
 class CartItemAdapter(private val actionListener: ActionListener,
-                      private val compositeSubscription: CompositeSubscription,
                       private val parentPosition: Int) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ViewHolderListener {
 
     private val cartItemHolderDataList: MutableList<CartItemHolderData> = mutableListOf()
@@ -24,7 +22,7 @@ class CartItemAdapter(private val actionListener: ActionListener,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding = HolderItemCartNewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return CartItemViewHolder(binding, compositeSubscription, actionListener)
+        return CartItemViewHolder(binding, actionListener)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -54,8 +52,13 @@ class CartItemAdapter(private val actionListener: ActionListener,
     }
 
     override fun onNeedToRefreshSingleShop(parentPosition: Int) {
-        actionListener.onNeedToRefreshSingleShop(parentPosition)
         actionListener.onNeedToRecalculate()
+        actionListener.onNeedToRefreshSingleShop(parentPosition)
+    }
+
+    override fun onNeedToRefreshWeight(parentPosition: Int) {
+        actionListener.onNeedToRecalculate()
+        actionListener.onNeedToRefreshWeight(parentPosition)
     }
 
     override fun onNeedToRefreshAllShop() {
@@ -74,9 +77,10 @@ class CartItemAdapter(private val actionListener: ActionListener,
         fun onCartItemCheckChanged(position: Int, parentPosition: Int, checked: Boolean)
         fun onWishlistCheckChanged(productId: String?, cartId: Long?, imageView: ImageView?)
         fun onNeedToRefreshSingleShop(parentPosition: Int)
+        fun onNeedToRefreshWeight(parentPosition: Int)
         fun onNeedToRefreshMultipleShop()
         fun onNeedToRecalculate()
-        fun onCartItemQuantityChangedThenHitUpdateCartAndValidateUse()
+        fun onCartItemQuantityChangedThenHitUpdateCartAndValidateUse(isTokoNow: Boolean?)
         fun onEditNoteDone(position: Int)
         fun onCartItemShowRemainingQty(productId: String?)
         fun onCartItemShowInformationLabel(productId: String?, informationLabel: String?)

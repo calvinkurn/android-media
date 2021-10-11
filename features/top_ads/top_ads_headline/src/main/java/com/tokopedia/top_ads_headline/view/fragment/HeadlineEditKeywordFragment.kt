@@ -288,9 +288,11 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
 
     private fun showEmptyView(isEmpty: Boolean) {
         if (isEmpty) {
+            (parentFragment as EditAdCostFragment).hideToolTip(View.GONE)
             keyword_counter.hide()
             add_keyword.hide()
         } else {
+            (parentFragment as EditAdCostFragment).hideToolTip(View.VISIBLE)
             keyword_counter.show()
             add_keyword.show()
             if (keywordType == KEYWORD_POSITIVE) {
@@ -306,7 +308,7 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
     }
 
     private fun showConfirmationDialog(keywordModel: HeadlineEditAdKeywordModel) {
-        val dialog = DialogUnify(context!!, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         if (keywordType == KEYWORD_POSITIVE) {
             dialog.setTitle(getString(R.string.topads_headline_edit_keyword_delete_kata_kunci_title))
             dialog.setDescription(getString(R.string.topads_headline_edit_keyword_delete_kata_kunci_description, keywordModel.keywordName))

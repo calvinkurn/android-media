@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        app:category_filter_chip_on="true"
+        app:category_filter_chip_off="false">
+        <aapt:attr name="android:drawable">
+            <shape android:shape="rectangle" android:padding="0dp">
+                <solid android:color="@color/Unify_G100"/>
+                <stroke android:width="1dp" android:color="@color/Unify_G400" />
+                <corners android:radius="8dp"/>
+            </shape>
+        </aapt:attr>
+    </item>
+
+    <item
+        app:category_filter_chip_on="false"
+        app:category_filter_chip_off="true">
+        <aapt:attr name="android:drawable">
+            <shape android:shape="rectangle" android:padding="0dp">
+                <solid android:color="@color/Unify_N0"/>
+                <stroke android:width="1dp" android:color="@color/Unify_N75" />
+                <corners android:radius="8dp"/>
+            </shape>
+        </aapt:attr>
+    </item>
+</selector>

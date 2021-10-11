@@ -11,7 +11,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.flight.booking.di.DaggerFlightBookingComponent
 import com.tokopedia.flight.booking.di.FlightBookingComponent
 import com.tokopedia.flight.booking.presentation.fragment.FlightBookingFragment
-import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
 import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
@@ -23,19 +23,19 @@ import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 class FlightBookingActivity : BaseFlightActivity(), HasComponent<FlightBookingComponent> {
 
     override fun getNewFragment(): Fragment {
-        val departureId = intent.getStringExtra(EXTRA_FLIGHT_DEPARTURE_ID)
-        val arrivalId = intent.getStringExtra(EXTRA_FLIGHT_ARRIVAL_ID)
-        val departureTerm = intent.getStringExtra(EXTRA_FLIGHT_DEPARTURE_TERM)
-        val returnTerm = intent.getStringExtra(EXTRA_FLIGHT_ARRIVAL_TERM)
-        val searchPassDataModel: FlightSearchPassDataModel = intent.getParcelableExtra(EXTRA_PASS_SEARCH_DATA)
-        val priceModel: FlightPriceModel = intent.getParcelableExtra(EXTRA_PRICE)
+        val departureId = intent.getStringExtra(EXTRA_FLIGHT_DEPARTURE_ID) ?: ""
+        val arrivalId = intent.getStringExtra(EXTRA_FLIGHT_ARRIVAL_ID) ?: ""
+        val departureTerm = intent.getStringExtra(EXTRA_FLIGHT_DEPARTURE_TERM) ?: ""
+        val returnTerm = intent.getStringExtra(EXTRA_FLIGHT_ARRIVAL_TERM) ?: ""
+        val searchPassDataModel: FlightSearchPassDataModel = intent.getParcelableExtra(EXTRA_PASS_SEARCH_DATA) ?: FlightSearchPassDataModel()
+        val priceModel: FlightPriceModel = intent.getParcelableExtra(EXTRA_PRICE) ?: FlightPriceModel()
         return FlightBookingFragment.newInstance(searchPassDataModel,
                 departureId, arrivalId, departureTerm, returnTerm, priceModel)
     }
 
     override fun getComponent(): FlightBookingComponent {
         return DaggerFlightBookingComponent.builder()
-                .flightComponent(flightComponent)
+                .flightComponent(getFlightComponent())
                 .build()
     }
 
@@ -61,7 +61,7 @@ class FlightBookingActivity : BaseFlightActivity(), HasComponent<FlightBookingCo
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean = true
 
-    override fun getScreenName(): String = FlightAnalytics.Screen.BOOKING
+    override fun getScreenName(): String = FlightAnalyticsScreenName.BOOKING
 
     companion object {
         private const val REQUEST_CODE_LOGIN = 6

@@ -5,8 +5,9 @@ import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.autocomplete.initialstate.InitialStateData
 import java.util.ArrayList
 
-fun InitialStateData.convertToListInitialStateProductListDataView(): MutableList<Visitable<*>> {
+fun InitialStateData.convertToListInitialStateProductListDataView(dimension90: String): MutableList<Visitable<*>> {
     val childList = ArrayList<BaseItemInitialStateSearch>()
+    var position = 1
     for (item in this.items) {
         val model = BaseItemInitialStateSearch(
                 template = item.template,
@@ -25,9 +26,12 @@ fun InitialStateData.convertToListInitialStateProductListDataView(): MutableList
                 header = this.header,
                 type = item.type,
                 discountPercentage = item.discountPercentage,
-                originalPrice = item.originalPrice
+                originalPrice = item.originalPrice,
+                dimension90 = dimension90,
+                position = position
         )
         childList.add(model)
+        position++
     }
     return arrayListOf(InitialStateProductListDataView(childList))
 }

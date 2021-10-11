@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -22,9 +21,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -631,7 +629,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         }
     }
 
-    override fun onItemProductReviewClicked(productId: Int, position: Int, imageUrl: String) {
+    override fun onItemProductReviewClicked(productId: String, position: Int, imageUrl: String) {
         tracking.eventClickItemRatingProduct(
                 shopId = userSession.shopId.orEmpty(),
                 productId = productId.toString(),
@@ -776,7 +774,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                     setHtmlDescription(getString(R.string.review_reminder_ticker_description))
                     setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                            RouteManager.route(context, ApplinkConstInternalMarketplace.REVIEW_REMINDER)
+                            RouteManager.route(context, ApplinkConstInternalSellerapp.REVIEW_REMINDER)
                         }
 
                         override fun onDismiss() {

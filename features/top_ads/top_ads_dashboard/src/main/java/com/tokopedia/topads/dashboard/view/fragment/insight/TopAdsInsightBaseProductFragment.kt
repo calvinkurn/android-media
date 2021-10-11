@@ -96,7 +96,7 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
         adapter = TopadsProductRecomAdapter(userSession, ::itemCheckedUnchecked, ::enableButton)
-        val dummyId: MutableList<Long> = mutableListOf()
+        val dummyId: MutableList<String> = mutableListOf()
         val suggestions = ArrayList<DataSuggestions>()
         suggestions.add(DataSuggestions(PRODUCT, dummyId))
         topAdsDashboardPresenter.getBidInfo(suggestions, ::getMaxBid)
@@ -235,8 +235,8 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
     }
 
     private fun getBidInfo() {
-        val selectedProductIds: List<Long>? = adapter.getSelectedIds().map {
-            it.toLong()
+        val selectedProductIds: List<String>? = adapter.getSelectedIds().map {
+            it
         }
         val suggestions = DataSuggestions(ParamObject.TYPE_HEADLINE_KEYWORD, ids = selectedProductIds)
         topAdsDashboardPresenter.getBidInfo(listOf(suggestions), this::onSuccessSuggestion)

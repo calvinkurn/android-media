@@ -19,6 +19,9 @@ import java.util.*
 
 object RechargeHomepageSectionMapper {
 
+    private const val LEGO_BANNER_SIZE_6 = 6
+    private const val LEGO_BANNER_SIZE_3 = 3
+
     fun updateSectionsData(
             oldData: List<RechargeHomepageSections.Section>,
             newData: RechargeHomepageSections): List<RechargeHomepageSections.Section> {
@@ -107,7 +110,9 @@ object RechargeHomepageSectionMapper {
                             getDynamicLegoBannerModel(it)
                         }
                     }
-                    SECTION_PRODUCT_CARD_ROW -> RechargeHomepageProductCardsModel(it)
+                    SECTION_PRODUCT_CARD_ROW, SECTION_PRODUCT_CARD_ROW_1X1 -> {
+                        RechargeHomepageProductCardsModel(it)
+                    }
                     SECTION_COUNTDOWN_PRODUCT_BANNER -> {
                         /**
                          * Count down widget is always from cloud because
@@ -158,13 +163,19 @@ object RechargeHomepageSectionMapper {
         return null
     }
 
-    private fun getDynamicLegoBannerModel(section: RechargeHomepageSections.Section): DynamicLegoBannerDataModel {
+    private fun getDynamicLegoBannerModel(section: RechargeHomepageSections.Section): DynamicLegoBannerDataModel? {
+        if (section.items.size < LEGO_BANNER_SIZE_3) return null
+
+        val (imageCount, layoutConfig) = when {
+            section.items.size >= LEGO_BANNER_SIZE_6 -> LEGO_BANNER_SIZE_6 to DynamicChannelLayout.LAYOUT_6_IMAGE
+            else -> LEGO_BANNER_SIZE_3 to DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE
+        }
         return DynamicLegoBannerDataModel(ChannelModel(
                 section.id,
                 section.id,
-                channelConfig = ChannelConfig(DynamicChannelLayout.LAYOUT_6_IMAGE),
+                channelConfig = ChannelConfig(layoutConfig),
                 channelHeader = ChannelHeader(name = section.title, subtitle = section.subtitle),
-                channelGrids = section.items.map { item ->
+                channelGrids = section.items.take(imageCount).map { item ->
                     ChannelGrid(item.id, imageUrl = item.mediaUrl, applink = item.applink)
                 }))
     }

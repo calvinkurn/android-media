@@ -66,9 +66,19 @@ internal open class SuggestionPresenterTestFixtures {
         suggestionPresenter.search()
     }
 
-    protected inline fun <reified T> findDataView(type: String): T {
+    protected inline fun <reified T> findDataView(): T {
+        val visitableList = slotVisitableList.captured
+
+        return visitableList.find { it is T } as T
+    }
+
+    protected inline fun <reified T> findDataView(type: String = ""): T {
         val visitableList = slotVisitableList.captured
 
         return visitableList.find { it is BaseSuggestionDataView && it.type == type} as T
+    }
+
+    protected fun `Given presenter will return searchParameter`(searchParameter: Map<String, String>) {
+        suggestionPresenter.setSearchParameter(searchParameter as HashMap<String, String>)
     }
 }

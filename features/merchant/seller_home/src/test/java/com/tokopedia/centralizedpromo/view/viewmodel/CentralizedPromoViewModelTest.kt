@@ -3,9 +3,10 @@ package com.tokopedia.centralizedpromo.view.viewmodel
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
+import com.tokopedia.centralizedpromo.common.util.CentralizedPromoResourceProvider
 import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
-import com.tokopedia.centralizedpromo.domain.usecase.GetPostUseCase
+import com.tokopedia.centralizedpromo.domain.usecase.VoucherCashbackEligibleUseCase
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.*
@@ -35,16 +36,19 @@ class CentralizedPromoViewModelTest {
     lateinit var context: Context
 
     @RelaxedMockK
+    lateinit var resourcesProvider: CentralizedPromoResourceProvider
+
+    @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     @RelaxedMockK
     lateinit var getOnGoingPromotionUseCase: GetOnGoingPromotionUseCase
 
     @RelaxedMockK
-    lateinit var getPostUseCase: GetPostUseCase
+    lateinit var getChatBlastSellerMetadataUseCase: GetChatBlastSellerMetadataUseCase
 
     @RelaxedMockK
-    lateinit var getChatBlastSellerMetadataUseCase: GetChatBlastSellerMetadataUseCase
+    lateinit var voucherCashbackEligibleUseCase: VoucherCashbackEligibleUseCase
 
     @RelaxedMockK
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
@@ -91,11 +95,11 @@ class CentralizedPromoViewModelTest {
 
     private val viewModel : CentralizedPromoViewModel by lazy {
         CentralizedPromoViewModel(
-            context,
+            resourcesProvider,
             userSession,
             getOnGoingPromotionUseCase,
-            getPostUseCase,
             getChatBlastSellerMetadataUseCase,
+            voucherCashbackEligibleUseCase,
             remoteConfig,
             coroutineTestRule.dispatchers
         )
@@ -157,81 +161,22 @@ class CentralizedPromoViewModelTest {
     }
 
     @Test
-    fun `Success get layout data for post`() = runBlocking {
-        val successResult = PostListUiModel(
-                items = listOf(
-                        PostUiModel(
-                                title = "Test Post",
-                                applink = "https://static-staging.tokopedia.net/seller/merchant-info/test-post/",
-                                url = "https://static-staging.tokopedia.net/seller/merchant-info/test-post/",
-                                featuredMediaUrl = "https://ecs7.tokopedia.net/img/blog/seller/2019/09/217_AM_-seller-center-1.jpg",
-                                subtitle = "<p>Info &#183; 20 SEP 19</p>"
-                        ),
-                        PostUiModel(
-                                title = "Test ke 2",
-                                applink = "https://static-staging.tokopedia.net/seller/merchant-info/test-ke-2/",
-                                url = "https://static-staging.tokopedia.net/seller/merchant-info/test-ke-2/",
-                                featuredMediaUrl = "https://ecs7.tokopedia.net/img/blog/seller/2019/09/217_AM_-seller-center-1.jpg",
-                                subtitle = "<p>Info &#183; 6 SEP 19</p>"
-                        ),
-                        PostUiModel(
-                                title = "Kumpul Keluarga Tokopedia Bersama Toko Cabang",
-                                applink = "https://seller.tokopedia.com/edu/seller-events/kumpul-keluarga-tc050320/",
-                                url = "https://seller.tokopedia.com/edu/seller-events/kumpul-keluarga-tc050320/",
-                                featuredMediaUrl = "https://seller.tokopedia.com/edu/seller-events/kumpul-keluarga-tc050320/tokocabang-event-seller-center_1024x439/",
-                                subtitle = "<p>Seller Event &#183; 5 MAR 20</p>"
-                        )
-                ),
-                errorMessage = ""
-        )
-
-        coEvery {
-            getPostUseCase.executeOnBackground()
-        } returns successResult
-
-        viewModel.getLayoutData(LayoutType.POST)
-
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
-        coVerify {
-            getPostUseCase.executeOnBackground()
-        }
-
-        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.POST)
-        assert(result != null && result == Success(successResult))
-    }
-
-    @Test
-    fun `Failed get layout data for posts`() = runBlocking {
-        coEvery {
-            getPostUseCase.executeOnBackground()
-        } throws MessageErrorException("")
-
-        viewModel.getLayoutData(LayoutType.POST)
-
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
-        coVerify {
-            getPostUseCase.executeOnBackground()
-        }
-
-        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.POST)
-        assert(result != null && result is Fail)
-    }
-
-    @Test
     fun `Success get layout data for promo creation with free broadcast chat quota`() = runBlocking {
 
         coEvery {
             getChatBlastSellerMetadataUseCase.executeOnBackground()
         } returns ChatBlastSellerMetadataUiModel(200, 2)
 
-        every {
-            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED)
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } returns false
+
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
         } returns true
 
         every {
-            context.getString(R.string.centralized_promo_broadcast_chat_extra_free_quota, any<Integer>())
+            resourcesProvider.composeBroadcastChatFreeQuotaLabel(any())
         } returns String.format("%d kuota gratis", 200)
 
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
@@ -254,6 +199,14 @@ class CentralizedPromoViewModelTest {
         coEvery {
             getChatBlastSellerMetadataUseCase.executeOnBackground()
         } returns ChatBlastSellerMetadataUiModel(0, 0)
+
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
+
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } returns true
 
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
 
@@ -279,6 +232,19 @@ class CentralizedPromoViewModelTest {
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
 
         assert(result != null && result is Fail)
+    }
+
+    @Test
+    fun `When get voucher cashback eligiblity fail, get layout data should also fails`() = runBlocking {
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } throws MessageErrorException()
+
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+
+        assert(result is Fail)
     }
 
     @Test

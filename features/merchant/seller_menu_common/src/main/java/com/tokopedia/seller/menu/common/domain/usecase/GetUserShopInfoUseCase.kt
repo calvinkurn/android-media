@@ -21,14 +21,11 @@ class GetUserShopInfoUseCase @Inject constructor(
                 info {
                   date_shop_created
                 }
-                stats {
-                  shop_total_transaction
-                }
               }
               shopInfoByID(
                 input: {
                   shopIDs: [${'$'}shopId]
-                  fields: ["other-goldos"]
+                  fields: ["other-goldos", "shopstats-limited", "shop-snippet", "location", "core", "branch-link"]
                 }
               ) {
                 result {
@@ -39,6 +36,19 @@ class GetUserShopInfoUseCase @Inject constructor(
                     shopTierWording
                     shopGrade
                     shopGradeWording
+                  }
+                  statsByDate {
+                    identifier
+                    value
+                    startTime
+                  }
+                  shopSnippetURL
+                  location
+                  branchLinkDomain
+                  shopCore {
+                    description
+                    tagLine
+                    url
                   }
                 }
               }
@@ -64,7 +74,7 @@ class GetUserShopInfoUseCase @Inject constructor(
 
         private const val SHOP_ID_KEY = "shopId"
 
-        fun createRequestParams(shopId: Int) = HashMap<String, Any>().apply {
+        fun createRequestParams(shopId: Long) = HashMap<String, Any>().apply {
             put(SHOP_ID_KEY, shopId)
         }
     }
@@ -73,7 +83,7 @@ class GetUserShopInfoUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): UserShopInfoWrapper {
         val gqlRequest = GraphqlRequest(USER_SHOP_INFO_QUERY, UserShopInfoResponse::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest))
 
         val gqlError = gqlResponse.getError(UserShopInfoResponse::class.java)
         if (gqlError.isNullOrEmpty()) {

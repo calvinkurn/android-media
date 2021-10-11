@@ -21,10 +21,11 @@
         android:background="@color/Unify_N0"/>
 
     <include
+        android:id="@+id/layout_sah_other_local_load"
         layout="@layout/setting_partial_others_local_load"/>
 
     <include
-        android:id="@+id/saldoBalance"
+        android:id="@+id/layout_sah_other_saldo"
         layout="@layout/setting_balance"/>
 
     <com.tokopedia.unifycomponents.DividerUnify

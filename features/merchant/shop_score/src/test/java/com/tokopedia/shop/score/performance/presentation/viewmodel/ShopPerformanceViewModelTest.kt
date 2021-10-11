@@ -77,7 +77,7 @@ class ShopPerformanceViewModelTest : ShopPerformanceViewModelTestFixture() {
 
     @Test
     fun `when getShopInfoLevel should set live data success`() {
-        val level = 4
+        val level = 4L
         val shopInfoLevelMapper = shopScoreMapper.mapToShopInfoLevelUiModel(level)
         shopPerformanceViewModel.getShopInfoLevel(level)
         val actualResult = shopPerformanceViewModel.shopInfoLevel.value

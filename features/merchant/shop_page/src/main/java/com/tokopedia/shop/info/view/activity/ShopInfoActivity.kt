@@ -22,6 +22,7 @@ class ShopInfoActivity: BaseSimpleActivity(), HasComponent<ShopComponent> {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupLayout(savedInstanceState)
+        window?.decorView?.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         toolbar?.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
         inflateFragment()
     }

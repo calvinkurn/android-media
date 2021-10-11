@@ -8,7 +8,6 @@ import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.data.HotelCancellationButtonEnum
@@ -26,11 +25,15 @@ import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationC
 import com.tokopedia.hotel.cancellation.presentation.viewmodel.HotelCancellationViewModel
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
+import com.tokopedia.hotel.databinding.FragmentHotelCancellationConfirmationBinding
+import com.tokopedia.hotel.common.util.ErrorHandlerHotel
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_hotel_cancellation_confirmation.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 /**
@@ -42,6 +45,8 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var cancellationViewModel: HotelCancellationViewModel
+
+    private var binding by autoClearedNullable<FragmentHotelCancellationConfirmationBinding>()
 
     @Inject
     lateinit var trackingHotelUtil: TrackingHotelUtil
@@ -82,6 +87,7 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
     }
 
     override fun onErrorRetryClicked() {
+        binding?.containerError?.root?.hide()
         submitCancellation()
     }
 
@@ -103,35 +109,37 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        cancellationViewModel.cancellationSubmitData.observe(this, Observer {
+        cancellationViewModel.cancellationSubmitData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     initView(it.data)
                 }
-                is Fail -> { showErrorState(it.throwable) }
+                is Fail -> { showErrorView(it.throwable) }
             }
             hideLoadingState()
         })
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_hotel_cancellation_confirmation, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentHotelCancellationConfirmationBinding.inflate(inflater,container,false)
+        return binding?.root
+    }
 
 
     private fun initView(cancellationSubmitModel: HotelCancellationSubmitModel) {
-        hotel_cancellation_confirmation_title.text = cancellationSubmitModel.title
-        hotel_cancellation_confirmation_subtitle.text = cancellationSubmitModel.desc
+        binding?.hotelCancellationConfirmationTitle?.text = cancellationSubmitModel.title
+        binding?.hotelCancellationConfirmationSubtitle?.text = cancellationSubmitModel.desc
 
-        hotel_cancellation_confirmation_button_layout.removeAllViews()
+        binding?.hotelCancellationConfirmationButtonLayout?.removeAllViews()
         for (button in cancellationSubmitModel.actionButton) {
-            hotel_cancellation_confirmation_button_layout.addView(getButtonFromType(button))
+            binding?.hotelCancellationConfirmationButtonLayout?.addView(getButtonFromType(button))
         }
 
         if (cancellationSubmitModel.success) {
             (activity as HotelCancellationConfirmationActivity).setPageTitle(getString(R.string.hotel_cancellation_success))
         } else {
-            if (isOrderNotFound) hotel_cancellation_confirmation_iv.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_404)
-            else hotel_cancellation_confirmation_iv.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500)
+            if (isOrderNotFound) binding?.hotelCancellationConfirmationIv?.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_404)
+            else binding?.hotelCancellationConfirmationIv?.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500)
             (activity as HotelCancellationConfirmationActivity).setPageTitle(getString(R.string.hotel_cancellation_failed))
         }
 
@@ -161,6 +169,18 @@ class HotelCancellationConfirmationFragment: HotelBaseFragment() {
             }
         }
         return button
+    }
+
+    fun showErrorView(error: Throwable?){
+        hideLoadingState()
+        binding?.containerError?.root?.visible()
+        context?.run {
+            binding?.containerError?.globalError?.let {
+                ErrorHandlerHotel.getErrorUnify(this, error,
+                    { onErrorRetryClicked() }, it
+                )
+            }
+        }
     }
 
     companion object {

@@ -3,7 +3,7 @@
 
     <string name="product_card_review_count_format">(%d)</string>
     <string name="product_card_text_add_to_cart_grid">+ Keranjang</string>
-    <string name="product_card_text_add_to_cart_list">Tambah ke Keranjang</string>
+    <string name="product_card_text_similar_product_grid">Lihat Barang Serupa</string>
     <string name="product_card_text_remove_product">Hapus Produk</string>
     <string name="product_card_topads">Ad</string>
     <string name="product_card_module_text_sold_out">Terjual Habis</string>
@@ -12,6 +12,7 @@
     <string name="product_card_out_of_stock">Stok Habis</string>
     <string name="home_flashsale_card_ad">Ad</string>
     <string name="product_card_text_notify_me">Ingatkan Saya</string>
+    <string name="product_card_text_variant_quantity_grid">99+ pcs</string>
 
     <string name="content_desc_textViewProductName">text nama produk</string>
     <string name="content_desc_labelDiscount">text diskon</string>
@@ -26,6 +27,7 @@
     <string name="content_desc_imageFreeOngkirPromo">image bebas ongkir</string>
     <string name="content_desc_imageRemoveFromWishlist">button hapus wishlist</string>
     <string name="content_desc_buttonAddToCart">button tambah ke keranjang</string>
+    <string name="content_desc_buttonSeeSimilarProduct">button lihat barang serupa</string>
     <string name="content_desc_notifyMe">button Ingatkan Saya</string>
     <string name="content_desc_imageRating">image rating</string>
     <string name="content_desc_imageWishlist">image wishlist</string>

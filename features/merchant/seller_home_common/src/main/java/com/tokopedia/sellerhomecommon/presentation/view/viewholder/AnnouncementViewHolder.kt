@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
+import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
 import kotlinx.android.synthetic.main.shc_announcement_widget.view.*
 
 /**
@@ -29,14 +30,20 @@ class AnnouncementViewHolder(
     }
 
     override fun bind(element: AnnouncementWidgetUiModel) {
-        itemView.visible()
+        if (!listener.getIsShouldRemoveWidget()) {
+            itemView.toggleWidgetHeight(true)
+        }
         val data = element.data
         when {
             data == null -> showLoadingState()
             data.error.isNotBlank() -> {
                 //remove widget if state is error
-                itemView.gone()
-                listener.removeWidget(adapterPosition, element)
+                if (listener.getIsShouldRemoveWidget()) {
+                    listener.removeWidget(adapterPosition, element)
+                } else {
+                    listener.onRemoveWidget(adapterPosition)
+                    itemView.toggleWidgetHeight(false)
+                }
             }
             else -> showSuccessState(element)
         }

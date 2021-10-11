@@ -28,7 +28,6 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity.Companion.HOTEL_DESTINATION_NAME
@@ -39,10 +38,13 @@ import com.tokopedia.hotel.homepage.presentation.adapter.viewholder.HotelLastSea
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.addTimeToSpesificDate
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
 import org.hamcrest.core.AllOf
 import org.junit.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -170,18 +172,21 @@ class HotelHomepageActivityTest {
 
     private fun changeDate() {
         Thread.sleep(3000)
-        onView(withTagStringValue(R.id.tv_hotel_homepage_checkout_date.toString())).perform(click())
+        onView(withTagStringValue(R.id.tv_hotel_homepage_checkin_date.toString())).perform(click())
 
         Thread.sleep(3000)
-        val cal = Calendar.getInstance()
-        cal.time = TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.getCurrentCalendar().time,
-                Calendar.DATE, 2)
-        val tomorrowDate = cal[Calendar.DATE]
+        val sdf = SimpleDateFormat("d")
+        val checkInDate = sdf.format(DateUtil.getCurrentDate())
+        val checkoutDate = sdf.format(DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.DATE, 2))
         try {
-            onView(CommonMatcher.getElementFromMatchAtPosition(withText(tomorrowDate.toString()), 0)).perform(click())
+            onView(CommonMatcher.getElementFromMatchAtPosition(withText(checkInDate), 0)).perform(click())
+            onView(CommonMatcher.getElementFromMatchAtPosition(withText(checkoutDate), 0)).perform(click())
         } catch (e: Exception) {
-            onView(CommonMatcher.getElementFromMatchAtPosition(withText(tomorrowDate.toString()), 1)).perform(click())
+            onView(CommonMatcher.getElementFromMatchAtPosition(withText(checkInDate), 1)).perform(click())
+            onView(CommonMatcher.getElementFromMatchAtPosition(withText(checkoutDate), 1)).perform(click())
         }
+
+        Thread.sleep(1000)
     }
 
     @After

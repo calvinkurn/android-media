@@ -25,7 +25,6 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import com.tokopedia.purchase_platform.common.utils.Utils.isNotNullOrEmptyOrZero
 import com.tokopedia.purchase_platform.common.utils.convertToString
-import com.tokopedia.purchase_platform.common.utils.isNullOrEmpty
 import java.util.*
 import javax.inject.Inject
 
@@ -52,7 +51,7 @@ class ShipmentMapper @Inject constructor() {
             isHidingCourier = shipmentAddressFormDataResponse.hideCourier
             isBlackbox = shipmentAddressFormDataResponse.isBlackbox == 1
             errorCode = shipmentAddressFormDataResponse.errorCode
-            isError = !isNullOrEmpty(shipmentAddressFormDataResponse.errors)
+            isError = shipmentAddressFormDataResponse.errors.isNotEmpty()
             errorMessage = convertToString(shipmentAddressFormDataResponse.errors)
             isShowOnboarding = shipmentAddressFormDataResponse.isShowOnboarding
             isIneligiblePromoDialogEnabled = shipmentAddressFormDataResponse.isIneligiblePromoDialogEnabled
@@ -63,6 +62,7 @@ class ShipmentMapper @Inject constructor() {
             campaignTimerUi = mapCampaignTimer(shipmentAddressFormDataResponse.campaignTimer)
             lastApplyData = mapPromoLastApply(shipmentAddressFormDataResponse.promoSAFResponse.lastApply?.data)
             promoCheckoutErrorDefault = mapPromoCheckoutErrorDefault(shipmentAddressFormDataResponse.promoSAFResponse.errorDefault)
+            errorTicker = shipmentAddressFormDataResponse.errorTicker
             groupAddress = mapGroupAddresses(shipmentAddressFormDataResponse, isDisablePPP)
             isHasError = checkCartHasError(this)
             popUpMessage = shipmentAddressFormDataResponse.popUpMessage
@@ -92,7 +92,7 @@ class ShipmentMapper @Inject constructor() {
         for (groupAddress in shipmentAddressFormDataResponse.groupAddress) {
             groupAddressListResult.add(
                     GroupAddress().apply {
-                        isError = !groupAddress.errors.isNullOrEmpty()
+                        isError = !groupAddress.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
                         errorMessage = convertToString(groupAddress.errors)
                         userAddress = mapUserAddress(groupAddress)
                         groupShop = mapGroupShops(groupAddress, shipmentAddressFormDataResponse, isDisablePPP)
@@ -109,8 +109,10 @@ class ShipmentMapper @Inject constructor() {
         groupAddress.groupShop.forEach {
             groupShopListResult.add(
                     GroupShop().apply {
-                        isError = !it.errors.isNullOrEmpty()
-                        errorMessage = convertToString(it.errors)
+                        isError = !it.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
+                        errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else convertToString(it.errors)
+                        hasUnblockingError = !it.unblockingErrors.isNullOrEmpty()
+                        unblockingErrorMessage = convertToString(it.unblockingErrors)
                         shippingId = it.shippingId
                         spId = it.spId
                         dropshipperName = it.dropshiper.name
@@ -129,7 +131,13 @@ class ShipmentMapper @Inject constructor() {
                         shipmentInformationData = mapShipmentInformationData(it.shipmentInformation)
                         shop = mapShopData(it.shop)
                         shopShipments = mapShopShipments(it.shopShipments)
-                        products = mapProducts(it, groupAddress, shipmentAddressFormDataResponse, isDisablePPP, shop.shopTypeInfoData)
+                        val mapProducts = mapProducts(it, groupAddress, shipmentAddressFormDataResponse, isDisablePPP, shop.shopTypeInfoData)
+                        products = mapProducts.first
+                        firstProductErrorIndex = mapProducts.second
+                        isDisableChangeCourier = it.isDisableChangeCourier
+                        autoCourierSelection = it.autoCourierSelection
+                        boMetadata = it.boMetadata
+                        courierSelectionErrorData = CourierSelectionErrorData(it.courierSelectionError.title, it.courierSelectionError.description)
                     }
             )
         }
@@ -140,9 +148,10 @@ class ShipmentMapper @Inject constructor() {
                             groupAddress: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress,
                             shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse,
                             isDisablePPP: Boolean,
-                            shopTypeInfoData: ShopTypeInfoData): MutableList<Product> {
+                            shopTypeInfoData: ShopTypeInfoData): Pair<MutableList<Product>, Int> {
         val productListResult = arrayListOf<Product>()
-        groupShop.products.forEach {
+        var firstErrorIndex = -1
+        groupShop.products.forEachIndexed { index, it ->
             val productResult = Product().apply {
                 analyticsProductCheckoutData = mapAnalyticsProductCheckoutData(
                         it,
@@ -155,9 +164,14 @@ class ShipmentMapper @Inject constructor() {
                 if (it.tradeInInfo.isValidTradeIn) {
                     productPrice = it.tradeInInfo.newDevicePrice.toLong()
                 }
-                isError = !it.errors.isNullOrEmpty()
-                errorMessage = if (it.errors.isNotEmpty()) it.errors[0] else ""
-                errorMessageDescription = if (it.errors.size >= 2) it.errors[1] else ""
+                isError = !it.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
+                errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else if (it.errors.isNotEmpty()) it.errors[0] else ""
+                errorMessageDescription = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else if (it.errors.size >= 2) it.errors[1] else ""
+                if (isError) {
+                    if (firstErrorIndex == -1) {
+                        firstErrorIndex = index
+                    }
+                }
                 productId = it.productId
                 cartId = it.cartId
                 productName = it.productName
@@ -168,6 +182,7 @@ class ShipmentMapper @Inject constructor() {
                 productWholesalePriceFmt = it.productWholesalePriceFmt
                 productWeightFmt = it.productWeightFmt
                 productWeight = it.productWeight
+                productWeightActual = it.productWeightActual
                 productCondition = it.productCondition
                 productUrl = it.productUrl
                 isProductReturnable = it.productReturnable == 1
@@ -208,7 +223,7 @@ class ShipmentMapper @Inject constructor() {
             }
             productListResult.add(productResult)
         }
-        return productListResult
+        return productListResult to firstErrorIndex
     }
 
     private fun mapAnalyticsProductCheckoutData(product: com.tokopedia.checkout.data.model.response.shipmentaddressform.Product,
@@ -312,6 +327,7 @@ class ShipmentMapper @Inject constructor() {
             cityId = shop.cityId
             cityName = shop.cityName
             shopAlertMessage = shop.shopAlertMessage
+            isTokoNow = shop.isTokoNow
         }
     }
 
@@ -381,6 +397,8 @@ class ShipmentMapper @Inject constructor() {
             isCorner = groupAddress.userAddress.isCorner
             state = groupAddress.userAddress.state
             stateDetail = groupAddress.userAddress.stateDetail
+            shopId = groupAddress.userAddress.tokoNow.shopId
+            warehouseId = groupAddress.userAddress.tokoNow.warehouseId
         }
     }
 
@@ -689,6 +707,8 @@ class ShipmentMapper @Inject constructor() {
             provinceName = defaultAddress.provinceName
             receiverName = defaultAddress.receiverName
             status = defaultAddress.status
+            shopId = defaultAddress.tokoNow.shopId
+            warehouseId = defaultAddress.tokoNow.warehouseId
         }
     }
 
@@ -702,25 +722,31 @@ class ShipmentMapper @Inject constructor() {
             for (groupShop in groupAddress.groupShop) {
                 if (groupShop.isError) {
                     hasError = true
-                    break
                 }
                 var totalProductError = 0
                 var defaultErrorMessage = ""
+                var allProductsHaveSameError = true
                 for ((isError, errorMessage) in groupShop.products) {
-                    if (isError || !isNullOrEmpty(errorMessage)) {
+                    if (isError || errorMessage.isNotEmpty()) {
                         hasError = true
                         totalProductError++
-                        if (isNullOrEmpty(defaultErrorMessage)) {
+                        if (defaultErrorMessage.isEmpty()) {
                             defaultErrorMessage = errorMessage
+                        } else if (allProductsHaveSameError && defaultErrorMessage != errorMessage) {
+                            allProductsHaveSameError = false
                         }
                     }
                 }
                 if (totalProductError == groupShop.products.size) {
-                    groupShop.isError = true
-                    groupShop.errorMessage = defaultErrorMessage
+                    if (!groupShop.isError) {
+                        groupShop.isError = true
+                        groupShop.errorMessage = defaultErrorMessage
+                    }
                     for (product in groupShop.products) {
-                        product.isError = false
-                        product.errorMessage = ""
+                        if (allProductsHaveSameError) {
+                            product.isError = false
+                            product.errorMessage = ""
+                        }
                     }
                 }
             }

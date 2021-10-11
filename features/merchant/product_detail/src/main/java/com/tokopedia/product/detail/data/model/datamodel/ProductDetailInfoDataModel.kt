@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.product.info.util.ProductDetailInfoConstant
 import com.tokopedia.product.info.util.ProductDetailInfoConstant.DESCRIPTION_DETAIL_KEY
 import kotlinx.android.parcel.Parcelize
 
@@ -18,6 +19,12 @@ data class ProductDetailInfoDataModel(
 
     fun getShowableData(): List<ProductDetailInfoContent> {
         return dataContent.filter { it.showAtFront }.filterNot { it.title.toLowerCase() == DESCRIPTION_DETAIL_KEY }
+    }
+
+    fun getDescription(): String {
+        return dataContent.find {
+            it.title.toLowerCase() == DESCRIPTION_DETAIL_KEY
+        }?.subtitle ?: ""
     }
 
     override val impressHolder: ImpressHolder = ImpressHolder()

@@ -59,6 +59,7 @@ class TopAdsDashboardPresenterTest {
     private val autoAdsStatusUseCase: GraphqlUseCase<AutoAdsResponse> = mockk(relaxed = true)
     private val getExpiryDateUseCase: GraphqlUseCase<ExpiryDateResponse> = mockk(relaxed = true)
     private val getHiddenTrialUseCase: GraphqlUseCase<FreeTrialShopListResponse> = mockk(relaxed = true)
+    private val whiteListedUserUseCase: GetWhiteListedUserUseCase = mockk(relaxed = true)
     private var userSession: UserSessionInterface = mockk(relaxed = true)
     private val res: Resources = mockk(relaxed = true)
 
@@ -75,7 +76,7 @@ class TopAdsDashboardPresenterTest {
                 validGroupUseCase, createGroupUseCase,
                 bidInfoUseCase, groupInfoUseCase, autoTopUpUSeCase, adsStatusUseCase,
                 autoAdsStatusUseCase, getExpiryDateUseCase,
-                getHiddenTrialUseCase, userSession)
+                getHiddenTrialUseCase, whiteListedUserUseCase, userSession)
     }
 
     @Before
@@ -130,8 +131,8 @@ class TopAdsDashboardPresenterTest {
 
     @Test
     fun `on product stats success`() {
-        val expected = 10
-        var actual = 0
+        val expected = "10"
+        var actual = "0"
         val res: Resources = mockk(relaxed = true)
         val data = GetDashboardProductStatistics(data = listOf(WithoutGroupDataItem(adId = expected)))
         val onSuccess: (data: GetDashboardProductStatistics) -> Unit = {
@@ -198,7 +199,7 @@ class TopAdsDashboardPresenterTest {
 
     @Test
     fun `get product data `() {
-        presenter.getGroupProductData(1, 1, "", "", 1, "", "", {}) {}
+        presenter.getGroupProductData(1, 1, "", "", 1, "", "", 0, {}) {}
         verify {
             topAdsGetGroupProductDataUseCase.execute(any(), any())
         }
@@ -364,16 +365,16 @@ class TopAdsDashboardPresenterTest {
 
     @Test
     fun `get group info success`() {
-        val expected = 10
-        var actual = 0
-        val data = GroupInfoResponse.TopAdsGetPromoGroup.Data(priceBid = expected)
+        val expected = 10.0F
+        var actual = 0.0F
+        val data = GroupInfoResponse.TopAdsGetPromoGroup.Data(daiyBudget = expected)
         val onSuccess: (data: GroupInfoResponse.TopAdsGetPromoGroup.Data) -> Unit = {
-            actual = it.priceBid
+            actual = it.daiyBudget
         }
         every { groupInfoUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
             onSuccess.invoke(data)
         }
-        presenter.getGroupInfo(res, "", onSuccess)
+        presenter.getGroupInfo(res, "", "", onSuccess)
         Assert.assertEquals(expected, actual)
     }
 

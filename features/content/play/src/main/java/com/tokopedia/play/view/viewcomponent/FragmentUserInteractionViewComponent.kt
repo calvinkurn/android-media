@@ -33,9 +33,30 @@ class FragmentUserInteractionViewComponent(
         }
     }
 
+    fun safeRelease() = synchronized(this) {
+        if (!isAlreadyInit.get()) return@synchronized
+        isAlreadyInit.compareAndSet(true, false)
+
+        fragmentManager.findFragmentByTag(USER_INTERACTION_FRAGMENT_TAG)?.let { fragment ->
+            fragmentManager.beginTransaction()
+                .remove(fragment)
+                .commit()
+        }
+    }
+
     fun setScaledVideoBottomBounds(finalBottomBounds: Int) {
         val fragment = fragmentManager.findFragmentByTag(USER_INTERACTION_FRAGMENT_TAG) as? PlayUserInteractionFragment
         fragment?.maxTopOnChatMode(finalBottomBounds)
+    }
+
+    fun startAnimateInsets(isHidingInsets: Boolean) {
+        val fragment = fragmentManager.findFragmentByTag(USER_INTERACTION_FRAGMENT_TAG) as? PlayUserInteractionFragment
+        fragment?.onStartAnimateInsets(isHidingInsets)
+    }
+
+    fun finishAnimateInsets(isHidingInsets: Boolean) {
+        val fragment = fragmentManager.findFragmentByTag(USER_INTERACTION_FRAGMENT_TAG) as? PlayUserInteractionFragment
+        fragment?.onFinishAnimateInsets(isHidingInsets)
     }
 
     private fun getPlayUserInteractionFragment(): Fragment {

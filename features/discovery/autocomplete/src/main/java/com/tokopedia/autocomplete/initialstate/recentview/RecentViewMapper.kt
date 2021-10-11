@@ -5,8 +5,9 @@ import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.autocomplete.initialstate.InitialStateData
 import java.util.*
 
-fun InitialStateData.convertRecentViewSearchToVisitableList(): MutableList<Visitable<*>> {
+fun InitialStateData.convertRecentViewSearchToVisitableList(dimension90: String): MutableList<Visitable<*>> {
     val childList = ArrayList<BaseItemInitialStateSearch>()
+    var position = 1
     for (item in this.items) {
         val model = BaseItemInitialStateSearch(
                 template = item.template,
@@ -20,9 +21,12 @@ fun InitialStateData.convertRecentViewSearchToVisitableList(): MutableList<Visit
                 label = item.label,
                 labelType = item.labelType,
                 shortcutImage = item.shortcutImage,
-                productId = item.itemId
+                productId = item.itemId,
+                dimension90 = dimension90,
+                position = position
         )
         childList.add(model)
+        position++
     }
     return arrayListOf(RecentViewDataView(childList))
 }

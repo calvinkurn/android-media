@@ -7,10 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder
 import com.tokopedia.home_recom.model.datamodel.*
-import com.tokopedia.home_recom.view.viewholder.RecommendationEmptyViewHolder
-import com.tokopedia.home_recom.view.viewholder.RecommendationErrorViewHolder
-import com.tokopedia.home_recom.view.viewholder.RecommendationItemViewHolder
-import com.tokopedia.home_recom.view.viewholder.SimilarProductLoadMoreViewHolder
+import com.tokopedia.home_recom.view.viewholder.*
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 
 /**
@@ -41,13 +38,25 @@ class SimilarProductRecommendationTypeFactoryImpl (
 
     override fun type(dataModel: RecommendationEmptyDataModel): Int = RecommendationEmptyDataModel.LAYOUT
 
+    override fun type(dataModel: RecommendationCPMDataModel): Int = -1
+
+    override fun type(dataModel: LoadMoreDataModel): Int {
+        return LoadMoreViewHolder.LAYOUT
+    }
+
+    override fun type(dataModel: FirstLoadDataModel): Int {
+        return FirstLoadViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
-        return when(type){
+        return when (type) {
             RecommendationItemDataModel.LAYOUT -> RecommendationItemViewHolder(view, recommendationListener)
             LoadingShimmeringGridViewHolder.LAYOUT -> LoadingShimmeringGridViewHolder(view)
             SimilarProductLoadMoreViewHolder.LAYOUT -> SimilarProductLoadMoreViewHolder(view)
             RecommendationErrorDataModel.LAYOUT -> RecommendationErrorViewHolder(view, recommendationErrorListener)
             RecommendationEmptyDataModel.LAYOUT -> RecommendationEmptyViewHolder(view, recommendationEmptyStateListener)
+            LoadMoreViewHolder.LAYOUT -> LoadMoreViewHolder(view)
+            FirstLoadViewHolder.LAYOUT -> FirstLoadViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

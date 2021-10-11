@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <item name="design_bottom_navigation_item" type="layout" tools:override="true">@layout/tkpd_ucrop_view</item>
+</resources>

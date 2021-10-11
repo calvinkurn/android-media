@@ -20,7 +20,6 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTION_RESULT_PRODUCT
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analyticvalidator.util.ShopUiTestUtil
 import com.tokopedia.shop.analyticvalidator.util.ViewActionUtil
@@ -35,8 +34,6 @@ import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.trackingoptimizer.constant.Constant
-import kotlinx.android.synthetic.main.item_shop_home_new_product_launch_campaign.view.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.AllOf
 import org.junit.After
@@ -147,20 +144,6 @@ class ShopPageBuyerAnalyticTest {
 
     private fun testProductWidget() {
         val productWidgetPosition = 1
-        val sampleProductIdWishlist = "23151232"
-        val mockIntentData = Intent().apply {
-            putExtra(PRODUCT_CARD_OPTION_RESULT_PRODUCT, ProductCardOptionsModel(
-                    isWishlisted = true,
-                    productId = sampleProductIdWishlist
-            ).apply {
-                wishlistResult = ProductCardOptionsModel.WishlistResult(
-                        isUserLoggedIn = true,
-                        isAddWishlist = true,
-                        isSuccess = true
-                )
-            })
-        }
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST, mockIntentData))
         val recyclerViewHomeWidgetInteraction = Espresso.onView(firstView(AllOf.allOf(
                 withId(R.id.recycler_view),
                 isDisplayed())
@@ -170,9 +153,6 @@ class ShopPageBuyerAnalyticTest {
         Espresso.onView(AllOf.allOf(
                 withId(R.id.carouselProductCardRecyclerView))
         ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
-        Espresso.onView(AllOf.allOf(
-                withId(R.id.carouselProductCardRecyclerView))
-        ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, CommonActions.clickChildViewWithId(R.id.imageThreeDots)))
         Espresso.onView(AllOf.allOf(
                 withId(R.id.carouselProductCardRecyclerView))
         ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, CommonActions.clickChildViewWithId(R.id.buttonAddToCart)))

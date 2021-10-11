@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/containerSetDeliveredBottomSheet"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/tfSomDetailSetDeliveredReceiverName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:text_field_label="@string/label_receiver_name" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnSomDetailChangeStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl6"
+        android:enabled="false"
+        android:text="@string/action_ubah"
+        app:layout_constraintTop_toBottomOf="@id/tfSomDetailSetDeliveredReceiverName"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,12 +9,14 @@ object EmoneyPdpAnalyticsConst {
         const val DIGITAL_GENERAL_EVENT = "digitalGeneralEvent"
         const val CLICK_EMONEY = "clickEmoney"
         const val CLICK_DIGITAL_NATIVE = "clickDigitalNative"
+        const val CLICK_DIGITAL_EVENT = "clickDigitalEvent"
     }
 
     object Category {
         const val DIGITAL_NATIVE = "digital - native"
         const val DIGITAL_HOMEPAGE = "digital - homepage"
         const val DIGITAL_UANG_ELEKTRONIK = "digital - Uang Elektronik"
+        const val EMONEY_PDP_SCREEN_NAME = "/digital/Uang Elektronik"
     }
 
     object Action {

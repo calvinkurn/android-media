@@ -70,9 +70,6 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         super.onCreate(savedInstanceState)
         initInject()
         getDataFromArgumentOrCacheManager()
-        setShowListener {
-            setStatusBarColor()
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -83,6 +80,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
+        setStatusBarColor()
         loadSomFilterData()
         clickShowOrder()
         observeSomFilter()
@@ -280,7 +278,9 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     }
 
     private fun setStatusBarColor() {
-        statusBarColorUtil = StatusBarColorUtil(requireActivity())
+        activity?.let {
+            statusBarColorUtil = StatusBarColorUtil(it)
+        }
         statusBarColorUtil?.setStatusBarColor()
     }
 

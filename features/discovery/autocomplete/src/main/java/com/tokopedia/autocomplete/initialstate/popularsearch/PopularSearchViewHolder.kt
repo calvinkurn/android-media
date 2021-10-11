@@ -102,7 +102,7 @@ class PopularSearchViewHolder(
 
             private fun bindListener(item: BaseItemInitialStateSearch) {
                 itemView.initialStateDynamicItem?.setOnClickListener {
-                    clickListener.onDynamicSectionItemClicked(item, adapterPosition)
+                    clickListener.onDynamicSectionItemClicked(item)
                 }
             }
         }

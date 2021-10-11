@@ -9,7 +9,7 @@ import android.widget.TextView
 
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.Wholesale
-import com.tokopedia.product.detail.data.util.getCurrencyFormatted
+import com.tokopedia.product.detail.common.getCurrencyFormatted
 
 import java.util.ArrayList
 

@@ -20,6 +20,8 @@ data class CouponListRecommendation(
 )
 
 data class Data(
+        @SerializedName("error_page")
+        val errorPage: ErrorPage = ErrorPage(),
         @SerializedName("result_status")
         val resultStatus: ResultStatus = ResultStatus(),
         @SerializedName("empty_state")
@@ -59,6 +61,26 @@ data class TncDetail(
         val iconImageUrl: String = "",
         @SerializedName("description")
         val description: String = ""
+)
+
+data class ErrorPage(
+        @SerializedName("is_show_error_page")
+        val isShowErrorPage: Boolean = false,
+        @SerializedName("image")
+        val img: String = "",
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("description")
+        val desc: String = "",
+        @SerializedName("button")
+        val button: Button = Button()
+)
+
+data class Button(
+        @SerializedName("text")
+        val text: String = "",
+        @SerializedName("destination")
+        val destination: String = ""
 )
 
 data class ResultStatus(
@@ -144,7 +166,7 @@ data class Coupon(
         @SerializedName("unique_id")
         val uniqueId: String = "",
         @SerializedName("shop_id")
-        val shopId: Int = 0,
+        val shopId: String = "",
         @SerializedName("tag_image_urls")
         val tagImageUrls: List<String> = emptyList(),
         @SerializedName("benefit_amount")

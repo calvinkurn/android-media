@@ -22,7 +22,7 @@ interface Cryptography {
 
     fun getPublicKey(): String
 
-    fun generateFingerprintSignature(userId: String, deviceId: String): SignatureData
+    fun generateFingerprintSignature(uniqueId: String, deviceId: String): SignatureData
 
     fun getSignature(textToEncrypt: String, algorithm: String): String
 

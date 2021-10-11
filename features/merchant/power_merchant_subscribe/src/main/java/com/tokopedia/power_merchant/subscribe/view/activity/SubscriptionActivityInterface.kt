@@ -6,8 +6,6 @@ package com.tokopedia.power_merchant.subscribe.view.activity
 
 interface SubscriptionActivityInterface {
 
-    fun fetchPowerMerchantBasicInfo()
-
     fun showLoadingState()
 
     fun showErrorState(throwable: Throwable)
@@ -19,4 +17,10 @@ interface SubscriptionActivityInterface {
     fun hideActivationProgress()
 
     fun showActivationProgress()
+
+    fun stopRenderPerformanceMonitoring()
+
+    fun startCustomMetricPerformanceMonitoring(tag: String)
+
+    fun stopCustomMetricPerformanceMonitoring(tag: String)
 }

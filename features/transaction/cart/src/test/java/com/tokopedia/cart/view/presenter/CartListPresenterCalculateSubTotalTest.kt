@@ -205,7 +205,7 @@ object CartListPresenterCalculateSubTotalTest : Spek({
                     cartShops.flatMap {
                         it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }
@@ -237,7 +237,7 @@ object CartListPresenterCalculateSubTotalTest : Spek({
                     cartShops.flatMap {
                         it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }
@@ -250,38 +250,6 @@ object CartListPresenterCalculateSubTotalTest : Spek({
                 verify {
                     view.updateCashback(100.0)
                     view.renderDetailInfoSubTotal("5", 1004.0, 1004.0, false, false, false)
-                }
-            }
-        }
-
-        Scenario("some item error") {
-
-            Given("error in unselected items") {
-                firstItemFirst.isSelected = true
-                secondItemFirstData.isError = true
-                firstShop.isPartialSelected = true
-
-                secondShopData.isError = true
-            }
-
-            Given("cart data list") {
-                every { view.getAllAvailableCartDataList() } answers {
-                    cartShops.flatMap {
-                        it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
-                    }.map {
-                        it.cartItemData ?: CartItemData()
-                    }
-                }
-            }
-
-            When("recalculate subtotal") {
-                cartListPresenter.reCalculateSubTotal(cartShops)
-            }
-
-            Then("should have 1000 subtotal, 100 cashback and selected all item") {
-                verify {
-                    view.updateCashback(100.0)
-                    view.renderDetailInfoSubTotal("1", 1000.0, 1000.0, true, false, false)
                 }
             }
         }
@@ -303,7 +271,7 @@ object CartListPresenterCalculateSubTotalTest : Spek({
                     cartShops.flatMap {
                         it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }
@@ -346,7 +314,7 @@ object CartListPresenterCalculateSubTotalTest : Spek({
                     cartShops.flatMap {
                         it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }
@@ -388,7 +356,7 @@ object CartListPresenterCalculateSubTotalTest : Spek({
                     cartShops.flatMap {
                         it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }
@@ -429,7 +397,7 @@ object CartListPresenterCalculateSubTotalTest : Spek({
                     cartShops.flatMap {
                         it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }
@@ -471,7 +439,7 @@ object CartListPresenterCalculateSubTotalTest : Spek({
                     cartShops.flatMap {
                         it.shopGroupAvailableData?.cartItemDataList ?: mutableListOf()
                     }.map {
-                        it.cartItemData ?: CartItemData()
+                        it.cartItemData
                     }
                 }
             }

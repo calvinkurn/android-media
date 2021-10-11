@@ -22,10 +22,7 @@ import com.tokopedia.topads.dashboard.view.adapter.insight.TopadsRecomGroupBsAda
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.topads_choose_group_insight_bottomsheet.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 const val DEBOUNCE_CONST: Long = 200
@@ -37,11 +34,15 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
     var onItemClick: ((groupId: String) -> Unit)? = null
     var onNewGroup: ((name: String) -> Unit)? = null
     var groupList: List<GroupListDataItem> = listOf()
+    val job = SupervisorJob()
+    val coroutineScope = CoroutineScope(Dispatchers.Main + job)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         super.onCreate(savedInstanceState)
-        val childView = View.inflate(context, R.layout.topads_choose_group_insight_bottomsheet, null)
+        val childView =
+            View.inflate(context, R.layout.topads_choose_group_insight_bottomsheet, null)
         setChild(childView)
         setSheetValues()
         adapter = TopadsRecomGroupBsAdapter(::onGroupSelect)
@@ -78,7 +79,8 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
 
     fun initInjector() {
         DaggerTopAdsDashboardComponent.builder().baseAppComponent(
-                (activity?.application as BaseMainApplication).baseAppComponent).build().inject(this)
+            (activity?.application as BaseMainApplication).baseAppComponent
+        ).build().inject(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -111,9 +113,11 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
         submit_butt?.setOnClickListener {
             submit_butt?.isLoading = true
             if (contentSwitch.isChecked || !contentSwitch.isVisible)
-                onNewGroup?.invoke(group_name_input?.textFieldInput?.text?.toString() ?: ""
+                onNewGroup?.invoke(
+                    group_name_input?.textFieldInput?.text?.toString() ?: ""
                 ) else
-                onItemClick?.invoke(adapter.getCheckedPosition()
+                onItemClick?.invoke(
+                    adapter.getCheckedPosition()
                 )
         }
     }
@@ -121,7 +125,12 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
     private fun setAdapter() {
         recyclerView?.adapter = adapter
         recyclerView?.layoutManager = LinearLayoutManager(context)
-        recyclerView?.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        recyclerView?.addItemDecoration(
+            DividerItemDecoration(
+                context,
+                DividerItemDecoration.VERTICAL
+            )
+        )
         adapter.setShimmer()
     }
 
@@ -132,15 +141,16 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                val coroutineScope = CoroutineScope(Dispatchers.Main)
                 val text = s.toString()
-                if(text.isEmpty()){
+                if (text.isEmpty()) {
                     setEmptyNameError()
-                 }else {
+                } else {
                     s?.let {
                         coroutineScope.launch {
                             delay(DEBOUNCE_CONST)
-                            topAdsDashboardPresenter.validateGroup(text, ::onSuccessGroupName)
+                            if (activity != null && isAdded) {
+                                topAdsDashboardPresenter.validateGroup(text, ::onSuccessGroupName)
+                            }
                         }
                     }
                 }
@@ -148,7 +158,7 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
         })
     }
 
-    fun setEmptyNameError(){
+    fun setEmptyNameError() {
         group_name_input?.setError(true)
         submit_butt?.isEnabled = false
         group_name_input?.setMessage(getString(R.string.topads_dash_name_empty_error))
@@ -171,7 +181,10 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
     }
 
     private fun getData() {
-        topAdsDashboardPresenter.getGroupList(search.searchBarTextField.text.toString(), ::onSuccessGroupList)
+        topAdsDashboardPresenter.getGroupList(
+            search.searchBarTextField.text.toString(),
+            ::onSuccessGroupList
+        )
     }
 
     private fun onSuccessGroupList(groupList: List<GroupListDataItem>) {
@@ -182,7 +195,7 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
             submit_butt?.isEnabled = true
             emptyText.gone()
             val groupIds: List<String> = groupList.map {
-                it.groupId.toString()
+                it.groupId
             }
             topAdsDashboardPresenter.getCountProductKeyword(resources, groupIds, ::onSuccessCount)
         }
@@ -194,7 +207,7 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
     }
 
     fun show(
-            fragmentManager: FragmentManager, groupList: List<GroupListDataItem>
+        fragmentManager: FragmentManager, groupList: List<GroupListDataItem>
     ) {
         this.groupList = groupList
         show(fragmentManager, TOPADS_BOTTOM_SHEET_TAG)
@@ -203,6 +216,11 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
     companion object {
         private const val TOPADS_BOTTOM_SHEET_TAG = "insight_bottom_sheet"
         fun getInstance() = TopAdsRecomGroupBottomSheet()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        job.cancelChildren()
     }
 
 }

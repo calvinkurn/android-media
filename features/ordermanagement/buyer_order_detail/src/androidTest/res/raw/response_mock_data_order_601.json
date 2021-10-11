@@ -1,0 +1,139 @@
+[
+  {
+    "data": {
+      "mp_bom_detail": {
+        "order_id": 166842788,
+        "invoice": "INV/20210608/MPL/20534713",
+        "invoice_url": "https://staging.tokopedia.com/invoice.pl?id=166842788&pdf=Invoice-825707-478945-20210608103803-dXV1dXV1dXUz",
+        "payment_date": "08 Juni 2021, 10:38 WIB",
+        "cashback_info": "",
+        "order_status": {
+          "id": 601,
+          "status_name": "Dikomplain",
+          "indicator_color": "#FFC400"
+        },
+        "ticker_info": {
+          "text": "",
+          "type": "",
+          "action_text": "",
+          "action_key": "",
+          "action_url": ""
+        },
+        "preorder": {
+          "is_preorder": false,
+          "label": "",
+          "value": ""
+        },
+        "deadline": {
+          "label": "",
+          "value": "",
+          "color": ""
+        },
+        "shop": {
+          "shop_id": 478945,
+          "shop_name": "Umbra|Penumbra",
+          "shop_type": 0,
+          "badge_url": ""
+        },
+        "products": [
+          {
+            "product_id": 15359272,
+            "order_detail_id": 20534714,
+            "product_name": "product 1",
+            "thumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2020/4/8/5479999/5479999_0d445339-9e18-4994-9744-2a18deffd0f6_315_315",
+            "price": 1500,
+            "price_text": "Rp1.500",
+            "quantity": 1,
+            "total_price": 1500,
+            "total_price_text": "Rp1.500",
+            "notes": "",
+            "category": "olahraga21 > Panahan > Busur",
+            "category_id": 1479,
+            "button": {
+              "key": "",
+              "display_name": "",
+              "type": "",
+              "variant": "",
+              "url": "",
+              "popup": {
+                "title": "",
+                "body": "",
+                "action_button": []
+              }
+            }
+          }
+        ],
+        "shipment": {
+          "shipping_name": "GrabExpress",
+          "shipping_product_name": "Instant",
+          "shipping_display_name": "Instant - GrabExpress",
+          "shipping_ref_num": "TKPD-SAY645U-159",
+          "eta": "Estimasi tiba 8 Jun",
+          "receiver": {
+            "name": "laras jogja",
+            "phone": "62893829525323",
+            "street": "jalan kraton yogyakarta nomor 12",
+            "postal": "55131",
+            "district": "Kraton",
+            "city": "Kota Yogyakarta",
+            "province": "D.I. Yogyakarta"
+          },
+          "driver": {
+            "name": "test",
+            "phone": "12345678",
+            "photo_url": "https://ecs12.tokopedia.net/newimg/cache/300/career/team/2016/7/20/719/719_886d47b9-fd2c-494e-9e53-a9d8d133ac08.jpg",
+            "license_number": "B 1234 ABC"
+          },
+          "shipping_info": {
+            "text": "Jaminan Tepat Waktu akan berlaku <b>setelah barang diserahkan ke kurir.</b>",
+            "type": "default",
+            "action_key": "",
+            "action_url": "https://gw-staging.tokopedia.com/rates/otdg_info_bom",
+            "action_text": "S&K berlaku"
+          }
+        },
+        "payment": {
+          "payment_method": {
+            "label": "Metode Pembayaran",
+            "value": "Saldo"
+          },
+          "payment_details": [
+            {
+              "label": "Total Harga (1 barang)",
+              "value": "Rp1.500"
+            },
+            {
+              "label": "Total Ongkos Kirim (0.01 kg)",
+              "value": "Rp11.000"
+            },
+            {
+              "label": "Biaya Asuransi",
+              "value": "Rp100"
+            }
+          ],
+          "payment_amount": {
+            "label": "Total Bayar",
+            "value": "Rp12.600"
+          }
+        },
+        "button": {
+          "key": "view_complaint",
+          "display_name": "Lihat Komplain",
+          "type": "main",
+          "variant": "filled",
+          "url": "https://staging.tokopedia.com/resolution-center/inbox/buyer?inv=INV/20210608/MPL/20534713",
+          "popup": {
+            "title": "",
+            "body": "",
+            "action_button": []
+          }
+        },
+        "dot_menus": [],
+        "meta": {
+          "is_bo": false,
+          "bo_image_url": ""
+        }
+      }
+    }
+  }
+]

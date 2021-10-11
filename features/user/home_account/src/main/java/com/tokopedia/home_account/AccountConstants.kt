@@ -51,12 +51,18 @@ object AccountConstants {
         const val DATA_DIMENSION_83 = "dimension83"
         const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
 
+        object Screen {
+            const val SCREEN_FUNDS_AND_INVESTMENT = "dana dan investasi page"
+        }
+
         object Event {
             const val EVENT_CLICK_HOME_PAGE = "clickHomePage"
             const val EVENT_CLICK_ACCOUNT = "clickAccount"
             const val EVENT_PRODUCT_CLICK = "productClick"
             const val EVENT_PRODUCT_VIEW = "productView"
             const val EVENT_CLICK_SETTING = "clickSetting"
+            const val EVENT_CLICK_DANA = "clickDana"
+            const val EVENT_VIEW_DANA_IRIS = "viewDanaIris"
         }
 
         object Category {
@@ -65,6 +71,9 @@ object AccountConstants {
             const val CATEGORY_ACCOUNT_BUYER = "akun saya pembeli"
             const val CATEGORY_OVO_HOMEPAGE = "ovo home page"
             const val CATEGORY_SETTING_PAGE = "setting page"
+            const val CATEGORY_ACCOUNT_PAGE_SETTING_GOJEK = "account page setting - gojek"
+            const val CATEGORY_ACCOUNT_PAGE_SETTING_LINK = "akun saya pembeli"
+            const val CATEGORY_FUNDS_AND_INVESTMENT_PAGE = "dana and investasi page"
         }
 
         object Action {
@@ -79,13 +88,26 @@ object AccountConstants {
             const val ACTION_CLICK_REWARD_SECTION = "click reward section"
             const val ACTION_CLICK_ACCOUNT_SETTING_SECTION = "click account settings section"
             const val ACTION_CLICK_APP_SETTING_SECTION = "click on application setting section"
+            const val ACTION_CLICK_SCREEN_RECORDER = "click on screen recorder"
             const val ACTION_CLICK_ABOUT_TOKOPEDIA_SECTION = "click on seputar tokopedia section"
             const val ACTION_CLICK_LOGOUT = "click on logout"
             const val ACTION_SIMPAN_THEME_SELECTION = "click simpan on theme selection"
+            const val ACTION_CLICK_LINK_ACC_GOJEK = "click link account to gojek"
+            const val ACTION_CLICK_SETTING_LINK_ACC = "click on application setting section"
+            const val ACTION_CLICK_BACK = "click on button back"
+            const val ACTION_CLICK_LINK_ACC = "click hubungkan akun"
+            const val ACTION_CLICK_ACC_GOJEK = "click account gojek connected"
+            const val ACTION_CLICK_HELP_LINK_ACC = "click help page to unlink gojek account"
+            const val ACTION_CLICK_ON_KONTEN_GAGAL = "click on konten gagal ditampilkan coba lagi"
+            const val ACTION_CLICK_ON_TOKOPEDIA_PAY_LIHAT_SEMUA = "click on tokopedia pay - lihat semua"
+            const val ACTION_CLICK_ON = "click on "
+            const val ACTION_CLICK_TOKOPEDIA_PAY = "click - tokopedia pay - "
         }
 
         object Label {
             const val LABEL_EMPTY = ""
+            const val LABEL_HYPEN = "-"
+            const val LABEL_CLICK = "click"
             const val LABEL_MEMBER = "Member"
             const val LABEL_MEMBER_STORE = "TokoMember"
             const val LABEL_TOP_QUEST = "TopQuest"
@@ -112,10 +134,15 @@ object AccountConstants {
             const val LABEL_PRIVACY_POLICY = "Kebijakan Privasi"
             const val LABEL_IP = "Hak Kekayaan Intelektual"
             const val LABEL_REVIEW_THIS_APP = "Ulas Aplikasi Ini"
+            const val LABEL_CONNECTED_ACC = "Akun yang terhubung"
+            const val LABEL_RETRY = "coba lagi"
+            const val LABEL_CONNECT = "sambungkan"
+            const val LABEL_ACTIVATE = "aktivasi"
         }
 
         object BusinessUnit {
             const val USER_PLATFORM_UNIT = "user platform"
+            const val HOME_AND_BROWSE = "home & browse"
         }
 
         object CurrentSite {
@@ -169,20 +196,20 @@ object AccountConstants {
         const val SETTING_DEV_OPTIONS = -1
         const val SETTING_APP_REVIEW_ID = 10
         const val SETTING_APP_ADVANCED_CLEAR_CACHE = 20
+        const val SETTING_APP_ADVANCED_SCREEN_RECORD = 21
         const val SETTING_ABOUT_US = 36
         const val SETTING_NOTIFICATION = 38
         const val SETTING_SECURITY = 39
         const val SETTING_OLD_ACCOUNT = 40
-        const val SETTING_OVO = 41
-        const val SETTING_SALDO = 42
         const val SETTING_MORE_MEMBER = 43
         const val SETTING_INSTANT_PAYMENT = 44
         const val SETTING_INSTANT_BUY = 45
         const val SETTING_APP_SETTING = 46
         const val SETTING_ABOUT_TOKOPEDIA = 47
-        const val SETTING_TOKOPOINTS = 48
         const val SETTING_QUALITY_SETTING = 49
         const val SETTING_DARK_MODE = 50
+        const val SETTING_VIEW_ALL_BALANCE = 51
+        const val SETTING_LINK_ACCOUNT = 51
     }
 
     object KEY {
@@ -196,7 +223,32 @@ object AccountConstants {
         const val REQUEST_ADD_PASSWORD = 100
     }
 
+    object TDNBanner {
+        const val TDN_RADIUS = 16
+        const val SOURCE = "16"
+        const val DIMEN_ID = 3
+        const val ADS_COUNT = 1
+        const val EMPTY = ""
+        const val TDN_INDEX = 4
+    }
+
+    object DIMENSION {
+        const val LAYOUT_TITLE_LEFT_MARGIN = 20
+    }
+
     object LAYOUT {
         const val TYPE_ERROR = -1
+    }
+
+    object WALLET {
+        const val OVO = "ovo"
+        const val GOPAY = "gopay"
+        const val GOPAYLATER = "gopaylater"
+        const val TOKOPOINT = "tokopoints"
+        const val SALDO = "saldo"
+        const val CO_BRAND_CC = "cobrandcc"
+        const val REKSADANA = "reksadana"
+        const val EMAS = "emas"
+        const val PAYLATER = "paylater"
     }
 }

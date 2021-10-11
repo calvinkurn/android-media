@@ -4,6 +4,16 @@ mutation coupon_list_recommendation($params: PromoStackRequest, $chosen_address:
         error_code
         status
         data {
+            error_page {
+                is_show_error_page
+                image
+                title
+                description
+                button {
+                    text
+                    destination
+                }
+            }
             result_status {
                 code
                 message

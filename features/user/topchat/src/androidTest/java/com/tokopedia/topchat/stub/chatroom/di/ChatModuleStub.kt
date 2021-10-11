@@ -7,8 +7,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -25,6 +23,7 @@ import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl
 import com.tokopedia.topchat.chatroom.di.ChatScope
+import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.imageserver.ChatImageServerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.common.chat.api.ChatApi
@@ -32,7 +31,6 @@ import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.network.TopchatCacheManagerImpl
-import com.tokopedia.topchat.common.network.XUserIdInterceptor
 import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -45,7 +43,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
-import javax.inject.Named
 
 @Module(
         includes = arrayOf(
@@ -98,15 +95,6 @@ class ChatModuleStub {
 
     @ChatScope
     @Provides
-    fun provideXUserIdInterceptor(@ApplicationContext context: Context,
-                                  networkRouter: NetworkRouter,
-                                  userSession: UserSession):
-            XUserIdInterceptor {
-        return XUserIdInterceptor(context, networkRouter, userSession)
-    }
-
-    @ChatScope
-    @Provides
     fun provideFingerprintInterceptor(networkRouter: NetworkRouter,
                                       userSessionInterface: UserSessionInterface):
             FingerprintInterceptor {
@@ -132,8 +120,11 @@ class ChatModuleStub {
 
     @ChatScope
     @Provides
-    fun provideRxWebSocketUtilStub(): RxWebSocketUtilStub {
-        return RxWebSocketUtilStub()
+    fun provideRxWebSocketUtilStub(
+        mapper: TopChatRoomGetExistingChatMapper,
+        session: UserSessionInterface,
+    ): RxWebSocketUtilStub {
+        return RxWebSocketUtilStub(mapper, session)
     }
 
     @ChatScope
@@ -143,12 +134,10 @@ class ChatModuleStub {
                             errorResponseInterceptor: ErrorResponseInterceptor,
                             chuckInterceptor: ChuckerInterceptor,
                             fingerprintInterceptor: FingerprintInterceptor,
-                            httpLoggingInterceptor: HttpLoggingInterceptor,
-                            xUserIdInterceptor: XUserIdInterceptor):
+                            httpLoggingInterceptor: HttpLoggingInterceptor):
             OkHttpClient {
         val builder = OkHttpClient.Builder()
                 .addInterceptor(fingerprintInterceptor)
-                .addInterceptor(xUserIdInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
@@ -194,13 +183,6 @@ class ChatModuleStub {
 
     @ChatScope
     @Provides
-    @Named("atcMutation")
-    fun provideAddToCartMutation(@TopchatContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
-    }
-
-    @ChatScope
-    @Provides
     fun provideGraphqlRepositoryModule(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
@@ -242,12 +224,5 @@ class ChatModuleStub {
     fun provideChatImageServerUseCase(graphqlRepository: GraphqlRepository)
             : com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ChatImageServerResponse> {
         return com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository)
-    }
-
-    @ChatScope
-    @Provides
-    @Named(AtcConstant.MUTATION_ATC_OCC)
-    fun provideAtcOccMutation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_checkout)
     }
 }

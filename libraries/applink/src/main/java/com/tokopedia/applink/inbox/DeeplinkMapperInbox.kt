@@ -4,15 +4,12 @@ import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
 object DeeplinkMapperInbox {
 
     fun getRegisteredNavigationNotifcenter(): String {
-        var applink = ApplinkConstInternalMarketplace.NOTIFICATION_CENTER
-        if (useNewNotifcenterOnInbox() && !GlobalConfig.isSellerApp()) {
-            applink = Uri.parse(ApplinkConstInternalMarketplace.INBOX).buildUpon().apply {
+        return if (!GlobalConfig.isSellerApp()) {
+            Uri.parse(ApplinkConstInternalMarketplace.INBOX).buildUpon().apply {
                 appendQueryParameter(
                     ApplinkConst.Inbox.PARAM_PAGE,
                     ApplinkConst.Inbox.VALUE_PAGE_NOTIFICATION
@@ -22,13 +19,8 @@ object DeeplinkMapperInbox {
                     false.toString()
                 )
             }.toString()
+        } else {
+            ApplinkConst.SELLER_INFO
         }
-        return applink
-    }
-
-    private fun useNewNotifcenterOnInbox(): Boolean {
-        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            AbTestPlatform.KEY_NEW_NOTFICENTER, AbTestPlatform.VARIANT_OLD_NOTFICENTER
-        ) == AbTestPlatform.VARIANT_NEW_NOTFICENTER
     }
 }

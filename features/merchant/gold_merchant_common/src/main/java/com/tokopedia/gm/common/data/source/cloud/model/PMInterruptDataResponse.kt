@@ -10,7 +10,7 @@ data class PMInterruptDataResponse(
         @SerializedName("goldGetPMShopInfo")
         val shopInfo: GoldGetPMShopInfoDataModel? = null,
         @SerializedName("goldGetPMOSStatus")
-        val pmStatus: PMShopStatusModel? = null,
+        val pmStatus: ShopStatusDataModel? = null,
         @SerializedName("goldGetPMSettingInfo")
         val pmSettingInfo: PMSettingInfoModel? = null
 )

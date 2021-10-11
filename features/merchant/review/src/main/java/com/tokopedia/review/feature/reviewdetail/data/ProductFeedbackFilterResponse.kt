@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
  * Created by Yehezkiel on 29/04/20
  */
 data class ProductFeedbackFilterResponse(
-        @SerializedName("productrevFeedbackDataPerProduct")
+        @SerializedName("productrevFeedbackDataPerProductV2")
         val productrevFeedbackDataPerProduct: ProductFeedbackFilterData = ProductFeedbackFilterData()
 )
 

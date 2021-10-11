@@ -1,14 +1,14 @@
 package com.tokopedia.flight.orderlist.view.adapter.viewholder;
 
-import androidx.annotation.LayoutRes;
-import androidx.appcompat.widget.AppCompatTextView;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
 
+import androidx.annotation.LayoutRes;
+import androidx.appcompat.widget.AppCompatTextView;
+
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.common.travel.utils.TravelDateUtil;
 import com.tokopedia.flight.orderlist.R;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
@@ -16,6 +16,7 @@ import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
+import com.tokopedia.utils.date.DateUtil;
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -58,7 +59,7 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
     public void bind(final FlightOrderSuccessViewModel element) {
         this.item = element;
         tvTitle.setText(element.getTitle());
-        tvOrderDate.setText(TravelDateUtil.formatToUi(element.getCreateTime()));
+        tvOrderDate.setText(DateUtil.formatToUi(element.getCreateTime()));
         tvOrderId.setText(String.format("%s %s", itemView.getContext().getString(R.string.flight_order_order_id_prefix), element.getId()));
 
         if (element.getOrderJourney().size() > 0) {

@@ -37,6 +37,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.showToasterError
+import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.*
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
@@ -45,8 +47,6 @@ import com.tokopedia.product.detail.view.adapter.AddToCartDoneAdapter
 import com.tokopedia.product.detail.view.adapter.AddToCartDoneTypeFactory
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.util.createProductCardOptionsModel
-import com.tokopedia.product.detail.view.util.showToasterError
-import com.tokopedia.product.detail.view.util.showToasterSuccess
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneAddedProductViewHolder
 import com.tokopedia.product.detail.view.viewmodel.AddToCartDoneViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
@@ -73,6 +73,7 @@ open class AddToCartDoneBottomSheet :
     companion object {
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
         private const val REQUEST_FROM_PDP = 394
+        private const val EXTRA_CART_ID = "cart_id"
         const val KEY_ADDED_PRODUCT_DATA_MODEL = "addedProductDataModel"
         private const val abNewPdpAfterAtcKey = "PDP ATC 2020"
         private const val oldVariantPDP = "PDP after ATC"
@@ -107,7 +108,7 @@ open class AddToCartDoneBottomSheet :
     }
 
     fun getRecyclerView(): RecyclerView? {
-        if(::recyclerView.isInitialized) {
+        if (::recyclerView.isInitialized) {
             return recyclerView
         }
         return null
@@ -134,7 +135,7 @@ open class AddToCartDoneBottomSheet :
         super.setupDialog(dialog, style)
         dialog.run {
             inflatedView = View.inflate(context, R.layout.add_to_cart_done_bottomsheet, null)
-            inflatedView?.let{
+            inflatedView?.let {
                 configView(it)
                 dialog.setContentView(it)
                 initInjector()
@@ -154,7 +155,7 @@ open class AddToCartDoneBottomSheet :
         dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)?.let {
             it.setBackgroundColor(Color.TRANSPARENT)
             bottomSheetBehavior = BottomSheetBehavior.from(it)
-            if(getRemoteConfig()?.getString(abNewPdpAfterAtcKey) != oldVariantPDP){
+            if (getRemoteConfig()?.getString(abNewPdpAfterAtcKey) != oldVariantPDP) {
                 dialog.setCanceledOnTouchOutside(false)
                 recyclerView.isNestedScrollingEnabled = false
                 val bottomSheetBehavior = BottomSheetBehavior.from<View>(it)
@@ -171,7 +172,7 @@ open class AddToCartDoneBottomSheet :
         }
         dialog.setOnShowListener {
             val bottomSheet = (it as BottomSheetDialog).findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout?
-            bottomSheet?.let{
+            bottomSheet?.let {
                 val behavior = BottomSheetBehavior.from(bottomSheet)
                 behavior.state = BottomSheetBehavior.STATE_EXPANDED
             }
@@ -237,11 +238,11 @@ open class AddToCartDoneBottomSheet :
         val factory = AddToCartDoneTypeFactory(this, this)
         atcDoneAdapter = AddToCartDoneAdapter(factory)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.animation= null
+        recyclerView.animation = null
         recyclerView.adapter = atcDoneAdapter
     }
 
-    private fun observeAtcStatus(){
+    private fun observeAtcStatus() {
         addToCartDoneViewModel.addToCartLiveData.observe(this, Observer { result ->
             addToCartButton.isLoading = false
             if (result is Success) {
@@ -292,7 +293,7 @@ open class AddToCartDoneBottomSheet :
         })
     }
 
-    private fun mapRecommendationWidgetToAddToCartRecommendationDataModel(recommendationWidget: RecommendationWidget): AddToCartDoneRecommendationWidgetDataModel{
+    private fun mapRecommendationWidgetToAddToCartRecommendationDataModel(recommendationWidget: RecommendationWidget): AddToCartDoneRecommendationWidgetDataModel {
         return AddToCartDoneRecommendationWidgetDataModel(
                 title = recommendationWidget.title,
                 currentPage = recommendationWidget.currentPage,
@@ -323,7 +324,7 @@ open class AddToCartDoneBottomSheet :
     }
 
     private fun configBottomSheetHeight() {
-        if(getRemoteConfig()?.getString(abNewPdpAfterAtcKey) == oldVariantPDP) {
+        if (getRemoteConfig()?.getString(abNewPdpAfterAtcKey) == oldVariantPDP) {
             dialog?.run {
                 val parent = findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
                 val displaymetrics = DisplayMetrics()
@@ -354,7 +355,11 @@ open class AddToCartDoneBottomSheet :
 
     private fun goToCart() {
         activity?.let {
-            startActivity(RouteManager.getIntent(it, ApplinkConst.CART))
+            val intent = RouteManager.getIntent(it, ApplinkConst.CART)
+            addedProductDataModel?.let {
+                intent.putExtra(EXTRA_CART_ID, it.cartId)
+            }
+            startActivity(intent)
             dismissAllowingStateLoss()
         }
     }
@@ -447,18 +452,18 @@ open class AddToCartDoneBottomSheet :
         shadow.visible()
         price.visible()
         addToCartButton.visible()
-        stateAtcView.visibility = if(dataModel.isAddedToCart) View.VISIBLE else View.GONE
-        addToCartButton.visibility = if(!dataModel.isAddedToCart) View.VISIBLE else View.GONE
-        discountPercentage.visibility = if(item.discountPercentage.isNotBlank()) View.VISIBLE else View.GONE
-        slashedPrice.visibility = if(item.discountPercentage.isNotBlank()) View.VISIBLE else View.GONE
-        headerPrice.visibility = if(!item.discountPercentage.isNotBlank()) View.VISIBLE else View.GONE
+        stateAtcView.visibility = if (dataModel.isAddedToCart) View.VISIBLE else View.GONE
+        addToCartButton.visibility = if (!dataModel.isAddedToCart) View.VISIBLE else View.GONE
+        discountPercentage.visibility = if (item.discountPercentage.isNotBlank()) View.VISIBLE else View.GONE
+        slashedPrice.visibility = if (item.discountPercentage.isNotBlank()) View.VISIBLE else View.GONE
+        headerPrice.visibility = if (!item.discountPercentage.isNotBlank()) View.VISIBLE else View.GONE
         discountPercentage.text = item.discountPercentage
         slashedPrice.text = item.slashedPrice
         slashedPrice.paintFlags = slashedPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         price.text = item.price
 
         addToCartButton.setOnClickListener {
-            if(!addToCartButton.isLoading){
+            if (!addToCartButton.isLoading) {
                 addToCartButton.isLoading = true
                 addToCartDoneViewModel.addToCart(dataModel)
                 addedProductDataModel?.productId?.let {
@@ -476,7 +481,8 @@ open class AddToCartDoneBottomSheet :
     }
 
     override fun onButtonGoToCartClicked() {
-        DynamicProductDetailTracking.Click.eventAtcClickLihat(addedProductDataModel?.productId ?: "")
+        DynamicProductDetailTracking.Click.eventAtcClickLihat(addedProductDataModel?.productId
+                ?: "")
         goToCart()
     }
 
@@ -489,7 +495,7 @@ open class AddToCartDoneBottomSheet :
                 recomWishlistItem?.isWishlist = !(recomWishlistItem?.isWishlist ?: false)
                 recomWishlistItem?.let { DynamicProductDetailTracking.Click.eventAddToCartRecommendationWishlist(it, addToCartDoneViewModel.isLoggedIn(), wishlistResult.isAddWishlist) }
                 view?.showToasterSuccess(
-                        message = if(wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_success_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_success_remove_wishlist),
+                        message = if (wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_success_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_success_remove_wishlist),
                         ctaText = getString(R.string.recom_go_to_wishlist),
                         ctaListener = {
                             goToWishlist()
@@ -497,7 +503,7 @@ open class AddToCartDoneBottomSheet :
                 )
             } else {
                 view?.showToasterError(
-                        if(wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_error_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_error_remove_wishlist)
+                        if (wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_error_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_error_remove_wishlist)
                 )
             }
         } else {
@@ -505,18 +511,18 @@ open class AddToCartDoneBottomSheet :
         }
     }
 
-    private fun goToWishlist(){
+    private fun goToWishlist() {
         RouteManager.route(context, ApplinkConst.WISHLIST)
     }
 
     private fun getRemoteConfig(): RemoteConfig? {
-        return try{
+        return try {
             RemoteConfigInstance.getInstance().abTestPlatform
-        }catch (e: Exception){
+        } catch (e: Exception) {
             activity?.application?.let { RemoteConfigInstance.initAbTestPlatform(it) }
             return try {
                 RemoteConfigInstance.getInstance().abTestPlatform
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 null
             }
         }

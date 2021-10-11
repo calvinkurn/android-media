@@ -12,6 +12,7 @@ data class AddToCartDoneAddedProductDataModel(
         val isVariant: Boolean?,
         val shopId: Int,
         val bebasOngkirUrl: String?,
+        val cartId:String?
 ) : Visitable<AddToCartDoneTypeFactory>, Parcelable {
 
     override fun type(typeFactory: AddToCartDoneTypeFactory): Int {
@@ -24,6 +25,7 @@ data class AddToCartDoneAddedProductDataModel(
             parcel.readString(),
             parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
             parcel.readInt(),
+            parcel.readString(),
             parcel.readString()
     )
 
@@ -34,6 +36,7 @@ data class AddToCartDoneAddedProductDataModel(
         parcel.writeValue(isVariant)
         parcel.writeInt(shopId)
         parcel.writeString(bebasOngkirUrl)
+        parcel.writeString(cartId)
     }
 
     override fun describeContents(): Int {

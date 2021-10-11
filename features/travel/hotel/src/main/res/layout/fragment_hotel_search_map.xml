@@ -71,6 +71,15 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+                android:id="@+id/fabHotelInfoMaxRadius"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fbType="group"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/hotel_loader"
                 android:layout_width="@dimen/layout_lvl4"
@@ -265,5 +274,9 @@
 
     </LinearLayout>
     <!-- End of Linear Layout for Header (Toolbar and Quick Filter) -->
-
+    <include
+        android:id="@+id/container_error"
+        layout="@layout/item_network_error_view"
+        android:visibility="gone"
+        tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

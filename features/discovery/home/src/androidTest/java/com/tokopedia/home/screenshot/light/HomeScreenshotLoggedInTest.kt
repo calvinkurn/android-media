@@ -19,12 +19,11 @@ import com.tokopedia.home_component.util.HomeNetworkUtil
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.CHOOSE_ADDRESS_ROLLENCE_KEY
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.BALANCE_EXP
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.BALANCE_VARIANT_NEW
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_EXP
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.HOME_VARIANT_REVAMP
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_EXP_TOP_NAV
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_VARIANT_REVAMP
+import com.tokopedia.remoteconfig.RollenceKey.BALANCE_EXP
+import com.tokopedia.remoteconfig.RollenceKey.BALANCE_VARIANT_NEW
+
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
 import com.tokopedia.test.application.espresso_component.CommonActions.findViewHolderAndScreenshot
 import com.tokopedia.test.application.espresso_component.CommonActions.takeScreenShotVisibleViewInScreen
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -144,8 +143,5 @@ class HomeScreenshotLoggedInTest {
         RemoteConfigInstance.getInstance().abTestPlatform.setString(
                 BALANCE_EXP,
                 BALANCE_VARIANT_NEW)
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                HOME_EXP,
-                HOME_VARIANT_REVAMP)
     }
 }

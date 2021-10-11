@@ -5,9 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.Transformation
+import android.widget.FrameLayout
 import androidx.core.view.ViewCompat
-
-const val COLLAPSES_SPEED = 0.5
 
 fun View.setMargin(left: Int, top: Int, right: Int, bottom: Int) {
     val layoutParams = this.layoutParams as ViewGroup.MarginLayoutParams
@@ -48,20 +47,26 @@ inline fun View.doOnNextLayout(crossinline action: (view: View) -> Unit) {
     })
 }
 
-fun expand(v: View) {
+fun expand(view: View, iconBackgroundContainer: FrameLayout) {
     val matchParentMeasureSpec =
-        View.MeasureSpec.makeMeasureSpec((v.parent as View).width, View.MeasureSpec.EXACTLY)
+        View.MeasureSpec.makeMeasureSpec((view.parent as View).width, View.MeasureSpec.EXACTLY)
     val wrapContentMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-    v.measure(matchParentMeasureSpec, wrapContentMeasureSpec)
-    val targetHeight = v.measuredHeight
+    view.measure(matchParentMeasureSpec, wrapContentMeasureSpec)
+    val targetHeight = view.measuredHeight
 
-    v.layoutParams.height = 1
-    v.visibility = View.VISIBLE
-    val a: Animation = object : Animation() {
+    view.layoutParams.height = 1
+    view.visibility = View.VISIBLE
+    val animation: Animation = object : Animation() {
          override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
-            v.layoutParams.height =
+            view.layoutParams.height =
                 if (interpolatedTime == 1f) ViewGroup.LayoutParams.WRAP_CONTENT else (targetHeight * interpolatedTime).toInt()
-            v.requestLayout()
+            view.requestLayout()
+
+             val marginLayoutParams = iconBackgroundContainer.layoutParams as ViewGroup.MarginLayoutParams
+             marginLayoutParams.bottomMargin =
+                 iconBackgroundContainer.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl4)
+             iconBackgroundContainer.layoutParams = marginLayoutParams
+             iconBackgroundContainer.requestLayout()
         }
 
         override fun willChangeBounds(): Boolean {
@@ -69,19 +74,24 @@ fun expand(v: View) {
         }
     }
 
-    a.duration = ((targetHeight / v.context.resources.displayMetrics.density) * COLLAPSES_SPEED).toLong()
-    v.startAnimation(a)
+    animation.duration = ((targetHeight / view.context.resources.displayMetrics.density)).toLong()
+    view.startAnimation(animation)
 }
 
-fun collapse(v: View) {
-    val initialHeight = v.measuredHeight
-    val a: Animation = object : Animation() {
+fun collapse(view: View, iconBackgroundContainer: FrameLayout) {
+    val initialHeight = view.measuredHeight
+    val animation: Animation = object : Animation() {
         override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
             if (interpolatedTime == 1f) {
-                v.visibility = View.GONE
+                view.visibility = View.GONE
             } else {
-                v.layoutParams.height = initialHeight - (initialHeight * interpolatedTime).toInt()
-                v.requestLayout()
+                view.layoutParams.height = initialHeight - (initialHeight * interpolatedTime).toInt()
+                view.requestLayout()
+                val marginLayoutParams = iconBackgroundContainer.layoutParams as ViewGroup.MarginLayoutParams
+                marginLayoutParams.bottomMargin =
+                    iconBackgroundContainer.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0)
+                iconBackgroundContainer.layoutParams = marginLayoutParams
+                iconBackgroundContainer.requestLayout()
             }
         }
 
@@ -90,8 +100,8 @@ fun collapse(v: View) {
         }
     }
 
-    a.duration = (((initialHeight / v.context.resources.displayMetrics.density)).toLong())
-    v.startAnimation(a)
+    animation.duration = (((initialHeight / view.context.resources.displayMetrics.density)).toLong())
+    view.startAnimation(animation)
 }
 
 data class MvcTokomemberBmViewData(val imageUrls: List<String>, val messages: List<String>, val buttonText: String)

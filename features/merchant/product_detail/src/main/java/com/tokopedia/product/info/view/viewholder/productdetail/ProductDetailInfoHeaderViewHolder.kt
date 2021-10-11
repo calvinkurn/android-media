@@ -9,13 +9,15 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
+import com.tokopedia.product.detail.databinding.BsItemProductDetailHeaderBinding
+import com.tokopedia.product.detail.databinding.ItemInfoProductDetailBinding
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoHeaderDataModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
 import com.tokopedia.product.share.ekstensions.layoutInflater
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.bs_item_product_detail_header.view.*
-import kotlinx.android.synthetic.main.item_info_product_detail.view.*
+import java.util.*
 
 /**
  * Created by Yehezkiel on 12/10/20
@@ -27,22 +29,24 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
         val LAYOUT = R.layout.bs_item_product_detail_header
     }
 
+    private val binding = BsItemProductDetailHeaderBinding.bind(view)
+
     override fun bind(element: ProductDetailInfoHeaderDataModel) {
-        view.pdp_header_product_title?.text = element.productTitle
-        view.pdp_header_img.loadImageRounded(element.img, 8f)
+        binding.pdpHeaderProductTitle.text = element.productTitle
+        binding.pdpHeaderImg.loadImageRounded(element.img, 8f)
         setupItemList(element.listOfInfo)
         setupSpecification(element.listOfAnnotation, element.needToShowSpecification())
     }
 
-    private fun setupSpecification(annotation: List<ProductDetailInfoContent>, showSpecification: Boolean) = with(view) {
+    private fun setupSpecification(annotation: List<ProductDetailInfoContent>, showSpecification: Boolean) = with(binding) {
         if (showSpecification) {
-            pdp_header_product_see_more.show()
-            pdp_header_product_see_more.setOnClickListener {
+            pdpHeaderProductSeeMore.show()
+            pdpHeaderProductSeeMore.setOnClickListener {
                 listener.goToSpecification(annotation)
             }
         } else {
-            pdp_header_product_see_more.hide()
-            pdp_header_product_see_more.setOnClickListener {}
+            pdpHeaderProductSeeMore.hide()
+            pdpHeaderProductSeeMore.setOnClickListener {}
         }
     }
 
@@ -53,21 +57,36 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
 
         listOfInfo.forEach { data ->
             val socProofView: View = inflater.inflate(R.layout.item_info_product_detail, null)
-            setupItem(socProofView, data)
+            val socProofBinding = ItemInfoProductDetailBinding.bind(socProofView)
+            setupItem(socProofBinding, data)
             rootView.addView(socProofView)
         }
     }
 
-    private fun setupItem(itemView: View, data: ProductDetailInfoContent) = with(view) {
-        itemView.info_detail_title?.text = data.title
-        itemView.info_detail_value?.text = data.subtitle
+    private fun setupItem(socProofBinding: ItemInfoProductDetailBinding, data: ProductDetailInfoContent) = with(socProofBinding) {
+        infoDetailTitle.text = data.title
+        infoDetailValue.text = data.subtitle
 
-        itemView.info_detail_value?.run {
+        infoDetailValue.run {
             if (data.applink.isNotEmpty()) {
                 setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 setWeight(Typography.BOLD)
+
                 setOnClickListener {
-                    listener.goToApplink(data.applink)
+                    when (data.title.toLowerCase(Locale.getDefault())) {
+                        ProductDetailCommonConstant.KEY_CATEGORY -> {
+                            listener.goToCategory(data.applink)
+                        }
+                        ProductDetailCommonConstant.KEY_ETALASE  -> {
+                            listener.goToEtalase(data.applink)
+                        }
+                        ProductDetailCommonConstant.KEY_CATALOG  -> {
+                            listener.goToCatalog(data.applink, data.subtitle)
+                        }
+                        else -> {
+                            listener.goToApplink(data.applink)
+                        }
+                    }
                 }
             } else {
                 setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))

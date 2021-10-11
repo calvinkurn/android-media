@@ -4,11 +4,7 @@ import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.Picture
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.Price
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductTopAds
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.*
 
 fun createProduct(
     id: String = "",
@@ -24,9 +20,10 @@ fun createProduct(
     sku: String? = "sku",
     pictures: List<Picture>? = emptyList(),
     topAds: ProductTopAds? = null,
-    isCampaign: Boolean = false
+    isCampaign: Boolean = false,
+    campaignTypeList: List<ProductCampaignType>? = emptyList()
 ): Product {
-    return Product(id, name, price, stock, hasStockReserved, status, cashback, featured, isVariant, url, sku, pictures, topAds, isCampaign)
+    return Product(id, name, price, stock, hasStockReserved, status, cashback, featured, isVariant, url, sku, pictures, topAds, isCampaign, campaignTypeList)
 }
 
 fun createProductUiModel(
@@ -46,7 +43,9 @@ fun createProductUiModel(
     hasStockReserved: Boolean = false,
     topAds: TopAdsInfo? = null,
     access: ProductManageAccess? = createShopOwnerAccess(),
-    isCampaign: Boolean = false
+    isCampaign: Boolean = false,
+    campaignTypeList: List<ProductCampaignType>? = emptyList(),
+    isProductBundling: Boolean = false,
 ): ProductUiModel {
     return ProductUiModel(
         id,
@@ -65,6 +64,8 @@ fun createProductUiModel(
         hasStockReserved,
         topAds,
         access,
-        isCampaign
+        isCampaign,
+        campaignTypeList,
+        isProductBundling
     )
 }

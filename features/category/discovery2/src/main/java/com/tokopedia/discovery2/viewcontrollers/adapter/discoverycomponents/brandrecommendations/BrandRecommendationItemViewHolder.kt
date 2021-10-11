@@ -76,6 +76,7 @@ class BrandRecommendationItemViewHolder(itemView: View, private val fragment: Fr
     }
 
     private fun sendClickBrandRecommendationClickEvent(it: DataItem) {
-        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerClick(it, adapterPosition)
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBrandRecommendationClick(it,
+                adapterPosition, brandRecommendationItemViewModel.getComponentID())
     }
 }

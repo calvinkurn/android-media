@@ -33,6 +33,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.gone
@@ -40,7 +41,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerAdapter
@@ -152,10 +153,18 @@ class SearchActivity: BaseActivity(),
     private fun isABTestNavigationRevamp(): Boolean {
         return try {
             (RemoteConfigInstance
-                    .getInstance()
-                    .abTestPlatform
-                    .getString(AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD)
-                    == AbTestPlatform.NAVIGATION_VARIANT_REVAMP)
+                .getInstance()
+                .abTestPlatform
+                .getString(RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD)
+                    == RollenceKey.NAVIGATION_VARIANT_REVAMP) ||
+                    (RemoteConfigInstance
+                        .getInstance()
+                        .abTestPlatform
+                        .getString(
+                            RollenceKey.NAVIGATION_EXP_TOP_NAV2,
+                            RollenceKey.NAVIGATION_VARIANT_OLD
+                        )
+                            == RollenceKey.NAVIGATION_VARIANT_REVAMP2)
         } catch (e: Exception) {
             e.printStackTrace()
             false
@@ -163,12 +172,7 @@ class SearchActivity: BaseActivity(),
     }
 
     private fun getIsEnableChooseAddress(): Boolean {
-        return try {
-            ChooseAddressUtils.isRollOutUser(this)
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-            false
-        }
+        return true
     }
 
     private fun setStatusBarColor() {
@@ -297,7 +301,8 @@ class SearchActivity: BaseActivity(),
     }
 
     private fun onSearchBarClicked() {
-        SearchTracking.trackEventClickSearchBar(searchParameter.getSearchQuery())
+        val pageSource = Dimension90Utils.getDimension90(searchParameter.getSearchParameterMap())
+        SearchTracking.trackEventClickSearchBar(searchParameter.getSearchQuery(), pageSource)
         moveToAutoCompleteActivity()
     }
 
@@ -671,5 +676,17 @@ class SearchActivity: BaseActivity(),
 
     override fun stopPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.stopMonitoring()
+    }
+
+    override fun updateSearchParameter(searchParameter: SearchParameter?) {
+        if (searchParameter == null) return
+
+        this.searchParameter = searchParameter
+
+        updateKeyword()
+    }
+
+    private fun updateKeyword() {
+        setToolbarTitle(searchParameter.getSearchQuery())
     }
 }

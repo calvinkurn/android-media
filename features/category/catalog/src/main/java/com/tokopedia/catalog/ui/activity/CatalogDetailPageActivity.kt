@@ -2,6 +2,7 @@ package com.tokopedia.catalog.ui.activity
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -46,9 +47,10 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_catalog_detail_page)
         catalogId = if (intent.hasExtra(EXTRA_CATALOG_ID))
-            intent.getStringExtra(EXTRA_CATALOG_ID)
+            intent.getStringExtra(EXTRA_CATALOG_ID) ?: ""
         else {
-            intent.data?.path?.replace("/", "") ?: ""
+            val pathSegments = Uri.parse(intent.data?.path ?: "").pathSegments
+            if (pathSegments.size > 0) pathSegments[0]?.split("-")?.lastOrNull()?.trim() ?: "" else ""
         }
         prepareView()
     }

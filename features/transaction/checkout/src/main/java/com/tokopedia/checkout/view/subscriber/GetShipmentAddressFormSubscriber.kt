@@ -1,14 +1,14 @@
 package com.tokopedia.checkout.view.subscriber
 
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.utils.isNullOrEmpty
 import rx.Subscriber
 import timber.log.Timber
 
@@ -33,6 +33,7 @@ class GetShipmentAddressFormSubscriber(private val shipmentPresenter: ShipmentPr
         }
         view.showToastError(errorMessage)
         view.stopTrace()
+        view.logOnErrorLoadCheckoutPage(e)
     }
 
     override fun onNext(cartShipmentAddressFormData: CartShipmentAddressFormData?) {
@@ -58,6 +59,7 @@ class GetShipmentAddressFormSubscriber(private val shipmentPresenter: ShipmentPr
                     view.onCacheExpired(cartShipmentAddressFormData.errorMessage)
                 } else {
                     view.showToastError(cartShipmentAddressFormData.errorMessage)
+                    view.logOnErrorLoadCheckoutPage(MessageErrorException(cartShipmentAddressFormData.errorMessage))
                 }
             } else {
                 val groupAddressList: List<GroupAddress> = cartShipmentAddressFormData.groupAddress
@@ -82,7 +84,7 @@ class GetShipmentAddressFormSubscriber(private val shipmentPresenter: ShipmentPr
                     view.updateLocalCacheAddressData(userAddress)
                     shipmentPresenter.initializePresenterData(cartShipmentAddressFormData)
                     view.renderCheckoutPage(!isReloadData, isReloadAfterPriceChangeHinger, isOneClickShipment)
-                    if (!isNullOrEmpty(cartShipmentAddressFormData.popUpMessage)) {
+                    if (cartShipmentAddressFormData.popUpMessage.isNotEmpty()) {
                         view.showToastNormal(cartShipmentAddressFormData.popUpMessage)
                     }
                 }
