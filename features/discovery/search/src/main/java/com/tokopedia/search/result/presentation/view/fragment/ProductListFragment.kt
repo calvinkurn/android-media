@@ -1906,15 +1906,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun getFragment() = this
 
-    override val isChooseAddressWidgetEnabled: Boolean
-        get() = context?.let {
-            try {
-                ChooseAddressUtils.isRollOutUser(it)
-            } catch (e: Throwable) {
-                false
-            }
-        } ?: false
-
+    override val isChooseAddressWidgetEnabled: Boolean = true
 
     override val chooseAddressData: LocalCacheModel
         get() = context?.let {
