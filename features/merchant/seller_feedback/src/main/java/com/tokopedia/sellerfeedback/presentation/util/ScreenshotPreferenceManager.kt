@@ -6,7 +6,6 @@ class ScreenshotPreferenceManager(private val context: Context) {
 
     companion object {
         private const val SHARED_PREF_NAME = "seller_feedback_toaster_pref"
-        private const val HAS_DATE_TOASTER = "seller_feedback_date_toaster"
         private const val SCREEN_SHOOT_TRIGGER_ENABLED = "screen_shoot_trigger_enabled"
         private const val FEEDBACK_FORM_SAVED_STATUS = "feedback_form_saved_status"
     }
@@ -31,24 +30,8 @@ class ScreenshotPreferenceManager(private val context: Context) {
         putBoolean(FEEDBACK_FORM_SAVED_STATUS, isSuccess)
     }
 
-    fun setDateToaster(value: String) {
-        putString(HAS_DATE_TOASTER, value)
-    }
-
-    fun getDateToaster() = getString(HAS_DATE_TOASTER)
-
-    private fun getString(key: String, defaultValue: String = ""): String {
-        return sharedPref.getString(key, defaultValue).orEmpty()
-    }
-
     private fun getBoolean(key: String, defVal: Boolean = false): Boolean {
         return sharedPref.getBoolean(key, defVal)
-    }
-
-    private fun putString(key: String, value: String) {
-        val editor = sharedPref.edit()
-        editor.putString(key, value)
-        editor.apply()
     }
 
     private fun putBoolean(key: String, value: Boolean) {

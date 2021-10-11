@@ -193,6 +193,31 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onClickRemoveImage(item: BaseImageFeedbackUiModel) {
+        SellerFeedbackTracking.Click.eventClickRemoveAttachment()
+        imageFeedbackAdapter.removeImage(item)
+        checkButtonSend()
+    }
+
+    override fun onClickAddImage() {
+        SellerFeedbackTracking.Click.eventClickPutAttachment()
+        val intent =
+            RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER)
+        val currentSelectedImages = getSelectedImageUrl(imageFeedbackAdapter.getImageFeedbackData())
+        imagePickerMultipleSelectionBuilder.initialSelectedImagePathList = currentSelectedImages
+        imagePickerBuilder.imagePickerMultipleSelectionBuilder = imagePickerMultipleSelectionBuilder
+        intent.putImagePickerBuilder(imagePickerBuilder)
+        intent.putParamPageSource(ImagePickerPageSource.SELLER_FEEDBACK_PAGE)
+        startActivityForResult(intent, REQUEST_CODE_IMAGE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            REQUEST_CODE_IMAGE -> handleImagePicker(resultCode, data)
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
     private fun showSettingsBottomSheet() {
         if (childFragmentManager.isStateSaved) return
         SettingsBottomSheet.createInstance()
@@ -454,31 +479,6 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
         return ImagePickerMultipleSelectionBuilder(
             maximumNoPick = ImageFeedbackAdapter.MAX_IMAGE
         )
-    }
-
-    override fun onClickRemoveImage(item: BaseImageFeedbackUiModel) {
-        SellerFeedbackTracking.Click.eventClickRemoveAttachment()
-        imageFeedbackAdapter.removeImage(item)
-        checkButtonSend()
-    }
-
-    override fun onClickAddImage() {
-        SellerFeedbackTracking.Click.eventClickPutAttachment()
-        val intent =
-            RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER)
-        val currentSelectedImages = getSelectedImageUrl(imageFeedbackAdapter.getImageFeedbackData())
-        imagePickerMultipleSelectionBuilder.initialSelectedImagePathList = currentSelectedImages
-        imagePickerBuilder.imagePickerMultipleSelectionBuilder = imagePickerMultipleSelectionBuilder
-        intent.putImagePickerBuilder(imagePickerBuilder)
-        intent.putParamPageSource(ImagePickerPageSource.SELLER_FEEDBACK_PAGE)
-        startActivityForResult(intent, REQUEST_CODE_IMAGE)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            REQUEST_CODE_IMAGE -> handleImagePicker(resultCode, data)
-        }
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun handleImagePicker(resultCode: Int, data: Intent?) {

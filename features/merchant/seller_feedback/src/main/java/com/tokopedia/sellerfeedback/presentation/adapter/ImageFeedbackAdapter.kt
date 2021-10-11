@@ -22,32 +22,6 @@ class ImageFeedbackAdapter(private val imageClickListener: BaseImageFeedbackView
     private val addImageFeedbackUiModel by lazy { AddImageFeedbackUiModel() }
 
     private val imageFeedbackData = mutableListOf<BaseImageFeedbackUiModel>()
-    fun getImageFeedbackData(): List<BaseImageFeedbackUiModel> = imageFeedbackData
-
-    fun setImageFeedbackData(data: List<ImageFeedbackUiModel>) {
-        imageFeedbackData.clear()
-        imageFeedbackData.addAll(data.toMutableList())
-        checkAddImageFeedback()
-        notifyDataSetChanged()
-    }
-
-    fun removeImage(item: BaseImageFeedbackUiModel) {
-        imageFeedbackData.remove(item)
-        checkAddImageFeedback()
-        notifyDataSetChanged()
-    }
-
-    private fun checkAddImageFeedback() {
-        with(imageFeedbackData) {
-            if (size < MAX_IMAGE && lastOrNull() !is AddImageFeedbackUiModel) {
-                showAddImageFeedbackBtn()
-            }
-        }
-    }
-
-    fun showAddImageFeedbackBtn() {
-        imageFeedbackData.add(addImageFeedbackUiModel)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseImageFeedbackViewHolder<*> {
         return when (viewType) {
@@ -77,6 +51,33 @@ class ImageFeedbackAdapter(private val imageClickListener: BaseImageFeedbackView
             is AddImageFeedbackUiModel -> TYPE_DEFAULT
             is ImageFeedbackUiModel -> TYPE_IMAGE
             else -> 0
+        }
+    }
+
+    fun getImageFeedbackData(): List<BaseImageFeedbackUiModel> = imageFeedbackData
+
+    fun setImageFeedbackData(data: List<ImageFeedbackUiModel>) {
+        imageFeedbackData.clear()
+        imageFeedbackData.addAll(data.toMutableList())
+        checkAddImageFeedback()
+        notifyDataSetChanged()
+    }
+
+    fun removeImage(item: BaseImageFeedbackUiModel) {
+        imageFeedbackData.remove(item)
+        checkAddImageFeedback()
+        notifyDataSetChanged()
+    }
+
+    fun showAddImageFeedbackBtn() {
+        imageFeedbackData.add(addImageFeedbackUiModel)
+    }
+
+    private fun checkAddImageFeedback() {
+        with(imageFeedbackData) {
+            if (size < MAX_IMAGE && lastOrNull() !is AddImageFeedbackUiModel) {
+                showAddImageFeedbackBtn()
+            }
         }
     }
 }
