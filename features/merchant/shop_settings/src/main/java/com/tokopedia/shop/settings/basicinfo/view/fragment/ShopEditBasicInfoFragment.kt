@@ -62,6 +62,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     companion object {
         private const val SAVED_IMAGE_PATH = "saved_img_path"
         private const val REQUEST_CODE_IMAGE = 846
+        const val UPLOADER_SOURCE_ID = "GAnVPX"
         const val INPUT_DELAY = 500L
     }
 
