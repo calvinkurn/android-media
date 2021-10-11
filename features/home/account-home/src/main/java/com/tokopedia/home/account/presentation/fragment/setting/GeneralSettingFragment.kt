@@ -182,6 +182,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
         recyclerView.addItemDecoration(DividerItemDecoration(activity))
         val appVersion = view.findViewById<TextView>(R.id.text_view_app_version)
         updateButton = view.findViewById(R.id.force_update_button)
+        appVersion.text = getString(R.string.application_version_fmt, GlobalConfig.RAW_VERSION_NAME)
         showForceUpdate()
     }
 
