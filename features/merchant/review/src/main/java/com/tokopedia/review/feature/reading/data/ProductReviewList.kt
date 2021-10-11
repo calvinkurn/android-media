@@ -58,7 +58,10 @@ data class ProductReview(
         @SerializedName("likeDislike")
         @Expose
         var likeDislike: LikeDislike = LikeDislike(),
-        var shopProductId : String = ""
+        var shopProductId : String = "",
+        @SerializedName("badRatingReasonFmt")
+        @Expose
+        var badRatingReasonFmt: String = ""
 )
 
 data class ProductReviewResponse(

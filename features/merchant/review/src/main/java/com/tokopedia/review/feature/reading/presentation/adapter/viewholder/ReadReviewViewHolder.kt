@@ -48,11 +48,15 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
     private var sellerResponse: ReadReviewSellerResponse? = null
     private var isProductReview = false
     private var shopId = ""
+    private var badRatingReason: Typography? = null
+
+    init {
+        bindViews()
+    }
 
     override fun bind(element: ReadReviewUiModel) {
         isProductReview = !element.isShopViewHolder
         shopId = element.shopId
-        bindViews()
         with(element.reviewData) {
             if (!isProductReview) {
                 setProductInfo(
@@ -80,6 +84,7 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
             else
                 setShopReviewLikeButton(feedbackID, element.shopId, element.productId, likeDislike)
             setReply(element.shopName, reviewResponse, feedbackID, element.productId)
+            showBadRatingReason(badRatingReasonFmt)
         }
     }
 
@@ -96,6 +101,7 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
             showResponseText = findViewById(R.id.read_review_show_response)
             showResponseChevron = findViewById(R.id.read_review_show_response_chevron)
             sellerResponse = findViewById(R.id.read_review_seller_response)
+            badRatingReason = findViewById(R.id.read_review_bad_rating_reason)
         }
     }
 
@@ -289,6 +295,12 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
         attachedImages?.apply {
             setImages(imageAttachments, attachedImagesClickListener, productReview, shopId, adapterPosition)
             show()
+        }
+    }
+
+    private fun showBadRatingReason(reason: String) {
+        badRatingReason?.shouldShowWithAction(reason.isNotBlank()) {
+            badRatingReason?.text = reason
         }
     }
 }

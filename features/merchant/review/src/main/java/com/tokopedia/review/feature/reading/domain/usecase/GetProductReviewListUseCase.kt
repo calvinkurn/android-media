@@ -48,6 +48,7 @@ class GetProductReviewListUseCase @Inject constructor(graphqlRepository: Graphql
                     totalLike
                     likeStatus
                   }
+                  badRatingReasonFmt
                 }
                 shop {
                   shopID
