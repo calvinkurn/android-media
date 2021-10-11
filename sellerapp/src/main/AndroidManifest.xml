@@ -170,9 +170,6 @@
         <package android:name="com.pixlr.express" />
         <package android:name="com.niksoftware.snapseed" />
         <package android:name="com.lightx" />
-        <intent>
-            <action android:name="android.intent.action.VIEW" />
-        </intent>
     </queries>
 
     <application
