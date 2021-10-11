@@ -13,8 +13,8 @@
     <string name="feedback_form_question_4">Ceritakan detailnya di sini, ya</string>
     <string name="feedback_form_question_5">Ada lampirannya, nggak?</string>
     <string name="feedback_form_page_hint">Pilih Halaman</string>
-    <string name="feedback_form_detail_hint">Ketik saran atau laporan error</string>
-    <string name="feedback_form_attachment_hint">Lampirkan bukti pendukung di sini supaya kami bisa paham masalahmu, ya.</string>
+    <string name="feedback_form_detail_hint">Ceritakan detailnya disini ya</string>
+    <string name="feedback_form_attachment_hint">Ada lampirannya, ngga?</string>
     <string name="feedback_form_button_send">Kirim</string>
     <string name="feedback_form_gallery_picker_title">Foto</string>
     <string name="feedback_form_page_not_found_title">Oops, halaman tidak ditemukan</string>
