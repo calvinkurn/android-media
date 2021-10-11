@@ -64,7 +64,7 @@
         <package android:name="id.co.pohondana" />
         <package android:name="com.fintopia.idnEasycash.google" />
         <package android:name="com.tms.vestia" />
-        <package android:name="id=com.asf.singa" />
+        <package android:name="com.asf.singa" />
         <package android:name="com.adakami.dana.kredit.pinjaman" />
         <package android:name="com.modalusaha.id" />
         <package android:name="com.silvrr.finance" />
@@ -154,7 +154,7 @@
         <package android:name="com.jlnperdan.ajt" />
         <package android:name="com.id.ksp.tunailite" />
         <package android:name="com.truecaller" />
-        <package android:name="id=gogolook.callgogolook2" />
+        <package android:name="gogolook.callgogolook2" />
         <package android:name="com.webascender.callerid" />
         <package android:name="com.lexa.fakegps" />
         <package android:name="com.blogspot.newapphorizons.fakegps" />
