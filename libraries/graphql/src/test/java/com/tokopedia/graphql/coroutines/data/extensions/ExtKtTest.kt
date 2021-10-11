@@ -4,6 +4,7 @@ import com.google.gson.JsonSyntaxException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.MockUtil
 import com.tokopedia.graphql.domain.example.FooModel
+import com.tokopedia.graphql.domain.example.NestedFooModel
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -12,7 +13,6 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.util.*
 
 @ExperimentalCoroutinesApi
 class ExtKtTest {
@@ -69,6 +69,16 @@ class ExtKtTest {
     fun `given map of arbitrary type should throw exception`() {
         runBlockingTest {
             repository.request<String, FooModel>("", "foo")
+        }
+    }
+
+    @Test
+    fun `given data class of nested model type should returns as expected`() {
+        runBlockingTest {
+            val foo= FooModel(1, "")
+            val param = NestedFooModel(1, null, foo)
+            val actual = repository.request<NestedFooModel, FooModel>("", param)
+            assertEquals(case, actual)
         }
     }
 }

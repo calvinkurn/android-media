@@ -1,16 +1,11 @@
 package com.tokopedia.attachinvoice.usecase
 
-import com.google.gson.Gson
-import com.google.gson.annotations.SerializedName
 import com.tokopedia.attachinvoice.data.GetInvoiceResponse
 import com.tokopedia.attachinvoice.data.ParamInvoice
 import com.tokopedia.graphql.coroutines.data.extensions.request
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.graphql.util.toMap
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class AttachInvoiceUseCase @Inject constructor(

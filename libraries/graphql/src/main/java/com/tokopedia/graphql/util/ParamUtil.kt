@@ -41,13 +41,8 @@ fun getParamBoolean(paramName: String,
     }
 }
 
-fun <T> T.toMap(): Map<String, Any> {
-    return convert()
-}
-
-// Convert an object of type T to type R
-inline fun <T, reified R> T.convert(): R {
+fun <T> T.toMapParam(): Map<String, Any> {
     val gson = Gson()
     val json = gson.toJson(this)
-    return gson.fromJson(json, object : TypeToken<R>() {}.type)
+    return gson.fromJson(json, object : TypeToken<Map<String, Any>>() {}.type)
 }
