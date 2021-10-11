@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.telco.data.TelcoAttributesProduct
 import com.tokopedia.topupbills.telco.data.TelcoCatalogDataCollection
 import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
@@ -50,14 +49,6 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         hasMccmProduct = false
 
         val dataCollection = mutableListOf<Visitable<*>>()
-        dataCollection.addAll(listOf(
-            TelcoCatalogDataCollection("Promo Spesial Buat Kamu", listOf(
-                TelcoProduct("1", titleSection = "Test Product 1"),
-                TelcoProduct("2", titleSection = "Test Product 2"),
-                TelcoProduct("3", titleSection = "Test Product 3"),
-                TelcoProduct("4", titleSection = "Test Product 4"),
-            ))
-        ))
         dataCollection.addAll(productList.filter { it.isMccm() })
         if (dataCollection.isNotEmpty()) {
             hasMccmProduct = true
