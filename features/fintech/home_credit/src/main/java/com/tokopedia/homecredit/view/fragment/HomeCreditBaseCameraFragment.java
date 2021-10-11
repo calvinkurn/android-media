@@ -216,14 +216,6 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         }
     }
 
-    protected String getCameraType(Uri uri) {
-        String cameraType = null;
-        if (uri != null && uri.getPathSegments().size() >= 3) {
-            cameraType = uri.getPathSegments().get(2);
-        }
-        return cameraType;
-    }
-
     protected void onSuccessImageTakenFromCamera(File imgFile) {
         String imagePath = imgFile.getAbsolutePath();
         finalCameraResultFilePath = imagePath;

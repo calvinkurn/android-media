@@ -76,8 +76,7 @@ public class HomeCreditSelfieFragment extends HomeCreditBaseCameraFragment {
 
     private void setCameraOverlayImage(ImageView cameraOverlayImg){
         Intent intent = getActivity().getIntent();
-        Uri uri = intent.getData();
-        String cameraType = getCameraType(uri);
+        String cameraType = intent.getStringExtra(Constants.CAMERA_TYPE);
         String cutOutImgUrl = intent.getStringExtra(Constants.CUST_OVERLAY_URL);
         String customHeader = intent.getStringExtra(Constants.CUST_HEADER);
         if(!TextUtils.isEmpty(customHeader))

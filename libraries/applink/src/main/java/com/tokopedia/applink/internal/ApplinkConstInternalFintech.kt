@@ -13,5 +13,6 @@ object ApplinkConstInternalFintech {
 
     const val HOME_CREDIT_REGISTER = "$INTERNAL_FINTECH/home-credit-register"
     const val SHOW_KTP = "show_ktp"
+    const val TYPE = "type"
 
 }
