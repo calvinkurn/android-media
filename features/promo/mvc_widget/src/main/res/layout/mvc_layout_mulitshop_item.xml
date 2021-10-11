@@ -10,7 +10,7 @@
         android:id="@+id/parent_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/ic_mvc_bg">
+        android:background="@drawable/mvc_bg_multishop_widget">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_shop_icon"
@@ -37,14 +37,14 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_shop_arrow"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_24"
             app:layout_constraintBottom_toBottomOf="@id/dashed_divider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_saving_arrow_right_grey" />
+            app:srcCompat="@drawable/ic_system_action_arrow_right_grayscale_24" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/dashed_divider"
@@ -57,7 +57,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_shop_name"
-            app:srcCompat="@drawable/bg_dash_spacing" />
+            app:srcCompat="@drawable/mvc_bg_dash_spacing" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_cashback_title"
@@ -122,7 +122,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_2"
-                    android:background="@drawable/bg_textview_deals"
+                    android:background="@drawable/mvc_bg_textview_deals"
                     android:gravity="center"
                     android:paddingLeft="@dimen/dp_6"
                     android:paddingTop="@dimen/dp_2"
@@ -150,15 +150,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
-                    android:scaleType="fitXY"
-                    tools:src="@drawable/img_giftsent_fail" />
+                    android:scaleType="fitXY" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_deals_coupon2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_2"
-                    android:background="@drawable/bg_textview_deals"
+                    android:background="@drawable/mvc_bg_textview_deals"
                     android:gravity="center"
                     android:paddingLeft="@dimen/dp_6"
                     android:paddingTop="@dimen/dp_2"

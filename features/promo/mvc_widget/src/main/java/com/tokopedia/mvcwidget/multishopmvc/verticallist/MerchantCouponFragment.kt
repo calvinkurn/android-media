@@ -1,12 +1,12 @@
-package com.tokopedia.tokopoints.view.merchantcoupon
+package com.tokopedia.mvcwidget.multishopmvc.verticallist
 
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.ViewFlipper
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,53 +14,48 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.library.baseadapter.AdapterCallback
-import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.di.TokopointBundleComponent
-import com.tokopedia.tokopoints.view.adapter.MerchantCouponItemDecoration
-import com.tokopedia.tokopoints.view.coupondetail.CouponDetailFragment
-import com.tokopedia.tokopoints.view.customview.MerchantRewardToolbar
-import com.tokopedia.tokopoints.view.customview.ServerErrorView
-import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant
-import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
-import com.tokopedia.tokopoints.view.util.*
-import kotlinx.android.synthetic.main.tp_coupon_notfound_error.*
-import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
-import kotlinx.android.synthetic.main.tp_layout_merchat_coupon_list.*
-import kotlinx.android.synthetic.main.tp_layout_merchat_coupon_list.container
-import kotlinx.android.synthetic.main.tp_layout_merchat_coupon_list.server_error_view
+import com.tokopedia.mvcwidget.*
+import com.tokopedia.mvcwidget.customview.MerchantRewardToolbar
+import com.tokopedia.mvcwidget.di.components.MvcComponent
+import com.tokopedia.mvcwidget.multishopmvc.MvcPerformanceConstant
+import com.tokopedia.mvcwidget.multishopmvc.MvcPerformanceMonitoringListener
+import com.tokopedia.mvcwidget.trackers.MvcSource.Companion.DEFAULT
+import com.tokopedia.mvcwidget.trackers.Tracker.Constants.MERCHANT_COUPONLIST_SCREEN_NAME
+import com.tokopedia.promoui.common.dpToPx
+import kotlinx.android.synthetic.main.mvc_layout_multishop_merchat_coupon_list.*
+import kotlinx.android.synthetic.main.mvc_notfound_error.*
 import javax.inject.Inject
 
-class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitoringListener, SwipeRefreshLayout.OnRefreshListener, AdapterCallback, View.OnClickListener {
+class MerchantCouponFragment : BaseDaggerFragment(), MvcPerformanceMonitoringListener,
+    SwipeRefreshLayout.OnRefreshListener, AdapterCallback {
 
     @Inject
-    lateinit var factory: ViewModelFactory
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val mViewModel: MerchantCouponViewModel by lazy { ViewModelProvider(this, factory)[MerchantCouponViewModel::class.java] }
+    private val mViewModel: MerchantCouponViewModel by lazy { ViewModelProvider(this, viewModelFactory)[MerchantCouponViewModel::class.java] }
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
-    private val mCouponAdapter: MerchantCouponListAdapter by lazy { MerchantCouponListAdapter(mViewModel, this, context) }
+    private val mCouponAdapter: MerchantCouponListAdapter by lazy { MerchantCouponListAdapter(mViewModel, this, HashSet() , DEFAULT) }
 
     private var merchantRewardToolbar: MerchantRewardToolbar? = null
     private lateinit var exploreCouponRv: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh
     private lateinit var appBarLayout: View
     private var statusBarBgView: View? = null
-    private var categoryId: String = ""
-    private var serverErrorView: ServerErrorView? = null
+    private var serverErrorView: GlobalError? = null
+    private var viewContainer: ViewFlipper? = null
 
     override fun getScreenName(): String {
-        return AnalyticsTrackerUtil.ScreenKeys.MERCHANT_COUPONLIST_SCREEN_NAME
+        return MERCHANT_COUPONLIST_SCREEN_NAME
     }
 
     override fun initInjector() {
-        getComponent(TokopointBundleComponent::class.java)
-                .inject(this)
+        getComponent(MvcComponent::class.java)
+            .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,12 +65,14 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initInjector()
-        val view = inflater.inflate(R.layout.tp_layout_merchat_coupon_list, container, false)
+        val view = inflater.inflate(R.layout.mvc_layout_multishop_merchat_coupon_list, container, false)
+
         exploreCouponRv = view.findViewById(R.id.rv_merchant_couponlist)
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout)
         appBarLayout = view.findViewById(R.id.app_bar_layout)
         merchantRewardToolbar = view.findViewById(R.id.toolbar_merchant)
         statusBarBgView = view.findViewById(R.id.status_bar_bg)
+        viewContainer = view.findViewById(R.id.container)
         (activity as BaseSimpleActivity).setSupportActionBar(merchantRewardToolbar)
 
         return view
@@ -84,32 +81,18 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews(view)
-        initVar()
         initObserver()
-        view?.findViewById<View>(R.id.text_failed_action).setOnClickListener(this)
-        merchantRewardToolbar?.setTitle(R.string.tp_kupon_toko)
-
-        mViewModel.couponData.value = Loading()
-    }
-
-    private fun initVar() {
-        if (arguments != null) {
-            categoryId = (requireArguments().getString(
-                    PARAM_CATEGORY_ID,
-                    DEFAULT_CATEGORY)
-                    )
+        serverErrorView?.errorSecondaryAction?.setOnClickListener {
+            showLoader()
+            mCouponAdapter.loadData(1)
         }
+        merchantRewardToolbar?.setTitle(R.string.mvc_kupon_toko)
+
+        mViewModel.couponData.value = LiveDataResult.loading()
     }
 
     private fun initObserver() {
         addListObserver()
-    }
-
-    override fun onClick(source: View) {
-        if (source.id == R.id.text_failed_action) {
-            showLoader()
-            mCouponAdapter.loadData(1)
-        }
     }
 
     private fun initViews(view: View) {
@@ -124,29 +107,29 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
                 LinearLayoutManager.VERTICAL,
                 false)
         exploreCouponRv.layoutManager = linearLayoutManager
-        exploreCouponRv.addItemDecoration(MerchantCouponItemDecoration(convertDpToPixel(8, exploreCouponRv.context)))
+        exploreCouponRv.addItemDecoration(MerchantCouponItemDecoration(dpToPx(8).toInt()))
+        mCouponAdapter.adImpression = arguments?.getSerializable(MVC_ADINFO) as HashSet<String?>
+        mCouponAdapter.source = arguments?.getInt(MVC_SOURCE_KEY) ?: DEFAULT
         exploreCouponRv.adapter = mCouponAdapter
     }
 
     private fun addListObserver() = mViewModel.couponData.observe(viewLifecycleOwner, Observer {
         it?.let {
-            when (it) {
-                is Loading -> {
+            when (it.status) {
+                 LiveDataResult.STATUS.LOADING -> {
                     mCouponAdapter.resetAdapter()
                     mCouponAdapter.notifyDataSetChanged()
                     mCouponAdapter.startDataLoading()
                 }
-                is Success -> {
+                LiveDataResult.STATUS.SUCCESS -> {
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
                     setOnRecyclerViewLayoutReady()
-                    it.data.merchantCouponResponse.productlist?.let { it1 -> mCouponAdapter.onSuccess(it1) }
+                    it.data?.merchantCouponResponse?.productlist?.let { it1 -> mCouponAdapter.onSuccess(it1) }
 
                 }
-                is ErrorMessage -> {
+                LiveDataResult.STATUS.ERROR -> {
                     mCouponAdapter.onError()
-                }
-                else -> {
                 }
             }
         }
@@ -154,17 +137,17 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
 
     override fun startPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
-                TokopointPerformanceConstant.CouponliststackPlt.COUPONLISTSTACK_TOKOPOINT_PLT_PREPARE_METRICS,
-                TokopointPerformanceConstant.CouponliststackPlt.COUPONLISTSTACK_TOKOPOINT_PLT_NETWORK_METRICS,
-                TokopointPerformanceConstant.CouponliststackPlt.COUPONLISTSTACK_TOKOPOINT_PLT_RENDER_METRICS,
-                0,
-                0,
-                0,
-                0,
-                null
+            MvcPerformanceConstant.MVCCouponListPlt.MVCLISTSTACK_MVC_PLT_PREPARE_METRICS,
+            MvcPerformanceConstant.MVCCouponListPlt.MVCLISTSTACK_MVC_PLT_NETWORK_METRICS,
+            MvcPerformanceConstant.MVCCouponListPlt.MVCLISTSTACK_MVC_PLT_RENDER_METRICS,
+            0,
+            0,
+            0,
+            0,
+            null
         )
 
-        pageLoadTimePerformanceMonitoring?.startMonitoring(TokopointPerformanceConstant.CouponliststackPlt.COUPONLISTSTACK_TOKOPOINT_PLT)
+        pageLoadTimePerformanceMonitoring?.startMonitoring(MvcPerformanceConstant.MVCCouponListPlt.MVCLISTSTACK_MVC_PLT)
         pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
     }
 
@@ -208,12 +191,11 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
     }
 
     override fun onRefresh() {
-        val id = mViewModel.category
-        id?.let { mViewModel.setCategoryRootId(id) }
+        mViewModel.couponData.value = LiveDataResult.loading()
     }
 
     fun showLoader() {
-        container?.displayedChild = CONTAINER_LOADER
+        viewContainer?.displayedChild = CONTAINER_LOADER
         swipe_refresh_layout?.isRefreshing = false
     }
 
@@ -222,19 +204,7 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
         swipe_refresh_layout?.isRefreshing = false
     }
 
-    fun getStatusBarHeight(context: Context?): Int {
-        var height = 0
-        val resId = requireContext().resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resId > 0 && context != null) {
-            height = context.resources.getDimensionPixelSize(resId)
-        }
-        return height
-    }
-
     companion object {
-
-        const val PARAM_CATEGORY_ID = "categoryRootID"
-        private const val DEFAULT_CATEGORY = "0"
         const val CONTAINER_LOADER = 0
         const val CONTAINER_DATA = 1
         const val CONTAINER_ERROR = 2
@@ -263,7 +233,6 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
     override fun onError(pageNumber: Int) {
         if (pageNumber == 1) {
             container.displayedChild = CONTAINER_ERROR
-            server_error_view?.showErrorUi(NetworkDetector.isConnectedToInternet(context?.applicationContext))
         }
         swipe_refresh_layout.isRefreshing = false
     }
@@ -271,7 +240,7 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
     private fun showEmptyView() {
         container?.displayedChild = CONTAINER_EMPTY
         btnError.setOnClickListener {
-            RouteManager.route(context, ApplinkConst.TOKOPEDIA_REWARD)
+            onFragmentBackPressed()
         }
     }
 
@@ -281,6 +250,6 @@ class MerchantCouponFragment : BaseDaggerFragment(), TokopointPerformanceMonitor
     }
 
     override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
-        view?.postDelayed({ hideLoader() }, CommonConstant.UI_SETTLING_DELAY_MS.toLong())
+        view?.postDelayed({ hideLoader() }, UI_SETTLING_DELAY_MS.toLong())
     }
 }

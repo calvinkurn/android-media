@@ -1,9 +1,8 @@
-package com.tokopedia.tokopoints.view.customview
+package com.tokopedia.mvcwidget.customview
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -16,10 +15,10 @@ import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
-import com.tokopedia.tokopoints.R
+import com.tokopedia.mvcwidget.R
 
 class MerchantRewardToolbar @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : Toolbar(context, attrs, defStyleAttr) {
     var tvToolbarTitle: TextView? = null
     var backArrowWhite: Drawable? = null
@@ -29,7 +28,7 @@ class MerchantRewardToolbar @JvmOverloads constructor(
 
     init {
         mContext = context
-        view = View.inflate(context, R.layout.tp_toolbar_merchant_coupon, this)
+        view = View.inflate(context, R.layout.mvc_toolbar_merchant_coupon, this)
         tvToolbarTitle = findViewById(R.id.tv_tpToolbar_title)
         initDrawableResources()
         setNavIcon(context)
@@ -39,9 +38,10 @@ class MerchantRewardToolbar @JvmOverloads constructor(
         post {
             val NAV_ICON_POSITION = 1
             val v = getChildAt(NAV_ICON_POSITION)
-            if (v != null && v.layoutParams is androidx.appcompat.widget.Toolbar.LayoutParams && v is AppCompatImageButton) {
-                val lp = v.getLayoutParams() as androidx.appcompat.widget.Toolbar.LayoutParams
-                lp.width = context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_48)
+            if (v != null && v.layoutParams is LayoutParams && v is AppCompatImageButton) {
+                val lp = v.getLayoutParams() as LayoutParams
+                lp.width =
+                    context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl6)
                 lp.gravity = Gravity.CENTER_VERTICAL
                 v.setLayoutParams(lp)
                 v.invalidate()
@@ -51,8 +51,11 @@ class MerchantRewardToolbar @JvmOverloads constructor(
     }
 
     private fun initDrawableResources() {
-        backArrowWhite = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_new_action_back_tokopoints)
-        backArrowWhite?.setColorFilter(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N400), PorterDuff.Mode.SRC_ATOP)
+        backArrowWhite = getBitmapDrawableFromVectorDrawable(mContext, com.tokopedia.abstraction.R.drawable.ic_action_back)
+        backArrowWhite?.setColorFilter(
+            context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N400),
+            PorterDuff.Mode.SRC_ATOP
+        )
         navigationIcon = backArrowWhite
     }
 
@@ -68,8 +71,10 @@ class MerchantRewardToolbar @JvmOverloads constructor(
             drawable = drawable?.let { DrawableCompat.wrap(it).mutate() }
         }
         val bitmap = drawable?.intrinsicWidth?.let {
-            Bitmap.createBitmap(it,
-                    drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+            Bitmap.createBitmap(
+                it,
+                drawable.intrinsicHeight, Bitmap.Config.ARGB_8888
+            )
         } ?: return null
         val canvas = Canvas(bitmap)
         drawable.setBounds(0, 0, canvas.width, canvas.height)
@@ -78,9 +83,9 @@ class MerchantRewardToolbar @JvmOverloads constructor(
     }
 
     override fun setTitle(title: CharSequence) {
-        if (title == resources.getString(R.string.tp_kupon_toko)) return
-        super.setTitle(resources.getString(R.string.tp_kupon_toko))
-        tvToolbarTitle?.text = resources.getString(R.string.tp_kupon_toko)
+        if (title == resources.getString(R.string.mvc_kupon_toko)) return
+        super.setTitle(resources.getString(R.string.mvc_kupon_toko))
+        tvToolbarTitle?.text = resources.getString(R.string.mvc_kupon_toko)
     }
 
 }
