@@ -1270,10 +1270,12 @@ class PlayViewModel @Inject constructor(
     }
 
     private suspend fun handleWebSocketMessage(message: WebSocketResponse, channelId: String) = withContext(dispatchers.main) {
+        Log.d("<INTERACTIVE>", "socket - message raw : $message")
         val result = withContext(dispatchers.computation) {
             val socketMapper = PlaySocketMapper(message)
             socketMapper.mapping()
         }
+        Log.d("<INTERACTIVE>", "socket - $result")
         when (result) {
             is TotalLike -> {
                 val (totalLike, totalLikeFmt) = playSocketToModelMapper.mapTotalLike(result)
