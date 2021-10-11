@@ -34,7 +34,7 @@ object ChatMessageViewHolderBinder {
         )
         return ViewUtil.generateBackgroundWithShadow(
             view = view,
-            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_G200,
+            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_GN50,
             topLeftRadius = R.dimen.dp_topchat_20,
             topRightRadius = R.dimen.dp_topchat_0,
             bottomLeftRadius = R.dimen.dp_topchat_20,
