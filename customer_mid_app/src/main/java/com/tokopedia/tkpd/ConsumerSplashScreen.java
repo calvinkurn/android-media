@@ -103,7 +103,7 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     private void registerPushNotif() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            RegisterPushNotificationWorker.companion.scheduleWorker(getApplicationContext(), true);
+            RegisterPushNotificationWorker.Companion.scheduleWorker(getApplicationContext(), true);
         }
     }
 
