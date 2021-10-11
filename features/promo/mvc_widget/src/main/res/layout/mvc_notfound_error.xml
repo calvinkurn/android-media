@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:ignore="MissingDefaultResource">
 
-
     <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/ivCouponError"
         android:layout_width="@dimen/dp_280"
@@ -23,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
-        android:text="@string/tp_mvc_empty_title"
+        android:text="@string/mvc_empty_title"
         android:textColor="@color/Unify_N700"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -39,7 +38,7 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_12"
         android:layout_marginEnd="@dimen/dp_16"
-        android:text="@string/tp_mvc_empty_subtitle"
+        android:text="@string/mvc_empty_subtitle"
         android:textColor="@color/Unify_N200"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_24"
         android:gravity="center"
-        android:text="@string/tp_catalog_code_error_btn"
+        android:text="@string/mvc_catalog_code_error_btn"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
