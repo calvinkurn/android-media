@@ -12,7 +12,10 @@ import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.screenshot_observer.Screenshot
+import com.tokopedia.sellerfeedback.SellerFeedbackConstants.REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK
+import com.tokopedia.sellerfeedback.SellerFeedbackConstants.REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK_DEFAULT
 import com.tokopedia.sellerfeedback.presentation.fragment.SellerFeedbackFragment
 import com.tokopedia.sellerfeedback.presentation.util.ScreenshotPreferenceManager
 import com.tokopedia.sellerfeedback.presentation.util.SuccessToasterHelper
@@ -31,6 +34,7 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
 
     private var lastTimeUpdate = 0L
 
+    private var remoteConfig: FirebaseRemoteConfigImpl? = null
     private var currentActivity: WeakReference<Activity>? = null
     private var onResumeCounter = ACTIVITY_STATUS_PAUSED
 
@@ -43,7 +47,9 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     }
 
     override fun onScreenShotTaken(uri: Uri) {
-        if (screenshotPreferenceManager.isScreenShootTriggerEnabled()) {
+        val enableSellerFeedbackScreenshot =
+            getEnableSellerGlobalFeedbackRemoteConfig(currentActivity?.get())
+        if (screenshotPreferenceManager.isScreenShootTriggerEnabled() && enableSellerFeedbackScreenshot) {
             processScreenshotTaken(uri)
         }
     }
@@ -51,6 +57,18 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     override fun onActivityResumed(activity: Activity) {
         currentActivity = WeakReference(activity)
         super.onActivityResumed(activity)
+    }
+
+    private fun getEnableSellerGlobalFeedbackRemoteConfig(activity: Activity?): Boolean {
+        return activity?.let {
+            if (remoteConfig == null) {
+                remoteConfig = FirebaseRemoteConfigImpl(activity)
+            }
+            remoteConfig?.getBoolean(
+                REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK,
+                REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK_DEFAULT
+            ) ?: REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK_DEFAULT
+        } ?: REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK_DEFAULT
     }
 
     private fun processScreenshotTaken(uri: Uri) {
