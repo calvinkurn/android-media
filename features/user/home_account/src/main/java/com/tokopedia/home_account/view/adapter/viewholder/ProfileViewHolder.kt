@@ -114,13 +114,13 @@ class ProfileViewHolder(
     }
 
     private fun setupMemberSection(itemView: View, tierData: TierData) {
-        itemView?.home_account_member_layout_title?.text = tierData.nameDesc
-        itemView?.home_account_member_layout_title?.setMargin(AccountConstants.DIMENSION.LAYOUT_TITLE_LEFT_MARGIN, 0, 0, 0)
+        binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutTitle?.text = tierData.nameDesc
+        binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutTitle?.setMargin(AccountConstants.DIMENSION.LAYOUT_TITLE_LEFT_MARGIN, 0, 0, 0)
         if(tierData.imageURL.isNotEmpty()) {
-            itemView?.home_account_member_layout_member_icon?.show()
-            itemView?.home_account_member_layout_member_icon?.setImageUrl(tierData.imageURL)
+            binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutMemberIcon?.show()
+            binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutMemberIcon?.setImageUrl(tierData.imageURL)
         } else {
-            itemView?.home_account_member_layout_member_icon?.hide()
+            binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutMemberIcon?.hide()
         }
     }
 

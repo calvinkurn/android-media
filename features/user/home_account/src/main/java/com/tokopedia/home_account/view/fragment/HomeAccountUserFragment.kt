@@ -252,8 +252,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         binding?.homeAccountUserToolbar?.let {
             NavRecyclerViewScrollListener(
                 navToolbar = it,
-                startTransitionPixel = 200,
-                toolbarTransitionRangePixel = 50,
+                startTransitionPixel = START_TRANSITION_PIXEL,
+                toolbarTransitionRangePixel = TOOLBAR_TRANSITION_RANNGE_PIXEL,
                 navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
                     override fun onAlphaChanged(offsetAlpha: Float) {
                         setStatusBarAlpha(offsetAlpha)
@@ -1477,6 +1477,9 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         private const val REQUEST_CODE_PROFILE_SETTING = 301
         private const val REQUEST_FROM_PDP = 394
         private const val REQUEST_CODE_LINK_ACCOUNT = 302
+
+        private const val START_TRANSITION_PIXEL = 200
+        private const val TOOLBAR_TRANSITION_RANNGE_PIXEL = 50
 
         private const val COMPONENT_NAME_TOP_ADS = "Account Home Recommendation Top Ads"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
