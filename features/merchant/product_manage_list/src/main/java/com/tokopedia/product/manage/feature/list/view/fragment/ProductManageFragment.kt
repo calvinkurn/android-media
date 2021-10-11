@@ -812,7 +812,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         productManageBottomSheet = ProductManageBottomSheet.createInstance(access).apply {
             init(this@ProductManageFragment, sellerFeatureCarouselClickListener)
         }
-        multiEditBottomSheet = ProductMultiEditBottomSheet(view, this, childFragmentManager)
+        multiEditBottomSheet = ProductMultiEditBottomSheet(this, childFragmentManager)
         productManageMoreMenuBottomSheet = ProductManageMoreMenuBottomSheet(context, this, childFragmentManager)
     }
 

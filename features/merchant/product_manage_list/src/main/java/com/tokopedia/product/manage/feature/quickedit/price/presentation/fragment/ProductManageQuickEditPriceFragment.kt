@@ -19,10 +19,11 @@ import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_PRICE_LENGTH
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MINIMUM_PRICE
+import com.tokopedia.product.manage.databinding.FragmentQuickEditPriceBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.CurrencyIdrTextWatcher
-import kotlinx.android.synthetic.main.fragment_quick_edit_price.*
 
 class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFinishedListener? = null,
                                           private var product: ProductUiModel? = null) : BottomSheetUnify() {
@@ -36,11 +37,15 @@ class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFini
         }
     }
 
+    private var binding by autoClearedNullable<FragmentQuickEditPriceBinding>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         savedInstanceState?.let {
             val cacheManagerId = it.getString(KEY_CACHE_MANAGER_ID).orEmpty()
-            val cacheManager = context?.let { SaveInstanceCacheManager(it, cacheManagerId) }
+            val cacheManager = context?.let { context ->
+                SaveInstanceCacheManager(context, cacheManagerId)
+            }
             product = cacheManager?.get<ProductUiModel>(KEY_PRODUCT, ProductUiModel::class.java, null)
         }
         val view = View.inflate(context, R.layout.fragment_quick_edit_price,null)
@@ -63,15 +68,15 @@ class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFini
 
     private fun initView(currentPrice: String) {
         context?.let {
-            quickEditPriceTextField.prependText(it.resources.getString(R.string.product_manage_quick_edit_currency))
+            binding?.quickEditPriceTextField?.prependText(it.resources.getString(R.string.product_manage_quick_edit_currency))
         }
-        quickEditPriceTextField.apply {
+        binding?.quickEditPriceTextField?.run {
             textFieldInput.filters = arrayOf(InputFilter.LengthFilter(MAXIMUM_PRICE_LENGTH))
             textFieldInput.setText(CurrencyFormatHelper.removeCurrencyPrefix(CurrencyFormatHelper.convertToRupiah(currentPrice)))
             setFirstIcon(com.tokopedia.unifyicon.R.drawable.ic_system_action_close_normal_24)
             setInputType(InputType.TYPE_CLASS_NUMBER)
             getFirstIcon().setOnClickListener {
-                quickEditPriceTextField.textFieldInput.text.clear()
+                binding?.quickEditPriceTextField?.textFieldInput?.text?.clear()
             }
             textFieldInput.setOnEditorActionListener { _, actionId, _ ->
                 if(actionId == EditorInfo.IME_ACTION_DONE){
@@ -115,8 +120,8 @@ class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFini
                 }
             }
         }
-        quickEditPriceTextField.requestFocus()
-        quickEditPriceSaveButton.setOnClickListener {
+        binding?.quickEditPriceTextField?.requestFocus()
+        binding?.quickEditPriceSaveButton?.setOnClickListener {
             isPriceValid()
             ProductManageTracking.eventEditPriceSave(product?.id.orEmpty())
         }
@@ -128,17 +133,24 @@ class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFini
     }
 
     private fun showErrorPriceTooLow() {
-        quickEditPriceTextField.setError(true)
-        context?.getString(R.string.product_manage_quick_edit_min_price_error)?.let { quickEditPriceTextField.setMessage(it) }
+        binding?.quickEditPriceTextField?.setError(true)
+        context?.getString(R.string.product_manage_quick_edit_min_price_error)?.let {
+            binding?.quickEditPriceTextField?.setMessage(it)
+        }
     }
 
     private fun hideError() {
-        quickEditPriceTextField.setError(false)
-        quickEditPriceTextField.setMessage("")
+        binding?.quickEditPriceTextField?.run {
+            setError(false)
+            setMessage("")
+        }
     }
 
     private fun isPriceValid() {
-        product = product?.copy(minPrice = product?.minPrice?.copy(price = CurrencyFormatHelper.convertRupiahToInt(quickEditPriceTextField.textFieldInput.text.toString()).toString()))
+        product = product?.copy(
+            minPrice = product?.minPrice?.copy(
+                price = CurrencyFormatHelper.convertRupiahToInt(
+                    binding?.quickEditPriceTextField?.textFieldInput?.text?.toString().orEmpty()).toString()))
         when {
             isPriceTooLow() -> {
                 showErrorPriceTooLow()

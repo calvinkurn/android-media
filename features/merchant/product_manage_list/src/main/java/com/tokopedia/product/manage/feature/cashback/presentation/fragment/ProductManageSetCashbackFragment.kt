@@ -20,6 +20,7 @@ import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
+import com.tokopedia.product.manage.databinding.FragmentProductManageSetCashbackBinding
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.di.DaggerProductManageSetCashbackComponent
 import com.tokopedia.product.manage.feature.cashback.di.ProductManageSetCashbackComponent
@@ -33,7 +34,7 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_product_manage_set_cashback.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
@@ -93,6 +94,8 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
     private var shopId = ""
     private var isDrafting = false
 
+    private var binding by autoClearedNullable<FragmentProductManageSetCashbackBinding>()
+
     override fun getComponent(): ProductManageSetCashbackComponent? {
         return activity?.run {
             DaggerProductManageSetCashbackComponent
@@ -116,16 +119,16 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_product_manage_set_cashback, container, false)
+        binding = FragmentProductManageSetCashbackBinding.inflate(inflater, container, false)
         val adapterTypeFactory = SetCashbackAdapterTypeFactory(this)
         adapter = SetCashbackAdapter(adapterTypeFactory)
-        return view
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setCashbackRecyclerView.adapter = adapter
-        setCashbackRecyclerView.layoutManager = LinearLayoutManager(this.context)
+        binding?.setCashbackRecyclerView?.adapter = adapter
+        binding?.setCashbackRecyclerView?.layoutManager = LinearLayoutManager(this.context)
         initView()
         observeSetCashback()
     }
@@ -160,18 +163,21 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
 
     private fun initHeader() {
         context?.let {
-            setCashbackHeader.title = it.resources.getString(R.string.product_manage_set_cashback_header_title)
+            binding?.setCashbackHeader?.title = it.resources.getString(R.string.product_manage_set_cashback_header_title)
         }
-        setCashbackHeader.isShowBackButton = true
-        setCashbackHeader.setNavigationOnClickListener {
-            activity?.onBackPressed()
+        binding?.setCashbackHeader?.run {
+
+            isShowBackButton = true
+            setNavigationOnClickListener {
+                this@ProductManageSetCashbackFragment.activity?.onBackPressed()
+            }
+            isShowShadow = false
+            subtitle = productName
         }
-        setCashbackHeader.isShowShadow = false
-        setCashbackHeader.subtitle = productName
     }
 
     private fun initButton() {
-        submitCashbackButton.setOnClickListener {
+        binding?.submitCashbackButton?.setOnClickListener {
             viewModel.setCashback(productId, productName, cashback)
             if (!isDrafting) {
                 if(shopId.isNotBlank()) {
@@ -244,12 +250,21 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
     }
 
     private fun onErrorSetCashback(setCashbackResult: SetCashbackResult) {
-        Toaster.build(setCashbackCoordinatorLayout, getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_fail),
-                Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_retry),
-                View.OnClickListener {
-                    viewModel.setCashback(productId = setCashbackResult.productId,
-                            productName = setCashbackResult.productName, cashback = setCashbackResult.cashback)
-                }).show()
+        binding?.setCashbackCoordinatorLayout?.let { cl ->
+            Toaster.build(
+                cl,
+                getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_fail),
+                Snackbar.LENGTH_SHORT,
+                Toaster.TYPE_ERROR,
+                getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_retry)
+            ) {
+                viewModel.setCashback(
+                    productId = setCashbackResult.productId,
+                    productName = setCashbackResult.productName,
+                    cashback = setCashbackResult.cashback
+                )
+            }.show()
+        }
     }
 
 }

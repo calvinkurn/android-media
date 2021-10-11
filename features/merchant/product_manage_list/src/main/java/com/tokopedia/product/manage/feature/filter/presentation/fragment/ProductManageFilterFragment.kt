@@ -2,6 +2,7 @@ package com.tokopedia.product.manage.feature.filter.presentation.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
@@ -30,12 +31,12 @@ import com.tokopedia.product.manage.feature.filter.presentation.widget.ChipsAdap
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SeeAllListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ShowChipsListener
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
+import com.tokopedia.product.manage.databinding.FragmentProductManageFilterNewBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_product_manage_filter_new.*
 import javax.inject.Inject
 
 class ProductManageFilterFragment(private var onFinishedListener: OnFinishedListener? = null,
@@ -84,6 +85,8 @@ class ProductManageFilterFragment(private var onFinishedListener: OnFinishedList
     private var postponedActivityResult: Runnable? = null
     private var cacheManager: SaveInstanceCacheManager? = null
 
+    private var binding: FragmentProductManageFilterNewBinding? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         savedInstanceState?.let {
@@ -92,8 +95,12 @@ class ProductManageFilterFragment(private var onFinishedListener: OnFinishedList
             filterOptionWrapper = cacheManager?.get(KEY_FILTER_OPTION_WRAPPER, FilterOptionWrapper::class.java, null)
             needToPostponeActivityResult = cacheManager?.get(KEY_NEED_TO_POSTPONE_ACTIVITY_RESULT, Boolean::class.java, false) ?: false
         }
-        val view = View.inflate(context, R.layout.fragment_product_manage_filter_new,null)
-        setChild(view)
+        binding = FragmentProductManageFilterNewBinding.inflate(
+            LayoutInflater.from(context),
+            null,
+            false
+        )
+        setChild(binding?.root)
         setTitle(BOTTOMSHEET_TITLE)
         initInjector()
     }
@@ -179,12 +186,14 @@ class ProductManageFilterFragment(private var onFinishedListener: OnFinishedList
 
     override fun onShowChips(element: FilterUiModel) {
         productManageFilterViewModel.updateShow(element)
-        when(element.title) {
-            SORT_HEADER -> filterRecyclerView.scrollToPosition(ITEM_SORT_INDEX)
-            ETALASE_HEADER -> filterRecyclerView.scrollToPosition(ITEM_ETALASE_INDEX)
-            CATEGORY_HEADER -> filterRecyclerView.scrollToPosition(ITEM_CATEGORIES_INDEX)
-            else -> filterRecyclerView.scrollToPosition(ITEM_OTHER_FILTER_INDEX)
-        }
+        val scrollPositionTarget =
+            when(element.title) {
+                SORT_HEADER -> ITEM_SORT_INDEX
+                ETALASE_HEADER -> ITEM_ETALASE_INDEX
+                CATEGORY_HEADER -> ITEM_CATEGORIES_INDEX
+                else -> ITEM_OTHER_FILTER_INDEX
+            }
+        binding?.filterRecyclerView?.scrollToPosition(scrollPositionTarget)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -251,9 +260,9 @@ class ProductManageFilterFragment(private var onFinishedListener: OnFinishedList
         layoutManager = LinearLayoutManager(this.context)
         val adapterTypeFactory = FilterAdapterTypeFactory(this, this, this)
         filterAdapter = FilterAdapter(adapterTypeFactory)
-        filterRecyclerView.layoutManager = layoutManager
-        filterRecyclerView.adapter = filterAdapter
-        buttonCloseBottomSheet.setOnClickListener {
+        binding?.filterRecyclerView?.layoutManager = layoutManager
+        binding?.filterRecyclerView?.adapter = filterAdapter
+        binding?.buttonCloseBottomSheet?.setOnClickListener {
             productManageFilterViewModel.filterData.value?.let { data ->
                 val dataToSave = ProductManageFilterMapper.mapFiltersToFilterOptions(data)
                 onFinishedListener?.onFinish(dataToSave)
@@ -325,15 +334,15 @@ class ProductManageFilterFragment(private var onFinishedListener: OnFinishedList
     }
 
     private fun showLoading() {
-        buttonCloseBottomSheet.isEnabled = false
-        filterRecyclerView.visibility= View.INVISIBLE
-        filterLoadingSpinner.visibility = View.VISIBLE
+        binding?.buttonCloseBottomSheet?.isEnabled = false
+        binding?.filterRecyclerView?.visibility= View.INVISIBLE
+        binding?.filterLoadingSpinner?.visibility = View.VISIBLE
     }
 
     private fun hideLoading() {
-        filterLoadingSpinner.visibility = View.GONE
-        buttonCloseBottomSheet.isEnabled = true
-        filterRecyclerView.visibility= View.VISIBLE
+        binding?.filterLoadingSpinner?.visibility = View.GONE
+        binding?.buttonCloseBottomSheet?.isEnabled = true
+        binding?.filterRecyclerView?.visibility= View.VISIBLE
     }
 
     private fun adjustBottomSheetPadding() {

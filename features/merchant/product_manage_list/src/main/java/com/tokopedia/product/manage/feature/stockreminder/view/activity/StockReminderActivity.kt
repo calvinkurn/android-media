@@ -6,9 +6,9 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.databinding.ActivityStockReminderBinding
 import com.tokopedia.product.manage.feature.stockreminder.constant.AppScreen
 import com.tokopedia.product.manage.feature.stockreminder.view.fragment.StockReminderFragment
-import kotlinx.android.synthetic.main.activity_stock_reminder.*
 
 class StockReminderActivity : BaseSimpleActivity() {
 
@@ -16,13 +16,18 @@ class StockReminderActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupLayout(savedInstanceState)
 
-        header.setNavigationOnClickListener {
-            onBackPressed()
+        ActivityStockReminderBinding.inflate(layoutInflater).run {
+            header.run {
+                setNavigationOnClickListener {
+                    onBackPressed()
+                }
+                headerTitle = getString(R.string.product_stock_reminder_header_title)
+                headerSubTitle = productName
+            }
         }
-        header.headerTitle = getString(R.string.product_stock_reminder_header_title)
-        header.headerSubTitle = productName
+
+        setupLayout(savedInstanceState)
     }
 
     override fun getNewFragment(): Fragment? {
