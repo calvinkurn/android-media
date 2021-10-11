@@ -11,7 +11,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.net.UrlQuerySanitizer;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 
@@ -130,11 +132,12 @@ public class RouteManager {
                 activityIntent.setData(uri);
 
                 // copy the query Parameter to bundle
-                Set<String> queryParameterNames = uri.getQueryParameterNames();
-                for (String queryParameterName : queryParameterNames) {
-                    activityIntent.putExtra(queryParameterName, uri.getQueryParameter(queryParameterName));
+                UrlQuerySanitizer sanitizer = new UrlQuerySanitizer(uri.toString());
+                List<UrlQuerySanitizer.ParameterValuePair> sanitizerParameterList = sanitizer.getParameterList();
+                for (UrlQuerySanitizer.ParameterValuePair valuePair : sanitizerParameterList) {
+                    activityIntent.putExtra(valuePair.mParameter, valuePair.mValue);
                 }
-                ApplinkLogger.getInstance(context).appendTrace("Explicit intent result:\n" + activityIntent.toString());
+                ApplinkLogger.getInstance(context).appendTrace("Explicit intent result:\n" + activityIntent);
                 return activityIntent;
             } else {
                 ApplinkLogger.getInstance(context).appendTrace("No ResolveInfo Found");

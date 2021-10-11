@@ -215,11 +215,6 @@ ext {
             branch     : "io.branch.sdk.android:library:5.0.4",
     ]
 
-    deeplinkDispatchDependencies = [
-            deeplinkDispatch         : "com.airbnb:deeplinkdispatch:${deeplinkDispatchVersion}",
-            deeplinkDispatchProcessor: "com.airbnb:deeplinkdispatch-processor:${deeplinkDispatchVersion}"
-    ]
-
     miscDependencies = [
             javaPoet              : 'com.squareup:javapoet:1.11.1',
             autoService           : "com.google.auto.service:auto-service:1.0-rc6",
