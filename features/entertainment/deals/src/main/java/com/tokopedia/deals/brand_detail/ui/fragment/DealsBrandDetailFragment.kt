@@ -153,7 +153,8 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
             it.collapsingToolbarBrandDetail.title = ""
             it.appBarLayoutBrandDetail.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
                 override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                    val toolbar = it.toolbarBrandDetail
+                   val toolbar = it.toolbarBrandDetail
+                   if(toolbar.menu.size() > 0){
                     if (abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
                         it.collapsingToolbarBrandDetail.title = title
                         toolbar.menu.getItem(0).setIcon(com.tokopedia.deals.R.drawable.ic_deals_revamp_share_black)
@@ -167,6 +168,7 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
                             setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                         }
                     }
+                }
                 }
             })
         }
