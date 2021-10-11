@@ -56,6 +56,8 @@ data class EventHomeDataResponse(
                     val title: String = ""
             ) {
                 data class Item(
+                        @SerializedName("is_free")
+                        val isFree: Int = 0,
                         @SerializedName("app_url")
                         val appUrl: String = "",
                         @SerializedName("url")

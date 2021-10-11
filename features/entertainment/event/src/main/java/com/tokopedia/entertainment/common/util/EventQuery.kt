@@ -40,6 +40,7 @@ object EventQuery {
                     rating
                     display_name
                     title
+                    is_free
                     image_app
                     sales_price
                     city_name

@@ -11,7 +11,7 @@ class EventCarouselModel(var layout: EventHomeDataResponse.Data.EventHome.Layout
                          = EventHomeDataResponse.Data.EventHome.Layout()) : HomeEventItem() {
 
     var items : MutableList<EventItemModel> = mutableListOf()
-
+    var isFree = 1
     init {
         layout.items.forEach {
             items.add(EventItemModel(
@@ -24,7 +24,8 @@ class EventCarouselModel(var layout: EventHomeDataResponse.Data.EventHome.Layout
                     it.minStartDate,
                     it.isLiked,
                     it.appUrl,
-                    it.seoUrl
+                    it.seoUrl,
+                    it.isFree == isFree
             ))
         }
     }
