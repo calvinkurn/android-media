@@ -109,6 +109,7 @@
             app:layout_constraintEnd_toStartOf="@+id/chevron"
             android:text="Cek Sekarang"
             app:typographyType="body_3"
+            app:typographyWeight="bold"
             android:visibility="gone"
             tools:visibility="visible"
             />
@@ -175,8 +176,8 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/chevron"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
             app:icon_name="CHEVRON_RIGHT"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
