@@ -25,10 +25,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import junit.framework.Assert.assertFalse
 import org.assertj.core.api.Assertions
 import org.junit.Assert
@@ -121,6 +118,16 @@ class HomeAccountUserViewModelTest {
         }
         Assertions.assertThat(viewModel.phoneNo.value)
             .isEqualTo(profilePojo.profileInfo.phone)
+    }
+
+    @Test
+    fun `Execute refreshPhoneNo Success but phone empty`() {
+        coEvery { getPhoneUseCase(Unit) } returns ProfilePojo()
+
+        viewModel.refreshPhoneNo()
+
+        Assertions.assertThat(viewModel.phoneNo.value)
+            .isEqualTo(null)
     }
 
     @Test
@@ -271,6 +278,24 @@ class HomeAccountUserViewModelTest {
             accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, isActive)
             accountPref.saveSettingValue(AccountConstants.KEY.CLEAR_CACHE, isActive)
         }
+    }
+
+    @Test
+    fun `Set safe mode Failed`() {
+        val isActive = true
+        /* When */
+        every {
+            homeAccountSafeSettingProfileUseCase.executeQuerySetSafeMode(
+                any(),
+                any(),
+                any()
+            )
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwableResponse)
+        }
+
+        viewModel.setSafeMode(isActive)
+        verify {throwableResponse.printStackTrace()}
     }
 
     @Test

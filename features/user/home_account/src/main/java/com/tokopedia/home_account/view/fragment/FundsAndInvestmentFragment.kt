@@ -191,11 +191,12 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
             if (eligibility[0].isEligible) {
                 if (adapter?.isWalletExistById(AccountConstants.WALLET.GOPAY).orFalse()) {
                     viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY)
+                    adapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
                 }
                 if (adapter?.isWalletExistById(AccountConstants.WALLET.GOPAYLATER).orFalse()) {
                     viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAYLATER)
+                    adapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
                 }
-                adapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
             } else {
                 adapter?.removeById(AccountConstants.WALLET.GOPAY)
                 adapter?.removeById(AccountConstants.WALLET.GOPAYLATER)

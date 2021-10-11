@@ -613,7 +613,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             }
         }
         adapter?.notifyItemChanged(0)
-        viewModel.getGopayWalletEligible()
         getBalanceAndPoints(centralizedUserAssetConfig)
     }
 
@@ -622,6 +621,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             if (it.id != AccountConstants.WALLET.GOPAY
             ) {
                 viewModel.getBalanceAndPoint(it.id)
+            } else {
+                viewModel.getGopayWalletEligible()
             }
         }
     }
