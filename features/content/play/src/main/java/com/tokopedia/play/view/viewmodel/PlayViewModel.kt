@@ -1387,7 +1387,10 @@ class PlayViewModel @Inject constructor(
                 if (result.isExist) checkInteractive(channelId)
             }
             is ChannelInteractive -> {
+                Log.d("<INTERACTIVE>", "socket - ChannelInteractive: $result")
+                Log.d("<INTERACTIVE>", "socket - socket interactive waitingDuration: ${result.waitingDuration}")
                 val interactive = playSocketToModelMapper.mapInteractive(result)
+                Log.d("<INTERACTIVE>", "socket - mapper interactive waitingDuration: ${interactive.endGameDelayInMs}")
                 handleInteractiveFromNetwork(interactive)
             }
             is RealTimeNotification -> {
