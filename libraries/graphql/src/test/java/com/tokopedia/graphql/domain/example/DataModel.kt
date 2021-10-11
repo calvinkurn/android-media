@@ -14,5 +14,8 @@ data class FooInput(val id: Int, val isSorted: Boolean) {
 data class NestedFooModel(
     val id: Int,
     val msg: String?,
-    val foo: FooModel
-    )
+    val foo: FooModel)
+
+data class NumberFooModel(
+    val id: Number
+)

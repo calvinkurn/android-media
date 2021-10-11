@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.MockUtil
 import com.tokopedia.graphql.domain.example.FooModel
 import com.tokopedia.graphql.domain.example.NestedFooModel
+import com.tokopedia.graphql.util.toMapParam
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -69,16 +70,6 @@ class ExtKtTest {
     fun `given map of arbitrary type should throw exception`() {
         runBlockingTest {
             repository.request<String, FooModel>("", "foo")
-        }
-    }
-
-    @Test
-    fun `given data class of nested model type should returns as expected`() {
-        runBlockingTest {
-            val foo= FooModel(1, "")
-            val param = NestedFooModel(1, null, foo)
-            val actual = repository.request<NestedFooModel, FooModel>("", param)
-            assertEquals(case, actual)
         }
     }
 }
