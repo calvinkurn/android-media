@@ -78,6 +78,12 @@ class DiscoMerchantAnalytics(private val discoveryAnalytics: BaseDiscoveryAnalyt
                             componentPosition,
                             productPosition
                         )
+                    else
+                        discoveryAnalytics.trackMerchantVoucherMultipleVoucherDetailClicks(
+                            componentsItem,
+                            userId,
+                            componentPosition
+                        )
                 }
             }
 
