@@ -287,6 +287,15 @@ object DeeplinkDFMapper : CoroutineScope {
             // IM
             add(DFP({ it.startsWith(REFERRAL) }, DF_BASE, R.string.applink_title_im_referral))
 
+            //Feed
+            add(DFP({
+                it.startsWithPattern(ApplinkConstInternalGlobal.IMAGE_PICKER_V2)
+            }, DF_IMAGE_PICKER_INSTA, R.string.title_image_picker))
+
+            add(DFP({
+                it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2)
+            }, DF_CREATE_POST, R.string.title_feed_create_post))
+
             // Logistic
             add(DFP({ it.startsWith(DROPOFF_PICKER) }, DF_BASE, R.string.dropoff_title))
             add(DFP({ it.startsWith(SHIPPING_CONFIRMATION) }, DF_BASE, R.string.path_shipping_confirmation))
@@ -571,15 +580,6 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Review Reminder
             add(DFP({ it.startsWith(REVIEW_REMINDER_PREVIOUS) }, DF_BASE, R.string.title_review_reminder))
-
-            //Feed
-            add(DFP({
-                it.startsWithPattern(ApplinkConstInternalGlobal.IMAGE_PICKER_V2)
-            }, DF_IMAGE_PICKER_INSTA, R.string.title_image_picker))
-
-            add(DFP({
-                it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2)
-            }, DF_CREATE_POST, R.string.title_feed_create_post))
         }
     }
 
