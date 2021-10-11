@@ -163,9 +163,9 @@ class MixTopComponentViewHolder(
         bannerDescription.text = bannerItem.description
         bannerDescription.visibility = if(bannerItem.description.isEmpty()) View.GONE else View.VISIBLE
         if(bannerItem.gradientColor.isEmpty() || bannerItem.gradientColor[0] == "#FFFFFF") {
-            background.invisible()
+            background.gone()
             val layoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
-            layoutParams.setMargins(0, 0, 0, itemView.context.resources.getDimensionPixelSize(R.dimen.home_margin_16_dp_product_card))
+            layoutParams.setMargins(0, 0, 0, itemView.context.resources.getDimensionPixelSize(R.dimen.dp_7))
             recyclerView.layoutParams = layoutParams
             recyclerView.translationY = itemView.context.resources.getDimensionPixelSize(R.dimen.home_padding_vertical_use_compat_padding_product_card).toFloat()
         }
@@ -173,9 +173,9 @@ class MixTopComponentViewHolder(
             background.visible()
             background.setGradientBackground(bannerItem.gradientColor)
             val layoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
-            layoutParams.setMargins(0, itemView.context.resources.getDimensionPixelSize(R.dimen.home_margin_12_dp_product_card), 0, itemView.context.resources.getDimensionPixelSize(R.dimen.home_margin_16_dp_product_card))
+            layoutParams.setMargins(0, itemView.context.resources.getDimensionPixelSize(R.dimen.home_margin_12_dp_product_card), 0, itemView.context.resources.getDimensionPixelSize(R.dimen.dp_12))
             recyclerView.layoutParams = layoutParams
-            recyclerView.translationY = itemView.context.resources.getDimensionPixelSize(R.dimen.home_padding_vertical_use_compat_padding_product_card).toFloat()
+            recyclerView.translationY = 0f
         }
         bannerTitle.setTextColor(textColor)
         bannerDescription.setTextColor(textColor)

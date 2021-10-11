@@ -13,9 +13,7 @@
         tools:background="@color/Unify_Static_Black"/>
     <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:orientation="vertical"
         android:descendantFocusability="blocksDescendants"
-        android:paddingBottom="@dimen/dp_8"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
