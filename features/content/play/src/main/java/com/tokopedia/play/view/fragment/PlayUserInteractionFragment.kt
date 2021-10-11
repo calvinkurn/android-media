@@ -82,6 +82,7 @@ import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -917,6 +918,9 @@ class PlayUserInteractionFragment @Inject constructor(
                     }
                     RemindToLikeEvent -> likeView.playReminderAnimation()
                     is PreloadLikeBubbleIconEvent -> likeBubbleView.preloadIcons(event.urls)
+                    is UserWinnerLog -> {
+                        view?.findViewById<Typography>(R.id.user_winner_log)?.text = event.data
+                    }
                 }
             }
         }

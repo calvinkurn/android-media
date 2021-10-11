@@ -69,3 +69,5 @@ data class AllowedWhenInactiveEvent(
         require(event !is AllowedWhenInactiveEvent)
     }
 }
+
+data class UserWinnerLog(val data: String): PlayViewerNewUiEvent()

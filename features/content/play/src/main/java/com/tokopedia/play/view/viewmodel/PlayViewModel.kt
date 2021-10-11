@@ -1412,6 +1412,10 @@ class PlayViewModel @Inject constructor(
                 }
             }
             is UserWinnerStatus -> {
+                _uiEvent.emit(
+                    UserWinnerLog("logged in user Id : ${userId}\n$result")
+                )
+
                 Log.d("<INTERACTIVE>", "socket - Socket WinnerStatus")
                 val interactiveState = _interactiveUiState.firstOrNull() ?: return@withContext
                 Log.d("<INTERACTIVE>", "socket - interactiveUiState is not null")
