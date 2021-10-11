@@ -119,6 +119,7 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotE
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
+import com.tokopedia.purchase_platform.common.utils.Switch;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.unifycomponents.TimerUnify;
@@ -144,6 +145,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 import static com.tokopedia.checkout.bundle.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_INDOMARET;
 import static com.tokopedia.checkout.bundle.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_NORMAL;
@@ -3223,4 +3225,26 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void logOnErrorCheckout(Throwable throwable, String request) {
         CheckoutLogger.INSTANCE.logOnErrorCheckout(throwable, request, isOneClickShipment(), isTradeIn(), isTradeInByDropOff());
     }
+
+    @Override
+    public boolean isBundleToggleChanged() {
+        Activity activity = getActivity();
+        if (activity != null) {
+            return !Switch.INSTANCE.isBundleToggleOn(activity);
+        }
+        return false;
+    }
+
+    @Override
+    public void recreateActivity() {
+        try {
+            Activity activity = getActivity();
+            if (activity != null) {
+                activity.recreate();
+            }
+        } catch (Throwable t) {
+            Timber.d(t);
+        }
+    }
+
 }

@@ -141,6 +141,11 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     override fun processInitialGetCartData(cartId: String, initialLoad: Boolean, isLoadingTypeRefresh: Boolean, getCartState: Int) {
         view?.let {
+            if (it.isBundleToggleChanged()) {
+                it.recreateActivity()
+                return
+            }
+
             if (initialLoad) {
                 it.renderLoadGetCartData()
             } else if (!isLoadingTypeRefresh) {
