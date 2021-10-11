@@ -25,6 +25,7 @@ import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.customer_mid_app.R;
+import com.tokopedia.linker.FirebaseDLWrapper;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
@@ -72,6 +73,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         ImageView loadingView = findViewById(R.id.iv_loading);
         ImageHandler.loadGif(loadingView, R.drawable.ic_loading_indeterminate, -1);
         logDeeplink();
+        new FirebaseDLWrapper().getFirebaseDynamicLink(this,getIntent());
     }
 
     private void checkUrlMapToApplink() {

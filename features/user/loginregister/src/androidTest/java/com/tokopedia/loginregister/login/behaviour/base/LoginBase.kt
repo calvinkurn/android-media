@@ -11,7 +11,9 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
+import com.tokopedia.loginregister.discover.pojo.DiscoverData
+import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
+import com.tokopedia.loginregister.discover.pojo.ProviderData
 import com.tokopedia.loginregister.login.behaviour.activity.LoginActivityStub
 import com.tokopedia.loginregister.login.behaviour.data.*
 import com.tokopedia.loginregister.login.behaviour.di.DaggerBaseAppComponentStub
@@ -22,7 +24,6 @@ import com.tokopedia.loginregister.login.behaviour.di.modules.DaggerMockLoginReg
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.login.idling.FragmentTransactionIdle
-import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -119,10 +120,10 @@ open class LoginBase: LoginRegisterBase() {
 
     protected fun setDefaultDiscover() {
         val mockProviders = arrayListOf(
-                DiscoverItemDataModel("gplus", "Google", "https://accounts.tokopedia.com/gplus-login", "", "#FFFFFF"),
-                DiscoverItemDataModel("facebook", "Facebook", "https://accounts.tokopedia.com/fb-login", "", "#FFFFFF")
+            ProviderData("gplus", "Google", "https://accounts.tokopedia.com/gplus-login", "", "#FFFFFF"),
+            ProviderData("facebook", "Facebook", "https://accounts.tokopedia.com/fb-login", "", "#FFFFFF")
         )
-        val response = DiscoverDataModel(mockProviders, "")
+        val response = DiscoverPojo(DiscoverData(mockProviders, ""))
         discoverUseCaseStub.response = response
     }
 

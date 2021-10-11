@@ -115,6 +115,12 @@ class FeedPlusAdapter(
         newList.addAll(newLists)
         updateList(newList)
     }
+    fun addListItemAtTop(visitable: Visitable<*>) {
+        val newList: MutableList<Visitable<*>> = mutableListOf()
+        newList.addAll(list)
+        newList.add(1, visitable)
+        updateList(newList)
+    }
 
     private fun remove(visitable: Visitable<*>) {
         val newList: MutableList<Visitable<*>> = mutableListOf()

@@ -18,7 +18,7 @@ suspend inline fun <P, reified R> GraphqlRepository.request(
         else -> throw IllegalArgumentException("Graphql only supports Map<String, Any> and Unit as a param")
     }
     val request = GraphqlRequest(query, R::class.java, variables)
-    val response = getReseponse(listOf(request))
+    val response = response(listOf(request))
 
     return response.getSuccessData()
 }

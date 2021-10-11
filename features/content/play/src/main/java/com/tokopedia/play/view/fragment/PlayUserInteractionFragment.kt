@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
@@ -45,7 +46,6 @@ import com.tokopedia.play.view.contract.PlayFullscreenManager
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.custom.dialog.InteractiveWinningDialogFragment
-import com.tokopedia.play.view.custom.realtimenotif.RealTimeNotificationBubbleView
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapKey
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapValue
@@ -55,6 +55,7 @@ import com.tokopedia.play.view.measurement.bounds.provider.videobounds.PlayVideo
 import com.tokopedia.play.view.measurement.bounds.provider.videobounds.VideoBoundsProvider
 import com.tokopedia.play.view.measurement.layout.DynamicLayoutManager
 import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
+import com.tokopedia.play.view.storage.multiplelikes.MultipleLikesIconCacheStorage
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
@@ -71,6 +72,7 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.*
@@ -92,7 +94,8 @@ class PlayUserInteractionFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
         private val dispatchers: CoroutineDispatchers,
         private val pipAnalytic: PlayPiPAnalytic,
-        private val analytic: PlayAnalytic
+        private val analytic: PlayAnalytic,
+        private val multipleLikesIconCacheStorage: MultipleLikesIconCacheStorage,
 ) :
         TkpdBaseV4Fragment(),
         PlayMoreActionBottomSheet.Listener,
@@ -132,6 +135,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
     private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
     private val rtnView by viewComponentOrNull { RealTimeNotificationViewComponent(it, this) }
+    private val likeBubbleView by viewComponent { LikeBubbleViewComponent(it, R.id.view_like_bubble, multipleLikesIconCacheStorage) }
 
     /**
      * Interactive
@@ -830,10 +834,11 @@ class PlayUserInteractionFragment @Inject constructor(
                 val state = cachedState.value
                 val prevState = cachedState.prevValue
 
-                renderInteractiveView(cachedState.isValueChanged(PlayViewerNewUiState::interactive), state.interactive, state.followStatus, state.showInteractive)
-                renderWinnerBadgeView(state.showWinnerBadge)
-                renderToolbarView(state.followStatus, state.partnerName, state.isShareable, state.cart)
+                renderInteractiveView(prevState?.interactiveView, state.interactiveView, state.partner)
+                renderWinnerBadgeView(state.winnerBadge)
+                renderToolbarView(state.partner, state.share, state.cart)
                 renderLikeView(prevState?.like, state.like)
+                renderLikeBubbleView(state.like)
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
             }
@@ -858,13 +863,60 @@ class PlayUserInteractionFragment @Inject constructor(
                         interactiveWinnerBadgeView?.hideCoachMark()
                     }
                     is OpenPageEvent -> {
-                        openPageByApplink(applink = event.applink, params = event.params.toTypedArray(), requestCode = event.requestCode, pipMode = event.pipMode)
+                        openPageByApplink(
+                            applink = event.applink,
+                            params = event.params.toTypedArray(),
+                            requestCode = event.requestCode,
+                            pipMode = event.pipMode
+                        )
                     }
-                    is ShowToasterEvent -> handleToasterEvent(event)
+                    is ShowInfoEvent -> {
+                        doShowToaster(
+                            toasterType = Toaster.TYPE_NORMAL,
+                            message = getTextFromUiString(event.message)
+                        )
+                    }
+                    is ShowErrorEvent -> {
+                        val errMessage = if (event.errMessage == null) {
+                            ErrorHandler.getErrorMessage(
+                                context, event.error, ErrorHandler.Builder()
+                                    .className(PlayViewModel::class.java.simpleName)
+                                    .build()
+                            )
+                        } else {
+                            val (_, errCode) = ErrorHandler.getErrorMessagePair(
+                                context, event.error, ErrorHandler.Builder()
+                                    .className(PlayViewModel::class.java.simpleName)
+                                    .build()
+                            )
+                            getString(
+                                commonR.string.play_custom_error_handler_msg,
+                                getTextFromUiString(event.errMessage),
+                                errCode
+                            )
+                        }
+                        doShowToaster(
+                            toasterType = Toaster.TYPE_ERROR,
+                            message = errMessage
+                        )
+                    }
                     is CopyToClipboardEvent -> copyToClipboard(event.content)
                     is ShowRealTimeNotificationEvent -> {
                         rtnView?.queueNotification(event.notification)
                     }
+                    is AnimateLikeEvent -> {
+                        likeView.playLikeAnimation(event.fromIsLiked)
+                    }
+                    is ShowLikeBubbleEvent -> {
+                        if (event is ShowLikeBubbleEvent.Burst) {
+                            likeBubbleView.shotBurst(event.count, event.reduceOpacity, event.config)
+                        }
+                        else if (event is ShowLikeBubbleEvent.Single) {
+                            likeBubbleView.shot(event.count, event.reduceOpacity, event.config)
+                        }
+                    }
+                    RemindToLikeEvent -> likeView.playReminderAnimation()
+                    is PreloadLikeBubbleIconEvent -> likeBubbleView.preloadIcons(event.urls)
                 }
             }
         }
@@ -1125,8 +1177,10 @@ class PlayUserInteractionFragment @Inject constructor(
             message: String,
     ) {
         if (toasterBottomMargin == 0) {
-            val likeAreaBottomMargin = (likeView.clickAreaView.layoutParams as? ViewGroup.MarginLayoutParams)?.bottomMargin?:0
-            toasterBottomMargin = likeView.clickAreaView.height + likeAreaBottomMargin
+            val likeAreaView = likeView.rootView
+            val likeAreaBottomMargin = (likeAreaView.layoutParams as? ViewGroup.MarginLayoutParams)
+                ?.bottomMargin ?: 0
+            toasterBottomMargin = likeAreaView.height + likeAreaBottomMargin
         }
         Toaster.toasterCustomBottomHeight = toasterBottomMargin
         Toaster.build(
@@ -1337,13 +1391,12 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun renderInteractiveView(
-            isStateChanged: Boolean,
-            state: PlayInteractiveUiState,
-            followStatus: PlayPartnerFollowStatus,
-            visibility: ViewVisibility,
+        prevState: PlayInteractiveViewUiState?,
+        state: PlayInteractiveViewUiState,
+        partner: PlayPartnerUiState,
     ) {
-        if (isStateChanged) {
-            when (state) {
+        if (prevState?.interactive != state.interactive) {
+            when (val interactive = state.interactive) {
                 PlayInteractiveUiState.Loading -> {
                     interactiveView?.setLoading()
                 }
@@ -1351,17 +1404,18 @@ class PlayUserInteractionFragment @Inject constructor(
                     interactiveView?.setError()
                 }
                 is PlayInteractiveUiState.PreStart -> {
-                    interactiveView?.setPreStart(title = state.title, timeToStartInMs = state.timeToStartInMs) {
-                        playViewModel.submitAction(InteractivePreStartFinishedAction)
-                    }
+                    interactiveView?.setPreStart(
+                        title = interactive.title,
+                        timeToStartInMs = interactive.timeToStartInMs
+                    ) { playViewModel.submitAction(InteractivePreStartFinishedAction) }
                 }
                 is PlayInteractiveUiState.Ongoing -> {
-                    interactiveView?.setTapTap(durationInMs = state.timeRemainingInMs) {
+                    interactiveView?.setTapTap(durationInMs = interactive.timeRemainingInMs) {
                         playViewModel.submitAction(InteractiveOngoingFinishedAction)
                     }
                 }
                 is PlayInteractiveUiState.Finished -> {
-                    interactiveView?.setFinish(info = getString(state.info))
+                    interactiveView?.setFinish(info = getString(interactive.info))
                 }
                 else -> {}
             }
@@ -1371,7 +1425,7 @@ class PlayUserInteractionFragment @Inject constructor(
              * and because of that, the distance between interactive view and winner badge increase significantly
              */
             val winnerBadgeView = interactiveWinnerBadgeView?.rootView
-            if (winnerBadgeView != null && state !is PlayInteractiveUiState.Ongoing) {
+            if (winnerBadgeView != null && state.interactive !is PlayInteractiveUiState.Ongoing) {
                 view?.changeConstraint {
                     val bottomAnchor = interactiveView?.id ?: return@changeConstraint
                     connect(winnerBadgeView.id, ConstraintSet.BOTTOM, bottomAnchor, ConstraintSet.TOP)
@@ -1380,35 +1434,35 @@ class PlayUserInteractionFragment @Inject constructor(
 
         }
 
-        interactiveView?.showFollowMode(followStatus is PlayPartnerFollowStatus.Followable && !followStatus.isFollowing)
+        interactiveView?.showFollowMode(
+            partner.followStatus is PlayPartnerFollowStatus.Followable &&
+                    !partner.followStatus.isFollowing
+        )
 
-        when (visibility) {
+        when (state.visibility) {
             ViewVisibility.Visible -> interactiveView?.show()
             ViewVisibility.Invisible -> interactiveView?.invisible()
             ViewVisibility.Gone -> interactiveView?.hide()
         }
     }
 
-    private fun renderWinnerBadgeView(
-            shouldShow: Boolean,
-    ) {
-        if (shouldShow) interactiveWinnerBadgeView?.show()
+    private fun renderWinnerBadgeView(state: PlayWinnerBadgeUiState) {
+        if (state.shouldShow) interactiveWinnerBadgeView?.show()
         else interactiveWinnerBadgeView?.hide()
     }
 
     private fun renderToolbarView(
-            followStatus: PlayPartnerFollowStatus,
-            partnerName: String,
-            isShareable: Boolean,
-            cartState: PlayCartUiState,
+        partner: PlayPartnerUiState,
+        share: PlayShareUiState,
+        cart: PlayCartUiState,
     ) {
-        toolbarView.setFollowStatus(followStatus)
-        toolbarView.setPartnerName(partnerName)
+        toolbarView.setFollowStatus(partner.followStatus)
+        toolbarView.setPartnerName(partner.name)
 
-        toolbarView.setIsShareable(isShareable)
+        toolbarView.setIsShareable(share.shouldShow)
 
-        toolbarView.showCart(cartState.shouldShow)
-        toolbarView.setCartCount(cartState.count)
+        toolbarView.showCart(cart.shouldShow)
+        toolbarView.setCartCount(cart.count)
     }
 
     private fun renderLikeView(
@@ -1417,8 +1471,10 @@ class PlayUserInteractionFragment @Inject constructor(
     ) {
         if (prevState?.canLike != likeState.canLike) likeView.setEnabled(isEnabled = likeState.canLike)
 
+        likeView.setMode(likeState.likeMode)
+
         if (prevState?.isLiked != likeState.isLiked) {
-            likeView.playLikeAnimation(likeState.isLiked, likeState.animate)
+            likeView.setIsLiked(likeState.isLiked)
         }
 
         likeView.setTotalLikes(likeState.totalLike)
@@ -1427,10 +1483,13 @@ class PlayUserInteractionFragment @Inject constructor(
         else likeView.hide()
     }
 
-    private fun renderStatsInfoView(
-            totalView: String,
-    ) {
-        statsInfoView.setTotalViews(totalView)
+    private fun renderLikeBubbleView(likeState: PlayLikeUiState) {
+        if (likeState.canShowBubble) likeBubbleView.show()
+        else likeBubbleView.hide()
+    }
+
+    private fun renderStatsInfoView(totalView: PlayTotalViewUiState) {
+        statsInfoView.setTotalViews(totalView.viewCountStr)
     }
 
     private fun renderRealTimeNotificationView(rtn: PlayRtnUiState) {
@@ -1439,17 +1498,6 @@ class PlayUserInteractionFragment @Inject constructor(
         else rtnView?.invisible()
     }
     //endregion
-
-    private fun handleToasterEvent(event: ShowToasterEvent) {
-        val text = getTextFromUiString(event.message)
-        doShowToaster(
-                toasterType = when (event) {
-                    is ShowToasterEvent.Info -> Toaster.TYPE_NORMAL
-                    is ShowToasterEvent.Error -> Toaster.TYPE_ERROR
-                },
-                message = text
-        )
-    }
 
     private fun getTextFromUiString(uiString: UiString): String {
         return when (uiString) {

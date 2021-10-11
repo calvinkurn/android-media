@@ -40,7 +40,7 @@ class WaitingPaymentOrderAdapterTypeFactory(
         return WaitingPaymentOrderEmptyViewHolder.LAYOUT
     }
 
-    override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
+    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             WaitingPaymentOrdersViewHolder.LAYOUT -> WaitingPaymentOrdersViewHolder(parent)
             WaitingPaymentTickerViewHolder.LAYOUT -> WaitingPaymentTickerViewHolder(parent, itemClickListener)

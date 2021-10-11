@@ -9,7 +9,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
-import com.tokopedia.chat_common.data.preview.ProductPreview
+import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -209,8 +209,7 @@ object AtcCommonMapper {
                 VariantComponentDataModel(
                         position = idCounter,
                         listOfVariantCategory = processedVariant,
-                        mapOfSelectedVariant = initialSelectedVariant,
-                        emptyOrInactiveCopy = selectedChild?.stock?.stockCopy ?: "")
+                        mapOfSelectedVariant = initialSelectedVariant)
         ).also {
             idCounter += 1
         }
@@ -259,8 +258,7 @@ object AtcCommonMapper {
                 is VariantComponentDataModel -> {
                     it.copy(listOfVariantCategory = processedVariant,
                             mapOfSelectedVariant = selectedVariantIds
-                                    ?: mutableMapOf(),
-                            emptyOrInactiveCopy = selectedVariantChild?.stock?.stockCopy ?: "")
+                                    ?: mutableMapOf())
                 }
                 is VariantQuantityDataModel -> {
                     it.copy(productId = selectedVariantChild?.productId ?: "",

@@ -131,8 +131,8 @@ class TopAdsDashboardPresenterTest {
 
     @Test
     fun `on product stats success`() {
-        val expected = 10
-        var actual = 0
+        val expected = "10"
+        var actual = "0"
         val res: Resources = mockk(relaxed = true)
         val data = GetDashboardProductStatistics(data = listOf(WithoutGroupDataItem(adId = expected)))
         val onSuccess: (data: GetDashboardProductStatistics) -> Unit = {

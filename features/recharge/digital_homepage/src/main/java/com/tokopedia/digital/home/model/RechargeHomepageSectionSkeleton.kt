@@ -16,6 +16,10 @@ data class RechargeHomepageSectionSkeleton (
         @Expose
         val searchBarWebLink: String = "",
 
+        @SerializedName("search_bar_screen_name")
+        @Expose
+        val searchBarScreenName: String = "",
+
         @SerializedName("sections")
         @Expose
         val sections: List<Item> = listOf()

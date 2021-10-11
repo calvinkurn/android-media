@@ -26,7 +26,7 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
-import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_PARAM
+import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_OOC_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.X_SOURCE_RECOMMENDATION_PARAM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -107,7 +107,7 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _miniCartRemove
     val homeAddToCartTracker: LiveData<HomeAddToCartTracker>
         get() = _homeAddToCartTracker
-    val productAddToCartQuantity: LiveData<Result<HomeLayoutListUiModel>>
+    val atcQuantity: LiveData<Result<HomeLayoutListUiModel>>
         get() = _productAddToCartQuantity
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
@@ -149,7 +149,7 @@ class TokoNowHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val recommendationWidgets = getRecommendationUseCase.getData(
                 GetRecommendationRequestParam(
-                    pageName = PAGE_NAME_RECOMMENDATION_PARAM,
+                    pageName = PAGE_NAME_RECOMMENDATION_OOC_PARAM,
                     xSource = X_SOURCE_RECOMMENDATION_PARAM,
                     xDevice = X_DEVICE_RECOMMENDATION_PARAM
                 )
@@ -673,7 +673,10 @@ class TokoNowHomeViewModel @Inject constructor(
         val productRecom = homeItem?.layout as? HomeProductRecomUiModel
         val recomWidget = productRecom?.recomWidget
         val recommendationItemList = recomWidget?.recommendationItemList.orEmpty()
-        val product = recommendationItemList.firstOrNull { it.productId.toString() == productId}
+        val product = recommendationItemList.firstOrNull {
+            it.productId.toString() == productId
+        }
+        product?.quantity = quantity
 
         product?.let { item ->
             val position = recommendationItemList.indexOf(item)

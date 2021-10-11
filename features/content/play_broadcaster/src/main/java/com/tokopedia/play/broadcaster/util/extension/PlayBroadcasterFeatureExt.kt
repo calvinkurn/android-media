@@ -8,7 +8,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestListener
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.network.R as networkR
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.unifycomponents.Toaster
 import java.text.SimpleDateFormat
 import java.util.*
@@ -36,6 +39,51 @@ internal fun GlobalError.channelNotFound(onAction: () -> Unit) {
     this.errorDescription.setTextColor(ContextCompat.getColor(this.context, R.color.play_dms_white_68))
     this.setType(GlobalError.PAGE_NOT_FOUND)
     this.setActionClickListener { onAction() }
+}
+
+internal fun View.showErrorToaster(
+    err: Throwable,
+    customErrMessage: String? = null,
+    className: String = "",
+    duration: Int = Toaster.LENGTH_LONG,
+    actionLabel: String = "",
+    actionListener: View.OnClickListener = View.OnClickListener {  },
+    bottomMargin: Int? = null,
+    showErrorCode: Boolean = true,
+) {
+    val errMessage = if (customErrMessage == null && showErrorCode) {
+        ErrorHandler.getErrorMessage(
+            context, err, ErrorHandler.Builder()
+                .className(className)
+                .build()
+        )
+    } else {
+        val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
+            context, err, ErrorHandler.Builder()
+                .className(className)
+                .build()
+        )
+
+        val finalErrMessage = customErrMessage
+            ?: errMsg
+            ?: context.getString(networkR.string.default_request_error_unknown)
+
+        if (showErrorCode) {
+            context.getString(
+                commonR.string.play_custom_error_handler_msg,
+                finalErrMessage,
+                errCode
+            )
+        } else { finalErrMessage }
+    }
+    showToaster(
+        message = errMessage,
+        type = Toaster.TYPE_ERROR,
+        duration = duration,
+        actionLabel = actionLabel,
+        actionListener = actionListener,
+        bottomMargin = bottomMargin,
+    )
 }
 
 internal fun View.showToaster(
@@ -84,7 +132,7 @@ internal fun Date.toCalendar(): Calendar {
     return calendar
 }
 
-const val DATE_FORMAT_RFC3339 = "yyyy-MM-dd'T'HH:mm:ssXXX"
+const val DATE_FORMAT_RFC3339 = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
 const val DATE_FORMAT_BROADCAST_SCHEDULE = "EEEE, d MMMM y - HH:mm"
 
 internal fun String.toDateWithFormat(format: String): Date {

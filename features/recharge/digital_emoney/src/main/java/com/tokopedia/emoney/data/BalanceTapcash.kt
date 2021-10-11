@@ -44,7 +44,7 @@ class AttributesTapcash(
 class TapcashError(
         @SerializedName("id")
         @Expose
-        val id: Int = 0,
+        val id: String = "",
         @SerializedName("title")
         @Expose
         val title: String = "",
