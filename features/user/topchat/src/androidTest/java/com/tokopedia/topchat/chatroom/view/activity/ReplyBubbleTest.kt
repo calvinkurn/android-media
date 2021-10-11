@@ -249,6 +249,4 @@ class ReplyBubbleTest : TopchatRoomTest() {
         ReplyBubbleResult.hasVisibleReplyBubbleImageAt(0)
     }
 
-    // TODO: should able copy to clipboard msg bubble
-
 }

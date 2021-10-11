@@ -40,7 +40,7 @@ object ReplyBubbleRobot {
         doActionOnReplyBubbleAt(position, R.id.cl_reply_container, click())
     }
 
-    private fun clickLongClickMenuItemAt(position: Int) {
+    fun clickLongClickMenuItemAt(position: Int) {
         onView(
             withRecyclerView(R.id.rvMenu).atPositionOnView(
                 position, R.id.ll_long_click_menu_item
