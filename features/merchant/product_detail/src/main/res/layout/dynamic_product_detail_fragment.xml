@@ -210,6 +210,7 @@
         </RelativeLayout>
 
         <include
+            android:id="@+id/partial_layout_button_action"
             layout="@layout/partial_layout_button_action"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

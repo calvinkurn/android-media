@@ -24,7 +24,8 @@
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/iv_sah_new_other_saldo"
                 android:layout_width="@dimen/layout_lvl2"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:adjustViewBounds="true"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_saldo_title"
                 app:layout_constraintBottom_toBottomOf="@id/tv_sah_new_other_saldo_title"
@@ -113,7 +114,8 @@
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/iv_sah_new_other_topads"
                 android:layout_width="@dimen/layout_lvl2"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:adjustViewBounds="true"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_topads_title"
                 app:layout_constraintBottom_toBottomOf="@id/tv_sah_new_other_topads_title"

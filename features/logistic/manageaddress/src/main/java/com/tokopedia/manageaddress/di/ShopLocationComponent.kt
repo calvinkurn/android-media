@@ -6,7 +6,7 @@ import com.tokopedia.manageaddress.di.module.ManageAddressModule
 import com.tokopedia.manageaddress.di.module.ManageAddressViewModelModule
 import com.tokopedia.manageaddress.ui.shoplocation.ShopLocationActivity
 import com.tokopedia.manageaddress.ui.shoplocation.ShopLocationFragment
-import com.tokopedia.shop.settings.address.view.ShopSettingAddressAddEditFragment
+import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.ShopSettingAddressAddEditFragment
 import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.ShopSettingAddressFragment
 import dagger.Component
 
