@@ -408,6 +408,14 @@ class ShopEditBasicInfoFragment: Fragment() {
                 is Fail -> {
                     hideLoading()
                     onErrorUpdateShopBasicData(it.throwable)
+
+                    ErrorHandler.getErrorMessage(
+                        context = context,
+                        e = it.throwable,
+                        builder = ErrorHandler.Builder()
+                            .className(this::class.java.simpleName)
+                            .build()
+                    )
                 }
                 else -> {/* no op */}
             }

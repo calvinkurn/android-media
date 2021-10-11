@@ -111,10 +111,10 @@ class ShopEditBasicInfoViewModel @Inject constructor(
                 when (val result = uploaderUseCase(requestParams)) {
                     is UploadResult.Success -> {
                         updateShopBasicData(name, domain, tagLine, description, result.uploadId)
-                        _uploadShopImage.value = Success(result.uploadId)
+                        _uploadShopImage.postValue(Success(result.uploadId))
                     }
                     is UploadResult.Error -> {
-                        _uploadShopImage.value = Fail(Throwable(result.message))
+                        _uploadShopImage.postValue(Fail(Throwable(result.message)))
                     }
                 }
             }
@@ -128,13 +128,13 @@ class ShopEditBasicInfoViewModel @Inject constructor(
             domain: String,
             tagLine: String,
             description: String,
-            logoCode: String? = null
+            imgId: String? = null
     ) {
         val shopName = name.nullIfNotChanged(currentShop?.name)
         val shopDomain = domain.nullIfNotChanged(currentShop?.domain)
 
         val requestParams = UpdateShopBasicDataUseCase.createRequestParam(
-                shopName, shopDomain, tagLine, description, logoCode)
+                shopName, shopDomain, tagLine, description, imgId)
 
         updateShopBasicData(requestParams)
     }
