@@ -141,6 +141,8 @@ open class HomeRevampViewModel @Inject constructor(
         private const val TOP_ADS_HOME_SOURCE = "1"
     }
 
+    var isFirstLoad = true
+
     private var isGopayEligible: Boolean = false
     val beautyFestLiveData: LiveData<Int>
         get() = _beautyFestLiveData

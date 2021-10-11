@@ -318,6 +318,7 @@ public interface ApplinkConst {
     String AFFILIATE_DEFAULT_CREATE_POST = "tokopedia://affiliate/create_post/";
     String AFFILIATE_ONBOARDING = "tokopedia://affiliate/onboarding";
     String AFFILIATE_PRODUCT = "tokopedia://affiliate/product/{product_id}";
+    String AFFILIATE = "tokopedia://affiliate";
 
     String PLAY_DETAIL = "tokopedia://play/{channel_id}";
     String PLAY_BROADCASTER = "tokopedia://play-broadcaster";
@@ -362,6 +363,8 @@ public interface ApplinkConst {
     String CATEGORY_HOST = "category";
     String CATEGORY = "tokopedia://category";
     String TRADEIN = "tokopedia://category/tradein";
+    String AFFILIATE_TOKO = "tokopedia://affiliate";
+    String AFFILIATE_TOKO_HELP = "tokopedia://affiliate/help";
     String QRSCAN = "tokopedia://scanqr";
     String OVOP2PTRANSFERFORM = "tokopedia-android-internal://ovop2ptransfer?phone";
     String OVOP2PTRANSFERFORM_SHORT = "tokopedia-android-internal://ovop2ptransfer";
@@ -500,6 +503,13 @@ public interface ApplinkConst {
         String SEARCH = "tokopedia://now/search";
         String CATEGORY = "tokopedia://now/category";
         String REPURCHASE = "tokopedia://now/repurchase-page";
+    }
+
+    interface TokoMart {
+        String HOME = "tokopedia://tokomart";
+        String SEARCH = "tokopedia://tokomart/search";
+        String CATEGORY = "tokopedia://tokomart/category";
+        String REPURCHASE = "tokopedia://tokomart/repurchase-page";
     }
 
     interface Query {
