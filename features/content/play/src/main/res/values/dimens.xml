@@ -105,6 +105,9 @@
     <dimen name="play_real_time_notif_width">193dp</dimen>
     <dimen name="play_real_time_notif_radius">12dp</dimen>
 
+    <!--Multiple Like-->
+    <dimen name="play_like_bubble_original_size">12dp</dimen>
+
     <!--General Dimension-->
     <dimen name="play_offset_6">6dp</dimen>
     <dimen name="play_offset_10">10dp</dimen>

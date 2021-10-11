@@ -1,7 +1,6 @@
 package com.tokopedia.sellerhome.domain.usecase.old
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhome.domain.mapper.ShopOperationalHourMapper
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoByIdUseCase

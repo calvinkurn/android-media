@@ -45,7 +45,7 @@ class AutoAdsWidgetViewModelCommon @Inject constructor(
                         TopAdsAutoAds.Response::class.java, mapOf(SHOP_ID to shopId))
                 val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build()
 
-                repository.getReseponse(listOf(request), cacheStrategy)
+                repository.response(listOf(request), cacheStrategy)
             }
             data.getSuccessData<TopAdsAutoAds.Response>().autoAds.data.let {
                 autoAdsData.postValue(it)
@@ -61,7 +61,7 @@ class AutoAdsWidgetViewModelCommon @Inject constructor(
                 val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,R.raw.topads_common_query_post_autoads),
                         TopAdsAutoAds.Response::class.java, getParams(param).parameters)
                 val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build()
-                repository.getReseponse(listOf(request), cacheStrategy)
+                repository.response(listOf(request), cacheStrategy)
             }
             data.getSuccessData<TopAdsAutoAds.Response>().autoAds.data.let {
                 autoAdsStatus.postValue(it)
@@ -77,7 +77,7 @@ class AutoAdsWidgetViewModelCommon @Inject constructor(
                 val request =  GraphqlRequest(GraphqlHelper.loadRawString(context.resources,R.raw.topads_common_auto_query_get_nondelivery_reason),
                         NonDeliveryResponse::class.java, mapOf(SHOPID to shopID, ADTYPE to "1"))
                 val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build()
-                repository.getReseponse(listOf(request), cacheStrategy)
+                repository.response(listOf(request), cacheStrategy)
             }
             data.getSuccessData<NonDeliveryResponse>().topAdsGetShopStatus.data.let {
                 adsDeliveryStatus.postValue(it[0])

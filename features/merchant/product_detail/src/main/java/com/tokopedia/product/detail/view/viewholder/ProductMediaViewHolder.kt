@@ -2,12 +2,13 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.databinding.ItemDynamicProductMediaBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import kotlinx.android.synthetic.main.item_dynamic_product_media.view.*
 
 /**
  * Created by Yehezkiel on 04/05/20
@@ -18,12 +19,10 @@ class ProductMediaViewHolder(private val view: View,
         val LAYOUT = R.layout.item_dynamic_product_media
     }
 
-    init {
-        measureScreenHeight()
-    }
+    private val binding = ItemDynamicProductMediaBinding.bind(view).also { measureScreenHeight(it) }
 
     override fun bind(element: ProductMediaDataModel) {
-        with(view) {
+        with(binding) {
             viewMediaPager.shouldRenderViewPager = element.shouldRefreshViewPagger
             viewMediaPager.setup(element.listOfMedia, listener, getComponentTrackData(element))
 
@@ -33,6 +32,9 @@ class ProductMediaViewHolder(private val view: View,
             }
 
             element.shouldRefreshViewPagger = false
+            view.addOnImpressionListener(element.impressHolder) {
+                listener.onImpressComponent(getComponentTrackData(element))
+            }
         }
     }
 
@@ -44,7 +46,7 @@ class ProductMediaViewHolder(private val view: View,
 
         when (payloads[0] as Int) {
             ProductDetailConstant.PAYLOAD_UPDATE_IMAGE -> {
-                view.viewMediaPager.updateImage(element.listOfMedia, listener)
+                binding.viewMediaPager.updateImage(element.listOfMedia, listener)
                 element.shouldRenderImageVariant = false
             }
         }
@@ -54,9 +56,9 @@ class ProductMediaViewHolder(private val view: View,
         listener.getProductVideoCoordinator()?.onPause()
     }
 
-    private fun measureScreenHeight() = with(view) {
+    private fun measureScreenHeight(binding: ItemDynamicProductMediaBinding) {
         val screenWidth = view.resources.displayMetrics.widthPixels
-        viewMediaPager.layoutParams.height = screenWidth
+        binding.viewMediaPager.layoutParams.height = screenWidth
     }
 
     private fun getComponentTrackData(element: ProductMediaDataModel?) = ComponentTrackDataModel(element?.type

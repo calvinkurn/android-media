@@ -1,7 +1,6 @@
 package com.tokopedia.tokopedianow.home.presentation.viewholder
 
 import android.view.View
-import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -10,6 +9,7 @@ import androidx.core.graphics.BlendModeCompat
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
+import com.google.android.material.imageview.ShapeableImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -22,7 +22,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 
 class HomeEducationalInformationWidgetViewHolder(
     itemView: View,
-    private val tokoNowListener: TokoNowView? = null,
+    private val tokoNowView: TokoNowView? = null,
     private val listener: HomeEducationalInformationListener? = null
 ) : AbstractViewHolder<HomeEducationalInformationWidgetUiModel>(itemView) {
 
@@ -40,17 +40,15 @@ class HomeEducationalInformationWidgetViewHolder(
     private var iuStockAvailable: ImageUnify? = null
     private var iuGuaranteedQuality: ImageUnify? = null
     private var laChevron: LottieAnimationView? = null
-    private var cvChevron: CardView? = null
     private var cvEducationalInfo: CardView? = null
-    private var ivChevronDown: ImageView? = null
+    private var sivChevronDown: ShapeableImageView? = null
 
     init {
         iuTwoHours = itemView.findViewById(R.id.iu_two_hours)
         iuStockAvailable = itemView.findViewById(R.id.iu_stock_available)
         iuGuaranteedQuality = itemView.findViewById(R.id.iu_guaranteed_quality)
-        ivChevronDown = itemView.findViewById(R.id.iv_chevron_down)
+        sivChevronDown = itemView.findViewById(R.id.siv_chevron_down)
         laChevron = itemView.findViewById(R.id.la_chevron)
-        cvChevron = itemView.findViewById(R.id.cv_chevron)
         cvEducationalInfo = itemView.findViewById(R.id.cv_educational_info)
     }
 
@@ -92,11 +90,11 @@ class HomeEducationalInformationWidgetViewHolder(
     }
 
     private fun setupBasicButton() {
-        cvChevron?.show()
         laChevron?.gone()
+        sivChevronDown?.show()
         val unifyColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-        ivChevronDown?.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(unifyColor, BlendModeCompat.SRC_ATOP)
-        cvChevron?.setOnClickListener {
+        sivChevronDown?.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(unifyColor, BlendModeCompat.SRC_ATOP)
+        sivChevronDown?.setOnClickListener {
             showBottomSheet()
         }
     }
@@ -104,7 +102,7 @@ class HomeEducationalInformationWidgetViewHolder(
     private fun showBottomSheet() {
         setupBasicButton()
         val bottomSheet = TokoNowHomeEducationalInformationBottomSheet.newInstance()
-        tokoNowListener?.getFragmentManagerPage()?.let { fragmentManager ->
+        tokoNowView?.getFragmentManagerPage()?.let { fragmentManager ->
             bottomSheet.show(fragmentManager)
         }
     }

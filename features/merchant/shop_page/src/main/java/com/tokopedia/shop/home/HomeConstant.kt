@@ -15,6 +15,7 @@ object WidgetType {
     const val CAMPAIGN = "campaign"
     const val PERSONALIZATION = "perso"
     const val SHOWCASE = "etalase"
+    const val PROMO = "promo"
 }
 
 object WidgetName {

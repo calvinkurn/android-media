@@ -5,20 +5,23 @@ import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getDimens
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.databinding.ItemWaitingPaymentOrdersBinding
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.WaitingPaymentOrderProductsAdapter
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.typefactory.WaitingPaymentOrderProductsAdapterTypeFactory
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderUiModel
-import kotlinx.android.synthetic.main.item_waiting_payment_orders.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by yusuf.hendrawan on 2020-09-07.
  */
 
 class WaitingPaymentOrdersViewHolder(
-        itemView: View?
+        itemView: View
 ) : AbstractViewHolder<WaitingPaymentOrderUiModel>(itemView) {
 
     companion object {
@@ -37,21 +40,23 @@ class WaitingPaymentOrdersViewHolder(
 
     private val animationListener = object: Animator.AnimatorListener {
         override fun onAnimationEnd(animation: Animator?) {
-            itemView?.setHasTransientState(false)
+            binding?.root?.setHasTransientState(false)
         }
 
         override fun onAnimationCancel(animation: Animator?) {
-            itemView?.setHasTransientState(false)
+            binding?.root?.setHasTransientState(false)
         }
 
         override fun onAnimationStart(animation: Animator?) {
-            itemView?.setHasTransientState(true)
+            binding?.root?.setHasTransientState(true)
         }
 
         override fun onAnimationRepeat(animation: Animator?) {
-            itemView?.setHasTransientState(true)
+            binding?.root?.setHasTransientState(true)
         }
     }
+
+    private val binding by viewBinding<ItemWaitingPaymentOrdersBinding>()
 
     init {
         animatorSet.addListener(animationListener)
@@ -60,7 +65,7 @@ class WaitingPaymentOrdersViewHolder(
     @Suppress("NAME_SHADOWING")
     override fun bind(element: WaitingPaymentOrderUiModel?) {
         element?.let { element ->
-            with(itemView) {
+            binding?.run {
                 tvValuePaymentDeadline.text = element.paymentDeadline
                 tvValueBuyerNameAndPlace.text = element.buyerNameAndPlace
                 tvToggleCollapseMoreProducts.apply {
@@ -70,7 +75,7 @@ class WaitingPaymentOrdersViewHolder(
                 }
                 icLoadMoreDropDown.apply {
                     iconDropdownAnimator?.end()
-                    rotation = if (element.isExpanded) -180f else 0f
+                    rotation = if (element.isExpanded) -180f else Float.ZERO
                     showWithCondition(element.productUiModels.size > MAX_ORDER_WHEN_COLLAPSED)
                 }
                 rvWaitingPaymentOrderProducts.apply {
@@ -90,18 +95,18 @@ class WaitingPaymentOrdersViewHolder(
     }
 
     private fun getRecyclerViewHeight(isExpanded: Boolean, productUiModelsSize: Int): Int {
-        return itemView.run {
+        return binding?.root?.run {
             val productCount = if (!isExpanded) productUiModelsSize.coerceAtMost(MAX_ORDER_WHEN_COLLAPSED) else productUiModelsSize
             productCount * (getDimens(R.dimen.waiting_order_product_height))
-        }
+        }.orZero()
     }
 
     private fun setLoadUnloadMoreClickListener(element: WaitingPaymentOrderUiModel) {
-        itemView.setOnClickListener {
+        binding?.root?.setOnClickListener {
             animatorSet.end()
             element.isExpanded = !element.isExpanded
             setupRecyclerViewSizeAnimator(
-                    itemView.rvWaitingPaymentOrderProducts.height,
+                    binding?.rvWaitingPaymentOrderProducts?.height.orZero(),
                     getRecyclerViewHeight(element.isExpanded, element.productUiModels.size))
             setupDropdownIconAnimator(element.isExpanded)
             updateToggleCollapseText(element.isExpanded)
@@ -114,19 +119,19 @@ class WaitingPaymentOrdersViewHolder(
         recyclerViewAnimator = ValueAnimator.ofInt(from, to)
         recyclerViewAnimator?.duration = RECYCLER_VIEW_ANIMATION_DURATION
         recyclerViewAnimator?.addUpdateListener { animation ->
-            val layoutParams = itemView.rvWaitingPaymentOrderProducts?.layoutParams
+            val layoutParams = binding?.rvWaitingPaymentOrderProducts?.layoutParams
             layoutParams?.let {
                 layoutParams.height = animation.animatedValue as Int
-                itemView.rvWaitingPaymentOrderProducts?.layoutParams = layoutParams
+                binding?.rvWaitingPaymentOrderProducts?.layoutParams = layoutParams
             }
         }
     }
 
     private fun setupDropdownIconAnimator(isExpanded: Boolean) {
         if (isExpanded) {
-            setupDropdownIconAnimator(0f, -180f)
+            setupDropdownIconAnimator(Float.ZERO, -180f)
         } else {
-            setupDropdownIconAnimator(-180f, 0f)
+            setupDropdownIconAnimator(-180f, Float.ZERO)
         }
     }
 
@@ -134,15 +139,17 @@ class WaitingPaymentOrdersViewHolder(
         iconDropdownAnimator = ValueAnimator.ofFloat(start, end)
         iconDropdownAnimator?.duration = RECYCLER_VIEW_ANIMATION_DURATION
         iconDropdownAnimator?.addUpdateListener { animation ->
-            itemView.icLoadMoreDropDown?.rotation = animation.animatedValue as Float
+            binding?.icLoadMoreDropDown?.rotation = animation.animatedValue as Float
         }
     }
 
     private fun updateToggleCollapseText(expanded: Boolean) {
-        itemView.tvToggleCollapseMoreProducts.text = if (expanded) {
-            itemView.context.getString(R.string.waiting_payment_orders_less_product)
-        } else {
-            itemView.context.getString(R.string.waiting_payment_orders_more_products)
+        binding?.run {
+            tvToggleCollapseMoreProducts.text = if (expanded) {
+                root.context.getString(R.string.waiting_payment_orders_less_product)
+            } else {
+                root.context.getString(R.string.waiting_payment_orders_more_products)
+            }
         }
     }
 }

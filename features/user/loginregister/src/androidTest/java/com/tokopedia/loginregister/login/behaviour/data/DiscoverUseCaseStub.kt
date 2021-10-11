@@ -1,18 +1,18 @@
 package com.tokopedia.loginregister.login.behaviour.data
 
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
-import com.tokopedia.loginregister.login.data.CloudDiscoverDataSource
-import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
-import com.tokopedia.usecase.RequestParams
-import rx.Subscriber
+import kotlinx.coroutines.CoroutineDispatcher
 
 class DiscoverUseCaseStub(
-        cloudDiscoverDataSource: CloudDiscoverDataSource
-): DiscoverUseCase(cloudDiscoverDataSource) {
+    graphqlRepository: GraphqlRepository,
+    dispatcher: CoroutineDispatcher
+): DiscoverUseCase(graphqlRepository, dispatcher) {
 
-    var response = DiscoverDataModel(arrayListOf(), "")
+    var response = DiscoverPojo()
 
-    override fun execute(requestParams: RequestParams?, subscriber: Subscriber<DiscoverDataModel>?) {
-        subscriber?.onNext(response)
+    override suspend fun execute(params: String): DiscoverPojo {
+        return response
     }
 }

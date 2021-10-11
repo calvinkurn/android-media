@@ -3,11 +3,12 @@ package com.tokopedia.tokopedianow.common.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.TextView
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.user.session.UserSession
 
 class NoAddressEmptyStateView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         BaseCustomView(context, attrs, defStyleAttr) {
@@ -17,8 +18,8 @@ class NoAddressEmptyStateView @JvmOverloads constructor(context: Context, attrs:
 
     init {
         LayoutInflater.from(context).inflate(R.layout.layout_tokopedianow_empty_state_no_address, this, true)
-        changeAddressButton = findViewById<UnifyButton>(R.id.tokonowEmptyStateButtonChangeAddress)
-        returnButton = findViewById<UnifyButton>(R.id.tokonowEmptyStateButtonReturn)
+        changeAddressButton = findViewById(R.id.tokonowEmptyStateButtonChangeAddress)
+        returnButton = findViewById(R.id.tokonowEmptyStateButtonReturn)
         initRemoteView()
     }
 
@@ -26,8 +27,27 @@ class NoAddressEmptyStateView @JvmOverloads constructor(context: Context, attrs:
         set(value) {
             field = value
             field?.let { listener ->
-                changeAddressButton?.setOnClickListener { listener.onChangeAddressClicked() }
-                returnButton?.setOnClickListener { listener.onReturnClick() }
+                val userSession = UserSession(context)
+                changeAddressButton?.setOnClickListener {
+                    listener.onChangeAddressClicked()
+
+                    if (listener.onGetNoAddressEmptyStateEventCategoryTracker().isNotEmpty()) {
+                        TokoNowCommonAnalytics.onClickChangeAddressOnOoc(
+                            userId = userSession.userId,
+                            category = listener.onGetNoAddressEmptyStateEventCategoryTracker()
+                        )
+                    }
+                }
+                returnButton?.setOnClickListener {
+                    listener.onReturnClick()
+
+                    if (listener.onGetNoAddressEmptyStateEventCategoryTracker().isNotEmpty()) {
+                        TokoNowCommonAnalytics.onClickShopOnTokopediaOoc(
+                            userId = userSession.userId,
+                            category = listener.onGetNoAddressEmptyStateEventCategoryTracker()
+                        )
+                    }
+                }
             }
         }
 
@@ -36,17 +56,13 @@ class NoAddressEmptyStateView @JvmOverloads constructor(context: Context, attrs:
         imgNoAddress.setImageUrl(IMG_NO_ADDRESS)
     }
 
-    fun setDescriptionCityName(city: String) {
-        val tvDescription = findViewById<TextView?>(R.id.tokonowEmptyStateDesc2)
-        tvDescription?.text = context.getString(R.string.tokopedianow_common_empty_state_desc_2, city)
-    }
-
     interface ActionListener {
         fun onChangeAddressClicked()
         fun onReturnClick()
+        fun onGetNoAddressEmptyStateEventCategoryTracker(): String
     }
 
     companion object {
-        private const val IMG_NO_ADDRESS = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_empty_state_no_address_560.png"
+        private const val IMG_NO_ADDRESS = "https://images.tokopedia.net/img/tokonow/tokonow_ic_empty_state_no_address_small.png"
     }
 }

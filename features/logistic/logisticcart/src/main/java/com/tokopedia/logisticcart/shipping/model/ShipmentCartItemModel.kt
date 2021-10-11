@@ -2,7 +2,7 @@ package com.tokopedia.logisticcart.shipping.model
 
 import android.os.Parcelable
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.util.*
 
 @Parcelize

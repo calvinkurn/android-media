@@ -63,7 +63,6 @@ import com.tokopedia.sellerhome.newrelic.SellerHomeNewRelic
 import com.tokopedia.sellerhome.view.SellerHomeDiffUtilCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
-import com.tokopedia.sellerhome.view.model.TickerUiModel
 import com.tokopedia.sellerhome.view.viewhelper.SellerHomeLayoutManager
 import com.tokopedia.sellerhome.view.viewhelper.ShopShareHelper
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
@@ -124,6 +123,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val DEFAULT_HEIGHT_DP = 720f
 
         private const val RV_TOP_POSITION = 0
+        private const val TICKER_FIRST_INDEX = 0
         private const val ADDITIONAL_POSITION = 1
     }
 
@@ -192,9 +192,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             } else null
         }
     }
-    private val tickerImpressHolder = ImpressHolder()
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var shopShareData: ShopShareDataUiModel? = null
+    private var shopImageFilePath: String = ""
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
@@ -273,6 +273,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun onDestroy() {
         super.onDestroy()
         pmShopScoreInterruptHelper.destroy()
+        shopShareHelper.removeTemporaryShopImage(shopImageFilePath)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -500,6 +501,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         }
                     }
                     BaseMilestoneMissionUiModel.UrlType.SHARE -> {
+                        shopShareHelper.removeTemporaryShopImage(shopImageFilePath)
                         setupShopSharing()
                     }
                 }
@@ -885,34 +887,31 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         sellerHomeViewModel.getMilestoneWidgetData(dataKeys)
     }
 
-    private var shopImageFilePath: String = ""
-
     private fun setupShopSharing() {
-        if (shopShareData != null) {
-            ImageHandler.loadImageWithTarget(
-                context,
-                shopShareData?.shopSnippetURL.orEmpty(),
-                object : CustomTarget<Bitmap>() {
-                    override fun onResourceReady(
-                        resource: Bitmap,
-                        transition: Transition<in Bitmap>?
-                    ) {
-                        val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
-                            resource,
-                            Bitmap.CompressFormat.PNG
-                        )
-                        if (savedFile != null) {
-                            shopImageFilePath = savedFile.absolutePath
-                            initShopShareBottomSheet()
-                        }
-                    }
-
-                    override fun onLoadCleared(placeholder: Drawable?) {
-                        // no op
+        ImageHandler.loadImageWithTarget(
+            context,
+            shopShareData?.shopSnippetURL.orEmpty(),
+            object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(
+                    resource: Bitmap,
+                    transition: Transition<in Bitmap>?
+                ) {
+                    val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
+                        resource,
+                        Bitmap.CompressFormat.PNG
+                    )
+                    if (savedFile != null) {
+                        shopImageFilePath = savedFile.absolutePath
+                        initShopShareBottomSheet()
                     }
                 }
-            )
-        } else {
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    // no op
+                }
+            }
+        )
+        if (shopShareData == null) {
             val milestoneWidget = adapter.data.firstOrNull { it is MilestoneWidgetUiModel }
             milestoneWidget?.let {
                 handleShopShareMilestoneWidget(it)
@@ -922,39 +921,40 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun initShopShareBottomSheet() {
-        if (universalShareBottomSheet == null) {
-            val shareListener = object : ShareBottomsheetListener {
+        val shareListener = object : ShareBottomsheetListener {
 
-                override fun onShareOptionClicked(shareModel: ShareModel) {
-                    val shareDataModel = ShopShareHelper.DataModel(
-                        shareModel, shopShareData?.shopUrl.orEmpty(), shopImageFilePath
-                    )
-                    activity?.let {
-                        shopShareHelper.onShareOptionClicked(
-                            it,
-                            shareDataModel,
-                            callback = { shareModel, _ ->
-                                setOnShopShareOptionClicked(shareModel)
-                            }
-                        )
-                    }
-                }
-
-                override fun onCloseOptionClicked() {
-                    //no op
-                }
-            }
-
-            universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-                init(shareListener)
-                setMetaData(
-                    userSession.shopName,
-                    userSession.shopAvatar,
-                    ""
+            override fun onShareOptionClicked(shareModel: ShareModel) {
+                val shareDataModel = ShopShareHelper.DataModel(
+                    shareModel = shareModel,
+                    shopImageFilePath = shopImageFilePath,
+                    shopCoreUrl = shopShareData?.shopUrl.orEmpty()
                 )
-                setOgImageUrl(userSession.shopAvatar)
-                imageSaved(shopImageFilePath)
+                activity?.let {
+                    shopShareHelper.onShareOptionClicked(
+                        it,
+                        view,
+                        shareDataModel,
+                        callback = { shareModel, _ ->
+                            setOnShopShareOptionClicked(shareModel)
+                        }
+                    )
+                }
             }
+
+            override fun onCloseOptionClicked() {
+                //no op
+            }
+        }
+
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(shareListener)
+            setMetaData(
+                userSession.shopName,
+                userSession.shopAvatar,
+                ""
+            )
+            setOgImageUrl(shopShareData?.shopSnippetURL.orEmpty())
+            imageSaved(shopImageFilePath)
         }
         universalShareBottomSheet?.show(childFragmentManager, this)
     }
@@ -1144,6 +1144,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
 
         setProgressBarVisibility(false)
+        showEmptyState()
 
         if (isWidgetHasError) {
             showErrorToaster()
@@ -1243,8 +1244,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     if (isVisible) return@post
                     emptyState?.setImageUrl(SellerHomeUrl.IMG_LAYOUT_NO_PERMISSION)
                     setTitle(getString(R.string.sah_empty_layout_message))
-                    setDescription("")
-                    setPrimaryCTAText("")
+                    setDescription(SellerHomeConst.EMPTY_STRING)
+                    setPrimaryCTAText(SellerHomeConst.EMPTY_STRING)
                     visible()
                 }
                 view?.sahGlobalError?.gone()
@@ -1584,8 +1585,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         view?.relTicker?.visibility = if (tickers.isEmpty()) View.GONE else View.VISIBLE
         view?.tickerView?.run {
+            val tickerImpressHolders = mutableListOf<ImpressHolder>()
             val tickersData = tickers.map {
-                TickerData(it.title, it.message, getTickerType(it.color), true, it)
+                TickerData(it.title, it.message, getTickerType(it.color), true, it).also {
+                    tickerImpressHolders.add(ImpressHolder())
+                }
             }
 
             val adapter = TickerPagerAdapter(context, tickersData)
@@ -1593,26 +1597,48 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                     if (!RouteManager.route(context, linkUrl.toString())) {
-                        if (itemData is TickerUiModel) {
+                        if (itemData is TickerItemUiModel) {
                             RouteManager.route(context, itemData.redirectUrl)
                         }
                     }
-                    SellerHomeTracking.sendHomeTickerCtaClickEvent(getShopStatusStr())
+                    (itemData as? TickerItemUiModel)?.let {
+                        SellerHomeTracking.sendHomeTickerCtaClickEvent(
+                            it.id,
+                            it.type
+                        )
+                    }
                 }
             })
-            addOnImpressionListener(tickerImpressHolder) {
-                SellerHomeTracking.sendHomeTickerImpressionEvent(getShopStatusStr())
+
+            // Add impression listener on first page of ticker
+            addSellerHomeImpressionListener(
+                tickerImpressHolders.firstOrNull(),
+                tickers.firstOrNull()
+            )
+
+            // Add impression listener if ticker view pager swiped to another page
+            onTickerPageChangeListener = { pageIndex ->
+                if (pageIndex > TICKER_FIRST_INDEX) {
+                    addSellerHomeImpressionListener(
+                        tickerImpressHolders.getOrNull(pageIndex),
+                        tickers.getOrNull(pageIndex)
+                    )
+                }
             }
         }
     }
 
-    private fun getShopStatusStr(): String {
-        val isOfficialStore = userSession.isShopOfficialStore
-        val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
-        return when {
-            isOfficialStore -> "OS"
-            isPowerMerchant -> "PM"
-            else -> "RM"
+    private fun Ticker.addSellerHomeImpressionListener(impressHolder: ImpressHolder?,
+                                                       ticker: TickerItemUiModel?) {
+        impressHolder?.let { holder ->
+            ticker?.let { ticker ->
+                addOnImpressionListener(holder) {
+                    SellerHomeTracking.sendHomeTickerImpressionEvent(
+                        ticker.id,
+                        ticker.type
+                    )
+                }
+            }
         }
     }
 
@@ -1661,8 +1687,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         adapter.data.clear()
         adapter.data.addAll(newWidgets)
         diffUtilResult.dispatchUpdatesTo(adapter)
-
-        showEmptyState()
     }
 
     private fun checkLoadingWidgets() {

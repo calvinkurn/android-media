@@ -104,9 +104,8 @@ class PlaySearchSuggestionsFragment @Inject constructor(
                     searchSuggestionsAdapter.setItemsAndAnimateChanges(result.data)
                 }
                 is NetworkResult.Fail -> {
-                    etalaseSetupCoordinator.showToaster(
-                            message = result.error.localizedMessage,
-                            type = Toaster.TYPE_ERROR,
+                    etalaseSetupCoordinator.showErrorToaster(
+                            err = result.error,
                             duration = Toaster.LENGTH_LONG,
                             actionLabel = getString(R.string.play_broadcast_try_again),
                             actionListener = View.OnClickListener {

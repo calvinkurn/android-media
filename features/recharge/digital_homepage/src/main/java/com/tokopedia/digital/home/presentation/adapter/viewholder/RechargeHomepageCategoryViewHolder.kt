@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeCarousellBinding
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeCategoryBinding
 import com.tokopedia.digital.home.model.RechargeHomepageCategoryModel
 import com.tokopedia.digital.home.presentation.adapter.RechargeItemCategoryAdapter
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
@@ -20,21 +21,23 @@ class RechargeHomepageCategoryViewHolder(itemView: View, val listener: RechargeH
         AbstractViewHolder<RechargeHomepageCategoryModel>(itemView) {
 
     override fun bind(element: RechargeHomepageCategoryModel) {
-        val bind = ViewRechargeHomeCarousellBinding.bind(itemView)
+
+        val bind = ViewRechargeHomeCategoryBinding.bind(itemView)
         val section = element.section
         with(bind) {
             if (section.items.isNotEmpty()) {
-                viewRechargeHomeCarousellShimmering.root.hide()
+
+                viewRechargeHomeCategoryShimmering.hide()
 
                 val layoutManager = GridLayoutManager(itemView.context, CATEGORY_SPAN_COUNT)
-                rvRechargeHomeCarousell.layoutManager = layoutManager
-                rvRechargeHomeCarousell.adapter = RechargeItemCategoryAdapter(section.items, listener)
-                tvRechargeHomeCarousellTitle.text = section.title
+                rvRechargeHomeCategory.layoutManager = layoutManager
+                rvRechargeHomeCategory.adapter = RechargeItemCategoryAdapter(section.items, listener)
+                tvRechargeHomeCategoryTitle.text = section.title
                 root.addOnImpressionListener(section) {
                     listener.onRechargeSectionItemImpression(section)
                 }
             } else {
-                viewRechargeHomeCarousellShimmering.root.show()
+                viewRechargeHomeCategoryShimmering.show()
                 listener.loadRechargeSectionData(element.visitableId())
             }
         }
