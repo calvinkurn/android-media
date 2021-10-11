@@ -6,6 +6,7 @@ package com.tokopedia.home.widget;
 
 import android.animation.Animator;
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -166,30 +167,34 @@ public class FloatingTextButton extends FrameLayout {
     }
 
     private void initAttributes(AttributeSet attrs) {
-        TypedArray styleable = getContext().obtainStyledAttributes(
-                attrs,
-                R.styleable.FloatingTextButton,
-                0,
-                0
-        );
+        try {
+            TypedArray styleable = getContext().obtainStyledAttributes(
+                    attrs,
+                    R.styleable.FloatingTextButton,
+                    0,
+                    0
+            );
 
-        title = styleable.getString(R.styleable.FloatingTextButton_floating_title);
-        titleColor = styleable.getColor(R.styleable.FloatingTextButton_floating_title_color, androidx.core.content.ContextCompat.getColor(getContext(),com.tokopedia.unifyprinciples.R.color.Unify_N700));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            leftIcon = styleable.getDrawable(R.styleable.FloatingTextButton_floating_left_icon);
-            rightIcon = styleable.getDrawable(R.styleable.FloatingTextButton_floating_right_icon);
-        } else {
-            final int drawableLeftId = styleable.getResourceId(R.styleable.FloatingTextButton_floating_left_icon, -1);
-            final int drawableRightId = styleable.getResourceId(R.styleable.FloatingTextButton_floating_right_icon, -1);
-            if (drawableLeftId != -1)
-                leftIcon = AppCompatResources.getDrawable(getContext(), drawableLeftId);
-            if (drawableRightId != -1)
-                rightIcon = AppCompatResources.getDrawable(getContext(), drawableRightId);
+            title = styleable.getString(R.styleable.FloatingTextButton_floating_title);
+            titleColor = styleable.getColor(R.styleable.FloatingTextButton_floating_title_color, androidx.core.content.ContextCompat.getColor(getContext(),com.tokopedia.unifyprinciples.R.color.Unify_N700));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                leftIcon = styleable.getDrawable(R.styleable.FloatingTextButton_floating_left_icon);
+                rightIcon = styleable.getDrawable(R.styleable.FloatingTextButton_floating_right_icon);
+            } else {
+                final int drawableLeftId = styleable.getResourceId(R.styleable.FloatingTextButton_floating_left_icon, -1);
+                final int drawableRightId = styleable.getResourceId(R.styleable.FloatingTextButton_floating_right_icon, -1);
+                if (drawableLeftId != -1)
+                    leftIcon = AppCompatResources.getDrawable(getContext(), drawableLeftId);
+                if (drawableRightId != -1)
+                    rightIcon = AppCompatResources.getDrawable(getContext(), drawableRightId);
+            }
+            background = styleable.getColor(R.styleable.FloatingTextButton_floating_background_color, androidx.core.content.ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0));
+            titleAllCaps = styleable.getBoolean(R.styleable.FloatingTextButton_floating_title_allcaps, false);
+            titleView.setAllCaps(titleAllCaps);
+            styleable.recycle();
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
         }
-        background = styleable.getColor(R.styleable.FloatingTextButton_floating_background_color, androidx.core.content.ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0));
-        titleAllCaps = styleable.getBoolean(R.styleable.FloatingTextButton_floating_title_allcaps, false);
-        titleView.setAllCaps(titleAllCaps);
-        styleable.recycle();
     }
 
     private void initView() {
