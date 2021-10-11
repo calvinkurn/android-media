@@ -64,7 +64,9 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
         const val ERROR_UPLOAD = "error upload image(s)"
         const val ERROR_SUBMIT = "error submit feedback form"
         const val ERROR_NETWORK = "error, please check cause"
-        private const val EXTRA_SHOW_SETTINGS = "show_settings"
+        private const val EXTRA_SCREEN_SHOOT_TRIGGER = "extra_screen_shoot_trigger"
+        private const val EXTRA_TOASTER_MESSAGE = "extra_toaster_message"
+        private const val EXTRA_SHOW_SETTINGS = "extra_show_settings"
 
         fun createInstance(uri: Uri?, shouldShowSettings: Boolean): SellerFeedbackFragment {
             return SellerFeedbackFragment().apply {
@@ -363,7 +365,7 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
 
     private val observerSubmitResult = Observer<SubmitResult> {
         when (it) {
-            is SubmitResult.Success -> showSuccessToasterMessage()
+            is SubmitResult.Success -> setOnSuccessFeedbackSaved()
             is SubmitResult.UploadFail -> {
                 logToCrashlytics(it.cause, ERROR_UPLOAD)
                 showErrorToaster(getString(R.string.feedback_form_toaster_fail_upload))
@@ -383,7 +385,7 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun showSuccessToasterMessage() {
+    private fun setOnSuccessFeedbackSaved() {
         val uriImage = arguments?.getParcelable<Uri>(EXTRA_URI_IMAGE)
         val isFromScreenShoot = uriImage != null
         if (isFromScreenShoot) {
@@ -393,11 +395,15 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
             view?.let {
                 val isScreenShootTriggerEnabled =
                     preferenceManager?.isScreenShootTriggerEnabled().orFalse()
-                SuccessToasterHelper.showToaster(
+                val toasterMessage = SuccessToasterHelper.getToastMessage(
                     it.context,
-                    it.rootView,
                     isScreenShootTriggerEnabled
                 )
+                activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                    putExtra(EXTRA_SCREEN_SHOOT_TRIGGER, isScreenShootTriggerEnabled)
+                    putExtra(EXTRA_TOASTER_MESSAGE, toasterMessage)
+                })
+                activity?.finish()
             }
         }
     }

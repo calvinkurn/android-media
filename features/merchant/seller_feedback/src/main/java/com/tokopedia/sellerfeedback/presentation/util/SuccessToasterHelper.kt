@@ -41,16 +41,7 @@ object SuccessToasterHelper {
         }, TOASTER_DELAY)
     }
 
-    private fun openFeedbackForm(context: Context) {
-        val intent = RouteManager.getIntent(
-            context,
-            ApplinkConstInternalSellerapp.SELLER_FEEDBACK
-        )
-        intent.putExtra(SHOW_SETTING_BOTTOM_SHEET, true)
-        context.startActivity(intent)
-    }
-
-    private fun getToastMessage(
+    fun getToastMessage(
         context: Context,
         isScreenShootTriggerEnabled: Boolean
     ): String {
@@ -59,5 +50,14 @@ object SuccessToasterHelper {
         } else {
             context.getString(R.string.feedback_from_screenshoot_tigger_disabled_success_message)
         }
+    }
+
+    private fun openFeedbackForm(context: Context) {
+        val intent = RouteManager.getIntent(
+            context,
+            ApplinkConstInternalSellerapp.SELLER_FEEDBACK
+        )
+        intent.putExtra(SHOW_SETTING_BOTTOM_SHEET, true)
+        context.startActivity(intent)
     }
 }
