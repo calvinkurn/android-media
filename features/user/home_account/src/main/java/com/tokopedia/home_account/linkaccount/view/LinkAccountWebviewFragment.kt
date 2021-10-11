@@ -46,12 +46,17 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
 
     override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
         when {
-            url.startsWith(BACK_BTN_APPLINK, ignoreCase = true) -> {
-                // Finish activity from webview
-                if(url.contains(KEY_STATUS) && checkForStatusQuery(url)) {
-                    return true
+            url.startsWith(TKPD_SCHEME, ignoreCase = true) || url.startsWith(TKPD_INTERNAL_SCHEME, ignoreCase = true) -> {
+                if(url.startsWith(BACK_BTN_APPLINK)) {
+                    // Finish activity from webview
+                    if (url.contains(KEY_STATUS) && checkForStatusQuery(url)) {
+                        return true
+                    }
+                    return super.shouldOverrideUrlLoading(webview, BACK_BTN_APPLINK)
+                } else {
+                    activity?.finish()
+                    return super.shouldOverrideUrlLoading(webview, url)
                 }
-                return super.shouldOverrideUrlLoading(webview, BACK_BTN_APPLINK)
             }
             url.contains(GOJEK_LINK, ignoreCase = true) -> {
                 // Check for gojek.link url
@@ -60,6 +65,7 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
                 activity?.finish()
                 return true
             }
+
             else -> {
                 // Default is hidden
                 hideToolbar()
@@ -131,6 +137,9 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
         const val KEY_URL = "url"
         const val GOJEK_LINK = "https://gojek.link"
         const val BACK_BTN_APPLINK = "tokopedia://back"
+        const val TKPD_SCHEME = "tokopedia://"
+        const val TKPD_INTERNAL_SCHEME = "tokopedia-android-internal://"
+
         const val KEY_STATUS = "status"
 
         fun newInstance(url: String): BaseSessionWebViewFragment {
