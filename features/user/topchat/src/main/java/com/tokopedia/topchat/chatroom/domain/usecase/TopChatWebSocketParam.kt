@@ -10,9 +10,9 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
 import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.WebsocketEvent
+import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.data.parentreply.ParentReplyWsRequest
-import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel

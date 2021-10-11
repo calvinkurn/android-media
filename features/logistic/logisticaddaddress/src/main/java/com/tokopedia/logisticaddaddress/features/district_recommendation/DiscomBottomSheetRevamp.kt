@@ -28,7 +28,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class DiscomBottomSheetRevamp: BottomSheetUnify(),
@@ -41,7 +41,7 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private var viewBinding by autoCleared<BottomsheetDistcrictReccomendationRevampBinding>()
+    private var viewBinding by autoClearedNullable<BottomsheetDistcrictReccomendationRevampBinding>()
 
     private val zipCodeChipsAdapter by lazy { ZipCodeChipsAdapter(context, this) }
     private val popularCityAdapter by lazy { PopularCityAdapter(context, this) }
@@ -104,7 +104,7 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
     private fun initLayout() {
         viewBinding = BottomsheetDistcrictReccomendationRevampBinding.inflate(LayoutInflater.from(context), null, false)
         setupDiscomBottomsheet(viewBinding)
-        setChild(viewBinding.root)
+        setChild(viewBinding?.root)
         setTitle(getString(R.string.kota_kecamatan))
         setCloseClickListener {
             if (isKodePosShown) {
@@ -122,23 +122,23 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
         }
     }
 
-    private fun setupDiscomBottomsheet(viewBinding: BottomsheetDistcrictReccomendationRevampBinding) {
+    private fun setupDiscomBottomsheet(viewBinding: BottomsheetDistcrictReccomendationRevampBinding?) {
         val cityList = resources.getStringArray(R.array.cityList)
-        val chipsLayoutManager = ChipsLayoutManager.newBuilder(viewBinding.root.context)
+        val chipsLayoutManager = ChipsLayoutManager.newBuilder(viewBinding?.root?.context)
             .setOrientation(ChipsLayoutManager.HORIZONTAL)
             .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
             .build()
 
-        chipsLayoutManagerZipCode = ChipsLayoutManager.newBuilder(viewBinding.root.context)
+        chipsLayoutManagerZipCode = ChipsLayoutManager.newBuilder(viewBinding?.root?.context)
             .setOrientation(ChipsLayoutManager.HORIZONTAL)
             .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
             .build()
 
-        ViewCompat.setLayoutDirection(viewBinding.rvChips, ViewCompat.LAYOUT_DIRECTION_LTR)
+        viewBinding?.rvChips?.let { ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR) }
 
         popularCityAdapter.cityList = cityList.toMutableList()
 
-        viewBinding.run {
+        viewBinding?.run {
             rvListDistrict.visibility = View.GONE
             llZipCode.visibility = View.GONE
             btnChooseZipcode.visibility = View.GONE
@@ -158,7 +158,7 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
     }
 
     private fun setViewListener() {
-        viewBinding.searchPageInput.searchBarTextField.run {
+        viewBinding?.searchPageInput?.searchBarTextField?.run {
 
             setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) AddNewAddressRevampAnalytics.onClickFieldCariKotaKecamatanNegative(userSession.userId)
@@ -178,13 +178,13 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (viewBinding.searchPageInput.searchBarTextField.text.toString().isEmpty()) {
-                        viewBinding.tvDescInputDistrict.visibility = View.GONE
-                        viewBinding.llPopularCity.visibility = View.VISIBLE
-                        viewBinding.rvListDistrict.visibility = View.GONE
+                    if (viewBinding?.searchPageInput?.searchBarTextField?.text.toString().isEmpty()) {
+                        viewBinding?.tvDescInputDistrict?.visibility = View.GONE
+                        viewBinding?.llPopularCity?.visibility = View.VISIBLE
+                        viewBinding?.rvListDistrict?.visibility = View.GONE
                         popularCityAdapter.notifyDataSetChanged()
                     } else {
-                        input = viewBinding.searchPageInput.searchBarTextField.text.toString()
+                        input = viewBinding?.searchPageInput?.searchBarTextField?.text.toString()
                         mIsInitialLoading = true
                         handler.postDelayed({
                             presenter.loadData(input, page)
@@ -199,10 +199,10 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
             })
         }
 
-        viewBinding.rvListDistrict.addOnScrollListener(mEndlessListener)
+        viewBinding?.rvListDistrict?.addOnScrollListener(mEndlessListener)
 
-        viewBinding.btnChooseZipcode.setOnClickListener {
-            if (viewBinding.etKodepos.textFieldInput.text.toString().length < MIN_TEXT_LENGTH) {
+        viewBinding?.btnChooseZipcode?.setOnClickListener {
+            if (viewBinding?.etKodepos?.textFieldInput?.text.toString().length < MIN_TEXT_LENGTH) {
                 AddNewAddressRevampAnalytics.onViewErrorToasterPilih(userSession.userId)
                 AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, NOT_SUCCESS)
                 Toaster.build(it, getString(R.string.postal_code_field_error), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
@@ -228,33 +228,33 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
     override fun onZipCodeClicked(zipCode: String) {
         AddNewAddressRevampAnalytics.onClickChipsKodePosNegative(userSession.userId)
         this.postalCode = zipCode
-        viewBinding.rvKodeposChips.visibility = View.GONE
-        viewBinding.etKodepos.textFieldInput.run {
+        viewBinding?.rvKodeposChips?.visibility = View.GONE
+        viewBinding?.etKodepos?.textFieldInput?.run {
             setText(zipCode)
         }
     }
 
     override fun onCityChipClicked(city: String) {
         AddNewAddressRevampAnalytics.onClickChipsKotaKecamatanNegative(userSession.userId)
-        viewBinding.searchPageInput.run {
+        viewBinding?.searchPageInput?.run {
             searchBarTextField.setText(city)
             searchBarTextField.setSelection(city.length)
         }
     }
 
     override fun renderData(list: List<Address>, hasNextPage: Boolean) {
-        viewBinding.run {
+        viewBinding?.run {
             llPopularCity.visibility = View.GONE
             rvListDistrict.visibility = View.VISIBLE
             tvDescInputDistrict.visibility = View.VISIBLE
             tvDescInputDistrict.setText(R.string.hint_advice_search_address)
 
             if (mIsInitialLoading) {
-                listDistrictAdapter.setData(list, viewBinding.searchPageInput.searchBarTextField.text.toString())
+                listDistrictAdapter.setData(list, viewBinding?.searchPageInput?.searchBarTextField?.text.toString())
                 mEndlessListener.resetState()
                 mIsInitialLoading = false
             } else {
-                listDistrictAdapter.appendData(list, viewBinding.searchPageInput.searchBarTextField.text.toString())
+                listDistrictAdapter.appendData(list, viewBinding?.searchPageInput?.searchBarTextField?.text.toString())
                 mEndlessListener.updateStateAfterGetData()
             }
             mEndlessListener.setHasNextPage(hasNextPage)
@@ -263,7 +263,7 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
 
     override fun showGetListError(throwable: Throwable) {
         val msg = ErrorHandler.getErrorMessage(context, throwable)
-        Toaster.build(viewBinding.root, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+        viewBinding?.root?.let { Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
     }
 
     override fun setLoadingState(active: Boolean) {
@@ -271,7 +271,7 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
     }
 
     override fun showEmpty() {
-        viewBinding.run {
+        viewBinding?.run {
             tvDescInputDistrict.visibility = View.VISIBLE
             tvDescInputDistrict.setText(R.string.hint_search_address_no_result)
             llPopularCity.visibility = View.VISIBLE
@@ -301,7 +301,7 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
     }
 
     private fun setupRvZipCodeChips() {
-        viewBinding.rvKodeposChips.apply {
+        viewBinding?.rvKodeposChips?.apply {
             visibility = View.GONE
             staticDimen8dp?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
             layoutManager = chipsLayoutManagerZipCode
@@ -311,7 +311,7 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
 
     fun getDistrict(data: Address) {
         districtAddressData = data
-        viewBinding.run {
+        viewBinding?.run {
             llZipCode.visibility = View.VISIBLE
             btnChooseZipcode.visibility = View.VISIBLE
             searchPageInput.visibility = View.GONE
@@ -338,22 +338,22 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
     }
 
     private fun openSoftKeyboard() {
-        viewBinding.etKodepos.textFieldInput.let {
-            (it.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(it, InputMethodManager.SHOW_IMPLICIT)
+        viewBinding?.etKodepos?.textFieldInput.let {
+            (it?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(it, InputMethodManager.SHOW_IMPLICIT)
         }
     }
 
     private fun showZipCodes(data: Address) {
-        ViewCompat.setLayoutDirection(viewBinding.rvKodeposChips, ViewCompat.LAYOUT_DIRECTION_LTR)
+        viewBinding?.rvKodeposChips?.let { ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR) }
         data.zipCodes?.let {
-            viewBinding.rvKodeposChips.visibility = View.VISIBLE
+            viewBinding?.rvKodeposChips?.visibility = View.VISIBLE
             zipCodeChipsAdapter.zipCodes = it.toMutableList()
             zipCodeChipsAdapter.notifyDataSetChanged()
         }
     }
 
     private fun hideZipCode() {
-        viewBinding.run {
+        viewBinding?.run {
             llZipCode.visibility = View.GONE
             btnChooseZipcode.visibility = View.GONE
             searchPageInput.visibility = View.VISIBLE

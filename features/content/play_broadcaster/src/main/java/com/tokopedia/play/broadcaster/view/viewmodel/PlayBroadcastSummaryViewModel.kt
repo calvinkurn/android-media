@@ -70,15 +70,17 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     fun saveVideo() {
         _observableSaveVideo.value = NetworkResult.Loading
         scope.launchCatchError(block = {
-            updateChannelUseCase.apply {
-                setQueryParams(
+            withContext(dispatcher.io) {
+                updateChannelUseCase.apply {
+                    setQueryParams(
                         UpdateChannelUseCase.createUpdateStatusRequest(
-                                channelId = channelId,
-                                authorId = userSession.shopId,
-                                status = PlayChannelStatusType.Transcoding
+                            channelId = channelId,
+                            authorId = userSession.shopId,
+                            status = PlayChannelStatusType.Transcoding
                         )
-                )
-            }.executeOnBackground()
+                    )
+                }.executeOnBackground()
+            }
             _observableSaveVideo.value = NetworkResult.Success(true)
         }) {
             _observableSaveVideo.value = NetworkResult.Fail(it) { saveVideo() }
