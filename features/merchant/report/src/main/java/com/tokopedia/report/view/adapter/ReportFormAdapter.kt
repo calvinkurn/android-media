@@ -23,12 +23,8 @@ import com.tokopedia.report.R
 import com.tokopedia.report.data.constant.GeneralConstant
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.data.util.MerchantReportTracking
+import com.tokopedia.report.databinding.*
 import com.tokopedia.report.view.util.SpaceItemDecoration
-import kotlinx.android.synthetic.main.item_header_form.view.*
-import kotlinx.android.synthetic.main.item_link_form.view.*
-import kotlinx.android.synthetic.main.item_photo_form.view.*
-import kotlinx.android.synthetic.main.item_submit_form.view.*
-import kotlinx.android.synthetic.main.item_textarea_form.view.*
 import java.util.*
 
 @Suppress("UNCHECKED_CAST")
@@ -111,8 +107,10 @@ class ReportFormAdapter(private val item: ProductReportReason,
 
     inner class HeaderViewHolder(view: View): RecyclerView.ViewHolder(view){
 
+        private val binding = ItemHeaderFormBinding.bind(view)
+
         fun bind(detail: String, descr: String){
-            with(itemView){
+            with(binding){
                 title.text = detail
                 if (descr.isBlank()) description.gone()
                 else {
@@ -124,8 +122,10 @@ class ReportFormAdapter(private val item: ProductReportReason,
     }
 
     inner class SubmitViewHolder(view: View): RecyclerView.ViewHolder(view){
+        private val binding = ItemSubmitFormBinding.bind(view)
+        private val context = binding.root.context
         init {
-            with(itemView){
+            with(binding){
                 footer.movementMethod = LinkMovementMethod.getInstance()
                 val spannable = MethodChecker.fromHtml(context.getString(R.string.product_report_see_all_types)) as Spannable
                 spannable.getSpans(0, spannable.length, URLSpan::class.java).forEach {
@@ -136,7 +136,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
                         listener = object : WebViewURLSpan.OnClickListener {
                             override fun onClick(url: String) {
                                 tracking.eventReportLearnMore(item.value.toLowerCase(Locale.getDefault()))
-                                RouteManager.route(itemView.context, "${ApplinkConst.WEBVIEW}?url=${GeneralConstant.URL_REPORT_TYPE}")
+                                RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${GeneralConstant.URL_REPORT_TYPE}")
                             }
 
                             override fun showUnderline() = false
@@ -148,11 +148,11 @@ class ReportFormAdapter(private val item: ProductReportReason,
                 }
                 footer.text = spannable
                 if (item.additionalFields.isEmpty()){
-                    btn_lapor.gone()
+                    btnLapor.gone()
                 } else {
-                    btn_lapor.visible()
+                    btnLapor.visible()
                 }
-                btn_lapor.setOnClickListener {
+                btnLapor.setOnClickListener {
                     tracking.eventReportClickDetail(item.value.toLowerCase(Locale.getDefault()))
                     submitForm.invoke()
                 }
@@ -160,18 +160,20 @@ class ReportFormAdapter(private val item: ProductReportReason,
         }
 
         fun validateButtonSubmit() {
-            itemView.btn_lapor.isEnabled =  submitEnabled
+            binding.btnLapor.isEnabled =  submitEnabled
         }
     }
 
     inner class LinkViewHolder(view: View): RecyclerView.ViewHolder(view){
 
+        private val binding = ItemLinkFormBinding.bind(view)
+
         fun bindLink(text: String, url: String){
-            with(itemView){
+            with(binding){
                 link.text = text
                 link.setOnClickListener {
                     tracking.eventReportClickLink(text, trackingReasonLabel)
-                    RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$url")
+                    RouteManager.route(root.context, "${ApplinkConst.WEBVIEW}?url=$url")
                 }
             }
         }
@@ -181,11 +183,14 @@ class ReportFormAdapter(private val item: ProductReportReason,
         private var minChar = -1
         private var maxChar = -1
 
+        private val binding = ItemTextareaFormBinding.bind(view)
+        private val context = binding.root.context
+
         override fun validate(): Boolean {
             return if (minChar == -1 && maxChar == -1) true
             else {
-                val input = itemView.edit_text_report.text.toString()
-                with(itemView.textInputLayoutReport){
+                val input = binding.editTextReport.text.toString()
+                with(binding.textInputLayoutReport){
                     if (input.length in minChar..maxChar){
                         error = null
                         isErrorEnabled = false
@@ -198,7 +203,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
         }
 
         fun bind(field: ProductReportReason.AdditionalField){
-            with(itemView){
+            with(binding){
                 minChar = field.min
                 maxChar = field.max
 
@@ -208,13 +213,13 @@ class ReportFormAdapter(private val item: ProductReportReason,
                 textInputLayoutReport.helperText = context.getString(R.string.product_helper_product_report,
                         field.min.toString())
                 textInputLayoutReport.setHelperTextColor(ContextCompat.getColorStateList(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-                edit_text_report.filters = arrayOf(InputFilter.LengthFilter(field.max))
-                edit_text_report.setText(input)
+                editTextReport.filters = arrayOf(InputFilter.LengthFilter(field.max))
+                editTextReport.setText(input)
                 if (inputs[field.key] != null)
                     validate()
 
-                edit_text_report.setOnClickListener {
-                    inputDetailListener.invoke(field.key, edit_text_report.text.toString(), field.min, field.max)
+                editTextReport.setOnClickListener {
+                    inputDetailListener.invoke(field.key, editTextReport.text.toString(), field.min, field.max)
                 }
             }
         }
@@ -227,8 +232,10 @@ class ReportFormAdapter(private val item: ProductReportReason,
         private val photoAdapter: UploadPhotoAdapter by lazy { UploadPhotoAdapter("",
                 addPhotoListener, this::afterRemovePhoto) }
 
+        private val binding = ItemPhotoFormBinding.bind(view)
+
         init {
-            with(itemView.rv_uploaded_foto){
+            with(binding.rvUploadedFoto){
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 addItemDecoration(SpaceItemDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_6),
                         LinearLayoutManager.HORIZONTAL))
@@ -241,7 +248,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
         }
 
         fun bind(field: ProductReportReason.AdditionalField){
-            with(itemView){
+            with(binding){
                 minChar = field.min
                 maxChar = field.max
 
@@ -249,10 +256,10 @@ class ReportFormAdapter(private val item: ProductReportReason,
                 photoAdapter.updateMax(field.max)
                 val photoUris: List<String> = inputs[field.key] as? List<String> ?: listOf()
                 photoAdapter.updatePhoto(photoUris)
-                title_upload.text = context.getString(R.string.product_report_upload_title,
+                titleUpload.text = root.context.getString(R.string.product_report_upload_title,
                         field.value, photoUris.size, field.max)
-                description_upload.text = field.detail
-                rv_uploaded_foto.adapter = photoAdapter
+                descriptionUpload.text = field.detail
+                rvUploadedFoto.adapter = photoAdapter
             }
         }
 

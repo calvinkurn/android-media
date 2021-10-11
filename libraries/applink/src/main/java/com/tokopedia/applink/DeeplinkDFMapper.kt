@@ -206,6 +206,8 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_CONTENT_PROFILE = "df_content_profile"
     const val DF_TOKOPEDIA_NOW = "df_tokopedianow"
     const val DF_CONTENT_PLAY_BROADCASTER = "df_content_play_broadcaster"
+    const val DF_IMAGE_PICKER_INSTA = "df_imagepicker_insta"
+    const val DF_CREATE_POST = "df_createpost"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
@@ -284,6 +286,15 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // IM
             add(DFP({ it.startsWith(REFERRAL) }, DF_BASE, R.string.applink_title_im_referral))
+
+            //Feed
+            add(DFP({
+                it.startsWithPattern(ApplinkConstInternalGlobal.IMAGE_PICKER_V2)
+            }, DF_IMAGE_PICKER_INSTA, R.string.title_image_picker))
+
+            add(DFP({
+                it.startsWithPattern(ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2)
+            }, DF_CREATE_POST, R.string.title_feed_create_post))
 
             // Logistic
             add(DFP({ it.startsWith(DROPOFF_PICKER) }, DF_BASE, R.string.dropoff_title))
@@ -552,9 +563,19 @@ object DeeplinkDFMapper : CoroutineScope {
                 it.startsWith(TokopediaNow.HOME) ||
                     it.startsWith(TokopediaNow.CATEGORY) ||
                     it.startsWith(TokopediaNow.SEARCH) ||
+                    it.startsWith(TokopediaNow.REPURCHASE) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.HOME) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.CATEGORY) ||
-                    it.startsWith(ApplinkConstInternalTokopediaNow.SEARCH)
+                    it.startsWith(ApplinkConstInternalTokopediaNow.SEARCH) ||
+                    it.startsWith(ApplinkConstInternalTokopediaNow.REPURCHASE)
+            }, DF_TOKOPEDIA_NOW, R.string.title_tokopedia_now))
+
+            // TokoMart
+            add(DFP({
+                it.startsWith(TokoMart.HOME) ||
+                    it.startsWith(TokoMart.CATEGORY) ||
+                    it.startsWith(TokoMart.SEARCH) ||
+                    it.startsWith(TokoMart.REPURCHASE)
             }, DF_TOKOPEDIA_NOW, R.string.title_tokopedia_now))
 
             // Review Reminder

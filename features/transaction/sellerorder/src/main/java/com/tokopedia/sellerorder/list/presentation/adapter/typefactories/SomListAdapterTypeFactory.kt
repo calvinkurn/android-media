@@ -14,7 +14,7 @@ open class SomListAdapterTypeFactory(
         protected val emptyStateListener: SomListOrderEmptyViewHolder.SomListEmptyStateListener
 ) : BaseAdapterTypeFactory() {
 
-    override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
+    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             SomListOrderViewHolder.LAYOUT -> SomListOrderViewHolder(parent, orderItemListener)
             SomListOrderEmptyViewHolder.LAYOUT -> SomListOrderEmptyViewHolder(parent, emptyStateListener)

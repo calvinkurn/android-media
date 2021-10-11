@@ -1,25 +1,28 @@
 package com.tokopedia.sellerorder.detail.presentation.bottomsheet
 
 import android.content.Context
+import android.view.View
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.SomBottomSheet
-import kotlinx.android.synthetic.main.partial_info_layout.view.*
+import com.tokopedia.sellerorder.databinding.PartialInfoLayoutBinding
 
 class SomConfirmShippingBottomSheet(
         context: Context
-) : SomBottomSheet(LAYOUT, true, true, false, context.getString(R.string.automatic_shipping), context, true) {
+) : SomBottomSheet<PartialInfoLayoutBinding>(LAYOUT, true, true, false, context.getString(R.string.automatic_shipping), context, true) {
 
     companion object {
         private val LAYOUT = R.layout.partial_info_layout
     }
 
+    override fun bind(view: View): PartialInfoLayoutBinding {
+        return PartialInfoLayoutBinding.bind(view)
+    }
+
     override fun setupChildView() {
-        childViews?.run {
-            button_understand?.setOnClickListener { dismiss() }
-        }
+        binding?.buttonUnderstand?.setOnClickListener { dismiss() }
     }
 
     fun setInfoText(infoText: String) {
-        childViews?.tv_confirm_info?.text = infoText
+        binding?.tvConfirmInfo?.text = infoText
     }
 }

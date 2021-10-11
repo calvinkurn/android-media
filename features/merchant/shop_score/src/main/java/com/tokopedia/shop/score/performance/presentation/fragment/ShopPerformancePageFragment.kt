@@ -5,6 +5,7 @@ import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
@@ -31,6 +33,9 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScorePrefManager
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
+import com.tokopedia.shop.score.common.plt.ShopPerformanceMonitoringContract
+import com.tokopedia.shop.score.common.plt.ShopScorePerformanceMonitoringListener
+import com.tokopedia.shop.score.databinding.FragmentShopPerformanceBinding
 import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponent
 import com.tokopedia.shop.score.performance.domain.model.ShopScoreWrapperResponse
 import com.tokopedia.shop.score.performance.presentation.activity.ShopPerformanceYoutubeActivity
@@ -42,8 +47,7 @@ import com.tokopedia.shop.score.performance.presentation.viewmodel.ShopPerforman
 import com.tokopedia.shop.score.performance.presentation.widget.PenaltyDotBadge
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_penalty_detail.*
-import kotlinx.android.synthetic.main.fragment_shop_performance.*
+import com.tokopedia.utils.view.binding.viewBinding
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -51,7 +55,7 @@ import kotlin.collections.ArrayList
 
 
 class ShopPerformancePageFragment : BaseDaggerFragment(),
-    ShopPerformanceListener {
+    ShopPerformanceListener, ShopPerformanceMonitoringContract {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -75,8 +79,12 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         )
     }
 
+    private val binding: FragmentShopPerformanceBinding? by viewBinding()
+
     private var shopScoreWrapperResponse: ShopScoreWrapperResponse? = null
     private var isNewSeller = false
+
+    private var shopScorePerformanceMonitoringListener: ShopScorePerformanceMonitoringListener? = null
 
     private val shopScoreCoachMarkPrefs by lazy { context?.let { ShopScorePrefManager(it) } }
 
@@ -88,6 +96,11 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private var counterPenalty = 0L
     private var menu: Menu? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        shopScorePerformanceMonitoringListener = castContextToTalkPerformanceMonitoringListener(context)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,6 +116,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        startNetworkRequestPerformanceMonitoring()
+        stopPreparePerformancePageMonitoring()
         super.onViewCreated(view, savedInstanceState)
         setPageBackground()
         setupActionBar()
@@ -128,7 +143,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onBtnErrorStateClicked() {
-        loadData()
+        loadData(false)
         showPenaltyBadge()
     }
 
@@ -365,6 +380,37 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         bottomSheetProtectedParameter.show(childFragmentManager)
     }
 
+    override fun stopPreparePerformancePageMonitoring() {
+        shopScorePerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        shopScorePerformanceMonitoringListener?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        shopScorePerformanceMonitoringListener?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        shopScorePerformanceMonitoringListener?.startRenderPerformanceMonitoring()
+        binding?.rvShopPerformance?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                shopScorePerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+                shopScorePerformanceMonitoringListener?.stopPerformanceMonitoring()
+                binding?.rvShopPerformance?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+            }
+        })
+    }
+
+    override fun castContextToTalkPerformanceMonitoringListener(context: Context): ShopScorePerformanceMonitoringListener? {
+        return if (context is ShopScorePerformanceMonitoringListener) {
+            context
+        } else {
+            null
+        }
+    }
+
     private fun setPageBackground() {
         try {
             context?.let {
@@ -387,7 +433,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                         }
                     }
                 smoothScroller.targetPosition = positionFaqSection
-                rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
+                binding?.rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
             }
         }
         shopScorePenaltyTracking.clickLearnShopPerformanceNewSeller()
@@ -414,7 +460,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun showPenaltyBadge() {
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             context?.let {
                 val menuItem = menu?.findItem(PENALTY_WARNING_MENU_ID)
                 if (counterPenalty < 0L) {
@@ -427,11 +473,11 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun recyclerViewScrollListenerCoachMark() {
-        rvShopPerformance?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding?.rvShopPerformance?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 val performanceLayoutManager =
-                    rvShopPerformance.layoutManager as? LinearLayoutManager
+                    binding?.rvShopPerformance?.layoutManager as? LinearLayoutManager
                 performanceLayoutManager?.let { layoutManager ->
                     val firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
                     val lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
@@ -518,7 +564,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun showCoachMark() {
         coachMark?.isDismissed = false
-        rvShopPerformance?.post {
+
+        binding?.rvShopPerformance?.post {
             if (getCoachMarkItems().value.isNotEmpty()) {
                 coachMark?.showCoachMark(getCoachMarkItems().value)
             }
@@ -568,7 +615,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                         }
                     }
                 smoothScroller.targetPosition = it
-                rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
+                binding?.rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
             }
         }
     }
@@ -601,7 +648,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                         }
                     }
                 smoothScroller.targetPosition = positionItem
-                rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
+                binding?.rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
             }
         }
     }
@@ -647,12 +694,12 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun getSectionLastItemViewCoachMark(): View? {
         return getPositionLastItemCoachMark()?.let { lastItemPosition ->
-            val layoutManager = rvShopPerformance?.layoutManager as? LinearLayoutManager
+            val layoutManager = binding?.rvShopPerformance?.layoutManager as? LinearLayoutManager
             val lastItemView = layoutManager?.findLastCompletelyVisibleItemPosition()
             val view =
-                lastItemView?.let { rvShopPerformance?.layoutManager?.getChildAt(lastItemPosition) }
+                lastItemView?.let { binding?.rvShopPerformance?.layoutManager?.getChildAt(lastItemPosition) }
             val viewHolder = view?.let {
-                rvShopPerformance?.findContainingViewHolder(it)
+                binding?.rvShopPerformance?.findContainingViewHolder(it)
             }
             viewHolder?.itemView
         }
@@ -662,8 +709,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         val position = shopPerformanceAdapter.list.indexOfFirst { it is T }.takeIf {
             it != RecyclerView.NO_POSITION
         }
-        val view = position?.let { rvShopPerformance?.layoutManager?.getChildAt(it) }
-        val viewHolder = view?.let { rvShopPerformance?.findContainingViewHolder(it) }
+        val view = position?.let { binding?.rvShopPerformance?.layoutManager?.getChildAt(it) }
+        val viewHolder = view?.let { binding?.rvShopPerformance?.findContainingViewHolder(it) }
         return viewHolder?.itemView
     }
 
@@ -688,7 +735,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun setupAdapter() {
-        rvShopPerformance?.apply {
+        binding?.rvShopPerformance?.run {
             layoutManager = context?.let { LinearLayoutManager(it) }
             adapter = shopPerformanceAdapter
         }
@@ -704,7 +751,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     impressMenuShopPerformance()
                 }
                 is Fail -> {
-                    shopPerformanceAdapter.hideLoading()
+                    hideLoading()
                     shopPerformanceAdapter.setShopPerformanceError(
                         ItemShopPerformanceErrorUiModel(
                             it.throwable
@@ -720,7 +767,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 }
             }
         }
-        loadData()
+        loadData(true)
     }
 
     private fun observeShopPerformancePage() {
@@ -728,6 +775,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             hideLoading()
             when (it) {
                 is Success -> {
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
                     shopPerformanceAdapter.setShopPerformanceData(it.data.first)
                     this.shopScoreWrapperResponse = it.data.second
                     val headerShopPerformanceUiModel =
@@ -758,7 +807,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun processShowCoachMark() {
         if (shopScoreCoachMarkPrefs?.getFinishCoachMark() == false && !isNewSeller) {
-            Handler().postDelayed({
+            Handler(Looper.getMainLooper()).postDelayed({
                 scrollToItemParameterDetailCoachMark()
                 showCoachMark()
             }, COACH_MARK_RENDER_SHOW)
@@ -766,33 +815,36 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun onSwipeRefreshShopPerformance() {
-        shopPerformanceSwipeRefresh?.setOnRefreshListener {
-            loadData()
+        binding?.shopPerformanceSwipeRefresh?.setOnRefreshListener {
+            loadData(false)
             showPenaltyBadge()
             coachMark?.dismissCoachMark()
         }
     }
 
-    private fun loadData() {
-        shopPerformanceAdapter.clearAllElements()
+    private fun loadData(isFirstLoad: Boolean) {
         showLoading()
-        viewModel.getShopInfoPeriod()
+        viewModel.getShopInfoPeriod(isFirstLoad)
     }
 
     private fun showLoading() {
-        shopPerformanceAdapter.showLoading()
-        shopPerformanceSwipeRefresh?.isRefreshing = false
+        shopPerformanceAdapter.run {
+            removeShopPerformanceData()
+            removeShopPerformanceError()
+            setShopPerformanceLoading(LoadingModel())
+        }
+        binding?.shopPerformanceSwipeRefresh?.isRefreshing = false
     }
 
     private fun hideLoading() {
-        shopPerformanceAdapter.hideLoading()
+        shopPerformanceAdapter.removeShopPerformanceLoading()
     }
 
     private fun setupActionBar() {
         (activity as? AppCompatActivity)?.run {
             supportActionBar?.hide()
-            setSupportActionBar(shop_performance_toolbar)
-            supportActionBar?.apply {
+            setSupportActionBar(binding?.shopPerformanceToolbar)
+            supportActionBar?.run {
                 title = getString(R.string.title_shop_performance)
             }
         }

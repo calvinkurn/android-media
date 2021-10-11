@@ -21,7 +21,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT
-import com.tokopedia.chat_common.data.preview.ProductPreview
+import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
@@ -715,6 +715,15 @@ abstract class TopchatRoomTest {
                     position, R.id.iu_broadcast_start_date
                 )
         ).check(matches(matcher))
+    }
+
+    protected fun assertToolbarTitle(expectedTitle: String) {
+        onView(
+            Matchers.allOf(
+                withId(com.tokopedia.chat_common.R.id.title),
+                isDescendantOfA(withId(R.id.toolbar))
+            )
+        ).check(matches(withText(expectedTitle)))
     }
 
     protected fun isKeyboardOpened(): Boolean {
