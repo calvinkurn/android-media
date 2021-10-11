@@ -18,11 +18,13 @@ import com.tokopedia.home_account.Utils
 import com.tokopedia.home_account.data.model.CommonDataView
 import com.tokopedia.home_account.data.model.ProfileDataView
 import com.tokopedia.home_account.databinding.HomeAccountItemProfileBinding
+import com.tokopedia.home_account.data.model.TierData
 import com.tokopedia.home_account.view.SpanningLinearLayoutManager
 import com.tokopedia.home_account.view.adapter.HomeAccountBalanceAndPointAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey.HOME_ACCOUNT_SHOW_VIEW_MORE_WALLET_TOGGLE
@@ -88,6 +90,8 @@ class ProfileViewHolder(
 
         setBackground(itemView.context, binding?.accountUserItemProfileContainer)
         listener.onItemViewBinded(adapterPosition, itemView, profile)
+
+        setupMemberSection(itemView, profile.memberStatus)
         memberAdapter?.let { memberAdapter ->
             listener.onProfileAdapterReady(memberAdapter)
         }
@@ -106,6 +110,17 @@ class ProfileViewHolder(
         } else {
             binding?.homeAccountProfileSection?.linkAccountProfileBtn?.hide()
             binding?.homeAccountProfileSection?.accountUserItemProfileLinkStatus?.hide()
+        }
+    }
+
+    private fun setupMemberSection(itemView: View, tierData: TierData) {
+        itemView?.home_account_member_layout_title?.text = tierData.nameDesc
+        itemView?.home_account_member_layout_title?.setMargin(AccountConstants.DIMENSION.LAYOUT_TITLE_LEFT_MARGIN, 0, 0, 0)
+        if(tierData.imageURL.isNotEmpty()) {
+            itemView?.home_account_member_layout_member_icon?.show()
+            itemView?.home_account_member_layout_member_icon?.setImageUrl(tierData.imageURL)
+        } else {
+            itemView?.home_account_member_layout_member_icon?.hide()
         }
     }
 

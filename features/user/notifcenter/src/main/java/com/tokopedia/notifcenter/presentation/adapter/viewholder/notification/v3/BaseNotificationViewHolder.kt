@@ -1,12 +1,16 @@
 package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3
 
 import android.graphics.Typeface
+import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -44,8 +48,28 @@ abstract class BaseNotificationViewHolder constructor(
         bindIcon(element)
         bindTime(element)
         bindClick(element)
+        bindRippleBackground()
         trackSeenNotification(element)
         trackNotificationImpression(element)
+    }
+
+    private fun bindRippleBackground() {
+        try {
+            val typedValue = TypedValue()
+            val isBgExist = itemView.context.theme.resolveAttribute(
+                android.R.attr.selectableItemBackground,
+                typedValue,
+                true
+            )
+            if (isBgExist && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                container?.foreground = ContextCompat.getDrawable(
+                    itemView.context, typedValue.resourceId
+                )
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            FirebaseCrashlytics.getInstance().recordException(e)
+        }
     }
 
     private fun trackNotificationImpression(element: NotificationUiModel) {

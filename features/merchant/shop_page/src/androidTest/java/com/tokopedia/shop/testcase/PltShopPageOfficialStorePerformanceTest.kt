@@ -2,23 +2,24 @@ package com.tokopedia.shop.testcase
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.test.application.TestRepeatRule
-import com.tokopedia.shop.environment.InstrumentationShopPageTestActivity
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.NetworkData
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 import com.tokopedia.analytics.performance.util.PltPerformanceData
-import com.tokopedia.shop.mock.ShopPageWithHomeTabMockResponseConfig
-import com.tokopedia.shop.mock.ShopPageWithHomeTabMockResponseConfig.Companion.KEY_QUERY_GET_IS_SHOP_OFFICIAL
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.shop.environment.InstrumentationShopPageTestActivity
+import com.tokopedia.shop.mock.ShopPageMockResponseConfig
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
+import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
-import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheckAndTotalSizeInterceptor
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+
 class PltShopPageOfficialStorePerformanceTest {
 
     companion object {
@@ -36,12 +37,13 @@ class PltShopPageOfficialStorePerformanceTest {
 
     @Before
     fun init() {
+        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+                RollenceKey.AB_TEST_SHOP_NEW_HOME_TAB,
+                RollenceKey.AB_TEST_SHOP_NEW_HOME_TAB
+        )
         context = InstrumentationRegistry.getInstrumentation().targetContext
         context?.let {
-            setupGraphqlMockResponseWithCheckAndTotalSizeInterceptor(
-                    ShopPageWithHomeTabMockResponseConfig(),
-                    listOf(KEY_QUERY_GET_IS_SHOP_OFFICIAL)
-            )
+            setupGraphqlMockResponse(ShopPageMockResponseConfig())
             val intent = Intent()
             intent.putExtra(SHOP_ID, SAMPLE_SHOP_ID)
             activityRule.launchActivity(intent)

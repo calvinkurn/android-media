@@ -965,7 +965,9 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_EDIT_AWB)
-                    failEditAwbResponse.message = it.throwable.message.toString()
+                    failEditAwbResponse.message = context?.run {
+                        SomErrorHandler.getErrorMessage(it.throwable, this)
+                    }.orEmpty()
                     if (failEditAwbResponse.message.isNotEmpty()) {
                         showToaster(failEditAwbResponse.message, view, TYPE_ERROR)
                     } else {

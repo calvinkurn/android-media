@@ -29,18 +29,17 @@ object GoldMerchantUtil {
         }
     }
 
-
-    fun getIsExistingSellerPastMonday(dateString: String): Boolean {
+    fun getDayNameFromCreatedDate(dateString: String): Int {
         return try {
             val simpleDateFormat =
                 SimpleDateFormat(PATTERN_DATE_SHOP_INFO, DateFormatUtils.DEFAULT_LOCALE)
             val calendar = Calendar.getInstance()
             simpleDateFormat.parse(dateString)?.let { calendar.time = it }
-            calendar.add(Calendar.DATE, NEW_SELLER_DAYS)
-            return calendar.get(Calendar.DAY_OF_WEEK) > Calendar.MONDAY
+            calendar.add(Calendar.DATE, totalDays(dateString).toInt())
+            return calendar.get(Calendar.DAY_OF_WEEK)
         } catch (e: Exception) {
             e.printStackTrace()
-            false
+            0
         }
     }
 
@@ -70,6 +69,25 @@ object GoldMerchantUtil {
             Calendar.MONDAY -> if (isAddedWeek) SEVEN_NUMBER else ZERO_NUMBER
             else -> ZERO_NUMBER
         }
+    }
+
+    fun getNNextDaysBasedOnShopScoreCalculation(dateString: String): String {
+        val calendar = Calendar.getInstance(DateFormatUtils.DEFAULT_LOCALE)
+        val simpleDateFormat =
+            SimpleDateFormat(PATTERN_DATE_SHOP_INFO, DateFormatUtils.DEFAULT_LOCALE)
+        simpleDateFormat.parse(dateString)?.let { calendar.time = it }
+        val firstMonday = when (calendar.get(Calendar.DAY_OF_WEEK)) {
+            Calendar.TUESDAY -> SIX_NUMBER
+            Calendar.WEDNESDAY -> FIVE_NUMBER
+            Calendar.THURSDAY -> FOUR_NUMBER
+            Calendar.FRIDAY -> THREE_NUMBER
+            Calendar.SATURDAY -> TWO_NUMBER
+            Calendar.SUNDAY -> ONE_NUMBER
+            Calendar.MONDAY -> ZERO_NUMBER
+            else -> ZERO_NUMBER
+        }
+        calendar.add(Calendar.DAY_OF_YEAR, firstMonday+THIRTY_DAYS)
+        return format(calendar.timeInMillis, PATTERN_DATE_TEXT)
     }
 
     fun GlobalError.setTypeGlobalError(throwable: Throwable?) {

@@ -12,7 +12,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -84,7 +83,6 @@ import com.tokopedia.home_account.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -390,8 +388,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         initCoachMark(position, itemView, data)
         if (position == 0) {
             initMemberLocalLoad(itemView)
-            initMemberTitle(itemView)
-
             initBalanceAndPointLocalLoad(itemView)
         }
     }
@@ -668,17 +664,13 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun onSuccessGetShortcutGroup(shortcutResponse: ShortcutResponse) {
         displayMemberLocalLoad(false)
-        val leftMargin = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            6f,
-            resources.displayMetrics
-        )
-        memberTitle?.setMargin(leftMargin.toInt(), 0, 0, 0)
-        memberTitle?.text =
-            shortcutResponse.tokopointsStatusFiltered.statusFilteredData.tier.nameDesc
-        memberIcon?.show()
-        memberIcon?.setImageUrl(shortcutResponse.tokopointsStatusFiltered.statusFilteredData.tier.imageURL)
-
+        adapter?.run {
+            if(isFirstItemIsProfile()) {
+                (getItem(0) as ProfileDataView).memberStatus =
+                    shortcutResponse.tokopointsStatusFiltered.statusFilteredData.tier
+                notifyDataSetChanged()
+            }
+        }
         val mappedMember = mapper.mapMemberItemDataView(shortcutResponse)
         memberAdapter?.addItems(mappedMember)
     }
@@ -706,7 +698,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun onFailGetData() {
         adapter?.run {
-            if (getItem(0) is ProfileDataView) {
+            if (isFirstItemIsProfile()) {
                 removeItemAt(0)
             }
             addItem(
@@ -729,11 +721,14 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         binding?.statusBarBg?.background = drawable
     }
 
+    private fun isFirstItemIsProfile(): Boolean =
+        adapter?.getItem(0) is ProfileDataView
+
     private fun onSuccessGetBuyerAccount(buyerAccount: UserAccountDataModel) {
         displayMemberLocalLoad(false)
         displayBalanceAndPointLocalLoad(false)
         adapter?.run {
-            if (getItem(0) is ProfileDataView) {
+            if (isFirstItemIsProfile()) {
                 removeItemAt(0)
             }
             addItem(0, mapper.mapToProfileDataView(buyerAccount, isEnableLinkAccount = isEnableLinkAccount()))
@@ -1298,15 +1293,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
         itemView.findViewById<CardUnify>(R.id.home_account_balance_and_point_card)?.let {
             balanceAndPointCardView = it
-        }
-    }
-
-    private fun initMemberTitle(itemView: View) {
-        itemView.findViewById<Typography>(R.id.home_account_member_layout_title)?.let {
-            memberTitle = it
-        }
-        itemView.findViewById<ImageUnify>(R.id.home_account_member_layout_member_icon)?.let {
-            memberIcon = it
         }
     }
 

@@ -4,9 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.user.session.UserSession
 
 class NoAddressEmptyStateView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         BaseCustomView(context, attrs, defStyleAttr) {
@@ -25,8 +27,27 @@ class NoAddressEmptyStateView @JvmOverloads constructor(context: Context, attrs:
         set(value) {
             field = value
             field?.let { listener ->
-                changeAddressButton?.setOnClickListener { listener.onChangeAddressClicked() }
-                returnButton?.setOnClickListener { listener.onReturnClick() }
+                val userSession = UserSession(context)
+                changeAddressButton?.setOnClickListener {
+                    listener.onChangeAddressClicked()
+
+                    if (listener.onGetNoAddressEmptyStateEventCategoryTracker().isNotEmpty()) {
+                        TokoNowCommonAnalytics.onClickChangeAddressOnOoc(
+                            userId = userSession.userId,
+                            category = listener.onGetNoAddressEmptyStateEventCategoryTracker()
+                        )
+                    }
+                }
+                returnButton?.setOnClickListener {
+                    listener.onReturnClick()
+
+                    if (listener.onGetNoAddressEmptyStateEventCategoryTracker().isNotEmpty()) {
+                        TokoNowCommonAnalytics.onClickShopOnTokopediaOoc(
+                            userId = userSession.userId,
+                            category = listener.onGetNoAddressEmptyStateEventCategoryTracker()
+                        )
+                    }
+                }
             }
         }
 
@@ -38,6 +59,7 @@ class NoAddressEmptyStateView @JvmOverloads constructor(context: Context, attrs:
     interface ActionListener {
         fun onChangeAddressClicked()
         fun onReturnClick()
+        fun onGetNoAddressEmptyStateEventCategoryTracker(): String
     }
 
     companion object {

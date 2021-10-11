@@ -1135,7 +1135,9 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     }
                 }
                 is Fail -> {
-                    val message = it.throwable.message.toString()
+                    val message = context?.run {
+                        SomErrorHandler.getErrorMessage(it.throwable, this)
+                    }.orEmpty()
                     if (message.isNotEmpty()) {
                         showToasterError(
                             view,

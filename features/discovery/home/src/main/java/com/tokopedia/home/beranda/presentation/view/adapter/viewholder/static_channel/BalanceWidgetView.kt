@@ -19,6 +19,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ho
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel.Companion.TYPE_STATE_2
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceAdapter
 import com.tokopedia.home.util.ViewUtils
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.layout_item_widget_balance_widget.view.*
 
 /**
@@ -36,8 +38,6 @@ class BalanceWidgetView: FrameLayout {
 
     private var tokopointsView: View? = null
     private var tokopointsViewNew: View? = null
-    private var gopayView: View? = null
-    private var gopayViewNew: View? = null
     private var gopayActivateNewView: View? = null
 
     constructor(context: Context) : super(context)
@@ -102,7 +102,12 @@ class BalanceWidgetView: FrameLayout {
             rvBalance?.layoutManager = layoutManager
             rvBalance?.adapter = balanceAdapter
         }
-        balanceAdapter?.setItemMap(element)
+        if (element.balanceDrawerItemModels.isEmpty()) {
+            rvBalance?.gone()
+        } else {
+            balanceAdapter?.setItemMap(element)
+            rvBalance?.show()
+        }
     }
 
     private fun getLayoutManager(element: HomeBalanceModel): GridLayoutManager {
@@ -132,13 +137,19 @@ class BalanceWidgetView: FrameLayout {
     }
 
     fun getGopayView(): View? {
-        gopayView = findViewById(R.id.home_coachmark_item_gopay)
-        return gopayView
+        if (balanceAdapter?.getItemMap()?.containsGopay() == true) {
+            val gopayView: View = findViewById(R.id.home_coachmark_item_gopay)
+            return gopayView
+        }
+        return null
     }
 
     fun getGopayNewView(): View? {
-        gopayViewNew = findViewById(R.id.home_coachmark_item_gopay_new)
-        return gopayViewNew
+        if (balanceAdapter?.getItemMap()?.containsGopay() == true) {
+            val gopayViewNew: View = findViewById(R.id.home_coachmark_item_gopay_new)
+            return gopayViewNew
+        }
+        return null
     }
 
     fun getGopayActivateNewView(): View? {
