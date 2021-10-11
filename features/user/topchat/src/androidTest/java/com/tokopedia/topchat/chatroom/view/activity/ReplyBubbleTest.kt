@@ -166,8 +166,11 @@ class ReplyBubbleTest : TopchatRoomTest() {
         getChatUseCase.response = getChatUseCase.defaultReplyBubbleResponse
         launchChatRoomActivity()
 
+        // When
+        scrollChatToPosition(3)
+
         // Then
-        ReplyBubbleResult.hasVisibleReplyBubbleStickerAt(2)
+        ReplyBubbleResult.hasVisibleReplyBubbleStickerAt(3)
     }
 
     @Test
