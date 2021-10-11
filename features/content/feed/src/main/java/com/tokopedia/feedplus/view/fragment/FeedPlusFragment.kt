@@ -3132,6 +3132,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     adapter.notifyItemRemoved(position)
                 }
             }
+
+            if (adapter.getlist().size > position && adapter.getlist()[position] is TopadsHeadlineUiModel) {
+                adapter.getlist().removeAt(position)
+                recyclerView.post {
+                    adapter.notifyItemRemoved(position)
+                }
+            }
             if (adapter.getlist().isEmpty()) {
                 showRefresh()
                 onRefresh()

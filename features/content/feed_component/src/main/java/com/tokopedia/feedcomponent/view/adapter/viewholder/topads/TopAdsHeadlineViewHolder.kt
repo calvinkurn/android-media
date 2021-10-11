@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
@@ -69,7 +70,7 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
 
     private fun hideHeadlineView() {
         topadsHeadlineView.hideShimmerView()
-        topAdsHeadlineListener?.hideTopadsView(adapterPosition)
+        topadsHeadlineView.hide()
     }
 
     override fun bind(element: TopadsHeadlineUiModel?) {
