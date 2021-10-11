@@ -298,11 +298,7 @@ class ReadReviewViewHolder(view: View,
     }
 
     private fun setReviewerStats(userStats: List<UserReviewStats>) {
-        if (basicInfo?.shouldShowCredibility() == true) {
-            basicInfo?.setStats(userStats)
-            return
-        }
-        basicInfo?.hideStats()
+        basicInfo?.setStats(userStats)
     }
 
     private fun setProfilePicture(imageUrl: String) {

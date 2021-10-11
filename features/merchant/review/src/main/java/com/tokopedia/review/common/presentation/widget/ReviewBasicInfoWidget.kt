@@ -124,8 +124,8 @@ class ReviewBasicInfoWidget : BaseCustomView {
     fun setStats(
         userStats: List<UserReviewStats>
     ) {
-        if (isAnonymous) {
-            hideStats()
+        if (!shouldShowCredibility()) {
+            reviewerStats?.hide()
             return
         }
         var textToShow = ""
@@ -150,10 +150,6 @@ class ReviewBasicInfoWidget : BaseCustomView {
                 }
             }
         }
-    }
-
-    fun hideStats() {
-        reviewerStats?.hide()
     }
 
     fun setReviewerImage(imageUrl: String) {
