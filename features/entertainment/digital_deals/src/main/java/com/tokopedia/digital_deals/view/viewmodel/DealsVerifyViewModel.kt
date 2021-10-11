@@ -67,8 +67,8 @@ class DealsVerifyViewModel @Inject constructor(
                                         productName = dealsResponse.displayName,
                                         providerId = dealsResponse.providerId.toString(),
                                         categoryId = dealsResponse.categoryId.toString(),
-                                        startTime = getDateMilis(dealsResponse.minStartDate.toString()),
-                                        endTime = getDateMilis(dealsResponse.maxEndDate.toString()),
+                                        startTime = getDateMilis(dealsResponse.minStartDate),
+                                        endTime = getDateMilis(dealsResponse.maxEndDate),
                                         price = dealsResponse.salesPrice,
                                         quantity = currentQuantity,
                                         totalPrice = currentQuantity * dealsResponse.salesPrice,
@@ -82,19 +82,16 @@ class DealsVerifyViewModel @Inject constructor(
         )
     }
 
-    private fun getDateMilis(date: String): String {
-        try {
-            val dateFormat = SimpleDateFormat(" dd MMM YYYY hh:mm")
-            val dateMilis = Date(TimeUnit.SECONDS.toMillis(date.toLong()))
-            return dateFormat.format(dateMilis).toString()
-        } catch (e: Exception){
-            return date
-        }
+    private fun getDateMilis(date: Int): String {
+         val dateFormat = SimpleDateFormat(dateFormat)
+         val dateMilis = Date(TimeUnit.SECONDS.toMillis(date.toLong()))
+         return dateFormat.format(dateMilis).toString()
     }
 
     companion object {
         const val eventVerify = "eventVerify"
         const val categoryName = "deal"
+        const val dateFormat = " dd MMM YYYY hh:mm"
     }
 
 }
