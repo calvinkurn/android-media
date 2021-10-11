@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.activity.robot
+package com.tokopedia.topchat.chatroom.view.activity.robot.replybubble
 
 import android.view.View
 import androidx.test.espresso.Espresso.onView
@@ -6,7 +6,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.activity.robot.ReplyBubbleMatcher.matchReplyBoxChildWithId
+import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleMatcher.matchReplyBoxChildWithId
 import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.not

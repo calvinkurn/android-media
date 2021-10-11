@@ -2,9 +2,10 @@ package com.tokopedia.topchat.chatroom.view.activity
 
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.filters.FlakyTest
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
-import com.tokopedia.topchat.chatroom.view.activity.robot.ReplyBubbleResult
-import com.tokopedia.topchat.chatroom.view.activity.robot.ReplyBubbleRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleRobot
 import org.hamcrest.Matchers.`is`
 import org.junit.Test
 import com.tokopedia.topchat.R
@@ -72,8 +73,10 @@ class ReplyBubbleTest : TopchatRoomTest() {
     }
 
     @Test
+    @FlakyTest
     fun should_go_to_specific_bubble_when_reply_compose_is_clicked() {
         // Given
+        val scrollWaitTime = 500L
         val lastBubbleIndex = getChatUseCase.getLastIndexOf(
             getChatUseCase.longReplyBubbleResponse
         )
@@ -86,6 +89,7 @@ class ReplyBubbleTest : TopchatRoomTest() {
         ReplyBubbleRobot.clickReplyItemMenu()
         scrollChatToPosition(0)
         ReplyBubbleRobot.clickReplyCompose()
+        waitForIt(scrollWaitTime)
 
         // Then
         assertMsgBubbleAt(lastBubbleIndex, isDisplayed())

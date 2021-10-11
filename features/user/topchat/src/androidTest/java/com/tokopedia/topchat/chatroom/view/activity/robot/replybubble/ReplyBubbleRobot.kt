@@ -1,11 +1,11 @@
-package com.tokopedia.topchat.chatroom.view.activity.robot
+package com.tokopedia.topchat.chatroom.view.activity.robot.replybubble
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.longClick
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.activity.robot.ReplyBubbleMatcher.matchReplyBoxChildWithId
+import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleMatcher.matchReplyBoxChildWithId
 import com.tokopedia.topchat.matchers.withRecyclerView
 
 object ReplyBubbleRobot {

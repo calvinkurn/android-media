@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.activity.robot
+package com.tokopedia.topchat.chatroom.view.activity.robot.replybubble
 
 import android.view.View
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
