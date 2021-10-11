@@ -65,7 +65,7 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
                 }
             })
             lihatSemuaViewModel.getRestartTimerAction().observe(it, { shouldStartTimer ->
-                if (shouldStartTimer && lihatSemuaViewModel.getStartDate().isNotEmpty() && lihatSemuaViewModel.getEndDate().isNotEmpty()) {
+                if (shouldStartTimer && (lihatSemuaViewModel.getStartDate().isNotEmpty() || lihatSemuaViewModel.getEndDate().isNotEmpty())) {
                     lihatSemuaViewModel.startTimer(timer)
                 }
             })
