@@ -520,13 +520,14 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun showCoachMark() {
-        coachMark?.isDismissed = false
-
-        binding?.rvShopPerformance?.post {
-            if (getCoachMarkItems().value.isNotEmpty()) {
-                coachMark?.showCoachMark(getCoachMarkItems().value)
+        try {
+            binding?.rvShopPerformance?.post {
+                coachMark?.isDismissed = false
+                if (getCoachMarkItems().value.isNotEmpty()) {
+                    coachMark?.showCoachMark(getCoachMarkItems().value)
+                }
             }
-        }
+        } catch (ignored: Exception) {}
     }
 
     private fun getPositionLastItemCoachMark(): Int? {
