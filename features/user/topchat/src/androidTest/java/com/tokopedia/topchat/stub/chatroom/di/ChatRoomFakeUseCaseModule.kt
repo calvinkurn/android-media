@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.stub.chatroom.di
 
+import android.content.Context
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
@@ -19,10 +20,12 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.tokonow.ChatTokoNowWarehouseResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.*
+import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.stub.chatroom.usecase.*
 import com.tokopedia.topchat.stub.chatroom.usecase.api.ChatRoomApiStub
 import com.tokopedia.topchat.stub.common.GraphqlUseCaseStub
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import dagger.Module
 import dagger.Provides
 
@@ -251,5 +254,21 @@ class ChatRoomFakeUseCaseModule {
             gqlUseCase: GraphqlUseCaseStub<ChatTokoNowWarehouseResponse>
     ): ChatTokoNowWarehouseUseCaseStub {
         return ChatTokoNowWarehouseUseCaseStub(gqlUseCase)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideAddWishListUseCase(
+        stub: AddWishListUseCaseStub
+    ): AddWishListUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideAddWishListUseCaseStub(
+        @TopchatContext context: Context
+    ): AddWishListUseCaseStub {
+        return AddWishListUseCaseStub(context)
     }
 }

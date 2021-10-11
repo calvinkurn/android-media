@@ -18,7 +18,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
 import com.tokopedia.topchat.matchers.withRecyclerView
@@ -289,6 +291,60 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         intended(hasData(intent.data))
     }
 
+    @Test
+    fun should_show_toaster_when_user_click_ingatkan_saya() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = getZeroStockAttachment()
+        launchChatRoomActivity()
+
+        //When
+        scrollChatToPosition(0)
+        onView(withRecyclerView(R.id.recycler_view_chatroom)
+            .atPositionOnView(1, R.id.tv_wishlist)).perform(click())
+
+        // Then
+        onView(withText(context.getString(R.string.title_topchat_success_atw)))
+            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+    }
+
+    @Test
+    fun should_show_error_toaster_when_user_click_ingatkan_saya_but_failed() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = getZeroStockAttachment()
+        addWishListUseCase.isFail = true
+        launchChatRoomActivity()
+
+        //When
+        scrollChatToPosition(0)
+        onView(withRecyclerView(R.id.recycler_view_chatroom)
+            .atPositionOnView(1, R.id.tv_wishlist)).perform(click())
+
+        // Then
+        onView(withText("Oops!"))
+            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+    }
+
+    @Test
+    fun should_open_wishlist_when_user_click_cek_wishlist() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = getZeroStockAttachment()
+        launchChatRoomActivity()
+
+        //When
+        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        scrollChatToPosition(0)
+        onView(withRecyclerView(R.id.recycler_view_chatroom)
+            .atPositionOnView(1, R.id.tv_wishlist)).perform(click())
+        onView(withRecyclerView(R.id.recycler_view_chatroom)
+            .atPositionOnView(1, R.id.tv_wishlist)).perform(click())
+
+        //Then
+        intended(hasData(ApplinkConst.NEW_WISHLIST))
+    }
+
     // TODO: assert attach product, stock info seller, and tokocabang is not displayed on buyer side
 
     private fun putProductAttachmentIntent(intent: Intent) {
@@ -313,5 +369,12 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         onView(withRecyclerView(R.id.rv_attachment_preview)
             .atPositionOnView(0, R.id.tv_variant_size))
             .check(matches(withText(testVariantSize)))
+    }
+
+    private fun getZeroStockAttachment(): ChatAttachmentResponse {
+        return AndroidFileUtil.parse(
+            "success_get_chat_attachments_zero_stock.json",
+            ChatAttachmentResponse::class.java
+        )
     }
 }
