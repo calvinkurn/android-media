@@ -37,6 +37,7 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.fragment_review_detail.*
 import javax.inject.Inject
 
@@ -67,6 +68,8 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
     private var reviewConnectionErrorRetryButton: UnifyButton? = null
+
+    private var badRatingReason: Typography? = null
 
     override fun stopPreparePerfomancePageMonitoring() {
         reviewPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
@@ -296,6 +299,9 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                     setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                     show()
                 }
+            }
+            badRatingReason?.shouldShowWithAction(this.badRatingReasonFmt.isNotBlank()) {
+                badRatingReason?.text = badRatingReasonFmt
             }
         }
     }

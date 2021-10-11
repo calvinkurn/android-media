@@ -152,13 +152,26 @@
                 android:layout_marginTop="@dimen/dp_12"
                 app:layout_constraintTop_toBottomOf="@id/reviewDetailContent"/>
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/review_detail_bad_rating_reason"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:textColor="@color/Unify_NN600"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/reviewDetailAttachedImages"
+                app:typographyType="body_3"
+                tools:text="Kendala: Kemasan tidak aman, Pengiriman lama" />
+
             <com.tokopedia.review.feature.historydetails.presentation.widget.ReviewDetailResponseWidget
                 android:id="@+id/reviewDetailResponse"
                 android:visibility="gone"
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/reviewDetailAttachedImages"/>
+                app:layout_constraintTop_toBottomOf="@id/review_detail_bad_rating_reason"/>
 
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/review_history_detail_barrier"
@@ -166,7 +179,7 @@
                 android:layout_height="wrap_content"
                 app:barrierMargin="@dimen/layout_lvl2"
                 app:barrierDirection="bottom"
-                app:constraint_referenced_ids="reviewDetailAttachedImages, reviewDetailResponse, reviewDetailContent"/>
+                app:constraint_referenced_ids="reviewDetailAttachedImages, reviewDetailResponse, reviewDetailContent, review_detail_bad_rating_reason"/>
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/review_history_detail_divider"
