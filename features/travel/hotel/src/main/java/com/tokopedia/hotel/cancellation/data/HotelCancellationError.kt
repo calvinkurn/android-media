@@ -8,15 +8,9 @@ import com.google.gson.annotations.SerializedName
 
 data class HotelCancellationError(
     @Expose
-    @SerializedName("propertyGetCancellation")
-    val propertyGetCancellation: PropertyGetCancellation = PropertyGetCancellation()
+    @SerializedName("content")
+    val content: Content = Content()
 ){
-    data class PropertyGetCancellation(
-        @Expose
-        @SerializedName("content")
-        val content: Content = Content()
-    )
-
     data class Content(
         @Expose
         @SerializedName("actionButton")
