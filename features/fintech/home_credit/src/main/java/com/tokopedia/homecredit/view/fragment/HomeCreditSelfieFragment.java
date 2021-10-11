@@ -3,6 +3,7 @@ package com.tokopedia.homecredit.view.fragment;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -74,9 +75,11 @@ public class HomeCreditSelfieFragment extends HomeCreditBaseCameraFragment {
     }
 
     private void setCameraOverlayImage(ImageView cameraOverlayImg){
-        String cameraType = getActivity().getIntent().getStringExtra(Constants.CAMERA_TYPE);
-        String cutOutImgUrl = getActivity().getIntent().getStringExtra(Constants.CUST_OVERLAY_URL);
-        String customHeader = getActivity().getIntent().getStringExtra(Constants.CUST_HEADER);
+        Intent intent = getActivity().getIntent();
+        Uri uri = intent.getData();
+        String cameraType = getCameraType(uri);
+        String cutOutImgUrl = intent.getStringExtra(Constants.CUST_OVERLAY_URL);
+        String customHeader = intent.getStringExtra(Constants.CUST_HEADER);
         if(!TextUtils.isEmpty(customHeader))
             headerText.setText(customHeader);
         if(Constants.SLFE_NO_OVERLAY.equalsIgnoreCase(cameraType)){

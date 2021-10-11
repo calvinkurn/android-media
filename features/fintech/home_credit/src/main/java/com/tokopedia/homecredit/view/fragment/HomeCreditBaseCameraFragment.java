@@ -9,6 +9,7 @@ import android.content.ContextWrapper;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -215,6 +216,14 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         }
     }
 
+    protected String getCameraType(Uri uri) {
+        String cameraType = null;
+        if (uri != null && uri.getPathSegments().size() >= 3) {
+            cameraType = uri.getPathSegments().get(2);
+        }
+        return cameraType;
+    }
+
     protected void onSuccessImageTakenFromCamera(File imgFile) {
         String imagePath = imgFile.getAbsolutePath();
         finalCameraResultFilePath = imagePath;
@@ -359,7 +368,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
     @Override
     public void onPause() {
         super.onPause();
-        if(isCameraOpen){
+        if (isCameraOpen) {
             cameraView.close();
         }
     }
