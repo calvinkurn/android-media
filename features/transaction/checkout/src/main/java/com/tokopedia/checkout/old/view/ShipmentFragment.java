@@ -3229,7 +3229,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public boolean isBundleToggleChanged() {
         Activity activity = getActivity();
         if (activity != null) {
-            return !Switch.INSTANCE.isBundleToggleOn(activity);
+            return Switch.INSTANCE.isBundleToggleOn(activity);
         }
         return false;
     }
