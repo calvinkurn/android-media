@@ -35,6 +35,7 @@ import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
+import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
 import com.tokopedia.play.broadcaster.view.partial.BroadcastInteractiveSetupViewComponent
@@ -77,6 +78,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val loadingView: FrameLayout by detachableView(R.id.loading_view)
     private val errorLiveNetworkLossView: View by detachableView(R.id.error_live_view)
     private val debugView: PlayLivePusherDebugView by detachableView(R.id.live_debug_view)
+    private val pinnedMessageView: PinnedMessageView by detachableView(R.id.pinned_msg_view)
 
     private val actionBarView by viewComponent {
         ActionBarViewComponent(it, object : ActionBarViewComponent.Listener {
@@ -196,6 +198,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         flProductTag.setOnClickListener {
             doShowProductInfo()
             analytic.clickProductTagOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
+        }
+        pinnedMessageView.setOnPinnedClickedListener {
+            showToaster("Tekan Pin")
         }
     }
 

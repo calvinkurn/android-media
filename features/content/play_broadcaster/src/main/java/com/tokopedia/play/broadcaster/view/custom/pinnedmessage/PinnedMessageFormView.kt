@@ -1,0 +1,97 @@
+package com.tokopedia.play.broadcaster.view.custom.pinnedmessage
+
+import android.content.Context
+import android.content.res.ColorStateList
+import android.util.AttributeSet
+import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.databinding.ViewPlayBroPinnedMsgFormBinding
+import com.tokopedia.unifyprinciples.R as unifyR
+
+/**
+ * Created by jegul on 11/10/21
+ */
+class PinnedMessageFormView : ConstraintLayout {
+
+    constructor(context: Context?) : super(context)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
+
+    constructor(
+        context: Context?,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+        defStyleRes: Int
+    ) : super(context, attrs, defStyleAttr, defStyleRes)
+
+    private val binding = ViewPlayBroPinnedMsgFormBinding.inflate(
+        LayoutInflater.from(context),
+        this,
+        true
+    )
+
+    private var mListener: Listener? = null
+
+    init {
+        setupView()
+    }
+
+    private fun setupView() {
+        with(binding) {
+            textFieldPinnedMsg.labelText.visibility = View.GONE
+            val whiteColor = MethodChecker.getColor(
+                context, unifyR.color.Unify_Static_White
+            )
+            val secondaryColor = MethodChecker.getColor(
+                context, R.color.play_bro_dms_pinned_msg_form_border
+            )
+            textFieldPinnedMsg.textInputLayout.boxStrokeColor = secondaryColor
+            textFieldPinnedMsg.editText.setTextColor(whiteColor)
+            textFieldPinnedMsg.editText.setHintTextColor(secondaryColor)
+            textFieldPinnedMsg.counterView?.setTextColor(whiteColor)
+            textFieldPinnedMsg.clearIconView.setImage(
+                newLightEnable = whiteColor,
+                newDarkEnable = whiteColor
+            )
+
+            val tempSecondaryColor = textFieldPinnedMsg.secondaryColorList
+            val secondaryColorStateList = ColorStateList(
+                textFieldPinnedMsg.disabledStateList,
+                tempSecondaryColor.apply { this[0] = whiteColor }
+            )
+            textFieldPinnedMsg.textInputLayout.setHelperTextColor(secondaryColorStateList)
+            textFieldPinnedMsg.secondaryColorStateList = secondaryColorStateList
+
+            textFieldPinnedMsg.editText.setOnKeyListener { _, keyCode, event ->
+                if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                    Toast.makeText(context, textFieldPinnedMsg.editText.text, Toast.LENGTH_SHORT).show()
+                    return@setOnKeyListener true
+                }
+                return@setOnKeyListener false
+            }
+        }
+    }
+
+    fun setListener(listener: Listener?) {
+        mListener = listener
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        mListener = null
+    }
+
+    interface Listener {
+
+        fun onPinnedMessageSaved(view: PinnedMessageFormView, message: String)
+    }
+}

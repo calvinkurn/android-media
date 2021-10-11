@@ -28,11 +28,13 @@ class PinnedMessageView : FrameLayout {
         defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    private val view = ViewPlayBroPinnedMsgBinding.inflate(
+    private val binding = ViewPlayBroPinnedMsgBinding.inflate(
         LayoutInflater.from(context),
         this,
         true,
     )
+
+    private var mOnPinnedClickedListener: OnPinnedClickedListener? = null
 
     init {
         setMode(Mode.Empty)
@@ -46,12 +48,25 @@ class PinnedMessageView : FrameLayout {
         }
     }
 
+    fun setOnPinnedClickedListener(listener: OnPinnedClickedListener?) {
+        mOnPinnedClickedListener = listener
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        mOnPinnedClickedListener = null
+    }
+
     private fun setEmptyMode() {
         val layout = ViewPlayBroPinnedMsgEmptyBinding.inflate(
             LayoutInflater.from(context),
             this,
             false
         ).root
+
+        layout.setOnClickListener {
+            mOnPinnedClickedListener?.onPinnedClicked(this@PinnedMessageView)
+        }
 
         addView(layout)
     }
@@ -63,6 +78,9 @@ class PinnedMessageView : FrameLayout {
             false
         )
 
+        layout.root.setOnClickListener {
+            mOnPinnedClickedListener?.onPinnedClicked(this@PinnedMessageView)
+        }
         layout.tvPinnedMsg.text = message
 
         addView(layout.root)
@@ -71,5 +89,10 @@ class PinnedMessageView : FrameLayout {
     sealed class Mode {
         object Empty : Mode()
         data class Filled(val message: String) : Mode()
+    }
+
+    fun interface OnPinnedClickedListener {
+
+        fun onPinnedClicked(view: PinnedMessageView)
     }
 }
