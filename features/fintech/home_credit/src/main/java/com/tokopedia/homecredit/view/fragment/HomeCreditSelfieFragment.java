@@ -41,7 +41,7 @@ public class HomeCreditSelfieFragment extends HomeCreditBaseCameraFragment {
         initViews(view);
         initListeners();
         initViewListeners();
-        Toaster.build(view, "Selfie page open", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL);
+        Toaster.build(view, "Selfie page open", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
     }
 
     private void initViews(View view) {
@@ -79,7 +79,7 @@ public class HomeCreditSelfieFragment extends HomeCreditBaseCameraFragment {
         String cameraType = getActivity().getIntent().getStringExtra(Constants.CAMERA_TYPE);
         String cutOutImgUrl = getActivity().getIntent().getStringExtra(Constants.CUST_OVERLAY_URL);
         String customHeader = getActivity().getIntent().getStringExtra(Constants.CUST_HEADER);
-        Toaster.build(cameraOverlayImg, "Selfie page -> " + customHeaderText, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL);
+        Toaster.build(cameraOverlayImg, "Selfie page -> " + customHeader, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show();
 
         if(!TextUtils.isEmpty(customHeader))
             headerText.setText(customHeader);

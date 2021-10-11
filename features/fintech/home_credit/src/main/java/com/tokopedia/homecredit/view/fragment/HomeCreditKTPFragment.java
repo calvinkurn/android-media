@@ -43,14 +43,14 @@ public class HomeCreditKTPFragment extends HomeCreditBaseCameraFragment {
         initViews(view);
         initListeners();
         initViewListeners();
-        Toaster.build(view, "Ktp page open", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL);
+        Toaster.build(view, "Ktp page open", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
     }
 
     private void setCameraOverlayImage(ImageView cameraOverlayImg){
         String cameraType = getActivity().getIntent().getStringExtra(Constants.CAMERA_TYPE);
         String cutOutImgUrl = getActivity().getIntent().getStringExtra(Constants.CUST_OVERLAY_URL);
         String customHeaderText = getActivity().getIntent().getStringExtra(Constants.CUST_HEADER);
-        Toaster.build(cameraOverlayImg, "Ktp page -> " + customHeaderText, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL);
+        Toaster.build(cameraOverlayImg, "Ktp page -> " + customHeaderText, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show();
 
         if(!TextUtils.isEmpty(customHeaderText))
             headerText.setText(customHeaderText);
