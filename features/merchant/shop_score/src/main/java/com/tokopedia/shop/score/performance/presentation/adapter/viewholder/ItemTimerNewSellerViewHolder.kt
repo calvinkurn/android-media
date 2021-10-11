@@ -31,7 +31,7 @@ class ItemTimerNewSellerViewHolder(
                 if (element?.isTenureDate == true) BG_ORANGE_TIMER else BG_GREEN_TIMER)
             timerNewSeller.targetDate = element?.effectiveDate
 
-            tvShopPerformanceNewSeller?.text = if (element?.shopScore.isLessThanZero()) {
+            tvShopPerformanceNewSeller.text = if (element?.shopScore.isLessThanZero()) {
                 getString(
                     R.string.title_shop_performance_become_existing_seller,
                     element?.effectiveDateText.orEmpty()

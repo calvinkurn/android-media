@@ -189,7 +189,7 @@ open class ProductAttachmentViewModel protected constructor(
     }
 
     fun hasEmptyStock(): Boolean {
-        return status != statusActive
+        return status != statusActive || remainingStock == 0
     }
 
     fun isWishListed(): Boolean {

@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers;
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference;
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreferenceManager;
 
 import dagger.Module;
 import dagger.Provides;
@@ -41,6 +43,12 @@ public class ChooseAccountModule {
     @Provides
     CoroutineDispatchers provideCoroutineDispatcher() {
         return CoroutineDispatchersProvider.INSTANCE;
+    }
+
+    @ChooseAccountScope
+    @Provides
+    FingerprintPreference provideFingerprintPreferenceManager(@ApplicationContext Context context) {
+        return new FingerprintPreferenceManager(context);
     }
 
 }
