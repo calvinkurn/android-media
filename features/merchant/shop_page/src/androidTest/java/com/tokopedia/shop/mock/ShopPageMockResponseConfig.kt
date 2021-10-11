@@ -5,14 +5,14 @@ import com.tokopedia.shop.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 
-class ShopPageAnalyticValidatorHomeTabMockResponseConfig : MockModelConfig() {
+class ShopPageMockResponseConfig : MockModelConfig() {
     companion object {
         const val KEY_QUERY_GET_SHOP_TICKER = "get_ticker"
         const val KEY_QUERY_GET_SHOP_PAGE_HEADER_LAYOUT = "getShopPageGetHeaderLayout"
         const val KEY_QUERY_GET_SHOP_OPERATIONAL_HOUR_STATUS = "getShopOperationalHourStatus"
         const val KEY_QUERY_SHOP_SHOWCASES_BY_ID = "shopShowcasesByShopID"
         const val KEY_QUERY_SHOP_SORT_DATA = "getShopSort"
-        const val KEY_QUERY_SHOP_PAGE_GET_LAYOUT = "get_shop_page_home_layout"
+        const val KEY_QUERY_SHOP_PAGE_GET_LAYOUT_V2 = "get_shop_page_home_layout_v2"
         const val KEY_QUERY_MEMBERSHIP_STAMP_PROGRESS = "membershipStampProgress"
         const val KEY_QUERY_GET_SHOP_PRODUCT = "GetShopProduct"
         const val KEY_QUERY_GET_IS_SHOP_OFFICIAL = "getIsOfficial"
@@ -89,8 +89,8 @@ class ShopPageAnalyticValidatorHomeTabMockResponseConfig : MockModelConfig() {
         )
 
         addMockResponse(
-                KEY_QUERY_SHOP_PAGE_GET_LAYOUT,
-                getRawString(context, R.raw.response_mock_data_shop_page_analytic_tracker_get_layout),
+                KEY_QUERY_SHOP_PAGE_GET_LAYOUT_V2,
+                getRawString(context, R.raw.response_mock_data_shop_page_analytic_tracker_get_layout_v2),
                 FIND_BY_CONTAINS)
 
         addMockResponse(
