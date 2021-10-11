@@ -1,23 +1,19 @@
 package com.tokopedia.shop.settings.setting.view.adapter.viewholder
 
 import android.view.View
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.shop.settings.R
+import com.tokopedia.shop.settings.databinding.ItemShopPageSettingProductBinding
 import com.tokopedia.shop.settings.setting.view.adapter.ShopPageSettingAdapter
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    private var displayProductsView: TextView? = null
-    private var editEtalaseView: TextView? = null
-
-    init {
-        displayProductsView = itemView.findViewById(R.id.tv_display_products)
-        editEtalaseView = itemView.findViewById(R.id.tv_edit_etalase)
-    }
+    private val binding: ItemShopPageSettingProductBinding? by viewBinding()
 
     fun bind(clickListener: ShopPageSettingAdapter.ProductItemClickListener) {
-        displayProductsView?.setOnClickListener { clickListener.onDisplayProductsClicked() }
-        editEtalaseView?.setOnClickListener { clickListener.onEditEtalaseClicked() }
+        binding?.apply {
+            tvDisplayProducts.setOnClickListener { clickListener.onDisplayProductsClicked() }
+            tvEditEtalase.setOnClickListener { clickListener.onEditEtalaseClicked() }
+        }
     }
 }

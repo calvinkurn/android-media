@@ -2,13 +2,14 @@ package com.tokopedia.seller.menu.common.view.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import com.tokopedia.seller.menu.common.R
+import com.tokopedia.seller.menu.common.databinding.LayoutSellerMenuFeatureCardBinding
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_PLAY_ICON
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_PROMO_ICON
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_FINANCE_ICON
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_STATISTICS_ICON
 import com.tokopedia.unifycomponents.CardUnify
-import kotlinx.android.synthetic.main.layout_seller_menu_feature_card.view.*
 
 class SellerMenuFeatureCard(context: Context, attrs: AttributeSet) : CardUnify(context, attrs) {
 
@@ -19,13 +20,17 @@ class SellerMenuFeatureCard(context: Context, attrs: AttributeSet) : CardUnify(c
         URL_FINANCE_ICON
     )
 
+    private var binding: LayoutSellerMenuFeatureCardBinding? = null
+
     init {
         inflateView()
         initView(attrs)
     }
 
     private fun inflateView() {
-        inflate(context, R.layout.layout_seller_menu_feature_card, this)
+        binding =
+            LayoutSellerMenuFeatureCardBinding.inflate(
+                LayoutInflater.from(context), this, true)
     }
 
     private fun initView(attrs: AttributeSet) {
@@ -35,11 +40,11 @@ class SellerMenuFeatureCard(context: Context, attrs: AttributeSet) : CardUnify(c
         val description = styledAttrs.getString(R.styleable.SellerMenuFeatureCard_menuDescription)
         val iconAttr = styledAttrs.getInt(R.styleable.SellerMenuFeatureCard_menuIcon, 0)
 
-        textTitle.text = title
-        textDescription.text = description
+        binding?.textTitle?.text = title
+        binding?.textDescription?.text = description
 
         iconURLs.getOrNull(iconAttr)?.let {
-            imageFeature.setImageUrl(it)
+            binding?.imageFeature?.setImageUrl(it)
         }
 
         styledAttrs.recycle()
