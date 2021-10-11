@@ -226,8 +226,8 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
 
         val isShowDarkMode = remoteConfig.getBoolean(
             RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE, false)
-        val isRollenceEnabledDarkMode = getAbTestPlatform().getBoolean(
-            RollenceKey.USER_DARK_MODE_TOGGLE, false)
+        val isRollenceEnabledDarkMode = getAbTestPlatform().getString(
+            RollenceKey.USER_DARK_MODE_TOGGLE, "").isNotEmpty()
 
         if(isShowDarkMode || isRollenceEnabledDarkMode) {
             settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_DARK_MODE,

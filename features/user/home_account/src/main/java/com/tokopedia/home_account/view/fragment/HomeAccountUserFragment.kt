@@ -883,8 +883,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun setupSettingList() {
         val userSettingsMenu = menuGenerator.generateUserSettingMenu()
-        val isRollenceEnabledDarkMode = getAbTestPlatform().getBoolean(
-            RollenceKey.USER_DARK_MODE_TOGGLE, false)
+        val isRollenceEnabledDarkMode = getAbTestPlatform().getString(
+            RollenceKey.USER_DARK_MODE_TOGGLE, "").isNotEmpty()
 
         userSettingsMenu.items.forEach {
             if(it.id == AccountConstants.SettingCode.SETTING_LINK_ACCOUNT && !isEnableLinkAccount()) {
