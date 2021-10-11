@@ -176,7 +176,7 @@ query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
 //        texts {
 //          bottom_sheet
 //          chosen_courier
-//          strikethrough_price
+//          ticker_courier
 //        }
       }
       pre_order {
