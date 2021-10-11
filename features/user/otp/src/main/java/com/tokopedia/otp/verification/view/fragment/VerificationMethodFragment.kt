@@ -227,8 +227,8 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
 
     private fun setFooter(linkType: Int) {
         when (linkType) {
-            TYPE_CHANGE_PHONE_UPLOAD_KTP -> inactivePhoneFooter()
-            TYPE_PROFILE_SETTING -> onProfileSettingType()
+            TYPE_CHANGE_PHONE_UPLOAD_KTP -> onDefaultFooterType()
+            TYPE_PROFILE_SETTING -> onProfileSettingFooterType()
             else -> onTypeHideLink()
         }
     }
@@ -246,12 +246,10 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         })
     }
 
-    private fun inactivePhoneFooter() {
+    private fun inactivePhoneFooter(message: String, clickableMessage: String, onClick: () -> Unit) {
         context?.let {
-            val message = getString(R.string.change_inactive_phone_number).orEmpty()
-            val clickableMessage = getString(R.string.otp_change_phone_number).orEmpty()
             val spannable = SpannableString(message).apply {
-                setSpan(clickableSpan { onGoToInactivePhoneNumber() },
+                setSpan(clickableSpan { onClick.invoke() },
                     message.indexOf(clickableMessage),
                     message.indexOf(clickableMessage) + clickableMessage.length,
                     0
@@ -284,21 +282,19 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         }
     }
 
-    private fun onProfileSettingType() {
-        context?.let {
-            val message = getString(R.string.my_phone_inactive_change_at_setting).orEmpty()
-            val clickableMessage = getString(R.string.setting).orEmpty()
-            val spannable = SpannableString(message).apply {
-                setSpan(clickableSpan { gotoSettingProfile() },
-                    message.indexOf(clickableMessage),
-                    message.indexOf(clickableMessage) + clickableMessage.length,
-                    0
-                )
-            }
-            viewBound.phoneInactive?.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-            viewBound.phoneInactive?.movementMethod = LinkMovementMethod.getInstance()
-            viewBound.phoneInactive?.setText(spannable, TextView.BufferType.SPANNABLE)
-            viewBound.phoneInactive?.visible()
+    private fun onDefaultFooterType() {
+        val message = getString(R.string.change_inactive_phone_number).orEmpty()
+        val clickableMessage = getString(R.string.otp_change_phone_number).orEmpty()
+        inactivePhoneFooter(message, clickableMessage) {
+            onGoToInactivePhoneNumber()
+        }
+    }
+
+    private fun onProfileSettingFooterType() {
+        val message = getString(R.string.my_phone_inactive_change_at_setting).orEmpty()
+        val clickableMessage = getString(R.string.setting).orEmpty()
+        inactivePhoneFooter(message, clickableMessage) {
+            gotoSettingProfile()
         }
     }
 
