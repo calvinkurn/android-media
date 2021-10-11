@@ -290,6 +290,7 @@ object ApplinkConstInternalGlobal {
     const val WEBVIEW_BACK_HOME = "$INTERNAL_GLOBAL/webviewbackhome"
 
     const val IMAGE_PICKER = "$INTERNAL_GLOBAL/image-picker"
+    const val IMAGE_PICKER_V2 = "$INTERNAL_GLOBAL/image-picker/v2/"
 
     const val IMAGE_EDITOR = "$INTERNAL_GLOBAL/image-editor"
 

@@ -11,6 +11,9 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TDN_ADS_COUNT
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TDN_DIMEN_ID
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TDN_INVENTORY_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohIdlingResource
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils.asSuccess
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.UohAnalytics
@@ -20,6 +23,8 @@ import com.tokopedia.buyerorder.unifiedhistory.list.domain.*
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -41,6 +46,7 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                            private val flightResendEmailUseCase: FlightResendEmailUseCase,
                                            private val trainResendEmailUseCase: TrainResendEmailUseCase,
                                            private val rechargeSetFailUseCase: RechargeSetFailUseCase,
+                                           private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
                                            private val atcUseCase: AddToCartUseCase) : BaseViewModel(dispatcher.main) {
 
     private val _orderHistoryListResult = MutableLiveData<Result<UohListOrder.Data.UohOrders>>()
@@ -78,6 +84,10 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     private val _atcResult = MutableLiveData<Result<AddToCartDataModel>>()
     val atcResult: LiveData<Result<AddToCartDataModel>>
         get() = _atcResult
+
+    private val _tdnBannerResult = MutableLiveData<Result<TopAdsImageViewModel>>()
+    val tdnBannerResult: LiveData<Result<TopAdsImageViewModel>>
+        get() = _tdnBannerResult
 
     fun loadOrderList(paramOrder: UohListParam) {
         UohIdlingResource.increment()
@@ -169,6 +179,19 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         launch {
             _rechargeSetFailResult.value = (rechargeSetFailUseCase.executeSuspend(orderId))
             UohIdlingResource.decrement()
+        }
+    }
+
+    fun loadTdnBanner(){
+        launch {
+            try {
+                val params = topAdsImageViewUseCase.getQueryMap("", TDN_INVENTORY_ID, "", TDN_ADS_COUNT, TDN_DIMEN_ID, "", "", "")
+                val tdnData = topAdsImageViewUseCase.getImageData(params)
+                if (tdnData.isNotEmpty()) _tdnBannerResult.value = (tdnData[0].asSuccess())
+            } catch (e: Exception) {
+                Timber.d(e)
+                _recommendationListResult.value = Fail(e.fillInStackTrace())
+            }
         }
     }
 
