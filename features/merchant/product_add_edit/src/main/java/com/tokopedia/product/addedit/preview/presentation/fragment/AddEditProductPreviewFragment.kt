@@ -1669,7 +1669,10 @@ class AddEditProductPreviewFragment :
             }
         })
         productLimitationTicker?.addPagerView(adapter, tickers)
-        productLimitationTicker?.showWithCondition((isAdding() && !isDrafting()) || viewModel.isDuplicate)
+        productLimitationTicker?.post {
+            productLimitationTicker?.showWithCondition(
+                (isAdding() && !isDrafting()) || viewModel.isDuplicate)
+        }
     }
 
     private fun setupBottomSheetProductLimitation(productLimitationModel: ProductLimitationModel) {
