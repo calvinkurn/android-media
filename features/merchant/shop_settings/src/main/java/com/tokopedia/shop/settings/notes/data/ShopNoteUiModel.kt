@@ -26,7 +26,7 @@ class ShopNoteUiModel() : Parcelable, Visitable<BaseShopNoteFactory> {
         this.updateTime = shopNoteModel.updateTime
         if (!isEmptyNumber(updateTime)){
             // update time in server is in GMT, convert to UTC, by minus 7 * 3600
-            this.updateTimeUTC = updateTime!!.toLong() - 25200
+            this.updateTimeUTC = updateTime!!.toLong() - SEVEN_HOUR_IN_SECOND
         }
     }
 
@@ -64,5 +64,7 @@ class ShopNoteUiModel() : Parcelable, Visitable<BaseShopNoteFactory> {
         override fun newArray(size: Int): Array<ShopNoteUiModel?> {
             return arrayOfNulls(size)
         }
+
+        private const val SEVEN_HOUR_IN_SECOND = 25200
     }
 }
