@@ -27,7 +27,6 @@ class TokoNowRecommendationCarouselViewHolder(
         @LayoutRes
         @JvmStatic
         val LAYOUT = R.layout.item_tokopedianow_recom_carousel
-        const val TEXT_OTHER_RECOM = "Rekomendasi Lainnya"
     }
 
     private val recommendationCarouselWidgetView =
@@ -45,48 +44,29 @@ class TokoNowRecommendationCarouselViewHolder(
         if (element.isBindWithPageName) {
             recommendationCarouselWidgetBindPageNameListener?.setViewToLifecycleOwner(recomWidget)
             if (element.keywords.isNotEmpty()) {
-                recomWidget.bindRecomSearchWithKeyword(
-                    pageName = element.pageName,
-                    keyword = element.keywords,
-                    widgetBindPageNameListener = this,
-                    adapterPosition = adapterPosition,
-                    scrollToPosition = scrollToPosition.orZero(),
-                    tempHeaderName = TEXT_OTHER_RECOM,
-                    isForceRefresh = element.isFirstLoad,
-                    isTokonow = true
-                )
-            } else if (element.categoryId.isNotEmpty()) {
-                //to load category page with categoryId or empty category with only pagename tokonow_no_result
-                recomWidget.bindRecomCategoryIds(
-                    pageName = element.pageName,
-                    categoryIds = element.categoryId,
-                    widgetBindPageNameListener = this,
-                    adapterPosition = adapterPosition,
-                    scrollToPosition = scrollToPosition.orZero(),
-                    tempHeaderName = TEXT_OTHER_RECOM,
-                    isForceRefresh = element.isFirstLoad,
-                    isTokonow = true
-                )
-            } else {
                 recomWidget.bindRecomWithPageName(
                     pageName = element.pageName,
                     widgetBindPageNameListener = this,
                     adapterPosition = adapterPosition,
                     scrollToPosition = scrollToPosition.orZero(),
-                    tempHeaderName = TEXT_OTHER_RECOM,
                     isForceRefresh = element.isFirstLoad,
-                    isTokonow = true
+                    isTokonow = true,
+                    categoryIds = element.categoryId,
+                    keyword = element.keywords
+                )
+                element.isFirstLoad = false
+            } else {
+                recomWidget.bindRecomWithData(
+                    carouselData = element.carouselData,
+                    adapterPosition = adapterPosition,
+                    widgetListener = this,
+                    scrollToPosition = scrollToPosition.orZero(),
+                )
+                recommendationCarouselListener?.onBindRecommendationCarousel(
+                    element,
+                    adapterPosition
                 )
             }
-            element.isFirstLoad = false
-        } else {
-            recomWidget.bindRecomWithData(
-                carouselData = element.carouselData,
-                adapterPosition = adapterPosition,
-                widgetListener = this,
-                scrollToPosition = scrollToPosition.orZero(),
-            )
-            recommendationCarouselListener?.onBindRecommendationCarousel(element, adapterPosition)
         }
     }
 

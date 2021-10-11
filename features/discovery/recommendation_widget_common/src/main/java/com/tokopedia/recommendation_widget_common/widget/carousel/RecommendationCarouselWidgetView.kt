@@ -31,6 +31,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.RecomItemTr
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.presenter.RecommendationViewModel
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TEXT_OTHER_RECOM
 import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
 import com.tokopedia.recommendation_widget_common.viewutil.getActivityFromContext
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_FAILED
@@ -145,7 +146,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         widgetBindPageNameListener: RecommendationCarouselWidgetBindPageNameListener?,
         scrollToPosition: Int = 0,
         pageName: String,
-        tempHeaderName: String = "",
+        tempHeaderName: String = TEXT_OTHER_RECOM,
         isForceRefresh: Boolean = false,
         categoryIds: List<String>,
         isTokonow: Boolean = false
@@ -181,7 +182,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         widgetBindPageNameListener: RecommendationCarouselWidgetBindPageNameListener?,
         scrollToPosition: Int = 0,
         pageName: String,
-        tempHeaderName: String = "",
+        tempHeaderName: String = TEXT_OTHER_RECOM,
         isForceRefresh: Boolean = false,
         keyword: String,
         isTokonow: Boolean = false
@@ -208,16 +209,20 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     /*
     *this function can be used for search recommendation that only provide pageName
     * bind recom widget with some important params
-    * - pageName
-    * - isTokonow
+    * - pageName (mandatory)
+    * - isTokonow (mandatory)
+    * - categoryIds (optional, if want to load recom category)
+    * - keyword (optional, if want to load recom from keyword search)
      */
     fun bindRecomWithPageName(
         adapterPosition: Int = 0,
         widgetBindPageNameListener: RecommendationCarouselWidgetBindPageNameListener?,
         scrollToPosition: Int = 0,
         pageName: String,
-        tempHeaderName: String = "",
+        tempHeaderName: String = TEXT_OTHER_RECOM,
         isForceRefresh: Boolean = false,
+        categoryIds: List<String> = listOf(),
+        keyword: String = "",
         isTokonow: Boolean = false
     ) {
         try {
@@ -231,7 +236,9 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             bindWidgetWithPageName(
                 pageName = pageName,
                 isForceRefresh = isForceRefresh,
-                isTokonow = isTokonow
+                isTokonow = isTokonow,
+                keyword = keyword,
+                categoryIds = categoryIds
             )
         } catch (e: Exception) {
             this.widgetBindPageNameListener?.onWidgetFail(pageName, e)
@@ -250,8 +257,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         adapterPosition: Int = 0,
         widgetBindPageNameListener: RecommendationCarouselWidgetBindPageNameListener?,
         scrollToPosition: Int = 0,
-        pageName: String = "",
-        tempHeaderName: String = "",
+        pageName: String,
+        tempHeaderName: String = TEXT_OTHER_RECOM,
         isForceRefresh: Boolean = false,
         parentProductId: String,
         isTokonow: Boolean = false
