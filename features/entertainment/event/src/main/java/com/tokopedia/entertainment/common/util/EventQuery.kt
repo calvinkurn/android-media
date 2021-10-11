@@ -739,6 +739,7 @@ object EventQuery {
                 {key: "child_category_ids", value: ${'$'}category_ids}
         ]) {
             products {
+                is_free    
                 id
                 category_id
                 child_category_ids
