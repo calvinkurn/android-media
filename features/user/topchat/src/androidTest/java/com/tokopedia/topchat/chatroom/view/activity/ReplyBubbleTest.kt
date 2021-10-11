@@ -249,4 +249,6 @@ class ReplyBubbleTest : TopchatRoomTest() {
         ReplyBubbleResult.hasVisibleReplyBubbleImageAt(0)
     }
 
+    // TODO: should_go_to_specific_bubble_when_msg_bubble_reply_time_nano_exist
+    // TODO: should show onboarding reply bubble
 }
