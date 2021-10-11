@@ -9,6 +9,7 @@ import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.*
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductProfile
+import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.chatlist.data.ChatWebSocketConstant
@@ -16,6 +17,7 @@ import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMa
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerAttributesResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerProfile
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.common.alterResponseOf
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.time.RfcDateTimeParser
 import com.tokopedia.websocket.RxWebSocketUtil
@@ -33,6 +35,8 @@ class RxWebSocketUtilStub constructor(
 ) : RxWebSocketUtil(
     emptyList(), 60, 5, 5
 ) {
+
+    val defaultImageResponsePath = "ws/image_response.json"
 
     val changeAddressResponse: WebSocketResponse
         get() {
@@ -59,6 +63,22 @@ class RxWebSocketUtilStub constructor(
     override fun send(msg: String) {
         startTimeQueue.add(msg)
     }
+
+    fun generateUploadImageResposne(roomMetaData: RoomMetaData): WebSocketResponse {
+        return alterResponseOf(defaultImageResponsePath) {
+            val data = it.getAsJsonObject(data)
+            data.addProperty(msg_id, roomMetaData.msgId)
+            data.addProperty(from_uid, roomMetaData.receiver.uid)
+            data.addProperty(to_uid, roomMetaData.sender.uid)
+            data.addProperty(is_opposite, true)
+        }
+    }
+
+    private val data = "data"
+    private val msg_id = "msg_id"
+    private val from_uid = "from_uid"
+    private val to_uid = "to_uid"
+    private val is_opposite = "is_opposite"
 
     fun simulateResponse(wsResponseText: WebSocketResponse) {
         val responseString = CommonUtil.toJson(wsResponseText)

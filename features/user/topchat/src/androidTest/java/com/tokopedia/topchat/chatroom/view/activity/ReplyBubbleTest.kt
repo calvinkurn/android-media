@@ -230,7 +230,20 @@ class ReplyBubbleTest : TopchatRoomTest() {
         ReplyBubbleResult.hasVisibleReplyBubbleImageAt(2)
     }
 
-    // TODO: should show image reply bubble when parent reply is not null from websocket
+    @Test
+    fun should_show_image_reply_bubble_when_parent_reply_is_not_null_from_websocket() {
+        // Given
+        getChatUseCase.response = getChatUseCase.defaultReplyBubbleResponse
+        val roomMetaData = getChatUseCase.getCurrentRoomMetaData(MSG_ID)
+        launchChatRoomActivity()
+
+        // When
+        val incomingEventWs = websocket.generateUploadImageResposne(roomMetaData)
+        websocket.simulateResponse(incomingEventWs)
+
+        // Then
+        ReplyBubbleResult.hasVisibleReplyBubbleImageAt(0)
+    }
 
     // TODO: should able copy to clipboard msg bubble
 
