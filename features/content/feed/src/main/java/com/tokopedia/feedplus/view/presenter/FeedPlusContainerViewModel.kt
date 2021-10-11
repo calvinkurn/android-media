@@ -2,6 +2,8 @@ package com.tokopedia.feedplus.view.presenter
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.createpost.common.data.pojo.getcontentform.FeedContentForm
+import com.tokopedia.createpost.common.data.pojo.getcontentform.FeedContentResponse
 import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -9,6 +11,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
+import com.tokopedia.feedplus.domain.usecase.GetContentFormForFeedUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -21,11 +24,13 @@ import javax.inject.Inject
 
 class FeedPlusContainerViewModel @Inject constructor(baseDispatcher: CoroutineDispatcher,
                                                      private val useCase: GraphqlUseCase<FeedTabs.Response>,
-                                                     private val getWhitelistUseCase: GetWhitelistUseCase)
+                                                     private val getWhitelistUseCase: GetWhitelistUseCase,
+                                                     private val getContentFormForFeedUseCase: GetContentFormForFeedUseCase)
     : BaseViewModel(baseDispatcher){
 
     val tabResp = MutableLiveData<Result<FeedTabs>>()
     val whitelistResp = MutableLiveData<Result<WhitelistDomain>>()
+    var feedContentForm = FeedContentForm()
 
     init {
         useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
@@ -44,6 +49,25 @@ class FeedPlusContainerViewModel @Inject constructor(baseDispatcher: CoroutineDi
             tabResp.value = Fail(it)
             useCase.clearCache()
         }
+    }
+
+    fun getContentForm(){
+        getContentFormForFeedUseCase.clearRequest()
+        getContentFormForFeedUseCase.execute(GetContentFormForFeedUseCase.createRequestParams(
+            mutableListOf(),"",""),
+            object: Subscriber<GraphqlResponse>() {
+                override fun onNext(t: GraphqlResponse) {
+                    val query = t.getData<FeedContentResponse>(FeedContentResponse::class.java)
+                    feedContentForm = query.feedContentForm
+                }
+
+                override fun onCompleted() {
+                }
+
+                override fun onError(e: Throwable) {
+                }
+            })
+
     }
 
     fun getWhitelist(authorListEmpty: Boolean) {
