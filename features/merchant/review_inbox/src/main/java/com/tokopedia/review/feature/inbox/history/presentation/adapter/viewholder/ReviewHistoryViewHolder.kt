@@ -5,6 +5,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.common.data.ProductrevReviewAttachment
 import com.tokopedia.review.common.util.ReviewAttachedImagesClickListener
@@ -12,6 +13,7 @@ import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.uimodel.ReviewHistoryUiModel
 import com.tokopedia.review.feature.inbox.history.presentation.util.ReviewHistoryItemListener
 import com.tokopedia.review.inbox.R
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_review_history.view.*
 
 class ReviewHistoryViewHolder(view: View,
@@ -23,6 +25,8 @@ class ReviewHistoryViewHolder(view: View,
         val LAYOUT = R.layout.item_review_history
     }
 
+    private val badRatingReason = itemView.findViewById<Typography>(R.id.review_bad_rating_reason)
+
     override fun bind(element: ReviewHistoryUiModel) {
         with(element.productrevFeedbackHistory) {
             with(product) {
@@ -33,6 +37,7 @@ class ReviewHistoryViewHolder(view: View,
                 showDescription(reviewText)
                 showAttachedImages(attachments, product.productName, product.productId, feedbackId)
                 setupStarRatings(rating)
+                showBadRatingReason(badRatingReason)
             }
             showDate(timestamp.createTimeFormatted)
             showOtherReview(status.hasResponse)
@@ -107,5 +112,13 @@ class ReviewHistoryViewHolder(view: View,
 
     private fun String.removeNewLine(): String {
         return this.replace("\n", "")
+    }
+
+    private fun showBadRatingReason(badRatingReason: String) {
+        this.badRatingReason.apply {
+            shouldShowWithAction(badRatingReason.isNotBlank()) {
+                text = badRatingReason
+            }
+        }
     }
 }
