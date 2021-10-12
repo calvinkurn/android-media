@@ -1,10 +1,12 @@
 package com.tokopedia.home.beranda.presentation.view.listener
 
 import android.content.Context
+import com.tokopedia.home.analytics.v2.CampaignWidgetTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.listener.CampaignWidgetComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.track.TrackApp
 
 /**
  * Created by yfsx on 12/10/21.
@@ -18,6 +20,11 @@ class CampaignWidgetComponentCallback(
 
     override fun onSeeAllBannerClicked(channel: ChannelModel, applink: String) {
         homeCategoryListener.onDynamicChannelClicked(applink = applink)
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            CampaignWidgetTracking.getSeeAllClickTracking(
+                channel
+            ) as HashMap<String, Any>
+        )
     }
 
     override fun onProductCardImpressed(
@@ -26,6 +33,11 @@ class CampaignWidgetComponentCallback(
         adapterPosition: Int,
         position: Int
     ) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            CampaignWidgetTracking.getCampaignWidgetItemImpressionTracking(
+                channelGrid, channel, position, adapterPosition, homeCategoryListener.userId
+            )
+        )
     }
 
     override fun onProductCardClicked(
@@ -36,10 +48,20 @@ class CampaignWidgetComponentCallback(
         applink: String
     ) {
         homeCategoryListener.onDynamicChannelClicked(applink = applink)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            CampaignWidgetTracking.getCampaignWidgetItemClickTracking(
+                channelGrid, channel, position, adapterPosition, homeCategoryListener.userId
+            )
+        )
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
         homeCategoryListener.onDynamicChannelClicked(applink = applink)
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            CampaignWidgetTracking.getSeeAllCardClickTracking(
+                channel
+            ) as HashMap<String, Any>
+        )
     }
 
     override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {
