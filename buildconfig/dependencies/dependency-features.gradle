@@ -168,6 +168,7 @@ ext {
             shopShowcase                    : ":features:merchant:shop_showcase",
             shopPage                        : ":features:merchant:shop_page",
             reviewShop                      : ":features:merchant:review_shop",
+            feedShop                        : ":features:merchant:feed_shop",
             shopSettings                    : ":features:merchant:shop_settings",
             statistic                       : ":features:merchant:statistic",
             officialStore                  : ":features:merchant:official_store",
