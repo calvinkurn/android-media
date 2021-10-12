@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.view.type.ShareType
+import com.tokopedia.createpost.common.view.type.ShareType
 import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.item_af_share.view.*
 
@@ -40,7 +40,7 @@ class ShareBottomSheetAdapter(val onClick: (ShareType, Boolean) -> Unit) : Recyc
                 shareTitle.text = context.getString(item.titleRes)
 
                 val subtitle =
-                        if (item.subtitleRes != null) item.subtitleFormula?.invoke(context, item.subtitleRes)
+                        if (item.subtitleRes != null) item.subtitleFormula?.invoke(context, item.subtitleRes?:0)
                         else null
 
                 if (subtitle != null) {
