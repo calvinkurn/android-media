@@ -1,7 +1,7 @@
-package com.tokopedia.buyerorder
+package com.tokopedia.unifyorderhistory
 
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohItemAdapter
+import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
 
 /**
  * Created by fwidjaja on 27/10/20.

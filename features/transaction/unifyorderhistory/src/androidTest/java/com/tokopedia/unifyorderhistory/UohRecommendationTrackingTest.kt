@@ -1,19 +1,18 @@
-package com.tokopedia.buyerorder
+package com.tokopedia.unifyorderhistory
 
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.cassava.validator.Utils.getJsonDataFromAsset
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.buyerorder.test.R
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohIdlingResource
-import com.tokopedia.buyerorder.unifiedhistory.list.view.activity.UohListActivity
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.unifyorderhistory.util.UohIdlingResource
+import com.tokopedia.unifyorderhistory.test.R
+import com.tokopedia.unifyorderhistory.view.activity.UohListActivity
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule

@@ -1,4 +1,4 @@
-package com.tokopedia.buyerorder
+package com.tokopedia.unifyorderhistory
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
@@ -19,7 +18,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import com.tokopedia.buyerorder.test.R
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import org.hamcrest.*
@@ -38,27 +36,27 @@ class UohRobot {
     }
 
     fun clickPrimaryButton() {
-        onView(withId(com.tokopedia.buyerorder.R.id.rv_order_list))
+        onView(withId(R.id.rv_order_list))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
-                        clickOnViewChild(com.tokopedia.buyerorder.R.id.uoh_btn_action)))
+                        clickOnViewChild(R.id.uoh_btn_action)))
     }
 
     fun clickThreeDotsMenu() {
-        onView(withId(com.tokopedia.buyerorder.R.id.rv_order_list))
+        onView(withId(R.id.rv_order_list))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
-                        clickOnViewChild(com.tokopedia.buyerorder.R.id.iv_kebab_menu)))
+                        clickOnViewChild(R.id.iv_kebab_menu)))
     }
 
     fun clickBeliLagi() {
-        onView(withId(com.tokopedia.buyerorder.R.id.rv_kebab))
+        onView(withId(R.id.rv_kebab))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
     }
 
     fun clickOrderCard() {
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        onView(withId(com.tokopedia.buyerorder.R.id.rv_order_list))
+        onView(withId(R.id.rv_order_list))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
-                        clickOnViewChild(com.tokopedia.buyerorder.R.id.cl_data_product)))
+                        clickOnViewChild(R.id.cl_data_product)))
     }
 
     fun doSearch(str: String) {
@@ -68,7 +66,7 @@ class UohRobot {
     }
 
     fun doApplyFilter() {
-        onView(withId(com.tokopedia.buyerorder.R.id.btn_apply))
+        onView(withId(R.id.btn_apply))
                 .perform(click())
         waitForData()
     }
@@ -80,7 +78,7 @@ class UohRobot {
     }
 
     fun selectFilterStatus() {
-        onView(withId(com.tokopedia.buyerorder.R.id.rv_option))
+        onView(withId(R.id.rv_option))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
         waitForData()
     }
@@ -92,7 +90,7 @@ class UohRobot {
     }
 
     fun selectFilterCategory() {
-        onView(withId(com.tokopedia.buyerorder.R.id.rv_option))
+        onView(withId(R.id.rv_option))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
         waitForData()
     }
@@ -104,19 +102,19 @@ class UohRobot {
     }
 
     fun selectFilterDate() {
-        onView(withId(com.tokopedia.buyerorder.R.id.rv_option))
+        onView(withId(R.id.rv_option))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
         waitForData()
     }
 
     fun scrollToRecommendationList() {
-        onView(withId(com.tokopedia.buyerorder.R.id.rv_order_list))
+        onView(withId(R.id.rv_order_list))
                 .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(5))
         waitForData()
     }
 
     fun clickAtcRecommendation() {
-        onView(withId(com.tokopedia.buyerorder.R.id.rv_order_list))
+        onView(withId(R.id.rv_order_list))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(5,
                         clickOnViewChild(R.id.buttonAddToCart)))
         waitForData()
@@ -124,9 +122,9 @@ class UohRobot {
 
     fun clickRecommendationCard() {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        onView(withId(com.tokopedia.buyerorder.R.id.rv_order_list))
+        onView(withId(R.id.rv_order_list))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(5,
-                        clickOnViewChild(com.tokopedia.buyerorder.R.id.uoh_product_item)))
+                        clickOnViewChild(R.id.uoh_product_item)))
         waitForData()
     }
 
