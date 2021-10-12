@@ -57,7 +57,10 @@ data class ShopReview(
         val state: State = State(),
         @SerializedName("likeDislike")
         @Expose
-        var likeDislike: LikeDislike = LikeDislike()
+        var likeDislike: LikeDislike = LikeDislike(),
+        @SerializedName("badRatingReasonFmt")
+        @Expose
+        var badRatingReasonFmt: String = ""
 )
 
 data class Product (

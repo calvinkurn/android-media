@@ -6,6 +6,7 @@ import android.view.View
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
+import com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
 import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -36,6 +37,7 @@ class ReviewImagePreviewDetailWidget : BaseCustomView {
     private var reviewText: Typography? = null
     private var likeCount: Typography? = null
     private var likeButton: IconUnify? = null
+    private var badRatingReason: ReviewBadRatingReasonWidget? = null
 
     private fun init() {
         View.inflate(context, R.layout.widget_image_preview_review_detail, this)
@@ -108,6 +110,10 @@ class ReviewImagePreviewDetailWidget : BaseCustomView {
 
     fun setVariantName(variantName: String) {
         basicInfo?.setVariantName(variantName)
+    }
+
+    fun setBadRatingReason(reason: String) {
+        badRatingReason?.showBadRatingReason(reason)
     }
 
 }

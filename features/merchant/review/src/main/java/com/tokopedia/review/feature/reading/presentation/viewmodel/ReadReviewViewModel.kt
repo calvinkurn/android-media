@@ -163,6 +163,7 @@ class ReadReviewViewModel @Inject constructor(
         }
         likeDislike = shopReview.likeDislike
         shopProductId = shopReview.product.productID
+        badRatingReasonFmt = shopReview.badRatingReasonFmt
     }
 
     fun toggleLikeReview(reviewId: String, shopId: String, likeStatus: Int, index: Int) {
