@@ -335,7 +335,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var loaderHeaderImage: FrameLayout
     private var stickyLoginView: StickyLoginView? = null
     private var homeRecyclerView: NestedRecyclerView? = null
-    private var oldToolbar: HomeMainToolbar? = null
     private var navToolbar: NavToolbar? = null
     private var homeSnackbar: Snackbar? = null
     private var component: BerandaComponent? = null
@@ -437,14 +436,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun isChooseAddressRollenceActive(): Boolean {
         return true
-    }
-
-    private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {
-        if (isOsExperiment()) {
-            ifNavRevamp.invoke()
-        } else {
-            ifNavOld.invoke()
-        }
     }
 
     private fun chooseAddressAbTestCondition(
@@ -613,7 +604,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             viewLifecycleOwner.lifecycle.addObserver(fragmentFramePerformanceIndexMonitoring)
         }
-        oldToolbar = view.findViewById(R.id.toolbar)
         navToolbar = view.findViewById(R.id.navToolbar)
 
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
@@ -624,56 +614,47 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         homeRecyclerView?.setHasFixedSize(true)
         initInboxAbTest()
         HomeComponentRollenceController.fetchHomeComponentRollenceValue()
-        navAbTestCondition(
-                ifNavOld = {
-                    oldToolbar?.setAfterInflationCallable(afterInflationCallable)
-                    oldToolbar?.switchToLightToolbar()
-                    oldToolbar?.visibility = View.VISIBLE
-                    navToolbar?.visibility = View.GONE
-                },
-                ifNavRevamp = {
-                    oldToolbar?.visibility = View.GONE
-                    navToolbar?.visibility = View.VISIBLE
-                    activity?.let { navToolbar?.setupToolbarWithStatusBar(it) }
-                    navToolbar?.let {
-                        viewLifecycleOwner.lifecycle.addObserver(it)
-                        homeRecyclerView?.addOnScrollListener(NavRecyclerViewScrollListener(
-                                navToolbar = it,
-                                startTransitionPixel = homeMainToolbarHeight,
-                                toolbarTransitionRangePixel = searchBarTransitionRange,
-                                navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
-                                    override fun onAlphaChanged(offsetAlpha: Float) {
 
-                                    }
+        //show nav toolbar
+        navToolbar?.visibility = View.VISIBLE
+        activity?.let { navToolbar?.setupToolbarWithStatusBar(it) }
+        navToolbar?.let {
+            viewLifecycleOwner.lifecycle.addObserver(it)
+            homeRecyclerView?.addOnScrollListener(NavRecyclerViewScrollListener(
+                    navToolbar = it,
+                    startTransitionPixel = homeMainToolbarHeight,
+                    toolbarTransitionRangePixel = searchBarTransitionRange,
+                    navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
+                        override fun onAlphaChanged(offsetAlpha: Float) {
 
-                                    override fun onSwitchToDarkToolbar() {
-                                        navToolbar?.hideShadow()
-                                        requestStatusBarLight()
-                                    }
-
-                                    override fun onSwitchToLightToolbar() {
-                                        requestStatusBarDark()
-                                    }
-
-                                    override fun onYposChanged(yOffset: Int) {
-                                        backgroundViewImage.y = -(yOffset.toFloat())
-                                    }
-                                }
-                        ))
-                        val icons = IconBuilder(
-                                IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)
-                        ).addIcon(getInboxIcon()) {}
-                        if (!useNewInbox) {
-                            icons.addIcon(IconList.ID_NOTIFICATION) {}
                         }
-                        icons.apply {
-                            addIcon(IconList.ID_CART) {}
-                            addIcon(IconList.ID_NAV_GLOBAL) {}
+
+                        override fun onSwitchToDarkToolbar() {
+                            navToolbar?.hideShadow()
+                            requestStatusBarLight()
                         }
-                        it.setIcon(icons)
+
+                        override fun onSwitchToLightToolbar() {
+                            requestStatusBarDark()
+                        }
+
+                        override fun onYposChanged(yOffset: Int) {
+                            backgroundViewImage.y = -(yOffset.toFloat())
+                        }
                     }
-                }
-        )
+            ))
+            val icons = IconBuilder(
+                    IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)
+            ).addIcon(getInboxIcon()) {}
+            if (!useNewInbox) {
+                icons.addIcon(IconList.ID_NOTIFICATION) {}
+            }
+            icons.apply {
+                addIcon(IconList.ID_CART) {}
+                addIcon(IconList.ID_NAV_GLOBAL) {}
+            }
+            it.setIcon(icons)
+        }
 
         chooseAddressAbTestCondition(
                 ifChooseAddressActive = {
@@ -1111,13 +1092,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 super.onScrolled(recyclerView, dx, dy)
                 val offset = recyclerView.computeVerticalScrollOffset()
                 evaluateHomeComponentOnScroll(recyclerView)
-                //calculate transparency of homeMainToolbar based on rv offset
-                navAbTestCondition(
-                        ifNavOld = {
-                            backgroundViewImage.y = -(offset.toFloat())
-                            calculateSearchbarView(recyclerView.computeVerticalScrollOffset())
-                        }
-                )
             }
         })
     }
@@ -1150,26 +1124,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             refreshLayout.setCanChildScrollUp(true)
         }
         if (recyclerView.canScrollVertically(RV_DIRECTION_TOP)) {
-            navAbTestCondition(
-                    ifNavOld = {
-                        if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
-                            oldToolbar?.showShadow()
-                        }
-                    }, ifNavRevamp = {
-                navToolbar?.showShadow(lineShadow = true)
-            })
+            navToolbar?.showShadow(lineShadow = true)
             showFeedSectionViewHolderShadow(false)
             homeRecyclerView?.setNestedCanScroll(false)
         } else { //home feed now can scroll up, so hide maintoolbar shadow
-            navAbTestCondition(
-                    ifNavOld = {
-                        if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
-                            oldToolbar?.hideShadow()
-                        }
-                    }, ifNavRevamp = {
-                navToolbar?.hideShadow(lineShadow = true)
-            }
-            )
+            navToolbar?.hideShadow(lineShadow = true)
             showFeedSectionViewHolderShadow(true)
             homeRecyclerView?.setNestedCanScroll(true)
         }
@@ -1263,14 +1222,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (activityStateListener != null) {
             activityStateListener!!.onResume()
         }
-        adjustStatusBarColor()
         if (isEnableToAutoRefresh(autoRefreshFlag)) {
             setAutoRefreshOnHome(autoRefreshFlag)
         }
         shouldPausePlay = true
-        navAbTestCondition(
-                ifNavOld = { oldToolbar?.startHintAnimation() }
-        )
         if(getHomeViewModel().isFirstLoad) {
             getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_RESUME_HOME)
             getHomeViewModel().isFirstLoad = false
@@ -1325,18 +1280,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return false
     }
 
-    private fun adjustStatusBarColor() {
-        navAbTestCondition(
-                ifNavOld = {
-                    if (homeRecyclerView != null) {
-                        calculateSearchbarView(homeRecyclerView!!.computeVerticalScrollOffset())
-                    } else {
-                        calculateSearchbarView(SEARCHBAR_DEFAULT_OFFSET)
-                    }
-                }
-        )
-    }
-
     private fun createAndCallSendScreen() {
         val sendScrWeave: WeaveInterface = object : WeaveInterface {
             override fun execute(): Any {
@@ -1358,9 +1301,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (isEnableToAutoRefresh(autoRefreshFlag)) {
             stopAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
         }
-        navAbTestCondition(
-                ifNavOld = { oldToolbar?.stopHintAnimation() }
-        )
     }
 
     override fun onStop() {
@@ -1390,18 +1330,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             /*
              * set notification gimmick
              */
-            navAbTestCondition(
-                    ifNavOld = {
-                        if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
-                            oldToolbar?.setNotificationNumber(NOTIFICATION_NUMBER_DEFAULT)
-                        }
-                    },
-                    ifNavRevamp = {
-                        if (!useNewInbox) {
-                            navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, NOTIFICATION_NUMBER_DEFAULT)
-                        }
-                    }
-            )
+            if (!useNewInbox) {
+                navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, NOTIFICATION_NUMBER_DEFAULT)
+            }
         }
         refreshLayout.setOnRefreshListener(this)
     }
@@ -1886,24 +1817,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (offsetAlpha < EMPTY_OFFSET_ALPHA) {
             offsetAlpha = EMPTY_OFFSET_ALPHA
         }
-        if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
-            if (offsetAlpha >= OFFSET_ALPHA_TRESHOLD) {
-                oldToolbar?.switchToDarkToolbar()
-                if (isLightThemeStatusBar) requestStatusBarDark()
-            } else {
-                oldToolbar?.switchToLightToolbar()
-                if (!isLightThemeStatusBar) requestStatusBarLight()
-            }
-        }
-        if (offsetAlpha >= MAX_OFFSET_ALPHA) {
-            offsetAlpha = MAX_OFFSET_ALPHA
-        }
-        if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
-            if (offsetAlpha >= EMPTY_OFFSET_ALPHA && offsetAlpha <= MAX_OFFSET_ALPHA) {
-                oldToolbar?.setBackgroundAlpha(offsetAlpha)
-                setStatusBarAlpha(offsetAlpha)
-            }
-        }
     }
 
     private fun requestStatusBarDark() {
@@ -2345,9 +2258,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun onPageLoadTimeEnd() {
         stickyLoginView?.loadContent()
-        navAbTestCondition(ifNavRevamp = {
-            if (isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnboarding()
-        })
+        if (isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnboarding()
         observeHomeNotif()
         pageLoadTimeCallback?.invalidate()
     }
@@ -2460,32 +2371,21 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun setHint(searchPlaceholder: SearchPlaceholder) {
         searchPlaceholder.data?.let { data ->
-            navAbTestCondition(
-                    ifNavOld = {
-                        oldToolbar?.setHint(
-                                HintData(data.placeholder ?: "", data.keyword ?: ""),
-                                placeholderToHint(data),
-                                isFirstInstall(),
-                                false)
+            navToolbar?.setupSearchbar(
+                    hints = listOf(HintData(data.placeholder ?: "", data.keyword
+                            ?: "")),
+                    applink = if (data.keyword?.isEmpty() != false) {
+                        ApplinkConstInternalDiscovery.AUTOCOMPLETE
+                    } else PARAM_APPLINK_AUTOCOMPLETE,
+                    searchbarClickCallback = {
+                        RouteManager.route(context,
+                                ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE,
+                                HOME_SOURCE,
+                                data.keyword.safeEncodeUtf8(),
+                                isFirstInstall().toString())
                     },
-                    ifNavRevamp = {
-                        navToolbar?.setupSearchbar(
-                                hints = listOf(HintData(data.placeholder ?: "", data.keyword
-                                        ?: "")),
-                                applink = if (data.keyword?.isEmpty() != false) {
-                                    ApplinkConstInternalDiscovery.AUTOCOMPLETE
-                                } else PARAM_APPLINK_AUTOCOMPLETE,
-                                searchbarClickCallback = {
-                                    RouteManager.route(context,
-                                            ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE,
-                                            HOME_SOURCE,
-                                            data.keyword.safeEncodeUtf8(),
-                                            isFirstInstall().toString())
-                                },
-                                searchbarImpressionCallback = {},
-                                shouldShowTransition = false
-                        )
-                    }
+                    searchbarImpressionCallback = {},
+                    shouldShowTransition = false
             )
         }
     }
@@ -2924,18 +2824,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onNotificationChanged(notificationCount: Int, inboxCount: Int, cartCount: Int) {
-        navAbTestCondition(
-                ifNavOld = {
-                    if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
-                        oldToolbar?.setNotificationNumber(notificationCount)
-                        oldToolbar?.setInboxNumber(inboxCount)
-                    }
-                },
-                ifNavRevamp = {
-                    getHomeViewModel().setHomeNotif(
-                            notificationCount, inboxCount, cartCount
-                    )
-                }
+        getHomeViewModel().setHomeNotif(
+            notificationCount, inboxCount, cartCount
         )
     }
 
@@ -2944,26 +2834,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         get() {
             var height = resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
             context?.let {
-                navAbTestCondition(
-                    ifNavOld = {
-                        if (oldToolbar != null) {
-                            height = oldToolbar?.height
-                                ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
-                            oldToolbar?.let {
-                                if (!it.isShadowApplied()) {
-                                    height += resources.getDimensionPixelSize(R.dimen.dp_8)
-                                }
-                            }
-                        }
-                    },
-                    ifNavRevamp = {
-                        navToolbar?.let {
-                            height = navToolbar?.height
-                                ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
-                            height += resources.getDimensionPixelSize(R.dimen.dp_8)
-                        }
-                    }
-                )
+                navToolbar?.let {
+                    height = navToolbar?.height
+                        ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
+                    height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                }
             }
             return height
         }

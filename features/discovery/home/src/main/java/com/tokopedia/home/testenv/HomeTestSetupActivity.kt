@@ -3,8 +3,6 @@ package com.tokopedia.home.testenv
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.coachmark.CoachMark2.Companion.isCoachmmarkShowAllowed
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
 import com.tokopedia.searchbar.navigation_component.NavConstant.KEY_FIRST_VIEW_NAVIGATION
 import com.tokopedia.searchbar.navigation_component.NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING
 import com.tokopedia.searchbar.navigation_component.NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1
@@ -40,6 +38,5 @@ class HomeTestSetupActivity : AppCompatActivity(){
             .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2, false)
             .putBoolean(KEY_P1_DONE_AS_NON_LOGIN, true).apply()
         userSession.setFirstTimeUserOnboarding(false)
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(NAVIGATION_EXP_TOP_NAV, NAVIGATION_EXP_TOP_NAV)
     }
 }

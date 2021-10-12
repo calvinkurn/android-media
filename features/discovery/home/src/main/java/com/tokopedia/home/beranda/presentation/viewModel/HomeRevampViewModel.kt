@@ -1217,8 +1217,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun getTokopoint(){
         if(getTokopointJob?.isActive == true || !userSession.get().isLoggedIn) return
-        getTokopointJob = if (navRollanceType.equals(RollenceKey.NAVIGATION_VARIANT_REVAMP)) {
-            launchCatchError(coroutineContext, block = {
+        getTokopointJob = launchCatchError(coroutineContext, block = {
                 val data = getTokopointListBasedOnElibility()
                 updateHeaderViewModel(
                         tokopointsDrawer = data.tokopointsDrawerList.drawerList.getDrawerListByType("Rewards")
@@ -1232,21 +1231,6 @@ open class HomeRevampViewModel @Inject constructor(
                         isTokoPointDataError = true
                 )
             }
-        } else {
-            launchCatchError(coroutineContext, block = {
-                getHomeTokopointsDataUseCase.get().setParams("2.0.0")
-                val data = getHomeTokopointsDataUseCase.get().executeOnBackground()
-                updateHeaderViewModel(
-                        tokopointsDrawer = data.tokopointsDrawer,
-                        isTokoPointDataError = false
-                )
-            }) {
-                updateHeaderViewModel(
-                        tokopointsDrawer = null,
-                        isTokoPointDataError = true
-                )
-            }
-        }
     }
 
     private fun getTokocashBalance() {
