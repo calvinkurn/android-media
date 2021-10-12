@@ -100,9 +100,14 @@ object GtmEvents {
         map[GiftBoxTrackerConstants.EVENT_CATEGORY] = GiftBoxCategory.GIFT_BOX_DAILY
         map[GiftBoxTrackerConstants.EVENT_ACTION] = GiftBoxAction.VIEW_REWARDS
         var eventLabelPrefix = "points"
-        if (benefitType != null && benefitType == BenefitType.REWARD_POINT) {
-            eventLabelPrefix = "tokopoints"
+        if (benefitType != null){
+            when(benefitType) {
+                BenefitType.REWARD_POINT-> eventLabelPrefix = "tokopoints"
+                BenefitType.OVO-> eventLabelPrefix = "points"
+                else -> eventLabelPrefix = benefitType
+            }
         }
+
         map[GiftBoxTrackerConstants.EVENT_LABEL] = "$eventLabelPrefix - $pointsAmount"
         userId?.let {
             map[GiftBoxTrackerConstants.USER_ID] = userId
