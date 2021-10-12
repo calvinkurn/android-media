@@ -221,6 +221,15 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 v.parent.requestLayout()
             }
         }
+
+        countdownTimer.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+            val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
+            if (marginLayoutParams.bottomMargin != newBottomMargin) {
+                marginLayoutParams.updateMargins(bottom = newBottomMargin)
+                v.parent.requestLayout()
+            }
+        }
     }
 
     private fun setupDebugView(view: View) {
@@ -273,6 +282,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             override fun onFinish() {
                 countdownTimer.gone()
                 parentViewModel.startLiveCountDownTimer()
+            }
+
+            override fun onCancelLiveStream() {
+                countdownTimer.gone()
             }
         })
     }
@@ -669,7 +682,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         const val KEY_START_COUNTDOWN = "start_count_down"
 
         private const val TIMER_ROTATION_INTERVAL = 3000L
-        private const val TIMER_TEXT_COUNTDOWN_INTERVAL = 2000L
+        private const val TIMER_TEXT_COUNTDOWN_INTERVAL = 1000L
         private const val TIMER_ANIMATION_TOTAL_COUNT = 3
     }
 }
