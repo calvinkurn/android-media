@@ -109,8 +109,8 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private val navigator: BuyerOrderDetailNavigator by lazy {
         BuyerOrderDetailNavigator(requireActivity(), this)
     }
-    private val digitalRecommendationData: DigitalRecommendationData by lazy {
-        DigitalRecommendationData(
+    private val digitalRecommendationData: DigitalRecommendationData
+        get() = DigitalRecommendationData(
                 viewModelFactory,
                 viewLifecycleOwner,
                 DigitalRecommendationAdditionalTrackingData(
@@ -120,7 +120,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
                 ),
                 DigitalRecommendationPage.PHYSICAL_GOODS
         )
-    }
+
     private val bottomSheetManager: BuyerOrderDetailBottomSheetManager by lazy {
         BuyerOrderDetailBottomSheetManager(requireContext(), childFragmentManager)
     }
