@@ -39,6 +39,7 @@ class EmptyStateViewHolder(itemView: View?,
             tvMvcEmptyStateTitle.text = title
             tvMvcEmptyStateViewHistory.isVisible = element.isActiveVoucher
 
+            if (!element.isEligible) btnMvcEmptyStateAction?.hide()
             btnMvcEmptyStateAction?.setOnClickListener {
                 element.onCreateVoucherClicked()
             }
