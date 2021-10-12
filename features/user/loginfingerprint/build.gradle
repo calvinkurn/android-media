@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-allopen'
 
 
 buildscript {
@@ -11,7 +12,12 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
+        classpath "org.jetbrains.kotlin:kotlin-allopen:1.5.30"
     }
+}
+
+allOpen {
+    annotation('com.tokopedia.loginfingerprint.di.OpenForTesting')
 }
 
 android {
@@ -71,6 +77,8 @@ dependencies {
     }
 
     // Instrumentation Test
+
+    androidTestImplementation "io.mockk:mockk-android:1.11.0"
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation(rootProject.ext.testDependencies.espressoIntents) {
