@@ -140,6 +140,7 @@ import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -216,6 +217,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private lateinit var shareData: LinkerData
     private lateinit var reportBottomSheet: ReportBottomSheet
     private var shareBottomSheetProduct = false
+    private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
+        TopAdsUrlHitter(context)
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -3060,7 +3064,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onFollowClick(positionInFeed: Int, shopId: String, adId: String) {
         val eventLabel = "$adId - $shopId"
-
         val eventAction = CLICK_FOLLOW_TOPADS
         analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
         feedViewModel.doToggleFavoriteShop(positionInFeed, 0, shopId)
@@ -3076,10 +3079,18 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedAnalytics?.clickSekSekarang(postId,shopId,type,isFollowed)
     }
 
-    override fun onTopAdsHeadlineImpression(position: Int, cpmModel: CpmModel) {
+    override fun onTopAdsHeadlineImpression(position: Int, cpmModel: CpmModel, isNewVariant:Boolean) {
         val eventLabel = "${cpmModel.data[0].id} - ${cpmModel.data[0].cpm.cpmShop.id}"
         val eventAction = IMPRESSION_CARD_TOPADS
 
+        if (isNewVariant){
+            sendTopadsImpression(
+                    cpmModel.data[0].cpm.cpmImage.fullUrl,
+                    cpmModel.data[0].cpm.cpmShop.id,
+                    cpmModel.data[0].cpm.uri,
+                    cpmModel.data[0].cpm?.cpmImage?.fullEcs
+            )
+        }
         analytics.sendFeedTopAdsHeadlineAdsImpression(
             eventAction,
             eventLabel,
@@ -3206,4 +3217,34 @@ class FeedPlusFragment : BaseDaggerFragment(),
             }
         }
     }
-}
+
+    private fun sendTopadsUrlClick(adClickUrl: String,id:String="",uri: String="",fullEcs: String?="") {
+        topAdsUrlHitter.hitClickUrl(
+                this::class.java.simpleName,
+                adClickUrl,
+                id,
+                uri,
+                fullEcs,
+                ""
+        )
+    }
+
+    private fun sendTopadsImpression(adViewUrl: String, id: String, uri: String, fullEcs: String?){
+        topAdsUrlHitter.hitImpressionUrl(
+                this::class.java.simpleName,
+                adViewUrl,
+                id,
+                uri,
+                fullEcs
+        )
+    }
+
+    private fun getAdClickUrl(positionInFeed: Int): String{
+        var adClickUrl=""
+        if (adapter.getlist()[positionInFeed] is TopadsHeadLineV2Model) {
+            val item = (adapter.getlist()[positionInFeed] as TopadsHeadLineV2Model)
+            adClickUrl = item.cpmModel?.data?.firstOrNull()?.adClickUrl?:""
+        }
+        return adClickUrl
+    }
+    }
