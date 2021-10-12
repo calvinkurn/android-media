@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.feature.multiedit.ui.bottomsheet
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import com.tokopedia.product.manage.databinding.BottomSheetProductManageBinding
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductMultiEditAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.MultiEditViewHolder.MenuClickListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class ProductMultiEditBottomSheet(
     private val listener: MultiEditListener,
@@ -26,19 +28,26 @@ class ProductMultiEditBottomSheet(
         R.string.product_bs_delete_title
     )
 
-    init {
-        val binding = BottomSheetProductManageBinding.inflate(
-            LayoutInflater.from(context),
-            null,
-            false
-        )
-        val adapter = ProductMultiEditAdapter(menuClickListener())
-        binding.menuList.adapter = adapter
-        adapter.menuList = menuList
+    private var binding by autoClearedNullable<BottomSheetProductManageBinding>()
 
+    init {
         showHeader = false
         showCloseIcon = false
-        setChild(binding.root)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = BottomSheetProductManageBinding.inflate(inflater, container, false)
+        setChild(binding?.root)
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setupView()
+        super.onViewCreated(view, savedInstanceState)
     }
 
     private fun menuClickListener(): MenuClickListener {
@@ -58,6 +67,12 @@ class ProductMultiEditBottomSheet(
                 dismiss()
             }
         }
+    }
+
+    private fun setupView() {
+        val adapter = ProductMultiEditAdapter(menuClickListener())
+        binding?.menuList?.adapter = adapter
+        adapter.menuList = menuList
     }
 
     fun show() {

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
@@ -27,6 +28,7 @@ import com.tokopedia.product.manage.common.feature.variant.di.QuickEditVariantCo
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.common.feature.variant.presentation.viewmodel.QuickEditVariantViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<QuickEditVariantComponent> {
@@ -41,19 +43,27 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
 
     private var adapter: BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>? = null
 
-    private var binding: BottomSheetProductManageQuickEditVariantBinding? = null
+    private var binding by autoClearedNullable<BottomSheetProductManageQuickEditVariantBinding>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = BottomSheetProductManageQuickEditVariantBinding.inflate(
-            LayoutInflater.from(context),
-            null,
-            false
-        )
-
-        setChild(binding?.root)
         setTitle(getTitle())
         setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = BottomSheetProductManageQuickEditVariantBinding.inflate(
+            inflater,
+            container,
+            false
+        )
+        setChild(binding?.root)
+
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

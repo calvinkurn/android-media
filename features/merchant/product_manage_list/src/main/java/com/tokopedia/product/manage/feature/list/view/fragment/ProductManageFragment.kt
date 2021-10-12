@@ -211,8 +211,10 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     private var filterProductBottomSheet: ProductManageFilterFragment? = null
     private var productManageMoreMenuBottomSheet: ProductManageMoreMenuBottomSheet? = null
     private var multiEditBottomSheet: ProductMultiEditBottomSheet? = null
-    private val stockInfoBottomSheet by lazy { StockInformationBottomSheet(view, fragmentManager) }
-    private val productManageAddEditMenuBottomSheet by lazy { ProductManageAddEditMenuBottomSheet(view, sellerFeatureCarouselClickListener, this, fragmentManager) }
+    private val stockInfoBottomSheet by lazy { StockInformationBottomSheet(childFragmentManager) }
+    private val productManageAddEditMenuBottomSheet by lazy {
+        ProductManageAddEditMenuBottomSheet(sellerFeatureCarouselClickListener, this, childFragmentManager)
+    }
 
     private var binding by autoClearedNullable<FragmentProductManageBinding>()
     private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }

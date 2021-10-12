@@ -3,12 +3,15 @@ package com.tokopedia.product.manage.feature.list.view.ui.bottomsheet
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.product.manage.databinding.BottomSheetProductManageMoreMenuBinding
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageMoreMenuAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductManageMoreMenuViewHolder
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class ProductManageMoreMenuBottomSheet(
         context: Context? = null,
@@ -22,21 +25,31 @@ class ProductManageMoreMenuBottomSheet(
 
     private var moreMenuAdapter: ProductManageMoreMenuAdapter? = null
 
+    private var binding by autoClearedNullable<BottomSheetProductManageMoreMenuBinding>()
+
     init {
         if (context != null && listener != null && fm != null) {
             moreMenuAdapter = ProductManageMoreMenuAdapter(context, listener)
-            val binding = BottomSheetProductManageMoreMenuBinding.inflate(
-                LayoutInflater.from(context),
-                null,
-                true
-            )
-            binding.moreMenuList.run {
-                setHasFixedSize(true)
-                layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                adapter = moreMenuAdapter
-            }
-            setChild(binding.root)
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = BottomSheetProductManageMoreMenuBinding.inflate(
+            inflater,
+            container,
+            true
+        )
+        setChild(binding?.root)
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setupView()
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -49,6 +62,14 @@ class ProductManageMoreMenuBottomSheet(
     fun show() {
         fm?.let {
             show(it, TAG)
+        }
+    }
+
+    private fun setupView() {
+        binding?.moreMenuList?.run {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            adapter = moreMenuAdapter
         }
     }
 

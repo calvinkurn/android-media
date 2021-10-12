@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +16,7 @@ import com.tokopedia.product.manage.common.view.ongoingpromotion.adapter.divider
 import com.tokopedia.product.manage.databinding.BottomSheetProductManageOngoingPromotionBinding
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.ArrayList
 
 class OngoingPromotionBottomSheet : BottomSheetUnify() {
@@ -40,11 +42,9 @@ class OngoingPromotionBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private var campaignListRecyclerView: RecyclerView? = null
-
     private var campaignTypeList: List<ProductCampaignType>? = null
 
-    private var binding: BottomSheetProductManageOngoingPromotionBinding? = null
+    private var binding by autoClearedNullable<BottomSheetProductManageOngoingPromotionBinding>()
 
     private val itemDecoration by lazy {
         context?.let {
@@ -58,12 +58,6 @@ class OngoingPromotionBottomSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        binding = BottomSheetProductManageOngoingPromotionBinding.inflate(
-            LayoutInflater.from(context),
-            null,
-            false
-        )
         setTitle(context?.getString(R.string.product_manage_campaign_bottom_sheet_title).orEmpty())
         setChild(binding?.root)
 
@@ -82,6 +76,20 @@ class OngoingPromotionBottomSheet : BottomSheetUnify() {
             ONGOING_CAMPAIGN_LIST_KEY,
             OngoingPromotionListWrapper::class.java
         )?.ongoingPromotionList
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = BottomSheetProductManageOngoingPromotionBinding.inflate(
+            inflater,
+            container,
+            false
+        )
+        setChild(binding?.root)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

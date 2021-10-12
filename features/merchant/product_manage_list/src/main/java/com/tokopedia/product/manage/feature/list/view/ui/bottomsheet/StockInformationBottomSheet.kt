@@ -10,9 +10,9 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.databinding.BottomSheetProductManageStockInformationBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class StockInformationBottomSheet(
-    container: View? = null,
     private val fm: FragmentManager? = null
 ): BottomSheetUnify() {
 
@@ -21,23 +21,31 @@ class StockInformationBottomSheet(
     }
 
     init {
-        (container as? ViewGroup)?.let { vg ->
-            val binding = BottomSheetProductManageStockInformationBinding.inflate(
-                LayoutInflater.from(context),
-                vg,
-                false
-            )
+        val title = context?.getString(R.string.product_manage_stock_information).orEmpty()
 
-            val title = context?.getString(R.string.product_manage_stock_information).orEmpty()
-            val description = context?.getString(com.tokopedia.product.manage.common.R.string.product_manage_stock_info_description).orEmpty()
-            val padding = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
+        setTitle(title)
+    }
 
-            binding.textDescription.text = description
-            binding.root.setPadding(0, 0, 0, padding)
+    private var binding by autoClearedNullable<BottomSheetProductManageStockInformationBinding>()
 
-            setTitle(title)
-            setChild(binding.root)
-        }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = BottomSheetProductManageStockInformationBinding.inflate(
+            inflater,
+            container,
+            false
+        )
+        setChild(binding?.root)
+
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setupView()
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -49,5 +57,14 @@ class StockInformationBottomSheet(
 
     fun show() {
         fm?.let { show(it, TAG) }
+    }
+
+    private fun setupView() {
+        val description = context?.getString(com.tokopedia.product.manage.common.R.string.product_manage_stock_info_description)
+            .orEmpty()
+        val padding = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
+
+        binding?.textDescription?.text = description
+        binding?.root?.setPadding(0, 0, 0, padding)
     }
 }

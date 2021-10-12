@@ -6,7 +6,9 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.DialogFragment
@@ -48,10 +50,18 @@ class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFini
             }
             product = cacheManager?.get<ProductUiModel>(KEY_PRODUCT, ProductUiModel::class.java, null)
         }
-        val view = View.inflate(context, R.layout.fragment_quick_edit_price,null)
-        setChild(view)
         setTitle(getString(R.string.product_manage_menu_set_price))
         setStyle(DialogFragment.STYLE_NORMAL, com.tokopedia.product.manage.common.R.style.DialogStyle)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentQuickEditPriceBinding.inflate(inflater, container, false)
+        setChild(binding?.root)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
