@@ -1164,12 +1164,10 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun isChooseAddressWidgetShowed(): Boolean {
         val remoteConfig = FirebaseRemoteConfigImpl(context)
-        val isRollOutUser = ChooseAddressUtils.isRollOutUser(context)
-        val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
-                TokoNowChooseAddressWidgetViewHolder.ENABLE_CHOOSE_ADDRESS_WIDGET,
-                true
+        return remoteConfig.getBoolean(
+            TokoNowChooseAddressWidgetViewHolder.ENABLE_CHOOSE_ADDRESS_WIDGET,
+            true
         )
-        return isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled
     }
 
     private fun updateCurrentPageLocalCacheModelData() {

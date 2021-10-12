@@ -79,11 +79,11 @@ class HomeEducationalInformationWidgetViewHolder(
 
     private fun setupBasicButton() {
         binding?.apply {
-            cvChevron.show()
             laChevron.gone()
+            sivChevronDown.show()
             val unifyColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-            ivChevronDown.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(unifyColor, BlendModeCompat.SRC_ATOP)
-            cvChevron.setOnClickListener {
+            sivChevronDown.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(unifyColor, BlendModeCompat.SRC_ATOP)
+            sivChevronDown.setOnClickListener {
                 showBottomSheet()
             }
         }

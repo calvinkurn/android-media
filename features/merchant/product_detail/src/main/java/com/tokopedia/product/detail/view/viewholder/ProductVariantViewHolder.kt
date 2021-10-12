@@ -12,10 +12,10 @@ import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.databinding.ItemLocalLoadUnifyBinding
+import com.tokopedia.product.detail.databinding.ItemProductVariantViewHolderBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.variant_common.view.adapter.VariantContainerAdapter
-import kotlinx.android.synthetic.main.item_local_load_unify.view.*
-import kotlinx.android.synthetic.main.item_product_variant_view_holder.view.*
 
 /**
  * Created by Yehezkiel on 2020-02-26
@@ -30,8 +30,11 @@ class ProductVariantViewHolder(val view: View,
         val LAYOUT = R.layout.item_product_variant_view_holder
     }
 
+    private val binding = ItemProductVariantViewHolderBinding.bind(view)
+    private val itemLocalLoadUnifyBinding = ItemLocalLoadUnifyBinding.bind(binding.root)
+
     override fun bind(element: VariantDataModel) {
-        with(view) {
+        with(binding) {
             if (element.isVariantError) {
                 showError(element)
             } else {
@@ -46,7 +49,7 @@ class ProductVariantViewHolder(val view: View,
                     containerAdapter?.setData(it)
                 }
             }
-            addOnImpressionListener(element.impressHolder) {
+            view.addOnImpressionListener(element.impressHolder) {
                 pdpListener.onImpressComponent(getComponentTrackData(element))
             }
         }
@@ -60,26 +63,28 @@ class ProductVariantViewHolder(val view: View,
         }
     }
 
-    private fun showError(element: VariantDataModel) = with(view) {
-        variant_local_load.progressState = false
-        variant_local_load.show()
+    private fun showError(element: VariantDataModel) = with(binding) {
+        val variantLocalLoad = itemLocalLoadUnifyBinding.variantLocalLoad
+        variantLocalLoad.progressState = false
+        variantLocalLoad.show()
         renderError(element)
         rvContainerVariant.hide()
     }
 
-    private fun renderError(element: VariantDataModel) = with(view) {
-        variant_local_load.refreshBtn?.setOnClickListener {
+    private fun renderError(element: VariantDataModel) = with(binding) {
+        val variantLocalLoad = itemLocalLoadUnifyBinding.variantLocalLoad
+        variantLocalLoad.refreshBtn?.setOnClickListener {
             if (!element.isRefreshing) {
                 element.isRefreshing = true
-                variant_local_load.progressState = true
+                variantLocalLoad.progressState = true
                 pdpListener.refreshPage()
             }
         }
     }
 
-    private fun hideError() = with(view) {
+    private fun hideError() = with(binding) {
         rvContainerVariant.show()
-        variant_local_load.hide()
+        itemLocalLoadUnifyBinding.variantLocalLoad.hide()
     }
 
     private fun getComponentTrackData(

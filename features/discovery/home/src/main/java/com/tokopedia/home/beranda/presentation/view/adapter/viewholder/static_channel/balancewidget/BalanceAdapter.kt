@@ -62,6 +62,7 @@ class BalanceAdapter(
     var attachedRecyclerView: RecyclerView? = null
     private var itemMap: HomeBalanceModel = HomeBalanceModel()
 
+    @Suppress("TooGenericExceptionCaught")
     fun setItemMap(itemMap: HomeBalanceModel) {
         this.itemMap = itemMap
 
@@ -71,7 +72,7 @@ class BalanceAdapter(
                 balanceModelList.add(it.key, it.value)
             }
             submitList(balanceModelList.toMutableList())
-        } catch (e: IndexOutOfBoundsException) {
+        } catch (e: Exception) {
             HomeServerLogger.logWarning(
                 type = TYPE_ERROR_SUBMIT_WALLET,
                 throwable = e,
