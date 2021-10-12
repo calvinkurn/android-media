@@ -44,43 +44,92 @@ class HomeAdapterTypeFactory(
     override fun type(uiModel: HomeProductRecomUiModel): Int = HomeProductRecomViewHolder.LAYOUT
     override fun type(uiModel: HomeEmptyStateUiModel): Int = HomeEmptyStateViewHolder.LAYOUT
     override fun type(uiModel: HomeLoadingStateUiModel): Int = HomeLoadingStateViewHolder.LAYOUT
-    override fun type(uiModel: HomeSharingEducationWidgetUiModel): Int = HomeSharingEducationWidgetViewHolder.LAYOUT
-    override fun type(uiModel: HomeEducationalInformationWidgetUiModel): Int = HomeEducationalInformationWidgetViewHolder.LAYOUT
+    override fun type(uiModel: HomeSharingEducationWidgetUiModel): Int =
+        HomeSharingEducationWidgetViewHolder.LAYOUT
+
+    override fun type(uiModel: HomeEducationalInformationWidgetUiModel): Int =
+        HomeEducationalInformationWidgetViewHolder.LAYOUT
     // endregion
 
     // region Global Home Component
-    override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int = DynamicLegoBannerViewHolder.LAYOUT
-    override fun type(dynamicLegoBannerSixAutoDataModel: DynamicLegoBannerSixAutoDataModel): Int = DynamicLegoBannerSixAutoViewHolder.LAYOUT
-    override fun type(recommendationListCarouselDataModel: RecommendationListCarouselDataModel): Int = RecommendationListCarouselViewHolder.LAYOUT
-    override fun type(reminderWidgetModel: ReminderWidgetModel): Int = ReminderWidgetViewHolder.LAYOUT
+    override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int =
+        DynamicLegoBannerViewHolder.LAYOUT
+
+    override fun type(dynamicLegoBannerSixAutoDataModel: DynamicLegoBannerSixAutoDataModel): Int =
+        DynamicLegoBannerSixAutoViewHolder.LAYOUT
+
+    override fun type(recommendationListCarouselDataModel: RecommendationListCarouselDataModel): Int =
+        RecommendationListCarouselViewHolder.LAYOUT
+
+    override fun type(reminderWidgetModel: ReminderWidgetModel): Int =
+        ReminderWidgetViewHolder.LAYOUT
+
     override fun type(mixLeftDataModel: MixLeftDataModel): Int = MixLeftComponentViewHolder.LAYOUT
     override fun type(mixTopDataModel: MixTopDataModel): Int = MixTopComponentViewHolder.LAYOUT
-    override fun type(productHighlightDataModel: ProductHighlightDataModel): Int = ProductHighlightComponentViewHolder.LAYOUT
+    override fun type(productHighlightDataModel: ProductHighlightDataModel): Int =
+        ProductHighlightComponentViewHolder.LAYOUT
+
     override fun type(lego4AutoDataModel: Lego4AutoDataModel) = Lego4AutoBannerViewHolder.LAYOUT
-    override fun type(featuredShopDataModel: FeaturedShopDataModel): Int = FeaturedShopViewHolder.LAYOUT
-    override fun type(categoryNavigationDataModel: CategoryNavigationDataModel): Int = CategoryNavigationViewHolder.LAYOUT
+    override fun type(featuredShopDataModel: FeaturedShopDataModel): Int =
+        FeaturedShopViewHolder.LAYOUT
+
+    override fun type(categoryNavigationDataModel: CategoryNavigationDataModel): Int =
+        CategoryNavigationViewHolder.LAYOUT
+
     override fun type(bannerDataModel: BannerDataModel): Int = BannerComponentViewHolder.LAYOUT
-    override fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int = DynamicIconViewHolder.LAYOUT
-    override fun type(featuredBrandDataModel: FeaturedBrandDataModel): Int = FeaturedBrandViewHolder.LAYOUT
-    // endregion
+    override fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int =
+        DynamicIconViewHolder.LAYOUT
+
+    override fun type(featuredBrandDataModel: FeaturedBrandDataModel): Int =
+        FeaturedBrandViewHolder.LAYOUT
+
+    override fun type(campaignWidgetDataModel: CampaignWidgetDataModel): Int = 0
+// endregion
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
-        return when(type) {
+        return when (type) {
             // region Common TokoNow Component
-            TokoNowCategoryGridViewHolder.LAYOUT -> TokoNowCategoryGridViewHolder(view, tokoNowCategoryGridListener)
-            TokoNowRecentPurchaseViewHolder.LAYOUT -> TokoNowRecentPurchaseViewHolder(view, tokoNowProductCardListener)
-            TokoNowChooseAddressWidgetViewHolder.LAYOUT -> TokoNowChooseAddressWidgetViewHolder(view, tokoNowView, tokoNowChooseAddressWidgetListener)
-            TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(view, tokoNowView)
-            TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(view, serverErrorListener)
+            TokoNowCategoryGridViewHolder.LAYOUT -> TokoNowCategoryGridViewHolder(
+                view,
+                tokoNowCategoryGridListener
+            )
+            TokoNowRecentPurchaseViewHolder.LAYOUT -> TokoNowRecentPurchaseViewHolder(
+                view,
+                tokoNowProductCardListener
+            )
+            TokoNowChooseAddressWidgetViewHolder.LAYOUT -> TokoNowChooseAddressWidgetViewHolder(
+                view,
+                tokoNowView,
+                tokoNowChooseAddressWidgetListener
+            )
+            TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(
+                view,
+                tokoNowView
+            )
+            TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(
+                view,
+                serverErrorListener
+            )
             // endregion
 
             // region TokoNow Home Component
             HomeTickerViewHolder.LAYOUT -> HomeTickerViewHolder(view, homeTickerListener)
-            HomeProductRecomViewHolder.LAYOUT -> HomeProductRecomViewHolder(view, tokoNowView, homeProductRecomListener)
+            HomeProductRecomViewHolder.LAYOUT -> HomeProductRecomViewHolder(
+                view,
+                tokoNowView,
+                homeProductRecomListener
+            )
             HomeEmptyStateViewHolder.LAYOUT -> HomeEmptyStateViewHolder(view, tokoNowView)
             HomeLoadingStateViewHolder.LAYOUT -> HomeLoadingStateViewHolder(view)
-            HomeSharingEducationWidgetViewHolder.LAYOUT -> HomeSharingEducationWidgetViewHolder(view, homeSharingEducationListener)
-            HomeEducationalInformationWidgetViewHolder.LAYOUT -> HomeEducationalInformationWidgetViewHolder(view, tokoNowView, homeEducationalInformationListener)
+            HomeSharingEducationWidgetViewHolder.LAYOUT -> HomeSharingEducationWidgetViewHolder(
+                view,
+                homeSharingEducationListener
+            )
+            HomeEducationalInformationWidgetViewHolder.LAYOUT -> HomeEducationalInformationWidgetViewHolder(
+                view,
+                tokoNowView,
+                homeEducationalInformationListener
+            )
             // endregion
 
             // region Global Home Component

@@ -131,25 +131,44 @@ class OfficialHomeAdapterTypeFactory(
         return BestSellerViewHolder.LAYOUT
     }
 
+    override fun type(campaignWidgetDataModel: CampaignWidgetDataModel): Int = 0
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<Visitable<*>> {
         return when (type) {
-            BestSellerViewHolder.LAYOUT-> BestSellerViewHolder(view, recommendationWidgetListener)
+            BestSellerViewHolder.LAYOUT -> BestSellerViewHolder(view, recommendationWidgetListener)
             OfficialLoadingContentViewHolder.LAYOUT -> OfficialLoadingContentViewHolder(view)
             OfficialLoadingMoreViewHolder.LAYOUT -> OfficialLoadingMoreViewHolder(view)
             OfficialBannerViewHolder.LAYOUT -> OfficialBannerViewHolder(view)
             OfficialBenefitViewHolder.LAYOUT -> OfficialBenefitViewHolder(view)
-            OfficialFeaturedShopViewHolder.LAYOUT -> OfficialFeaturedShopViewHolder(view, featuredShopListener)
-            DynamicChannelThematicViewHolder.LAYOUT -> DynamicChannelThematicViewHolder(view, dcEventHandler)
-            DynamicChannelSprintSaleViewHolder.LAYOUT -> DynamicChannelSprintSaleViewHolder(view, dcEventHandler)
-            MixLeftComponentViewHolder.LAYOUT -> MixLeftComponentViewHolder(
-                    view,
-                    mixLeftComponentListener,
-                    homeComponentListener,
-                    recycledViewPool
+            OfficialFeaturedShopViewHolder.LAYOUT -> OfficialFeaturedShopViewHolder(
+                view,
+                featuredShopListener
             )
-            MixTopComponentViewHolder.LAYOUT -> MixTopComponentViewHolder(view, homeComponentListener, mixTopComponentListener)
-            OfficialProductRecommendationTitleViewHolder.LAYOUT -> OfficialProductRecommendationTitleViewHolder(view)
-            OfficialProductRecommendationViewHolder.LAYOUT -> OfficialProductRecommendationViewHolder(view)
+            DynamicChannelThematicViewHolder.LAYOUT -> DynamicChannelThematicViewHolder(
+                view,
+                dcEventHandler
+            )
+            DynamicChannelSprintSaleViewHolder.LAYOUT -> DynamicChannelSprintSaleViewHolder(
+                view,
+                dcEventHandler
+            )
+            MixLeftComponentViewHolder.LAYOUT -> MixLeftComponentViewHolder(
+                view,
+                mixLeftComponentListener,
+                homeComponentListener,
+                recycledViewPool
+            )
+            MixTopComponentViewHolder.LAYOUT -> MixTopComponentViewHolder(
+                view,
+                homeComponentListener,
+                mixTopComponentListener
+            )
+            OfficialProductRecommendationTitleViewHolder.LAYOUT -> OfficialProductRecommendationTitleViewHolder(
+                view
+            )
+            OfficialProductRecommendationViewHolder.LAYOUT -> OfficialProductRecommendationViewHolder(
+                view
+            )
             OfficialLoadingContentViewHolder.LAYOUT -> OfficialLoadingContentViewHolder(view)
             FeaturedShopViewHolder.LAYOUT -> FeaturedShopViewHolder(view, featuredShopDCListener, homeComponentListener)
             HideViewHolder.LAYOUT -> HideViewHolder(view)
