@@ -195,7 +195,8 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
             itemSortFilterWrapperList.add(
                 ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper(
                     title = it.title,
-                    isSelected = it.isSelected
+                    isSelected = it.isSelected,
+                    idFilter = it.value
                 )
             )
         }
