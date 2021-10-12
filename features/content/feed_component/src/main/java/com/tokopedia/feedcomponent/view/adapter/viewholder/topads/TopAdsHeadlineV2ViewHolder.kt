@@ -25,7 +25,6 @@ import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
 
-
 const val TOPADS_VARIANT_EXPERIMENT_CLEAN = 2
 const val TOPADS_VARIANT_EXPERIMENT_INFO = 3
 

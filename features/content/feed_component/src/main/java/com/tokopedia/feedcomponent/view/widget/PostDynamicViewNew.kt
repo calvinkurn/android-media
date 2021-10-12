@@ -250,7 +250,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.typename,
             feedXCard.media.firstOrNull()?.type ?: "",
             feedXCard.text,
-            feedXCard.media.firstOrNull()?.type ?: "",
             feedXCard.isTopAds,
             feedXCard.adId,
             feedXCard.shopId

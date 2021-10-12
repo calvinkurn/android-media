@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.view.mapper
 
+import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.*
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -107,7 +108,7 @@ object TopadsFeedXMapper {
                 type = "image",
                 appLink = applinks,
                 mediaUrl = image.m_url,
-                tagging = arrayListOf(FeedXMediaTagging(index,0.5f,0.5f)),
+                tagging = arrayListOf(FeedXMediaTagging(index,0.5f,0.5f,mediaIndex = index)),
                 isImageImpressedFirst = false,
                 productName = name,
                 price = product.priceFormat,
@@ -121,7 +122,7 @@ object TopadsFeedXMapper {
     }
 
     private fun getFeedxMediaTagging(index:Int):FeedXMediaTagging{
-        return FeedXMediaTagging(index,0.5f, 0.5f)
+        return FeedXMediaTagging(index,0.5f, 0.5f,mediaIndex = index)
     }
 
     private fun cpmProductToFeedXProduct(
