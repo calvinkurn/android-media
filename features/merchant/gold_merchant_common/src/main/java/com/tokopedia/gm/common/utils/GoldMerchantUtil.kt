@@ -49,15 +49,20 @@ object GoldMerchantUtil {
             val simpleDateFormat =
                 SimpleDateFormat(PATTERN_DATE_SHOP_INFO, DateFormatUtils.DEFAULT_LOCALE)
             simpleDateFormat.parse(dateString)?.let { calendar.time = it }
-            val firstMonday = when (calendar.get(Calendar.DAY_OF_WEEK)) {
-                Calendar.TUESDAY -> SIX_NUMBER
-                Calendar.WEDNESDAY -> FIVE_NUMBER
-                Calendar.THURSDAY -> FOUR_NUMBER
-                Calendar.FRIDAY -> THREE_NUMBER
-                Calendar.SATURDAY -> TWO_NUMBER
-                Calendar.SUNDAY -> ONE_NUMBER
-                Calendar.MONDAY -> ZERO_NUMBER
-                else -> ZERO_NUMBER
+            val shopAge = totalDays(dateString)
+            val firstMonday = if (shopAge > ONE_NUMBER) {
+                 when (calendar.get(Calendar.DAY_OF_WEEK)) {
+                    Calendar.TUESDAY -> SIX_NUMBER
+                    Calendar.WEDNESDAY -> FIVE_NUMBER
+                    Calendar.THURSDAY -> FOUR_NUMBER
+                    Calendar.FRIDAY -> THREE_NUMBER
+                    Calendar.SATURDAY -> TWO_NUMBER
+                    Calendar.SUNDAY -> ONE_NUMBER
+                    Calendar.MONDAY -> ZERO_NUMBER
+                    else -> ZERO_NUMBER
+                }
+            } else {
+                SEVEN_NUMBER
             }
             calendar.add(Calendar.DAY_OF_YEAR, firstMonday)
             val diffInMs: Long = abs(System.currentTimeMillis() - calendar.timeInMillis)
