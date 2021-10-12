@@ -802,6 +802,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                     map[KEY_POSITION] = componentsItems.indexOf(coupon) + 1
                     map[KEY_PROMO_ID] = it.promoId.toString()
                     map[KEY_PROMO_CODE] = it.slug.toString()
+                    map[KEY_NAME] = CLAIM_COUPON_ITEM_NAME
                 }
                 list.add(map)
             }
@@ -833,7 +834,8 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                             ?: NONE_OTHER else it.imageUrlMobile ?: NONE_OTHER,
                     KEY_POSITION to (position + 1).toString(),
                     KEY_PROMO_ID to it.promoId.toString(),
-                    KEY_PROMO_CODE to it.slug.toString()
+                    KEY_PROMO_CODE to it.slug.toString(),
+                    KEY_NAME to CLAIM_COUPON_ITEM_NAME
             ))
         }
         val promotions: Map<String, ArrayList<Map<String, Any>>> = mapOf(
