@@ -12,11 +12,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -28,16 +26,17 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst.AttachProduct
 import com.tokopedia.attachproduct.R
 import com.tokopedia.attachproduct.analytics.NewAttachProductAnalytics
+import com.tokopedia.attachproduct.databinding.FragmentAttachProductBinding
 import com.tokopedia.attachproduct.di.AttachProductModule
+import com.tokopedia.attachproduct.di.DaggerAttachProductComponent
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
-import com.tokopedia.attachproduct.view.adapter.NewAttachProductListAdapter
-import com.tokopedia.attachproduct.view.adapter.NewAttachProductListAdapterTypeFactory
+import com.tokopedia.attachproduct.view.adapter.AttachProductListAdapter
+import com.tokopedia.attachproduct.view.adapter.AttachProductListAdapterTypeFactory
 import com.tokopedia.attachproduct.view.presenter.AttachProductContract
-import com.tokopedia.attachproduct.view.uimodel.NewAttachProductItemUiModel
-import com.tokopedia.attachproduct.view.viewholder.NewCheckableInteractionListenerWithPreCheckedAction
+import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel
+import com.tokopedia.attachproduct.view.viewholder.CheckableInteractionListenerWithPreCheckedAction
 import com.tokopedia.attachproduct.view.viewmodel.AttachProductViewModel
 import com.tokopedia.track.TrackApp
-import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import java.util.*
@@ -46,10 +45,11 @@ import javax.inject.Inject
 /**
  * Created by Hendri on 13/02/18.
  */
-class AttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, NewAttachProductListAdapterTypeFactory>(), NewCheckableInteractionListenerWithPreCheckedAction, AttachProductContract.View {
-    private lateinit var sendButton: Button
-    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private lateinit var searchBar: SearchBarUnify
+class AttachProductFragment : BaseListFragment<AttachProductItemUiModel, AttachProductListAdapterTypeFactory>(), CheckableInteractionListenerWithPreCheckedAction, AttachProductContract.View {
+
+    private var _binding: FragmentAttachProductBinding? = null
+
+    private val binding get() = _binding!!
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -59,7 +59,7 @@ class AttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, NewA
     }
 
     private var activityContract: AttachProductContract.Activity? = null
-    protected val adapter by lazy { NewAttachProductListAdapter(adapterTypeFactory) }
+    protected val adapter by lazy { AttachProductListAdapter(adapterTypeFactory) }
     private var isSeller = false
     private var source = ""
     private var shopId = ""
@@ -76,7 +76,7 @@ class AttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, NewA
     }
 
     override fun initInjector() {
-            DaggerNewAttachProductComponent.builder().newAttachProductModule(AttachProductModule(requireContext())).baseAppComponent(
+            DaggerAttachProductComponent.builder().attachProductModule(AttachProductModule(requireContext())).baseAppComponent(
             (requireActivity().application as BaseMainApplication).baseAppComponent
         ).build().inject(this)
     }
@@ -115,8 +115,7 @@ class AttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, NewA
     }
 
     private fun initSearchBar() {
-        searchBar = requireActivity().findViewById(R.id.search_input_view)
-        searchBar.searchBarTextField.addTextChangedListener(object : TextWatcher {
+        binding.searchInputView.searchBarTextField.addTextChangedListener(object : TextWatcher {
             var timer: Timer? = null
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
@@ -124,18 +123,18 @@ class AttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, NewA
                 timer = Timer()
                 timer!!.schedule(object : TimerTask() {
                     override fun run() {
-                        val mainHandler = Handler(searchBar.getContext().mainLooper)
+                        val mainHandler = Handler(binding.searchInputView.getContext().mainLooper)
                         val myRunnable = Runnable { onSearchTextChanged(s.toString()) }
                         mainHandler.post(myRunnable)
                     }
                 }, 300)
             }
         })
-        searchBar.searchBarTextField.setOnEditorActionListener { v: TextView?, actionId: Int, event: KeyEvent? ->
+        binding.searchInputView.searchBarTextField.setOnEditorActionListener { v: TextView?, actionId: Int, event: KeyEvent? ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                searchBar.clearFocus()
+                binding.searchInputView.clearFocus()
                 val `in` = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                `in`.hideSoftInputFromWindow(searchBar.getWindowToken(), 0)
+                `in`.hideSoftInputFromWindow(binding.searchInputView.getWindowToken(), 0)
 
                 onSearchSubmitted()
                 return@setOnEditorActionListener true
@@ -154,12 +153,10 @@ class AttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, NewA
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_attach_product, container, false)
-        sendButton = view.findViewById(R.id.send_button_attach_product)
-        sendButton.setOnClickListener { sendButtonClicked() }
-        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
-        swipeRefreshLayout.setOnRefreshListener{
-            if (searchBar.searchBarTextField.text.toString().isEmpty()) {
+        _binding = FragmentAttachProductBinding.inflate(inflater, container, false)
+        binding.sendButtonAttachProduct.setOnClickListener { sendButtonClicked() }
+        binding.swipeRefreshLayout.setOnRefreshListener{
+            if (binding.searchInputView.searchBarTextField.text.toString().isEmpty()) {
                 viewModel.clearCache()
             }
             loadInitialData()
@@ -179,7 +176,7 @@ class AttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, NewA
 
     private fun onSearchSubmitted() {
         KeyboardHandler.DropKeyboard(activity, view)
-        if (searchBar.searchBarTextField.text.toString().isNotEmpty()) {
+        if (binding.searchInputView.searchBarTextField.text.toString().isNotEmpty()) {
             loadInitialData()
         }
     }
@@ -219,7 +216,7 @@ class AttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, NewA
         })
     }
 
-    override fun onItemClicked(newAttachProductItemUiModel: NewAttachProductItemUiModel) {}
+    override fun onItemClicked(attachProductItemUiModel: AttachProductItemUiModel) {}
     override fun loadInitialData() {
         adapter.clearAllElements()
         recyclerViewLayoutManager.scrollToPosition(0)
@@ -228,7 +225,7 @@ class AttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, NewA
 
     override fun loadData(page: Int) {
         if (activityContract != null) {
-            if (searchBar.searchBarTextField.text.toString().isEmpty()
+            if (binding.searchInputView.searchBarTextField.text.toString().isEmpty()
                     && viewModel.cacheList.isNotEmpty()) {
                 val page = (viewModel.cacheList.size / 10) + 1
                 viewModel.loadProductData(
@@ -239,7 +236,7 @@ class AttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, NewA
             }
             else {
                 viewModel.loadProductData(
-                        searchBar.searchBarTextField.text.toString(),
+                    binding.searchInputView.searchBarTextField.text.toString(),
                 shopId,
                 page, warehouseId
                 )
@@ -253,16 +250,16 @@ class AttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, NewA
         return 1
     }
 
-    override fun createAdapterInstance(): BaseListAdapter<NewAttachProductItemUiModel, NewAttachProductListAdapterTypeFactory> {
+    override fun createAdapterInstance(): BaseListAdapter<AttachProductItemUiModel, AttachProductListAdapterTypeFactory> {
         return adapter
     }
 
-    override fun getAdapter(): BaseListAdapter<NewAttachProductItemUiModel, NewAttachProductListAdapterTypeFactory> {
+    override fun getAdapter(): BaseListAdapter<AttachProductItemUiModel, AttachProductListAdapterTypeFactory> {
         return adapter
     }
 
-    override fun getAdapterTypeFactory(): NewAttachProductListAdapterTypeFactory {
-        return NewAttachProductListAdapterTypeFactory(this)
+    override fun getAdapterTypeFactory(): AttachProductListAdapterTypeFactory {
+        return AttachProductListAdapterTypeFactory(this)
     }
 
     override fun shouldAllowCheckChange(position: Int, checked: Boolean): Boolean {
@@ -289,19 +286,19 @@ class AttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, NewA
         }
     }
 
-    override fun addProductToList(productNews: List<NewAttachProductItemUiModel>, hasNextPage: Boolean) {
-        if (productNews.isNotEmpty()) {
-            sendButton.visibility = View.VISIBLE
+    override fun addProductToList(products: List<AttachProductItemUiModel>, hasNextPage: Boolean) {
+        if (products.isNotEmpty()) {
+            binding.sendButtonAttachProduct.visibility = View.VISIBLE
         } else {
-            sendButton.visibility = View.VISIBLE
+            binding.sendButtonAttachProduct.visibility = View.VISIBLE
         }
-        removeHiddenProducts(productNews.toMutableList())
-        renderList(productNews, hasNextPage)
+        removeHiddenProducts(products.toMutableList())
+        renderList(products, hasNextPage)
     }
 
     override fun hideAllLoadingIndicator() {
         hideLoading()
-        swipeRefreshLayout.isRefreshing = false
+        binding.swipeRefreshLayout.isRefreshing = false
     }
 
     override fun showErrorMessage(throwable: Throwable) {
@@ -310,8 +307,8 @@ class AttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, NewA
     }
 
     override fun updateButtonBasedOnChecked(checkedCount: Int) {
-        sendButton.text = getString(R.string.string_attach_product_send_button_text, checkedCount.toString(), maxChecked.toString())
-        sendButton.isEnabled = checkedCount in 1..maxChecked
+        binding.sendButtonAttachProduct.text = getString(R.string.string_attach_product_send_button_text, checkedCount.toString(), maxChecked.toString())
+        binding.sendButtonAttachProduct.isEnabled = checkedCount in 1..maxChecked
     }
 
     private fun sendButtonClicked() {
@@ -322,7 +319,7 @@ class AttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, NewA
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyResultViewModel = EmptyResultViewModel()
-        if (TextUtils.isEmpty(searchBar.searchBarTextField.text)) {
+        if (TextUtils.isEmpty(binding.searchInputView.searchBarTextField.text)) {
             if (isSeller) {
                 emptyResultViewModel.content = getString(R.string.string_attach_product_my_empty_product)
             } else {
@@ -349,11 +346,11 @@ class AttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, NewA
         activityContract!!.goToAddProduct(shopId)
     }
 
-    private fun removeHiddenProducts(productNews: MutableList<NewAttachProductItemUiModel>) {
+    private fun removeHiddenProducts(products: MutableList<AttachProductItemUiModel>) {
         if (hiddenProducts == null) {
             return
         }
-        val iterator = productNews.iterator()
+        val iterator = products.iterator()
         while (iterator.hasNext()) {
             val product = iterator.next()
             var shouldHide = false
@@ -387,6 +384,7 @@ class AttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, NewA
 
     override fun onDestroy() {
         super.onDestroy()
+        _binding = null
     }
 
     companion object {

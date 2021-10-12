@@ -3,6 +3,8 @@ package com.tokopedia.attachproduct.view.resultmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel;
+
 /**
  * Created by Hendri on 19/02/18.
  */

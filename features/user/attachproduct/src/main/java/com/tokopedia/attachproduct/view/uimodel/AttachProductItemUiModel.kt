@@ -2,14 +2,14 @@ package com.tokopedia.attachproduct.view.uimodel
 
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.attachproduct.view.adapter.NewAttachProductListAdapterTypeFactory
-import kotlinx.android.parcel.Parcelize
+import com.tokopedia.attachproduct.view.adapter.AttachProductListAdapterTypeFactory
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by Hendri on 13/02/18.
  */
 @Parcelize
-data class NewAttachProductItemUiModel(
+data class AttachProductItemUiModel(
     val productUrl: String,
     val productName: String,
     val productId: String,
@@ -22,9 +22,9 @@ data class NewAttachProductItemUiModel(
     val isFreeOngkirActive: Boolean,
     val imgUrlFreeOngkir: String,
     val stock: Int
-) : Visitable<NewAttachProductListAdapterTypeFactory>, Parcelable {
+) : Visitable<AttachProductListAdapterTypeFactory>, Parcelable {
 
-    override fun type(typeFactoryNew: NewAttachProductListAdapterTypeFactory): Int {
-        return typeFactoryNew.type(this)
+    override fun type(typeFactory: AttachProductListAdapterTypeFactory): Int {
+        return typeFactory.type(this)
     }
 }

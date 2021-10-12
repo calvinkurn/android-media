@@ -4,16 +4,16 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.attachproduct.view.uimodel.NewAttachProductItemUiModel
+import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel
 import java.util.*
 
-class NewAttachProductListAdapter(baseListAdapterTypeFactoryNew: NewAttachProductListAdapterTypeFactory?)
-    : BaseListAdapter<NewAttachProductItemUiModel,
-        NewAttachProductListAdapterTypeFactory>(baseListAdapterTypeFactoryNew) {
+class AttachProductListAdapter(baseListAdapterTypeFactory: AttachProductListAdapterTypeFactory?)
+    : BaseListAdapter<AttachProductItemUiModel,
+        AttachProductListAdapterTypeFactory>(baseListAdapterTypeFactory) {
     private var productIds: HashSet<String> = HashSet()
-    private var checkedList: ArrayList<NewAttachProductItemUiModel> = ArrayList()
+    private var checkedList: ArrayList<AttachProductItemUiModel> = ArrayList()
 
-    override fun getData(): List<NewAttachProductItemUiModel> {
+    override fun getData(): List<AttachProductItemUiModel> {
         return super.getData()
     }
 
@@ -25,11 +25,11 @@ class NewAttachProductListAdapter(baseListAdapterTypeFactoryNew: NewAttachProduc
         }
     }
 
-    private fun getDataRow(position: Int): NewAttachProductItemUiModel? {
+    private fun getDataRow(position: Int): AttachProductItemUiModel? {
         return if (position < 0 || position >= visitables.size) {
             null
         } else {
-            visitables[position] as NewAttachProductItemUiModel
+            visitables[position] as AttachProductItemUiModel
         }
     }
 
@@ -47,8 +47,8 @@ class NewAttachProductListAdapter(baseListAdapterTypeFactoryNew: NewAttachProduc
         }
     }
 
-    private fun addToCheckedDataList(productItemViewModelNew: NewAttachProductItemUiModel) {
-        checkedList.add(productItemViewModelNew)
+    private fun addToCheckedDataList(productItemViewModel: AttachProductItemUiModel) {
+        checkedList.add(productItemViewModel)
     }
 
     private fun removeFromCheckedDataList(productId: String) {
@@ -74,6 +74,6 @@ class NewAttachProductListAdapter(baseListAdapterTypeFactoryNew: NewAttachProduc
         return productIds.contains(productId)
     }
 
-    val checkedDataList: List<NewAttachProductItemUiModel>
+    val checkedDataList: List<AttachProductItemUiModel>
         get() = checkedList
 }

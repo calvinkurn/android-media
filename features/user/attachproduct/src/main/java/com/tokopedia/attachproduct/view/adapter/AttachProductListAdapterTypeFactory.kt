@@ -9,20 +9,21 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
-import com.tokopedia.attachproduct.view.uimodel.NewAttachProductItemUiModel
-import com.tokopedia.attachproduct.view.viewholder.NewAttachProductEmptyResultViewHolder
-import com.tokopedia.attachproduct.view.viewholder.NewAttachProductListItemViewHolder
-import com.tokopedia.attachproduct.view.viewholder.NewCheckableInteractionListenerWithPreCheckedAction
+import com.tokopedia.attachproduct.databinding.ItemProductAttachBinding
+import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel
+import com.tokopedia.attachproduct.view.viewholder.AttachProductEmptyResultViewHolder
+import com.tokopedia.attachproduct.view.viewholder.AttachProductListItemViewHolder
+import com.tokopedia.attachproduct.view.viewholder.CheckableInteractionListenerWithPreCheckedAction
 
-class NewAttachProductListAdapterTypeFactory
+class AttachProductListAdapterTypeFactory
     (private val checkableInteractionListener : CheckableInteractionListener)
-    : BaseAdapterTypeFactory(), BaseListCheckableTypeFactory<NewAttachProductItemUiModel?> {
+    : BaseAdapterTypeFactory(), BaseListCheckableTypeFactory<AttachProductItemUiModel?> {
 
     private val listener = checkableInteractionListener as
-            NewCheckableInteractionListenerWithPreCheckedAction
+            CheckableInteractionListenerWithPreCheckedAction
 
-    override fun type(viewModelNew: NewAttachProductItemUiModel?): Int {
-        return NewAttachProductListItemViewHolder.LAYOUT
+    override fun type(viewModel: AttachProductItemUiModel?): Int {
+        return AttachProductListItemViewHolder.LAYOUT
     }
 
     override fun type(viewModel: EmptyResultViewModel): Int {
@@ -34,10 +35,11 @@ class NewAttachProductListAdapterTypeFactory
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
-        return if (type == NewAttachProductListItemViewHolder.LAYOUT) {
-            NewAttachProductListItemViewHolder(parent, listener, checkableInteractionListener)
+        return if (type == AttachProductListItemViewHolder.LAYOUT) {
+            val binding = ItemProductAttachBinding.bind(parent)
+            AttachProductListItemViewHolder(binding, listener, checkableInteractionListener)
         } else if (type == EmptyResultViewHolder.LAYOUT) {
-            NewAttachProductEmptyResultViewHolder(parent)
+            AttachProductEmptyResultViewHolder(parent)
         } else if (type == ErrorNetworkViewHolder.LAYOUT) {
             ErrorNetworkViewHolder(parent)
         } else {

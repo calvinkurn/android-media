@@ -1,12 +1,12 @@
 package com.tokopedia.attachproduct.view.presenter
 
 import com.tokopedia.attachcommon.data.ResultProduct
-import com.tokopedia.attachproduct.view.uimodel.NewAttachProductItemUiModel
+import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel
 import java.util.*
 
 interface AttachProductContract {
     interface View {
-        fun addProductToList(productNews: List<NewAttachProductItemUiModel>, hasNextPage: Boolean)
+        fun addProductToList(products: List<AttachProductItemUiModel>, hasNextPage: Boolean)
         fun hideAllLoadingIndicator()
         fun showErrorMessage(throwable: Throwable)
         fun updateButtonBasedOnChecked(checkedCount: Int)
@@ -21,7 +21,7 @@ interface AttachProductContract {
 
     interface Presenter {
         fun loadProductData(query: String, shopId: String, page: Int, warehouseId: String)
-        fun updateCheckedList(productNews: List<NewAttachProductItemUiModel>)
+        fun updateCheckedList(products: List<AttachProductItemUiModel>)
         fun resetCheckedList()
         fun completeSelection(onFinish: (ArrayList<ResultProduct>) -> Unit)
     }

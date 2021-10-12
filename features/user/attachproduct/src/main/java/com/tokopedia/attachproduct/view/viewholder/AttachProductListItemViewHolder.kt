@@ -1,36 +1,29 @@
 package com.tokopedia.attachproduct.view.viewholder
 
 import android.view.View
-import android.widget.CheckBox
 import android.widget.CompoundButton
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.attachproduct.R
-import com.tokopedia.attachproduct.view.uimodel.NewAttachProductItemUiModel
+import com.tokopedia.attachproduct.databinding.ItemProductAttachBinding
+import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel
 
 /**
  * Created by Hendri on 13/02/18.
  */
-class NewAttachProductListItemViewHolder
-    (itemView: View,
-     private val newCheckableInteractionListener: NewCheckableInteractionListenerWithPreCheckedAction,
+class AttachProductListItemViewHolder
+    (private val binding: ItemProductAttachBinding,
+     private val newCheckableInteractionListener: CheckableInteractionListenerWithPreCheckedAction,
      checkableInteractionListener: CheckableInteractionListener)
-    : BaseCheckableViewHolder<NewAttachProductItemUiModel>(itemView, checkableInteractionListener),
+    : BaseCheckableViewHolder<AttachProductItemUiModel>(binding.root, checkableInteractionListener),
         CompoundButton.OnCheckedChangeListener {
-    private var imageView: ImageView = itemView.findViewById(R.id.attach_product_item_image)
-    private var nameTextView: TextView = itemView.findViewById(R.id.attach_product_item_name)
-    private var checkBox: CheckBox = itemView.findViewById(R.id.attach_product_item_checkbox)
-    private var priceTextView: TextView = itemView.findViewById(R.id.attach_product_item_price)
-
 
     override fun getCheckable(): CompoundButton {
-        return checkBox
+        return binding.attachProductItemCheckbox
     }
 
-    override fun bind(element: NewAttachProductItemUiModel) {
+    override fun bind(element: AttachProductItemUiModel) {
         bindClickable()
         bindName(element)
         bindImage(element)
@@ -46,19 +39,19 @@ class NewAttachProductListItemViewHolder
     }
 
     private fun bindClickable() {
-        checkBox.isClickable = false
+        binding.attachProductItemCheckbox.isClickable = false
     }
 
-    private fun bindName(element: NewAttachProductItemUiModel) {
-        nameTextView.text = element.productName
+    private fun bindName(element: AttachProductItemUiModel) {
+        binding.attachProductItemName.text = element.productName
     }
 
-    private fun bindImage(element: NewAttachProductItemUiModel) {
-        ImageHandler.loadImageRounded2(imageView.context, imageView, element.productImage)
+    private fun bindImage(element: AttachProductItemUiModel) {
+        ImageHandler.loadImageRounded2(binding.attachProductItemImage.context, binding.attachProductItemImage, element.productImage)
     }
 
-    private fun bindPrice(element: NewAttachProductItemUiModel) {
-        priceTextView.text = element.productPrice
+    private fun bindPrice(element: AttachProductItemUiModel) {
+        binding.attachProductItemPrice.text = element.productPrice
     }
 
     private fun bindToogle() {

@@ -6,7 +6,7 @@ import java.util.*
 /**
  * Created by Hendri on 08/08/18.
  */
-class NewAttachProductEventTracking(event: String, category: String, action: String, label: String) {
+class AttachProductEventTracking(event: String, category: String, action: String, label: String) {
     protected var eventTracking: MutableMap<String, Any> = HashMap()
 
     fun setEvent(event: String) {

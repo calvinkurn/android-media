@@ -9,9 +9,6 @@ import com.tokopedia.attachproduct.R
 import com.tokopedia.attachproduct.domain.usecase.AttachProductUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.network.NetworkRouter
-import com.tokopedia.network.interceptor.FingerprintInterceptor
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.user.session.UserSession
 import dagger.Module
 import dagger.Provides
@@ -32,33 +29,6 @@ class AttachProductModule(private val context: Context) {
     @Provides
     fun provideUserSession(@ApplicationContext context: Context?): UserSession {
         return UserSession(context)
-    }
-
-    @AttachProductScope
-    @Provides
-    fun provideErrorResponseInterceptor(): ErrorResponseInterceptor {
-        return ErrorResponseInterceptor(TkpdV4ResponseError::class.java)
-    }
-
-    @AttachProductScope
-    @Provides
-    fun provideNetworkRouter(@ApplicationContext context: Context?): NetworkRouter? {
-        return context as NetworkRouter?
-    }
-
-    @AttachProductScope
-    @Provides
-    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context?,
-                                   networkRouter: NetworkRouter?,
-                                   userSession: UserSession?): TkpdAuthInterceptor {
-        return TkpdAuthInterceptor(context, networkRouter, userSession)
-    }
-
-    @AttachProductScope
-    @Provides
-    fun provideFingerprintInterceptor(networkRouter: NetworkRouter?,
-                                      userSession: UserSession?): FingerprintInterceptor {
-        return FingerprintInterceptor(networkRouter, userSession)
     }
 
     @Provides

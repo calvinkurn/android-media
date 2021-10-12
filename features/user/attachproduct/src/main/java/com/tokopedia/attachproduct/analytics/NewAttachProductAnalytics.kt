@@ -1,5 +1,7 @@
 package com.tokopedia.attachproduct.analytics
 
+import com.tokopedia.attachproduct.view.tracking.AttachProductEventTracking
+
 object NewAttachProductAnalytics {
     val eventCheckProduct: AttachProductEventTracking
         get() = AttachProductEventTracking(
@@ -9,7 +11,7 @@ object NewAttachProductAnalytics {
             ""
         )
 
-    fun getEventCheckProductTalk(productId: String?): AttachProductEventTracking {
+    fun getEventCheckProductTalk(productId: String): AttachProductEventTracking {
         return AttachProductEventTracking(
             "clickInboxChat",
             "inbox - talk",
