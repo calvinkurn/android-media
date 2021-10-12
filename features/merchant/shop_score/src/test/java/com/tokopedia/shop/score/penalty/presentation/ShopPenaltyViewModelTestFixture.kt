@@ -78,6 +78,10 @@ abstract class ShopPenaltyViewModelTestFixture {
         } returns shopScorePenaltyDetail
     }
 
+    protected fun onGetShopPenaltyDetailUseCaseError_thenReturn(exception: Throwable) {
+        coEvery { getShopPenaltyDetailUseCase.get().executeOnBackground() } throws exception
+    }
+
     protected fun verifyGetShopPenaltyDetailUseCaseCaseCalled() {
         coVerify { getShopPenaltyDetailUseCase.get().executeOnBackground() }
     }
