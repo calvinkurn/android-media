@@ -386,7 +386,7 @@ public class BranchWrapper implements WrapperInterface {
                                 if (data.isThrowOnError()) {
                                     shareCallback.onError(LinkerUtils.createLinkerError(LinkerConstants.ERROR_SOMETHING_WENT_WRONG, null));
                                 } else {
-                                    shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.getDesktopUrl(), data.getDesktopUrl()));
+                                    shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.renderShareUri(), data.renderShareUri()));
                                 }
                             }
                         }
@@ -664,7 +664,7 @@ public class BranchWrapper implements WrapperInterface {
         handler.postDelayed(
                 new Runnable() {
                     public void run() {
-                        shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.getDesktopUrl(), data.getDesktopUrl()));
+                        shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.renderShareUri(), data.renderShareUri()));
                         Timber.w("P2#BRANCH_LINK_TIMEOUT#error;linkdata='%s'", data.getId());
                     }
                 },
