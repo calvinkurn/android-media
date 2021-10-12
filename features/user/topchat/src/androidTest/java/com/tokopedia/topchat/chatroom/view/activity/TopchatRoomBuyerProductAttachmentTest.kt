@@ -252,7 +252,42 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
     }
 
     @Test
-    fun user_open_bottomsheet_when_click_beli_in_attached_product_variants() {
+    fun should_directly_add_to_cart_when_click_keranjang_in_attached_product() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        launchChatRoomActivity()
+
+        //When
+        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        scrollChatToPosition(4)
+        onView(withRecyclerView(R.id.recycler_view_chatroom)
+            .atPositionOnView(4, R.id.tv_atc)).perform(click())
+
+        // Then
+        onView(withText(context.getString(R.string.title_topchat_see_cart)))
+            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+    }
+
+    @Test
+    fun should_open_cart_when_click_beli_in_attached_product() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        launchChatRoomActivity()
+
+        //When
+        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        scrollChatToPosition(4)
+        onView(withRecyclerView(R.id.recycler_view_chatroom)
+            .atPositionOnView(4, R.id.tv_buy)).perform(click())
+
+        // Then
+        intended(hasData(ApplinkConst.CART))
+    }
+
+    @Test
+    fun should_open_bottomsheet_when_click_beli_in_attached_product_variants() {
         // Given
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
@@ -272,7 +307,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
     }
 
     @Test
-    fun user_open_bottomsheet_when_click_keranjang_in_attached_product_variants() {
+    fun should_open_bottomsheet_when_click_keranjang_in_attached_product_variants() {
         // Given
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse

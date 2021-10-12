@@ -1429,7 +1429,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     topchatViewState?.chatRoomViewModel?.shopName ?: "",
                     element.getBuyEventAction()
                 )
-                RouteManager.route(context, ApplinkConst.CART)
+                val intent = RouteManager.getIntent(context, ApplinkConst.CART)
+                startActivity(intent)
             }
         } else {
             showAtcVariantHelper(element.productId, element.shopId.toString())
@@ -1452,12 +1453,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                         msg,
                         Toaster.LENGTH_LONG,
                         Toaster.TYPE_NORMAL,
-                        view.context.getString(R.string.title_topchat_see_cart),
-                        View.OnClickListener {
-                            analytics.eventClickSeeButtonOnAtcSuccessToaster()
-                            RouteManager.route(context, ApplinkConst.CART)
-                        }
-                    ).show()
+                        view.context.getString(R.string.title_topchat_see_cart)
+                    ) {
+                        analytics.eventClickSeeButtonOnAtcSuccessToaster()
+                        RouteManager.route(context, ApplinkConst.CART)
+                    }.show()
                 }
             }
         } else {
