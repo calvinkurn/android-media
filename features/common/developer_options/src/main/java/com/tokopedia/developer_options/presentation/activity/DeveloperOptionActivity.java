@@ -69,8 +69,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV;
-import static com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP;
+import static com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT;
 
 public class DeveloperOptionActivity extends BaseActivity {
     public static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
@@ -100,8 +99,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     String PREFERENCE_NAME = "coahmark_choose_address";
     String EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK";
 
-    String EXP_TOP_NAV = NAVIGATION_EXP_TOP_NAV;
-    String VARIANT_REVAMP = NAVIGATION_VARIANT_REVAMP;
+    String EXP_OS_BOTTOM_NAV_EXPERIMENT = NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT;
 
     private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
     private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
@@ -251,8 +249,6 @@ public class DeveloperOptionActivity extends BaseActivity {
                 .putBoolean(KEY_P1_DONE_AS_NON_LOGIN, true).apply();
 
         userSession.setFirstTimeUserOnboarding(false);
-
-        RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_TOP_NAV, VARIANT_REVAMP);
     }
 
     /**
@@ -332,8 +328,8 @@ public class DeveloperOptionActivity extends BaseActivity {
         tvFakeResponse = findViewById(R.id.tv_fake_response);
 
         UnifyButton buttonResetOnboardingNavigation = findViewById(R.id.resetOnboardingNavigation);
-        UnifyButton alwaysOldButton = findViewById(R.id.buttonAlwaysOldNavigation);
         UnifyButton alwaysNewNavigation = findViewById(R.id.buttonAlwaysNewNavigation);
+        UnifyButton alwaysOsExperiment = findViewById(R.id.buttonAlwaysExpOsBottomNavigation);
         alwaysOldBalanceWidget = findViewById(R.id.buttonAlwaysOldBalanceWidget);
         System.out.println("++ line 332");
         UnifyButton alwaysNewBalanceWidget = findViewById(R.id.buttonAlwaysNewBalanceWidget);
@@ -375,27 +371,23 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
-        String EXP_TOP_NAV = RollenceKey.NAVIGATION_EXP_TOP_NAV;
-        String VARIANT_OLD = RollenceKey.NAVIGATION_VARIANT_OLD;
-        String VARIANT_REVAMP = RollenceKey.NAVIGATION_VARIANT_REVAMP;
-
         String EXP_BALANCE_WIDGET = RollenceKey.BALANCE_EXP;
         String BALANCE_WIDGET_VARIANT_OLD = RollenceKey.BALANCE_VARIANT_OLD;
         String BALANCE_WIDGET_VARIANT_REVAMP = RollenceKey.BALANCE_VARIANT_NEW;
 
-        alwaysOldButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_TOP_NAV, VARIANT_OLD);
-                Toast.makeText(DeveloperOptionActivity.this, "Navigation: Old", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         alwaysNewNavigation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_TOP_NAV, VARIANT_REVAMP);
+                RemoteConfigInstance.getInstance().getABTestPlatform().deleteKeyLocally(EXP_OS_BOTTOM_NAV_EXPERIMENT);
                 Toast.makeText(DeveloperOptionActivity.this, "Navigation: Revamped", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        alwaysOsExperiment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_OS_BOTTOM_NAV_EXPERIMENT, EXP_OS_BOTTOM_NAV_EXPERIMENT);
+                Toast.makeText(DeveloperOptionActivity.this, "Navigation: OS Removed", Toast.LENGTH_SHORT).show();
             }
         });
 

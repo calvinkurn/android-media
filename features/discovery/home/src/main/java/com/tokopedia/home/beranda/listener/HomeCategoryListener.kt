@@ -129,7 +129,7 @@ interface HomeCategoryListener {
 
     fun getRechargeBUWidget(source: WidgetSource)
 
-    fun isNewNavigation(): Boolean
+    fun isBottomNavOsExperiment(): Boolean
 
     fun onChooseAddressUpdated()
 

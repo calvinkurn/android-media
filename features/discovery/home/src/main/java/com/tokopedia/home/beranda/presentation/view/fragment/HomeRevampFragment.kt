@@ -16,7 +16,6 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.VisibleForTesting
@@ -177,10 +176,6 @@ import kotlinx.android.synthetic.main.fragment_home_revamp.*
 import kotlinx.android.synthetic.main.home_header_ovo.view.*
 import kotlinx.android.synthetic.main.layout_item_widget_balance_widget.view.*
 import kotlinx.android.synthetic.main.view_onboarding_navigation.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
@@ -239,9 +234,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
         private const val CLICK_TIME_INTERVAL: Long = 500
 
-        private const val EXP_TOP_NAV = RollenceKey.NAVIGATION_EXP_TOP_NAV
-        private const val VARIANT_OLD = RollenceKey.NAVIGATION_VARIANT_OLD
-        private const val VARIANT_REVAMP = RollenceKey.NAVIGATION_VARIANT_REVAMP
         private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
         private const val HOME_SOURCE = "home"
 
@@ -290,6 +282,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private var beautyFestEvent = BEAUTY_FEST_NOT_SET
         private var counterBypassFirstNetworkHomeData = 0
         private var eligibleBeautyFest = false
+        private const val isNavRevamp = true
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -394,9 +387,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private val coachmarkHandler = Handler()
 
     @Suppress("TooGenericExceptionCaught")
-    private fun isNavRevamp(): Boolean {
+    private fun isOsExperiment(): Boolean {
         return try {
-            return (context as? MainParentStateListener)?.isNavigationRevamp?:false
+            return (context as? MainParentStateListener)?.isOsExperiment?:false
         } catch (e: Exception) {
             e.printStackTrace()
             false
@@ -447,7 +440,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {
-        if (isNavRevamp()) {
+        if (isOsExperiment()) {
             ifNavRevamp.invoke()
         } else {
             ifNavOld.invoke()
@@ -708,7 +701,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun initInboxAbTest() {
         useNewInbox = getAbTestPlatform().getString(
                 RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-        ) == RollenceKey.VARIANT_NEW_INBOX && isNavRevamp()
+        ) == RollenceKey.VARIANT_NEW_INBOX
     }
 
     private fun getInboxIcon(): Int {
@@ -910,7 +903,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (isP1HomeCoachmarkDone(
                 context = ctx,
                 isUseInboxRollence = useNewInbox,
-                isUseNavigationRollence = isNavRevamp()
+                isUseNavigationRollence = isNavRevamp
             )) {
             if (!isNewWalletAppCoachmarkShown(ctx)) {
                 showGopayEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
@@ -1195,10 +1188,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
 
         getHomeViewModel().setRollanceNavigationType(
-                if (isNavRevamp()) {
-                    RollenceKey.NAVIGATION_VARIANT_REVAMP
+                if (isOsExperiment()) {
+                    RollenceKey.NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT
                 } else {
-                    RollenceKey.NAVIGATION_VARIANT_OLD
+                    ""
                 }
         )
 
@@ -1864,7 +1857,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun checkNavigationOnboardingFinished(): Boolean {
-        return if (isNewNavigation() && remoteConfigIsShowOnboarding()) {
+        return if (remoteConfigIsShowOnboarding()) {
             !isFirstViewNavigation()
         } else {
             true
@@ -2615,8 +2608,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         getHomeViewModel().onDynamicChannelRetryClicked()
     }
 
-    override fun isNewNavigation(): Boolean {
-        return isNavRevamp()
+    override fun isBottomNavOsExperiment(): Boolean {
+        return isOsExperiment()
     }
 
     private fun openApplink(applink: String, trackingAttribution: String) {

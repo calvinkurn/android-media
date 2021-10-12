@@ -179,7 +179,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun isNavRevamp(): Boolean {
         return try {
-            return (context as? MainParentStateListener)?.isNavigationRevamp?:false
+            return (context as? MainParentStateListener)?.isOsExperiment?:false
         } catch (e: Exception) {
             e.printStackTrace()
             false

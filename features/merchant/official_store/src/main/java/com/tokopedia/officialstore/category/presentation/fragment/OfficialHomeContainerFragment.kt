@@ -354,7 +354,7 @@ class OfficialHomeContainerFragment
     private fun initInboxAbTest() {
         useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
                 RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-        ) == RollenceKey.VARIANT_NEW_INBOX && isNavRevamp()
+        ) == RollenceKey.VARIANT_NEW_INBOX
     }
 
     private fun getInboxIcon(): Int {
@@ -413,26 +413,18 @@ class OfficialHomeContainerFragment
     }
 
     private fun configMainToolbar(view: View) {
-        if(isNavRevamp()){
-            mainToolbar = view.findViewById(R.id.maintoolbar)
-            maintoolbar?.run {
-                viewLifecycleOwner.lifecycle.addObserver(this)
-                setIcon(getToolbarIcons())
-                setupSearchbar(
-                        hints = listOf(HintData(placeholder = getString(R.string.os_query_search))),
-                        applink = ApplinkConstant.OFFICIAL_SEARCHBAR
-                )
-                show()
-            }
-            toolbar?.hide()
-            onNotificationChanged(badgeNumberNotification, badgeNumberInbox, badgeNumberCart) // notify badge after toolbar created
-        } else {
-            toolbar = view.findViewById(R.id.toolbar)
-            toolbar?.searchApplink = ApplinkConstant.OFFICIAL_SEARCHBAR
-            toolbar?.setQuerySearch(getString(R.string.os_query_search))
-            toolbar?.show()
-            mainToolbar?.hide()
+        mainToolbar = view.findViewById(R.id.maintoolbar)
+        maintoolbar?.run {
+            viewLifecycleOwner.lifecycle.addObserver(this)
+            setIcon(getToolbarIcons())
+            setupSearchbar(
+                    hints = listOf(HintData(placeholder = getString(R.string.os_query_search))),
+                    applink = ApplinkConstant.OFFICIAL_SEARCHBAR
+            )
+            show()
         }
+        toolbar?.hide()
+        onNotificationChanged(badgeNumberNotification, badgeNumberInbox, badgeNumberCart) // notify badge after toolbar created
     }
 
     private fun getToolbarIcons(): IconBuilder {
@@ -449,15 +441,6 @@ class OfficialHomeContainerFragment
         }
 
         return icons
-    }
-
-    private fun isNavRevamp(): Boolean {
-        return try {
-            return (context as? MainParentStateListener)?.isNavigationRevamp?:false
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
     }
 
     private fun getAbTestPlatform(): AbTestPlatform {

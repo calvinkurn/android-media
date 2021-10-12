@@ -145,7 +145,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
@@ -175,7 +174,6 @@ import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_UOH
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -323,20 +321,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         return try {
             return getFirebaseRemoteConfig()?.getBoolean(HOME_ENABLE_AUTO_REFRESH_UOH)?:false
         } catch (e: Exception) {
-            false
-        }
-    }
-
-    private fun isNavRevamp(): Boolean {
-        return try {
-            return (context as? MainParentStateListener)?.isNavigationRevamp?: (getAbTestPlatform().getString(
-                RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
-            ) == RollenceKey.NAVIGATION_VARIANT_REVAMP) ||
-                    (getAbTestPlatform().getString(
-                        RollenceKey.NAVIGATION_EXP_TOP_NAV2, RollenceKey.NAVIGATION_VARIANT_OLD
-                    ) == RollenceKey.NAVIGATION_VARIANT_REVAMP2)
-        } catch (e: Exception) {
-            e.printStackTrace()
             false
         }
     }
@@ -619,9 +603,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 addIcon(IconList.ID_MESSAGE) {}
                 addIcon(IconList.ID_NOTIFICATION) {}
                 addIcon(IconList.ID_CART) {}
-                if (isNavRevamp()) {
-                    addIcon(IconList.ID_NAV_GLOBAL) {}
-                }
+                addIcon(IconList.ID_NAV_GLOBAL) {}
             }
             it.setIcon(icons)
         }

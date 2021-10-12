@@ -212,7 +212,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var unavailableItemAccordionCollapseState = true
     private var hasCalledOnSaveInstanceState = false
     private var isCheckUncheckDirectAction = true
-    private var isNavToolbar = false
 
     companion object {
 
@@ -240,9 +239,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         const val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
         const val WISHLIST_SOURCE_UNAVAILABLE_ITEM = "WISHLIST_SOURCE_UNAVAILABLE_ITEM"
         const val WORDING_GO_TO_HOMEPAGE = "Kembali ke Homepage"
-        const val TOOLBAR_VARIANT_BASIC = RollenceKey.NAVIGATION_VARIANT_OLD
-        const val TOOLBAR_VARIANT_NAVIGATION = RollenceKey.NAVIGATION_VARIANT_REVAMP
-        const val TOOLBAR_VARIANT_NAVIGATION2 = RollenceKey.NAVIGATION_VARIANT_REVAMP2
         const val HEIGHT_DIFF_CONSTRAINT = 100
         const val DELAY_SHOW_PROMO_BUTTON_AFTER_SCROLL = 750L
         const val PROMO_ANIMATION_DURATION = 500L
@@ -283,8 +279,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 cartAllPerformanceMonitoring = PerformanceMonitoring.start(CART_ALL_TRACE)
             }
         }
-
-        initRemoteConfig()
 
         dPresenter.attachView(this)
     }
@@ -476,28 +470,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter = CartAdapter(this, this, this, this, userSession)
     }
 
-    private fun initRemoteConfig() {
-        isNavToolbar = isNavRevamp()
-    }
-
-    private fun isNavRevamp(): Boolean {
-        val EXP_NAME = RollenceKey.NAVIGATION_EXP_TOP_NAV
-        val EXP_NAME2 = RollenceKey.NAVIGATION_EXP_TOP_NAV2
-        val fromActivity = arguments?.getBoolean(CartActivity.EXTRA_IS_FROM_CART_ACTIVITY, false)
-                ?: false
-        if (fromActivity) {
-            return RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, TOOLBAR_VARIANT_BASIC) == TOOLBAR_VARIANT_NAVIGATION ||
-                RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME2, TOOLBAR_VARIANT_BASIC) == TOOLBAR_VARIANT_NAVIGATION2
-        } else {
-            return try {
-                return (context as? MainParentStateListener)?.isNavigationRevamp ?: false
-            } catch (e: Exception) {
-                e.printStackTrace()
-                false
-            }
-        }
-    }
-
     override fun initView(view: View) {
         initToolbar(view)
 
@@ -614,11 +586,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onBackPressed() {
-        if (isNavToolbar) {
-            cartPageAnalytics.eventClickBackNavToolbar(userSession.userId)
-        } else {
-            cartPageAnalytics.eventClickAtcCartClickArrowBack()
-        }
+        cartPageAnalytics.eventClickBackNavToolbar(userSession.userId)
 
         if (isAtcExternalFlow()) {
             routeToHome()
@@ -823,15 +791,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun initToolbar(view: View) {
-        if (isNavToolbar) {
-            initNavigationToolbar(view)
+        initNavigationToolbar(view)
             binding?.toolbarCart?.gone()
             binding?.navToolbar?.show()
-        } else {
-            initBasicToolbar(view)
-            binding?.navToolbar?.gone()
-            binding?.toolbarCart?.show()
-        }
         setToolbarShadowVisibility(false)
     }
 
@@ -3081,14 +3043,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     @SuppressLint("Recycle")
     private fun animateProductImage(message: String) {
         val tmpAnimatedImage = binding?.tmpAnimatedImage ?: return
-        var target: Pair<Int, Int>? = null
 
-        if (isNavToolbar) {
-            val targetX = getScreenWidth() - resources.getDimensionPixelSize(R.dimen.dp_64)
-            target = Pair(targetX, 0)
-        } else {
-            target = toolbar.getWishlistIconPosition()
-        }
+        val targetXToolbar = getScreenWidth() - resources.getDimensionPixelSize(R.dimen.dp_64)
+        val target = Pair(targetXToolbar, 0)
 
         tmpAnimatedImage.show()
 
@@ -3113,11 +3070,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 override fun onAnimationEnd(animation: Animator) {
                     binding?.tmpAnimatedImage?.gone()
 
-                    if (isNavToolbar) {
-                        binding?.navToolbar?.triggerAnimatedVectorDrawableAnimation(IconList.ID_WISHLIST)
-                    } else {
-                        toolbar.animateWishlistIcon()
-                    }
+                    binding?.navToolbar?.triggerAnimatedVectorDrawableAnimation(IconList.ID_WISHLIST)
 
                     showToastMessageGreen(message)
                     dPresenter.processGetWishlistData()
