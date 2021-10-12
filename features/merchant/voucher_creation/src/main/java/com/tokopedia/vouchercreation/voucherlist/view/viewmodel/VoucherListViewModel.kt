@@ -45,6 +45,8 @@ class VoucherListViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
     var isEligibleToCreateVoucher = false
+    var currentPage: Int = 1
+
     private var showBroadCastChatTicker: Boolean = true
     private var isFreeBroadCastIconVisible: Boolean = false
     private var isSuccessDialogDisplayed: Boolean = false

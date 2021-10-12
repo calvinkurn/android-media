@@ -273,23 +273,13 @@ class VoucherListFragment :
     }
 
     override fun loadData(page: Int) {
+        mViewModel.currentPage = page
         if (!isToolbarAlreadyLoaded) {
             view?.run {
                 searchBarMvc.isVisible = false
                 headerChipMvc.isVisible = false
             }
             renderList(listOf(LoadingStateUiModel(isActiveVoucher)))
-        }
-        if (isActiveVoucher) {
-            mViewModel.getActiveVoucherList(shopBasicData == null)
-        } else {
-            mViewModel.getVoucherListHistory(
-                voucherType,
-                voucherTarget,
-                voucherSort,
-                page,
-                isInverted
-            )
         }
         mViewModel.getBroadCastMetaData()
         mViewModel.getCreateVoucherEligibility()
@@ -1283,6 +1273,18 @@ class VoucherListFragment :
                     view?.showErrorToaster(errorMessage)
                 }
             }
+            // get voucher list data
+            if (isActiveVoucher) {
+                mViewModel.getActiveVoucherList(shopBasicData == null)
+            } else {
+                mViewModel.getVoucherListHistory(
+                    voucherType,
+                    voucherTarget,
+                    voucherSort,
+                    mViewModel.currentPage,
+                    isInverted
+                )
+            }
         })
     }
 
@@ -1341,7 +1343,7 @@ class VoucherListFragment :
     }
 
     private fun getEmptyStateUiModel() =
-        EmptyStateUiModel(isActiveVoucher, ::onSeeHistoryClicked, ::onCreateVoucherClicked)
+        EmptyStateUiModel(mViewModel.isEligibleToCreateVoucher, isActiveVoucher, ::onSeeHistoryClicked, ::onCreateVoucherClicked)
 
     private fun showCancellationSuccessToaster(
         isCancel: Boolean,
