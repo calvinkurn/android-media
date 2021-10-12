@@ -323,6 +323,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                 putString(ProductDetailCommonConstant.PARAM_PRODUCT_KEY, productKey)
                 putString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, whId)
                 putString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, layoutId)
+                putString(ProductDetailCommonConstant.PARAM_EXT_PARAM, extParam)
                 putObject(ProductDetailCommonConstant.PARAM_USER_LOCATION, userLocationRequest)
             }
     }
