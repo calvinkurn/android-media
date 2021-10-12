@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.local.entity.AtfCacheEntity
-import com.tokopedia.home.beranda.data.datasource.remote.GeolocationRemoteDataSource
 import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.model.AtfData
@@ -51,7 +50,6 @@ class HomeRevampRepositoryImpl @Inject constructor(
         private val homeCachedDataSource: HomeCachedDataSource,
         private val homeRemoteDataSource: HomeRemoteDataSource,
         private val homeDefaultDataSource: HomeDefaultDataSource,
-        private val geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource>,
         private val homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper,
         private val applicationContext: Context?,
         private val remoteConfig: RemoteConfig
@@ -63,6 +61,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
     }
     var isCacheExist = false
     val gson = Gson()
+    var cachedHomeData: HomeData? = null
 
     private val jobList = mutableListOf<Deferred<AtfData>>()
 
@@ -85,6 +84,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
 
     override fun getHomeData(): Flow<HomeData?> = homeCachedDataSource.getCachedHomeData().map {
         isCacheExist = it != null
+        this.cachedHomeData = it
         it
     }
 
@@ -143,7 +143,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                     homeData.atfData = homeAtfResponse
                 }
             } catch (e: Exception) {
-                homeData.atfData = null
+                homeData.atfData = cachedHomeData?.atfData
                 isAtfSuccess = false
                 emit(Result.errorAtf(error = e, data = null))
             }
@@ -259,9 +259,6 @@ class HomeRevampRepositoryImpl @Inject constructor(
                         numOfChannel = CHANNEL_LIMIT_FOR_PAGINATION,
                         locationParams = applicationContext?.let {
                             ChooseAddressUtils.getLocalizingAddressData(applicationContext)?.convertToLocationParams()} ?: "")
-                if (!isAtfSuccess) {
-                    homeData.atfData = null
-                }
                 dynamicChannelResponse
             } catch (e: Exception) {
                 if (!isAtfSuccess && !isCacheExistForProcess) {
@@ -288,15 +285,20 @@ class HomeRevampRepositoryImpl @Inject constructor(
                 }
 
                 homeData.isProcessingDynamicChannel = false
-                saveToDatabase(homeData, true)
+                if (isAtfSuccess) {
+                    saveToDatabase(homeData, true)
+                } else {
+                    saveToDatabase(homeData, false)
+                }
             } else if (dynamicChannelResponseValue == null) {
                 /**
                  * 7.1 Emit error pagination only when atf is empty
                  * Because there is no content that we can show, we showing error page
                  */
-                if (homeData.atfData == null ||
-                        (homeData.atfData?.dataList == null && homeData.atfData?.isProcessingAtf == false) ||
-                        homeData.atfData?.dataList?.isEmpty() == true) {
+                if (!isCacheExistForProcess &&
+                    (homeData.atfData == null ||
+                            (homeData.atfData?.dataList == null && homeData.atfData?.isProcessingAtf == false) ||
+                            homeData.atfData?.dataList?.isEmpty() == true)) {
                     emit(Result.errorGeneral(Throwable(),null))
                 } else {
                     emit(Result.error(Throwable(), null))
@@ -325,7 +327,11 @@ class HomeRevampRepositoryImpl @Inject constructor(
                          * 7. Submit current data to database, to trigger HomeViewModel flow
                          */
                         homeData.isProcessingDynamicChannel = false
-                        saveToDatabase(it, true)
+                        if (isAtfSuccess) {
+                            saveToDatabase(it, true)
+                        } else {
+                            saveToDatabase(it, false)
+                        }
                     }
                 } catch (e: Exception) {
                     /**
@@ -335,7 +341,12 @@ class HomeRevampRepositoryImpl @Inject constructor(
                     if (homeData.atfData?.dataList == null || homeData.atfData?.dataList?.isEmpty() == true) {
                         emit(Result.errorPagination(error = MessageErrorException(e.localizedMessage), data = null))
                     }
-                    saveToDatabase(homeData)
+                    cacheCondition(
+                        isCacheExistForProcess,
+                        isCacheEmptyAction = {
+                            saveToDatabase(homeData)
+                        }
+                    )
                 }
             }
         }
@@ -392,8 +403,6 @@ class HomeRevampRepositoryImpl @Inject constructor(
         }
         return homeDataResponse
     }
-
-    override fun sendGeolocationInfo(): Observable<Response<String>> = geolocationRemoteDataSource.get().sendGeolocationInfo()
 
     override fun deleteHomeData() {
         homeCachedDataSource.deleteHomeData()

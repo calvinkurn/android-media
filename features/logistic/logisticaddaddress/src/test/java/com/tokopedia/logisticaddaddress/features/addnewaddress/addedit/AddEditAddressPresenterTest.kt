@@ -17,13 +17,16 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
+import com.tokopedia.logisticaddaddress.helper.MockTimber
 import com.tokopedia.network.exception.MessageErrorException
 import io.mockk.*
+import org.assertj.core.api.SoftAssertions.assertSoftly
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import rx.Observable
+import timber.log.Timber
 
 class AddEditAddressPresenterTest {
 
@@ -36,10 +39,14 @@ class AddEditAddressPresenterTest {
     val autoCompleteUseCase: AutoCompleteUseCase = mockk(relaxUnitFun = true)
     val view: AddEditView = mockk(relaxed = true)
 
+    lateinit var timber : MockTimber
     lateinit var presenter: AddEditAddressPresenter
 
     @Before
     fun setup() {
+        timber = MockTimber()
+        Timber.plant(timber)
+
         presenter = AddEditAddressPresenter(saveUseCase, zipUseCase, districtUseCase, autoCompleteUseCase)
 
         mockkObject(AddNewAddressAnalytics)
@@ -157,6 +164,34 @@ class AddEditAddressPresenterTest {
 
         verifyOrder {
             view.moveMap(givenLat, givenLong)
+        }
+    }
+
+    @Test
+    fun `get autocomplete error`() {
+        val throwable = spyk(Throwable())
+        every { autoCompleteUseCase.execute(any()) } answers { Observable.error(throwable) }
+
+        presenter.getAutoComplete("")
+
+        assertSoftly {
+            timber.lastLogMessage() contentEquals throwable.localizedMessage
+        }
+    }
+
+    @Test
+    fun `get autocomplete error with placeid`() {
+        val givenPlaceId = "1"
+        val successModel = Place(listOf(SuggestedPlace(givenPlaceId)))
+        val throwable = spyk(Throwable())
+
+        every { autoCompleteUseCase.execute(any()) } returns Observable.just(successModel)
+        every { districtUseCase.execute(any()) } answers { Observable.error(throwable) }
+
+        presenter.getAutoComplete("")
+
+        assertSoftly {
+            timber.lastLogMessage() contentEquals throwable.localizedMessage
         }
     }
 

@@ -1,0 +1,13 @@
+{
+  "cc_cobrand_getstatesforaccounts": {
+    "id": "id",
+    "title": "title",
+    "subtitle": "subtitle",
+    "subtitle_color": "subtitle_color",
+    "applink": "applink",
+    "weblink": "weblink",
+    "icon": "icon",
+    "is_active": true,
+    "is_hidden": false
+  }
+}

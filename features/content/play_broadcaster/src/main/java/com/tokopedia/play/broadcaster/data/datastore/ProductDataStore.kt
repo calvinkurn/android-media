@@ -15,7 +15,7 @@ interface ProductDataStore {
 
     fun selectProduct(product: ProductData, isSelected: Boolean)
 
-    fun isProductSelected(productId: Long): Boolean
+    fun isProductSelected(productId: String): Boolean
 
     fun getTotalSelectedProduct(): Int
 

@@ -27,24 +27,26 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.createpost.CREATE_POST_ERROR_MSG
-import com.tokopedia.createpost.DRAFT_ID
-import com.tokopedia.createpost.TYPE_AFFILIATE
+import com.tokopedia.createpost.common.CREATE_POST_ERROR_MSG
+import com.tokopedia.createpost.common.DRAFT_ID
+import com.tokopedia.createpost.common.TYPE_AFFILIATE
 import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.data.pojo.getcontentform.Author
-import com.tokopedia.createpost.data.pojo.getcontentform.FeedContentForm
+import com.tokopedia.createpost.common.data.pojo.getcontentform.Author
+import com.tokopedia.createpost.common.data.pojo.getcontentform.FeedContentForm
+import com.tokopedia.createpost.common.di.CreatePostCommonModule
+import com.tokopedia.createpost.common.view.viewmodel.*
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
-import com.tokopedia.createpost.domain.entity.FeedDetail
+import com.tokopedia.createpost.common.domain.entity.FeedDetail
 import com.tokopedia.createpost.view.activity.*
 import com.tokopedia.createpost.view.adapter.DefaultCaptionsAdapter
 import com.tokopedia.createpost.view.adapter.ProductAttachmentAdapter
 import com.tokopedia.createpost.view.adapter.ProductSuggestionAdapter
 import com.tokopedia.createpost.view.adapter.ShareBottomSheetAdapter
-import com.tokopedia.createpost.view.contract.CreatePostContract
+import com.tokopedia.createpost.common.view.contract.CreatePostContract
 import com.tokopedia.createpost.view.listener.CreatePostActivityListener
-import com.tokopedia.createpost.view.service.SubmitPostService
-import com.tokopedia.createpost.view.type.ShareType
+import com.tokopedia.createpost.common.view.service.SubmitPostService
+import com.tokopedia.createpost.common.view.type.ShareType
 import com.tokopedia.createpost.view.util.SpaceItemDecoration
 import com.tokopedia.createpost.view.viewmodel.*
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
@@ -138,9 +140,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     override fun initInjector() {
         DaggerCreatePostComponent.builder()
-                .createPostModule(CreatePostModule(requireContext().applicationContext))
-                .build()
-                .inject(this)
+            .createPostCommonModule(CreatePostCommonModule(requireContext().applicationContext))
+            .createPostModule(CreatePostModule(requireContext().applicationContext)).build()
+            .inject(this)
     }
 
     override fun onAttach(context: Context) {
@@ -230,7 +232,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            REQUEST_IMAGE_PICKER -> if (resultCode == Activity.RESULT_OK) {
+                        REQUEST_IMAGE_PICKER -> if (resultCode == Activity.RESULT_OK) {
                 val imageList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
                 val images = imageList.map { MediaModel(it, MediaType.IMAGE) }
 

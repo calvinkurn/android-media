@@ -17,17 +17,16 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
 import com.tokopedia.shop_showcase.common.*
+import com.tokopedia.shop_showcase.databinding.FragmentShopShowcaseProductAddBinding
 import com.tokopedia.shop_showcase.shop_showcase_add.presentation.fragment.ShopShowcaseAddFragment
 import com.tokopedia.shop_showcase.shop_showcase_product_add.di.component.DaggerShowcaseProductAddComponent
 import com.tokopedia.shop_showcase.shop_showcase_product_add.di.component.ShowcaseProductAddComponent
@@ -35,15 +34,18 @@ import com.tokopedia.shop_showcase.shop_showcase_product_add.di.module.ShowcaseP
 import com.tokopedia.shop_showcase.shop_showcase_product_add.di.module.ShowcaseProductAddUseCaseModule
 import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.model.GetProductListFilter
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.adapter.ShowcaseProductListAdapter
+import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.listener.ShopShowcaseProductAddListener
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.BaseShowcaseProduct
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.ShowcaseProduct
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.viewmodel.ShowcaseProductAddViewModel
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_shop_showcase_product_add.view.*
 import javax.inject.Inject
 
 /**
@@ -77,6 +79,18 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    private var _binding: FragmentShopShowcaseProductAddBinding? = null
+    private var productSelectedCounter: CardView? = null
+    private var emptyState: EmptyStateUnify? = null
+    private var searchBar: SearchBarUnify? = null
+    private var productCounterChoosenImage: ImageUnify? = null
+    private var productChoosenContainer: CardView? = null
+    private var productChoosenCounterText: Typography? = null
+    private var buttonBackToTop: FloatingButtonUnify? = null
+    private var headerUnify: HeaderUnify? = null
+    private var headerLayoutShowcaseProductAdd: CardView? = null
+    private var loader: LoaderUnify? = null
+    private var recyclerViewShowcaseAddProduct: RecyclerView? = null
     private var productListFilter = GetProductListFilter()
     private var isLoadNextPage: Boolean = false
     private var showcaseId: String? = ""
@@ -101,34 +115,6 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
 
     private var productListFirstItem: Int = linearLayoutManager.findFirstCompletelyVisibleItemPosition()
 
-    private val buttonBackToTop: FloatingButtonUnify? by lazy {
-        view?.findViewById<FloatingButtonUnify>(R.id.btn_back_to_top)?.apply {
-            circleMainMenu.run {
-                setOnClickListener {
-                    recyclerViewProductList?.smoothScrollToPosition(0)
-                    hide()
-                }
-            }
-        }
-    }
-
-    private val recyclerViewProductList: RecyclerView? by lazy {
-        view?.findViewById<RecyclerView>(R.id.rv_showcase_add_product)
-    }
-
-    private val headerUnify: HeaderUnify? by lazy {
-        view?.findViewById<HeaderUnify>(R.id.add_product_showcase_toolbar)?.apply {
-            setNavigationOnClickListener {
-                tracking.addShowcaseProductClickBackButton(shopId, shopType, isActionEdit)
-                activity?.onBackPressed()
-            }
-        }
-    }
-
-    private val headerLayout: CardView? by lazy {
-        view?.findViewById<CardView>(R.id.header_layout)
-    }
-
     /**
      * Setup Scroll Listener for endless recycler view load.
      */
@@ -144,11 +130,11 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
                 super.onScrolled(view, dx, dy)
                 if(linearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
                     buttonBackToTop?.hide()
-                    headerLayout?.cardElevation = CARD_HEADER_NO_ELEVATION
+                    headerLayoutShowcaseProductAdd?.cardElevation = CARD_HEADER_NO_ELEVATION
                 }
                 else {
                     buttonBackToTop?.show()
-                    headerLayout?.cardElevation = CARD_HEADER_ELEVATION
+                    headerLayoutShowcaseProductAdd?.cardElevation = CARD_HEADER_ELEVATION
                 }
             }
 
@@ -177,18 +163,6 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
         ViewModelProvider(this, viewModelFactory).get(ShowcaseProductAddViewModel::class.java)
     }
 
-    private val productSelectedCounter: CardView? by lazy {
-        view?.findViewById<CardView>(R.id.product_choosen_counter)
-    }
-
-    private val emptyState: EmptyStateUnify? by lazy {
-        view?.findViewById<EmptyStateUnify>(R.id.empty_state_product_search)
-    }
-
-    private val searchBar: SearchBarUnify? by lazy {
-        view?.findViewById<SearchBarUnify>(R.id.searchbar_add_product)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -199,8 +173,37 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_shop_showcase_product_add, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        val binding = FragmentShopShowcaseProductAddBinding.inflate(inflater, container, false).apply {
+            productChoosenCounterText = totalSelectedProductCounter
+            productChoosenContainer = productChoosenCounter
+            productCounterChoosenImage = productChoosenImage
+            searchBar = searchbarAddProduct
+            emptyState = emptyStateProductSearch
+            productSelectedCounter = productChoosenCounter
+            recyclerViewShowcaseAddProduct = rvShowcaseAddProduct
+            loader = loaderUnify
+            headerLayoutShowcaseProductAdd = headerLayout
+
+            buttonBackToTop = btnBackToTop.apply {
+                circleMainMenu.run {
+                    setOnClickListener {
+                        recyclerViewShowcaseAddProduct?.smoothScrollToPosition(0)
+                        hide()
+                    }
+                }
+            }
+
+            headerUnify = addProductShowcaseToolbar.apply {
+                setNavigationOnClickListener {
+                    tracking.addShowcaseProductClickBackButton(shopId, shopType, isActionEdit)
+                    activity?.onBackPressed()
+                }
+            }
+        }
+
+        _binding = binding
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -208,6 +211,11 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
         initView(view, this)
         initListener()
         tracking.sendScreenNameAddShowcaseProduct()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun getScreenName(): String {
@@ -229,6 +237,43 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun showProductCounter(totalSelectedProduct: Int, excludedProduct: ArrayList<ShowcaseProduct>, selectedProduct: ArrayList<ShowcaseProduct>) {
+        if(totalSelectedProduct > 0) {
+            var idx = 0
+            val item = if(excludedProduct.size > 0) {
+                // if in edit mode, find first appended product to show product image on counter
+                for(i in 0 until selectedProduct.size) {
+                    if(selectedProduct[i].isNewAppended) {
+                        idx = i
+                        break
+                    }
+                }
+                selectedProduct[idx]
+            } else {
+                // if in create mode, just use first selected product image
+                selectedProduct[idx]
+            }
+
+            // try catch to avoid ImageUnify crash on set image to product counter image
+            try {
+                if(productCounterChoosenImage?.context?.isValidGlideContext() == true) {
+                    ImageHandler.LoadImage(
+                            productCounterChoosenImage,
+                            item.productImageUrl
+                    )
+                }
+            } catch (e : Throwable) {}
+
+            productChoosenContainer?.visibility = View.VISIBLE
+            productChoosenCounterText?.text = context?.resources?.getString(
+                    R.string.chosen_product_counter_text,
+                    totalSelectedProduct.toString()
+            )
+        } else {
+            productChoosenContainer?.visibility = View.GONE
+        }
+    }
+
     private fun initView(view: View?, listener: ShopShowcaseProductAddListener) {
         emptyState?.visible()
         initRecyclerView(view, listener)
@@ -236,7 +281,7 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
 
         observeProductListData()
         observeLoadingState()
-        observeFetchingState(view)
+        observeFetchingState()
 
         setSearchListener(searchBar)
     }
@@ -288,10 +333,10 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
 
     private fun initRecyclerView(view: View?, listener: ShopShowcaseProductAddListener) {
         view?.run {
-            recyclerViewProductList?.apply {
+            recyclerViewShowcaseAddProduct?.apply {
                 setHasFixedSize(true)
                 layoutManager = linearLayoutManager
-                showcaseProductListAdapter = ShowcaseProductListAdapter(context, view, listener)
+                showcaseProductListAdapter = ShowcaseProductListAdapter(listener)
                 adapter = showcaseProductListAdapter
                 addOnScrollListener(scrollListener)
             }
@@ -301,11 +346,11 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
     private fun showEmptyViewProductSearch(state: Boolean) {
         emptyState?.setImageUrl(ImageAssets.SEARCH_SHOWCASE_NOT_FOUND)
         if(state) {
-            recyclerViewProductList?.gone()
+            recyclerViewShowcaseAddProduct?.gone()
             emptyState?.visible()
         }
         else {
-            recyclerViewProductList?.visible()
+            recyclerViewShowcaseAddProduct?.visible()
             emptyState?.gone()
         }
     }
@@ -359,10 +404,10 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun observeFetchingState(view: View?) {
+    private fun observeFetchingState() {
         observe(showcaseProductAddViewModel.fetchingState) {
-            if(it) showFetchingProgress(view)
-            else hideFetchingProgress(view)
+            if(it) showFetchingProgress()
+            else hideFetchingProgress()
         }
     }
 
@@ -382,15 +427,15 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
         showcaseProductListAdapter?.showLoadingProgress()
     }
 
-    private fun showFetchingProgress(view: View?) {
+    private fun showFetchingProgress() {
         emptyState?.invisible()
-        view?.loaderUnify?.visible()
-        view?.rv_showcase_add_product?.gone()
+        loader?.visible()
+        recyclerViewShowcaseAddProduct?.gone()
     }
 
-    private fun hideFetchingProgress(view: View?) {
-        view?.loaderUnify?.gone()
-        view?.rv_showcase_add_product?.visible()
+    private fun hideFetchingProgress() {
+        loader?.gone()
+        recyclerViewShowcaseAddProduct?.visible()
     }
 
     private fun hideLoadingProgress() {
@@ -409,8 +454,4 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
             buttonBackToTop?.circleMainMenu?.show()
     }
 
-}
-
-interface ShopShowcaseProductAddListener {
-    fun onCLickProductCardTracking()
 }

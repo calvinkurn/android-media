@@ -22,8 +22,11 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselEmptyCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselProductCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
+import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselViewAllCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
+import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselViewAllCardViewHolder
+import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselViewAllCardViewHolder.Companion.DEFAULT_VIEW_ALL_ID
 import com.tokopedia.home_component.util.*
 import com.tokopedia.home_component.viewholders.adapter.MixLeftAdapter
 import com.tokopedia.home_component.visitable.MixLeftDataModel
@@ -187,8 +190,23 @@ class MixLeftComponentViewHolder (itemView: View,
             }
         }
 
-        if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty())
-            listData.add(CarouselSeeMorePdpDataModel(channel.channelHeader.applink, channel.channelHeader.backImage, this))
+        if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty()) {
+            if(channel.channelViewAllCard.id != DEFAULT_VIEW_ALL_ID && channel.channelViewAllCard.contentType.isNotBlank() && channel.channelViewAllCard.contentType != CarouselViewAllCardViewHolder.CONTENT_DEFAULT) {
+                listData.add(
+                    CarouselViewAllCardDataModel(
+                        channel.channelHeader.applink,
+                        channel.channelViewAllCard,
+                        this,
+                        channel.channelBanner.imageUrl,
+                        channel.channelBanner.gradientColor,
+                        channel.layout
+                    )
+                )
+            }
+            else {
+                listData.add(CarouselSeeMorePdpDataModel(channel.channelHeader.applink, channel.channelHeader.backImage, this))
+            }
+        }
         adapter = MixLeftAdapter(listData,typeFactoryImpl)
         recyclerView.adapter = adapter
         recyclerView.addOnScrollListener(getParallaxEffect())

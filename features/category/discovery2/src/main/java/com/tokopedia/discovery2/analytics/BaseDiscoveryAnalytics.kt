@@ -21,7 +21,7 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
         return TrackApp.getInstance().gtm
     }
 
-    open fun trackBannerImpression(banners: List<DataItem>, componentPosition: Int, userID: String?) {}
+    open fun trackBannerImpression(banners: List<DataItem>, componentPosition: Int?, userID: String?) {}
     open fun trackBrandRecommendationImpression(items: List<ComponentsItem>, componentPosition: Int, componentID: String) {}
     open fun trackBrandRecommendationClick(banner: DataItem, bannerPosition: Int, compID : String) {}
     open fun trackBannerClick(banner: DataItem, bannerPosition: Int, userID: String?) {}
@@ -72,6 +72,12 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackTopAdsProductImpression(componentDataItem: ComponentsItem, cpmData: CpmData, componentPosition: Int, productPosition: Int, userLoggedIn: Boolean) {}
     open fun trackClickTopAdsProducts(componentDataItem: ComponentsItem, cpmData: CpmData, componentPosition: Int, productPosition: Int, userLoggedIn: Boolean) {}
     open fun trackHeaderSeeAllClick(isLogin: Boolean, componentsItems: ComponentsItem) {}
+    open fun trackSingleMerchantVoucherImpression(components: ComponentsItem,shopId: String,userID: String?,positionInPage: Int,couponName: String?) {}
+    open fun trackSingleMerchantVoucherClick(components: ComponentsItem,shopId: String,userID: String?,positionInPage: Int,couponName: String?) {}
+    open fun trackMerchantCouponDetailImpression(components: ComponentsItem, shopId: String, shopType: String, userID: String?, positionInPage: Int, couponName: String?) {}
+    open fun trackMerchantCouponVisitShopCTA(shopId: String, shopType: String) {}
+    open fun trackMerchantCouponCTASection(shopId: String,shopType: String, buttonDetail: String) {}
+    open fun trackMerchantCouponCloseBottomSheet(shopId: String, shopType: String) {}
     open fun trackImpressionNavigationChips(componentsItems: ArrayList<ComponentsItem>?) {}
     open fun trackClickNavigationChips(categoryItem: DataItem?, position: Int) {}
     open fun trackClickNavigationDropDown() {}
@@ -93,4 +99,6 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackScrollDepth(screenScrollPercentage: Int, lastVisibleComponent: ComponentsItem?) {}
     open fun trackUnifyShare(event: String = "", eventAction: String = "", userID: String?, eventLabel : String = "") {}
     open fun trackScrollDepth(screenScrollPercentage: Int, lastVisibleComponent: ComponentsItem?, isManualScroll : Boolean) {}
+    open fun trackScreenshotAccess(eventAction : String = "", eventLabel : String = "", userID: String?, ) {}
+    open fun trackEventProductATC(componentsItems: ComponentsItem, userID: String?) {}
 }

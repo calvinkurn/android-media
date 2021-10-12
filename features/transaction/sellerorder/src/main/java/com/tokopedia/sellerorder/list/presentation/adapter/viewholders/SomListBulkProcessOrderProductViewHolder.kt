@@ -6,20 +6,23 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.databinding.ItemSomListBulkProcessOrderProductBinding
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkProcessOrderProductUiModel
-import kotlinx.android.synthetic.main.item_som_list_bulk_process_order_product.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
-class SomListBulkProcessOrderProductViewHolder(itemView: View?) : AbstractViewHolder<SomListBulkProcessOrderProductUiModel>(itemView) {
+class SomListBulkProcessOrderProductViewHolder(itemView: View) : AbstractViewHolder<SomListBulkProcessOrderProductUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.item_som_list_bulk_process_order_product
     }
 
+    private val binding by viewBinding<ItemSomListBulkProcessOrderProductBinding>()
+
     @SuppressLint("SetTextI18n")
     @Suppress("NAME_SHADOWING")
     override fun bind(element: SomListBulkProcessOrderProductUiModel?) {
         element?.let { element ->
-            with(itemView) {
+            binding?.run {
                 ivProduct.loadImageRounded(element.picture)
                 val productName = element.productName.split(" - ").firstOrNull().orEmpty().trim()
                 val productVariant = element.productName.split(" - ").takeIf { it.size > 1 }?.lastOrNull().orEmpty().replace(Regex("\\s*,\\s*"), " | ").trim()

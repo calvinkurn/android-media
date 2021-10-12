@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeRouter
@@ -23,6 +24,11 @@ class SellerHomeNavigator(
     private val sellerHomeRouter: SellerHomeRouter?,
     private val userSession: UserSessionInterface
 ) {
+
+    companion object {
+        private const val OTHER_MENU_REVAMP_EXPERIMENT = "sa_lainnyarevamp"
+        private const val OTHER_MENU_REVAMP_VALUE = "sa_lainnyarevamp"
+    }
 
     private var homeFragment: Fragment? = null
     private var productManageFragment: Fragment? = null
@@ -151,8 +157,19 @@ class SellerHomeNavigator(
         homeFragment = SellerHomeFragment.newInstance()
         productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
         chatFragment = sellerHomeRouter?.getChatListFragment()
-        somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_ALL_ORDER, 0, "", "")
-        otherSettingsFragment = OtherMenuFragment.createInstance()
+        somListFragment = sellerHomeRouter?.getSomListFragment(
+            context,
+            SomTabConst.STATUS_ALL_ORDER,
+            SomTabConst.DEFAULT_ORDER_TYPE_FILTER,
+            "",
+            ""
+        )
+        otherSettingsFragment =
+            if (useRevampedOtherMenu()) {
+                OtherMenuFragment.createInstance()
+            } else {
+                com.tokopedia.sellerhome.settings.view.fragment.old.OtherMenuFragment.createInstance()
+            }
 
         addPage(homeFragment, context.getString(R.string.sah_home))
         addPage(productManageFragment, context.getString(R.string.sah_product_list))
@@ -226,7 +243,13 @@ class SellerHomeNavigator(
     }
 
     private fun setupSellerOrderPage(page: PageFragment): Fragment? {
-        somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage, page.orderType, page.keywordSearch, page.orderId)
+        somListFragment = sellerHomeRouter?.getSomListFragment(
+            context,
+            page.tabPage,
+            page.orderType,
+            page.keywordSearch,
+            page.orderId
+        )
         return somListFragment
     }
 
@@ -269,4 +292,15 @@ class SellerHomeNavigator(
             shopName
         }
     }
+
+    private fun useRevampedOtherMenu(): Boolean {
+        return try {
+            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                OTHER_MENU_REVAMP_EXPERIMENT, "")
+            remoteConfigRollenceValue.equals(OTHER_MENU_REVAMP_VALUE, ignoreCase = true)
+        } catch (ex: Exception) {
+            false
+        }
+    }
+
 }

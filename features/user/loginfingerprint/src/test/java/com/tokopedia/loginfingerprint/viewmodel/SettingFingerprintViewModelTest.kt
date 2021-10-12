@@ -7,6 +7,7 @@ import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatu
 import com.tokopedia.loginfingerprint.domain.usecase.RegisterFingerprintUseCase
 import com.tokopedia.loginfingerprint.domain.usecase.RemoveFingerprintUsecase
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -35,6 +36,7 @@ class SettingFingerprintViewModelTest {
     private var checkFingerprintObserver = mockk<Observer<Result<CheckFingerprintPojo>>>(relaxed = true)
     private var registerFingerprintObserver = mockk<Observer<Result<RegisterFingerprintResult>>>(relaxed = true)
     private var removeFingerprintObserver = mockk<Observer<Result<RemoveFingerprintData>>>(relaxed = true)
+    val fingerprintPreferenceManager = mockk<FingerprintPreference>(relaxed = true)
 
     private val throwable = mockk<Throwable>(relaxed = true)
 
@@ -46,7 +48,8 @@ class SettingFingerprintViewModelTest {
             registerFingerprintUseCase,
             removeFingerprintUseCase,
             cryptographyUtils,
-            checkFingerprintToggleStatusUseCase
+            checkFingerprintToggleStatusUseCase,
+            fingerprintPreferenceManager
         )
 
         viewModel.checkFingerprintStatus.observeForever(checkFingerprintObserver)
@@ -92,8 +95,8 @@ class SettingFingerprintViewModelTest {
         every { cryptographyUtils.generateFingerprintSignature(any(), any()) } returns SignatureData("abc", "123")
         every { cryptographyUtils.getPublicKey() } returns "abc123"
 
-        every { registerFingerprintUseCase.registerFingerprint(any(), any(), any(), any()) } answers {
-            thirdArg<(RegisterFingerprintPojo) -> Unit>().invoke(response)
+        every { registerFingerprintUseCase.registerFingerprint(any(), any(), any(), any(), any()) } answers {
+            arg<(RegisterFingerprintPojo) -> Unit>(3).invoke(response)
         }
 
         viewModel.registerFingerprint()
@@ -111,8 +114,8 @@ class SettingFingerprintViewModelTest {
         every { cryptographyUtils.generateFingerprintSignature(any(), any()) } returns SignatureData("abc", "123")
         every { cryptographyUtils.getPublicKey() } returns "abc123"
 
-        every { registerFingerprintUseCase.registerFingerprint(any(), any(), any(), any()) } answers {
-            arg<(Throwable) -> Unit>(3).invoke(throwable)
+        every { registerFingerprintUseCase.registerFingerprint(any(), any(), any(), any(), any()) } answers {
+            arg<(Throwable) -> Unit>(4).invoke(throwable)
         }
 
         viewModel.registerFingerprint()

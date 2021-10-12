@@ -6,9 +6,12 @@ import android.view.View
 import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.sellerorder.R
-import kotlinx.android.synthetic.main.item_widget_filter_date.view.*
+import com.tokopedia.sellerorder.databinding.ItemWidgetFilterDateBinding
 
 class FilterSelectDate: RelativeLayout {
+
+    private var _binding: ItemWidgetFilterDateBinding? = null
+    private val binding get() = _binding!!
 
     constructor(context: Context) : super(context) {
         init()
@@ -23,16 +26,18 @@ class FilterSelectDate: RelativeLayout {
     }
 
     private fun init() {
-        View.inflate(context, R.layout.item_widget_filter_date, this)
+        View.inflate(context, R.layout.item_widget_filter_date, this).run {
+            _binding = ItemWidgetFilterDateBinding.bind(this)
+        }
     }
 
     fun setDateLabel(date: String) {
-        tvSelectDateText?.text = date
-        tvSelectDateText?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+        binding.tvSelectDateText.text = date
+        binding.tvSelectDateText.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
     }
 
     fun setDateLabelEmpty(date: String) {
-        tvSelectDateText?.text = date
-        tvSelectDateText?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+        binding.tvSelectDateText.text = date
+        binding.tvSelectDateText.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
     }
 }

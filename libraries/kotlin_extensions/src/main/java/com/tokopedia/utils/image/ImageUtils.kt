@@ -20,31 +20,42 @@ import com.tokopedia.kotlin.extensions.R
 
 object ImageUtils {
 
-    fun loadImage(imageView: ImageView, url: String, resPlaceholder: Int) {
-        if (imageView.context != null) {
-            Glide.with(imageView.context)
-                    .load(url)
-                    .into(object : CustomTarget<Drawable>() {
-                        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                            imageView.setImageDrawable(resource)
-                        }
-
-                        override fun onLoadStarted(placeholder: Drawable?) {
-                            imageView.setImageResource(resPlaceholder)
-                        }
-
-                        override fun onLoadCleared(placeholder: Drawable?) {
-                            imageView.setImageResource(resPlaceholder)
-                        }
-
-                        override fun onLoadFailed(errorDrawable: Drawable?) {
-                            imageView.setImageResource(resPlaceholder)
-                        }
-                    })
+    private fun isValidContextForGlide(context: Context?): Boolean {
+        if (context is Activity) {
+            if (context.isFinishing || context.isDestroyed) {
+                return false
+            }
         }
+        return true
+    }
+
+    fun loadImage(imageView: ImageView, url: String, resPlaceholder: Int) {
+        if(!isValidContextForGlide(imageView.context)) return
+
+        Glide.with(imageView.context)
+            .load(url)
+            .into(object : CustomTarget<Drawable>() {
+                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                    imageView.setImageDrawable(resource)
+                }
+
+                override fun onLoadStarted(placeholder: Drawable?) {
+                    imageView.setImageResource(resPlaceholder)
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    imageView.setImageResource(resPlaceholder)
+                }
+
+                override fun onLoadFailed(errorDrawable: Drawable?) {
+                    imageView.setImageResource(resPlaceholder)
+                }
+            })
     }
 
     fun loadImage2(imageview: ImageView, url: String?, resId: Int) {
+        if(!isValidContextForGlide(imageview.context)) return
+
         val error = AppCompatResources.getDrawable(imageview.context, resId)
         if (url != null && !TextUtils.isEmpty(url)) {
             Glide.with(imageview.context)
@@ -64,6 +75,8 @@ object ImageUtils {
 
     fun loadImageCircle2(context: Context, imageView: ImageView,
                          url: String?) {
+        if(!isValidContextForGlide(context)) return
+
         if (url != null && !url.isEmpty()) {
             Glide.with(context)
                     .asBitmap()
@@ -77,6 +90,7 @@ object ImageUtils {
 
     fun loadImageCircleWithPlaceHolder(context: Context?, imageView: ImageView,
                                        url: String?) {
+        if(!isValidContextForGlide(context)) return
         context?.let {
             Glide.with(context)
                     .asBitmap()
@@ -89,6 +103,8 @@ object ImageUtils {
     }
 
     fun loadImageRounded2(context: Context, imageview: ImageView, url: String?, radius: Float) {
+        if(!isValidContextForGlide(context)) return
+
         if (url != null && !url.isEmpty()) {
             Glide.with(context)
                     .asBitmap()
@@ -101,28 +117,26 @@ object ImageUtils {
     }
 
     fun loadImageWithIdWithoutPlaceholder(imageview: ImageView, resId: Int) {
-        if (imageview.context != null) {
-            val drawable = AppCompatResources.getDrawable(imageview.context, resId)
-            Glide.with(imageview.context)
-                    .load("")
-                    .placeholder(drawable)
-                    .dontAnimate()
-                    .error(drawable)
-                    .into(imageview)
-        }
+
+        if (!isValidContextForGlide(imageview.context)) return
+
+        val drawable = AppCompatResources.getDrawable(imageview.context, resId)
+        Glide.with(imageview.context)
+            .load("")
+            .placeholder(drawable)
+            .dontAnimate()
+            .error(drawable)
+            .into(imageview)
+
     }
 
     fun loadImageWithoutPlaceholderAndError(imageview: ImageView, url: String) {
-        val context = imageview.context
-        if (context != null) {
-            if (context is Activity && (context.isFinishing)) {
-                return
-            }
+        if(!isValidContextForGlide(imageview.context)) return
+
             Glide.with(imageview.context)
                     .load(url)
                     .dontAnimate()
                     .into(imageview)
-        }
     }
 
     fun clearImage(imageView: ImageView?) {
@@ -153,6 +167,8 @@ object ImageUtils {
 
     @JvmStatic
     fun loadImageWithSignature(imageView: ImageView, url: String, signature: ObjectKey, imageLoaded: (Boolean) -> Unit) {
+        if(!isValidContextForGlide(imageView.context)) return
+
         Glide.with(imageView.context)
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
@@ -185,6 +201,8 @@ object ImageUtils {
                   isAnimate: Boolean = false,
                   imageLoaded: (Boolean) -> Unit = {},
                   imageCleared: (Boolean) -> Unit = {}) {
+
+        if(!isValidContextForGlide(imageView.context)) return
 
         val drawableError: Drawable? = if (resOnError == 0) {
             AppCompatResources.getDrawable(imageView.context, R.drawable.ic_loading_error)

@@ -1,5 +1,10 @@
 package com.tokopedia.loginregister.login.behaviour.case
 
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.behaviour.base.LoginBase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
@@ -64,7 +69,7 @@ class LoginNegativeCase: LoginBase() {
         runTest {
             inputEmailOrPhone("12345678901234567")
             clickSubmit()
-            isDisplayingGivenText(R.id.tv_error, errorMsg)
+            isDisplayingSubGivenText(R.id.tv_error, errorMsg)
         }
     }
 
@@ -73,7 +78,7 @@ class LoginNegativeCase: LoginBase() {
     fun forbiddenPage_discoverEmpty() {
         isDefaultDiscover = false
         runTest {
-            isDisplayingGivenText(com.google.android.material.R.id.snackbar_text, "Terjadi kesalahan. Ulangi beberapa saat lagi (1005)")
+            isDisplayingSubGivenText(com.google.android.material.R.id.snackbar_text, "Terjadi kesalahan. Ulangi beberapa saat lagi (1005)")
         }
     }
 
@@ -115,9 +120,12 @@ class LoginNegativeCase: LoginBase() {
             clickSubmit()
             inputPassword("test12345678")
             clickSubmit()
-
-            isDisplayingGivenText(com.google.android.material.R.id.snackbar_text, errorMsg)
         }
+
+        onView(ViewMatchers.withSubstring(errorMsg))
+            .check(matches(withEffectiveVisibility(
+                ViewMatchers.Visibility.VISIBLE
+            )))
     }
 
     @Test

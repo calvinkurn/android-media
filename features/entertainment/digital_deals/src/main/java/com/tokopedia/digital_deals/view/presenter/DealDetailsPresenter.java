@@ -401,4 +401,10 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
     public void getEventContent(@NotNull Function1<? super EventContentData, Unit> onSuccess, @NotNull Function1<? super Throwable, Unit> onError) {
         getEventContentUseCase.getEventContent(onSuccess, onError, this.typeId, String.valueOf(dealsDetailsResponse.getId()));
     }
+
+    @Override
+    public void detachView() {
+        this.mTouchViewPager = null;
+        super.detachView();
+    }
 }
