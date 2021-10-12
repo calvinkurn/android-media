@@ -25,6 +25,7 @@ import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.data.*
 import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
+import com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
 import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.review.common.util.ReviewAttachedImagesClickListener
 import com.tokopedia.review.common.util.ReviewConstants
@@ -37,7 +38,6 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.fragment_review_detail.*
 import javax.inject.Inject
 
@@ -69,7 +69,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
     private var reviewConnectionErrorRetryButton: UnifyButton? = null
 
-    private var badRatingReason: Typography? = null
+    private var badRatingReason: ReviewBadRatingReasonWidget? = null
 
     override fun stopPreparePerfomancePageMonitoring() {
         reviewPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
@@ -300,9 +300,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                     show()
                 }
             }
-            badRatingReason?.shouldShowWithAction(this.badRatingReasonFmt.isNotBlank()) {
-                badRatingReason?.text = badRatingReasonFmt
-            }
+            badRatingReason?.showBadRatingReason(badRatingReasonFmt)
         }
     }
 
@@ -373,6 +371,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     private fun bindViews() {
         reviewConnectionErrorRetryButton = view?.findViewById(com.tokopedia.review.inbox.R.id.reviewConnectionErrorRetryButton)
+        badRatingReason = view?.findViewById(R.id.review_detail_bad_rating_reason)
     }
 
     private fun initHeader() {

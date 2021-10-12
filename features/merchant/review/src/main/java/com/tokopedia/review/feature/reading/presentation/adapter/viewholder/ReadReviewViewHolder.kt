@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
+import com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
 import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
@@ -48,7 +49,7 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
     private var sellerResponse: ReadReviewSellerResponse? = null
     private var isProductReview = false
     private var shopId = ""
-    private var badRatingReason: Typography? = null
+    private var badRatingReason: ReviewBadRatingReasonWidget? = null
 
     init {
         bindViews()
@@ -299,8 +300,6 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
     }
 
     private fun showBadRatingReason(reason: String) {
-        badRatingReason?.shouldShowWithAction(reason.isNotBlank()) {
-            badRatingReason?.text = reason
-        }
+        badRatingReason?.showBadRatingReason(reason)
     }
 }
