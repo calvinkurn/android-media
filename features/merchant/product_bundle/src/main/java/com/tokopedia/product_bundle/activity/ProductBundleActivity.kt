@@ -174,10 +174,12 @@ class ProductBundleActivity : BaseSimpleActivity() {
                 else -> { /* no-op */ }
             }
         } else {
-            title = getString(R.string.dialog_error_title_empty_pdp)
-            message = getString(R.string.error_bundle_out_of_stock_dialog_description)
-            buttonText = getString(R.string.dialog_error_action_change_bundle)
-            showUnifyDialog(title, message, buttonText)
+            if (errorResult.type != InventoryErrorType.NO_ERROR) {
+                title = getString(R.string.dialog_error_title_empty_pdp)
+                message = getString(R.string.error_bundle_out_of_stock_dialog_description)
+                buttonText = getString(R.string.dialog_error_action_change_bundle)
+                showUnifyDialog(title, message, buttonText)
+            }
         }
     }
 
