@@ -244,8 +244,6 @@ public class MainParentActivity extends BaseActivity implements
 
     private boolean isNewNavigation;
 
-    private Boolean isBundleToggleOn = null;
-
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -349,18 +347,7 @@ public class MainParentActivity extends BaseActivity implements
             setDefaultShakeEnable();
             routeOnboarding();
         }
-        validateRecreateCart();
         pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_START_METRICS);
-    }
-
-    private void validateRecreateCart() {
-        try {
-            if (isBundleToggleOn != null && isBundleToggleOn != Switch.INSTANCE.isBundleToggleOn(this)) {
-                recreate();
-            }
-        } catch (Throwable t) {
-            Timber.d(t);
-        }
     }
 
     private void routeOnboarding() {
@@ -756,7 +743,7 @@ public class MainParentActivity extends BaseActivity implements
         fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, getIntent().getExtras()));
         fragmentList.add(OfficialHomeContainerFragment.newInstance(getIntent().getExtras()));
         if (!isNewNavigation) {
-            isBundleToggleOn = Switch.INSTANCE.isBundleToggleOn(this);
+            boolean isBundleToggleOn = Switch.INSTANCE.isBundleToggleOn(this);
             if (isBundleToggleOn) {
                 fragmentList.add(CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
             } else {
