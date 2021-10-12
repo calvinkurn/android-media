@@ -47,10 +47,6 @@ class UohFilterOptionsBottomSheet : BottomSheetUnify() {
         bottomSheetFilterOptions?.show(fragmentManager, "")
     }
 
-    fun doDismiss() {
-        if (bottomSheetFilterOptions?.isVisible == true) bottomSheetFilterOptions?.dismiss()
-    }
-
     fun hideChooseDate() {
         binding?.run {
             clChooseDate.gone()

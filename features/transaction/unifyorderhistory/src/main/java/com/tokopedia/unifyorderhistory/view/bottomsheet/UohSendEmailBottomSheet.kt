@@ -86,8 +86,4 @@ class UohSendEmailBottomSheet : BottomSheetUnify() {
 
         }
     }
-
-    fun doDismiss() {
-        if (bottomSheetSendEmail?.isVisible == true) bottomSheetSendEmail?.dismiss()
-    }
 }

@@ -20,14 +20,6 @@ class UohKebabMenuBottomSheet : BottomSheetUnify() {
     private var bottomSheetKebabMenu : BottomSheetUnify? = null
     private var binding by autoClearedNullable<BottomsheetKebabMenuUohBinding>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initView()
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    private fun initView() {
-    }
-
     fun show(context: Context, fragmentManager: FragmentManager, adapter: UohBottomSheetKebabMenuAdapter) {
         bottomSheetKebabMenu = BottomSheetUnify()
         binding = BottomsheetKebabMenuUohBinding.inflate(LayoutInflater.from(context), null, false)
@@ -43,9 +35,5 @@ class UohKebabMenuBottomSheet : BottomSheetUnify() {
             setCloseClickListener { dismiss() }
         }
         bottomSheetKebabMenu?.show(fragmentManager, "")
-    }
-
-    fun doDismiss() {
-        if (bottomSheetKebabMenu?.isVisible == true) bottomSheetKebabMenu?.dismiss()
     }
 }

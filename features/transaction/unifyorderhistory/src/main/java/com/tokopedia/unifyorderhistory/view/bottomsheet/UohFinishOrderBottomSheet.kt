@@ -54,8 +54,4 @@ class UohFinishOrderBottomSheet : BottomSheetUnify() {
     fun setActionListener(fragment: UohListFragment) {
         this.actionListener = fragment
     }
-
-    fun doDismiss() {
-        if (bottomSheetFinishOrder?.isVisible == true) bottomSheetFinishOrder?.dismiss()
-    }
 }

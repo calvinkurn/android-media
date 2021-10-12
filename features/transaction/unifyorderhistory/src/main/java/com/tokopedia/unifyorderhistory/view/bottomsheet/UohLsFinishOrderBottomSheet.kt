@@ -19,14 +19,6 @@ class UohLsFinishOrderBottomSheet : BottomSheetUnify() {
     private var actionListener: ActionListener? = null
     private var binding by autoClearedNullable<BottomsheetLsFinishOrderUohBinding>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initView()
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    private fun initView() {
-    }
-
     fun show(context: Context, fragmentManager: FragmentManager, index: Int, orderId: String) {
         val bottomSheet = BottomSheetUnify()
         bottomSheet.showCloseIcon = true
