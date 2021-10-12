@@ -166,7 +166,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
 
 
     private fun updateItemChildSortFilterPenalty(sortFilterItemPeriodWrapperList: List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>?) {
-        val typeId = sortFilterItemPeriodWrapperList?.find { it.isSelected }?.idFilter ?: 0
+        val typeId = sortFilterItemPeriodWrapperList?.find { it.isSelected }?.idFilter ?: ZERO_NUMBER
         sortFilterItemPeriodWrapperList?.let { penaltyPageAdapter.updateChipsSelected(it) }
         penaltyPageAdapter.run {
             removePenaltyListData()
