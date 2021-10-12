@@ -2,6 +2,7 @@ package com.tokopedia.kyc.view.activity;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import androidx.fragment.app.Fragment;
 
@@ -35,7 +36,10 @@ public class UpgradeProcessCompleteActivity extends BaseSimpleActivity implement
             message = uri.getQueryParameter(Constants.Keys.MESSAGE);
         }
         BaseDaggerFragment baseDaggerFragment = null;
-        if (status.equalsIgnoreCase(Constants.Status.INPROGRESS)) {
+        if (TextUtils.isEmpty(status)) {
+            finish();
+            return null;
+        } else if (status.equalsIgnoreCase(Constants.Status.INPROGRESS)) {
             baseDaggerFragment = FragmentFollowupCustomerCare.newInstance();
         } else if (status.equalsIgnoreCase(Constants.Status.SUCCESSFUL)) {
             baseDaggerFragment = FragmentVerificationSuccess.newInstance();
