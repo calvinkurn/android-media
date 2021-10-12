@@ -75,8 +75,8 @@ class ShopPenaltyViewModelTest: ShopPenaltyViewModelTestFixture() {
     @Test
     fun `when get penalty detail by type filter should return fail`() {
         runBlocking {
-            val shopScorePenaltyDetail = ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail()
-            onGetShopPenaltyDetailUseCase_thenReturn(shopScorePenaltyDetail)
+            val messageErrorException = MessageErrorException("Internal Server Error")
+            onGetShopPenaltyDetailUseCaseError_thenReturn(messageErrorException)
 
             val typeFilter = 4
 
@@ -85,9 +85,10 @@ class ShopPenaltyViewModelTest: ShopPenaltyViewModelTestFixture() {
             penaltyViewModel.setTypeFilterData(typeFilter)
 
             verifyGetShopPenaltyDetailUseCaseCaseCalled()
-            val actualResult = (penaltyViewModel.shopPenaltyDetailData.observeAwaitValue() as Success).data
-            assertTrue(penaltyViewModel.shopPenaltyDetailData.observeAwaitValue() is Success)
-            assertNotNull(actualResult)
+            val actualResult = (penaltyViewModel.shopPenaltyDetailData.observeAwaitValue() as Fail).throwable::class
+            val expectedResult = messageErrorException::class
+            assertTrue(penaltyViewModel.shopPenaltyDetailData.observeAwaitValue() is Fail)
+            assertEquals(expectedResult, actualResult)
         }
     }
 

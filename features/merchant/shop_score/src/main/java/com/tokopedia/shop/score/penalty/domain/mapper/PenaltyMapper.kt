@@ -125,11 +125,11 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
                          typeId: Int,
                          dateFilter: Pair<String, String>
     ): PenaltyDataWrapper {
-        val penaltyTypes = shopScorePenaltySummaryWrapper.shopScorePenaltyTypesResponse?.result
+        val penaltyTypes = shopScorePenaltySummaryWrapper.shopScorePenaltyTypesResponse?.result ?: emptyList()
         return PenaltyDataWrapper(
                 penaltyVisitableList = mapToItemVisitablePenaltyList(shopScorePenaltySummaryWrapper, shopScorePenaltyDetailResponse,
                         dateFilter, typeId),
-                penaltyFilterList = penaltyTypes?.let { mapToPenaltyFilterBottomSheet(it, sortBy, typeId) }
+                penaltyFilterList = mapToPenaltyFilterBottomSheet(penaltyTypes, sortBy, typeId)
         )
     }
 
