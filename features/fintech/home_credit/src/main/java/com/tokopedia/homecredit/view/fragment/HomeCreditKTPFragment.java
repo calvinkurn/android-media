@@ -47,8 +47,10 @@ public class HomeCreditKTPFragment extends HomeCreditBaseCameraFragment {
         String cameraType = getActivity().getIntent().getStringExtra(Constants.CAMERA_TYPE);
         String cutOutImgUrl = getActivity().getIntent().getStringExtra(Constants.CUST_OVERLAY_URL);
         String customHeaderText = getActivity().getIntent().getStringExtra(Constants.CUST_HEADER);
-        if(!TextUtils.isEmpty(customHeaderText))
+
+        if(!TextUtils.isEmpty(customHeaderText)) {
             headerText.setText(customHeaderText);
+        }
         if(!TextUtils.isEmpty(cameraType) && Constants.KTP_NO_OVERLAY.equalsIgnoreCase(cameraType)){
             cameraOverlayImg.setVisibility(View.GONE);
         }
@@ -72,6 +74,7 @@ public class HomeCreditKTPFragment extends HomeCreditBaseCameraFragment {
             reverseCamera.setVisibility(View.GONE);
         }
         cameraLayout = view.findViewById(R.id.hc_camera_layout);
+        headerText = view.findViewById(R.id.desc_1);
         cameraView.setFacing(Facing.BACK);
         cameraView.setZoom(0f);
         cameraOverlayImage = view.findViewById(R.id.img_cutout);

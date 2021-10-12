@@ -44,7 +44,6 @@ import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
-import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -69,7 +68,7 @@ class PlayFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
         private val pageMonitoring: PlayPltPerformanceCallback,
         private val dispatchers: CoroutineDispatchers,
-        private val analytic: PlayAnalytic,
+        private val analytic: PlayAnalytic
 ) :
         TkpdBaseV4Fragment(),
         PlayFragmentContract,
@@ -155,11 +154,11 @@ class PlayFragment @Inject constructor(
 
     override fun onPause() {
         unregisterKeyboardListener(requireView())
+        onPageDefocused()
         playParentViewModel.setLatestChannelStorageData(
                 channelId,
                 playViewModel.latestCompleteChannelData
         )
-        onPageDefocused()
         super.onPause()
     }
 

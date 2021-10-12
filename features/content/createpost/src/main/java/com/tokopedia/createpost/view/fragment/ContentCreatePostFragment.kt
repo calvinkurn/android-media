@@ -6,7 +6,7 @@ import com.tokopedia.applink.ApplinkConst.AttachProduct.*
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachcommon.data.ResultProduct
-import com.tokopedia.createpost.view.viewmodel.ProductSuggestionItem
+import com.tokopedia.createpost.common.view.viewmodel.ProductSuggestionItem
 
 /**
  * @author by milhamj on 01/03/19.

@@ -7,12 +7,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
+import com.tokopedia.product.detail.databinding.ItemComparisonWidgetViewholderBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonListModel
 import com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetInterface
 import com.tokopedia.recommendation_widget_common.widget.comparison.RecommendationTrackingModel
-import kotlinx.android.synthetic.main.item_comparison_widget_viewholder.view.*
 
 class PdpComparisonWidgetViewHolder(
       private val view: View,
@@ -21,13 +21,15 @@ class PdpComparisonWidgetViewHolder(
 
     private var componentTrackDataModel: ComponentTrackDataModel? = null
 
+    private val binding = ItemComparisonWidgetViewholderBinding.bind(view)
+
     companion object {
         val LAYOUT = R.layout.item_comparison_widget_viewholder
         const val PDP_PAGE_NAME = "product detail page"
     }
 
     override fun bind(element: PdpComparisonWidgetDataModel) {
-        itemView.comparison_widget.setComparisonWidgetData(
+        binding.comparisonWidget.setComparisonWidgetData(
                 element.recommendationWidget,
                 this@PdpComparisonWidgetViewHolder,
                 RecommendationTrackingModel(
