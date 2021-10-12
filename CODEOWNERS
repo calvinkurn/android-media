@@ -1,6 +1,7 @@
 /features/content/createpost/           				@tokopedia/android-minionskywalker-dev
 /features/content/explore/              				@tokopedia/android-minionskywalker-dev
 /features/content/feed/                 				@tokopedia/android-minionskywalker-dev
+/features/merchant/feed_shop/                 		    @tokopedia/android-minionken-dev
 /features/content/interest_pick/        				@tokopedia/android-minionskywalker-dev
 /features/content/kol/                  				@tokopedia/android-minionskywalker-dev
 /features/content/kol_common/           				@tokopedia/android-minionskywalker-dev
