@@ -26,7 +26,7 @@
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
-            android:background="@color/Unify_N75"
+            android:background="@color/Unify_NN300"
             app:layout_constraintTop_toBottomOf="@+id/seemorebutton_description" />
         <com.tokopedia.unifycomponents.TabsUnify
             android:id="@+id/tab_layout"
