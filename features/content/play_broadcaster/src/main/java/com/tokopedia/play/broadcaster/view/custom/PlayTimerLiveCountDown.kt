@@ -35,7 +35,6 @@ class PlayTimerLiveCountDown @JvmOverloads constructor(
      */
     private val textAnimatorIn: AnimatorSet
     private val textAnimatorOut: AnimatorSet
-    private val animatorProgressCircularOut: AnimatorSet
     private val animatorInfoOut: AnimatorSet
 
     private val textAnimatorSet = AnimatorSet()
@@ -52,7 +51,6 @@ class PlayTimerLiveCountDown @JvmOverloads constructor(
         textAnimatorIn = AnimatorInflater.loadAnimator(context, R.animator.play_timer_count_down_scale_alpha) as AnimatorSet
         textAnimatorOut = AnimatorInflater.loadAnimator(context, R.animator.play_timer_count_down_reverse_alpha) as AnimatorSet
         textAnimatorSet.playSequentially(textAnimatorIn, textAnimatorOut)
-        animatorProgressCircularOut = AnimatorInflater.loadAnimator(context, R.animator.play_timer_count_down_reverse_scale_alpha) as AnimatorSet
         animatorInfoOut = AnimatorInflater.loadAnimator(context, R.animator.play_timer_count_down_translate_alpha) as AnimatorSet
         textAnimatorIn.setTarget(countText)
         textAnimatorOut.setTarget(countText)
@@ -66,21 +64,28 @@ class PlayTimerLiveCountDown @JvmOverloads constructor(
     override fun setVisibility(visibility: Int) {
         super.setVisibility(visibility)
         if (visibility == View.GONE) {
-            textAnimatorOut.end()
-            textAnimatorIn.end()
-            textAnimatorSet.end()
-            animatorProgressCircularOut.end()
-            animatorInfoOut.end()
+            endAllAnimation()
         }
+    }
+
+    private fun endAllAnimation() {
+        textAnimatorOut.end()
+        textAnimatorIn.end()
+        textAnimatorSet.end()
+        animatorInfoOut.end()
     }
 
     fun startCountDown(property: AnimationProperty, listener: Listener? = null){
         loader.gone()
+        btnCancel.visible()
+
         val textInterval = property.textCountDownInterval
 
         setupTextCountAnimator(textInterval)
 
         btnCancel.setOnClickListener {
+            timer.cancel()
+            endAllAnimation()
             listener?.onCancelLiveStream()
         }
 
@@ -91,8 +96,8 @@ class PlayTimerLiveCountDown @JvmOverloads constructor(
 
             override fun onFinish() {
                 animatorInfoOut.start()
-                animatorProgressCircularOut.start()
                 loader.visible()
+                btnCancel.gone()
                 listener?.onFinish()
             }
 
@@ -130,21 +135,13 @@ class PlayTimerLiveCountDown @JvmOverloads constructor(
     }
 
     class AnimationProperty private constructor(
-        val fullRotationInterval: Long,
         val textCountDownInterval: Long,
         val totalCount: Int
     ) {
 
         class Builder {
-
-            private var fullRotationInterval: Long = MILLIS_IN_SECOND
             private var textCountDownInterval: Long = MILLIS_IN_SECOND
             private var totalCount: Int = 3
-
-            fun setFullRotationInterval(intervalInMillis: Long): Builder {
-                fullRotationInterval = intervalInMillis
-                return this
-            }
 
             fun setTextCountDownInterval(intervalInMillis: Long): Builder {
                 textCountDownInterval = intervalInMillis
@@ -158,7 +155,6 @@ class PlayTimerLiveCountDown @JvmOverloads constructor(
 
             fun build(): AnimationProperty {
                 return AnimationProperty(
-                    fullRotationInterval = fullRotationInterval,
                     textCountDownInterval = textCountDownInterval,
                     totalCount = totalCount
                 )

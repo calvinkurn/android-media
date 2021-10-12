@@ -44,9 +44,6 @@ import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.BroadcastScheduleViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.play_common.detachableview.FragmentViewContainer
-import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
-import com.tokopedia.play_common.detachableview.detachableView
 import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
@@ -213,7 +210,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     private fun setupView(view: View) {
         actionBarView.setTitle(getString(R.string.play_action_bar_prepare_final_title))
         btnStartLive.setOnClickListener {
-            startStreaming()
+            startCountDown()
         }
         llSelectedProduct.setOnClickListener {
             openEditProductPage()
@@ -508,9 +505,8 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private fun startCountDown() {
         val animationProperty = PlayTimerLiveCountDown.AnimationProperty.Builder()
-            .setFullRotationInterval(TIMER_ROTATION_INTERVAL)
             .setTextCountDownInterval(TIMER_TEXT_COUNTDOWN_INTERVAL)
-            .setTotalCount(TIMER_ANIMATION_TOTAL_COUNT)
+            .setTotalCount(parentViewModel.getBeforeLiveCountDownDuration())
             .build()
 
         countdownTimer.visible()
@@ -518,8 +514,8 @@ class PlayBeforeLiveFragment @Inject constructor(
             override fun onTick(milisUntilFinished: Long) {}
 
             override fun onFinish() {
-                countdownTimer.gone()
-                parentViewModel.startLiveCountDownTimer()
+                startStreaming()
+//                parentViewModel.startLiveCountDownTimer()
             }
 
             override fun onCancelLiveStream() {
