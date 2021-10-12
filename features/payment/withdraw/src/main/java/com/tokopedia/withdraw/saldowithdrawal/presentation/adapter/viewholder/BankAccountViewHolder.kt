@@ -26,6 +26,7 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val bankAdminFee: TextView = view.tvAdminFee
     private val ivPremiumAccount: ImageView = view.ivPremiumAccount
     private val tvSpecialOffer: TextView = view.tvSpecialOffer
+    private val warningMessage: TextView = view.tvWarningMessage
 
     fun bindData(bankAccount: BankAccount, onBankAccountSelected: (BankAccount) -> Unit,
                  listener: BankAccountAdapter.BankAdapterListener,
@@ -43,6 +44,15 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         } else {
             bankAdminFee.text = ""
             bankAdminFee.gone()
+        }
+
+        if (bankAccount.warningMessage.isNullOrEmpty())
+            warningMessage.gone()
+        else {
+            val color = getWarningTextColor(bankAccount.warningColor)
+            warningMessage.visible()
+            warningMessage.text = bankAccount.warningMessage
+            warningMessage.setTextColor(ContextCompat.getColor(context, color))
         }
 
         val drawable: Drawable = when {
@@ -91,6 +101,12 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     }
 
+    private fun getWarningTextColor(warningColor: Int): Int {
+        return if (warningColor == WARNING_COLOR_RED)
+            com.tokopedia.unifyprinciples.R.color.Unify_R600
+        else com.tokopedia.unifyprinciples.R.color.Unify_N700_32
+    }
+
     fun getPowerMerchantImageView(): View = ivPremiumAccount
 
     fun isPowerMerchantVisible(): Boolean {
@@ -102,6 +118,7 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         const val ALPHA_DISABLED = 0.5F
         const val ALPHA_ENABLED = 1.0F
         const val INACTIVE_BANK_STATUS = 0
+        const val WARNING_COLOR_RED = 1
         fun getViewHolder(inflater: LayoutInflater, parent: ViewGroup) = BankAccountViewHolder(
                 inflater.inflate(LAYOUT_ID, parent, false)
         )
