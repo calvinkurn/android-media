@@ -132,6 +132,7 @@ class HotelCancellationFragment : HotelBaseFragment() {
 
     private fun convertDynamicError(error: Throwable){
         hideLoadingState()
+        binding?.hotelCancellationContainer?.gone()
         binding?.containerError?.root?.visible()
         try {
             val gson = Gson()
@@ -165,6 +166,9 @@ class HotelCancellationFragment : HotelBaseFragment() {
     }
 
     private fun initView(hotelCancellationModel: HotelCancellationModel) {
+        binding?.hotelCancellationContainer?.visible()
+        binding?.containerError?.root?.gone()
+
         hotelCancellationModel.property.let {
             binding?.layoutHotelCancellationSummary?.hotelCancellationPropertyName?.text = it.name
             binding?.layoutHotelCancellationSummary?.hotelCancellationRoomName?.text = it.room.firstOrNull()?.roomName ?: ""
