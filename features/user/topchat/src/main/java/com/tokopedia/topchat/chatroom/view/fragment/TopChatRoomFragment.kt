@@ -145,6 +145,7 @@ import android.R.attr.label
 
 import android.content.ClipData
 import android.widget.TextView
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 
 
 /**
@@ -2391,14 +2392,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return presenter.roomMetaData.userIdMap[senderId]?.name ?: ""
     }
 
-    override fun goToBubble(localId: String, replyTimeMillis: String) {
-        val bubblePosition = adapter.getBubblePosition(localId)
+    override fun goToBubble(parentReply: ParentReply) {
+        val bubblePosition = adapter.getBubblePosition(
+            parentReply.localId, parentReply.replyTime
+        )
         if (bubblePosition != RecyclerView.NO_POSITION) {
             smoothScroller?.targetPosition = bubblePosition
             rvLayoutManager?.startSmoothScroll(smoothScroller)
         } else {
             resetItemList()
-            setupBeforeReplyTime(replyTimeMillis)
+            setupBeforeReplyTime(parentReply.replyTimeMillisOffset)
             loadInitialData()
         }
     }

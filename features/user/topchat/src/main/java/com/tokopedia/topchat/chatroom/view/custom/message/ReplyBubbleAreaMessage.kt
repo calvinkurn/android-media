@@ -51,7 +51,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
 
     interface Listener {
         fun getUserName(senderId: String): String
-        fun goToBubble(localId: String, replyTimeMillis: String)
+        fun goToBubble(parentReply: ParentReply)
     }
 
     private fun initLayout() {
@@ -91,10 +91,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     private fun bindClick(parentReply: ParentReply) {
         setOnClickListener {
             if (!parentReply.isExpired) {
-                listener?.goToBubble(
-                    localId = parentReply.localId,
-                    replyTimeMillis = parentReply.replyTimeMillisOffset
-                )
+                listener?.goToBubble(parentReply)
             } else {
                 val msg = context.getString(R.string.title_topchat_reply_bubble_expired)
                 Toaster.build(

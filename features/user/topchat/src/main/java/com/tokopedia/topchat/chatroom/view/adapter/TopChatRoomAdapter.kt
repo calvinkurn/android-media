@@ -121,14 +121,16 @@ class TopChatRoomAdapter constructor(
         }
     }
 
-    fun getBubblePosition(localId: String): Int {
-        var position = RecyclerView.NO_POSITION
-        if (replyMap.contains(localId)) {
-            position = visitables.indexOfFirst {
+    fun getBubblePosition(localId: String, replyTime: String): Int {
+        return if (replyMap.contains(localId)) {
+            visitables.indexOfFirst {
                 it is BaseChatViewModel && it.localId == localId
             }
+        } else {
+            visitables.indexOfFirst {
+                it is BaseChatViewModel && it.replyTime == replyTime
+            }
         }
-        return position
     }
 
     override fun isOpposite(adapterPosition: Int, isSender: Boolean): Boolean {
