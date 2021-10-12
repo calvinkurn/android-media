@@ -4,6 +4,7 @@ import com.tokopedia.digital.digital_recommendation.data.DigitalRecommendationQu
 import com.tokopedia.digital.digital_recommendation.data.DigitalRecommendationResponse
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
+import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -39,7 +40,10 @@ class DigitalRecommendationUseCase @Inject constructor(
         )
 
         multiRequestGraphqlUseCase.setCacheStrategy(
-                GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+                GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                        .setExpiryTime(1 * GraphqlConstant.ExpiryTimes.HOUR.`val`())
+                        .setSessionIncluded(true)
+                        .build()
         )
         multiRequestGraphqlUseCase.clearRequest()
 
