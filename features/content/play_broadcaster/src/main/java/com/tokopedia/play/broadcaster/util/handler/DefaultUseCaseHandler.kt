@@ -55,6 +55,6 @@ class DefaultUseCaseHandler(
     }
 
     companion object {
-        const val MAX_RETRY = 3
+        const val MAX_RETRY = 5
     }
 }
