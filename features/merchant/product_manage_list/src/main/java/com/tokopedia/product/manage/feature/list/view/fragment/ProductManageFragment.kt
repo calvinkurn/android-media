@@ -206,7 +206,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     private var isOfficialStore: Boolean = false
     private var productListFeaturedOnlySize: Int = 0
     private var dialogFeaturedProduct: DialogUnify? = null
-    private var searchBar: SearchBarUnify? = null
     private var productManageBottomSheet: ProductManageBottomSheet? = null
     private var filterProductBottomSheet: ProductManageFilterFragment? = null
     private var productManageMoreMenuBottomSheet: ProductManageMoreMenuBottomSheet? = null
@@ -291,10 +290,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         get() = binding?.progressBar
     private val interceptor: FrameLayout?
         get() = binding?.interceptor
+    private val searchBar: SearchBarUnify?
+        get() = binding?.searchBarProductManage
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentProductManageBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
-        return inflater.inflate(getLayoutRes(), container, false)
+        return binding?.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -328,7 +330,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(view)
+        initView()
     }
 
     override fun clearAllData() {
@@ -336,7 +338,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         super.clearAllData()
     }
 
-    private fun initView(view: View) {
+    private fun initView() {
         setupInterceptor()
         setupSearchBar()
         setupProductList()
@@ -787,7 +789,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     private fun setupSearchBar() {
-        searchBar = binding?.searchBarProductManage
         searchBar?.run {
             clearFocus()
 
