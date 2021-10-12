@@ -517,10 +517,6 @@ class PlayBeforeLiveFragment @Inject constructor(
                 startStreaming()
 //                parentViewModel.startLiveCountDownTimer()
             }
-
-            override fun onCancelLiveStream() {
-                countdownTimer.gone()
-            }
         })
     }
 
@@ -598,8 +594,6 @@ class PlayBeforeLiveFragment @Inject constructor(
         private const val TAG_PRODUCT_EDIT = "product_edit"
         private const val TAG_TITLE_AND_TAGS_EDIT = "title_and_tags_edit"
 
-        private const val TIMER_ROTATION_INTERVAL = 3000L
         private const val TIMER_TEXT_COUNTDOWN_INTERVAL = 1000L
-        private const val TIMER_ANIMATION_TOTAL_COUNT = 3
     }
 }
