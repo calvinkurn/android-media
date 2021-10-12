@@ -17,7 +17,7 @@
         android:id="@+id/desc1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="4dp"
         app:typographyType="body_3"
         app:layout_constraintTop_toBottomOf="@id/title1" />
 
@@ -25,7 +25,7 @@
         android:id="@+id/title2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="12dp"
         android:text="@string/topads_create_tip_sheet_title2"
         app:layout_constraintTop_toBottomOf="@id/desc1"
         app:typographyType="body_2"
@@ -35,7 +35,7 @@
         android:id="@+id/desc2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="4dp"
         app:typographyType="body_3"
         app:layout_constraintTop_toBottomOf="@id/title2" />
 
@@ -43,7 +43,7 @@
         android:id="@+id/title3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="12dp"
         android:text="@string/topads_create_tip_sheet_title3"
         app:layout_constraintTop_toBottomOf="@id/desc2"
         app:typographyType="body_2"
@@ -53,7 +53,7 @@
         android:id="@+id/desc3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="4dp"
         app:typographyType="body_3"
         app:layout_constraintTop_toBottomOf="@id/title3" />
 
@@ -61,7 +61,7 @@
         android:id="@+id/desc4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="4dp"
         app:typographyType="body_3"
         app:layout_constraintTop_toBottomOf="@id/desc3" />
 

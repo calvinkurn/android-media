@@ -166,7 +166,7 @@
         app:layout_constraintBottom_toBottomOf="@id/replyDisplayName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/replyDisplayName"
-        app:layout_goneMarginTop="@dimen/dp_12"
+        app:layout_goneMarginTop="12dp"
         app:srcCompat="@drawable/talk_ic_kebab"
         tools:visibility="visible" />
 

@@ -16,25 +16,25 @@
             layout="@layout/partial_shimmering_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16" />
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp" />
 
         <include
             layout="@layout/partial_shimmering_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16" />
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp" />
 
         <include
             layout="@layout/partial_shimmering_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16" />
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp" />
 
     </LinearLayout>
 
@@ -51,8 +51,8 @@
         android:layout_alignParentBottom="true"
         android:background="@color/Unify_N0"
         android:clipToPadding="false"
-        android:elevation="@dimen/dp_8"
-        android:padding="@dimen/dp_16">
+        android:elevation="8dp"
+        android:padding="16dp">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_info"
@@ -61,8 +61,8 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
             android:layout_toStartOf="@+id/btn_action"
             android:layout_toLeftOf="@+id/btn_action"
             android:textColor="@color/Unify_N700_96"

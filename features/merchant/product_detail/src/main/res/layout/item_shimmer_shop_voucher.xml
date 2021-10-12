@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/shimmer_shop_voucher_container"
     android:layout_width="match_parent"
-    android:padding="@dimen/dp_20"
+    android:padding="20dp"
     android:layout_height="wrap_content">
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
@@ -17,9 +17,9 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/merchant_shimmer_txt_1"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginStart="10dp"
         app:corners="@integer/corner_radius_shimmering"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/merchant_shimmer_ic_2"
@@ -30,7 +30,7 @@
         android:id="@+id/merchant_shimmer_ic_2"
         android:layout_width="@dimen/dp_25"
         android:layout_height="@dimen/dp_25"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginStart="16dp"
         app:corners="100"
         app:layout_constraintEnd_toStartOf="@id/merchant_shimmer_txt_2"
         app:layout_constraintStart_toEndOf="@+id/merchant_shimmer_txt_1"
@@ -38,10 +38,10 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/merchant_shimmer_txt_2"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginStart="10dp"
         android:gravity="center"
         app:corners="@integer/corner_radius_shimmering"
         app:layout_constraintBottom_toBottomOf="parent"

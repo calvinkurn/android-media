@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:clipToPadding="false"
     android:clipChildren="false"
-    android:layout_marginBottom="@dimen/dp_4">
+    android:layout_marginBottom="4dp">
 
     <include
         android:id="@+id/etalase_header_container"

@@ -28,8 +28,8 @@
         android:layout_height="match_parent"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingBottom="@dimen/dp_8"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:background="@color/Unify_N0"/>
 

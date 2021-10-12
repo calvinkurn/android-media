@@ -24,13 +24,13 @@
         android:id="@+id/tvStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/t_promo_status_bg_round"
-        android:paddingStart="@dimen/dp_4"
-        android:paddingTop="@dimen/dp_2"
-        android:paddingEnd="@dimen/dp_4"
-        android:paddingBottom="@dimen/dp_2"
+        android:paddingStart="4dp"
+        android:paddingTop="2dp"
+        android:paddingEnd="4dp"
+        android:paddingBottom="2dp"
         android:text="@string/t_promo_min_transaction"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,7 +41,7 @@
     <LinearLayout
         android:id="@+id/clTransaction"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_48"
+        android:layout_height="48dp"
         android:background="@drawable/promo_ui_bottom_corner"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appCompatImageView">
@@ -54,7 +54,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginStart="8dp"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/icon"
@@ -74,7 +74,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/t_promo_grey96"
-                    android:textSize="@dimen/sp_14"
+                    android:textSize="14sp"
                     app:typographyType="heading_5"
                     tools:text="Rp100.000" />
 
@@ -82,9 +82,9 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/icon"
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
-                android:layout_marginStart="@dimen/dp_10"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="10dp"
                 android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -101,7 +101,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginStart="8dp"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/icon1"
@@ -121,7 +121,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/t_promo_grey96"
-                    android:textSize="@dimen/sp_14"
+                    android:textSize="14sp"
                     app:typographyType="heading_5"
                     tools:text="Rp100.000" />
 
@@ -129,9 +129,9 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/icon1"
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
-                android:layout_marginStart="@dimen/dp_10"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="10dp"
                 android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

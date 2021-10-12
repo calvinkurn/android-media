@@ -33,7 +33,7 @@
         android:id="@+id/info_detail_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginStart="4dp"
         android:singleLine="true"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="@+id/info_detail_title"
@@ -48,7 +48,7 @@
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         android:background="@color/Unify_N75"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/info_detail_title" />

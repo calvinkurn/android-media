@@ -3,6 +3,6 @@
     <stroke
         android:width="@dimen/dp_1"
         android:color="@color/gf_outline_btn" />
-    <corners android:radius="@dimen/dp_8" />
+    <corners android:radius="8dp" />
     <solid android:color="@color/transparent"/>
 </shape>

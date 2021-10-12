@@ -3,6 +3,6 @@
     <stroke
         android:width="3dip"
         android:color="@color/Unify_G400" />
-    <corners android:radius="@dimen/dp_8" />
+    <corners android:radius="8dp" />
     <solid android:color="@color/product_detail_dms_variant_overlay" />
 </shape>

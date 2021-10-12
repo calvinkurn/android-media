@@ -8,5 +8,5 @@
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/quick_filter_padding_vertical"
     android:paddingBottom="@dimen/quick_filter_padding_vertical"
-    android:paddingRight="@dimen/dp_5"
+    android:paddingRight="5dp"
     tools:text="7.828.192 Produk"/>

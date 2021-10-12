@@ -7,6 +7,6 @@
         android:endColor="@color/Unify_R100"
         android:startColor="@color/Unify_R100" />
 
-    <corners android:radius="@dimen/dp_4" />
+    <corners android:radius="4dp" />
 
 </shape>

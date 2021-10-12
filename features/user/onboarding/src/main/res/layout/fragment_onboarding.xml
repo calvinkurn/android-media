@@ -43,22 +43,22 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_indicator"
-        android:layout_width="@dimen/dp_39"
-        android:layout_height="@dimen/dp_12"
+        android:layout_width="39dp"
+        android:layout_height="12dp"
         android:layout_marginBottom="@dimen/dp_30"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:tabBackground="@drawable/indicator_onboarding_selector"
-        app:tabIndicatorHeight="@dimen/dp_0" />
+        app:tabIndicatorHeight="0dp" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/next_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/dp_24"
-        android:paddingTop="@dimen/dp_12"
-        android:paddingRight="@dimen/dp_24"
+        android:paddingLeft="24dp"
+        android:paddingTop="12dp"
+        android:paddingRight="24dp"
         android:paddingBottom="@dimen/dp_26"
         android:text="@string/nav_action_next"
         android:textColor="@color/Unify_G500"

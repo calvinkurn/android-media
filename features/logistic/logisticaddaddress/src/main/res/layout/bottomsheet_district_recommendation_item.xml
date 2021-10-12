@@ -15,7 +15,7 @@
         android:tint="@color/Unify_N200"
         android:contentDescription="@string/pointer"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="@dimen/dp_12"/>
+        android:layout_marginTop="12dp"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_district_name"
@@ -25,8 +25,8 @@
         android:layout_toEndOf="@id/ic_location"
         android:maxLines="2"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginEnd="@dimen/dp_18"
         android:ellipsize="none"
         android:scrollHorizontally="false"/>
@@ -36,6 +36,6 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:background="@color/Unify_N100"
-        android:layout_marginBottom="@dimen/dp_10"/>
+        android:layout_marginBottom="10dp"/>
 
 </RelativeLayout>

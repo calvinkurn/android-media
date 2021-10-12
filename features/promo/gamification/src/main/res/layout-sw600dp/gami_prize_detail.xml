@@ -16,8 +16,8 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/image_close"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_gravity="center_vertical"
             app:srcCompat="@drawable/iconunify_close"
             app:tint="@color/gf_close_color" />
@@ -25,8 +25,8 @@
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_10"
-            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:text="@string/gami_hadiah_yang_mungkin_didapat"
             app:typographyType="heading_2"
             app:typographyWeight="bold" />
@@ -37,7 +37,7 @@
         android:id="@+id/image"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="10dp"
         app:gami_corner_radius="8dp"
         app:layout_constraintDimensionRatio="h,3:1"
         app:layout_constraintEnd_toEndOf="parent"
@@ -59,7 +59,7 @@
         android:id="@+id/greenBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/prizeListItemContainer" />

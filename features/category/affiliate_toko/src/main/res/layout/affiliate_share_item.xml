@@ -7,9 +7,9 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/share_icon"
-        android:layout_width="@dimen/dp_20"
-        android:layout_height="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="16dp"
         app:icon_color_light_enable="@color/Unify_NN900"
         app:icon_enable_state="true"
         app:icon_name="FACEBOOK"
@@ -34,8 +34,8 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/share_button"
         android:layout_width="@dimen/dp_110"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginBottom="@dimen/dp_12"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
         android:layout_height="wrap_content"
         android:text="@string/affiliate_copy_link"
         app:layout_constraintLeft_toRightOf="@id/share_platform"
@@ -48,7 +48,7 @@
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_2"
+        android:layout_height="2dp"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

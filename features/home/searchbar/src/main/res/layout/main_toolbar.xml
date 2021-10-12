@@ -15,19 +15,19 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:orientation="horizontal"
-        android:padding="@dimen/dp_8">
+        android:padding="8dp">
 
         <LinearLayout
             android:id="@+id/layout_search"
             android:layout_toLeftOf="@+id/btn_wishlist"
             android:layout_toStartOf="@+id/btn_wishlist"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             android:layout_width="match_parent"
             android:background="@drawable/toolbar_bg_corner"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:padding="@dimen/dp_4">
+            android:padding="4dp">
 
             <ImageView
                 android:layout_marginLeft="4dp"
@@ -40,8 +40,8 @@
             <TextView
                 android:id="@+id/et_search"
                 android:gravity="center_vertical"
-                android:layout_marginLeft="@dimen/dp_4"
-                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginLeft="4dp"
+                android:layout_marginStart="4dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="@string/search_tokopedia"

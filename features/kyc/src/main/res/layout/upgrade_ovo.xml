@@ -32,9 +32,9 @@
                     style="@style/TextView.TitleMedium.Bold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_20"
-                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="16dp"
                     android:gravity="center_horizontal"
                     android:text="@string/upgrade_ovo_title" />
 
@@ -43,9 +43,9 @@
                     style="@style/TextView.Small.BlackSecondary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_24"
-                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginRight="16dp"
                     android:gravity="center_horizontal"
                     android:text="@string/upgrade_description" />
 

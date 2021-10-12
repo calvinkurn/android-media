@@ -7,6 +7,6 @@
         android:color="@color/Unify_N700_96" />
 
     <corners
-        android:radius="@dimen/dp_6"/>
+        android:radius="6dp"/>
 
 </shape>

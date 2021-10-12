@@ -27,7 +27,7 @@
                     android:layout_width="@dimen/dp_28"
                     android:layout_height="@dimen/dp_28"
                     android:gravity="left"
-                    android:padding="@dimen/dp_8"
+                    android:padding="8dp"
                     app:srcCompat="@drawable/ic_tp_arrow_back"
                     app:unifyImageButtonVariant="image" />
 
@@ -36,7 +36,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginStart="@dimen/dp_12"
+                    android:layout_marginStart="12dp"
                     android:text="@string/tp_title_tokopoints"
                     app:typographyType="heading_3"
                     app:typographyWeight="bold" />
@@ -58,7 +58,7 @@
         android:id="@+id/text_title_error"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         android:gravity="center_horizontal"
         android:layout_marginStart="@dimen/dp_50"
         android:layout_marginEnd="@dimen/dp_50"
@@ -71,7 +71,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_label_error"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/tp_margin_xsmall"
         android:gravity="center_horizontal"
@@ -87,7 +87,7 @@
     <com.tokopedia.tokopoints.view.customview.RoundButton
         android:id="@+id/text_failed_action"
         android:layout_width="@dimen/dp_200"
-        android:layout_height="@dimen/dp_48"
+        android:layout_height="48dp"
         android:layout_marginTop="@dimen/tp_margin_large"
         android:gravity="center"
         android:text="@string/tp_try_again"

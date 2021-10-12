@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/dp_16">
+    android:paddingBottom="16dp">
 
     <LinearLayout
         android:id="@+id/ll_content"
@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:padding="@dimen/dp_16"
+        android:padding="16dp"
         android:visibility="gone" />
 
 </FrameLayout>

@@ -5,14 +5,14 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="@dimen/dp_16">
+    android:padding="16dp">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderUnify"
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
-        android:layout_marginStart="@dimen/dp_0"
-        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="8dp"
         app:loader_corner_radius="@dimen/dp_32"
         app:loader_type="circular" />
 

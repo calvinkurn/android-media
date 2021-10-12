@@ -6,16 +6,16 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/dp_minus12"
     android:layout_marginRight="@dimen/dp_minus12"
-    android:layout_marginBottom="@dimen/dp_8">
+    android:layout_marginBottom="8dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_12"
+        android:paddingLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:paddingRight="16dp"
+        android:layout_marginBottom="12dp"
         android:textColor="@color/Unify_N700_96"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/youtube_home_shop_page"
@@ -33,7 +33,7 @@
     <com.tokopedia.shop.home.ShopCarouselBannerImageUnify
         android:id="@+id/youtube_home_shop_page"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0"
+        android:layout_height="0dp"
         app:layout_constraintDimensionRatio="H,16:9"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
@@ -46,7 +46,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/loaderVideoYoutube"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0"
+        android:layout_height="0dp"
         app:layout_constraintDimensionRatio="H,16:9"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
@@ -71,7 +71,7 @@
     <View
         android:id="@+id/bgVideoError"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0"
+        android:layout_height="0dp"
         app:layout_constraintDimensionRatio="H,16:9"
         android:background="@color/Unify_N700"
         app:layout_constraintBottom_toBottomOf="@id/youtube_home_shop_page"
@@ -104,7 +104,7 @@
 
     <androidx.constraintlayout.widget.Group
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0"
+        android:layout_height="0dp"
         app:layout_constraintDimensionRatio="H,16:9"
         android:visibility="gone"
         app:constraint_referenced_ids="bgVideoError,ivVideoNotFound,tvYoutubeNotFound"

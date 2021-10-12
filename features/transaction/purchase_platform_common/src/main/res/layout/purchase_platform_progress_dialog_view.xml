@@ -5,12 +5,12 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="@dimen/dp_16">
+    android:padding="16dp">
 
     <ProgressBar
-        android:layout_width="@dimen/dp_48"
-        android:layout_height="@dimen/dp_48"
-        android:layout_marginEnd="@dimen/dp_16" />
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="16dp" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"

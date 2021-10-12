@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_16"
-    android:layout_marginBottom="@dimen/dp_16">
+    android:layout_marginTop="16dp"
+    android:layout_marginBottom="16dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/headerText"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="@id/subHeaderText"
         app:layout_constraintHorizontal_bias="0"
@@ -23,11 +23,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/subHeaderText"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_2"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toStartOf="@id/radioButton"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,7 +39,7 @@
         android:id="@+id/radioButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginEnd="16dp"
         android:clickable="false"
         android:focusable="false"
         app:layout_constraintBottom_toBottomOf="parent"

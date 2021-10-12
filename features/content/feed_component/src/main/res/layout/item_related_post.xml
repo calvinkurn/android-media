@@ -4,18 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/dp_16"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginEnd="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginStart="16dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginRight="16dp"
     android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/feed_other_related_post"
         android:textColor="@color/Unify_N700_68"
         app:typographyType="heading_5"
@@ -29,7 +29,7 @@
         android:layout_marginRight="-4dp"
         android:clipToPadding="false"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/dp_16"
+        android:paddingBottom="16dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2"
         tools:listitem="@layout/item_related_post_child" />

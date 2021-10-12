@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Unify_N0"
-    android:padding="@dimen/dp_16">
+    android:padding="16dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/tokonowEmptyStateIcon"
@@ -48,8 +48,8 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/tokonowEmptyStateButtonChangeAddress"
         android:layout_width="@dimen/dp_240"
-        android:layout_height="@dimen/dp_40"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_height="40dp"
+        android:layout_marginTop="24dp"
         android:text="@string/tokopedianow_common_empty_state_button_change_address"
         app:layout_constraintBottom_toTopOf="@id/tokonowEmptyStateButtonReturn"
         app:layout_constraintEnd_toEndOf="parent"
@@ -62,7 +62,7 @@
         android:id="@+id/tokonowEmptyStateButtonReturn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="16dp"
         android:text="@string/tokopedianow_common_empty_state_button_return"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

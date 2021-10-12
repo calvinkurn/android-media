@@ -6,10 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_8"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_8"
+    android:paddingLeft="16dp"
+    android:paddingTop="8dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="8dp"
     android:visibility="gone"
     tools:visibility="visible">
 
@@ -25,11 +25,11 @@
 
     <ImageView
         android:id="@+id/badge"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:visibility="gone"
         tools:src="@tools:sample/avatars"
         tools:visibility="visible" />

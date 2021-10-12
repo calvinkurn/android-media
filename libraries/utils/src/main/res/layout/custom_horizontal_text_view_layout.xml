@@ -10,7 +10,7 @@
         android:id="@+id/top_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_14"
+        android:textSize="14sp"
         android:layout_weight="1"/>
 
     <LinearLayout
@@ -24,7 +24,7 @@
             android:id="@+id/bottom_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_14"
+            android:textSize="14sp"
             android:textStyle="bold" />
     </LinearLayout>
 

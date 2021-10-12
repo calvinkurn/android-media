@@ -4,7 +4,7 @@
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_4">
+    android:padding="4dp">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_view"
@@ -14,7 +14,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:loader_corner_radius="@dimen/dp_8"
+        app:loader_corner_radius="8dp"
         app:loader_type="rect" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

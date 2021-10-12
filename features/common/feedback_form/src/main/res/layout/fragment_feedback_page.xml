@@ -2,9 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_16"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp"
     android:enabled="false"
     android:background="@color/Neutral_N0"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -26,7 +26,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="8dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +47,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_toLeftOf="@id/tokopedia_separator"
-                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginTop="8dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     android:hint="@string/email">
@@ -62,7 +62,7 @@
                         android:overScrollMode="always"
                         android:scrollbarStyle="insideInset"
                         android:scrollbars="vertical"
-                        android:textSize="@dimen/sp_14"/>
+                        android:textSize="14sp"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -73,7 +73,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignBottom="@id/et_email_wrapper"
                     android:layout_alignTop="@id/et_email_wrapper"
-                    android:layout_marginTop="@dimen/dp_20"
+                    android:layout_marginTop="20dp"
                     android:textSize="@dimen/sp_16"
                     android:text="@string/tokopedia_email"
                     app:typographyType="body_3"/>
@@ -84,7 +84,7 @@
                 android:id="@+id/tv_type_report"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="16dp"
                 app:layout_constraintTop_toBottomOf="@id/email_layout"
                 app:layout_constraintStart_toStartOf="parent"
                 android:textColor="@color/Neutral_N700_68"
@@ -96,7 +96,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginTop="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_type_report">
 
@@ -132,7 +132,7 @@
                     android:id="@+id/tv_bug_type"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginTop="16dp"
                     app:layout_constraintTop_toBottomOf="@id/filterReport"
                     app:layout_constraintStart_toStartOf="parent"
                     android:text="@string/category"
@@ -162,7 +162,7 @@
                     android:id="@+id/tv_pages"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginTop="8dp"
                     android:text="@string/page"
                     android:textColor="@color/Neutral_N700_68"
                     app:typographyType="body_3"/>
@@ -186,7 +186,7 @@
                         android:overScrollMode="always"
                         android:scrollbarStyle="insideInset"
                         android:scrollbars="vertical"
-                        android:textSize="@dimen/sp_14"/>
+                        android:textSize="14sp"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -194,7 +194,7 @@
                     android:id="@+id/tv_journey"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginTop="8dp"
                     android:text="@string/bugs_detail"
                     android:textColor="@color/Neutral_N700_68"
                     app:typographyType="body_3"/>
@@ -217,7 +217,7 @@
                         android:overScrollMode="always"
                         android:scrollbarStyle="insideInset"
                         android:scrollbars="vertical"
-                        android:textSize="@dimen/sp_14"/>
+                        android:textSize="14sp"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -235,7 +235,7 @@
                     android:id="@+id/tv_expected"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginTop="16dp"
                     android:text="@string/expected_behavior"
                     android:textColor="@color/Neutral_N700_68"
                     app:typographyType="body_3"/>
@@ -258,7 +258,7 @@
                         android:overScrollMode="always"
                         android:scrollbarStyle="insideInset"
                         android:scrollbars="vertical"
-                        android:textSize="@dimen/sp_14"/>
+                        android:textSize="14sp"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -278,7 +278,7 @@
                     android:id="@+id/tv_feedback"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginTop="16dp"
                     android:text="@string/feedback"
                     android:textColor="@color/Neutral_N700_68"
                     app:typographyType="body_3"/>
@@ -301,7 +301,7 @@
                         android:overScrollMode="always"
                         android:scrollbarStyle="insideInset"
                         android:scrollbars="vertical"
-                        android:textSize="@dimen/sp_14"/>
+                        android:textSize="14sp"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -322,8 +322,8 @@
             android:id="@+id/submitButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:text="Submit"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold" />

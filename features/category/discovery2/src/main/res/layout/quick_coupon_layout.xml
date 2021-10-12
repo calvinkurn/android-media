@@ -5,9 +5,9 @@
     android:id="@+id/parent_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/dp_6"
-    android:layout_marginHorizontal="@dimen/dp_16"
-    android:layout_marginTop="@dimen/dp_16">
+    app:cardCornerRadius="6dp"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginTop="16dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cardLayout"
@@ -30,18 +30,18 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_coupon_applied"
             android:visibility="gone"
-            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginStart="12dp"
             android:contentDescription="@null"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title_tv"
             android:contentDescription="@string/content_desc_title_tv"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/Unify_N0"
@@ -49,21 +49,21 @@
             app:layout_constraintLeft_toRightOf="@id/applied_img"
             app:layout_constraintRight_toLeftOf="@+id/apply_btn"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_goneMarginLeft="@dimen/dp_12"
+            app:layout_goneMarginLeft="12dp"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="@string/quick_coupon_title"
-            app:layout_goneMarginStart="@dimen/dp_12"/>
+            app:layout_goneMarginStart="12dp"/>
 
         <Button
             android:id="@+id/apply_btn"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_32"
-            android:layout_marginEnd="@dimen/dp_12"
+            android:layout_marginEnd="12dp"
             android:gravity="center"
             android:textColor="@color/Unify_N0"
             android:background="@drawable/button_white_border"
-            android:paddingVertical="@dimen/dp_4"
+            android:paddingVertical="4dp"
             android:visibility="gone"
             android:ellipsize="end"
             android:text="@string/pakai"
@@ -72,8 +72,8 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_goneMarginEnd="@dimen/dp_4"
-            app:layout_goneMarginRight="@dimen/dp_4"
+            app:layout_goneMarginEnd="4dp"
+            app:layout_goneMarginRight="4dp"
             tools:text="@string/pakai"
             tools:visibility="visible"/>
 

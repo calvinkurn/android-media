@@ -11,9 +11,9 @@
         android:id="@+id/text_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/dp_12"
-        android:paddingRight="@dimen/dp_12"
-        android:paddingTop="@dimen/dp_8"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="8dp"
         android:textStyle="bold"
         tools:textSize="@dimen/sp_16"/>
 
@@ -21,16 +21,16 @@
         android:id="@+id/text_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:lineSpacingExtra="@dimen/dp_4"
-        android:paddingBottom="@dimen/dp_8"
-        android:paddingLeft="@dimen/dp_12"
-        android:paddingRight="@dimen/dp_12"
-        android:paddingTop="@dimen/dp_8"/>
+        android:lineSpacingExtra="4dp"
+        android:paddingBottom="8dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="8dp"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         android:background="@color/Unify_N400"/>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -45,10 +45,10 @@
             android:clickable="true"
             android:focusable="true"
             android:gravity="start"
-            android:paddingBottom="@dimen/dp_12"
-            android:paddingLeft="@dimen/dp_12"
-            android:paddingStart="@dimen/dp_12"
-            android:paddingTop="@dimen/dp_12"
+            android:paddingBottom="12dp"
+            android:paddingLeft="12dp"
+            android:paddingStart="12dp"
+            android:paddingTop="12dp"
             tools:ignore="RtlSymmetry"/>
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -56,7 +56,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginTop="2dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="horizontal">
@@ -69,10 +69,10 @@
             android:clickable="true"
             android:focusable="true"
             android:gravity="end"
-            android:paddingBottom="@dimen/dp_12"
-            android:paddingEnd="@dimen/dp_12"
-            android:paddingRight="@dimen/dp_12"
-            android:paddingTop="@dimen/dp_12"
+            android:paddingBottom="12dp"
+            android:paddingEnd="12dp"
+            android:paddingRight="12dp"
+            android:paddingTop="12dp"
             tools:ignore="RtlSymmetry"/>
     </androidx.appcompat.widget.LinearLayoutCompat>
 

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:paddingTop="@dimen/dp_12"
+    android:paddingTop="12dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -13,8 +13,8 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         app:typographyType="heading_5"
         tools:text="Lihat barang lain di (nama deals)" />
 
@@ -22,9 +22,9 @@
         android:id="@+id/searchProductBannerImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:scaleType="fitXY"
         android:contentDescription="@string/content_desc_imageBanner" />
 

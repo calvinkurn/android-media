@@ -6,16 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/dp_8"
-    android:paddingTop="@dimen/dp_16">
+    android:paddingBottom="8dp"
+    android:paddingTop="16dp">
 
     <com.tokopedia.unifyprinciples.Typography style="@style/TextView.Title.Bold"
         android:text="@string/shop_info_label_statistic"
         app:typographyWeight="bold"
         android:layout_height="@dimen/dp_50"
         android:gravity="center_vertical"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"/>
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,8 +24,8 @@
         android:orientation="horizontal"
         android:id="@+id/labelViewReview"
         android:gravity="center_vertical"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         android:foreground="?android:attr/selectableItemBackground">
 
         <LinearLayout
@@ -39,8 +39,8 @@
                 app:typographyWeight="bold"
                 android:id="@+id/productQualityValue"
                 style="@style/TextView.Small.Bold"
-                android:layout_marginRight="@dimen/dp_4"
-                android:layout_marginEnd="@dimen/dp_4"
+                android:layout_marginRight="4dp"
+                android:layout_marginEnd="4dp"
                 tools:text="@string/app_name" />
 
             <RatingBar
@@ -54,8 +54,8 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/totalReview"
                 style="@style/TextView.Micro.BlackDisabled"
-                android:layout_marginLeft="@dimen/dp_4"
-                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginLeft="4dp"
+                android:layout_marginStart="4dp"
                 tools:text="@string/app_name" />
 
         </LinearLayout>
@@ -63,16 +63,16 @@
         <com.tokopedia.unifyprinciples.Typography style="@style/TextView.Small.Green"
             android:id="@+id/textSeeRating"
             android:text="@string/see_label"
-            android:paddingRight="@dimen/dp_8"
-            android:paddingEnd="@dimen/dp_8"/>
+            android:paddingRight="8dp"
+            android:paddingEnd="8dp"/>
 
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_half"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:background="@drawable/bg_line_separator_thin"/>
 
     <com.tokopedia.shop.common.view.ShopPageLabelView
@@ -81,37 +81,37 @@
         android:layout_height="@dimen/dp_64"
         app:shop_lv_content="@string/see_label"
         app:shop_lv_title="@string/shop_info_title_tab_discussion"
-        app:shop_lv_title_text_size="@dimen/sp_14"
-        app:shop_lv_content_text_size="@dimen/sp_14"
+        app:shop_lv_title_text_size="14sp"
+        app:shop_lv_content_text_size="14sp"
         app:shop_lv_content_color="@color/Unify_G400"
         android:foreground="?android:attr/selectableItemBackground"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"/>
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"/>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_half"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:background="@drawable/bg_line_separator_thin"/>
 
     <com.tokopedia.shop.common.view.ShopPageLabelView
         android:id="@+id/labelViewProcessOrder"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_64"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         app:shop_lv_content="@string/see_label"
         app:shop_lv_title="@string/shop_info_label_process_time"
-        app:shop_lv_title_text_size="@dimen/sp_14"
-        app:shop_lv_content_text_size="@dimen/sp_14"
+        app:shop_lv_title_text_size="14sp"
+        app:shop_lv_content_text_size="14sp"
         app:shop_lv_content_color="@color/Unify_N700_32"/>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_half"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:background="@drawable/bg_line_separator_thin"/>
 
     <LinearLayout
@@ -119,8 +119,8 @@
         android:layout_height="@dimen/dp_64"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_24">
+        android:paddingLeft="16dp"
+        android:paddingRight="24dp">
 
         <com.tokopedia.unifyprinciples.Typography
             style="@style/TextView.Small"
@@ -137,7 +137,7 @@
                 android:id="@+id/shopReputationView"
                 android:layout_width="wrap_content"
                 android:layout_gravity="end"
-                android:layout_height="@dimen/dp_24"/>
+                android:layout_height="24dp"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/totalPoin"
@@ -150,9 +150,9 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_half"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:background="@drawable/bg_line_separator_thin"/>
 
     <LinearLayout
@@ -160,8 +160,8 @@
         android:layout_height="@dimen/dp_64"
         android:gravity="center_vertical"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16">
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/TextView.Small"
@@ -170,7 +170,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="4dp"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -181,15 +181,15 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/image_view_smiley_good"
-                    android:layout_width="@dimen/dp_16"
-                    android:layout_height="@dimen/dp_16"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
                     app:srcCompat="@drawable/ic_smiley_good" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/textViewScoreGood"
                     style="@style/TextView.Micro.BlackDisabled"
-                    android:layout_marginLeft="@dimen/dp_4"
-                    android:layout_marginStart="@dimen/dp_4"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginStart="4dp"
                     tools:text="@string/app_name" />
             </LinearLayout>
 
@@ -197,21 +197,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
                 android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/image_view_smiley_neutral"
-                    android:layout_width="@dimen/dp_16"
-                    android:layout_height="@dimen/dp_16"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
                     app:srcCompat="@drawable/ic_smiley_neutral" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/textViewScoreNeutral"
                     style="@style/TextView.Micro.BlackDisabled"
-                    android:layout_marginLeft="@dimen/dp_4"
-                    android:layout_marginStart="@dimen/dp_4"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginStart="4dp"
                     tools:text="@string/app_name" />
 
             </LinearLayout>
@@ -220,21 +220,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
                 android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/image_view_smiley_bad"
-                    android:layout_width="@dimen/dp_16"
-                    android:layout_height="@dimen/dp_16"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
                     app:srcCompat="@drawable/ic_smiley_bad" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/textViewScoreBad"
                     style="@style/TextView.Micro.BlackDisabled"
-                    android:layout_marginLeft="@dimen/dp_4"
-                    android:layout_marginStart="@dimen/dp_4"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginStart="4dp"
                     tools:text="@string/app_name" />
 
             </LinearLayout>
@@ -245,9 +245,9 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_half"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:background="@drawable/bg_line_separator_thin"/>
 
 </LinearLayout>

@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingTop="@dimen/dp_8"
-    android:paddingBottom="@dimen/dp_8">
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_month_count"
@@ -42,7 +42,7 @@
         android:id="@+id/tv_installment_minimum_price_ext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginTop="2dp"
         android:textColor="@color/Unify_N200"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_installment_price"

@@ -3,11 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_8"
-    android:layout_marginBottom="@dimen/dp_8"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
     android:background="@drawable/bg_gradient_blue"
-    android:paddingTop="@dimen/dp_10"
-    android:paddingBottom="@dimen/dp_10"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
     android:orientation="vertical">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -15,8 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginRight="@dimen/dp_12"/>
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"/>
 
     <com.tokopedia.shop.common.util.CircleIndicatorView
         android:id="@+id/circle_rv_indicator"
@@ -25,6 +25,6 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:layout_below="@+id/rv_membership"
-        android:layout_marginTop="@dimen/dp_5"
-        android:layout_marginBottom="@dimen/dp_5" />
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp" />
 </RelativeLayout>

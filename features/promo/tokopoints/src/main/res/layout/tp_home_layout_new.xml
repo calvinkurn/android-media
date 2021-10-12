@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleGravity="left|bottom"
-            app:expandedTitleMarginBottom="@dimen/dp_8"
+            app:expandedTitleMarginBottom="8dp"
             app:expandedTitleMarginStart="0dp"
             app:expandedTitleTextAppearance="@style/ToolbarExpandedTitle3"
             app:layout_scrollFlags="scroll|enterAlways">

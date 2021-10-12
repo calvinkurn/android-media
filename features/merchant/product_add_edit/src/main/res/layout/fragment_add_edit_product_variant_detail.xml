@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginBottom="10dp"
         android:text="@string/label_manage_at_once_desc"
         android:textColor="@color/Unify_N700_68"
         app:typographyType="body_3"
@@ -65,7 +65,7 @@
         android:id="@+id/firstDivider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl3"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="20dp"
         app:layout_constraintTop_toBottomOf="@id/textViewManageAtOnceDesc" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -74,7 +74,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="20dp"
         android:text="@string/label_add_sku"
         android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/heading_5"
@@ -86,7 +86,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginLeft="@dimen/spacing_lvl2"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="20dp"
         android:text="@string/label_optional"
         android:textColor="@color/Unify_N700_68"
         app:typographyType="body_3"
@@ -97,7 +97,7 @@
         android:id="@+id/switchUnifySku"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         app:layout_constraintRight_toRightOf="parent"
@@ -107,7 +107,7 @@
         android:id="@+id/secondDivider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl3"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="20dp"
         app:layout_constraintTop_toBottomOf="@id/textViewAddSku" />
 
     <com.tokopedia.unifyprinciples.Typography

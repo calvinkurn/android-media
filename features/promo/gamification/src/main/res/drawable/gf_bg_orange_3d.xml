@@ -3,7 +3,7 @@
     <item android:bottom="@dimen/dp_3">
         <shape
             android:shape="rectangle">
-            <corners android:radius="@dimen/dp_8" />
+            <corners android:radius="8dp" />
             <solid
                 android:color="@color/gf_box_orange_1" />
         </shape>
@@ -13,7 +13,7 @@
         android:bottom="@dimen/dp_3">
         <shape
             android:shape="rectangle">
-            <corners android:radius="@dimen/dp_8" />
+            <corners android:radius="8dp" />
             <solid android:color="@color/gf_box_orange_2" />
         </shape>
     </item>
@@ -22,7 +22,7 @@
         android:gravity="bottom">
         <shape
             android:shape="rectangle">
-            <corners android:radius="@dimen/dp_8" />
+            <corners android:radius="8dp" />
 
             <gradient
                 android:angle="90"

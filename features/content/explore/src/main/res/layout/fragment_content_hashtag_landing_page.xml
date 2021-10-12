@@ -5,8 +5,8 @@
     android:id="@+id/swipe_refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingStart="@dimen/dp_12"
-    android:paddingEnd="@dimen/dp_12">
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,8 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingTop="@dimen/dp_12"
-            android:paddingBottom="@dimen/dp_12"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
             tools:itemCount="20"
             tools:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
             tools:listitem="@layout/item_explore_hashtag_landing_item"

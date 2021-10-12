@@ -10,19 +10,19 @@
         android:layout_width="@dimen/dp_280"
         android:layout_height="@dimen/dp_140"
         android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="@dimen/dp_40"
-        android:layout_marginTop="@dimen/dp_72"
-        android:layout_marginRight="@dimen/dp_40"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="72dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginBottom="16dp"
         android:adjustViewBounds="true" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="@dimen/dp_40"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginRight="@dimen/dp_40"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="40dp"
         android:gravity="center"
         android:text="@string/title_empty_address"
         android:textColor="@color/Unify_N700"
@@ -32,9 +32,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="@dimen/dp_40"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_40"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="40dp"
         android:gravity="center"
         android:text="@string/text_empty_address"
         app:typographyType="body_3" />
@@ -47,7 +47,7 @@
         android:layout_marginRight="@dimen/dp_60"
         android:layout_marginLeft="@dimen/dp_60"
         android:text="@string/tambah_alamat"
-        android:textSize="@dimen/sp_14"
+        android:textSize="14sp"
         android:textStyle="bold"
         android:gravity="center"/>
 

@@ -13,7 +13,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_gravity="bottom"
         android:background="@color/Unify_N0"
-        android:elevation="@dimen/dp_4">
+        android:elevation="4dp">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_event_pdp_ticket_label"
@@ -83,7 +83,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_gravity="bottom"
         android:background="@color/Unify_N0"
-        android:elevation="@dimen/dp_4">
+        android:elevation="4dp">
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/title_shimmering"

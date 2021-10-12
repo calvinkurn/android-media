@@ -8,19 +8,19 @@
 
     <com.tokopedia.unifycomponents.CardUnify
         android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="@dimen/dp_10">
+        app:cardCornerRadius="10dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/linearLayout3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/dp_8">
+            android:padding="8dp">
             <ImageView
                 android:id="@+id/image_view_added_product"
                 android:layout_width="@dimen/dp_64"
@@ -37,8 +37,8 @@
                 android:singleLine="true"
                 android:text="@string/atc_done_add_product_success"
                 android:textColor="@color/Unify_N700"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
                 app:typographyType="heading_5"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/image_view_added_product"
@@ -48,8 +48,8 @@
                 android:contentDescription="@string/content_desc_imageFreeOngkirPromo"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/product_card_free_ongkir_badge_height"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="16dp"
                 android:visibility="gone"
                 android:scaleType="fitStart"
                 app:layout_constraintTop_toBottomOf="@+id/text_view_added_product"
@@ -63,9 +63,9 @@
                 android:gravity="center"
                 android:text="@string/atc_done_see_cart"
                 android:textAllCaps="false"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
                 app:unifyButtonSize="micro"
                 app:unifyButtonVariant="ghost"
                 app:unifyButtonType="main"

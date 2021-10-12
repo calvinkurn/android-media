@@ -13,8 +13,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -25,13 +25,13 @@
 
         <com.tokopedia.iconnotification.IconNotification
             android:id="@+id/icon_notification"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginStart="@dimen/dp_35"
             android:layout_marginLeft="@dimen/dp_35"
             android:layout_marginRight="@dimen/dp_35"
             android:layout_marginEnd="@dimen/dp_35"
-            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginBottom="8dp"
             tools:src="@drawable/ic_big_notif_customerapp" />
 
         <com.tokopedia.unifyprinciples.Typography

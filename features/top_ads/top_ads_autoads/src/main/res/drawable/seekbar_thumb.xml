@@ -5,6 +5,6 @@
     <solid android:color="@color/tkpd_main_green" />
 
     <size
-        android:width="@dimen/dp_24"
-        android:height="@dimen/dp_24" />
+        android:width="24dp"
+        android:height="24dp" />
 </shape>

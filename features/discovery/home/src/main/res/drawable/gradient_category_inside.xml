@@ -6,5 +6,5 @@
         android:startColor="@color/home_dms_gradient_category_top"
         android:endColor="@color/home_dms_gradient_category_bottom" />
 
-    <corners android:radius="@dimen/dp_6" />
+    <corners android:radius="6dp" />
 </shape>

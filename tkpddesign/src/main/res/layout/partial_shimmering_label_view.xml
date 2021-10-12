@@ -2,18 +2,18 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_48"
+    android:layout_height="48dp"
     android:orientation="horizontal"
     android:gravity="center_vertical">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="150dp"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         app:corners="@integer/corner_radius_shimmering_small"
         android:layout_gravity="start|center_vertical"/>
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="60dp"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         app:corners="@integer/corner_radius_shimmering_small"
         android:layout_gravity="end|center_vertical"/>
 </FrameLayout>

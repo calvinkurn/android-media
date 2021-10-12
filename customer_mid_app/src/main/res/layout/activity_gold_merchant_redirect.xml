@@ -71,7 +71,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/gold_merchant_redirect_text"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="14sp" />
     </LinearLayout>
 
 </RelativeLayout>

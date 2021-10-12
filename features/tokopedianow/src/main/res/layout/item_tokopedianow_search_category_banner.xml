@@ -7,6 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:layout_height="100dp"
-    app:layout_goneMarginTop="@dimen/dp_8"
+    app:layout_goneMarginTop="8dp"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent" />

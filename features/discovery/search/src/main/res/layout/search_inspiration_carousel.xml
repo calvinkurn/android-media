@@ -5,14 +5,14 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/inspirationCarousel"
-    android:layout_marginTop="@dimen/dp_10"
-    android:layout_marginBottom="@dimen/dp_8"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="8dp"
     android:orientation="vertical">
 
     <View
         android:id="@+id/viewSeparatorTop"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
+        android:layout_height="8dp"
         android:background="@color/Unify_N50"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -20,13 +20,13 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/inspirationCarouselTitle"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="16dp"
         android:text="@string/inspiration_carousel_title"
         android:textColor="@color/Unify_N700_96"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
         android:maxLines="1"
         android:ellipsize="end"
         app:typographyType="heading_4"
@@ -37,9 +37,9 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/inspirationCarouselSeeAllButton"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_0"
+        android:layout_height="0dp"
         android:text="@string/inspiration_carousel_option_view_all"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginEnd="16dp"
         android:textColor="@color/Unify_G500"
         android:gravity="center"
         android:background="?attr/selectableItemBackground"
@@ -63,9 +63,9 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/inspirationCarouselChipsList"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="12dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/inspirationCarouselOptionList"
@@ -75,9 +75,9 @@
 
     <include
         android:id="@+id/inspirationCarouselChipsShimmeringView"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="16dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/inspirationCarouselChipsList"
@@ -86,9 +86,9 @@
 
     <com.tokopedia.carouselproductcard.CarouselProductCardView
         android:id="@+id/inspirationCarouselChipsContent"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_14"
+        android:layout_marginTop="14dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/inspirationCarouselChipsShimmeringView"
@@ -98,7 +98,7 @@
     <View
         android:id="@+id/viewSeparatorBottom"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
+        android:layout_height="8dp"
         android:layout_marginTop="@dimen/dp_11"
         android:background="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/inspirationCarouselChipsContent"

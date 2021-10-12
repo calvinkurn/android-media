@@ -7,14 +7,14 @@
               xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="horizontal"
               android:background="@color/white"
-              android:padding="@dimen/dp_10">
+              android:padding="10dp">
 
     <ImageView
         android:id="@+id/promo_icon"
         android:layout_width="55dp"
         android:layout_height="55dp"
-        android:layout_marginLeft="@dimen/dp_10"
-        android:layout_marginRight="@dimen/dp_10" />
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,7 +25,7 @@
             android:id="@+id/promo_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginBottom="5dp"
             android:textSize="@dimen/sp_18"
             android:textStyle="bold"
             tools:text="GRATIS ONGKIR" />
@@ -34,28 +34,28 @@
             android:id="@+id/promo_benefit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginBottom="5dp"
             tools:text="Hemat s/d Rp 40.000" />
 
         <TextView
             android:id="@+id/promo_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginBottom="5dp"
             tools:text="Nikmati gratis ongkir s.d Rp40.000 dan maksimum Rp30.000 untu Instant Kurir" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_5"
+            android:layout_marginBottom="5dp"
             android:gravity="center_vertical">
 
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 app:srcCompat="@drawable/ic_time_stopwatch"
-                android:layout_marginRight="@dimen/dp_5"
-                android:layout_marginEnd="@dimen/dp_5"/>
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"/>
 
             <TextView
                 android:layout_width="wrap_content"

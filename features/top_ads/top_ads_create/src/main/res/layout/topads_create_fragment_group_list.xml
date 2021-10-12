@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/dp_16">
+    android:padding="16dp">
 
 
     <com.tokopedia.unifyprinciples.Typography
@@ -24,7 +24,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="left"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="4dp"
         android:textColor="#F540454C"
         android:text="@string/atur_beberapa_iklan_sekaligus_ke_dalam_satu_group_sesuai_kategori_produk"
         app:layout_constraintStart_toStartOf="parent"
@@ -61,7 +61,7 @@
         android:id="@+id/tip_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_24"
+        android:layout_marginBottom="24dp"
         app:fbType="group"
         app:layout_constraintBottom_toTopOf="@+id/btn_submit"
         app:layout_constraintEnd_toEndOf="parent"
@@ -72,7 +72,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_margin="@dimen/dp_16"
+        android:layout_margin="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginEnd="16dp"

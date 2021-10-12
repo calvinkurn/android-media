@@ -5,10 +5,10 @@
     android:orientation="horizontal"
     android:layout_width="wrap_content"
     android:gravity="center"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_10"
-    android:paddingBottom="@dimen/dp_10"
+    android:paddingRight="16dp"
+    android:paddingLeft="16dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
     android:layout_height="wrap_content">
 
     <TextView
@@ -22,10 +22,10 @@
 
     <ImageView
         android:id="@+id/image_rating"
-        android:layout_marginLeft="@dimen/dp_5"
-        android:layout_marginStart="@dimen/dp_5"
-        android:layout_width="@dimen/dp_10"
-        android:layout_height="@dimen/dp_10"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
         android:layout_gravity="center_vertical"
         app:srcCompat="@drawable/ic_rating_gold_micro"/>
 </LinearLayout>

@@ -10,7 +10,7 @@
     <RelativeLayout
         android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_20"
+        android:padding="20dp"
         android:background="@drawable/bg_rounded_chat_input">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/txt_success_addproduct"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/dp_20"
+            android:layout_marginBottom="20dp"
             android:text="@string/popup_label_static_second"
             android:textColor="@color/Unify_N700"
             app:typographyType="heading_2" />
@@ -60,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_tips_trick"
-            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginBottom="10dp"
             android:text="@string/courier_option" />
 
         <com.tokopedia.unifycomponents.UnifyButton

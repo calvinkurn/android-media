@@ -12,10 +12,10 @@
                 android:color="@color/Unify_N75" />
 
             <padding
-                android:bottom="@dimen/dp_10"
-                android:left="@dimen/dp_10"
-                android:right="@dimen/dp_10"
-                android:top="@dimen/dp_10" />
+                android:bottom="10dp"
+                android:left="10dp"
+                android:right="10dp"
+                android:top="10dp" />
         </shape>
     </item>
 

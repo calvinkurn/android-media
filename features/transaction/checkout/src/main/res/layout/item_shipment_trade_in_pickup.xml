@@ -5,7 +5,7 @@
     android:id="@+id/layout_trade_in_shipping_info"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/dp_16">
+    android:padding="16dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_trade_in_shipping_price_title"

@@ -4,19 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/dp_8">
+    app:cardCornerRadius="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dp_8">
+        android:paddingBottom="8dp">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/keywordName"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -28,8 +28,8 @@
             android:id="@+id/searchType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="2dp"
             android:textColor="@color/Green_G600"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
@@ -40,10 +40,10 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/searchTypeSelection"
-            android:layout_width="@dimen/dp_14"
-            android:layout_height="@dimen/dp_14"
-            android:layout_marginStart="@dimen/dp_2"
-            android:padding="@dimen/dp_2"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_marginStart="2dp"
+            android:padding="2dp"
             android:tint="@color/Green_G600"
             app:layout_constraintBottom_toBottomOf="@id/searchType"
             app:layout_constraintEnd_toEndOf="parent"
@@ -66,7 +66,7 @@
             android:id="@+id/advertisingCost"
             android:layout_width="@dimen/dp_150"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginStart="16dp"
             android:focusableInTouchMode="true"
             app:layout_constraintEnd_toStartOf="@id/klik"
             app:layout_constraintStart_toStartOf="parent"

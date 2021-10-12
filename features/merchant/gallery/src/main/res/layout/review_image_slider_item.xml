@@ -46,7 +46,7 @@
                 android:id="@+id/review_image_slider_item_see_all_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginTop="12dp"
                 android:text="@string/review_image_slider_see_all_images"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -65,8 +65,8 @@
         android:id="@+id/review_image_slider_rating_and_date_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_17"
-        android:layout_marginBottom="@dimen/dp_2"
+        android:layout_marginStart="17dp"
+        android:layout_marginBottom="2dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@id/review_image_slider_container">
@@ -81,7 +81,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/review_image_slider_date"
             style="@style/TextView.Micro.WhitePrimary"
-            android:layout_marginStart="@dimen/dp_9"
+            android:layout_marginStart="9dp"
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
 
@@ -91,8 +91,8 @@
         android:id="@+id/review_image_slider_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_17"
-        android:paddingBottom="@dimen/dp_24"
+        android:layout_marginStart="17dp"
+        android:paddingBottom="24dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -106,7 +106,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/review_image_slider_name"
             style="@style/TextView.Small.White.Bold"
-            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginStart="4dp"
             app:typographyType="body_2"
             app:typographyWeight="bold" />
 

@@ -15,8 +15,8 @@
 
         <ImageView
             android:id="@+id/iv_cancel"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             android:tint="@color/Unify_N400"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -61,8 +61,8 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/button_send"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="@dimen/dp_48"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
             android:layout_marginTop="@dimen/dp_32"
             android:background="@drawable/bg_button_orange_dynamic"
             android:enabled="false"

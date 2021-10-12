@@ -3,6 +3,6 @@
     <solid android:color="@color/Unify_N0" />
     <stroke android:width="1dip" android:color="@color/Unify_N75"/>
     <corners
-        android:radius="@dimen/dp_8">
+        android:radius="8dp">
     </corners>
 </shape>

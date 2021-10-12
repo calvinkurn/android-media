@@ -15,7 +15,7 @@
         android:letterSpacing="0.01"
         android:layout_marginTop="@dimen/dp_85"
         android:textSize="@dimen/sp_28"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginStart="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:typographyWeight="bold" />
@@ -23,9 +23,9 @@
     <com.tokopedia.unifyprinciples.Typography
         android:lineSpacingExtra="@dimen/sp_6"
         android:gravity="center"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         app:typographyType="body_1"
         android:textColor="@color/Unify_N700_96"
         android:text="@string/text_add_product"

@@ -51,8 +51,8 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/imageProductIconContainer"
-            android:layout_width="@dimen/dp_72"
-            android:layout_height="@dimen/dp_72"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             android:layout_marginTop="@dimen/spacing_lvl8"
             app:cardCornerRadius="@dimen/spacing_lvl5"
             app:cardElevation="@dimen/spacing_lvl2"

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/button_shop_follow"
-    android:layout_width="@dimen/dp_10"
+    android:layout_width="10dp"
     android:gravity="center"
     android:layout_height="wrap_content"
     app:layout_flexGrow="1"

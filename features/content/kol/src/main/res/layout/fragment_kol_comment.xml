@@ -24,11 +24,11 @@
             android:hint="@string/write_comment"
             android:inputType="textVisiblePassword|textMultiLine"
             android:maxLines="5"
-            android:paddingEnd="@dimen/dp_12"
-            android:paddingLeft="@dimen/dp_12"
-            android:paddingRight="@dimen/dp_12"
-            android:paddingStart="@dimen/dp_12"
-            android:textSize="@dimen/sp_14"
+            android:paddingEnd="12dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingStart="12dp"
+            android:textSize="14sp"
             android:textStyle="normal"
             android:dropDownWidth="match_parent"/>
 
@@ -37,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:padding="@dimen/dp_10"
+            android:padding="10dp"
             android:contentDescription="null"
             app:srcCompat="@drawable/kol_ic_send_24dp_green"/>
 

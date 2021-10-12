@@ -9,12 +9,12 @@
         android:id="@+id/top_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_14"
+        android:textSize="14sp"
         android:maxLines="1" />
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/bottom_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_14"
+        android:textSize="14sp"
         android:maxLines="1"/>
 </LinearLayout>

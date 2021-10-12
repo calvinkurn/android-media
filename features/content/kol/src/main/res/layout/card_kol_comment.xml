@@ -11,12 +11,12 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
         android:orientation="vertical"
-        android:paddingTop="@dimen/dp_10"
-        android:paddingBottom="@dimen/dp_10"
-        android:paddingStart="@dimen/dp_16"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingEnd="@dimen/dp_16">
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingStart="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingEnd="16dp">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/avatar"
@@ -28,17 +28,17 @@
             android:id="@+id/badge"
             android:layout_width="@dimen/dp_15"
             android:layout_height="@dimen/dp_15"
-            android:layout_marginStart="@dimen/dp_10"
-            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="2dp"
             android:layout_toEndOf="@id/avatar"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginStart="10dp"
             android:textColor="@color/Unify_N700_44"
-            android:textSize="@dimen/sp_14"
+            android:textSize="14sp"
             android:layout_toEndOf="@id/avatar"
             tools:text="      Nisie ih produknya kurang joss. Naik kereta api tut tut tut. Siapa hendak turun. Ke bandnung, surabaya. Bolehlah naik dengan percuma hahaha."
             app:typographyType="body_2" />
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_below="@id/comment"
-            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginStart="10dp"
             android:layout_toEndOf="@id/avatar">
 
             <com.tokopedia.unifyprinciples.Typography
@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 app:unifyButtonSize="micro"
                 app:unifyButtonVariant="text"
-                android:layout_marginStart="@dimen/dp_2"
+                android:layout_marginStart="2dp"
                 android:text="@string/kol_reply"/>
 
         </LinearLayout>

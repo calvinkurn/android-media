@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/dp_16"
+            android:padding="16dp"
             tools:ignore="UselessParent">
 
             <TextView
@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/reason_input_left"
                 android:layout_marginLeft="@dimen/reason_input_left"
-                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_marginBottom="16dp"
                 android:hint="@string/kol_reason_here"/>
 
             <View
@@ -61,7 +61,7 @@
                 android:id="@+id/sendBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_5"
+                android:layout_marginBottom="5dp"
                 android:elevation="0dp"
                 android:enabled="false"
                 android:text="@string/button_send"

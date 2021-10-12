@@ -7,8 +7,8 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,9 +19,9 @@
         android:id="@+id/card_auto_topup_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:visibility="visible"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/dp_16">
+            android:padding="16dp">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="0dp"
@@ -51,7 +51,7 @@
                 android:id="@+id/auto_topup_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginStart="16dp"
                 app:typographyType="body_2" />
 
         </LinearLayout>
@@ -62,10 +62,10 @@
         android:id="@+id/selectCreditCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:padding="@dimen/dp_12"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:padding="12dp"
         app:layout_constraintTop_toBottomOf="@id/card_auto_topup_status">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -85,7 +85,7 @@
                 android:id="@+id/chooseCreditText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="16dp"
                 android:text="@string/topads_dash_choose_credit"
                 android:textColor="@color/topads_common_select_color_unchecked"
                 app:layout_constraintStart_toStartOf="parent"
@@ -96,10 +96,10 @@
                 android:id="@+id/creditDropMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginTop="4dp"
                 android:background="@drawable/topads_common_border"
                 android:orientation="horizontal"
-                android:padding="@dimen/dp_10"
+                android:padding="10dp"
                 app:layout_constraintTop_toBottomOf="@id/chooseCreditText">
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -122,7 +122,7 @@
                 android:id="@+id/bonusText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginTop="4dp"
                 android:textColor="@color/topads_light_shadow"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/creditDropMenu"
@@ -133,7 +133,7 @@
                 android:id="@+id/deductionTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_24"
+                android:layout_marginTop="24dp"
                 android:text="@string/topads_dash_when_credit_is_down"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/bonusText"
@@ -142,9 +142,9 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/tooltip"
-                android:layout_width="@dimen/dp_10"
-                android:layout_height="@dimen/dp_10"
-                android:layout_marginStart="@dimen/dp_5"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_marginStart="5dp"
                 android:src="@drawable/topads_dash_info_tooltip"
                 app:layout_constraintBottom_toBottomOf="@id/deductionTitle"
                 app:layout_constraintStart_toEndOf="@id/deductionTitle"
@@ -154,7 +154,7 @@
                 android:id="@+id/dedAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="8dp"
                 android:text="Rp 500"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/deductionTitle"
@@ -164,7 +164,7 @@
                 android:id="@+id/tickerInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_24"
+                android:layout_marginTop="24dp"
                 app:closeButtonVisibility="gone"
                 app:descriptionText="@string/topads_dash_auto_topup_ticker_desc"
                 app:layout_constraintTop_toBottomOf="@id/dedAmount"

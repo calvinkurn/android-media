@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:paddingTop="@dimen/dp_8"
+    android:paddingTop="8dp"
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_topad_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginLeft="16dp"
         android:lineSpacingExtra="@dimen/sp_6"
         android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_4"
@@ -27,7 +27,7 @@
         android:id="@+id/tv_topads_see_all"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginRight="16dp"
         android:text="Lihat Semua"
         android:textColor="@color/Unify_G400"
         app:typographyType="heading_5"
@@ -42,8 +42,8 @@
         android:id="@+id/tv_topads_sub_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="4dp"
         android:lineSpacingExtra="@dimen/sp_6"
         android:textColor="@color/Unify_N700_68"
         app:typographyType="heading_6"
@@ -57,8 +57,8 @@
         android:id="@+id/container_topads"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:measureAllChildren="false"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_topads_sub_title">
@@ -67,15 +67,15 @@
             android:id="@+id/loaderUnify"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            app:loader_corner_radius="@dimen/dp_8"
+            android:layout_marginTop="8dp"
+            app:loader_corner_radius="8dp"
             app:loader_type="rect" />
 
         <com.tokopedia.topads.sdk.widget.TopAdsImageView
             android:id="@+id/topads_reward"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="8dp"
             android:background="@drawable/bg_tierinfo"
             app:layout_constraintDimensionRatio="H,3:1" />
     </ViewFlipper>

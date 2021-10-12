@@ -28,7 +28,7 @@
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:textColor="@color/Unify_N700_96"
-            tools:textSize="@dimen/sp_14"
+            tools:textSize="14sp"
             tools:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    app:cardCornerRadius="@dimen/dp_16"
+    app:cardCornerRadius="16dp"
     tools:layout_width="@dimen/chat_widget_margin">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,10 +15,10 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             android:textColor="@color/white"
             app:layout_constraintBottom_toTopOf="@id/chat_button"
             app:layout_constraintEnd_toStartOf="@id/close_button"
@@ -41,12 +41,12 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/chat_button"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="0dp"
             android:layout_height="@dimen/dp_32"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             android:text="@string/contact_us_tool_tip_text"
             android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="parent"

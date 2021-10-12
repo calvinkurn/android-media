@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="@dimen/dp_36"
-    android:layout_height="@dimen/dp_40">
+    android:layout_height="40dp">
     <EditText
         android:layout_width="@dimen/dp_100"
         android:background="@drawable/bg_round_corner_solid_green"
-        android:layout_height="@dimen/dp_20"/>
+        android:layout_height="20dp"/>
 
 </androidx.cardview.widget.CardView>

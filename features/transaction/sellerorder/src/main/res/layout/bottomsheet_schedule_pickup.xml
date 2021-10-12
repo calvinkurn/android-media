@@ -28,9 +28,9 @@
     <View
         android:id="@+id/divider_schedule"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
+        android:layout_height="8dp"
         android:background="@color/Unify_N75"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/rv_today"
         android:visibility="visible"/>
 
@@ -54,7 +54,7 @@
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginEnd="@dimen/unify_space_16"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="4dp"
         app:layout_constraintTop_toBottomOf="@id/tv_tomorrow"/>
 
 

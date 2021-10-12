@@ -56,7 +56,7 @@
         android:layout_gravity="center"
         android:visibility="gone"
         tools:visibility="visible"
-        app:loader_corner_radius="@dimen/dp_10"
+        app:loader_corner_radius="10dp"
         app:loader_type="circular" />
 
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

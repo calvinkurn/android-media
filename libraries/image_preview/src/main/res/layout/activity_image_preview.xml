@@ -14,10 +14,10 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/dp_20"
-        android:paddingRight="@dimen/dp_20"
-        android:paddingTop="@dimen/dp_20"
-        android:paddingBottom="@dimen/dp_20"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         android:background="@color/Unify_N700_44">
         <ImageView
             android:id="@+id/ivClose"
@@ -47,8 +47,8 @@
             android:layout_toEndOf="@+id/ivClose"
             android:layout_toLeftOf="@+id/ivDownload"
             android:layout_toStartOf="@+id/ivDownload"
-            android:layout_marginLeft="@dimen/dp_20"
-            android:layout_marginRight="@dimen/dp_20"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             tools:text="Store"/>
 
         <TextView
@@ -62,8 +62,8 @@
             android:layout_toEndOf="@+id/ivClose"
             android:layout_toLeftOf="@+id/ivDownload"
             android:layout_toStartOf="@+id/ivDownload"
-            android:layout_marginLeft="@dimen/dp_20"
-            android:layout_marginRight="@dimen/dp_20"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             tools:text="12:20"/>
     </RelativeLayout>
 

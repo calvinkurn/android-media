@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/dp_6"
-    android:paddingBottom="@dimen/dp_6">
+    android:paddingTop="6dp"
+    android:paddingBottom="6dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/label_promo_item_title"

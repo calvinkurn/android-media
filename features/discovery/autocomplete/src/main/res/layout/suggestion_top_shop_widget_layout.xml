@@ -11,9 +11,9 @@
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_N700_96"
         android:text="@string/suggestion_top_shop_title"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         app:typographyType="heading_5"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"/>

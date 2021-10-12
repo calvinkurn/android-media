@@ -4,21 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/image_editor_widget_item_width"
     android:layout_height="wrap_content"
-    android:minWidth="@dimen/dp_48"
-    android:layout_marginLeft="@dimen/dp_8"
-    android:layout_marginRight="@dimen/dp_8"
-    android:paddingTop="@dimen/dp_8"
-    android:paddingBottom="@dimen/dp_8"
+    android:minWidth="48dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
     android:orientation="vertical">
 
     <FrameLayout
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_gravity="center_horizontal">
         <ImageView
             android:id="@+id/iv_edit"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_gravity="center"
             android:scaleType="fitCenter"
             android:src="@drawable/selector_rect_stroke_grey" />

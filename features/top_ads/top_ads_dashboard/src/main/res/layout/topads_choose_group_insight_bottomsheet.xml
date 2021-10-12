@@ -11,7 +11,7 @@
         android:id="@+id/bs_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginTop="2dp"
         android:text="@string/topads_dash_grp_bs_desc"
         app:typographyType="body_3" />
 
@@ -19,7 +19,7 @@
         android:id="@+id/contentSwitch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="16dp"
         android:textOff="@string/topads_dash_grp_bs_label_switch_on"
         android:textOn="@string/topads_dash_grp_bs_label_switch_off" />
 
@@ -38,7 +38,7 @@
         android:id="@+id/search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="16dp"
         app:search_bar_placeholder="@string/topads_dash_grp_bs_search_hint"
         app:search_bar_show_icon="false" />
 
@@ -63,8 +63,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:enabled="false"
         android:text="@string/topads_iklankan_button"
         app:unifyButtonSize="medium"

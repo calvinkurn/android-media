@@ -9,7 +9,7 @@
     <View
         android:id="@+id/view_hold_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0"
+        android:layout_height="0dp"
         android:background="@color/Unify_Y100"
         app:layout_constraintBottom_toBottomOf="@+id/tv_desc_info"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,7 +24,7 @@
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_begin="@dimen/dp_26" />
@@ -32,7 +32,7 @@
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline1"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_0"
+        android:layout_height="0dp"
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="@dimen/dp_26" />
 
@@ -40,8 +40,8 @@
         android:id="@+id/iv_dismiss_ticker"
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
-        android:layout_marginRight="@dimen/dp_8"
-        android:padding="@dimen/dp_8"
+        android:layout_marginRight="8dp"
+        android:padding="8dp"
         app:srcCompat="@drawable/ic_action_x"
         android:tint="@color/Unify_N700_32"
         app:layout_constraintEnd_toEndOf="parent"
@@ -51,13 +51,13 @@
         android:id="@+id/tv_title_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_40"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="40dp"
         android:lineSpacingExtra="@dimen/sp_4"
-        android:paddingTop="@dimen/dp_8"
+        android:paddingTop="8dp"
         android:text="@string/saldolock_tickerTitle"
         android:textColor="@color/Unify_N700_96"
-        android:textSize="@dimen/sp_14"
+        android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -67,10 +67,10 @@
         android:id="@+id/tv_desc_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_40"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="40dp"
         android:lineSpacingExtra="3sp"
-        android:paddingBottom="@dimen/dp_8"
+        android:paddingBottom="8dp"
         android:text="@string/saldolock_tickerDescription"
         android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/sp_12"

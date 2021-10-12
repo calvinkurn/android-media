@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="@dimen/dp_16"
+        android:padding="16dp"
         android:gravity="center_vertical">
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -22,8 +22,8 @@
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginStart="12dp"
+            android:layout_marginLeft="12dp"
             android:textColor="@color/Unify_N700_96"
             app:typographyType="heading_3"
             tools:text="Boy William" />
@@ -34,21 +34,21 @@
         android:id="@+id/iv_avatar"
         android:layout_width="@dimen/dp_64"
         android:layout_height="@dimen/dp_64"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginTop="24dp"
         android:layout_gravity="center_horizontal"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         android:layout_gravity="center_horizontal"
         android:gravity="center">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_badge"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16" />
+            android:layout_width="16dp"
+            android:layout_height="16dp" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_name"
@@ -56,8 +56,8 @@
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_N700_96"
             app:typographyType="heading_5"
-            android:layout_marginStart="@dimen/dp_2"
-            android:layout_marginLeft="@dimen/dp_2"
+            android:layout_marginStart="2dp"
+            android:layout_marginLeft="2dp"
             tools:text="Boy William" />
 
     </LinearLayout>
@@ -66,11 +66,11 @@
         android:id="@+id/tv_instruction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         android:textAlignment="center"
         android:layout_gravity="center_horizontal"
-        android:layout_marginStart="@dimen/dp_40"
-        android:layout_marginEnd="@dimen/dp_40"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
         app:typographyType="body_3"
         tools:text="Follow untuk dapetin rekomendasi fashion pria dari profil ini!"/>
 
@@ -78,10 +78,10 @@
         android:id="@+id/btn_follow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_40"
-        android:layout_marginEnd="@dimen/dp_40"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
         android:layout_marginTop="@dimen/dp_32"
-        android:layout_marginBottom="@dimen/dp_24"
+        android:layout_marginBottom="24dp"
         android:text="@string/action_follow_english"
         tools:text="Follow"/>
 

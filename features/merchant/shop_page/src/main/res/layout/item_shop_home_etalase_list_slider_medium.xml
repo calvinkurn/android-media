@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingStart="@dimen/dp_4"
-    android:paddingEnd="@dimen/dp_4">
+    android:paddingStart="4dp"
+    android:paddingEnd="4dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_showcase_item_slider_medium"
@@ -22,8 +22,8 @@
         app:typographyType="body_2"
         android:textColor="@color/Unify_N700_96"
         tools:text="Bicycle Bag"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginStart="@dimen/dp_2"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="2dp"
         />
 
 </LinearLayout>

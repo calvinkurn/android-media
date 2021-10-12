@@ -15,9 +15,9 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shipment_shimmer_2"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginStart="10dp"
         app:corners="@integer/corner_radius_shimmering"
         app:layout_constraintBottom_toBottomOf="@+id/shipment_shimmer_1"
         app:layout_constraintEnd_toEndOf="parent"
@@ -46,9 +46,9 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shipment_shimmer_4"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginStart="10dp"
         app:corners="@integer/corner_radius_shimmering"
         app:layout_constraintBottom_toBottomOf="@+id/shipment_shimmer_3"
         app:layout_constraintEnd_toEndOf="parent"
@@ -57,7 +57,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shipment_service_title_1"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:corners="@integer/corner_radius_shimmering"
         android:layout_marginTop="24dp"
@@ -68,7 +68,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shipment_product_title_1"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:corners="@integer/corner_radius_shimmering"
         app:layout_constraintTop_toBottomOf="@+id/shipment_service_title_1"
@@ -108,7 +108,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shipment_service_title_2"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:corners="@integer/corner_radius_shimmering"
         android:layout_marginTop="24dp"
@@ -119,7 +119,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shipment_product_title_2"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:corners="@integer/corner_radius_shimmering"
         app:layout_constraintTop_toBottomOf="@+id/shipment_service_title_2"
@@ -159,7 +159,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shipment_service_title_3"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:corners="@integer/corner_radius_shimmering"
         android:layout_marginTop="24dp"
@@ -170,7 +170,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shipment_product_title_3"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:corners="@integer/corner_radius_shimmering"
         app:layout_constraintTop_toBottomOf="@+id/shipment_service_title_3"

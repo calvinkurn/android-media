@@ -7,6 +7,6 @@
     android:layout_marginRight="-12dp"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_8"
-    android:paddingBottom="@dimen/dp_8" />
+    android:paddingLeft="16dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp" />

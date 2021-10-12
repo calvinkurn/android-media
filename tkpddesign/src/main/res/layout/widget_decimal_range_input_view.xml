@@ -80,7 +80,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8">
+        android:layout_marginTop="8dp">
 
         <com.tokopedia.design.price.DynamicBackgroundSeekBar
             android:id="@+id/seekbar_background"
@@ -95,7 +95,7 @@
             android:layout_width="@dimen/dp_30"
             android:layout_height="@dimen/dp_30"
             android:layout_centerVertical="true"
-            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/price_input_seekbar_button_pressed" />
 
         <View
@@ -103,7 +103,7 @@
             android:layout_width="@dimen/dp_30"
             android:layout_height="@dimen/dp_30"
             android:layout_centerVertical="true"
-            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginBottom="8dp"
             android:background="@drawable/price_input_seekbar_button_pressed" />
 
     </RelativeLayout>

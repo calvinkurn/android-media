@@ -8,7 +8,7 @@
         android:id="@+id/calendar"
         android:layout_height="@dimen/dp_290"
         android:layout_width="@dimen/dp_290"
-        android:dateTextAppearance="@dimen/sp_14" />
+        android:dateTextAppearance="14sp" />
 
     <LinearLayout
         android:layout_height="wrap_content"

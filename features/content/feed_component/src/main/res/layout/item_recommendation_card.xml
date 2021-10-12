@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/dp_8"
-    app:cardElevation="@dimen/dp_4"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
     app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -14,7 +14,7 @@
 
         <com.tokopedia.design.image.SquareImageView
             android:id="@+id/ivImage1"
-            android:layout_width="@dimen/dp_72"
+            android:layout_width="72dp"
             android:layout_height="0dp"
             android:background="@color/Unify_N50"
             app:layout_constraintDimensionRatio="1:1"
@@ -25,7 +25,7 @@
 
         <com.tokopedia.design.image.SquareImageView
             android:id="@+id/ivImage2"
-            android:layout_width="@dimen/dp_72"
+            android:layout_width="72dp"
             android:layout_height="0dp"
             android:layout_marginLeft="@dimen/dp_1"
             android:layout_marginRight="@dimen/dp_1"
@@ -37,7 +37,7 @@
 
         <com.tokopedia.design.image.SquareImageView
             android:id="@+id/ivImage3"
-            android:layout_width="@dimen/dp_72"
+            android:layout_width="72dp"
             android:layout_height="0dp"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintLeft_toRightOf="@+id/ivImage2"
@@ -47,8 +47,8 @@
 
         <ImageView
             android:id="@+id/ivProfile"
-            android:layout_width="@dimen/dp_48"
-            android:layout_height="@dimen/dp_48"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@drawable/bg_circle_gray_border"
             app:layout_constraintBottom_toBottomOf="@+id/ivImage1"
             app:layout_constraintLeft_toLeftOf="@+id/btnFollow"
@@ -61,12 +61,12 @@
         <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/btnFollow"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="@dimen/dp_72"
+            android:layout_width="72dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginTop="@dimen/dp_30"
-            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginBottom="8dp"
             android:textAllCaps="false"
             app:buttonCompatSize="small"
             app:buttonCompatType="primary"
@@ -82,7 +82,7 @@
             android:id="@+id/tvDescription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_8"
+            android:layout_margin="8dp"
             android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="5sp"
@@ -98,8 +98,8 @@
 
         <ImageView
             android:id="@+id/ivBadge"
-            android:layout_width="@dimen/dp_14"
-            android:layout_height="@dimen/dp_14"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
             app:layout_constraintBottom_toBottomOf="@+id/tvName"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -113,8 +113,8 @@
             android:id="@+id/tvName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:lines="1"

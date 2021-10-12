@@ -5,7 +5,7 @@
     <item android:id="@android:id/background">
         <shape>
             <corners
-                android:radius="@dimen/dp_8" />
+                android:radius="8dp" />
             <solid android:color="@color/Unify_N75"/>
         </shape>
     </item>
@@ -14,7 +14,7 @@
     <item android:id="@android:id/progress">
         <clip>
             <shape>
-                <corners android:radius="@dimen/dp_8" />
+                <corners android:radius="8dp" />
                 <solid android:color="@color/Unify_R500"/>
             </shape>
         </clip>

@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_marginEnd="@dimen/spacing_lvl3"
     android:layout_marginBottom="@dimen/spacing_lvl3"
-    app:cardCornerRadius="@dimen/dp_10"
+    app:cardCornerRadius="10dp"
     app:cardElevation="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,8 +28,8 @@
 
         <ImageView
             android:id="@+id/iv_onboarding_item"
-            android:layout_width="@dimen/dp_48"
-            android:layout_height="@dimen/dp_48"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="center"
             android:layout_margin="@dimen/spacing_lvl2"
             app:layout_constraintBottom_toBottomOf="parent"

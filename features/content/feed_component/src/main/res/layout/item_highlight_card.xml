@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/dp_150"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_8">
+    android:layout_margin="8dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,13 +33,13 @@
 
             <ImageView
                 android:id="@+id/badge"
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginTop="@dimen/dp_4"
-                android:layout_marginEnd="@dimen/dp_4"
-                android:layout_marginRight="@dimen/dp_4"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginRight="4dp"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -51,22 +51,22 @@
                 android:id="@+id/layout_video_duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_8"
+                android:layout_margin="8dp"
                 android:background="@color/Unify_N50"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:cardCornerRadius="@dimen/dp_4"
+                app:cardCornerRadius="4dp"
                 tools:visibility="visible">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_video_duration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_8"
-                    android:layout_marginTop="@dimen/dp_2"
-                    android:layout_marginBottom="@dimen/dp_2"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="2dp"
                     app:typographyType="body_2"
                     tools:text="00:14"/>
             </com.tokopedia.unifycomponents.CardUnify>
@@ -75,21 +75,21 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/userImage"
-                android:layout_width="@dimen/dp_16"
-                android:layout_height="@dimen/dp_16"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:adjustViewBounds="true"
                 android:background="@color/Unify_N0"
                 android:scaleType="centerCrop"
                 tools:ignore="ContentDescription"
                 tools:src="@tools:sample/avatars"
-                android:layout_marginRight="@dimen/dp_4"/>
+                android:layout_marginRight="4dp"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/userName"
@@ -108,14 +108,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingTop="@dimen/dp_8"
-            android:paddingBottom="@dimen/dp_8">
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginLeft="8dp"
                 android:layout_alignParentLeft="true">
 
                 <ImageView
@@ -136,10 +136,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
-                    android:paddingStart="@dimen/dp_4"
-                    android:paddingLeft="@dimen/dp_4"
-                    android:paddingEnd="@dimen/dp_16"
-                    android:paddingRight="@dimen/dp_16"
+                    android:paddingStart="4dp"
+                    android:paddingLeft="4dp"
+                    android:paddingEnd="16dp"
+                    android:paddingRight="16dp"
                     android:text="@string/kol_action_like"
                     android:textColor="@color/Unify_N700_68"
                     android:textSize="@dimen/sp_10"
@@ -164,10 +164,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
-                    android:paddingStart="@dimen/dp_4"
-                    android:paddingLeft="@dimen/dp_4"
-                    android:paddingEnd="@dimen/dp_16"
-                    android:paddingRight="@dimen/dp_16"
+                    android:paddingStart="4dp"
+                    android:paddingLeft="4dp"
+                    android:paddingEnd="16dp"
+                    android:paddingRight="16dp"
                     android:text="@string/kol_action_comment"
                     android:textColor="@color/Unify_N700_68"
                     android:textSize="@dimen/sp_10"

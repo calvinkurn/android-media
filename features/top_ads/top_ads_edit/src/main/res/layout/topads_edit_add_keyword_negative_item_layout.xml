@@ -12,9 +12,9 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/keyword_name"
         style="@style/TextView.Small"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="@dimen/dp_18"
         android:layout_marginBottom="@dimen/dp_18"
         android:gravity="center_vertical"
@@ -24,7 +24,7 @@
         app:typographyType="body_3"
         android:text="@string/_0_produk"
         tools:text="@tools:sample/first_names"
-        android:layout_marginStart="@dimen/dp_16" />
+        android:layout_marginStart="16dp" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/checkBox"
@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:checked="false"
         android:gravity="center_vertical"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginRight="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -42,8 +42,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:background="@color/topads_common_line_color"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

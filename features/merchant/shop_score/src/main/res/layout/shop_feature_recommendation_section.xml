@@ -35,7 +35,7 @@
             app:layout_constraintStart_toStartOf="@id/tvTitleShopCreation"
             app:layout_constraintEnd_toEndOf="@id/tvTitleShopCreation"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="@dimen/dp_12"
+            android:layout_marginBottom="12dp"
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             tools:listitem="@layout/item_promo_creation_shop_performance"

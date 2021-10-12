@@ -20,7 +20,7 @@
         app:loader_type="rect"/>
 
     <RelativeLayout
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="12dp"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/tokopedianow_shimmering_margin_bottom"

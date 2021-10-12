@@ -9,7 +9,7 @@
     <View
         android:id="@+id/variant_parent_separator"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
+        android:layout_height="8dp"
         android:background="@color/Unify_N50"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:clipToPadding="false"
         android:orientation="vertical"
-        android:paddingTop="@dimen/dp_16"
+        android:paddingTop="16dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     <include

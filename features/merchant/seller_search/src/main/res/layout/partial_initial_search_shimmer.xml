@@ -8,9 +8,9 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/loadImageView"
-        android:layout_width="@dimen/dp_48"
-        android:layout_height="@dimen/dp_48"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:corners="4"/>
@@ -21,7 +21,7 @@
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginLeft="@dimen/spacing_lvl3"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="20dp"
         app:layout_constraintStart_toEndOf="@id/loadImageView"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.65"
@@ -30,7 +30,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/loadTvDesc"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginLeft="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl3"

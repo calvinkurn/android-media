@@ -34,8 +34,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|end"
                 android:layout_marginTop="@dimen/dp_56"
-                android:layout_marginEnd="@dimen/dp_12"
-                android:layout_marginRight="@dimen/dp_12"
+                android:layout_marginEnd="12dp"
+                android:layout_marginRight="12dp"
                 app:srcCompat="@drawable/gf_ic_sound_on" />
 
             <com.tokopedia.gamification.giftbox.presentation.views.StarsContainer
@@ -60,10 +60,10 @@
                 android:background="@drawable/gf_bg_big_timer"
                 android:paddingStart="@dimen/dp_32"
                 android:paddingLeft="@dimen/dp_32"
-                android:paddingTop="@dimen/dp_8"
+                android:paddingTop="8dp"
                 android:paddingEnd="@dimen/dp_32"
                 android:paddingRight="@dimen/dp_32"
-                android:paddingBottom="@dimen/dp_8"
+                android:paddingBottom="8dp"
                 android:textColor="@android:color/white"
                 app:typographyType="heading_1"
                 app:typographyWeight="bold"
@@ -128,8 +128,8 @@
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/loader"
-                android:layout_width="@dimen/dp_48"
-                android:layout_height="@dimen/dp_48"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_gravity="center" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -138,7 +138,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_18"
                 android:layout_marginLeft="@dimen/dp_18"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="@dimen/dp_18"
                 android:layout_marginRight="@dimen/dp_18"
                 android:gravity="center"
@@ -153,7 +153,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_18"
                 android:layout_marginLeft="@dimen/dp_18"
-                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="@dimen/dp_18"
                 android:layout_marginRight="@dimen/dp_18"
                 android:gravity="center"

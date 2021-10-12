@@ -8,7 +8,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/review_shimmer_header"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,7 +19,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/review_shimmer_subheader"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl2"
         app:layout_constraintStart_toStartOf="@id/review_shimmer_header"
@@ -30,7 +30,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="@dimen/layout_lvl7"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginEnd="@dimen/layout_lvl2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/review_shimmer_header"
@@ -86,7 +86,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/review_shimmer_description"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl2"
         app:layout_constraintStart_toStartOf="@id/review_shimmer_header"
@@ -97,7 +97,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/review_shimmer_description_1"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl2"
         app:layout_constraintStart_toStartOf="@id/review_shimmer_header"
@@ -108,7 +108,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/review_shimmer_description_2"
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl2"
         app:layout_constraintStart_toStartOf="@id/review_shimmer_header"
@@ -118,7 +118,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/dp_12"
+        android:layout_height="12dp"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl2"
         app:layout_constraintStart_toStartOf="@id/review_shimmer_header"

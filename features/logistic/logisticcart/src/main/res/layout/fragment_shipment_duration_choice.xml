@@ -31,6 +31,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:padding="@dimen/dp_16" />
+        android:padding="16dp" />
 
 </FrameLayout>

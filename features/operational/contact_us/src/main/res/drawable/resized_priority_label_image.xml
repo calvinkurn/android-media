@@ -3,10 +3,10 @@
 
 
     <item
-        android:width="@dimen/dp_10"
-        android:height="@dimen/dp_10"
+        android:width="10dp"
+        android:height="10dp"
         android:left="-1dp"
-        android:right="@dimen/dp_10">
+        android:right="10dp">
         <bitmap
             android:src="@drawable/priority_label_image"
             />
@@ -14,10 +14,10 @@
 
     <item
         android:width="@dimen/dp_1"
-        android:height="@dimen/dp_8"
+        android:height="8dp"
         android:top="@dimen/dp_1"
         android:bottom="@dimen/dp_1"
-        android:left="@dimen/dp_12"
+        android:left="12dp"
         android:right="@dimen/dp_1">
         <shape android:shape="rectangle">
             <solid android:color="@color/grey_350"></solid>

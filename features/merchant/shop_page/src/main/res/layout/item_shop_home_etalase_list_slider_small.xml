@@ -5,9 +5,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingStart="@dimen/dp_2"
-    android:paddingEnd="@dimen/dp_4"
-    android:paddingBottom="@dimen/dp_12"
+    android:paddingStart="2dp"
+    android:paddingEnd="4dp"
+    android:paddingBottom="12dp"
     >
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -26,7 +26,7 @@
         tools:text="Aesthetic Wall Hanging Mirror New 2021"
         android:ellipsize="end"
         android:singleLine="true"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         />
 
 </LinearLayout>

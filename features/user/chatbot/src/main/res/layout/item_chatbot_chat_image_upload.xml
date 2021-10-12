@@ -16,7 +16,7 @@
         android:layout_below="@id/chatbot_ticker"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl4"
-        app:cardCornerRadius="@dimen/dp_12"
+        app:cardCornerRadius="12dp"
         app:cardBackgroundColor="#E5F5FF"
         android:layout_centerHorizontal="true">
 

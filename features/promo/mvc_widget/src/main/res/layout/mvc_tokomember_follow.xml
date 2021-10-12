@@ -31,8 +31,8 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/image_icon"
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center" />
             </FrameLayout>
 
@@ -42,15 +42,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="16dp"
             android:orientation="vertical">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_9"
-                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginStart="9dp"
+                android:layout_marginEnd="16dp"
                 android:textColor="@color/Unify_N700"
                 app:typographyType="body_3"
                 app:typographyWeight="reguler"
@@ -60,15 +60,15 @@
                 android:id="@+id/container_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginEnd="16dp"
                 android:visibility="visible">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tvSubTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_2"
-                    android:layout_marginStart="@dimen/dp_9"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginStart="9dp"
                     android:visibility="visible"
                     android:textColor="@color/Unify_N700"
                     app:layout_constraintStart_toStartOf="parent"
@@ -85,8 +85,8 @@
                     android:id="@+id/ll_buttons"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:layout_marginStart="@dimen/dp_9"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="9dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvSubTitle">
 
@@ -94,7 +94,7 @@
                         android:id="@+id/btnFirst"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/dp_32"
-                        android:layout_marginEnd="@dimen/dp_4"
+                        android:layout_marginEnd="4dp"
                         android:layout_weight="1"
                         android:text="@string/mvc_cek_info"
                         app:unifyButtonSize="small"
@@ -104,7 +104,7 @@
                         android:id="@+id/btnSecond"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/dp_32"
-                        android:layout_marginStart="@dimen/dp_4"
+                        android:layout_marginStart="4dp"
                         android:layout_weight="1"
                         android:text="@string/mvc_jadi_member"
                         app:unifyButtonSize="small" />
@@ -115,10 +115,10 @@
                 android:id="@+id/container_collapsable"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginEnd="@dimen/dp_12"
-                android:layout_marginBottom="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="12dp"
                 android:orientation="vertical"
                 android:visibility="visible"
                 tools:visibility="visible">
@@ -133,8 +133,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:paddingTop="@dimen/dp_8"
-                    android:paddingBottom="@dimen/dp_8"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
                     android:textColor="@color/Unify_G500"
                     app:typographyType="small"
                     app:typographyWeight="bold"

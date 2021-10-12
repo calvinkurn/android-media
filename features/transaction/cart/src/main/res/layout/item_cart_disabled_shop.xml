@@ -5,12 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/Unify_N0"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16">
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
 
     <View
         android:id="@+id/v_divider_item_cart_error"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="@dimen/dp_1"
         android:background="@color/Unify_N75"
         app:layout_constraintEnd_toEndOf="parent"
@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:foregroundGravity="center_vertical"
-        android:paddingTop="@dimen/dp_16"
+        android:paddingTop="16dp"
         app:flexWrap="wrap"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/v_divider_item_cart_error"
@@ -33,7 +33,7 @@
             android:id="@+id/img_shop_badge"
             android:layout_width="@dimen/dp_18"
             android:layout_height="@dimen/dp_18"
-            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginEnd="4dp"
             tools:src="@drawable/ic_badge_shop_official"
             tools:visibility="visible" />
 

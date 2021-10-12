@@ -12,8 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_8"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         android:gravity="center_vertical"
         android:clipChildren="false"
         android:clipToPadding="false">
@@ -30,8 +30,8 @@
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:textColor="@color/Unify_N600"
             android:textSize="@dimen/sp_17"
             tools:text="Atur" />

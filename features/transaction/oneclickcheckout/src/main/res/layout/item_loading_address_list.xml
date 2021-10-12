@@ -5,9 +5,9 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/progress_bar_address"
-        android:layout_width="@dimen/dp_48"
-        android:layout_height="@dimen/dp_48"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/dp_8" />
+        android:layout_margin="8dp" />
 
 </FrameLayout>

@@ -8,22 +8,22 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_4"
+        android:layout_height="4dp"
         android:background="@drawable/mvc_bg_shadow" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:paddingBottom="@dimen/dp_8">
+        android:layout_marginTop="8dp"
+        android:paddingBottom="8dp">
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_continue"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_48"
+            android:layout_height="48dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold"
             android:text="@string/mvc_cek_toko"

@@ -3,25 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_40">
+    android:layout_height="40dp">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_40"
+        android:layout_height="40dp"
         android:scaleType="fitXY"
         app:srcCompat="@drawable/gami_result_item_bg" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_40"
+        android:layout_height="40dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/dp_8">
+        android:padding="8dp">
 
         <com.tkpd.remoteresourcerequest.view.DeferredImageView
             android:id="@+id/image"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_gravity="center_vertical" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -29,8 +29,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/dp_6"
-            android:layout_marginLeft="@dimen/dp_6"
+            android:layout_marginStart="6dp"
+            android:layout_marginLeft="6dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:scrollHorizontally="true"

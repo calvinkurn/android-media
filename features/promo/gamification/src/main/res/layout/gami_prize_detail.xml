@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/dp_16">
+    android:paddingBottom="16dp">
 
     <com.tokopedia.gamification.giftbox.presentation.views.CouponImageView
         android:id="@+id/image"
@@ -31,7 +31,7 @@
         android:id="@+id/greenBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/prizeListItemContainer" />

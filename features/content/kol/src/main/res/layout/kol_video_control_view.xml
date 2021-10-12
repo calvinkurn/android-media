@@ -18,22 +18,22 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView android:id="@id/exo_play"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             style="@style/ExoMediaButton.Play"/>
 
         <ImageView android:id="@id/exo_pause"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             style="@style/ExoMediaButton.Pause"/>
 
     </FrameLayout>
 
     <ImageView android:id="@+id/volume_control"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
         app:srcCompat="@drawable/ic_af_volume_on"
         app:layout_constraintLeft_toRightOf="@+id/control"
         app:layout_constraintStart_toEndOf="@+id/control"
@@ -44,10 +44,10 @@
         android:id="@id/exo_progress"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginRight="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintStart_toEndOf="@+id/volume_control"
         app:layout_constraintEnd_toStartOf="@id/exo_position"
         app:layout_constraintTop_toTopOf="@id/volume_control"
