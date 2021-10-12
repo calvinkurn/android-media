@@ -291,10 +291,14 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     override fun onBadRatingCategoryClicked(
         title: String,
-        isSelectedBoolean: Boolean,
+        isSelected: Boolean,
         badRatingCategoryId: Int
     ) {
-        // Handle Click
+        if (isSelected) {
+            createReviewViewModel.addBadRatingCategory(badRatingCategoryId.toString())
+        } else {
+            createReviewViewModel.removeBadRatingCategory(badRatingCategoryId.toString())
+        }
     }
 
     private fun initInjector() {
@@ -335,10 +339,14 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 val isGoodRating = isGoodRating()
                 updateButtonState(isGoodRating, textArea?.isEmpty()?.not() ?: false)
                 createReviewViewModel.updateProgressBarFromRating(isGoodRating)
-                if (isGoodRating && !isUserEligible()) {
-                    showTemplates()
+                if (isGoodRating) {
+                    if (!isUserEligible()) {
+                        showTemplates()
+                    }
+                    badRatingCategoryRecyclerView?.hide()
                 } else {
                     hideTemplates()
+                    badRatingCategoryRecyclerView?.show()
                 }
                 clearFocusAndHideSoftInput(view)
             }

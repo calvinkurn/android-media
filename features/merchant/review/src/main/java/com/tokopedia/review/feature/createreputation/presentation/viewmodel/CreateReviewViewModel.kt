@@ -80,6 +80,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     val badRatingCategories: LiveData<Result<List<BadRatingCategory>>>
         get() = _badRatingCategories
 
+    private val selectedBadRatingCategories = mutableSetOf<String>()
+
     fun submitReview(rating: Int, reviewText: String, reputationScore: Int, isAnonymous: Boolean, utmSource: String) {
         (reputationDataForm.value as? CoroutineSuccess)?.data?.productrevGetForm?.let {
             _submitReviewResult.postValue(LoadingView())
@@ -270,6 +272,14 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }) {
             _badRatingCategories.postValue(CoroutineFail(it))
         }
+    }
+
+    fun addBadRatingCategory(badRatingCategoryId: String) {
+        selectedBadRatingCategories.add(badRatingCategoryId)
+    }
+
+    fun removeBadRatingCategory(badRatingCategoryId: String) {
+        selectedBadRatingCategories.remove(badRatingCategoryId)
     }
 
     private fun sendReviewWithoutImage(reputationId: String, productId: String, shopId: String, reputationScore: Int, rating: Int,
