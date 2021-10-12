@@ -368,8 +368,6 @@ class SearchProductFirstPageGqlUseCase(
                   title
                   description
                   category_id_l2
-                  applink
-                  url
                   filters {
                     title
                     key

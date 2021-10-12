@@ -108,7 +108,6 @@ import rx.Subscriber
 import rx.functions.Action1
 import rx.observers.Subscribers
 import rx.subscriptions.CompositeSubscription
-import rx.subscriptions.Subscriptions
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -678,9 +677,13 @@ class ProductListPresenter @Inject constructor(
         view.stopPreparePagePerformanceMonitoring()
         view.startNetworkRequestPerformanceMonitoring()
 
-        // Unsubscribe first in case user has slow connection, and the previous loadDataUseCase has not finished yet.
+        // Unsubscribe first in case user has slow connection,
+        // and the previous loadDataUseCase has not finished yet.
         searchProductFirstPageUseCase.unsubscribe()
-        searchProductFirstPageUseCase.execute(useCaseRequestParams, getLoadDataSubscriber(requestParams.parameters))
+        searchProductFirstPageUseCase.execute(
+            useCaseRequestParams,
+            getLoadDataSubscriber(requestParams.parameters)
+        )
     }
 
     private fun getLoadDataSubscriber(searchParameter: Map<String, Any>): Subscriber<SearchProductModel> {
@@ -752,7 +755,10 @@ class ProductListPresenter @Inject constructor(
         view.redirectSearchToAnotherPage(applink)
     }
 
-    private fun getViewToProcessSearchResult(searchParameter: Map<String, Any>, searchProductModel: SearchProductModel) {
+    private fun getViewToProcessSearchResult(
+        searchParameter: Map<String, Any>,
+        searchProductModel: SearchProductModel,
+    ) {
         updateValueEnableGlobalNavWidget()
 
         val productDataView = createFirstProductDataView(searchProductModel)
@@ -1043,6 +1049,8 @@ class ProductListPresenter @Inject constructor(
             }
         }
 
+        addLastFilterDataView(list, productDataView)
+
         if (isEnableChooseAddress)
             list.add(ChooseAddressDataView())
 
@@ -1098,6 +1106,17 @@ class ProductListPresenter @Inject constructor(
     private fun shouldShowSearchPMProPopUp(): Boolean {
         return if (shouldShowPMProPopUp) searchCoachMarkLocalCache.shouldShowSearchPMProPopUp()
         else shouldShowPMProPopUp
+    }
+
+    private fun addLastFilterDataView(
+        visitableList: MutableList<Visitable<*>>,
+        productDataView: ProductDataView,
+    ) {
+        val lastFilterDataView = productDataView.lastFilterDataView
+
+        if (lastFilterDataView.shouldShow()) {
+            visitableList.add(lastFilterDataView)
+        }
     }
 
     private fun getFirstProductPositionWithBOELabel(list: List<Visitable<*>>): Int {
