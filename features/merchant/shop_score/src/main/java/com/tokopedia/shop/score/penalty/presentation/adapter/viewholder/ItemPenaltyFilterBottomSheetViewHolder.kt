@@ -60,7 +60,7 @@ class ItemPenaltyFilterBottomSheetViewHolder(
                 it.layoutManager = layoutManagerChips
                 ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR)
                 it.adapter = itemChipsFilterPenaltyAdapter
-                itemChipsFilterPenaltyAdapter?.setItemChipsFilterPenaltyList(data.chipsFilerList)
+                itemChipsFilterPenaltyAdapter?.setItemChipsFilterPenaltyList(data.chipsFilterList)
             }
         }
     }
