@@ -14,7 +14,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
 import org.junit.Test
 
-internal class SearchProductSaveLastFilter: ProductListPresenterTestFixtures() {
+internal class SearchProductLastFilterTest: ProductListPresenterTestFixtures() {
 
     private val saveLastFilterRequestParamSlot = slot<RequestParams>()
     private val saveLastFilterRequestParam by lazy { saveLastFilterRequestParamSlot.captured }
