@@ -897,20 +897,24 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check home credit register ktp with type query then should return tokopedia internal`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://fintech/home-credit-register?show_ktp=true"
-        assertEqualsDeepLinkMapper(ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE, expectedDeepLink)
+            "${DeeplinkConstant.SCHEME_INTERNAL}://fintech/home-credit-register?show_ktp=true?type=KTP1"
+        val deeplink = UriUtil.buildUri(ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE, "KTP1")
+        assertEqualsDeepLinkMapper(deeplink, expectedDeepLink)
     }
 
     @Test
     fun `check home credit register selfie query then should return tokopedia internal`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://fintech/home-credit-register?show_ktp=false"
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://fintech/home-credit-register?show_ktp=false"
         assertEqualsDeepLinkMapper(ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE, expectedDeepLink)
     }
 
     @Test
     fun `check home credit register selfie with type query then should return tokopedia internal`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://fintech/home-credit-register?show_ktp=false"
-        assertEqualsDeepLinkMapper(ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE, expectedDeepLink)
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://fintech/home-credit-register?show_ktp=false&type=SLFE1"
+        val deeplink = UriUtil.buildUri(ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE, "SLFE1")
+        assertEqualsDeepLinkMapper(deeplink, expectedDeepLink)
     }
 
     @Test

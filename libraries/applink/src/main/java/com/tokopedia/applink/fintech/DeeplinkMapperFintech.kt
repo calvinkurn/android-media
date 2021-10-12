@@ -32,9 +32,12 @@ object DeeplinkMapperFintech {
     }
 
     fun getRegisteredNavigationForHomeCreditRegister(uri: Uri): String {
-        return UriUtil.buildUriAppendParam(
-            ApplinkConstInternalFintech.HOME_CREDIT_REGISTER,
-            mapOf(ApplinkConstInternalFintech.SHOW_KTP to (KTP == uri.pathSegments[1]).toString(),
-                ApplinkConstInternalFintech.TYPE to (uri.pathSegments.getOrNull(2))))
+        val map =
+            mutableMapOf(ApplinkConstInternalFintech.SHOW_KTP to (KTP == uri.pathSegments[1]).toString())
+        val type = uri.pathSegments.getOrNull(2)
+        if (type != null) {
+            map[ApplinkConstInternalFintech.TYPE] = type
+        }
+        return UriUtil.buildUriAppendParam(ApplinkConstInternalFintech.HOME_CREDIT_REGISTER, map)
     }
 }
