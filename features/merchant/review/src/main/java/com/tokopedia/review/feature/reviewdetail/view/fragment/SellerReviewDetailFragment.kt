@@ -231,11 +231,6 @@ class SellerReviewDetailFragment :
         super.onDestroy()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_option_review_product_detail, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_option_product_detail -> {
