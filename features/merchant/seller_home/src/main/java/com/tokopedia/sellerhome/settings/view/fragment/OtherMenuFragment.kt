@@ -256,8 +256,8 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     override fun onFollowersCountClicked() {
-        NewOtherMenuTracking.sendEventClickTotalFollowers()
-        goToShopFavouriteList()
+//        NewOtherMenuTracking.sendEventClickTotalFollowers()
+//        goToShopFavouriteList()
     }
 
     override fun onSaldoClicked() {

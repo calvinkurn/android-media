@@ -19,7 +19,7 @@ class ShopPerformanceViewModelTest : ShopPerformanceViewModelTestFixture() {
         runBlocking {
             val shopInfoPeriodUiModel = ShopInfoPeriodUiModel(periodType = TRANSITION_PERIOD, shopAge = 80, isNewSeller = true)
             onGetShopInfoPeriodUseCase_thenReturn(shopInfoPeriodUiModel)
-            shopPerformanceViewModel.getShopInfoPeriod()
+            shopPerformanceViewModel.getShopInfoPeriod(false)
             verifyGetShopInfoPeriodUseCaseCalled()
             val actualResult = (shopPerformanceViewModel.shopInfoPeriod.value as Success).data
             assertEquals(shopInfoPeriodUiModel, actualResult)
@@ -33,7 +33,7 @@ class ShopPerformanceViewModelTest : ShopPerformanceViewModelTestFixture() {
         runBlocking {
             val errorException = MessageErrorException()
             onGetShopInfoPeriodUseCaseError_thenReturn(errorException)
-            shopPerformanceViewModel.getShopInfoPeriod()
+            shopPerformanceViewModel.getShopInfoPeriod(false)
             verifyGetShopInfoPeriodUseCaseCalled()
             val actualResult = (shopPerformanceViewModel.shopInfoPeriod.value as Fail).throwable::class.java
             val expectedResult = errorException::class.java

@@ -16,7 +16,7 @@ data class CarouselPlayWidgetUiModel(
         override val header: BaseShopHomeWidgetUiModel.Header,
         val actionEvent: Event<Action> = Event(Action.Refresh),
         val widgetUiModel: PlayWidgetUiModel = PlayWidgetUiModel.Placeholder
-) : BaseShopHomeWidgetUiModel {
+) : BaseShopHomeWidgetUiModel() {
 
     sealed class Action {
 

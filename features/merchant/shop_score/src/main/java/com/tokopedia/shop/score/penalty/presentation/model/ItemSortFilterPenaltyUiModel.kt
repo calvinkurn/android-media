@@ -4,8 +4,7 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapterF
 
 data class ItemSortFilterPenaltyUiModel(
     var itemSortFilterWrapperList: List<ItemSortFilterWrapper> = listOf()
-) :
-    BasePenaltyPage {
+) : BasePenaltyPage {
 
     data class ItemSortFilterWrapper(
         val title: String = "",
