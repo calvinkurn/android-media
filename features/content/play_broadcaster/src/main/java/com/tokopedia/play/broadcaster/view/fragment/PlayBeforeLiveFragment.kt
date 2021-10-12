@@ -164,7 +164,7 @@ class PlayBeforeLiveFragment @Inject constructor(
         initView(view)
         setupView(view)
         setupObserve()
-        setupInsets(view)
+        setupInsets()
 
         if (savedInstanceState != null) populateSavedData(savedInstanceState)
     }
@@ -247,8 +247,8 @@ class PlayBeforeLiveFragment @Inject constructor(
         observeChannelInfo()
     }
 
-    private fun setupInsets(view: View) {
-        view.doOnApplyWindowInsets { v, insets, padding, _ ->
+    private fun setupInsets() {
+        clBeforeLiveContainer.doOnApplyWindowInsets { v, insets, padding, _ ->
             v.updatePadding(top = padding.top + insets.systemWindowInsetTop, bottom = padding.bottom + insets.systemWindowInsetBottom)
         }
 
