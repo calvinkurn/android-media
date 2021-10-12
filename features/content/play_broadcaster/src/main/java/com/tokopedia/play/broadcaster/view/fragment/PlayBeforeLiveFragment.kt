@@ -15,7 +15,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cachemanager.gson.GsonSingleton
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
@@ -29,6 +31,7 @@ import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.custom.PlayStartStreamingButton
+import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.edit.CoverEditFragment
 import com.tokopedia.play.broadcaster.view.fragment.edit.ProductEditFragment
@@ -41,6 +44,9 @@ import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.BroadcastScheduleViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.detachableview.FragmentViewContainer
+import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
+import com.tokopedia.play_common.detachableview.detachableView
 import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
@@ -73,6 +79,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     private lateinit var followerView: PlayShareFollowerView
     private lateinit var ivShareLink: ImageView
     private lateinit var flEdit: FrameLayout
+    private lateinit var countdownTimer: PlayTimerLiveCountDown
 
     private val actionBarView by viewComponent {
         ActionBarViewComponent(it, object : ActionBarViewComponent.Listener {
@@ -199,6 +206,7 @@ class PlayBeforeLiveFragment @Inject constructor(
             followerView = findViewById(R.id.follower_view)
             ivShareLink = findViewById(R.id.iv_share_link)
             flEdit = findViewById(R.id.fl_edit)
+            countdownTimer = findViewById(R.id.play_countdown_timer)
         }
     }
 
@@ -243,6 +251,8 @@ class PlayBeforeLiveFragment @Inject constructor(
         view.doOnApplyWindowInsets { v, insets, padding, _ ->
             v.updatePadding(top = padding.top + insets.systemWindowInsetTop, bottom = padding.bottom + insets.systemWindowInsetBottom)
         }
+
+        countdownTimer.setBottomWindowInsets()
     }
 
     //region observe
@@ -496,6 +506,28 @@ class PlayBeforeLiveFragment @Inject constructor(
         }
     }
 
+    private fun startCountDown() {
+        val animationProperty = PlayTimerLiveCountDown.AnimationProperty.Builder()
+            .setFullRotationInterval(TIMER_ROTATION_INTERVAL)
+            .setTextCountDownInterval(TIMER_TEXT_COUNTDOWN_INTERVAL)
+            .setTotalCount(TIMER_ANIMATION_TOTAL_COUNT)
+            .build()
+
+        countdownTimer.visible()
+        countdownTimer.startCountDown(animationProperty, object : PlayTimerLiveCountDown.Listener {
+            override fun onTick(milisUntilFinished: Long) {}
+
+            override fun onFinish() {
+                countdownTimer.gone()
+                parentViewModel.startLiveCountDownTimer()
+            }
+
+            override fun onCancelLiveStream() {
+                countdownTimer.gone()
+            }
+        })
+    }
+
     private fun createLiveStream() {
         prepareViewModel.createLiveStream()
         analytic.clickStartStreamingOnFinalSetupPage()
@@ -565,10 +597,13 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     companion object {
-
         private const val KEY_SETUP_DATA = "setup_data"
         private const val TAG_COVER_EDIT = "cover_edit"
         private const val TAG_PRODUCT_EDIT = "product_edit"
         private const val TAG_TITLE_AND_TAGS_EDIT = "title_and_tags_edit"
+
+        private const val TIMER_ROTATION_INTERVAL = 3000L
+        private const val TIMER_TEXT_COUNTDOWN_INTERVAL = 1000L
+        private const val TIMER_ANIMATION_TOTAL_COUNT = 3
     }
 }

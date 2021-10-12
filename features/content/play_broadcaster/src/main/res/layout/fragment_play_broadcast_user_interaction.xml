@@ -126,17 +126,6 @@
             app:icon_name="SETTING_FILLED"
             android:visibility="invisible"/>
 
-    <com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
-            android:id="@+id/countdown_timer"
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="@dimen/layout_lvl0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:visibility="gone"
-            />
-
         <com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
             android:id="@+id/live_debug_view"
             android:layout_width="match_parent"

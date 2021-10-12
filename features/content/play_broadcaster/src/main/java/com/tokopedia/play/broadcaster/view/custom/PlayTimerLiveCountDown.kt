@@ -1,33 +1,38 @@
 package com.tokopedia.play.broadcaster.view.custom
 
-import android.animation.*
+import android.animation.AnimatorInflater
+import android.animation.AnimatorSet
 import android.content.Context
 import android.os.CountDownTimer
 import android.util.AttributeSet
 import android.view.View
-import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import android.widget.TextView
-import com.airbnb.lottie.LottieAnimationView
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.updateMargins
+import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlin.math.ceil
 
-
-class PlayTimerCountDown @JvmOverloads constructor(
+/**
+ * Created By : Jonathan Darwin on October 12, 2021
+ */
+class PlayTimerLiveCountDown @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-    private val progressCircular: LottieAnimationView
-    private val info: LottieAnimationView
     private val countText: TextView
+    private val btnCancel: UnifyButton
+    private val loader: LoaderUnify
 
     private lateinit var timer: CountDownTimer
 
     /**
      * Animation area
      */
-    private lateinit var rotateAnimator: Animator
-
     private val textAnimatorIn: AnimatorSet
     private val textAnimatorOut: AnimatorSet
     private val animatorProgressCircularOut: AnimatorSet
@@ -36,12 +41,11 @@ class PlayTimerCountDown @JvmOverloads constructor(
     private val textAnimatorSet = AnimatorSet()
 
     init {
-        val view = View.inflate(context, R.layout.widget_play_timer_count_down, this)
-
-        progressCircular = view.findViewById(R.id.progress_circular)
+        val view = View.inflate(context, R.layout.widget_play_timer_live_count_down, this)
 
         countText = view.findViewById(R.id.count_text)
-        info = view.findViewById(R.id.info)
+        btnCancel = view.findViewById(R.id.btn_play_cancel_live_stream)
+        loader = view.findViewById(R.id.play_loader_count_down)
 
         countText.alpha = 0f
 
@@ -52,22 +56,6 @@ class PlayTimerCountDown @JvmOverloads constructor(
         animatorInfoOut = AnimatorInflater.loadAnimator(context, R.animator.play_timer_count_down_translate_alpha) as AnimatorSet
         textAnimatorIn.setTarget(countText)
         textAnimatorOut.setTarget(countText)
-        animatorProgressCircularOut.setTarget(progressCircular)
-        animatorInfoOut.setTarget(info)
-
-        progressCircular.addAnimatorListener(object : Animator.AnimatorListener{
-            override fun onAnimationRepeat(animation: Animator?) {}
-
-            override fun onAnimationEnd(animation: Animator?) {
-                progressCircular.removeAllAnimatorListeners()
-                rotateAnimator.start()
-            }
-
-            override fun onAnimationCancel(animation: Animator?) {}
-
-            override fun onAnimationStart(animation: Animator?) {
-            }
-        })
     }
 
     override fun onDetachedFromWindow() {
@@ -87,10 +75,14 @@ class PlayTimerCountDown @JvmOverloads constructor(
     }
 
     fun startCountDown(property: AnimationProperty, listener: Listener? = null){
+        loader.gone()
         val textInterval = property.textCountDownInterval
 
         setupTextCountAnimator(textInterval)
-        setupRotationAnimator(property.fullRotationInterval)
+
+        btnCancel.setOnClickListener {
+            listener?.onCancelLiveStream()
+        }
 
         timer = object : CountDownTimer(textInterval * property.totalCount, textInterval) {
 
@@ -100,13 +92,12 @@ class PlayTimerCountDown @JvmOverloads constructor(
             override fun onFinish() {
                 animatorInfoOut.start()
                 animatorProgressCircularOut.start()
+                loader.visible()
                 listener?.onFinish()
             }
 
             override fun onTick(millisUntilFinished: Long) {
                 if (!alreadyTick) {
-                    progressCircular.playAnimation()
-                    info.playAnimation()
                     alreadyTick = true
                 }
 
@@ -120,23 +111,22 @@ class PlayTimerCountDown @JvmOverloads constructor(
         }.start()
     }
 
+    fun setBottomWindowInsets() {
+        btnCancel.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as MarginLayoutParams
+            val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
+            if (marginLayoutParams.bottomMargin != newBottomMargin) {
+                marginLayoutParams.updateMargins(bottom = newBottomMargin)
+                v.parent.requestLayout()
+            }
+        }
+    }
+
     private fun setupTextCountAnimator(interval: Long) {
         val multiplier = interval / MILLIS_IN_SECOND
         textAnimatorIn.duration = 225 * multiplier
         textAnimatorOut.duration = 150 * multiplier
         textAnimatorOut.startDelay = 400 * multiplier
-    }
-
-    private fun setupRotationAnimator(interval: Long) {
-        rotateAnimator = getRotateAnimator(interval)
-    }
-
-    private fun getRotateAnimator(interval: Long): Animator {
-        val rotateAnimator = ObjectAnimator.ofFloat(progressCircular, "rotation", 0f, 360f)
-        rotateAnimator.interpolator = LinearInterpolator()
-        rotateAnimator.duration = interval
-        rotateAnimator.repeatCount = ValueAnimator.INFINITE
-        return rotateAnimator
     }
 
     class AnimationProperty private constructor(
@@ -186,5 +176,7 @@ class PlayTimerCountDown @JvmOverloads constructor(
         fun onTick(milisUntilFinished: Long)
 
         fun onFinish()
+
+        fun onCancelLiveStream()
     }
 }
