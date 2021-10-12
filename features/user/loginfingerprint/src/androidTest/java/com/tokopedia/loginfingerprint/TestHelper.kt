@@ -2,7 +2,6 @@ package com.tokopedia.loginfingerprint
 
 import android.content.Intent
 import androidx.biometric.BiometricPrompt
-import androidx.fragment.app.FragmentActivity
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.RootMatchers
@@ -13,8 +12,6 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.loginfingerprint.view.activity.VerifyFingerprintActivity
-import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
-import io.mockk.every
 
 /**
  * Created by Yoris on 09/09/21.
@@ -39,20 +36,6 @@ class TestHelper {
         Espresso.onView(ViewMatchers.withText((R.string.title_main)))
             .inRoot(RootMatchers.isDialog())
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Thread.sleep(1000)
-    }
-
-    fun scan_valid_fingerprint() {
-        Runtime.getRuntime().exec("adb -e emu finger touch 1")
-    }
-
-    fun scan_invalid_fingerprint(fragmentActivity: FragmentActivity) {
-        every {
-            BiometricPromptHelper.showBiometricPrompt(any(), any(), any(), any())
-        } answers {
-            (thirdArg() as () -> Unit).invoke()
-        }
-//        Runtime.getRuntime().exec("/usr/local/bin/adb -e emu finger touch 2")
     }
 
     fun on_fingerprint_valid(rule: ActivityTestRule<VerifyFingerprintActivity>) {
@@ -74,16 +57,16 @@ class TestHelper {
     }
 
     infix fun submit(func: TestResult.() -> Unit): TestResult {
-//        Espresso.onView(withId(R.id.btn_save_address))
-//            .perform(ViewActions.scrollTo(), ViewActions.click())
         return TestResult().apply(func)
     }
 }
 
 class TestResult {
+    private val BIOMETRIC_QUERY_ID = "42"
+
     fun hasPassedAnalytics(rule: CassavaTestRule, path: String) {
         assertThat(
-            rule.validate("42"),
+            rule.validate(BIOMETRIC_QUERY_ID),
             hasAllSuccess()
         )
     }
