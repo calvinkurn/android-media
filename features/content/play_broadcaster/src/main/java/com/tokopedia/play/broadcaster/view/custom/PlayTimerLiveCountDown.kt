@@ -87,6 +87,7 @@ class PlayTimerLiveCountDown @JvmOverloads constructor(
             timer.cancel()
             endAllAnimation()
             gone()
+            listener?.onCancelLiveStream()
         }
 
         timer = object : CountDownTimer(textInterval * property.totalCount, textInterval) {
@@ -172,5 +173,7 @@ class PlayTimerLiveCountDown @JvmOverloads constructor(
         fun onTick(milisUntilFinished: Long)
 
         fun onFinish()
+
+        fun onCancelLiveStream()
     }
 }

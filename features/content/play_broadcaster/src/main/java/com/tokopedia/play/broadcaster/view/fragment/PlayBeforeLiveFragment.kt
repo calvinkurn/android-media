@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -68,6 +69,7 @@ class PlayBeforeLiveFragment @Inject constructor(
         private val analytic: PlayBroadcastAnalytic
 ) : PlayBaseBroadcastFragment() {
 
+    private lateinit var clBeforeLiveContainer: ConstraintLayout
     private lateinit var ivImagePreview: ImageView
     private lateinit var tvChannelTitle: TextView
     private lateinit var llSelectedProduct: LinearLayout
@@ -195,6 +197,7 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private fun initView(view: View) {
         with(view) {
+            clBeforeLiveContainer = findViewById(R.id.cl_play_before_live_container)
             ivImagePreview = findViewById(R.id.iv_image_preview)
             tvChannelTitle = findViewById(R.id.tv_channel_title)
             tvSelectedProduct = findViewById(R.id.tv_selected_product)
@@ -504,12 +507,13 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun startCountDown() {
+        showCountdown(true)
+
         val animationProperty = PlayTimerLiveCountDown.AnimationProperty.Builder()
             .setTextCountDownInterval(TIMER_TEXT_COUNTDOWN_INTERVAL)
             .setTotalCount(parentViewModel.getBeforeLiveCountDownDuration())
             .build()
 
-        countdownTimer.visible()
         countdownTimer.startCountDown(animationProperty, object : PlayTimerLiveCountDown.Listener {
             override fun onTick(milisUntilFinished: Long) {}
 
@@ -517,7 +521,22 @@ class PlayBeforeLiveFragment @Inject constructor(
                 startStreaming()
 //                parentViewModel.startLiveCountDownTimer()
             }
+
+            override fun onCancelLiveStream() {
+                showCountdown(false)
+            }
         })
+    }
+
+    private fun showCountdown(isShow: Boolean) {
+        if(isShow) {
+            countdownTimer.visible()
+            clBeforeLiveContainer.gone()
+        }
+        else {
+            countdownTimer.gone()
+            clBeforeLiveContainer.visible()
+        }
     }
 
     private fun createLiveStream() {
