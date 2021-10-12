@@ -7,12 +7,18 @@ import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse
 import com.tokopedia.digital_deals.view.viewmodel.DealsCheckoutViewModel
 import com.tokopedia.digital_deals.view.viewmodel.DealsVerifyViewModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlError
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import io.mockk.coEvery
 import io.mockk.mockk
 import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.lang.reflect.Type
 
 class DealsCheckoutViewModelTest {
 
@@ -118,6 +124,92 @@ class DealsCheckoutViewModelTest {
 
         //then
         assertEquals(mockDealsCheckoutGeneralRequest, actual)
+    }
+
+
+    @Test
+    fun checkoutGeneralDeals_success_shouldsuccess(){
+        //given
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = DealsCheckoutResponse::class.java
+        result[objectType] = mockDealsCheckoutGeneralResponse
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
+
+        //when
+        viewModel.checkoutGeneral(mockDealsCheckoutGeneralRequest)
+
+        //then
+        val actualData = viewModel.dealsCheckoutResponse.value
+        assertEquals(mockDealsCheckoutGeneralResponse, actualData)
+    }
+
+
+    @Test
+    fun checkoutGeneralDeals_error_shoulderror(){
+        //given
+        val message = "Error Fetch Checkout General"
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val errorGql = GraphqlError()
+        val objectType = DealsCheckoutResponse::class.java
+        errorGql.message = message
+        errors[objectType] = listOf(errorGql)
+        val gqlResponseError = GraphqlResponse(result, errors, false)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseError
+
+        //when
+        viewModel.checkoutGeneral(mockDealsCheckoutGeneralRequest)
+
+        //then
+        val actualData = viewModel.errorGeneralValue.value
+        assertEquals(actualData?.message, message)
+    }
+
+
+    @Test
+    fun checkoutInstantDeals_success_shouldsuccess(){
+        //given
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = DealsCheckoutInstantResponse::class.java
+        result[objectType] = mockDealsCheckoutGeneralInstantResponse
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
+
+        //when
+        viewModel.checkoutGeneralInstant(mockDealsCheckoutGeneralInstantRequest)
+
+        //then
+        val actualData = viewModel.dealsCheckoutInstantResponse.value
+        assertEquals(mockDealsCheckoutGeneralInstantResponse, actualData)
+    }
+
+
+    @Test
+    fun checkoutInstantDeals_error_shoulderror(){
+        //given
+        val message = "Error Fetch Checkout Instant"
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val errorGql = GraphqlError()
+        val objectType = DealsCheckoutInstantResponse::class.java
+        errorGql.message = message
+        errors[objectType] = listOf(errorGql)
+        val gqlResponseError = GraphqlResponse(result, errors, false)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseError
+
+        //when
+        viewModel.checkoutGeneralInstant(mockDealsCheckoutGeneralInstantRequest)
+
+        //then
+        val actualData = viewModel.errorGeneralValue.value
+        assertEquals(actualData?.message, message)
     }
 
 }

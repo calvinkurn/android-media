@@ -93,7 +93,7 @@ class DealsVerifyViewModelTest {
     @Test
     fun verifyDeals_error_shoulderror(){
         //given
-        val message = "Error Fetch History"
+        val message = "Error Fetch Verify"
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
         val errorGql = GraphqlError()
