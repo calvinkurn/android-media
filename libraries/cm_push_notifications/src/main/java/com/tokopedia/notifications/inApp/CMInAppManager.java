@@ -21,9 +21,12 @@ import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataConsumer;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
+import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager;
 import com.tokopedia.notifications.inApp.ruleEngine.rulesinterpreter.RuleInterpreterImpl;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.DataConsumerImpl;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
+import com.tokopedia.notifications.inApp.usecase.InAppDataProvider;
+import com.tokopedia.notifications.inApp.usecase.InAppFetchListener;
 import com.tokopedia.notifications.inApp.viewEngine.CMActivityLifeCycle;
 import com.tokopedia.notifications.inApp.viewEngine.CMInAppController;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor;
@@ -129,6 +132,11 @@ public class CMInAppManager implements CmInAppListener,
                 entityHashCode,
                 isActivity
         );
+        //TODO new way to fetch InApp from Local Database
+        InAppDataProvider.Companion.getInstance(application, RepositoryManager.getInstance())
+                .getInAppData(name, isActivity, inAppList -> {
+
+                });
     }
 
     @Override
