@@ -25,7 +25,7 @@ class LongClickMenuViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
     private fun bindStartIcon(menu: TopchatItemMenu) {
         val drawable = ContextCompat.getDrawable(itemView.context, menu.icon) ?: return
         val colorLightEnable = ContextCompat.getColor(
-            itemView.context, R.color.Unify_NN900
+            itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900
         )
         applyIconUnifyColor(drawable, colorLightEnable)
         icon?.setImageDrawable(drawable)
