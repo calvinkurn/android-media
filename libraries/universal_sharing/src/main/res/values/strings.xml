@@ -11,11 +11,12 @@
     <string name="shop_string_ok">OK</string>
     <!-- shop share -->
     <string name="label_to_social_media_text">Bagikan ke teman kamu</string>
-    <string name="label_bhasha_copy_link">Salin link</string>
+    <string name="label_bhasha_copy_link">Salin Link</string>
     <string name="label_copy_link">Copy Link</string>
     <string name="label_instagram_feed">IG Feed</string>
     <string name="label_instagram_msg">IG</string>
     <string name="label_instagram_story">IG Story</string>
+    <string name="label_instagram_dm">IG DM</string>
     <string name="label_facebook">FB Feed</string>
     <string name="label_facebook_story">FB Story</string>
     <string name="label_whatsapp">WhatsApp</string>
