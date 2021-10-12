@@ -19,7 +19,6 @@ import com.otaliastudios.cameraview.controls.Facing;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.homecredit.R;
 import com.tokopedia.homecredit.applink.Constants;
-import com.tokopedia.unifycomponents.Toaster;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.homecredit.view.activity.HomeCreditRegisterActivity.HCI_KTP_IMAGE_PATH;
@@ -81,9 +80,6 @@ public class HomeCreditSelfieFragment extends HomeCreditBaseCameraFragment {
 
         if(!TextUtils.isEmpty(customHeader)) {
             headerText.setText(customHeader);
-            Toaster.build(cameraOverlayImg, "Selfie page -> " + customHeader, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show();
-        } else {
-            Toaster.build(cameraOverlayImg, "Selfie page -> header empty", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show();
         }
         if(Constants.SLFE_NO_OVERLAY.equalsIgnoreCase(cameraType)){
             cameraOverlayImg.setVisibility(View.GONE);
