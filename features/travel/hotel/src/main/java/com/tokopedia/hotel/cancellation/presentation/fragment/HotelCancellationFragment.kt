@@ -144,14 +144,20 @@ class HotelCancellationFragment : HotelBaseFragment() {
                     it.errorTitle.text = errorData.content.title
                     it.errorDescription.text = errorData.content.desc
                     it.errorAction.text = errorData.content.actionButton.firstOrNull()?.label ?: ""
-                    (it.errorAction as UnifyButton).buttonType = HotelCancellationButtonEnum.getEnumFromValue(errorData.content.actionButton.firstOrNull()?.buttonType ?: "").buttonType
+                    (it.errorAction as UnifyButton).buttonType = HotelCancellationButtonEnum
+                        .getEnumFromValue(errorData.content.actionButton.firstOrNull()?.buttonType ?: "").buttonType
+                    (it.errorAction as UnifyButton).buttonVariant = HotelCancellationButtonEnum
+                        .getEnumFromValue(errorData.content.actionButton.firstOrNull()?.buttonType ?: "").buttonVariant
                     it.setActionClickListener {
                         RouteManager.route(this,errorData.content.actionButton.firstOrNull()?.uri)
                     }
                     if(errorData.content.actionButton.size >= 2){
                         it.errorSecondaryAction.show()
                         it.errorSecondaryAction.text = errorData.content.actionButton.lastOrNull()?.label ?: ""
-                        (it.errorSecondaryAction as UnifyButton).buttonType = HotelCancellationButtonEnum.getEnumFromValue(errorData.content.actionButton.lastOrNull()?.buttonType ?: "").buttonType
+                        (it.errorSecondaryAction as UnifyButton).buttonType = HotelCancellationButtonEnum
+                            .getEnumFromValue(errorData.content.actionButton.lastOrNull()?.buttonType ?: "").buttonType
+                        (it.errorSecondaryAction as UnifyButton).buttonVariant = HotelCancellationButtonEnum
+                            .getEnumFromValue(errorData.content.actionButton.lastOrNull()?.buttonType ?: "").buttonVariant
                         it.setSecondaryActionClickListener {
                             RouteManager.route(this,errorData.content.actionButton.lastOrNull()?.uri)
                         }
