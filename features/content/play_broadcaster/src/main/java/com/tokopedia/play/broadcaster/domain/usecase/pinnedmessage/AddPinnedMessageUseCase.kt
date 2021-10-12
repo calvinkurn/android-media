@@ -41,23 +41,19 @@ class AddPinnedMessageUseCase @Inject constructor(
                 ${"$$PARAM_CHANNEL_ID"}: String!,
                 ${"$$PARAM_TITLE"}: String!
             ) {
-                broadcasterAddPinMessages (
-                ⠀⠀req: {
-                ⠀⠀⠀⠀$PARAM_CHANNEL_ID: ${"$$PARAM_CHANNEL_ID"},
-                ⠀⠀⠀⠀pinMessages: [
-                ⠀⠀⠀⠀⠀⠀{
-                ⠀⠀⠀⠀⠀⠀⠀⠀appLink: "",
-                ⠀⠀⠀⠀⠀⠀⠀⠀imageURL: "",
-                ⠀⠀⠀⠀⠀⠀⠀⠀message: "",
-                ⠀⠀⠀⠀⠀⠀⠀⠀status: 1,
-                ⠀⠀⠀⠀⠀⠀⠀⠀$PARAM_TITLE: ${"$$PARAM_TITLE"},
-                ⠀⠀⠀⠀⠀⠀⠀⠀webLink: "",
-                ⠀⠀⠀⠀⠀⠀⠀⠀weight: 1
-                ⠀⠀⠀⠀⠀⠀}
-                ⠀⠀⠀⠀]
-                ⠀⠀}
+                broadcasterAddPinMessages(
+                    req: {
+                        $PARAM_CHANNEL_ID: ${"$$PARAM_CHANNEL_ID"},
+                        pinMessages: [
+                            {
+                                status: 1,
+                                $PARAM_TITLE: ${"$$PARAM_TITLE"},
+                                weight: 1
+                            }
+                        ]
+                    }
                 ) {
-                ⠀⠀messageIDs
+                    messageIDs
                 }
             }
         """

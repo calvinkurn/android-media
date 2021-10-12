@@ -40,25 +40,21 @@ class UpdatePinnedMessageUseCase @Inject constructor(
         const val QUERY_NAME = "UpdatePinnedMessageUseCaseQuery"
 
         const val QUERY = """
-            mutation UpdateBroadcasterPinnedMessage(
+            mutation updateBroadcasterPinnedMessage(
                 ${"$$PARAM_ID"}: Int64!,
                 ${"$$PARAM_CHANNEL_ID"}: Int64!,
                 ${"$$PARAM_TITLE"}: String!
             ) {
-                broadcasterUpdatePinMessage (
-                ⠀⠀req: {
-                ⠀⠀⠀⠀$PARAM_ID: ${"$$PARAM_ID"},
-                ⠀⠀⠀⠀appLink: "",
-                ⠀⠀⠀⠀$PARAM_CHANNEL_ID: ${"$$PARAM_CHANNEL_ID"},
-                ⠀⠀⠀⠀imageURL: "",
-                ⠀⠀⠀⠀message: "",
-                ⠀⠀⠀⠀status: 1,
-                ⠀⠀⠀⠀$PARAM_TITLE: ${"$$PARAM_TITLE"},
-                ⠀⠀⠀⠀webLink: "",
-                ⠀⠀⠀⠀weight: 1
-                ⠀⠀}
+                broadcasterUpdatePinMessage(
+                    req: {
+                        $PARAM_ID: ${"$$PARAM_ID"},
+                        $PARAM_CHANNEL_ID: ${"$$PARAM_CHANNEL_ID"},
+                        status: 1,
+                        $PARAM_TITLE: ${"$$PARAM_TITLE"},
+                        weight: 1
+                    }
                 ) {
-                ⠀⠀ID
+                    ID
                 }
             }
         """

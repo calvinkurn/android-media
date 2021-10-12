@@ -38,13 +38,13 @@ class GetPinnedMessagesUseCase @Inject constructor(
         const val QUERY = """
             query GetBroadcasterPinnedMessage(${"$$PARAM_CHANNEL_ID"}: String!) {
                 broadcasterGetPinMessages($PARAM_CHANNEL_ID: ${"$$PARAM_CHANNEL_ID"}) {
-                ⠀⠀pinMessages {
-                    ID
-                    message
-                    status {
-                      ID 
+                    pinMessages {
+                        ID
+                        message
+                        status {
+                            ID
+                        }
                     }
-                  }
                 }
             }
         """
