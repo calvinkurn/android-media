@@ -88,8 +88,4 @@ open class ExternalRegisterInitialFragment: BaseDaggerFragment() {
         registerPushNotif()
         saveFirstInstallTime()
     }
-
-    companion object {
-        private const val REGISTER_PUSH_NOTIF_SERVICE_JOB_ID = 3048
-    }
 }

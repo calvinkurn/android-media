@@ -14,8 +14,7 @@ import com.tokopedia.logger.utils.globalScopeLaunch
 import com.tokopedia.loginregister.login.data.SignResult
 import com.tokopedia.loginregister.login.domain.RegisterPushNotificationParamsModel
 import com.tokopedia.loginregister.login.domain.RegisterPushNotificationUseCase
-import com.tokopedia.sessioncommon.di.SessionModule
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.security.*
@@ -28,14 +27,15 @@ class RegisterPushNotificationWorker(
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
 
-    @field:Named(SessionModule.SESSION_MODULE)
-    @Inject
-    lateinit var userSession: UserSessionInterface
-
     @Inject
     lateinit var registerPushNotificationUseCase: RegisterPushNotificationUseCase
 
+    private var userSession: UserSession? = null
     private var keyPair: KeyPair? = null
+
+    init {
+        userSession = UserSession(context)
+    }
 
     override suspend fun doWork(): Result {
         if (runAttemptCount > MAX_RUN_ATTEMPT) {
@@ -44,7 +44,7 @@ class RegisterPushNotificationWorker(
 
         return withContext(Dispatchers.IO) {
             val result: Result = try {
-                if (userSession.isLoggedIn) {
+                if (userSession?.isLoggedIn == true) {
                     registerPushNotification()
                     Result.success()
                 } else {
@@ -63,7 +63,7 @@ class RegisterPushNotificationWorker(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             generateKey()
             if (keyPair != null) {
-                signData(userSession.userId, userSession.deviceId).let {
+                signData(userSession?.userId.orEmpty(), userSession?.deviceId.orEmpty()).let {
                     registerPushNotificationUseCase(RegisterPushNotificationParamsModel(
                         publicKey = it.publicKey,
                         signature = it.signature,
