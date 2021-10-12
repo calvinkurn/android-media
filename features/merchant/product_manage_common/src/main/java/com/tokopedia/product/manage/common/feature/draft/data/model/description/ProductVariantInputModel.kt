@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.common.feature.draft.data.model.description
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.util.*
 
 @Parcelize
