@@ -8,5 +8,5 @@ data class Texts(
         @SerializedName("chosen_courier")
         val chosenCourier: String = "<b>Bebas Ongkir (</b><s>Rp.40.000</s> <b>Rp 0)</b>",
         @SerializedName("ticker_courier")
-        val tickerCourier: String = ""
+        val tickerCourier: String = "<b>Tersedia Bebas Ongkir OCC</b> <s>Gratis</s>"
 )

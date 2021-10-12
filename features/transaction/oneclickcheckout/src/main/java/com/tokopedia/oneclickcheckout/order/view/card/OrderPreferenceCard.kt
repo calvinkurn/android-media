@@ -22,6 +22,7 @@ import com.tokopedia.oneclickcheckout.databinding.CardOrderPreferenceBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val listener: OrderPreferenceCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) : RecyclerView.ViewHolder(binding.root) {
@@ -180,18 +181,19 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
         binding.apply {
             val logisticPromo = shipping.shippingRecommendationData?.logisticPromo
             if (shipping.logisticPromoTickerMessage?.isNotEmpty() == true && logisticPromo != null) {
+                val formattedLogisticPromoTickerMessage = HtmlLinkHelper(tickerShippingPromoTitle.context, shipping.logisticPromoTickerMessage).spannedString
                 if (logisticPromo.etaData.errorCode == 0) {
                     if (logisticPromo.etaData.textEta.isEmpty()) {
                         tickerShippingPromoSubtitle.setText(com.tokopedia.logisticcart.R.string.estimasi_tidak_tersedia)
                     } else {
                         tickerShippingPromoSubtitle.text = logisticPromo.etaData.textEta
                     }
-                    tickerShippingPromoTitle.text = "${shipping.logisticPromoTickerMessage}"
+                    tickerShippingPromoTitle.text = formattedLogisticPromoTickerMessage
                     tickerShippingPromoTitle.visible()
                     tickerShippingPromoSubtitle.visible()
                     tickerShippingPromoDescription.gone()
                 } else {
-                    tickerShippingPromoDescription.text = "${shipping.logisticPromoTickerMessage}"
+                    tickerShippingPromoDescription.text = formattedLogisticPromoTickerMessage
                     tickerShippingPromoDescription.visible()
                     tickerShippingPromoTitle.gone()
                     tickerShippingPromoSubtitle.gone()

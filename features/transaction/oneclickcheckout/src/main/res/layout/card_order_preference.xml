@@ -182,7 +182,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:typographyType="body_3"
-                        app:typographyWeight="bold" />
+                        app:typographyWeight="reguler" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/ticker_shipping_promo_subtitle"
