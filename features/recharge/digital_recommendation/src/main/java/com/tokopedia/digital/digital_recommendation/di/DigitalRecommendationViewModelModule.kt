@@ -11,7 +11,7 @@ import dagger.multibindings.IntoMap
  * @author by furqan on 23/09/2021
  */
 @Module
-abstract class DigitalRecommendationViewModelModuie {
+abstract class DigitalRecommendationViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(DigitalRecommendationViewModel::class)
