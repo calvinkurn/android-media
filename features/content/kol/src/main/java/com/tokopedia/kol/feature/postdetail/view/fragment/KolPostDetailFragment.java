@@ -83,6 +83,8 @@ import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kolcommon.util.PostMenuListener;
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener;
+import com.tokopedia.topads.sdk.domain.model.CpmData;
+import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -1010,11 +1012,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void userCarouselImpression(@NotNull String activityId, @NotNull FeedXMedia media, int positionInFeed, String type, boolean isFollowed, @NotNull String shopId, int postPosition) {
-
-    }
-
-    @Override
     public void onBottomSheetMenuClicked(@NotNull ProductPostTagViewModelNew item, @NotNull Context context, @NotNull String shopId) {
 
     }
@@ -1075,12 +1072,17 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onFollowClick(int positionInFeed, @NonNull String shopId, @NonNull String adId) {
+    public void onClickSekSekarang(@NonNull String postId, @NonNull String shopId, @NonNull String type, boolean isFollowed) {
 
     }
 
     @Override
-    public void onClickSekSekarang(@NonNull String postId, @NonNull String shopId, @NonNull String type, boolean isFollowed) {
+    public void onFollowClickAds(int positionInFeed, @NonNull String shopId, @NonNull String adId, boolean isNewVariant, @NonNull String adClickUrl) {
+
+    }
+
+    @Override
+    public void userCarouselImpression(@NonNull String activityId, @NonNull FeedXMedia media, int positionInFeed, @NonNull String postType, boolean isFollowed, @NonNull String shopId, int postPosition, @NonNull CpmData cpmData, @NonNull List<? extends Product> products) {
 
     }
 }

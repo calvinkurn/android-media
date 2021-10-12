@@ -139,6 +139,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener
@@ -1846,14 +1847,20 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun userCarouselImpression(
-        activityId: String,
-        media: FeedXMedia,
-        positionInFeed: Int,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        postPosition: Int
+            activityId: String,
+            media: FeedXMedia,
+            positionInFeed: Int,
+            type: String,
+            isFollowed: Boolean,
+            shopId: String,
+            postPosition: Int,
+            cpmData: CpmData,
+            products: List<Product>
     ) {
+        if (type == TYPE_TOPADS_HEADLINE) {
+            onTopAdsProductItemListsner(positionInFeed, products[positionInFeed], cpmData, true)
+            TopAdsGtmTracker.eventTopAdsHeadlineShopView(postPosition, cpmData, "", userSession.userId)
+        }
         feedAnalytics.eventImpression(
             activityId,
             media,
@@ -3044,6 +3051,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedViewModel.doToggleFavoriteShop(positionInFeed, 0, shopId)
     }
 
+    override fun onFollowClickAds(positionInFeed: Int, shopId: String, adId: String, isNewVariant: Boolean, adClickUrl: String) {
+        onFollowClick(positionInFeed, shopId, adId)
+        sendTopadsUrlClick(adClickUrl, "", "", "")
+    }
+
     override fun onClickSekSekarang(postId: String, shopId: String, type: String, isFollowed: Boolean) {
         feedAnalytics?.clickSekSekarang(postId,shopId,type,isFollowed)
     }
@@ -3077,9 +3089,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         )
     }
 
-    override fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, cpmData: CpmData) {
-        RouteManager.route(context, applink)
-
+    override fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, cpmData: CpmData, isNewVariant:Boolean) {
+        if (!isNewVariant) {
+            RouteManager.route(context, applink)
+        }
         var eventAction = ""
         val eventLabel = "${cpmData.id} - ${cpmData.cpm.cpmShop.id}"
 

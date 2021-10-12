@@ -93,7 +93,11 @@ object TopadsFeedXMapper {
             impressHolder = impressHolder,
             isTopAds = true,
             adId = data.adClickUrl,
-            shopId = data.cpm.cpmShop.id
+            shopId = data.cpm.cpmShop.id,
+            adClickUrl = data.adClickUrl,
+            adViewUrl = data.cpm.cpmImage.fullUrl,
+            cpmData = data,
+            listProduct = data.cpm.cpmShop.products
         )
     }
 

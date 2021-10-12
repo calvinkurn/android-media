@@ -25,8 +25,8 @@ import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
 
-const val TOPADS_VARIANT_EXPERIMENT_CLEAN = 2
-const val TOPADS_VARIANT_EXPERIMENT_INFO = 3
+const val TOPADS_VARIANT_EXPERIMENT_CLEAN = 1
+const val TOPADS_VARIANT_EXPERIMENT_INFO = 2
 
 open class TopAdsHeadlineV2ViewHolder(
     view: View, private val userSession: UserSessionInterface,
@@ -122,21 +122,15 @@ open class TopAdsHeadlineV2ViewHolder(
     }
 
     override fun onFollowClick(shopId: String, ads_id: String) {
-        topAdsHeadlineListener?.onFollowClick(adapterPosition, shopId, ads_id)
     }
 
     private fun setImpressionListener(element: TopadsHeadLineV2Model) {
         element.cpmModel?.let {
-            topadsHeadlineView.addOnImpressionListener(element.impressHolder) {
-                topAdsHeadlineListener?.onTopAdsHeadlineImpression(adapterPosition, it)
-            }
+                topAdsHeadlineListener?.onTopAdsHeadlineImpression(adapterPosition, it,true)
         }
     }
 
     override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
-        data?.let {
-            topAdsHeadlineListener?.onTopAdsHeadlineAdsClick(position, applink, it)
-        }
     }
 
     private fun hideTopadsView(){
