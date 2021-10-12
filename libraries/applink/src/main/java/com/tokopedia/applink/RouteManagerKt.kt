@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
+import com.tokopedia.config.GlobalConfig
 
 
 /**
@@ -23,7 +24,8 @@ object RouteManagerKt {
         if (url.endsWith(".pl")) {
             return false
         }
-        if (!url.contains(DeepLinkChecker.WEB_HOST) && !url.contains(DeepLinkChecker.MOBILE_HOST)) {
+        if (!url.contains(DeepLinkChecker.WEB_HOST) && !url.contains(DeepLinkChecker.MOBILE_HOST)
+            && !UriUtil.isHostStaging(url)) {
             return false
         }
         val registeredNavigation = DeeplinkMapper.getRegisteredNavigationFromHttp(activity.applicationContext, Uri.parse(url), url)
@@ -93,6 +95,9 @@ object RouteManagerKt {
                 val paymentId = getLinkSegment(url)[3]
                 return RouteManager.route(activity, ApplinkConst.THANKYOU_PAGE_NATIVE,
                         paymentId, merchantCode)
+            }
+            DeepLinkChecker.SALDO_DEPOSIT -> {
+                return RouteManager.route(activity, ApplinkConst.SALDO)
             }
         }
         return false
