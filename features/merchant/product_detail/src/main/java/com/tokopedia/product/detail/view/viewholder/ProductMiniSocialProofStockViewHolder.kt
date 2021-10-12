@@ -11,10 +11,10 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
+import com.tokopedia.product.detail.databinding.ItemHierarchycalSocialProofStockBinding
 import com.tokopedia.product.detail.view.adapter.MiniSocialProofAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.shimmering_social_proof.view.*
 
 class ProductMiniSocialProofStockViewHolder(
         private val view: View,
@@ -25,13 +25,15 @@ class ProductMiniSocialProofStockViewHolder(
         val LAYOUT = R.layout.item_hierarchycal_social_proof_stock
     }
 
+    private val binding = ItemHierarchycalSocialProofStockBinding.bind(view)
+    private val shimmeringBinding = binding.socialProofStockShimmering
+
     init {
         initRecyclerView()
         initAdapter()
     }
 
     private var miniSocialProofAdapter: MiniSocialProofAdapter? = null
-    private var miniSocialProofRecyclerView: RecyclerView? = null
 
     override fun bind(element: ProductMiniSocialProofStockDataModel) {
         if (!element.shouldRenderSocialProof) {
@@ -55,33 +57,32 @@ class ProductMiniSocialProofStockViewHolder(
         }
     }
 
-    private fun showLoading() = with(view) {
-        miniSocialProofRecyclerView?.hide()
-        pdp_shimmering_social_proof.show()
+    private fun showLoading() = with(binding) {
+        miniSocialProofRecyclerView.hide()
+        shimmeringBinding.root.show()
     }
 
-    private fun hideLoading() = with(view) {
-        miniSocialProofRecyclerView?.show()
-        pdp_shimmering_social_proof.hide()
+    private fun hideLoading() = with(binding) {
+        miniSocialProofRecyclerView.show()
+        shimmeringBinding.root.hide()
     }
 
-    private fun setupLoading(shouldShowSingleSocialProof: Boolean) = with(view) {
+    private fun setupLoading(shouldShowSingleSocialProof: Boolean) = with(shimmeringBinding) {
         if (shouldShowSingleSocialProof)
-            pdp_shimmering_social_proof.setPadding(8.toPx(), 0, 16.toPx(), 14.toPx())
+            root.setPadding(8.toPx(), 0, 16.toPx(), 14.toPx())
         else
-            pdp_shimmering_social_proof.setPadding(8.toPx(), 8.toPx(), 16.toPx(), 18.toPx())
+            root.setPadding(8.toPx(), 8.toPx(), 16.toPx(), 18.toPx())
     }
 
     private fun getComponentTrackData(element: ProductMiniSocialProofStockDataModel) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
 
     private fun initRecyclerView() {
-        miniSocialProofRecyclerView = view.findViewById(R.id.mini_social_proof_recycler_view)
-        miniSocialProofRecyclerView?.setHasFixedSize(true)
+        binding.miniSocialProofRecyclerView.setHasFixedSize(true)
     }
 
     private fun initAdapter() {
         miniSocialProofAdapter = MiniSocialProofAdapter(listener)
-        miniSocialProofRecyclerView?.apply {
+        binding.miniSocialProofRecyclerView.apply {
             adapter = miniSocialProofAdapter
             layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
         }
