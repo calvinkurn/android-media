@@ -7,14 +7,15 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.DateUtil
 import com.tokopedia.tokopedianow.common.util.DateUtil.calendarToStringFormat
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRepurchaseSortFilterBinding
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.utils.view.binding.viewBinding
 
 class RepurchaseSortFilterViewHolder(
     itemView: View,
@@ -30,9 +31,9 @@ class RepurchaseSortFilterViewHolder(
         private const val DATE_FORMAT = "d/M/yyyy"
     }
 
-    private val filterItems: ArrayList<SortFilterItem> = arrayListOf()
+    private var binding: ItemTokopedianowRepurchaseSortFilterBinding? by viewBinding()
 
-    private val sortFilter: SortFilter? by lazy { itemView.findViewById(R.id.sort_filter) }
+    private val filterItems: ArrayList<SortFilterItem> = arrayListOf()
 
     override fun bind(data: RepurchaseSortFilterUiModel) {
         clearSortFilterItems()
@@ -62,7 +63,7 @@ class RepurchaseSortFilterViewHolder(
             val item = SortFilterItem(title)
 
             filterItems.add(item)
-            sortFilter?.addItem(filterItems)
+            binding?.sortFilter?.addItem(filterItems)
 
             item.apply {
                 type = if(selectedItems.isNotEmpty()) {
@@ -81,7 +82,7 @@ class RepurchaseSortFilterViewHolder(
     }
 
     private fun setupClearButton(data: RepurchaseSortFilterUiModel) {
-        sortFilter?.sortFilterPrefix?.setOnClickListener {
+        binding?.sortFilter?.sortFilterPrefix?.setOnClickListener {
             clearAllFilters(data)
             setupLayout(data)
         }
@@ -106,10 +107,10 @@ class RepurchaseSortFilterViewHolder(
                 com.tokopedia.unifyprinciples.R.dimen.layout_lvl0
             )
         }
-        val gridLayoutParams = sortFilter?.layoutParams
+        val gridLayoutParams = binding?.sortFilter?.layoutParams
             as? StaggeredGridLayoutManager.LayoutParams
         gridLayoutParams?.marginStart = marginStart
-        sortFilter?.layoutParams = gridLayoutParams
+        binding?.sortFilter?.layoutParams = gridLayoutParams
     }
 
     private fun setupFilterChipMargin(filterApplied: Boolean) {
@@ -149,7 +150,7 @@ class RepurchaseSortFilterViewHolder(
     }
 
     private fun clearAllFilters(data: RepurchaseSortFilterUiModel) {
-        sortFilter?.resetAllFilters()
+        binding?.sortFilter?.resetAllFilters()
         filterItems.forEachIndexed { index, item ->
             val sortFilter = data.sortFilterList[index]
             val title = getString(sortFilter.title)
