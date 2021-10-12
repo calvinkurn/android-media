@@ -58,6 +58,7 @@ import com.tokopedia.stickylogin.common.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginAction
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_EXP_NAME
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_EXP_NAME2
@@ -98,6 +99,8 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.*
+import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowHomeBinding
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingEducationWidgetViewHolder.*
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
@@ -115,6 +118,7 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
 
@@ -161,6 +165,8 @@ class TokoNowHomeFragment: Fragment(),
 
     @Inject
     lateinit var analytics: HomeAnalytics
+
+    private var binding by autoClearedNullable<FragmentTokopedianowHomeBinding>()
 
     private val adapter by lazy {
         HomeAdapter(
@@ -224,10 +230,16 @@ class TokoNowHomeFragment: Fragment(),
             isShowFirstInstallSearch = it.getBoolean(REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH, false)
             durationAutoTransition = it.getLong(REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH, DEFAULT_INTERVAL_HINT)
         }
+        TokoNowCommonAnalytics.onOpenScreen(
+            isLoggedInStatus = userSession.isLoggedIn,
+            screenName = HOMEPAGE_TOKONOW,
+            userId = userSession.userId
+        )
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_tokopedianow_home, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = FragmentTokopedianowHomeBinding.inflate(inflater, container, false)
+        return binding?.root as View
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -648,13 +660,13 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun setupUi() {
         view?.apply {
-            ivHeaderBackground = findViewById(R.id.view_background_image)
-            navToolbar = findViewById(R.id.navToolbar)
-            statusBarBackground = findViewById(R.id.status_bar_bg)
-            rvHome = findViewById(R.id.rv_home)
-            swipeLayout = findViewById(R.id.swipe_refresh_layout)
-            miniCartWidget = findViewById(R.id.mini_cart_widget)
-            stickyLoginTokonow = findViewById(R.id.sticky_login_tokonow)
+            ivHeaderBackground = binding?.viewBackgroundImage
+            navToolbar = binding?.navToolbar
+            statusBarBackground = binding?.statusBarBg
+            rvHome = binding?.rvHome
+            swipeLayout = binding?.swipeRefreshLayout
+            miniCartWidget = binding?.miniCartWidget
+            stickyLoginTokonow = binding?.stickyLoginTokonow
         }
     }
 
@@ -1152,12 +1164,10 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun isChooseAddressWidgetShowed(): Boolean {
         val remoteConfig = FirebaseRemoteConfigImpl(context)
-        val isRollOutUser = ChooseAddressUtils.isRollOutUser(context)
-        val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
-                TokoNowChooseAddressWidgetViewHolder.ENABLE_CHOOSE_ADDRESS_WIDGET,
-                true
+        return remoteConfig.getBoolean(
+            TokoNowChooseAddressWidgetViewHolder.ENABLE_CHOOSE_ADDRESS_WIDGET,
+            true
         )
-        return isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled
     }
 
     private fun updateCurrentPageLocalCacheModelData() {

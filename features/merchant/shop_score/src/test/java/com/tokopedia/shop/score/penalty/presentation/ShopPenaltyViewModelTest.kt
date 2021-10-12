@@ -75,16 +75,13 @@ class ShopPenaltyViewModelTest: ShopPenaltyViewModelTestFixture() {
     @Test
     fun `when getDataPenalty should return success`() {
         runBlocking {
-            val shopPenaltySummaryTypeWrapper = ShopPenaltySummaryTypeWrapper()
-            onGetShopPenaltySummaryTypesUseCase_thenReturn(shopPenaltySummaryTypeWrapper)
+            onGetShopPenaltyDetailMergeUseCase_thenReturn()
 
-            val shopScorePenaltyDetail = ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail()
-            onGetShopPenaltyDetailUseCase_thenReturn(shopScorePenaltyDetail)
+            onGetShopPenaltyDetailMergeUseCase_thenReturn()
 
             penaltyViewModel.getDataPenalty()
 
-            verifyGetShopPenaltySummaryTypesUseCaseCalled()
-            verifyGetShopPenaltyDetailUseCaseCaseCalled()
+            verifyGetShopPenaltyDetailMergeUseCaseCalled()
             val actualResult = (penaltyViewModel.penaltyPageData.observeAwaitValue() as Success).data
             assertTrue(penaltyViewModel.penaltyPageData.observeAwaitValue() is Success)
             assertNotNull(actualResult)
@@ -95,13 +92,11 @@ class ShopPenaltyViewModelTest: ShopPenaltyViewModelTestFixture() {
     fun `when getDataPenalty should return Fail`() {
         runBlocking {
             val exception = MessageErrorException()
-            onGetShopPenaltySummaryTypesUseCaseError_thenReturn(exception)
-            onGetShopPenaltyDetailUseCaseError_thenReturn(exception)
+            onGetShopPenaltyDetailMergeUseCaseError_thenReturn(exception)
 
             penaltyViewModel.getDataPenalty()
 
-            verifyGetShopPenaltySummaryTypesUseCaseCalled()
-            verifyGetShopPenaltyDetailUseCaseCaseCalled()
+            verifyGetShopPenaltyDetailMergeUseCaseCalled()
             val actualResult = (penaltyViewModel.penaltyPageData.observeAwaitValue() as Fail).throwable::class
             val expectedResult = exception::class
             assertTrue(penaltyViewModel.penaltyPageData.observeAwaitValue() is Fail)

@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.util.mapper
 
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.home.WidgetName.IS_SHOW_ETALASE_NAME
@@ -16,7 +17,9 @@ import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.ShopHomeCampaignNplTncModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowcaseListBaseWidgetViewHolder
+import com.tokopedia.shop.home.data.model.ShopLayoutWidgetV2
 import com.tokopedia.shop.home.view.model.*
+import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import com.tokopedia.unifycomponents.UnifyButton
@@ -522,4 +525,57 @@ object ShopPageHomeMapper {
             type = model.type,
             header = mapToHeaderModel(model.header)
     )
+
+    fun mapToListShopHomeWidget(
+            responseWidgetData: List<ShopLayoutWidget.Widget>,
+            myShop: Boolean,
+            isLoggedIn: Boolean
+    ): List<BaseShopHomeWidgetUiModel> {
+        return mutableListOf<BaseShopHomeWidgetUiModel>().apply {
+            responseWidgetData.filter { it.data.isNotEmpty() || it.type.equals(DYNAMIC, ignoreCase = true) || it.name == VOUCHER_STATIC}.onEach {
+                val widgetUiModel = mapToWidgetUiModel(it, myShop, isLoggedIn)
+                widgetUiModel?.let { model ->
+                    model.widgetMasterId = it.widgetMasterID
+                    add(model)
+                }
+            }
+        }
+    }
+
+    fun mapToShopHomeWidgetLayoutData(response: ShopPageGetHomeType.HomeLayoutData): ShopPageHomeWidgetLayoutUiModel {
+        return ShopPageHomeWidgetLayoutUiModel(
+                layoutId =  response.layoutId,
+                masterLayoutId =  response.masterLayoutId.toIntOrZero().toString(),
+                listWidgetLayout =  response.widgetIdList.map {
+                    ShopPageHomeWidgetLayoutUiModel.WidgetLayout(
+                            it.widgetId,
+                            it.widgetMasterId,
+                            it.widgetType,
+                            it.widgetName
+                    )
+                }
+        )
+    }
+
+    fun mapShopHomeWidgetLayoutToListShopHomeWidget(
+            listWidgetLayout: List<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>,
+            myShop: Boolean,
+            isLoggedIn: Boolean
+    ): List<BaseShopHomeWidgetUiModel> {
+        return mutableListOf<BaseShopHomeWidgetUiModel>().apply {
+            listWidgetLayout.onEach {
+                mapToWidgetUiModel(
+                        ShopLayoutWidget.Widget(
+                                widgetID = it.widgetId,
+                                type = it.widgetType,
+                                name = it.widgetName
+                        ), myShop, isLoggedIn
+                )?.let{ resModel ->
+                    resModel.widgetMasterId = it.widgetMasterId
+                    add(resModel)
+                }
+            }
+        }
+    }
+
 }

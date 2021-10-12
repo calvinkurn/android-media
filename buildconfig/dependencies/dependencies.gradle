@@ -265,6 +265,7 @@ ext {
             exoPlayer             : "com.google.android.exoplayer:exoplayer:$exoPlayerVersion",
             exoPlayerUi           : "com.google.android.exoplayer:exoplayer-ui:$exoPlayerVersion",
             exoPlayerRtmp         : "com.google.android.exoplayer:extension-rtmp:$exoPlayerVersion",
+            exoPlayerCastExt      : "com.google.android.exoplayer:extension-cast:$exoPlayerVersion",
             lifeCycleExtentions   : "androidx.lifecycle:lifecycle-extensions:$lifeCycleExtensionsVersion",
             lifeCycleRuntime      : "androidx.lifecycle:lifecycle-compiler:$lifeCycleVersion",
             lifeCycleCommon       : "androidx.lifecycle:lifecycle-common-java8:$lifeCycleVersion",
@@ -291,7 +292,9 @@ ext {
             biometric             : "androidx.biometric:biometric:$biometricVersion",
             embraceSdk            : "io.embrace:embrace-android-sdk:$embraceVersion",
             embraceSwazzler       : "io.embrace:embrace-swazzler:$embraceVersion",
-            window                : "androidx.window:window:$windowVersion"
+            window                : "androidx.window:window:$windowVersion",
+            mp4Composer           : "com.github.MasayukiSuda:Mp4Composer-android:v0.4.1",
+            zoomLayout            : "com.otaliastudios:zoomlayout:1.8.0@aar",
     ]
 
     testDependencies = [

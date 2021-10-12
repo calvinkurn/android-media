@@ -153,18 +153,27 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
             it.collapsingToolbarBrandDetail.title = ""
             it.appBarLayoutBrandDetail.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
                 override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
-                    val toolbar = it.toolbarBrandDetail
-                    if (abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
-                        it.collapsingToolbarBrandDetail.title = title
-                        toolbar.menu.getItem(0).setIcon(com.tokopedia.deals.R.drawable.ic_deals_revamp_share_black)
-                        context?.let {
-                            setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-                        }
-                    } else if (verticalOffset == 0) {
-                        it.collapsingToolbarBrandDetail.title = ""
-                        toolbar.menu.getItem(0).setIcon(com.tokopedia.deals.R.drawable.ic_deals_revamp_share_white)
-                        context?.let {
-                            setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                    context?.let { context ->
+                        if(it.toolbarBrandDetail.menu.size() > 0) {
+                            var colorInt = 0
+                            if (abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
+                                it.collapsingToolbarBrandDetail.title = title
+                                colorInt = ContextCompat.getColor(
+                                    context,
+                                    com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                                )
+                            } else if (verticalOffset == 0) {
+                                it.collapsingToolbarBrandDetail.title = ""
+                                colorInt = ContextCompat.getColor(
+                                    context,
+                                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                                )
+                            }
+
+                            it.toolbarBrandDetail?.let { toolbar ->
+                                setDrawableColorFilter(toolbar.getNavigationIcon(), colorInt)
+                                setDrawableColorFilter(toolbar.menu.getItem(0).icon, colorInt)
+                            }
                         }
                     }
                 }
@@ -225,9 +234,8 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
                                 DealsBottomSheetNoInternetConnection().showErroNoConnection(context, it,
                                         object : DealsBottomSheetNoInternetConnection.
                                         DealsOnClickBottomSheetNoConnectionListener {
-                                            override fun onClick() {
-                                                showShimmering()
-                                                loadData()
+                                            override fun onDismissBottomsheet() {
+                                                reLoadData()
                                             }
                                         })
                             }
@@ -238,6 +246,11 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
                 }
             }
         }
+    }
+
+    private fun reLoadData(){
+        showShimmering()
+        loadData()
     }
 
     private fun getBrandDetail() {
@@ -308,10 +321,9 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
         context?.let {
             val errorMessage = ErrorHandler.getErrorMessage(it, throwable)
             binding?.root?.let {
-                Toaster.build(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                Toaster.build(it, errorMessage, Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
                         getString(R.string.deals_error_reload), View.OnClickListener {
-                    showShimmering()
-                    loadData()
+                    reLoadData()
                 }).show()
             }
         }

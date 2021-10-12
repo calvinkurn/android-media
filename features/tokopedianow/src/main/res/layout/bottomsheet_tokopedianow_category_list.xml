@@ -31,7 +31,7 @@
     </ScrollView>
 
     <include
-        android:id="@+id/loader"
+        android:id="@+id/loaderPartial"
         layout="@layout/partial_tokopedianow_category_list_linearlayout_shimmering" />
 
     <com.tokopedia.globalerror.GlobalError

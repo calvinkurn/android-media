@@ -75,7 +75,7 @@ class FeaturedBrandViewHolder (itemView: View,
     private fun setHeaderComponent(element: FeaturedBrandDataModel) {
         itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
-                featuredBrandListener?.onSeeAllClicked(element.channelModel, adapterPosition)
+                featuredBrandListener?.onSeeAllClicked(element.channelModel, adapterPosition, link)
             }
 
             override fun onChannelExpired(channelModel: ChannelModel) {

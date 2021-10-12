@@ -13,11 +13,11 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
 import com.tokopedia.product.detail.data.model.review.Review
+import com.tokopedia.product.detail.databinding.ItemDynamicReviewBinding
 import com.tokopedia.product.detail.view.adapter.ImageReviewAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.ProductDetailUtil
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import kotlinx.android.synthetic.main.item_dynamic_review.view.*
 
 class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetailListener) :
         AbstractViewHolder<ProductMostHelpfulReviewDataModel>(view) {
@@ -32,6 +32,8 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
         const val RATING_FIVE = 5
         val LAYOUT = R.layout.item_dynamic_review
     }
+
+    private val binding = ItemDynamicReviewBinding.bind(view)
 
     override fun bind(element: ProductMostHelpfulReviewDataModel?) {
         element?.let {
@@ -63,19 +65,19 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
     }
 
     private fun showShimmering() {
-        view.review_shimmering.show()
+        binding.reviewShimmering.root.show()
     }
 
     private fun hideShimmering() {
-        view.review_shimmering.hide()
+        binding.reviewShimmering.root.hide()
     }
 
     private fun showTitle() {
-        view.txt_review_title.show()
+        binding.txtReviewTitle.show()
     }
 
     private fun setSeeAllReviewClickListener(componentData: ComponentTrackDataModel) {
-        view.txt_see_all_partial.apply {
+        binding.txtSeeAllPartial.apply {
             setOnClickListener {
                 listener.onSeeAllTextView(componentData)
             }
@@ -90,8 +92,8 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
             false
         }
 
-        with(view) {
-            review_count.apply {
+        with(binding) {
+            reviewCount.apply {
                 text = if (listener.shouldShowRatingAndReviewCount()) {
                     if (formattedReviewCount == "0") {
                         context.getString(R.string.pdp_review_rating_only_count, formattedRatingCount)
@@ -103,14 +105,14 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
                 }
                 show()
             }
-            review_rating.apply {
+            reviewRating.apply {
                 setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(context, R.drawable.ic_review_rating_star), null, null, null)
                 text = if (listener.shouldShowRatingAndReviewCount()) formattedRating else ratingScore.toString()
                 show()
             }
 
             if (imageReviews.isNotEmpty()) {
-                image_review_list.apply {
+                imageReviewList.apply {
                     adapter = ImageReviewAdapter(imageReviews.toMutableList(), showSeeAll, listener::onImageReviewClick, listener::onSeeAllLastItemImageReview,
                             componentTrackDataModel)
                     show()
@@ -118,12 +120,12 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
                 }
                 return
             }
-            image_review_list.gone()
+            imageReviewList.gone()
         }
     }
 
     private fun setReviewStars(reviewData: Review) {
-        view.rating_review_pdp.apply {
+        binding.ratingReviewPdp.apply {
             if (reviewData.productRating == 0) {
                 hide()
                 return
@@ -134,7 +136,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
     }
 
     private fun setReviewAuthor(reviewData: Review) {
-        view.txt_date_user_pdp.apply {
+        binding.txtDateUserPdp.apply {
             if (reviewData.user.fullName.isEmpty()) {
                 return
             }
@@ -145,21 +147,21 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
     private fun setReviewVariant(review: Review) {
         if (review.variant.variantTitle.isNotEmpty()) {
-            view.txt_variant_review_pdp.apply {
+            binding.txtVariantReviewPdp.apply {
                 show()
                 text = review.variant.variantTitle
             }
         } else {
-            view.txt_variant_review_pdp.hide()
+            binding.txtVariantReviewPdp.hide()
         }
     }
 
     private fun setReviewDescription(reviewData: Review) {
         if (reviewData.message.isEmpty()) {
-            view.txt_desc_review_pdp.hide()
+            binding.txtDescReviewPdp.hide()
             return
         }
-        view.txt_desc_review_pdp.apply {
+        binding.txtDescReviewPdp.apply {
             maxLines = MAX_LINES_REVIEW_DESCRIPTION
             val formattingResult = ProductDetailUtil.reviewDescFormatter(context, reviewData.message)
             text = formattingResult.first
@@ -188,25 +190,25 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
     }
 
     private fun hideAllOtherElements() {
-        view.apply {
-            txt_review_title.hide()
-            txt_see_all_partial.hide()
-            review_rating.hide()
-            review_count.hide()
-            image_review_list.hide()
-            rating_review_pdp.hide()
-            txt_date_user_pdp.hide()
-            txt_variant_review_pdp.hide()
-            txt_desc_review_pdp.hide()
+        binding.apply {
+            txtReviewTitle.hide()
+            txtSeeAllPartial.hide()
+            reviewRating.hide()
+            reviewCount.hide()
+            imageReviewList.hide()
+            ratingReviewPdp.hide()
+            txtDateUserPdp.hide()
+            txtVariantReviewPdp.hide()
+            txtDescReviewPdp.hide()
         }
     }
 
     private fun hideMostHelpfulElements() {
-        view.apply {
-            rating_review_pdp.hide()
-            txt_desc_review_pdp.hide()
-            txt_variant_review_pdp.hide()
-            txt_date_user_pdp.hide()
+        binding.apply {
+            ratingReviewPdp.hide()
+            txtDescReviewPdp.hide()
+            txtVariantReviewPdp.hide()
+            txtDateUserPdp.hide()
         }
     }
 }

@@ -80,7 +80,7 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         return if (savedInstanceState == null) {
             when{
                 intent.hasExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD) -> intent.getStringExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD).orEmpty()
-                intent.hasExtra(KEY_QUERY_PARAM_EXTRA) -> intent.getBundleExtra(KEY_QUERY_PARAM_EXTRA)?.getString(QUERY_SEARCH, "").orEmpty()
+                intent.hasExtra(KEY_QUERY_PARAM_EXTRA) -> getSearchKeywordDataFromQueryParam(intent.getBundleExtra(KEY_QUERY_PARAM_EXTRA))
                 intent.data?.getQueryParameter(QUERY_SEARCH) != null -> intent.data?.getQueryParameter(QUERY_SEARCH).orEmpty()
                 intent.data?.getQueryParameter(SearchApiConst.Q) != null -> intent.data?.getQueryParameter(SearchApiConst.Q).orEmpty()
                 else -> ""
@@ -88,6 +88,16 @@ class ShopProductListResultActivity : BaseSimpleActivity(), HasComponent<ShopCom
         } else {
             savedInstanceState.getString(SAVED_KEYWORD, "")
         }
+    }
+
+    private fun getSearchKeywordDataFromQueryParam(bundleExtra: Bundle?): String {
+        return bundleExtra?.let {
+            when {
+                it.containsKey(QUERY_SEARCH) -> it.getString(QUERY_SEARCH, "")
+                it.containsKey(SearchApiConst.Q) -> it.getString(SearchApiConst.Q, "")
+                else -> ""
+            }
+        }.orEmpty()
     }
 
     private fun getShopIdFromUri(data: Uri?, pathSegments: List<String>) {

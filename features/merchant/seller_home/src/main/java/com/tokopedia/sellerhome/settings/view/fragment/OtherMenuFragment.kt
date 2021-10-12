@@ -74,6 +74,7 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import java.io.File
 import javax.inject.Inject
 
 class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
@@ -153,6 +154,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     private var shopShareInfo: OtherMenuShopShareData? = null
     private var shopSnippetImageUrl: String = ""
+    private var shopShareImagePath: String = ""
     private var canShowShareBottomSheet = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -187,6 +189,14 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     override fun onResume() {
         super.onResume()
         viewModel.getAllOtherMenuData()
+        if (isSharingEnabled) {
+            viewModel.getShopShareInfoData()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        deletePreviousSavedImage()
     }
 
     override fun onItemClicked(t: SettingUiModel?) {}
@@ -246,8 +256,8 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     override fun onFollowersCountClicked() {
-        NewOtherMenuTracking.sendEventClickTotalFollowers()
-        goToShopFavouriteList()
+//        NewOtherMenuTracking.sendEventClickTotalFollowers()
+//        goToShopFavouriteList()
     }
 
     override fun onSaldoClicked() {
@@ -718,10 +728,22 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                 canShowShareBottomSheet = false
                 shopSnippetImageUrl = snippetUrl
                 context?.let {
-                    SharingUtil.saveImageFromURLToStorage(it, shopSnippetImageUrl) { storageImage ->
+                    SharingUtil.saveImageFromURLToStorage(it, shopSnippetImageUrl) { storageImagePath ->
                         canShowShareBottomSheet = true
-                        showUniversalShareBottomSheet(storageImage)
+                        deletePreviousSavedImage()
+                        shopShareImagePath = storageImagePath
+                        showUniversalShareBottomSheet(storageImagePath)
                     }
+                }
+            }
+        }
+    }
+
+    private fun deletePreviousSavedImage() {
+        if (shopShareImagePath.isNotBlank()) {
+            File(shopShareImagePath).run {
+                if (exists()) {
+                    delete()
                 }
             }
         }

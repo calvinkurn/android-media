@@ -109,10 +109,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return if(dynamicIconSectionDataModel.dynamicIconWrap) DynamicIconTwoRowsSectionViewHolder.LAYOUT else DynamicIconSectionViewHolder.LAYOUT
     }
 
-    override fun type(sellDataModel: SellDataModel): Int {
-        return SellViewHolder.LAYOUT
-    }
-
     override fun type(headerDataModel: HeaderDataModel): Int {
         return if (headerDataModel.isUserLogin)
             OvoViewHolder.LAYOUT
@@ -344,7 +340,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             UseCaseIconSectionViewHolder.LAYOUT -> viewHolder = UseCaseIconSectionViewHolder(view, listener)
             DynamicIconSectionViewHolder.LAYOUT -> viewHolder = DynamicIconSectionViewHolder(view, listener)
             DynamicIconTwoRowsSectionViewHolder.LAYOUT -> viewHolder = DynamicIconTwoRowsSectionViewHolder(view, listener)
-            SellViewHolder.LAYOUT -> viewHolder = SellViewHolder(view, listener)
             OvoViewHolder.LAYOUT, OvoViewHolder.NON_LOGIN_LAYOUT -> viewHolder = OvoViewHolder(view, listener)
             RetryViewHolder.LAYOUT -> viewHolder = RetryViewHolder(view, homeFeedsListener)
             SprintSaleCarouselViewHolder.LAYOUT -> viewHolder = SprintSaleCarouselViewHolder(view, listener)

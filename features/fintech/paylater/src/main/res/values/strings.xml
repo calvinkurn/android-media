@@ -68,6 +68,7 @@
     <string name="pay_later_one_month">30 Hari</string>
     <string name="pay_later_partner_interest">Bunga</string>
     <string name="pay_later_shippingcost_and_insurance_text"><![CDATA[*Belum termasuk biaya asuransi & ongkir]]></string>
+    <string name="pay_later_supervised_by">Semua mitra penyedia terdaftar dan diawasi oleh</string>
 
 
 </resources>
