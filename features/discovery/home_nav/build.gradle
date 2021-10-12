@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
+apply from: "../../../compile-instrument-test.gradle"
 
 android{
     testOptions {
@@ -94,15 +95,19 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
-
+    // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
     androidTestImplementation rootProject.ext.testDependencies.junit
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
+    androidTestImplementation rootProject.ext.testDependencies.benchmark
     androidTestImplementation rootProject.ext.testDependencies.testCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
 
     implementation rootProject.ext.miscDependencies.navigationFragmentKtx
     implementation rootProject.ext.miscDependencies.navigationUiKtx
@@ -110,6 +115,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.irisSession)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation rootProject.ext.networkDependencies.glide
+
+    implementation projectOrAar(rootProject.ext.features.navigationCommon)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
 }
 
 project.ext {
@@ -121,3 +129,4 @@ project.ext {
 
 apply from: '../../../publish_local.gradle'
 apply from: '../../../sonar_config.gradle'
+apply from: '../../../jacoco_task.gradle'

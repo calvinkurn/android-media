@@ -47,12 +47,15 @@ dependencies {
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
     implementation projectOrAar(rootProject.ext.features.productCard)
     implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation rootProject.ext.unifyDependencies.dialog
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.tkpdInternalLibDependencies.network
-    
+    implementation rootProject.ext.miscDependencies.lottie
+
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)

@@ -30,7 +30,7 @@ class PlayBroadcastConfigurableMapper(
 
     override fun mapProductList(
         productsResponse: GetProductsByEtalaseResponse.GetProductListData,
-        isSelectedHandler: (Long) -> Boolean,
+        isSelectedHandler: (String) -> Boolean,
         isSelectableHandler: (Boolean) -> SelectableState
     ): List<ProductContentUiModel> {
         return if (!isMock) uiMapper.mapProductList(productsResponse, isSelectedHandler, isSelectableHandler)

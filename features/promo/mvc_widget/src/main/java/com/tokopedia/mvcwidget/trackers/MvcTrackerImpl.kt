@@ -54,4 +54,8 @@ interface MvcTrackerImpl {
 
     fun tokomemberImpressionOnPdp(shopId: String,userId: String?)
 
+    fun viewMVCCoupon(label: String, mapData: HashMap< String,Any> , @MvcSource source: Int)
+
+    fun mvcMultiShopCardClick(shopName: String, eventAction: String, @MvcSource source: Int, userId: String?, label: String = "")
+
 }

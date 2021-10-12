@@ -32,13 +32,31 @@ class VideoLoadingComponent(
         show()
     }
 
+    fun showCasting() {
+        ivLoadingText.text = getString(R.string.play_casting_chromecast)
+        showTextOnly()
+    }
+
+    fun showLoadingCasting() {
+        ivLoadingText.text = getString(R.string.play_connecting_chromecast)
+        showTextOnly()
+    }
+
     private fun showLoadingWithText() {
+        ivLoading.visible()
         ivLoadingText.visible()
         show()
     }
 
     private fun showLoadingOnly() {
+        ivLoading.visible()
         ivLoadingText.gone()
+        show()
+    }
+
+    private fun showTextOnly() {
+        ivLoading.gone()
+        ivLoadingText.visible()
         show()
     }
 

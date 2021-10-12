@@ -241,7 +241,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
                                     .commit()
                             tradeInAnalytics.viewInitialPricePage(
                                     deviceDisplayName
-                                            ?: "none/other", minPrice, maxPrice, productId.toString())
+                                            ?: "none/other", minPrice, maxPrice, productId)
                         }
                     }
                 }
@@ -444,7 +444,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount > 0) {
             if (currentFragment is TradeInInitialPriceFragment)
-                tradeInAnalytics.initialPricePageBackButtonClick(viewModel.tradeInParams.productId.toString())
+                tradeInAnalytics.initialPricePageBackButtonClick(viewModel.tradeInParams.productId)
             else if (currentFragment is TradeInFinalPriceFragment)
                 tradeInAnalytics.clickFinalPriceBack()
             supportFragmentManager.popBackStack()

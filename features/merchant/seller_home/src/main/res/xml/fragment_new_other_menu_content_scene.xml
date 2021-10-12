@@ -25,14 +25,6 @@
             android:layout_marginTop="@dimen/sah_new_other_layout_animation_start_margin_top"
             android:alpha="0.2"
             motion:layout_constraintTop_toTopOf="parent"/>
-        <Constraint
-            android:id="@+id/iv_sah_new_other_share"
-            android:layout_width="@dimen/layout_lvl4"
-            android:layout_height="@dimen/layout_lvl4"
-            android:layout_marginTop="@dimen/layout_lvl5"
-            android:alpha="0"
-            motion:layout_constraintTop_toTopOf="parent"
-            motion:layout_constraintStart_toEndOf="parent"/>
     </ConstraintSet>
 
     <ConstraintSet
@@ -51,68 +43,6 @@
             android:layout_marginTop="@dimen/spacing_lvl6"
             android:alpha="1"
             motion:layout_constraintTop_toTopOf="parent"/>
-        <Constraint
-            android:id="@+id/iv_sah_new_other_share"
-            android:layout_width="@dimen/layout_lvl4"
-            android:layout_height="@dimen/layout_lvl4"
-            android:layout_marginTop="@dimen/layout_lvl5"
-            android:alpha="0"
-            motion:layout_constraintTop_toTopOf="parent"
-            motion:layout_constraintStart_toEndOf="parent"/>
-    </ConstraintSet>
-
-    <!-- Share button animation from right -->
-
-    <ConstraintSet
-        android:id="@+id/constraint_sah_new_other_share_start"
-        motion:transitionEasing="decelerate">
-        <Constraint
-            android:id="@+id/iv_sah_new_other_curved_header"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/sah_new_other_header_background_height"
-            android:alpha="1"
-            motion:layout_constraintTop_toTopOf="parent" />
-        <Constraint
-            android:id="@+id/layout_sah_new_other_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl6"
-            android:alpha="1"
-            motion:layout_constraintTop_toTopOf="parent"/>
-        <Constraint
-            android:id="@+id/iv_sah_new_other_share"
-            android:layout_width="@dimen/layout_lvl4"
-            android:layout_height="@dimen/layout_lvl4"
-            android:layout_marginTop="@dimen/layout_lvl5"
-            android:alpha="0"
-            motion:layout_constraintTop_toTopOf="parent"
-            motion:layout_constraintStart_toEndOf="parent"/>
-    </ConstraintSet>
-
-    <ConstraintSet
-        android:id="@+id/constraint_sah_new_other_share_end"
-        motion:transitionEasing="decelerate">
-        <Constraint
-            android:id="@+id/iv_sah_new_other_curved_header"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/sah_new_other_header_background_height"
-            android:alpha="1"
-            motion:layout_constraintTop_toTopOf="parent" />
-        <Constraint
-            android:id="@+id/layout_sah_new_other_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl6"
-            android:alpha="1"
-            motion:layout_constraintTop_toTopOf="parent"/>
-        <Constraint
-            android:id="@+id/iv_sah_new_other_share"
-            android:layout_width="@dimen/layout_lvl4"
-            android:layout_height="@dimen/layout_lvl4"
-            android:layout_marginTop="@dimen/layout_lvl5"
-            android:alpha="1"
-            motion:layout_constraintTop_toTopOf="parent"
-            motion:layout_constraintEnd_toEndOf="parent"/>
     </ConstraintSet>
 
 </MotionScene>

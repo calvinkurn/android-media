@@ -3,19 +3,24 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.databinding.PartialProductNotifyMeBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
-import kotlinx.android.synthetic.main.partial_product_notify_me.view.*
 
-class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductNotifyMeDataModel>(view) {
+class ProductNotifyMeViewHolder(
+    private val view: View, private val listener: DynamicProductDetailListener
+) : AbstractViewHolder<ProductNotifyMeDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.partial_product_notify_me
     }
+
+    private val binding = PartialProductNotifyMeBinding.bind(view)
 
     override fun bind(element: ProductNotifyMeDataModel) {
         if (element.campaignID.isNotEmpty()) {
@@ -26,19 +31,22 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
             campaignRibbon?.setDynamicProductDetailListener(listener)
             campaignRibbon?.setComponentTrackDataModel(trackDataModel)
             campaignRibbon?.renderUpComingCampaignRibbon(element, element.upcomingNplData.upcomingType)
+            view.addOnImpressionListener(element.impressHolder) {
+                listener.onImpressComponent(getComponentTrackData(element))
+            }
         } else {
             hideContainer()
         }
     }
 
-    private fun showContainer() = with(itemView) {
-        upcoming_campaign_ribbon?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
-        upcoming_campaign_ribbon?.requestLayout()
+    private fun showContainer() = with(binding) {
+        upcomingCampaignRibbon.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        upcomingCampaignRibbon.requestLayout()
     }
 
-    private fun hideContainer() = with(itemView){
-        upcoming_campaign_ribbon?.layoutParams?.height = 0
-        upcoming_campaign_ribbon?.requestLayout()
+    private fun hideContainer() = with(binding){
+        upcomingCampaignRibbon.layoutParams?.height = 0
+        upcomingCampaignRibbon.requestLayout()
     }
 
     override fun bind(element: ProductNotifyMeDataModel?, payloads: MutableList<Any>) {
@@ -48,9 +56,13 @@ class ProductNotifyMeViewHolder(view: View, private val listener: DynamicProduct
         }
         when (payloads[0] as Int) {
             ProductDetailConstant.PAYLOAD_NOTIFY_ME -> {
-                val campaignRibbon = itemView.upcoming_campaign_ribbon
-                campaignRibbon?.updateRemindMeButton(listener, element, element.campaignType)
+                val campaignRibbon = binding.upcomingCampaignRibbon
+                campaignRibbon.updateRemindMeButton(listener, element, element.campaignType)
             }
         }
     }
+
+    private fun getComponentTrackData(
+        element: ProductNotifyMeDataModel
+    ) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
 }

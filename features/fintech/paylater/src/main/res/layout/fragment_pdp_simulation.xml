@@ -1,88 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parent_scroll_view"
+
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <com.tokopedia.unifycomponents.ContentSwitcherUnify
-        android:id="@+id/modeSwitcher"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/unify_space_32"
-        android:layout_marginStart="@dimen/unify_space_16"
-        android:layout_marginTop="@dimen/unify_space_16"
-        android:layout_marginEnd="@dimen/unify_space_16"
-        android:textOff="@string/pay_later_content_switcher_heading"
-        android:textOn="@string/pay_later_credit_content_switcher_heading"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <include
-        android:id="@+id/paylaterDaftarWidget"
-        layout="@layout/paylater_daftar_widget"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/sp_app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/pay_later_margin_dp_10"
-        android:layout_marginTop="@dimen/unify_space_8"
-        android:layout_marginEnd="@dimen/pay_later_margin_dp_10"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/modeSwitcher" />
+        android:background="@color/Unify_N0"
+        app:elevation="@dimen/unify_space_0">
 
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/payLaterBorder"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/unify_space_8"
-        android:layout_marginTop="@dimen/unify_space_16"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/paylaterDaftarWidget" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_scrollFlags="scroll">
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/daftarGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:constraint_referenced_ids="paylaterDaftarWidget,payLaterBorder" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.TabsUnify
-        android:id="@+id/paylaterTabLayout"
-        style="?tabTheme"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/payLaterBorder"
-        app:layout_goneMarginTop="@dimen/unify_space_16"
-        app:tabIndicatorColor="@color/Unify_G500"
-        app:tabMode="fixed"
-        app:tabSelectedTextColor="@color/Unify_G500"
-        app:tabTextColor="@color/Unify_N700_68" />
+                <include
+                    android:id="@+id/productDetail"
+                    layout="@layout/product_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <com.tokopedia.unifycomponents.LoaderUnify
+                    android:id="@+id/productInfoShimmer"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginLeft="@dimen/unify_space_16"
+                    android:layout_marginBottom="@dimen/dp_20"
+                    app:layout_constraintBottom_toBottomOf="@id/productDetail"
+                    app:layout_constraintLeft_toLeftOf="@id/productDetail"
+                    app:layout_constraintRight_toRightOf="@id/productDetail"
+                    app:layout_constraintTop_toTopOf="@id/productDetail"
+                    app:loader_type="rect"
+                    tools:visibility="gone" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <com.tokopedia.unifycomponents.DividerUnify
+                android:id="@+id/payLaterBorder"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/unify_space_8" />
+
+            <com.tokopedia.unifycomponents.ContentSwitcherUnify
+                android:id="@+id/modeSwitcher"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/unify_space_32"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:textOff="@string/pay_later_content_switcher_heading"
+                android:textOn="@string/pay_later_credit_content_switcher_heading" />
+
+
+            <com.tokopedia.unifycomponents.TabsUnify
+                android:id="@+id/paylaterTabLayout"
+                style="?tabTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_goneMarginTop="@dimen/unify_space_16"
+                app:tabIndicatorColor="@color/Unify_G500"
+                app:tabMode="fixed"
+                app:tabSelectedTextColor="@color/Unify_G500"
+                app:tabTextColor="@color/Unify_N700_68" />
+
+        </LinearLayout>
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/payLaterViewPager"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/unify_space_0"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/paylaterTabLayout" />
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/parentDataGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="paylaterTabLayout, payLaterViewPager" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/payLaterParentGlobalError"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_48"
-        android:gravity="center"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>

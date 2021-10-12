@@ -2474,3 +2474,4 @@ private fun testAddToCartVariantWithQuantityAbove99(): ProductCardModelMatcher {
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
+

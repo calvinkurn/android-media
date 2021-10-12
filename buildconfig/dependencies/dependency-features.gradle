@@ -18,6 +18,7 @@ ext {
             kategori                        : ":features:category:kategori",
             categoryLevels                  : ":features:category:category_levels",
             agerestriction                  : ":features:category:age_restriction",
+            affiliateToko                  : ":features:category:affiliate_toko",
             findNative                      : ":features:category:find_native",
             tradeIn                         : ":features:category:tradein",
             moneyIn                         : ":features:category:moneyin",
@@ -38,6 +39,7 @@ ext {
             affiliateCommon                 : ":features:content:affiliate_common",
             profile                         : ":features:content:profile",
             createpost                      : ":features:content:createpost",
+            createpostCommon                : ":features:content:createpost_common",
             play                            : ":features:content:play",
             playCommon                      : ":features:content:play_common",
             playBroadcaster                 : ":features:content:play_broadcaster",
@@ -124,6 +126,7 @@ ext {
             mediauploader                   : ":features:media:mediauploader",
             mediaCommon                     : ":features:media:media-common",
             medialoader                     : ":features:media:medialoader",
+            liveBroadcaster                 : ":features:media:live-broadcaster",
 
             goldMerchantCommon              : ":features:merchant:gold_merchant_common",
             powerMerchantSubscribe          : ":features:merchant:power_merchant_subscribe",

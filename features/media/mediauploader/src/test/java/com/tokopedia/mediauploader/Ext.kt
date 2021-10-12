@@ -26,7 +26,7 @@ inline fun <reified R: Throwable> GraphqlRepository.stubRepositoryAsThrow(
     val it = this
 
     return coEvery {
-        it.getReseponse(any(), any())
+        it.response(any(), any())
     } throws `as`
 }
 
@@ -38,7 +38,7 @@ inline fun <reified T : Any> GraphqlRepository.stubRepository(
     val data = hashMapOf<Type, Any>(T::class.java to onSuccess)
 
     return coEvery {
-        it.getReseponse(any(), any())
+        it.response(any(), any())
     } returns GraphqlResponse(
         data,
         onError,
