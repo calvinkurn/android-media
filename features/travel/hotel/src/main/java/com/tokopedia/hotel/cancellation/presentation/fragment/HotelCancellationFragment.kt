@@ -121,8 +121,6 @@ class HotelCancellationFragment : HotelBaseFragment() {
     }
 
     fun showErrorView(error: Throwable?){
-        hideLoadingState()
-        binding?.containerError?.root?.visible()
         context?.run {
             binding?.containerError?.globalError?.let {
                 ErrorHandlerHotel.getErrorUnify(this, error,
@@ -133,6 +131,8 @@ class HotelCancellationFragment : HotelBaseFragment() {
     }
 
     private fun convertDynamicError(error: Throwable){
+        hideLoadingState()
+        binding?.containerError?.root?.visible()
         try {
             val gson = Gson()
             val itemType = object : TypeToken<HotelCancellationError>() {}.type
@@ -140,17 +140,19 @@ class HotelCancellationFragment : HotelBaseFragment() {
             context?.run {
                 binding?.containerError?.globalError?.let {
                     it.setType(GlobalError.SERVER_ERROR)
-                    it.errorTitle.text = errorData.propertyGetCancellation.content.title
-                    it.errorDescription.text = errorData.propertyGetCancellation.content.desc
-                    (it.errorAction as UnifyButton).buttonType = HotelCancellationButtonEnum.getEnumFromValue(errorData.propertyGetCancellation.content.actionButton.firstOrNull()?.buttonType ?: "").buttonType
+                    it.errorTitle.text = errorData.content.title
+                    it.errorDescription.text = errorData.content.desc
+                    it.errorAction.text = errorData.content.actionButton.firstOrNull()?.label ?: ""
+                    (it.errorAction as UnifyButton).buttonType = HotelCancellationButtonEnum.getEnumFromValue(errorData.content.actionButton.firstOrNull()?.buttonType ?: "").buttonType
                     it.setActionClickListener {
-                        RouteManager.route(this,errorData.propertyGetCancellation.content.actionButton.firstOrNull()?.uri)
+                        RouteManager.route(this,errorData.content.actionButton.firstOrNull()?.uri)
                     }
-                    if(errorData.propertyGetCancellation.content.actionButton.isNotEmpty()){
+                    if(errorData.content.actionButton.size >= 2){
                         it.errorSecondaryAction.show()
-                        (it.errorSecondaryAction as UnifyButton).buttonType = HotelCancellationButtonEnum.getEnumFromValue(errorData.propertyGetCancellation.content.actionButton.lastOrNull()?.buttonType ?: "").buttonType
+                        it.errorSecondaryAction.text = errorData.content.actionButton.lastOrNull()?.label ?: ""
+                        (it.errorSecondaryAction as UnifyButton).buttonType = HotelCancellationButtonEnum.getEnumFromValue(errorData.content.actionButton.lastOrNull()?.buttonType ?: "").buttonType
                         it.setSecondaryActionClickListener {
-                            RouteManager.route(this,errorData.propertyGetCancellation.content.actionButton.lastOrNull()?.uri)
+                            RouteManager.route(this,errorData.content.actionButton.lastOrNull()?.uri)
                         }
                     }else{
                         it.errorSecondaryAction.gone()
