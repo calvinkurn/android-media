@@ -47,7 +47,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
     implementation projectOrAar(rootProject.ext.features.reputationCommon)
     implementation projectOrAar(rootProject.ext.features.inboxCommon)
-    implementation project(rootProject.ext.features.productDetailCommon)
+    implementation projectOrAar(rootProject.ext.features.productDetailCommon)
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)

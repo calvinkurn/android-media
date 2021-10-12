@@ -297,7 +297,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun showTemplateChatIfReady() {
-        if(chatRoomFlexModeListener?.isFlexMode() == true) {
+        if (chatRoomFlexModeListener?.isFlexMode() == true) {
             topchatViewState?.hideTemplateChat()
         } else {
             topchatViewState?.showTemplateChatIfReady(
@@ -308,7 +308,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun hasProductPreviewShown(): Boolean {
-        return topchatViewState?.hasProductPreviewShown()?: false
+        return topchatViewState?.hasProductPreviewShown() ?: false
     }
 
     override fun hasNoSrw(): Boolean {
@@ -645,7 +645,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return {
             this.messageId = it
             loadInitialData()
-            if(chatRoomFlexModeListener?.isFlexMode() == true) {
+            if (chatRoomFlexModeListener?.isFlexMode() == true) {
                 chatRoomFlexModeListener?.onSuccessGetMessageId(msgId = it)
             }
         }
@@ -811,7 +811,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onImageAnnouncementClicked(viewModel: ImageAnnouncementViewModel) {
-        analytics.trackClickImageAnnouncement(viewModel.broadcastBlastId.toString(), viewModel.attachmentId)
+        analytics.trackClickImageAnnouncement(
+            viewModel.broadcastBlastId.toString(),
+            viewModel.attachmentId
+        )
         super.onImageAnnouncementClicked(viewModel)
     }
 
@@ -1160,7 +1163,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val isLastMessageBroadcast = adapter.isLastMessageBroadcast()
         val amIBuyer = !isSeller()
         chatRoomFlexModeListener?.getSeparatedTemplateChat()?.updateTemplate(list)
-        if(chatRoomFlexModeListener?.isFlexMode() == true) {
+        if (chatRoomFlexModeListener?.isFlexMode() == true) {
             hideSeparatedChatTemplate()
         } else {
             topchatViewState?.setTemplate(list, isLastMessageBroadcast, amIBuyer)
@@ -1422,7 +1425,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
         analytics.eventClickBuyProductAttachment(element)
-        if(element.variants.isNullOrEmpty()) {
+        if (element.variants.isNullOrEmpty()) {
             doBuyAndAtc(element) {
                 analytics.trackSuccessDoBuyAndAtc(
                     element, it,
@@ -1439,7 +1442,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
         analytics.eventClickAddToCartProductAttachment(element, session)
-        if(element.variants.isNullOrEmpty()) {
+        if (element.variants.isNullOrEmpty()) {
             doBuyAndAtc(element) {
                 analytics.trackSuccessDoBuyAndAtc(
                     element, it,
@@ -1602,7 +1605,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             topchatViewState?.onCheckChatBlocked(
                 opponentRole,
                 opponentName,
-                topchatViewState?.blockStatus?: BlockedStatus()
+                topchatViewState?.blockStatus ?: BlockedStatus()
             )
             context?.let {
                 showToasterConfirmation(it.getString(R.string.title_success_block_chat))
@@ -1620,7 +1623,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             topchatViewState?.onCheckChatBlocked(
                 opponentRole,
                 opponentName,
-                topchatViewState?.blockStatus?: BlockedStatus()
+                topchatViewState?.blockStatus ?: BlockedStatus()
             )
             context?.let {
                 showToasterConfirmation(it.getString(R.string.title_success_unblock_chat))
@@ -1970,7 +1973,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun requestAllowPromo() {
         presenter.requestAllowPromo(messageId, {
             topchatViewState?.setChatPromoBlockStatus(false)
-            addBroadCastSpamHandler(topchatViewState?.isShopFollowed?: false)
+            addBroadCastSpamHandler(topchatViewState?.isShopFollowed ?: false)
             onSuccessAllowPromoFromBcHandler()
         }, {
             onErrorAllowPromoFromBcHandler(it)
@@ -2084,7 +2087,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun getInvoicePreviewId(savedInstanceState: Bundle?): String {
         val id = getStringArgument(ApplinkConst.Chat.INVOICE_ID, savedInstanceState)
-        return if(id.toLongOrNull() == null) {
+        return if (id.toLongOrNull() == null) {
             InvoicePreviewUiModel.INVALID_ID
         } else {
             id
@@ -2275,10 +2278,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    private fun initKeyboardListener(view: View) { TopChatKeyboardHandler(view, object :
+    private fun initKeyboardListener(view: View) {
+        TopChatKeyboardHandler(view, object :
             TopChatKeyboardHandler.OnKeyBoardVisibilityChangeListener {
             override fun onKeyboardShow() {
-                if(chatRoomFlexModeListener?.isFlexMode() == true) {
+                if (chatRoomFlexModeListener?.isFlexMode() == true) {
                     chatBoxPadding?.show()
                     showSeparatedChatTemplateIfFlex()
                 }
@@ -2318,13 +2322,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 } else if (toggle && viewStateShouldShowTemplate()) {
                     topchatViewState?.showTemplateChat()
                 }
-            } catch (ignored: Exception) {}
+            } catch (ignored: Exception) {
+            }
         }
     }
 
     private fun removeAttachmentIfNecessary(savedInstance: Bundle?) {
         val isNecessary = getBooleanArgument(Constant.CHAT_REMOVE_ATTACHMENT, savedInstance)
-        if(isNecessary) {
+        if (isNecessary) {
             topchatViewState?.clearAttachmentPreview()
         }
     }
