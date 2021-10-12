@@ -1,73 +1,65 @@
-package com.tokopedia.purchase_platform.common.analytics;
+package com.tokopedia.purchase_platform.common.analytics
 
-import android.app.Activity;
-
-import com.tokopedia.iris.util.IrisSession;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-
-import java.util.HashMap;
-import java.util.Map;
-import com.tokopedia.iris.util.ConstantKt;
+import android.app.Activity
+import android.os.Bundle
+import com.tokopedia.iris.util.IrisSession
+import com.tokopedia.iris.util.KEY_SESSION_IRIS
+import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
+import java.util.*
 
 /**
  * @author anggaprasetiyo on 18/05/18.
  */
-public abstract class TransactionAnalytics {
+abstract class TransactionAnalytics {
 
-    protected TransactionAnalytics() {
+    fun sendScreenName(activity: Activity?, screenName: String) {
+        if (activity == null) {
+            return
+        }
+        val customDimension: MutableMap<String, String> = HashMap()
+        customDimension[KEY_SESSION_IRIS] = IrisSession(activity).getSessionId()
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, customDimension)
     }
 
-    Analytics getTracker() {
-        return TrackApp.getInstance().getGTM();
+    fun sendScreenName(activity: Activity, screenName: String, customDimension: MutableMap<String, String>) {
+        customDimension[KEY_SESSION_IRIS] = IrisSession(activity).getSessionId()
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, customDimension)
     }
 
-    public Map<String, Object> getGTMDataFromTrackAppUtils(String title) {
-
-        return TrackAppUtils.gtmData(
-                "",
-                ConstantTransactionAnalytics.EventCategory.FIN_INSURANCE_CHECKOUT,
-                ConstantTransactionAnalytics.EventAction.FIN_INSURANCE_CHECKOUT,
-                String.format("checkout - %s", title)
-        );
+    protected fun sendGeneralEvent(event: String, eventCategory: String,
+                                   eventAction: String, eventLabel: String = "") {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                TrackAppUtils.gtmData(event, eventCategory, eventAction, eventLabel)
+        )
     }
 
-    public void sendScreenName(Activity activity, String screenName) {
-        Map<String, String> customDimension = new HashMap<>();
-        customDimension.put(ConstantKt.KEY_SESSION_IRIS, new IrisSession(activity).getSessionId());
-
-        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName, customDimension);
+    protected fun sendEventCategoryActionLabel(event: String, eventCategory: String,
+                                               eventAction: String, eventLabel: String?) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                TrackAppUtils.gtmData(event, eventCategory, eventAction, eventLabel)
+        )
     }
 
-    public void sendScreenName(Activity activity, String screenName,  Map<String, String> customDimension) {
-        customDimension.put(ConstantKt.KEY_SESSION_IRIS, new IrisSession(activity).getSessionId());
-
-        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName, customDimension);
+    protected fun sendEventCategoryAction(event: String, eventCategory: String,
+                                          eventAction: String) {
+        sendEventCategoryActionLabel(event, eventCategory, eventAction, "")
     }
 
-    protected void sendEventCategoryActionLabel(String event, String eventCategory,
-                                                String eventAction, String eventLabel) {
-
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                event, eventCategory, eventAction, eventLabel));
+    protected fun sendEnhancedEcommerce(dataLayer: Map<String, Any?>) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(dataLayer)
     }
 
-    protected void sendEventCategoryAction(String event, String eventCategory,
-                                           String eventAction) {
-        sendEventCategoryActionLabel(event, eventCategory, eventAction, "");
+    protected fun sendEnhancedEcommerce(eventName: String, bundle: Bundle) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventName, bundle)
     }
 
-    protected void sendEnhancedEcommerce(Map<String, Object> dataLayer) {
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(dataLayer);
+    protected fun sendGeneralEvent(eventData: Map<String, Any>) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventData)
     }
 
-    protected void sendGeneralEvent(Map<String, Object> eventData) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(eventData);
-    }
-
-    protected Map<String, Object> getGtmData(String event, String eventCategory,
-                                             String eventAction, String eventLabel) {
-        return TrackAppUtils.gtmData(event, eventCategory, eventAction, eventLabel);
+    protected fun getGtmData(event: String, eventCategory: String,
+                             eventAction: String, eventLabel: String): MutableMap<String, Any> {
+        return TrackAppUtils.gtmData(event, eventCategory, eventAction, eventLabel)
     }
 }

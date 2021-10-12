@@ -6,7 +6,7 @@ import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
 class PaymentListingAnalytics : TransactionAnalytics() {
 
     fun eventClickBackArrowInPilihPembayaran() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 EventName.CLICK_CHECKOUT_EXPRESS,
                 EventCategory.PURCHASE_SETTING,
                 EventAction.CLICK_BACK_ARROW_IN_PILIH_METHOD_PAYMENT
