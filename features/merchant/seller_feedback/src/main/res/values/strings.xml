@@ -33,8 +33,8 @@
     <string name="feedback_form_settings_title">Pengaturan Feedback</string>
     <string name="feedback_from_feedback_trigger">Feedback Trigger</string>
     <string name="feedback_form_feedback_trigger_desc">Form feedback bisa muncul setelah screenshot</string>
-    <string name="feedback_from_screenshoot_tigger_enabled_success_message">Feedback-mu terkirim. Ambil screenshot untuk memunculkan form feedback lagi.</string>
-    <string name="feedback_from_screenshoot_tigger_disabled_success_message">Feedback-mu terkirim. Agar lebih mudah, aktifkan Feedback Trigger.</string>
+    <string name="feedback_form_screenshoot_tigger_enabled_success_message">Feedback-mu terkirim. Ambil screenshot untuk memunculkan form feedback lagi.</string>
+    <string name="feedback_form_screenshoot_tigger_disabled_success_message">Feedback-mu terkirim. Agar lebih mudah, aktifkan Feedback Trigger.</string>
 
     <string-array name="feedback_pages">
         <item>Home</item>
