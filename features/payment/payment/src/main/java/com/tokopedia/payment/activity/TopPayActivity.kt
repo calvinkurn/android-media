@@ -484,6 +484,13 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         hideProgressDialog()
     }
 
+    private fun routeToHomeCredit(appLink: String, overlayUrl: String?, headerText: String?) {
+        val intent = RouteManager.getIntent(this@TopPayActivity, appLink)
+        if (!overlayUrl.isNullOrEmpty()) intent.putExtra(CUST_OVERLAY_URL, overlayUrl)
+        if (!headerText.isNullOrEmpty()) intent.putExtra(CUST_HEADER, headerText)
+        startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE)
+    }
+
     private inner class TopPayWebViewClient : WebViewClient() {
 
         fun gotoLinkAccount() {
@@ -546,17 +553,19 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                     return true
                 }
 
+                val queryParam = uri.getQueryParameter(CUST_OVERLAY_URL)
+                val headerText = uri.getQueryParameter(CUST_HEADER)
                 // hci
                 if (url.contains(HCI_CAMERA_KTP)) {
                     view?.stopLoading()
                     mJsHciCallbackFuncName = Uri.parse(url).lastPathSegment
-                    startActivityForResult(RouteManager.getIntent(this@TopPayActivity, ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE), HCI_CAMERA_REQUEST_CODE)
+                    routeToHomeCredit(ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE, queryParam, headerText)
                     return true
                 }
                 if (url.contains(HCI_CAMERA_SELFIE)) {
                     view?.stopLoading()
                     mJsHciCallbackFuncName = Uri.parse(url).lastPathSegment
-                    startActivityForResult(RouteManager.getIntent(this@TopPayActivity, ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE), HCI_CAMERA_REQUEST_CODE)
+                    routeToHomeCredit(ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE, queryParam, headerText)
                     return true
                 }
 
@@ -813,6 +822,8 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         private const val INSUFFICIENT_STOCK_URL = "https://www.tokopedia.com/cart/insufficient_booking_stock"
 
         private const val BACK_DIALOG_URL = "javascript:handlePopAndroid();"
+        private const val CUST_OVERLAY_URL = "imgurl"
+        private const val CUST_HEADER = "header_text"
 
         private const val REQUEST_CODE_LINK_ACCOUNT = 101
 
