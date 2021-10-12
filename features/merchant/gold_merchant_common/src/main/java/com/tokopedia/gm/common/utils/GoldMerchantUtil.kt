@@ -69,7 +69,7 @@ object GoldMerchantUtil {
             return TimeUnit.DAYS.convert(diffInMs, TimeUnit.MILLISECONDS)
         } catch (e: Exception) {
             e.printStackTrace()
-            0
+            ZERO_NUMBER.toLong()
         }
     }
 

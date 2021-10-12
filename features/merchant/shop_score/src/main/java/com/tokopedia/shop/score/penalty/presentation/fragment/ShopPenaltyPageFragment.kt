@@ -17,6 +17,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.gm.common.constant.ZERO_NUMBER
 import com.tokopedia.gm.common.utils.ShopScoreReputationErrorLogger
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
@@ -148,10 +149,10 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
 
         penaltyPageAdapter.updateChipsSelected(chipsPenaltyMap)
 
-        val typeId = typePenaltyList?.find { it.isSelected }?.value ?: 0
+        val typeId = typePenaltyList?.find { it.isSelected }?.value ?: ZERO_NUMBER
         val sortBy =
             penaltyFilterUiModelList.find { it.title == ShopScoreConstant.TITLE_SORT }?.chipsFilterList?.find { it.isSelected }?.value
-                ?: 0
+                ?: ZERO_NUMBER
         penaltyPageAdapter.run {
             removePenaltyListData()
             refreshSticky()
