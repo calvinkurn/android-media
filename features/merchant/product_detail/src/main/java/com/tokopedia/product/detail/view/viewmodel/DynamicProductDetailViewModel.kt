@@ -776,7 +776,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                 ?: "")
                         val productIdsString = TextUtils.join(",", productIds) ?: ""
                         val recomFilterList = mutableListOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
-                        if (pageName == PDP_3 || pageNName == PDP_K2K) {
+                        if (pageName == PDP_3 || pageName == PDP_K2K) {
                             getRecommendationFilterChips.get().setParams(
                                     userId = if (userSessionInterface.userId.isEmpty()) 0 else userSessionInterface.userId.toInt(),
                                     pageName = pageName,
