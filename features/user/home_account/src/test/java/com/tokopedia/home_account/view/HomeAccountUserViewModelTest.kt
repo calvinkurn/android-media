@@ -80,6 +80,7 @@ class HomeAccountUserViewModelTest {
     private val responseResult = UserAccountDataModel()
     private val linkStatusResult = LinkStatusResponse()
     private val profilePojo = ProfilePojo(profileInfo = ProfileInfo(phone = "089123456789"))
+    private val throwableMock = mockk<Throwable>(relaxed = true)
 
     @Before
     fun setUp() {
@@ -291,11 +292,15 @@ class HomeAccountUserViewModelTest {
                 any()
             )
         } answers {
-            secondArg<(Throwable) -> Unit>().invoke(throwableResponse)
+            secondArg<(Throwable) -> Unit>().invoke(throwableMock)
         }
 
         viewModel.setSafeMode(isActive)
-        verify {throwableResponse.printStackTrace()}
+
+        justRun { throwableMock.printStackTrace() }
+        verify(atLeast = 1) {
+            throwableMock.printStackTrace()
+        }
     }
 
     @Test
