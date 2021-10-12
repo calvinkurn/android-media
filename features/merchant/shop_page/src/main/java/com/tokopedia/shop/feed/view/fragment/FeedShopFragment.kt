@@ -703,6 +703,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         positionInFeed: Int,
         redirectUrl: String,
         postTagItem: FeedXProduct,
+        adClickUrl: String
     ) {
         TODO("Not yet implemented")
     }
@@ -772,7 +773,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         postType: String,
         isFollowed: Boolean,
         shopId: String,
-        postPosition: Int
+        postPosition: Int,
+        cpmData: CpmData,
+        products: List<Product>
     ) {
     }
 
@@ -1180,10 +1183,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onFollowClick(positionInFeed: Int, shopId: String, adId: String) {
+    override fun onFollowClickAds(positionInFeed: Int, shopId: String, adId: String) {
 
     }
 
-    override fun onClickSekSekarang(postId: String, shopId: String, type: String, isFollowed: Boolean) {
+    override fun onClickSekSekarang(postId: String, shopId: String, type: String, isFollowed: Boolean, positionInFeed: Int) {
     }
 }
