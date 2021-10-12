@@ -1093,7 +1093,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
         filterOptionBottomSheet = UohFilterOptionsBottomSheet()
         filterOptionBottomSheet?.setActionListener(this@UohListFragment)
-        context?.let { filterOptionBottomSheet?.show(it, childFragmentManager, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_DATE) }
+        context?.let { fragmentManager?.let { it1 -> filterOptionBottomSheet?.show(it, it1, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_DATE) } }
     }
 
     private fun onClickFilterStatus() {
@@ -1111,7 +1111,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
         filterOptionBottomSheet = UohFilterOptionsBottomSheet()
         filterOptionBottomSheet?.setActionListener(this@UohListFragment)
-        context?.let { filterOptionBottomSheet?.show(it, childFragmentManager, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_FILTERS) }
+        context?.let { fragmentManager?.let { it1 -> filterOptionBottomSheet?.show(it, it1, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_FILTERS) } }
     }
 
     private fun onClickFilterCategoryProduct() {
@@ -1125,7 +1125,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
         filterOptionBottomSheet = UohFilterOptionsBottomSheet()
         filterOptionBottomSheet?.setActionListener(this@UohListFragment)
-        context?.let { context -> filterOptionBottomSheet?.show(context, childFragmentManager, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_CATEGORIES) }
+        context?.let { context -> fragmentManager?.let { filterOptionBottomSheet?.show(context, it, uohBottomSheetOptionAdapter, UohConsts.CHOOSE_CATEGORIES) } }
 
         tempFilterType = UohConsts.TYPE_FILTER_CATEGORY
         if (tempFilterCategoryLabel.isEmpty()) tempFilterCategoryLabel = ALL_PRODUCTS
@@ -1398,7 +1398,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 }
                 setCloseClickListener { dismiss() }
             }
-            datePicker.show(parentFragmentManager, "")
+            fragmentManager?.let { datePicker.show(it, "") }
         }
     }
 
@@ -1423,7 +1423,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         uohBottomSheetKebabMenuAdapter._orderIndex = orderIndex
         uohBottomSheetKebabMenuAdapter.addList(order)
         kebabMenuBottomSheet = UohKebabMenuBottomSheet()
-        context?.let { context -> kebabMenuBottomSheet?.show(context, childFragmentManager, uohBottomSheetKebabMenuAdapter) }
+        context?.let { context -> fragmentManager?.let { kebabMenuBottomSheet?.show(context, it, uohBottomSheetKebabMenuAdapter) } }
         userSession.userId?.let { UohAnalytics.clickThreeDotsMenu(order.verticalCategory, it) }
     }
 
@@ -1480,14 +1480,14 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     sendEmailBottomSheet = UohSendEmailBottomSheet()
                     sendEmailBottomSheet?.run {
                         setActionListener(this@UohListFragment)
-                        show(childFragmentManager, GQL_FLIGHT_EMAIL, orderData)
+                        fragmentManager?.let { show(it, GQL_FLIGHT_EMAIL, orderData) }
                     }
                 }
                 dotMenu.actionType.equals(GQL_TRAIN_EMAIL, true) -> {
                     sendEmailBottomSheet = UohSendEmailBottomSheet()
                     sendEmailBottomSheet?.run {
                         setActionListener(this@UohListFragment)
-                        show(childFragmentManager, GQL_TRAIN_EMAIL, orderData)
+                        fragmentManager?.let { show(it, GQL_TRAIN_EMAIL, orderData) }
                     }
                 }
                 dotMenu.actionType.equals(GQL_MP_CHAT, true) -> {
@@ -1502,7 +1502,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     finishOrderBottomSheet = UohFinishOrderBottomSheet()
                     finishOrderBottomSheet?.run {
                         setActionListener(this@UohListFragment)
-                        context?.let { context -> show(context, childFragmentManager, orderIndex, orderData.verticalID, orderData.verticalStatus) } }
+                        context?.let { context -> fragmentManager?.let { show(context, it, orderIndex, orderData.verticalID, orderData.verticalStatus) } } }
                 }
                 dotMenu.actionType.equals(GQL_TRACK, true) -> {
                     val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, orderData.verticalID)
@@ -1569,7 +1569,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         finishOrderBottomSheet = UohFinishOrderBottomSheet()
                         finishOrderBottomSheet?.run {
                             setActionListener(this@UohListFragment)
-                            context?.let { context -> show(context, childFragmentManager, index, order.verticalID, order.verticalStatus) }
+                            context?.let { context -> fragmentManager?.let { show(context, it, index, order.verticalID, order.verticalStatus) } }
                         }
                     }
                     button.actionType.equals(GQL_ATC, true) -> {
@@ -1583,7 +1583,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         orderIdNeedUpdated = order.orderUUID
                         context?.let { context -> UohLsFinishOrderBottomSheet().run {
                                 setActionListener(this@UohListFragment)
-                                show(context, parentFragmentManager, index, order.verticalID) } }
+                            fragmentManager?.let { show(context, it, index, order.verticalID) }
+                        } }
                     }
                     button.actionType.equals(GQL_LS_LACAK, true) -> {
                         val linkUrl = button.appURL
