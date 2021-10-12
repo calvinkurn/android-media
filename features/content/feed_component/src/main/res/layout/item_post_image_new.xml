@@ -107,9 +107,8 @@
             android:layout_marginStart="@dimen/spacing_lvl4"
             app:layout_constraintBottom_toTopOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/chevron"
-            android:text="Cek Sekarang"
+            android:text="@string/feeds_sek_sekarang"
             app:typographyType="body_3"
-            app:typographyWeight="bold"
             android:visibility="gone"
             tools:visibility="visible"
             />

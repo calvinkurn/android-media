@@ -3,6 +3,7 @@ package com.tokopedia.feedcomponent.view.widget
 import android.annotation.SuppressLint
 import android.animation.LayoutTransition
 import android.content.Context
+import android.graphics.Typeface
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
@@ -826,14 +827,15 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     labelDiscount.hide()
                                     labelPrice.hide()
 
-                                    topAdsProductName.show()
                                     topAdsProductName.text = context.getString(R.string.feeds_sek_sekarang)
+                                    topAdsProductName.setTypeface(null,Typeface.BOLD)
                                     topAdsProductName.setTextColor(
                                         MethodChecker.getColor(
                                             context,
                                             com.tokopedia.unifyprinciples.R.color.Unify_NN600
                                         )
                                     )
+                                    topAdsProductName.show()
                                     val constraintSet = ConstraintSet()
                                     constraintSet.clone(topAdsCard)
                                     constraintSet.connect(
@@ -851,6 +853,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     constraintSet.applyTo(topAdsCard)
                                 } else if (feedMedia.variant == TOPADS_VARIANT_EXPERIMENT_INFO) {
                                    // group.show()
+                                    topAdsProductName.weightType = Typography.REGULAR
                                     topAdsProductName.displayTextOrHide(feedMedia.productName)
                                     textViewPrice.displayTextOrHide(feedMedia.price)
                                     textViewSlashedPrice.displayTextOrHide(feedMedia.slashedPrice)
