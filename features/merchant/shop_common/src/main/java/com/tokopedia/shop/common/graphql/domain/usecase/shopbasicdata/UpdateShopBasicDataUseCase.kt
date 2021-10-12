@@ -45,7 +45,22 @@ class UpdateShopBasicDataUseCase @Inject constructor(
     }
 
     init {
-        val query = GraphqlHelper.loadRawString(context.resources, R.raw.gql_mutation_shop_basic_data)
+        val query = """
+            mutation updateShopInfo(${'$'}name :String, ${'$'}domain :String, ${'$'}tagline :String, ${'$'}description :String, ${'$'}imgId :String){
+              updateShopInfo(input: {
+                  name: ${'$'}name,
+                  domain: ${'$'}domain,
+                  tagline: ${'$'}tagline,
+                  description: ${'$'}description,
+                  logo: {
+                    imgID: ${'$'}imgId
+                  }
+                }) {
+                  success
+                  message
+                }
+            }
+        """.trimIndent()
         setGraphqlQuery(query)
         setTypeClass(ShopBasicDataMutation::class.java)
     }
