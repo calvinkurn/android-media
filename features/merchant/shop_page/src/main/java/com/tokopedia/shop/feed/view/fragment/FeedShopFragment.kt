@@ -82,6 +82,8 @@ import com.tokopedia.shop.feed.view.model.EmptyFeedShopUiModel
 import com.tokopedia.shop.feed.view.model.WhitelistUiModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
+import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
 import com.tokopedia.user.session.UserSessionInterface
