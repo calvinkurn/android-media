@@ -21,6 +21,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveConfigUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.PostInteractiveCreateSessionUseCase
 import com.tokopedia.play.broadcaster.pusher.*
+import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastUiEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
@@ -177,6 +178,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
     private val _configInfo = _observableConfigInfo.asFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+    private val _pinnedMessage: MutableStateFlow<PinnedMessageUiModel?> = MutableStateFlow(null)
 
     private val _channelUiState = _configInfo
         .filterIsInstance<NetworkResult.Success<ConfigurationUiModel>>()
@@ -187,8 +189,6 @@ internal class PlayBroadcastViewModel @Inject constructor(
             )
         }
 
-    private val _pinnedMessage: MutableStateFlow<PinnedMessageUiModel?> = MutableStateFlow(null)
-
 //    private val _channelUiState = flow {
 //        emit(
 //            PlayChannelUiState(
@@ -198,23 +198,23 @@ internal class PlayBroadcastViewModel @Inject constructor(
 //        )
 //    }
 
-//    val uiState = combine(
-//        _channelUiState.distinctUntilChanged(),
-//        _pinnedMessage
-//    ) { channelState, pinnedMessage ->
-//        PlayBroadcastUiState(
-//            channel = channelState,
-//            pinnedMessage = pinnedMessage?.message.orEmpty(),
-//        )
-//    }
-
-    //TODO("This is mock code")
-    val uiState = _pinnedMessage.map { pinnedMessage ->
+    val uiState = combine(
+        _channelUiState.distinctUntilChanged(),
+        _pinnedMessage
+    ) { channelState, pinnedMessage ->
         PlayBroadcastUiState(
-            channel = PlayChannelUiState(true, emptyList()),
+            channel = channelState,
             pinnedMessage = pinnedMessage?.message.orEmpty(),
         )
     }
+
+    //TODO("This is mock code")
+//    val uiState = _pinnedMessage.map { pinnedMessage ->
+//        PlayBroadcastUiState(
+//            channel = PlayChannelUiState(true, emptyList()),
+//            pinnedMessage = pinnedMessage?.message.orEmpty(),
+//        )
+//    }
 
     private val ingestUrl: String
         get() = hydraConfigStore.getIngestUrl()
@@ -280,6 +280,12 @@ internal class PlayBroadcastViewModel @Inject constructor(
         livePusherMediator.removeListener(liveCountDownTimerStateListener)
         if (GlobalConfig.DEBUG) livePusherMediator.removeListener(livePusherStatsListener)
         livePusherMediator.destroy()
+    }
+
+    fun submitAction(event: PlayBroadcastUiEvent) {
+        when (event) {
+            is PlayBroadcastUiEvent.SetPinnedMessage -> handleSetPinnedMessage(event.message)
+        }
     }
 
     fun getCurrentSetupDataStore(): PlayBroadcastSetupDataStore {
@@ -792,10 +798,26 @@ internal class PlayBroadcastViewModel @Inject constructor(
     }
 
     private fun getPinnedMessage() {
-        viewModelScope.launch(dispatcher.io) {
-            val activePinned = repo.getActivePinnedMessage("abc")
+        viewModelScope.launchCatchError(dispatcher.io, block = {
+            val activePinned = repo.getActivePinnedMessage(channelId)
             _pinnedMessage.value = activePinned
-        }
+        }) {}
+    }
+
+    private fun handleSetPinnedMessage(message: String) {
+        viewModelScope.launchCatchError(dispatcher.io, block = {
+            val pinnedMessageId = _pinnedMessage.value?.id
+            val id = repo.setActivePinnedMessage(
+                id = pinnedMessageId,
+                channelId = channelId,
+                message = message
+            )
+            _pinnedMessage.value = PinnedMessageUiModel(
+                id = id,
+                message = message,
+                isActive = true,
+            )
+        }) {}
     }
 
     //TODO("Mock Code, Remove This!!!")

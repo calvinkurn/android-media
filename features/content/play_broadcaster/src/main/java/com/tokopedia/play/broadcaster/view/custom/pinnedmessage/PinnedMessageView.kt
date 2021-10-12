@@ -65,7 +65,7 @@ class PinnedMessageView : FrameLayout {
         ).root
 
         layout.setOnClickListener {
-            mOnPinnedClickedListener?.onPinnedClicked(this@PinnedMessageView)
+            mOnPinnedClickedListener?.onPinnedClicked(this@PinnedMessageView, "")
         }
 
         addView(layout)
@@ -79,7 +79,7 @@ class PinnedMessageView : FrameLayout {
         )
 
         layout.root.setOnClickListener {
-            mOnPinnedClickedListener?.onPinnedClicked(this@PinnedMessageView)
+            mOnPinnedClickedListener?.onPinnedClicked(this@PinnedMessageView, message)
         }
         layout.tvPinnedMsg.text = message
 
@@ -93,6 +93,6 @@ class PinnedMessageView : FrameLayout {
 
     fun interface OnPinnedClickedListener {
 
-        fun onPinnedClicked(view: PinnedMessageView)
+        fun onPinnedClicked(view: PinnedMessageView, message: String)
     }
 }

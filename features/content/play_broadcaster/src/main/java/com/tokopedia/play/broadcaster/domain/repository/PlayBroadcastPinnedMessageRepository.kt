@@ -12,5 +12,6 @@ interface PlayBroadcastPinnedMessageRepository {
     suspend fun setActivePinnedMessage(
         id: String? = null,
         channelId: String,
-    )
+        message: String,
+    ): String
 }

@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Toast
+import android.view.inputmethod.InputMethodManager
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.broadcaster.R
@@ -73,7 +73,11 @@ class PinnedMessageFormView : ConstraintLayout {
 
             textFieldPinnedMsg.editText.setOnKeyListener { _, keyCode, event ->
                 if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                    Toast.makeText(context, textFieldPinnedMsg.editText.text, Toast.LENGTH_SHORT).show()
+                    mListener?.onPinnedMessageSaved(
+                        view = this@PinnedMessageFormView,
+                        message = textFieldPinnedMsg.editText.text.toString()
+                    )
+                    hideKeyboard()
                     return@setOnKeyListener true
                 }
                 return@setOnKeyListener false
@@ -81,8 +85,17 @@ class PinnedMessageFormView : ConstraintLayout {
         }
     }
 
+    fun setPinnedMessage(message: String) {
+        binding.textFieldPinnedMsg.editText.setText(message)
+    }
+
     fun setListener(listener: Listener?) {
         mListener = listener
+    }
+
+    private fun hideKeyboard() {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.textFieldPinnedMsg.windowToken, 0)
     }
 
     override fun onDetachedFromWindow() {

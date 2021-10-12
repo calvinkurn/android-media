@@ -20,6 +20,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
+import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastUiEvent
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
@@ -36,6 +37,7 @@ import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
+import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
@@ -204,8 +206,23 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             doShowProductInfo()
             analytic.clickProductTagOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
         }
-        pinnedMessageView.setOnPinnedClickedListener {
-            showToaster("Tekan Pin")
+        val pinnedMessageFormViewListener = object : PinnedMessageFormView.Listener {
+            override fun onPinnedMessageSaved(view: PinnedMessageFormView, message: String) {
+                parentViewModel.submitAction(PlayBroadcastUiEvent.SetPinnedMessage(message))
+                val parentView = this@PlayBroadcastUserInteractionFragment.view
+                if (parentView is ViewGroup) parentView.removeView(view)
+            }
+        }
+        pinnedMessageView.setOnPinnedClickedListener { _, message ->
+            val view = this.view
+            if (view !is ViewGroup) return@setOnPinnedClickedListener
+            val pinnedView = view.findViewWithTag(PINNED_MSG_FORM_TAG) ?: run {
+                val theView = PinnedMessageFormView(view.context)
+                view.addView(theView)
+                theView
+            }
+            pinnedView.setPinnedMessage(message)
+            pinnedView.setListener(pinnedMessageFormViewListener)
         }
     }
 
@@ -689,6 +706,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     companion object {
         const val KEY_START_COUNTDOWN = "start_count_down"
+
+        private const val PINNED_MSG_FORM_TAG = "PINNED_MSG_FORM"
 
         private const val TIMER_ROTATION_INTERVAL = 3000L
         private const val TIMER_TEXT_COUNTDOWN_INTERVAL = 2000L
