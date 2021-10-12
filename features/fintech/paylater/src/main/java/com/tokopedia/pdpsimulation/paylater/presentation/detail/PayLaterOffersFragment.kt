@@ -15,7 +15,6 @@ import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.common.constants.PRODUCT_PRICE
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
-import com.tokopedia.pdpsimulation.common.presentation.fragment.PdpSimulationFragment
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterAllData
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterGetSimulation
@@ -112,7 +111,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
                         onPageSelectedByUser(detail)
                     }
                 } else {
-                    filterData.add(SortFilterItem(name) {
+                    filterData.add(SortFilterItem(name, size =  ChipsUnify.SIZE_SMALL) {
                         selectOtherTenure(i, name)
                     })
                 }
@@ -263,7 +262,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
 
     companion object {
-        const val PAGE_MARGIN = 16
+        const val PAGE_MARGIN = 6
 
         @JvmStatic
         fun newInstance(

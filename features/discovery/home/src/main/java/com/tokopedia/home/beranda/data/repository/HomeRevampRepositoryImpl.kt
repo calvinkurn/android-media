@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
 import com.tokopedia.home.beranda.data.datasource.local.entity.AtfCacheEntity
-import com.tokopedia.home.beranda.data.datasource.remote.GeolocationRemoteDataSource
 import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.model.AtfData
@@ -51,7 +50,6 @@ class HomeRevampRepositoryImpl @Inject constructor(
         private val homeCachedDataSource: HomeCachedDataSource,
         private val homeRemoteDataSource: HomeRemoteDataSource,
         private val homeDefaultDataSource: HomeDefaultDataSource,
-        private val geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource>,
         private val homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper,
         private val applicationContext: Context?,
         private val remoteConfig: RemoteConfig
@@ -405,8 +403,6 @@ class HomeRevampRepositoryImpl @Inject constructor(
         }
         return homeDataResponse
     }
-
-    override fun sendGeolocationInfo(): Observable<Response<String>> = geolocationRemoteDataSource.get().sendGeolocationInfo()
 
     override fun deleteHomeData() {
         homeCachedDataSource.deleteHomeData()

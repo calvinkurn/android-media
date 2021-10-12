@@ -17,7 +17,7 @@ import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAn
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
-import com.tokopedia.play.broadcaster.util.extension.showToaster
+import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.partial.BottomActionNextViewComponent
@@ -185,24 +185,27 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
 
     private fun onUploadFailed(e: Throwable?) {
         bottomActionNextView.setLoading(false)
-        e?.localizedMessage?.let {
-            errMessage -> showToaster(errMessage, type = Toaster.TYPE_ERROR)
-        }
+        e?.let { err -> showErrorToaster(err) }
     }
 
-    private fun showToaster(message: String, type: Int = Toaster.TYPE_NORMAL, duration: Int = Toaster.LENGTH_SHORT, actionLabel: String = "", actionListener: View.OnClickListener = View.OnClickListener { }) {
+    private fun showErrorToaster(
+        err: Throwable,
+        customErrMessage: String? = null,
+        duration: Int = Toaster.LENGTH_LONG,
+        actionLabel: String = "",
+    ) {
         if (toasterBottomMargin == 0) {
             val offset8 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
             toasterBottomMargin = bottomActionNextView.rootView.height + offset8
         }
 
-        view?.showToaster(
-                message = message,
-                type = type,
-                duration = duration,
-                actionLabel = actionLabel,
-                actionListener = actionListener,
-                bottomMargin = toasterBottomMargin
+        view?.showErrorToaster(
+            err = err,
+            customErrMessage = customErrMessage,
+            className = this::class.java.simpleName,
+            duration = duration,
+            actionLabel = actionLabel,
+            bottomMargin = toasterBottomMargin,
         )
     }
 
