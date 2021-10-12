@@ -77,7 +77,6 @@ class PinnedMessageFormView : ConstraintLayout {
                         view = this@PinnedMessageFormView,
                         message = textFieldPinnedMsg.editText.text.toString()
                     )
-                    hideKeyboard()
                     return@setOnKeyListener true
                 }
                 return@setOnKeyListener false
@@ -91,11 +90,6 @@ class PinnedMessageFormView : ConstraintLayout {
 
     fun setListener(listener: Listener?) {
         mListener = listener
-    }
-
-    private fun hideKeyboard() {
-        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(binding.textFieldPinnedMsg.windowToken, 0)
     }
 
     override fun onDetachedFromWindow() {

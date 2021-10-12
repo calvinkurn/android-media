@@ -1,5 +1,6 @@
 package com.tokopedia.play_common.util.extension
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.ContentResolver
 import android.graphics.PorterDuff
@@ -13,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.Window
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.annotation.ColorRes
 import androidx.annotation.RequiresApi
@@ -291,4 +293,13 @@ val List<GraphqlError>.defaultErrorMessage: String
 
 fun dismissToaster() {
     try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
+}
+
+fun Activity.hideKeyboard() {
+    val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+}
+
+fun Fragment.hideKeyboard() {
+    activity?.hideKeyboard()
 }

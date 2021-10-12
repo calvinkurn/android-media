@@ -30,8 +30,8 @@ import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
@@ -47,13 +47,13 @@ import com.tokopedia.play.broadcaster.view.partial.ChatListViewComponent
 import com.tokopedia.play.broadcaster.view.state.PlayLiveCountDownTimerState
 import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
 import com.tokopedia.play_common.detachableview.detachableView
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
+import com.tokopedia.play_common.util.extension.hideKeyboard
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
@@ -62,6 +62,7 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.play_common.R as commonR
 
 /**
  * Created by mzennis on 25/05/20.
@@ -211,13 +212,16 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 parentViewModel.submitAction(PlayBroadcastUiEvent.SetPinnedMessage(message))
                 val parentView = this@PlayBroadcastUserInteractionFragment.view
                 if (parentView is ViewGroup) parentView.removeView(view)
+                hideKeyboard()
             }
         }
         pinnedMessageView.setOnPinnedClickedListener { _, message ->
             val view = this.view
             if (view !is ViewGroup) return@setOnPinnedClickedListener
             val pinnedView = view.findViewWithTag(PINNED_MSG_FORM_TAG) ?: run {
-                val theView = PinnedMessageFormView(view.context)
+                val theView = PinnedMessageFormView(view.context).apply {
+                    tag = PINNED_MSG_FORM_TAG
+                }
                 view.addView(theView)
                 theView
             }
