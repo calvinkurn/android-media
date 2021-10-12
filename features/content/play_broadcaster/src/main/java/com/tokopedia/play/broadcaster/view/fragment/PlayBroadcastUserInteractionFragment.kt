@@ -222,14 +222,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
         }
 
-        countdownTimer.doOnApplyWindowInsets { v, insets, _, margin ->
-            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
-            val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
-            if (marginLayoutParams.bottomMargin != newBottomMargin) {
-                marginLayoutParams.updateMargins(bottom = newBottomMargin)
-                v.parent.requestLayout()
-            }
-        }
+        countdownTimer.setBottomWindowInsets()
     }
 
     private fun setupDebugView(view: View) {

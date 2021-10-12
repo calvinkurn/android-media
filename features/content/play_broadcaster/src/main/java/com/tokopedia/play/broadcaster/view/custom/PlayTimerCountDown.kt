@@ -5,10 +5,13 @@ import android.content.Context
 import android.os.CountDownTimer
 import android.util.AttributeSet
 import android.view.View
-import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import android.widget.TextView
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlin.math.ceil
@@ -69,6 +72,7 @@ class PlayTimerCountDown @JvmOverloads constructor(
     }
 
     fun startCountDown(property: AnimationProperty, listener: Listener? = null){
+        loader.gone()
         val textInterval = property.textCountDownInterval
 
         setupTextCountAnimator(textInterval)
@@ -85,6 +89,7 @@ class PlayTimerCountDown @JvmOverloads constructor(
             override fun onFinish() {
                 animatorInfoOut.start()
                 animatorProgressCircularOut.start()
+                loader.visible()
                 listener?.onFinish()
             }
 
@@ -101,6 +106,17 @@ class PlayTimerCountDown @JvmOverloads constructor(
                 listener?.onTick(millisUntilFinished)
             }
         }.start()
+    }
+
+    fun setBottomWindowInsets() {
+        btnCancel.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as MarginLayoutParams
+            val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
+            if (marginLayoutParams.bottomMargin != newBottomMargin) {
+                marginLayoutParams.updateMargins(bottom = newBottomMargin)
+                v.parent.requestLayout()
+            }
+        }
     }
 
     private fun setupTextCountAnimator(interval: Long) {
