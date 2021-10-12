@@ -212,7 +212,8 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
     private fun renderBboShipping(shipping: OrderShipment, logisticPromoViewModel: LogisticPromoUiModel) {
         binding.apply {
-            tvShippingCourier.text = binding.root.context.getString(R.string.lbl_shipping_with_name, logisticPromoViewModel.title)
+            val formattedFreeShippingChosenCourierTitle = HtmlLinkHelper(tvShippingCourier.context, logisticPromoViewModel.freeShippingChosenCourierTitle).spannedString
+            tvShippingCourier.text = formattedFreeShippingChosenCourierTitle
             tvShippingDuration.gone()
             btnChangeDuration.gone()
             tvShippingCourierNotes.gone()

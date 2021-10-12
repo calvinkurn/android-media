@@ -283,7 +283,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_shipping_duration_eta"
                 app:typographyType="body_3"
-                app:typographyWeight="bold"
+                app:typographyWeight="reguler"
                 tools:ignore="RtlSymmetry" />
 
             <com.tokopedia.unifyprinciples.Typography
