@@ -1,8 +1,12 @@
 package com.tokopedia.graphql.domain.example
 
 import java.util.*
+import com.tokopedia.graphql.data.GqlParam
 
-data class FooModel(val id: Int, val msg: String)
+data class FooModel(
+    val id: Int,
+    val msg: String
+) : GqlParam
 
 data class FooInput(val id: Int, val isSorted: Boolean) {
     fun toMap(): Map<String, Any> = mapOf(
@@ -14,7 +18,8 @@ data class FooInput(val id: Int, val isSorted: Boolean) {
 data class NestedFooModel(
     val id: Int,
     val msg: String?,
-    val foo: FooModel)
+    val foo: FooModel
+)
 
 data class NumberFooModel(
     val id: Number

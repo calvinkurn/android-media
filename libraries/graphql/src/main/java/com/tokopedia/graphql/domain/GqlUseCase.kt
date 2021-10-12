@@ -22,7 +22,7 @@ import java.lang.IllegalArgumentException
  *   from certain sources, both network and local sources.
  *
 */
-abstract class GqlUseCase<Input, Output>() {
+abstract class GqlUseCase<Input, Output> {
 
     /*
     * override this to set the graphql query
