@@ -8,10 +8,8 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
-import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.SendableViewModel.Companion.SENDING_TEXT
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
@@ -22,6 +20,10 @@ import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
+import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.DEFAULT_ONE_MEGABYTE
+import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE
+import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_HEIGHT
+import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_WIDTH
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.TickerData.TickerData
@@ -407,18 +409,20 @@ class ChatbotPresenter @Inject constructor(
                 listInterceptor)
     }
 
-    override fun generateInvoice(invoiceLinkPojo: InvoiceLinkPojo, senderId: String):
-            AttachInvoiceSentViewModel {
-        val invoiceLinkAttributePojo = invoiceLinkPojo.attributes
-        return AttachInvoiceSentViewModel(
-                senderId,
-                userSession.name,
-                invoiceLinkAttributePojo.title,
-                invoiceLinkAttributePojo.description,
-                invoiceLinkAttributePojo.imageUrl,
-                invoiceLinkAttributePojo.totalAmount,
-                SendableViewModel.generateStartTime()
-        )
+    override fun generateInvoice(
+        invoiceLinkPojo: InvoiceLinkPojo, senderId: String
+    ) : AttachInvoiceSentViewModel {
+        return AttachInvoiceSentViewModel.Builder()
+            .withInvoiceAttributesResponse(invoiceLinkPojo)
+            .withFromUid(senderId)
+            .withFrom(userSession.name)
+            .withAttachmentType(AttachmentType.Companion.TYPE_INVOICE_SEND)
+            .withReplyTime(SENDING_TEXT)
+            .withStartTime(SendableViewModel.generateStartTime())
+            .withIsRead(false)
+            .withIsDummy(true)
+            .withIsSender(true)
+            .build()
     }
 
     override fun uploadImages(it: ImageUploadViewModel,
@@ -485,10 +489,7 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun validateImageAttachment(uri: String?): Boolean {
-        var MAX_FILE_SIZE = 5120
-        val MINIMUM_HEIGHT = 100
-        val MINIMUM_WIDTH = 300
-        val DEFAULT_ONE_MEGABYTE: Long = 1024
+
         if (uri == null) return false
         val file = File(uri)
         val options = BitmapFactory.Options()
@@ -609,15 +610,22 @@ class ChatbotPresenter @Inject constructor(
             block = {
                 val response = getTopBotNewSessionUseCase.getTobBotUserSession(params)
                 val isNewSession = response.topBotGetNewSession.isNewSession
-                if (isNewSession) {
-                    view.startNewSession()
-                } else {
-                    view.loadChatHistory()
-                }
+                val isTypingBlocked = response.topBotGetNewSession.isTypingBlocked
+                handleNewSession(isNewSession)
+                handleReplyBox(isTypingBlocked)
             },
             onError = {
                 view.loadChatHistory()
+                view.enableTyping()
             }
         )
+    }
+
+    private fun handleReplyBox(isTypingBlocked: Boolean) {
+        if (isTypingBlocked) view.blockTyping() else view.enableTyping()
+    }
+
+    private fun handleNewSession(isNewSession: Boolean) {
+        if (isNewSession) view.startNewSession() else view.loadChatHistory()
     }
 }

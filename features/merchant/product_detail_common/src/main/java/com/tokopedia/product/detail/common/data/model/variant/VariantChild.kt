@@ -34,6 +34,10 @@ data class VariantChild(
         @Expose
         val optionIds: List<String> = listOf(),
 
+        @SerializedName("optionName")
+        @Expose
+        val optionName: List<String> = listOf(),
+
         @SerializedName("productName")
         @Expose
         val name: String = "",
@@ -128,7 +132,7 @@ data class VariantChild(
         if (variantReference != null && variantReference.isNotEmpty()) {
             val optionStringList = mutableListOf<String>()
             optionIds.forEachIndexed { index, option ->
-                val value: String? = variantReference.get(index).options.find { it.id == option }?.value
+                val value: String? = variantReference.getOrNull(index)?.options?.find { it.id == option }?.value
                 value?.let {
                     optionStringList.add(it)
                 }
@@ -190,7 +194,16 @@ data class VariantStock(
 
         @SerializedName("maximumOrder")
         @Expose
-        val maximumOrder: String? = ""
+        val maximumOrder: String? = "",
+
+        @SerializedName("stockFmt")
+        @Expose
+        val stockFmt: String? = "", // Stock: 11 or >50
+
+        @SerializedName("stockCopy")
+        @Expose
+        val stockCopy: String? = ""
+
 )
 
 data class VariantCampaign(

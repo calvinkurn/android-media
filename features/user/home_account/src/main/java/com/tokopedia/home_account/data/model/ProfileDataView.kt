@@ -9,5 +9,8 @@ data class ProfileDataView(
         val name: String = "",
         val phone: String = "",
         val email: String = "",
-        val avatar: String = ""
+        val avatar: String = "",
+        var isLinked: Boolean = false,
+        var isShowLinkStatus: Boolean = false,
+        var memberStatus: TierData = TierData()
 )

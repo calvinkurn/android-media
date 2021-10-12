@@ -77,7 +77,7 @@ class PlayFollowOwnShopTest {
             submitAction(ClickFollowAction)
         } thenVerify {
             withState {
-                followStatus.isEqualTo(
+                partner.followStatus.isEqualTo(
                         PlayPartnerFollowStatus.NotFollowable
                 )
             }
@@ -101,7 +101,7 @@ class PlayFollowOwnShopTest {
             submitAction(ClickFollowAction)
         } thenVerify {
             withState {
-                followStatus.isEqualTo(
+                partner.followStatus.isEqualTo(
                         PlayPartnerFollowStatus.NotFollowable
                 )
             }
@@ -125,7 +125,7 @@ class PlayFollowOwnShopTest {
             submitAction(ClickFollowAction)
         } thenVerify {
             withState {
-                followStatus.isEqualTo(
+                partner.followStatus.isEqualTo(
                         PlayPartnerFollowStatus.NotFollowable
                 )
             }

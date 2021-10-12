@@ -9,10 +9,13 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConfig
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConnection
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
+import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -38,10 +41,14 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         }
     }
 
-    override fun mapProductList(productsResponse: GetProductsByEtalaseResponse.GetProductListData, isSelectedHandler: (Long) -> Boolean, isSelectableHandler: (Boolean) -> SelectableState): List<ProductContentUiModel> {
+    override fun mapProductList(
+        productsResponse: GetProductsByEtalaseResponse.GetProductListData,
+        isSelectedHandler: (String) -> Boolean,
+        isSelectableHandler: (Boolean) -> SelectableState
+    ): List<ProductContentUiModel> {
         return List(6) {
             ProductContentUiModel(
-                    id = 12345L + it,
+                    id = (12345L + it).toString(),
                     name = "Product ${it + 1}",
                     imageUrl = when (it) {
                         1 -> "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,b_rgb:f5f5f5/oyhemtbkghuegy9gpo0i/joyride-run-flyknit-running-shoe-sqfqGQ.jpg"
@@ -246,6 +253,19 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             "1",
             "Giveaway Tesla",
             60 * 1000L
+        )
+    }
+
+    override fun mapLiveInfo(
+        activeIngestUrl: String,
+        config: PlayLivePusherConfig
+    ): PlayLiveInfoUiModel {
+        return PlayLiveInfoUiModel(
+            "rtmp://tkpd.com",
+            config.videoWidth,
+            config.videoHeight,
+            config.fps,
+            config.videoBitrate
         )
     }
 

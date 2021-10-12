@@ -9,10 +9,11 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.ShopScoreUtils
+import com.tokopedia.shop.score.databinding.ItemHeaderShopPerformanceBinding
 import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformanceListener
 import com.tokopedia.shop.score.performance.presentation.model.HeaderShopPerformanceUiModel
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import kotlinx.android.synthetic.main.item_header_shop_performance.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 import java.lang.NumberFormatException
 
 class ItemHeaderShopPerformanceViewHolder(
@@ -22,9 +23,10 @@ class ItemHeaderShopPerformanceViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_header_shop_performance
-        const val SHOP_SCORE_NULL = -1
         const val ROUNDED_RADIUS = 16F
     }
+
+    private val binding: ItemHeaderShopPerformanceBinding? by viewBinding()
 
     override fun bind(element: HeaderShopPerformanceUiModel?) {
         setBackgroundRadiusHeader()
@@ -36,29 +38,29 @@ class ItemHeaderShopPerformanceViewHolder(
     }
 
     private fun setupShopScoreLevelHeader(element: HeaderShopPerformanceUiModel?) {
-        with(itemView) {
-            tvPerformanceLevel?.text =
+        binding?.run {
+            tvPerformanceLevel.text =
                 getString(R.string.shop_performance_level_header, element?.shopLevel)
 
-            tvShopScoreValue?.text = if (element?.shopScore != null) element.shopScore else "-"
+            tvShopScoreValue.text = if (element?.shopScore != null) element.shopScore else "-"
 
-            ivLevelBarShopScore?.background = ContextCompat.getDrawable(
-                context,
+            ivLevelBarShopScore.background = ContextCompat.getDrawable(
+                root.context,
                 ShopScoreUtils.getLevelBarWhite(element?.shopLevel.toLongOrZero())
             )
         }
     }
 
     private fun setupProgressBarScore(element: HeaderShopPerformanceUiModel?) {
-        with(itemView) {
+        binding?.run {
             val shopScore = shopScoreFormatted(element?.shopScore)
-            if (element?.shopAge.orZero() < ShopScoreConstant.SHOP_AGE_SIXTY || shopScore < 0) {
-                progressBarNewSeller?.show()
-                progressBarScorePerformance?.hide()
+            if (shopScore.isLessThanZero()) {
+                progressBarNewSeller.show()
+                progressBarScorePerformance.hide()
             } else {
-                progressBarNewSeller?.hide()
-                progressBarScorePerformance?.show()
-                progressBarScorePerformance?.setValue(shopScore)
+                progressBarNewSeller.hide()
+                progressBarScorePerformance.show()
+                progressBarScorePerformance.setValue(shopScore)
                 setupProgressBarScoreColor(shopScore)
             }
         }
@@ -66,48 +68,57 @@ class ItemHeaderShopPerformanceViewHolder(
 
     private fun shopScoreFormatted(shopScore: String?): Int {
         return try {
-            shopScore?.toInt() ?: SHOP_SCORE_NULL
+            shopScore?.toIntOrNull() ?: ShopScoreConstant.SHOP_SCORE_NULL.toInt()
         } catch (e: NumberFormatException) {
-            SHOP_SCORE_NULL
+            ShopScoreConstant.SHOP_SCORE_NULL.toInt()
         }
     }
 
     private fun setupProgressBarScoreColor(shopScore: Int) {
-        with(itemView) {
+        binding?.run {
             when (shopScore) {
                 in ShopScoreConstant.SHOP_SCORE_ZERO..ShopScoreConstant.SHOP_SCORE_FIFTY_NINE -> {
-                    progressBarScorePerformance?.progressBarColor = intArrayOf(
-                        ContextCompat.getColor(context, R.color.shop_score_progressbar_dms_red),
-                        ContextCompat.getColor(context, R.color.shop_score_progressbar_dms_red)
+                    progressBarScorePerformance.progressBarColor = intArrayOf(
+                        ContextCompat.getColor(
+                            root.context,
+                            R.color.shop_score_progressbar_dms_red
+                        ),
+                        ContextCompat.getColor(root.context, R.color.shop_score_progressbar_dms_red)
                     )
                 }
                 in ShopScoreConstant.SHOP_SCORE_SIXTY..ShopScoreConstant.SHOP_SCORE_SIXTY_NINE -> {
-                    progressBarScorePerformance?.progressBarColor = intArrayOf(
-                        ContextCompat.getColor(context, R.color.shop_score_progressbar_dms_yellow),
-                        ContextCompat.getColor(context, R.color.shop_score_progressbar_dms_yellow)
+                    progressBarScorePerformance.progressBarColor = intArrayOf(
+                        ContextCompat.getColor(
+                            root.context,
+                            R.color.shop_score_progressbar_dms_yellow
+                        ),
+                        ContextCompat.getColor(
+                            root.context,
+                            R.color.shop_score_progressbar_dms_yellow
+                        )
                     )
                 }
                 in ShopScoreConstant.SHOP_SCORE_SEVENTY..ShopScoreConstant.SHOP_SCORE_SEVENTY_NINE -> {
-                    progressBarScorePerformance?.progressBarColor = intArrayOf(
+                    progressBarScorePerformance.progressBarColor = intArrayOf(
                         ContextCompat.getColor(
-                            context,
+                            root.context,
                             R.color.shop_score_progressbar_dms_green_light
                         ),
                         ContextCompat.getColor(
-                            context,
+                            root.context,
                             R.color.shop_score_progressbar_dms_green_light
                         )
                     )
                 }
 
                 in ShopScoreConstant.SHOP_SCORE_EIGHTY..ShopScoreConstant.SHOP_SCORE_ONE_HUNDRED -> {
-                    progressBarScorePerformance?.progressBarColor = intArrayOf(
+                    progressBarScorePerformance.progressBarColor = intArrayOf(
                         ContextCompat.getColor(
-                            context,
+                            root.context,
                             R.color.shop_score_progressbar_dms_green_dark
                         ),
                         ContextCompat.getColor(
-                            context,
+                            root.context,
                             R.color.shop_score_progressbar_dms_green_dark
                         )
                     )
@@ -119,25 +130,27 @@ class ItemHeaderShopPerformanceViewHolder(
     }
 
     private fun setupClickListenerHeader(element: HeaderShopPerformanceUiModel?) {
-        with(itemView) {
+        binding?.run {
 
-            if (element?.shopAge.orZero() < ShopScoreConstant.SHOP_AGE_SIXTY) {
-                ic_shop_score_performance?.hide()
+            val shopScore = shopScoreFormatted(element?.shopScore)
+
+            if (shopScore.isLessThanZero()) {
+                icShopScorePerformance.hide()
             } else {
-                ic_shop_score_performance?.show()
+                icShopScorePerformance.show()
             }
 
-            ic_performance_level_information?.setOnClickListener {
+            icPerformanceLevelInformation.setOnClickListener {
                 shopPerformanceListener.onTooltipLevelClicked(element?.shopLevel.toLongOrZero())
             }
-            ic_shop_score_performance?.setOnClickListener {
+            icShopScorePerformance.setOnClickListener {
                 shopPerformanceListener.onTooltipScoreClicked()
             }
         }
     }
 
     private fun setBackgroundRadiusHeader() {
-        with(itemView) {
+        binding?.run {
             containerHeaderShopPerformance.shapeAppearanceModel =
                 containerHeaderShopPerformance.shapeAppearanceModel
                     .toBuilder()
@@ -148,11 +161,13 @@ class ItemHeaderShopPerformanceViewHolder(
     }
 
     private fun setupTicker(element: HeaderShopPerformanceUiModel?) {
-        with(itemView) {
+        binding?.run {
             val isNewSeller = element?.shopAge.orZero() < NEW_SELLER_DAYS
-            tickerShopHasPenalty?.showWithCondition(element?.scorePenalty.orZero() < 0
-                    && !isNewSeller)
-            tickerShopHasPenalty?.apply {
+            tickerShopHasPenalty.showWithCondition(
+                element?.scorePenalty.orZero() < 0
+                        && !isNewSeller
+            )
+            tickerShopHasPenalty.run {
                 if (element?.scorePenalty != null) {
                     setHtmlDescription(
                         getString(
@@ -176,19 +191,19 @@ class ItemHeaderShopPerformanceViewHolder(
     }
 
     private fun setupDescHeaderShopPerformance(element: HeaderShopPerformanceUiModel?) {
-        with(itemView) {
+        binding?.run {
             if (element?.showCardNewSeller == true) {
-                tvHeaderShopService?.hide()
-                tvDescShopService?.hide()
-                cardDescNewSeller?.show()
-                tvHeaderShopServiceNewSeller?.text = element.titleHeaderShopService ?: "-"
-                tvDescShopServiceNewSeller?.text = element.descHeaderShopService ?: "-"
+                tvHeaderShopService.hide()
+                tvDescShopService.hide()
+                cardDescNewSeller.show()
+                tvHeaderShopServiceNewSeller.text = element.titleHeaderShopService ?: "-"
+                tvDescShopServiceNewSeller.text = element.descHeaderShopService ?: "-"
             } else {
-                tvHeaderShopService?.show()
-                tvDescShopService?.show()
-                cardDescNewSeller?.hide()
-                tvHeaderShopService?.text = element?.titleHeaderShopService ?: "-"
-                tvDescShopService?.text = element?.descHeaderShopService ?: "-"
+                tvHeaderShopService.show()
+                tvDescShopService.show()
+                cardDescNewSeller.hide()
+                tvHeaderShopService.text = element?.titleHeaderShopService ?: "-"
+                tvDescShopService.text = element?.descHeaderShopService ?: "-"
             }
         }
     }

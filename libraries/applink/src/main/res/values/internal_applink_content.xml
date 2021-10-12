@@ -6,7 +6,9 @@
     <string name="path_hashtag_page_landing" translatable="false">/explore-hashtag/.*\\/</string>
     <string name="path_post_shop_picker" translatable="false">/content-shop/picker</string>
     <string name="applink_cp_path_create_post" translatable="false">/create_post/.*\</string>
+    <string name="applink_cp_path_create_post_v2" translatable="false">/create_post_v2/</string>
     <string name="applink_cp_path_draft_post" translatable="false">/draft/.*\</string>
+    <string name="applink_cp_productpickerfromshop" translatable="false">/productpickerfromshop/.*\</string>
 
     <string name="kol_applink_post_detail_path_pattern">/post-detail/.*\</string>
     <string name="path_content_report" translatable="false">/content-report/.*\</string>
@@ -15,18 +17,13 @@
     <string name="path_comment" translatable="false">/comment/.*\</string>
     <string name="path_comment_new" translatable="false">/comment-new/.*\</string>
 
-
     <string name="host_profile" translatable="false">people</string>
     <string name="path_profile_detail" translatable="false">/.*\</string>
 
+    <string name="applink_title_on_boarding">Onboarding</string>
     <string name="applink_title_profile">Profile</string>
-    <string name="applink_title_affiliate">Affiliate</string>
 
     <string name="host_affiliate" translatable="false">affiliate</string>
-    <string name="path_af_dashboard" translatable="false">/dashboard</string>
-    <string name="path_af_education" translatable="false">/education</string>
-    <string name="path_af_explore" translatable="false">/explore</string>
-    <string name="path_af_byme_tracking" translatable="false">/tracking/.*\</string>
 
     <string name="applink_title_play" translatable="false">Play</string>
     <string name="applink_title_play_broadcaster" translatable="false">Play Broadcaster</string>

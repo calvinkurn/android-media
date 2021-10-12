@@ -22,6 +22,7 @@ import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -167,23 +168,19 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
 
     private fun onUpdateFail(error: Throwable) {
         btnSet?.isLoading = false
-        showToasterError(
-                message = error.localizedMessage
-        )
+        showToasterError(error)
     }
 
-    private fun showToasterError(
-            message: String
-    ) {
+    private fun showToasterError(err: Throwable) {
         if (toasterBottomMargin == 0) {
-            val offset8 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            val offset8 =
+                resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
             toasterBottomMargin = btnSet?.height.orZero() + offset8
         }
 
-        container.showToaster(
-                message = message,
-                type = Toaster.TYPE_ERROR,
-                bottomMargin = toasterBottomMargin
+        container.showErrorToaster(
+            err = err,
+            bottomMargin = toasterBottomMargin
         )
     }
 

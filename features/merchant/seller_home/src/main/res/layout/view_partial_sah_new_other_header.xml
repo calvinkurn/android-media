@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:clickable="true"
+    android:focusable="true"
+    tools:background="@drawable/bg_sah_new_other_header_pm">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl4"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_sah_new_other_header_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:textColor="@color/Unify_N0"
+            android:ellipsize="end"
+            android:lines="1"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ic_sah_new_other_header_name"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintHorizontal_bias="0"
+            app:typographyType="heading_4"
+            tools:text="Rockerpowershop"/>
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_sah_new_other_header_name"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            app:layout_constraintStart_toEndOf="@id/tv_sah_new_other_header_name"
+            app:layout_constraintEnd_toStartOf="@id/ic_sah_new_other_header_share"
+            app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_header_name"
+            app:layout_constraintBottom_toBottomOf="@id/tv_sah_new_other_header_name"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:icon_name="CHEVRON_RIGHT"
+            app:icon_color_light_enable="@color/Unify_N0"/>
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_sah_new_other_header_share"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_header_name"
+            app:layout_constraintBottom_toBottomOf="@id/tv_sah_new_other_header_name"
+            app:icon_name="SHARE_MOBILE"
+            app:icon_color_light_enable="@color/Unify_N0"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

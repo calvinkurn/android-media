@@ -36,7 +36,7 @@ class ShopStatusTypeUseCase @Inject constructor(private val graphqlRepository: G
 
     override suspend fun executeOnBackground(): ShopType {
         val gqlRequest = GraphqlRequest(QUERY, ShopStatusResponse::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest))
 
         val gqlError = gqlResponse.getError(ShopStatusResponse::class.java)
         if (gqlError.isNullOrEmpty()) {

@@ -40,9 +40,9 @@ interface InitialStateContract {
 
         fun refreshViewWithPosition(position: Int)
 
-        fun trackEventClickCuratedCampaignCard(userId: String, label: String, type: String)
+        fun trackEventClickCuratedCampaignCard(userId: String, label: String, type: String, campaignCode: String)
 
-        fun onCuratedCampaignCardImpressed(userId: String, label: String, type: String)
+        fun onCuratedCampaignCardImpressed(userId: String, label: String, type: String, campaignCode: String)
 
         fun trackEventClickRecentView(item: BaseItemInitialStateSearch, label: String)
 

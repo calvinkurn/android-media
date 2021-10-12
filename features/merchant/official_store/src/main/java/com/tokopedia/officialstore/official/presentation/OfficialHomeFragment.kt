@@ -30,12 +30,14 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
+import com.tokopedia.officialstore.OSPerformanceConstant
+import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_PREPARING_OS_HOME
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OSMixLeftTracking
@@ -45,6 +47,7 @@ import com.tokopedia.officialstore.category.presentation.data.OSChooseAddressDat
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
+import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Cta
@@ -57,12 +60,8 @@ import com.tokopedia.officialstore.official.presentation.adapter.typefactory.Off
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
 import com.tokopedia.officialstore.official.presentation.listener.*
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
-import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
-import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
@@ -77,8 +76,7 @@ class OfficialHomeFragment :
         HasComponent<OfficialStoreHomeComponent>,
         RecommendationListener,
         FeaturedShopListener,
-        DynamicChannelEventHandler,
-        RecommendationWidgetListener{
+        DynamicChannelEventHandler{
 
     companion object {
         const val PRODUCT_RECOMM_GRID_SPAN_COUNT = 2
@@ -154,12 +152,16 @@ class OfficialHomeFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        officialStorePerformanceMonitoringListener = context?.let { castContextToOfficialStorePerformanceMonitoring(it) }
+        if (savedInstanceState == null) {
+            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.startCustomMetric(
+                KEY_PERFORMANCE_PREPARING_OS_HOME)
+        }
         super.onCreate(savedInstanceState)
         arguments?.let {
             category = it.getParcelable(BUNDLE_CATEGORY)
         }
         context?.let { tracking = OfficialStoreTracking(it) }
-        officialStorePerformanceMonitoringListener = context?.let { castContextToOfficialStorePerformanceMonitoring(it) }
         remoteConfig = FirebaseRemoteConfigImpl(activity)
     }
 
@@ -184,7 +186,7 @@ class OfficialHomeFragment :
         val adapterTypeFactory = OfficialHomeAdapterTypeFactory(
                 this,
                 this,
-            this,
+                RecommendationWidgetCallback(this, this.context, userSession.userId),
                 OfficialStoreHomeComponentCallback(),
                 OfficialStoreLegoBannerComponentCallback(this),
                 OSMixLeftComponentCallback(this),
@@ -213,6 +215,9 @@ class OfficialHomeFragment :
         loadData()
         setListener()
         getOfficialStorePageLoadTimeCallback()?.stopPreparePagePerformanceMonitoring()
+        if (savedInstanceState == null) officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(
+            KEY_PERFORMANCE_PREPARING_OS_HOME)
+
     }
 
     private fun observeRecomwidget() {
@@ -699,13 +704,13 @@ class OfficialHomeFragment :
         dynamicChannelPerformanceMonitoring = PerformanceMonitoring.start(dynamicChannelConstant)
     }
 
-    private fun removeLoading() {
+    private fun removeLoading(isCache: Boolean) {
         val osPltCallback = getOfficialStorePageLoadTimeCallback()
         if (osPltCallback != null) {
             osPltCallback.stopNetworkRequestPerformanceMonitoring()
             osPltCallback.startRenderPerformanceMonitoring()
         }
-        setPerformanceListenerForRecyclerView()
+        setPerformanceListenerForRecyclerView(isCache)
     }
 
     private fun castContextToOfficialStorePerformanceMonitoring(context: Context): OfficialStorePerformanceMonitoringListener? {
@@ -718,10 +723,10 @@ class OfficialHomeFragment :
         return officialStorePerformanceMonitoringListener?.officialStorePageLoadTimePerformanceInterface
     }
 
-    private fun setPerformanceListenerForRecyclerView() {
+    private fun setPerformanceListenerForRecyclerView(isCache: Boolean) {
         recyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                officialStorePerformanceMonitoringListener?.stopOfficialStorePerformanceMonitoring()
+                officialStorePerformanceMonitoringListener?.stopOfficialStorePerformanceMonitoring(isCache)
                 recyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
         })
@@ -736,7 +741,19 @@ class OfficialHomeFragment :
 
         if (userVisibleHint && isAdded && ::viewModel.isInitialized) {
             if (!isLoadedOnce || isRefresh) {
-                viewModel.loadFirstData(category, getLocation())
+                viewModel.loadFirstData(category, getLocation(),
+                        onBannerCacheStartLoad = {
+                            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.startCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CACHE)
+                        },
+                        onBannerCacheStopLoad = {
+                            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CACHE)
+                        },
+                        onBannerCloudStartLoad = {
+                            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.startCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CLOUD)
+                        },
+                        onBannerCloudStopLoad = {
+                            officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(OSPerformanceConstant.KEY_PERFORMANCE_OS_HOME_BANNER_CLOUD)
+                        })
                 isLoadedOnce = true
 
                 getOfficialStorePageLoadTimeCallback()?.startNetworkRequestPerformanceMonitoring()
@@ -756,15 +773,21 @@ class OfficialHomeFragment :
 
     private fun observeBannerData() {
         viewModel.officialStoreBannersResult.observe(viewLifecycleOwner, {
-            when (it) {
+            val resultValue = it.second
+            val shouldShowErrorMessage = it.first
+            when (resultValue) {
                 is Success -> {
-                    removeLoading()
-                    swipeRefreshLayout?.isRefreshing = false
-                    officialHomeMapper.mappingBanners(it.data, adapter, category?.title)
+                    if (resultValue.data.banners.isNotEmpty()) {
+                        removeLoading(resultValue.data.isCache)
+                        swipeRefreshLayout?.isRefreshing = false
+                        officialHomeMapper.mappingBanners(resultValue.data, adapter, category?.title)
+                    }
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    showErrorNetwork(it.throwable)
+                    if (shouldShowErrorMessage) {
+                        showErrorNetwork(resultValue.throwable)
+                    }
                 }
             }
             bannerPerformanceMonitoring.stopTrace()
@@ -921,7 +944,7 @@ class OfficialHomeFragment :
                 category?.title.toEmptyStringIfNull(),
                 !productCardOptionsModel.isWishlisted,
                 viewModel.isLoggedIn(),
-                productCardOptionsModel.productId.toIntOrZero(),
+                productCardOptionsModel.productId.toLongOrZero(),
                 productCardOptionsModel.isTopAds
         )
     }
@@ -1000,28 +1023,23 @@ class OfficialHomeFragment :
         }
     }
 
-    override fun onBestSellerClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
-        RouteManager.route(context, recommendationItem.appUrl)
+    override fun onBestSellerClick(appLink: String) {
+        RouteManager.route(context, appLink)
     }
 
-    override fun onBestSellerImpress(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
-    }
-
-    override fun onBestSellerThreeDotsClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
+    override fun onBestSellerThreeDotsClick(recommendationItem: RecommendationItem,
+        widgetPosition: Int) {
         recommendationWishlistItem = recommendationItem
         showProductCardOptions(
             this,
             recommendationItem.createProductCardOptionsModel(widgetPosition))
     }
 
-    override fun onBestSellerFilterClick(filter: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, widgetPosition: Int, selectedChipsPosition: Int) {
-    }
-
-    override fun onBestSellerSeeMoreTextClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {
+    override fun onBestSellerSeeMoreTextClick(appLink: String) {
         RouteManager.route(context, appLink)
     }
 
-    override fun onBestSellerSeeAllCardClick(bestSellerDataModel: BestSellerDataModel, appLink: String, widgetPosition: Int) {
+    override fun onBestSellerSeeAllCardClick(appLink: String) {
         RouteManager.route(context, appLink)
     }
 

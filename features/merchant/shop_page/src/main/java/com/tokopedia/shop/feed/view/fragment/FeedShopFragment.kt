@@ -598,7 +598,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         id: String,
         authorType: String,
         postType: String,
-        isVideo: Boolean
+        isVideo: Boolean,
+        caption: String
     ) {
         context?.let {
             val menus =
@@ -868,7 +869,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onGridItemClick(
         positionInFeed: Int,
         contentPosition: Int,
-        productPosition: Int,
+        productPosition: String,
         redirectLink: String,
         type: String,
         isFollowed: Boolean,

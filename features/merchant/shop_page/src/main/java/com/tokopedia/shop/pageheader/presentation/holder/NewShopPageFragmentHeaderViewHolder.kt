@@ -22,6 +22,7 @@ import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.widget.ShopPageHeaderAdapterTypeFactory
@@ -49,6 +50,7 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
                                           private val shopPerformanceWidgetImageTextListener: ShopPerformanceWidgetImageTextComponentViewHolder.Listener
 ) {
     private var isShopFavorite = false
+    private var isUserNeverFollow = false
     private val chooseAddressWidget: ChooseAddressWidget?
         get() = view.findViewById(R.id.choose_address_widget)
     private var coachMark: CoachMark2? = null
@@ -68,7 +70,7 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
 
     fun setupChooseAddressWidget(remoteConfig: RemoteConfig, isMyShop: Boolean) {
         chooseAddressWidget?.apply {
-            val isRollOutUser = ChooseAddressUtils.isRollOutUser(view.context)
+            val isRollOutUser = true
             val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
                     ShopPageConstant.ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET,
                     true
@@ -104,11 +106,13 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
 
     fun setFollowStatus(followStatus: FollowStatus?) {
         isShopFavorite = followStatus?.status?.userIsFollowing == true
+        isUserNeverFollow = followStatus?.status?.userNeverFollow == true
         followStatus?.let {
             shopPageHeaderAdapter?.setFollowButtonData(
                     it.followButton?.buttonLabel.orEmpty(),
                     it.followButton?.voucherIconURL.orEmpty(),
-                    isShopFavorite
+                    isShopFavorite,
+                    isUserNeverFollow
             )
         }
     }

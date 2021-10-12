@@ -8,7 +8,10 @@ import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageAttachment
 import com.tokopedia.topchat.chatroom.domain.usecase.GetChatUseCase
+import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.stub.common.GraphqlUseCaseStub
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 class GetChatUseCaseStub @Inject constructor(
@@ -19,6 +22,12 @@ class GetChatUseCaseStub @Inject constructor(
 
     private val changeAddressResponsePath =
         "success_get_chat_replies_with_srw_change_address.json"
+    private val broadcastCampaignLabelPath =
+        "success_get_chat_with_broadcast_campaign.json"
+    private val chatWithSellerPath =
+        "success_get_chat_first_page_as_seller.json"
+    private val chatWithBuyerPath =
+        "success_get_chat_first_page_as_buyer.json"
 
     var response: GetExistingChatPojo = GetExistingChatPojo()
         set(value) {
@@ -26,11 +35,45 @@ class GetChatUseCaseStub @Inject constructor(
             field = value
         }
 
-    val defaultChangeAddressResponse: GetExistingChatPojo
+    val defaultChatWithSellerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatWithSellerPath) { response ->
+            alterDateToToday(response)
+        }
+
+    val defaultChatWithBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatWithBuyerPath) { response ->
+            alterDateToToday(response)
+        }
+
+    var isError = false
+        set(value) {
+            gqlUseCase.isError = value
+            field = value
+        }
+
+    /**
+     * <!--- Start Broadcast responses --->
+     */
+    val defaultBroadcastCampaignLabel: GetExistingChatPojo
         get() = AndroidFileUtil.parse(
-            changeAddressResponsePath,
+            broadcastCampaignLabelPath,
             GetExistingChatPojo::class.java
         )
+    /**
+     * <!--- Stop Broadcast responses --->
+     */
+
+    fun getBannerAttachmentId(response: GetExistingChatPojo): String {
+        return response.chatReplies.list[0].chats[0].replies[0].attachment.id
+    }
+
+    /**
+     * <!--- Start SRW responses --->
+     */
+    val defaultChangeAddressResponse: GetExistingChatPojo
+        get() = alterResponseOf(changeAddressResponsePath) { response ->
+            alterDateToToday(response)
+        }
 
     val srwChangeAddressCtaDisabled: GetExistingChatPojo
         get() = alterResponseOf(changeAddressResponsePath) { response ->
@@ -94,6 +137,9 @@ class GetChatUseCaseStub @Inject constructor(
                 .getAsJsonArray(replies).get(0).asJsonObject
                 .remove(attachment)
         }
+    /**
+     * <!--- Stop SRW responses --->
+     */
 
     private val chatReplies = "chatReplies"
     private val list = "list"
@@ -110,6 +156,22 @@ class GetChatUseCaseStub @Inject constructor(
     private val name = "name"
     private val isOpposite = "isOpposite"
     private val cta_button = "cta_button"
+    private val date = "date"
+
+    private fun alterDateToToday(response: JsonObject) {
+        val list = response.getAsJsonObject(chatReplies)
+            .getAsJsonArray(list)
+        list.forEach {
+            val chat = it.asJsonObject
+            chat.addProperty(date, getTodayDate())
+        }
+    }
+
+    private fun getTodayDate(): String {
+        val format = SimpleDateFormat(HeaderDateUiModel.DATE_FORMAT, Locale.ENGLISH)
+        val currentTime = Calendar.getInstance().time
+        return format.format(currentTime)
+    }
 
     private fun alterHeaderCtaButtonAttachment(
         listPosition: Int,
