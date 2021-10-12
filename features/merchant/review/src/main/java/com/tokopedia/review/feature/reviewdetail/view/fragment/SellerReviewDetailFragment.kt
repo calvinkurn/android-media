@@ -477,7 +477,7 @@ class SellerReviewDetailFragment :
         bottomSheetPeriodDetail?.apply {
             setTitle(title)
             setOnDismissListener {
-                ItemOverallReviewDetailBinding.bind(view).reviewPeriodFilterButtonDetail.toggle()
+//                ItemOverallReviewDetailBinding.bind(view).reviewPeriodFilterButtonDetail.toggle()
             }
             showCloseIcon = true
             setCloseClickListener {
