@@ -114,8 +114,7 @@ class ShopPenaltyViewModel @Inject constructor(
                 getShopPenaltyDetailMergeUseCase.get().executeOnBackground()
             }
 
-            penaltyFilterUiModel = penaltyDetailMerge.penaltyFilterList?.toMutableList()
-                ?: mutableListOf()
+            penaltyFilterUiModel = penaltyDetailMerge.penaltyFilterList?.toMutableList() ?: mutableListOf()
             itemSortFilterWrapperList =
                 penaltyMapper.mapToSortFilterItemFromPenaltyList(penaltyFilterUiModel)
                     .toMutableList()

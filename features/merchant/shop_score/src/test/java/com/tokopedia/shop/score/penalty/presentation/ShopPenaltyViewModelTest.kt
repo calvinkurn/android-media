@@ -73,6 +73,25 @@ class ShopPenaltyViewModelTest: ShopPenaltyViewModelTestFixture() {
     }
 
     @Test
+    fun `when get penalty detail by type filter should return fail`() {
+        runBlocking {
+            val shopScorePenaltyDetail = ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail()
+            onGetShopPenaltyDetailUseCase_thenReturn(shopScorePenaltyDetail)
+
+            val typeFilter = 4
+
+            penaltyViewModel.shopPenaltyDetailMediator.observe( {lifecycle}) {}
+
+            penaltyViewModel.setTypeFilterData(typeFilter)
+
+            verifyGetShopPenaltyDetailUseCaseCaseCalled()
+            val actualResult = (penaltyViewModel.shopPenaltyDetailData.observeAwaitValue() as Success).data
+            assertTrue(penaltyViewModel.shopPenaltyDetailData.observeAwaitValue() is Success)
+            assertNotNull(actualResult)
+        }
+    }
+
+    @Test
     fun `when getDataPenalty should return success`() {
         runBlocking {
             onGetShopPenaltyDetailMergeUseCase_thenReturn()
