@@ -230,7 +230,7 @@ class ProductBundleViewModel @Inject constructor(
     }
 
     fun isProductBundleAvailable(bundleInfo: BundleInfo): Boolean {
-        return bundleInfo.status == PRODUCT_BUNDLE_STATUS_ACTIVE && bundleInfo.quota.isMoreThanZero()
+        return bundleInfo.status == PRODUCT_BUNDLE_STATUS_ACTIVE
     }
 
     fun mapBundleInfoToBundleMaster(bundleInfo: BundleInfo): ProductBundleMaster {
