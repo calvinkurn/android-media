@@ -59,7 +59,7 @@ class DailyBudgetViewModelTest {
         val t = Exception("my excep")
         var data: ResponseBidInfo.Result? = null
 
-        coEvery { repository.getReseponse(any(), any()) } throws t
+        coEvery { repository.response(any(), any()) } throws t
 
         viewModel.getBudgetInfo("reqType", "source") {
             data = it
@@ -92,7 +92,7 @@ class DailyBudgetViewModelTest {
     fun `test exception in postAutoAds`() {
         val t = Exception("my excep")
 
-        coEvery { repository.getReseponse(any(), any()) } throws t
+        coEvery { repository.response(any(), any()) } throws t
 
         viewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
                 AutoAdsBaseBudgetFragment.TOGGLE_OFF,
@@ -110,7 +110,7 @@ class DailyBudgetViewModelTest {
         val successData: TopAdsAutoAds.Response = mockk(relaxed = true)
         val response: GraphqlResponse = mockk(relaxed = true)
 
-        coEvery { repository.getReseponse(any(), any()) } returns response
+        coEvery { repository.response(any(), any()) } returns response
         every { response.getError(TopAdsAutoAds.Response::class.java) } returns listOf()
         every { response.getData<TopAdsAutoAds.Response>(TopAdsAutoAds.Response::class.java) } returns successData
         every { successData.autoAds.data } returns data
@@ -143,7 +143,7 @@ class DailyBudgetViewModelTest {
         val expected = null
         var actual: EstimationResponse.TopadsStatisticsEstimationAttribute.DataItem? = null
 
-        coEvery { repository.getReseponse(any(), any()) } throws t
+        coEvery { repository.response(any(), any()) } throws t
         viewModel.topadsStatisticsEstimationPotentialReach({
             actual = it
         }, "id", "source")
@@ -159,7 +159,7 @@ class DailyBudgetViewModelTest {
         val successData: EstimationResponse = mockk(relaxed = true)
         val response: GraphqlResponse = mockk(relaxed = true)
 
-        coEvery { repository.getReseponse(any(), any()) } returns response
+        coEvery { repository.response(any(), any()) } returns response
         every { response.getError(EstimationResponse::class.java) } returns listOf()
         every { response.getData<EstimationResponse>(EstimationResponse::class.java) } returns successData
         every { successData.topadsStatisticsEstimationAttribute } returns data

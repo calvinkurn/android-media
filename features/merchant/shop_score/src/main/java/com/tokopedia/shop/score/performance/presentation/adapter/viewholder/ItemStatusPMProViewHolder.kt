@@ -5,9 +5,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.gm.common.constant.PMProURL
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.databinding.ItemStatusPowerMerchantProBinding
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemStatusPowerMerchantProListener
 import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMProUiModel
-import kotlinx.android.synthetic.main.item_status_power_merchant_pro.view.*
+import com.tokopedia.utils.view.binding.viewBinding
+
 
 class ItemStatusPMProViewHolder(
     view: View,
@@ -18,25 +20,27 @@ class ItemStatusPMProViewHolder(
         val LAYOUT = R.layout.item_status_power_merchant_pro
     }
 
+    private val binding: ItemStatusPowerMerchantProBinding? by viewBinding()
+
     override fun bind(element: ItemStatusPMProUiModel?) {
         setupIconClickListener()
         setupItemPowerMerchantPro()
     }
 
     private fun setupItemPowerMerchantPro() {
-        with(itemView) {
-            ic_pm_pro_badge_current_status?.loadImage(PMProURL.ICON_URL)
-            tv_pm_pro_reputation_value?.text = getString(R.string.title_pm_pro_value)
-            tv_desc_content_pm_pro_section?.text = getString(R.string.desc_content_pm_pro_section)
+        binding?.run {
+            icPmProBadgeCurrentStatus.loadImage(PMProURL.ICON_URL)
+            tvPmProReputationValue.text = getString(R.string.title_pm_pro_value)
+            tvDescContentPmProSection.text = getString(R.string.desc_content_pm_pro_section)
         }
     }
 
     private fun setupIconClickListener() {
-        with(itemView) {
-            ic_pm_pro_reputation_right?.setOnClickListener {
+        binding?.run {
+            icPmProReputationRight.setOnClickListener {
                 itemStatusPowerMerchantProListener.onItemClickedGoToPMProActivation()
             }
-            potentialPowerMerchantProWidget?.setOnClickListener {
+            potentialPowerMerchantProWidget.setOnClickListener {
                 itemStatusPowerMerchantProListener.onItemClickedGoToPMProActivation()
             }
         }

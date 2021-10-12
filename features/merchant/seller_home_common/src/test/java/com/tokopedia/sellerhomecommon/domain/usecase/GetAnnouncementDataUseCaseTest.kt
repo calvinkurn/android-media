@@ -57,13 +57,13 @@ class GetAnnouncementDataUseCaseTest {
         val successResponse = TestHelper.createSuccessResponse<GetAnnouncementDataResponse>(SUCCESS_RESPONSE)
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         val result = getAnnouncementDataUseCase.executeOnBackground()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         Assert.assertTrue(!result.isNullOrEmpty())
@@ -75,14 +75,14 @@ class GetAnnouncementDataUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<GetAnnouncementDataResponse>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(RuntimeException::class.java)
         val result = getAnnouncementDataUseCase.executeOnBackground()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         Assert.assertTrue(result.isNullOrEmpty())

@@ -22,6 +22,7 @@ import com.tokopedia.sellerhomecommon.presentation.view.adapter.PostListPagerAda
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
+import com.tokopedia.unifycomponents.NotificationUnify
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_partial_post_list_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_post_list_widget_error.view.*
@@ -33,16 +34,14 @@ import timber.log.Timber
  */
 
 class PostListViewHolder(
-        view: View?,
-        private val listener: Listener
+    view: View?,
+    private val listener: Listener
 ) : AbstractViewHolder<PostListWidgetUiModel>(view) {
 
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.shc_post_list_card_widget
     }
-
-    private var dataKey: String = ""
 
     private var pagerAdapter: PostListPagerAdapter? = null
 
@@ -103,7 +102,7 @@ class PostListViewHolder(
             imgShcPostEmpty.visible()
             tvShcPostEmptyTitle.run {
                 text = element.emptyState.title.takeIf { it.isNotBlank() }
-                        ?: getString(R.string.shc_empty_state_title)
+                    ?: getString(R.string.shc_empty_state_title)
                 visible()
             }
             tvShcPostEmptyDescription.run {
@@ -115,7 +114,9 @@ class PostListViewHolder(
                 showWithCondition(element.emptyState.ctaText.isNotBlank())
                 setOnClickListener { goToSellerEducationCenter(element) }
             }
-            ImageHandler.loadImageWithoutPlaceholderAndError(imgShcPostEmpty, element.emptyState.imageUrl.takeIf { it.isNotBlank() }
+            ImageHandler.loadImageWithoutPlaceholderAndError(
+                imgShcPostEmpty,
+                element.emptyState.imageUrl.takeIf { it.isNotBlank() }
                     ?: SellerHomeUrl.IMG_EMPTY_STATE)
         }
     }
@@ -141,6 +142,7 @@ class PostListViewHolder(
             hideShimmeringLayout()
             setupTooltip(element.tooltip)
             itemView.tvPostListTitle.text = element.title
+            setTagNotification(element.tag)
             setupPostFilter(element)
             showCtaButtonIfNeeded(element)
             showListLayout()
@@ -158,6 +160,20 @@ class PostListViewHolder(
         pagerAdapter = PostListPagerAdapter {
             if (RouteManager.route(itemView.context, it.appLink)) {
                 listener.sendPosListItemClickEvent(element, it)
+            }
+        }
+    }
+
+    private fun setTagNotification(tag: String) {
+        val isTagVisible = tag.isNotBlank()
+        with(itemView) {
+            notifTagPostList.showWithCondition(isTagVisible)
+            if (isTagVisible) {
+                notifTagPostList.setNotification(
+                    tag,
+                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COLOR_TEXT_TYPE
+                )
             }
         }
     }
@@ -181,7 +197,6 @@ class PostListViewHolder(
     }
 
     private fun addImpressionTracker(element: PostListWidgetUiModel) {
-        this@PostListViewHolder.dataKey = element.dataKey
         itemView.addOnImpressionListener(element.impressHolder) {
             listener.sendPostListImpressionEvent(element)
         }
@@ -276,9 +291,10 @@ class PostListViewHolder(
             pageControlShcPostPager.isVisible = pagers.size > 1
 
             rvPostList.run {
-                val mLayoutManager = object : LinearLayoutManager(itemView.context, HORIZONTAL, false) {
-                    override fun canScrollVertically(): Boolean = false
-                }
+                val mLayoutManager =
+                    object : LinearLayoutManager(itemView.context, HORIZONTAL, false) {
+                        override fun canScrollVertically(): Boolean = false
+                    }
                 layoutManager = mLayoutManager
                 adapter = pagerAdapter
 

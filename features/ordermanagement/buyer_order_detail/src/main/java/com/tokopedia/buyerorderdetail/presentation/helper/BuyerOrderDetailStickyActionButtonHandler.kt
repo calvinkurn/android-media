@@ -7,17 +7,15 @@ import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.adapter.ActionButtonClickListener
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.usecase.coroutines.Success
 
 class BuyerOrderDetailStickyActionButtonHandler(
-        private val bottomSheetManager: BuyerOrderDetailBottomSheetManager,
-        private val cacheManager: SaveInstanceCacheManager,
-        private val cartId: String,
-        private val navigator: BuyerOrderDetailNavigator,
-        private val viewModel: BuyerOrderDetailViewModel
+    private val bottomSheetManager: BuyerOrderDetailBottomSheetManager,
+    private val cacheManager: SaveInstanceCacheManager,
+    private val navigator: BuyerOrderDetailNavigator,
+    private val viewModel: BuyerOrderDetailViewModel
 ) : ActionButtonClickListener {
     override fun onActionButtonClicked(isFromPrimaryButton: Boolean, button: ActionButtonsUiModel.ActionButton) {
         val buttonName = when (button.key) {
@@ -51,7 +49,7 @@ class BuyerOrderDetailStickyActionButtonHandler(
             }
             BuyerOrderDetailActionButtonKey.BUY_AGAIN -> {
                 onBuyAgainAllProductButtonClicked()
-                trackBuyAgainProduct(viewModel.getProducts())
+                trackBuyAgainProduct()
                 ""
             }
             BuyerOrderDetailActionButtonKey.GIVE_REVIEW -> {
@@ -109,7 +107,7 @@ class BuyerOrderDetailStickyActionButtonHandler(
     }
 
     private fun onHelpActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
-        navigator.openWebView(button.url, false)
+        navigator.openAppLink(button.url, false)
     }
 
     private fun onBuyAgainAllProductButtonClicked() {
@@ -120,15 +118,11 @@ class BuyerOrderDetailStickyActionButtonHandler(
         navigator.openAppLink(url, true)
     }
 
-    private fun trackBuyAgainProduct(products: List<ProductListUiModel.ProductUiModel>) {
+    private fun trackBuyAgainProduct() {
         BuyerOrderDetailTracker.eventClickBuyAgain(
-                products,
-                viewModel.getOrderId(),
-                cartId,
-                viewModel.getShopId(),
-                viewModel.getShopName(),
-                viewModel.getShopType(),
-                viewModel.getUserId())
+            viewModel.getOrderId(),
+            viewModel.getUserId()
+        )
     }
 
     private fun trackClickActionButton(fromPrimaryButton: Boolean, buttonName: String) {

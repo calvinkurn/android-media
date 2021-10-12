@@ -11,6 +11,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_installment"
+            android:layout_width="@dimen/layout_lvl8"
+            android:layout_height="@dimen/layout_lvl8"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:loader_type="circular" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_installment_message"
             android:layout_width="match_parent"
@@ -24,6 +32,7 @@
             app:typographyWeight="reguler" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/terms_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"

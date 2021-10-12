@@ -50,7 +50,7 @@ import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.mvcwidget.MvcSource
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.UserNotLoginException
@@ -72,7 +72,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
-import com.tokopedia.shop.analytic.model.TrackShopTypeDef
+import com.tokopedia.shop.common.constant.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopModerateRequestStatusCode
 import com.tokopedia.shop.common.constant.ShopPageConstant
@@ -87,8 +87,6 @@ import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
 import com.tokopedia.shop.common.util.ShopUtil.isExceptionIgnored
-import com.tokopedia.shop.common.util.ShopUtil.isShouldCheckShopType
-import com.tokopedia.shop.common.util.ShopUtil.isNotRegularMerchant
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
 import com.tokopedia.shop.common.view.ShopPageCountDrawable
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
@@ -100,7 +98,7 @@ import com.tokopedia.shop.common.view.viewmodel.ShopPageFollowingStatusSharedVie
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
-import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
+import com.tokopedia.shop.home.view.fragment.OldShopPageHomeFragment
 import com.tokopedia.shop.note.view.bottomsheet.ShopNoteBottomSheet
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
@@ -116,6 +114,7 @@ import com.tokopedia.shop.common.util.ShopUtil.isUsingNewShareBottomSheet
 import com.tokopedia.shop.common.util.ShopUtil.joinStringWithDelimiter
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageFab
 import com.tokopedia.shop.common.view.model.ShopPageFabConfig
+import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.pageheader.presentation.NewShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
@@ -134,7 +133,6 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidge
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.review.shop.view.ReviewShopFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
-import com.tokopedia.shop.setting.view.activity.ShopPageSettingActivity
 import com.tokopedia.shop.showcase.presentation.fragment.ShopPageShowcaseFragment
 import com.tokopedia.stickylogin.common.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginAction
@@ -149,6 +147,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -177,7 +176,8 @@ class NewShopPageFragment :
         ShopHeaderPlayWidgetViewHolder.Listener,
         ShopPerformanceWidgetImageTextComponentViewHolder.Listener,
         ShareBottomsheetListener,
-        ScreenShotListener
+        ScreenShotListener,
+        PermissionListener
 {
 
     companion object {
@@ -213,7 +213,6 @@ class NewShopPageFragment :
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
         private const val START_PAGE = 1
         private const val IS_FIRST_TIME_VISIT = "isFirstTimeVisit"
-        private const val IS_FIRST_TIME_SHOW_TAB_LABEL = "isFirstTimeShowTabLabel"
         private const val SOURCE = "shop page"
 
         private const val REQUEST_CODE_START_LIVE_STREAMING = 7621
@@ -274,8 +273,6 @@ class NewShopPageFragment :
         get() = R.drawable.ic_shop_tab_showcase_inactive.takeIf {
             isUsingNewNavigation()
         } ?: R.drawable.ic_shop_tab_showcase_inactive_old
-    private val iconTabShowcaseWithLabelInactive: Int
-        get() = R.drawable.ic_shop_tab_showcase_with_label_inactive
     private val iconTabShowcaseActive: Int
         get() = R.drawable.ic_shop_tab_showcase_active
     private val iconTabFeedInactive: Int
@@ -915,7 +912,12 @@ class NewShopPageFragment :
             }
         }
         context?.let {
-           screenShotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(it, this, this)
+           screenShotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+                   it,
+                   this,
+                   this,
+                   permissionListener = this
+           )
         }
     }
 
@@ -1287,7 +1289,7 @@ class NewShopPageFragment :
             if (GlobalConfig.isSellerApp()) {
                 RouteManager.route(context, ApplinkConstInternalSellerapp.MENU_SETTING)
             } else {
-                startActivity(ShopPageSettingActivity.createIntent(context, shopId))
+                RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID, shopId)
             }
         }
     }
@@ -1394,16 +1396,6 @@ class NewShopPageFragment :
         shopShareBottomSheet?.dismiss()
     }
 
-    private fun saveFirstShowTabLabel() {
-        sharedPreferences?.edit()?.run {
-            putBoolean(IS_FIRST_TIME_SHOW_TAB_LABEL, true)
-        }?.apply()
-    }
-
-    private fun isFirstTimeShowTabLabel(): Boolean? {
-        return sharedPreferences?.getBoolean(IS_FIRST_TIME_SHOW_TAB_LABEL, false)
-    }
-
     private fun setupTabs() {
         listShopPageTabModel = (createListShopPageTabModel() as? List<ShopPageTabModel>) ?: listOf()
         configureTab(listShopPageTabModel.size)
@@ -1442,12 +1434,6 @@ class NewShopPageFragment :
                 viewPager?.setCurrentItem(position, false)
                 tabLayout?.getTabAt(position)?.let{
                     viewPagerAdapter?.handleSelectedTab(it, true)
-                    listShopPageTabModel[tab.position].apply {
-                        if (tabFragment is ShopPageShowcaseFragment && isUsingNewNavigation()) {
-                            tabIconInactive = iconTabShowcaseInactive
-                            saveFirstShowTabLabel()
-                        }
-                    }
                 }
                 if(isTabClickByUser) {
                     shopPageTracking?.clickTab(
@@ -1531,10 +1517,18 @@ class NewShopPageFragment :
         var selectedPosition = viewPager?.currentItem.orZero()
         if (tabLayout?.tabCount == 0) {
             if (shouldOverrideTabToHome) {
-                selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(ShopPageHomeFragment::class.java) == true) {
-                    viewPagerAdapter?.getFragmentPosition(ShopPageHomeFragment::class.java).orZero()
+                selectedPosition = if(!isUsingNewShopHomeTab()) {
+                    if (viewPagerAdapter?.isFragmentObjectExists(OldShopPageHomeFragment::class.java) == true) {
+                        viewPagerAdapter?.getFragmentPosition(OldShopPageHomeFragment::class.java).orZero()
+                    } else {
+                        selectedPosition
+                    }
                 } else {
-                    selectedPosition
+                    if (viewPagerAdapter?.isFragmentObjectExists(ShopPageHomeFragment::class.java) == true) {
+                        viewPagerAdapter?.getFragmentPosition(ShopPageHomeFragment::class.java).orZero()
+                    } else {
+                        selectedPosition
+                    }
                 }
             }
             if (shouldOverrideTabToReview) {
@@ -1593,43 +1587,18 @@ class NewShopPageFragment :
                 shopPageProductFragment
         ))
 
-        if (isShouldCheckShopType()) {
-            if (isNotRegularMerchant(shopPageHeaderDataModel)) {
-                listShopPageTabModel.add(ShopPageTabModel(
-                        getString(R.string.shop_info_title_tab_showcase),
-                        if (isFirstTimeShowTabLabel() == false && isUsingNewNavigation()) {
-                            iconTabShowcaseWithLabelInactive
-                        } else {
-                            iconTabShowcaseInactive
-                        },
-                        iconTabShowcaseActive,
-                        ShopPageShowcaseFragment.createInstance(
-                                shopId,
-                                shopRef,
-                                shopAttribution,
-                                shopPageHeaderDataModel?.isOfficial ?: false,
-                                shopPageHeaderDataModel?.isGoldMerchant ?: false,
-                        )
-                ))
-            }
-        } else {
-            listShopPageTabModel.add(ShopPageTabModel(
-                    getString(R.string.shop_info_title_tab_showcase),
-                    if (isFirstTimeShowTabLabel() == false && isUsingNewNavigation()) {
-                        iconTabShowcaseWithLabelInactive
-                    } else {
-                        iconTabShowcaseInactive
-                    },
-                    iconTabShowcaseActive,
-                    ShopPageShowcaseFragment.createInstance(
-                            shopId,
-                            shopRef,
-                            shopAttribution,
-                            shopPageHeaderDataModel?.isOfficial ?: false,
-                            shopPageHeaderDataModel?.isGoldMerchant ?: false,
-                    )
-            ))
-        }
+        listShopPageTabModel.add(ShopPageTabModel(
+                getString(R.string.shop_info_title_tab_showcase),
+                iconTabShowcaseInactive,
+                iconTabShowcaseActive,
+                ShopPageShowcaseFragment.createInstance(
+                        shopId,
+                        shopRef,
+                        shopAttribution,
+                        shopPageHeaderDataModel?.isOfficial ?: false,
+                        shopPageHeaderDataModel?.isGoldMerchant ?: false,
+                )
+        ))
 
         if (isShowFeed) {
             val feedFragment = FeedShopFragment.createInstance(
@@ -1664,21 +1633,43 @@ class NewShopPageFragment :
 
     private fun getHomeFragment(): Fragment? {
         return if (isShowHomeTab()) {
-            ShopPageHomeFragment.createInstance(
-                    shopId,
-                    shopPageHeaderDataModel?.isOfficial ?: false,
-                    shopPageHeaderDataModel?.isGoldMerchant ?: false,
-                    shopPageHeaderDataModel?.shopName.orEmpty(),
-                    shopAttribution ?: "",
-                    shopRef
-            ).apply {
-                shopViewModel?.productListData?.let {
-                    setInitialProductListData(it)
+            if(!isUsingNewShopHomeTab()) {
+                OldShopPageHomeFragment.createInstance(
+                        shopId,
+                        shopPageHeaderDataModel?.isOfficial ?: false,
+                        shopPageHeaderDataModel?.isGoldMerchant ?: false,
+                        shopPageHeaderDataModel?.shopName.orEmpty(),
+                        shopAttribution ?: "",
+                        shopRef
+                ).apply {
+                    shopViewModel?.productListData?.let {
+                        setInitialProductListData(it)
+                    }
+                }
+            } else{
+                ShopPageHomeFragment.createInstance(
+                        shopId,
+                        shopPageHeaderDataModel?.isOfficial ?: false,
+                        shopPageHeaderDataModel?.isGoldMerchant ?: false,
+                        shopPageHeaderDataModel?.shopName.orEmpty(),
+                        shopAttribution ?: "",
+                        shopRef
+                ).apply {
+                    shopViewModel?.productListData?.let {
+                        setInitialProductListData(it)
+                    }
+                    shopViewModel?.homeWidgetLayoutData?.let{
+                        setListWidgetLayoutData(it)
+                    }
                 }
             }
         } else {
             null
         }
+    }
+
+    private fun isUsingNewShopHomeTab(): Boolean {
+        return ShopUtil.isUsingNewShopHomeTab()
     }
 
     private fun onErrorGetShopPageTabData(e: Throwable?) {
@@ -1738,6 +1729,9 @@ class NewShopPageFragment :
 
         val shopPageHomeFragment: Fragment? = viewPagerAdapter?.getRegisteredFragment(TAB_POSITION_HOME)
         if (shopPageHomeFragment is ShopPageHomeFragment) {
+            shopPageHomeFragment.clearCache()
+        }
+        if (shopPageHomeFragment is OldShopPageHomeFragment) {
             shopPageHomeFragment.clearCache()
         }
         isRefresh = true
@@ -2429,47 +2423,49 @@ class NewShopPageFragment :
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    checkUsingCustomBranchLinkDomain(linkerShareData)
-                    var shareString = getString(
-                        R.string.shop_page_share_text_with_link,
-                        shopPageHeaderDataModel?.shopName,
-                        linkerShareData?.shareContents
-                    )
-                    shareModel.subjectName = shopPageHeaderDataModel?.shopName.toString()
-                    SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
-                    // send gql tracker
-                    shareModel.socialMediaName?.let { name ->
-                        shopViewModel?.sendShopShareTracker(
-                            shopId,
-                            channel = when (shareModel) {
-                                is ShareModel.CopyLink -> {
-                                    ShopPageConstant.SHOP_SHARE_DEFAULT_CHANNEL
-                                }
-                                is ShareModel.Others -> {
-                                    ShopPageConstant.SHOP_SHARE_OTHERS_CHANNEL
-                                }
-                                else -> name
-                            }
+                    context?.let{
+                        checkUsingCustomBranchLinkDomain(linkerShareData)
+                        var shareString = getString(
+                                R.string.shop_page_share_text_with_link,
+                                shopPageHeaderDataModel?.shopName,
+                                linkerShareData?.shareContents
                         )
-                    }
+                        shareModel.subjectName = shopPageHeaderDataModel?.shopName.toString()
+                        SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
+                        // send gql tracker
+                        shareModel.socialMediaName?.let { name ->
+                            shopViewModel?.sendShopShareTracker(
+                                    shopId,
+                                    channel = when (shareModel) {
+                                        is ShareModel.CopyLink -> {
+                                            ShopPageConstant.SHOP_SHARE_DEFAULT_CHANNEL
+                                        }
+                                        is ShareModel.Others -> {
+                                            ShopPageConstant.SHOP_SHARE_OTHERS_CHANNEL
+                                        }
+                                        else -> name
+                                    }
+                            )
+                        }
 
-                    // send gtm tracker
-                    if(isGeneralShareBottomSheet) {
-                        shopPageTracking?.clickShareBottomSheetOption(
-                                shareModel.channel.orEmpty(),
-                                customDimensionShopPage,
-                                userId
-                        )
-                    } else{
-                        shopPageTracking?.clickScreenshotShareBottomSheetOption(
-                                shareModel.channel.orEmpty(),
-                                customDimensionShopPage,
-                                userId
-                        )
-                    }
+                        // send gtm tracker
+                        if(isGeneralShareBottomSheet) {
+                            shopPageTracking?.clickShareBottomSheetOption(
+                                    shareModel.channel.orEmpty(),
+                                    customDimensionShopPage,
+                                    userId
+                            )
+                        } else{
+                            shopPageTracking?.clickScreenshotShareBottomSheetOption(
+                                    shareModel.channel.orEmpty(),
+                                    customDimensionShopPage,
+                                    userId
+                            )
+                        }
 
-                    //we have to check if we can move it inside the common function
-                    universalShareBottomSheet?.dismiss()
+                        //we have to check if we can move it inside the common function
+                        universalShareBottomSheet?.dismiss()
+                    }
                 }
 
                 override fun onError(linkerError: LinkerError?) {}
@@ -2555,5 +2551,9 @@ class NewShopPageFragment :
 
     fun hideShopPageFab() {
         shopPageFab?.hide()
+    }
+
+    override fun permissionAction(action: String, label: String) {
+        shopPageTracking?.clickUniversalSharingPermission(action, label, shopId, userId)
     }
 }

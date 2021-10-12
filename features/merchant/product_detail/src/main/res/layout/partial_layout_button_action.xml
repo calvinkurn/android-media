@@ -9,21 +9,21 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_shadow_top">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_topchat"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_8"
-        android:background="@drawable/variant_topchat_green"
-        android:padding="@dimen/dp_4"
-        android:scaleType="center"
+        app:unifyButtonType="alternate"
+        app:unifyButtonVariant="ghost"
         android:visibility="gone"
+        tools:text="Chat"
+        app:unifyButtonSize="medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_pdp_topchat"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -111,7 +111,7 @@
 
         <View
             android:id="@+id/divider_button_quantity"
-            android:layout_width="@dimen/chatcommon_1dp"
+            android:layout_width="1dp"
             android:layout_height="0dp"
             android:layout_marginStart="4dp"
             android:layout_marginTop="2dp"

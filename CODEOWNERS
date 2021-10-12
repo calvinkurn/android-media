@@ -1,11 +1,11 @@
-/features/content/createpost/           				@tokopedia/android-minionskywalker-dev
-/features/content/explore/              				@tokopedia/android-minionskywalker-dev
-/features/content/feed/                 				@tokopedia/android-minionskywalker-dev
-/features/content/interest_pick/        				@tokopedia/android-minionskywalker-dev
-/features/content/kol/                  				@tokopedia/android-minionskywalker-dev
-/features/content/kol_common/           				@tokopedia/android-minionskywalker-dev
-/features/content/profile/              				@tokopedia/android-minionskywalker-dev
-/features/content/feed_component/       				@tokopedia/android-minionskywalker-dev
+/features/content/createpost/           				@tokopedia/android-minionsolo-dev
+/features/content/explore/              				@tokopedia/android-minionsolo-dev
+/features/content/feed/                 				@tokopedia/android-minionsolo-dev
+/features/content/interest_pick/        				@tokopedia/android-minionsolo-dev
+/features/content/kol/                  				@tokopedia/android-minionsolo-dev
+/features/content/kol_common/           				@tokopedia/android-minionsolo-dev
+/features/content/profile/              				@tokopedia/android-minionsolo-dev
+/features/content/feed_component/       				@tokopedia/android-minionsolo-dev
 /features/category/       				                @tokopedia/android-miniondarth-dev
 /features/discovery/topadssdk/                      	@tokopedia/android-gatekeeperanalytic-dev
 /features/discovery/home/                           	@tokopedia/android-miniondave-dev
@@ -20,7 +20,7 @@
 /features/discovery/image_search/                   	@tokopedia/android-miniondave-dev
 /features/discovery/similarsearch/                  	@tokopedia/android-miniondave-dev
 /features/discovery/autocomplete/                   	@tokopedia/android-miniondave-dev
-/features/digital/digital_browse/                   	@tokopedia/android-minionsolo-dev
+/features/digital/digital_browse/                   	@tokopedia/@android-minionmark-dev
 /features/discovery/global_nav_widget/              	@tokopedia/android-miniondave-dev
 /features/discovery/global_nav_widget_samples/      	@tokopedia/android-miniondave-dev
 /features/home/dynamicbanner/                          	@tokopedia/android-miniondave-dev
@@ -104,7 +104,6 @@
 /features/merchant/seller_feedback/                     @tokopedia/android-minionstuart-dev
 /libraries/kotlin_extensions/                           @tokopedia/android-minionstuart-dev
 
-/features/content/affiliate/            				@tokopedia/android-minionmark-dev
 /features/content/affiliate_common/     				@tokopedia/android-minionmark-dev
 /features/content/play/                                 @tokopedia/android-minionmark-dev
 /features/content/play_common/                          @tokopedia/android-minionmark-dev

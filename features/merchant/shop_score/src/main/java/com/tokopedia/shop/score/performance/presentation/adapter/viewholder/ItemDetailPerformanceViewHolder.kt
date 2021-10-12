@@ -4,21 +4,18 @@ import android.content.res.Resources
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.asUpperCase
-import com.tokopedia.kotlin.extensions.view.getResColor
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.AND_SYMBOL
 import com.tokopedia.shop.score.common.ShopScoreConstant.AND_TEXT
-import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_AGE_SIXTY
+import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_NULL
+import com.tokopedia.shop.score.databinding.ItemDetailShopPerformanceBinding
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemShopPerformanceListener
 import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerformanceUiModel
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.item_detail_shop_performance.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 import timber.log.Timber
-import java.util.*
 
 class ItemDetailPerformanceViewHolder(
     view: View,
@@ -30,12 +27,16 @@ class ItemDetailPerformanceViewHolder(
         const val PERCENT = "%"
         const val MINUS_SIGN = "-"
         const val START_INDEX_HEX_STRING = 2
+        const val SIXTEEN_PADDING = 16
+        const val ZERO_PADDING = 0
     }
 
-    override fun bind(element: ItemDetailPerformanceUiModel?) {
-        with(itemView) {
-            setupItemDetailPerformance(element)
+    private val binding: ItemDetailShopPerformanceBinding? by viewBinding()
 
+    override fun bind(element: ItemDetailPerformanceUiModel?) {
+        binding?.run {
+            setupItemDetailPerformance(element)
+            val shopScore = element?.shopScore ?: SHOP_SCORE_NULL
             val titleBottomSheet =
                 if (element?.titleDetailPerformance?.startsWith(getString(R.string.desc_calculation_open_seller_app)) == true) {
                     getString(R.string.desc_calculation_open_seller_app)
@@ -46,8 +47,8 @@ class ItemDetailPerformanceViewHolder(
                         element?.titleDetailPerformance.orEmpty()
                     }
                 }
-            setOnClickListener {
-                if (element?.shopAge.orZero() < SHOP_AGE_SIXTY) {
+            root.setOnClickListener {
+                if (shopScore < SHOP_SCORE_NULL) {
                     itemShopPerformanceListener.onItemClickedToFaqClicked()
                 } else {
                     itemShopPerformanceListener.onItemClickedToDetailBottomSheet(
@@ -56,8 +57,8 @@ class ItemDetailPerformanceViewHolder(
                     )
                 }
             }
-            ic_item_performance_right?.setOnClickListener {
-                if (element?.shopAge.orZero() < SHOP_AGE_SIXTY) {
+            icItemPerformanceRight.setOnClickListener {
+                if (shopScore == SHOP_SCORE_NULL) {
                     itemShopPerformanceListener.onItemClickedToFaqClicked()
                 } else {
                     itemShopPerformanceListener.onItemClickedToDetailBottomSheet(
@@ -70,18 +71,28 @@ class ItemDetailPerformanceViewHolder(
     }
 
     private fun setupItemDetailPerformance(element: ItemDetailPerformanceUiModel?) {
-        with(itemView) {
+        binding?.run {
             setContainerBackground()
-            separatorItemDetail?.showWithCondition(element?.isDividerHide == false)
+            separatorItemDetail.showWithCondition(element?.isDividerHide == false)
 
             if (element?.isDividerHide == true) {
                 setCardItemDetailPerformanceBackground()
-                cardItemDetailShopPerformance?.setPadding(16.toPx(), 0.toPx(), 16.toPx(), 16.toPx())
+                cardItemDetailShopPerformance.setPadding(
+                    SIXTEEN_PADDING.toPx(),
+                    ZERO_PADDING.toPx(),
+                    SIXTEEN_PADDING.toPx(),
+                    SIXTEEN_PADDING.toPx()
+                )
             } else {
-                cardItemDetailShopPerformance?.setPadding(16.toPx(), 0.toPx(), 16.toPx(), 0.toPx())
+                cardItemDetailShopPerformance.setPadding(
+                    SIXTEEN_PADDING.toPx(),
+                    ZERO_PADDING.toPx(),
+                    SIXTEEN_PADDING.toPx(),
+                    ZERO_PADDING.toPx()
+                )
             }
-            tvTitlePerformanceProgress?.text = element?.titleDetailPerformance.orEmpty()
-            tvPerformanceValue?.text =
+            tvTitlePerformanceProgress.text = element?.titleDetailPerformance.orEmpty()
+            tvPerformanceValue.text =
                 if (element?.valueDetailPerformance == MINUS_SIGN) {
                     element.valueDetailPerformance
                 } else {
@@ -95,7 +106,7 @@ class ItemDetailPerformanceViewHolder(
             ) {
                 tvPerformanceValue.setTextColorUnifyParameterDetail(element.colorValueDetailPerformance)
             }
-            tvPerformanceTarget?.text = getString(
+            tvPerformanceTarget.text = getString(
                 R.string.item_detail_performance_target,
                 element?.targetDetailPerformance.orEmpty()
             )
@@ -104,9 +115,9 @@ class ItemDetailPerformanceViewHolder(
 
     private fun setContainerBackground() {
         try {
-            with(itemView) {
-                context?.let {
-                    cardItemDetailShopPerformance?.setBackgroundColor(
+            binding?.run {
+                root.context?.let {
+                    binding?.cardItemDetailShopPerformance?.setBackgroundColor(
                         it.getResColor(R.color.shop_score_penalty_dms_container)
                     )
                 }
@@ -118,10 +129,10 @@ class ItemDetailPerformanceViewHolder(
 
     private fun setCardItemDetailPerformanceBackground() {
         try {
-            with(itemView) {
-                context?.let {
-                    cardItemDetailShopPerformance?.background = ContextCompat.getDrawable(
-                        context,
+            binding?.run {
+                root.context?.let {
+                    binding?.cardItemDetailShopPerformance?.background = ContextCompat.getDrawable(
+                        root.context,
                         R.drawable.corner_rounded_performance_list
                     )
                 }
@@ -167,7 +178,7 @@ class ItemDetailPerformanceViewHolder(
     private fun Typography.getColorHexString(idColor: Int): String {
         return try {
             val colorHexInt = ContextCompat.getColor(context, idColor)
-            val colorToHexString = Integer.toHexString(colorHexInt).toUpperCase(Locale.getDefault())
+            val colorToHexString = Integer.toHexString(colorHexInt).uppercase()
                 .substring(START_INDEX_HEX_STRING)
             return "#$colorToHexString"
         } catch (e: Exception) {

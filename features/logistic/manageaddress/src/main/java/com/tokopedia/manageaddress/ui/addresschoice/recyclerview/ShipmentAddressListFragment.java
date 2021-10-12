@@ -211,7 +211,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                 }
 
                 if ((maxItemPosition + 1) == totalItemCount && !isLoading && dy > 0 && getContext() != null) {
-                    mPresenter.loadMore(prevState, getChosenAddrId(), ChooseAddressUtils.INSTANCE.isRollOutUser(getContext()));
+                    mPresenter.loadMore(prevState, getChosenAddrId(), true);
                 }
             }
         });
@@ -320,7 +320,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     @Override
     public void onSearchReset() {
         if (getContext() != null) {
-            mPresenter.getAddress(prevState, getChosenAddrId(), ChooseAddressUtils.INSTANCE.isRollOutUser(getContext()));
+            mPresenter.getAddress(prevState, getChosenAddrId(), true);
         }
     }
 
@@ -329,9 +329,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressCartChangeAddressSubmitSearchFromPilihAlamatLainnya();
         if (getContext() != null) {
             if (!query.isEmpty()) {
-                mPresenter.searchAddress(query, prevState, getChosenAddrId(), ChooseAddressUtils.INSTANCE.isRollOutUser(getContext()));
+                mPresenter.searchAddress(query, prevState, getChosenAddrId(), true);
             } else {
-                mPresenter.getAddress(prevState, getChosenAddrId(), ChooseAddressUtils.INSTANCE.isRollOutUser(getContext()));
+                mPresenter.getAddress(prevState, getChosenAddrId(), true);
             }
         }
     }
@@ -388,7 +388,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                     }
                     if (requestType == CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN) {
                         if (getContext() != null) {
-                            mPresenter.getAddress(prevState, getChosenAddrId(), ChooseAddressUtils.INSTANCE.isRollOutUser(getContext()));
+                            mPresenter.getAddress(prevState, getChosenAddrId(), true);
                         }
                         mCurrentAddress = address;
                     } else
@@ -411,7 +411,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                     }
                     if (requestType == CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN) {
                         if (getContext() != null) {
-                            mPresenter.getAddress(prevState, getChosenAddrId(), ChooseAddressUtils.INSTANCE.isRollOutUser(getContext()));
+                            mPresenter.getAddress(prevState, getChosenAddrId(), true);
                         }
                         mCurrentAddress = newAddress;
                     } else

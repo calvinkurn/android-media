@@ -4,7 +4,7 @@
 
     <application>
         <activity android:name=".view.TelephonyActivity"
-            android:theme="@style/TransparentActivity"
+            android:theme="@style/Theme.AppCompat.Transparent.NoActionBar.Fingerprint"
             android:label="@string/applink_telephony">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

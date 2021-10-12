@@ -115,7 +115,6 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
                                   products {
                                       shipper_name
                                       shipper_id
-                                      shipper_product_id
                                       shipper_product_name
                                       shipper_product_desc
                                       shipper_weight
@@ -188,7 +187,6 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
                               recommendations {
                                   service_name
                                   shipping_id
-                                  shipping_product_id
                                   price {
                                       price
                                       formatted_price
@@ -252,7 +250,7 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
                 .setSessionIncluded(false)
                 .build()
 
-        val response = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+        val response = graphqlRepository.response(listOf(request), cacheStrategy)
         val error: List<GraphqlError>? = response.getError(BottomSheetProductDetailInfoResponse::class.java)
         val data = response.getSuccessData<RatesEstimationModel.Response>().data?.data
                 ?: throw NullPointerException()

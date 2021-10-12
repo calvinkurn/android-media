@@ -9,7 +9,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
-import com.tokopedia.chat_common.data.preview.ProductPreview
+import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -117,25 +117,11 @@ object AtcCommonMapper {
      *
      * auto select will run if there is only 1 child left buyable
      */
-    fun determineSelectedOptionIds(isParent: Boolean, variantData: ProductVariant?, selectedChild: VariantChild?): MutableMap<String, String> {
-        val shouldAutoSelect = variantData?.autoSelectedOptionIds() ?: listOf()
-        return when {
-            isParent -> {
-                if (selectedChild == null) {
-                    AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
-                } else {
-                    AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, selectedChild.optionIds)
-                }
-            }
-            selectedChild?.isBuyable == true -> {
-                AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, selectedChild.optionIds)
-            }
-            shouldAutoSelect.isNotEmpty() -> {
-                AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, shouldAutoSelect)
-            }
-            else -> {
-                AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
-            }
+    fun determineSelectedOptionIds(variantData: ProductVariant?, selectedChild: VariantChild?): MutableMap<String, String> {
+        return if (selectedChild == null) {
+            AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
+        } else {
+            AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, selectedChild.optionIds)
         }
     }
 
@@ -195,9 +181,10 @@ object AtcCommonMapper {
                        initialSelectedVariant: MutableMap<String, String>,
                        processedVariant: List<VariantCategory>?,
                        selectedProductFulfillment: Boolean,
-                       totalStock: Int,
                        selectedQuantity: Int,
-                       shouldShowDeleteButton: Boolean): List<AtcVariantVisitable>? {
+                       shouldShowDeleteButton: Boolean,
+                       uspImageUrl: String,
+                       cashBackPercentage: Int): List<AtcVariantVisitable>? {
         if (processedVariant == null) return null
 
         var idCounter = 0L
@@ -209,6 +196,10 @@ object AtcCommonMapper {
                         position = idCounter,
                         productId = selectedChild?.productId ?: "",
                         productImage = headerData.first,
+                        listOfVariantTitle = selectedChild?.optionName ?: listOf(),
+                        isTokoCabang = selectedProductFulfillment,
+                        uspImageUrl = uspImageUrl,
+                        cashBackPercentage = cashBackPercentage,
                         headerData = headerData.second)
         ).also {
             idCounter += 1
@@ -218,9 +209,7 @@ object AtcCommonMapper {
                 VariantComponentDataModel(
                         position = idCounter,
                         listOfVariantCategory = processedVariant,
-                        mapOfSelectedVariant = initialSelectedVariant,
-                        isEmptyStock = (totalStock == 0 || (selectedChild?.isBuyable == false) && !selectedChild.isInactive),
-                        isTokoCabang = selectedProductFulfillment)
+                        mapOfSelectedVariant = initialSelectedVariant)
         ).also {
             idCounter += 1
         }
@@ -269,9 +258,7 @@ object AtcCommonMapper {
                 is VariantComponentDataModel -> {
                     it.copy(listOfVariantCategory = processedVariant,
                             mapOfSelectedVariant = selectedVariantIds
-                                    ?: mutableMapOf(),
-                            isEmptyStock = selectedVariantChild?.isBuyable == false && !selectedVariantChild.isInactive,
-                            isTokoCabang = selectedProductFulfillment)
+                                    ?: mutableMapOf())
                 }
                 is VariantQuantityDataModel -> {
                     it.copy(productId = selectedVariantChild?.productId ?: "",
@@ -288,8 +275,11 @@ object AtcCommonMapper {
                         it.copy(productImage = variantImage)
                     } else {
                         val headerData = generateHeaderDataModel(selectedVariantChild)
-                        it.copy(productImage = headerData.first, productId = selectedVariantChild?.productId
-                                ?: "", headerData = headerData.second)
+                        it.copy(productImage = headerData.first,
+                                productId = selectedVariantChild?.productId ?: "",
+                                headerData = headerData.second,
+                                isTokoCabang = selectedProductFulfillment,
+                                listOfVariantTitle = selectedVariantChild?.optionName ?: listOf())
                     }
                 }
                 else -> {
@@ -305,6 +295,7 @@ object AtcCommonMapper {
                                  mapOfSelectedVariantOption: MutableMap<String, String>? = null,
                                  atcMessage: String? = null,
                                  shouldRefreshPreviousPage: Boolean? = null,
+                                 isFollowShop: Boolean? = null,
                                  requestCode: Int? = null): ProductVariantResult {
         val result = recentData?.copy() ?: ProductVariantResult()
 
@@ -314,6 +305,7 @@ object AtcCommonMapper {
         if (parentProductId != null) result.parentProductId = parentProductId
         if (shouldRefreshPreviousPage != null) result.shouldRefreshPreviousPage = shouldRefreshPreviousPage
         if (requestCode != null) result.requestCode = requestCode
+        if (isFollowShop != null) result.isFollowShop = isFollowShop
 
         return result
     }
@@ -382,7 +374,7 @@ object AtcCommonMapper {
                 isCampaignActive = selectedChild?.campaign?.isActive ?: false,
                 productSlashPrice = selectedChild?.campaign?.discountedPrice?.getCurrencyFormatted()
                         ?: "",
-                productStock = selectedChild?.getVariantFinalStock()?.toString() ?: ""
+                productStockFmt = selectedChild?.stock?.stockFmt ?: ""
         )
         return productImage to headerData
     }

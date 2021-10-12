@@ -15,7 +15,7 @@ class ChatroomViewModel constructor(
         val replyable: Boolean = false,
         var blockedStatus: BlockedStatus = BlockedStatus(),
         val latestHeaderDate: String = "",
-        val attachmentIds: String = ""
+        val replyIDs: String = ""
 ) {
 
     val shopName: String get() {
@@ -51,7 +51,7 @@ class ChatroomViewModel constructor(
     }
 
     fun hasAttachment(): Boolean {
-        return attachmentIds.isNotEmpty()
+        return replyIDs.isNotEmpty()
     }
 
 }

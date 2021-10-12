@@ -138,6 +138,7 @@ class HomeAnalytics {
         const val WITH_VARIANT = "with variant"
         const val WITHOUT_VARIANT = "without variant"
         const val PRODUCT_TOPADS = "product topads"
+        const val HOMEPAGE_TOKONOW = "homepage tokonow"
     }
 
     fun onClickSearchBar() {

@@ -2021,6 +2021,14 @@ class ProductListPresenter @Inject constructor(
         isBottomSheetFilterEnabled = true
     }
 
+    override fun onApplySortFilter(mapParameter: Map<String, Any>) {
+        val keywordFromFilter = mapParameter[SearchApiConst.Q] ?: ""
+        val currentKeyword = view?.queryKey ?: ""
+
+        if (currentKeyword != keywordFromFilter)
+            dynamicFilterModel = null
+    }
+
     override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {
         if (isViewNotAttached) return
 

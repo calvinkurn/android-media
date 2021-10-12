@@ -13,6 +13,7 @@
         layout="@layout/content_base_toolbar" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/baseDealsCoor"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
@@ -33,19 +34,11 @@
 
                 <include
                     layout="@layout/content_base_deals_search_bar"
+                    android:id="@+id/contentBaseDealsSearchBar"
                     app:layout_collapseMode="none" />
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
         </com.google.android.material.appbar.AppBarLayout>
-
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/containerBaseDealsParentView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:background="@color/Unify_N700_68"
-            />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </LinearLayout>
