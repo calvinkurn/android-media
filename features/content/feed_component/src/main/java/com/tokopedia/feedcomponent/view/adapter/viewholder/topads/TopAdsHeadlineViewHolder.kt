@@ -71,6 +71,7 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
     private fun hideHeadlineView() {
         topadsHeadlineView.hideShimmerView()
         topadsHeadlineView.hide()
+        hideTopadsView()
     }
 
     override fun bind(element: TopadsHeadlineUiModel?) {

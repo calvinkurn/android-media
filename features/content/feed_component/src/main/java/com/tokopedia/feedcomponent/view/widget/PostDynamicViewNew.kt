@@ -38,7 +38,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.TagsItem
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
-import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE
+import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE_NEW
 import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.util.util.doOnLayout
@@ -221,7 +221,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     private fun bindTracking(feedXCard: FeedXCard) {
-        if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE ) {
+        if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW ) {
                 addOnImpressionListener(feedXCard.impressHolder) {
                     listener?.onImpressionTracking(feedXCard, positionInFeed)
                 }
@@ -351,7 +351,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             spannableString.setSpan(object : ClickableSpan() {
                 override fun onClick(widget: View) {
                     if (isTopads) {
-                               listener?.onFollowClickAds(positionInFeed,shopId,adId,true,cpmData.adClickUrl)
+                        listener?.onFollowClickAds(positionInFeed, shopId, adId)
                     } else {
                         listener?.onHeaderActionClick(
                             positionInFeed, author.id,
@@ -382,6 +382,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
         shopName.text = spannableString
         shopName.movementMethod = LinkMovementMethod.getInstance()
         followers.transitionFollow = false
+
+        shopName.setOnClickListener {
+            sendHeaderTopadsEvent(positionInFeed, author.appLink, cpmData, true)
+        }
+        shopBadge.setOnClickListener {
+            sendHeaderTopadsEvent(positionInFeed, author.appLink, cpmData, true)
+        }
         shopImage.setOnClickListener {
             listener?.onAvatarClick(
                 positionInFeed,
@@ -395,7 +402,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 isVideo,
                 false
             )
-            topAdsListener?.onTopAdsHeadlineAdsClick(positionInFeed,author.appLink,cpmData,true)
+            sendHeaderTopadsEvent(positionInFeed,author.appLink,cpmData,true)
         }
         shopMenuIcon.setOnClickListener {
             listener?.onMenuClick(
@@ -810,7 +817,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 topAdsCard.show()
                                 topAdsCard.setOnClickListener {
                                     RouteManager.route(context,feedMedia.appLink)
-                                    listener?.onClickSekSekarang(feedXCard.id,feedXCard.shopId, TYPE_TOPADS_HEADLINE,feedXCard.followers.isFollowed)
+                                    listener?.onClickSekSekarang(feedXCard.id,feedXCard.shopId, TYPE_TOPADS_HEADLINE_NEW,feedXCard.followers.isFollowed, positionInFeed)
                                 }
                                 if (feedMedia.variant == TOPADS_VARIANT_EXPERIMENT_CLEAN) {
                                    // group.hide()
@@ -955,14 +962,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             productTag?.setOnClickListener {
                                 listener?.let { listener ->
                                     listener.onTagClicked(
-                                        postId,
-                                        tagProducts,
-                                        listener,
-                                        feedXCard.author.id,
-                                        feedXCard.typename,
-                                        feedXCard.followers.isFollowed,
-                                        false,
-                                        positionInFeed
+                                            postId,
+                                            tagProducts,
+                                            listener,
+                                            feedXCard.author.id,
+                                            feedXCard.typename,
+                                            feedXCard.followers.isFollowed,
+                                            false,
+                                            positionInFeed
                                     )
                                 }
                             }
@@ -1037,14 +1044,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
             video_tag_text?.setOnClickListener {
                 listener?.let { listener ->
                     listener.onTagClicked(
-                        postId.toIntOrZero(),
-                        products,
-                        listener,
-                        id,
-                        type,
-                        isFollowed,
-                        true,
-                        positionInFeed
+                            postId.toIntOrZero(),
+                            products,
+                            listener,
+                            id,
+                            type,
+                            isFollowed,
+                            true,
+                            positionInFeed
                     )
                 }
             }
@@ -1465,5 +1472,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
         }
         return isInflatedBubbleShowing
+    }
+
+    private fun sendHeaderTopadsEvent(positionInFeed: Int, appLink: String, cpmData: CpmData, isNewVariant: Boolean) {
+        topAdsListener?.onTopAdsHeadlineAdsClick(positionInFeed, appLink, cpmData, isNewVariant)
     }
 }

@@ -979,9 +979,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onPostTagBubbleClick(
-        positionInFeed: Int,
-        redirectUrl: String,
-        postTagItem: FeedXProduct,
+            positionInFeed: Int,
+            redirectUrl: String,
+            postTagItem: FeedXProduct,
+            adClickUrl: String,
     ) {
         TODO("Not yet implemented")
     }
@@ -1263,14 +1264,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onTagClicked(
-        postId: Int,
-        products: List<FeedXProduct>,
-        listener: DynamicPostViewHolder.DynamicPostListener,
-        id: String,
-        type: String,
-        isFollowed: Boolean,
-        isVideo: Boolean,
-        positionInFeed: Int
+            postId: Int,
+            products: List<FeedXProduct>,
+            listener: DynamicPostViewHolder.DynamicPostListener,
+            id: String,
+            type: String,
+            isFollowed: Boolean,
+            isVideo: Boolean,
+            positionInFeed: Int
     ) {
     }
 
@@ -2056,9 +2057,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     }
 
-    override fun onFollowClickAds(positionInFeed: Int, shopId: String, adId: String, isNewVariant: Boolean, adClickUrl: String) {
+    override fun onFollowClickAds(positionInFeed: Int, shopId: String, adId: String) {
     }
 
-    override fun onClickSekSekarang(postId: String, shopId: String, type: String, isFollowed: Boolean) {
+    override fun onClickSekSekarang(postId: String, shopId: String, type: String, isFollowed: Boolean, positionInFeed: Int) {
     }
 }

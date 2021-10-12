@@ -48,10 +48,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
-import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
-import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE
-import com.tokopedia.feedcomponent.domain.mapper.TopAdsHeadlineActivityCounter
+import com.tokopedia.feedcomponent.domain.mapper.*
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
@@ -1798,9 +1795,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onPostTagBubbleClick(
-        positionInFeed: Int,
-        redirectUrl: String,
-        postTagItem: FeedXProduct
+            positionInFeed: Int,
+            redirectUrl: String,
+            postTagItem: FeedXProduct,
+            adClickUrl: String
     ) {
         if (adapter.getlist()[positionInFeed] is DynamicPostUiModel) {
             val item = (adapter.getlist()[positionInFeed] as DynamicPostUiModel)
@@ -1812,6 +1810,23 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 item.feedXCard.followers.isFollowed,
                 item.feedXCard.author.id
             )
+        }
+
+        if (adapter.getlist()[positionInFeed] is TopadsHeadLineV2Model) {
+            val item = (adapter.getlist()[positionInFeed] as TopadsHeadLineV2Model)
+            val isFollowed = item.cpmModel?.data?.firstOrNull()?.cpm?.cpmShop?.isFollowed
+            val id  = item.cpmModel?.data?.get(0)?.id?:""
+            if (isFollowed != null) {
+                feedAnalytics.eventClickPostTagitem(
+                        id,
+                        postTagItem,
+                        0,
+                        TYPE_TOPADS_HEADLINE_NEW,
+                        isFollowed,
+                        id
+                )
+            }
+            sendTopadsUrlClick(adClickUrl)
         }
         onGoToLink(redirectUrl)
     }
@@ -1857,8 +1872,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             cpmData: CpmData,
             products: List<Product>
     ) {
-        if (type == TYPE_TOPADS_HEADLINE) {
-            onTopAdsProductItemListsner(positionInFeed, products[positionInFeed], cpmData, true)
+        if (type == TYPE_TOPADS_HEADLINE_NEW) {
+            onTopAdsProductItemListsner(positionInFeed, products[positionInFeed], cpmData)
             TopAdsGtmTracker.eventTopAdsHeadlineShopView(postPosition, cpmData, "", userSession.userId)
         }
         feedAnalytics.eventImpression(
@@ -2057,14 +2072,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onTagClicked(
-        postId: Int,
-        products: List<FeedXProduct>,
-        listener: DynamicPostViewHolder.DynamicPostListener,
-        id: String,
-        type: String,
-        isFollowed: Boolean,
-        isVideo: Boolean,
-        positionInFeed: Int
+            postId: Int,
+            products: List<FeedXProduct>,
+            listener: DynamicPostViewHolder.DynamicPostListener,
+            id: String,
+            type: String,
+            isFollowed: Boolean,
+            isVideo: Boolean,
+            positionInFeed: Int
     ) {
         productTagBS = ProductItemInfoBottomSheet()
         feedAnalytics.eventTagClicked(postId.toString(), type, isFollowed, id, isVideo)
@@ -2680,7 +2695,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     feedAnalytics.eventClickFollowitem(
                             id,
                             adapterPosition,
-                            TYPE_TOPADS_HEADLINE,
+                            TYPE_TOPADS_HEADLINE_NEW,
                             !isFollowed,
                             id
                     )
@@ -3051,12 +3066,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedViewModel.doToggleFavoriteShop(positionInFeed, 0, shopId)
     }
 
-    override fun onFollowClickAds(positionInFeed: Int, shopId: String, adId: String, isNewVariant: Boolean, adClickUrl: String) {
+    override fun onFollowClickAds(positionInFeed: Int, shopId: String, adId: String) {
         onFollowClick(positionInFeed, shopId, adId)
-        sendTopadsUrlClick(adClickUrl, "", "", "")
+        sendTopadsUrlClick(getAdClickUrl(positionInFeed))
     }
 
-    override fun onClickSekSekarang(postId: String, shopId: String, type: String, isFollowed: Boolean) {
+    override fun onClickSekSekarang(postId: String, shopId: String, type: String, isFollowed: Boolean, positionInFeed: Int) {
+        sendTopadsUrlClick(getAdClickUrl(positionInFeed = positionInFeed))
         feedAnalytics?.clickSekSekarang(postId,shopId,type,isFollowed)
     }
 
@@ -3092,6 +3108,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, cpmData: CpmData, isNewVariant:Boolean) {
         if (!isNewVariant) {
             RouteManager.route(context, applink)
+        } else{
+            sendTopadsUrlClick(getAdClickUrl(position))
         }
         var eventAction = ""
         val eventLabel = "${cpmData.id} - ${cpmData.cpm.cpmShop.id}"

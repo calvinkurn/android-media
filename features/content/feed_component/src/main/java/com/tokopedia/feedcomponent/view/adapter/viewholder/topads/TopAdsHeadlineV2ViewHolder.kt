@@ -13,14 +13,10 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.mapper.TopadsFeedXMapper.cpmModelToFeedXDataModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.widget.PostDynamicViewNew
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
-import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
-import com.tokopedia.topads.sdk.listener.TopAdsShopFollowBtnClickListener
 import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
@@ -35,7 +31,7 @@ open class TopAdsHeadlineV2ViewHolder(
     private val videoViewListener: VideoViewHolder.VideoViewListener,
     private val gridItemListener: GridPostAdapter.GridItemListener,
     private val imagePostListener: ImagePostViewHolder.ImagePostListener
-) : AbstractViewHolder<TopadsHeadLineV2Model>(view), TopAdsShopFollowBtnClickListener, TopAdsBannerClickListener {
+) : AbstractViewHolder<TopadsHeadLineV2Model>(view) {
 
     private val topadsHeadlineView =  TopAdsHeadlineView(itemView.context)
     private val topadsPostDynamic: PostDynamicViewNew = view.findViewById(R.id.item_post_dynamic_view)
@@ -121,16 +117,10 @@ open class TopAdsHeadlineV2ViewHolder(
         }
     }
 
-    override fun onFollowClick(shopId: String, ads_id: String) {
-    }
-
     private fun setImpressionListener(element: TopadsHeadLineV2Model) {
         element.cpmModel?.let {
                 topAdsHeadlineListener?.onTopAdsHeadlineImpression(adapterPosition, it,true)
         }
-    }
-
-    override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
     }
 
     private fun hideTopadsView(){

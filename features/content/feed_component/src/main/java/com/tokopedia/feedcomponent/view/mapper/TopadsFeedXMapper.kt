@@ -2,7 +2,7 @@ package com.tokopedia.feedcomponent.view.mapper
 
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.*
-import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE
+import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE_NEW
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.Product
@@ -67,7 +67,7 @@ object TopadsFeedXMapper {
         )
 
         return FeedXCard(
-            typename = TYPE_TOPADS_HEADLINE,
+            typename = TYPE_TOPADS_HEADLINE_NEW,
             id = cpmData.data[0].id,
             publishedAt = "",
             reportable = true,
@@ -153,7 +153,8 @@ object TopadsFeedXMapper {
                 id = id,
                 webLink = applinks,
                 authorName = authorName,
-                isTopads = true
+                isTopads = true,
+                adClickUrl = imageProduct.imageClickUrl
             )
         }
     }

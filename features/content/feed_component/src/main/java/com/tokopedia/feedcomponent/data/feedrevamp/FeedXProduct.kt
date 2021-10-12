@@ -54,5 +54,6 @@ data class FeedXProduct(
         var productName : String= "",
         val slashedPrice : String = "",
         val authorName : String = "",
-        val isTopads: Boolean = false
+        val isTopads: Boolean = false,
+        val adClickUrl: String = ""
         )

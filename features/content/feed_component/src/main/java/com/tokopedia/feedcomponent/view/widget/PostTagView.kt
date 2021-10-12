@@ -9,7 +9,6 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.util.util.*
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
@@ -112,7 +111,7 @@ class PostTagView @JvmOverloads constructor(
             0
         )
         productTagExpandedView.setOnClickListener {
-            listener?.onPostTagBubbleClick(positionInFeed, product.appLink, product)
+            listener?.onPostTagBubbleClick(positionInFeed, product.appLink, product , product.adClickUrl)
         }
 
         productTagExpandedView.doOnLayout {

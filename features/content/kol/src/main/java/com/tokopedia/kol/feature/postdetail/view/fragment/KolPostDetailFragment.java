@@ -1067,17 +1067,17 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onPostTagBubbleClick(int positionInFeed, @NonNull String redirectUrl, @NonNull FeedXProduct postTagItem) {
+    public void onPostTagBubbleClick(int positionInFeed, @NotNull String redirectUrl, @NotNull FeedXProduct postTagItem, @NotNull String adClickUrl) {
 
     }
 
     @Override
-    public void onClickSekSekarang(@NonNull String postId, @NonNull String shopId, @NonNull String type, boolean isFollowed) {
+    public void onClickSekSekarang(@NotNull String postId, @NotNull String shopId, @NotNull String type, boolean isFollowed, int positionInFeed) {
 
     }
 
     @Override
-    public void onFollowClickAds(int positionInFeed, @NonNull String shopId, @NonNull String adId, boolean isNewVariant, @NonNull String adClickUrl) {
+    public void onFollowClickAds(int positionInFeed, @NonNull String shopId, @NonNull String adId) {
 
     }
 
