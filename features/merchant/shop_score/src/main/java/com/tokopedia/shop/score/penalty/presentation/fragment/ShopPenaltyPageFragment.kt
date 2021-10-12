@@ -138,8 +138,8 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
 
     override fun onClickFilterApplied(penaltyFilterUiModelList: List<PenaltyFilterUiModel>) {
         val typePenaltyList =
-            penaltyFilterUiModelList.find { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }?.chipsFilterList?.toList()
-        val chipsPenaltyMap = typePenaltyList.chipsPenaltyMapToItemSortFilter().toList()
+            penaltyFilterUiModelList.find { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }?.chipsFilterList
+        val chipsPenaltyMap = typePenaltyList.chipsPenaltyMapToItemSortFilter()
 
         viewModelShopPenalty.setItemSortFilterWrapperList(
             penaltyFilterUiModelList,
