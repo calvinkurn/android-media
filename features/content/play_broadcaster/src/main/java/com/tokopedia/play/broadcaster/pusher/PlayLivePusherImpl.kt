@@ -66,6 +66,7 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
 
     override fun startPreview(surfaceView: SurfaceAspectRatioView) {
         if (streamer == null) createStreamer(surfaceView)
+        streamer?.setSurface(surfaceView.surfaceHolder.surface)
         safeStartPreview()
     }
 
