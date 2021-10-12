@@ -1,16 +1,12 @@
 package com.tokopedia.attachproduct.di
 
 import android.content.Context
-import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.attachproduct.R
-import com.tokopedia.attachproduct.data.source.url.AttachProductUrl
-import com.tokopedia.attachproduct.domain.usecase.NewAttachProductUseCase
-import com.tokopedia.config.GlobalConfig
+import com.tokopedia.attachproduct.domain.usecase.AttachProductUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.NetworkRouter
@@ -25,7 +21,7 @@ import kotlinx.coroutines.Dispatchers
  * Created by Hendri on 19/02/18.
  */
 @Module
-class NewAttachProductModule(private val context: Context) {
+class AttachProductModule(private val context: Context) {
 
     @Provides
     @AttachProductContext
@@ -79,7 +75,7 @@ class NewAttachProductModule(private val context: Context) {
 
     @Provides
     @AttachProductScope
-    fun provideUseCase(repository: GraphqlRepository, query: String): NewAttachProductUseCase {
-        return NewAttachProductUseCase(repository, query, Dispatchers.IO)
+    fun provideUseCase(repository: GraphqlRepository, query: String): AttachProductUseCase {
+        return AttachProductUseCase(repository, query, Dispatchers.IO)
     }
 }

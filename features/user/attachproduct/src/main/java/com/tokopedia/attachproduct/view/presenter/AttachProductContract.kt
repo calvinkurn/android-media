@@ -4,7 +4,7 @@ import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachproduct.view.uimodel.NewAttachProductItemUiModel
 import java.util.*
 
-interface NewAttachProductContract {
+interface AttachProductContract {
     interface View {
         fun addProductToList(productNews: List<NewAttachProductItemUiModel>, hasNextPage: Boolean)
         fun hideAllLoadingIndicator()

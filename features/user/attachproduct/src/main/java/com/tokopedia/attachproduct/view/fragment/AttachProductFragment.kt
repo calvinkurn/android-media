@@ -28,13 +28,11 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst.AttachProduct
 import com.tokopedia.attachproduct.R
 import com.tokopedia.attachproduct.analytics.NewAttachProductAnalytics
-import com.tokopedia.attachproduct.di.NewAttachProductModule
-import com.tokopedia.attachproduct.di.DaggerNewAttachProductComponent
-import com.tokopedia.attachproduct.view.activity.NewAttachProductActivity
+import com.tokopedia.attachproduct.di.AttachProductModule
+import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.attachproduct.view.adapter.NewAttachProductListAdapter
 import com.tokopedia.attachproduct.view.adapter.NewAttachProductListAdapterTypeFactory
 import com.tokopedia.attachproduct.view.presenter.AttachProductContract
-import com.tokopedia.attachproduct.view.presenter.NewAttachProductContract
 import com.tokopedia.attachproduct.view.uimodel.NewAttachProductItemUiModel
 import com.tokopedia.attachproduct.view.viewholder.NewCheckableInteractionListenerWithPreCheckedAction
 import com.tokopedia.attachproduct.view.viewmodel.AttachProductViewModel
@@ -48,7 +46,7 @@ import javax.inject.Inject
 /**
  * Created by Hendri on 13/02/18.
  */
-class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, NewAttachProductListAdapterTypeFactory>(), NewCheckableInteractionListenerWithPreCheckedAction, NewAttachProductContract.View {
+class AttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, NewAttachProductListAdapterTypeFactory>(), NewCheckableInteractionListenerWithPreCheckedAction, AttachProductContract.View {
     private lateinit var sendButton: Button
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var searchBar: SearchBarUnify
@@ -66,7 +64,7 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
     private var source = ""
     private var shopId = ""
     private var warehouseId = "0"
-    private var maxChecked = NewAttachProductActivity.MAX_CHECKED_DEFAULT
+    private var maxChecked = AttachProductActivity.MAX_CHECKED_DEFAULT
     private var hiddenProducts: ArrayList<String>? = ArrayList()
 
     fun setActivityContract(activityContract: AttachProductContract.Activity?) {
@@ -78,7 +76,7 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
     }
 
     override fun initInjector() {
-            DaggerNewAttachProductComponent.builder().newAttachProductModule(NewAttachProductModule(requireContext())).baseAppComponent(
+            DaggerNewAttachProductComponent.builder().newAttachProductModule(AttachProductModule(requireContext())).baseAppComponent(
             (requireActivity().application as BaseMainApplication).baseAppComponent
         ).build().inject(this)
     }
@@ -96,12 +94,12 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
             isSeller = savedInstanceState.getBoolean(IS_SELLER, false)
             shopId = savedInstanceState.getString(SHOP_ID, "")
             source = savedInstanceState.getString(SOURCE, "")
-            maxChecked = savedInstanceState.getInt(MAX_CHECKED, NewAttachProductActivity.MAX_CHECKED_DEFAULT)
+            maxChecked = savedInstanceState.getInt(MAX_CHECKED, AttachProductActivity.MAX_CHECKED_DEFAULT)
             hiddenProducts = savedInstanceState.getStringArrayList(HIDDEN_PRODUCTS)
         } else if (arguments != null) {
             isSeller = requireArguments().getBoolean(IS_SELLER, false)
             source = requireArguments().getString(SOURCE, "")
-            maxChecked = requireArguments().getInt(MAX_CHECKED, NewAttachProductActivity.MAX_CHECKED_DEFAULT)
+            maxChecked = requireArguments().getInt(MAX_CHECKED, AttachProductActivity.MAX_CHECKED_DEFAULT)
             hiddenProducts = requireArguments().getStringArrayList(HIDDEN_PRODUCTS)
         }
         updateButtonBasedOnChecked(adapter.checkedCount)
@@ -372,7 +370,7 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
     }
 
     private fun trackAction(source: String, productId: String) {
-        if (source == NewAttachProductActivity.SOURCE_TALK) {
+        if (source == AttachProductActivity.SOURCE_TALK) {
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 NewAttachProductAnalytics.getEventCheckProductTalk(productId).event
             )
@@ -403,7 +401,7 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
             checkedUIView: AttachProductContract.Activity?,
             isSeller: Boolean, source: String?, maxChecked: Int,
             hiddenProducts: ArrayList<String>?, warehouseId: String?, shopId: String
-        ): NewAttachProductFragment {
+        ): AttachProductFragment {
             val args = Bundle()
             args.putString(SHOP_ID, shopId)
             args.putBoolean(IS_SELLER, isSeller)
@@ -411,7 +409,7 @@ class NewAttachProductFragment : BaseListFragment<NewAttachProductItemUiModel, N
             args.putString(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_WAREHOUSE_ID, warehouseId)
             args.putInt(MAX_CHECKED, maxChecked)
             args.putStringArrayList(HIDDEN_PRODUCTS, hiddenProducts)
-            val fragment = NewAttachProductFragment()
+            val fragment = AttachProductFragment()
             fragment.setActivityContract(checkedUIView)
             fragment.arguments = args
             return fragment

@@ -3,8 +3,8 @@ package com.tokopedia.attachproduct.data.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class NewAttachProductApiResponseWrapper {
-    @SerializedName("products")
+class AceResponseWrapper {
+    @SerializedName("data")
     @Expose
-    var products: List<NewDataProductResponse> = listOf()
+    var data: AttachProductApiResponseWrapper = AttachProductApiResponseWrapper()
 }

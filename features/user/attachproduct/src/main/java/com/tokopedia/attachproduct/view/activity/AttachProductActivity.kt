@@ -10,14 +10,13 @@ import com.tokopedia.applink.ApplinkConst.AttachProduct
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachproduct.R
-import com.tokopedia.attachproduct.view.fragment.AttachProductFragment
-import com.tokopedia.attachproduct.view.fragment.NewAttachProductFragment.Companion.newInstance
+import com.tokopedia.attachproduct.view.fragment.AttachProductFragment.Companion.newInstance
 import com.tokopedia.attachproduct.view.presenter.AttachProductContract
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import java.util.*
 
-class NewAttachProductActivity : BaseSimpleActivity(), AttachProductContract.Activity {
+class AttachProductActivity : BaseSimpleActivity(), AttachProductContract.Activity {
 
     private var warehouseId = "0"
     private var shopId = ""
@@ -32,11 +31,6 @@ class NewAttachProductActivity : BaseSimpleActivity(), AttachProductContract.Act
         const val MAX_CHECKED_DEFAULT = 3
         const val TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK = 324
         const val SOURCE_TALK = "talk"
-        const val USE_NEW_FRAGMENT_REMOTE_CONFIG = "attach_product_use_new_fragment"
-    }
-
-    private fun isUseNewFragment(): Boolean {
-        return remoteConfig.getBoolean(USE_NEW_FRAGMENT_REMOTE_CONFIG, false)
     }
 
     private fun setupParam() {
@@ -68,20 +62,13 @@ class NewAttachProductActivity : BaseSimpleActivity(), AttachProductContract.Act
     }
 
     override fun getNewFragment(): Fragment {
-        var fragment = supportFragmentManager.findFragmentByTag(tagFragment)
+        val fragment = supportFragmentManager.findFragmentByTag(tagFragment)
         return if (fragment != null) {
             fragment
         } else {
-            fragment = if (isUseNewFragment()) {
-                newInstance(
-                    this, isSeller, source, maxChecked, hiddenProducts,
-                    warehouseId, shopId)
-            } else {
-                AttachProductFragment.newInstance(this, isSeller, source,
-                    maxChecked, hiddenProducts, warehouseId)
-            }
-
-            fragment
+            newInstance(
+                this, isSeller, source, maxChecked, hiddenProducts,
+                warehouseId, shopId)
         }
     }
 
@@ -102,20 +89,10 @@ class NewAttachProductActivity : BaseSimpleActivity(), AttachProductContract.Act
         toolbar.subtitle = shopName
     }
 
-    //is used for old fragment
-    override fun isSeller(): Boolean {
-        return isSeller
-    }
-
-    //is used for old fragment
-    override fun getShopId(): String {
-        return shopId
-    }
-
     override fun finishActivityWithResult(products: ArrayList<ResultProduct>) {
         val data = Intent()
         data.putParcelableArrayListExtra(AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY, products)
-        setResult(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK, data)
+        setResult(TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK, data)
         finish()
     }
 

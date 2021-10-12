@@ -1,7 +1,7 @@
 package com.tokopedia.attachproduct.domain.model
 
-import com.tokopedia.attachproduct.data.model.NewDataProductResponse
+import com.tokopedia.attachproduct.data.model.DataProductResponse
 
 data class NewAttachProductDomainModel(
-    var productNews: List<NewDataProductResponse> = emptyList()
+    var products: List<DataProductResponse> = emptyList()
 )

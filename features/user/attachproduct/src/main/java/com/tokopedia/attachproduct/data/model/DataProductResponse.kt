@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class NewDataProductResponse (
+data class DataProductResponse (
     @SerializedName("url")
     var productUrl: String = "",
 
@@ -29,7 +29,7 @@ data class NewDataProductResponse (
     var priceInt: Int = 0,
 
     @SerializedName("shop")
-    val shop: NewDataShopResponse = NewDataShopResponse(),
+    val shop: DataShopResponse = DataShopResponse(),
 
     @SerializedName("originalPrice")
     val originalPrice: String = "",

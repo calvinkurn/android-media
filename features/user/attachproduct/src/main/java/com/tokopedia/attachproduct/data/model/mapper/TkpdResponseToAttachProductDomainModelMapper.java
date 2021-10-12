@@ -1,8 +1,5 @@
 package com.tokopedia.attachproduct.data.model.mapper;
 
-import com.tokopedia.attachproduct.data.model.AceResponseWrapper;
-import com.tokopedia.attachproduct.domain.model.AttachProductDomainModel;
-
 import javax.inject.Inject;
 
 import retrofit2.Response;

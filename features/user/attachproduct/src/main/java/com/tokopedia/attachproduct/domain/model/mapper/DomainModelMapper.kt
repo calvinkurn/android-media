@@ -5,7 +5,7 @@ import com.tokopedia.attachproduct.domain.model.NewAttachProductDomainModel
 import com.tokopedia.attachproduct.view.uimodel.NewAttachProductItemUiModel
 
 fun NewAttachProductDomainModel.toDomainModelMapper(): List<NewAttachProductItemUiModel> {
-   return this.productNews.map { product ->
+   return this.products.map { product ->
        product.mapToAttachUiModel()
    }
 }

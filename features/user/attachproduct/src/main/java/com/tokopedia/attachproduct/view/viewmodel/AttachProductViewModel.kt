@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachproduct.data.model.mapper.mapToListProduct
 import com.tokopedia.attachproduct.domain.model.mapper.toDomainModelMapper
-import com.tokopedia.attachproduct.domain.usecase.NewAttachProductUseCase
-import com.tokopedia.attachproduct.view.presenter.NewAttachProductContract
+import com.tokopedia.attachproduct.domain.usecase.AttachProductUseCase
+import com.tokopedia.attachproduct.view.presenter.AttachProductContract
 import com.tokopedia.attachproduct.view.uimodel.NewAttachProductItemUiModel
 import com.tokopedia.usecase.coroutines.*
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -16,8 +16,8 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AttachProductViewModel @Inject constructor
-    (private val useCaseNew: NewAttachProductUseCase, private val dispatcher: CoroutineDispatchers)
-    : BaseViewModel(dispatcher.io), NewAttachProductContract.Presenter {
+    (private val useCase: AttachProductUseCase, private val dispatcher: CoroutineDispatchers)
+    : BaseViewModel(dispatcher.io), AttachProductContract.Presenter {
 
     private val _products = MutableLiveData<Result<List<NewAttachProductItemUiModel>>>()
     private val _cacheList = mutableListOf<NewAttachProductItemUiModel>()
@@ -38,7 +38,7 @@ class AttachProductViewModel @Inject constructor
 
     override fun loadProductData(query: String, shopId: String, page: Int, warehouseId: String) {
         launchCatchError(block = {
-            val result = useCaseNew(generateParam(query, shopId, page, warehouseId))
+            val result = useCase(generateParam(query, shopId, page, warehouseId))
 
             withContext(dispatcher.main) {
                 val resultModel = result.mapToListProduct().toDomainModelMapper()

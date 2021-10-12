@@ -1,8 +1,5 @@
 package com.tokopedia.attachproduct.domain.util;
 
-import com.tokopedia.attachproduct.data.model.DataProductResponse;
-import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel;
-
 /**
  * Created by Hendri on 14/02/18.
  */

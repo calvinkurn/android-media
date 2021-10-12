@@ -10,9 +10,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder;
-import com.tokopedia.attachproduct.view.viewholder.AttachProductEmptyResultViewHolder;
-import com.tokopedia.attachproduct.view.viewholder.AttachProductListItemViewHolder;
-import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel;
 
 /**
  * Created by Hendri on 14/02/18.

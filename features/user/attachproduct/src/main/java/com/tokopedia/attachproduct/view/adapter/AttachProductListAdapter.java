@@ -3,7 +3,6 @@ package com.tokopedia.attachproduct.view.adapter;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel;
 
 import java.util.ArrayList;
 import java.util.HashSet;

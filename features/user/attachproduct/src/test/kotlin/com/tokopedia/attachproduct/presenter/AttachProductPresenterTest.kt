@@ -1,10 +1,6 @@
 package com.tokopedia.attachproduct.presenter
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.attachproduct.domain.usecase.AttachProductUseCase
-import com.tokopedia.attachproduct.view.presenter.AttachProductContract
-import com.tokopedia.attachproduct.view.presenter.AttachProductPresenter
-import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.Assert.assertTrue

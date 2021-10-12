@@ -2,9 +2,6 @@ package com.tokopedia.attachproduct.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.attachproduct.data.repository.AttachProductRepository
-import com.tokopedia.attachproduct.domain.model.mapper.DataModelToDomainModelMapper
-import com.tokopedia.attachproduct.domain.usecase.AttachProductUseCase
-import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK

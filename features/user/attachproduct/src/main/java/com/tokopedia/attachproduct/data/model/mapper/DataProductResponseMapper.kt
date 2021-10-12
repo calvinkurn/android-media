@@ -1,9 +1,9 @@
 package com.tokopedia.attachproduct.data.model.mapper
 
-import com.tokopedia.attachproduct.data.model.NewDataProductResponse
+import com.tokopedia.attachproduct.data.model.DataProductResponse
 import com.tokopedia.attachproduct.view.uimodel.NewAttachProductItemUiModel
 
-fun NewDataProductResponse.mapToAttachUiModel(): NewAttachProductItemUiModel {
+fun DataProductResponse.mapToAttachUiModel(): NewAttachProductItemUiModel {
     return NewAttachProductItemUiModel(this.productUrl,
         this.productName, this.productId
         , this.productImageFull, this.productImage

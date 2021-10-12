@@ -1,7 +1,5 @@
 package com.tokopedia.attachproduct.analytics;
 
-import com.tokopedia.attachproduct.view.tracking.AttachProductEventTracking;
-
 /**
  * Created by Hendri on 02/03/18.
  */
