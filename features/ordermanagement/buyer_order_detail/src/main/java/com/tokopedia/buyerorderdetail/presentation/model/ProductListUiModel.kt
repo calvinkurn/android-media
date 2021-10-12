@@ -1,10 +1,12 @@
 package com.tokopedia.buyerorderdetail.presentation.model
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.kotlin.extensions.view.orZero
 
 data class ProductListUiModel(
         val productList: List<ProductUiModel>,
+        val productBundlingList: List<ProductBundlingUiModel>?,
         val productListHeaderUiModel: ProductListHeaderUiModel
 ) {
     data class ProductListHeaderUiModel(
@@ -51,4 +53,17 @@ data class ProductListUiModel(
             return true
         }
     }
+
+    data class ProductBundlingUiModel(
+            val bundleName: String,
+            val bundleIconUrl: String,
+            val totalPrice: Double,
+            val totalPriceText: String,
+            val bundleItemList: List<ProductUiModel>
+    ) : Visitable<BuyerOrderDetailTypeFactory> {
+        override fun type(typeFactory: BuyerOrderDetailTypeFactory): Int {
+            return typeFactory.type(this)
+        }
+    }
+
 }

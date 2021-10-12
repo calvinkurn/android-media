@@ -38,12 +38,33 @@ class GetWaitingPaymentOrderUseCase @Inject constructor(
                   order_id
                   buyer_name
                   payment_deadline
+                  have_product_bundle
                   products {
                     product_id
                     product_name
                     product_picture
                     product_qty
                     product_price
+                  }
+                  bundle_detail {
+                    product_bundling_icon
+                    bundle {
+                      bundle_name
+                      order_detail {
+                        product_id
+                        product_name
+                        product_picture
+                        product_qty
+                        product_price
+                      }
+                    }
+                    non_bundle {
+                      product_id
+                      product_name
+                      product_picture
+                      product_qty
+                      product_price
+                    }
                   }
                 }
                 cursor_payment_deadline

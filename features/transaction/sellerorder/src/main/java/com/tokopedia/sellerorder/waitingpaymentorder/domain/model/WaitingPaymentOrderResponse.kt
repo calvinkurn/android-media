@@ -44,9 +44,17 @@ data class WaitingPaymentOrderResponse(
                     @Expose
                     val buyerNameAndPlace: String = "",
 
+                    @SerializedName("have_product_bundle")
+                    @Expose
+                    val haveProductBundle: Boolean = false,
+
                     @SerializedName("products")
                     @Expose
-                    val products: List<Product> = listOf()
+                    val products: List<Product> = listOf(),
+
+                    @SerializedName("bundle_detail")
+                    @Expose
+                    val bundleDetail: BundleDetail? = null
             ) {
                 data class Product(
                         @SerializedName("product_id")
@@ -69,6 +77,30 @@ data class WaitingPaymentOrderResponse(
                         @Expose
                         val price: String = ""
                 )
+
+                data class BundleDetail(
+                    @SerializedName("product_bundling_icon")
+                    @Expose
+                    val productBundlingIcon: String = "",
+
+                    @SerializedName("bundle")
+                    @Expose
+                    val bundle: List<Bundle> = listOf(),
+
+                    @SerializedName("non_bundle")
+                    @Expose
+                    val nonBundle: List<Product> = listOf()
+                ) {
+                    data class Bundle(
+                        @SerializedName("bundle_name")
+                        @Expose
+                        val name: String = "",
+
+                        @SerializedName("order_detail")
+                        @Expose
+                        val products: List<Product> = listOf()
+                    )
+                }
             }
         }
     }

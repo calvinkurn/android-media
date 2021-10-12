@@ -34,8 +34,6 @@ class BuyerRequestCancelActivity : BaseSimpleActivity(), HasComponent<OrderDetai
         } else {
             bundle.putString(BuyerConsts.PARAM_SHOP_NAME, "")
             bundle.putString(BuyerConsts.PARAM_INVOICE, "")
-            bundle.putSerializable(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT, null)
-            bundle.putSerializable(BuyerConsts.PARAM_JSON_LIST_PRODUCT, null)
             bundle.putString(BuyerConsts.PARAM_ORDER_ID, "")
             bundle.putString(BuyerConsts.PARAM_URI, "")
             bundle.putBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED, false)

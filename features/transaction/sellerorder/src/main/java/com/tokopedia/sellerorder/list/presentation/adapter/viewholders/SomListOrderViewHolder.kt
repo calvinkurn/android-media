@@ -183,7 +183,8 @@ open class SomListOrderViewHolder(
                     setMargin(12.toPx(), 11f.dpToPx().toInt(), 0, 0)
                 }
             }
-            element.orderProduct.firstOrNull()?.let { product ->
+            val displayedProduct = element.orderProduct.firstOrNull()
+            displayedProduct?.let { product ->
                 val productName = product.productName.split(" - ").firstOrNull().orEmpty().trim()
                 val productVariant = product.productName.split(" - ").takeIf { it.size > 1 }?.lastOrNull().orEmpty().replace(Regex("\\s*,\\s*"), " | ").trim()
 
@@ -208,8 +209,8 @@ open class SomListOrderViewHolder(
                     showWithCondition(productVariant.isNotBlank())
                 }
                 tvSomListProductExtra.apply {
-                    text = getString(R.string.som_list_more_products, (element.orderProduct.size - 1).toString())
-                    showWithCondition(element.orderProduct.size > 1)
+                    text = getString(R.string.som_list_more_products, (element.productCount - 1).toString())
+                    showWithCondition(element.productCount > 1)
                 }
             }
         }
