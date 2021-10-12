@@ -196,6 +196,13 @@ object ShopPageHomeMapper {
         )
     }
 
+    fun mapToShopHomeFlashSaleTncUiModel(model: ShopHomeCampaignNplTncModel): ShopHomeFlashSaleTncUiModel {
+        return ShopHomeFlashSaleTncUiModel(
+            title = model.title,
+            listMessage = model.listMessage
+        )
+    }
+
     private fun mapToProductCardLabelGroup(labelGroupUiModel: LabelGroupUiModel): ProductCardModel.LabelGroup {
         return ProductCardModel.LabelGroup(
                 position = labelGroupUiModel.position,

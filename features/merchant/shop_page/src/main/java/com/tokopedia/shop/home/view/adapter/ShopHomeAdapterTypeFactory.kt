@@ -42,6 +42,7 @@ class ShopHomeAdapterTypeFactory(
         private val shopHomeCarouselProductListener: ShopHomeCarouselProductListener,
         private val shopProductEtalaseListViewHolderListener: ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener?,
         private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener,
+        private val shopHomeFlashSaleWidgetListener: ShopHomeFlashSaleWidgetListener,
         private val shopProductChangeGridSectionListener: ShopProductChangeGridSectionListener,
         private val playWidgetCoordinator: PlayWidgetCoordinator,
         private val isShowTripleDot: Boolean,
@@ -215,6 +216,7 @@ class ShopHomeAdapterTypeFactory(
             ShopHomeNplCampaignViewHolder.LAYOUT -> {
                 ShopHomeNplCampaignViewHolder(parent, shopHomeCampaignNplWidgetListener)
             }
+            ShopHomeFlashSaleViewHolder.LAYOUT -> return ShopHomeFlashSaleViewHolder(parent, shopHomeFlashSaleWidgetListener)
             ShopHomeProductChangeGridSectionViewHolder.LAYOUT -> ShopHomeProductChangeGridSectionViewHolder(parent, shopProductChangeGridSectionListener)
             CarouselPlayWidgetViewHolder.LAYOUT -> CarouselPlayWidgetViewHolder(PlayWidgetViewHolder(parent, playWidgetCoordinator))
             ShopHomeCarouselProductPersonalizationViewHolder.LAYOUT -> ShopHomeCarouselProductPersonalizationViewHolder(parent, shopHomeCarouselProductListener)

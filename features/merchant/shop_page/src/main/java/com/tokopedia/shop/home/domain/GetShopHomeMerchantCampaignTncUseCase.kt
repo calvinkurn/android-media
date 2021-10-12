@@ -9,19 +9,21 @@ import com.tokopedia.shop.home.data.model.ShopHomeCampaignNplTncModel
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetShopHomeCampaignNplTncUseCase @Inject constructor(
+class GetShopHomeMerchantCampaignTncUseCase @Inject constructor(
         private val gqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<ShopHomeCampaignNplTncModel>() {
 
     companion object {
         private const val KEY_PARAM = "param"
+        private const val BUYER = 0
 
         @JvmStatic
         fun createParams(
                 campaignId: String = ""
         ):Map<String, Any>{
             val paramGetCampaignTnc = GetMerchantCampaignTNCRequest(
-                    campaignId.toIntOrZero()
+                campaignId.toIntOrZero(),
+                BUYER
             )
             return mapOf<String, Any>(
                     KEY_PARAM to paramGetCampaignTnc

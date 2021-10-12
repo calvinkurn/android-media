@@ -139,6 +139,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener,
         ShopHomeCarouselProductListener,
         ShopHomeCampaignNplWidgetListener,
+        ShopHomeFlashSaleWidgetListener,
         ShopProductChangeGridSectionListener,
         SortFilterBottomSheet.Callback,
         PlayWidgetListener,
@@ -2154,6 +2155,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
+    override fun onClickTncFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onTimerFinished(model: ShopHomeFlashSaleUiModel) {
+        TODO("Not yet implemented")
+    }
+
     private fun showNplCampaignTncBottomSheet(campaignId: String, statusCampaign: String, ruleID: String) {
         val bottomSheet = ShopHomeNplCampaignTncBottomSheet.createInstance(
                 campaignId,
@@ -2164,6 +2173,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 ruleID
         )
         bottomSheet.show(childFragmentManager, "")
+    }
+
+    private fun showFlashTncSaleBottomSheet(campaignId: String, statusCampaign: String, ruleID: String) {
+
     }
 
     override fun onClickRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
