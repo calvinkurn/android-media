@@ -10,11 +10,11 @@ import com.tokopedia.imagepicker_insta.models.PhotosData
 import com.tokopedia.imagepicker_insta.models.ZoomInfo
 import com.tokopedia.imagepicker_insta.util.CameraUtil
 import javax.inject.Inject
-import kotlin.math.roundToInt
+import kotlin.math.min
 
 class CropUseCase @Inject constructor() {
 
-    suspend fun cropPhotos(context: Context, imageSize: Int, pairList: List<Pair<ImageAdapterData, ZoomInfo>>) :List<Uri>{
+    suspend fun cropPhotos(context: Context, width: Int, height: Int, pairList: List<Pair<ImageAdapterData, ZoomInfo>>) :List<Uri>{
         val uriList = arrayListOf<Uri>()
         pairList.forEach {
             if (it.second.hasChanged()) {
@@ -26,7 +26,7 @@ class CropUseCase @Inject constructor() {
                         .apply(RequestOptions().override(it.second.bmpWidth!!,it.second.bmpHeight!!))
                         .submit()
                         .get()
-                    val bmp = createTempBitmap(drawable, it.second, imageSize)
+                    val bmp = createTempBitmap(drawable, it.second, width, height)
                     val file = CameraUtil.createMediaFile(context, isImage = true, storeInCache = true)
                     val fos = file.outputStream()
                     bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos)
@@ -44,32 +44,18 @@ class CropUseCase @Inject constructor() {
     }
 
     @Throws(Exception::class)
-    private suspend fun createTempBitmap(bmp: Bitmap?, zoomInfo: ZoomInfo, size: Int): Bitmap {
+    private suspend fun createTempBitmap(bmp: Bitmap?, zoomInfo: ZoomInfo, width: Int, height:Int): Bitmap {
         if (bmp != null && zoomInfo.hasData()) {
-            val translationX: Float = zoomInfo.panX!! * zoomInfo.scale!!
-            val translationY: Float = zoomInfo.panY!! * zoomInfo.scale!!
+            val top = -min(0f,zoomInfo.panY!!).toInt()
+            val left = -min(0f,zoomInfo.panX!!).toInt()
 
-            val x: Float = if (translationX > 0f) 0f else -translationX
-            val y: Float = if (translationY > 0f) 0f else -translationY
-            val left: Int = (x / zoomInfo.scale!!).toInt()
-            val top: Int = (y / zoomInfo.scale!!).toInt()
-            var newWidth: Int = (size / zoomInfo.scale!!).roundToInt()
-            var newHeight: Int = newWidth
-
-            if (top == 0) {
-                newHeight = bmp.height
-            }
-
-            //vertical image
-            if (left == 0) {
-                newHeight = (bmp.height / zoomInfo.scale!!).toInt()
-                newWidth = bmp.width
-            }
+            val w = min(bmp.width.toFloat(),width/zoomInfo.scale!!)
+            val h =  min(bmp.height.toFloat(),height/zoomInfo.scale!!)
 
             //INVALID
-            if ((left + newWidth > bmp.width) || top + newHeight > bmp.height) throw Exception("Invalid params")
+            if ((left + w> bmp.width) || top + h> bmp.height) throw Exception("Invalid crop params")
 
-            return Bitmap.createBitmap(bmp, left, top, newWidth, newHeight)
+            return Bitmap.createBitmap(bmp, left, top, w.toInt(), h.toInt())
 
         }
         throw Exception("Unable to create bitmap")

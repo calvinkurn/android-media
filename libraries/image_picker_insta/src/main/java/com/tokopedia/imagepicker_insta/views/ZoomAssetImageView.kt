@@ -12,10 +12,12 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.otaliastudios.zoom.ZoomEngine
 import com.otaliastudios.zoom.ZoomImageView
 import com.tokopedia.imagepicker_insta.models.Asset
+import com.tokopedia.imagepicker_insta.models.PhotosData
 import com.tokopedia.imagepicker_insta.models.ZoomInfo
 import kotlin.math.max
 import kotlin.math.min
@@ -26,19 +28,54 @@ class ZoomAssetImageView @JvmOverloads constructor(
 
     init {
         setMinZoom(1f)
+        setMaxZoom(5f)
     }
 
     var zoomInfo: ZoomInfo? = null
+    var asset: Asset? = null
     var mediaScaleTypeContract: MediaScaleTypeContract? = null
     private val portraitAR = 4 / 5f
     private val landscapeAR = 16 / 9f
 
+//    private var isMinZoomLocked = false
+
     fun lockMinZoom() {
-        //Do nothing
+//        isMinZoomLocked = true
+//
+//        val updateParams = !(engine.panX<=0 && engine.panY<=0)
+//
+//        if(engine.panX>0){
+//            layoutParams.width = (width - (2*engine.scaledPanX)).toInt()
+//            requestLayout()
+//        } else if (engine.panY>0){
+//            layoutParams.height = (height - (2*engine.scaledPanY)).toInt()
+//        }
+//        if(updateParams){
+//            requestLayout()
+//        }else{
+//            setMinZoom(getCenterCropZoom())
+//        }
     }
 
     fun unLockMinZoom() {
-        //Do nothing
+//        val updateParams = !(width==ViewGroup.LayoutParams.MATCH_PARENT || height==ViewGroup.LayoutParams.MATCH_PARENT)
+//
+//        if (width!=ViewGroup.LayoutParams.MATCH_PARENT){
+//            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+//        }
+//        if (height!=ViewGroup.LayoutParams.MATCH_PARENT){
+//            layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+//        }
+//        if(updateParams) {
+//            requestLayout()
+//        }
+//        isMinZoomLocked = false
+//
+//        if (asset!=null && zoomInfo != null) {
+//            loadAsset(asset!!,zoomInfo!!)
+//        } else {
+//            setMinZoom(1f)
+//        }
     }
 
     fun updateZoomInfo(bmp: Bitmap?, engine: ZoomEngine){
@@ -108,7 +145,40 @@ class ZoomAssetImageView @JvmOverloads constructor(
             val panY = dy / 2f
             engine.moveTo(scale, panX, panY, animate)
             updateZoomInfo(bmp,scale,panX,panY)
+
+//            if(isMinZoomLocked) {
+//                if(getMaxZoom()<= scale){
+//                    setMaxZoom(scale)
+//                }
+//                setMinZoom(scale)
+//            }
         }
+    }
+
+    fun getCenterCropZoom():Float{
+        val bmp = (drawable as? BitmapDrawable)?.bitmap
+        if (bmp != null) {
+
+            val dwidth = bmp.width
+            val dheight = bmp.height
+
+            val vwidth = width - paddingLeft - paddingRight;
+            val vheight = height - paddingTop - paddingBottom;
+
+            var scale: Float
+
+            if (dwidth * vheight > vwidth * dheight) {
+                //Landscape
+                scale = (vheight / dheight.toFloat())
+                scale = max(scale,engine.getMinZoom())
+            } else {
+                //Portrait
+                scale = (vwidth / dwidth.toFloat())
+                scale = max(scale,engine.getMinZoom())
+            }
+            return scale
+        }
+        return 1f
     }
 
     fun centerInside(animate: Boolean) {
@@ -152,12 +222,14 @@ class ZoomAssetImageView @JvmOverloads constructor(
 
     fun loadAsset(asset: Asset, zoomInfo: ZoomInfo) {
         this.zoomInfo = zoomInfo
+        this.asset = asset
 
         if (!isValidGlideContext(context)) return
 
         Glide.with(this)
             .load(asset.contentUri)
             .fitCenter()
+            .apply(RequestOptions().override(width,height))
             .addListener(requestListener)
             .into(this)
     }

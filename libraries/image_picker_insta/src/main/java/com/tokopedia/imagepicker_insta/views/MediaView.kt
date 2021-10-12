@@ -1,5 +1,6 @@
 package com.tokopedia.imagepicker_insta.views
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
@@ -29,7 +30,7 @@ class MediaView @JvmOverloads constructor(
 
     private lateinit var playerView: PlayerView
     private lateinit var playPauseIcon: View
-    private lateinit var assetView: ZoomAssetImageView
+    lateinit var assetView: ZoomAssetImageView
     private var simpleExoPlayer: SimpleExoPlayer? = null
     private val isSdkLowerThanN = Build.VERSION.SDK_INT < Build.VERSION_CODES.N
     private lateinit var dataFactory: DefaultDataSourceFactory
@@ -89,6 +90,7 @@ class MediaView @JvmOverloads constructor(
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setListeners() {
         playerView.setOnTouchListener { _, event ->
             gestureDetector.onTouchEvent(event)
