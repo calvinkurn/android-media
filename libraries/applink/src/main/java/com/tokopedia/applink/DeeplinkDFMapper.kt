@@ -351,6 +351,7 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWithPattern(SHOP_NOTE) ||
                         it.startsWithPattern(SHOP_INFO) ||
                         it.startsWithPattern(SHOP_HOME) ||
+                        it.startsWithPattern(SHOP_SETTINGS_CUSTOMER_APP) ||
                         it.startsWith(SHOP_SETTINGS_NOTE)
             }, DF_BASE, R.string.title_shop_page))
             add(DFP({
@@ -642,6 +643,7 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWithPattern(SHOP_NOTE) ||
                         it.startsWithPattern(SHOP_INFO) ||
                         it.startsWithPattern(SHOP_HOME) ||
+                        it.startsWithPattern(SHOP_SETTINGS_CUSTOMER_APP) ||
                         it.startsWith(SHOP_SETTINGS_NOTE)
             }, DF_BASE_SELLER_APP, R.string.title_shop_page))
             add(DFP({ it.startsWith(MERCHANT_STATISTIC_DASHBOARD) }, DF_BASE_SELLER_APP, R.string.title_statistic))
