@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
@@ -98,7 +99,7 @@ class PlayTimerLiveCountDown @JvmOverloads constructor(
             override fun onFinish() {
                 animatorInfoOut.start()
                 loader.visible()
-                btnCancel.gone()
+                btnCancel.invisible()
                 listener?.onFinish()
             }
 

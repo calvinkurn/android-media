@@ -170,6 +170,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         setupInsets()
         setupObserve()
 
+        parentViewModel.startLiveCountDownTimer()
+
         if (GlobalConfig.DEBUG) setupDebugView(view)
     }
 

@@ -290,11 +290,10 @@ class PlayBeforeLiveFragment @Inject constructor(
     private fun observeCreateChannel() {
         prepareViewModel.observableCreateLiveStream.observe(viewLifecycleOwner, Observer {
             when (it) {
-                NetworkResult.Loading -> btnStartLive.setLoading(true)
                 is NetworkResult.Success -> parentViewModel.startLiveStream(withTimer = false)
                 is NetworkResult.Fail -> {
+                    showCountdown(false)
                     showErrorToaster(it.error)
-                    btnStartLive.setLoading(false)
                     analytic.viewErrorOnFinalSetupPage(getProperErrorMessage(it.error))
                 }
             }
@@ -365,11 +364,10 @@ class PlayBeforeLiveFragment @Inject constructor(
         when (state) {
             is PlayLiveViewState.Started -> {
                 openBroadcastLivePage()
-                btnStartLive.setLoading(false)
                 parentViewModel.setFirstTimeLiveStreaming()
             }
             is PlayLiveViewState.Error -> {
-                btnStartLive.setLoading(false)
+                showCountdown(false)
                 handleLivePushError(state)
             }
         }
@@ -519,7 +517,6 @@ class PlayBeforeLiveFragment @Inject constructor(
 
             override fun onFinish() {
                 startStreaming()
-//                parentViewModel.startLiveCountDownTimer()
             }
 
             override fun onCancelLiveStream() {
