@@ -150,7 +150,6 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         val sortBy =
             penaltyFilterUiModelList.find { it.title == ShopScoreConstant.TITLE_SORT }?.chipsFilerList?.find { it.isSelected }?.value
                 ?: 0
-        viewModelShopPenalty.setSortTypeFilterData(Pair(sortBy, typeId))
         penaltyPageAdapter.run {
             removePenaltyListData()
             refreshSticky()
@@ -159,6 +158,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
             showLoading()
         }
         endlessRecyclerViewScrollListener.resetState()
+        viewModelShopPenalty.setSortTypeFilterData(Pair(sortBy, typeId))
     }
 
     private fun clearAllPenaltyData() {
@@ -188,7 +188,6 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
     private fun updateItemChildSortFilterPenalty(sortFilterItemPeriodWrapperList: List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>?) {
         sortFilterItemPeriodWrapperList?.let { penaltyPageAdapter.updateChipsSelected(it) }
         val typeId = sortFilterItemPeriodWrapperList?.find { it.isSelected }?.idFilter ?: 0
-        viewModelShopPenalty.setTypeFilterData(typeId)
         penaltyPageAdapter.run {
             removePenaltyListData()
             refreshSticky()
@@ -197,6 +196,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
             showLoading()
         }
         endlessRecyclerViewScrollListener.resetState()
+        viewModelShopPenalty.setTypeFilterData(typeId)
     }
 
     override fun onSaveCalendarClicked(
