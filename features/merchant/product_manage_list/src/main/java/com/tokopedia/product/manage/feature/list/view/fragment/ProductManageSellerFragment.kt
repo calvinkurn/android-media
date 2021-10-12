@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -20,7 +19,6 @@ import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageT
 import com.tokopedia.product.manage.common.feature.list.constant.DRAFT_PRODUCT
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageDataLayer
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
-import com.tokopedia.product.manage.databinding.FragmentProductManageSellerBinding
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.BROADCAST_ADD_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.REQUEST_CODE_DRAFT_PRODUCT
@@ -31,7 +29,6 @@ import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOpti
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
 
@@ -59,8 +56,6 @@ class ProductManageSellerFragment : ProductManageFragment() {
     @Inject
     lateinit var productDraftListCountViewModel: ProductDraftListCountViewModel
 
-    private var binding by autoClearedNullable<FragmentProductManageSellerBinding>()
-
     private var alreadySendScreenNameAfterAddEditProduct: Boolean = false
 
     private val tvDraftProduct: Typography?
@@ -68,13 +63,9 @@ class ProductManageSellerFragment : ProductManageFragment() {
 
     override fun getScreenName(): String = "/product list page"
 
-    override fun getLayoutRes(): Int = R.layout.fragment_product_manage_seller
-
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
 
-    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
-        return binding?.layoutFragmentProductManage?.swipeRefreshLayout
-    }
+    override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         checkLogin()

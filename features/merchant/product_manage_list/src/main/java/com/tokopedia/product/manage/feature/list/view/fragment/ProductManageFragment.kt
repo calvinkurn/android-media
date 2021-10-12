@@ -29,6 +29,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -81,6 +83,7 @@ import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.common.view.ongoingpromotion.bottomsheet.OngoingPromotionBottomSheet
 import com.tokopedia.product.manage.databinding.DialogProductAddBinding
 import com.tokopedia.product.manage.databinding.FragmentProductManageBinding
+import com.tokopedia.product.manage.databinding.FragmentProductManageSellerBinding
 import com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity
@@ -201,6 +204,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     @Inject
     lateinit var productManageSession: ProductManageSession
 
+    protected var binding by autoClearedNullable<FragmentProductManageSellerBinding>()
+
     private var shopDomain: String = ""
     private var goldMerchant: Boolean = false
     private var isOfficialStore: Boolean = false
@@ -215,7 +220,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         ProductManageAddEditMenuBottomSheet(sellerFeatureCarouselClickListener, this, childFragmentManager)
     }
 
-    private var binding by autoClearedNullable<FragmentProductManageBinding>()
     private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }
     private var defaultFilterOptions: List<FilterOption> = emptyList()
     private var itemsChecked: MutableList<ProductUiModel> = mutableListOf()
@@ -257,44 +261,44 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     private var optionsMenu: Menu? = null
 
     private val stockTicker: Ticker?
-        get() = binding?.stockTicker?.root
+        get() = binding?.layoutFragmentProductManage?.stockTicker?.root
     private val mainContainer: CoordinatorLayout?
-        get() = binding?.mainContainer
+        get() = binding?.layoutFragmentProductManage?.mainContainer
     private val errorPage: GlobalError?
-        get() = binding?.errorPage
+        get() = binding?.layoutFragmentProductManage?.errorPage
     private val noAccessPage: GlobalError?
-        get() = binding?.noAccessPage
+        get() = binding?.layoutFragmentProductManage?.noAccessPage
     private val swipeRefreshLayout: SwipeToRefresh?
-        get() = binding?.swipeRefreshLayout
+        get() = binding?.layoutFragmentProductManage?.swipeRefreshLayout
     private val constraintLayout: ConstraintLayout?
-        get() = binding?.constraintLayoutProductManage
+        get() = binding?.layoutFragmentProductManage?.constraintLayoutProductManage
     private val tabSortFilter: SortFilter?
-        get() = binding?.tabSortFilter
+        get() = binding?.layoutFragmentProductManage?.tabSortFilter
     private val shimmerSortFilter: ConstraintLayout?
-        get() = binding?.shimmerSortFilter?.root
+        get() = binding?.layoutFragmentProductManage?.shimmerSortFilter?.root
     private val textProductCount: Typography?
-        get() = binding?.textProductCount
+        get() = binding?.layoutFragmentProductManage?.textProductCount
     private val textMultipleSelect: Typography?
-        get() = binding?.textMultipleSelect
+        get() = binding?.layoutFragmentProductManage?.textMultipleSelect
     private val multiSelectContainer: LinearLayout?
-        get() = binding?.multiSelectContainer
+        get() = binding?.layoutFragmentProductManage?.multiSelectContainer
     private val checkBoxSelectAll: CheckboxUnify?
-        get() = binding?.checkBoxSelectAll
+        get() = binding?.layoutFragmentProductManage?.checkBoxSelectAll
     private val btnMultiEdit: CardView?
-        get() = binding?.btnMultiEdit
+        get() = binding?.layoutFragmentProductManage?.btnMultiEdit
     private val recyclerView: VerticalRecyclerView?
-        get() = binding?.recyclerView
+        get() = binding?.layoutFragmentProductManage?.recyclerView
     private val topAdsWidgetFreeClaim: TopAdsWidgetFreeClaim?
-        get() = binding?.topAdsWidgetFreeClaim
+        get() = binding?.layoutFragmentProductManage?.topAdsWidgetFreeClaim
     private val progressBar: LoaderUnify?
-        get() = binding?.progressBar
+        get() = binding?.layoutFragmentProductManage?.progressBar
     private val interceptor: FrameLayout?
-        get() = binding?.interceptor
+        get() = binding?.layoutFragmentProductManage?.interceptor
     private val searchBar: SearchBarUnify?
-        get() = binding?.searchBarProductManage
+        get() = binding?.layoutFragmentProductManage?.searchBarProductManage
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentProductManageBinding.inflate(inflater, container, false)
+        binding = FragmentProductManageSellerBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         return binding?.root
     }
@@ -326,8 +330,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         }
     }
 
-    open fun getLayoutRes(): Int = R.layout.fragment_product_manage
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
@@ -337,6 +339,10 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         isLoadingInitialData = true
         super.clearAllData()
     }
+
+    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? = swipeRefreshLayout
+
+    override fun getRecyclerView(view: View?): RecyclerView? = recyclerView
 
     private fun initView() {
         setupInterceptor()
