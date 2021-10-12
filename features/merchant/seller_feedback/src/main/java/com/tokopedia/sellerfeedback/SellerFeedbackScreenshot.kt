@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
@@ -46,7 +47,7 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
 
     override fun onScreenShotTaken(uri: Uri) {
         val enableSellerFeedbackScreenshot =
-            getEnableSellerGlobalFeedbackRemoteConfig(currentActivity?.get())
+            true
         if (screenshotPreferenceManager.isScreenShootTriggerEnabled() && enableSellerFeedbackScreenshot) {
             processScreenshotTaken(uri)
         }
@@ -83,7 +84,9 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.putExtra(SellerFeedbackFragment.EXTRA_URI_IMAGE, uri)
         currentActivity.startActivity(intent)
-
+        println("Class Name : " + currentActivity::class.java.canonicalName)
+        Toast.makeText(context, "Can : "+currentActivity::class.java.canonicalName, Toast.LENGTH_LONG).show()
+        Toast.makeText(context, "Name : "+currentActivity::class.java.name, Toast.LENGTH_LONG).show()
         handleFeedbackSuccessToaster(currentActivity)
     }
 
