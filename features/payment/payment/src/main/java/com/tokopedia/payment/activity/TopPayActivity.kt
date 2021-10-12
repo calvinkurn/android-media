@@ -484,6 +484,13 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         hideProgressDialog()
     }
 
+    private fun routeToHomeCredit(appLink: String, overlayUrl: String?, headerText: String?) {
+        val intent = RouteManager.getIntent(this@TopPayActivity, appLink)
+        if (!overlayUrl.isNullOrEmpty()) intent.putExtra(CUST_OVERLAY_URL, overlayUrl)
+        if (!headerText.isNullOrEmpty()) intent.putExtra(CUST_HEADER, headerText)
+        startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE)
+    }
+
     private inner class TopPayWebViewClient : WebViewClient() {
 
         fun gotoLinkAccount() {
@@ -546,29 +553,19 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                     return true
                 }
 
-                val queryParam = uri.getQueryParameter(CUST_OVERLAY_URL) ?: ""
-                val headerText = uri.getQueryParameter(CUST_HEADER)?: ""
+                val queryParam = uri.getQueryParameter(CUST_OVERLAY_URL)
+                val headerText = uri.getQueryParameter(CUST_HEADER)
                 // hci
                 if (url.contains(HCI_CAMERA_KTP)) {
                     view?.stopLoading()
                     mJsHciCallbackFuncName = Uri.parse(url).lastPathSegment
-                    val intent = RouteManager.getIntent(this@TopPayActivity, ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE)
-                    if (queryParam.isNotEmpty())
-                        intent.putExtra(CUST_OVERLAY_URL, queryParam)
-                    if (headerText.isNotEmpty())
-                        intent.putExtra(CUST_HEADER, headerText)
-                    startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE)
+                    routeToHomeCredit(ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE, queryParam, headerText)
                     return true
                 }
                 if (url.contains(HCI_CAMERA_SELFIE)) {
                     view?.stopLoading()
                     mJsHciCallbackFuncName = Uri.parse(url).lastPathSegment
-                    val intent = RouteManager.getIntent(this@TopPayActivity, ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE)
-                    if (queryParam.isNotEmpty())
-                        intent.putExtra(CUST_OVERLAY_URL, queryParam)
-                    if (headerText.isNotEmpty())
-                        intent.putExtra(CUST_HEADER, headerText)
-                    startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE)
+                    routeToHomeCredit(ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE, queryParam, headerText)
                     return true
                 }
 

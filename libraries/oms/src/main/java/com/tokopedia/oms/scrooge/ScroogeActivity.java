@@ -237,22 +237,12 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
                 } else if (url.contains(HCI_CAMERA_KTP)) {
                     view.stopLoading();
                     mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
-                    Intent intent = RouteManager.getIntent(ScroogeActivity.this, ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE);
-                    if (queryParam != null)
-                        intent.putExtra(CUST_OVERLAY_URL, queryParam);
-                    if (headerText != null)
-                        intent.putExtra(CUST_HEADER, headerText);
-                    startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE);
+                    routeToHomeCredit(ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE, queryParam, headerText);
                     return true;
                 } else if (url.contains(HCI_CAMERA_SELFIE)) {
                     view.stopLoading();
                     mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
-                    Intent intent = RouteManager.getIntent(ScroogeActivity.this, ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE);
-                    if (queryParam != null)
-                        intent.putExtra(CUST_OVERLAY_URL, queryParam);
-                    if (headerText != null)
-                        intent.putExtra(CUST_HEADER, headerText);
-                    startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE);
+                    routeToHomeCredit(ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE, queryParam, headerText);
                     return true;
                 } else {
                     returnVal = false;
@@ -301,5 +291,14 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
         bm.compress(Bitmap.CompressFormat.JPEG, 60, baos);
         byte[] b = baos.toByteArray();
         return Base64.encodeToString(b, Base64.DEFAULT);
+    }
+
+    private void routeToHomeCredit(String appLink, String overlayUrl, String headerText) {
+        Intent intent = RouteManager.getIntent(ScroogeActivity.this, appLink);
+        if (overlayUrl != null)
+            intent.putExtra(CUST_OVERLAY_URL, overlayUrl);
+        if (headerText != null)
+            intent.putExtra(CUST_HEADER, headerText);
+        startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE);
     }
 }
