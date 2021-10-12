@@ -16,7 +16,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.assertThrows
 
-class GetExistingMessageIdUseCaseNewTest {
+class GetExistingMessageIdUseCaseTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -25,7 +25,7 @@ class GetExistingMessageIdUseCaseNewTest {
     lateinit var repository: GraphqlRepository
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
-    private lateinit var useCase: GetExistingMessageIdUseCaseNew
+    private lateinit var useCase: GetExistingMessageIdUseCase
     private val testShopId = "123"
     private val testUserId = "345"
     private val source = "testSource"
@@ -33,7 +33,7 @@ class GetExistingMessageIdUseCaseNewTest {
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        useCase = GetExistingMessageIdUseCaseNew(repository, dispatchers)
+        useCase = GetExistingMessageIdUseCase(repository, dispatchers)
     }
 
     @Test

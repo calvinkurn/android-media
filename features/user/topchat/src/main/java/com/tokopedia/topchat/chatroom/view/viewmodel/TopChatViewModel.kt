@@ -6,14 +6,14 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.topchat.chatroom.domain.usecase.GetExistingMessageIdUseCaseNew
+import com.tokopedia.topchat.chatroom.domain.usecase.GetExistingMessageIdUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 open class TopChatViewModel @Inject constructor(
-    private var getExistingMessageIdUseCase: GetExistingMessageIdUseCaseNew,
+    private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig
 ): BaseViewModel(dispatcher.main) {

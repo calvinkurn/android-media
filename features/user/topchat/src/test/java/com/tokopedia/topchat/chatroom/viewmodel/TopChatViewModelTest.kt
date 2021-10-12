@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topchat.chatroom.domain.pojo.GetExistingMessageIdPojo
-import com.tokopedia.topchat.chatroom.domain.usecase.GetExistingMessageIdUseCaseNew
+import com.tokopedia.topchat.chatroom.domain.usecase.GetExistingMessageIdUseCase
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -22,7 +22,7 @@ class TopChatViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     @RelaxedMockK
-    lateinit var getExistingMessageIdUseCase: GetExistingMessageIdUseCaseNew
+    lateinit var getExistingMessageIdUseCase: GetExistingMessageIdUseCase
 
     @RelaxedMockK
     lateinit var remoteConfig: RemoteConfig

@@ -9,12 +9,18 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.chatroom.domain.pojo.GetExistingMessageIdPojo
 import javax.inject.Inject
 
-open class GetExistingMessageIdUseCaseNew @Inject constructor(
+open class GetExistingMessageIdUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ): CoroutineUseCase<Map<String, Any>, GetExistingMessageIdPojo>(dispatcher.io) {
 
-    override fun graphqlQuery(): String = query
+    override fun graphqlQuery(): String = """
+            query get_existing_message_id($$PARAM_TO_SHOP_ID: Int!, $$PARAM_TO_USER_ID: Int!, $$PARAM_SOURCE: String!) {
+              chatExistingChat(toShopId: $$PARAM_TO_SHOP_ID, toUserId: $$PARAM_TO_USER_ID, source: $$PARAM_SOURCE) {
+                messageId
+              }
+            }
+        """
 
     override suspend fun execute(params: Map<String, Any>): GetExistingMessageIdPojo {
         return repository.request(graphqlQuery(), params)
@@ -32,13 +38,5 @@ open class GetExistingMessageIdUseCaseNew @Inject constructor(
         private const val PARAM_TO_SHOP_ID: String = "toShopId"
         private const val PARAM_TO_USER_ID: String = "toUserId"
         private const val PARAM_SOURCE: String = "source"
-
-        private val query = """
-            query get_existing_message_id($$PARAM_TO_SHOP_ID: Int!, $$PARAM_TO_USER_ID: Int!, $$PARAM_SOURCE: String!) {
-              chatExistingChat(toShopId: $$PARAM_TO_SHOP_ID, toUserId: $$PARAM_TO_USER_ID, source: $$PARAM_SOURCE) {
-                messageId
-              }
-            }
-        """
     }
 }

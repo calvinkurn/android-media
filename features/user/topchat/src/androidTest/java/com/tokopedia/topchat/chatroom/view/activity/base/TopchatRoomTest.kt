@@ -127,7 +127,7 @@ abstract class TopchatRoomTest {
     protected lateinit var websocket: RxWebSocketUtilStub
 
     @Inject
-    protected lateinit var getExistingMessageIdUseCaseNewStub: GetExistingMessageIdUseCaseNewStub
+    protected lateinit var getExistingMessageIdUseCaseNewStub: GetExistingMessageIdUseCaseStub
 
     protected open lateinit var activity: TopChatRoomActivityStub
 
