@@ -286,6 +286,11 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     override fun processUpdateCartData(fireAndForget: Boolean, onlyTokoNowProducts: Boolean) {
         view?.let {
             if (!fireAndForget) {
+                if (it.isBundleToggleChanged()) {
+                    it.recreateActivity()
+                    return
+                }
+
                 it.showProgressLoading()
             }
 
