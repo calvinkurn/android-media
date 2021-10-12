@@ -231,7 +231,7 @@
                 app:layout_constraintCircleRadius="@dimen/dp_4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <RelativeLayout
                     android:layout_width="0dp"
@@ -296,7 +296,7 @@
                 app:layout_constraintCircleRadius="@dimen/dp_4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="gone">
+                tools:visibility="visible">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_selected_single_shipping_title"
@@ -304,32 +304,13 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/Unify_N700_96"
                     app:typographyType="body_3"
-                    app:typographyWeight="bold"
                     tools:text="Pengiriman 2 jam (" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/label_selected_single_shipping_original_price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/Unify_N700_68"
-                    app:typographyType="small"
-                    app:typographyWeight="reguler"
-                    tools:text="Rp25.000" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/label_selected_single_shipping_discounted_price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/Unify_N700_96"
-                    app:typographyType="body_3"
-                    app:typographyWeight="bold"
-                    tools:text=" Rp10.000)" />
 
                 <androidx.constraintlayout.helper.widget.Flow
                     android:id="@+id/flow_label_selected_single_shipping"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="label_selected_single_shipping_title,label_selected_single_shipping_original_price,label_selected_single_shipping_discounted_price"
+                    app:constraint_referenced_ids="label_selected_single_shipping_title"
                     app:flow_horizontalBias="0"
                     app:flow_horizontalStyle="packed"
                     app:flow_wrapMode="chain"
