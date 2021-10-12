@@ -171,7 +171,7 @@ class SellerReviewDetailFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentSellerReviewDetailBinding.inflate(inflater, container, true)
+        binding = FragmentSellerReviewDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -229,6 +229,11 @@ class SellerReviewDetailFragment :
         viewModelProductReviewDetail?.reviewInitialData?.removeObservers(this)
         viewModelProductReviewDetail?.flush()
         super.onDestroy()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_option_review_product_detail, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -477,7 +482,7 @@ class SellerReviewDetailFragment :
         bottomSheetPeriodDetail?.apply {
             setTitle(title)
             setOnDismissListener {
-//                ItemOverallReviewDetailBinding.bind(view).reviewPeriodFilterButtonDetail.toggle()
+                ItemOverallReviewDetailBinding.bind(view).reviewPeriodFilterButtonDetail.toggle()
             }
             showCloseIcon = true
             setCloseClickListener {
