@@ -16,6 +16,7 @@ import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocket
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocketMapper
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
+import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveConfigUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.PostInteractiveCreateSessionUseCase
@@ -23,6 +24,7 @@ import com.tokopedia.play.broadcaster.pusher.*
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
+import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
@@ -84,7 +86,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
     private val playBroadcastMapper: PlayBroadcastMapper,
     private val channelInteractiveMapper: PlayChannelInteractiveMapper,
     private val interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper,
-    private val channelRepo: PlayBroadcastChannelRepository,
+    private val repo: PlayBroadcastRepository,
 ) : ViewModel() {
 
     val isFirstStreaming: Boolean
@@ -185,6 +187,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
             )
         }
 
+    private val _pinnedMessage: MutableStateFlow<PinnedMessageUiModel?> = MutableStateFlow(null)
+
 //    private val _channelUiState = flow {
 //        emit(
 //            PlayChannelUiState(
@@ -194,8 +198,22 @@ internal class PlayBroadcastViewModel @Inject constructor(
 //        )
 //    }
 
-    val uiState = _channelUiState.map {
-        PlayBroadcastUiState(channel = it)
+//    val uiState = combine(
+//        _channelUiState.distinctUntilChanged(),
+//        _pinnedMessage
+//    ) { channelState, pinnedMessage ->
+//        PlayBroadcastUiState(
+//            channel = channelState,
+//            pinnedMessage = pinnedMessage?.message.orEmpty(),
+//        )
+//    }
+
+    //TODO("This is mock code")
+    val uiState = _pinnedMessage.map { pinnedMessage ->
+        PlayBroadcastUiState(
+            channel = PlayChannelUiState(true, emptyList()),
+            pinnedMessage = pinnedMessage?.message.orEmpty(),
+        )
     }
 
     private val ingestUrl: String
@@ -272,7 +290,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             _observableConfigInfo.value = NetworkResult.Loading
 
-            val configUiModel = channelRepo.getChannelConfiguration()
+            val configUiModel = repo.getChannelConfiguration()
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
 
             if (!configUiModel.streamAllowed) return@launchCatchError
@@ -409,6 +427,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
     fun startLiveStream(withTimer: Boolean = true) {
         livePusherMediator.startLiveStreaming(ingestUrl, withTimer)
+        getPinnedMessage()
         if (withTimer) {
             // TODO("find the best way to trigger engagement tools")
             getInteractiveConfig()
@@ -770,6 +789,18 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
     private fun setInteractiveId(id: String) {
         getCurrentSetupDataStore().setInteractiveId(id)
+    }
+
+    private fun getPinnedMessage() {
+        viewModelScope.launch(dispatcher.io) {
+            val activePinned = repo.getActivePinnedMessage("abc")
+            _pinnedMessage.value = activePinned
+        }
+    }
+
+    //TODO("Mock Code, Remove This!!!")
+    fun doSomething() {
+        getPinnedMessage()
     }
 
     /**

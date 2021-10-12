@@ -7,6 +7,7 @@ import com.tokopedia.play.broadcaster.ui.model.TermsAndConditionUiModel
  */
 internal data class PlayBroadcastUiState(
     val channel: PlayChannelUiState,
+    val pinnedMessage: String,
 )
 
 internal data class PlayChannelUiState(

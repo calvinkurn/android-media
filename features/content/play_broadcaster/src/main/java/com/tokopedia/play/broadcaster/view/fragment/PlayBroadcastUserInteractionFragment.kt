@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
@@ -57,6 +58,7 @@ import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 /**
@@ -161,6 +163,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
+
+        //TODO("This is mock code")
+        parentViewModel.doSomething()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -262,6 +267,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeEvent()
         observeInteractiveConfig()
         observeCreateInteractiveSession()
+        observeUiState()
     }
 
     private fun startCountDown() {
@@ -620,6 +626,17 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 }
             }
         })
+    }
+
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            parentViewModel.uiState.collectLatest {
+                pinnedMessageView.setMode(
+                    if (it.pinnedMessage.isEmpty()) PinnedMessageView.Mode.Empty
+                    else PinnedMessageView.Mode.Filled(it.pinnedMessage)
+                )
+            }
+        }
     }
     //endregion
 

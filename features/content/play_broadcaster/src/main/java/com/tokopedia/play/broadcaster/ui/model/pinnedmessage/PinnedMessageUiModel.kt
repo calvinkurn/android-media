@@ -1,0 +1,18 @@
+package com.tokopedia.play.broadcaster.ui.model.pinnedmessage
+
+/**
+ * Created by jegul on 12/10/21
+ */
+data class PinnedMessageUiModel(
+    val id: String,
+    val message: String,
+    val isActive: Boolean,
+) {
+    companion object {
+        fun Empty() = PinnedMessageUiModel(
+            id = "",
+            message = "",
+            isActive = false
+        )
+    }
+}
