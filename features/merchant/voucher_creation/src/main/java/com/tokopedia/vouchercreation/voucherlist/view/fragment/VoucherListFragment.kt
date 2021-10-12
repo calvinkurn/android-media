@@ -273,6 +273,7 @@ class VoucherListFragment :
     }
 
     override fun loadData(page: Int) {
+        mViewModel.currentPage = page
         if (!isToolbarAlreadyLoaded) {
             view?.run {
                 searchBarMvc.isVisible = false
@@ -1280,7 +1281,7 @@ class VoucherListFragment :
                     voucherType,
                     voucherTarget,
                     voucherSort,
-                    page,
+                    mViewModel.currentPage,
                     isInverted
                 )
             }
