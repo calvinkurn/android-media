@@ -1,9 +1,6 @@
 package com.tokopedia.digital.digital_recommendation.domain
 
-import com.tokopedia.digital.digital_recommendation.data.DigitalRecommendationResponse
-import com.tokopedia.digital.digital_recommendation.data.PersonalizedItems
-import com.tokopedia.digital.digital_recommendation.data.RecommendationItem
-import com.tokopedia.digital.digital_recommendation.data.TrackingData
+import com.tokopedia.digital.digital_recommendation.data.*
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlError
@@ -139,6 +136,9 @@ class DigitalRecommendationUseCaseTest {
                 mapOf(
                         DigitalRecommendationResponse::class.java to DigitalRecommendationResponse(
                                 personalizedItems = PersonalizedItems(
+                                        trackingData = UserTrackingData(
+                                                userType = "non login"
+                                        ),
                                         appLink = "tokopediatest://dummy-applink",
                                         bannerAppLink = "",
                                         bannerWebLink = "",
@@ -265,8 +265,9 @@ class DigitalRecommendationUseCaseTest {
 
             // then
             assert(data is Success)
+            assertEquals((data as Success).data.userType, "non login")
 
-            val successData = (data as Success).data
+            val successData = (data as Success).data.items
             assertEquals(successData.size, 4)
 
             // first data
@@ -319,7 +320,7 @@ class DigitalRecommendationUseCaseTest {
             // then
             assert(data1 is Success)
 
-            val successData1 = (data1 as Success).data
+            val successData1 = (data1 as Success).data.items
             assertEquals(successData1.size, 4)
 
             // first data

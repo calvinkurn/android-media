@@ -21,8 +21,8 @@ class DigitalRecommendationViewModel @Inject constructor(
         dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.io) {
 
-    private val _digitalRecommendationItems = MutableLiveData<Result<List<DigitalRecommendationModel>>>()
-    val digitalRecommendationItems: LiveData<Result<List<DigitalRecommendationModel>>>
+    private val _digitalRecommendationItems = MutableLiveData<Result<DigitalRecommendationModel>>()
+    val digitalRecommendationItems: LiveData<Result<DigitalRecommendationModel>>
         get() = _digitalRecommendationItems
 
     fun fetchDigitalRecommendation(page: DigitalRecommendationPage,

@@ -26,7 +26,7 @@ class DigitalRecommendationUseCase @Inject constructor(
     suspend fun execute(page: DigitalRecommendationPage,
                         dgCategories: List<Int>,
                         pgCategories: List<Int>)
-            : Result<List<DigitalRecommendationModel>> {
+            : Result<DigitalRecommendationModel> {
         val params = mapOf(
                 PARAM_INPUT to mapOf(
                         PARAM_CHANNEL_NAME to when (page) {

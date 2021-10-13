@@ -2,7 +2,7 @@ package com.tokopedia.digital.digital_recommendation.utils
 
 import android.os.Bundle
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
-import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationItemModel
 import com.tokopedia.track.TrackApp
 
 /**
@@ -10,7 +10,7 @@ import com.tokopedia.track.TrackApp
  */
 class DigitalRecommendationAnalytics {
 
-    fun impressionDigitalRecommendationItems(digitalRecommendationModel: DigitalRecommendationModel,
+    fun impressionDigitalRecommendationItems(digitalRecommendationModel: DigitalRecommendationItemModel,
                                              additionalTrackingData: DigitalRecommendationAdditionalTrackingData,
                                              index: Int,
                                              userId: String) {
@@ -50,7 +50,7 @@ class DigitalRecommendationAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DigitalRecommendationEvents.VIEW_ITEM_LIST, bundle)
     }
 
-    fun clickDigitalRecommendationItems(digitalRecommendationModel: DigitalRecommendationModel,
+    fun clickDigitalRecommendationItems(digitalRecommendationModel: DigitalRecommendationItemModel,
                                         additionalTrackingData: DigitalRecommendationAdditionalTrackingData,
                                         index: Int,
                                         userId: String) {

@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.digital_recommendation.databinding.ItemDigitalRecommendationBinding
-import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationItemModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -17,7 +17,7 @@ class DigitalRecommendationViewHolder(private val binding: ItemDigitalRecommenda
                                       private val actionListener: DigitalRecommendationItemActionListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(element: DigitalRecommendationModel) {
+    fun bind(element: DigitalRecommendationItemModel) {
         setupProductNameMaxLine(element)
         renderCategoryName(element)
         renderProductName(element)
@@ -34,7 +34,7 @@ class DigitalRecommendationViewHolder(private val binding: ItemDigitalRecommenda
         actionListener.onItemBinding(element, adapterPosition)
     }
 
-    private fun setupProductNameMaxLine(element: DigitalRecommendationModel) {
+    private fun setupProductNameMaxLine(element: DigitalRecommendationItemModel) {
         if (element.discountTag.isNotEmpty() || element.beforePrice.isNotEmpty() || element.price.isNotEmpty()) {
             binding.tgProductDigitalRecommendation.maxLines = 2
         } else {
@@ -43,7 +43,7 @@ class DigitalRecommendationViewHolder(private val binding: ItemDigitalRecommenda
         binding.tgProductDigitalRecommendation.requestLayout()
     }
 
-    private fun renderCategoryName(element: DigitalRecommendationModel) {
+    private fun renderCategoryName(element: DigitalRecommendationItemModel) {
         if (element.categoryName.isEmpty()) {
             binding.tgCategoryDigitalRecommendation.hide()
         } else {
@@ -53,7 +53,7 @@ class DigitalRecommendationViewHolder(private val binding: ItemDigitalRecommenda
         }
     }
 
-    private fun renderProductName(element: DigitalRecommendationModel) {
+    private fun renderProductName(element: DigitalRecommendationItemModel) {
         if (element.productName.isEmpty()) {
             binding.tgProductDigitalRecommendation.hide()
         } else {
@@ -62,11 +62,11 @@ class DigitalRecommendationViewHolder(private val binding: ItemDigitalRecommenda
         }
     }
 
-    private fun renderImage(element: DigitalRecommendationModel) {
+    private fun renderImage(element: DigitalRecommendationItemModel) {
         binding.ivIconDigitalRecommendation.loadImage(element.iconUrl)
     }
 
-    private fun renderBottomLabel(element: DigitalRecommendationModel) {
+    private fun renderBottomLabel(element: DigitalRecommendationItemModel) {
         with(binding) {
             // render price
             if (element.price.isNotEmpty()) {
@@ -98,7 +98,7 @@ class DigitalRecommendationViewHolder(private val binding: ItemDigitalRecommenda
     }
 
     interface DigitalRecommendationItemActionListener {
-        fun onItemBinding(element: DigitalRecommendationModel, position: Int)
-        fun onItemClicked(element: DigitalRecommendationModel, position: Int)
+        fun onItemBinding(element: DigitalRecommendationItemModel, position: Int)
+        fun onItemClicked(element: DigitalRecommendationItemModel, position: Int)
     }
 }

@@ -14,7 +14,7 @@ import com.tokopedia.digital.digital_recommendation.databinding.LayoutDigitalRec
 import com.tokopedia.digital.digital_recommendation.presentation.adapter.DigitalRecommendationAdapter
 import com.tokopedia.digital.digital_recommendation.presentation.adapter.viewholder.DigitalRecommendationViewHolder
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
-import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationItemModel
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.digital.digital_recommendation.presentation.viewmodel.DigitalRecommendationViewModel
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationAnalytics
@@ -66,7 +66,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         }
     }
 
-    override fun onItemBinding(element: DigitalRecommendationModel, position: Int) {
+    override fun onItemBinding(element: DigitalRecommendationItemModel, position: Int) {
         additionalTrackingData?.let {
             digitalRecommendationAnalytics.impressionDigitalRecommendationItems(
                     element, it, position, digitalRecommendationViewModel.getUserId()
@@ -74,7 +74,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         }
     }
 
-    override fun onItemClicked(element: DigitalRecommendationModel, position: Int) {
+    override fun onItemClicked(element: DigitalRecommendationItemModel, position: Int) {
         additionalTrackingData?.let {
             digitalRecommendationAnalytics.clickDigitalRecommendationItems(
                     element, it, position, digitalRecommendationViewModel.getUserId()
@@ -139,12 +139,13 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
             when (it) {
                 is Success -> {
                     hideLoading()
+                    additionalTrackingData?.userType = it.data.userType
 
                     with(binding) {
                         tgDigitalRecommendationTitle.show()
                         rvDigitalRecommendation.layoutManager = LinearLayoutManager(context,
                                 LinearLayoutManager.HORIZONTAL, false)
-                        rvDigitalRecommendation.adapter = DigitalRecommendationAdapter(it.data, this@DigitalRecommendationWidget)
+                        rvDigitalRecommendation.adapter = DigitalRecommendationAdapter(it.data.items, this@DigitalRecommendationWidget)
                         rvDigitalRecommendation.show()
                     }
                 }

@@ -3,7 +3,6 @@ package com.tokopedia.digital.digital_recommendation.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.digital.digital_recommendation.domain.DigitalRecommendationUseCase
 import com.tokopedia.digital.digital_recommendation.presentation.model.*
-import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -30,19 +29,12 @@ class DigitalRecommendationViewModelTest {
     private val digitalRecommendationUseCase: DigitalRecommendationUseCase = mockk()
     private val userSession: UserSessionInterface = mockk()
     private val dispatcher = CoroutineTestDispatchersProvider
-    private val digitalRecommendationData = DigitalRecommendationData(
-            mockk(),
-            mockk(),
-            DigitalRecommendationAdditionalTrackingData(),
-            DigitalRecommendationPage.DIGITAL_GOODS
-    )
 
     private lateinit var viewmodel: DigitalRecommendationViewModel
 
     @Before
     fun setUp() {
         viewmodel = DigitalRecommendationViewModel(digitalRecommendationUseCase, userSession, dispatcher)
-        viewmodel.digitalRecommendationData = digitalRecommendationData
     }
 
     @Test
@@ -53,7 +45,7 @@ class DigitalRecommendationViewModelTest {
         } returns Fail(Throwable("Fetching Failed"))
 
         // when
-        viewmodel.fetchDigitalRecommendation()
+        viewmodel.fetchDigitalRecommendation(DigitalRecommendationPage.DIGITAL_GOODS, emptyList(), emptyList())
 
         // then
         val value = viewmodel.digitalRecommendationItems.value
@@ -66,38 +58,41 @@ class DigitalRecommendationViewModelTest {
         // given
         coEvery {
             digitalRecommendationUseCase.execute(any(), any(), any())
-        } returns Success(arrayListOf(
-                DigitalRecommendationModel(
-                        "someurl.com",
-                        "dummy category",
-                        "dummy product",
-                        "tokopedia-test://dummy-applink",
-                        DigitalRecommendationTrackingModel(
-                                "dummy typename",
-                                "dummy business unit",
-                                "dummy category id",
-                                "dummy category name",
-                                "dummy item label",
-                                "dummy item type",
-                                "dummy operator id",
-                                "dummy product id"
-                        ),
-                        DigitalRecommendationType.CATEGORY,
-                        "Rp10.000",
-                        "Rp100.000",
-                        "90%"
+        } returns Success(DigitalRecommendationModel(
+                userType = "non login",
+                items = arrayListOf(
+                        DigitalRecommendationItemModel(
+                                "someurl.com",
+                                "dummy category",
+                                "dummy product",
+                                "tokopedia-test://dummy-applink",
+                                DigitalRecommendationTrackingModel(
+                                        "dummy typename",
+                                        "dummy business unit",
+                                        "dummy category id",
+                                        "dummy category name",
+                                        "dummy item label",
+                                        "dummy item type",
+                                        "dummy operator id",
+                                        "dummy product id"
+                                ),
+                                DigitalRecommendationType.CATEGORY,
+                                "Rp10.000",
+                                "Rp100.000",
+                                "90%"
+                        )
                 )
         ))
 
         // when
-        viewmodel.fetchDigitalRecommendation()
+        viewmodel.fetchDigitalRecommendation(DigitalRecommendationPage.PHYSICAL_GOODS, emptyList(), emptyList())
 
         // then
         val value = viewmodel.digitalRecommendationItems.value
         assert(value is Success)
-        val successValue = value as Success
-        assertEquals(successValue.data.size, 1)
-        val dataIndexZero = successValue.data[0]
+        val successValue = (value as Success).data
+        assertEquals(successValue.items.size, 1)
+        val dataIndexZero = successValue.items[0]
         assertEquals(dataIndexZero.iconUrl, "someurl.com")
         assertEquals(dataIndexZero.categoryName, "dummy category")
         assertEquals(dataIndexZero.productName, "dummy product")

@@ -44,6 +44,9 @@ data class PersonalizedItems(
         @field:SerializedName("tracking")
         val tracking: List<Any> = emptyList(),
 
+        @field:SerializedName("trackingData")
+        val trackingData: UserTrackingData = UserTrackingData(),
+
         @field:SerializedName("webLink")
         val webLink: String = ""
 )
@@ -117,4 +120,9 @@ data class TrackingData(
 
         @field:SerializedName("productID")
         val productID: String = ""
+)
+
+data class UserTrackingData(
+        @field:SerializedName("userType")
+        val userType: String = ""
 )

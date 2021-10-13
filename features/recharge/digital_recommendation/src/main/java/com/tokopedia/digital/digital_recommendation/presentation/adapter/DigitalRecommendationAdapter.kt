@@ -5,12 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital.digital_recommendation.databinding.ItemDigitalRecommendationBinding
 import com.tokopedia.digital.digital_recommendation.presentation.adapter.viewholder.DigitalRecommendationViewHolder
-import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationItemModel
 
 /**
  * @author by furqan on 20/09/2021
  */
-class DigitalRecommendationAdapter(private val recommendationItems: List<DigitalRecommendationModel>,
+class DigitalRecommendationAdapter(private val recommendationItems: List<DigitalRecommendationItemModel>,
                                    private val actionListener: DigitalRecommendationViewHolder.DigitalRecommendationItemActionListener
 ) : RecyclerView.Adapter<DigitalRecommendationViewHolder>() {
 

@@ -22,6 +22,9 @@ class DigitalRecommendationQuery {
                   action
                   data
                 }
+                trackingData{
+                  userType
+                }
                 items {
                   id
                   title

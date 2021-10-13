@@ -2,6 +2,7 @@ package com.tokopedia.digital.digital_recommendation.domain
 
 import com.tokopedia.digital.digital_recommendation.data.DigitalRecommendationResponse
 import com.tokopedia.digital.digital_recommendation.data.TrackingData
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationItemModel
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationTrackingModel
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationType
@@ -11,12 +12,12 @@ import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRe
  */
 class DigitalRecommendationMapper {
     companion object {
-        fun transform(response: DigitalRecommendationResponse): List<DigitalRecommendationModel> {
-            val newData = arrayListOf<DigitalRecommendationModel>()
+        fun transform(response: DigitalRecommendationResponse): DigitalRecommendationModel {
+            val newData = arrayListOf<DigitalRecommendationItemModel>()
 
             for (item in response.personalizedItems.recommendationItems) {
                 newData.add(
-                        DigitalRecommendationModel(
+                        DigitalRecommendationItemModel(
                                 iconUrl = item.mediaURL,
                                 categoryName = if (item.trackingData.itemLabel.isNotEmpty()) {
                                     when (item.trackingData.itemLabel) {
@@ -41,7 +42,10 @@ class DigitalRecommendationMapper {
                 )
             }
 
-            return newData
+            return DigitalRecommendationModel(
+                    userType = response.personalizedItems.trackingData.userType,
+                    items = newData
+            )
         }
 
         private fun transform(trackingData: TrackingData): DigitalRecommendationTrackingModel =
