@@ -623,7 +623,7 @@ abstract class BaseSearchCategoryFragment:
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         getViewModel().onViewUpdateCartItems(miniCartSimplifiedData)
         val registery = LifecycleRegistry(this)
-        registery.markState(Lifecycle.State.RESUMED)
+        registery.currentState = Lifecycle.State.RESUMED
     }
 
     private fun updateMiniCartWidgetVisibility(isVisible: Boolean?) {
