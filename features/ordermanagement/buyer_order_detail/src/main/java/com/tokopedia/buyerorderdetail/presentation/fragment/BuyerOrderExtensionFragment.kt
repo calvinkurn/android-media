@@ -107,7 +107,7 @@ class BuyerOrderExtensionFragment : BaseDaggerFragment() {
                 showSubmissionOrderExtension(orderExtensionRespondInfoUiModel)
             }
             BuyerOrderExtensionConstant.RespondInfoMessageCode.ERROR -> {
-                toasterComponent?.setToasterNormal(
+                toasterComponent.setToasterNormal(
                     orderExtensionRespondInfoUiModel.messageCode,
                     orderExtensionRespondInfoUiModel.message
                 ) {

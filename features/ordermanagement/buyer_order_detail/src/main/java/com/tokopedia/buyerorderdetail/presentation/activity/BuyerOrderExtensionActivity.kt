@@ -33,4 +33,8 @@ class BuyerOrderExtensionActivity: BaseSimpleActivity(), HasComponent<BuyerOrder
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buyer_order_extension_base)
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+    }
 }
