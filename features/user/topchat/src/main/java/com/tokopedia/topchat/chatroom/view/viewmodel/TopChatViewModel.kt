@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.topchat.chatroom.domain.pojo.param.ExistingMessageIdParam
 import com.tokopedia.topchat.chatroom.domain.usecase.GetExistingMessageIdUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -28,8 +29,12 @@ open class TopChatViewModel @Inject constructor(
         source: String,
     ) {
         launchCatchError(block = {
-            val params = getExistingMessageIdUseCase.generateParam(toShopId, toUserId, source)
-            val result = getExistingMessageIdUseCase.invoke(params)
+            val existingMessageIdParam = ExistingMessageIdParam(
+                toUserId = toUserId,
+                toShopId = toShopId,
+                source = source
+            )
+            val result = getExistingMessageIdUseCase.invoke(existingMessageIdParam)
             _messageId.value = Success(result.chatExistingChat.messageId)
         }, onError = {
             _messageId.value = Fail(it)
