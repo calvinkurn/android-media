@@ -13,19 +13,29 @@ import com.tokopedia.sellerhomecommon.presentation.view.viewholder.*
  * Created By @ilhamsuaib on 01/07/20
  */
 
-class TableItemFactoryImpl(private val listener: TableColumnHtmlViewHolder.Listener) : BaseAdapterTypeFactory(), TableItemFactory {
+class TableItemFactoryImpl(
+    private val listener: TableColumnHtmlViewHolder.Listener
+) : BaseAdapterTypeFactory(), TableItemFactory {
 
-    override fun type(header: TableHeaderUiModel): Int = TableHeaderColumnViewHolder.RES_LAYOUT
+    override fun type(header: TableHeaderUiModel): Int {
+        return TableHeaderColumnViewHolder.RES_LAYOUT
+    }
 
-    override fun type(column: TableRowsUiModel.RowColumnText): Int = TableColumnTextViewHolder.RES_LAYOUT
+    override fun type(column: TableRowsUiModel.RowColumnText): Int {
+        return TableColumnTextViewHolder.RES_LAYOUT
+    }
 
-    override fun type(column: TableRowsUiModel.RowColumnImage): Int = TableColumnImageViewHolder.RES_LAYOUT
+    override fun type(column: TableRowsUiModel.RowColumnImage): Int {
+        return TableColumnImageViewHolder.RES_LAYOUT
+    }
 
-    override fun type(column: TableRowsUiModel.RowColumnHtml): Int = TableColumnHtmlViewHolder.RES_LAYOUT
+    override fun type(column: TableRowsUiModel.RowColumnHtml): Int {
+        return TableColumnHtmlViewHolder.RES_LAYOUT
+    }
 
     override fun type(divider: TableItemDivider): Int = TableItemDividerViewHolder.RES_LAYOUT
 
-    override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
+    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             TableHeaderColumnViewHolder.RES_LAYOUT -> TableHeaderColumnViewHolder(parent)
             TableColumnTextViewHolder.RES_LAYOUT -> TableColumnTextViewHolder(parent)

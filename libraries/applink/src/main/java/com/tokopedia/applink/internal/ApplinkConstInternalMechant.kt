@@ -16,9 +16,7 @@ object ApplinkConstInternalMechant {
 
     const val INTERNAL_MERCHANT = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_MERCHANT}"
 
-    const val MERCHANT_REDIRECT_CREATE_SHOP = "${INTERNAL_MERCHANT}:/redirect-create-shop"
-
-    const val MERCHANT_OPEN_CATALOG_PICKER = "${INTERNAL_MERCHANT}:/open-catalog-picker"
+    const val MERCHANT_REDIRECT_CREATE_SHOP = "${INTERNAL_MERCHANT}/redirect-create-shop"
 
     const val MERCHANT_OPEN_PRODUCT_PREVIEW = "${INTERNAL_MERCHANT}/open-product-preview"
 
@@ -33,8 +31,6 @@ object ApplinkConstInternalMechant {
     const val MERCHANT_SHOP_SHOWCASE_LIST = "${INTERNAL_MERCHANT}/shop-showcase-list"
 
     const val MERCHANT_SHOP_SHOWCASE_ADD = "${INTERNAL_MERCHANT}/shop-showcase-add"
-
-    const val MERCHANT_SHOP_SHOWCASE_EDIT = "${INTERNAL_MERCHANT}/shop-showcase-edit"
 
     const val MERCHANT_SHOP_SCORE = "${INTERNAL_MERCHANT}/shop-score-detail"
 

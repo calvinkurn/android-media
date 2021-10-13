@@ -1431,7 +1431,7 @@ class NewShopPageFragment :
 
             override fun onTabSelected(tab: TabLayout.Tab) {
                 val position = tab.position
-                viewPager?.setCurrentItem(position, false)
+                viewPager?.setCurrentItem(position, true)
                 tabLayout?.getTabAt(position)?.let{
                     viewPagerAdapter?.handleSelectedTab(it, true)
                 }
@@ -1458,10 +1458,8 @@ class NewShopPageFragment :
                         hideBottomSheetSellerMigration()
                     }
                 }
-                viewPager?.post {
-                    checkIfShouldShowOrHideScrollToTopButton(position)
-                    checkIfShouldShowOrHideShopPageFab(position)
-                }
+                hideScrollToTopButton()
+                hideShopPageFab()
                 isTabClickByUser = false
             }
         })

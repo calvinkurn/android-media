@@ -10,10 +10,13 @@ import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategoryCategoryFilterBinding
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategoryCategoryFilterChipsBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.FilterChip
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterItemDataView
+import com.tokopedia.utils.view.binding.viewBinding
 
 class CategoryFilterViewHolder(
         itemView: View,
@@ -27,13 +30,11 @@ class CategoryFilterViewHolder(
         val LAYOUT = R.layout.item_tokopedianow_search_category_category_filter
     }
 
-    private val filterRecyclerView: RecyclerView? = itemView.findViewById(
-            R.id.tokoNowSearchCategoryCategoryFilterRecyclerView
-    )
+    private var binding: ItemTokopedianowSearchCategoryCategoryFilterBinding? by viewBinding()
 
     override fun bind(element: CategoryFilterDataView) {
         val context = itemView.context ?: return
-        val filterRecyclerView = filterRecyclerView ?: return
+        val filterRecyclerView = binding?.tokoNowSearchCategoryCategoryFilterRecyclerView ?: return
 
         filterRecyclerView.layoutManager = LinearLayoutManager(context, HORIZONTAL, false)
         filterRecyclerView.adapter = Adapter(element.categoryFilterItemList, categoryFilterListener)
@@ -88,24 +89,24 @@ class CategoryFilterViewHolder(
             val LAYOUT = R.layout.item_tokopedianow_search_category_category_filter_chips
         }
 
-        private val filterChip: FilterChip? = itemView.findViewById(
-                R.id.tokoNowSearchCategoryCategoryFilterChip
-        )
+        private var binding: ItemTokopedianowSearchCategoryCategoryFilterChipsBinding? by viewBinding()
 
         fun bind(categoryFilterItemDataView: CategoryFilterItemDataView) {
             val option = categoryFilterItemDataView.option
 
-            filterChip?.setContent(
+            binding?.tokoNowSearchCategoryCategoryFilterChip?.apply {
+                setContent(
                     FilterChip.Model(
-                            imageUrl = option.iconUrl,
-                            title = option.name,
-                            state = categoryFilterItemDataView.isSelected
+                        imageUrl = option.iconUrl,
+                        title = option.name,
+                        state = categoryFilterItemDataView.isSelected
                     )
-            )
+                )
 
-            filterChip?.listener = object: FilterChip.Listener {
-                override fun onClick(state: Boolean) {
-                    categoryFilterListener.onCategoryFilterChipClick(option, state)
+                listener = object: FilterChip.Listener {
+                    override fun onClick(state: Boolean) {
+                        categoryFilterListener.onCategoryFilterChipClick(option, state)
+                    }
                 }
             }
         }
