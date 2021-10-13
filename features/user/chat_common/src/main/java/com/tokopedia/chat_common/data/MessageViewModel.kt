@@ -15,8 +15,6 @@ open class MessageViewModel protected constructor(
     var attachment: Any? = builder.attachment
         private set
 
-    val dummyReplyBubbleMsg: String = "Lorem ips  ".repeat(Random.nextInt(1, 10))
-
     override fun type(typeFactory: BaseChatTypeFactory): Int {
         return typeFactory.type(this)
     }
