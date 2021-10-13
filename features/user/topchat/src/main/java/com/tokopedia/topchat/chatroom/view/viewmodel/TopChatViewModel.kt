@@ -34,7 +34,7 @@ open class TopChatViewModel @Inject constructor(
                 toShopId = toShopId,
                 source = source
             )
-            val result = getExistingMessageIdUseCase.invoke(existingMessageIdParam)
+            val result = getExistingMessageIdUseCase(existingMessageIdParam)
             _messageId.value = Success(result.chatExistingChat.messageId)
         }, onError = {
             _messageId.value = Fail(it)

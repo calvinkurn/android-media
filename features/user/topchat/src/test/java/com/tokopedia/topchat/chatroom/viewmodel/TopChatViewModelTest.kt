@@ -63,6 +63,27 @@ class TopChatViewModelTest {
     }
 
     @Test
+    fun should_not_error_when_the_userid_and_shopid_is_not_number () {
+        //Given
+        val testShopIdWrong = "test"
+        val testUserIdWrong = "test"
+        val expectedMessageId = "567"
+        val expectedResult = GetExistingMessageIdPojo().apply {
+            this.chatExistingChat.messageId = expectedMessageId
+        }
+        coEvery {
+            getExistingMessageIdUseCase.invoke(any())
+        } returns expectedResult
+
+        //When
+        viewModel.getMessageId(testShopIdWrong, testUserIdWrong, source)
+
+        //Then
+        Assert.assertEquals(viewModel.messageId.value,
+            Success(expectedResult.chatExistingChat.messageId))
+    }
+
+    @Test
     fun should_get_throwable_when_failed () {
         //Given
         val expectedResult = Throwable("Oops!")

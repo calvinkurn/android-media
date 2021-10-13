@@ -333,27 +333,6 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     }
 
     @Test
-    fun `Get message usecase called when no message id provided`() {
-        // Given
-        val mockOnSuccess: (String) -> Unit = mockk()
-        val mockOnError: (Throwable) -> Unit = mockk()
-
-        // When
-        presenter.getMessageId(toUserId, toShopId, source, mockOnError, mockOnSuccess)
-
-        // Then
-        verify(exactly = 1) {
-            getExistingMessageIdUseCase.getMessageId(
-                toShopId,
-                toUserId,
-                source,
-                mockOnSuccess,
-                mockOnError
-            )
-        }
-    }
-
-    @Test
     fun `Get chat usecase called when load top page chat`() {
         // Given
         val mockOnSuccess: (ChatroomViewModel, ChatReplies) -> Unit = mockk()

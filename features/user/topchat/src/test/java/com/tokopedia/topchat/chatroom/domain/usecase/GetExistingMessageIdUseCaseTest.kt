@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topchat.chatroom.domain.pojo.GetExistingMessageIdPojo
+import com.tokopedia.topchat.chatroom.domain.pojo.param.ExistingMessageIdParam
 import com.tokopedia.topchat.stubRepository
 import com.tokopedia.topchat.stubRepositoryAsThrow
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -26,8 +27,8 @@ class GetExistingMessageIdUseCaseTest {
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
     private lateinit var useCase: GetExistingMessageIdUseCase
-    private val testShopId = "123"
-    private val testUserId = "345"
+    private val testShopId: String = "123"
+    private val testUserId: String = "345"
     private val source = "testSource"
 
     @Before
@@ -39,16 +40,16 @@ class GetExistingMessageIdUseCaseTest {
     @Test
     fun should_get_message_id_when_successfully_get_data() {
         //Given
-        val params = useCase.generateParam(testShopId, testUserId, source)
         val expectedMessageId = "567"
         val expectedResult = GetExistingMessageIdPojo().apply {
             this.chatExistingChat.messageId = expectedMessageId
         }
+        val params = ExistingMessageIdParam(testShopId, testUserId, source)
 
         //Then
         runBlocking {
             repository.stubRepository(expectedResult, onError = mapOf())
-            val result = useCase.invoke(params)
+            val result = useCase(params)
             Assert.assertEquals(result, expectedResult)
         }
     }
@@ -56,7 +57,7 @@ class GetExistingMessageIdUseCaseTest {
     @Test
     fun should_get_throwable_when_failed_to_get_data() {
         //Given
-        val params = useCase.generateParam(testShopId, testUserId, source)
+        val params = ExistingMessageIdParam(testShopId, testUserId, source)
         val expectedResult = Throwable("Oops!")
         repository.stubRepositoryAsThrow(expectedResult)
 
