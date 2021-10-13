@@ -198,4 +198,11 @@ object ApplinkConstInternalOrder {
 
     // buyer request cancel
     const val INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_BUYER/$PATH_CANCELLATION_REQUEST"
+
+    object OrderExtensionKey {
+        const val IS_FROM_ORDER = "is_from_order"
+        const val TOASTER_MESSAGE = "toaster_message"
+        const val TOASTER_TYPE = "toaster_type"
+        const val IS_ORDER_EXTENDED = "is_order_extended"
+    }
 }

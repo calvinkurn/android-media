@@ -40,4 +40,8 @@ class OrderExtensionDialog(
         }
     }
 
+    fun dismissDialog() {
+        if (dialogUnify?.isShowing == true)
+            dialogUnify?.dismiss()
+    }
 }

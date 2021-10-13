@@ -5,18 +5,43 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailOrderExtension
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderExtensionConstant
 import com.tokopedia.buyerorderdetail.databinding.OrderExtensionSubmissionExtendsBottomsheetBinding
+import com.tokopedia.buyerorderdetail.di.DaggerBuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.presentation.dialog.OrderExtensionDialog
 import com.tokopedia.buyerorderdetail.presentation.model.OrderExtensionRespondInfoUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.OrderExtensionRespondUiModel
+import com.tokopedia.buyerorderdetail.presentation.partialview.OrderExtensionToaster
+import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailExtensionViewModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import java.lang.ref.WeakReference
+import javax.inject.Inject
 
 class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
 
+    private val toasterComponent by lazy {
+        OrderExtensionToaster(context, WeakReference(activity))
+    }
+
+    @Inject
+    lateinit var buyerOrderDetailExtensionViewModel: BuyerOrderDetailExtensionViewModel
+
     private var binding: OrderExtensionSubmissionExtendsBottomsheetBinding? = null
+    private var confirmedCancelledOrderDialog: OrderExtensionDialog? = null
+    private var isOrderExtended: Boolean? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initInjector()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,11 +59,43 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setupTextView()
         setupCta()
+        observeRespond()
+    }
+
+    private fun initInjector() {
+        activity?.let {
+            val appComponent = (it.application as BaseMainApplication).baseAppComponent
+            DaggerBuyerOrderDetailComponent.builder()
+                .baseAppComponent(appComponent)
+                .build()
+                .inject(this)
+        }
     }
 
     fun show(fm: FragmentManager) {
         if (!isVisible) {
             show(fm, TAG)
+        }
+    }
+
+    private fun observeRespond() {
+        observe(buyerOrderDetailExtensionViewModel.orderExtensionRespond) {
+            setButtonLoadingFalse()
+            confirmedCancelledOrderDialog?.dismissDialog()
+            when (it) {
+                is Success -> {
+                    showRespondOrderExtension(it.data)
+                }
+                is Fail -> {
+                    toasterComponent.setToasterInternalError(it.throwable)
+                }
+            }
+        }
+    }
+
+    private fun setButtonLoadingFalse() {
+        if (binding?.btnSubmissionExtends?.isLoading == true) {
+            binding?.btnSubmissionExtends?.isLoading = false
         }
     }
 
@@ -53,37 +110,61 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
             showConfirmedCancelledOrderDialog()
         }
         btnSubmissionExtends.setOnClickListener {
+            btnSubmissionExtends.isLoading = true
+        }
+    }
 
+    private fun showRespondOrderExtension(orderExtensionRespondUiModel: OrderExtensionRespondUiModel) {
+        when (orderExtensionRespondUiModel.messageCode) {
+            BuyerOrderExtensionConstant.RespondMessageCode.SUCCESS,
+            BuyerOrderExtensionConstant.RespondMessageCode.ERROR -> {
+                toasterComponent.setToasterNormal(
+                    orderExtensionRespondUiModel.messageCode,
+                    orderExtensionRespondUiModel.message
+                ) {
+
+                }
+            }
+            BuyerOrderExtensionConstant.RespondMessageCode.STATUS_CHANGE -> {
+                showConfirmedCancelledOrderDialog()
+            }
+        }
+    }
+
+    private fun getInstanceDialog(): Lazy<OrderExtensionDialog?> {
+        val respondInfo = getRespondInfo().value
+        val nn950Color = com.tokopedia.unifyprinciples.R.color.Unify_NN950.toString()
+        return lazy {
+            context?.let {
+                OrderExtensionDialog(
+                    it,
+                    DialogUnify.WITH_ILLUSTRATION
+                ).apply {
+                    setTitle(getString(R.string.order_extension_title_confirmed_order_cancelled))
+                    setDescription(
+                        getString(
+                            R.string.order_extension_desc_confirmed_order_cancelled,
+                            respondInfo?.rejectText.orEmpty(),
+                            nn950Color,
+                            respondInfo?.newDeadline.orEmpty(),
+                        )
+                    )
+                    setImageUrl(BuyerOrderDetailOrderExtension.Image.CONFIRMED_CANCELLED_ORDER_URL)
+                    setDialogSecondaryCta()
+                }
+            }
         }
     }
 
     private fun showConfirmedCancelledOrderDialog() {
-        val respondInfo = getRespondInfo().value
-        val nn950Color = com.tokopedia.unifyprinciples.R.color.Unify_NN950.toString()
-        val confirmedCancelledOrderDialog = context?.let {
-            OrderExtensionDialog(
-                it,
-                DialogUnify.WITH_ILLUSTRATION
-            ).apply {
-                setTitle(getString(R.string.order_extension_title_confirmed_order_cancelled))
-                setDescription(
-                    getString(
-                        R.string.order_extension_desc_confirmed_order_cancelled,
-                        respondInfo?.rejectText.orEmpty(),
-                        nn950Color,
-                        respondInfo?.newDeadline.orEmpty(),
-                    )
-                )
-                setImageUrl(BuyerOrderDetailOrderExtension.Image.CONFIRMED_CANCELLED_ORDER_URL)
-                setDialogSecondaryCta()
-            }
-        }
+        val orderId = getRespondInfo().value?.orderId.orEmpty()
+        confirmedCancelledOrderDialog = getInstanceDialog().value
         confirmedCancelledOrderDialog?.getDialog()?.run {
             setPrimaryCTAClickListener {
-
+                buyerOrderDetailExtensionViewModel.requestRespond(orderId)
             }
             setSecondaryCTAClickListener {
-
+                buyerOrderDetailExtensionViewModel.requestRespond(orderId)
             }
             show()
         }
@@ -107,6 +188,7 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+        toasterComponent.activity.clear()
     }
 
     companion object {
