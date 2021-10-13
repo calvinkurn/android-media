@@ -211,20 +211,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
         val pinnedMessageFormViewListener = object : PinnedMessageFormView.Listener {
 
-            private fun onClosed(view: PinnedMessageFormView) {
-                val parentView = this@PlayBroadcastUserInteractionFragment.view
-                if (parentView is ViewGroup) parentView.removeView(view)
-                hideKeyboard()
-                clInteraction.visibility = View.VISIBLE
-            }
-
             override fun onCloseButtonClicked(view: PinnedMessageFormView) {
-                onClosed(view)
+                removePinnedFormView(view)
             }
 
             override fun onPinnedMessageSaved(view: PinnedMessageFormView, message: String) {
                 parentViewModel.submitAction(PlayBroadcastUiEvent.SetPinnedMessage(message))
-                onClosed(view)
+                removePinnedFormView(view)
             }
         }
         pinnedMessageView.setOnPinnedClickedListener { _, message ->
@@ -329,8 +322,15 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     override fun onBackPressed(): Boolean {
-        return if (interactiveSetupView.isShown()) interactiveSetupView.interceptBackPressed()
-        else showDialogWhenActionClose()
+        val pinnedForm = view?.findViewWithTag<PinnedMessageFormView>(PINNED_MSG_FORM_TAG)
+        return when {
+            pinnedForm != null -> {
+                removePinnedFormView(pinnedForm)
+                true
+            }
+            interactiveSetupView.isShown() -> interactiveSetupView.interceptBackPressed()
+            else -> showDialogWhenActionClose()
+        }
     }
 
     /**
@@ -554,6 +554,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun showLoading(isLoading: Boolean) {
         loadingView.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    private fun removePinnedFormView(view: PinnedMessageFormView) {
+        val parentView = this@PlayBroadcastUserInteractionFragment.view
+        if (parentView is ViewGroup) parentView.removeView(view)
+        hideKeyboard()
+        clInteraction.visibility = View.VISIBLE
     }
 
     //region observe
