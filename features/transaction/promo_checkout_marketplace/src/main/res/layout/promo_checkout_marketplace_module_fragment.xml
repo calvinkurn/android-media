@@ -19,7 +19,7 @@
             app:elevation="@dimen/dp_0">
 
             <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
+                android:id="@+id/toolbar_promo_checkout"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
                 android:minHeight="?attr/actionBarSize"

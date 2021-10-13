@@ -18,7 +18,6 @@ import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
 import com.tokopedia.analyticsdebugger.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
-import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.cachemanager.CacheManager;
@@ -189,11 +188,6 @@ public class InstrumentationTestApp extends CoreNetworkApplication
 
     @Override
     public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
-        return null;
-    }
-
-    @Override
-    public ApplinkDelegate applinkDelegate() {
         return null;
     }
 

@@ -31,9 +31,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
 
     implementation rootProject.ext.networkDependencies.glide
-
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
 
 project.ext {

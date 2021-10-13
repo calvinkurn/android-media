@@ -26,7 +26,7 @@ class AffiliatePromotionCardItemVH(itemView: View, private val promotionClickInt
                     AffiliatePromotionProductCard.toAffiliateProductModel(it))
         }
 
-        itemView.findViewById<UnifyButton>(R.id.buttonNotify)?.run {
+        itemView.findViewById<UnifyButton>(com.tokopedia.productcard.R.id.buttonNotify)?.run {
             visibility = View.VISIBLE
             buttonType = UnifyButton.Type.MAIN
             buttonVariant = UnifyButton.Variant.GHOST

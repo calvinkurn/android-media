@@ -765,7 +765,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetRecentPurchaseUseCaseCalled()
 
-        viewModel.productAddToCartQuantity
+        viewModel.atcQuantity
             .verifySuccessEquals(expectedResult)
     }
 
