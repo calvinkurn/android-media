@@ -9,6 +9,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.dpToPx
@@ -29,12 +30,12 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
         private const val ACTIVITY_STATUS_PAUSED = 0
         private const val ACTIVITY_STATUS_RESUMED = 1
         private const val TOASTER_MARGIN_BOTTOM = 104
-        private const val TOASTER_DELAY = 1000L
     }
 
     private var remoteConfig: FirebaseRemoteConfigImpl? = null
     private var currentActivity: WeakReference<Activity>? = null
     private var onResumeCounter = ACTIVITY_STATUS_PAUSED
+    private var isScreenShootToasterShown = false
 
     private val screenshotPreferenceManager by lazy { ScreenshotPreferenceManager(context) }
 
@@ -124,23 +125,29 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     }
 
     private fun showToasterSellerFeedback(uri: Uri?, currentActivity: Activity?) {
+        if (isScreenShootToasterShown) return
+        isScreenShootToasterShown = true
+
         val view = currentActivity?.window?.decorView?.rootView
         view?.run {
-            postDelayed({
-                Toaster.toasterCustomBottomHeight = context.dpToPx(TOASTER_MARGIN_BOTTOM).toInt()
-                Toaster.build(this,
-                    text = currentActivity.getString(R.string.screenshot_seller_feedback_toaster_text),
-                    actionText = currentActivity.getString(R.string.screenshot_seller_feedback_toaster_cta_text),
-                    type = Toaster.TYPE_NORMAL,
-                    duration = Toaster.LENGTH_LONG,
-                    clickListener = {
-                        uri?.let { uri ->
-                            SellerFeedbackTracking.Click.eventClickFeedbackButton()
-                            openFeedbackForm(uri, currentActivity)
-                        }
+            Toaster.toasterCustomBottomHeight = context.dpToPx(TOASTER_MARGIN_BOTTOM).toInt()
+            Toaster.build(this,
+                text = currentActivity.getString(R.string.screenshot_seller_feedback_toaster_text),
+                actionText = currentActivity.getString(R.string.screenshot_seller_feedback_toaster_cta_text),
+                type = Toaster.TYPE_NORMAL,
+                duration = Toaster.LENGTH_LONG,
+                clickListener = {
+                    uri?.let { uri ->
+                        SellerFeedbackTracking.Click.eventClickFeedbackButton()
+                        openFeedbackForm(uri, currentActivity)
                     }
-                ).show()
-            }, TOASTER_DELAY)
+                }
+            ).addCallback(object : Snackbar.Callback() {
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    super.onDismissed(transientBottomBar, event)
+                    isScreenShootToasterShown = false
+                }
+            }).show()
         }
     }
 }

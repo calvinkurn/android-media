@@ -1,7 +1,10 @@
 package com.tokopedia.sellerfeedback.presentation.util
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.view.View
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.dpToPx
@@ -16,19 +19,24 @@ object SuccessToasterHelper {
 
     const val SHOW_SETTING_BOTTOM_SHEET = "extra_show_settings"
     private const val TOASTER_HEIGHT = 104
+    private const val TOASTER_CTA_WIDTH = 120
     private const val TOASTER_DURATION = 5000
     private const val TOASTER_DELAY = 1000L
+    private var isToasterShown = false
 
     fun showToaster(context: Context, view: View, isScreenShootTriggerEnabled: Boolean) {
-        view.postDelayed({
+        if (isToasterShown) return
+
+        Handler(Looper.getMainLooper()).postDelayed({
             Toaster.toasterCustomBottomHeight = context.dpToPx(TOASTER_HEIGHT).toInt()
-            if (isScreenShootTriggerEnabled) {
+            val toaster = if (isScreenShootTriggerEnabled) {
                 Toaster.build(
                     view,
                     text = getToastMessage(context, isScreenShootTriggerEnabled),
                     duration = Toaster.LENGTH_LONG
-                ).show()
+                )
             } else {
+                Toaster.toasterCustomCtaWidth = context.dpToPx(TOASTER_CTA_WIDTH).toInt()
                 Toaster.build(view,
                     text = getToastMessage(context, isScreenShootTriggerEnabled),
                     actionText = context.getString(R.string.feedback_form_settings),
@@ -36,8 +44,14 @@ object SuccessToasterHelper {
                     clickListener = {
                         openFeedbackForm(context)
                     }
-                ).show()
+                )
             }
+            toaster.addCallback(object : Snackbar.Callback() {
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    super.onDismissed(transientBottomBar, event)
+                    isToasterShown = false
+                }
+            }).show()
         }, TOASTER_DELAY)
     }
 

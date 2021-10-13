@@ -72,6 +72,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         private const val LOGOUT_ALIAS = "logout"
         private const val REQ_CODE_GLOBAL_FEEDBACK = 8043
         private const val TOASTER_HEIGHT = 104
+        private const val TOASTER_CTA_WIDTH = 120
         private const val TOASTER_DURATION = 5000
         private const val TOASTER_DELAY = 1000L
 
@@ -208,6 +209,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                     duration = Toaster.LENGTH_LONG
                 ).show()
             } else {
+                Toaster.toasterCustomCtaWidth = rootView.context.dpToPx(TOASTER_CTA_WIDTH).toInt()
                 Toaster.build(rootView,
                     text = toasterMessage,
                     actionText = rootView.context.getString(R.string.menu_setting_title),
