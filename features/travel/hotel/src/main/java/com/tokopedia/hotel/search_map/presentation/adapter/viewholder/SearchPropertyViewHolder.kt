@@ -8,6 +8,7 @@ import com.tokopedia.hotel.databinding.ItemPropertySearchResultBinding
 import com.tokopedia.hotel.search_map.data.model.Property
 import com.tokopedia.hotel.search_map.data.model.PropertyPrice
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 
 class SearchPropertyViewHolder(val binding: ItemPropertySearchResultBinding) : AbstractViewHolder<Property>(binding.root) {
 
