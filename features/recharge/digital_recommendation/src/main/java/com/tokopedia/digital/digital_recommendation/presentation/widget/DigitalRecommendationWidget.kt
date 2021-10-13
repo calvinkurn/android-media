@@ -45,6 +45,8 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
     private var additionalTrackingData: DigitalRecommendationAdditionalTrackingData? = null
     private var page: DigitalRecommendationPage? = null
 
+    private lateinit var adapter: DigitalRecommendationAdapter
+
     init {
         showLoading()
     }
@@ -141,11 +143,15 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
                     hideLoading()
                     additionalTrackingData?.userType = it.data.userType
 
+                    if (!::adapter.isInitialized) {
+                        adapter = DigitalRecommendationAdapter(it.data.items, this@DigitalRecommendationWidget)
+                    }
+
                     with(binding) {
                         tgDigitalRecommendationTitle.show()
                         rvDigitalRecommendation.layoutManager = LinearLayoutManager(context,
                                 LinearLayoutManager.HORIZONTAL, false)
-                        rvDigitalRecommendation.adapter = DigitalRecommendationAdapter(it.data.items, this@DigitalRecommendationWidget)
+                        rvDigitalRecommendation.adapter = adapter
                         rvDigitalRecommendation.show()
                     }
                 }
