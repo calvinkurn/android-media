@@ -7,7 +7,7 @@ import com.tokopedia.hotel.databinding.ItemHotelDetailFacilityGroupBinding
 import com.tokopedia.hotel.hoteldetail.data.entity.FacilityData
 import com.tokopedia.hotel.hoteldetail.data.entity.FacilityItem
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailFacilityItemAdapter
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.media.loader.loadIcon
 
 /**
  * @author by furqan on 06/05/19
@@ -17,7 +17,7 @@ class HotelDetailFacilityViewHolder(val binding: ItemHotelDetailFacilityGroupBin
     override fun bind(element: FacilityData) {
         with(binding) {
             tvFacilityGroupName.text = element.groupName
-            ivFacilityGroupIcon.loadImage(element.groupIconUrl)
+            ivFacilityGroupIcon.loadIcon(element.groupIconUrl)
             configFacilityItem(element.item)
         }
     }

@@ -8,7 +8,7 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.databinding.FragmentHotelPayAtHotelPromoBinding
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class HotelPayAtHotelPromoFragment : HotelBaseFragment() {

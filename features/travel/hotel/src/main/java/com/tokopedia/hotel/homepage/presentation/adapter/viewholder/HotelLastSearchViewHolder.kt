@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.hotel.R
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifyprinciples.Typography
 

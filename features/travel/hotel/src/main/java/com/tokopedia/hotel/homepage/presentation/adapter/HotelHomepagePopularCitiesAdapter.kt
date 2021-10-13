@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.homepage.presentation.widget.HotelHomepagePopularCitiesWidget
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.media.loader.loadImage
 import kotlinx.android.synthetic.main.layout_hotel_homepage_popular_city_view_holder.view.*
 import kotlin.math.min
 
