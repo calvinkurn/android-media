@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.kotlin.extensions.view.hide
@@ -161,11 +162,11 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     private fun setTitle(senderId: String?) {
         senderId ?: return
         val senderName = listener?.getUserName(senderId)
-        this.title?.text = senderName
+        this.title?.text = MethodChecker.fromHtml(senderName)
     }
 
     private fun setReplyMsg(msg: String) {
-        desc?.text = msg
+        desc?.text = MethodChecker.fromHtml(msg)
     }
 
     fun updateMessageOrientation(msgOrientation: Int) {
