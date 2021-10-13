@@ -9,7 +9,7 @@ import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ReplyChatViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
-import com.tokopedia.chat_common.data.preview.ProductPreview
+import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -44,7 +44,6 @@ import io.mockk.mockkObject
 import io.mockk.spyk
 import okhttp3.Interceptor
 import okhttp3.WebSocket
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import rx.subjects.PublishSubject

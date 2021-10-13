@@ -23,7 +23,7 @@ data class SubmitPostMedium(
         @Expose
         var videoID: String = ""
 
-) {
+        ) {
     companion object {
         const val TYPE_IMAGE = "image"
         const val TYPE_VIDEO = "video"

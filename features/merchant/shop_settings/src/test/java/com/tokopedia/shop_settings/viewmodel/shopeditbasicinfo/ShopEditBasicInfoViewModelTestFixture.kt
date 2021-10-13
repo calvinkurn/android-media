@@ -1,6 +1,8 @@
 package com.tokopedia.shop_settings.viewmodel.shopeditbasicinfo
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.mediauploader.data.state.UploadResult
+import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.gql.ShopBasicDataMutation
 import com.tokopedia.shop.common.graphql.data.shopopen.ShopDomainSuggestionData
@@ -10,9 +12,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShop
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.GetShopDomainNameSuggestionUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ValidateDomainShopNameUseCase
 import com.tokopedia.shop.settings.basicinfo.data.AllowShopNameDomainChanges
-import com.tokopedia.shop.settings.basicinfo.data.UploadShopEditImageModel
 import com.tokopedia.shop.settings.basicinfo.domain.GetAllowShopNameDomainChanges
-import com.tokopedia.shop.settings.basicinfo.domain.UploadShopImageUseCase
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopEditBasicInfoViewModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
@@ -38,7 +38,7 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
     lateinit var updateShopBasicDataUseCase: UpdateShopBasicDataUseCase
 
     @RelaxedMockK
-    lateinit var uploadShopImageUseCase: UploadShopImageUseCase
+    lateinit var uploaderUseCase: UploaderUseCase
 
     @RelaxedMockK
     lateinit var getAllowShopNameDomainChangesUseCase: GetAllowShopNameDomainChanges
@@ -59,7 +59,7 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
         shopEditBasicInfoViewModel = ShopEditBasicInfoViewModel(
                 getShopBasicDataUseCase,
                 updateShopBasicDataUseCase,
-                uploadShopImageUseCase,
+                uploaderUseCase,
                 getAllowShopNameDomainChangesUseCase,
                 getShopDomainNameSuggestionUseCase,
                 validateDomainShopNameUseCase,
@@ -111,9 +111,9 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
     }
 
     protected fun _onUploadShopImage_thenReturn() {
-        every {
-            uploadShopImageUseCase.getData(any())
-        } returns UploadShopEditImageModel()
+        coEvery {
+            uploaderUseCase(any())
+        } returns UploadResult.Success("1231")
     }
 
     protected fun verifySuccessGetAllowShopNameDomainChangesCalled() {

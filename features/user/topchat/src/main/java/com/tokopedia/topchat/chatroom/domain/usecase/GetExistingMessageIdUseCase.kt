@@ -7,12 +7,30 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.chatroom.domain.pojo.GetExistingMessageIdPojo
+import com.tokopedia.topchat.chatroom.domain.pojo.param.ExistingMessageIdParam
 import javax.inject.Inject
 
 open class GetExistingMessageIdUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-): CoroutineUseCase<Map<String, Any>, GetExistingMessageIdPojo>(dispatcher.io) {
+): CoroutineUseCase<ExistingMessageIdParam, GetExistingMessageIdPojo>(dispatcher.io) {
+
+    override suspend fun execute(params: ExistingMessageIdParam): GetExistingMessageIdPojo {
+        val param = generateParam(params)
+        return repository.request(graphqlQuery(), param)
+    }
+
+    private fun generateParam(existingMessageIdParam: ExistingMessageIdParam): Map<String, Any> {
+        val requestParams = ArrayMap<String, Any>()
+        requestParams[PARAM_TO_SHOP_ID] = if (existingMessageIdParam.toShopId.isNotBlank()) {
+            existingMessageIdParam.toShopId.toLongOrZero()
+        } else 0
+        requestParams[PARAM_TO_USER_ID] = if (existingMessageIdParam.toUserId.isNotBlank()) {
+            existingMessageIdParam.toUserId.toLongOrZero()
+        } else 0
+        requestParams[PARAM_SOURCE] = existingMessageIdParam.source
+        return requestParams
+    }
 
     override fun graphqlQuery(): String = """
             query get_existing_message_id($$PARAM_TO_SHOP_ID: Int!, $$PARAM_TO_USER_ID: Int!, $$PARAM_SOURCE: String!) {
@@ -21,18 +39,6 @@ open class GetExistingMessageIdUseCase @Inject constructor(
               }
             }
         """
-
-    override suspend fun execute(params: Map<String, Any>): GetExistingMessageIdPojo {
-        return repository.request(graphqlQuery(), params)
-    }
-
-    fun generateParam(toShopId: String, toUserId: String, source: String): Map<String, Any> {
-        val requestParams = ArrayMap<String, Any>()
-        requestParams[PARAM_TO_SHOP_ID] = if (toShopId.isNotBlank()) toShopId.toLongOrZero() else 0
-        requestParams[PARAM_TO_USER_ID] = if (toUserId.isNotBlank()) toUserId.toLongOrZero() else 0
-        requestParams[PARAM_SOURCE] = source
-        return requestParams
-    }
 
     companion object {
         private const val PARAM_TO_SHOP_ID: String = "toShopId"

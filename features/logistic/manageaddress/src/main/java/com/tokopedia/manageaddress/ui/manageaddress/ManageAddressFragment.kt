@@ -179,7 +179,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         maxItemPosition = 0
         val addrId = saveAddressDataModel?.id ?: getChosenAddrId()
         context?.let {
-            viewModel.searchAddress(query, prevState, addrId, ChooseAddressUtils.isRollOutUser(it))
+            viewModel.searchAddress(query, prevState, addrId, true)
         }
     }
 
@@ -221,11 +221,9 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                     globalErrorLayout?.gone()
                     if (viewModel.isClearData) clearData()
                     if (it.data.listAddress.isNotEmpty()) {
-                        if (context?.let { context -> ChooseAddressUtils.isRollOutUser(context) } == true) {
-                            updateTicker(it.data.pageInfo?.ticker)
-                            updateButton(it.data.pageInfo?.buttonLabel)
-                            updateStateForCheckoutSnippet(it.data.listAddress)
-                        }
+                        updateTicker(it.data.pageInfo?.ticker)
+                        updateButton(it.data.pageInfo?.buttonLabel)
+                        updateStateForCheckoutSnippet(it.data.listAddress)
                     }
                     updateData(it.data.listAddress)
                     setEmptyState()
@@ -298,7 +296,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
                         if (isFromDeleteAddress == true) {
                             context?.let {
-                                viewModel.searchAddress("", prevState, data.addressId, ChooseAddressUtils.isRollOutUser(it))
+                                viewModel.searchAddress("", prevState, data.addressId, true)
                             }
                         }
                     }
@@ -361,7 +359,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
                 if ((maxItemPosition + 1) == totalItemCount && viewModel.canLoadMore && !isLoading) {
                     context?.let {
-                        viewModel.loadMore(prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(it))
+                        viewModel.loadMore(prevState, getChosenAddrId(), true)
                     }
                 }
             }
@@ -525,18 +523,18 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                     _selectedAddressItem = data
                 }
                 isStayOnPageState = true
-                viewModel.setDefaultPeopleAddress(data.id, false, prevState, data.id.toInt(), ChooseAddressUtils.isRollOutUser(context))
+                viewModel.setDefaultPeopleAddress(data.id, false, prevState, data.id.toInt(), true)
                 bottomSheetLainnya?.dismiss()
             }
             btn_hapus_alamat?.setOnClickListener {
-                viewModel.deletePeopleAddress(data.id, prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(context))
+                viewModel.deletePeopleAddress(data.id, prevState, getChosenAddrId(), true)
                 bottomSheetLainnya?.dismiss()
                 isFromDeleteAddress = true
             }
             btn_alamat_utama_choose?.setOnClickListener {
                 isStayOnPageState = false
                 context?.let {
-                    viewModel.setDefaultPeopleAddress(data.id,true, prevState, data.id.toInt(), ChooseAddressUtils.isRollOutUser(it))
+                    viewModel.setDefaultPeopleAddress(data.id,true, prevState, data.id.toInt(), true)
                 }
                 _selectedAddressItem = data
             }
@@ -589,7 +587,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         globalErrorLayout?.setType(type)
         globalErrorLayout?.setActionClickListener {
             context?.let {
-                viewModel.searchAddress("", prevState, getChosenAddrId(), ChooseAddressUtils.isRollOutUser(it))
+                viewModel.searchAddress("", prevState, getChosenAddrId(), true)
             }
         }
         searchAddress?.gone()

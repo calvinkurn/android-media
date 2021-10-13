@@ -8,8 +8,10 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryItemUiModel
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeCategoryBinding
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowCategoryItemViewHolder(
     itemView: View,
@@ -21,18 +23,17 @@ class TokoNowCategoryItemViewHolder(
         val LAYOUT = R.layout.item_tokopedianow_home_category
     }
 
-    override fun bind(data: TokoNowCategoryItemUiModel) {
-        itemView.apply {
-            val tpCategory: Typography = findViewById(R.id.tp_category)
-            val iuCategory: ImageUnify = findViewById(R.id.iu_category)
+    private var binding: ItemTokopedianowHomeCategoryBinding? by viewBinding()
 
+    override fun bind(data: TokoNowCategoryItemUiModel) {
+        binding?.apply {
             tpCategory.text = data.title
             iuCategory.loadImage(data.imageUrl) {
                 setCacheStrategy(MediaCacheStrategy.RESOURCE)
             }
-            setOnClickListener {
+            cuItemCategory.setOnClickListener {
                 listener?.onCategoryClicked(adapterPosition, data.id)
-                RouteManager.route(context, data.appLink)
+                RouteManager.route(itemView.context, data.appLink)
             }
         }
     }
