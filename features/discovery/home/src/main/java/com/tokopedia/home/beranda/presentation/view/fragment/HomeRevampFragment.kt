@@ -2162,11 +2162,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 ConstantKey.RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
         )
         if (activity != null && remoteConfigEnable) {
-            activity?.startActivity(PromoListActivity.newInstance(
-                    activity,
-                    PromoListActivity.DEFAULT_AUTO_SELECTED_MENU_ID,
-                    PromoListActivity.DEFAULT_AUTO_SELECTED_CATEGORY_ID
-            ))
+            RouteManager.route(requireActivity(), ApplinkConstInternalPromo.PROMO_LIST)
         } else {
             if (activity != null) {
                 showBannerWebViewOnAllPromoClickFromHomeIntent(BerandaUrl.PROMO_URL + BerandaUrl.FLAG_APP, getString(R.string.title_activity_promo))

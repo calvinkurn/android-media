@@ -8,4 +8,5 @@ import com.tokopedia.play.view.type.VideoOrientation
 data class PlayVideoStreamUiModel(
         val id: String,
         val orientation: VideoOrientation,
+        val title: String
 )

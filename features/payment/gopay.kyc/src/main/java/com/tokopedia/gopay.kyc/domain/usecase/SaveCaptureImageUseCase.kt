@@ -17,14 +17,14 @@ import java.io.FileOutputStream
 import javax.inject.Inject
 
 class SaveCaptureImageUseCase @Inject constructor(
-    @ApplicationContext val context: Context,
+        @ApplicationContext val context: Context,
 ) : UseCase<CameraImageResult>() {
 
     fun parseAndSaveCapture(
-        onSuccess: (CameraImageResult) -> Unit,
-        onError: (Throwable) -> Unit,
-        imageByte: ByteArray,
-        ordinal: Int
+            onSuccess: (CameraImageResult) -> Unit,
+            onError: (Throwable) -> Unit,
+            imageByte: ByteArray,
+            ordinal: Int
     ) {
         useCaseRequestParams = RequestParams().apply {
             putObject(PARAM_IMAGE, imageByte)
@@ -34,13 +34,9 @@ class SaveCaptureImageUseCase @Inject constructor(
     }
 
     override suspend fun executeOnBackground(): CameraImageResult {
-        try {
-            val imageByte = (useCaseRequestParams.getObject(PARAM_IMAGE) as ByteArray)
-            val facingOrdinal = (useCaseRequestParams.getObject(PARAM_IMAGE_PROPERTIES) as Int)
-            return generateImage(imageByte, facingOrdinal)
-        } catch (e: Exception) {
-            throw e
-        }
+        val imageByte = (useCaseRequestParams.getObject(PARAM_IMAGE) as ByteArray)
+        val facingOrdinal = (useCaseRequestParams.getObject(PARAM_IMAGE_PROPERTIES) as Int)
+        return generateImage(imageByte, facingOrdinal)
     }
 
     private fun generateImage(imageByte: ByteArray, ordinal: Int): CameraImageResult {
@@ -104,9 +100,9 @@ class SaveCaptureImageUseCase @Inject constructor(
         try {
             val stream = ByteArrayOutputStream()
             bitmap?.compress(
-                Bitmap.CompressFormat.JPEG,
-                IMAGE_QUALITY,
-                stream
+                    Bitmap.CompressFormat.JPEG,
+                    IMAGE_QUALITY,
+                    stream
             )
             return stream.toByteArray().toList()
         } finally {
@@ -118,9 +114,9 @@ class SaveCaptureImageUseCase @Inject constructor(
         try {
             val stream = ByteArrayOutputStream()
             bitmap?.compress(
-                Bitmap.CompressFormat.JPEG,
-                IMAGE_QUALITY,
-                stream
+                    Bitmap.CompressFormat.JPEG,
+                    IMAGE_QUALITY,
+                    stream
             )
             return stream.toByteArray()
         } finally {
@@ -136,4 +132,3 @@ class SaveCaptureImageUseCase @Inject constructor(
         const val IMAGE_QUALITY = 100
     }
 }
-
