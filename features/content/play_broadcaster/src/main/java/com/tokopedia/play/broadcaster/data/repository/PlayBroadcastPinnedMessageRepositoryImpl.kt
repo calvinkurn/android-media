@@ -18,7 +18,6 @@ class PlayBroadcastPinnedMessageRepositoryImpl @Inject constructor(
     private val getPinnedMessagesUseCase: GetPinnedMessagesUseCase,
     private val addPinnedMessageUseCase: AddPinnedMessageUseCase,
     private val updatePinnedMessageUseCase: UpdatePinnedMessageUseCase,
-    private val userSession: UserSessionInterface,
     private val mapper: PlayBroadcastMapper,
     private val dispatchers: CoroutineDispatchers,
 ) : PlayBroadcastPinnedMessageRepository {
@@ -30,21 +29,18 @@ class PlayBroadcastPinnedMessageRepositoryImpl @Inject constructor(
             setRequestParams(GetPinnedMessagesUseCase.createParams(channelId))
         }.executeOnBackground()
 
-        return@withContext mapper.mapPinnedMessage(pinnedMessages.data).firstOrNull {
+        val pinnedList = mapper.mapPinnedMessage(pinnedMessages.data)
+
+        return@withContext pinnedList.firstOrNull {
             it.isActive
-        }
-//        PinnedMessageUiModel(
-//            id = "1",
-//            message = "Halo teman2",
-//            isActive = true,
-//        )
+        } ?: pinnedList.firstOrNull()
     }
 
-    override suspend fun setActivePinnedMessage(
+    override suspend fun setPinnedMessage(
         id: String?,
         channelId: String,
         message: String
-    ): String = withContext(dispatchers.io) {
+    ): PinnedMessageUiModel = withContext(dispatchers.io) {
         if (id == null) addNewPinnedMessage(channelId, message)
         else updatePinnedMessage(id, channelId, message)
     }
@@ -57,7 +53,11 @@ class PlayBroadcastPinnedMessageRepositoryImpl @Inject constructor(
             setRequestParams(AddPinnedMessageUseCase.createParams(channelId, message))
         }.executeOnBackground()
 
-        return@withContext response.data.messageIds.first()
+        return@withContext PinnedMessageUiModel(
+            id = response.data.messageIds.first(),
+            message = message,
+            isActive = true,
+        )
     }
 
     private suspend fun updatePinnedMessage(
@@ -67,12 +67,17 @@ class PlayBroadcastPinnedMessageRepositoryImpl @Inject constructor(
     ) = withContext(dispatchers.io) {
         val response = updatePinnedMessageUseCase.apply {
             setRequestParams(UpdatePinnedMessageUseCase.createParams(
-                id.toLong(),
-                channelId.toLong(),
-                message
+                id = id.toLong(),
+                channelId = channelId.toLong(),
+                title = message,
+                isActive = message.isNotBlank()
             ))
         }.executeOnBackground()
 
-        return@withContext response.data.id
+        return@withContext PinnedMessageUiModel(
+            id = id,
+            message = message,
+            isActive = message.isNotBlank()
+        )
     }
 }

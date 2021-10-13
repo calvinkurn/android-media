@@ -11,6 +11,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewPlayBroPinnedMsgFormBinding
+import com.tokopedia.play_common.util.extension.doOnLayout
+import com.tokopedia.play_common.util.extension.showKeyboard
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
@@ -21,16 +23,16 @@ import com.tokopedia.unifyprinciples.R as unifyR
  */
 class PinnedMessageFormView : ConstraintLayout {
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
     )
 
     constructor(
-        context: Context?,
+        context: Context,
         attrs: AttributeSet?,
         defStyleAttr: Int,
         defStyleRes: Int
@@ -84,6 +86,11 @@ class PinnedMessageFormView : ConstraintLayout {
                     return@setOnKeyListener true
                 }
                 return@setOnKeyListener false
+            }
+
+            textFieldPinnedMsg.editText.doOnLayout {
+                textFieldPinnedMsg.editText.requestFocus()
+                textFieldPinnedMsg.editText.showKeyboard()
             }
 
             iconClose.setOnClickListener {

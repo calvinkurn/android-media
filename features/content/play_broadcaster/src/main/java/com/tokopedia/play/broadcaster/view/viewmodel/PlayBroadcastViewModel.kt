@@ -189,22 +189,15 @@ internal class PlayBroadcastViewModel @Inject constructor(
             )
         }
 
-//    private val _channelUiState = flow {
-//        emit(
-//            PlayChannelUiState(
-//                canStream = false,
-//                tnc = emptyList(),
-//            )
-//        )
-//    }
-
     val uiState = combine(
         _channelUiState.distinctUntilChanged(),
         _pinnedMessage
     ) { channelState, pinnedMessage ->
         PlayBroadcastUiState(
             channel = channelState,
-            pinnedMessage = pinnedMessage?.message.orEmpty(),
+            pinnedMessage = if (pinnedMessage?.isActive == true) {
+                pinnedMessage.message
+            } else "",
         )
     }
 
@@ -816,15 +809,10 @@ internal class PlayBroadcastViewModel @Inject constructor(
     private fun handleSetPinnedMessage(message: String) {
         viewModelScope.launchCatchError(dispatcher.io, block = {
             val pinnedMessageId = _pinnedMessage.value?.id
-            val id = repo.setActivePinnedMessage(
+            _pinnedMessage.value = repo.setPinnedMessage(
                 id = pinnedMessageId,
                 channelId = channelId,
                 message = message
-            )
-            _pinnedMessage.value = PinnedMessageUiModel(
-                id = id,
-                message = message,
-                isActive = true,
             )
         }) {}
     }

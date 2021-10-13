@@ -3,6 +3,7 @@ package com.tokopedia.play_common.util.extension
 import android.app.Activity
 import android.app.Dialog
 import android.content.ContentResolver
+import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
@@ -302,4 +303,9 @@ fun Activity.hideKeyboard() {
 
 fun Fragment.hideKeyboard() {
     activity?.hideKeyboard()
+}
+
+fun View.showKeyboard() {
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
 }

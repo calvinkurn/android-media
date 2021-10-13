@@ -9,9 +9,9 @@ interface PlayBroadcastPinnedMessageRepository {
 
     suspend fun getActivePinnedMessage(channelId: String): PinnedMessageUiModel?
 
-    suspend fun setActivePinnedMessage(
+    suspend fun setPinnedMessage(
         id: String? = null,
         channelId: String,
         message: String,
-    ): String
+    ): PinnedMessageUiModel
 }

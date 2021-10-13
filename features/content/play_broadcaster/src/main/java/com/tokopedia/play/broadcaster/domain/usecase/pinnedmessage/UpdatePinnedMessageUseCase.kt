@@ -37,19 +37,21 @@ class UpdatePinnedMessageUseCase @Inject constructor(
         private const val PARAM_ID = "ID"
         private const val PARAM_CHANNEL_ID = "channelID"
         private const val PARAM_TITLE = "title"
+        private const val PARAM_STATUS = "status"
         const val QUERY_NAME = "UpdatePinnedMessageUseCaseQuery"
 
         const val QUERY = """
             mutation updateBroadcasterPinnedMessage(
                 ${"$$PARAM_ID"}: Int64!,
                 ${"$$PARAM_CHANNEL_ID"}: Int64!,
-                ${"$$PARAM_TITLE"}: String!
+                ${"$$PARAM_TITLE"}: String!,
+                ${"$$PARAM_STATUS"}: Int!
             ) {
                 broadcasterUpdatePinMessage(
                     req: {
                         $PARAM_ID: ${"$$PARAM_ID"},
                         $PARAM_CHANNEL_ID: ${"$$PARAM_CHANNEL_ID"},
-                        status: 1,
+                        $PARAM_STATUS: ${"$$PARAM_STATUS"},
                         $PARAM_TITLE: ${"$$PARAM_TITLE"},
                         weight: 1
                     }
@@ -63,11 +65,13 @@ class UpdatePinnedMessageUseCase @Inject constructor(
             id: Long,
             channelId: Long,
             title: String,
+            isActive: Boolean,
         ): Map<String, Any> {
             return mapOf(
                 PARAM_ID to id,
                 PARAM_CHANNEL_ID to channelId,
                 PARAM_TITLE to title,
+                PARAM_STATUS to if (isActive) 1 else 0,
             )
         }
     }
