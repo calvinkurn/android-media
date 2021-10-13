@@ -166,8 +166,12 @@ class ZoomImageView : androidx.appcompat.widget.AppCompatImageView {
         return tapDetector.onTouchEvent(event) || return scaleDetector.onTouchEvent(event) || return true
     }
 
-    private fun setZoom(scale: Float, x: Float, y: Float) {
-        zoomMatrix.postScale(scale, scale, x, y)
+    private fun setZoom(scale: Float, x: Float, y: Float, absolute:Boolean = false) {
+        if(absolute){
+            zoomMatrix.setScale(scale, scale, x, y)
+        }else{
+            zoomMatrix.postScale(scale, scale, x, y)
+        }
         setBounds()
         updateMatrix(drawMatrix)
         updateZoomInfo()
@@ -205,6 +209,7 @@ class ZoomImageView : androidx.appcompat.widget.AppCompatImageView {
             scale < MIN_SCALE -> MIN_SCALE
             else -> scale
         }
+
         cancelAnimation()
         animateZoom(oldScale, zoom, x, y)
     }
@@ -241,8 +246,11 @@ class ZoomImageView : androidx.appcompat.widget.AppCompatImageView {
         if (zoomInfo?.matrix != null) {
             imageMatrix.set(zoomInfo!!.matrix)
         } else {
-            setScaleAbsolute(getInitialScale(), viewWidth / 2f, viewHeight / 2f)
-            imageMatrix = baseMatrix
+            val scale = getInitialScale()
+            zoomMatrix.setScale(scale,scale,viewWidth / 2f, viewHeight / 2f)
+            setBounds()
+            updateMatrix(drawMatrix)
+            updateZoomInfo()
         }
     }
 
@@ -290,6 +298,7 @@ class ZoomImageView : androidx.appcompat.widget.AppCompatImageView {
     }
 
     private fun animateZoom(startZoom: Float, endZoom: Float, x: Float, y: Float) {
+
         zoomAnimator = ValueAnimator.ofFloat(startZoom, endZoom).apply {
             duration = VALUE_ANIMATOR_DURATION
             addUpdateListener {
@@ -457,7 +466,7 @@ class ZoomImageView : androidx.appcompat.widget.AppCompatImageView {
     companion object {
         var MAX_SCALE = 5F
         var MIN_SCALE = 1F
-        private const val VALUE_ANIMATOR_DURATION = 300L
+        private const val VALUE_ANIMATOR_DURATION = 10L
         const val portraitAR = 4 / 5f
         const val landscapeAR = 16 / 9f
     }
