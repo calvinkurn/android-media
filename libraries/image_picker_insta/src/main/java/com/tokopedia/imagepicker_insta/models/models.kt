@@ -1,5 +1,7 @@
 package com.tokopedia.imagepicker_insta.models
 
+import android.graphics.Matrix
+import android.graphics.RectF
 import android.net.Uri
 
 abstract class Asset(open val contentUri: Uri, open val createdDate: Long)
@@ -39,15 +41,14 @@ data class ZoomInfo(
     var panX: Float? = null,
     var bmpHeight: Int? = null,
     var bmpWidth: Int? = null,
+    var matrix: Matrix?=null,
+    var rectF: RectF?=null
 ) {
     fun hasData(): Boolean {
-        return scale != null && panX != null && panY != null
+        return matrix!=null
     }
 
     fun hasChanged(): Boolean {
-        if (scale != null && scale == 1f) {
-            return false
-        }
         return true
     }
 }

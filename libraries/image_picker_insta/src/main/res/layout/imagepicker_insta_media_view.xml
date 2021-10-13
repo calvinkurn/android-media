@@ -27,7 +27,7 @@
             app:srcCompat="@drawable/imagepicker_insta_play_icon" />
     </com.google.android.exoplayer2.ui.PlayerView>
 
-    <com.tokopedia.imagepicker_insta.views.ZoomAssetImageView
+    <com.tokopedia.imagepicker_insta.views.ZoomImageView
         android:id="@+id/media_asset_view"
         android:layout_width="0dp"
         android:layout_height="0dp"

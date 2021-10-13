@@ -30,7 +30,7 @@ class MediaView @JvmOverloads constructor(
 
     private lateinit var playerView: PlayerView
     private lateinit var playPauseIcon: View
-    lateinit var assetView: ZoomAssetImageView
+    lateinit var assetView: ZoomImageView
     private var simpleExoPlayer: SimpleExoPlayer? = null
     private val isSdkLowerThanN = Build.VERSION.SDK_INT < Build.VERSION_CODES.N
     private lateinit var dataFactory: DefaultDataSourceFactory
@@ -44,10 +44,10 @@ class MediaView @JvmOverloads constructor(
             //Add logic for scaling in exoplayer as well
             if (value == MediaScaleType.MEDIA_CENTER_CROP) {
                 playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-                assetView.centerCrop(true)
+                assetView.setScaleToCenterCrop()
             } else {
                 playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-                assetView.centerInside(true)
+                assetView.setScaleToCenterInside()
             }
             field = value
         }
@@ -66,7 +66,6 @@ class MediaView @JvmOverloads constructor(
         playerView = findViewById(R.id.media_player_view)
         assetView = findViewById(R.id.media_asset_view)
         playPauseIcon = findViewById(R.id.play_icon)
-        assetView.initListeners()
         assetView.mediaScaleTypeContract = object : MediaScaleTypeContract {
             override fun getCurrentMediaScaleType(): Int {
                 return mediaScaleType
@@ -251,10 +250,10 @@ class MediaView @JvmOverloads constructor(
     }
 
     fun lockAspectRatio() {
-        assetView.lockMinZoom()
+//        assetView.lockMinZoom()
     }
 
     fun unLockAspectRatio() {
-        assetView.unLockMinZoom()
+//        assetView.unLockMinZoom()
     }
 }

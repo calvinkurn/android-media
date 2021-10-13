@@ -46,8 +46,8 @@ class CropUseCase @Inject constructor() {
     @Throws(Exception::class)
     private suspend fun createTempBitmap(bmp: Bitmap?, zoomInfo: ZoomInfo, width: Int, height:Int): Bitmap {
         if (bmp != null && zoomInfo.hasData()) {
-            val top = -min(0f,zoomInfo.panY!!).toInt()
-            val left = -min(0f,zoomInfo.panX!!).toInt()
+            val top = -min(0f,(zoomInfo.rectF!!.top/zoomInfo.scale!!)).toInt()
+            val left = -min(0f,(zoomInfo.rectF!!.left/zoomInfo.scale!!)).toInt()
 
             val w = min(bmp.width.toFloat(),width/zoomInfo.scale!!)
             val h =  min(bmp.height.toFloat(),height/zoomInfo.scale!!)
