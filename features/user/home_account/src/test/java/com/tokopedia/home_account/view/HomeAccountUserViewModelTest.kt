@@ -162,7 +162,8 @@ class HomeAccountUserViewModelTest {
     fun `Execute getBuyerData Failed`() {
         /* When */
         coEvery { homeAccountUserUsecase.executeOnBackground() } throws throwable.throwable
-        coEvery { homeAccountShortcutUseCase.executeOnBackground() } returns shortcut
+        coEvery { homeAccountShortcutUseCase.executeOnBackground() } throws throwable.throwable
+        coEvery { getLinkStatusUseCase.invoke(any()) } throws throwable.throwable
 
         viewModel.getBuyerData()
         Assertions.assertThat(viewModel.buyerAccountDataData.value).isEqualTo(throwable)
@@ -284,6 +285,53 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `Set safe mode Failed`() {
         val isActive = true
+        /* When */
+        every {
+            homeAccountSafeSettingProfileUseCase.executeQuerySetSafeMode(
+                any(),
+                any(),
+                any()
+            )
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwableMock)
+        }
+
+        viewModel.setSafeMode(isActive)
+
+        justRun { throwableMock.printStackTrace() }
+        verify(atLeast = 1) {
+            throwableMock.printStackTrace()
+        }
+    }
+
+    @Test
+    fun `Set safe mode inactive success`() {
+        val data = SetUserProfileSetting(isSuccess = true, error = "")
+        val setUserProfileResponse = SetUserProfileSettingResponse(data)
+
+        val isActive = false
+        /* When */
+        every {
+            homeAccountSafeSettingProfileUseCase.executeQuerySetSafeMode(
+                any(),
+                any(),
+                any()
+            )
+        } answers {
+            firstArg<(SetUserProfileSettingResponse) -> Unit>().invoke(setUserProfileResponse)
+        }
+
+        viewModel.setSafeMode(isActive)
+
+        verify {
+            accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, isActive)
+            accountPref.saveSettingValue(AccountConstants.KEY.CLEAR_CACHE, isActive)
+        }
+    }
+
+    @Test
+    fun `Set safe mode inactive Failed`() {
+        val isActive = false
         /* When */
         every {
             homeAccountSafeSettingProfileUseCase.executeQuerySetSafeMode(
