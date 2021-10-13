@@ -23,5 +23,6 @@ annotation class HomeStaticLayoutId {
         const val EMPTY_STATE_FAILED_TO_FETCH_DATA = "4"
         const val LOADING_STATE = "5"
         const val PRODUCT_RECOM_OOC = "6"
+        const val PROGRESS_BAR = "7"
     }
 }
