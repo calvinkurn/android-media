@@ -18,6 +18,7 @@ object DeepLinkChecker {
     private const val DEFAULT_EXCLUDED_AMP_VALUE = "stories"
 
     const val WEB_HOST = "www.tokopedia.com"
+    const val WEB_HOST_STAGING = "staging.tokopedia.com"
     const val MOBILE_HOST = "m.tokopedia.com"
 
     const val OTHER = -1
@@ -59,6 +60,7 @@ object DeepLinkChecker {
     const val NATIVE_THANK_YOU = 38
     const val LOGIN_BY_QR = 39
     const val POWER_MERCHANT = 40
+    const val SALDO_DEPOSIT = 41
 
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 
@@ -180,7 +182,8 @@ object DeepLinkChecker {
 
     private fun isHome(uriData: Uri): Boolean {
         return uriData.pathSegments.isEmpty() &&
-            (uriData.host?.contains(WEB_HOST) ?: false || uriData.host?.contains(MOBILE_HOST) ?: false)
+            (uriData.host?.contains(WEB_HOST) ?: false || uriData.host?.contains(MOBILE_HOST) ?: false
+                    || UriUtil.isHostStaging(uriData.host ?: ""))
     }
 
     @JvmStatic

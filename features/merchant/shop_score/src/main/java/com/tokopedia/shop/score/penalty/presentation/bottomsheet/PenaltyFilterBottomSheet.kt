@@ -189,7 +189,7 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
 
     private fun checkIsSelected(): Boolean {
         viewModelShopPenalty.getPenaltyFilterUiModelList().forEach {
-            it.chipsFilerList.forEach { chips ->
+            it.chipsFilterList.forEach { chips ->
                 if (chips.isSelected) {
                     return true
                 }

@@ -43,6 +43,32 @@ object GoldMerchantUtil {
         }
     }
 
+    fun getNNStartShowProtectedParameterNewSeller(dateString: String): Long {
+        return try {
+            val calendar = Calendar.getInstance(DateFormatUtils.DEFAULT_LOCALE)
+            val simpleDateFormat =
+                SimpleDateFormat(PATTERN_DATE_SHOP_INFO, DateFormatUtils.DEFAULT_LOCALE)
+            simpleDateFormat.parse(dateString)?.let { calendar.timeInMillis = it.time }
+            val firstMonday = when (calendar.get(Calendar.DAY_OF_WEEK)) {
+                Calendar.TUESDAY -> SIX_NUMBER
+                Calendar.WEDNESDAY -> FIVE_NUMBER
+                Calendar.THURSDAY -> FOUR_NUMBER
+                Calendar.FRIDAY -> THREE_NUMBER
+                Calendar.SATURDAY -> TWO_NUMBER
+                Calendar.SUNDAY -> ONE_NUMBER
+                Calendar.MONDAY -> SEVEN_NUMBER
+                else -> ZERO_NUMBER
+            }
+            val shopDateCreatedInMs = calendar.timeInMillis
+            calendar.add(Calendar.DAY_OF_YEAR, firstMonday)
+            val diffInMs: Long = abs(shopDateCreatedInMs - calendar.timeInMillis)
+            return TimeUnit.DAYS.convert(diffInMs, TimeUnit.MILLISECONDS)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ZERO_NUMBER.toLong()
+        }
+    }
+
     fun isTenureNewSeller(dateString: String): Boolean {
         return (totalDays(dateString) in START_TENURE_EIGHTY_THREE until NEW_SELLER_DAYS)
     }
@@ -86,7 +112,7 @@ object GoldMerchantUtil {
             Calendar.MONDAY -> ZERO_NUMBER
             else -> ZERO_NUMBER
         }
-        calendar.add(Calendar.DAY_OF_YEAR, firstMonday+THIRTY_DAYS)
+        calendar.add(Calendar.DAY_OF_YEAR, firstMonday + THIRTY_DAYS)
         return format(calendar.timeInMillis, PATTERN_DATE_TEXT)
     }
 

@@ -19,7 +19,7 @@ class FilterPenaltyAdapter(adapterFactory: FilterPenaltyAdapterFactory) :
     fun resetFilterSelected(dataList: List<PenaltyFilterUiModel>) {
         visitables.filterIsInstance<PenaltyFilterUiModel>().mapIndexed { index, item ->
             val chipsIndex = visitables.indexOf(item)
-            item.chipsFilerList = dataList[index].chipsFilerList
+            item.chipsFilterList = dataList[index].chipsFilterList
             if (chipsIndex != -1) {
                 notifyItemChanged(chipsIndex, PAYLOAD_CHIPS_FILTER)
             }
@@ -34,7 +34,7 @@ class FilterPenaltyAdapter(adapterFactory: FilterPenaltyAdapterFactory) :
             visitables.filterIsInstance<PenaltyFilterUiModel>().find { it.title == title }
         val chipsIndex = visitables.indexOf(updateIndex)
         visitables.filterIsInstance<PenaltyFilterUiModel>()
-            .find { it.title == title }?.chipsFilerList = chipFilterList
+            .find { it.title == title }?.chipsFilterList = chipFilterList
         if (chipsIndex != -1) {
             notifyItemChanged(chipsIndex, PAYLOAD_CHIPS_FILTER)
         }

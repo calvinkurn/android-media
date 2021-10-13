@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.consts.VoucherUrl
 import com.tokopedia.vouchercreation.voucherlist.model.ui.EmptyStateUiModel
@@ -15,11 +16,14 @@ import kotlinx.android.synthetic.main.item_mvc_voucher_list_empty_state.view.*
  * Created By @ilhamsuaib on 17/04/20
  */
 
-class EmptyStateViewHolder(itemView: View?,
-                           private val onImpressionListener: (dataKey: String) -> Unit) : AbstractViewHolder<EmptyStateUiModel>(itemView) {
+class EmptyStateViewHolder(
+    itemView: View?,
+    private val onImpressionListener: (dataKey: String) -> Unit
+) : AbstractViewHolder<EmptyStateUiModel>(itemView) {
 
     companion object {
         const val EMPTY_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/mvc_empty_state.png"
+
         @LayoutRes
         val RES_LAYOUT = R.layout.item_mvc_voucher_list_empty_state
     }
@@ -39,6 +43,7 @@ class EmptyStateViewHolder(itemView: View?,
             tvMvcEmptyStateTitle.text = title
             tvMvcEmptyStateViewHistory.isVisible = element.isActiveVoucher
 
+            if (!element.isEligible) btnMvcEmptyStateAction?.hide()
             btnMvcEmptyStateAction?.setOnClickListener {
                 element.onCreateVoucherClicked()
             }

@@ -248,8 +248,8 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
     private fun mapToPenaltyFilterBottomSheet(penaltyTypes: List<ShopScorePenaltyTypes.Result>,
                                               sortBy: Int, typeId: Int): List<PenaltyFilterUiModel> {
         return mutableListOf<PenaltyFilterUiModel>().apply {
-            add(PenaltyFilterUiModel(title = TITLE_SORT, isDividerVisible = true, chipsFilerList = mapToChipsSortFilter(sortBy)))
-            add(PenaltyFilterUiModel(title = TITLE_TYPE_PENALTY, chipsFilerList = mapToChipsTypePenaltyFilter(penaltyTypes, typeId)))
+            add(PenaltyFilterUiModel(title = TITLE_SORT, isDividerVisible = true, chipsFilterList = mapToChipsSortFilter(sortBy)))
+            add(PenaltyFilterUiModel(title = TITLE_TYPE_PENALTY, chipsFilterList = mapToChipsTypePenaltyFilter(penaltyTypes, typeId)))
         }
     }
 
@@ -270,7 +270,7 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
 
     fun mapToSortFilterItemFromPenaltyList(penaltyFilterList: List<PenaltyFilterUiModel>): List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper> {
         val mapItemSortFilterWrapper = mutableListOf<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>()
-        penaltyFilterList.find { it.title == TITLE_TYPE_PENALTY }?.chipsFilerList?.map {
+        penaltyFilterList.find { it.title == TITLE_TYPE_PENALTY }?.chipsFilterList?.map {
             mapItemSortFilterWrapper.add(ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper(
                     title = it.title,
                     isSelected = it.isSelected,
