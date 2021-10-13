@@ -203,14 +203,7 @@ class ProductListPresenter @Inject constructor(
 
     private fun isABTestNavigationRevamp(): Boolean {
         return try {
-            checkNavigationRollenceValue(
-                NAVIGATION_EXP_TOP_NAV,
-                NAVIGATION_VARIANT_REVAMP
-            )
-            || checkNavigationRollenceValue(
-                NAVIGATION_EXP_TOP_NAV2,
-                NAVIGATION_VARIANT_REVAMP2
-            )
+            true
         } catch (e: Exception) {
             e.printStackTrace()
             false
@@ -218,7 +211,7 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun checkNavigationRollenceValue(rollenceKey: String, expectedValue: String): Boolean {
-        return view.abTestRemoteConfig?.getString(rollenceKey, NAVIGATION_VARIANT_OLD) == expectedValue
+        return false
     }
 
     private fun getHasFullThreeDotsOptions(): Boolean {

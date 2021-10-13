@@ -188,11 +188,6 @@ class ReviewInboxContainerViewModelTest : ReviewInboxContainerViewModelTestFixtu
                     RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
             )
         } returns RollenceKey.VARIANT_OLD_INBOX
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                    RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
-            )
-        } returns RollenceKey.NAVIGATION_VARIANT_OLD
     }
 
     private fun onCheckIsInboxUnified_returnsTrue() {
@@ -201,11 +196,6 @@ class ReviewInboxContainerViewModelTest : ReviewInboxContainerViewModelTestFixtu
                     RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
             )
         } returns RollenceKey.VARIANT_NEW_INBOX
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                    RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
-            )
-        } returns RollenceKey.NAVIGATION_VARIANT_REVAMP
     }
 
     private fun verifyTabCountersEquals(tabs: List<ReviewInboxTabs>) {

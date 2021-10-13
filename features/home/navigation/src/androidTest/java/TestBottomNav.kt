@@ -32,10 +32,6 @@ class TestBottomNav {
         TestBottomNavActivity::class.java
     ) {
         override fun beforeActivityLaunched() {
-            RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                RollenceKey.NAVIGATION_EXP_TOP_NAV,
-                RollenceKey.NAVIGATION_VARIANT_REVAMP
-            )
             super.beforeActivityLaunched()
         }
     }

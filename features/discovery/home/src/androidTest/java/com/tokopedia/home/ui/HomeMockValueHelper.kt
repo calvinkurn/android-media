@@ -31,12 +31,6 @@ object HomeMockValueHelper {
                 RollenceKey.VARIANT_NEW_INBOX
             )
         }
-        if (navigationRollence) {
-            RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                RollenceKey.NAVIGATION_EXP_TOP_NAV,
-                RollenceKey.NAVIGATION_VARIANT_REVAMP
-            )
-        }
         if (balanceWidgetRollence) {
             RemoteConfigInstance.getInstance().abTestPlatform.setString(
                 RollenceKey.BALANCE_EXP,
@@ -53,12 +47,6 @@ object HomeMockValueHelper {
             RemoteConfigInstance.getInstance().abTestPlatform.setString(
                 RollenceKey.HOME_PAYMENT_ABC,
                 RollenceKey.HOME_PAYMENT_ABC
-            )
-        }
-        if (navigationNewRollence) {
-            RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                RollenceKey.NAVIGATION_EXP_TOP_NAV2,
-                RollenceKey.NAVIGATION_VARIANT_REVAMP2
             )
         }
     }
