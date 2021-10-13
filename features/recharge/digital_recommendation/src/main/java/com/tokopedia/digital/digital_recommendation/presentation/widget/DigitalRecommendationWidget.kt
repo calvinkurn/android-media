@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.digital.digital_recommendation.databinding.LayoutDigitalRecommendationBinding
@@ -15,12 +16,14 @@ import com.tokopedia.digital.digital_recommendation.presentation.adapter.Digital
 import com.tokopedia.digital.digital_recommendation.presentation.adapter.viewholder.DigitalRecommendationViewHolder
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationItemModel
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.digital.digital_recommendation.presentation.viewmodel.DigitalRecommendationViewModel
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 
 /**
@@ -46,6 +49,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
     private var page: DigitalRecommendationPage? = null
 
     private lateinit var adapter: DigitalRecommendationAdapter
+    private lateinit var observer: Observer<Result<DigitalRecommendationModel>>
 
     init {
         showLoading()
@@ -116,28 +120,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         }
 
         digitalRecommendationAnalytics = DigitalRecommendationAnalytics()
-
-        showLoading()
-        observeLivedata()
-        digitalRecommendationViewModel.fetchDigitalRecommendation(
-                page ?: DigitalRecommendationPage.DIGITAL_GOODS,
-                additionalTrackingData?.dgCategories ?: emptyList(),
-                additionalTrackingData?.pgCategories ?: emptyList()
-        )
-    }
-
-    fun showLoading() {
-        binding.loadingDigitalRecommendation.root.show()
-        binding.tgDigitalRecommendationTitle.hide()
-        binding.rvDigitalRecommendation.hide()
-    }
-
-    fun hideLoading() {
-        binding.loadingDigitalRecommendation.root.hide()
-    }
-
-    private fun observeLivedata() {
-        digitalRecommendationViewModel.digitalRecommendationItems.observe(lifecycleOwner, {
+        observer = Observer<Result<DigitalRecommendationModel>> {
             when (it) {
                 is Success -> {
                     hideLoading()
@@ -160,7 +143,29 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
                     listener?.onFetchFailed(it.throwable)
                 }
             }
-        })
+        }
+
+        showLoading()
+        observeLivedata()
+        digitalRecommendationViewModel.fetchDigitalRecommendation(
+                page ?: DigitalRecommendationPage.DIGITAL_GOODS,
+                additionalTrackingData?.dgCategories ?: emptyList(),
+                additionalTrackingData?.pgCategories ?: emptyList()
+        )
+    }
+
+    fun showLoading() {
+        binding.loadingDigitalRecommendation.root.show()
+        binding.tgDigitalRecommendationTitle.hide()
+        binding.rvDigitalRecommendation.hide()
+    }
+
+    fun hideLoading() {
+        binding.loadingDigitalRecommendation.root.hide()
+    }
+
+    private fun observeLivedata() {
+        digitalRecommendationViewModel.digitalRecommendationItems.observe(lifecycleOwner, observer)
     }
 
     interface Listener {
