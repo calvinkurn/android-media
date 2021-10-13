@@ -10,22 +10,25 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_main"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="H,1:1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/contentVideoPreviewImage"
-            android:layout_width="match_parent"
-            android:layout_height="384dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:scaleType="centerInside"
             app:unify_image_corner_radius="0"
             android:src="@color/transparent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:src="@tools:sample/avatars"
             tools:visibility="visible" />
 
@@ -63,8 +66,8 @@
 
     <FrameLayout
         android:id="@+id/frame_video"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:clickable="true"
         android:focusable="true"
         android:visibility="visible"
@@ -76,7 +79,7 @@
         <com.google.android.exoplayer2.ui.PlayerView
             android:id="@+id/feed_content_layout_video"
             android:layout_width="match_parent"
-            android:layout_height="384dp"
+            android:layout_height="match_parent"
             app:resize_mode="fixed_width"
             app:show_timeout="3000"
             app:shutter_background_color="@android:color/transparent"
