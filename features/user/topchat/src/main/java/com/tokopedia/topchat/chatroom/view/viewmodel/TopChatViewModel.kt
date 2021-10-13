@@ -9,7 +9,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topchat.chatroom.domain.pojo.param.ExistingMessageIdParam
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.usecase.GetExistingMessageIdUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.GetShopFollowingUseCaseNew
+import com.tokopedia.topchat.chatroom.domain.usecase.GetShopFollowingUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 open class TopChatViewModel @Inject constructor(
     private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
-    private var getShopFollowingUseCase: GetShopFollowingUseCaseNew,
+    private var getShopFollowingUseCase: GetShopFollowingUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig
 ): BaseViewModel(dispatcher.main) {

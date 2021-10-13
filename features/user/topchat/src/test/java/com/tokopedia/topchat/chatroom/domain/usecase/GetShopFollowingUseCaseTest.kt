@@ -24,13 +24,13 @@ class GetShopFollowingUseCaseTest {
     lateinit var repository: GraphqlRepository
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
-    private lateinit var useCase: GetShopFollowingUseCaseNew
+    private lateinit var useCase: GetShopFollowingUseCase
     private val testShopId: Long = 123
 
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        useCase = GetShopFollowingUseCaseNew(repository, dispatchers)
+        useCase = GetShopFollowingUseCase(repository, dispatchers)
     }
 
     @Test

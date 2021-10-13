@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topchat.chatroom.domain.pojo.*
 import com.tokopedia.topchat.chatroom.domain.usecase.GetExistingMessageIdUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.GetShopFollowingUseCaseNew
+import com.tokopedia.topchat.chatroom.domain.usecase.GetShopFollowingUseCase
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -26,7 +26,7 @@ class TopChatViewModelTest {
     lateinit var getExistingMessageIdUseCase: GetExistingMessageIdUseCase
 
     @RelaxedMockK
-    lateinit var getShopFollowingUseCase: GetShopFollowingUseCaseNew
+    lateinit var getShopFollowingUseCase: GetShopFollowingUseCase
 
     @RelaxedMockK
     lateinit var remoteConfig: RemoteConfig

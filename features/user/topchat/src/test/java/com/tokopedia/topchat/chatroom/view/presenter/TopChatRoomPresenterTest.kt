@@ -130,7 +130,6 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
             getChatUseCase.unsubscribe()
             getTemplateChatRoomUseCase.unsubscribe()
             replyChatUseCase.unsubscribe()
-            getShopFollowingUseCase.safeCancel()
             addToCartUseCase.unsubscribe()
             groupStickerUseCase.safeCancel()
             chatAttachmentUseCase.safeCancel()

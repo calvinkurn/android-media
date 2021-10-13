@@ -1,77 +1,40 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import kotlinx.coroutines.*
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
-/**
- * @author by nisie on 16/01/19.
- */
+open class GetShopFollowingUseCase@Inject constructor(
+    private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
+): CoroutineUseCase<Long, ShopFollowingPojo>(dispatcher.io) {
 
-open class GetShopFollowingUseCase @Inject constructor(
-        private val gqlUseCase: GraphqlUseCase<ShopFollowingPojo>,
-        private var dispatchers: CoroutineDispatchers
-) : CoroutineScope {
-
-    private val paramShopIDs = "shopIDs"
-    private val paramInputFields = "inputFields"
-
-    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
-
-    fun getStatus(
-            shopId: Long,
-            onError: (Throwable) -> Unit,
-            onSuccessGetShopFollowingStatus: (Boolean) -> Unit
-    ) {
-        launchCatchError(
-                dispatchers.io,
-                {
-                    val params = generateParam(shopId)
-                    val response = gqlUseCase.apply {
-                        setTypeClass(ShopFollowingPojo::class.java)
-                        setRequestParams(params)
-                        setGraphqlQuery(query)
-                    }.executeOnBackground()
-                    withContext(dispatchers.main) {
-                        onSuccessGetShopFollowingStatus(response.isFollow)
-                    }
-                },
-                {
-                    withContext(dispatchers.main) {
-                        onError(it)
-                    }
-                }
-        )
-    }
-
-    fun safeCancel() {
-        if (coroutineContext.isActive) {
-            cancel()
-        }
+    override suspend fun execute(params: Long): ShopFollowingPojo {
+        val param = generateParam(params)
+        return repository.request(graphqlQuery(), param)
     }
 
     private fun generateParam(shopId: Long): Map<String, Any> {
         val shopIds = listOf(shopId)
         val inputFields = listOf(DEFAULT_FAVORITE)
         return mapOf<String, Any>(
-                PARAM_SHOP_IDS to shopIds,
-                PARAM_INPUT_FIELDS to inputFields
+            PARAM_SHOP_IDS to shopIds,
+            PARAM_INPUT_FIELDS to inputFields
         )
     }
 
-    private val query = """
+    override fun graphqlQuery(): String = """
         query get_shop_following_status(
-            $$paramShopIDs: [Int!]!, 
-            $$paramInputFields: [String!]!
+            $$PARAM_SHOP_IDS: [Int!]!, 
+            $$PARAM_INPUT_FIELDS: [String!]!
         ) {
           shopInfoByID(
             input: {
-                shopIDs: $$paramShopIDs,
-                fields: $$paramInputFields
+                shopIDs: $$PARAM_SHOP_IDS,
+                fields: $$PARAM_INPUT_FIELDS
             }
           ) {
             result {
@@ -85,8 +48,8 @@ open class GetShopFollowingUseCase @Inject constructor(
     """.trimIndent()
 
     companion object {
-        private val PARAM_SHOP_IDS: String = "shopIDs"
-        private val PARAM_INPUT_FIELDS: String = "inputFields"
-        private val DEFAULT_FAVORITE: String = "favorite"
+        private const val PARAM_SHOP_IDS = "shopIDs"
+        private const val PARAM_INPUT_FIELDS = "inputFields"
+        private const val DEFAULT_FAVORITE: String = "favorite"
     }
 }
