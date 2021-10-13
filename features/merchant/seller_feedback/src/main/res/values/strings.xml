@@ -36,23 +36,20 @@
     <string name="feedback_form_feedback_trigger_desc">Form feedback bisa muncul setelah screenshot</string>
     <string name="feedback_from_screenshoot_tigger_enabled_success_message">Feedback-mu terkirim. Ambil screenshot untuk memunculkan form feedback lagi.</string>
     <string name="feedback_from_screenshoot_tigger_disabled_success_message">Feedback-mu terkirim. Agar lebih mudah, aktifkan Feedback Trigger.</string>
-
-    <string-array name="feedback_pages">
-        <item>Home</item>
-        <item>Chat</item>
-        <item>Diskusi</item>
-        <item>Tambah Produk</item>
-        <item>Ubah Produk</item>
-        <item>Produk Toko</item>
-        <item>Penjualan</item>
-        <item>Statistik</item>
-        <item>Iklan dan Promosi</item>
-        <item>Dekorasi Toko</item>
-        <item>Ulasan</item>
-        <item>Pesanan Dikomplain</item>
-        <item>Pengaturan Toko</item>
-        <item>Pengaturan Admin</item>
-        <item>Lainnya</item>
-    </string-array>
+    <string name="feedback_from_home">Home</string>
+    <string name="feedback_from_chat">Chat</string>
+    <string name="feedback_from_discuss">Diskusi</string>
+    <string name="feedback_from_add_product">Tambah Produk</string>
+    <string name="feedback_from_edit_product">Ubah Produk</string>
+    <string name="feedback_from_product_manage">Produk Toko</string>
+    <string name="feedback_from_som">Penjualan</string>
+    <string name="feedback_from_statistic">Statistik</string>
+    <string name="feedback_from_centralized_promo">Iklan dan Promosi</string>
+    <string name="feedback_from_shop_decoration">Dekorasi Toko</string>
+    <string name="feedback_from_review">Ulasan</string>
+    <string name="feedback_from_order_complaint">Pesanan Dikomplain</string>
+    <string name="feedback_from_shop_setting">Pengaturan Toko</string>
+    <string name="feedback_from_admin_setting">Pengaturan Admin</string>
+    <string name="feedback_from_others">Lainnya</string>
 
 </resources>
