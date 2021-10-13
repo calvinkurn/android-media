@@ -1,7 +1,14 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: "de.mannodermaus.android-junit5"
+apply plugin: 'kotlin-kapt'
+
+android{
+    buildFeatures {
+        viewBinding true
+    }
+}
 
 android {
     testOptions {
@@ -23,6 +30,11 @@ android {
 
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
+}
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
 }
 
 buildscript {
@@ -66,15 +78,20 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.multiDex
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.coroutineCore
 
     // spek
     testImplementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.miscDependencies.coroutineCore
-    testImplementation rootProject.ext.testDependencies.spek2Api
-    testImplementation rootProject.ext.testDependencies.spek2Dsl
+    testImplementation rootProject.ext.testDependencies.junit
+
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
 
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
     testImplementation rootProject.ext.testDependencies.junitJupiterEngine

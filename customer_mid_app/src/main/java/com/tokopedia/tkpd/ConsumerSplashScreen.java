@@ -1,17 +1,13 @@
 package com.tokopedia.tkpd;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.analytics.performance.util.SplashScreenPerformanceTracker;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.customer_mid_app.R;
