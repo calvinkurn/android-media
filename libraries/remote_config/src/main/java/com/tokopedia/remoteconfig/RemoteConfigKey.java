@@ -258,4 +258,5 @@ public class RemoteConfigKey {
     public static final String FORCE_LIGHT_MODE = "android_force_light_mode";
   
     public static final String ENABLE_ADD_BILLS_SBM = "android_main_app_enable_add_bills_sbm";
+    public static final String ENABLE_NEW_CONTENT_CREATION_FLOW = "app_android_feed_cc_feature_flag";
 }
