@@ -521,7 +521,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun onSuccessRegisterCheckFingerprint(data: RegisterCheckFingerprintResult) {
         activity?.let {
-            if (isEnableFingerprint && isEnableFingerprintRollout() && data.isRegistered) {
+            if (isEnableFingerprint && data.isRegistered) {
                 enableFingerprint()
             } else {
                 disableFingerprint()
@@ -1254,14 +1254,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
         return remoteConfigInstance.abTestPlatform
     }
-
-    fun isEnableFingerprintRollout(): Boolean {
-        if (Build.VERSION.SDK_INT == OS_11) {
-            return getAbTestPlatform().getString(SessionConstants.Rollout.ROLLOUT_LOGIN_FINGERPRINT_11).isNotEmpty()
-        }
-        return getAbTestPlatform().getString(SessionConstants.Rollout.ROLLOUT_LOGIN_FINGERPRINT).isNotEmpty()
-    }
-
 
     fun isEnableEncryptRollout(): Boolean {
         val rolloutKey = if (GlobalConfig.isSellerApp()) {

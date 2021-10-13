@@ -8,6 +8,28 @@
     android:paddingBottom="@dimen/dp_18">
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        android:text="@string/feed_component_edit"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/div0"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginBottom="@dimen/dp_18"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_18"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/report"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,6 +65,7 @@
         android:layout_height="@dimen/dp_1"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_18"
+        android:layout_marginBottom="@dimen/dp_18"
         android:visibility="gone"
         tools:visibility="visible" />
 
@@ -51,7 +74,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/dp_18"
         android:text="@string/feed_delete_comment"
         android:textColor="@color/Red_R600"
         android:visibility="gone"

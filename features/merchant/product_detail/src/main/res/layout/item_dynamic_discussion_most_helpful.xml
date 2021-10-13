@@ -51,7 +51,6 @@
 
     <include layout="@layout/partial_dynamic_discussion_most_helpful_empty_state"
         android:id="@+id/productDiscussionMostHelpfulEmptyLayout"
-        android:visibility="gone"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:paddingBottom="@dimen/layout_lvl2"
@@ -60,7 +59,6 @@
 
     <include layout="@layout/partial_dynamic_discussion_shimmer"
         android:id="@+id/productDiscussionShimmerLayout"
-        android:visibility="gone"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:paddingBottom="@dimen/layout_lvl2"
@@ -69,7 +67,6 @@
 
     <include layout="@layout/partial_dynamic_discussion_local_load"
         android:id="@+id/productDiscussionLocalLoadLayout"
-        android:visibility="gone"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:paddingBottom="@dimen/layout_lvl2"

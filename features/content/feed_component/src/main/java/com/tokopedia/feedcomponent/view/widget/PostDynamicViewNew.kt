@@ -17,6 +17,7 @@ import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
@@ -59,7 +60,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
-import com.tokopedia.feedcomponent.view.widget.PostTagView
 
 
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
@@ -234,7 +234,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.deletable,
             feedXCard.followers,
             feedXCard.typename,
-            feedXCard.media.firstOrNull()?.type ?: ""
+            feedXCard.media.firstOrNull()?.type ?: "",
+            feedXCard.text
         )
     }
 
@@ -245,7 +246,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         deletable: Boolean,
         followers: FeedXFollowers,
         type: String,
-        mediaType: String
+        mediaType: String,
+        caption: String
     ) {
         val isFollowed = followers.isFollowed
         val count = followers.count
@@ -373,8 +375,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 author.id,
                 authorType,
                 type,
-                isVideo
-            )
+                isVideo,
+                caption)
         }
     }
 
@@ -664,7 +666,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val media = feedXCard.media
         val postId = feedXCard.id.toIntOrZero()
         if (feedXCard.typename != TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT) {
-            val products = feedXCard.tags
+            val globalCardProductList = feedXCard.tags
             gridList.gone()
             carouselView.visible()
             commentButton.visible()
@@ -688,6 +690,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     positionInFeed
                 )
                 media.forEach { feedMedia ->
+                    val tags = feedMedia.tagging
+                    val tagProducts = mutableListOf<FeedXProduct>()
+                    tags.map {
+                        if (!ifProductAlreadyPresent(globalCardProductList[it.tagIndex],
+                                tagProducts))
+                        tagProducts.add(globalCardProductList[it.tagIndex])
+                    }
 
                     feedMedia.isImageImpressedFirst = true
 
@@ -701,15 +710,18 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             val postImage = findViewById<ImageUnify>(R.id.post_image)
                             postImage.setImageUrl(feedMedia.mediaUrl)
                             findViewById<IconUnify>(R.id.product_tag_button).showWithCondition(
-                                products.isNotEmpty()
+                                tagProducts.isNotEmpty()
+                            )
+                            findViewById<CardView>(R.id.video_tagging_parent).showWithCondition(
+                                tagProducts.isNotEmpty()
                             )
 
                             val productTag = findViewById<IconUnify>(R.id.product_tag_button)
                             val productTagText = findViewById<Typography>(R.id.product_tag_text)
                             val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
                             val layoutLihatProdukParent = findViewById<ConstraintLayout>(R.id.lihat_parent_layout)
+                            layoutLihatProdukParent.showWithCondition(tagProducts.isNotEmpty())
                             layoutLihatProdukParent.layoutTransition.apply {
-//                                enableTransitionType(LayoutTransition.CHANGING)
                                 setDuration(LayoutTransition.CHANGING,300)
                             }
 
@@ -726,7 +738,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     val productTagView = PostTagView(context, feedXMediaTagging)
                                     productTagView.postDelayed({
                                         productTagView.bindData(listener,
-                                            products,
+                                            globalCardProductList,
                                             imageWidth,
                                             imageHeight,
                                             positionInFeed)
@@ -822,7 +834,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 listener?.let { listener ->
                                     listener.onTagClicked(
                                         postId,
-                                        products,
+                                        tagProducts,
                                         listener,
                                         feedXCard.author.id,
                                         feedXCard.typename,
@@ -836,7 +848,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 listener?.let { listener ->
                                     listener.onTagClicked(
                                         postId,
-                                        products,
+                                        tagProducts,
                                         listener,
                                         feedXCard.author.id,
                                         feedXCard.typename,
@@ -859,7 +871,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         setVideoCarouselView(
                             feedMedia,
                             feedXCard.id,
-                            products,
+                            tagProducts,
                             feedXCard.author.id,
                             feedXCard.typename,
                             feedXCard.followers.isFollowed
@@ -947,9 +959,18 @@ class PostDynamicViewNew @JvmOverloads constructor(
         feedXCard: FeedXCard,
     ) {
         val videoItem = feedMedia.videoView
+        val tags =feedMedia.tagging
+        val postProductList = feedXCard.tags
+        val tagProducts = mutableListOf<FeedXProduct>()
+        tags.map {
+            if (!ifProductAlreadyPresent(postProductList[it.tagIndex], tagProducts))
+            tagProducts.add(postProductList[it.tagIndex])
+        }
         videoItem?.run {
             val layoutLihatProdukParent = findViewById<ConstraintLayout>(R.id.lihat_video_parent_layout)
             layoutLihatProdukParent?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+            findViewById<CardView>(R.id.product_tagging_parent).showWithCondition(tagProducts.isNotEmpty())
+
 
             if (handlerAnim == null)
                 handlerAnim = Handler(Looper.getMainLooper())
@@ -1158,6 +1179,17 @@ class PostDynamicViewNew @JvmOverloads constructor(
             mutableListOf()
         }
     }
+    private fun ifProductAlreadyPresent(
+        product: FeedXProduct,
+        tagList: List<FeedXProduct>,
+    ): Boolean {
+        tagList.forEachIndexed { index, feedXProduct ->
+            if (feedXProduct.id == product.id)
+                return true
+        }
+        return false
+    }
+
 
     private fun bindPublishedAt(publishedAt: String, subTitle: String) {
         val avatarDate = TimeConverter.generateTimeNew(context, publishedAt)
@@ -1244,14 +1276,22 @@ class PostDynamicViewNew @JvmOverloads constructor(
             videoPlayer?.pause()
     }
 
-    fun bindImage(products: List<FeedXProduct>, media: FeedXMedia) {
-        var isInflatedBubbleShowing = false
+    fun bindImage(cardProducts: List<FeedXProduct>, media: FeedXMedia) {
         val imageItem = media.imageView
+        val tags = media.tagging
+        val tagProducts = mutableListOf<FeedXProduct>()
+        tags.map {
+            if(!ifProductAlreadyPresent(cardProducts[it.tagIndex],tagProducts))
+            tagProducts.add(cardProducts[it.tagIndex])
+        }
         imageItem?.run {
-            findViewById<IconUnify>(R.id.product_tag_button).showWithCondition(products.isNotEmpty())
+            findViewById<CardView>(R.id.video_tagging_parent).showWithCondition(
+                tagProducts.isNotEmpty())
+            findViewById<IconUnify>(R.id.product_tag_button).showWithCondition(tagProducts.isNotEmpty())
             val productTagText = this.findViewById<Typography>(R.id.product_tag_text)
             val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
             val layoutLihatProdukParent = findViewById<ConstraintLayout>(R.id.lihat_parent_layout)
+            layoutLihatProdukParent.showWithCondition(tagProducts.isNotEmpty())
             layoutLihatProdukParent.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
 
 
@@ -1265,7 +1305,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
             if (handlerAnim == null)
                 handlerAnim = Handler(Looper.getMainLooper())
-            if (!productTagText.isVisible && products.isNotEmpty()) {
+            if (!productTagText.isVisible && tagProducts.isNotEmpty()) {
                 showViewWithSlideAnimation(layoutLihatProdukParent)
                 handlerAnim?.postDelayed({
                     productTagText.apply {

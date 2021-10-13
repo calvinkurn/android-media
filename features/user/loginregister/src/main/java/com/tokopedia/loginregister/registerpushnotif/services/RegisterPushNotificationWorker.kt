@@ -82,11 +82,15 @@ class RegisterPushNotificationWorker(
             generateKey()
             if (keyPair != null) {
                 signData(userSession.userId.orEmpty(), userSession.deviceId.orEmpty()).let {
-                    return registerPushNotificationUseCase(RegisterPushNotificationParamsModel(
-                        publicKey = it.publicKey,
-                        signature = it.signature,
-                        datetime = it.datetime
-                    )).data
+                    try {
+                        return registerPushNotificationUseCase(RegisterPushNotificationParamsModel(
+                            publicKey = it.publicKey,
+                            signature = it.signature,
+                            datetime = it.datetime
+                        )).data
+                    } catch (e: Exception) {
+                        recordLog(LOG_TYPE_REGISTER_PUSH_NOTIF, "", e)
+                    }
                 }
             }
         }
@@ -170,6 +174,7 @@ class RegisterPushNotificationWorker(
         private const val LOG_TYPE_SCHEDULE_WORKER = "scheduleWorker()"
         private const val LOG_TYPE_DO_WORK = "doWork()"
         private const val LOG_TYPE_SIGN_DATA = "signData()"
+        private const val LOG_TYPE_REGISTER_PUSH_NOTIF = "registerPushNotification()"
 
         @JvmStatic
         fun scheduleWorker(context: Context, forceWorker: Boolean) {

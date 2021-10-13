@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/pay_later_margin_dp_10"
         android:paddingBottom="@dimen/pay_later_benefit_margin_dp_6"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/unify_font_12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

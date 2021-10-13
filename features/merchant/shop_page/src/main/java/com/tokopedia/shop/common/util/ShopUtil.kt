@@ -9,6 +9,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_NEW_HOME_TAB
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_REVIEW
 import com.tokopedia.remoteconfig.RollenceKey.NEW_REVIEW_SHOP
 import com.tokopedia.remoteconfig.RollenceKey.OLD_REVIEW_SHOP
@@ -118,5 +119,19 @@ object ShopUtil {
                 OLD_REVIEW_SHOP
         )
         return shopReviewAbTestKey.equals(NEW_REVIEW_SHOP, true)
+    }
+
+    fun isUsingNewShopHomeTab(): Boolean {
+        val newShopHomeTabAbTestKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+                AB_TEST_SHOP_NEW_HOME_TAB,
+                ""
+        ).orEmpty()
+        return newShopHomeTabAbTestKey.isNotEmpty()
+    }
+
+    fun <E> MutableList<E>.setElement(index: Int, element: E){
+        if(index in 0 until size){
+            set(index, element)
+        }
     }
 }

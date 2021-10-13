@@ -78,7 +78,7 @@ class AffiliateHowToPromoteBottomSheet : BottomSheetUnify() {
                 val typography = Typography(requireContext()).apply {
                     this.setWeight(Typography.REGULAR)
                     this.setType(Typography.BODY_2)
-                    this.setTextColor(MethodChecker.getColor(requireContext(), R.color.Unify_N700_96))
+                    this.setTextColor(MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                     this.setPadding(
                             0,
                             resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_4),
