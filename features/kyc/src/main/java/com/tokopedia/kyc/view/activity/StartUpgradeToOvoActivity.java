@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -43,14 +42,6 @@ public class StartUpgradeToOvoActivity extends BaseSimpleActivity implements
     private boolean isPermissionGotDenied;
     protected static final int REQUEST_CAMERA_PERMISSIONS = 932;
     private int retryCount = 3;
-
-    @DeepLink(Constants.AppLinks.OVOUPGRADE)
-    public static Intent getCallingStartUpgradeToOvo(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, StartUpgradeToOvoActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
-    }
 
     @Override
     protected Fragment getNewFragment() {

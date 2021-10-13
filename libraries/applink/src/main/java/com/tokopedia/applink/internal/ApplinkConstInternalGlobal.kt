@@ -512,4 +512,7 @@ object ApplinkConstInternalGlobal {
     // LinkAccountWebViewActivity
     // tokopedia-android-internal://global/link-account-webview
     const val LINK_ACCOUNT_WEBVIEW = "$INTERNAL_GLOBAL/link-account-webview"
+
+    //TkpdYoutubeVideoActivity
+    const val YOUTUBE_VIDEO = "$INTERNAL_GLOBAL/youtube-video"
 }

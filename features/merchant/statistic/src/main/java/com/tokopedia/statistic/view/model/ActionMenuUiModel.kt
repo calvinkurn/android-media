@@ -4,7 +4,7 @@ import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.statistic.view.adapter.factory.ActionMenuAdapterFactory
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created By @ilhamsuaib on 14/02/21

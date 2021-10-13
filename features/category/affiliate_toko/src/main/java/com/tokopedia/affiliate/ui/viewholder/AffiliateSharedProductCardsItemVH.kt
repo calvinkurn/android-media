@@ -26,11 +26,11 @@ class AffiliateSharedProductCardsItemVH(itemView: View, private val productClick
             itemView.product_name.text = product.itemTitle
             if (product.status == PRODUCT_ACTIVE) {
                 itemView.status_bullet.setImageDrawable(MethodChecker.getDrawable(itemView.context, R.drawable.affiliate_circle_active))
-                itemView.product_status.setTextColor(MethodChecker.getColor(itemView.context, R.color.unify_G500))
+                itemView.product_status.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 itemView.product_status.text = getString(R.string.affiliate_active)
             } else {
                 itemView.status_bullet.setImageDrawable(MethodChecker.getDrawable(itemView.context, R.drawable.affiliate_circle_inactive))
-                itemView.product_status.setTextColor(MethodChecker.getColor(itemView.context, R.color.Unify_NN500))
+                itemView.product_status.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN500))
                 itemView.product_status.text = getString(R.string.affiliate_inactive)
             }
             itemView.shop_name.text = product.footer?.firstOrNull()?.footerText

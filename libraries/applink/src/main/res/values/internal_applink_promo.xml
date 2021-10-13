@@ -21,6 +21,9 @@
     <string name="path_promo_list_marketplace" translatable="false">/list/marketplace</string>
     <string name="path_promo_detail_marketplace" translatable="false">/detail/marketplace</string>
 
+    <string name="path_promo_list" translatable="false">/promo-list</string>
+    <string name="path_promo_detail" translatable="false">/promo-detail</string>
+
     <string name="path_promo_checkout_marketplace">/checkout-marketplace</string>
 
     <string name="path_promo_campaign_shake_landing" translatable="false">/campaign-shake-landing/.*\\/</string>
