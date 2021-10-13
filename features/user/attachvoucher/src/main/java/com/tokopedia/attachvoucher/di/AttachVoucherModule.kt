@@ -18,21 +18,10 @@ class AttachVoucherModule {
 
     @AttachVoucherScope
     @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @AttachVoucherScope
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
-//    @AttachVoucherScope
-//    @Provides
-//    fun provideGqlUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<GetVoucherResponse> {
-//        return GraphqlUseCase(graphqlRepository)
-//    }
-
-    @AttachVoucherScope
-    @Provides
-    fun provideUseCase(repository: GraphqlRepository): CoroutineUseCase<Map<String, Any>, GetMerchantPromotionGetMVListResponse> {
-        return GetVoucherUseCase(repository, Dispatchers.IO)
-    }
 }

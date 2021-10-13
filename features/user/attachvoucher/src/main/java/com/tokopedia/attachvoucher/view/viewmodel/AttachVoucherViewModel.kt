@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.attachvoucher.data.FilterParam
+import com.tokopedia.attachvoucher.data.GetVoucherParam
 import com.tokopedia.attachvoucher.data.VoucherUiModel
 import com.tokopedia.attachvoucher.mapper.VoucherMapper
 import com.tokopedia.attachvoucher.usecase.GetVoucherUseCase
@@ -19,7 +21,7 @@ class AttachVoucherViewModel @Inject constructor(
         private val getVouchersUseCase: GetVoucherUseCase,
         private val dispatcher: CoroutineDispatchers,
         private val mapper: VoucherMapper
-) : BaseViewModel(dispatcher.io) {
+) : BaseViewModel(dispatcher.main) {
 
     var hasNext = false
     var isLoading = false
@@ -54,28 +56,13 @@ class AttachVoucherViewModel @Inject constructor(
             val param = generateParams(page, filter.value ?: NO_FILTER)
             val response = getVouchersUseCase(param)
             val vouchers = mapper.map(response)
-            withContext(dispatcher.main) {
-                hasNext = response.merchantPromotionGetMVList.data.paging.hasNext
-                onSuccessGetVouchers(vouchers)
-                stopLoading()
-            }
+            hasNext = response.merchantPromotionGetMVList.data.paging.hasNext
+            onSuccessGetVouchers(vouchers)
+            stopLoading()
         }, onError = {
-            withContext(dispatcher.main) {
-                onErrorGetVouchers(it)
-                stopLoading()
-            }
+            onErrorGetVouchers(it)
+            stopLoading()
         })
-
-//        currentPage = page
-//        if (getVouchersUseCase.isLoading) {
-//            getVouchersUseCase.cancelCurrentLoad()
-//        }
-//        getVouchersUseCase.getVouchers(
-//                page,
-//                filter.value ?: NO_FILTER,
-//                ::onSuccessGetVouchers,
-//                ::onErrorGetVouchers
-//        )
     }
 
     private fun stopLoading() {
@@ -91,19 +78,13 @@ class AttachVoucherViewModel @Inject constructor(
         stopLoading()
     }
 
-    private fun generateParams(page: Int, filter: Int): Map<String, Any> {
-        val requestParam = ArrayMap<String, Any>()
-        val paramMVFilter = ArrayMap<String, Any>().apply {
-            put(GetVoucherUseCase.MVFilter.VoucherStatus.param, GetVoucherUseCase.MVFilter.VoucherStatus.paramOnGoing)
-            put(GetVoucherUseCase.MVFilter.PerPage.param, GetVoucherUseCase.MVFilter.PerPage.default)
-            put(GetVoucherUseCase.MVFilter.paramPage, page)
-        }
+    private fun generateParams(page: Int, filter: Int): FilterParam {
+        val paramMVFilter = GetVoucherParam(GetVoucherUseCase.MVFilter.VoucherStatus.paramOnGoing, GetVoucherUseCase.MVFilter.PerPage.default, page)
 
         if (filter != GetVoucherUseCase.MVFilter.VoucherType.noFilter) {
-            paramMVFilter[GetVoucherUseCase.MVFilter.VoucherType.param] = filter
+            paramMVFilter.voucher_type = filter
         }
-        requestParam[PARAM_FILTER] = paramMVFilter
-        return requestParam
+        return FilterParam(paramMVFilter)
     }
 
     fun hasNoFilter(): Boolean {
