@@ -152,7 +152,6 @@ class OfficialHomeFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         officialStorePerformanceMonitoringListener = context?.let { castContextToOfficialStorePerformanceMonitoring(it) }
         if (savedInstanceState == null) {
             officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.startCustomMetric(
@@ -164,7 +163,6 @@ class OfficialHomeFragment :
         }
         context?.let { tracking = OfficialStoreTracking(it) }
         remoteConfig = FirebaseRemoteConfigImpl(activity)
-
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -219,6 +217,7 @@ class OfficialHomeFragment :
         getOfficialStorePageLoadTimeCallback()?.stopPreparePagePerformanceMonitoring()
         if (savedInstanceState == null) officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(
             KEY_PERFORMANCE_PREPARING_OS_HOME)
+
     }
 
     private fun observeRecomwidget() {
