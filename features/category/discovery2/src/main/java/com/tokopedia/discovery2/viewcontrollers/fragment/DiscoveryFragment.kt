@@ -31,6 +31,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.R
+import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.*
 import com.tokopedia.discovery2.data.*
@@ -1197,12 +1198,12 @@ class DiscoveryFragment :
     private fun getTabTextColor(context: Context, textColor: String?): Int {
         return try {
             if(textColor.isNullOrEmpty()){
-                ContextCompat.getColor(context, R.color.Unify_G500)
+                ContextCompat.getColor(context, RUnify.color.Unify_G500)
             }else{
                 Color.parseColor(textColor)
             }
         } catch (exception: Exception) {
-            ContextCompat.getColor(context, R.color.Unify_G500)
+            ContextCompat.getColor(context, RUnify.color.Unify_G500)
         }
     }
 
