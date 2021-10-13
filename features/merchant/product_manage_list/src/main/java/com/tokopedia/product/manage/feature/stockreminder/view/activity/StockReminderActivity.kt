@@ -14,18 +14,10 @@ class StockReminderActivity : BaseSimpleActivity() {
 
     private var productName: String = ""
 
+    private var binding: ActivityStockReminderBinding? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        ActivityStockReminderBinding.inflate(layoutInflater).run {
-            header.run {
-                setNavigationOnClickListener {
-                    onBackPressed()
-                }
-                headerTitle = getString(R.string.product_stock_reminder_header_title)
-                headerSubTitle = productName
-            }
-        }
 
         setupLayout(savedInstanceState)
     }
@@ -43,9 +35,23 @@ class StockReminderActivity : BaseSimpleActivity() {
         return StockReminderFragment.createInstance(productId, productName, stock)
     }
 
-    override fun getLayoutRes(): Int = R.layout.activity_stock_reminder
+    override fun setupLayout(savedInstanceState: Bundle?) {
+        binding = ActivityStockReminderBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
+        setupView()
+    }
 
     override fun getScreenName(): String = AppScreen.SCREEN_STOCK_REMINDER
 
     override fun getParentViewResourceID(): Int = R.id.parent_view
+
+    private fun setupView() {
+        binding?.header?.run {
+            setNavigationOnClickListener {
+                onBackPressed()
+            }
+            headerTitle = getString(R.string.product_stock_reminder_header_title)
+            headerSubTitle = productName
+        }
+    }
 }
