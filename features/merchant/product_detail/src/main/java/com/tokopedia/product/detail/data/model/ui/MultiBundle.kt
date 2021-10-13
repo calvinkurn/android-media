@@ -87,10 +87,10 @@ class MultiBundle(parent: View) {
             }
 
             val itemProductId = item.productId
-            if (itemProductId != bundle.productId) {
-                setItemClickListener(listOf(viewImage, viewPrice, viewDiscount, viewSlash)) {
-                    setOnClickItem(itemProductId)
-                }
+            val clickableItem = listOf(viewImage, viewPrice, viewDiscount, viewSlash)
+            if (itemProductId == bundle.productId) removeItemClickListener(clickableItem)
+            else setItemClickListener(clickableItem) {
+                setOnClickItem(itemProductId)
             }
         }
 
@@ -113,5 +113,9 @@ class MultiBundle(parent: View) {
 
     private fun setItemClickListener(views: List<View>, onClick: () -> Unit) {
         views.forEach { it.setOnClickListener { onClick() } }
+    }
+
+    private fun removeItemClickListener(views: List<View>) {
+        views.forEach { it.setOnClickListener(null) }
     }
 }
