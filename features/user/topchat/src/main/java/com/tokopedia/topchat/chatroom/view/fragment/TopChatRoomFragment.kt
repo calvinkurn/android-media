@@ -2405,7 +2405,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val clipboard = context?.getSystemService(
             CLIPBOARD_SERVICE
         ) as? ClipboardManager
-        val clip = ClipData.newPlainText("chat message", text)
+        val clip = ClipData.newPlainText(CLIPBOARD_CHAT, text)
         clipboard?.setPrimaryClip(clip)
     }
 
@@ -2433,6 +2433,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         const val REVIEW_SOURCE_TOPCHAT = "android_topchat"
         const val BS_CHAT_BUBBLE_MENU = "CHAT_BUBBLE_MENU"
         private const val EXTRA_SOURCE_STOCK = "chat"
+        private const val CLIPBOARD_CHAT = "chat message"
         private const val MAX_SIZE_IMAGE_PICKER = 20360
 
         private const val REQUEST_GO_TO_SHOP = 111
