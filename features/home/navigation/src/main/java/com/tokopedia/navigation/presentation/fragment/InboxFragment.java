@@ -459,8 +459,8 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 || headlineData.getData() == null
                 || headlineData.getData().get(0) == null
                 || headlineData.getData().get(0).getCpm() == null) {
-            adapter.addElement(absRecommPosition, title);
             this.visitables = list;
+            adapter.addElement(list);
             return;
         } else {
             int absRecommPosition = headlineData.getData().get(0).getCpm().getPosition() + adapter.getList().size();
