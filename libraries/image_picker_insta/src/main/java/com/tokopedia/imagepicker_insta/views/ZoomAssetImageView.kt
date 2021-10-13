@@ -17,8 +17,8 @@ import com.bumptech.glide.request.target.Target
 import com.otaliastudios.zoom.ZoomEngine
 import com.otaliastudios.zoom.ZoomImageView
 import com.tokopedia.imagepicker_insta.models.Asset
-import com.tokopedia.imagepicker_insta.models.PhotosData
 import com.tokopedia.imagepicker_insta.models.ZoomInfo
+import timber.log.Timber
 import kotlin.math.max
 import kotlin.math.min
 
@@ -79,23 +79,26 @@ class ZoomAssetImageView @JvmOverloads constructor(
     }
 
     fun updateZoomInfo(bmp: Bitmap?, engine: ZoomEngine){
-        if(bmp!=null){
+//        if(bmp!=null){
             zoomInfo?.let {
                 it.panX = engine.panX
                 it.panY = engine.panY
                 it.scale = engine.zoom
-                it.bmpHeight = bmp.height
-                it.bmpWidth = bmp.width
-            }
+                if(bmp!=null) {
+                    it.bmpHeight = bmp.height
+                    it.bmpWidth = bmp.width
+                }
+//            }
         }
     }
 
     private fun updateZoomInfo(bmp: Bitmap?, scale: Float, panX:Float, panY:Float){
-        if(bmp!=null){
+//        if(bmp!=null){
             zoomInfo?.let {
                 it.panX = panX
                 it.panY = panY
                 it.scale = scale
+                if(bmp!=null){
                 it.bmpHeight = bmp.height
                 it.bmpWidth = bmp.width
             }
@@ -107,10 +110,11 @@ class ZoomAssetImageView @JvmOverloads constructor(
             override fun onIdle(engine: ZoomEngine) {
                 val bmp = (drawable as? BitmapDrawable)?.bitmap
                 updateZoomInfo(bmp,engine)
+                Timber.d("onIdle- uri = ${asset?.contentUri}, px = ${engine.panX}, py = ${engine.panY}")
             }
 
             override fun onUpdate(engine: ZoomEngine, matrix: Matrix) {
-                //Do nothing
+                Timber.d("onUpdate- uri = ${asset?.contentUri}, px = ${engine.panX}, py = ${engine.panY}")
             }
         })
     }
@@ -278,6 +282,8 @@ class ZoomAssetImageView @JvmOverloads constructor(
     fun scaleBitmapOnLoad() {
         if (zoomInfo != null && zoomInfo!!.hasData()) {
             engine.moveTo(zoomInfo!!.scale!!, zoomInfo!!.panX!!, zoomInfo!!.panY!!, false)
+            val bmp = (drawable as? BitmapDrawable)?.bitmap
+            updateZoomInfo(bmp,engine)
         } else if (mediaScaleTypeContract?.getCurrentMediaScaleType() == MediaScaleType.MEDIA_CENTER_CROP) {
             centerCrop(false)
         } else if (mediaScaleTypeContract?.getCurrentMediaScaleType() == MediaScaleType.MEDIA_CENTER_INSIDE) {

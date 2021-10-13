@@ -52,11 +52,7 @@ class CropUseCase @Inject constructor() {
             val w = min(bmp.width.toFloat(),width/zoomInfo.scale!!)
             val h =  min(bmp.height.toFloat(),height/zoomInfo.scale!!)
 
-            //INVALID
-            if ((left + w> bmp.width) || top + h> bmp.height) throw Exception("Invalid crop params")
-
             return Bitmap.createBitmap(bmp, left, top, w.toInt(), h.toInt())
-
         }
         throw Exception("Unable to create bitmap")
     }
