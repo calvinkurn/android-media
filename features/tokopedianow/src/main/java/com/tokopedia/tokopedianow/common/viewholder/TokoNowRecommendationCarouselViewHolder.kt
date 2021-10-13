@@ -43,30 +43,28 @@ class TokoNowRecommendationCarouselViewHolder(
             recommendationCarouselListener?.onGetCarouselScrollPosition(adapterPosition)
         if (element.isBindWithPageName) {
             recommendationCarouselWidgetBindPageNameListener?.setViewToLifecycleOwner(recomWidget)
-            if (element.keywords.isNotEmpty()) {
-                recomWidget.bindRecomWithPageName(
-                    pageName = element.pageName,
-                    widgetBindPageNameListener = this,
-                    adapterPosition = adapterPosition,
-                    scrollToPosition = scrollToPosition.orZero(),
-                    isForceRefresh = element.isFirstLoad,
-                    isTokonow = true,
-                    categoryIds = element.categoryId,
-                    keyword = element.keywords
-                )
-                element.isFirstLoad = false
-            } else {
-                recomWidget.bindRecomWithData(
-                    carouselData = element.carouselData,
-                    adapterPosition = adapterPosition,
-                    widgetListener = this,
-                    scrollToPosition = scrollToPosition.orZero(),
-                )
-                recommendationCarouselListener?.onBindRecommendationCarousel(
-                    element,
-                    adapterPosition
-                )
-            }
+            recomWidget.bindRecomWithPageName(
+                pageName = element.pageName,
+                widgetBindPageNameListener = this,
+                adapterPosition = adapterPosition,
+                scrollToPosition = scrollToPosition.orZero(),
+                isForceRefresh = element.isFirstLoad,
+                isTokonow = true,
+                categoryIds = element.categoryId,
+                keyword = element.keywords
+            )
+            element.isFirstLoad = false
+        } else {
+            recomWidget.bindRecomWithData(
+                carouselData = element.carouselData,
+                adapterPosition = adapterPosition,
+                widgetListener = this,
+                scrollToPosition = scrollToPosition.orZero(),
+            )
+            recommendationCarouselListener?.onBindRecommendationCarousel(
+                element,
+                adapterPosition
+            )
         }
     }
 
