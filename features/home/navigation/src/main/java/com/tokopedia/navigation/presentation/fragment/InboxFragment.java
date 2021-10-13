@@ -453,12 +453,14 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     @Override
     public void onRenderRecomInbox(List<Visitable> list, RecomTitle title) {
-        if (headlineData == null
+            adapter.addElement(absRecommPosition, title);
+            
+            if (headlineData == null
                 || headlineData.getData() == null
                 || headlineData.getData().get(0) == null
                 || headlineData.getData().get(0).getCpm() == null) {
+            adapter.addElement(absRecommPosition, title);
             this.visitables = list;
-            adapter.addElement(list);
             return;
         } else {
             int absRecommPosition = headlineData.getData().get(0).getCpm().getPosition() + adapter.getList().size();
@@ -466,8 +468,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             adapter.addElement(list);
 
             if (absRecommPosition <= adapter.getList().size() && !isAdded) {
-                adapter.addElement(absRecommPosition, title);
-                adapter.addElement(absRecommPosition + 1, new TopadsHeadlineUiModel(headlineData, 0));
+                adapter.addElement(absRecommPosition, new TopadsHeadlineUiModel(headlineData, 0));
                 isAdded = true;
             }
 
