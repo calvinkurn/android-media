@@ -427,8 +427,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void showSelectedPage() {
-        int tabPosition = HOME_MENU;
-        tabPosition = getTabPositionFromIntent();
+        int tabPosition = getTabPositionFromIntent();
         if (tabPosition > fragmentList.size() - 1) {
             tabPosition = HOME_MENU;
         }
