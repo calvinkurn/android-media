@@ -27,7 +27,6 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getOpposite
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
-import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifyprinciples.Typography
 
 class ChatMessageUnifyViewHolder(
