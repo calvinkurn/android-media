@@ -19,19 +19,26 @@ import com.tokopedia.topchat.common.util.ViewUtil
 
 object ChatMessageViewHolderBinder {
 
-    fun generateRightBg(view: View?): Drawable? {
-        val pressedBackground = ViewUtil.generateBackgroundWithShadow(
-            view = view,
-            backgroundColor = R.color.topchat_dms_right_button_pressed,
-            topLeftRadius = R.dimen.dp_topchat_20,
-            topRightRadius = R.dimen.dp_topchat_0,
-            bottomLeftRadius = R.dimen.dp_topchat_20,
-            bottomRightRadius = R.dimen.dp_topchat_20,
-            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            elevation = R.dimen.dp_topchat_2,
-            shadowRadius = R.dimen.dp_topchat_1,
-            shadowGravity = Gravity.CENTER
-        )
+    fun generateRightBg(
+        view: View?,
+        usePressedBackground: Boolean = true
+    ): Drawable? {
+        val pressedBackground = if (usePressedBackground) {
+            ViewUtil.generateBackgroundWithShadow(
+                view = view,
+                backgroundColor = R.color.topchat_dms_right_button_pressed,
+                topLeftRadius = R.dimen.dp_topchat_20,
+                topRightRadius = R.dimen.dp_topchat_0,
+                bottomLeftRadius = R.dimen.dp_topchat_20,
+                bottomRightRadius = R.dimen.dp_topchat_20,
+                shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+                elevation = R.dimen.dp_topchat_2,
+                shadowRadius = R.dimen.dp_topchat_1,
+                shadowGravity = Gravity.CENTER
+            )
+        } else {
+            null
+        }
         return ViewUtil.generateBackgroundWithShadow(
             view = view,
             backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_GN50,
@@ -47,19 +54,26 @@ object ChatMessageViewHolderBinder {
         )
     }
 
-    fun generateLeftBg(view: View?): Drawable? {
-        val pressedBackground = ViewUtil.generateBackgroundWithShadow(
-            view = view,
-            backgroundColor = R.color.topchat_dms_left_button_pressed,
-            topLeftRadius = R.dimen.dp_topchat_0,
-            topRightRadius = R.dimen.dp_topchat_20,
-            bottomLeftRadius = R.dimen.dp_topchat_20,
-            bottomRightRadius = R.dimen.dp_topchat_20,
-            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            elevation = R.dimen.dp_topchat_2,
-            shadowRadius = R.dimen.dp_topchat_1,
-            shadowGravity = Gravity.CENTER
-        )
+    fun generateLeftBg(
+        view: View?,
+        usePressedBackground: Boolean = true
+    ): Drawable? {
+        val pressedBackground = if (usePressedBackground) {
+            ViewUtil.generateBackgroundWithShadow(
+                view = view,
+                backgroundColor = R.color.topchat_dms_left_button_pressed,
+                topLeftRadius = R.dimen.dp_topchat_0,
+                topRightRadius = R.dimen.dp_topchat_20,
+                bottomLeftRadius = R.dimen.dp_topchat_20,
+                bottomRightRadius = R.dimen.dp_topchat_20,
+                shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+                elevation = R.dimen.dp_topchat_2,
+                shadowRadius = R.dimen.dp_topchat_1,
+                shadowGravity = Gravity.CENTER
+            )
+        } else {
+            null
+        }
         return ViewUtil.generateBackgroundWithShadow(
             view = view,
             backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,

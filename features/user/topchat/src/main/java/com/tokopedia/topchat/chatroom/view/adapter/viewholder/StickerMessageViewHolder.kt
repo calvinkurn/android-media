@@ -41,8 +41,8 @@ class StickerMessageViewHolder(
     private var stickerImage: ImageView? = itemView?.findViewById(R.id.iv_sticker_message)
     private var loader: AnimatedVectorDrawableCompat? = null
 
-    private val bgLeft = generateLeftBg(stickerBodyContainer)
-    private val bgRight = generateRightBg(stickerBodyContainer)
+    private val bgLeft = generateLeftBg(stickerBodyContainer, false)
+    private val bgRight = generateRightBg(stickerBodyContainer, false)
 
     override fun alwaysShowTime(): Boolean = true
 
