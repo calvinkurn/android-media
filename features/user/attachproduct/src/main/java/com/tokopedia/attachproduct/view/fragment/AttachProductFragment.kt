@@ -162,7 +162,7 @@ class AttachProductFragment : BaseListFragment<AttachProductItemUiModel, AttachP
             loadInitialData()
         }
         updateButtonBasedOnChecked(0)
-        return view
+        return binding.root
     }
 
     override fun onStart() {
@@ -195,7 +195,7 @@ class AttachProductFragment : BaseListFragment<AttachProductItemUiModel, AttachP
                 is Success -> {
                     hideAllLoadingIndicator()
                     var hasNext = false
-                    var listData = result.data.toMutableList()
+                    val listData = result.data.toMutableList()
                     if (listData.size >= AttachProductViewModel.DEFAULT_ROWS) {
                         hasNext = true
                         listData.removeAt(result.data.size - 1)

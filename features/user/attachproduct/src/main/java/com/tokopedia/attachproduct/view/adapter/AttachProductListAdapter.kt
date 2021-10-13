@@ -1,13 +1,18 @@
 package com.tokopedia.attachproduct.view.adapter
 
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.attachproduct.databinding.ItemProductAttachBinding
 import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel
+import com.tokopedia.attachproduct.view.viewholder.AttachProductListItemViewHolder
 import java.util.*
 
-class AttachProductListAdapter(baseListAdapterTypeFactory: AttachProductListAdapterTypeFactory?)
+class AttachProductListAdapter(private val baseListAdapterTypeFactory: AttachProductListAdapterTypeFactory)
     : BaseListAdapter<AttachProductItemUiModel,
         AttachProductListAdapterTypeFactory>(baseListAdapterTypeFactory) {
     private var productIds: HashSet<String> = HashSet()
@@ -15,6 +20,25 @@ class AttachProductListAdapter(baseListAdapterTypeFactory: AttachProductListAdap
 
     override fun getData(): List<AttachProductItemUiModel> {
         return super.getData()
+    }
+
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): AbstractViewHolder<out Visitable<*>> {
+        val view = onCreateViewItem(parent, viewType)
+        return baseListAdapterTypeFactory.createViewHolder(view, viewType)
+    }
+
+    override fun onCreateViewItem(parent: ViewGroup?, viewType: Int): View {
+        return when (viewType) {
+            AttachProductListItemViewHolder.LAYOUT -> {
+                ItemProductAttachBinding.inflate(LayoutInflater.from(parent!!.context), parent, false).root
+            }
+            else -> {
+                LayoutInflater.from(parent!!.context).inflate(viewType, parent, false)
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int) {

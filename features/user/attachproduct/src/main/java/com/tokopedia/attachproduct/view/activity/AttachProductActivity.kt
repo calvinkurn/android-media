@@ -62,14 +62,11 @@ class AttachProductActivity : BaseSimpleActivity(), AttachProductContract.Activi
     }
 
     override fun getNewFragment(): Fragment {
-        val fragment = supportFragmentManager.findFragmentByTag(tagFragment)
-        return if (fragment != null) {
-            fragment
-        } else {
-            newInstance(
+        return supportFragmentManager.findFragmentByTag(tagFragment)
+            ?: newInstance(
                 this, isSeller, source, maxChecked, hiddenProducts,
-                warehouseId, shopId)
-        }
+                warehouseId, shopId
+            )
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {
