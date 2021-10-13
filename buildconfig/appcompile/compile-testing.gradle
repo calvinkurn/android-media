@@ -1,0 +1,2 @@
+// Sort alphabetically by name
+includeIfEnabled("testing:joint:pdp_checkout")

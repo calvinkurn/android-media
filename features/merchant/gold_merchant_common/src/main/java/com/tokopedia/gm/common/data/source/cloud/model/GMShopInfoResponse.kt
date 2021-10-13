@@ -9,7 +9,10 @@ import com.google.gson.annotations.SerializedName
 
 data class GMShopInfoResponse(
         @SerializedName("goldGetPMShopInfo")
-        val goldGetPMShopInfo: GoldGetPMShopInfoDataModel? = GoldGetPMShopInfoDataModel()
+        val goldGetPMShopInfo: GoldGetPMShopInfoDataModel? = GoldGetPMShopInfoDataModel(),
+        @Expose
+        @SerializedName("shopInfoByID")
+        val shopInfoByID: ShopInfoByIDResponse.ShopInfoByID = ShopInfoByIDResponse.ShopInfoByID()
 )
 
 data class GoldGetPMShopInfoDataModel(

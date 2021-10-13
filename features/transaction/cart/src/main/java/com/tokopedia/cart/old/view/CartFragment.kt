@@ -1963,11 +1963,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 onNeedToRemoveViewItem(chooseAddressWidgetPosition)
             } else {
                 validateLocalCacheAddress(it, localizationChooseAddressData)
-
-                if (ChooseAddressUtils.isRollOutUser(it)) {
-                    val cartChooseAddressHolderData = CartChooseAddressHolderData()
-                    cartAdapter.addItem(cartChooseAddressHolderData)
-                }
+                val cartChooseAddressHolderData = CartChooseAddressHolderData()
+                cartAdapter.addItem(cartChooseAddressHolderData)
             }
         }
     }

@@ -160,7 +160,6 @@ class ShopScoreMapper @Inject constructor(
                 mapToHeaderShopPerformance(
                     shopScoreWrapperResponse.shopScoreLevelResponse?.result,
                     powerMerchantData,
-                    isOfficialStore,
                     shopAge,
                     shopInfoPeriodUiModel.dateShopCreated
                 )
@@ -262,7 +261,6 @@ class ShopScoreMapper @Inject constructor(
     private fun mapToHeaderShopPerformance(
         shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?,
         powerMerchantResponse: GoldGetPMOStatusResponse.GoldGetPMOSStatus.Data?,
-        isOfficialStore: Boolean,
         shopAge: Long,
         dateShopCreated: String
     ): HeaderShopPerformanceUiModel {
@@ -485,7 +483,7 @@ class ShopScoreMapper @Inject constructor(
                     it.identifier == PENALTY_IDENTIFIER
                 }?.rawValue?.roundToLong().orZero()
 
-            this.isShowPopupEndTenure = getIsShowPopupEndTenure(shopAge, dateShopCreated)
+            this.isShowPopupEndTenure = getIsShowPopupEndTenure(dateShopCreated)
         }
         return headerShopPerformanceUiModel
     }
@@ -948,38 +946,39 @@ class ShopScoreMapper @Inject constructor(
         }
     }
 
-    //
-    private fun getIsShowPopupEndTenure(shopAge: Long, dateShopCreated: String): Boolean {
+    private fun getIsShowPopupEndTenure(dateShopCreated: String): Boolean {
         return if (shopScorePrefManager.getIsShowPopupEndTenure()) {
-            val calendar = Calendar.getInstance(getLocale())
-            if (shopAge in SHOP_AGE_NINETY..SHOP_AGE_NINETY_SIX &&
-                !GoldMerchantUtil.getIsExistingSellerPastMonday(dateShopCreated, shopAge)
-            ) {
-                calendar.getIsRangeCurrentWeekFromMonday()
-            } else if (shopAge > SHOP_AGE_NINETY_SIX &&
-                shopAge <= (SHOP_AGE_NINETY_SIX + calendar.getNNextDaysPopupEndTenure())
-            ) {
-                calendar.getIsRangeCurrentWeekFromMonday()
-            } else false
+            return getIsShowPopupCelebratoryEdgeCases(dateShopCreated)
         } else false
     }
 
-    private fun Calendar.getIsRangeCurrentWeekFromMonday(): Boolean {
-        return if (this.get(Calendar.DAY_OF_WEEK) >= Calendar.MONDAY) {
-            this.get(Calendar.DAY_OF_WEEK) in Calendar.MONDAY..Calendar.SATURDAY
-        } else {
-            false
-        }
-    }
-
-    private fun Calendar.getNNextDaysPopupEndTenure(): Int {
-        return when (this.get(Calendar.DAY_OF_WEEK)) {
-            Calendar.TUESDAY -> ONE_NUMBER
-            Calendar.WEDNESDAY -> TWO_NUMBER
-            Calendar.THURSDAY -> THREE_NUMBER
-            Calendar.FRIDAY -> FOUR_NUMBER
-            Calendar.SATURDAY -> FIVE_NUMBER
-            else -> ZERO_NUMBER
+    private fun getIsShowPopupCelebratoryEdgeCases(
+        dateShopCreated: String
+    ): Boolean {
+        val shopAge = GoldMerchantUtil.totalDays(dateShopCreated)
+        return when (GoldMerchantUtil.getDayNameFromCreatedDate(dateShopCreated)) {
+            Calendar.SUNDAY -> {
+                false
+            }
+            Calendar.MONDAY -> {
+                shopAge in SHOP_AGE_NINETY..SHOP_AGE_NINETY_SIX
+            }
+            Calendar.TUESDAY -> {
+                shopAge in SHOP_AGE_NINETY_ONE..SHOP_AGE_NINETY_SEVEN
+            }
+            Calendar.WEDNESDAY -> {
+                shopAge in SHOP_AGE_NINETY_TWO..SHOP_AGE_NINETY_EIGHT
+            }
+            Calendar.THURSDAY -> {
+                shopAge in SHOP_AGE_NINETY_THREE..SHOP_AGE_NINETY_NINE
+            }
+            Calendar.FRIDAY -> {
+                shopAge in SHOP_AGE_NINETY_FOUR..SHOP_AGE_ONE_HUNDRED
+            }
+            Calendar.SATURDAY -> {
+                shopAge in SHOP_AGE_NINETY_FIVE..SHOP_AGE_ONE_HUNDRED_ONE
+            }
+            else -> false
         }
     }
 
