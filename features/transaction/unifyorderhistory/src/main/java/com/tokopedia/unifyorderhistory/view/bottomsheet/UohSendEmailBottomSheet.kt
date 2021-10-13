@@ -4,28 +4,29 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifyorderhistory.R
-import com.tokopedia.unifyorderhistory.data.model.UohListOrder
 import com.tokopedia.unifyorderhistory.databinding.BottomsheetSendEmailBinding
 import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.unifyorderhistory.util.UohUtils
-import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
  * Created by fwidjaja on 02/10/21.
  */
 class UohSendEmailBottomSheet : BottomSheetUnify() {
-    private var actionListener: ActionListener? = null
-    private var bottomSheetSendEmail : BottomSheetUnify? = null
+    private var listener: UohSendEmailBottomSheetListener? = null
     private var binding by autoClearedNullable<BottomsheetSendEmailBinding>()
 
-    fun show(fragmentManager: FragmentManager, gqlGroup: String, orderData: UohListOrder.Data.UohOrders.Order) {
-        bottomSheetSendEmail = BottomSheetUnify()
+    companion object {
+        private const val TAG: String = "UohLsFinishOrderBottomSheet"
+
+        @JvmStatic
+        fun newInstance(): UohSendEmailBottomSheet { return UohSendEmailBottomSheet() }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         binding = BottomsheetSendEmailBinding.inflate(LayoutInflater.from(context), null, false)
         binding?.run {
             tfEmail.textFieldInput.addTextChangedListener(object : TextWatcher {
@@ -55,35 +56,26 @@ class UohSendEmailBottomSheet : BottomSheetUnify() {
             })
 
             val email = tfEmail.textFieldInput.text.toString()
-            btnSendEmail.setOnClickListener { actionListener?.onEmailSent(email, gqlGroup, orderData)  }
+            btnSendEmail.setOnClickListener { listener?.onEmailSent(email)  }
         }
-        bottomSheetSendEmail?.run {
-            showCloseIcon = true
-            showHeader = true
-            isFullpage = false
-            isKeyboardOverlap = false
-            setChild(binding?.root)
-            setTitle(UohConsts.FINISH_ORDER_BOTTOMSHEET_TITLE)
-            setCloseClickListener { dismiss() }
-        }
-        bottomSheetSendEmail?.show(fragmentManager, "")
+        showCloseIcon = true
+        showHeader = true
+        isFullpage = false
+        isKeyboardOverlap = false
+        setChild(binding?.root)
+        setTitle(UohConsts.RESEND_ETICKET_BOTTOMSHEET_TITLE)
+        setCloseClickListener { dismiss() }
     }
 
-    interface ActionListener {
-        fun onEmailSent(email: String, gqlGroup: String, orderData: UohListOrder.Data.UohOrders.Order)
+    interface UohSendEmailBottomSheetListener {
+        fun onEmailSent(email: String)
     }
 
-    fun setActionListener(fragment: UohListFragment) {
-        this.actionListener = fragment
+    fun setListener(listener: UohSendEmailBottomSheetListener) {
+        this.listener = listener
     }
 
-    fun setLayoutError() {
-        binding?.run {
-            tfEmail.run {
-                setError(true)
-                setMessage(getString(R.string.toaster_failed_send_email))
-            }
-
-        }
+    fun show(fm: FragmentManager) {
+        show(fm, TAG)
     }
 }

@@ -72,6 +72,7 @@ object UohConsts {
     const val GQL_RECHARGE_BATALKAN = "gql-recharge-batalkan"
 
     const val FINISH_ORDER_BOTTOMSHEET_TITLE = "Selesaikan pesanan ini?"
+    const val RESEND_ETICKET_BOTTOMSHEET_TITLE = "Kirim E-tiket"
     const val REPLACE_ORDER_ID = "{order_id}"
 
     const val PARAM_LS_PRINT_FINISH_ACTION = "FINISHED"

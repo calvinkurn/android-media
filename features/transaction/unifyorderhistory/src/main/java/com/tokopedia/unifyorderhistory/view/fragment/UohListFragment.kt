@@ -174,9 +174,7 @@ import kotlin.collections.ArrayList
 /**
  * Created by fwidjaja on 29/06/20.
  */
-class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener,
-        UohItemAdapter.ActionListener,
-        UohLsFinishOrderBottomSheet.ActionListener, UohSendEmailBottomSheet.ActionListener{
+class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener, UohItemAdapter.ActionListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -230,8 +228,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private lateinit var trackingQueue: TrackingQueue
     private var _arrayListStatusFilterBundle = arrayListOf<UohFilterBundle>()
     private var _arrayListCategoryProductFilterBundle = arrayListOf<UohFilterBundle>()
-    private var lsFinishOrderBottomSheet: UohLsFinishOrderBottomSheet? = null
-    private var sendEmailBottomSheet: UohSendEmailBottomSheet? = null
 
     private var binding by autoClearedNullable<FragmentUohListBinding>()
 
@@ -821,27 +817,23 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun observingFlightResendEmail() {
-        binding?.run {
-            uohListViewModel.flightResendEmailResult.observe(viewLifecycleOwner, { result ->
-                when (result) {
-                    is Success -> {
-                        val flightEmailResponse = result.data.flightResendEmailV2
-                        if (flightEmailResponse == null) {
-                            sendEmailBottomSheet?.setLayoutError()
-                        } else {
-                            if (flightEmailResponse.meta.status.equals(FLIGHT_STATUS_OK, true)) {
-                                sendEmailBottomSheet?.dismiss()
-                                // kebabMenuBottomSheet?.dismiss()
-                                showToaster(getString(R.string.toaster_succeed_send_email), Toaster.TYPE_NORMAL)
-                            }
+        uohListViewModel.flightResendEmailResult.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Success -> {
+                    val flightEmailResponse = result.data.flightResendEmailV2
+                    if (flightEmailResponse == null) {
+                        showToaster(getString(R.string.toaster_failed_send_email), Toaster.TYPE_ERROR)
+                    } else {
+                        if (flightEmailResponse.meta.status.equals(FLIGHT_STATUS_OK, true)) {
+                            showToaster(getString(R.string.toaster_succeed_send_email), Toaster.TYPE_NORMAL)
                         }
                     }
-                    is Fail -> {
-                        sendEmailBottomSheet?.setLayoutError()
-                    }
                 }
-            })
-        }
+                is Fail -> {
+                    showToaster(getString(R.string.toaster_failed_send_email), Toaster.TYPE_ERROR)
+                }
+            }
+        })
     }
 
     private fun observingTrainResendEmail() {
@@ -850,17 +842,15 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 is Success -> {
                     val trainEmailResponse = it.data.trainResendBookingEmail
                     if (trainEmailResponse == null) {
-                        sendEmailBottomSheet?.setLayoutError()
+                        showToaster(getString(R.string.toaster_failed_send_email), Toaster.TYPE_ERROR)
                     } else {
                         if (trainEmailResponse.success) {
-                            sendEmailBottomSheet?.dismiss()
-                            // kebabMenuBottomSheet?.dismiss()
                             showToaster(getString(R.string.toaster_succeed_send_email), Toaster.TYPE_NORMAL)
                         }
                     }
                 }
                 is Fail -> {
-                    sendEmailBottomSheet?.setLayoutError()
+                    showToaster(getString(R.string.toaster_failed_send_email), Toaster.TYPE_ERROR)
                 }
             }
         })
@@ -1289,7 +1279,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun onClickFilterCategoryProduct() {
-        var selectedKey: String
+        val selectedKey: String
         tempFilterType = UohConsts.TYPE_FILTER_PRODUCT
         if (tempFilterCategoryLabel.isEmpty()) tempFilterCategoryLabel = ALL_PRODUCTS
         if (tempFilterCategoryKey.isEmpty()) tempFilterCategoryKey = ""
@@ -1581,18 +1571,35 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 } else {
                     when {
                         dotMenu.actionType.equals(GQL_FLIGHT_EMAIL, true) -> {
-                            sendEmailBottomSheet = UohSendEmailBottomSheet()
-                            sendEmailBottomSheet?.run {
-                                setActionListener(this@UohListFragment)
-                                fragmentManager?.let { show(it, GQL_FLIGHT_EMAIL, orderData) }
-                            }
+                            val sendEmailBottomSheet = UohSendEmailBottomSheet.newInstance()
+                            if (sendEmailBottomSheet.isAdded || childFragmentManager.isStateSaved) return
+
+                            sendEmailBottomSheet.setListener(object : UohSendEmailBottomSheet.UohSendEmailBottomSheetListener {
+                                override fun onEmailSent(email: String) {
+                                    val flightQueryParam = gson.fromJson(orderData.metadata.queryParams, FlightQueryParams::class.java)
+                                    val invoiceId = flightQueryParam.invoiceId
+                                    uohListViewModel.doFlightResendEmail(invoiceId, email)
+                                    userSession.userId?.let { userId -> UohAnalytics.clickKirimOnBottomSheetSendEmail(userId, orderData.verticalCategory) }
+                                }
+
+                            })
+                            sendEmailBottomSheet.show(childFragmentManager)
                         }
                         dotMenu.actionType.equals(GQL_TRAIN_EMAIL, true) -> {
-                            sendEmailBottomSheet = UohSendEmailBottomSheet()
-                            sendEmailBottomSheet?.run {
-                                setActionListener(this@UohListFragment)
-                                fragmentManager?.let { show(it, GQL_TRAIN_EMAIL, orderData) }
-                            }
+                            val sendEmailBottomSheet = UohSendEmailBottomSheet.newInstance()
+                            if (sendEmailBottomSheet.isAdded || childFragmentManager.isStateSaved) return
+
+                            sendEmailBottomSheet.setListener(object : UohSendEmailBottomSheet.UohSendEmailBottomSheetListener {
+                                override fun onEmailSent(email: String) {
+                                    val trainQueryParam = gson.fromJson(orderData.metadata.queryParams, TrainQueryParams::class.java)
+                                    val invoiceId = trainQueryParam.invoiceId
+                                    val param = TrainResendEmailParam(bookCode = invoiceId, email = email)
+                                    uohListViewModel.doTrainResendEmail(param)
+                                    userSession.userId?.let { userId -> UohAnalytics.clickKirimOnBottomSheetSendEmail(userId, orderData.verticalCategory) }
+                                }
+
+                            })
+                            sendEmailBottomSheet.show(childFragmentManager)
                         }
                         dotMenu.actionType.equals(GQL_MP_CHAT, true) -> {
                             doChatSeller(dotMenu.appURL, orderData)
@@ -1624,6 +1631,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun doFinishOrder(index: Int, status: String, verticalId: String) {
         val finishOrderBottomSheet = UohFinishOrderBottomSheet.newInstance(index, status, verticalId)
+        if (finishOrderBottomSheet.isAdded || childFragmentManager.isStateSaved) return
+
         finishOrderBottomSheet.setListener(object : UohFinishOrderBottomSheet.UohFinishOrderBottomSheetListener {
             override fun onClickFinishOrder(index: Int, status: String, orderId: String) {
                 finishOrderBottomSheet.dismiss()
@@ -1712,9 +1721,18 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     }
                     button.actionType.equals(GQL_LS_FINISH, true) -> {
                         orderIdNeedUpdated = order.orderUUID
-                        lsFinishOrderBottomSheet = UohLsFinishOrderBottomSheet()
-                        lsFinishOrderBottomSheet?.setActionListener(this@UohListFragment)
-                        context?.let { context -> fragmentManager?.let { lsFinishOrderBottomSheet?.show(context, it, index, order.verticalID) } }
+                        val lsFinishOrderBottomSheet = UohLsFinishOrderBottomSheet.newInstance(index, order.verticalID)
+                        if (lsFinishOrderBottomSheet.isAdded || childFragmentManager.isStateSaved) return
+
+                        lsFinishOrderBottomSheet.setListener(object : UohLsFinishOrderBottomSheet.UohLsFinishOrderBottomSheetListener {
+                            override fun onClickLsFinishOrder(index: Int, orderId: String) {
+                                currIndexNeedUpdate = index
+                                uohItemAdapter.showLoaderAtIndex(index)
+                                uohListViewModel.doLsPrintFinishOrder(orderId)
+                            }
+
+                        })
+                        lsFinishOrderBottomSheet.show(childFragmentManager)
                     }
                     button.actionType.equals(GQL_LS_LACAK, true) -> {
                         val linkUrl = button.appURL
@@ -1928,26 +1946,5 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     override fun onPause() {
         super.onPause()
         trackingQueue.sendAll()
-    }
-
-    override fun onClickLsFinishOrder(index: Int, orderId: String) {
-        currIndexNeedUpdate = index
-        uohItemAdapter.showLoaderAtIndex(index)
-        uohListViewModel.doLsPrintFinishOrder(orderId)
-    }
-
-    override fun onEmailSent(email: String, gqlGroup: String, orderData: UohListOrder.Data.UohOrders.Order) {
-        if (gqlGroup.equals(GQL_FLIGHT_EMAIL, true)) {
-            val flightQueryParam = gson.fromJson(orderData.metadata.queryParams, FlightQueryParams::class.java)
-            val invoiceId = flightQueryParam.invoiceId
-            uohListViewModel.doFlightResendEmail(invoiceId, email)
-
-        } else if (gqlGroup.equals(GQL_TRAIN_EMAIL, true)) {
-            val trainQueryParam = gson.fromJson(orderData.metadata.queryParams, TrainQueryParams::class.java)
-            val invoiceId = trainQueryParam.invoiceId
-            val param = TrainResendEmailParam(bookCode = invoiceId, email = email)
-            uohListViewModel.doTrainResendEmail(param)
-        }
-        userSession.userId?.let { it1 -> UohAnalytics.clickKirimOnBottomSheetSendEmail(it1, orderData.verticalCategory) }
     }
 }
