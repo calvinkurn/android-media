@@ -12,6 +12,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.user.session.UserSession
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 /**
@@ -36,16 +37,14 @@ class AttachProductModule(private val context: Context) {
     fun provideGraphqlRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
+    @Provides
+    @AttachProductScope
+    fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
+
 
     @Provides
     @AttachProductScope
     fun provideQuery(): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_query_attach_product)
-    }
-
-    @Provides
-    @AttachProductScope
-    fun provideUseCase(repository: GraphqlRepository, query: String): AttachProductUseCase {
-        return AttachProductUseCase(repository, query, Dispatchers.IO)
     }
 }

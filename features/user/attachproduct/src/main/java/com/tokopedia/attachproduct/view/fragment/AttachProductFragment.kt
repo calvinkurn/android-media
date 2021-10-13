@@ -25,7 +25,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst.AttachProduct
 import com.tokopedia.attachproduct.R
-import com.tokopedia.attachproduct.analytics.NewAttachProductAnalytics
+import com.tokopedia.attachproduct.analytics.AttachProductAnalytics
 import com.tokopedia.attachproduct.databinding.FragmentAttachProductBinding
 import com.tokopedia.attachproduct.di.AttachProductModule
 import com.tokopedia.attachproduct.di.DaggerAttachProductComponent
@@ -369,11 +369,11 @@ class AttachProductFragment : BaseListFragment<AttachProductItemUiModel, AttachP
     private fun trackAction(source: String, productId: String) {
         if (source == AttachProductActivity.SOURCE_TALK) {
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                NewAttachProductAnalytics.getEventCheckProductTalk(productId).event
+                AttachProductAnalytics.getEventCheckProductTalk(productId).event
             )
         } else {
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                NewAttachProductAnalytics.eventCheckProduct.event
+                AttachProductAnalytics.eventCheckProduct.event
             )
         }
     }

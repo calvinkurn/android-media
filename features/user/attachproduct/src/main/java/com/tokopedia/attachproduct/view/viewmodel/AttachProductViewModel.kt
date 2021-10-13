@@ -12,12 +12,11 @@ import com.tokopedia.attachproduct.view.presenter.AttachProductContract
 import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel
 import com.tokopedia.usecase.coroutines.*
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AttachProductViewModel @Inject constructor
     (private val useCase: AttachProductUseCase, private val dispatcher: CoroutineDispatchers)
-    : BaseViewModel(dispatcher.io), AttachProductContract.Presenter {
+    : BaseViewModel(dispatcher.main), AttachProductContract.Presenter {
 
     private val _products = MutableLiveData<Result<List<AttachProductItemUiModel>>>()
     private val _cacheList = mutableListOf<AttachProductItemUiModel>()
@@ -40,15 +39,13 @@ class AttachProductViewModel @Inject constructor
         launchCatchError(block = {
             val result = useCase(generateParam(query, shopId, page, warehouseId))
 
-            withContext(dispatcher.main) {
-                val resultModel = result.mapToListProduct().toDomainModelMapper()
-                _products.value = Success(resultModel)
+            val resultModel = result.mapToListProduct().toDomainModelMapper()
+            _products.value = Success(resultModel)
 
-                if (query.isEmpty()) {
-                    _products.value.let { data ->
-                        if (data != null) {
-                            cacheData(data)
-                        }
+            if (query.isEmpty()) {
+                _products.value.let { data ->
+                    if (data != null) {
+                        cacheData(data)
                     }
                 }
             }
