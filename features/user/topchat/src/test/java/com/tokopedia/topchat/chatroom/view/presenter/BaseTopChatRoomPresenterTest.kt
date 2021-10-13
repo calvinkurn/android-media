@@ -274,7 +274,6 @@ abstract class BaseTopChatRoomPresenterTest {
                 topChatRoomWebSocketMessageMapper,
                 getTemplateChatRoomUseCase,
                 replyChatUseCase,
-                getShopFollowingUseCase,
                 toggleFavouriteShopUseCase,
                 addToCartUseCase,
                 compressImageUseCase,

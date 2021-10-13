@@ -120,21 +120,6 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
     }
 
     @Test
-    fun `on get shop following status`() {
-        // Given
-        val onError: (Throwable) -> Unit = mockk(relaxed = true)
-        val onSuccess: (Boolean) -> Unit = mockk(relaxed = true)
-
-        // When
-        presenter.getShopFollowingStatus(exShopId, onError, onSuccess)
-
-        // Then
-        verifyOrder {
-            getShopFollowingUseCase.getStatus(exShopId, onError, onSuccess)
-        }
-    }
-
-    @Test
     fun `on detachView`() {
         // When
         presenter.detachView()

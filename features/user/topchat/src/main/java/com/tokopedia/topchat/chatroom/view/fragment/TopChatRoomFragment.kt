@@ -720,7 +720,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    private fun onErrorGetShopFollowingStatus(throwable: Throwable) {
+    private fun onErrorGetShopFollowingStatus() {
         topchatViewState?.isShopFollowed = false
     }
 
@@ -2314,8 +2314,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         })
         viewModel.shopFollowing.observe(viewLifecycleOwner, {
             when(it) {
-                is Success -> onSuccessGetShopFollowingStatus(it.data.isFollow)
-                is Fail -> onErrorGetShopFollowingStatus(it.throwable)
+                is Success -> {
+                    if(it.data.shopInfoById.result.isNullOrEmpty()) {
+                        onErrorGetShopFollowingStatus()
+                    } else {
+                        onSuccessGetShopFollowingStatus(it.data.isFollow)
+                    }
+                }
+                is Fail -> onErrorGetShopFollowingStatus()
             }
         })
     }
