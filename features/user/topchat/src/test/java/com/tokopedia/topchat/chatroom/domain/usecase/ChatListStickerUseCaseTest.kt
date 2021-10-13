@@ -3,7 +3,7 @@ package com.tokopedia.topchat.chatroom.domain.usecase
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topchat.FileUtil
-import com.tokopedia.topchat.TopchatCacheManagerStub
+import com.tokopedia.topchat.FakeTopchatCacheManager
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
@@ -30,7 +30,7 @@ class ChatListStickerUseCaseTest {
     private lateinit var onSuccess: (List<Sticker>) -> Unit
     @RelaxedMockK
     private lateinit var onError: (Throwable) -> Unit
-    private lateinit var cacheManager: TopchatCacheManagerStub
+    private lateinit var cacheManager: FakeTopchatCacheManager
     private val testDispatcher = CoroutineTestDispatchersProvider
 
     private lateinit var chatListStickerUseCase: ChatListStickerUseCase
@@ -52,7 +52,7 @@ class ChatListStickerUseCaseTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        cacheManager = spyk(TopchatCacheManagerStub(Dummy.successResponse))
+        cacheManager = spyk(FakeTopchatCacheManager(Dummy.successResponse))
         chatListStickerUseCase = ChatListStickerUseCase(gqlUseCase, cacheManager, testDispatcher)
     }
 

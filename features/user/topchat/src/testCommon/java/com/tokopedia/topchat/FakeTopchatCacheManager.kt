@@ -3,7 +3,7 @@ package com.tokopedia.topchat
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import java.lang.reflect.Type
 
-class TopchatCacheManagerStub(
+class FakeTopchatCacheManager(
         var cache: Any?
 ) : TopchatCacheManager {
 

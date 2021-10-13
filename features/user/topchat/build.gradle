@@ -31,6 +31,14 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8
     }
+    sourceSets {
+        test {
+            java.srcDirs += "$projectDir/src/testCommon/java"
+        }
+        androidTest {
+            java.srcDirs += "$projectDir/src/testCommon/java"
+        }
+    }
 }
 
 dependencies {
