@@ -47,10 +47,12 @@
 
     <!-- error dialog wording -->
     <string name="dialog_error_title_empty">Oops, paket ini habis</string>
+    <string name="dialog_error_title_empty_pdp">Oops, paketnya habis</string>
     <string name="dialog_error_title_empty_bundle">Oops, paket yang kamu pilih habis</string>
     <string name="dialog_error_message_other_bundle_and_variant_available">Coba ganti dengan varian lain, atau bisa juga cek paket lainnya, ya.</string>
     <string name="dialog_error_message_other_variant_available">Coba ganti dengan varian lain, ya.</string>
     <string name="dialog_error_message_other_bundle_available">Tenang kamu bisa cek pilihan paket serupa lainnya, ya.</string>
+    <string name="dialog_error_message_pdp">Tenang kamu bisa cek pilihan paket serupa lainnya, ya.</string>
     <string name="dialog_error_action_change_variant">Ganti Varian</string>
     <string name="dialog_error_action_change_bundle">Lihat Paket Lain</string>
 

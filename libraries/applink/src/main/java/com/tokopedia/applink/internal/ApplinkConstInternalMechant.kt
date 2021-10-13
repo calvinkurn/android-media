@@ -7,11 +7,18 @@ import com.tokopedia.applink.constant.DeeplinkConstant
  */
 
 object ApplinkConstInternalMechant {
+    // Product Bundle Query Params
+    const val QUERY_PARAM_BUNDLE_ID = "bundleId"
+    const val QUERY_PARAM_PAGE_SOURCE = "source"
+    const val SOURCE_PDP = "pdp"
+
+    // Add Edit Product Query Params
     const val QUERY_PARAM_ID = "id"
     const val QUERY_PARAM_MODE = "mode"
     const val MODE_EDIT_PRODUCT = "edit-product"
     const val MODE_EDIT_DRAFT = "edit-draft"
     const val MODE_DUPLICATE_PRODUCT = "duplicate-product"
+
     const val HOST_MERCHANT = "merchant"
 
     const val INTERNAL_MERCHANT = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_MERCHANT}"
