@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -74,6 +75,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
+    private val clInteraction: ConstraintLayout by detachableView(R.id.cl_interaction)
     private val viewTimer: PlayTimerView by detachableView(R.id.view_timer)
     private val viewStatInfo: PlayStatInfoView by detachableView(R.id.view_stat_info)
     private val ivShareLink: AppCompatImageView by detachableView(R.id.iv_share_link)
@@ -208,11 +210,21 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             analytic.clickProductTagOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
         }
         val pinnedMessageFormViewListener = object : PinnedMessageFormView.Listener {
-            override fun onPinnedMessageSaved(view: PinnedMessageFormView, message: String) {
-                parentViewModel.submitAction(PlayBroadcastUiEvent.SetPinnedMessage(message))
+
+            private fun onClosed(view: PinnedMessageFormView) {
                 val parentView = this@PlayBroadcastUserInteractionFragment.view
                 if (parentView is ViewGroup) parentView.removeView(view)
                 hideKeyboard()
+                clInteraction.visibility = View.VISIBLE
+            }
+
+            override fun onCloseButtonClicked(view: PinnedMessageFormView) {
+                onClosed(view)
+            }
+
+            override fun onPinnedMessageSaved(view: PinnedMessageFormView, message: String) {
+                parentViewModel.submitAction(PlayBroadcastUiEvent.SetPinnedMessage(message))
+                onClosed(view)
             }
         }
         pinnedMessageView.setOnPinnedClickedListener { _, message ->
@@ -223,6 +235,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     tag = PINNED_MSG_FORM_TAG
                 }
                 view.addView(theView)
+                theView.visibility = View.VISIBLE
+                clInteraction.visibility = View.GONE
                 theView
             }
             pinnedView.setPinnedMessage(message)

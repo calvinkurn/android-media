@@ -11,6 +11,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewPlayBroPinnedMsgFormBinding
+import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
@@ -43,6 +46,7 @@ class PinnedMessageFormView : ConstraintLayout {
 
     init {
         setupView()
+        setupInsets()
     }
 
     private fun setupView() {
@@ -81,6 +85,19 @@ class PinnedMessageFormView : ConstraintLayout {
                 }
                 return@setOnKeyListener false
             }
+
+            iconClose.setOnClickListener {
+                mListener?.onCloseButtonClicked(this@PinnedMessageFormView)
+            }
+        }
+    }
+
+    private fun setupInsets() {
+        binding.root.doOnApplyWindowInsets { view, insets, padding, _ ->
+            view.updatePadding(
+                top = insets.systemWindowInsetTop + padding.top,
+                bottom = insets.systemWindowInsetBottom + padding.bottom
+            )
         }
     }
 
@@ -92,6 +109,11 @@ class PinnedMessageFormView : ConstraintLayout {
         mListener = listener
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        binding.root.requestApplyInsetsWhenAttached()
+    }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         mListener = null
@@ -99,6 +121,7 @@ class PinnedMessageFormView : ConstraintLayout {
 
     interface Listener {
 
+        fun onCloseButtonClicked(view: PinnedMessageFormView)
         fun onPinnedMessageSaved(view: PinnedMessageFormView, message: String)
     }
 }
