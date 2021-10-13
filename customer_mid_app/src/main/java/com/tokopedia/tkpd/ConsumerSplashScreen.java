@@ -20,7 +20,7 @@ import com.tokopedia.installreferral.InstallReferral;
 import com.tokopedia.installreferral.InstallReferralKt;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
-import com.tokopedia.loginregister.login.service.RegisterPushNotificationWorker;
+import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -102,7 +102,8 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     private void registerPushNotif() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            RegisterPushNotificationWorker.Companion.scheduleWorker(ConsumerSplashScreen.this.getApplicationContext(), true);
+            RegisterPushNotificationWorker.Companion
+                    .scheduleWorker(ConsumerSplashScreen.this.getApplicationContext(), true);
         }
     }
 
