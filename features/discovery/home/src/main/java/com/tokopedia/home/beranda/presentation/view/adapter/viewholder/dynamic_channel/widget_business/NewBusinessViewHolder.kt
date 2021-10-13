@@ -207,6 +207,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
             }
             tabLayout.tabLayout.addOnTabSelectedListener(tabChangeListener)
         }
+        tabLayout.tabLayout.background = ContextCompat.getDrawable(tabLayout.context, R.drawable.bg_tabs_design_team)
     }
 
     private fun initViewPager(list: List<BusinessUnitDataModel>){

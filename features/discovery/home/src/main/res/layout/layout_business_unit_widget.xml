@@ -25,7 +25,7 @@
         <View
             android:id="@+id/divider"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
+            android:layout_height="1dp"
             android:background="@color/Unify_NN300"
             />
         <com.tokopedia.unifycomponents.TabsUnify
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
             app:tabBackground="@color/Unify_N0"
-            app:tabPaddingBottom="6dp"
+            app:tabPaddingBottom="@dimen/dp_6"
             app:tabIndicatorColor="@color/Unify_G500"
             app:tabSelectedTextColor="@color/Unify_G500"
             app:tabTextColor="@color/Unify_N200"/>
