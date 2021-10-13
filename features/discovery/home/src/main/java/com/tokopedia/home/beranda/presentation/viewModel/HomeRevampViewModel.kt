@@ -61,6 +61,7 @@ import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
 import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
 import com.tokopedia.network.exception.MessageErrorException
@@ -1002,12 +1003,12 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun isAddressDataEmpty(): Boolean {
-        return getAddressData().lat.isEmpty() &&
-                getAddressData().long.isEmpty() &&
-                getAddressData().districId.isEmpty() &&
-                getAddressData().cityId.isEmpty() &&
-                getAddressData().addressId.isEmpty() &&
-                getAddressData().postCode.isEmpty()
+        return getAddressData().localCacheModel.lat.isEmpty() &&
+                getAddressData().localCacheModel.long.isEmpty() &&
+                getAddressData().localCacheModel.district_id.isEmpty() &&
+                getAddressData().localCacheModel.city_id.isEmpty() &&
+                getAddressData().localCacheModel.address_id.isEmpty() &&
+                getAddressData().localCacheModel.postal_code.isEmpty()
 
     }
 
@@ -1099,29 +1100,8 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun getHomeLocationDataParam() : String {
         return if (!isAddressDataEmpty()) {
-            buildLocationParams(
-                    getAddressData().lat,
-                    getAddressData().long,
-                    getAddressData().addressId,
-                    getAddressData().cityId,
-                    getAddressData().districId,
-                    getAddressData().postCode)
+            getAddressData().localCacheModel.convertToLocationParams()
         } else ""
-    }
-
-    private fun buildLocationParams(
-            lat: String = "",
-            long: String = "",
-            addressId: String = "",
-            cityId: String = "",
-            districtId: String = "",
-            postCode: String = ""): String {
-        return "user_lat=" + lat +
-                "&user_long=" + long +
-                "&user_addressId=" + addressId +
-                "&user_cityId=" + cityId +
-                "&user_districtId=" + districtId +
-                "&user_postCode=" + postCode
     }
 
     private fun convertPopularKeywordDataList(popularKeywordList: HomeWidget.PopularKeywordList): MutableList<PopularKeywordDataModel> {
