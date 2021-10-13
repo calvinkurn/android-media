@@ -67,6 +67,7 @@ dependencies {
 
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.networkDependencies.retrofit
+    implementation rootProject.ext.networkDependencies.adapterRxJava
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
@@ -81,7 +82,7 @@ dependencies {
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
-    
+
     // unit test
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
