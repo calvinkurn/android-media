@@ -56,7 +56,92 @@ object ScreenShootPageHelper {
 
     private fun getPagesHasMap(context: Context): Map<String, List<String>> {
         return mapOf(
-            getHomePageMapper(context), getChatPageMapper(context)
+            getHomePageMapper(context),
+            getChatPageMapper(context),
+            getDiscussPageMapper(context),
+            getAddProductPageMapper(context),
+            getEditProductPageMapper(context),
+            getProductManagePageMapper(context),
+            getSomPageMapper(context),
+            getStatisticPageMapper(context),
+            getCentralizedPromoPageMapper(context),
+            getShopDecorationPageMapper(context),
+            getReviewPageMapper(context),
+            getComplainedOrderPageMapper(context),
+            getShopSettingPageMapper(context),
+            getAdminSettingPageMapper(context)
+        )
+    }
+
+    private fun getAdminSettingPageMapper(context: Context): Pair<String, List<String>> {
+        return context.getString(PAGE_ADMIN_SETTING) to listOf(
+            ""
+        )
+    }
+
+    private fun getShopSettingPageMapper(context: Context): Pair<String, List<String>> {
+        return context.getString(PAGE_SHOP_SETTING) to listOf(
+            ""
+        )
+    }
+
+    private fun getComplainedOrderPageMapper(context: Context): Pair<String, List<String>> {
+        return context.getString(PAGE_COMPLAINED_ORDER) to listOf(
+            ""
+        )
+    }
+
+    private fun getReviewPageMapper(context: Context): Pair<String, List<String>> {
+        return context.getString(PAGE_REVIEW) to listOf(
+            ""
+        )
+    }
+
+    private fun getShopDecorationPageMapper(context: Context): Pair<String, List<String>> {
+        return context.getString(PAGE_SHOP_DECORATION) to listOf(
+            ""
+        )
+    }
+
+    private fun getCentralizedPromoPageMapper(context: Context): Pair<String, List<String>> {
+        return context.getString(PAGE_CENTRALIZED_PROMO) to listOf(
+            ""
+        )
+    }
+
+    private fun getStatisticPageMapper(context: Context): Pair<String, List<String>> {
+        return context.getString(PAGE_STATISTIC) to listOf(
+            ""
+        )
+    }
+
+    private fun getSomPageMapper(context: Context): Pair<String, List<String>> {
+        return context.getString(PAGE_SOM) to listOf(
+            ""
+        )
+    }
+
+    private fun getProductManagePageMapper(context: Context): Pair<String, List<String>> {
+        return context.getString(PAGE_PRODUCT_MANAGE) to listOf(
+            ""
+        )
+    }
+
+    private fun getEditProductPageMapper(context: Context): Pair<String, List<String>> {
+        return context.getString(PAGE_EDIT_PRODUCT) to listOf(
+            ""
+        )
+    }
+
+    private fun getAddProductPageMapper(context: Context): Pair<String, List<String>> {
+        return context.getString(PAGE_ADD_PRODUCT) to listOf(
+            ""
+        )
+    }
+
+    private fun getDiscussPageMapper(context: Context): Pair<String, List<String>> {
+        return context.getString(PAGE_DISCUSS) to listOf(
+            ""
         )
     }
 
