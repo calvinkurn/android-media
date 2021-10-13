@@ -7,7 +7,7 @@ class ParentReplyWsRequest(
     val attachment_id: Long,
     val attachment_type: Long,
     val sender_id: Long,
-    val reply_time: Long,
+    val reply_time: String,
     val main_text: String,
     val sub_text: String,
     val image_url: String,

@@ -64,24 +64,6 @@ object TopChatWebSocketParam {
     }
 
     fun generateParentReplyRequestPayload(
-        referredMsg: BaseChatViewModel?
-    ): JsonElement? {
-        if (referredMsg == null) return null
-        val requestContract = ParentReplyWsRequest(
-            attachment_id = referredMsg.attachmentId.toLongOrZero(),
-            attachment_type = referredMsg.attachmentType.toLongOrZero(),
-            sender_id = referredMsg.fromUid.toLongOrZero() ,
-            reply_time = referredMsg.replyTime?.toLongOrZero() ?: 0,
-            main_text = referredMsg.message,
-            sub_text = "",
-            image_url = referredMsg.getReferredImageUrl(),
-            local_id = referredMsg.localId,
-            source = "chat"
-        )
-        return gson.toJsonTree(requestContract)
-    }
-
-    fun generateParentReplyRequestPayload(
         parentReply: ParentReply?
     ): JsonElement? {
         if (parentReply == null) return null
@@ -89,7 +71,7 @@ object TopChatWebSocketParam {
             attachment_id = parentReply.attachmentId.toLongOrZero(),
             attachment_type = parentReply.attachmentType.toLongOrZero(),
             sender_id = parentReply.senderId.toLongOrZero() ,
-            reply_time = parentReply.replyTime.toLongOrZero(),
+            reply_time = parentReply.replyTime,
             main_text = parentReply.mainText,
             sub_text = parentReply.subText,
             image_url = parentReply.imageUrl,
