@@ -17,6 +17,7 @@ import com.tokopedia.home_account.R
 import com.tokopedia.home_account.Utils
 import com.tokopedia.home_account.data.model.CommonDataView
 import com.tokopedia.home_account.data.model.ProfileDataView
+import com.tokopedia.home_account.databinding.HomeAccountItemProfileBinding
 import com.tokopedia.home_account.data.model.TierData
 import com.tokopedia.home_account.view.SpanningLinearLayoutManager
 import com.tokopedia.home_account.view.adapter.HomeAccountBalanceAndPointAdapter
@@ -29,11 +30,7 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey.HOME_ACCOUNT_SHOW_VIEW_MORE_WALLET_TOGGLE
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
-import kotlinx.android.synthetic.main.home_account_balance_and_point.view.*
-import kotlinx.android.synthetic.main.home_account_item_profile.view.*
-import kotlinx.android.synthetic.main.home_account_member.view.*
-import kotlinx.android.synthetic.main.home_account_profile.view.*
-
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by Yoris Prayogo on 16/10/20.
@@ -47,77 +44,83 @@ class ProfileViewHolder(
     private val memberAdapter: HomeAccountMemberAdapter?
 ) : BaseViewHolder(itemView) {
 
+    private val binding: HomeAccountItemProfileBinding? by viewBinding()
+
     fun bind(profile: ProfileDataView) {
-        with(itemView) {
-            account_user_item_profile_name?.text = profile.name
-            if (profile.phone.isNotEmpty()) {
-                account_user_item_profile_phone?.text = Utils.formatPhoneNumber(profile.phone)
+        binding?.homeAccountProfileSection?.accountUserItemProfileName?.text = profile.name
+        if (profile.phone.isNotEmpty()) {
+            binding?.homeAccountProfileSection?.accountUserItemProfilePhone?.text =
+                Utils.formatPhoneNumber(profile.phone)
+        } else {
+            binding?.homeAccountProfileSection?.accountUserItemProfilePhone?.hide()
+            binding?.homeAccountProfileSection?.accountUserItemProfileName?.run {
+                binding?.homeAccountProfileSection?.accountUserItemProfileName?.setPadding(
+                    paddingLeft,
+                    ProfileViewHolder.TOP_PAD,
+                    paddingRight,
+                    paddingBottom
+                )
+            }
+        }
+
+        if (profile.name.toLowerCase().contains(DEFAULT_NAME)) {
+            binding?.homeAccountProfileSection?.accountUserItemProfileIconWarningName?.show()
+            binding?.homeAccountProfileSection?.accountUserItemProfileIconWarningName?.setOnClickListener {
+                listener.onIconWarningClicked(
+                    profile
+                )
+            }
+        } else binding?.homeAccountProfileSection?.accountUserItemProfileIconWarningName?.hide()
+
+        if (profile.phone != profile.email) {
+            binding?.homeAccountProfileSection?.accountUserItemProfileEmail?.text = profile.email
+        }
+        binding?.homeAccountProfileSection?.accountUserItemProfileEdit?.setOnClickListener { listener.onEditProfileClicked() }
+        binding?.homeAccountProfileSection?.root?.setOnClickListener { listener.onProfileClicked() }
+
+        binding?.homeAccountProfileSection?.accountUserItemProfileAvatar?.let {
+            loadImage(
+                it,
+                profile.avatar
+            )
+        }
+
+        setupMemberAdapter(itemView)
+        setupBalanceAndPointAdapter(itemView)
+
+        setBackground(itemView.context, binding?.accountUserItemProfileContainer)
+        listener.onItemViewBinded(adapterPosition, itemView, profile)
+
+        setupMemberSection(itemView, profile.memberStatus)
+        memberAdapter?.let { memberAdapter ->
+            listener.onProfileAdapterReady(memberAdapter)
+        }
+
+        if (profile.isShowLinkStatus) {
+            binding?.homeAccountProfileSection?.linkAccountProfileBtn?.setOnClickListener {
+                listener.onLinkingAccountClicked(profile.isLinked)
+            }
+            if (profile.isLinked) {
+                binding?.homeAccountProfileSection?.linkAccountProfileBtn?.hide()
+                binding?.homeAccountProfileSection?.accountUserItemProfileLinkStatus?.show()
             } else {
-                account_user_item_profile_phone?.hide()
-                account_user_item_profile_name?.run {
-                    account_user_item_profile_name?.setPadding(
-                        paddingLeft,
-                        ProfileViewHolder.TOP_PAD,
-                        paddingRight,
-                        paddingBottom
-                    )
-                }
+                binding?.homeAccountProfileSection?.accountUserItemProfileLinkStatus?.hide()
+                binding?.homeAccountProfileSection?.linkAccountProfileBtn?.show()
             }
-
-            if (profile.name.toLowerCase().contains(DEFAULT_NAME)) {
-                account_user_item_profile_icon_warning_name?.show()
-                account_user_item_profile_icon_warning_name?.setOnClickListener {
-                    listener.onIconWarningClicked(
-                        profile
-                    )
-                }
-            } else account_user_item_profile_icon_warning_name?.hide()
-
-            if (profile.phone != profile.email) {
-                account_user_item_profile_email?.text = profile.email
-            }
-            account_user_item_profile_edit?.setOnClickListener { listener.onEditProfileClicked() }
-            home_account_profile_section?.setOnClickListener { listener.onProfileClicked() }
-
-            loadImage(account_user_item_profile_avatar, profile.avatar)
-
-            setupMemberAdapter(itemView)
-            setupBalanceAndPointAdapter(itemView)
-
-            setBackground(context, account_user_item_profile_container)
-            listener.onItemViewBinded(adapterPosition, itemView, profile)
-
-            setupMemberSection(itemView, profile.memberStatus)
-            memberAdapter?.let { memberAdapter ->
-                listener.onProfileAdapterReady(memberAdapter)
-            }
-
-            if(profile.isShowLinkStatus) {
-                link_account_profile_btn?.setOnClickListener {
-                    listener.onLinkingAccountClicked(profile.isLinked)
-                }
-                if(profile.isLinked) {
-                    link_account_profile_btn?.hide()
-                    account_user_item_profile_link_status?.show()
-                } else {
-                    account_user_item_profile_link_status?.hide()
-                    link_account_profile_btn.show()
-                }
-            } else {
-                link_account_profile_btn?.hide()
-                account_user_item_profile_link_status?.hide()
-            }
+        } else {
+            binding?.homeAccountProfileSection?.linkAccountProfileBtn?.hide()
+            binding?.homeAccountProfileSection?.accountUserItemProfileLinkStatus?.hide()
         }
     }
 
     private fun setupMemberSection(itemView: View, tierData: TierData) {
-        itemView?.home_account_member_layout_title?.text = tierData.nameDesc
-        itemView?.home_account_member_layout_title?.setMargin(AccountConstants.DIMENSION.LAYOUT_TITLE_LEFT_MARGIN, 0, 0, 0)
+        binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutTitle?.text = tierData.nameDesc
+        binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutTitle?.setMargin(AccountConstants.DIMENSION.LAYOUT_TITLE_LEFT_MARGIN, 0, 0, 0)
         if(tierData.imageURL.isNotEmpty()) {
-            itemView?.home_account_member_layout_member_icon?.show()
-            itemView?.home_account_member_layout_member_icon?.setImageUrl(tierData.imageURL)
+            binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutMemberIcon?.show()
+            binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutMemberIcon?.setImageUrl(tierData.imageURL)
         } else {
-            itemView?.home_account_member_layout_member_icon?.hide()
+            binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutMemberIcon?.hide()
         }
     }
 
@@ -146,8 +149,8 @@ class ProfileViewHolder(
 
     private fun setupBalanceAndPointAdapter(itemView: View) {
         if (isShowViewMoreWallet()) {
-            itemView.home_account_view_more?.show()
-            itemView.home_account_view_more?.setOnClickListener {
+            binding?.homeAccountProfileBalanceAndPointSection?.homeAccountViewMore?.show()
+            binding?.homeAccountProfileBalanceAndPointSection?.homeAccountViewMore?.setOnClickListener {
                 listener.onSettingItemClicked(
                     CommonDataView(
                         id = AccountConstants.SettingCode.SETTING_VIEW_ALL_BALANCE,
@@ -156,13 +159,16 @@ class ProfileViewHolder(
                 )
             }
         } else {
-            itemView.home_account_view_more?.hide()
+            binding?.homeAccountProfileBalanceAndPointSection?.homeAccountViewMore?.hide()
         }
 
-        itemView.home_account_balance_and_point_rv?.adapter = balanceAndPointAdapter
-        itemView.home_account_balance_and_point_rv?.setHasFixedSize(true)
+        binding?.homeAccountProfileBalanceAndPointSection?.homeAccountBalanceAndPointRv?.adapter =
+            balanceAndPointAdapter
+        binding?.homeAccountProfileBalanceAndPointSection?.homeAccountBalanceAndPointRv?.setHasFixedSize(
+            true
+        )
         val layoutManager = SpanningLinearLayoutManager(
-            itemView.home_account_balance_and_point_rv?.context,
+            binding?.homeAccountProfileBalanceAndPointSection?.homeAccountBalanceAndPointRv?.context,
             LinearLayoutManager.HORIZONTAL,
             false
         )
@@ -180,7 +186,7 @@ class ProfileViewHolder(
             )
         }
         val dividerItemDecoration = DividerItemDecoration(
-            itemView.home_account_balance_and_point_rv.context,
+            binding?.homeAccountProfileBalanceAndPointSection?.homeAccountBalanceAndPointRv?.context,
             layoutManager.orientation
         )
 
@@ -188,16 +194,23 @@ class ProfileViewHolder(
             dividerItemDecoration.setDrawable(this)
         }
 
-        if (itemView.home_account_balance_and_point_rv.itemDecorationCount < 1) {
-            itemView.home_account_balance_and_point_rv.addItemDecoration(dividerItemDecoration)
+        binding?.homeAccountProfileBalanceAndPointSection?.homeAccountBalanceAndPointRv?.itemDecorationCount?.let {
+            if (it < 1) {
+                binding?.homeAccountProfileBalanceAndPointSection?.homeAccountBalanceAndPointRv?.addItemDecoration(
+                    dividerItemDecoration
+                )
+            }
         }
-        itemView.home_account_balance_and_point_rv?.layoutManager = layoutManager
 
-        itemView.home_account_balance_and_point_rv?.isLayoutFrozen = true
+        binding?.homeAccountProfileBalanceAndPointSection?.homeAccountBalanceAndPointRv?.layoutManager =
+            layoutManager
+
+        binding?.homeAccountProfileBalanceAndPointSection?.homeAccountBalanceAndPointRv?.isLayoutFrozen =
+            true
     }
 
     private fun setupMemberAdapter(itemView: View) {
-        itemView.home_account_member_layout_member_forward?.setOnClickListener {
+        binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutMemberForward?.setOnClickListener {
             listener.onSettingItemClicked(
                 CommonDataView(
                     id = AccountConstants.SettingCode.SETTING_MORE_MEMBER,
@@ -206,10 +219,10 @@ class ProfileViewHolder(
             )
         }
 
-        itemView.home_account_member_layout_rv?.adapter = memberAdapter
-        itemView.home_account_member_layout_rv?.setHasFixedSize(true)
+        binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutRv?.adapter = memberAdapter
+        binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutRv?.setHasFixedSize(true)
         val layoutManager = SpanningLinearLayoutManager(
-            itemView.home_account_member_layout_rv?.context,
+            binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutRv?.context,
             LinearLayoutManager.HORIZONTAL,
             false
         )
@@ -227,7 +240,7 @@ class ProfileViewHolder(
             )
         }
         val dividerItemDecoration = DividerItemDecoration(
-            itemView.home_account_member_layout_rv.context,
+            binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutRv?.context,
             layoutManager.orientation
         )
 
@@ -235,12 +248,18 @@ class ProfileViewHolder(
             dividerItemDecoration.setDrawable(this)
         }
 
-        if (itemView.home_account_member_layout_rv.itemDecorationCount < 1) {
-            itemView.home_account_member_layout_rv.addItemDecoration(dividerItemDecoration)
+        binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutRv?.itemDecorationCount?.let {
+            if (it < 1) {
+                binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutRv?.addItemDecoration(
+                    dividerItemDecoration
+                )
+            }
         }
-        itemView.home_account_member_layout_rv?.layoutManager = layoutManager
 
-        itemView.home_account_member_layout_rv?.isLayoutFrozen = true
+        binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutRv?.layoutManager =
+            layoutManager
+
+        binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutRv?.isLayoutFrozen = true
     }
 
     private fun isShowViewMoreWallet(): Boolean {

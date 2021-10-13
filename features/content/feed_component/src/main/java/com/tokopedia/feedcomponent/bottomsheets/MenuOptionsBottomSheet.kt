@@ -18,6 +18,7 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
     var onReport: (() -> Unit)? = null
     var onFollow: (() -> Unit)? = null
     var onDelete: (() -> Unit)? = null
+    var onEdit: (() -> Unit)? = null
     var onDismiss: (() -> Unit)? = null
     var onClosedClicked: (() -> Unit)? = null
     private var dismissedByClosing = false
@@ -52,8 +53,10 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
         report.showWithCondition(!canBeDeleted && isReportable)
         follow.showWithCondition(!canBeDeleted && canBeUnFollow)
         delete.showWithCondition(canBeDeleted)
+        edit.showWithCondition(canBeDeleted)
 
         if (canBeDeleted && report.isVisible && follow.isVisible) {
+            div0.show()
             div1.show()
             div2.show()
         } else {
@@ -62,9 +65,15 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
             }
             if (follow.isVisible && canBeDeleted) {
                 div2.show()
+                div0.show()
             }
-            if (report.isVisible && canBeDeleted)
+            if (report.isVisible && canBeDeleted) {
                 div2.show()
+                div0.show()
+            }
+            if(edit.isVisible){
+                div0.show()
+            }
         }
 
         follow.setOnClickListener {
@@ -80,6 +89,11 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
         delete?.setOnClickListener {
             dismissedByClosing = true
             onDelete?.invoke()
+            dismiss()
+        }
+        edit?.setOnClickListener {
+            dismissedByClosing = true
+            onEdit?.invoke()
             dismiss()
         }
         setCloseClickListener {
