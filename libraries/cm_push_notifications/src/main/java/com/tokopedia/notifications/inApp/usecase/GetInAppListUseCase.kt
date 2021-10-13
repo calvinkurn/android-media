@@ -82,7 +82,7 @@ class GetInAppListUseCase(private val application: Application,
             if (!TextUtils.isEmpty(screenNames)) {
                 val screenNamesArray = screenNames.split(",").toTypedArray()
                 for (screenName in screenNamesArray) {
-                    if (key == screenName || isActivity && screenName == "*") {
+                    if (key == screenName || (isActivity && screenName == "*")) {
                         finalList.add(cmInApp)
                         break
                     }

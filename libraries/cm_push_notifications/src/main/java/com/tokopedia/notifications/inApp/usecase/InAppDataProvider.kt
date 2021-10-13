@@ -25,7 +25,8 @@ class InAppDataProvider private constructor(private val application: Application
                     getInAppListUseCase.getInAPPListByScreenName(screenName, isActivity)
             )
         },onError ={
-            //todo Timber Logging
+            inAppFetchListener.onInAPPListFetchCompleted(null)
+            //todo Timber Logging by lalit
         })
     }
 

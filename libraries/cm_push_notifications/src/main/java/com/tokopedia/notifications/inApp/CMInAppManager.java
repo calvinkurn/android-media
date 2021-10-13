@@ -2,7 +2,6 @@ package com.tokopedia.notifications.inApp;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -32,7 +31,6 @@ import com.tokopedia.notifications.inApp.viewEngine.CMInAppController;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
 import com.tokopedia.notifications.inApp.viewEngine.ElementType;
-import com.tokopedia.notifications.utils.NotificationCancelManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,8 +40,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-
-import timber.log.Timber;
 
 import static com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.RemoteConfig.KEY_CM_INAPP_END_TIME_INTERVAL;
 import static com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor.HOURS_24_IN_MILLIS;
@@ -125,18 +121,16 @@ public class CMInAppManager implements CmInAppListener,
     private void showInAppNotification(String name, int entityHashCode, boolean isActivity) {
         if (excludeScreenList != null && excludeScreenList.contains(name))
             return;
-        RulesManager.getInstance().checkValidity(
-                name,
-                0L,
-                this,
-                entityHashCode,
-                isActivity
-        );
+//        RulesManager.getInstance().checkValidity(
+//                name,
+//                0L,
+//                this,
+//                entityHashCode,
+//                isActivity
+//        );
         //TODO new way to fetch InApp from Local Database
         InAppDataProvider.Companion.getInstance(application, RepositoryManager.getInstance())
-                .getInAppData(name, isActivity, inAppList -> {
-
-                });
+                .getInAppData(name, isActivity, inAppList -> CMInAppManager.this.notificationsDataResult((List<CMInApp>) inAppList, entityHashCode, name));
     }
 
     @Override
