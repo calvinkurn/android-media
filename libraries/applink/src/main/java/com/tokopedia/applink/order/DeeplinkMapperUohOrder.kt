@@ -22,9 +22,6 @@ import java.util.*
  * Created by fwidjaja on 27/08/20.
  */
 object DeeplinkMapperUohOrder {
-    const val UOH_AB_TEST_KEY = "uoh_android_v2"
-    const val UOH_AB_TEST_VALUE = "uoh_android_v2"
-
     private const val PATH_ORDER = "order"
     const val PATH_ORDER_ID = "order_id"
     const val PATH_PAYMENT_ID = "payment_id"
