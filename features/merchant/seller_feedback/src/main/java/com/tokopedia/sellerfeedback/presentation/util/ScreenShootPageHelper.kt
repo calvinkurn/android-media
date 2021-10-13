@@ -45,13 +45,10 @@ object ScreenShootPageHelper {
         )
     }
 
-    fun getPageByClass(context: Context, canonicalName: String): String {
-        getPagesHasMap(context).entries.forEach {
-            if (it.value.contains(canonicalName)) {
-                return canonicalName
-            }
-        }
-        return context.getString(PAGE_OTHERS)
+    fun getPageByClassName(context: Context, canonicalName: String): String {
+        val pageMap = getPagesHasMap(context).entries
+            .firstOrNull { it.value.contains(canonicalName) }
+        return pageMap?.key ?: context.getString(PAGE_OTHERS)
     }
 
     private fun getPagesHasMap(context: Context): Map<String, List<String>> {
@@ -99,19 +96,19 @@ object ScreenShootPageHelper {
 
     private fun getShopDecorationPageMapper(context: Context): Pair<String, List<String>> {
         return context.getString(PAGE_SHOP_DECORATION) to listOf(
-            ""
+            "com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity"
         )
     }
 
     private fun getCentralizedPromoPageMapper(context: Context): Pair<String, List<String>> {
         return context.getString(PAGE_CENTRALIZED_PROMO) to listOf(
-            ""
+            "com.tokopedia.centralizedpromo.view.activity.CentralizedPromoActivity"
         )
     }
 
     private fun getStatisticPageMapper(context: Context): Pair<String, List<String>> {
         return context.getString(PAGE_STATISTIC) to listOf(
-            ""
+            "com.tokopedia.statistic.view.activity.StatisticActivity"
         )
     }
 
@@ -148,6 +145,7 @@ object ScreenShootPageHelper {
     private fun getChatPageMapper(context: Context): Pair<String, List<String>> {
         return context.getString(PAGE_CHAT) to listOf(
             "com.tokopedia.topchat.chatlist.activity.ChatListActivity",
+            "com.tokopedia.sellerhome.view.activity.SellerHomeActivity",
             "com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity"
         )
     }

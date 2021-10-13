@@ -37,6 +37,7 @@ import com.tokopedia.sellerfeedback.presentation.bottomsheet.SettingsBottomSheet
 import com.tokopedia.sellerfeedback.presentation.uimodel.BaseImageFeedbackUiModel
 import com.tokopedia.sellerfeedback.presentation.uimodel.ImageFeedbackUiModel
 import com.tokopedia.sellerfeedback.presentation.uimodel.Score
+import com.tokopedia.sellerfeedback.presentation.util.ScreenShootPageHelper
 import com.tokopedia.sellerfeedback.presentation.util.ScreenshotManager
 import com.tokopedia.sellerfeedback.presentation.util.ScreenshotPreferenceManager
 import com.tokopedia.sellerfeedback.presentation.util.SuccessToasterHelper
@@ -61,6 +62,7 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
     companion object {
         const val REQUEST_CODE_IMAGE = 111
         const val EXTRA_URI_IMAGE = "uri_image"
+        const val EXTRA_ACTIVITY_NAME = "extra_activity_name"
         const val ERROR_UPLOAD = "error upload image(s)"
         const val ERROR_SUBMIT = "error submit feedback form"
         const val ERROR_NETWORK = "error, please check cause"
@@ -239,6 +241,13 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
             }
         }
 
+        val pageClassName = arguments?.getString(EXTRA_ACTIVITY_NAME).orEmpty()
+        textFieldFeedbackPage?.setText(
+            ScreenShootPageHelper.getPageByClassName(
+                requireContext(),
+                pageClassName
+            )
+        )
         textFieldFeedbackPage?.setOnClickListener {
             val currentValue = textFieldFeedbackPage?.text.toString()
             val bottomSheet = SellerFeedbackPageChooserBottomSheet.createInstance(currentValue)

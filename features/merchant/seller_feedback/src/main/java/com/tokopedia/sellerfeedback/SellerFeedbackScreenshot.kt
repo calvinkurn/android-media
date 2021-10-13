@@ -83,6 +83,7 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
         val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_FEEDBACK)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.putExtra(SellerFeedbackFragment.EXTRA_URI_IMAGE, uri)
+        intent.putExtra(SellerFeedbackFragment.EXTRA_ACTIVITY_NAME, currentActivity::class.java.canonicalName)
         currentActivity.startActivity(intent)
         handleFeedbackSuccessToaster(currentActivity)
     }
