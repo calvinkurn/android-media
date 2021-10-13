@@ -1,7 +1,6 @@
 package com.tokopedia.gopay.kyc.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import com.otaliastudios.cameraview.CameraUtils
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.gopay.kyc.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.gopay.kyc.domain.data.CameraImageResult
@@ -38,24 +37,11 @@ class GoPayKycViewModel @Inject constructor(
         ordinal: Int
     ) {
         imageByte?.let {
-            try {
-                CameraUtils.decodeBitmap(imageByte, captureWidth, captureHeight) { bitmap ->
-                    if (bitmap != null) {
-                        saveCaptureImageUseCase.parseAndSaveCapture(
-                            ::onSaveSuccess,
-                            ::onSaveError,
-                            imageByte, ordinal
-                        )
-                    }
-
-                }
-            } catch (e: Throwable) {
-                saveCaptureImageUseCase.parseAndSaveCapture(
+            saveCaptureImageUseCase.parseAndSaveCapture(
                     ::onSaveSuccess,
                     ::onSaveError,
                     imageByte, ordinal
-                )
-            }
+            )
         } ?: kotlin.run {  onSaveError(NullPointerException("Empty Data byte")) }
 
     }

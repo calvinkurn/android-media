@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import com.otaliastudios.cameraview.CameraUtils
 import com.otaliastudios.cameraview.controls.Facing
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -43,36 +44,22 @@ class SaveCaptureImageUseCase @Inject constructor(
     }
 
     private fun generateImage(imageByte: ByteArray, ordinal: Int): CameraImageResult {
-        try {
-            val cameraResultFile = saveToCacheDirectory(imageByte)
-            val finalBitmap = cameraResultFile?.let { onSuccessImageTakenFromCamera(it, ordinal) }
-            return CameraImageResult(
+        val compressedBitmap = CameraUtils.decodeBitmap(imageByte, 1280, 1280)
+        val cameraResultFile = saveToCacheDirectory(compressedBitmap)
+        val finalBitmap = cameraResultFile?.let { onSuccessImageTakenFromCamera(it, ordinal) }
+        return CameraImageResult(
                 finalBitmap?.width ?: 0,
                 finalBitmap?.height ?: 0,
                 cameraResultFile?.absolutePath,
                 ArrayList(bitmapToByte(finalBitmap))
-            )
-        } catch (e: Throwable) {
-            val cameraResultFile = saveToCacheDirectory(imageByte)
-            val finalBitmap = cameraResultFile?.let { onSuccessImageTakenFromCamera(it, ordinal) }
-            return CameraImageResult(
-                finalBitmap?.width ?: 0,
-                finalBitmap?.height ?: 0,
-                cameraResultFile?.absolutePath,
-                ArrayList(bitmapToByte(finalBitmap))
-            )
-        }
+        )
     }
 
     private fun onSuccessImageTakenFromCamera(imageFile: File, ordinal: Int): Bitmap? {
-        try {
-            val file = File(imageFile.absolutePath)
-            if (file.exists()) {
-                val myBitmap = BitmapFactory.decodeFile(file.absolutePath)
-                flipBitmapByOrdinal(myBitmap, ordinal)
-            }
-        } catch (e: Throwable) {
-            throw e
+        val file = File(imageFile.absolutePath)
+        if (file.exists()) {
+            val myBitmap = BitmapFactory.decodeFile(file.absolutePath)
+            return flipBitmapByOrdinal(myBitmap, ordinal)
         }
         return null
     }
@@ -88,23 +75,20 @@ class SaveCaptureImageUseCase @Inject constructor(
         return null
     }
 
-    private fun saveToCacheDirectory(imageByte: ByteArray): File? {
+    private fun saveToCacheDirectory(bitmap: Bitmap?): File? {
         var out: FileOutputStream? = null
-        try {
+        return try {
+            val byteArray = bitmapToByteArray(bitmap)
             val file = getFileLocationFromDirectory()
             out = FileOutputStream(file)
-            out.write(imageByte)
-            return file
+            out.write(byteArray)
+            file
         } catch (e: Exception) {
-            return null
+            null
         } finally {
             out?.let {
-                try {
-                    out.flush()
-                    out.close()
-                } catch (e: Exception) {
-                    throw e
-                }
+                out.flush()
+                out.close()
             }
         }
     }
@@ -125,6 +109,20 @@ class SaveCaptureImageUseCase @Inject constructor(
                 stream
             )
             return stream.toByteArray().toList()
+        } finally {
+            bitmap?.recycle()
+        }
+    }
+
+    private fun bitmapToByteArray(bitmap: Bitmap?): ByteArray {
+        try {
+            val stream = ByteArrayOutputStream()
+            bitmap?.compress(
+                Bitmap.CompressFormat.JPEG,
+                IMAGE_QUALITY,
+                stream
+            )
+            return stream.toByteArray()
         } finally {
             bitmap?.recycle()
         }
