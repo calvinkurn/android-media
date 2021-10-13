@@ -33,10 +33,6 @@ public interface Constants {
         String CS_TEL_NO = "tel:1500696";
         String CHOOSER_TTL_CALL = "Lakukan panggilan";
     }
-    interface AppLinks{
-        String OVOUPGRADE = "tokopedia://ovoupgrade";
-        String OVOUPGRADE_STATUS = "tokopedia://ovoupgradestatus/{status}/{message}";
-    }
 
     interface Keys{
         String DOCUMENT_FILE = "document_file";

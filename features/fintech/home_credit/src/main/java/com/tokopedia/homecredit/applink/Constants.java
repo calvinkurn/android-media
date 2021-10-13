@@ -8,7 +8,7 @@ public class Constants {
     * SLFE1 => no overlay on camera Selfie
     * SLFE2 => custom overlay camera Selfie
     * */
-    public static final String CAMERA_TYPE = "{type}";
+    public static final String CAMERA_TYPE = "type";
     public static final String KTP_NO_OVERLAY = "KTP1";
     public static final String CUST_OVERLAY_URL = "imgurl";
     public static final String CUST_HEADER = "header_text";
