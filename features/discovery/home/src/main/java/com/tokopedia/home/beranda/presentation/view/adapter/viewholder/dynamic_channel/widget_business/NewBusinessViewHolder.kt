@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.BaseOnTabSelectedListener
@@ -79,6 +80,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
 
     init {
         tabLayout.tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
+        tabLayout.background = ContextCompat.getDrawable(tabLayout.context, R.drawable.bg_tabs_design_team)
         viewPager.isUserInputEnabled = false
         viewPager.adapter = adapterBusinessWidget
         errorBuWidget.title?.text = itemView.context.getString(R.string.widget_gagal_ditampilkan)

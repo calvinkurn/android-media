@@ -68,7 +68,7 @@ class DynamicChannelHeaderView: FrameLayout {
             handleSubtitle(channel.channelHeader.subtitle, stubChannelSubtitle, channel)
             handleSeeAllApplink(channel, stubSeeAllButton, channel.channelHeader.subtitle, channelTitleContainer)
             handleBackImage(channel, stubSeeAllButtonUnify, channel.channelHeader.subtitle, channelTitleContainer)
-            handleHeaderExpiredTime(channel, stubCountDownView)
+            handleHeaderExpiredTime(channel, stubCountDownView, channelTitleContainer)
             handleBackgroundColor(channel, it, stubSeeAllButton, stubSeeAllButtonUnify)
         }
     }
@@ -217,7 +217,7 @@ class DynamicChannelHeaderView: FrameLayout {
         seeAllButton?.hide()
     }
 
-    private fun handleHeaderExpiredTime(channel: ChannelModel, stubCountDownView: View?) {
+    private fun handleHeaderExpiredTime(channel: ChannelModel, stubCountDownView: View?, channelTitleContainer: ConstraintLayout) {
         /**
          * Requirement:
          * Only show countDownView when expired time exist
@@ -243,7 +243,7 @@ class DynamicChannelHeaderView: FrameLayout {
                     }
 
                     visibility = View.VISIBLE
-
+                    channelTitleContainer.setPadding(channelTitleContainer.paddingLeft, channelTitleContainer.paddingTop, channelTitleContainer.paddingRight, context.resources.getDimensionPixelSize(R.dimen.dp_8))
                     // calculate date diff
                     targetDate = Calendar.getInstance().apply {
                         val currentDate = Date()
@@ -262,6 +262,7 @@ class DynamicChannelHeaderView: FrameLayout {
         } else {
             countDownView?.let {
                 it.visibility = View.GONE
+                channelTitleContainer.setPadding(channelTitleContainer.paddingLeft, channelTitleContainer.paddingTop, channelTitleContainer.paddingRight, context.resources.getDimensionPixelSize(R.dimen.dp_12))
             }
         }
     }

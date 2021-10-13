@@ -19,7 +19,6 @@
         app:tabPaddingStart="0dp"
         app:tabPaddingEnd="0dp"
         app:tabMode="scrollable"
-        android:layout_marginBottom="@dimen/dp_8"
         android:visibility="gone"
         app:tabIndicatorHeight="0dp"
         />
