@@ -23,7 +23,6 @@ import com.tokopedia.tokopedianow.home.domain.model.KeywordSearchData
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
 import com.tokopedia.tokopedianow.home.domain.model.TickerResponse
 import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeLayoutDataUseCase
-import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeLayoutListUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetTickerUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
@@ -51,8 +50,6 @@ import java.lang.reflect.Field
 
 abstract class TokoNowHomeViewModelTestFixture {
 
-    @RelaxedMockK
-    lateinit var getHomeLayoutListUseCase: GetHomeLayoutListUseCase
     @RelaxedMockK
     lateinit var getHomeLayoutDataUseCase: GetHomeLayoutDataUseCase
     @RelaxedMockK
@@ -89,7 +86,6 @@ abstract class TokoNowHomeViewModelTestFixture {
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = TokoNowHomeViewModel(
-                getHomeLayoutListUseCase,
                 getHomeLayoutDataUseCase,
                 getCategoryListUseCase,
                 getKeywordSearchUseCase,
@@ -167,21 +163,17 @@ abstract class TokoNowHomeViewModelTestFixture {
         Assert.assertTrue(actualResponse is Fail)
     }
 
-    protected fun verifyGetHomeLayoutUseCaseCalled() {
-        coVerify { getHomeLayoutListUseCase.execute(any()) }
-    }
-
     protected fun verifyGetHomeLayoutDataUseCaseCalled(
         localCacheModel: LocalCacheModel = LocalCacheModel(),
         times: Int = 1
     ) {
-        coVerify(exactly = times) { getHomeLayoutDataUseCase.execute(any(), localCacheModel) }
+        coVerify(exactly = times) { getHomeLayoutDataUseCase.execute(any(), any(), localCacheModel) }
     }
 
     protected fun verifyGetHomeLayoutDataUseCaseNotCalled(
         localCacheModel: LocalCacheModel = LocalCacheModel()
     ) {
-        coVerify(exactly = 0) { getHomeLayoutDataUseCase.execute(any(), localCacheModel) }
+        coVerify(exactly = 0) { getHomeLayoutDataUseCase.execute(any(), any(), localCacheModel) }
     }
 
     protected fun verifyGetTickerUseCaseCalled() {
@@ -236,19 +228,15 @@ abstract class TokoNowHomeViewModelTestFixture {
         coEvery { getTickerUseCase.execute(any()) } returns tickerResponse
     }
 
-    protected fun onGetHomeLayout_thenReturn(layoutResponse: List<HomeLayoutResponse>) {
-        coEvery { getHomeLayoutListUseCase.execute(any()) } returns layoutResponse
-    }
-
     protected fun onGetHomeLayoutData_thenReturn(
-        layoutResponse: HomeLayoutResponse,
+        layoutResponse: List<HomeLayoutResponse>,
         localCacheModel: LocalCacheModel = LocalCacheModel()
     ) {
-        coEvery { getHomeLayoutDataUseCase.execute(any(), localCacheModel) } returns layoutResponse
+        coEvery { getHomeLayoutDataUseCase.execute(any(), any(), localCacheModel) } returns layoutResponse
     }
 
     protected fun onGetHomeLayoutData_thenReturn(error: Throwable) {
-        coEvery { getHomeLayoutDataUseCase.execute(anyString(), any()) } throws error
+        coEvery { getHomeLayoutDataUseCase.execute(anyString(), any(), any()) } throws error
     }
 
     protected fun onGetKeywordSearch_thenReturn(keywordSearchResponse: KeywordSearchData) {
@@ -265,10 +253,6 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     protected fun onGetTicker_thenReturn(errorThrowable: Throwable) {
         coEvery { getTickerUseCase.execute(any()) } throws errorThrowable
-    }
-
-    protected fun onGetHomeLayout_thenReturn(errorThrowable: Throwable) {
-        coEvery { getHomeLayoutListUseCase.execute(any()) } throws errorThrowable
     }
 
     protected fun onGetCategoryList_thenReturn(errorThrowable: Throwable) {
