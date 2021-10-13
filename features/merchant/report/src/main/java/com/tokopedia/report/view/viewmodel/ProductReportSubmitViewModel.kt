@@ -3,7 +3,7 @@ package com.tokopedia.report.view.viewmodel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.data.state.UploadResult
-import com.tokopedia.mediauploader.domain.UploaderUseCase
+import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.report.domain.interactor.SubmitReportUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.cancel
