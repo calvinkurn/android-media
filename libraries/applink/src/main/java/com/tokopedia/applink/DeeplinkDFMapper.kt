@@ -105,6 +105,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.REPORT_PRODUCT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE_BASE
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST
@@ -330,6 +331,7 @@ object DeeplinkDFMapper : CoroutineScope {
                         || it.startsWith(ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE)
             }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.POWER_MERCHANT }))
             add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.SHOP_SETTINGS }))
+            add(DFP({ it.startsWithPattern(SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID) }, DF_MERCHANT_SELLER, R.string.merchant_seller))
             add(DFP({
                 it.startsWith(TOPADS_DASHBOARD_CUSTOMER) || it.startsWith(TOPADS_DASHBOARD_INTERNAL)
             }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.TOP_ADS_DASHBOARD }))
@@ -351,7 +353,6 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWithPattern(SHOP_NOTE) ||
                         it.startsWithPattern(SHOP_INFO) ||
                         it.startsWithPattern(SHOP_HOME) ||
-                        it.startsWithPattern(SHOP_SETTINGS_CUSTOMER_APP) ||
                         it.startsWith(SHOP_SETTINGS_NOTE)
             }, DF_BASE, R.string.title_shop_page))
             add(DFP({
@@ -643,7 +644,6 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWithPattern(SHOP_NOTE) ||
                         it.startsWithPattern(SHOP_INFO) ||
                         it.startsWithPattern(SHOP_HOME) ||
-                        it.startsWithPattern(SHOP_SETTINGS_CUSTOMER_APP) ||
                         it.startsWith(SHOP_SETTINGS_NOTE)
             }, DF_BASE_SELLER_APP, R.string.title_shop_page))
             add(DFP({ it.startsWith(MERCHANT_STATISTIC_DASHBOARD) }, DF_BASE_SELLER_APP, R.string.title_statistic))
