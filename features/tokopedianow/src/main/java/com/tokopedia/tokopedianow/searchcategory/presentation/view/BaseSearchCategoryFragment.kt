@@ -10,9 +10,7 @@ import android.view.ViewGroup
 import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE
@@ -624,6 +622,8 @@ abstract class BaseSearchCategoryFragment:
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         getViewModel().onViewUpdateCartItems(miniCartSimplifiedData)
+        val registery = LifecycleRegistry(this)
+        registery.markState(Lifecycle.State.RESUMED)
     }
 
     private fun updateMiniCartWidgetVisibility(isVisible: Boolean?) {
