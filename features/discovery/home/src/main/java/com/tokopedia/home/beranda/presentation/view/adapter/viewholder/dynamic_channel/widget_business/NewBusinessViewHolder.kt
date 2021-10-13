@@ -80,7 +80,6 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
 
     init {
         tabLayout.tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
-        tabLayout.background = ContextCompat.getDrawable(tabLayout.context, R.drawable.bg_tabs_design_team)
         viewPager.isUserInputEnabled = false
         viewPager.adapter = adapterBusinessWidget
         errorBuWidget.title?.text = itemView.context.getString(R.string.widget_gagal_ditampilkan)
