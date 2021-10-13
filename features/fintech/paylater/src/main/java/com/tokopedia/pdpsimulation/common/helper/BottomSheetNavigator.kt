@@ -8,22 +8,38 @@ import com.tokopedia.pdpsimulation.creditcard.presentation.registration.bottomsh
 import com.tokopedia.pdpsimulation.creditcard.presentation.simulation.bottomsheet.CreditCardAvailableBanksBottomSheet
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterActionStepsBottomSheet
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterFaqBottomSheet
+import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterTokopediaGopayBottomsheet
 
 
 class BottomSheetNavigator(val childFragmentManager: FragmentManager) {
 
-    fun <T : Any> showBottomSheet(modelClass: Class<T>, bundle: Bundle, pdpSimulationCallback: PdpSimulationCallback, productUrl: String) {
+    fun <T : Any> showBottomSheet(
+        modelClass: Class<T>,
+        bundle: Bundle,
+        pdpSimulationCallback: PdpSimulationCallback,
+        productUrl: String
+    ) {
         when {
 
 
             modelClass.isAssignableFrom(PayLaterActionStepsBottomSheet::class.java) -> {
                 bundle.putString(PayLaterActionStepsBottomSheet.PRODUCT_URL, productUrl)
-                PayLaterActionStepsBottomSheet.show(bundle, pdpSimulationCallback, childFragmentManager)
+                PayLaterActionStepsBottomSheet.show(
+                    bundle,
+                    pdpSimulationCallback,
+                    childFragmentManager
+                )
             }
 
-
             modelClass.isAssignableFrom(PayLaterFaqBottomSheet::class.java) ->
-                PayLaterFaqBottomSheet.show(bundle,pdpSimulationCallback, childFragmentManager)
+                PayLaterFaqBottomSheet.show(bundle, pdpSimulationCallback, childFragmentManager)
+
+            modelClass.isAssignableFrom(PayLaterTokopediaGopayBottomsheet::class.java) ->
+                PayLaterTokopediaGopayBottomsheet.show(
+                    bundle,
+                    pdpSimulationCallback,
+                    childFragmentManager
+                )
 
             modelClass.isAssignableFrom(CreditCardsListBottomSheet::class.java) ->
                 CreditCardsListBottomSheet.show(bundle, pdpSimulationCallback, childFragmentManager)
