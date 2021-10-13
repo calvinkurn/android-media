@@ -49,7 +49,31 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
     private var page: DigitalRecommendationPage? = null
 
     private lateinit var adapter: DigitalRecommendationAdapter
-    private lateinit var observer: Observer<Result<DigitalRecommendationModel>>
+    private val observer: Observer<Result<DigitalRecommendationModel>> =
+            Observer<Result<DigitalRecommendationModel>> {
+                when (it) {
+                    is Success -> {
+                        hideLoading()
+                        additionalTrackingData?.userType = it.data.userType
+
+                        if (!::adapter.isInitialized) {
+                            adapter = DigitalRecommendationAdapter(it.data.items, this@DigitalRecommendationWidget)
+                        }
+
+                        with(binding) {
+                            tgDigitalRecommendationTitle.show()
+                            rvDigitalRecommendation.layoutManager = LinearLayoutManager(context,
+                                    LinearLayoutManager.HORIZONTAL, false)
+                            rvDigitalRecommendation.adapter = adapter
+                            rvDigitalRecommendation.show()
+                        }
+                    }
+                    is Fail -> {
+                        binding.root.hide()
+                        listener?.onFetchFailed(it.throwable)
+                    }
+                }
+            }
 
     init {
         showLoading()
@@ -120,30 +144,6 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         }
 
         digitalRecommendationAnalytics = DigitalRecommendationAnalytics()
-        observer = Observer<Result<DigitalRecommendationModel>> {
-            when (it) {
-                is Success -> {
-                    hideLoading()
-                    additionalTrackingData?.userType = it.data.userType
-
-                    if (!::adapter.isInitialized) {
-                        adapter = DigitalRecommendationAdapter(it.data.items, this@DigitalRecommendationWidget)
-                    }
-
-                    with(binding) {
-                        tgDigitalRecommendationTitle.show()
-                        rvDigitalRecommendation.layoutManager = LinearLayoutManager(context,
-                                LinearLayoutManager.HORIZONTAL, false)
-                        rvDigitalRecommendation.adapter = adapter
-                        rvDigitalRecommendation.show()
-                    }
-                }
-                is Fail -> {
-                    binding.root.hide()
-                    listener?.onFetchFailed(it.throwable)
-                }
-            }
-        }
 
         showLoading()
         observeLivedata()
