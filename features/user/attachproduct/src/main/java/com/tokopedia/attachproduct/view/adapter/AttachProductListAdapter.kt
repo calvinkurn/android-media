@@ -22,17 +22,6 @@ class AttachProductListAdapter(private val baseListAdapterTypeFactory: AttachPro
         return super.getData()
     }
 
-    override fun onCreateViewItem(parent: ViewGroup?, viewType: Int): View {
-        return when (viewType) {
-            AttachProductListItemViewHolder.LAYOUT -> {
-                ItemProductAttachBinding.inflate(LayoutInflater.from(parent!!.context), parent, false).root
-            }
-            else -> {
-                LayoutInflater.from(parent!!.context).inflate(viewType, parent, false)
-            }
-        }
-    }
-
     override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int) {
         super.onBindViewHolder(holder, position)
         if (holder is BaseCheckableViewHolder<*>) {
