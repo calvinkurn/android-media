@@ -1,6 +1,5 @@
 package com.tokopedia.tokopedianow.home.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -208,7 +207,6 @@ class TokoNowHomeViewModel @Inject constructor(
             launchCatchError(block = {
                 showProgressBar()
 
-                Log.e("tokonowLog", "start load more")
                 val warehouseId = localCacheModel?.warehouse_id.orEmpty()
                 val homeLayoutResponse = getHomeLayoutDataUseCase.execute(
                     token = channelToken,
