@@ -115,14 +115,15 @@ object TopadsFeedXMapper {
                 appLink = applinks,
                 mediaUrl = image.m_url,
                 tagging = arrayListOf(FeedXMediaTagging(index,0.5f,0.5f,mediaIndex = index)),
-                isImageImpressedFirst = false,
+                isImageImpressedFirst = true,
                 productName = name,
                 price = product.priceFormat,
                 slashedPrice = product.campaign.originalPrice,
                 discountPercentage = if (product.campaign.discountPercentage != 0) "${product.campaign.discountPercentage}%" else "",
                 isCashback = isProductCashback,
                 variant = variant,
-                cashBackFmt = cashback
+                cashBackFmt = cashback,
+                imageView = null,
             )
         }
     }

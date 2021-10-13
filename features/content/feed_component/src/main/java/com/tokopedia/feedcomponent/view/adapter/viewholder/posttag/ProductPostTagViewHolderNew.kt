@@ -14,6 +14,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewMode
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
@@ -40,6 +41,9 @@ class ProductPostTagViewHolderNew(
     private lateinit var star: IconUnify
     private lateinit var menuBtn: IconUnify
     private lateinit var card: CardUnify
+    private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
+        TopAdsUrlHitter(mainView.context)
+    }
 
     override fun bind(item: ProductPostTagViewModelNew) {
         productLayout = itemView.findViewById(R.id.productLayout)
@@ -76,14 +80,22 @@ class ProductPostTagViewHolderNew(
         productImage.setImageUrl(item.imgUrl)
         productName.text = item.text
 
-        card.setOnClickListener(
+        card.setOnClickListener {
             getItemClickNavigationListener(
-                listener,
-                item.positionInFeed,
-                item.product,
-                adapterPosition
+                    listener,
+                    item.positionInFeed,
+                    item.product,
+                    adapterPosition
             )
-        )
+            topAdsUrlHitter.hitClickUrl(
+                    this::class.java.simpleName,
+                    item.adClickUrl,
+                    "",
+                    "",
+                    "",
+                    ""
+            )
+        }
         menuBtn.setOnClickListener {
             listener.onBottomSheetMenuClicked(item, mainView.context)
         }

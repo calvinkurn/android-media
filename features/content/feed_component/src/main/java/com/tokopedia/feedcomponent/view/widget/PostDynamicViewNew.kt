@@ -70,6 +70,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
+import android.graphics.Paint
+
+
+
 
 
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
@@ -336,6 +340,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     false
 
                 )
+                sendHeaderTopadsEvent(positionInFeed,author.appLink,cpmData,true)
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -384,9 +389,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
         shopName.movementMethod = LinkMovementMethod.getInstance()
         followers.transitionFollow = false
 
-        shopName.setOnClickListener {
-            sendHeaderTopadsEvent(positionInFeed, author.appLink, cpmData, true)
-        }
         shopBadge.setOnClickListener {
             sendHeaderTopadsEvent(positionInFeed, author.appLink, cpmData, true)
         }
@@ -856,7 +858,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     topAdsProductName.weightType = Typography.REGULAR
                                     topAdsProductName.displayTextOrHide(feedMedia.productName)
                                     textViewPrice.displayTextOrHide(feedMedia.price)
-                                    textViewSlashedPrice.displayTextOrHide(feedMedia.slashedPrice)
+                                    if (feedMedia.slashedPrice.isNotEmpty()) {
+                                        textViewSlashedPrice.show()
+                                        textViewSlashedPrice.text = feedMedia.slashedPrice
+                                        textViewSlashedPrice.paintFlags = textViewSlashedPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                                    }
                                     if (feedMedia.discountPercentage.isNotEmpty()) {
                                         labelDiscount.show()
                                         labelDiscount.text = feedMedia.discountPercentage

@@ -10,7 +10,6 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE_NEW
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder.Companion.PAYLOAD_POST_VISIBLE
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
@@ -23,9 +22,9 @@ import java.util.*
 object FeedScrollListenerNew {
     private const val THRESHOLD_VIDEO_HEIGHT_SHOWN = 90
     private const val TOTAL_VIDEO_HEIGHT_PERCENT = 100
+    private const val PAYLOAD_POST_TOPADS_VISIBLE= 77
     private const val TYPE_VIDEO = "video"
     fun  onFeedScrolled(recyclerView: RecyclerView, list: List<Visitable<*>>) {
-        //true
         if (canAutoplayVideo(recyclerView)) {
             val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
             val firstPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
@@ -76,11 +75,10 @@ object FeedScrollListenerNew {
             percentVideo = visibleVideo * TOTAL_VIDEO_HEIGHT_PERCENT / imageView.height
 
             val isStateChanged: Boolean = percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN
-
             if (isStateChanged && item.isImageImpressedFirst) {
                 item.isImageImpressedFirst = false
                 Objects.requireNonNull(recyclerView.adapter)
-                    .notifyItemChanged(i, PAYLOAD_POST_VISIBLE)
+                    .notifyItemChanged(i, PAYLOAD_POST_TOPADS_VISIBLE)
             }
             if(percentVideo <= 0)
                 item.isImageImpressedFirst = true

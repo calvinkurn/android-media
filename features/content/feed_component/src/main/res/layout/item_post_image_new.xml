@@ -150,6 +150,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/product_card_label_discount_height"
             android:layout_marginStart="@dimen/spacing_lvl3"
+            app:layout_goneMarginStart="@dimen/dp_8"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"

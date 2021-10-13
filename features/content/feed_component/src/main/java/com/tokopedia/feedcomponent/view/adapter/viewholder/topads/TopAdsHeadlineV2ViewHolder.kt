@@ -6,6 +6,7 @@ import android.widget.ViewFlipper
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
@@ -21,8 +22,8 @@ import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
 
-const val TOPADS_VARIANT_EXPERIMENT_CLEAN = 1
-const val TOPADS_VARIANT_EXPERIMENT_INFO = 2
+const val TOPADS_VARIANT_EXPERIMENT_CLEAN = 2
+const val TOPADS_VARIANT_EXPERIMENT_INFO = 3
 
 open class TopAdsHeadlineV2ViewHolder(
     view: View, private val userSession: UserSessionInterface,
@@ -44,6 +45,8 @@ open class TopAdsHeadlineV2ViewHolder(
         val LAYOUT = R.layout.item_topads_headline_container
         const val SHOW_SHIMMER = 0
         const val VARIANT_EXPERIMENT = 1
+        const val PAYLOAD_ANIMATE_FOLLOW = 7
+        const val PAYLOAD_POST_VISIBLE = 77
     }
 
     init {
@@ -70,7 +73,8 @@ open class TopAdsHeadlineV2ViewHolder(
     private fun onSuccessResponse(cpmModel: CpmModel) {
         topadsHeadlineUiModel?.run {
             this.cpmModel = cpmModel
-            this.feedXCard = cpmModelToFeedXDataModel(impressHolder,cpmModel)
+            val layoutType = cpmModel?.data?.firstOrNull()?.cpm?.layout
+            this.feedXCard = cpmModelToFeedXDataModel(impressHolder,cpmModel,layoutType?:0)
             showHeadlineView(cpmModel)
         }
     }
@@ -82,6 +86,20 @@ open class TopAdsHeadlineV2ViewHolder(
         params.width = 0
         this.itemView.layoutParams = params
         hideTopadsView()
+    }
+
+    override fun bind(element: TopadsHeadLineV2Model?, payloads: MutableList<Any>) {
+        if (element == null) {
+            itemView.hide()
+            return
+        }
+        when (payloads.firstOrNull() as Int) {
+            PAYLOAD_POST_VISIBLE -> topadsPostDynamic.bindImage(
+                    element.feedXCard.tags,
+                    element.feedXCard.media[0]
+            )
+            PAYLOAD_ANIMATE_FOLLOW -> topadsPostDynamic.bindFollow(element.feedXCard)
+        }
     }
 
     override fun bind(element: TopadsHeadLineV2Model?) {
@@ -108,7 +126,7 @@ open class TopAdsHeadlineV2ViewHolder(
                     videoViewListener,
                     adapterPosition,
                     userSession,
-                    cpmModelToFeedXDataModel(impressHolder ?: ImpressHolder(), it, layoutType),
+                    this.topadsHeadlineUiModel?.feedXCard?: FeedXCard(),
                     imagePostListener, topAdsHeadlineListener
                 )
             }

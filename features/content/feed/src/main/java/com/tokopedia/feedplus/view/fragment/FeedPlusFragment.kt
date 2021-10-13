@@ -66,6 +66,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineListener
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineV2ViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
@@ -1003,10 +1004,17 @@ class FeedPlusFragment : BaseDaggerFragment(),
         val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
         for (i in firstPosition..lastPosition) {
             val item = getCardViewModel(adapter.getList(), i)
+            val topadsItem = getTopadsCardViewModel(adapter.getList(),i)
             if (isImageCard(adapter.getList(), i)) {
                 if (item != null) {
                     Objects.requireNonNull(adapter)
                         .notifyItemChanged(i, DynamicPostNewViewHolder.PAYLOAD_POST_VISIBLE)
+                }
+            }
+            else if (isTopadsImageCard(adapter.getList(), i)) {
+                if (topadsItem != null) {
+                    Objects.requireNonNull(adapter)
+                            .notifyItemChanged(i, TopAdsHeadlineV2ViewHolder.PAYLOAD_POST_VISIBLE)
                 }
             }
         }
@@ -1025,6 +1033,26 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (position >= 0 && list.size > position && list[position] is DynamicPostUiModel) {
             val item = (list[position] as DynamicPostUiModel).feedXCard
             return (item.typename == TYPE_FEED_X_CARD_POST
+                    && (item.media.isNotEmpty()
+                    && (item.media.find { it.type == TYPE_IMAGE } != null)))
+        }
+        return false
+    }
+
+    private fun getTopadsCardViewModel(list: List<Visitable<*>>, position: Int): FeedXMedia? {
+        try {
+            return (list[position] as TopadsHeadLineV2Model).feedXCard.media.firstOrNull()
+        } catch (e: Exception) {
+            Timber.d(e.localizedMessage)
+        }
+        return null
+    }
+
+    private fun isTopadsImageCard(list: List<Visitable<*>>, position: Int): Boolean {
+
+        if (position >= 0 && list.size > position && list[position] is TopadsHeadLineV2Model) {
+            val item = (list[position] as TopadsHeadLineV2Model).feedXCard
+            return (item.typename == TYPE_TOPADS_HEADLINE_NEW
                     && (item.media.isNotEmpty()
                     && (item.media.find { it.type == TYPE_IMAGE } != null)))
         }
@@ -2688,23 +2716,25 @@ class FeedPlusFragment : BaseDaggerFragment(),
             }
 
             if (adapter.getlist()[rowNumber] is TopadsHeadLineV2Model) {
-                val topadsHeadlineUiModel = adapter.getlist()[rowNumber] as TopadsHeadLineV2Model
-                topadsHeadlineUiModel.cpmModel?.data?.firstOrNull()?.cpm?.cpmShop?.isFollowed?.let {
-                    topadsHeadlineUiModel.cpmModel?.data?.firstOrNull()?.cpm?.cpmShop?.isFollowed =
-                        !it
-                }
-                val isFollowed = topadsHeadlineUiModel.cpmModel?.data?.firstOrNull()?.cpm?.cpmShop?.isFollowed
-                val id  = topadsHeadlineUiModel.cpmModel?.data?.get(0)?.id?:""
-                if (isFollowed != null) {
-                    feedAnalytics.eventClickFollowitem(
-                            id,
-                            adapterPosition,
-                            TYPE_TOPADS_HEADLINE_NEW,
-                            !isFollowed,
-                            id
-                    )
-                }
-                adapter.notifyItemChanged(rowNumber)
+
+                val item = (adapter.getlist()[rowNumber] as TopadsHeadLineV2Model)
+                item.feedXCard.followers.isFollowed = !item.feedXCard.followers.isFollowed
+
+                feedAnalytics.eventClickFollowitem(
+                        item.feedXCard.id,
+                        adapterPosition,
+                        item.feedXCard.typename,
+                        !item.feedXCard.followers.isFollowed,
+                        item.feedXCard.author.id
+                )
+
+                if (item.feedXCard.followers.isFollowed)
+                    item.feedXCard.followers.transitionFollow = true
+
+                adapter.notifyItemChanged(
+                        rowNumber,
+                        TopAdsHeadlineV2ViewHolder.PAYLOAD_ANIMATE_FOLLOW
+                )
             }
         }
     }
