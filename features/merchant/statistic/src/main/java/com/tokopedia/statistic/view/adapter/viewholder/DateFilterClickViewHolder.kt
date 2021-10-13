@@ -7,15 +7,15 @@ import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
+import com.tokopedia.statistic.databinding.ItemStcDateRangeClickBinding
 import com.tokopedia.statistic.view.model.DateFilterItem
-import kotlinx.android.synthetic.main.item_stc_date_range_click.view.*
 
 /**
  * Created By @ilhamsuaib on 15/06/20
  */
 
 class DateFilterClickViewHolder(
-    itemView: View?,
+    itemView: View,
     private val onClick: (DateFilterItem) -> Unit
 ) : AbstractViewHolder<DateFilterItem.Click>(itemView) {
 
@@ -24,9 +24,13 @@ class DateFilterClickViewHolder(
         val RES_LAYOUT = R.layout.item_stc_date_range_click
     }
 
+    private val binding by lazy {
+        ItemStcDateRangeClickBinding.bind(itemView)
+    }
+
     override fun bind(element: DateFilterItem.Click) {
-        with(itemView) {
-            setBackgroundColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        with(binding) {
+            root.setBackgroundColor(root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
 
             tvStcDateRangeLabel.text = element.label
             tvStcDefaultDateRange.text =
@@ -36,7 +40,7 @@ class DateFilterClickViewHolder(
                 setOnSelected(element)
             }
 
-            setOnClickListener {
+            root.setOnClickListener {
                 setOnSelected(element)
             }
 
