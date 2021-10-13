@@ -54,8 +54,7 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val config: RemoteConfig = FirebaseRemoteConfigImpl(context)
-        val shouldShowNewContentCreationFlow = config.getBoolean(RemoteConfigKey.ENABLE_NEW_CONTENT_CREATION_FLOW, true)
+        val shouldShowNewContentCreationFlow = enableContentCreationNewFlow()
         report.showWithCondition(!canBeDeleted && isReportable)
         follow.showWithCondition(!canBeDeleted && canBeUnFollow)
         delete.showWithCondition(canBeDeleted)
@@ -114,5 +113,9 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
             if (!dismissedByClosing)
                 onDismiss?.invoke()
         }
+    }
+    private fun enableContentCreationNewFlow(): Boolean {
+        val config: RemoteConfig = FirebaseRemoteConfigImpl(context)
+        return config.getBoolean(RemoteConfigKey.ENABLE_NEW_CONTENT_CREATION_FLOW, true)
     }
 }

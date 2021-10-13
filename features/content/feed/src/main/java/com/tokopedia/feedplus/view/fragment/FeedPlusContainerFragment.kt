@@ -452,9 +452,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                             listener = {
                                 fab_feed.menuOpen = false
                                 entryPointAnalytic.clickCreatePostEntryPoint()
-                                val config: RemoteConfig = FirebaseRemoteConfigImpl(context)
-                                val shouldShowNewContentCreationFlow = config.getBoolean(RemoteConfigKey.ENABLE_NEW_CONTENT_CREATION_FLOW, true)
-                                if (shouldShowNewContentCreationFlow) {
+                                val shouldShowNewContentCreationFlow = enableContentCreationNewFlow()
+                                 if (shouldShowNewContentCreationFlow) {
                                     val authors = viewModel.feedContentForm.authors
                                     val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
                                     intent.putExtra(APPLINK_AFTER_CAMERA_CAPTURE,
@@ -487,6 +486,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             fab_feed.hide()
         }
     }
+
+    private fun enableContentCreationNewFlow(): Boolean {
+        val config: RemoteConfig = FirebaseRemoteConfigImpl(context)
+        return config.getBoolean(RemoteConfigKey.ENABLE_NEW_CONTENT_CREATION_FLOW, true)
+    }
+
 
     private fun setViewPager() {
         view_pager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
