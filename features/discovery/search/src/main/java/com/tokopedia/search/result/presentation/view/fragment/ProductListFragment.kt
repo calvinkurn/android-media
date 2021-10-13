@@ -114,6 +114,7 @@ import com.tokopedia.filter.common.helper.getFilterParams
 import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.filter.common.helper.getSortFilterParamsString
 import com.tokopedia.filter.common.helper.isSortHasDefaultValue
+import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.utils.removeQuickFilterElevation
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -154,7 +155,8 @@ class ProductListFragment: BaseDaggerFragment(),
         SearchNavigationClickListener,
         TopAdsImageViewListener,
         ChooseAddressListener,
-        BannerListener {
+        BannerListener,
+        LastFilterListener {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -353,6 +355,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 topAdsImageViewListener = this,
                 chooseAddressListener = this,
                 bannerListener = this,
+                lastFilterListener = this,
                 topAdsConfig = topAdsConfig,
         )
 

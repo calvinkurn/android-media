@@ -13,7 +13,6 @@ class LastFilterDataView(
 
     fun optionNames(): String = filterList.joinToString { it.name }
 
-    override fun type(typeFactory: ProductListTypeFactory?): Int {
-        return 0
-    }
+    override fun type(typeFactory: ProductListTypeFactory?) =
+        typeFactory?.type(this) ?: 0
 }
