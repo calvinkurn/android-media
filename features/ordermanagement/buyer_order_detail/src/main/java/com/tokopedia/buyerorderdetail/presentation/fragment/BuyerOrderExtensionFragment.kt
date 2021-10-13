@@ -81,7 +81,7 @@ class BuyerOrderExtensionFragment : BaseDaggerFragment() {
     private fun loadRespondInfo() {
         val orderId = arguments?.getString(ApplinkConstInternalOrder.PARAM_ORDER_ID).orEmpty()
         binding?.loaderBuyerOrderExtension?.show()
-        buyerOrderDetailExtensionViewModel.requestRespond(orderId)
+        buyerOrderDetailExtensionViewModel.requestRespondInfo(orderId)
     }
 
     private fun observeRespondInfo() {
