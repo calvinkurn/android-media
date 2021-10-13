@@ -100,6 +100,9 @@
     <!-- Review Shop -->
     <string name="title_review_shop">Review Shop</string>
 
+    <!-- Feed Shop -->
+    <string name="title_feed_shop">Feed Shop</string>
+
     <!-- Statistic -->
     <string name="title_statistic">Statistic</string>
 

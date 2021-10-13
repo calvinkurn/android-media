@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.FragmentConst.DF_INSTALLER_FRAGMENT_CLASS_PATH
+import com.tokopedia.applink.FragmentConst.FEED_SHOP_FRAGMENT
 import com.tokopedia.applink.FragmentConst.REVIEW_SHOP_FRAGMENT
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
@@ -39,6 +40,12 @@ object FragmentDFMapper {
                     DeeplinkDFMapper.DF_BASE,
                     R.string.title_review_shop
             ))
+
+            add(FragmentDFPattern(
+                    {it == FEED_SHOP_FRAGMENT},
+                    DeeplinkDFMapper.DF_BASE,
+                    R.string.title_feed_shop
+            ))
         }
     }
 
@@ -57,6 +64,12 @@ object FragmentDFMapper {
                     {it == REVIEW_SHOP_FRAGMENT},
                     DeeplinkDFMapper.DF_BASE_SELLER_APP,
                     R.string.title_review_shop
+            ))
+
+            add(FragmentDFPattern(
+                    {it == FEED_SHOP_FRAGMENT},
+                    DeeplinkDFMapper.DF_BASE_SELLER_APP,
+                    R.string.title_feed_shop
             ))
         }
     }
