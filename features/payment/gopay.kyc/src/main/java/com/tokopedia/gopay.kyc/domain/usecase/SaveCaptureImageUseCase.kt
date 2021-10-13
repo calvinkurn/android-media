@@ -3,11 +3,8 @@ package com.tokopedia.gopay.kyc.domain.usecase
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import com.otaliastudios.cameraview.CameraUtils
-import com.otaliastudios.cameraview.controls.Facing
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.gopay.kyc.domain.data.CameraImageResult
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -24,57 +21,33 @@ class SaveCaptureImageUseCase @Inject constructor(
             onSuccess: (CameraImageResult) -> Unit,
             onError: (Throwable) -> Unit,
             imageByte: ByteArray,
-            ordinal: Int
     ) {
         useCaseRequestParams = RequestParams().apply {
             putObject(PARAM_IMAGE, imageByte)
-            putObject(PARAM_IMAGE_PROPERTIES, ordinal)
         }
         execute({ onSuccess(it) }, { onError(it) }, useCaseRequestParams)
     }
 
     override suspend fun executeOnBackground(): CameraImageResult {
         val imageByte = (useCaseRequestParams.getObject(PARAM_IMAGE) as ByteArray)
-        val facingOrdinal = (useCaseRequestParams.getObject(PARAM_IMAGE_PROPERTIES) as Int)
-        return generateImage(imageByte, facingOrdinal)
+        return generateImage(imageByte)
     }
 
-    private fun generateImage(imageByte: ByteArray, ordinal: Int): CameraImageResult {
-        val compressedBitmap = CameraUtils.decodeBitmap(imageByte, 1280, 1280)
-        val cameraResultFile = saveToCacheDirectory(compressedBitmap)
-        val finalBitmap = cameraResultFile?.let { onSuccessImageTakenFromCamera(it, ordinal) }
+    private fun generateImage(imageByte: ByteArray): CameraImageResult {
+        val compressedBitmap = CameraUtils.decodeBitmap(imageByte, MAX_IMAGE_DIMENSION, MAX_IMAGE_DIMENSION)
+        val compressedByteArray = bitmapToByteArray(compressedBitmap)
+        val cameraResultFile = saveToCacheDirectory(compressedByteArray)
         return CameraImageResult(
-                finalBitmap?.width ?: 0,
-                finalBitmap?.height ?: 0,
+                compressedBitmap?.width ?: 0,
+                compressedBitmap?.height ?: 0,
                 cameraResultFile?.absolutePath,
-                ArrayList(bitmapToByte(finalBitmap))
+                ArrayList(compressedByteArray.toList())
         )
     }
 
-    private fun onSuccessImageTakenFromCamera(imageFile: File, ordinal: Int): Bitmap? {
-        val file = File(imageFile.absolutePath)
-        if (file.exists()) {
-            val myBitmap = BitmapFactory.decodeFile(file.absolutePath)
-            return flipBitmapByOrdinal(myBitmap, ordinal)
-        }
-        return null
-    }
-
-    private fun flipBitmapByOrdinal(bitmap: Bitmap?, ordinal: Int): Bitmap? {
-        bitmap?.let {
-            return if (ordinal == Facing.FRONT.ordinal) {
-                val flippedBitmap = ImageHandler.flip(bitmap, true, false)
-                bitmap.recycle()
-                flippedBitmap
-            } else bitmap
-        }
-        return null
-    }
-
-    private fun saveToCacheDirectory(bitmap: Bitmap?): File? {
+    private fun saveToCacheDirectory(byteArray: ByteArray): File? {
         var out: FileOutputStream? = null
         return try {
-            val byteArray = bitmapToByteArray(bitmap)
             val file = getFileLocationFromDirectory()
             out = FileOutputStream(file)
             out.write(byteArray)
@@ -86,27 +59,6 @@ class SaveCaptureImageUseCase @Inject constructor(
                 out.flush()
                 out.close()
             }
-        }
-    }
-
-    private fun getFileLocationFromDirectory(): File {
-        val directory = ContextWrapper(context).getDir(FOLDER_NAME, Context.MODE_PRIVATE)
-        if (!directory.exists()) directory.mkdir()
-        val imageName = System.currentTimeMillis().toString() + FILE_EXTENSIONS
-        return File(directory.absolutePath, imageName)
-    }
-
-    private fun bitmapToByte(bitmap: Bitmap?): List<Byte> {
-        try {
-            val stream = ByteArrayOutputStream()
-            bitmap?.compress(
-                    Bitmap.CompressFormat.JPEG,
-                    IMAGE_QUALITY,
-                    stream
-            )
-            return stream.toByteArray().toList()
-        } finally {
-            bitmap?.recycle()
         }
     }
 
@@ -124,11 +76,18 @@ class SaveCaptureImageUseCase @Inject constructor(
         }
     }
 
+    private fun getFileLocationFromDirectory(): File {
+        val directory = ContextWrapper(context).getDir(FOLDER_NAME, Context.MODE_PRIVATE)
+        if (!directory.exists()) directory.mkdir()
+        val imageName = System.currentTimeMillis().toString() + FILE_EXTENSIONS
+        return File(directory.absolutePath, imageName)
+    }
+
     companion object {
         const val PARAM_IMAGE = "byte array"
-        const val PARAM_IMAGE_PROPERTIES = "image properties"
         const val FOLDER_NAME = "extras"
         const val FILE_EXTENSIONS = ".jpg"
         const val IMAGE_QUALITY = 100
+        const val MAX_IMAGE_DIMENSION = 1280
     }
 }

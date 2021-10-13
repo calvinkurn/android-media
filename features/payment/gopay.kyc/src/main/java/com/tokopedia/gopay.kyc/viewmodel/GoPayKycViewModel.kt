@@ -30,17 +30,12 @@ class GoPayKycViewModel @Inject constructor(
 
     fun getCapturedImagePath() = cameraImageResultLiveData.value?.finalCameraResultPath ?: ""
 
-    fun processAndSaveImage(
-        imageByte: ByteArray?,
-        captureWidth: Int,
-        captureHeight: Int,
-        ordinal: Int
-    ) {
+    fun processAndSaveImage(imageByte: ByteArray?) {
         imageByte?.let {
             saveCaptureImageUseCase.parseAndSaveCapture(
                     ::onSaveSuccess,
                     ::onSaveError,
-                    imageByte, ordinal
+                    imageByte
             )
         } ?: kotlin.run {  onSaveError(NullPointerException("Empty Data byte")) }
 

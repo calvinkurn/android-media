@@ -131,12 +131,7 @@ abstract class GoPayKycBaseCameraFragment : GoPayKycBaseFragment() {
     private fun generateImage(data: ByteArray?) {
         if (mCaptureNativeSize == null)
             mCaptureNativeSize = cameraView?.pictureSize
-            viewModel.processAndSaveImage(
-                data,
-                mCaptureNativeSize?.width ?: -1,
-                mCaptureNativeSize?.height ?: -1,
-                cameraView?.facing?.ordinal ?: 1
-            )
+            viewModel.processAndSaveImage(data)
     }
 
     private fun reInitCamera() {
