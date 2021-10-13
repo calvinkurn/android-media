@@ -14,6 +14,7 @@ import com.tokopedia.logger.utils.globalScopeLaunch
 import com.tokopedia.loginregister.login.data.SignResult
 import com.tokopedia.loginregister.login.domain.RegisterPushNotificationParamsModel
 import com.tokopedia.loginregister.login.domain.RegisterPushNotificationUseCase
+import com.tokopedia.loginregister.login.domain.pojo.RegisterPushNotifData
 import com.tokopedia.loginregister.registerpushnotif.di.DaggerRegisterPushNotificationComponent
 import com.tokopedia.loginregister.registerpushnotif.di.RegisterPushNotificationModule
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -54,8 +55,16 @@ class RegisterPushNotificationWorker(
         return withContext(Dispatchers.IO) {
             val result: Result = try {
                 if (userSession.isLoggedIn) {
-                    registerPushNotification()
-                    Result.success()
+                    val response = registerPushNotification()
+                    if (response?.isSuccess == true) {
+                        Result.success()
+                    } else {
+                        recordLog(LOG_TYPE_DO_WORK,
+                            "retry count = $runAttemptCount",
+                            Throwable(response?.errorMessage))
+
+                        Result.failure()
+                    }
                 } else {
                     Result.failure()
                 }
@@ -68,19 +77,20 @@ class RegisterPushNotificationWorker(
         }
     }
 
-    private suspend fun registerPushNotification() {
+    private suspend fun registerPushNotification(): RegisterPushNotifData? {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             generateKey()
             if (keyPair != null) {
                 signData(userSession.userId.orEmpty(), userSession.deviceId.orEmpty()).let {
-                    registerPushNotificationUseCase(RegisterPushNotificationParamsModel(
+                    return registerPushNotificationUseCase(RegisterPushNotificationParamsModel(
                         publicKey = it.publicKey,
                         signature = it.signature,
                         datetime = it.datetime
-                    ))
+                    )).data
                 }
             }
         }
+        return null
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
