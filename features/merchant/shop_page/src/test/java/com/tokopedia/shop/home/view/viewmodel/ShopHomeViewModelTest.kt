@@ -15,8 +15,6 @@ import com.tokopedia.mvcwidget.ResultStatus
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
-import com.tokopedia.play.widget.data.PlayWidget
-import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
