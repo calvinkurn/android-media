@@ -71,8 +71,11 @@ class EventSearchViewModel @Inject constructor(private val dispatcher: Coroutine
                     }
                 },
                 onError = {
-                        errorReport.value = it
-                        isItRefreshing.value = false
+                        //https://pl.kotl.in/ufZRQSa7o
+                        if (it !is CancellationException){
+                            errorReport.value = it
+                            isItRefreshing.value = false
+                        }
                 }
         )
     }
