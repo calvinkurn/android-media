@@ -2275,6 +2275,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     .setLocalCacheModel(localCacheModel)
             )
             chooseAddressWidgetInitialized = false
+            getHomeViewModel().refresh(forceRefresh = true)
         }
     }
 
