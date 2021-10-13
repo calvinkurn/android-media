@@ -9,4 +9,5 @@ interface HomeTypeFactory {
     fun type(uiModel: HomeLoadingStateUiModel): Int
     fun type(uiModel: HomeSharingEducationWidgetUiModel): Int
     fun type(uiModel: HomeEducationalInformationWidgetUiModel): Int
+    fun type(uiModel: HomeProgressBarUiModel): Int
 }
