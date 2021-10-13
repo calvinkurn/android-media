@@ -14,11 +14,6 @@ object ConstantKey {
 
     //ab testing
     const val AB_TEST_AUTO_TRANSITION_KEY = "auto_transition"
-    const val AB_TEST_EXP_NAME = RollenceKey.NAVIGATION_EXP_TOP_NAV
-    const val AB_TEST_EXP_NAME2 = RollenceKey.NAVIGATION_EXP_TOP_NAV2
-    const val AB_TEST_VARIANT_OLD = RollenceKey.NAVIGATION_VARIANT_OLD
-    const val AB_TEST_VARIANT_REVAMP = RollenceKey.NAVIGATION_VARIANT_REVAMP
-    const val AB_TEST_VARIANT_REVAMP2 = RollenceKey.NAVIGATION_VARIANT_REVAMP2
 
     //default value
     const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"

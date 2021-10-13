@@ -26,11 +26,6 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV2
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OLD
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP2
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking

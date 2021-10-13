@@ -46,15 +46,11 @@ internal class SearchProductCountTitleTest: ProductListPresenterTestFixtures() {
     }
 
     private fun `Given AB Test return navigation revamp`() {
-        every {
-            productListView.abTestRemoteConfig?.getString(RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD)
-        }.answers { RollenceKey.NAVIGATION_VARIANT_REVAMP }
+
     }
 
     private fun `Given AB Test return navigation revamp2`() {
-        every {
-            productListView.abTestRemoteConfig?.getString(RollenceKey.NAVIGATION_EXP_TOP_NAV2, RollenceKey.NAVIGATION_VARIANT_OLD)
-        }.answers { RollenceKey.NAVIGATION_VARIANT_REVAMP2 }
+
     }
 
     private fun `Given visitable list will be captured`() {
