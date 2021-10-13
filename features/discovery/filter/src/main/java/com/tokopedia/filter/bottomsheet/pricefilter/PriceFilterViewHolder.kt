@@ -12,7 +12,7 @@ import com.tokopedia.filter.common.helper.ChipSpacingItemDecoration
 import com.tokopedia.filter.common.helper.addItemDecorationIfNotExists
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.utils.text.currency.AfterTextWatcher
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.sort_filter_bottom_sheet_chips_layout.view.*
@@ -62,12 +62,12 @@ internal class PriceFilterViewHolder(
         }
     }
 
-    private fun TextFieldUnify.addNumberTextChangedListener(onPriceEdited: (String) -> Unit) {
-        textFieldInput.run {
+    private fun TextFieldUnify2.addNumberTextChangedListener(onPriceEdited: (String) -> Unit) {
+        editText.run {
             addTextChangedListener(object: AfterTextWatcher() {
                 override fun afterTextChanged(s: Editable) {
-                    CurrencyFormatHelper.setToRupiahCheckPrefix(textFieldInput)
-                    onPriceEdited(textFieldInput.text.toString())
+                    CurrencyFormatHelper.setToRupiahCheckPrefix(editText)
+                    onPriceEdited(editText.text.toString())
                 }
             })
         }
@@ -87,12 +87,10 @@ internal class PriceFilterViewHolder(
 
     private fun bindMinMaxPriceValue(priceFilterViewModel: PriceFilterViewModel) {
         itemView.priceFilterMinValue?.bindPriceFilterValue(
-            priceFilterViewModel.minPriceFilterTitle,
             priceFilterViewModel.minPriceFilterValue,
         )
 
         itemView.priceFilterMaxValue?.bindPriceFilterValue(
-            priceFilterViewModel.maxPriceFilterTitle,
             priceFilterViewModel.maxPriceFilterValue,
         )
     }
@@ -103,10 +101,8 @@ internal class PriceFilterViewHolder(
                 .toIntOrZero()
     }
 
-    private fun TextFieldUnify.bindPriceFilterValue(title: String, value: String) {
-        textFiedlLabelText.text = title
-
-        textFieldInput.run {
+    private fun TextFieldUnify2.bindPriceFilterValue(value: String) {
+        editText.run {
             if (value != this.text.toString()) setText(value)
 
             setOnFocusChangeListener { _, hasFocus ->

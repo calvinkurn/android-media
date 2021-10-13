@@ -77,6 +77,18 @@
         />
 
     <include
+        android:id="@+id/view_like_bubble"
+        layout="@layout/view_like_bubble"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl9"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/layout_lvl7"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/view_like"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
+        />
+
+    <include
         android:id="@+id/view_like"
         layout="@layout/view_like"
         android:layout_width="wrap_content"
@@ -201,6 +213,16 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/view_size"
         app:layout_constraintTop_toBottomOf="@id/view_toolbar"
+        />
+
+    <androidx.mediarouter.app.MediaRouteButton
+        android:id="@+id/btn_play_cast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/view_pip_control"
+        app:layout_constraintTop_toBottomOf="@id/view_toolbar"
+        app:layout_goneMarginEnd="@dimen/spacing_lvl2"
+        app:mediaRouteButtonTint="@color/Neutral_N0"
         />
 
     <include

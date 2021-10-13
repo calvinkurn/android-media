@@ -15,8 +15,6 @@ import com.tokopedia.track.interfaces.Analytics
 
 object Tracker {
 
-
-
     fun getTracker(): Analytics {
         return TrackApp.getInstance().gtm
     }
@@ -28,11 +26,13 @@ object Tracker {
         const val EVENT_LABEL = "eventLabel"
         const val USER_ID = "userId"
         const val BUSINESS_UNIT = "businessUnit"
-        const val CURRENT_SITE = "currentSite"
         const val TOKOPOINT_BUSINESSUNIT = "tokopoints"
         const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
         const val TOKOMEMBER_BUSINESSUNIT = "tokomember"
         const val PHYSICALGOODS_BUSINESSUNIT = "physical goods"
+        const val MERCHANT_COUPONLIST_SCREEN_NAME = "mvcwidget/multishopverticallist"
+        const val CURRENT_SITE = "currentSite"
+        const val ECOMMERCE = "ecommerce"
     }
 
     object Event {
@@ -41,6 +41,10 @@ object Tracker {
         const val VIEW_MV = "viewMerchantVoucherIris"
         const val VIEW_SHOP = "viewShopPageIris"
         const val CLICK_KUPON = "clickCoupon"
+        const val CLICK_PRODUCT_CARD = "click product card"
+        const val CLICK_SHOP_NAME = "click shop name"
+        const val CLICK_COUPON_TITLE = "click coupon title"
+        const val EVENT_VIEW_PROMO = "promoView"
     }
 
     object Category {
@@ -73,24 +77,24 @@ object Tracker {
         const val CLICK_LIHAT_SELENGKAPNYA = "click lihat selengkapnya"
         const val CLICK_MULAI_BELANJA = "click mulai belanja"
         const val VIEW_TOKOMEMBER = "view coupon tokomember"
+        const val VIEW_MVC_COUPON = "impression-mvc"
     }
+        object Label {
+            const val PDP_VIEW = "pdp view"
+            const val SHOP_PAGE = "shop page"
+            const val MVC_CLOSE_VIEW_SELEGKAPANYA = "mvc_closed_lihat_selengkapnya"
+            const val MVC_CLOSE_VIEW_MULAIBELANJA = "mvc_closed_mulai_belanja"
+            const val MVC_CLOSE_CEK_INFO = "mvc_closed_cek_info"
+        }
 
-    object Label {
-        const val PDP_VIEW = "pdp view"
-        const val SHOP_PAGE = "shop page"
-        const val MVC_CLOSE_VIEW_SELEGKAPANYA = "mvc_closed_lihat_selengkapnya"
-        const val MVC_CLOSE_VIEW_MULAIBELANJA = "mvc_closed_mulai_belanja"
-        const val MVC_CLOSE_CEK_INFO = "mvc_closed_cek_info"
-    }
-
-    fun fillCommonItems(map: MutableMap<String, Any>, userId: String? , businessUnit : String) {
-        map[Constants.BUSINESS_UNIT] = businessUnit
-        map[Constants.CURRENT_SITE] = Constants.TOKOPEDIA_MARKETPLACE
-        userId?.let {
-            map[Constants.USER_ID] = userId
+        fun fillCommonItems(map: MutableMap<String, Any>, userId: String?, businessUnit: String) {
+            map[Constants.BUSINESS_UNIT] = businessUnit
+            map[Constants.CURRENT_SITE] = Constants.TOKOPEDIA_MARKETPLACE
+            userId?.let {
+                map[Constants.USER_ID] = userId
+            }
         }
     }
-}
 
 @Retention(AnnotationRetention.SOURCE)
 @IntDef(DEFAULT, SHOP, PDP, REWARDS)

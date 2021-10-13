@@ -20,9 +20,9 @@ import com.tokopedia.design.touchhelper.SimpleItemTouchHelperCallback
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.Companion.ETALASE_CUSTOM
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
-import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
 import com.tokopedia.shop_showcase.common.*
+import com.tokopedia.shop_showcase.databinding.FragmentReorderShowcaseBinding
 import com.tokopedia.shop_showcase.shop_showcase_management.di.DaggerShopShowcaseManagementComponent
 import com.tokopedia.shop_showcase.shop_showcase_management.di.ShopShowcaseManagementComponent
 import com.tokopedia.shop_showcase.shop_showcase_management.di.ShopShowcaseManagementModule
@@ -57,10 +57,11 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModel: ShopShowcaseListViewModel
     lateinit var shopShowcaseFragmentNavigation: ShopShowcaseFragmentNavigation
-    private lateinit var headerUnify: HeaderUnify
-    private lateinit var headerLayout: CardView
-    private lateinit var loading: LoaderUnify
-    private lateinit var recyclerView: RecyclerView
+    private var _binding: FragmentReorderShowcaseBinding? = null
+    private var headerUnify: HeaderUnify? = null
+    private var headerLayoutReorderShowcase: CardView? = null
+    private var loader: LoaderUnify? = null
+    private var recyclerView: RecyclerView? = null
     private var layoutManager: LinearLayoutManager? = null
     private var shopShowcaseListReorderAdapter: ShopShowcaseListReorderAdapter? = null
     private var shopShowcaseListDefault: ArrayList<ShopEtalaseModel>? = null
@@ -98,17 +99,20 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_reorder_showcase, container, false)
-        headerUnify = view.findViewById(R.id.showcase_list_toolbar)
-        headerLayout = view.findViewById(R.id.header_layout)
-        recyclerView = view.findViewById(R.id.rv_list_showcase)
-        loading = view.findViewById(R.id.loading)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        val binding = FragmentReorderShowcaseBinding.inflate(inflater, container, false).apply {
+            headerUnify = showcaseListToolbar
+            headerLayoutReorderShowcase = headerLayout
+            recyclerView = rvListShowcase
+            loader = loading
+        }
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        recyclerView.layoutManager = layoutManager
-        shopShowcaseListReorderAdapter = ShopShowcaseListReorderAdapter(this, this, isMyShop)
-        recyclerView.adapter = shopShowcaseListReorderAdapter
-        return view
+        shopShowcaseListReorderAdapter = ShopShowcaseListReorderAdapter(this, this)
+        recyclerView?.layoutManager = layoutManager
+        recyclerView?.adapter = shopShowcaseListReorderAdapter
+
+        _binding = binding
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -130,12 +134,17 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
         super.onDestroy()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
         itemTouchHelper!!.startDrag(viewHolder)
     }
 
     private fun initHeaderUnify() {
-        headerUnify.apply {
+        headerUnify?.apply {
             setNavigationOnClickListener {
                 shopShowcaseFragmentNavigation.navigateToPage(
                         page = PageNameConstant.SHOWCASE_LIST_PAGE,
@@ -143,7 +152,7 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
                         showcaseList = null)
             }
         }
-        headerUnify.actionTextView?.setOnClickListener {
+        headerUnify?.actionTextView?.setOnClickListener {
             saveReorderListShowcase()
         }
     }
@@ -157,9 +166,9 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
 
     private fun showLoading(isLoading: Boolean) {
         if (isLoading) {
-            loading.visibility = View.VISIBLE
+            loader?.visibility = View.VISIBLE
         } else {
-            loading.visibility = View.GONE
+            loader?.visibility = View.GONE
         }
     }
 
@@ -199,16 +208,16 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
     private fun initRecyclerView() {
         var currentScrollPosition = 0
 
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 currentScrollPosition += dy
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     if (currentScrollPosition == 0) {
-                        headerLayout.cardElevation = CARD_HEADER_NO_ELEVATION
+                        headerLayoutReorderShowcase?.cardElevation = CARD_HEADER_NO_ELEVATION
                     } else {
-                        headerLayout.cardElevation = CARD_HEADER_ELEVATION
+                        headerLayoutReorderShowcase?.cardElevation = CARD_HEADER_ELEVATION
                     }
                 }
             }

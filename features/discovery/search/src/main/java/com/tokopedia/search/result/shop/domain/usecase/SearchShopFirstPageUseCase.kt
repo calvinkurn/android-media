@@ -25,7 +25,7 @@ internal class SearchShopFirstPageUseCase(
                 createParametersForQuery()
         )
 
-        val graphqlResponse = graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+        val graphqlResponse = graphqlRepository.response(listOf(graphqlRequest), graphqlCacheStrategy)
 
         val error = graphqlResponse.getError(SearchShopModel::class.java)
 

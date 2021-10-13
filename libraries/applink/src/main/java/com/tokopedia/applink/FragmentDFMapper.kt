@@ -70,9 +70,22 @@ object FragmentDFMapper {
 
     @JvmStatic
     fun checkIfFragmentIsInstalled(context: Context, className: String): Boolean {
-        val matchedFragmentDFPattern = getMatchedFragmentDFPattern(className)
-        val moduleId = matchedFragmentDFPattern?.moduleId.orEmpty()
-        return getSplitManager(context)?.installedModules?.contains(moduleId) ?: false
+        return if(isClassExist(className))
+            true
+        else{
+            val matchedFragmentDFPattern = getMatchedFragmentDFPattern(className)
+            val moduleId = matchedFragmentDFPattern?.moduleId.orEmpty()
+            getSplitManager(context)?.installedModules?.contains(moduleId) ?: false
+        }
+    }
+
+    private fun isClassExist(className: String): Boolean {
+        return try {
+            Class.forName(className)
+            true
+        } catch (e: ClassNotFoundException) {
+            false
+        }
     }
 
     private fun getMatchedFragmentDFPattern(

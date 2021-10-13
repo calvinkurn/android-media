@@ -7,8 +7,9 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
+import com.tokopedia.power_merchant.subscribe.databinding.ItemPmExpandableWidgetItemBinding
 import com.tokopedia.power_merchant.subscribe.view.model.ExpandableItemUiModel
-import kotlinx.android.synthetic.main.item_pm_expandable_widget_item.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created By @ilhamsuaib on 04/03/21
@@ -23,14 +24,16 @@ class ExpandableItemViewHolder(
         val RES_LAYOUT = R.layout.item_pm_expandable_widget_item
     }
 
+    private val binding: ItemPmExpandableWidgetItemBinding? by viewBinding()
+
     override fun bind(element: ExpandableItemUiModel) {
-        with(itemView) {
+        binding?.run {
             tvPmExpandableItemText.text = element.text
 
             if (element.urlOrAppLink.isNotBlank()) {
                 icPmExpandableItemIcon.visible()
-                setOnClickListener {
-                    RouteManager.route(context, element.urlOrAppLink)
+                root.setOnClickListener {
+                    RouteManager.route(root.context, element.urlOrAppLink)
                     powerMerchantTracking.sendEventClickPowerMerchantBenefitItem(element.text)
                 }
             } else {
