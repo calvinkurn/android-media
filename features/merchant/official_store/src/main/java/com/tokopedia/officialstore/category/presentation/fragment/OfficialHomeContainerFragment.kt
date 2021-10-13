@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.analytics.performance.util.PerformanceCustomTrace
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
@@ -269,14 +268,7 @@ class OfficialHomeContainerFragment
             when (it) {
                 is Success -> {
                     removeLoading()
-//                    PerformanceCustomTrace.launchFunctionWithTrace(
-//                        {
-//                            populateCategoriesData(it.data)
-//                        }, "PopulateCategoriesData"
-//                    )
-                    PerformanceCustomTrace.beginMethodTracing("PopulateCategoriesData", 10)
                     populateCategoriesData(it.data)
-                    PerformanceCustomTrace.endMethodTracing("PopulateCategoriesData", 10)
                 }
                 is Fail -> {
                     val throwable = it.throwable

@@ -20,7 +20,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
-import com.tokopedia.analytics.performance.util.PerformanceCustomTrace
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -153,7 +152,6 @@ class OfficialHomeFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        PerformanceCustomTrace.beginMethodTracing("OfficialStore-oncreate",8)
 
         officialStorePerformanceMonitoringListener = context?.let { castContextToOfficialStorePerformanceMonitoring(it) }
         if (savedInstanceState == null) {
@@ -167,7 +165,6 @@ class OfficialHomeFragment :
         context?.let { tracking = OfficialStoreTracking(it) }
         remoteConfig = FirebaseRemoteConfigImpl(activity)
 
-        PerformanceCustomTrace.endMethodTracing("OfficialStore-oncreate",8)
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -206,8 +203,6 @@ class OfficialHomeFragment :
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        PerformanceCustomTrace.beginMethodTracing("OfficialStore-onViewCreated",9)
-
         super.onViewCreated(view, savedInstanceState)
         observeBannerData()
         observeBenefit()
@@ -224,7 +219,6 @@ class OfficialHomeFragment :
         getOfficialStorePageLoadTimeCallback()?.stopPreparePagePerformanceMonitoring()
         if (savedInstanceState == null) officialStorePerformanceMonitoringListener?.getOfficialStorePageLoadTimePerformanceInterface()?.stopCustomMetric(
             KEY_PERFORMANCE_PREPARING_OS_HOME)
-        PerformanceCustomTrace.endMethodTracing("OfficialStore-onViewCreated",9)
     }
 
     private fun observeRecomwidget() {

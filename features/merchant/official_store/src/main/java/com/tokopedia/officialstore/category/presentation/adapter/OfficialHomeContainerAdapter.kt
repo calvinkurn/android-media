@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.PagerAdapter
-import com.tokopedia.analytics.performance.util.PerformanceCustomTrace
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment.Companion.KEY_CATEGORY
 import com.tokopedia.officialstore.official.presentation.OfficialHomeFragment
@@ -46,10 +45,8 @@ class OfficialHomeContainerAdapter(
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        PerformanceCustomTrace.beginMethodTracing("OfficialStore-InstantiateFragmentItem_"+position,7)
         val o = super.instantiateItem(container, position)
         registeredFragment.put(position, o as Fragment)
-        PerformanceCustomTrace.endMethodTracing("OfficialStore-InstantiateFragmentItem_"+position,7)
         return o
     }
 

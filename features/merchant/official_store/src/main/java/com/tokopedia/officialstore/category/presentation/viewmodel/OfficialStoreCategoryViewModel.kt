@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.analytics.performance.util.PerformanceCustomTrace
 import com.tokopedia.officialstore.category.data.model.OfficialStoreCategories
 import com.tokopedia.officialstore.category.domain.GetOfficialStoreCategoriesUseCase
 import com.tokopedia.officialstore.category.presentation.data.OSChooseAddressData
@@ -44,9 +43,7 @@ class OfficialStoreCategoryViewModel @Inject constructor(
 
             val cacheResponse = async(dispatchers.io) {
                 try {
-                    PerformanceCustomTrace.beginMethodTracing("getOfficialStoreCategoriesUseCase-Cache", 3)
                     val data = getOfficialStoreCategoriesUseCase.executeOnBackground(true, doQueryHashing)
-                    PerformanceCustomTrace.endMethodTracing("getOfficialStoreCategoriesUseCase-Cache", 3)
                     Success(data)
                 } catch (e: Throwable) {
                     Fail(e)
@@ -54,9 +51,7 @@ class OfficialStoreCategoryViewModel @Inject constructor(
             }
             val cloudResponse = async(dispatchers.io) {
                 try {
-                    PerformanceCustomTrace.beginMethodTracing("getOfficialStoreCategoriesUseCase-Network", 4)
                     val data = getOfficialStoreCategoriesUseCase.executeOnBackground(false, doQueryHashing)
-                    PerformanceCustomTrace.endMethodTracing("getOfficialStoreCategoriesUseCase-Network", 4)
                     Success(data)
                 } catch (e: Throwable) {
                     Fail(e)
