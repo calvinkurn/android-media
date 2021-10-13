@@ -15,9 +15,10 @@ import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerProfile
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder.generateLeftBg
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder.generateRightBg
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
-import com.tokopedia.topchat.common.util.ViewUtil
 
 class StickerMessageViewHolder(
     itemView: View?,
@@ -40,38 +41,8 @@ class StickerMessageViewHolder(
     private var stickerImage: ImageView? = itemView?.findViewById(R.id.iv_sticker_message)
     private var loader: AnimatedVectorDrawableCompat? = null
 
-    private val bgLeft = generateLeftBg()
-    private val bgRight = generateRightBg()
-
-    private fun generateRightBg(): Drawable? {
-        return ViewUtil.generateBackgroundWithShadow(
-            view = stickerBodyContainer,
-            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_G200,
-            topLeftRadius = R.dimen.dp_topchat_20,
-            topRightRadius = R.dimen.dp_topchat_0,
-            bottomLeftRadius = R.dimen.dp_topchat_20,
-            bottomRightRadius = R.dimen.dp_topchat_20,
-            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            elevation = R.dimen.dp_topchat_2,
-            shadowRadius = R.dimen.dp_topchat_1,
-            shadowGravity = Gravity.CENTER
-        )
-    }
-
-    private fun generateLeftBg(): Drawable? {
-        return ViewUtil.generateBackgroundWithShadow(
-            view = stickerBodyContainer,
-            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
-            topLeftRadius = R.dimen.dp_topchat_0,
-            topRightRadius = R.dimen.dp_topchat_20,
-            bottomLeftRadius = R.dimen.dp_topchat_20,
-            bottomRightRadius = R.dimen.dp_topchat_20,
-            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            elevation = R.dimen.dp_topchat_2,
-            shadowRadius = R.dimen.dp_topchat_1,
-            shadowGravity = Gravity.CENTER
-        )
-    }
+    private val bgLeft = generateLeftBg(stickerBodyContainer)
+    private val bgRight = generateRightBg(stickerBodyContainer)
 
     override fun alwaysShowTime(): Boolean = true
 
