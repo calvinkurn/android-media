@@ -164,7 +164,7 @@ class TokoNowHomeFragment: Fragment(),
     @Inject
     lateinit var analytics: HomeAnalytics
 
-    private val adapter: HomeAdapter? by lazy {
+    private val adapter by lazy {
         HomeAdapter(
             typeFactory = HomeAdapterTypeFactory(
                 tokoNowView = this,
@@ -332,12 +332,12 @@ class TokoNowHomeFragment: Fragment(),
 
     override fun onChooseAddressWidgetRemoved() {
         if(rvHome?.isComputingLayout == false) {
-            adapter?.removeHomeChooseAddressWidget()
+            adapter.removeHomeChooseAddressWidget()
         }
     }
 
     override fun onCategoryRetried() {
-        val item = adapter?.getItem(TokoNowCategoryGridUiModel::class.java)
+        val item = adapter.getItem(TokoNowCategoryGridUiModel::class.java)
         if (item is TokoNowCategoryGridUiModel) {
             viewModelTokoNow.getCategoryGrid(item, localCacheModel?.warehouse_id.orEmpty())
         }
@@ -1012,7 +1012,7 @@ class TokoNowHomeFragment: Fragment(),
         loadHeaderBackground()
         checkAddressDataAndServiceArea()
         if (!isChooseAddressWidgetShowed()) {
-            adapter?.removeHomeChooseAddressWidget()
+            adapter.removeHomeChooseAddressWidget()
         }
     }
 
@@ -1055,7 +1055,7 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun showHomeLayout(data: HomeLayoutListUiModel) {
         val items = data.items.toMutableList().map { it.layout }
-        adapter?.submitList(items)
+        adapter.submitList(items)
     }
 
     private fun addLoadMoreListener() {
