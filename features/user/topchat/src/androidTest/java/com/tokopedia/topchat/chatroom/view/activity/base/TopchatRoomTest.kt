@@ -51,6 +51,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAtta
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.common.TopChatInternalRouter
+import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.isKeyboardOpened
 import com.tokopedia.topchat.matchers.hasSrwBubble
 import com.tokopedia.topchat.matchers.withRecyclerView
@@ -129,6 +130,9 @@ abstract class TopchatRoomTest {
 
     @Inject
     protected lateinit var websocket: RxWebSocketUtilStub
+
+    @Inject
+    protected lateinit var cacheManager: TopchatCacheManager
 
     protected open lateinit var activity: TopChatRoomActivityStub
 

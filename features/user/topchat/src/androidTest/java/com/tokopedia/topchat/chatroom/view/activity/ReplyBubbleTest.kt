@@ -9,8 +9,18 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbl
 import org.hamcrest.Matchers.`is`
 import org.junit.Test
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.onboarding.ReplyBubbleOnBoarding.Companion.KEY_REPLY_BUBBLE_ONBOARDING
 
 class ReplyBubbleTest : TopchatRoomTest() {
+
+    override fun before() {
+        super.before()
+        disableReplyBubbleOnBoarding()
+    }
+
+    private fun disableReplyBubbleOnBoarding() {
+        cacheManager.saveState(KEY_REPLY_BUBBLE_ONBOARDING, true)
+    }
 
     @Test
     fun should_show_bottomsheet_menu_on_long_click_normal_text_bubble() {
@@ -20,6 +30,7 @@ class ReplyBubbleTest : TopchatRoomTest() {
 
         // When
         ReplyBubbleRobot.longClickBubbleAt(1)
+        waitForIt(5000)
 
         // Then
         assertLongClickMenu(isDisplayed())
