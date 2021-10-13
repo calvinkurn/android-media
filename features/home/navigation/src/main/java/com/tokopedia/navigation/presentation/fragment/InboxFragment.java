@@ -453,7 +453,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     @Override
     public void onRenderRecomInbox(List<Visitable> list, RecomTitle title) {
-            adapter.addElement(absRecommPosition, title);
+            adapter.addElement(title);
             
             if (headlineData == null
                 || headlineData.getData() == null
