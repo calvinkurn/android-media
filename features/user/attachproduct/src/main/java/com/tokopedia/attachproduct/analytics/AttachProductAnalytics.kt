@@ -2,7 +2,7 @@ package com.tokopedia.attachproduct.analytics
 
 import com.tokopedia.attachproduct.view.tracking.AttachProductEventTracking
 
-object NewAttachProductAnalytics {
+object AttachProductAnalytics {
     val eventCheckProduct: AttachProductEventTracking
         get() = AttachProductEventTracking(
             Event.CLICK_CHAT_DETAIL,
