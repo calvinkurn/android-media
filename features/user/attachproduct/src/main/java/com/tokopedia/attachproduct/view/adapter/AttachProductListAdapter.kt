@@ -22,14 +22,6 @@ class AttachProductListAdapter(private val baseListAdapterTypeFactory: AttachPro
         return super.getData()
     }
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): AbstractViewHolder<out Visitable<*>> {
-        val view = onCreateViewItem(parent, viewType)
-        return baseListAdapterTypeFactory.createViewHolder(view, viewType)
-    }
-
     override fun onCreateViewItem(parent: ViewGroup?, viewType: Int): View {
         return when (viewType) {
             AttachProductListItemViewHolder.LAYOUT -> {

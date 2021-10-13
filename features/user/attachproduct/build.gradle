@@ -79,6 +79,7 @@ dependencies {
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.swipeRefresh
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
 }
 

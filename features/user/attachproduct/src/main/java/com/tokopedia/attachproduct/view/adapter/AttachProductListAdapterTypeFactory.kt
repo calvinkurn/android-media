@@ -36,8 +36,7 @@ class AttachProductListAdapterTypeFactory
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return if (type == AttachProductListItemViewHolder.LAYOUT) {
-            val binding = ItemProductAttachBinding.bind(parent)
-            AttachProductListItemViewHolder(binding, listener, checkableInteractionListener)
+            AttachProductListItemViewHolder(parent, listener, checkableInteractionListener)
         } else if (type == EmptyResultViewHolder.LAYOUT) {
             AttachProductEmptyResultViewHolder(parent)
         } else if (type == ErrorNetworkViewHolder.LAYOUT) {

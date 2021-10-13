@@ -8,19 +8,22 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.attachproduct.R
 import com.tokopedia.attachproduct.databinding.ItemProductAttachBinding
 import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by Hendri on 13/02/18.
  */
 class AttachProductListItemViewHolder
-    (private val binding: ItemProductAttachBinding,
-     private val newCheckableInteractionListener: CheckableInteractionListenerWithPreCheckedAction,
+    (itemView: View, private val newCheckableInteractionListener: CheckableInteractionListenerWithPreCheckedAction,
      checkableInteractionListener: CheckableInteractionListener)
-    : BaseCheckableViewHolder<AttachProductItemUiModel>(binding.root, checkableInteractionListener),
+    : BaseCheckableViewHolder<AttachProductItemUiModel>(itemView, checkableInteractionListener),
         CompoundButton.OnCheckedChangeListener {
 
+    private val binding: ItemProductAttachBinding? by viewBinding()
+
+
     override fun getCheckable(): CompoundButton {
-        return binding.attachProductItemCheckbox
+        return binding!!.attachProductItemCheckbox
     }
 
     override fun bind(element: AttachProductItemUiModel) {
@@ -39,19 +42,19 @@ class AttachProductListItemViewHolder
     }
 
     private fun bindClickable() {
-        binding.attachProductItemCheckbox.isClickable = false
+        binding?.attachProductItemCheckbox?.isClickable = false
     }
 
     private fun bindName(element: AttachProductItemUiModel) {
-        binding.attachProductItemName.text = element.productName
+        binding?.attachProductItemName?.text = element.productName
     }
 
     private fun bindImage(element: AttachProductItemUiModel) {
-        ImageHandler.loadImageRounded2(binding.attachProductItemImage.context, binding.attachProductItemImage, element.productImage)
+        ImageHandler.loadImageRounded2(binding?.attachProductItemImage?.context, binding?.attachProductItemImage, element.productImage)
     }
 
     private fun bindPrice(element: AttachProductItemUiModel) {
-        binding.attachProductItemPrice.text = element.productPrice
+        binding?.attachProductItemPrice?.text = element.productPrice
     }
 
     private fun bindToogle() {
