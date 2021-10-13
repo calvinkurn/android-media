@@ -67,7 +67,7 @@ class FeedAnalyticTracker
         private const val ASGC_RECOM = "asgc recom"
         private const val TOPADS = "topads"
         private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT= "FeedXCardProductsHighlight"
-        private const val TYPE_FEED_X_CARD_PRODUCT_TOPADS= "topads_headline"
+        private const val TYPE_FEED_X_CARD_PRODUCT_TOPADS= "topads_headline_new"
 
     }
 

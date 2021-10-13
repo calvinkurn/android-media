@@ -10,7 +10,7 @@ import com.tokopedia.topads.sdk.widget.TopAdsBannerView
 
 object TopadsFeedXMapper {
     var authorName = ""
-    fun cpmModelToFeedXDataModel(impressHolder: ImpressHolder, cpmData: CpmModel , variant:Int): FeedXCard {
+    fun cpmModelToFeedXDataModel(impressHolder: ImpressHolder, cpmData: CpmModel , variant:Int=0): FeedXCard {
         val media = arrayListOf<FeedXMedia>()
         val data = cpmData.data[0]
         val merchantVouchers = data.cpm.cpmShop.merchantVouchers
@@ -66,6 +66,8 @@ object TopadsFeedXMapper {
             transitionFollow = cpmData.data[0].cpm.cpmShop.isFollowed
         )
 
+
+
         return FeedXCard(
             typename = TYPE_TOPADS_HEADLINE_NEW,
             id = cpmData.data[0].id,
@@ -80,7 +82,7 @@ object TopadsFeedXMapper {
             type = "",
             products = feedXProducts,
             subTitle = data.cpm.decription,
-            text = data.cpm.promotedText,
+            text = data.cpm.cpmShop.slogan,
             title = data.cpm.name,
             like = FeedXLike(),
             comments = FeedXComments(),

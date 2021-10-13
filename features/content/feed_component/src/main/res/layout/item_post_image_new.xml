@@ -103,7 +103,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/chevron"
-            android:maxLines="2"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:layout_marginStart="@dimen/spacing_lvl4"
             app:layout_constraintBottom_toTopOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/chevron"
@@ -175,8 +176,8 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/chevron"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
             app:icon_name="CHEVRON_RIGHT"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -9,9 +9,11 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
+import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE_NEW
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder.Companion.PAYLOAD_POST_VISIBLE
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -22,13 +24,15 @@ object FeedScrollListenerNew {
     private const val THRESHOLD_VIDEO_HEIGHT_SHOWN = 90
     private const val TOTAL_VIDEO_HEIGHT_PERCENT = 100
     private const val TYPE_VIDEO = "video"
-    fun onFeedScrolled(recyclerView: RecyclerView, list: List<Visitable<*>>) {
+    fun  onFeedScrolled(recyclerView: RecyclerView, list: List<Visitable<*>>) {
+        //true
         if (canAutoplayVideo(recyclerView)) {
             val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
             val firstPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
             val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
             for (i in firstPosition..lastPosition) {
                 val item = getCardViewModel(list, i)
+                val topadsItem = getTopadsCardViewModel(list,i)
                 if (isVideoCard(list, i)) {
                     if (item != null) {
                         getVideoModelScrollListener(layoutManager, recyclerView, i, item)
@@ -36,6 +40,11 @@ object FeedScrollListenerNew {
                 } else if (isImageCard(list, i)) {
                     if (item != null) {
                         getImagePostScrollListener(layoutManager, recyclerView, i, item)
+                    }
+                }
+                else if (isTopadsImageCard(list, i)) {
+                    if (topadsItem != null) {
+                        getImagePostScrollListener(layoutManager, recyclerView, i, topadsItem)
                     }
                 }
             }
@@ -138,6 +147,22 @@ object FeedScrollListenerNew {
     private fun getCardViewModel(list: List<Visitable<*>>, position: Int): FeedXMedia? {
         try {
             return (list[position] as DynamicPostUiModel).feedXCard.media.firstOrNull()
+        } catch (e: Exception) {
+            e.localizedMessage
+        }
+        return null
+    }
+
+    private fun isTopadsImageCard(list: List<Visitable<*>>, position: Int): Boolean {
+        return (list.size > position && list[position] is TopadsHeadLineV2Model && (list[position] as TopadsHeadLineV2Model).feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW
+                && (list[position] as TopadsHeadLineV2Model).feedXCard.media.isNotEmpty() && ((list[position] as TopadsHeadLineV2Model).feedXCard.media.find {
+            it.type == TYPE_IMAGE
+        } != null))
+    }
+
+    private fun getTopadsCardViewModel(list: List<Visitable<*>>, position: Int): FeedXMedia? {
+        try {
+            return (list[position] as TopadsHeadLineV2Model).feedXCard.media.firstOrNull()
         } catch (e: Exception) {
             e.localizedMessage
         }
