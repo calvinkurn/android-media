@@ -15,7 +15,7 @@ import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocket
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocketMapper
 import com.tokopedia.play.broadcaster.domain.model.*
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
+import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveConfigUseCase
@@ -651,24 +651,29 @@ internal class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
+    private suspend fun getSocketCredential(): GetSocketCredentialResponse.SocketCredential = try {
+        withContext(dispatcher.io) {
+            return@withContext getSocketCredentialUseCase.executeOnBackground()
+        }
+    } catch (e: Throwable) {
+        GetSocketCredentialResponse.SocketCredential()
+    }
+
     private fun startWebSocket() {
-        viewModelScope.launch {
-            val socketCredential = try {
-                withContext(dispatcher.io) {
-                    return@withContext getSocketCredentialUseCase.executeOnBackground()
+        socketJob?.cancel()
+        socketJob = viewModelScope.launch {
+            val socketCredential = getSocketCredential()
+
+            if (!isActive) return@launch
+            connectWebSocket(
+                channelId = channelId,
+                socketCredential = socketCredential
+            )
+
+            playBroadcastWebSocket.listenAsFlow()
+                .collect {
+                    handleWebSocketResponse(it, channelId, socketCredential)
                 }
-            } catch (e: Throwable) {
-                GetSocketCredentialResponse.SocketCredential()
-            }
-
-            socketJob = launch {
-                playBroadcastWebSocket.listenAsFlow()
-                    .collect {
-                        handleWebSocketResponse(it, channelId, socketCredential)
-                    }
-            }
-
-            connectWebSocket(channelId,socketCredential)
         }
     }
 
@@ -725,6 +730,10 @@ internal class PlayBroadcastViewModel @Inject constructor(
             is ChannelInteractive -> {
                 val currentInteractive = channelInteractiveMapper.mapInteractive(result)
                 handleActiveInteractiveFromNetwork(currentInteractive)
+            }
+            is PinnedMessageSocketResponse -> {
+                val mappedResult = playBroadcastMapper.mapPinnedMessageSocket(result)
+                _pinnedMessage.emit(mappedResult)
             }
         }
     }

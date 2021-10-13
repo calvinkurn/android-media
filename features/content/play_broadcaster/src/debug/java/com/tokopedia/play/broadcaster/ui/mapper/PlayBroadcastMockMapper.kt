@@ -10,6 +10,7 @@ import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
+import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConfig
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConnection
 import com.tokopedia.play.broadcaster.type.StockAvailable
@@ -279,6 +280,14 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         response: GetPinnedMessageResponse.Data
     ): List<PinnedMessageUiModel> {
         return emptyList()
+    }
+
+    override fun mapPinnedMessageSocket(response: PinnedMessageSocketResponse): PinnedMessageUiModel {
+        return PinnedMessageUiModel(
+            id = "",
+            message = "",
+            isActive = false,
+        )
     }
 
     companion object {

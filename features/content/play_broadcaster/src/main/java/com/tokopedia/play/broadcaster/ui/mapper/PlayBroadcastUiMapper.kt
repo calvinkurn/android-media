@@ -13,6 +13,7 @@ import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
+import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConfig
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConnection
 import com.tokopedia.play.broadcaster.type.EtalaseType
@@ -325,6 +326,14 @@ class PlayBroadcastUiMapper(
                 isActive = it.status.id == 1
             )
         }
+    }
+
+    override fun mapPinnedMessageSocket(response: PinnedMessageSocketResponse): PinnedMessageUiModel {
+        return PinnedMessageUiModel(
+            id = response.pinnedMessageId,
+            message = response.title,
+            isActive = true
+        )
     }
 
     companion object {
