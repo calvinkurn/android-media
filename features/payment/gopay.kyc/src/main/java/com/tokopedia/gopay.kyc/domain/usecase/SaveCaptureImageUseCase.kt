@@ -33,48 +33,28 @@ class SaveCaptureImageUseCase @Inject constructor(
     }
 
     override suspend fun executeOnBackground(): CameraImageResult {
-        try {
-            val imageByte = (useCaseRequestParams.getObject(PARAM_IMAGE) as ByteArray)
-            val facingOrdinal = (useCaseRequestParams.getObject(PARAM_IMAGE_PROPERTIES) as Int)
-            return generateImage(imageByte, facingOrdinal)
-        } catch (e: Exception) {
-            throw e
-        }
+        val imageByte = (useCaseRequestParams.getObject(PARAM_IMAGE) as ByteArray)
+        val facingOrdinal = (useCaseRequestParams.getObject(PARAM_IMAGE_PROPERTIES) as Int)
+        return generateImage(imageByte, facingOrdinal)
     }
 
     private fun generateImage(imageByte: ByteArray, ordinal: Int): CameraImageResult {
-        try {
-            val cameraResultFile = saveToCacheDirectory(imageByte)
-            val finalBitmap = cameraResultFile?.let { onSuccessImageTakenFromCamera(it, ordinal) }
-            return CameraImageResult(
-                finalBitmap?.width ?: 0,
-                finalBitmap?.height ?: 0,
-                cameraResultFile?.absolutePath,
-                ArrayList(bitmapToByte(finalBitmap))
-            )
-        } catch (e: Throwable) {
-            val cameraResultFile = saveToCacheDirectory(imageByte)
-            val finalBitmap = cameraResultFile?.let { onSuccessImageTakenFromCamera(it, ordinal) }
-            return CameraImageResult(
-                finalBitmap?.width ?: 0,
-                finalBitmap?.height ?: 0,
-                cameraResultFile?.absolutePath,
-                ArrayList(bitmapToByte(finalBitmap))
-            )
-        }
+        val cameraResultFile = saveToCacheDirectory(imageByte)
+        val finalBitmap = cameraResultFile?.let { onSuccessImageTakenFromCamera(it, ordinal) }
+        return CameraImageResult(
+            finalBitmap?.width ?: 0,
+            finalBitmap?.height ?: 0,
+            cameraResultFile?.absolutePath,
+            ArrayList(bitmapToByte(finalBitmap))
+        )
     }
 
     private fun onSuccessImageTakenFromCamera(imageFile: File, ordinal: Int): Bitmap? {
-        try {
-            val file = File(imageFile.absolutePath)
-            if (file.exists()) {
-                val myBitmap = BitmapFactory.decodeFile(file.absolutePath)
-                flipBitmapByOrdinal(myBitmap, ordinal)
-            }
-        } catch (e: Throwable) {
-            throw e
-        }
-        return null
+        val file = File(imageFile.absolutePath)
+        return if (file.exists()) {
+            val myBitmap = BitmapFactory.decodeFile(file.absolutePath)
+            flipBitmapByOrdinal(myBitmap, ordinal)
+        } else null
     }
 
     private fun flipBitmapByOrdinal(bitmap: Bitmap?, ordinal: Int): Bitmap? {
@@ -90,21 +70,17 @@ class SaveCaptureImageUseCase @Inject constructor(
 
     private fun saveToCacheDirectory(imageByte: ByteArray): File? {
         var out: FileOutputStream? = null
-        try {
+        return try {
             val file = getFileLocationFromDirectory()
             out = FileOutputStream(file)
             out.write(imageByte)
-            return file
+            file
         } catch (e: Exception) {
-            return null
+            null
         } finally {
             out?.let {
-                try {
-                    out.flush()
-                    out.close()
-                } catch (e: Exception) {
-                    throw e
-                }
+                out.flush()
+                out.close()
             }
         }
     }
