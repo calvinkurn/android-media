@@ -83,7 +83,7 @@ object AmplificationDataSource {
 
                     val cmInApp = CmInAppBundleConvertor.getCmInApp(amplificationCMInApp)
                     // flag if this data comes from amplification fetch API
-                    amplificationCMInApp.isAmplification = true
+                    cmInApp.isAmplification = true
 
                     // storage to local storage
                     RepositoryManager
