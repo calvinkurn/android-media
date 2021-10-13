@@ -71,7 +71,7 @@ object TopChatWebSocketParam {
             attachment_id = parentReply.attachmentId.toLongOrZero(),
             attachment_type = parentReply.attachmentType.toLongOrZero(),
             sender_id = parentReply.senderId.toLongOrZero() ,
-            reply_time = parentReply.replyTime,
+            reply_time = parentReply.replyTime.toLongOrZero(),
             main_text = parentReply.mainText,
             sub_text = parentReply.subText,
             image_url = parentReply.imageUrl,
