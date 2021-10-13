@@ -124,16 +124,10 @@ class OfficialStoreHomeViewModel @Inject constructor(
             currentSlugDC = category?.slug ?: ""
             onBannerCacheStartLoad.invoke()
             onBannerCloudStartLoad.invoke()
-            PerformanceCustomTrace.beginMethodTracing("getOfficialStoreBanners-Cache", 1)
-            _officialStoreBannersResult.value = Pair(false, getOfficialStoreBanners(currentSlug, true))
-            PerformanceCustomTrace.endMethodTracing("getOfficialStoreBanners-Cache", 1)
-
-            onBannerCacheStopLoad.invoke()
-            PerformanceCustomTrace.beginMethodTracing("getOfficialStoreBanners-Network", 2)
-            _officialStoreBannersResult.value = Pair(true, getOfficialStoreBanners(currentSlug, false))
-            PerformanceCustomTrace.endMethodTracing("getOfficialStoreBanners-Network", 2)
-
-            onBannerCloudStopLoad.invoke()
+            _officialStoreBannersResult.value =
+                Pair(false, getOfficialStoreBanners(currentSlug, true, onBannerCacheStopLoad))
+            _officialStoreBannersResult.value =
+                Pair(true, getOfficialStoreBanners(currentSlug, false, onBannerCloudStopLoad))
             _officialStoreBenefitResult.value = getOfficialStoreBenefit()
             _officialStoreFeaturedShopResult.value = getOfficialStoreFeaturedShop(categoryId)
 
@@ -149,8 +143,10 @@ class OfficialStoreHomeViewModel @Inject constructor(
         launch {
             try {
                 withContext(dispatchers.io) {
-                    val recomData = getRecommendationUseCase.createObservable(getRecommendationUseCase
-                            .getOfficialStoreRecomParams(pageNumber, pageName, categoryId)).toBlocking()
+                    val recomData = getRecommendationUseCase.createObservable(
+                        getRecommendationUseCase
+                            .getOfficialStoreRecomParams(pageNumber, pageName, categoryId)
+                    ).toBlocking()
                     _productRecommendation.postValue(Success(recomData.first().get(0)))
                 }
             } catch (e: Throwable) {
@@ -159,14 +155,21 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getOfficialStoreBanners(categoryId: String, isCache:Boolean): Result<OfficialStoreBanners> {
+    private suspend fun getOfficialStoreBanners(
+        categoryId: String,
+        isCache: Boolean,
+        onCompleteInvokeData: () -> Unit = {}
+    ): Result<OfficialStoreBanners> {
         return withContext(dispatchers.io) {
             try {
-                getOfficialStoreBannersUseCase.params = GetOfficialStoreBannerUseCase.createParams(categoryId)
+                getOfficialStoreBannersUseCase.params =
+                    GetOfficialStoreBannerUseCase.createParams(categoryId)
                 val banner = getOfficialStoreBannersUseCase.executeOnBackground(isCache)
                 banner.isCache = isCache
+                onCompleteInvokeData.invoke()
                 Success(banner)
             } catch (t: Throwable) {
+                onCompleteInvokeData.invoke()
                 Fail(t)
             }
         }
@@ -320,4 +323,5 @@ class OfficialStoreHomeViewModel @Inject constructor(
         removeWishListUseCase.unsubscribe()
         getDisplayHeadlineAds.cancelJobs()
     }
+
 }

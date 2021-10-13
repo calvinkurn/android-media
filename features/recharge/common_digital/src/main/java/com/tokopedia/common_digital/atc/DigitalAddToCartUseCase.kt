@@ -76,7 +76,7 @@ class DigitalAddToCartUseCase @Inject constructor(@DigitalAddToCartQualifier val
         private const val VALUE_INSTANT_CHECKOUT_ID = "1"
 
         fun getRequestBodyAtcDigital(digitalCheckoutPassData: DigitalCheckoutPassData,
-                                     userId: Int,
+                                     userId: String,
                                      digitalIdentifierParam: RequestBodyIdentifier,
                                      digitalSubscriptionParams: DigitalSubscriptionParams): RequestBodyAtcDigital {
 
@@ -105,12 +105,11 @@ class DigitalAddToCartUseCase @Inject constructor(@DigitalAddToCartQualifier val
             attributes.instantCheckout = digitalCheckoutPassData.instantCheckout == VALUE_INSTANT_CHECKOUT_ID
             attributes.ipAddress = DeviceUtil.localIpAddress
             attributes.userAgent = DeviceUtil.userAgentForApiCall
-            attributes.userId = userId
-            attributes.productId = if (!digitalCheckoutPassData.productId.isNullOrEmpty()) digitalCheckoutPassData.productId?.toInt()
-                    ?: 0 else 0
-            val orderId = if (!digitalCheckoutPassData.orderId.isNullOrEmpty()) digitalCheckoutPassData.orderId?.toLong()
-                    ?: 0 else 0
-            if (orderId > 0L) attributes.orderId = orderId
+            attributes.userId = userId.toLong()
+            attributes.productId = if (!digitalCheckoutPassData.productId.isNullOrEmpty())
+                digitalCheckoutPassData.productId?.toLong() ?: 0L else 0L
+            attributes.orderId = if (!digitalCheckoutPassData.orderId.isNullOrEmpty())
+                digitalCheckoutPassData.orderId?.toLong() ?: 0L else 0L
             attributes.fields = fieldList
             if (GlobalConfig.isSellerApp()) {
                 attributes.isReseller = true

@@ -166,6 +166,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.csat_rating)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.agerestriction)
+    implementation projectOrAar(rootProject.ext.features.affiliateToko)
     implementation projectOrAar(rootProject.ext.features.promotionsTarget)
     implementation projectOrAar(rootProject.ext.features.promoGamificationCommon)
     implementation projectOrAar(rootProject.ext.libraries.shakeDetect)
@@ -310,8 +311,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation projectOrAar(rootProject.ext.libraries.analyticAnnotationCentral)
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticGTMUtil
     implementation(rootProject.ext.miscDependencies.facebook) {

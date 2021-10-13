@@ -1,6 +1,6 @@
 package com.tokopedia.createpost.domain.usecase
 
-import com.tokopedia.createpost.view.viewmodel.ProductSuggestionItem
+import com.tokopedia.createpost.common.view.viewmodel.ProductSuggestionItem
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 

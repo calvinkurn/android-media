@@ -23,6 +23,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.officialstore.ApplinkConstant
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
 import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CACHE
@@ -278,9 +279,12 @@ class OfficialHomeContainerFragment
                     PerformanceCustomTrace.endMethodTracing("PopulateCategoriesData", 10)
                 }
                 is Fail -> {
+                    val throwable = it.throwable
                     removeLoading()
-                    NetworkErrorHelper.showEmptyState(context, official_home_motion) {
-                        fetchOSCategory()
+                    context?.let { ctx ->
+                        NetworkErrorHelper.showEmptyState(ctx, official_home_motion, ErrorHandler.getErrorMessage(ctx, throwable)) {
+                            fetchOSCategory()
+                        }
                     }
                 }
             }
@@ -496,11 +500,7 @@ class OfficialHomeContainerFragment
     }
 
     private fun isChooseAddressRollenceActive(): Boolean {
-        return if (context != null) {
-            ChooseAddressUtils.isRollOutUser(requireContext())
-        } else {
-            false
-        }
+        return true
     }
 
     private fun getChooseAddressWidget(): ChooseAddressWidget? {

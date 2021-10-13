@@ -53,6 +53,7 @@ class AddEditAddressPresenterTest {
         every { AddNewAddressAnalytics.eventClickButtonSimpanSuccess(any(), any()) } just Runs
         every { AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(any(), any()) } just Runs
         every { AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(any(), any(), any()) } just Runs
+        every { AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(any(), any(), any()) } just Runs
 
         presenter.attachView(view)
     }
@@ -108,6 +109,22 @@ class AddEditAddressPresenterTest {
 
         verifyOrder {
             AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(any(), any(), any())
+            view.showError(exception)
+        }
+    }
+
+    @Test
+    fun `save address error gql response from negative form`() {
+        val model = SaveAddressDataModel()
+        val exception = MessageErrorException("hi")
+
+        every { saveUseCase.execute(any(), "0")
+        } returns Observable.error(exception)
+
+        presenter.saveAddress(model, AddressConstants.ANA_NEGATIVE, true, true)
+
+        verifyOrder {
+            AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(any(), any(), any())
             view.showError(exception)
         }
     }

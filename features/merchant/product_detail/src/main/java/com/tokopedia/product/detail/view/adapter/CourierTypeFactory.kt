@@ -10,33 +10,35 @@ import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.shop.BlackBoxShipmentHolder
 import com.tokopedia.product.detail.data.model.shop.ProductShopShipment
-import kotlinx.android.synthetic.main.item_shop_shipment.view.*
+import com.tokopedia.product.detail.databinding.ItemShopShipmentBinding
 
 class CourierTypeFactory: BaseAdapterTypeFactory(){
 
     fun type(data: BlackBoxShipmentHolder): Int = CourierViewHolder.LAYOUT
 
-    override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
+    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type){
             CourierViewHolder.LAYOUT -> CourierViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
 
-    class CourierViewHolder(view: View?): AbstractViewHolder<BlackBoxShipmentHolder>(view) {
+    class CourierViewHolder(view: View): AbstractViewHolder<BlackBoxShipmentHolder>(view) {
         companion object {
             val LAYOUT = R.layout.item_shop_shipment
         }
 
+        private val binding = ItemShopShipmentBinding.bind(view)
+
         override fun bind(element: BlackBoxShipmentHolder) {
-            with(itemView){
+            with(binding){
                 when(element){
                     is ProductShopShipment -> {
-                        courier_item_image.visible()
-                        courier_item_name.setFontSize(TextViewCompat.FontSize.TITLE)
-                        courier_item_name.text = element.name
-                        courier_item_info.text = element.product.map { it.name }.joinToString(", ")
-                        courier_item_image.loadIcon(element.image)
+                        courierItemImage.visible()
+                        courierItemName.setFontSize(TextViewCompat.FontSize.TITLE)
+                        courierItemName.text = element.name
+                        courierItemInfo.text = element.product.map { it.name }.joinToString(", ")
+                        courierItemImage.loadIcon(element.image)
                     }
                     else -> {}
                 }

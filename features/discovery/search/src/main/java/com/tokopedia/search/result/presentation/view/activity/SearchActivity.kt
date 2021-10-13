@@ -172,12 +172,7 @@ class SearchActivity: BaseActivity(),
     }
 
     private fun getIsEnableChooseAddress(): Boolean {
-        return try {
-            ChooseAddressUtils.isRollOutUser(this)
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-            false
-        }
+        return true
     }
 
     private fun setStatusBarColor() {
