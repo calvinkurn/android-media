@@ -8,22 +8,18 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyorderhistory.data.model.UohFilterBundle
 import com.tokopedia.unifyorderhistory.databinding.BottomsheetOptionUohItemBinding
 import com.tokopedia.unifyorderhistory.util.UohConsts
-import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
+import com.tokopedia.unifyorderhistory.view.bottomsheet.UohFilterOptionsBottomSheet
 
 /**
  * Created by fwidjaja on 05/07/20.
  */
 class UohBottomSheetOptionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()  {
-    private var actionListener: ActionListener? = null
+    private var actionListener: UohFilterOptionsBottomSheet.UohFilterOptionBottomSheetListener? = null
     var filterBundleList = arrayListOf<UohFilterBundle>()
     var filterType = -1
     var selectedKey = ""
     var isReset = false
     private var selectedRadio = -1
-
-    interface ActionListener {
-        fun onOptionItemClick(label: String, value: String, filterType: Int)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding = BottomsheetOptionUohItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
@@ -34,8 +30,8 @@ class UohBottomSheetOptionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
         return filterBundleList.size
     }
 
-    fun setActionListener(fragment: UohListFragment) {
-        this.actionListener = fragment
+    fun setActionListener(listener: UohFilterOptionsBottomSheet.UohFilterOptionBottomSheetListener) {
+        this.actionListener = listener
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -83,7 +79,7 @@ class UohBottomSheetOptionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
                    if (selectedKey.isEmpty() && selectedRadio == -1) {
                        if (filterType == UohConsts.TYPE_FILTER_DATE && filterBundle.key == "0" ||
                                filterType == UohConsts.TYPE_FILTER_STATUS && filterBundle.key.isEmpty() ||
-                               filterType == UohConsts.TYPE_FILTER_CATEGORY && filterBundle.value.equals(UohConsts.ALL_PRODUCTS, true)) {
+                               filterType == UohConsts.TYPE_FILTER_PRODUCT && filterBundle.value.equals(UohConsts.ALL_PRODUCTS, true)) {
                            binding.rbOption.isChecked = true
                        }
                    } else {
@@ -97,7 +93,7 @@ class UohBottomSheetOptionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
                    if (selectedKey.isEmpty() && selectedRadio == -1) {
                        if ((filterType == UohConsts.TYPE_FILTER_DATE && position == 0) ||
                                (filterType == UohConsts.TYPE_FILTER_STATUS && filterBundle.value == UohConsts.ALL_STATUS_TRANSACTION) ||
-                               (filterType == UohConsts.TYPE_FILTER_CATEGORY && filterBundle.value == UohConsts.ALL_PRODUCTS)) {
+                               (filterType == UohConsts.TYPE_FILTER_PRODUCT && filterBundle.value == UohConsts.ALL_PRODUCTS)) {
                            binding.rbOption.isChecked = true
                        } else {
                            if (filterBundle.key.equals(selectedKey, true) && selectedRadio == -1) {

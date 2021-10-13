@@ -1,10 +1,7 @@
 package com.tokopedia.unifyorderhistory.view.bottomsheet
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.gone
@@ -15,7 +12,6 @@ import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.unifyorderhistory.util.UohConsts.DATE_FORMAT_DDMMMYYYY
 import com.tokopedia.unifyorderhistory.util.UohUtils
 import com.tokopedia.unifyorderhistory.view.adapter.UohBottomSheetOptionAdapter
-import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 
@@ -23,28 +19,39 @@ import java.util.*
  * Created by fwidjaja on 02/10/21.
  */
 class UohFilterOptionsBottomSheet : BottomSheetUnify() {
-    private var actionListener: ActionListener? = null
-    private var bottomSheetFilterOptions : BottomSheetUnify? = null
+    private var listener: UohFilterOptionBottomSheetListener? = null
+    private var adapterOptionBottomSheet: UohBottomSheetOptionAdapter? = null
     private var binding by autoClearedNullable<BottomsheetOptionUohBinding>()
 
-    fun show(context: Context, fragmentManager: FragmentManager, adapterBottomSheet: UohBottomSheetOptionAdapter, title: String){
-        bottomSheetFilterOptions = BottomSheetUnify()
+    companion object {
+        private const val TAG: String = "UohFilterOptionsBottomSheet"
+        private const val TITLE_BOTTOMSHEET = "title_bottomsheet"
+
+        @JvmStatic
+        fun newInstance(title: String): UohFilterOptionsBottomSheet { return UohFilterOptionsBottomSheet().apply {
+                val bundle = Bundle()
+                bundle.putString(TITLE_BOTTOMSHEET, title)
+                arguments = bundle
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         binding = BottomsheetOptionUohBinding.inflate(LayoutInflater.from(context), null, false)
         binding?.run {
+            listener?.let { adapterOptionBottomSheet?.setActionListener(it) }
             rvOption.apply {
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                adapter = adapterBottomSheet
+                adapter = adapterOptionBottomSheet
             }
-            btnApply.setOnClickListener { actionListener?.onClickApply() }
+            btnApply.setOnClickListener { listener?.onClickApply() }
         }
-        bottomSheetFilterOptions?.run {
-            showCloseIcon = true
-            showHeader = true
-            setChild(binding?.root)
-            setTitle(title)
-            setCloseClickListener { dismiss() }
-        }
-        bottomSheetFilterOptions?.show(fragmentManager, "")
+        showCloseIcon = true
+        showHeader = true
+        setChild(binding?.root)
+        setTitle(arguments?.getString(TITLE_BOTTOMSHEET) ?: "")
+        setCloseClickListener { dismiss() }
     }
 
     fun hideChooseDate() {
@@ -60,13 +67,13 @@ class UohFilterOptionsBottomSheet : BottomSheetUnify() {
                 setText(UohUtils.calendarToStringFormat(chosenStartDate, DATE_FORMAT_DDMMMYYYY))
                 isFocusable = false
                 isClickable = true
-                setOnClickListener { actionListener?.showDatePicker(UohConsts.START_DATE)  }
+                setOnClickListener { listener?.showDatePicker(UohConsts.START_DATE)  }
             }
             tfEndDate.textFieldInput.run {
                 setText(UohUtils.calendarToStringFormat(chosenEndDate, DATE_FORMAT_DDMMMYYYY))
                 isFocusable = false
                 isClickable = true
-                setOnClickListener { actionListener?.showDatePicker(UohConsts.END_DATE)  }
+                setOnClickListener { listener?.showDatePicker(UohConsts.END_DATE)  }
             }
         }
     }
@@ -83,12 +90,21 @@ class UohFilterOptionsBottomSheet : BottomSheetUnify() {
         }
     }
 
-    interface ActionListener {
-        fun onClickApply()
-        fun showDatePicker(flag: String)
+    fun show(fm: FragmentManager) {
+        show(fm, TAG)
     }
 
-    fun setActionListener(fragment: UohListFragment) {
-        this.actionListener = fragment
+    fun setListener(listener: UohFilterOptionBottomSheetListener) {
+        this.listener = listener
+    }
+
+    fun setAdapter(adapter: UohBottomSheetOptionAdapter) {
+        this.adapterOptionBottomSheet = adapter
+    }
+
+    interface UohFilterOptionBottomSheetListener {
+        fun onClickApply()
+        fun showDatePicker(flag: String)
+        fun onOptionItemClick(label: String, value: String, filterType: Int)
     }
 }

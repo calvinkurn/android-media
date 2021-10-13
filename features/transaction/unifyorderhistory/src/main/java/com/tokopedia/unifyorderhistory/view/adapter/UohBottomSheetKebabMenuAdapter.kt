@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifyorderhistory.data.model.UohListOrder
 import com.tokopedia.unifyorderhistory.databinding.BottomsheetKebabUohItemBinding
 import com.tokopedia.unifyorderhistory.view.adapter.viewholder.UohBottomSheetKebabMenuViewHolder
-import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
+import com.tokopedia.unifyorderhistory.view.bottomsheet.UohKebabMenuBottomSheet
 
 /**
  * Created by fwidjaja on 05/07/20.
@@ -15,11 +15,7 @@ class UohBottomSheetKebabMenuAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
     var uohKebabMenuList = mutableListOf<UohListOrder.Data.UohOrders.Order.Metadata.DotMenu>()
     var _orderData: UohListOrder.Data.UohOrders.Order? = null
     var _orderIndex: Int = -1
-    private var actionListener: ActionListener? = null
-
-    interface ActionListener {
-        fun onKebabItemClick(index: Int, orderData: UohListOrder.Data.UohOrders.Order, orderIndex: Int)
-    }
+    private var actionListener: UohKebabMenuBottomSheet.UohKebabMenuBottomSheetListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding = BottomsheetKebabUohItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
@@ -37,8 +33,8 @@ class UohBottomSheetKebabMenuAdapter : RecyclerView.Adapter<RecyclerView.ViewHol
         notifyDataSetChanged()
     }
 
-    fun setActionListener(fragment: UohListFragment) {
-        this.actionListener = fragment
+    fun setActionListener(listener: UohKebabMenuBottomSheet.UohKebabMenuBottomSheetListener) {
+        this.actionListener = listener
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {

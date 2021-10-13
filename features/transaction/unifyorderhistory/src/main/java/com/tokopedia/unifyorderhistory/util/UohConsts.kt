@@ -16,11 +16,11 @@ object UohConsts {
     const val ALL_PRODUCTS = "Semua Produk"
     const val CHOOSE_DATE = "Pilih Tanggal"
     const val OTHERS = "Lainnya"
-    const val CHOOSE_FILTERS = "Mau lihat status apa?"
-    const val CHOOSE_CATEGORIES = "Mau lihat produk apa?"
+    const val CHOOSE_STATUS = "Mau lihat status apa?"
+    const val CHOOSE_PRODUCT = "Mau lihat produk apa?"
     const val TYPE_FILTER_DATE = 0
     const val TYPE_FILTER_STATUS = 1
-    const val TYPE_FILTER_CATEGORY = 2
+    const val TYPE_FILTER_PRODUCT = 2
     const val START_DATE = "start_date"
     const val END_DATE = "end_date"
     const val CATEGORY_BELANJA = "marketplace"
