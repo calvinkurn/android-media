@@ -18,8 +18,7 @@
             android:layout_width="60dp"
             android:layout_height="4dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:background="@drawable/search_last_filter_card_header" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Space
             android:id="@+id/searchLastFilterTopSpace"

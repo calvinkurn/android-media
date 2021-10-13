@@ -47,6 +47,7 @@ import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterMod
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.data.SavedOption
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
@@ -114,6 +115,7 @@ import com.tokopedia.filter.common.helper.getFilterParams
 import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.filter.common.helper.getSortFilterParamsString
 import com.tokopedia.filter.common.helper.isSortHasDefaultValue
+import com.tokopedia.search.result.presentation.model.LastFilterDataView
 import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.utils.removeQuickFilterElevation
 import com.tokopedia.sortfilter.SortFilter
@@ -1998,5 +2000,21 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun trackEventClickSeeMoreDynamicProductCarousel(dynamicProductCarousel: BroadMatchDataView, type: String) {
         SearchTracking.trackEventClickDynamicProductCarouselSeeMore(type, queryKey, dynamicProductCarousel.keyword)
+    }
+
+    override fun applyLastFilter(lastFilterDataView: LastFilterDataView) {
+        val optionList = lastFilterDataView.filterList.map(SavedOption::asOption)
+
+        filterController.setFilter(optionList)
+
+        refreshSearchParameter(filterController.getParameter())
+    }
+
+    override fun closeLastFilter(lastFilterDataView: LastFilterDataView) {
+        val searchParameterMap = searchParameter?.getSearchParameterMap() ?: mapOf()
+
+        productListAdapter?.removeLastFilterWidget()
+
+        presenter?.closeLastFilter(searchParameterMap, lastFilterDataView.filterList)
     }
 }

@@ -160,5 +160,9 @@ interface ProductListSectionContract {
             option: Option,
             isFilterApplied: Boolean,
         )
+        fun closeLastFilter(
+            searchParameter: Map<String, Any>,
+            savedOptionList: List<SavedOption>,
+        )
     }
 }

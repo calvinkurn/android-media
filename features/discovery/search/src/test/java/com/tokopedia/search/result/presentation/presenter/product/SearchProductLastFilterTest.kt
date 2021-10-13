@@ -158,7 +158,7 @@ internal class SearchProductLastFilterTest: ProductListPresenterTestFixtures() {
     }
 
     @Test
-    fun `show last filter in visitable list`() {
+    fun `show last filter view in visitable list`() {
         val searchProductModel = "searchproduct/lastfilter/last-filter.json"
             .jsonToObject<SearchProductModel>()
         val visitableListSlot = slot<List<Visitable<*>>>()
@@ -216,4 +216,40 @@ internal class SearchProductLastFilterTest: ProductListPresenterTestFixtures() {
         val allOptionNameMatchers = lastFilter.data.filters.map { containsString(it.name) }
         assertThat(lastFilterDataView.optionNames(), allOf(allOptionNameMatchers))
     }
+
+    @Test
+    fun `close last filter will delete all saved filter`() {
+        val searchParameter = createSearchParameter()
+        val searchProductModel = "searchproduct/lastfilter/last-filter.json"
+            .jsonToObject<SearchProductModel>()
+        val savedOptionList = searchProductModel.lastFilter.data.filters
+
+        `Given search product will return search product model`(searchProductModel)
+        `Given view load data and shown last filter`(searchParameter)
+
+        `When user close last filter`(searchParameter, savedOptionList)
+
+        `Then verify save last filter is called`()
+
+        val saveLastFilterInput = saveLastFilterRequestParam.getSaveLastFilterInput()
+
+        `Then assert input params action`(saveLastFilterInput, SaveLastFilterInput.Delete)
+        `Then assert input params contains filters and params`(
+            saveLastFilterInput,
+            savedOptionList,
+            searchParameter,
+        )
+    }
+
+    private fun `Given view load data and shown last filter`(searchParameter: Map<String, Any>) {
+        productListPresenter.loadData(searchParameter)
+    }
+
+    private fun `When user close last filter`(
+        searchParameter: Map<String, Any>,
+        savedOptionList: List<SavedOption>,
+    ) {
+        productListPresenter.closeLastFilter(searchParameter, savedOptionList)
+    }
+
 }

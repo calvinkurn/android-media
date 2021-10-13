@@ -21,6 +21,8 @@ data class SavedOption(
     val name: String = "",
 ) {
 
+    fun asOption(): Option = Option(key = key, value = value, name = name)
+
     companion object {
         fun create(option: Option, filterList: List<Filter>) =
             SavedOption(
