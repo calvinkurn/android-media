@@ -63,6 +63,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
+import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowSearchCategoryBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickySingleHeaderView
@@ -83,6 +84,7 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 abstract class BaseSearchCategoryFragment:
@@ -106,6 +108,8 @@ abstract class BaseSearchCategoryFragment:
         protected const val DEFAULT_SPAN_COUNT = 2
         protected const val OUT_OF_COVERAGE_CHOOSE_ADDRESS = "OUT_OF_COVERAGE_CHOOSE_ADDRESS"
     }
+
+    private var binding by autoClearedNullable<FragmentTokopedianowSearchCategoryBinding>()
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -149,16 +153,9 @@ abstract class BaseSearchCategoryFragment:
         context?.let { trackingQueue = TrackingQueue(it) }
     }
 
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?,
-    ): View? {
-        return inflater.inflate(
-                R.layout.fragment_tokopedianow_search_category,
-                container,
-                false
-        )
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentTokopedianowSearchCategoryBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -177,15 +174,15 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun findViews(view: View) {
-        navToolbar = view.findViewById(R.id.tokonowSearchCategoryNavToolbar)
-        recyclerView = view.findViewById(R.id.tokonowSearchCategoryRecyclerView)
-        miniCartWidget = view.findViewById(R.id.tokonowSearchCategoryMiniCart)
-        stickyView = view.findViewById(R.id.tokonowSearchCategoryStickyView)
-        swipeRefreshLayout = view.findViewById(R.id.tokonowSearchCategorySwipeRefreshLayout)
-        statusBarBackground = view.findViewById(R.id.tokonowSearchCategoryStatusBarBackground)
-        headerBackground = view.findViewById(R.id.tokonowSearchCategoryBackgroundImage)
-        loaderUnify = view.findViewById(R.id.tokonowSearchCategoryLoader)
-        container = view.findViewById(R.id.tokonowSearchCategoryContainer)
+        navToolbar = binding?.tokonowSearchCategoryNavToolbar
+        recyclerView = binding?.tokonowSearchCategoryRecyclerView
+        miniCartWidget = binding?.tokonowSearchCategoryMiniCart
+        stickyView = binding?.tokonowSearchCategoryStickyView
+        swipeRefreshLayout = binding?.tokonowSearchCategorySwipeRefreshLayout
+        statusBarBackground = binding?.tokonowSearchCategoryStatusBarBackground
+        headerBackground = binding?.tokonowSearchCategoryBackgroundImage
+        loaderUnify = binding?.tokonowSearchCategoryLoader
+        container = binding?.tokonowSearchCategoryContainer
     }
 
     protected open fun configureNavToolbar() {

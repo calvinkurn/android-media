@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_Static_White"
+    android:paddingTop="@dimen/dp_35"
+    android:paddingBottom="@dimen/dp_35">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_heading"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_32"
+        android:layout_marginEnd="@dimen/dp_32"
+        android:gravity="center_horizontal"
+        android:text="@string/imagepicker_insta_akt"
+        android:textColor="@color/imagepicker_insta_title_black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_35"
+        android:layout_marginEnd="@dimen/dp_32"
+        android:gravity="center_horizontal"
+        android:text="@string/imagepicker_insta_sup"
+        android:textColor="@color/imagepicker_insta_message_grey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_heading"
+        app:typographyType="body_2" />
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/image_contaianer"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginStart="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_32"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_message"
+        app:srcCompat="@drawable/imagepicker_insta_permission_rect" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/image_perm"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginStart="@dimen/dp_12"
+        app:layout_constraintBottom_toBottomOf="@id/image_contaianer"
+        app:layout_constraintStart_toStartOf="@id/image_contaianer"
+        app:layout_constraintTop_toTopOf="@id/image_contaianer"
+        app:srcCompat="@drawable/imagepicker_insta_ic_image" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        android:text="@string/imagepicker_insta_akt"
+        android:textColor="@color/imagepicker_insta_title_black"
+        app:layout_constraintBottom_toBottomOf="@id/image_contaianer"
+        app:layout_constraintStart_toEndOf="@id/image_perm"
+        app:layout_constraintTop_toTopOf="@id/image_contaianer"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/btn_perm"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/dp_12"
+        android:paddingEnd="@dimen/dp_12"
+        android:text="@string/imagepicker_insta_aktifikan"
+        android:textColor="@color/imagepicker_insta_menu"
+        app:layout_constraintBottom_toBottomOf="@id/image_contaianer"
+        app:layout_constraintEnd_toEndOf="@id/image_contaianer"
+        app:layout_constraintTop_toTopOf="@id/image_contaianer"
+        app:typographyType="body_3" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
