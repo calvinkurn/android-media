@@ -21,7 +21,7 @@ class TopchatCacheManagerStub(
         return cache as T
     }
 
-    override fun saveState(stateCacheKey: String, isSuccess: Boolean) {
+    override fun saveState(stateCacheKey: String, value: Boolean) {
 
     }
 

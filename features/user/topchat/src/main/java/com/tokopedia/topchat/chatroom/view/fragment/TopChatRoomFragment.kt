@@ -138,14 +138,15 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 import kotlin.math.abs
-import android.R.attr.label
 import android.app.Activity.CLIPBOARD_SERVICE
 import android.content.*
-import android.R.attr.label
 
 import android.content.ClipData
-import android.widget.TextView
+import android.widget.LinearLayout
 import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.topchat.chatroom.view.adapter.layoutmanager.TopchatLinearLayoutManager
+import com.tokopedia.topchat.chatroom.view.custom.message.TopchatMessageRecyclerView
+import com.tokopedia.topchat.chatroom.view.onboarding.ReplyBubbleOnBoarding
 
 
 /**
@@ -182,6 +183,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     @Inject
     lateinit var sellerReviewHelper: TopChatSellerReviewHelper
 
+    @Inject
+    lateinit var replyBubbleOnBoarding: ReplyBubbleOnBoarding
+
     private lateinit var fpm: PerformanceMonitoring
     private lateinit var customMessage: String
     private lateinit var adapter: TopChatRoomAdapter
@@ -204,11 +208,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var composeArea: EditText? = null
     private var orderProgress: TransactionOrderProgressLayout? = null
     private var chatMenu: ChatMenuView? = null
-    private var rvLayoutManager: LinearLayoutManager? = null
+    private var rvLayoutManager: TopchatLinearLayoutManager? = null
     private var rvScrollListener: LoadMoreTopBottomScrollListener? = null
     private var fbNewUnreadMessage: FloatingButtonUnify? = null
     private var tvTotalUnreadMessage: Typography? = null
-    private var rv: RecyclerView? = null
+    private var rv: TopchatMessageRecyclerView? = null
     private var rvSrw: SrwFrameLayout? = null
     private var replyCompose: ReplyBubbleAreaMessage? = null
     private var rvContainer: CoordinatorLayout? = null
@@ -219,6 +223,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     protected var topchatViewState: TopChatViewStateImpl? = null
     private var uploadImageBroadcastReceiver: BroadcastReceiver? = null
     private var smoothScroller: CenterSmoothScroller? = null
+    private var commentArea: LinearLayout? = null
 
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var chatBoxPadding: View? = null
@@ -435,6 +440,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         chatBackground = view?.findViewById(R.id.iv_bg_chat)
         sendButton = view?.findViewById(R.id.send_but)
         chatBoxPadding = view?.findViewById(R.id.view_chat_box_padding)
+        commentArea = view?.findViewById(R.id.add_comment_area)
     }
 
     private fun initStickerView() {
@@ -583,7 +589,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
-        return LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, true).also {
+        return TopchatLinearLayoutManager(
+            activity, LinearLayoutManager.VERTICAL, true
+        ).also {
             rvLayoutManager = it
         }
     }
@@ -731,6 +739,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         updateHasNextAfterState(chat)
         loadChatRoomSettings(chatRoom)
         presenter.loadAttachmentData(messageId.toLongOrZero(), chatRoom)
+    }
+
+    private fun checkReplyBubbleOnBoardingFirstRender() {
+        val hasShowOnBoarding = replyBubbleOnBoarding.hasBeenShown()
+        if (!hasShowOnBoarding && !presenter.isInTheMiddleOfThePage()) {
+            replyBubbleOnBoarding.showReplyBubbleOnBoarding(
+                rv, adapter, commentArea, context
+            )
+        }
     }
 
     private fun updateHasNextAfterState(chat: ChatReplies) {
@@ -1083,6 +1100,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             addSrwBubbleToChat()
         }
         onSendingMessage().invoke()
+        replyBubbleOnBoarding.dismiss()
         presenter.sendAttachmentsAndMessage(
             sendMessage, referredMsg
         )
@@ -1191,6 +1209,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             hideSeparatedChatTemplate()
         } else {
             topchatViewState?.setTemplate(list, isLastMessageBroadcast, amIBuyer)
+            checkReplyBubbleOnBoardingFirstRender()
         }
     }
 
@@ -1700,6 +1719,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onDestroyView() {
         super.onDestroyView()
+        replyBubbleOnBoarding.flush()
         lifecycleScope.launch(Dispatchers.IO) {
             sellerReviewHelper.saveMessageId(messageId)
         }
@@ -2369,6 +2389,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun showMsgMenu(msg: BaseChatViewModel, text: CharSequence) {
+        replyBubbleOnBoarding.dismiss()
         val bs = TopchatBottomSheetBuilder.getLongClickBubbleMenuBs(
             context, msg
         ) { id, msg ->

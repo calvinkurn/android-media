@@ -27,7 +27,7 @@
             android:layout_gravity="bottom"
             android:adjustViewBounds="true" />
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.tokopedia.topchat.chatroom.view.custom.message.TopchatMessageRecyclerView
             android:id="@+id/recycler_view_chatroom"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
