@@ -7,7 +7,6 @@ import android.text.style.URLSpan
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 
 class MessageOnTouchListener(
@@ -39,12 +38,10 @@ class MessageOnTouchListener(
                     when {
                         viewListener.shouldHandleUrlManually(clickedUrl) -> {
                             viewListener.onGoToWebView(clickedUrl, clickedUrl)
-                            notifyLinkHit(widget)
                             return true
                         }
                         viewListener.isBranchIOLink(clickedUrl) -> {
                             viewListener.handleBranchIOLinkClick(clickedUrl)
-                            notifyLinkHit(widget)
                             return true
                         }
                     }
@@ -54,7 +51,6 @@ class MessageOnTouchListener(
                         buffer.getSpanStart(link[0]),
                         buffer.getSpanEnd(link[0])
                     )
-                    notifyLinkHit(widget)
                     return true
                 }
             }
@@ -62,7 +58,4 @@ class MessageOnTouchListener(
         return false
     }
 
-    private fun notifyLinkHit(widget: TextView) {
-        Toast.makeText(widget.context, "LInk Hit True", Toast.LENGTH_SHORT).show()
-    }
 }
