@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.login.service
+package com.tokopedia.loginregister.registerpushnotif.services
 
 import android.content.Context
 import android.os.Build
@@ -14,7 +14,10 @@ import com.tokopedia.logger.utils.globalScopeLaunch
 import com.tokopedia.loginregister.login.data.SignResult
 import com.tokopedia.loginregister.login.domain.RegisterPushNotificationParamsModel
 import com.tokopedia.loginregister.login.domain.RegisterPushNotificationUseCase
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.loginregister.registerpushnotif.di.DaggerRegisterPushNotificationComponent
+import com.tokopedia.loginregister.registerpushnotif.di.RegisterPushNotificationModule
+import com.tokopedia.sessioncommon.di.SessionModule
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.security.*
@@ -27,14 +30,20 @@ class RegisterPushNotificationWorker(
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
 
+    @Named(SessionModule.SESSION_MODULE)
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var registerPushNotificationUseCase: RegisterPushNotificationUseCase
 
-    private var userSession: UserSession? = null
     private var keyPair: KeyPair? = null
 
     init {
-        userSession = UserSession(context)
+        DaggerRegisterPushNotificationComponent.builder()
+            .registerPushNotificationModule(RegisterPushNotificationModule(context))
+            .build()
+            .inject(this)
     }
 
     override suspend fun doWork(): Result {
@@ -44,7 +53,7 @@ class RegisterPushNotificationWorker(
 
         return withContext(Dispatchers.IO) {
             val result: Result = try {
-                if (userSession?.isLoggedIn == true) {
+                if (userSession.isLoggedIn) {
                     registerPushNotification()
                     Result.success()
                 } else {
@@ -63,7 +72,7 @@ class RegisterPushNotificationWorker(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             generateKey()
             if (keyPair != null) {
-                signData(userSession?.userId.orEmpty(), userSession?.deviceId.orEmpty()).let {
+                signData(userSession.userId.orEmpty(), userSession.deviceId.orEmpty()).let {
                     registerPushNotificationUseCase(RegisterPushNotificationParamsModel(
                         publicKey = it.publicKey,
                         signature = it.signature,

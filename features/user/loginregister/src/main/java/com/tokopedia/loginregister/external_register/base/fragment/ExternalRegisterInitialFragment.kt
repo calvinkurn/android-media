@@ -14,7 +14,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.const.LoginConstants
-import com.tokopedia.loginregister.login.service.RegisterPushNotificationWorker
+import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import java.net.URLDecoder
