@@ -41,7 +41,7 @@ class ProductManageMoreMenuBottomSheet(
         binding = BottomSheetProductManageMoreMenuBinding.inflate(
             inflater,
             container,
-            true
+            false
         )
         setChild(binding?.root)
         return super.onCreateView(inflater, container, savedInstanceState)
