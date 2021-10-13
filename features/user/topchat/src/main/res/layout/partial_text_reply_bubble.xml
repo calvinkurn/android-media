@@ -44,7 +44,7 @@
         android:maxLines="1"
         android:textColor="@color/Unify_N700_68"
         app:layout_constrainedWidth="true"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/iv_rb_close"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tp_reply_from"
@@ -54,9 +54,10 @@
     <ImageView
         android:id="@+id/iv_rb_close"
         android:layout_width="@dimen/dp_topchat_41"
-        android:layout_height="@dimen/dp_topchat_35"
+        android:layout_height="0dp"
+        android:paddingTop="@dimen/dp_topchat_10"
         android:paddingHorizontal="@dimen/dp_topchat_14"
-        android:paddingVertical="@dimen/unify_space_12"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/topchat_ic_close" />
