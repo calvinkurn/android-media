@@ -865,6 +865,11 @@ class AddEditProductPreviewFragment :
                 productInputModel = viewModel.productInputModel.value
             }
         }
+        // update product limitation ticker
+        productLimitationTicker?.post {
+            productLimitationTicker?.showWithCondition(
+                (isAdding() && !isDrafting()) || viewModel.isDuplicate)
+        }
     }
 
     private fun displayAddModeDetail(productInputModel: ProductInputModel) {
