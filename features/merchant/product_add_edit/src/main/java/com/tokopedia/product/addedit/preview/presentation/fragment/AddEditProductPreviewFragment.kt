@@ -867,8 +867,9 @@ class AddEditProductPreviewFragment :
         }
         // update product limitation ticker
         productLimitationTicker?.post {
-            productLimitationTicker?.showWithCondition(
-                (isAdding() && !isDrafting()) || viewModel.isDuplicate)
+            val productLimitationModel = SharedPreferencesUtil
+                .getProductLimitationModel(requireActivity()) ?: ProductLimitationModel()
+            setupBottomSheetProductLimitation(productLimitationModel)
         }
     }
 
