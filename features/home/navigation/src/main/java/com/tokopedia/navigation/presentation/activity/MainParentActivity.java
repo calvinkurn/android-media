@@ -168,6 +168,9 @@ public class MainParentActivity extends BaseActivity implements
     private static final String HOME_PERFORMANCE_MONITORING_PREPARE_METRICS = "home_plt_start_page_metrics";
     private static final String HOME_PERFORMANCE_MONITORING_NETWORK_METRICS = "home_plt_network_request_page_metrics";
     private static final String HOME_PERFORMANCE_MONITORING_RENDER_METRICS = "home_plt_render_page_metrics";
+    private static final String MAIN_PARENT_ON_CREATE_METRICS = "mp_main_parent_on_create_metrics";
+    private static final String MAIN_PARENT_ON_START_METRICS = "mp_main_parent_on_start_metrics";
+    private static final String MAIN_PARENT_ON_RESUME_METRICS = "mp_main_parent_on_resume_metrics";
 
     private static final String PERFORMANCE_MONITORING_CACHE_ATTRIBUTION = "dataSource";
     private static final String PERFORMANCE_MONITORING_CACHE_VALUE = "Cache";
@@ -179,6 +182,8 @@ public class MainParentActivity extends BaseActivity implements
     private static final String OFFICIAL_STORE_PERFORMANCE_MONITORING_RENDER_METRICS = "official_store_plt_render_page_metrics";
 
     private static final String MAIN_PARENT_PERFORMANCE_MONITORING_KEY = "mp_slow_rendering_perf";
+
+    private static final String MAIN_PARENT_LOAD_ON_RESUME = "main_parent_load_on_resume";
 
     private static final String ROLLANCE_EXP_NAME = RollenceKey.NAVIGATION_EXP_TOP_NAV;
     private static final String ROLLANCE_EXP_NAME2 = RollenceKey.NAVIGATION_EXP_TOP_NAV2;
@@ -232,6 +237,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private PageLoadTimePerformanceCallback pageLoadTimePerformanceCallback;
     private PageLoadTimePerformanceCallback officialStorePageLoadTimePerformanceCallback;
+    private PageLoadTimePerformanceCallback mainParentPageLoadTimePerformanceCallback;
 
     private boolean isNewNavigation;
 
@@ -258,6 +264,9 @@ public class MainParentActivity extends BaseActivity implements
         //changes for triggering unittest checker
         startSelectedPagePerformanceMonitoring();
         startMainParentPerformanceMonitoring();
+        if (pageLoadTimePerformanceCallback != null) {
+            pageLoadTimePerformanceCallback.startCustomMetric(MAIN_PARENT_ON_CREATE_METRICS);
+        }
 
         super.onCreate(savedInstanceState);
         initInjector();
@@ -279,6 +288,10 @@ public class MainParentActivity extends BaseActivity implements
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeEventsWeave, RemoteConfigKey.ENABLE_ASYNC_OPENHOME_EVENT, getContext());
         installDFonBackground();
         runRiskWorker();
+
+        if (pageLoadTimePerformanceCallback != null && pageLoadTimePerformanceCallback.getCustomMetric().containsKey(MAIN_PARENT_ON_CREATE_METRICS)) {
+            pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_CREATE_METRICS);
+        }
     }
 
     private void runRiskWorker() {
@@ -330,9 +343,15 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onStart() {
         super.onStart();
+        if (pageLoadTimePerformanceCallback != null) {
+            pageLoadTimePerformanceCallback.startCustomMetric(MAIN_PARENT_ON_START_METRICS);
+        }
         if (isFirstTimeUser()) {
             setDefaultShakeEnable();
             routeOnboarding();
+        }
+        if (pageLoadTimePerformanceCallback != null && pageLoadTimePerformanceCallback.getCustomMetric().containsKey(MAIN_PARENT_ON_START_METRICS)) {
+            pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_START_METRICS);
         }
     }
 
@@ -408,10 +427,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void showSelectedPage() {
-        int tabPosition = HOME_MENU;
-        if (getIntent().getExtras() != null) {
-            tabPosition = getTabPositionFromIntent();
-        }
+        int tabPosition = getTabPositionFromIntent();
         if (tabPosition > fragmentList.size() - 1) {
             tabPosition = HOME_MENU;
         }
@@ -433,22 +449,38 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private int getTabPositionFromIntent() {
-        int position = getIntent().getExtras().getInt(ARGS_TAB_POSITION, -1);
-        if (position != -1) return position;
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            int position = getIntent().getExtras().getInt(ARGS_TAB_POSITION, -1);
+            if (position != -1) return position;
 
-        try {
-            String posString = getIntent().getExtras().getString(ARGS_TAB_POSITION);
-            return Integer.parseInt(posString);
-        } catch (Exception e) {
+            if (getIntent().getExtras().getString(ARGS_TAB_POSITION) != null) {
+                try {
+                    String posString = getIntent().getExtras().getString(ARGS_TAB_POSITION);
+                    return Integer.parseInt(posString);
+                } catch (Exception e) {
+                    return HOME_MENU;
+                }
+            } else {
+                return HOME_MENU;
+            }
+        } else if (
+                getIntent() != null &&
+                        getIntent().getData() != null &&
+                        getIntent().getData().getQueryParameter(ARGS_TAB_POSITION) != null) {
+            try {
+                String posString = getIntent().getData().getQueryParameter(ARGS_TAB_POSITION);
+                return Integer.parseInt(posString);
+            } catch (Exception e) {
+                return HOME_MENU;
+            }
+        } else {
             return HOME_MENU;
         }
     }
 
     private void startSelectedPagePerformanceMonitoring() {
         int tabPosition = HOME_MENU;
-        if (getIntent().getExtras() != null) {
-            tabPosition = getTabPositionFromIntent();
-        }
+        tabPosition = getTabPositionFromIntent();
         switch (tabPosition) {
             case HOME_MENU:
                 startHomePerformanceMonitoring();
@@ -462,29 +494,25 @@ public class MainParentActivity extends BaseActivity implements
 
         if (bottomNavigation == null) return;
 
-        if (getIntent().getExtras() != null) {
-            int tabPosition = getTabPositionFromIntent();
-            switch (tabPosition) {
-                case FEED_MENU:
-                    bottomNavigation.setSelected(FEED_MENU);
-                    break;
-                case OS_MENU:
-                    bottomNavigation.setSelected(OS_MENU);
-                    break;
-                case WISHLIST_MENU:
-                    bottomNavigation.setSelected(WISHLIST_MENU);
-                    break;
-                case ACCOUNT_MENU:
-                    bottomNavigation.setSelected(ACCOUNT_MENU);
-                    break;
-                case RECOMENDATION_LIST:
-                case HOME_MENU:
-                default:
-                    bottomNavigation.setSelected(HOME_MENU);
-                    break;
-            }
-        } else {
-            bottomNavigation.setSelected(HOME_MENU);
+        int tabPosition = getTabPositionFromIntent();
+        switch (tabPosition) {
+            case FEED_MENU:
+                bottomNavigation.setSelected(FEED_MENU);
+                break;
+            case OS_MENU:
+                bottomNavigation.setSelected(OS_MENU);
+                break;
+            case WISHLIST_MENU:
+                bottomNavigation.setSelected(WISHLIST_MENU);
+                break;
+            case ACCOUNT_MENU:
+                bottomNavigation.setSelected(ACCOUNT_MENU);
+                break;
+            case RECOMENDATION_LIST:
+            case HOME_MENU:
+            default:
+                bottomNavigation.setSelected(HOME_MENU);
+                break;
         }
     }
 
@@ -645,6 +673,9 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        if (pageLoadTimePerformanceCallback != null && !getIntent().getBooleanExtra(MAIN_PARENT_LOAD_ON_RESUME, false)) {
+            pageLoadTimePerformanceCallback.startCustomMetric(MAIN_PARENT_ON_RESUME_METRICS);
+        }
         // if user is downloading the update (in app update feature),
         // check if the download is finished or is in progress
         checkForInAppUpdateInProgressOrCompleted();
@@ -670,6 +701,11 @@ public class MainParentActivity extends BaseActivity implements
         if (currentFragment != null) {
             configureStatusBarBasedOnFragment(currentFragment);
             FragmentLifecycleObserver.INSTANCE.onFragmentSelected(currentFragment);
+        }
+
+        if (pageLoadTimePerformanceCallback != null && pageLoadTimePerformanceCallback.getCustomMetric().containsKey(MAIN_PARENT_ON_RESUME_METRICS) && !getIntent().getBooleanExtra(MAIN_PARENT_LOAD_ON_RESUME, false)) {
+            pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_RESUME_METRICS);
+            getIntent().putExtra(MAIN_PARENT_LOAD_ON_RESUME, true);
         }
     }
 

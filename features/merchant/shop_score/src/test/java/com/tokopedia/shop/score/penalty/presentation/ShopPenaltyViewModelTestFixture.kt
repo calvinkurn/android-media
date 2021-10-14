@@ -5,10 +5,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleRegistry
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.shop.score.penalty.domain.mapper.PenaltyMapper
-import com.tokopedia.shop.score.penalty.domain.response.ShopPenaltySummaryTypeWrapper
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailResponse
+import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltyDetailMergeUseCase
 import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltyDetailUseCase
-import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltySummaryTypesUseCase
+import com.tokopedia.shop.score.penalty.presentation.model.PenaltyDataWrapper
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewModel
 import dagger.Lazy
@@ -27,7 +27,7 @@ abstract class ShopPenaltyViewModelTestFixture {
     lateinit var penaltyMapper: PenaltyMapper
 
     @RelaxedMockK
-    lateinit var getShopPenaltySummaryTypesUseCase: Lazy<GetShopPenaltySummaryTypesUseCase>
+    lateinit var getShopPenaltyDetailMergeUseCase: Lazy<GetShopPenaltyDetailMergeUseCase>
 
     @RelaxedMockK
     lateinit var getShopPenaltyDetailUseCase: Lazy<GetShopPenaltyDetailUseCase>
@@ -41,7 +41,7 @@ abstract class ShopPenaltyViewModelTestFixture {
         MockKAnnotations.init(this)
         penaltyViewModel = ShopPenaltyViewModel(
             CoroutineTestDispatchersProvider,
-            getShopPenaltySummaryTypesUseCase,
+            getShopPenaltyDetailMergeUseCase,
             getShopPenaltyDetailUseCase,
             penaltyMapper
         )
@@ -55,20 +55,18 @@ abstract class ShopPenaltyViewModelTestFixture {
         unmockkAll()
     }
 
-    protected fun onGetShopPenaltySummaryTypesUseCase_thenReturn(
-        shopPenaltySummaryTypeWrapper: ShopPenaltySummaryTypeWrapper
-    ) {
+    protected fun onGetShopPenaltyDetailMergeUseCase_thenReturn() {
         coEvery {
-            getShopPenaltySummaryTypesUseCase.get().executeOnBackground()
-        } returns shopPenaltySummaryTypeWrapper
+            getShopPenaltyDetailMergeUseCase.get().executeOnBackground()
+        } returns PenaltyDataWrapper()
     }
 
-    protected fun onGetShopPenaltySummaryTypesUseCaseError_thenReturn(exception: Throwable) {
-        coEvery { getShopPenaltySummaryTypesUseCase.get().executeOnBackground() } throws exception
+    protected fun onGetShopPenaltyDetailMergeUseCaseError_thenReturn(exception: Throwable) {
+        coEvery { getShopPenaltyDetailMergeUseCase.get().executeOnBackground() } throws exception
     }
 
-    protected fun verifyGetShopPenaltySummaryTypesUseCaseCalled() {
-        coVerify { getShopPenaltySummaryTypesUseCase.get().executeOnBackground() }
+    protected fun verifyGetShopPenaltyDetailMergeUseCaseCalled() {
+        coVerify { getShopPenaltyDetailMergeUseCase.get().executeOnBackground() }
     }
 
     protected fun onGetShopPenaltyDetailUseCase_thenReturn(

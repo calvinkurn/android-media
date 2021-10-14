@@ -14,11 +14,13 @@ import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Base64
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.webkit.*
 import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -35,6 +37,9 @@ import com.tokopedia.authentication.*
 import com.tokopedia.authentication.AuthKey.Companion.KEY_WSV4
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.common.payment.utils.LINK_ACCOUNT_BACK_BUTTON_APPLINK
+import com.tokopedia.common.payment.utils.LINK_ACCOUNT_SOURCE_PAYMENT
+import com.tokopedia.common.payment.utils.LinkStatusMatcher
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.fingerprint.util.FingerprintConstant
 import com.tokopedia.logger.ServerLogger
@@ -49,10 +54,7 @@ import com.tokopedia.payment.fingerprint.view.FingerPrintDialogPayment
 import com.tokopedia.payment.fingerprint.view.FingerprintDialogRegister
 import com.tokopedia.payment.presenter.TopPayContract
 import com.tokopedia.payment.presenter.TopPayPresenter
-import com.tokopedia.payment.utils.Constant
-import com.tokopedia.payment.utils.HEADER_TKPD_SESSION_ID
-import com.tokopedia.payment.utils.HEADER_TKPD_USER_AGENT
-import com.tokopedia.payment.utils.PaymentPageTimeOutLogging
+import com.tokopedia.payment.utils.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
@@ -68,7 +70,6 @@ import rx.schedulers.Schedulers
 import java.io.ByteArrayOutputStream
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
-import java.net.URLEncoder
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -96,6 +97,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     private var btnBack: View? = null
     private var tvTitle: TextView? = null
     private var progressDialog: ProgressDialog? = null
+    private var mainContainer: RelativeLayout? = null
 
     private var fingerPrintDialogPayment: FingerPrintDialogPayment? = null
     private var fingerPrintDialogRegister: FingerprintDialogRegister? = null
@@ -113,6 +115,8 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     private var isPaymentPageLoadingTimeout: Boolean = false
 
     private val paymentPageTimeOutLogging by lazy { PaymentPageTimeOutLogging(this.application) }
+
+    private var reloadUrl = ""
 
     private val webViewOnKeyListener: View.OnKeyListener
         get() = View.OnKeyListener { _, keyCode, event ->
@@ -159,16 +163,25 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     }
 
     private fun initView() {
-        setContentView(R.layout.activity_top_pay_payment_module)
-        tvTitle = findViewById(R.id.tv_title)
-        btnBack = findViewById(R.id.btn_back)
-        scroogeWebView = findViewById(R.id.scrooge_webview)
-        progressBar = findViewById(R.id.progressbar)
-        progressDialog = ProgressDialog(this)
-        progressDialog?.setMessage(getString(R.string.title_loading))
-        tvTitle?.text = getString(R.string.toppay_title)
-        val currentTransactionId = paymentPassData?.transactionId ?: ""
-        tvTitle?.contentDescription = getString(R.string.toppay_title_content_desc, currentTransactionId)
+        try {
+            setContentView(R.layout.activity_top_pay_payment_module)
+            mainContainer = findViewById(R.id.activity_topay_container)
+            tvTitle = findViewById(R.id.tv_title)
+            btnBack = findViewById(R.id.btn_back)
+            scroogeWebView = findViewById(R.id.scrooge_webview)
+            progressBar = findViewById(R.id.progressbar)
+            progressDialog = ProgressDialog(this)
+            progressDialog?.setMessage(getString(R.string.title_loading))
+            tvTitle?.text = getString(R.string.toppay_title)
+            val currentTransactionId = paymentPassData?.transactionId ?: ""
+            tvTitle?.contentDescription = getString(R.string.toppay_title_content_desc, currentTransactionId)
+        } catch (e: Exception) {
+            ServerLogger.log(Priority.P1, "WEBVIEW_ERROR",
+                mapOf("type" to "exception",
+                    "err" to Log.getStackTraceString(e).take(LOG_TIMEOUT),
+                    "data" to ""))
+            finish()
+        }
     }
 
     private fun initVar() {
@@ -420,7 +433,37 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                         .append("')")
                 scroogeWebView?.loadUrl(jsCallbackBuilder.toString())
             }
+        } else if(requestCode == REQUEST_CODE_LINK_ACCOUNT) {
+            hideProgressDialog()
+            if(resultCode == Activity.RESULT_OK) {
+                val status = intent?.getStringExtra(ApplinkConstInternalGlobal.PARAM_STATUS) ?: ""
+                if(status.isNotEmpty()) {
+                    handleStatusMatching(status)
+                }
+                reloadPayment()
+            } else {
+                hideFullLoading()
+            }
         }
+    }
+
+    private fun handleStatusMatching(status: String) {
+        val message = LinkStatusMatcher.getStatus(status)
+        if(message.isNotEmpty()) {
+            showToaster(message, Toaster.TYPE_NORMAL)
+        }
+    }
+
+    private fun showToaster(message: String, type: Int) {
+        mainContainer?.run {
+            Toaster.build(this, message, Toaster.LENGTH_LONG, type).show()
+        }
+    }
+
+
+    private fun reloadPayment() {
+        // scroogeWebView?.reload() doesn't work
+        scroogeWebView?.loadUrl(reloadUrl)
     }
 
     private fun encodeToBase64(imagePath: String?): String {
@@ -431,7 +474,33 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         return Base64.encodeToString(b, Base64.DEFAULT)
     }
 
+    private fun showFullLoading() {
+        scroogeWebView?.visibility = View.INVISIBLE
+        showProgressDialog()
+    }
+
+    private fun hideFullLoading() {
+        scroogeWebView?.visibility = View.VISIBLE
+        hideProgressDialog()
+    }
+
+    private fun routeToHomeCredit(appLink: String, overlayUrl: String?, headerText: String?) {
+        val intent = RouteManager.getIntent(this@TopPayActivity, appLink)
+        if (!overlayUrl.isNullOrEmpty()) intent.putExtra(CUST_OVERLAY_URL, overlayUrl)
+        if (!headerText.isNullOrEmpty()) intent.putExtra(CUST_HEADER, headerText)
+        startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE)
+    }
+
     private inner class TopPayWebViewClient : WebViewClient() {
+
+        fun gotoLinkAccount() {
+            showFullLoading()
+            reloadUrl = scroogeWebView?.url ?: ""
+            val intent = RouteManager.getIntent(this@TopPayActivity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_LD, LINK_ACCOUNT_BACK_BUTTON_APPLINK)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, LINK_ACCOUNT_SOURCE_PAYMENT)
+            startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
+        }
 
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
             if (url != null) {
@@ -450,6 +519,11 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                     val deepLinkUrl = (ApplinkConstInternalGlobal.WEBVIEW_BACK_HOME + "?url=" + url)
                     RouteManager.route(this@TopPayActivity, deepLinkUrl)
                     return true
+                }
+
+                if(url.isNotEmpty() && url.startsWith(ApplinkConst.LINK_ACCOUNT)){
+                        gotoLinkAccount()
+                        return true
                 }
 
                 // success payment
@@ -479,17 +553,19 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                     return true
                 }
 
+                val queryParam = uri.getQueryParameter(CUST_OVERLAY_URL)
+                val headerText = uri.getQueryParameter(CUST_HEADER)
                 // hci
                 if (url.contains(HCI_CAMERA_KTP)) {
                     view?.stopLoading()
                     mJsHciCallbackFuncName = Uri.parse(url).lastPathSegment
-                    startActivityForResult(RouteManager.getIntent(this@TopPayActivity, ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE), HCI_CAMERA_REQUEST_CODE)
+                    routeToHomeCredit(ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE, queryParam, headerText)
                     return true
                 }
                 if (url.contains(HCI_CAMERA_SELFIE)) {
                     view?.stopLoading()
                     mJsHciCallbackFuncName = Uri.parse(url).lastPathSegment
-                    startActivityForResult(RouteManager.getIntent(this@TopPayActivity, ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE), HCI_CAMERA_REQUEST_CODE)
+                    routeToHomeCredit(ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE, queryParam, headerText)
                     return true
                 }
 
@@ -732,6 +808,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
         const val HCI_CAMERA_REQUEST_CODE = 978
         const val FORCE_TIMEOUT = 90000L
+        const val LOG_TIMEOUT = 1000
 
         private const val IMAGE_COMPRESS_QUALITY = 60
 
@@ -745,6 +822,10 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         private const val INSUFFICIENT_STOCK_URL = "https://www.tokopedia.com/cart/insufficient_booking_stock"
 
         private const val BACK_DIALOG_URL = "javascript:handlePopAndroid();"
+        private const val CUST_OVERLAY_URL = "imgurl"
+        private const val CUST_HEADER = "header_text"
+
+        private const val REQUEST_CODE_LINK_ACCOUNT = 101
 
         @JvmStatic
         fun createInstance(context: Context, paymentPassData: PaymentPassData?): Intent {

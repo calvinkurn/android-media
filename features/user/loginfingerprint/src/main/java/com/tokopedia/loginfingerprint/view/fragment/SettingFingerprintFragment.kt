@@ -16,8 +16,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginfingerprint.R
-import com.tokopedia.loginfingerprint.data.model.CheckFingerprintPojo
+import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintResult
+import com.tokopedia.loginfingerprint.databinding.FragmentSettingFingerprintBinding
 import com.tokopedia.loginfingerprint.di.LoginFingerprintComponent
 import com.tokopedia.loginfingerprint.listener.AuthenticationFingerprintCallback
 import com.tokopedia.loginfingerprint.tracker.BiometricTracker
@@ -28,7 +29,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_setting_fingerprint.*
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 
@@ -49,6 +50,8 @@ class SettingFingerprintFragment(val listener: AuthenticationFingerprintCallback
 
     private var enableSwitch = true
 
+    private val binding: FragmentSettingFingerprintBinding? by viewBinding()
+
     override fun getScreenName(): String = TAG
 
     override fun initInjector() {
@@ -66,8 +69,7 @@ class SettingFingerprintFragment(val listener: AuthenticationFingerprintCallback
             initObserver()
             loading()
             viewModel.getFingerprintStatus()
-
-            fragment_fingerprint_setting_switch?.setOnCheckedChangeListener { switch, isEnable ->
+            binding?.fragmentFingerprintSettingSwitch?.setOnCheckedChangeListener { switch, isEnable ->
                 if (enableSwitch) {
                     if (isEnable) {
                         enableSwitch = false
@@ -99,12 +101,12 @@ class SettingFingerprintFragment(val listener: AuthenticationFingerprintCallback
             when(it) {
                 is Success -> {
                     enableSwitch = false
-                    fragment_fingerprint_setting_switch?.isChecked = false
+                    binding?.fragmentFingerprintSettingSwitch?.isChecked = false
                     tracker.trackRemoveFingerprintSuccess()
                 }
                 is Fail -> {
                     enableSwitch = false
-                    fragment_fingerprint_setting_switch?.isChecked = true
+                    binding?.fragmentFingerprintSettingSwitch?.isChecked = true
                     tracker.trackRemoveFingerprintFailed(it.throwable.message ?: "")
                     showToaster(it.throwable.message)
                 }
@@ -117,7 +119,7 @@ class SettingFingerprintFragment(val listener: AuthenticationFingerprintCallback
                 is Success -> onSuccessRegisterFingerprint(it.data)
                 is Fail -> {
                     enableSwitch = false
-                    fragment_fingerprint_setting_switch?.isChecked = false
+                    binding?.fragmentFingerprintSettingSwitch?.isChecked = false
                     onErrorRegisterFingerprint(throwable = it.throwable)
                 }
             }
@@ -166,7 +168,7 @@ class SettingFingerprintFragment(val listener: AuthenticationFingerprintCallback
         if (data.success) {
             tracker.trackRegisterFpSuccess()
             enableSwitch = false
-            fragment_fingerprint_setting_switch?.isChecked = true
+            binding?.fragmentFingerprintSettingSwitch?.isChecked = true
             view?.let {
                 Toaster.build(it, getString(R.string.fingerprint_success_login_toaster), Toaster.LENGTH_LONG).show()
             }
@@ -182,9 +184,9 @@ class SettingFingerprintFragment(val listener: AuthenticationFingerprintCallback
         showToaster(throwable.message)
     }
 
-    fun onSuccessGetFingerprintStatus(checkFingerprintResponse: CheckFingerprintPojo) {
+    fun onSuccessGetFingerprintStatus(checkFingerprintResponse: CheckFingerprintResult) {
         enableSwitch = false
-        fragment_fingerprint_setting_switch?.isChecked = checkFingerprintResponse.data.isRegistered
+        binding?.fragmentFingerprintSettingSwitch?.isChecked = checkFingerprintResponse.isRegistered
         enableSwitch = true
     }
 
@@ -193,13 +195,13 @@ class SettingFingerprintFragment(val listener: AuthenticationFingerprintCallback
     }
 
     fun loading() {
-        fragment_fingerprint_setting_container?.alpha = LESS_ALPHA
-        fragment_fingerprint_setting_loader.show()
+        binding?.fragmentFingerprintSettingContainer?.alpha = LESS_ALPHA
+        binding?.fragmentFingerprintSettingLoader?.show()
     }
 
     fun hideLoading() {
-        fragment_fingerprint_setting_container?.alpha = NORMAL_ALPHA
-        fragment_fingerprint_setting_loader.hide()
+        binding?.fragmentFingerprintSettingContainer?.alpha = NORMAL_ALPHA
+        binding?.fragmentFingerprintSettingLoader?.hide()
     }
 
     private fun onSuccessAuthentication() {

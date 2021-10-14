@@ -1,7 +1,6 @@
 package com.tokopedia.filter.bottomsheet
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
@@ -114,11 +113,13 @@ class SortFilterBottomSheet: BottomSheetUnify() {
 
     private val keywordFilterListener = object: KeywordFilterListener {
         override fun scrollToPosition(position: Int) {
-            val recyclerView = sortFilterBottomSheetView?.recyclerViewSortFilterBottomSheet ?: return
-            Handler().postDelayed(
-                { recyclerView.smoothScrollToPosition(position) },
-                50
-            )
+            val layoutManager =
+                sortFilterBottomSheetView
+                    ?.recyclerViewSortFilterBottomSheet
+                    ?.layoutManager
+
+            if (layoutManager is LinearLayoutManager)
+                layoutManager.scrollToPositionWithOffset(position, 0)
         }
 
         override fun onChangeKeywordFilter(keywordFilterDataView: KeywordFilterDataView) {

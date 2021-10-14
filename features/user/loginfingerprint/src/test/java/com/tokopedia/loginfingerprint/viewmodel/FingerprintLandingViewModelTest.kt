@@ -7,11 +7,13 @@ import com.tokopedia.loginfingerprint.data.model.VerifyFingerprintPojo
 import com.tokopedia.loginfingerprint.domain.usecase.VerifyFingerprintUseCase
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -35,6 +37,7 @@ class FingerprintLandingViewModelTest {
 
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
     private val cryptographyUtils = mockk<Cryptography>(relaxed = true)
+    val fingerprintPreferenceManager = mockk<FingerprintPreference>(relaxed = true)
 
     private val throwable = mockk<Throwable>(relaxed = true)
 
@@ -44,7 +47,8 @@ class FingerprintLandingViewModelTest {
             CoroutineTestDispatchersProvider,
             userSession,
             verifyFingerprintUseCase,
-            cryptographyUtils
+            cryptographyUtils,
+            fingerprintPreferenceManager
         )
 
         viewModel.verifyFingerprint.observeForever(verifyFingerprintObserver)
@@ -57,9 +61,7 @@ class FingerprintLandingViewModelTest {
         val data = VerifyFingerprint(isSuccess = true,  validateToken = "abc123")
         val response = VerifyFingerprintPojo(data)
 
-        every { verifyFingerprintUseCase.verifyFingerprint(any(), any(), any()) } answers {
-            secondArg<(VerifyFingerprintPojo) -> Unit>().invoke(response)
-        }
+        coEvery { verifyFingerprintUseCase.invoke(any()) } returns response
 
         viewModel.verifyFingerprint()
 
@@ -73,9 +75,7 @@ class FingerprintLandingViewModelTest {
     @Test
     fun `on Error Throwable Verify Fingerprint`() {
         /* When */
-        every { verifyFingerprintUseCase.verifyFingerprint(any(), any(), any()) } answers {
-            thirdArg<(Throwable) -> Unit>().invoke(throwable)
-        }
+        coEvery { verifyFingerprintUseCase.invoke(any()) } throws throwable
 
         viewModel.verifyFingerprint()
 
@@ -89,9 +89,7 @@ class FingerprintLandingViewModelTest {
         val data = VerifyFingerprint(isSuccess = true,  validateToken = "abc123", errorMessage = "error")
         val response = VerifyFingerprintPojo(data)
 
-        every { verifyFingerprintUseCase.verifyFingerprint(any(), any(), any()) } answers {
-            secondArg<(VerifyFingerprintPojo) -> Unit>().invoke(response)
-        }
+        coEvery { verifyFingerprintUseCase.invoke(any()) } returns response
 
         viewModel.verifyFingerprint()
 

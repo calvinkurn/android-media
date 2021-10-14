@@ -47,7 +47,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
-    lateinit var dateUtil: DateUtil
+    lateinit var dateUtil:     DateUtil
     @Inject
     lateinit var mAnalytics: OrderAnalyticsOrderTracking
 

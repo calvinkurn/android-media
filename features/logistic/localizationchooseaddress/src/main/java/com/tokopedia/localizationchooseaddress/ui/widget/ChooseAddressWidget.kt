@@ -70,7 +70,7 @@ class ChooseAddressWidget : ConstraintLayout,
         iconChooseAddress = findViewById(R.id.icon_location)
         iconChevronChooseAddress = findViewById(R.id.btn_arrow)
 
-        checkRollence()
+        getLocalizingAddressData()
     }
 
     private fun initInjector() {
@@ -124,8 +124,8 @@ class ChooseAddressWidget : ConstraintLayout,
         }
     }
 
-    private fun checkRollence() {
-        val value = ChooseAddressUtils.isRollOutUser(context)
+    private fun getLocalizingAddressData() {
+        val value = true
         value.let { chooseAddressWidgetListener?.onLocalizingAddressRollOutUser(it) }
     }
 
@@ -156,7 +156,7 @@ class ChooseAddressWidget : ConstraintLayout,
     private fun initChooseAddressFlow() {
         val localData = ChooseAddressUtils.getLocalizingAddressData(context)
         updateWidget()
-        if (localData?.address_id?.isEmpty() == true && ChooseAddressUtils.isRollOutUser(context)) {
+        if (localData?.address_id?.isEmpty() == true) {
             chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()?.let { viewModel.getStateChosenAddress(it, isSupportWarehouseLoc) }
             initObservers()
         }

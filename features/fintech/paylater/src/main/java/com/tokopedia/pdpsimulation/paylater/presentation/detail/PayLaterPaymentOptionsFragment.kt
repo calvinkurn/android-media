@@ -23,6 +23,7 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.GatewayDetail
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterOfferDescriptionAdapter
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterActionStepsBottomSheet
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterFaqBottomSheet
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
@@ -175,6 +176,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             recommendationText.text = data.is_recommended_string ?: ""
         } else {
             recommendationText.gone()
+            paylaterPartnerCard.cardType = CardUnify.TYPE_SHADOW
         }
     }
 
@@ -191,7 +193,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
                 resources.getString(R.string.pay_later_installment_text) + " ${data.tenure}x"
 
         interestText.text =
-            "${resources.getString(R.string.pay_later_partner_interest)}(${(data.interest_pct ?: 0)}%)"
+            "${resources.getString(R.string.pay_later_partner_interest)} (${(data.interest_pct ?: 0)}%)"
 
 
 
@@ -300,7 +302,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
     private fun setUIIfDisable(data: Detail) {
         disableVisibilityGroup.gone()
         tvTitlePaymentPartner.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
-        tvSubTitlePaylaterPartner.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+        tvSubTitlePaylaterPartner.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N400_32))
         if (tvSmallSubTitlePaylaterPartner.isVisible)
             tvSmallSubTitlePaylaterPartner.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
         interestText.text = data.disableDetail?.description ?: ""
@@ -326,7 +328,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
     private fun setDefaultHeaderUI(subheader: String) {
         tvSubTitlePaylaterPartner.text = subheader
-        tvSubTitlePaylaterPartner.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
+        tvSubTitlePaylaterPartner.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N400_96))
         tvSubTitlePaylaterPartner.setBackgroundColor(Color.TRANSPARENT)
 
     }

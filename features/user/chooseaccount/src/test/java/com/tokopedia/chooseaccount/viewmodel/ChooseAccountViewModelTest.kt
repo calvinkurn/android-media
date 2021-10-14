@@ -3,12 +3,11 @@ package com.tokopedia.chooseaccount.viewmodel
 import FileUtil
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.chooseaccount.data.AccountListDataModel
 import com.tokopedia.chooseaccount.data.AccountsDataModel
 import com.tokopedia.chooseaccount.di.ChooseAccountQueryConstant
 import com.tokopedia.chooseaccount.domain.subscriber.LoginFacebookSubscriber
-import com.tokopedia.chooseaccount.viewmodel.ChooseAccountViewModel
+import com.tokopedia.chooseaccount.domain.usecase.GetAccountListUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -37,7 +36,7 @@ class ChooseAccountViewModelTest {
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
-    lateinit var getAccountsListUseCase: GraphqlUseCase<AccountsDataModel>
+    lateinit var getAccountsListUseCase: GetAccountListUseCase
     @RelaxedMockK
     lateinit var loginTokenUseCase: LoginTokenUseCase
     @RelaxedMockK
@@ -66,8 +65,7 @@ class ChooseAccountViewModelTest {
                 getAccountsListUseCase,
                 userSession,
                 loginTokenUseCase,
-                rawQueries,
-                CoroutineTestDispatchersProvider
+                CoroutineTestDispatchersProvider,
         )
     }
 
@@ -198,9 +196,7 @@ class ChooseAccountViewModelTest {
     fun `Success get account list phone`() {
         viewmodel.getAccountListDataModelPhoneResponse.observeForever(getAccountListDataModelPhoneResponseObserver)
 
-        coEvery { getAccountsListUseCase.execute(any(), any()) } coAnswers {
-            firstArg<(AccountsDataModel) -> Unit>().invoke(SUCCESS_GET_ACCOUNTS_LIST_RESPONSE)
-        }
+        coEvery { getAccountsListUseCase.invoke(any()) } returns SUCCESS_GET_ACCOUNTS_LIST_RESPONSE
 
         viewmodel.getAccountListPhoneNumber("", "")
 
@@ -215,9 +211,7 @@ class ChooseAccountViewModelTest {
     fun `Failed get account list phone`() {
         viewmodel.getAccountListDataModelPhoneResponse.observeForever(getAccountListDataModelPhoneResponseObserver)
 
-        coEvery { getAccountsListUseCase.execute(any(), any()) } coAnswers {
-            secondArg<(Throwable) -> Unit>().invoke(throwable)
-        }
+        coEvery { getAccountsListUseCase.invoke(any()) } throws throwable
 
         viewmodel.getAccountListPhoneNumber("", "")
 
@@ -232,9 +226,7 @@ class ChooseAccountViewModelTest {
     fun `Success get account list fb`() {
         viewmodel.getAccountListDataModelFBResponse.observeForever(getAccountListDataModelFBResponseObserver)
 
-        coEvery { getAccountsListUseCase.execute(any(), any()) } coAnswers {
-            firstArg<(AccountsDataModel) -> Unit>().invoke(SUCCESS_GET_ACCOUNTS_LIST_RESPONSE)
-        }
+        coEvery { getAccountsListUseCase.invoke(any()) } returns SUCCESS_GET_ACCOUNTS_LIST_RESPONSE
 
         viewmodel.getAccountListFacebook("")
 
@@ -249,9 +241,7 @@ class ChooseAccountViewModelTest {
     fun `Failed get account list fb`() {
         viewmodel.getAccountListDataModelFBResponse.observeForever(getAccountListDataModelFBResponseObserver)
 
-        coEvery { getAccountsListUseCase.execute(any(), any()) } coAnswers {
-            secondArg<(Throwable) -> Unit>().invoke(throwable)
-        }
+        coEvery { getAccountsListUseCase.invoke(any()) } throws throwable
 
         viewmodel.getAccountListFacebook("")
 

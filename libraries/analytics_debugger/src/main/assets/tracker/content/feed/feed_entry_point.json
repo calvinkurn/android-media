@@ -1,0 +1,33 @@
+{
+  "readme": "Entry Point in Feed - Analytics",
+  "mode": "exact",
+  "query": [
+    {
+      "event":"clickFeed",
+      "eventAction":"click - plus button",
+      "eventCategory":"content feed timeline",
+      "eventLabel":"\\d+ - \\d+",
+      "businessUnit":"content",
+      "currentSite":"tokopediamarketplace",
+      "sessionIris":".*"
+    },
+    {
+      "event":"clickFeed",
+      "eventAction":"click - buat post",
+      "eventCategory":"content feed timeline",
+      "eventLabel":"\\d+ - \\d+",
+      "businessUnit":"content",
+      "currentSite":"tokopediamarketplace",
+      "sessionIris":".*"
+    },
+    {
+      "event":"clickFeed",
+      "eventAction":"click - buat live",
+      "eventCategory":"content feed timeline",
+      "eventLabel":"\\d+ - \\d+",
+      "businessUnit":"content",
+      "currentSite":"tokopediamarketplace",
+      "sessionIris":".*"
+    }
+  ]
+}

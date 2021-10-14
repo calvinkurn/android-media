@@ -14,7 +14,7 @@ data class ShopHomeVoucherUiModel(
         override val header: BaseShopHomeWidgetUiModel.Header = BaseShopHomeWidgetUiModel.Header(),
         val data: MerchantVoucherCouponUiModel? = null,
         val isError: Boolean = false
-) : BaseShopHomeWidgetUiModel {
+) : BaseShopHomeWidgetUiModel() {
 
     override fun type(typeFactory: ShopHomeAdapterTypeFactory): Int {
         return typeFactory.type(this)

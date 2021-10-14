@@ -5,13 +5,13 @@ import androidx.lifecycle.Observer
 import com.tokopedia.chooseaccount.data.AccountListDataModel
 import com.tokopedia.chooseaccount.data.AccountsDataModel
 import com.tokopedia.chooseaccount.data.ErrorResponseDataModel
-import com.tokopedia.chooseaccount.domain.usecase.GetAccountListUseCase
-import com.tokopedia.chooseaccount.viewmodel.ChooseAccountFingerprintViewModel
+import com.tokopedia.chooseaccount.domain.usecase.GetFingerprintAccountListUseCase
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
 import org.hamcrest.CoreMatchers
@@ -28,7 +28,8 @@ class ChooseAccountFingerprintViewModelTest {
 
     lateinit var viewModel: ChooseAccountFingerprintViewModel
 
-    val getAccountListUseCase = mockk<GetAccountListUseCase>(relaxed = true)
+    val getAccountListUseCase = mockk<GetFingerprintAccountListUseCase>(relaxed = true)
+    val fingerprintPreferenceManager = mockk<FingerprintPreference>(relaxed = true)
 
     private var getAccountListObserver = mockk<Observer<Result<AccountListDataModel>>>(relaxed = true)
 
@@ -36,6 +37,7 @@ class ChooseAccountFingerprintViewModelTest {
     fun setUp() {
         viewModel = ChooseAccountFingerprintViewModel(
             getAccountListUseCase,
+            fingerprintPreferenceManager,
             CoroutineTestDispatchersProvider
         )
         viewModel.getAccountListDataModelResponse.observeForever(getAccountListObserver)
@@ -45,9 +47,7 @@ class ChooseAccountFingerprintViewModelTest {
     fun `on Success Get Account List`() {
         val resp = AccountsDataModel()
 
-        every { getAccountListUseCase.getAccounts(any(), any(), any(), any()) } answers {
-            arg<(AccountsDataModel) -> Unit>(2).invoke(resp)
-        }
+        coEvery { getAccountListUseCase.invoke(any()) } returns resp
 
         viewModel.getAccountListFingerprint("abc123")
 
@@ -60,9 +60,7 @@ class ChooseAccountFingerprintViewModelTest {
         val accountList = AccountListDataModel(errorResponseDataModels = listOf(ErrorResponseDataModel("error", message = msg)))
         val resp = AccountsDataModel(accountListDataModel = accountList)
 
-        every { getAccountListUseCase.getAccounts(any(), any(), any(), any()) } answers {
-            arg<(AccountsDataModel) -> Unit>(2).invoke(resp)
-        }
+        coEvery { getAccountListUseCase.invoke(any()) } returns resp
 
         viewModel.getAccountListFingerprint("abc123")
 
@@ -78,9 +76,7 @@ class ChooseAccountFingerprintViewModelTest {
     fun `on Error Get Account List`() {
         val error = Throwable()
 
-        every { getAccountListUseCase.getAccounts(any(), any(), any(), any()) } answers {
-            arg<(Throwable) -> Unit>(3).invoke(error)
-        }
+        coEvery { getAccountListUseCase.invoke(any()) } throws error
 
         viewModel.getAccountListFingerprint("abc123")
 
