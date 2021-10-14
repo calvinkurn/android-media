@@ -6,8 +6,8 @@ import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachproduct.data.model.AceSearchProductResponse
 import com.tokopedia.attachproduct.data.model.mapper.mapToListProduct
 import com.tokopedia.attachproduct.domain.model.mapper.toDomainModelMapper
-import com.tokopedia.attachproduct.domain.usecase.NewAttachProductUseCase
-import com.tokopedia.attachproduct.view.uimodel.NewAttachProductItemUiModel
+import com.tokopedia.attachproduct.domain.usecase.AttachProductUseCase
+import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel
 import com.tokopedia.attachproduct.view.viewmodel.AttachProductViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -31,13 +31,13 @@ class AttachProductViewModelTest {
     private val mockPage = 1
 
     @RelaxedMockK
-    lateinit var useCase: NewAttachProductUseCase
+    lateinit var useCase: AttachProductUseCase
 
     @RelaxedMockK
-    lateinit var productsObserver: Observer<Result<List<NewAttachProductItemUiModel>>>
+    lateinit var productsObserver: Observer<Result<List<AttachProductItemUiModel>>>
 
     @RelaxedMockK
-    lateinit var checkedListObserver: Observer<List<NewAttachProductItemUiModel>>
+    lateinit var checkedListObserver: Observer<List<AttachProductItemUiModel>>
 
     lateinit var vm: AttachProductViewModel
 
