@@ -323,6 +323,27 @@ BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     }
 
     @Test
+    fun `getCategoryId should return category id for product bundling when getBuyerOrderDetail result is success`() {
+        val productBundlingItem =
+            ProductListUiModel.ProductBundlingUiModel(
+                bundleName = "Bundle test",
+                bundleIconUrl = "www.icon.com",
+                totalPrice = 100.0,
+                totalPriceText = "Rp100.0",
+                bundleItemList = listOf(product)
+            )
+        val buyerOrderDetailResult = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
+            every { productListUiModel.productBundlingList } returns listOf(productBundlingItem)
+        }
+
+        createSuccessBuyerOrderDetailResult(buyerOrderDetailResult)
+
+        val categoryId = viewModel.getCategoryId()
+        assert(categoryId.size == 1)
+        assert(categoryId[0] == 10)
+    }
+
+    @Test
     fun `getUserId should return user id`() {
         assert(viewModel.getUserId() == userId)
     }
