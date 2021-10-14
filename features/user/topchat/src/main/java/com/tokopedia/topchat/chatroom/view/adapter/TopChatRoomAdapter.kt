@@ -112,7 +112,7 @@ class TopChatRoomAdapter constructor(
         addTopData(visitables)
     }
 
-    fun addNewMessage(item: SendableViewModel) {
+    fun addNewMessage(item: SendableUiModel) {
         if (item is Visitable<*> && item.localId.isNotEmpty()) {
             val indexToAdd = getOffsetSafely()
             replyMap[item.localId] = item
@@ -136,7 +136,7 @@ class TopChatRoomAdapter constructor(
     override fun isOpposite(adapterPosition: Int, isSender: Boolean): Boolean {
         val nextItem = visitables.getOrNull(adapterPosition + 1)
         val nextItemIsSender: Boolean = when (nextItem) {
-            is SendableViewModel -> nextItem.isSender
+            is SendableUiModel -> nextItem.isSender
             is ProductCarouselUiModel -> nextItem.isSender
             is ReviewUiModel -> nextItem.isSender
             else -> true
@@ -220,7 +220,7 @@ class TopChatRoomAdapter constructor(
         this.bottomMostHeaderDate = HeaderDateUiModel(latestHeaderDate)
     }
 
-    fun addHeaderDateIfDifferent(preview: SendableViewModel) {
+    fun addHeaderDateIfDifferent(preview: SendableUiModel) {
         if (preview is Visitable<*>) {
             addHeaderDateIfDifferent(preview as Visitable<*>)
         }

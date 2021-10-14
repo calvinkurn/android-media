@@ -20,7 +20,7 @@ import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
@@ -186,7 +186,7 @@ abstract class BaseChatViewStateImpl(
     }
 
     override fun removeDummyIfExist(successVisitable: Visitable<*>) {
-        if (successVisitable is SendableViewModel) {
+        if (successVisitable is SendableUiModel) {
             getAdapter().removeDummy(successVisitable)
         }
     }

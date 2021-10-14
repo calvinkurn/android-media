@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
  */
 open class ProductAttachmentViewModel protected constructor(
     builder: Builder
-) : SendableViewModel(builder), Visitable<BaseChatTypeFactory>, DeferredAttachment {
+) : SendableUiModel(builder), Visitable<BaseChatTypeFactory>, DeferredAttachment {
 
     override var isLoading: Boolean = true
     override var isError: Boolean = false
@@ -279,7 +279,7 @@ open class ProductAttachmentViewModel protected constructor(
         const val NO_PRODUCT_ID = "0"
     }
 
-    open class Builder : SendableViewModel.Builder<Builder, ProductAttachmentViewModel>() {
+    open class Builder : SendableUiModel.Builder<Builder, ProductAttachmentViewModel>() {
 
         internal var productId: String = "0"
         internal var productName: String = ""

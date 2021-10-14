@@ -9,7 +9,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.*
-import com.tokopedia.chat_common.data.SendableViewModel.Companion.SENDING_TEXT
+import com.tokopedia.chat_common.data.SendableUiModel.Companion.SENDING_TEXT
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
@@ -418,7 +418,7 @@ class ChatbotPresenter @Inject constructor(
             .withFrom(userSession.name)
             .withAttachmentType(AttachmentType.Companion.TYPE_INVOICE_SEND)
             .withReplyTime(SENDING_TEXT)
-            .withStartTime(SendableViewModel.generateStartTime())
+            .withStartTime(SendableUiModel.generateStartTime())
             .withIsRead(false)
             .withIsDummy(true)
             .withIsSender(true)

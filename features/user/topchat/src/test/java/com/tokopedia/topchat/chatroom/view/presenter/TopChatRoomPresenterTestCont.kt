@@ -8,8 +8,6 @@ import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
-import com.tokopedia.chat_common.util.IdentifierUtil
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.pojo.ChatDelete
 import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
@@ -18,9 +16,7 @@ import com.tokopedia.topchat.chatroom.domain.usecase.TopChatWebSocketParam
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exImageUploadId
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exMessageId
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exOpponentId
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exSendMessage
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exStartTime
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.imageUploadViewModel
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.readParam
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.replyChatViewModelApiSuccess
@@ -231,7 +227,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
             .withFromUid("123123")
             .withAttachmentId("123987")
             .withAttachmentType(AttachmentType.Companion.TYPE_IMAGE_UPLOAD)
-            .withReplyTime(SendableViewModel.SENDING_TEXT)
+            .withReplyTime(SendableUiModel.SENDING_TEXT)
             .withStartTime("123")
             .withIsDummy(true)
             .withImageUrl("https://ecs.tokopedia.com/image.jpg")
@@ -603,7 +599,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
             .withFromUid("123123")
             .withAttachmentId("123987")
             .withAttachmentType(AttachmentType.Companion.TYPE_IMAGE_UPLOAD)
-            .withReplyTime(SendableViewModel.SENDING_TEXT)
+            .withReplyTime(SendableUiModel.SENDING_TEXT)
             .withStartTime("123")
             .withIsDummy(true)
             .withImageUrl("https://ecs.tokopedia.com/image.jpg")

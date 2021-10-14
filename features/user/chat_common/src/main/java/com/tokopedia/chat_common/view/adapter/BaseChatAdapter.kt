@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.MessageViewModel
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.TypingChatModel
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactoryImpl
 import com.tokopedia.chat_common.view.adapter.viewholder.ImageAnnouncementViewHolder
@@ -31,7 +31,7 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
             if (enableShowTime()) showTimeBaseChat(holder.adapterPosition)
         }
 
-        if (visitables[position] is SendableViewModel) {
+        if (visitables[position] is SendableUiModel) {
             showRoleBaseChat(holder.adapterPosition)
         }
         super.onBindViewHolder(holder, position)
@@ -154,35 +154,35 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
     private fun showRoleBaseChat(position: Int) {
         if (position != visitables.size - 1) {
             try {
-                val now = visitables[position] as SendableViewModel
+                val now = visitables[position] as SendableUiModel
                 if (!now.isSender) {
                     now.isShowRole = false
                     return
                 }
 
-                var prev: SendableViewModel? = null
+                var prev: SendableUiModel? = null
                 val myTime = ((now.replyTime)?.toLong() ?: 0) / SECONDS
                 var prevTime: Long = 0
 
-                if (visitables[position + 1] != null && visitables[position + 1] is SendableViewModel) {
-                    prev = visitables.get(position + 1) as SendableViewModel
+                if (visitables[position + 1] != null && visitables[position + 1] is SendableUiModel) {
+                    prev = visitables.get(position + 1) as SendableUiModel
                     if (prev.replyTime != null) {
                         prevTime = (prev.replyTime)!!.toLong() / SECONDS
                     }
                 }
 
-                (visitables.get(position) as SendableViewModel).isShowRole = !(prev != null
+                (visitables.get(position) as SendableUiModel).isShowRole = !(prev != null
                         && compareSender(now, prev)
                         && compareHour(myTime, prevTime))
             } catch (e: NumberFormatException) {
-                (visitables.get(position) as SendableViewModel).isShowRole = false
+                (visitables.get(position) as SendableUiModel).isShowRole = false
             } catch (e: ClassCastException) {
-                (visitables.get(position) as SendableViewModel).isShowRole = false
+                (visitables.get(position) as SendableUiModel).isShowRole = false
             }
 
         } else {
             try {
-                (visitables.get(position) as SendableViewModel).isShowRole = true
+                (visitables.get(position) as SendableUiModel).isShowRole = true
             } catch (e: ClassCastException) {
                 e.printStackTrace()
             }
@@ -202,7 +202,7 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
 
         val currentIsSender: Boolean
         val compareIsSender: Boolean
-        if (current is SendableViewModel && compare is SendableViewModel) {
+        if (current is SendableUiModel && compare is SendableUiModel) {
             currentIsSender = current.isSender
             compareIsSender = compare.isSender
             if (!currentIsSender) return currentIsSender == compareIsSender
@@ -234,12 +234,12 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
     }
 
     fun removeDummy(visitable: Visitable<*>) {
-        if (visitable is SendableViewModel && visitables.isNotEmpty()) {
+        if (visitable is SendableUiModel && visitables.isNotEmpty()) {
             val iter = visitables.iterator()
 
             while (iter.hasNext()) {
                 val chatItem = iter.next()
-                if (chatItem is SendableViewModel
+                if (chatItem is SendableUiModel
                         && chatItem.isDummy
                         && chatItem.startTime == visitable.startTime) {
                     val position = this.visitables.indexOf(chatItem)
@@ -261,10 +261,10 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
                     (visitables.get(i) as MessageViewModel).isRead = true
                     notifyItemRangeChanged(i, 1)
                 }
-            } else if (currentItem is SendableViewModel && currentItem.isSender) {
+            } else if (currentItem is SendableUiModel && currentItem.isSender) {
                 if (!currentItem.isRead) {
                     currentItem.isRead = true
-                    notifyItemChanged(i, SendableViewModel.PAYLOAD_EVENT_READ)
+                    notifyItemChanged(i, SendableUiModel.PAYLOAD_EVENT_READ)
                 }
             }
         }

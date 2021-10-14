@@ -83,7 +83,7 @@ interface TopChatContract {
          */
         fun removeSrwBubble(productId: String)
         fun expandSrwBubble()
-        fun showPreviewMsg(previewMsg: SendableViewModel)
+        fun showPreviewMsg(previewMsg: SendableUiModel)
         fun clearReferredMsg()
     }
 

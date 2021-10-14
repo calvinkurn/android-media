@@ -10,7 +10,7 @@ import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.tokopedia.chat_common.data.SendableViewModel.Companion.PAYLOAD_EVENT_READ
+import com.tokopedia.chat_common.data.SendableUiModel.Companion.PAYLOAD_EVENT_READ
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerProfile

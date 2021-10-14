@@ -11,7 +11,7 @@ import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 
 class AttachInvoiceSentViewModel private constructor(
     builder: Builder
-) : SendableViewModel(builder), Visitable<BaseChatTypeFactory>, DeferredAttachment {
+) : SendableUiModel(builder), Visitable<BaseChatTypeFactory>, DeferredAttachment {
 
     var imageUrl: String = builder.imageUrl
     var description: String = builder.description
@@ -61,7 +61,7 @@ class AttachInvoiceSentViewModel private constructor(
         this.isError = false
     }
 
-    class Builder : SendableViewModel.Builder<Builder, AttachInvoiceSentViewModel>() {
+    class Builder : SendableUiModel.Builder<Builder, AttachInvoiceSentViewModel>() {
 
         internal var imageUrl: String = ""
         internal var description: String = ""

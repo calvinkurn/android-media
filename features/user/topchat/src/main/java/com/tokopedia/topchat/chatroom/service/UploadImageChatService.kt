@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.network.utils.ErrorHandler
@@ -224,9 +224,9 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
 
         fun findDummy(dummy: Visitable<*>): Int? {
             for(i in 0 until dummyMap.size) {
-                val temp = (dummyMap[i].visitable as SendableViewModel)
-                if (temp.startTime == (dummy as SendableViewModel).startTime
-                        && temp.messageId == (dummy as SendableViewModel).messageId) {
+                val temp = (dummyMap[i].visitable as SendableUiModel)
+                if (temp.startTime == (dummy as SendableUiModel).startTime
+                        && temp.messageId == (dummy as SendableUiModel).messageId) {
                     return i
                 }
             }

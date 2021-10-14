@@ -2,14 +2,13 @@ package com.tokopedia.topchat.chatroom.view.viewmodel
 
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chat_common.data.AttachmentType
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.attachment.AttachmentId
 import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.chat_common.view.viewmodel.InvoiceViewModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.AttachmentPreviewFactory
-import okhttp3.Interceptor
 
 class InvoicePreviewUiModel(
     id: String,
@@ -52,7 +51,7 @@ class InvoicePreviewUiModel(
     override fun generatePreviewMessage(
         roomMetaData: RoomMetaData,
         message: String
-    ): SendableViewModel {
+    ): SendableUiModel {
         return AttachInvoiceSentViewModel.Builder()
             .withRoomMetaData(roomMetaData)
             .withAttachmentId(AttachmentId.NOT_YET_GENERATED)
@@ -79,7 +78,7 @@ class InvoicePreviewUiModel(
         userLocationInfo: LocalCacheModel,
         localId: String
     ): Any {
-        val startTime = SendableViewModel.generateStartTime()
+        val startTime = SendableUiModel.generateStartTime()
         val msgId = roomMetaData.msgId
         val toUid = roomMetaData.receiver.uid
         return SendWebsocketParam.generateParamSendInvoiceAttachment(

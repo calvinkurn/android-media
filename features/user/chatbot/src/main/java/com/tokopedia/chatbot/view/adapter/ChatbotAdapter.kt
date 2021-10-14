@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
 
@@ -38,7 +38,7 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
 
     override fun isPreviousItemSender(adapterPosition: Int): Boolean {
         val item = visitables.getOrNull(adapterPosition + 1)
-        return if (item is SendableViewModel && item.isSender || item is ChatSepratorViewModel) {
+        return if (item is SendableUiModel && item.isSender || item is ChatSepratorViewModel) {
             true
         } else false
     }

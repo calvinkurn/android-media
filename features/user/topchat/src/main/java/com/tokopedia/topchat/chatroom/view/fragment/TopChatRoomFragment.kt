@@ -39,7 +39,7 @@ import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
-import com.tokopedia.chat_common.data.SendableViewModel.Companion.SENDING_TEXT
+import com.tokopedia.chat_common.data.SendableUiModel.Companion.SENDING_TEXT
 import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.*
@@ -365,7 +365,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun showPreviewMsg(previewMsg: SendableViewModel) {
+    override fun showPreviewMsg(previewMsg: SendableUiModel) {
         adapter.addHeaderDateIfDifferent(previewMsg)
         adapter.addNewMessage(previewMsg)
         topchatViewState?.scrollToBottom()
@@ -1453,7 +1453,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             .withRoomMetaData(presenter.roomMetaData)
             .withAttachmentType(AttachmentType.Companion.TYPE_IMAGE_UPLOAD)
             .withReplyTime(SENDING_TEXT)
-            .withStartTime(SendableViewModel.generateStartTime())
+            .withStartTime(SendableUiModel.generateStartTime())
             .withIsDummy(true)
             .withImageUrl(imageUrl)
             .withParentReply(replyCompose?.referredMsg)

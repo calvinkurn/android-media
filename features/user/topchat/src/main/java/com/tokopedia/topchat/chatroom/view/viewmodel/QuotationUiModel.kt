@@ -1,13 +1,13 @@
 package com.tokopedia.topchat.chatroom.view.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.QuotationPojo
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 
 class QuotationUiModel private constructor(
     builder: Builder
-) : SendableViewModel(builder), Visitable<TopChatTypeFactory> {
+) : SendableUiModel(builder), Visitable<TopChatTypeFactory> {
 
     private val quotationPojo: QuotationPojo = builder.quotationPojo
 
@@ -21,7 +21,7 @@ class QuotationUiModel private constructor(
         return typeFactory.type(this)
     }
 
-    class Builder : SendableViewModel.Builder<Builder, QuotationUiModel>() {
+    class Builder : SendableUiModel.Builder<Builder, QuotationUiModel>() {
 
         internal var quotationPojo = QuotationPojo()
 

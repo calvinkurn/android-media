@@ -9,7 +9,7 @@ import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 
 class ImageUploadViewModel(
     builder: Builder
-) : SendableViewModel(builder), Visitable<BaseChatTypeFactory> {
+) : SendableUiModel(builder), Visitable<BaseChatTypeFactory> {
 
     var imageUrl: String? = builder.imageUrl
     var imageUrlThumbnail: String? = builder.imageUrlThumbnail
@@ -25,7 +25,7 @@ class ImageUploadViewModel(
         return typeFactory.type(this)
     }
 
-    class Builder: SendableViewModel.Builder<Builder, ImageUploadViewModel>() {
+    class Builder: SendableUiModel.Builder<Builder, ImageUploadViewModel>() {
 
         internal var imageUrl: String? = null
         internal var imageUrlThumbnail: String? = null

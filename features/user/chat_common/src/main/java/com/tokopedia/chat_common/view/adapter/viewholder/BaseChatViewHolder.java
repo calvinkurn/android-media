@@ -18,7 +18,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.chat_common.R;
 import com.tokopedia.chat_common.data.BaseChatUiModel;
-import com.tokopedia.chat_common.data.SendableViewModel;
+import com.tokopedia.chat_common.data.SendableUiModel;
 import com.tokopedia.chat_common.util.ChatTimeConverter;
 
 import java.util.Date;
@@ -159,7 +159,7 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
         }
     }
 
-    protected void bindChatReadStatus(SendableViewModel element) {
+    protected void bindChatReadStatus(SendableUiModel element) {
         if (chatReadStatus == null) return;
         int imageResource;
         if (element.isShowTime() || alwaysShowTime()) {
@@ -190,7 +190,7 @@ public class BaseChatViewHolder<T extends Visitable> extends AbstractViewHolder<
         }
     }
 
-    protected void bindRoleHeader(SendableViewModel chat, int gravity) {
+    protected void bindRoleHeader(SendableUiModel chat, int gravity) {
         if (roleContainer == null) {
             hideHeader();
             return;

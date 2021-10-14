@@ -489,8 +489,8 @@ open class TopChatViewStateImpl constructor(
             for (i in 0 until getAdapter().getList().size) {
                 var item = getAdapter().getList()[i]
                 if (item is BaseChatUiModel) {
-                    if (item is SendableViewModel) {
-                        if ((item as SendableViewModel).isDummy) {
+                    if (item is SendableUiModel) {
+                        if ((item as SendableUiModel).isDummy) {
                             break
                         } else {
                             return transform(item as BaseChatUiModel)

@@ -500,9 +500,9 @@ open class TopChatRoomPresenter @Inject constructor(
     private fun getDummyOnList(visitable: Visitable<*>): Visitable<*>? {
         dummyList.isNotEmpty().let {
             for (i in 0 until dummyList.size) {
-                val temp = (dummyList[i] as SendableViewModel)
-                if (temp.startTime == (visitable as SendableViewModel).startTime
-                    && temp.messageId == (visitable as SendableViewModel).messageId
+                val temp = (dummyList[i] as SendableUiModel)
+                if (temp.startTime == (visitable as SendableUiModel).startTime
+                    && temp.messageId == (visitable as SendableUiModel).messageId
                 ) {
                     return dummyList[i]
                 }
@@ -625,7 +625,7 @@ open class TopChatRoomPresenter @Inject constructor(
         products: List<SendablePreview>? = null,
         referredMsg: ParentReply? = null
     ) {
-        val startTime = SendableViewModel.generateStartTime()
+        val startTime = SendableUiModel.generateStartTime()
         val previewMsg = generatePreviewMessage(
             messageText = sendMessage,
             startTime = startTime,
@@ -646,7 +646,7 @@ open class TopChatRoomPresenter @Inject constructor(
 
     private fun sendWs(
         request: String,
-        preview: SendableViewModel
+        preview: SendableUiModel
     ) {
         processPreviewMessage(preview)
         sendMessageWebSocket(request)
@@ -658,7 +658,7 @@ open class TopChatRoomPresenter @Inject constructor(
         sendMessageWebSocket(request)
     }
 
-    private fun processPreviewMessage(previewMsg: SendableViewModel) {
+    private fun processPreviewMessage(previewMsg: SendableUiModel) {
         view?.showPreviewMsg(previewMsg)
     }
 
@@ -666,7 +666,7 @@ open class TopChatRoomPresenter @Inject constructor(
         messageText: String,
         startTime: String,
         referredMsg: ParentReply?
-    ): SendableViewModel {
+    ): SendableUiModel {
         val localId = IdentifierUtil.generateLocalId()
         return MessageViewModel.Builder()
             .withMsgId(roomMetaData.msgId)
@@ -701,7 +701,7 @@ open class TopChatRoomPresenter @Inject constructor(
         sticker: Sticker,
         referredMsg: ParentReply?
     ) {
-        val startTime = SendableViewModel.generateStartTime()
+        val startTime = SendableUiModel.generateStartTime()
         val previewSticker = StickerUiModel.generatePreviewMessage(
             roomMetaData = roomMetaData,
             sticker = sticker,
