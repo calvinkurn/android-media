@@ -25,6 +25,7 @@ object UohConsts {
     const val END_DATE = "end_date"
     const val CATEGORY_BELANJA = "marketplace"
     const val ALL_STATUS_TRANSACTION = "Semua Status Transaksi"
+    const val TDN_INDEX = 6
 
     const val TICKER_TYPE_ANNOUNCEMENT = "announcement"
     const val TICKER_TYPE_ERROR = "error"
@@ -56,6 +57,7 @@ object UohConsts {
     const val TYPE_EMPTY = "empty"
     const val TYPE_RECOMMENDATION_TITLE = "recommendation_title"
     const val TYPE_RECOMMENDATION_ITEM = "recommendation"
+    const val TDN_BANNER = "tdn"
 
     const val TYPE_ACTION_BUTTON_LINK = "link"
     const val TYPE_ACTION_CANCEL_ORDER = "cancelOrder"
@@ -143,4 +145,9 @@ object UohConsts {
     const val STATUS_DIPROSES = "diproses"
     const val STATUS_DIKIRIM = "dikirim"
     const val STATUS_TIBA_DI_TUJUAN = "tiba_di_tujuan"
+
+    const val TDN_INVENTORY_ID = "17"
+    const val TDN_ADS_COUNT = 1
+    const val TDN_DIMEN_ID = 3
+    const val TDN_RADIUS = 16
 }

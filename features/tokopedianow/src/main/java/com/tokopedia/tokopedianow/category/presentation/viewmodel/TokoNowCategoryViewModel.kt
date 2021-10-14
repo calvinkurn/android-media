@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -44,6 +45,7 @@ import com.tokopedia.tokopedianow.searchcategory.utils.WAREHOUSE_ID
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -82,6 +84,9 @@ class TokoNowCategoryViewModel @Inject constructor (
         abTestPlatformWrapper,
         userSession,
 ) {
+
+    protected val openScreenTrackingUrlMutableLiveData = SingleLiveEvent<String>()
+    val openScreenTrackingUrlLiveData: LiveData<String> = openScreenTrackingUrlMutableLiveData
 
     val categoryIdTracking: String
 
@@ -147,6 +152,8 @@ class TokoNowCategoryViewModel @Inject constructor (
         )
 
         onGetFirstPageSuccess(headerDataView, contentDataView, searchProduct)
+
+        sendOpenScreenTrackingUrl(categoryModel)
     }
 
     override fun createTitleDataView(headerDataView: HeaderDataView): TitleDataView {
@@ -265,6 +272,10 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     override fun getPageSourceForGeneralSearchTracking() =
         "$TOKOPEDIA_NOW.$TOKONOW_CATEGORY.$LOCAL_SEARCH.$warehouseId"
+
+    private fun sendOpenScreenTrackingUrl(categoryModel: CategoryModel) {
+        openScreenTrackingUrlMutableLiveData.value = categoryModel.categoryDetail.data.url
+    }
 
     override fun executeLoadMore() {
         getCategoryLoadMorePageUseCase.execute(

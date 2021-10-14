@@ -27,6 +27,7 @@ object ApplinkConstInternalPayment {
     const val INTERNAL_PMS = "${DeeplinkConstant.SCHEME_INTERNAL}://buyer"
 
     val PMS_PAYMENT_LIST = "${INTERNAL_PMS}/payment"
+    val GOPAY_KYC = "${INTERNAL_PAYMENT}/gopayKyc"
 
     // how to pay
 

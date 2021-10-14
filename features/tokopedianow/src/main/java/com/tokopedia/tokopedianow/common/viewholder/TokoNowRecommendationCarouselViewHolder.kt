@@ -12,9 +12,10 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetBindPageNameListener
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetListener
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetView
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecomCarouselBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowRecommendationCarouselViewHolder(
     itemView: View,
@@ -29,21 +30,17 @@ class TokoNowRecommendationCarouselViewHolder(
         val LAYOUT = R.layout.item_tokopedianow_recom_carousel
     }
 
-    private val recommendationCarouselWidgetView =
-        itemView.findViewById<RecommendationCarouselWidgetView?>(
-                    R.id.tokoNowSearchCategoryRecomCarousel
-            )
+    private var binding: ItemTokopedianowRecomCarouselBinding? by viewBinding()
 
     private var uiModel: TokoNowRecommendationCarouselUiModel? = null
 
     override fun bind(element: TokoNowRecommendationCarouselUiModel?) {
         uiModel = element ?: return
-        val recomWidget = recommendationCarouselWidgetView ?: return
         val scrollToPosition =
             recommendationCarouselListener?.onGetCarouselScrollPosition(adapterPosition)
         if (element.isBindWithPageName) {
             recommendationCarouselWidgetBindPageNameListener?.setViewToLifecycleOwner(recomWidget)
-            recomWidget.bindRecomWithPageName(
+            binding?.tokoNowSearchCategoryRecomCarousel?.bindRecomWithPageName(
                 pageName = element.pageName,
                 widgetBindPageNameListener = this,
                 adapterPosition = adapterPosition,
@@ -55,7 +52,7 @@ class TokoNowRecommendationCarouselViewHolder(
             )
             element.isFirstLoad = false
         } else {
-            recomWidget.bindRecomWithData(
+            binding?.tokoNowSearchCategoryRecomCarousel?.bindRecomWithData(
                 carouselData = element.carouselData,
                 adapterPosition = adapterPosition,
                 widgetListener = this,
@@ -157,7 +154,7 @@ class TokoNowRecommendationCarouselViewHolder(
     private fun saveCarouselScrollPosition() {
         val adapterPosition = this.adapterPosition
         val carouselScrollPosition =
-                recommendationCarouselWidgetView?.getCurrentPosition() ?: 0
+            binding?.tokoNowSearchCategoryRecomCarousel?.getCurrentPosition() ?: 0
 
         recommendationCarouselListener?.onSaveCarouselScrollPosition(
                 adapterPosition = adapterPosition,
