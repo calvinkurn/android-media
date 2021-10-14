@@ -5,7 +5,7 @@
         android:allowBackup="true"
         android:supportsRtl="true">
         <activity
-            android:name=".view.activity.NewAttachProductActivity"
+            android:name=".view.activity.AttachProductActivity"
             android:screenOrientation="portrait"
             android:label="@string/string_attach_product_activity_title"
             android:theme="@style/Theme.AttachCommon">
