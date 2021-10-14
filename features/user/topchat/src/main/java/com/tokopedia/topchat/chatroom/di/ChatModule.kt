@@ -58,8 +58,6 @@ import javax.inject.Named
         includes = arrayOf(
                 ChatNetworkModule::class,
                 MediaUploaderModule::class,
-                MediaUploaderNetworkModule::class,
-                NetworkModule::class
         )
 )
 class ChatModule {
