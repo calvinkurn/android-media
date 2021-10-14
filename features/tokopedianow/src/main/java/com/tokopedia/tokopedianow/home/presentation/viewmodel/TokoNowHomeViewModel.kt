@@ -105,7 +105,7 @@ class TokoNowHomeViewModel @Inject constructor(
     val homeAddToCartTracker: LiveData<HomeAddToCartTracker>
         get() = _homeAddToCartTracker
     val atcQuantity: LiveData<Result<HomeLayoutListUiModel>>
-        get() = _productAddToCartQuantity
+        get() = _atcQuantity
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
@@ -115,7 +115,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _miniCartUpdate = MutableLiveData<Result<UpdateCartV2Data>>()
     private val _miniCartRemove = MutableLiveData<Result<Pair<String,String>>>()
     private val _homeAddToCartTracker = MutableLiveData<HomeAddToCartTracker>()
-    private val _productAddToCartQuantity = MutableLiveData<Result<HomeLayoutListUiModel>>()
+    private val _atcQuantity = MutableLiveData<Result<HomeLayoutListUiModel>>()
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
@@ -330,10 +330,10 @@ class TokoNowHomeViewModel @Inject constructor(
                 getMiniCartUseCase.execute({
                     setProductAddToCartQuantity(it)
                 }, {
-                    _productAddToCartQuantity.postValue(Fail(it))
+                    _atcQuantity.postValue(Fail(it))
                 })
             }) {
-                _productAddToCartQuantity.postValue(Fail(it))
+                _atcQuantity.postValue(Fail(it))
             }
         }
     }
@@ -350,7 +350,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 items = homeLayoutItemList,
                 state = TokoNowLayoutState.SHOW
             )
-            _productAddToCartQuantity.postValue(Success(data))
+            _atcQuantity.postValue(Success(data))
         }) {}
     }
 
