@@ -71,6 +71,7 @@ import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAn
 import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.view.dialog.OvoAccountDialog
 import com.tokopedia.loginregister.login.const.LoginConstants
+import com.tokopedia.loginregister.login.const.LoginConstants.DiscoverLoginId.FACEBOOK
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
@@ -550,23 +551,25 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
         socmedButtonsContainer?.removeAllViews()
 
-        for (i in discoverData.providers.indices) {
-            val item = discoverData.providers[i]
-            if (item.id != PHONE_NUMBER) {
-                context?.let {
-                    val loginTextView = LoginTextView(it, MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                    loginTextView.setText(item.name)
-                    loginTextView.setImage(item.image)
-                    loginTextView.setRoundCorner(SOCMED_BUTTON_CORNER_SIZE)
+        discoverData.providers.forEach { provider ->
+            if (provider.id.equals(FACEBOOK, ignoreCase = true)) {
+                return@forEach
+            }
 
-                    setDiscoverOnClickListener(item, loginTextView)
+            context?.let {
+                val loginTextView = LoginTextView(it, MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                loginTextView.setText(provider.name)
+                loginTextView.setImage(provider.image)
+                loginTextView.setRoundCorner(SOCMED_BUTTON_CORNER_SIZE)
 
-                    socmedButtonsContainer?.run {
-                        addView(loginTextView, childCount,
-                                layoutParams)
-                    }
+                setDiscoverOnClickListener(provider, loginTextView)
+
+                socmedButtonsContainer?.run {
+                    addView(loginTextView, childCount,
+                        layoutParams)
                 }
             }
+
         }
     }
 
