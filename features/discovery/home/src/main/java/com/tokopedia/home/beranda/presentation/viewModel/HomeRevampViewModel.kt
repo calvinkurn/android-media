@@ -282,13 +282,14 @@ open class HomeRevampViewModel @Inject constructor(
     /**
      * use this refresh mechanism only for conditional refresh (3 mins rule)
      */
-    fun refresh(forceRefresh: Boolean = false){
+    fun refresh(forceRefresh: Boolean = false, isFirstInstall: Boolean = false){
         if ((forceRefresh && getHomeDataJob?.isActive == false) || (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY))) {
             refreshHomeData()
             _isNeedRefresh.value = Event(true)
         } else {
             getHeaderData()
         }
+        getSearchHint(isFirstInstall)
     }
 
     private fun showBalanceWidgetLoading() {
@@ -559,10 +560,8 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getRecommendationFeedSectionPosition() = homeDataModel.list.size -1
 
-    fun refreshHomeData(isFirstInstall: Boolean = false) {
+    fun refreshHomeData() {
         getHeaderData()
-        getSearchHint(isFirstInstall)
-
         if (homeFlowDataCancelled) {
             initFlow()
             homeFlowDataCancelled = false
