@@ -123,7 +123,6 @@ object TopadsFeedXMapper {
                 isCashback = isProductCashback,
                 variant = variant,
                 cashBackFmt = cashback,
-                imageView = null,
             )
         }
     }

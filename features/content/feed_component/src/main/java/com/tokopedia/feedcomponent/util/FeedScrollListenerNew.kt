@@ -43,7 +43,7 @@ object FeedScrollListenerNew {
                 }
                 else if (isTopadsImageCard(list, i)) {
                     if (topadsItem != null) {
-                        getImagePostScrollListener(layoutManager, recyclerView, i, topadsItem)
+                        getImagePostScrollListener(layoutManager, recyclerView, i, topadsItem, true)
                     }
                 }
             }
@@ -54,7 +54,8 @@ object FeedScrollListenerNew {
         layoutManager: LinearLayoutManager?,
         recyclerView: RecyclerView,
         i: Int,
-        item: FeedXMedia
+        item: FeedXMedia,
+        isTopads:Boolean = false
     ) {
         val rvRect = Rect()
         recyclerView.getGlobalVisibleRect(rvRect)
@@ -76,10 +77,11 @@ object FeedScrollListenerNew {
                 percentVideo = visibleVideo * TOTAL_VIDEO_HEIGHT_PERCENT / imageView.height
             } catch (e: Exception) {
             }
-
             val isStateChanged: Boolean = percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN
             if (isStateChanged && item.isImageImpressedFirst) {
-                item.isImageImpressedFirst = false
+                if (!isTopads) {
+                    item.isImageImpressedFirst = false
+                }
                 Objects.requireNonNull(recyclerView.adapter)
                     .notifyItemChanged(i, PAYLOAD_POST_TOPADS_VISIBLE)
             }

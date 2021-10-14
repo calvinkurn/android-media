@@ -71,9 +71,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
 import android.graphics.Paint
-
-
-
+import java.lang.Exception
 
 
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
@@ -384,7 +382,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
-        spannableString.setSpan(cs, 0, authorName.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        try {
+            spannableString.setSpan(cs, 0, authorName.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        } catch (e: Exception) {
+        }
         shopName.text = spannableString
         shopName.movementMethod = LinkMovementMethod.getInstance()
         followers.transitionFollow = false
