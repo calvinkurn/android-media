@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Paint
 import android.view.View
 import android.view.ViewStub
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
@@ -35,6 +36,8 @@ class MultiBundle(parent: View) {
     private val slash1: Typography = view.findViewById(R.id.product_bundling_slash_1)
     private val slash2: Typography = view.findViewById(R.id.product_bundling_slash_2)
     private val slash3: Typography = view.findViewById(R.id.product_bundling_slash_3)
+    private val iconAdd1: IconUnify = view.findViewById(R.id.product_bundling_icon_add_1)
+    private val iconAdd2: IconUnify = view.findViewById(R.id.product_bundling_icon_add_2)
 
     private val quantity: Typography = parent.findViewById(R.id.product_bundling_total_quantity)
 
@@ -42,6 +45,7 @@ class MultiBundle(parent: View) {
     private val prices = listOf(price1, price2, price3)
     private val discounts = listOf(discount1, discount2, discount3)
     private val slashes = listOf(slash1, slash2, slash3)
+    private val iconAdds = listOf(iconAdd1, iconAdd2)
 
     fun process(
         bundle: BundleInfo,
@@ -50,13 +54,14 @@ class MultiBundle(parent: View) {
         view.show()
 
         val items = bundle.bundleItems
-        val unusedViews = (images + prices + discounts + slashes).toMutableList<View>()
+        val unusedViews = (images + prices + discounts + slashes + iconAdds).toMutableList<View>()
 
         items.forEachIndexed { index, item ->
             val viewImage = images[index].apply { show() }
             val viewPrice = prices[index].apply { show() }
             val viewDiscount = discounts[index].apply { show() }
             val viewSlash = slashes[index].apply { show() }
+            val viewIconAdd = iconAdds.getOrNull(index - 1)?.apply { show() }
 
             viewImage.urlSrc = item.picURL
 
@@ -88,6 +93,7 @@ class MultiBundle(parent: View) {
                 remove(viewPrice)
                 remove(viewDiscount)
                 remove(viewSlash)
+                viewIconAdd?.let { remove(it) }
             }
         }
 
