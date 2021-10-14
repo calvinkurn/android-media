@@ -1,7 +1,7 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
 import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.mediauploader.data.state.UploadResult
+import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers

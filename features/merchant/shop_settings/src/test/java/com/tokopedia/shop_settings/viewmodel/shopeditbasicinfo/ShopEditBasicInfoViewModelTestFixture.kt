@@ -1,7 +1,7 @@
 package com.tokopedia.shop_settings.viewmodel.shopeditbasicinfo
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.mediauploader.data.state.UploadResult
+import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.gql.ShopBasicDataMutation
