@@ -19,7 +19,6 @@
             android:id="@+id/rba_sticker"
             android:layout_width="@dimen/dp_topchat_224"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/unify_space_2"
             android:paddingBottom="@dimen/dp_topchat_27"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
