@@ -96,7 +96,7 @@ open class GetExistingChatMapper @Inject constructor() {
     }
 
     open fun convertToMessageViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        return MessageViewModel.Builder()
+        return MessageUiModel.Builder()
             .withResponseFromGQL(chatItemPojoByDateByTime)
             .build()
     }

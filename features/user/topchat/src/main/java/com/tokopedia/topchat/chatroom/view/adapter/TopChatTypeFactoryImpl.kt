@@ -69,19 +69,19 @@ open class TopChatTypeFactoryImpl constructor(
             return HideViewHolder.LAYOUT
         }
         val chat = visitables[position]
-        return if (chat is MessageViewModel && chat.isBanned()) {
+        return if (chat is MessageUiModel && chat.isBanned()) {
             ChatMessageUnifyViewHolder.TYPE_BANNED
         } else {
             default
         }
     }
 
-    override fun type(messageViewModel: MessageViewModel): Int {
+    override fun type(messageUiModel: MessageUiModel): Int {
         return ChatMessageUnifyViewHolder.LAYOUT
     }
 
     override fun type(fallbackAttachmentUiModel: FallbackAttachmentUiModel): Int {
-        return type(fallbackAttachmentUiModel as MessageViewModel)
+        return type(fallbackAttachmentUiModel as MessageUiModel)
     }
 
     override fun type(imageDualAnnouncementViewModel: ImageDualAnnouncementUiModel): Int {

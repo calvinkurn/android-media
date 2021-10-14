@@ -8,16 +8,16 @@ import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
  */
 
 class FallbackAttachmentUiModel private constructor(
-    builder: MessageViewModel.Builder
-) : MessageViewModel(builder),
+    builder: MessageUiModel.Builder
+) : MessageUiModel(builder),
     Visitable<BaseChatTypeFactory> {
 
     override fun type(typeFactory: BaseChatTypeFactory): Int {
         return typeFactory.type(this)
     }
 
-    class Builder : MessageViewModel.Builder() {
-        override fun build(): MessageViewModel {
+    class Builder : MessageUiModel.Builder() {
+        override fun build(): MessageUiModel {
             return FallbackAttachmentUiModel(this)
         }
     }

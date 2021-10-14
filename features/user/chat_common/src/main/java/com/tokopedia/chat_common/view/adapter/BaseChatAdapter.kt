@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.data.BaseChatUiModel
-import com.tokopedia.chat_common.data.MessageViewModel
+import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.TypingChatModel
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactoryImpl
@@ -254,11 +254,11 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
     fun changeReadStatus() {
         for (i in visitables.indices) {
             val currentItem = visitables.get(i)
-            if (currentItem is MessageViewModel && currentItem.isSender) {
-                if ((visitables.get(i) as MessageViewModel).isRead) {
+            if (currentItem is MessageUiModel && currentItem.isSender) {
+                if ((visitables.get(i) as MessageUiModel).isRead) {
                     break
                 } else {
-                    (visitables.get(i) as MessageViewModel).isRead = true
+                    (visitables.get(i) as MessageUiModel).isRead = true
                     notifyItemRangeChanged(i, 1)
                 }
             } else if (currentItem is SendableUiModel && currentItem.isSender) {

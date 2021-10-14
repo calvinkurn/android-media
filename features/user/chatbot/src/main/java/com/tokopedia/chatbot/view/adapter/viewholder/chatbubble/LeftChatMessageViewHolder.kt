@@ -4,7 +4,7 @@ import android.view.Gravity
 import android.view.View
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.chat_common.data.MessageViewModel
+import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.domain.pojo.senderinfo.SenderInfoData
@@ -37,7 +37,7 @@ class LeftChatMessageViewHolder(
             Gravity.CENTER
     )
 
-    override fun bind(message: MessageViewModel) {
+    override fun bind(message: MessageUiModel) {
         super.bind(message)
         hideSenderInfo()
         val senderInfoData = convertToSenderInfo(message.source)
@@ -69,11 +69,11 @@ class LeftChatMessageViewHolder(
         } else return null
     }
 
-    private fun bindBackground(message: MessageViewModel) {
+    private fun bindBackground(message: MessageUiModel) {
         customChatLayout?.background = bg
     }
 
-    private fun bindMessageInfo(message: MessageViewModel) {
+    private fun bindMessageInfo(message: MessageUiModel) {
         if (!message.isSender) {
             customChatLayout?.showReadMoreView()
         } else {

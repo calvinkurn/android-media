@@ -19,7 +19,7 @@ import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.MessageViewModel
+import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.util.IdentifierUtil
@@ -170,7 +170,7 @@ abstract class BaseChatViewStateImpl(
 
     override fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String, startTime: String) {
         val localId = IdentifierUtil.generateLocalId()
-        val message = MessageViewModel.Builder()
+        val message = MessageUiModel.Builder()
             .withMsgId(messageId)
             .withFromUid(userId)
             .withFrom(name)

@@ -5,7 +5,7 @@ import android.view.View
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.chat_common.data.BaseChatUiModel
-import com.tokopedia.chat_common.data.MessageViewModel
+import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
@@ -20,7 +20,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 abstract class CustomChatbotMessageViewHolder(
         itemView: View?,
         protected val listener: ChatLinkHandlerListener,
-) : BaseChatViewHolder<MessageViewModel>(itemView) {
+) : BaseChatViewHolder<MessageUiModel>(itemView) {
 
     protected open val customChatLayout: CustomChatbotChatLayout? = itemView?.findViewById(com.tokopedia.chatbot.R.id.customChatLayout)
     protected open val msgContainer: ConstraintLayout? = itemView?.findViewById(com.tokopedia.chatbot.R.id.cl_msg_container)
@@ -30,14 +30,14 @@ abstract class CustomChatbotMessageViewHolder(
 
     private val movementMethod = ChatLinkHandlerMovementMethod(listener)
 
-    override fun bind(message: MessageViewModel) {
+    override fun bind(message: MessageUiModel) {
         verifyReplyTime(message)
         ChatbotMessageViewHolderBinder.bindChatMessage(message.message, customChatLayout, movementMethod, message.isSender)
         ChatbotMessageViewHolderBinder.bindHour(message.replyTime, customChatLayout)
         setHeaderDate(message)
     }
 
-    protected fun verifyReplyTime(chat: MessageViewModel) {
+    protected fun verifyReplyTime(chat: MessageUiModel) {
         try {
             if (chat.replyTime.toLongOrZero() / MILISECONDS < START_YEAR) {
                 chat.replyTime = (chat.replyTime.toLongOrZero() * MILISECONDS).toString()

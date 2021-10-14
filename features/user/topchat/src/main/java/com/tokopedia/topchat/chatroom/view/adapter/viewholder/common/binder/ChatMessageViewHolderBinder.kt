@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.chat_common.data.MessageViewModel
+import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.util.ChatTimeConverter
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
@@ -91,7 +91,7 @@ object ChatMessageViewHolderBinder {
 
     @SuppressLint("ClickableViewAccessibility")
     fun bindChatMessage(
-        chat: MessageViewModel,
+        chat: MessageUiModel,
         fxChat: FlexBoxChatLayout?
     ) {
         val htmlMessage = MethodChecker.fromHtml(chat.message)
@@ -106,18 +106,18 @@ object ChatMessageViewHolderBinder {
     }
 
     fun bindHour(
-        viewModel: MessageViewModel,
+        uiModel: MessageUiModel,
         fxChat: FlexBoxChatLayout?
     ) {
-        val hourTime = getHourTime(viewModel.replyTime)
+        val hourTime = getHourTime(uiModel.replyTime)
         fxChat?.setHourTime(hourTime)
     }
 
     fun bindHourTextView(
-        viewModel: MessageViewModel,
+        uiModel: MessageUiModel,
         hour: TextView?
     ) {
-        val hourTime = getHourTime(viewModel.replyTime)
+        val hourTime = getHourTime(uiModel.replyTime)
         hour?.text = hourTime
     }
 
@@ -131,13 +131,13 @@ object ChatMessageViewHolderBinder {
         }
     }
 
-    fun bindChatReadStatus(element: MessageViewModel, messageView: FlexBoxChatLayout?) {
+    fun bindChatReadStatus(element: MessageUiModel, messageView: FlexBoxChatLayout?) {
         messageView?.checkMark?.let {
             bindChatReadStatus(element, it)
         }
     }
 
-    fun bindChatReadStatus(element: MessageViewModel, checkMark: ImageView) {
+    fun bindChatReadStatus(element: MessageUiModel, checkMark: ImageView) {
         if (element.isShowTime && element.isSender) {
             checkMark.show()
             val imageResource = when {

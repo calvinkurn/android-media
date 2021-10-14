@@ -10,7 +10,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_REVIEW_REMIN
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
 import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
-import com.tokopedia.chat_common.data.MessageViewModel
+import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.ChatRepliesItem
@@ -99,7 +99,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     override fun convertToMessageViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        return MessageViewModel.Builder()
+        return MessageUiModel.Builder()
             .withResponseFromGQL(chatItemPojoByDateByTime)
             .build()
     }
@@ -211,7 +211,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         val attachment = gson.fromJson(
             reply.attachment.attributes, HeaderCtaButtonAttachment::class.java
         )
-        return MessageViewModel.Builder()
+        return MessageUiModel.Builder()
             .withResponseFromGQL(reply)
             .withAttachment(attachment)
             .build()

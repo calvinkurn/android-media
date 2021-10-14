@@ -7,7 +7,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.chat_common.data.MessageViewModel
+import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -23,7 +23,7 @@ class BannedChatMessageViewHolder(
     private val listener: ChatLinkHandlerListener,
     private val commonListener: CommonViewHolderListener,
     private val adapterListener: AdapterListener
-) : BaseChatViewHolder<MessageViewModel>(itemView) {
+) : BaseChatViewHolder<MessageUiModel>(itemView) {
 
     private var container: ConstraintLayout? = itemView?.findViewById(R.id.cl_ban_container)
     private var checkMark: ImageView? = itemView?.findViewById(R.id.ivCheckMark)
@@ -36,7 +36,7 @@ class BannedChatMessageViewHolder(
     private val bgLeft = ChatMessageViewHolderBinder.generateLeftBg(container)
     private val bgRight = ChatMessageViewHolderBinder.generateRightBg(container)
 
-    override fun bind(message: MessageViewModel) {
+    override fun bind(message: MessageUiModel) {
         verifyReplyTime(message)
         bindMargin(message)
         bindClickInfo()
@@ -46,7 +46,7 @@ class BannedChatMessageViewHolder(
         ChatMessageViewHolderBinder.bindHourTextView(message, hourTime)
     }
 
-    private fun bindGravity(message: MessageViewModel) {
+    private fun bindGravity(message: MessageUiModel) {
         if (message.isSender) {
             msgContainer?.gravity = Gravity.END
         } else {
@@ -60,13 +60,13 @@ class BannedChatMessageViewHolder(
         }
     }
 
-    private fun bindCheckMark(message: MessageViewModel) {
+    private fun bindCheckMark(message: MessageUiModel) {
         checkMark?.let {
             ChatMessageViewHolderBinder.bindChatReadStatus(message, it)
         }
     }
 
-    private fun bindBackground(message: MessageViewModel) {
+    private fun bindBackground(message: MessageUiModel) {
         if (message.isSender) {
             container?.background = bgRight
         } else {
@@ -74,7 +74,7 @@ class BannedChatMessageViewHolder(
         }
     }
 
-    private fun bindMargin(message: MessageViewModel) {
+    private fun bindMargin(message: MessageUiModel) {
         val lp = msgContainer?.layoutParams
         if (lp is RecyclerView.LayoutParams) {
             if (adapterListener.isOpposite(adapterPosition, message.isSender)) {
@@ -90,7 +90,7 @@ class BannedChatMessageViewHolder(
         }
     }
 
-    private fun verifyReplyTime(chat: MessageViewModel) {
+    private fun verifyReplyTime(chat: MessageUiModel) {
         try {
             if (chat.replyTime.toLongOrZero() / MILISECONDS < START_YEAR) {
                 chat.replyTime = (chat.replyTime.toLongOrZero() * MILISECONDS).toString()

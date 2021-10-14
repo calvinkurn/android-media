@@ -3,7 +3,7 @@ package com.tokopedia.chat_common.domain.mapper
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.MessageViewModel
+import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.ReplyChatViewModel
 import com.tokopedia.chat_common.domain.pojo.ChatItemPojo
 import com.tokopedia.chat_common.domain.pojo.ReplyChatItemPojo
@@ -41,8 +41,8 @@ class ReplyChatMapper @Inject constructor() : Func1<Response<DataResponse<ReplyC
         }
     }
 
-    private fun generateMessage(reply: ChatItemPojo): MessageViewModel {
-        return MessageViewModel.Builder().withResponseFromAPI(reply)
+    private fun generateMessage(reply: ChatItemPojo): MessageUiModel {
+        return MessageUiModel.Builder().withResponseFromAPI(reply)
             .build()
     }
 

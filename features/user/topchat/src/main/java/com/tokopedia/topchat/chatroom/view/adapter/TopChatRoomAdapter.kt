@@ -342,7 +342,7 @@ class TopChatRoomAdapter constructor(
     fun isLastMessageBroadcast(): Boolean {
         if (visitables.isEmpty()) return false
         val latestMessage = visitables.first()
-        return (latestMessage is MessageViewModel && latestMessage.isFromBroadCast()) ||
+        return (latestMessage is MessageUiModel && latestMessage.isFromBroadCast()) ||
                 latestMessage is BroadcastSpamHandlerUiModel ||
                 latestMessage is BroadCastUiModel
     }
@@ -365,7 +365,7 @@ class TopChatRoomAdapter constructor(
     }
 
     private fun isFromBroadcast(latestMessage: Visitable<*>?): Boolean {
-        return latestMessage is MessageViewModel &&
+        return latestMessage is MessageUiModel &&
                 latestMessage.isFromBroadCast() &&
                 !latestMessage.isSender
     }

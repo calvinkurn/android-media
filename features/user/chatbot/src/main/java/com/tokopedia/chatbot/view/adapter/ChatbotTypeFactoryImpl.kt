@@ -51,7 +51,7 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
             return HideViewHolder.LAYOUT
         }
         val chat = visitables[position]
-        return if (chat is MessageViewModel) {
+        return if (chat is MessageUiModel) {
             if (chat.isSender) {
                 CustomChatbotMessageViewHolder.TYPE_RIGHT
             } else {

@@ -7,7 +7,7 @@ import androidx.annotation.LayoutRes;
 import androidx.core.content.ContextCompat;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.chat_common.data.MessageViewModel;
+import com.tokopedia.chat_common.data.MessageUiModel;
 import com.tokopedia.chat_common.view.adapter.viewholder.MessageViewHolder;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener;
 import com.tokopedia.chatbot.EllipsizeMaker;
@@ -30,7 +30,7 @@ public class ChatBotMessageViewHolder extends MessageViewHolder {
     }
 
     @Override
-    public void bind(MessageViewModel element) {
+    public void bind(MessageUiModel element) {
         htmlMessage = element.getMessage();
         super.bind(element);
     }

@@ -668,7 +668,7 @@ open class TopChatRoomPresenter @Inject constructor(
         referredMsg: ParentReply?
     ): SendableUiModel {
         val localId = IdentifierUtil.generateLocalId()
-        return MessageViewModel.Builder()
+        return MessageUiModel.Builder()
             .withMsgId(roomMetaData.msgId)
             .withFromUid(userSession.userId)
             .withFrom(userSession.name)

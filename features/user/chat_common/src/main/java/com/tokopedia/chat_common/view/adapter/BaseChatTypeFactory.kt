@@ -10,7 +10,7 @@ import com.tokopedia.chat_common.data.*
 
 interface BaseChatTypeFactory {
 
-    fun type(messageViewModel: MessageViewModel): Int
+    fun type(messageUiModel: MessageUiModel): Int
 
     fun type(typingViewModel: TypingChatModel): Int
 

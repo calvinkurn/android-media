@@ -119,7 +119,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         list.forEach { api ->
             adapter.data.forEach { ws ->
                 when {
-                    ws is MessageViewModel && api is MessageViewModel -> {
+                    ws is MessageUiModel && api is MessageUiModel -> {
                         if ((ws.replyTime == api.replyTime) && (ws.message == api.message)) {
                             filteredList.remove(api)
                         }

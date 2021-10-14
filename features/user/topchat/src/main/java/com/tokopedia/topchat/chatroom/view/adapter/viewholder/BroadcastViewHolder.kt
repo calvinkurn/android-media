@@ -6,7 +6,7 @@ import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
-import com.tokopedia.chat_common.data.MessageViewModel
+import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.kotlin.extensions.view.*
@@ -238,7 +238,7 @@ class BroadcastViewHolder constructor(
     }
 
     private fun bindMessage(element: BroadCastUiModel) {
-        val message: MessageViewModel? = element.messageUiModel
+        val message: MessageUiModel? = element.messageUiModel
         if (message != null) {
             broadcastText?.show()
             ChatMessageViewHolderBinder.bindChatMessage(message, broadcastText)

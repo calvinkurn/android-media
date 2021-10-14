@@ -464,7 +464,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return {
             val list = it.listChat.filter {
                 !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
-                        (it is MessageViewModel && it.message.isEmpty()))
+                        (it is MessageUiModel && it.message.isEmpty()))
             }
 
             updateViewData(it)
@@ -479,7 +479,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return {
             val list = it.listChat.filter {
                 !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
-                        (it is MessageViewModel && it.message.isEmpty()))
+                        (it is MessageUiModel && it.message.isEmpty()))
             }
             if (page == FIRST_PAGE) isFirstPage = false
             if (list.isNotEmpty()){
@@ -526,7 +526,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun managePreviousStateOfBubble(visitable: Visitable<*>) {
-        if(visitable is MessageViewModel && visitable.isSender){
+        if(visitable is MessageUiModel && visitable.isSender){
             getViewState()?.hideInvoiceList()
             getViewState()?.hideHelpfullOptions()
         }
@@ -534,7 +534,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun manageActionBubble(visitable: Visitable<*>) {
         when {
-            visitable is MessageViewModel && visitable.isSender -> hideActionBubble()
+            visitable is MessageUiModel && visitable.isSender -> hideActionBubble()
             visitable is AttachInvoiceSentViewModel && visitable.isSender -> hideActionBubble()
         }
     }

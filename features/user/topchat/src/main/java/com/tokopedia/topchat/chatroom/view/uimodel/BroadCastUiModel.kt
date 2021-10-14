@@ -13,7 +13,7 @@ class BroadCastUiModel : BaseChatUiModel, Visitable<TopChatTypeFactory> {
     val voucherUiModel: TopChatVoucherUiModel? get() = items[AttachmentType.Companion.TYPE_VOUCHER] as? TopChatVoucherUiModel
     val productCarousel: ProductCarouselUiModel? get() = items[AttachmentType.Companion.TYPE_IMAGE_CAROUSEL] as? ProductCarouselUiModel
     val singleProduct: ProductAttachmentViewModel? get() = items[AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT] as? ProductAttachmentViewModel
-    val messageUiModel: MessageViewModel? get() = items[AttachmentType.Companion.TYPE_MESSAGE] as? MessageViewModel
+    val messageUiModel: MessageUiModel? get() = items[AttachmentType.Companion.TYPE_MESSAGE] as? MessageUiModel
     val isOpposite: Boolean
     val reply: Reply
 

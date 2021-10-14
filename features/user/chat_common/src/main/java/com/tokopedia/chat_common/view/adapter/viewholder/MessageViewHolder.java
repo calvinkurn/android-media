@@ -11,14 +11,14 @@ import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.chat_common.R;
-import com.tokopedia.chat_common.data.MessageViewModel;
+import com.tokopedia.chat_common.data.MessageUiModel;
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener;
 
 /**
  * @author by nisie on 5/16/18.
  */
-public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
+public class MessageViewHolder extends BaseChatViewHolder<MessageUiModel> {
 
     private static final String ROLE_USER = "User";
 
@@ -80,14 +80,14 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
     }
 
     @Override
-    public void bind(MessageViewModel element) {
+    public void bind(MessageUiModel element) {
         super.bind(element);
         message.setText(MethodChecker.fromHtml(element.getMessage()));
         setupChatBubbleAlignment(chatBalloon, element);
         setRole(element);
     }
 
-    private void setupChatBubbleAlignment(View chatBalloon, MessageViewModel element) {
+    private void setupChatBubbleAlignment(View chatBalloon, MessageUiModel element) {
         if (element.isSender()) {
             setChatRight(chatBalloon);
             setReadStatus(element);
@@ -124,7 +124,7 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
         chatStatus.setVisibility(View.VISIBLE);
     }
 
-    private void setRole(MessageViewModel element) {
+    private void setRole(MessageUiModel element) {
         if (!TextUtils.isEmpty(element.getFromRole())
                 && !element.getFromRole().toLowerCase().equals(ROLE_USER.toLowerCase())
                 && element.isSender()
@@ -143,7 +143,7 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
         }
     }
 
-    private void setReadStatus(MessageViewModel element) {
+    private void setReadStatus(MessageUiModel element) {
         int imageResource;
         if (element.isShowTime()) {
             chatStatus.setVisibility(View.VISIBLE);
