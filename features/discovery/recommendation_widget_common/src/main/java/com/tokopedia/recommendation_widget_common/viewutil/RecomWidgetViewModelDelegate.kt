@@ -1,19 +1,16 @@
 package com.tokopedia.recommendation_widget_common.viewutil
 
-import android.content.Context
-import android.view.ContextThemeWrapper
+import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.recommendation_widget_common.di.recomwidget.DaggerRecommendationComponent
 import com.tokopedia.recommendation_widget_common.di.recomwidget.RecommendationComponentInstance
-import com.tokopedia.recommendation_widget_common.di.recomwidget.RecommendationWidgetModule
 import com.tokopedia.recommendation_widget_common.presenter.RecommendationViewModel
 
 /**
  * Created by yfsx on 13/10/21.
  */
-class RecomWidgetViewModelDelegate<T : RecommendationViewModel>(val context: () -> Context) :
+class RecomWidgetViewModelDelegate<T : RecommendationViewModel>(val activity: () -> Activity?) :
     Lazy<T> {
 
     private var recommendationViewModel: T? = null
@@ -24,32 +21,14 @@ class RecomWidgetViewModelDelegate<T : RecommendationViewModel>(val context: () 
 
     override val value: T
         get() = recommendationViewModel
-            ?: initializeViewModel(context.invoke())!!.also { recommendationViewModel = it }
+            ?: initializeViewModel(activity.invoke()!!).also { recommendationViewModel = it }
 
-    private fun initializeViewModel(it: Context): T? {
+    private fun initializeViewModel(it: Activity): T {
         val appContext = it.applicationContext as BaseMainApplication
         val component = RecommendationComponentInstance.getRecomWidgetComponent(appContext)
         component.inject(appContext)
         val viewModelFactory = component.getViewModelFactory()
-        return when (it) {
-            is AppCompatActivity -> {
-                val viewModelProvider = ViewModelProvider(it, viewModelFactory)
-                viewModelProvider[RecommendationViewModel::class.java] as T
-            }
-            is ContextThemeWrapper -> {
-                val activity = it.getActivityFromContext()
-                activity?.let {
-                    if (activity is AppCompatActivity) {
-                        val viewModelProvider = ViewModelProvider(activity, viewModelFactory)
-                        viewModelProvider[RecommendationViewModel::class.java] as T
-                    } else {
-                        null
-                    }
-                }
-            }
-            else -> {
-                null
-            }
-        }
+        val viewModelProvider = ViewModelProvider(it as AppCompatActivity, viewModelFactory)
+        return viewModelProvider[RecommendationViewModel::class.java] as T
     }
 }

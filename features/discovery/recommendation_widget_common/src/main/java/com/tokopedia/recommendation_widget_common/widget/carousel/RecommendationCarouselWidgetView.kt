@@ -28,6 +28,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presenter.RecommendationViewModel
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TEXT_OTHER_RECOM
 import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
+import com.tokopedia.recommendation_widget_common.viewutil.getActivityFromContext
 import com.tokopedia.recommendation_widget_common.viewutil.initViewModel
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_FAILED
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_LOADING
@@ -87,7 +88,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModel: RecommendationViewModel by initViewModel {
-        context
+        context.getActivityFromContext()
     }
 
 

@@ -46,6 +46,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
+import com.tokopedia.searchbar.navigation_component.util.getActivityFromContext
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.EXTRA_SELECTED_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.REQUEST_CODE_CATEGORY_FILTER_BOTTOM_SHEET
@@ -130,7 +131,7 @@ class TokoNowRecentPurchaseFragment:
     private val carouselScrollPosition = SparseIntArray()
 
     private val recomWidgetViewModel by initViewModel {
-        requireContext()
+        requireContext().getActivityFromContext()
     }
 
     private val adapter by lazy {
