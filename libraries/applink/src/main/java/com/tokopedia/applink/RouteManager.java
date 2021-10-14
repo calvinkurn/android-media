@@ -197,10 +197,30 @@ public class RouteManager {
 
     public static Fragment instantiateFragmentDF(@NonNull AppCompatActivity activity, @NonNull String classPathName, @Nullable Bundle extras) {
         boolean isFragmentInstalled = FragmentDFMapper.checkIfFragmentIsInstalled(activity, classPathName);
-        if (isFragmentInstalled) {
-            return instantiateFragment(activity, classPathName, extras);
-        } else {
-            return FragmentDFMapper.getFragmentDFDownloader(activity, classPathName, extras);
+        Fragment destinationFragment = null;
+//        if (isFragmentInstalled) {
+//            destinationFragment = instantiateFragment(activity, classPathName, extras);
+//        } else {
+//            destinationFragment = FragmentDFMapper.getFragmentDFDownloader(activity, classPathName, extras);
+//        }
+        if( destinationFragment == null){
+            logErrorGetFragmentDF(activity, classPathName);
+        }
+        return destinationFragment;
+    }
+
+    private static void logErrorGetFragmentDF(AppCompatActivity activity, String classPathName) {
+        try {
+            String sourceClass = "";
+            sourceClass = activity.getClass().getCanonicalName();
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "Router Fragment: Fragment Null");
+            messageMap.put("source", sourceClass);
+            messageMap.put("class_path_name", classPathName);
+            messageMap.put("journey", UserJourney.INSTANCE.getReadableJourneyActivity(5));
+            ServerLogger.log(Priority.P2, "DF_FRAGMENT", messageMap);
+        } catch (Exception e) {
+            Timber.e(e);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.tokopedia.applink
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -9,7 +10,12 @@ import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.FragmentConst.DF_INSTALLER_FRAGMENT_CLASS_PATH
 import com.tokopedia.applink.FragmentConst.REVIEW_SHOP_FRAGMENT
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.dev_monitoring_tools.userjourney.UserJourney.getReadableJourneyActivity
+import com.tokopedia.logger.ServerLogger.log
+import com.tokopedia.logger.utils.Priority
+import timber.log.Timber
 import tokopedia.applink.R
+import java.util.*
 
 /**
  * Fragment Dynamic Feature Mapper
@@ -70,7 +76,7 @@ object FragmentDFMapper {
 
     @JvmStatic
     fun checkIfFragmentIsInstalled(context: Context, className: String): Boolean {
-        return if(isClassExist(className))
+        return if(isClassExist(context, className))
             true
         else{
             val matchedFragmentDFPattern = getMatchedFragmentDFPattern(className)
@@ -79,12 +85,30 @@ object FragmentDFMapper {
         }
     }
 
-    private fun isClassExist(className: String): Boolean {
+    private fun isClassExist(context: Context,className: String): Boolean {
         return try {
             Class.forName(className)
             true
         } catch (e: ClassNotFoundException) {
+            logErrorFragmentClassNotExists(context, className)
             false
+        }
+    }
+
+    private fun logErrorFragmentClassNotExists(context: Context, classPathName: String) {
+        try {
+            var sourceClass = ""
+            if (context is Activity) {
+                sourceClass = context.javaClass.canonicalName.orEmpty()
+            }
+            val messageMap: MutableMap<String, String> = HashMap()
+            messageMap["type"] = "Router Fragment: Class Not Exists"
+            messageMap["source"] = sourceClass
+            messageMap["class_path_name"] = classPathName
+            messageMap["journey"] = getReadableJourneyActivity(5)
+            log(Priority.P2, "DF_FRAGMENT", messageMap)
+        } catch (e: Exception) {
+            Timber.e(e)
         }
     }
 
@@ -102,7 +126,7 @@ object FragmentDFMapper {
     }
 
     @JvmStatic
-    fun getFragmentDFDownloader(activity: AppCompatActivity, className: String, extras: Bundle): Fragment? {
+    fun getFragmentDFDownloader(activity: AppCompatActivity, className: String, extras: Bundle?): Fragment? {
         return getSplitManager(activity)?.let {
             val matchedFragmentDFPattern = getMatchedFragmentDFPattern(className)
             matchedFragmentDFPattern?.let { fragmentDfMapper ->
