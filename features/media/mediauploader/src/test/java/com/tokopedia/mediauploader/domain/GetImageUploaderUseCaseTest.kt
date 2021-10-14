@@ -2,7 +2,7 @@ package com.tokopedia.mediauploader.domain
 
 import com.tokopedia.mediauploader.image.data.ImageUploadServices
 import com.tokopedia.mediauploader.image.data.entity.ImageUploader
-import com.tokopedia.mediauploader.image.data.params.ImageUploaderParam
+import com.tokopedia.mediauploader.image.data.params.ImageUploadParam
 import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
 import com.tokopedia.mediauploader.stubUploadFileServices
 import io.mockk.mockk
@@ -20,7 +20,7 @@ class GetImageUploaderUseCaseTest {
     @Test fun `It should be failed to upload image without params`() {
         runBlocking {
             // Given
-            val params = ImageUploaderParam()
+            val params = ImageUploadParam()
 
             // Then
             assertFailsWith<RuntimeException> {
@@ -32,7 +32,7 @@ class GetImageUploaderUseCaseTest {
     @Test fun `It should success upload image and received uploadId correctly`() {
         runBlocking {
             // Given
-            val params = ImageUploaderParam(
+            val params = ImageUploadParam(
                 uploadUrl = "/",
                 filePath = "image.jpg",
                 timeOut = "60",

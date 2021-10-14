@@ -4,7 +4,7 @@ import com.tokopedia.mediauploader.common.state.ProgressCallback
 import com.tokopedia.mediauploader.common.util.fileBody
 import java.io.File
 
-data class ImageUploaderParam(
+data class ImageUploadParam(
     var hostUrl: String,
     var sourceId: String,
     var file: File,

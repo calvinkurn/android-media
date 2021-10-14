@@ -7,7 +7,7 @@ import com.tokopedia.mediauploader.common.state.ProgressCallback
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.*
 import com.tokopedia.mediauploader.image.data.mapper.ImagePolicyMapper
-import com.tokopedia.mediauploader.image.data.params.ImageUploaderParam
+import com.tokopedia.mediauploader.image.data.params.ImageUploadParam
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
 import java.io.File
@@ -28,7 +28,7 @@ class ImageUploaderManager constructor(
         policy: SourcePolicy
     ): UploadResult {
         // media uploader
-        val uploaderParams = ImageUploaderParam(
+        val uploaderParams = ImageUploadParam(
             hostUrl = policy.host,
             sourceId = sourceId,
             file = fileToUpload,
