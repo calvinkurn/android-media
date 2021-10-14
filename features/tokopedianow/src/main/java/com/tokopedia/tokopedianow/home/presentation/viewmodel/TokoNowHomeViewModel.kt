@@ -69,6 +69,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Job
 import javax.inject.Inject
 
 class TokoNowHomeViewModel @Inject constructor(
@@ -121,6 +122,8 @@ class TokoNowHomeViewModel @Inject constructor(
     private var hasTickerBeenRemoved = false
     private var channelToken = ""
 
+    private var getHomeLayoutJob: Job? = null
+
     fun getLoadingState() {
         channelToken = ""
         homeLayoutItemList.clear()
@@ -163,6 +166,8 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     fun getHomeLayout(localCacheModel: LocalCacheModel?, hasSharingEducationBeenRemoved: Boolean) {
+        getHomeLayoutJob?.cancel()
+
         launchCatchError(block = {
             homeLayoutItemList.clear()
 
@@ -187,6 +192,8 @@ class TokoNowHomeViewModel @Inject constructor(
             _homeLayoutList.postValue(Success(data))
         }) {
             _homeLayoutList.postValue(Fail(it))
+        }.let {
+            getHomeLayoutJob = it
         }
     }
 
