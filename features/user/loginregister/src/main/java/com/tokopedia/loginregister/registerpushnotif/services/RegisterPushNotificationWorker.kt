@@ -17,21 +17,16 @@ import com.tokopedia.loginregister.login.domain.RegisterPushNotificationUseCase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterPushNotifData
 import com.tokopedia.loginregister.registerpushnotif.di.DaggerRegisterPushNotificationComponent
 import com.tokopedia.loginregister.registerpushnotif.di.RegisterPushNotificationModule
-import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.security.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import javax.inject.Named
 
 class RegisterPushNotificationWorker(
     val context: Context,
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
 
-    @Named(SessionModule.SESSION_MODULE)
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -52,28 +47,24 @@ class RegisterPushNotificationWorker(
             return Result.failure()
         }
 
-        return withContext(Dispatchers.IO) {
-            val result: Result = try {
-                if (userSession.isLoggedIn) {
-                    val response = registerPushNotification()
-                    if (response?.isSuccess == true) {
-                        Result.success()
-                    } else {
-                        recordLog(LOG_TYPE_DO_WORK,
-                            "retry count = $runAttemptCount",
-                            Throwable(response?.errorMessage))
-
-                        Result.failure()
-                    }
+        return try {
+            if (userSession.isLoggedIn) {
+                val response = registerPushNotification()
+                if (response?.isSuccess == true) {
+                    Result.success()
                 } else {
+                    recordLog(LOG_TYPE_DO_WORK,
+                        "retry count = $runAttemptCount",
+                        Throwable(response?.errorMessage))
+
                     Result.failure()
                 }
-            } catch (e: Exception) {
-                recordLog(LOG_TYPE_DO_WORK, "retry count = $runAttemptCount", e)
-                Result.retry()
+            } else {
+                Result.failure()
             }
-
-            return@withContext result
+        } catch (e: Exception) {
+            recordLog(LOG_TYPE_DO_WORK, "retry count = $runAttemptCount", e)
+            Result.retry()
         }
     }
 

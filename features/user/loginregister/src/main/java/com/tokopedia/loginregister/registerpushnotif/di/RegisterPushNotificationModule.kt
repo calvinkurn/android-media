@@ -20,7 +20,6 @@ class RegisterPushNotificationModule(
 
     @LoginRegisterScope
     @Provides
-    @Named(SessionModule.SESSION_MODULE)
     fun provideUserSession(): UserSessionInterface = UserSession(context)
 
     @LoginRegisterScope

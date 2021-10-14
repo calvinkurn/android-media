@@ -1,5 +1,6 @@
 package com.tokopedia.loginregister.login.domain
 
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -12,8 +13,11 @@ import javax.inject.Inject
  */
 
 data class RegisterPushNotificationParamsModel(
+    @SerializedName("publicKey")
     var publicKey: String = "",
+    @SerializedName("signature")
     var signature: String = "",
+    @SerializedName("datetime")
     var datetime: String = ""
 )
 
@@ -23,21 +27,15 @@ class RegisterPushNotificationUseCase @Inject constructor(
 ) : CoroutineUseCase<RegisterPushNotificationParamsModel, RegisterPushNotifPojo>(coroutineDispatchers.io) {
 
     override suspend fun execute(params: RegisterPushNotificationParamsModel): RegisterPushNotifPojo {
-        return repository.request(graphqlQuery(), mapParams(params))
+        return repository.request(graphqlQuery(), params)
     }
 
-    private fun mapParams(params: RegisterPushNotificationParamsModel): Map<String, Any> = mapOf(
-        PARAM_PUBLIC_KEY to params.publicKey,
-        PARAM_SIGNATURE to params.signature,
-        PARAM_DATETIME to params.datetime
-    )
-
     override fun graphqlQuery(): String = """
-        query registerPushnotif(${'$'}publicKey : String!, ${'$'}signature : String!, ${'$'}datetime : String!) {
+        query registerPushnotif($$PARAM_PUBLIC_KEY : String!, $$PARAM_SIGNATURE : String!, $$PARAM_DATETIME : String!) {
           RegisterPushnotif(
-            publicKey: ${'$'}publicKey
-            signature: ${'$'}signature
-            datetime: ${'$'}datetime
+            publicKey: $$PARAM_PUBLIC_KEY
+            signature: $$PARAM_SIGNATURE
+            datetime: $$PARAM_DATETIME
           ){
             success
             errorMessage
