@@ -777,17 +777,20 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                         getCoachMarkItem(
                             talkInboxSortFilter.chipItems?.getOrNull(0)?.refChipUnify,
                             getString(R.string.inbox_coach_mark_filter_title),
-                            getString(R.string.inbox_coach_mark_filter_subtitle)
+                            getString(R.string.inbox_coach_mark_filter_subtitle),
+                            this
                         ),
                         getCoachMarkItem(
                             talkInboxSortFilter.chipItems?.getOrNull(1)?.refChipUnify,
                             getString(R.string.inbox_coach_mark_reported_title),
-                            getString(R.string.inbox_coach_mark_reported_subtitle)
+                            getString(R.string.inbox_coach_mark_reported_subtitle),
+                            this
                         ),
                         getCoachMarkItem(
                             talkInboxSortFilter.chipItems?.getOrNull(2)?.refChipUnify,
                             getString(R.string.inbox_coach_mark_smart_reply_title),
-                            getString(R.string.inbox_coach_mark_smart_reply_subtitle)
+                            getString(R.string.inbox_coach_mark_smart_reply_subtitle),
+                            this
                         )
                     )
                 )
@@ -803,10 +806,11 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     private fun getCoachMarkItem(
         anchorView: View?,
         title: String,
-        subtitle: String
+        subtitle: String,
+        binding: FragmentTalkInboxBinding
     ): CoachMark2Item {
         return CoachMark2Item(
-            anchorView ?: binding!!.talkInboxSortFilter,
+            anchorView ?: binding.talkInboxSortFilter,
             title,
             subtitle
         )
