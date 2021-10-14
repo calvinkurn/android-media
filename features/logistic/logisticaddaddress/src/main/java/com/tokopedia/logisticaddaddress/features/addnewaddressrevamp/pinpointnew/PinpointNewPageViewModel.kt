@@ -78,7 +78,7 @@ class PinpointNewPageViewModel @Inject constructor(private val repo: KeroReposit
         }
     }
 
-    fun getDistrictBoundaries(districtId: Int) {
+    fun getDistrictBoundaries(districtId: Long) {
         viewModelScope.launch {
             try {
                 val districtBoundary = repo.getDistrictBoundaries(districtId)

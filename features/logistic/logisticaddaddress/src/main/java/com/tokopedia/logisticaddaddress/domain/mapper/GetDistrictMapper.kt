@@ -13,7 +13,7 @@ class GetDistrictMapper @Inject constructor() {
         val msg = response.keroPlacesGetDistrict.messageError.firstOrNull()
         val errorCode = response.keroPlacesGetDistrict.errorCode
         with(response.keroPlacesGetDistrict.data) {
-            return GetDistrictDataUiModel(
+                return GetDistrictDataUiModel(
                     title = this.title,
                     formattedAddress = this.formattedAddress,
                     latitude = this.latitude,

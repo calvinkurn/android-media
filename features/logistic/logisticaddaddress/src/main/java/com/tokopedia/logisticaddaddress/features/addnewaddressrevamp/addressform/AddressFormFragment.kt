@@ -226,7 +226,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         viewModel.defaultAddress.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    if (it.data.addressId != 0) {
+                    if (it.data.addressId != 0L) {
                         binding.layoutCbDefaultLoc.visibility = View.VISIBLE
                     } else {
                         binding.layoutCbDefaultLoc.visibility = View.GONE
