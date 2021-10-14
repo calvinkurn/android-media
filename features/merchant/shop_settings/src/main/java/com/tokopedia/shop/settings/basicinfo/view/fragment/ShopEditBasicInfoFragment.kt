@@ -87,7 +87,6 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
-        initGqlClient()
         super.onCreate(savedInstanceState)
         setupToolbar()
         savedLocalImageUrl = savedInstanceState?.getString(SAVED_IMAGE_PATH).orEmpty()
@@ -162,10 +161,6 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     private fun dismissToaster() {
         snackbar?.dismiss()
-    }
-
-    private fun initGqlClient() {
-        context?.let { GraphqlClient.init(it) }
     }
 
     private fun setupToolbar() {

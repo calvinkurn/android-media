@@ -54,7 +54,6 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
 
     private fun initInjector(context: Context) {
         try {
-            GraphqlClient.init(context)
             val baseMainApplication = context.applicationContext as BaseMainApplication
             DaggerCMNotificationComponent.builder()
                     .baseAppComponent(baseMainApplication.baseAppComponent)

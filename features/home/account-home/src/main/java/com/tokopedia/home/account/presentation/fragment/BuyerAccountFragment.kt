@@ -246,7 +246,6 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         if (shouldRefreshOnResume) {
             scrollToTop()
             context?.let {
-                GraphqlClient.init(it)
                 getData()
             }
         } else {

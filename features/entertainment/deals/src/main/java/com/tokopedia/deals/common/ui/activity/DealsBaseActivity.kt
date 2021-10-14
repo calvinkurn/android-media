@@ -75,7 +75,6 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         super.onCreate(savedInstanceState, persistentState)
         initInjector()
-        GraphqlClient.init(this)
     }
 
     private fun initInjector() {

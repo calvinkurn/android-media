@@ -55,7 +55,6 @@ class SellerActionSliceProvider: SliceProvider(), SellerActionContract.View{
     override fun onBindSlice(sliceUri: Uri): Slice? {
         if (!isAlreadyInjected) {
             // Init GraphqlClient first before injecting because GraphqlRepository would require GraphqlClient to be initialized first
-            context?.let { GraphqlClient.init(it) }
             injectDependencies()
             presenter.attachView(this)
             isAlreadyInjected = true

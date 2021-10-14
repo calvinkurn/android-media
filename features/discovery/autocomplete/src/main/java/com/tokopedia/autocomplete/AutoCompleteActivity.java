@@ -103,7 +103,6 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     private void initActivityOnCreate() {
-        GraphqlClient.init(this);
         autocompleteTracking = new AutocompleteTracking(new UserSession(this));
     }
 

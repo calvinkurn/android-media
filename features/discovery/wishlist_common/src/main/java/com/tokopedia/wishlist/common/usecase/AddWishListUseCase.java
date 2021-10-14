@@ -23,7 +23,6 @@ public class AddWishListUseCase {
     private GraphqlUseCase graphqlUseCase;
 
     public AddWishListUseCase(Context context) {
-        GraphqlClient.init(context);
         graphqlUseCase = new GraphqlUseCase();
         this.context = context;
     }

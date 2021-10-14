@@ -54,13 +54,6 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
         getComponent(SettingPaymentComponent::class.java).inject(this)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        activity?.run {
-            GraphqlClient.init(this)
-        }
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_setting_list_payment, container, false)
     }
