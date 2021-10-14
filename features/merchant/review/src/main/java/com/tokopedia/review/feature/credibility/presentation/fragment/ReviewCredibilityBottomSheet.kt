@@ -238,7 +238,7 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
 
     private fun routeToWebView(url: String): Boolean {
         dismiss()
-        return RouteManager.route(context, ApplinkConst.WEBVIEW, url)
+        return RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
     }
 
     private fun setDismissBehavior() {
