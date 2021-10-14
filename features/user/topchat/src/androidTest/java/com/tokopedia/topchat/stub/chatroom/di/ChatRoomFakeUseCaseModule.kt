@@ -254,7 +254,7 @@ class ChatRoomFakeUseCaseModule {
         return ChatTokoNowWarehouseUseCaseStub(gqlUseCase)
     }
 
-    // -- separator -- //
+    // -- separator -- view model usecase start here //
 
     @Provides
     @ChatScope
@@ -265,7 +265,7 @@ class ChatRoomFakeUseCaseModule {
     @Provides
     @ChatScope
     fun provideGetExistingMessageIdUseCaseStub(
-        repository: GraphqlRepositoryStub<GetExistingMessageIdUseCaseStub>,
+        repository: GraphqlRepositoryStub,
         dispatchers: CoroutineDispatchers
     ): GetExistingMessageIdUseCaseStub {
         return GetExistingMessageIdUseCaseStub(repository, dispatchers)

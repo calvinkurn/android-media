@@ -8,10 +8,10 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import java.lang.reflect.Type
 import javax.inject.Inject
 
-class GraphqlRepositoryStub<T: Any> @Inject constructor(): GraphqlRepository {
+class GraphqlRepositoryStub @Inject constructor(): GraphqlRepository {
 
     var mapResult: MutableMap<Type, Any> = hashMapOf()
-    var mapGraphqlError: MutableMap<Type, MutableList<GraphqlError>> = hashMapOf()
+    var mapGraphqlError: MutableMap<Type, List<GraphqlError>> = hashMapOf()
     var isCached = false
 
     override suspend fun response(
@@ -21,13 +21,14 @@ class GraphqlRepositoryStub<T: Any> @Inject constructor(): GraphqlRepository {
         return GraphqlResponse(mapResult, mapGraphqlError, isCached)
     }
 
-    fun createMapResult(useCase: T, resultData: Any) {
-        mapResult[useCase::class.java] = resultData
+    fun createMapResult(pojo: Type, resultData: Any) {
+        mapResult[pojo] = resultData
     }
 
-    fun createErrorMapResult(useCase: T, errorMessage: String) {
-        mapResult[useCase::class.java] = GraphqlError().apply {
+    fun createErrorMapResult(pojo: Type, errorMessage: String) {
+        val gqlError = GraphqlError().apply {
             this.message = errorMessage
         }
+        mapGraphqlError[pojo] = listOf(gqlError)
     }
 }
