@@ -108,6 +108,9 @@
     <string name="payment_title_activity_dest_bank">Pilih Bank Tujuan</string>
     <string name="payment_title_upload_proof">Unggah Bukti Pembayaran</string>
 
+    <string name="title_gopay_kyc">GoPay Kyc</string>
+
+
     <!-- Payment Withdraw-->
     <string name="payment_title_withdraw">Penarikan Saldo</string>
     <string name="payment_title_auto_withdraw">Pengaturan Saldo</string>
