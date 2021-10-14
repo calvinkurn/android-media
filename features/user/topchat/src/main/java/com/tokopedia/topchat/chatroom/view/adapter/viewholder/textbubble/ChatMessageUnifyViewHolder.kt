@@ -7,7 +7,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
@@ -216,7 +216,7 @@ class ChatMessageUnifyViewHolder(
 
     private fun bindHeaderInfo(msg: MessageViewModel) {
         if (
-            msg.source == BaseChatViewModel.SOURCE_REPLIED_BLAST &&
+            msg.source == BaseChatUiModel.SOURCE_REPLIED_BLAST &&
             commonListener.isSeller()
         ) {
             headerInfo?.show()

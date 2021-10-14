@@ -1,11 +1,10 @@
 package com.tokopedia.chatbot.view.adapter.viewholder.chatbubble
 
 import android.text.TextUtils
-import android.text.format.DateUtils
 import android.view.View
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
@@ -17,8 +16,6 @@ import com.tokopedia.chatbot.view.customview.CustomChatbotChatLayout
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import java.text.SimpleDateFormat
-import java.util.*
 
 abstract class CustomChatbotMessageViewHolder(
         itemView: View?,
@@ -50,7 +47,7 @@ abstract class CustomChatbotMessageViewHolder(
         }
     }
 
-    override fun setHeaderDate(element: BaseChatViewModel?) {
+    override fun setHeaderDate(element: BaseChatUiModel?) {
         if (date == null) return
         val time = element?.replyTime?.let {
             ChatBotTimeConverter.getDateIndicatorTime(

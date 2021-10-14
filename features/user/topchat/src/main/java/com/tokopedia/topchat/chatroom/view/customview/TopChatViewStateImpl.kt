@@ -488,15 +488,15 @@ open class TopChatViewStateImpl constructor(
         if (getAdapter().getList().isNotEmpty()) {
             for (i in 0 until getAdapter().getList().size) {
                 var item = getAdapter().getList()[i]
-                if (item is BaseChatViewModel) {
+                if (item is BaseChatUiModel) {
                     if (item is SendableViewModel) {
                         if ((item as SendableViewModel).isDummy) {
                             break
                         } else {
-                            return transform(item as BaseChatViewModel)
+                            return transform(item as BaseChatUiModel)
                         }
                     } else {
-                        return transform(item as BaseChatViewModel)
+                        return transform(item as BaseChatUiModel)
                     }
                 } else {
                     break
@@ -582,7 +582,7 @@ open class TopChatViewStateImpl constructor(
         chatBlockLayout.visibility = View.GONE
     }
 
-    private fun transform(item: BaseChatViewModel): Parcelable? {
+    private fun transform(item: BaseChatUiModel): Parcelable? {
         return ReplyParcelableModel(item.messageId, item.message, item.replyTime)
     }
 

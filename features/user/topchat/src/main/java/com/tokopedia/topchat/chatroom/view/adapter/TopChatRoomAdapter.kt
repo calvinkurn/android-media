@@ -65,7 +65,7 @@ class TopChatRoomAdapter constructor(
      * String - the replyId or localId
      * BaseChatViewModel - the bubble/reply
      */
-    private var replyMap: ArrayMap<String, BaseChatViewModel> = ArrayMap()
+    private var replyMap: ArrayMap<String, BaseChatUiModel> = ArrayMap()
 
     override fun enableShowDate(): Boolean = false
     override fun enableShowTime(): Boolean = false
@@ -79,7 +79,7 @@ class TopChatRoomAdapter constructor(
         localId: String
     ) {
         val chatBubblePosition = visitables.indexOfFirst {
-            it is BaseChatViewModel && it.localId == localId
+            it is BaseChatUiModel && it.localId == localId
         }
         if (chatBubblePosition == RecyclerView.NO_POSITION) return
         visitables[chatBubblePosition] = visitable
@@ -124,11 +124,11 @@ class TopChatRoomAdapter constructor(
     fun getBubblePosition(localId: String, replyTime: String): Int {
         return if (replyMap.contains(localId)) {
             visitables.indexOfFirst {
-                it is BaseChatViewModel && it.localId == localId
+                it is BaseChatUiModel && it.localId == localId
             }
         } else {
             visitables.indexOfFirst {
-                it is BaseChatViewModel && it.replyTime == replyTime
+                it is BaseChatUiModel && it.replyTime == replyTime
             }
         }
     }
@@ -227,7 +227,7 @@ class TopChatRoomAdapter constructor(
     }
 
     fun addHeaderDateIfDifferent(visitable: Visitable<*>) {
-        if (visitable is BaseChatViewModel) {
+        if (visitable is BaseChatUiModel) {
             val chatTime = visitable.replyTime?.toLong()?.div(SECONDS) ?: return
             val previousChatTime = bottomMostHeaderDate?.dateTimestamp ?: return
             if (!sameDay(chatTime, previousChatTime)) {
@@ -322,7 +322,7 @@ class TopChatRoomAdapter constructor(
     }
 
     private fun mapListChat(listChat: List<Visitable<*>>) {
-        listChat.filterIsInstance(BaseChatViewModel::class.java)
+        listChat.filterIsInstance(BaseChatUiModel::class.java)
             .forEach {
                 val id = it.localId
                 if (id.isEmpty()) return@forEach

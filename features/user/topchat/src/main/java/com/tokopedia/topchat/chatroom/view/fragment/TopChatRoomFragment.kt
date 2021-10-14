@@ -891,7 +891,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
-        val chatBubble = visitable as? BaseChatViewModel
+        val chatBubble = visitable as? BaseChatUiModel
         val hasPreviewOnList = adapter.hasPreviewOnList(chatBubble?.localId)
         if (chatBubble != null && hasPreviewOnList) {
             adapter.updatePreviewFromWs(visitable, chatBubble.localId)
@@ -2388,7 +2388,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun showMsgMenu(msg: BaseChatViewModel, text: CharSequence) {
+    override fun showMsgMenu(msg: BaseChatUiModel, text: CharSequence) {
         replyBubbleOnBoarding.dismiss()
         val bs = TopchatBottomSheetBuilder.getLongClickBubbleMenuBs(
             context, msg

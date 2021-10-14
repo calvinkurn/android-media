@@ -34,7 +34,7 @@ constructor(
     attachmentId: String, attachmentType: String, replyTime: String, val imageUrl: String,
     val redirectUrl: String, message: String, val broadcastBlastId: Long, source: String,
     val isHideBanner: Boolean
-) : BaseChatViewModel(
+) : BaseChatUiModel(
         messageId, fromUid, from, fromRole, attachmentId,
         attachmentType, replyTime, message, source
 ), Visitable<BaseChatTypeFactory>, DeferredAttachment {

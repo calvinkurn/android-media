@@ -6,7 +6,7 @@ import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 
-class BroadCastUiModel : BaseChatViewModel, Visitable<TopChatTypeFactory> {
+class BroadCastUiModel : BaseChatUiModel, Visitable<TopChatTypeFactory> {
 
     val items: Map<String, Visitable<*>>
     val banner: ImageAnnouncementViewModel? get() = items[AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT] as? ImageAnnouncementViewModel

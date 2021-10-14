@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -73,7 +73,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     }
 
     fun bindReplyData(
-        uiModel: BaseChatViewModel
+        uiModel: BaseChatUiModel
     ) {
         val parentReply = uiModel.parentReply
         if (parentReply != null) {
@@ -110,7 +110,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     }
 
     fun composeReplyData(
-        referredMsg: BaseChatViewModel,
+        referredMsg: BaseChatUiModel,
         enableCloseButton: Boolean = false
     ) {
         val parentReply = ParentReply(

@@ -2,7 +2,7 @@ package com.tokopedia.chatbot.data.invoice
 
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactory
 
 /**
@@ -13,7 +13,7 @@ class AttachInvoiceSelectionViewModel (messageId: String, fromUid: String, from:
                                       fromRole: String, attachmentId: String,
                                       attachmentType: String, replyTime: String,
                                       var list: List<AttachInvoiceSingleViewModel>?,
-                                      message: String, source: String) : BaseChatViewModel(messageId, fromUid,
+                                      message: String, source: String) : BaseChatUiModel(messageId, fromUid,
         from, fromRole, attachmentId, attachmentType, replyTime, message, source)
         , Visitable<ChatbotTypeFactory> {
 

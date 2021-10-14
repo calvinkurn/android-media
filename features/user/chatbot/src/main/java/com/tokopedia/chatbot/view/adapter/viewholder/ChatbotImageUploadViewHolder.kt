@@ -8,7 +8,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
@@ -117,7 +117,7 @@ class ChatbotImageUploadViewHolder(itemView: View?,
         }
     }
 
-    override fun setHeaderDate(element: BaseChatViewModel?) {
+    override fun setHeaderDate(element: BaseChatUiModel?) {
         if (date == null) return
         val time = element?.replyTime?.let {
             ChatBotTimeConverter.getDateIndicatorTime(

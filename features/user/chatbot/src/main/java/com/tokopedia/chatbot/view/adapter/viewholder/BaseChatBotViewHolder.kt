@@ -1,14 +1,13 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
 import android.text.TextUtils
-import android.text.format.DateUtils
 import android.view.Gravity
 import android.view.View
 import androidx.cardview.widget.CardView
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.domain.pojo.senderinfo.SenderInfoData
@@ -22,8 +21,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
-import java.text.SimpleDateFormat
-import java.util.*
 
 open class BaseChatBotViewHolder<T : Visitable<*>>(itemView: View,
                                                    private val chatbotAdapterListener: ChatbotAdapterListener? = null) : BaseChatViewHolder<T>(itemView) {
@@ -52,7 +49,7 @@ open class BaseChatBotViewHolder<T : Visitable<*>>(itemView: View,
     )
 
     override fun bind(viewModel: T) {
-        if (viewModel is BaseChatViewModel) {
+        if (viewModel is BaseChatUiModel) {
             bindBackground()
             verifyReplyTime(viewModel)
             ChatbotMessageViewHolderBinder.bindHour(viewModel.replyTime, customChatLayout)
@@ -92,7 +89,7 @@ open class BaseChatBotViewHolder<T : Visitable<*>>(itemView: View,
         customChatLayout?.background = bg
     }
 
-    protected fun verifyReplyTime(chat: BaseChatViewModel) {
+    protected fun verifyReplyTime(chat: BaseChatUiModel) {
         try {
             if (chat.replyTime.toLongOrZero() / MILISECONDS < START_YEAR) {
                 chat.replyTime = (chat.replyTime.toLongOrZero() * MILISECONDS).toString()
@@ -102,7 +99,7 @@ open class BaseChatBotViewHolder<T : Visitable<*>>(itemView: View,
         }
     }
 
-    override fun setHeaderDate(element: BaseChatViewModel?) {
+    override fun setHeaderDate(element: BaseChatUiModel?) {
         if (date == null) return
         val time = element?.replyTime?.let {
             ChatBotTimeConverter.getDateIndicatorTime(

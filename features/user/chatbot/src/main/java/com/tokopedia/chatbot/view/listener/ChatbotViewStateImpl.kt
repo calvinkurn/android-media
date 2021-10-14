@@ -124,7 +124,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
                             filteredList.remove(api)
                         }
                     }
-                    ws is BaseChatViewModel && api is BaseChatViewModel -> {
+                    ws is BaseChatUiModel && api is BaseChatUiModel -> {
                         if ((ws.replyTime == api.replyTime) && (ws.message == api.message)) {
                             filteredList.remove(api)
                         }
@@ -143,7 +143,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     override fun onCheckToHideQuickReply(visitable: Visitable<*>) {
-        if (visitable is BaseChatViewModel
+        if (visitable is BaseChatUiModel
                 && TextUtils.isEmpty(visitable.attachmentId)
                 && hasQuickReply()
                 && !isMyMessage(visitable.fromUid)) {

@@ -3,7 +3,7 @@ package com.tokopedia.topchat.stub.chatroom.view.fragment
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.chat_common.BaseChatToolbarActivity
-import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
@@ -35,7 +35,7 @@ open class TopChatRoomFragmentStub : TopChatRoomFragment() {
         }
     }
 
-    override fun showMsgMenu(msg: BaseChatViewModel, text: CharSequence) {
+    override fun showMsgMenu(msg: BaseChatUiModel, text: CharSequence) {
         super.showMsgMenu(msg, text)
         childFragmentManager.executePendingTransactions()
     }

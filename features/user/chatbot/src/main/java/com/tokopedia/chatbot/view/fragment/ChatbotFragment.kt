@@ -544,7 +544,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun sendEventForWelcomeMessage(visitable: Visitable<*>) {
-        if (visitable is BaseChatViewModel && visitable.message.contains(WELCOME_MESSAGE_VALIDATION)) {
+        if (visitable is BaseChatUiModel && visitable.message.contains(WELCOME_MESSAGE_VALIDATION)) {
             chatbotAnalytics.eventShowView(ACTION_IMPRESSION_WELCOME_MESSAGE)
         }
     }

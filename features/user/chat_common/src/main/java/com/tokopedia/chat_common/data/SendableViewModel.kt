@@ -8,7 +8,7 @@ import java.util.*
 
 open class SendableViewModel constructor(
     builder: Builder<*, *>
-) : BaseChatViewModel(builder) {
+) : BaseChatUiModel(builder) {
 
     var startTime: String = builder.startTime
     var isRead: Boolean = builder.isRead
@@ -54,7 +54,7 @@ open class SendableViewModel constructor(
     abstract class Builder<
             out B : Builder<B, UI>,
             out UI : SendableViewModel
-            > : BaseChatViewModel.Builder<B, UI>() {
+            > : BaseChatUiModel.Builder<B, UI>() {
 
         internal var startTime: String = ""
         internal var isRead: Boolean = false
