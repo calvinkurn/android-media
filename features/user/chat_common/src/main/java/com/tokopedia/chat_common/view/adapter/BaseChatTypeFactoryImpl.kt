@@ -45,7 +45,7 @@ abstract class BaseChatTypeFactoryImpl(private val imageAnnouncementListener: Im
         return FallbackAttachmentViewHolder.LAYOUT
     }
 
-    override fun type(bannedAttachmentViewModel: BannedProductAttachmentViewModel): Int {
+    override fun type(bannedAttachmentUiModel: BannedProductAttachmentUiModel): Int {
         return BannedProductAttachmentViewHolder.LAYOUT
     }
 

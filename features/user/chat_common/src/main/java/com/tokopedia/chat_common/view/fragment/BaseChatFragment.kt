@@ -259,11 +259,11 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun onClickAttachVoucher(voucherMenu: VoucherMenu) {}
 
-    override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) {}
+    override fun onClickBannedProduct(uiModel: BannedProductAttachmentUiModel) {}
 
     override fun trackSeenProduct(element: ProductAttachmentViewModel) {}
 
-    override fun trackSeenBannedProduct(viewModel: BannedProductAttachmentViewModel) {}
+    override fun trackSeenBannedProduct(uiModel: BannedProductAttachmentUiModel) {}
 
     override fun onClickAddToWishList(product: ProductAttachmentViewModel, success: () -> Unit) {}
 

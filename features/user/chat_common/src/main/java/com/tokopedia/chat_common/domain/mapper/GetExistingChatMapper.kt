@@ -164,7 +164,7 @@ open class GetExistingChatMapper @Inject constructor() {
             chatItemPojoByDateByTime.isOpposite, chatItemPojoByDateByTime.role
         )
         if (pojoAttribute.isBannedProduct()) {
-            return BannedProductAttachmentViewModel.Builder()
+            return BannedProductAttachmentUiModel.Builder()
                 .withResponseFromGQL(chatItemPojoByDateByTime)
                 .withProductAttributesResponse(pojoAttribute)
                 .withCanShowFooter(canShowFooter)

@@ -160,7 +160,7 @@ open class TopChatTypeFactoryImpl constructor(
         return TopchatImageAnnouncementViewHolder.LAYOUT
     }
 
-    override fun type(bannedAttachmentViewModel: BannedProductAttachmentViewModel): Int {
+    override fun type(bannedAttachmentUiModel: BannedProductAttachmentUiModel): Int {
         return TopchatBannedProductAttachmentViewHolder.LAYOUT
     }
 

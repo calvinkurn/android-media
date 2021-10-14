@@ -1737,9 +1737,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun trackSeenBannedProduct(viewModel: BannedProductAttachmentViewModel) {
-        if (seenAttachedBannedProduct.add(viewModel.productId)) {
-            analytics.eventSeenBannedProductAttachment(viewModel)
+    override fun trackSeenBannedProduct(uiModel: BannedProductAttachmentUiModel) {
+        if (seenAttachedBannedProduct.add(uiModel.productId)) {
+            analytics.eventSeenBannedProductAttachment(uiModel)
         }
     }
 
@@ -1828,9 +1828,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         startActivityForResult(intent, REQUEST_ATTACH_INVOICE)
     }
 
-    override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) {
-        analytics.eventClickBannedProduct(viewModel)
-        presenter.onClickBannedProduct(viewModel.liteUrl)
+    override fun onClickBannedProduct(uiModel: BannedProductAttachmentUiModel) {
+        analytics.eventClickBannedProduct(uiModel)
+        presenter.onClickBannedProduct(uiModel.liteUrl)
     }
 
     override fun redirectToBrowser(url: String) {

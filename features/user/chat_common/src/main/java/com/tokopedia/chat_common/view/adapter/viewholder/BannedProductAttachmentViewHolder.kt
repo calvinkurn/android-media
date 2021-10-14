@@ -7,14 +7,14 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.R
-import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel
+import com.tokopedia.chat_common.data.BannedProductAttachmentUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.toPx
 
 open class BannedProductAttachmentViewHolder(itemView: View?, val listener: ProductAttachmentListener)
-    : BaseChatViewHolder<BannedProductAttachmentViewModel>(itemView) {
+    : BaseChatViewHolder<BannedProductAttachmentUiModel>(itemView) {
 
     protected open var container: ConstraintLayout? = null
     protected open var warning: Ticker? = null
@@ -32,22 +32,22 @@ open class BannedProductAttachmentViewHolder(itemView: View?, val listener: Prod
         image = itemView?.findViewById(R.id.product_image)
     }
 
-    override fun bind(viewModel: BannedProductAttachmentViewModel) {
-        setAlignment(viewModel)
-        bindWarning(viewModel)
-        bindImage(viewModel)
-        bindName(viewModel)
-        bindPrice(viewModel)
-        bindSeamlessRedirect(viewModel)
-        listener.trackSeenBannedProduct(viewModel)
+    override fun bind(uiModel: BannedProductAttachmentUiModel) {
+        setAlignment(uiModel)
+        bindWarning(uiModel)
+        bindImage(uiModel)
+        bindName(uiModel)
+        bindPrice(uiModel)
+        bindSeamlessRedirect(uiModel)
+        listener.trackSeenBannedProduct(uiModel)
     }
 
-    private fun bindSeamlessRedirect(viewModel: BannedProductAttachmentViewModel) {
-        btnBuy?.setOnClickListener { listener.onClickBannedProduct(viewModel) }
+    private fun bindSeamlessRedirect(uiModel: BannedProductAttachmentUiModel) {
+        btnBuy?.setOnClickListener { listener.onClickBannedProduct(uiModel) }
     }
 
-    private fun setAlignment(viewModel: BannedProductAttachmentViewModel) {
-        if (viewModel.isSender) {
+    private fun setAlignment(uiModel: BannedProductAttachmentUiModel) {
+        if (uiModel.isSender) {
             setChatRight()
         } else {
             setChatLeft()
@@ -74,8 +74,8 @@ open class BannedProductAttachmentViewHolder(itemView: View?, val listener: Prod
         }
     }
 
-    private fun bindWarning(viewModel: BannedProductAttachmentViewModel) {
-        val message = viewModel.getBannedWarningMessage()
+    private fun bindWarning(uiModel: BannedProductAttachmentUiModel) {
+        val message = uiModel.getBannedWarningMessage()
         warning?.setTextDescription(message)
 
         // Workaround for ticker not wrapping multiline content correctly
@@ -88,20 +88,20 @@ open class BannedProductAttachmentViewHolder(itemView: View?, val listener: Prod
         }
     }
 
-    private fun bindImage(viewModel: BannedProductAttachmentViewModel) {
+    private fun bindImage(uiModel: BannedProductAttachmentUiModel) {
         image?.let {
-            val imageUrl = viewModel.productImage
+            val imageUrl = uiModel.productImage
             ImageHandler.loadImageRounded2(itemView.context, it, imageUrl, 8.toPx().toFloat())
         }
     }
 
-    private fun bindName(viewModel: BannedProductAttachmentViewModel) {
-        val productName = viewModel.productName
+    private fun bindName(uiModel: BannedProductAttachmentUiModel) {
+        val productName = uiModel.productName
         name?.text = productName
     }
 
-    private fun bindPrice(viewModel: BannedProductAttachmentViewModel) {
-        val productPrice = viewModel.productPrice
+    private fun bindPrice(uiModel: BannedProductAttachmentUiModel) {
+        val productPrice = uiModel.productPrice
         price?.text = productPrice
     }
 

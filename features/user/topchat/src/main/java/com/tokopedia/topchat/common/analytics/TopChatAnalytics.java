@@ -14,7 +14,7 @@ import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.atc_common.domain.model.response.DataModel;
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
-import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel;
+import com.tokopedia.chat_common.data.BannedProductAttachmentUiModel;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress;
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel;
@@ -522,7 +522,7 @@ public class TopChatAnalytics {
     }
 
     // #BP1
-    public void eventClickBannedProduct(@NotNull BannedProductAttachmentViewModel viewModel) {
+    public void eventClickBannedProduct(@NotNull BannedProductAttachmentUiModel viewModel) {
         String clientId = TrackApp.getInstance().getGTM().getCachedClientIDString();
         String eventLabel = viewModel.getProductId() + " - " + clientId;
         TrackApp.getInstance().getGTM().sendGeneralEvent(
@@ -534,7 +534,7 @@ public class TopChatAnalytics {
     }
 
     // #BP2
-    public void eventSeenBannedProductAttachment(@NotNull BannedProductAttachmentViewModel viewModel) {
+    public void eventSeenBannedProductAttachment(@NotNull BannedProductAttachmentUiModel viewModel) {
         String clientId = TrackApp.getInstance().getGTM().getCachedClientIDString();
         String eventLabel = viewModel.getProductId() + " - " + clientId;
         TrackApp.getInstance().getGTM().sendGeneralEvent(

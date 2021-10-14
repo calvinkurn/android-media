@@ -2,7 +2,7 @@ package com.tokopedia.chat_common.data
 
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 
-class BannedProductAttachmentViewModel(
+class BannedProductAttachmentUiModel(
     builder: ProductAttachmentViewModel.Builder
 ) : ProductAttachmentViewModel(builder) {
 
@@ -18,7 +18,7 @@ class BannedProductAttachmentViewModel(
 
     class Builder : ProductAttachmentViewModel.Builder() {
         override fun build(): ProductAttachmentViewModel {
-            return BannedProductAttachmentViewModel(this)
+            return BannedProductAttachmentUiModel(this)
         }
     }
 }
