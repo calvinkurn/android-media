@@ -33,12 +33,15 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.R
+import com.tokopedia.universal_sharing.model.ImageGeneratorRequestData
+import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ImageListAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ShareBottomSheetAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
@@ -46,6 +49,9 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListe
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
@@ -228,6 +234,11 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var parentFragmentContainer: Fragment? = null
     //parent fragment lifecycle observer
     private lateinit var parentFragmentLifecycleObserver: DefaultLifecycleObserver
+
+    //Array to contain image generator API data
+    private var imageGeneratorDataArray : ArrayList<ImageGeneratorRequestData>? = null
+
+    lateinit var imageGeneratorUseCase: ImageGeneratorUseCase
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -652,7 +663,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         preserveImage = true
         shareModel.ogImgUrl = ogImageUrl
         shareModel.savedImageFilePath = savedImagePath
-        bottomSheetListener?.onShareOptionClicked(shareModel)
+        mockCallPdpImageGeneratorApi()
+//        bottomSheetListener?.onShareOptionClicked(shareModel)
     }
 
     fun setFeatureFlagRemoteConfigKey(key: String){
@@ -702,5 +714,37 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         clearData()
         removeLifecycleObserverAndSavedImage()
         super.onDismiss(dialog)
+    }
+
+    fun addImageGeneratorData(key: String, value: String){
+        if(imageGeneratorDataArray == null) {
+            imageGeneratorDataArray = ArrayList()
+        }
+        imageGeneratorDataArray?.add(ImageGeneratorRequestData(key, value))
+    }
+
+
+    fun executeImageGeneratorUseCase(sourceId: String, args: ArrayList<ImageGeneratorRequestData>){
+        CoroutineScope(Dispatchers.IO).launchCatchError(block = {
+            withContext(Dispatchers.IO) {
+                imageGeneratorUseCase = ImageGeneratorUseCase(GraphqlInteractor.getInstance().graphqlRepository)
+                imageGeneratorUseCase.apply {
+                    params = ImageGeneratorUseCase.createParam(sourceId, args)
+                }.executeOnBackground()
+            }
+        }, onError = {
+            it.printStackTrace()
+        })
+    }
+
+    fun mockCallPdpImageGeneratorApi(){
+        var sourceId = "gFZoml"
+        addImageGeneratorData("product_image_url", "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/4/7/fd207246-a066-4dc0-9c32-db6a81e6b6c8.jpg")
+        addImageGeneratorData("product_price", "50000")
+        addImageGeneratorData("product_title", "Halo")
+        addImageGeneratorData("is_bebas_ongkir", "true")
+        addImageGeneratorData("platform", "wa")
+        addImageGeneratorData("product_rating", "4.1")
+        imageGeneratorDataArray?.let { executeImageGeneratorUseCase(sourceId, it) }
     }
 }
