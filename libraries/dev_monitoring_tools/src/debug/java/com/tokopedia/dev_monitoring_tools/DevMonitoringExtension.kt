@@ -5,6 +5,6 @@ import leakcanary.LeakCanary
 object DevMonitoringExtension {
 
     fun initLeakCanary(enable: Boolean = true) {
-        LeakCanary.config = LeakCanary.config.copy(dumpHeap = enable)
+//        LeakCanary.config = LeakCanary.config.copy(dumpHeap = enable)
     }
 }
