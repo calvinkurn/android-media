@@ -80,22 +80,14 @@ class ProductPostTagViewHolderNew(
         productImage.setImageUrl(item.imgUrl)
         productName.text = item.text
 
-        card.setOnClickListener {
+        card.setOnClickListener (
             getItemClickNavigationListener(
                     listener,
                     item.positionInFeed,
                     item.product,
                     adapterPosition
             )
-            topAdsUrlHitter.hitClickUrl(
-                    this::class.java.simpleName,
-                    item.adClickUrl,
-                    "",
-                    "",
-                    "",
-                    ""
-            )
-        }
+        )
         menuBtn.setOnClickListener {
             listener.onBottomSheetMenuClicked(item, mainView.context)
         }

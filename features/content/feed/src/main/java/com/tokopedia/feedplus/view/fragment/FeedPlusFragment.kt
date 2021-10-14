@@ -1821,7 +1821,19 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 item.feedXCard.followers.isFollowed,
                 item.feedXCard.author.id
             )
+        }
 
+        if (adapter.getlist()[positionInFeed] is TopadsHeadLineV2Model) {
+            val item = (adapter.getlist()[positionInFeed] as TopadsHeadLineV2Model)
+            feedAnalytics.eventClickBSitem(
+                    item.feedXCard.id,
+                    item.feedXCard.tags,
+                    itemPosition,
+                    item.feedXCard.typename,
+                    item.feedXCard.followers.isFollowed,
+                    item.feedXCard.author.id
+            )
+           sendTopadsUrlClick(getAdClickUrl(positionInFeed))
         }
         onGoToLink(redirectUrl)
     }
