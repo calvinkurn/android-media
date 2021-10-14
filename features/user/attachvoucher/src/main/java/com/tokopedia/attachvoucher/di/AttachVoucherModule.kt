@@ -23,5 +23,4 @@ class AttachVoucherModule {
     @AttachVoucherScope
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
-
 }

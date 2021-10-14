@@ -13,6 +13,7 @@ import com.tokopedia.attachvoucher.mapper.VoucherMapper
 import com.tokopedia.attachvoucher.usecase.GetVoucherUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -20,10 +21,9 @@ import javax.inject.Inject
 class AttachVoucherViewModel @Inject constructor(
         private val getVouchersUseCase: GetVoucherUseCase,
         private val dispatcher: CoroutineDispatchers,
-        private val mapper: VoucherMapper
-) : BaseViewModel(dispatcher.main) {
+) : BaseViewModel(dispatcher.io) {
 
-    var hasNext = false
+    val hasNext: Boolean get() = getVouchersUseCase.hasNext
     var isLoading = false
     var currentPage = 0
 
@@ -46,17 +46,16 @@ class AttachVoucherViewModel @Inject constructor(
     }
 
     fun loadVouchers(page: Int) {
-        startLoading()
-        currentPage = page
         if (isLoading) {
             cancelCurrentLoad()
         }
 
-        val jobs = launchCatchError(block = {
+        startLoading()
+        currentPage = page
+
+        launchCatchError(block = {
             val param = generateParams(page, filter.value ?: NO_FILTER)
-            val response = getVouchersUseCase(param)
-            val vouchers = mapper.map(response)
-            hasNext = response.merchantPromotionGetMVList.data.paging.hasNext
+            val vouchers = getVouchersUseCase(param)
             onSuccessGetVouchers(vouchers)
             stopLoading()
         }, onError = {

@@ -7,7 +7,7 @@ import com.tokopedia.inboxcommon.RoleType
 object InboxConfig {
 
     @RoleType
-    var role: Int = RoleType.BUYER
+    var role: Int = RoleType.SELLER
         private set
 
     @InboxFragmentType

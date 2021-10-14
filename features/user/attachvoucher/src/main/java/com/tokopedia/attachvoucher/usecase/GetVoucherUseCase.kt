@@ -18,10 +18,12 @@ import kotlin.coroutines.CoroutineContext
 class GetVoucherUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatcher,
-) : CoroutineUseCase<FilterParam, GetMerchantPromotionGetMVListResponse>(dispatcher) {
+    private val mapper: VoucherMapper
+) : CoroutineUseCase<FilterParam, List<VoucherUiModel>>(dispatcher) {
 
-    private var getVouchersJob: Job? = null
     private val paramFilter = "Filter"
+    var hasNext = false
+
 
     private val privateVoucherQuery = """
         query MerchantPromotionGetMVListQuery($$paramFilter: MVFilter!){
@@ -116,8 +118,10 @@ class GetVoucherUseCase @Inject constructor(
         }
     }
 
-    override suspend fun execute(params: FilterParam): GetMerchantPromotionGetMVListResponse {
-        return repository.request(graphqlQuery(), params)
+    override suspend fun execute(params: FilterParam): List<VoucherUiModel> {
+        val data = repository.request<FilterParam, GetMerchantPromotionGetMVListResponse>(graphqlQuery(), params)
+        hasNext = data.merchantPromotionGetMVList.data.paging.hasNext
+        return mapper.map(data)
     }
 
     override fun graphqlQuery(): String {
