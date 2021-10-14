@@ -523,7 +523,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                     _selectedAddressItem = data
                 }
                 isStayOnPageState = true
-                viewModel.setDefaultPeopleAddress(data.id, false, prevState, data.id.toInt(), true)
+                viewModel.setDefaultPeopleAddress(data.id, false, prevState, data.id.toLong(), true)
                 bottomSheetLainnya?.dismiss()
             }
             btn_hapus_alamat?.setOnClickListener {
@@ -534,7 +534,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             btn_alamat_utama_choose?.setOnClickListener {
                 isStayOnPageState = false
                 context?.let {
-                    viewModel.setDefaultPeopleAddress(data.id,true, prevState, data.id.toInt(), true)
+                    viewModel.setDefaultPeopleAddress(data.id,true, prevState, data.id.toLong(), true)
                 }
                 _selectedAddressItem = data
             }
@@ -660,11 +660,11 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         }
     }
 
-    private fun getChosenAddrId(): Int {
-        var chosenAddrId = 0
+    private fun getChosenAddrId(): Long {
+        var chosenAddrId: Long = 0
         localChosenAddr?.address_id?.let { localAddrId ->
             if (localAddrId.isNotEmpty()) {
-                localChosenAddr?.address_id?.toInt()?.let { id ->
+                localChosenAddr?.address_id?.toLong()?.let { id ->
                     chosenAddrId = id
                 }
             }
