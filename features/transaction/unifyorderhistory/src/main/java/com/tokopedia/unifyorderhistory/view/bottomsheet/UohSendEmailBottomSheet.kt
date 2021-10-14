@@ -55,7 +55,7 @@ class UohSendEmailBottomSheet : BottomSheetUnify() {
 
             })
 
-            val email = tfEmail.textFieldInput.text.toString()
+            val email = "${tfEmail.textFieldInput.text}"
             btnSendEmail.setOnClickListener { listener?.onEmailSent(email)  }
         }
         showCloseIcon = true
