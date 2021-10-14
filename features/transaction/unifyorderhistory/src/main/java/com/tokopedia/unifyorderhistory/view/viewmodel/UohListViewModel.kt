@@ -11,9 +11,6 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.unifyorderhistory.util.UohConsts
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TDN_ADS_COUNT
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TDN_DIMEN_ID
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TDN_INVENTORY_ID
 import com.tokopedia.unifyorderhistory.util.UohIdlingResource
 import com.tokopedia.unifyorderhistory.util.UohUtils.asSuccess
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -25,6 +22,9 @@ import com.tokopedia.unifyorderhistory.analytics.UohAnalytics
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAdd
 import com.tokopedia.unifyorderhistory.data.model.*
 import com.tokopedia.unifyorderhistory.domain.*
+import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_ADS_COUNT
+import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_DIMEN_ID
+import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_INVENTORY_ID
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result

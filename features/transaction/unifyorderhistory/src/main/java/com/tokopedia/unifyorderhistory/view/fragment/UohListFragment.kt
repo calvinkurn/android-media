@@ -91,7 +91,6 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.STATUS_DIKIRIM
 import com.tokopedia.unifyorderhistory.util.UohConsts.STATUS_DIPROSES
 import com.tokopedia.unifyorderhistory.util.UohConsts.STATUS_MENUNGGU_KONFIRMASI
 import com.tokopedia.unifyorderhistory.util.UohConsts.STATUS_TIBA_DI_TUJUAN
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TDN_INDEX
 import com.tokopedia.unifyorderhistory.util.UohConsts.TIBA_DI_TUJUAN
 import com.tokopedia.unifyorderhistory.util.UohConsts.TRANSAKSI_BERLANGSUNG
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_ACTION_BUTTON_LINK
@@ -172,6 +171,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_INDEX
 
 /**
  * Created by fwidjaja on 29/06/20.

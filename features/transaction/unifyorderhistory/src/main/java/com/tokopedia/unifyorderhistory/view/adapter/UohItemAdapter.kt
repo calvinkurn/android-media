@@ -2,7 +2,6 @@ package com.tokopedia.unifyorderhistory.view.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_EMPTY
@@ -17,6 +16,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.unifyorderhistory.databinding.*
+import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_BANNER
 import com.tokopedia.unifyorderhistory.view.adapter.viewholder.*
 import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
 
@@ -77,8 +77,8 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 UohRecommendationItemViewHolder(binding, actionListener)
             }
             LAYOUT_BANNER -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.uoh_tdn_banner_layout, parent, false)
-                UohTdnBannerViewHolder(view)
+                val binding = UohTdnBannerLayoutBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                UohTdnBannerViewHolder(binding)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }
@@ -125,7 +125,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 holder.bind(element, holder.adapterPosition)
             }
             is UohTdnBannerViewHolder -> {
-                holder.bind(element, holder.adapterPosition)
+                holder.bind(element)
             }
         }
     }
@@ -136,10 +136,6 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             listTypeData.add(UohTypeData("", TYPE_LOADER))
         }
         notifyDataSetChanged()
-    }
-
-    fun getDataAtIndex(index: Int): UohListOrder.Data.UohOrders.Order {
-        return listTypeData[index].dataObject as UohListOrder.Data.UohOrders.Order
     }
 
     fun showLoaderAtIndex(index: Int) {

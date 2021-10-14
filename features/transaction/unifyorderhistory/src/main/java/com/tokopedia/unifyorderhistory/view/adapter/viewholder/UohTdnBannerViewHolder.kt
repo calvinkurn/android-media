@@ -1,44 +1,31 @@
-package com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder
+package com.tokopedia.unifyorderhistory.view.adapter.viewholder
 
-import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.buyerorder.R
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TDN_RADIUS
-import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohTypeData
-import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohItemAdapter
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.topads.sdk.utils.ImpresionTask
-import com.tokopedia.topads.sdk.widget.TopAdsImageView
+import com.tokopedia.unifyorderhistory.data.model.UohTypeData
+import com.tokopedia.unifyorderhistory.databinding.UohTdnBannerLayoutBinding
+import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_RADIUS
 
-class UohTdnBannerViewHolder(itemView: View) :
-        UohItemAdapter.BaseViewHolder<UohTypeData>(itemView) {
-    private val tdnBanner: TopAdsImageView by lazy {
-        itemView.findViewById<TopAdsImageView>(
-                R.id.uohTdnBanner
-        )
-    }
+class UohTdnBannerViewHolder(private val binding: UohTdnBannerLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
+    fun bind(item: UohTypeData) {
+        if (item.dataObject is TopAdsImageViewModel) {
+            binding.uohTdnBanner.setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
+                override fun onTopAdsImageViewClicked(applink: String?) {
+                    RouteManager.route(itemView.context, applink)
+                }
+            })
 
-    private fun bindTdn(element: TopAdsImageViewModel) {
+            binding.uohTdnBanner.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
+                override fun onTopAdsImageViewImpression(viewUrl: String) {
+                    ImpresionTask(this@UohTdnBannerViewHolder.javaClass.canonicalName).execute(viewUrl)
+                }
+            })
 
-        tdnBanner.setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
-            override fun onTopAdsImageViewClicked(applink: String?) {
-                RouteManager.route(itemView.context, applink)
-            }
-        })
-
-        tdnBanner.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
-            override fun onTopAdsImageViewImpression(viewUrl: String) {
-                ImpresionTask(this@UohTdnBannerViewHolder.javaClass.canonicalName).execute(viewUrl)
-            }
-        })
-
-        tdnBanner.loadImage(element, TDN_RADIUS)
-    }
-
-
-    override fun bind(item: UohTypeData, position: Int) {
-        bindTdn(item.dataObject as TopAdsImageViewModel)
+            binding.uohTdnBanner.loadImage(item.dataObject, TDN_RADIUS)
+        }
     }
 }
