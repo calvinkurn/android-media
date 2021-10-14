@@ -1010,7 +1010,7 @@ class ProductListPresenter @Inject constructor(
 
         if (!productDataView.isQuerySafe) view.showAdultRestriction()
 
-        if (shouldShowSearchPMProPopUp()) view.showPowerMerchantProPopUp()
+//        if (shouldShowSearchPMProPopUp()) view.showPowerMerchantProPopUp()
 
         if (isABTestNavigationRevamp && !isEnableChooseAddress)
             list.add(SearchProductCountDataView(list.size, searchProduct.header.totalDataText))
