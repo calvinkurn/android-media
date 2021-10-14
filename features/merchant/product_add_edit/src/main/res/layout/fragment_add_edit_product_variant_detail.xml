@@ -9,6 +9,7 @@
         android:id="@+id/ticker_add_edit_variant_multi_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:descriptionText="@string/ticker_variant_only_main_location"
         app:tickerType="warning"
         app:tickerShapeType="full"
         app:closeButtonVisibility="gone"

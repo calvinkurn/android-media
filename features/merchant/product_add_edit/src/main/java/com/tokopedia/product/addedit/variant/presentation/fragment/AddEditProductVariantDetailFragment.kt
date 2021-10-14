@@ -125,10 +125,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
 
         viewModel.setupMultiLocationValue()
 
-        val multiLocationDescription = MethodChecker.fromHtml(getString(
-            R.string.ticker_variant_only_main_location))
         multiLocationTicker = view.findViewById(R.id.ticker_add_edit_variant_multi_location)
-        multiLocationTicker?.setTextDescription(multiLocationDescription)
         multiLocationTicker?.showWithCondition(viewModel.isMultiLocationShop)
 
         val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this, viewModel.isMultiLocationShop)
