@@ -17,16 +17,19 @@ import com.tokopedia.loginregister.login.domain.RegisterPushNotificationUseCase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterPushNotifData
 import com.tokopedia.loginregister.registerpushnotif.di.DaggerRegisterPushNotificationComponent
 import com.tokopedia.loginregister.registerpushnotif.di.RegisterPushNotificationModule
+import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.user.session.UserSessionInterface
 import java.security.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import javax.inject.Named
 
 class RegisterPushNotificationWorker(
     val context: Context,
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
 
+    @Named(SessionModule.SESSION_MODULE)
     @Inject
     lateinit var userSession: UserSessionInterface
 
