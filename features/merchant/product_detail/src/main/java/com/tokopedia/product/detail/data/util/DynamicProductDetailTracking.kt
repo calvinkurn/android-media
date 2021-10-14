@@ -12,6 +12,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Action.CLICK_ANNOTATION_RECOM_CHIP
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.util.TrackingUtil.removeCurrencyPrice
@@ -1463,13 +1464,21 @@ object DynamicProductDetailTracking {
                                         trackerAttribution: String?,
                                         isTradeIn: Boolean, isDiagnosed: Boolean,
                                         multiOrigin: Boolean, deeplinkUrl: String,
-                                        isStockAvailable: String, boType: Int, affiliateUniqueId: String ->
+                                        isStockAvailable: String, boType: Int,
+                                        affiliateUniqueId: String,
+                                        rateEstimateData: P2RatesEstimateData?,
+                                        buyerDistrictId: String, sellerDistrictId: String ->
 
+            val dimension10 = productInfo?.data?.isCod ?: false
+            val dimension12 = ""
+            val dimension14 = rateEstimateData?.instanLabel ?: ""
+            val dimension16 = rateEstimateData?.etaText ?: ""
             val dimension55 = TrackingUtil.getTradeInString(isTradeIn, isDiagnosed)
             val dimension83 = TrackingUtil.getBoTypeString(boType)
             val dimension54 = TrackingUtil.getMultiOriginAttribution(multiOrigin)
             val dimension38 = trackerAttribution ?: ProductTrackingConstant.Tracking.DEFAULT_VALUE
             val dimension98 = if (isStockAvailable == "0") "not available" else "available"
+            val dimension120 = "$buyerDistrictId - $sellerDistrictId"
 
             val categoryFormatted = TrackingUtil.getEnhanceCategoryFormatted(productInfo?.basic?.category?.detail)
 
@@ -1481,6 +1490,10 @@ object DynamicProductDetailTracking {
                     variant = ProductTrackingConstant.Tracking.DEFAULT_VALUE,
                     category = categoryFormatted,
                     currency = null,
+                    dimension10 = dimension10.toString(),
+                    dimension12 = dimension12,
+                    dimension14 = dimension14,
+                    dimension16 = dimension16,
                     dimension38 = dimension38,
                     dimension55 = dimension55,
                     dimension54 = dimension54,
@@ -1489,14 +1502,21 @@ object DynamicProductDetailTracking {
                     dimension98 = dimension98,
                     dimension90 = if (affiliateUniqueId.isNotBlank()) "affiliate" else null,
                     dimension113 = affiliateUniqueId,
+                    dimension120 = dimension120,
                     index = 1
             ))
         }
 
-        private val generateProductViewBundle = { irisSessionId: String, trackerListName: String?, productInfo: DynamicProductInfoP1?,
+        private val generateProductViewBundle = { irisSessionId: String, trackerListName: String?,
+                                                  productInfo: DynamicProductInfoP1?,
                                                   shopInfo: ShopInfo?, trackerAttribution: String?,
                                                   isTradeIn: Boolean, isDiagnosed: Boolean,
-                                                  multiOrigin: Boolean, deeplinkUrl: String, isStockAvailable: String, boType: Int, affiliateUniqueId: String ->
+                                                  multiOrigin: Boolean, deeplinkUrl: String,
+                                                  isStockAvailable: String, boType: Int,
+                                                  affiliateUniqueId: String,
+                                                  ratesEstimateData: P2RatesEstimateData?,
+                                                  buyerDistrictId: String,
+                                                  sellerDistrictId: String ->
 
             val categoryIdLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.id ?: ""
             val categoryNameLevel1 = productInfo?.basic?.category?.detail?.firstOrNull()?.name ?: ""
@@ -1515,7 +1535,9 @@ object DynamicProductDetailTracking {
             val label = TrackingUtil.getProductViewLabel(productInfo)
 
             val products = generateProduct(irisSessionId, trackerListName, productInfo,
-                    trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl, isStockAvailable, boType, affiliateUniqueId)
+                trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl,
+                isStockAvailable, boType, affiliateUniqueId, ratesEstimateData, buyerDistrictId,
+                sellerDistrictId)
 
             ProductDetailViewsBundler
                     .getBundle(
@@ -1575,13 +1597,17 @@ object DynamicProductDetailTracking {
                              deeplinkUrl: String,
                              isStockAvailable: String,
                              boType: Int,
-                             affiliateUniqueId: String) {
+                             affiliateUniqueId: String,
+                             ratesEstimateData: P2RatesEstimateData?,
+                             buyerDistrictId: String,
+                             sellerDistrictId: String) {
             productInfo?.let {
                 if (shopInfo?.isShopInfoNotEmpty() == true) {
                     val sentBundle = generateProductViewBundle(
                             irisSessionId, trackerListName, it, shopInfo,
                             trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl,
-                            isStockAvailable, boType, affiliateUniqueId
+                            isStockAvailable, boType, affiliateUniqueId, ratesEstimateData,
+                            buyerDistrictId, sellerDistrictId
                     )
                     sendTrackingBundle(
                             ProductDetailViewsBundler.KEY,
