@@ -378,7 +378,8 @@ class FlexBoxChatLayout : ViewGroup {
                 0f
             }
             val lastLineAndStatusWidth = msgLastLineWidth + statusWidth
-            if (lastLineAndStatusWidth < maxAvailableWidth) {
+            val offset = 5
+            if (lastLineAndStatusWidth < maxAvailableWidth + offset) {
                 totalWidth += statusWidth
             } else {
                 totalHeight += statusHeight
