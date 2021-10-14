@@ -1,7 +1,8 @@
 package com.tokopedia.mediauploader.domain
 
+import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.data.entity.*
-import com.tokopedia.mediauploader.data.state.UploadResult
+import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.image.data.entity.ImagePolicy
 import com.tokopedia.mediauploader.image.data.entity.ImageUploader
 import com.tokopedia.mediauploader.image.data.entity.UploadData

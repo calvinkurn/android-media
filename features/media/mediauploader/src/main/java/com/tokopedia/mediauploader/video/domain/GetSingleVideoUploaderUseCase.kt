@@ -1,7 +1,7 @@
 package com.tokopedia.mediauploader.video.domain
 
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.mediauploader.data.state.ProgressCallback
+import com.tokopedia.mediauploader.common.state.ProgressCallback
 import com.tokopedia.mediauploader.video.data.VideoUploadServices
 import com.tokopedia.mediauploader.video.data.entity.VideoUploader
 import com.tokopedia.mediauploader.video.data.params.VideoUploaderParam

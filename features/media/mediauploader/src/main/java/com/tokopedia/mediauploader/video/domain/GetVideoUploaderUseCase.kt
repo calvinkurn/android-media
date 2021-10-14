@@ -1,7 +1,6 @@
 package com.tokopedia.mediauploader.video.domain
 
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.mediauploader.data.state.ProgressCallback
 import com.tokopedia.mediauploader.video.data.VideoUploadServices
 import com.tokopedia.mediauploader.video.data.entity.VideoLargeUploader
 import com.tokopedia.mediauploader.video.data.params.VideoUploaderParam
@@ -12,11 +11,9 @@ class GetVideoUploaderUseCase constructor(
     private val services: VideoUploadServices
 ) : CoroutineUseCase<VideoUploaderParam, VideoLargeUploader>(Dispatchers.IO) {
 
-    var progressCallback: ProgressCallback? = null
-
     override suspend fun execute(params: VideoUploaderParam): VideoLargeUploader {
         val uploadParam = params.LargeUpload()
-        val videoFile = uploadParam.fileBlob(progressCallback)
+        val videoFile = uploadParam.fileBlob(null)
         val sourceId = uploadParam.sourceId()
         val uploadId = uploadParam.uploadId()
         val partNumber = uploadParam.partNumber()
