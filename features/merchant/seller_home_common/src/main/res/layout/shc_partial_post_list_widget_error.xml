@@ -22,6 +22,7 @@
         tools:text="Power Merchant (Aktif)" />
 
     <include
+        android:id="@+id/shcPostListCommonErrorView"
         layout="@layout/shc_partial_common_widget_state_error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

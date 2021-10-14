@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <size
+                android:width="@dimen/digital_recommendation_card_width"
+                android:height="@dimen/digital_recommendation_card_width" />
+            <solid android:color="@color/Unify_N0" />
+            <corners android:radius="@dimen/unify_space_8" />
+        </shape>
+    </item>
+
+    <item
+        android:bottom="@dimen/digital_recommendation_red_tag_bottom"
+        android:left="@dimen/unify_space_0"
+        android:right="@dimen/digital_recommendation_red_tag_right"
+        android:top="@dimen/unify_space_12">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/Unify_TN400" />
+            <corners
+                android:bottomRightRadius="@dimen/unify_space_8"
+                android:topRightRadius="@dimen/unify_space_8" />
+        </shape>
+    </item>
+</layer-list>
