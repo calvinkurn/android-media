@@ -464,6 +464,36 @@ class PlayBroadcastAnalytic(
     }
 
     /**
+     * Click Add Pin Chat Message
+     */
+    fun clickAddPinChatMessage(channelId: String, titleChannel: String) {
+        clickGeneralEvent(
+            "add pin chat message",
+            "- $channelId - $titleChannel"
+        )
+    }
+
+    /**
+     * Click Edit Pin Chat Message
+     */
+    fun clickEditPinChatMessage(channelId: String, titleChannel: String) {
+        clickGeneralEvent(
+            "edit pin chat message",
+            "- $channelId - $titleChannel"
+        )
+    }
+
+    /**
+     * Click Save Pin Chat Message
+     */
+    fun clickSavePinChatMessage(channelId: String, titleChannel: String) {
+        clickGeneralEvent(
+            "save pin chat message",
+            "- $channelId - $titleChannel"
+        )
+    }
+
+    /**
      * View Exit Pop Up on Live Room
      */
     fun viewDialogExitOnLivePage(channelId: String, titleChannel: String) {
