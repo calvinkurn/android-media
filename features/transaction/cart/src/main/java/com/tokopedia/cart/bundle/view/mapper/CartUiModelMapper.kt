@@ -21,6 +21,8 @@ import kotlin.math.min
 
 object CartUiModelMapper {
 
+    private const val BUNDLE_NO_VARIANT_CONST = -1
+
     fun mapSelectAllUiModel(): CartSelectAllHolderData {
         return CartSelectAllHolderData(isCheked = false)
     }
@@ -322,7 +324,11 @@ object CartUiModelMapper {
                 parentId = if (product.parentId.isBlank() || product.parentId == "0") product.productId + cartDetail.bundleDetail.bundleId else product.parentId
                 isMultipleBundleProduct = cartDetail.products.size > 1
                 minOrder = cartDetail.bundleDetail.bundleMinOrder
-                maxOrder = min(cartDetail.bundleDetail.bundleMaxOrder, cartDetail.bundleDetail.bundleQuota)
+                maxOrder = if (cartDetail.bundleDetail.bundleQuota > BUNDLE_NO_VARIANT_CONST) {
+                    min(cartDetail.bundleDetail.bundleMaxOrder, cartDetail.bundleDetail.bundleQuota)
+                } else {
+                    cartDetail.bundleDetail.bundleMaxOrder
+                }
                 quantity = if (cartDetail.bundleDetail.bundleQty > 0) {
                     val tmpQty = product.productQuantity / cartDetail.bundleDetail.bundleQty
                     if (tmpQty > 0) {
