@@ -15,6 +15,7 @@ object RecommendationComponentInstance {
             recommendationComponent = DaggerRecommendationComponent.builder().baseAppComponent(
                 (application as BaseMainApplication).baseAppComponent
             ).build()
+            recommendationComponent.inject(application)
         }
         return recommendationComponent
     }
