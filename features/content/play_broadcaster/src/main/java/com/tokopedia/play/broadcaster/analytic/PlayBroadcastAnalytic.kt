@@ -380,6 +380,16 @@ class PlayBroadcastAnalytic(
     }
 
     /**
+     * Click 'Batalkan' on Count Down
+     */
+    fun clickCancelOnCountDown(channelId: String, titleChannel: String) {
+        clickGeneralEvent(
+            action = "batalkan livestream",
+            label = "- $channelId - $titleChannel"
+        )
+    }
+
+    /**
      * Click `Simpan` on Preparation Page Title Edit
      */
     fun clickSubmitOnEditTitleBottomSheet() {

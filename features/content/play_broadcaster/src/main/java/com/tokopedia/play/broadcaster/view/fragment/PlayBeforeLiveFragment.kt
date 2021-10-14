@@ -518,6 +518,7 @@ class PlayBeforeLiveFragment @Inject constructor(
 
             override fun onCancelLiveStream() {
                 showCountdown(false)
+                analytic.clickCancelOnCountDown(parentViewModel.channelId, parentViewModel.channelTitle)
             }
         })
     }
