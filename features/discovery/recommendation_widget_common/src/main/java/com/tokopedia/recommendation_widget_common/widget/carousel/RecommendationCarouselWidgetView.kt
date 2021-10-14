@@ -87,8 +87,12 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val viewModel: RecommendationViewModel by initRecomWidgetViewModel {
-        context.getActivityFromContext()
+    private val viewModel: RecommendationViewModel? by initRecomWidgetViewModel {
+        try {
+            context.getActivityFromContext()
+        } catch (e: Exception) {
+            null
+        }
     }
 
 

@@ -34,6 +34,7 @@ import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecomItemTrackingMetadata
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presenter.RecommendationViewModel
 import com.tokopedia.recommendation_widget_common.viewutil.initRecomWidgetViewModel
 import com.tokopedia.recommendation_widget_common.viewutil.updateRecomWidgetQtyItemWithMiniCart
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
@@ -134,8 +135,12 @@ class TokoNowRecentPurchaseFragment:
 
     private var binding by autoClearedNullable<FragmentTokopedianowRecentPurchaseBinding>()
 
-    private val recomWidgetViewModel by initRecomWidgetViewModel {
-        requireContext().getActivityFromContext()
+    private val recomWidgetViewModel: RecommendationViewModel? by initRecomWidgetViewModel {
+        try {
+            requireContext().getActivityFromContext()
+        } catch (e: Exception) {
+            null
+        }
     }
 
     private val adapter by lazy {
@@ -210,7 +215,7 @@ class TokoNowRecentPurchaseFragment:
         }
         viewModel.setProductAddToCartQuantity(miniCartSimplifiedData)
         setupPadding(miniCartSimplifiedData.isShowMiniCartWidget)
-        context?.let { recomWidgetViewModel.updateRecomWidgetQtyItemWithMiniCart(it) }
+        context?.let { recomWidgetViewModel?.updateRecomWidgetQtyItemWithMiniCart(it) }
     }
 
     override fun onChooseAddressWidgetRemoved() {

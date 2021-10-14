@@ -47,6 +47,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecomItemTrackingMetadata
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presenter.RecommendationViewModel
 import com.tokopedia.recommendation_widget_common.viewutil.initRecomWidgetViewModel
 import com.tokopedia.recommendation_widget_common.viewutil.updateRecomWidgetQtyItemWithMiniCart
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
@@ -141,8 +142,12 @@ abstract class BaseSearchCategoryFragment:
 
     protected abstract val toolbarPageName: String
 
-    private val recomWidgetViewModel by initRecomWidgetViewModel {
-        requireContext().getActivityFromContext()
+    private val recomWidgetViewModel: RecommendationViewModel? by initRecomWidgetViewModel {
+        try {
+            requireContext().getActivityFromContext()
+        } catch (e: Exception) {
+            null
+        }
     }
 
     private val searchCategoryToolbarHeight: Int
@@ -626,7 +631,7 @@ abstract class BaseSearchCategoryFragment:
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         getViewModel().onViewUpdateCartItems(miniCartSimplifiedData)
-        context?.let { recomWidgetViewModel.updateRecomWidgetQtyItemWithMiniCart(it) }
+        context?.let { recomWidgetViewModel?.updateRecomWidgetQtyItemWithMiniCart(it) }
     }
 
     private fun updateMiniCartWidgetVisibility(isVisible: Boolean?) {
