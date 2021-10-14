@@ -121,16 +121,12 @@ object UohAnalytics {
                 event, eventCategory, eventAction, eventLabel))
     }
 
-    fun viewOrderListPage(trackingQueue: TrackingQueue, isLoggedInStatus: Boolean, userId: String) {
-        val map = DataLayer.mapOf(
-            EVENT, OPEN_SCREEN,
-            SCREEN_NAME, ORDER_LIST_SCREEN_NAME,
-            IS_LOGGED_IN_STATUS, isLoggedInStatus,
-            CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
-            BUSINESS_UNIT, ORDER_MANAGEMENT,
-            USER_ID, userId
+    fun viewOrderListPage() {
+        val mutableMap: MutableMap<String, String> = mutableMapOf(
+            CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+            BUSINESS_UNIT to ORDER_MANAGEMENT
         )
-        trackingQueue.putEETracking(map as HashMap<String, Any>)
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(ORDER_LIST_SCREEN_NAME, mutableMap)
     }
 
     fun submitSearch(keyword: String, userId: String) {
@@ -223,6 +219,7 @@ object UohAnalytics {
             CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
             USER_ID, userId,
             BUSINESS_UNIT, ORDER_MANAGEMENT,
+            ITEM_LIST, ACTION_FIELD_CLICK_ECOMMERCE.replace(BUSINESS_UNIT_REPLACEE, order.verticalCategory),
             ECOMMERCE, DataLayer.mapOf(
                 CURRENCY_CODE, IDR,
                 IMPRESSIONS, convertOrderItemToDataImpressionObject(order, listProduct, position)
@@ -231,19 +228,18 @@ object UohAnalytics {
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
-    fun convertOrderItemToDataImpressionObject(order: UohListOrder.Data.UohOrders.Order, listProduct: JsonArray, position: String): List<Any>  {
+    private fun convertOrderItemToDataImpressionObject(order: UohListOrder.Data.UohOrders.Order, listProduct: JsonArray, position: String): List<Any> {
         var eeProductId = ""
         var eeProductPrice = ""
-        return DataLayer.listOf(
-            order.metadata.products.forEachIndexed { index, product ->
-                val itemName = product.title
-                if (order.metadata.listProducts.isNotEmpty()) {
-                    val objProduct = listProduct.get(index)?.asJsonObject
-                    eeProductId = objProduct?.get(UohConsts.EE_PRODUCT_ID).toString()
-                    eeProductPrice = objProduct?.get(UohConsts.EE_PRODUCT_PRICE).toString()
-                }
+        return order.metadata.products.mapIndexed { index, product ->
+            val itemName = product.title
+            if (order.metadata.listProducts.isNotEmpty()) {
+                val objProduct = listProduct.get(index)?.asJsonObject
+                eeProductId = objProduct?.get(UohConsts.EE_PRODUCT_ID).toString()
+                eeProductPrice = objProduct?.get(UohConsts.EE_PRODUCT_PRICE).toString()
+            }
 
-                DataLayer.mapOf(
+            return@mapIndexed DataLayer.mapOf(
                     ITEM_NAME, itemName,
                     ITEM_ID, eeProductId,
                     PRICE, eeProductPrice,
@@ -251,9 +247,8 @@ object UohAnalytics {
                     ITEM_VARIANT, "",
                     ITEM_CATEGORY, "",
                     INDEX, position
-                )
-            }
-        )
+            )
+        }
     }
 
     fun clickOrderCard(verticalLabel: String, userId: String, arrayListProducts: ArrayList<ECommerceClick.Products>) {

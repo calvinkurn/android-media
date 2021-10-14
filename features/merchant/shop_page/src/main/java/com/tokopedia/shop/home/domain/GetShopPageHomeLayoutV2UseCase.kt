@@ -164,6 +164,13 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                           title
                         }
                         hideGimmick
+                        stockSoldPercentage
+                        labelGroups {
+                          position
+                          type
+                          title
+                          url
+                        }
                       }
                     }
                   }
