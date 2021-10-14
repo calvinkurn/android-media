@@ -16,9 +16,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.setClickableUrlHtml
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.databinding.ShcItemTableColumnHtmlBinding
 import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
 import com.tokopedia.sellerhomecommon.utils.SpannableTouchListener
-import kotlinx.android.synthetic.main.shc_item_table_column_html.view.*
 import timber.log.Timber
 
 /**
@@ -26,8 +26,8 @@ import timber.log.Timber
  */
 
 class TableColumnHtmlViewHolder(
-        itemView: View?,
-        private val listener: Listener
+    itemView: View,
+    private val listener: Listener
 ) : AbstractViewHolder<TableRowsUiModel.RowColumnHtml>(itemView) {
 
     companion object {
@@ -40,12 +40,14 @@ class TableColumnHtmlViewHolder(
         private const val NUNITO_TYPOGRAPHY_FONT = "NunitoSansExtraBold.ttf"
     }
 
+    private val binding by lazy { ShcItemTableColumnHtmlBinding.bind(itemView) }
+
     private val deeplinkMatcher by lazy {
         DeeplinkMatcher()
     }
 
     override fun bind(element: TableRowsUiModel.RowColumnHtml) {
-        with(itemView) {
+        with(binding) {
             setOnHtmlTextClicked(element)
             if (element.isLeftAlign) {
                 tvTableColumnHtml.gravity = Gravity.START
@@ -56,34 +58,37 @@ class TableColumnHtmlViewHolder(
     }
 
     private fun setOnHtmlTextClicked(element: TableRowsUiModel.RowColumnHtml) {
-        with(itemView) {
-            val textColorInt = element.colorInt ?: MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+        with(binding) {
+            val textColorInt = element.colorInt ?: MethodChecker.getColor(
+                root.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+            )
             element.colorInt = textColorInt
             tvTableColumnHtml?.run {
                 setClickableUrlHtml(
-                        element.valueStr,
-                        applyCustomStyling = {
-                            isUnderlineText = false
-                            color = textColorInt
-                            context?.let {
-                                applyTypographyFont(it)
-                            }
-                        },
-                        onTouchListener = { spannable ->
-                            SpannableTouchListener(spannable)
-                        },
-                        onUrlClicked = { url ->
-                            listener.onHyperlinkClicked(url)
-                            Uri.parse(url).let { uri ->
-                                if (isAppLink(uri)) {
-                                    RouteManager.route(context, url)
-                                } else {
-                                    if (!checkUrlForNativePage(context, uri)) {
-                                        goToDefaultIntent(context, uri)
-                                    }
+                    element.valueStr,
+                    applyCustomStyling = {
+                        isUnderlineText = false
+                        color = textColorInt
+                        context?.let {
+                            applyTypographyFont(it)
+                        }
+                    },
+                    onTouchListener = { spannable ->
+                        SpannableTouchListener(spannable)
+                    },
+                    onUrlClicked = { url ->
+                        listener.onHyperlinkClicked(url)
+                        Uri.parse(url).let { uri ->
+                            if (isAppLink(uri)) {
+                                RouteManager.route(context, url)
+                            } else {
+                                if (!checkUrlForNativePage(context, uri)) {
+                                    goToDefaultIntent(context, uri)
                                 }
                             }
-                        })
+                        }
+                    })
                 setTextColor(textColorInt)
             }
         }
@@ -110,7 +115,12 @@ class TableColumnHtmlViewHolder(
                 with(uri.pathSegments) {
                     getOrNull(0)?.let { shopDomain ->
                         getOrNull(1)?.let { productKey ->
-                            RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN, shopDomain, productKey)
+                            RouteManager.route(
+                                context,
+                                ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN,
+                                shopDomain,
+                                productKey
+                            )
                         }
                     }
                 }

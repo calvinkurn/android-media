@@ -272,6 +272,7 @@ public interface ApplinkConst {
     String NOTIFICATION = "tokopedia://notification";
     String NOTIFICATION_TROUBLESHOOTER = "tokopedia://notification-troubleshooter";
     String PMS = "tokopedia://buyer/payment";
+    String GOPAY_KYC = "tokopedia://payment/gopayKyc";
     String PURCHASE_ORDER = "tokopedia://buyer/order";
     String PURCHASE_ORDER_DETAIL = "tokopedia://buyer/order/{order_id}";
     String PURCHASE_CONFIRMED = "tokopedia://buyer/confirmed";

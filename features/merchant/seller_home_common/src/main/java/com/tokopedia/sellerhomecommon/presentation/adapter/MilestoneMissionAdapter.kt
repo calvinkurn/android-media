@@ -1,7 +1,6 @@
 package com.tokopedia.sellerhomecommon.presentation.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -9,13 +8,12 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.databinding.ShcItemMissionMilestoneWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.BaseMilestoneMissionUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneFinishMissionUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneMissionUiModel
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.shc_item_mission_milestone_widget.view.*
 
 /**
  * Created By @ilhamsuaib on 31/08/21
@@ -37,15 +35,18 @@ class MilestoneMissionAdapter(
         holder.bind(mission, milestoneData.showNumber, listener)
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(
+        private val binding: ShcItemMissionMilestoneWidgetBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         companion object {
             private const val PLUS_ONE = 1
 
             fun create(parent: ViewGroup): ViewHolder {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.shc_item_mission_milestone_widget, parent, false)
-                return ViewHolder(view)
+                val binding = ShcItemMissionMilestoneWidgetBinding.inflate(
+                    LayoutInflater.from(parent.context), parent, false
+                )
+                return ViewHolder(binding)
             }
         }
 
@@ -54,7 +55,7 @@ class MilestoneMissionAdapter(
             shouldShowNumber: Boolean,
             listener: Listener
         ) {
-            with(itemView) {
+            with(binding) {
                 tvShcTitleItemMission.text = mission.title
                 tvShcDescItemMission.text = mission.subTitle
                 tvShcMissionPosition.isVisible = shouldShowNumber
@@ -65,7 +66,7 @@ class MilestoneMissionAdapter(
                 setupCtaButton(mission) {
                     listener.onMissionActionClick(it, adapterPosition.plus(PLUS_ONE))
                 }
-                addOnImpressionListener(mission.impressHolder) {
+                root.addOnImpressionListener(mission.impressHolder) {
                     listener.onMissionImpressionListener(mission, adapterPosition.plus(PLUS_ONE))
                 }
             }
@@ -75,7 +76,7 @@ class MilestoneMissionAdapter(
             mission: BaseMilestoneMissionUiModel,
             onCtaClick: (BaseMilestoneMissionUiModel) -> Unit
         ) {
-            with(itemView) {
+            with(binding) {
                 when (mission) {
                     is MilestoneMissionUiModel -> setupMissionButton(mission)
                     is MilestoneFinishMissionUiModel -> setupFinishedMissionButton()
@@ -89,14 +90,14 @@ class MilestoneMissionAdapter(
         }
 
         private fun setupFinishedMissionButton() {
-            with(itemView) {
+            with(binding) {
                 btnShcMissionCta.buttonType = UnifyButton.Type.ALTERNATE
                 btnShcMissionCta.isEnabled = true
             }
         }
 
         private fun setupMissionButton(mission: MilestoneMissionUiModel) {
-            with(itemView) {
+            with(binding) {
                 if (mission.missionCompletionStatus) {
                     btnShcMissionCta.buttonType = UnifyButton.Type.ALTERNATE
                     btnShcMissionCta.isEnabled = false

@@ -1,7 +1,6 @@
 package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.view.View
-import android.view.ViewStub
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -11,6 +10,10 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.common.SellerHomeCommonUtils
+import com.tokopedia.sellerhomecommon.databinding.ShcMilestoneWidgetBinding
+import com.tokopedia.sellerhomecommon.databinding.ShcMilestoneWidgetErrorBinding
+import com.tokopedia.sellerhomecommon.databinding.ShcMilestoneWidgetLoadingBinding
+import com.tokopedia.sellerhomecommon.databinding.ShcMilestoneWidgetSuccessBinding
 import com.tokopedia.sellerhomecommon.presentation.adapter.MilestoneMissionAdapter
 import com.tokopedia.sellerhomecommon.presentation.model.BaseMilestoneMissionUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneProgressbarUiModel
@@ -19,9 +22,6 @@ import com.tokopedia.sellerhomecommon.presentation.view.viewhelper.MilestoneMiss
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
-import kotlinx.android.synthetic.main.shc_milestone_widget_error.view.*
-import kotlinx.android.synthetic.main.shc_milestone_widget_loading.view.*
-import kotlinx.android.synthetic.main.shc_milestone_widget_success.view.*
 
 class MilestoneViewHolder(
     itemView: View,
@@ -37,9 +37,19 @@ class MilestoneViewHolder(
         private const val LAST_ONE = 1
     }
 
-    private val onLoadingView: View by itemView.viewStubInflater(R.id.stubShcMilestoneLoading)
-    private val onErrorView: View by itemView.viewStubInflater(R.id.stubShcMilestoneError)
-    private val onSuccessView: View by itemView.viewStubInflater(R.id.stubShcMilestoneSuccess)
+    private val binding by lazy { ShcMilestoneWidgetBinding.bind(itemView) }
+    private val loadingStateBinding by lazy {
+        val view = binding.stubShcMilestoneLoading.inflate()
+        ShcMilestoneWidgetLoadingBinding.bind(view)
+    }
+    private val errorStateBinding by lazy {
+        val view = binding.stubShcMilestoneError.inflate()
+        ShcMilestoneWidgetErrorBinding.bind(view)
+    }
+    private val successStateBinding by lazy {
+        val view = binding.stubShcMilestoneSuccess.inflate()
+        ShcMilestoneWidgetSuccessBinding.bind(view)
+    }
 
     override fun bind(element: MilestoneWidgetUiModel) {
         val data = element.data
@@ -51,9 +61,9 @@ class MilestoneViewHolder(
     }
 
     private fun setOnSuccess(element: MilestoneWidgetUiModel) {
-        onErrorView.containerShcMilestoneError.gone()
-        onLoadingView.containerShcMilestoneLoading.gone()
-        with(onSuccessView) {
+        errorStateBinding.containerShcMilestoneError.gone()
+        loadingStateBinding.containerShcMilestoneLoading.gone()
+        with(successStateBinding) {
             val data = element.data ?: return@with
 
             containerShcMilestoneSuccess.visible()
@@ -84,7 +94,7 @@ class MilestoneViewHolder(
             setupTooltip(tvTitleMilestoneWidget, element)
             setupSeeMoreCta(element)
 
-            addOnImpressionListener(element.impressHolder) {
+            root.addOnImpressionListener(element.impressHolder) {
                 listener.sendMilestoneWidgetImpressionEvent(element)
                 setupMilestoneList(element)
             }
@@ -93,7 +103,7 @@ class MilestoneViewHolder(
 
     private fun setTagNotification(tag: String) {
         val isTagVisible = tag.isNotBlank()
-        with(itemView) {
+        with(successStateBinding) {
             notifTagMilestone.showWithCondition(isTagVisible)
             if (isTagVisible) {
                 notifTagMilestone.setNotification(
@@ -107,12 +117,12 @@ class MilestoneViewHolder(
 
     private fun showMilestoneBackground(imageUrl: String) {
         if (imageUrl.isNotBlank()) {
-            onSuccessView.imgShcBgMilestone.loadImage(imageUrl)
+            successStateBinding.imgShcBgMilestone.loadImage(imageUrl)
         }
     }
 
     private fun setupSeeMoreCta(element: MilestoneWidgetUiModel) {
-        with(onSuccessView) {
+        with(successStateBinding) {
             val applink = element.getSeeMoreCtaApplink()
             val ctaText = element.getSeeMoreCtaText()
 
@@ -125,13 +135,13 @@ class MilestoneViewHolder(
                     RouteManager.route(itemView.context, applink)
                     listener.sendMilestoneWidgetCtaClickEvent()
                 }
-                val iconColor = context.getResColor(
+                val iconColor = root.context.getResColor(
                     com.tokopedia.unifyprinciples.R.color.Unify_G400
                 )
-                val iconWidth = context.resources.getDimension(
+                val iconWidth = root.context.resources.getDimension(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
                 )
-                val iconHeight = context.resources.getDimension(
+                val iconHeight = root.context.resources.getDimension(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
                 )
                 tvShcMilestoneCta.setUnifyDrawableEnd(
@@ -145,10 +155,10 @@ class MilestoneViewHolder(
     }
 
     private fun setupMilestoneList(element: MilestoneWidgetUiModel) {
-        with(onSuccessView) {
+        with(successStateBinding) {
             val mission = element.data ?: return
             rvShcMissionMilestone.layoutManager = object : LinearLayoutManager(
-                context, HORIZONTAL, false
+                root.context, HORIZONTAL, false
             ) {
                 override fun canScrollVertically(): Boolean = false
             }
@@ -163,7 +173,7 @@ class MilestoneViewHolder(
             }
             rvShcMissionMilestone.addItemDecoration(
                 MilestoneMissionItemDecoration(
-                    resources.getDimension(R.dimen.unify_space_12).toInt()
+                    root.resources.getDimension(R.dimen.unify_space_12).toInt()
                 )
             )
             rvShcMissionMilestone.adapter = MilestoneMissionAdapter(
@@ -189,7 +199,7 @@ class MilestoneViewHolder(
     }
 
     private fun setupMilestoneProgress(milestoneProgress: MilestoneProgressbarUiModel) {
-        with(onSuccessView) {
+        with(successStateBinding) {
             val valuePerIndicator = try {
                 PROGRESS_BAR_MAX_VALUE / milestoneProgress.totalTask
             } catch (e: ArithmeticException) {
@@ -207,9 +217,9 @@ class MilestoneViewHolder(
     }
 
     private fun showErrorState(element: MilestoneWidgetUiModel) {
-        onSuccessView.containerShcMilestoneSuccess.gone()
-        onLoadingView.containerShcMilestoneLoading.gone()
-        onErrorView.run {
+        successStateBinding.containerShcMilestoneSuccess.gone()
+        loadingStateBinding.containerShcMilestoneLoading.gone()
+        errorStateBinding.run {
             containerShcMilestoneError.visible()
             tvShcMilestoneErrorStateTitle.text = element.title
             btnMilestoneError.setOnClickListener {
@@ -223,9 +233,9 @@ class MilestoneViewHolder(
     }
 
     private fun showLoadingState(element: MilestoneWidgetUiModel) {
-        onSuccessView.containerShcMilestoneSuccess.gone()
-        onErrorView.containerShcMilestoneError.gone()
-        onLoadingView.run {
+        successStateBinding.containerShcMilestoneSuccess.gone()
+        errorStateBinding.containerShcMilestoneError.gone()
+        loadingStateBinding.run {
             containerShcMilestoneLoading.visible()
             tvShcMilestoneErrorTitle.text = element.title
             setupTooltip(tvShcMilestoneErrorTitle, element)
@@ -235,13 +245,6 @@ class MilestoneViewHolder(
     private fun setupTooltip(textView: TextView, element: MilestoneWidgetUiModel) {
         SellerHomeCommonUtils.setupWidgetTooltip(textView, element) {
             listener.onTooltipClicked(it)
-        }
-    }
-
-    private fun View.viewStubInflater(viewStubId: Int): Lazy<View> {
-        return lazy {
-            val viewStub: ViewStub = findViewById(viewStubId)
-            viewStub.inflate()
         }
     }
 

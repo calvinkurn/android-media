@@ -23,7 +23,7 @@ class CentralizedPromoActivity : BaseSimpleActivity() {
     }
 
     private val bottomSheet by lazy {
-        FirstVoucherBottomSheetFragment.createInstance(this).apply {
+        FirstVoucherBottomSheetFragment.createInstance().apply {
             setCloseClickListener {
                 this.dismiss()
             }
