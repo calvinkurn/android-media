@@ -393,11 +393,15 @@ class TokoNowHomeViewModel @Inject constructor(
      */
     private suspend fun getLayoutComponentData(warehouseId: String) {
         homeLayoutItemList.filter { it.state == HomeLayoutItemState.NOT_LOADED }.forEach {
+            val item = it.layout
             homeLayoutItemList.setStateToLoading(it)
 
-            when (val item = it.layout) {
-                is HomeLayoutUiModel -> getTokoNowHomeComponent(item, warehouseId) // TokoNow Home Component
-                is TokoNowLayoutUiModel -> getTokoNowGlobalComponent(item, warehouseId) // TokoNow Common Component
+            if(item is HomeLayoutUiModel) {
+                getTokoNowHomeComponent(item, warehouseId) // TokoNow Home Component
+            }
+
+            if(item is TokoNowLayoutUiModel) {
+                getTokoNowGlobalComponent(item, warehouseId) // TokoNow Common Component
             }
         }
     }
@@ -410,9 +414,12 @@ class TokoNowHomeViewModel @Inject constructor(
      * @param item TokopediaNOW Home component item
      */
     private suspend fun getTokoNowHomeComponent(item: HomeLayoutUiModel, warehouseId: String) {
-        when (item) {
-            is HomeTickerUiModel -> getTickerDataAsync(item).await()
-            is HomeSharingEducationWidgetUiModel -> getSharingEducationAsync(item, warehouseId).await()
+        if(item is HomeTickerUiModel) {
+            getTickerDataAsync(item).await()
+        }
+
+        if(item is HomeSharingEducationWidgetUiModel) {
+            getSharingEducationAsync(item, warehouseId).await()
         }
     }
 
@@ -425,9 +432,12 @@ class TokoNowHomeViewModel @Inject constructor(
      * @param warehouseId Id obtained from choose address widget
      */
     private suspend fun getTokoNowGlobalComponent(item: TokoNowLayoutUiModel, warehouseId: String) {
-        when(item) {
-            is TokoNowCategoryGridUiModel -> getCategoryGridDataAsync(item, warehouseId).await()
-            is TokoNowRecentPurchaseUiModel -> getRecentPurchaseDataAsync(item, warehouseId).await()
+        if(item is TokoNowCategoryGridUiModel) {
+            getCategoryGridDataAsync(item, warehouseId).await()
+        }
+
+        if(item is TokoNowRecentPurchaseUiModel) {
+            getRecentPurchaseDataAsync(item, warehouseId).await()
         }
     }
 
