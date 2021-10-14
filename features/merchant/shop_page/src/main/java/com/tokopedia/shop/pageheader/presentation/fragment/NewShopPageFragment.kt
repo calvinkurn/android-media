@@ -31,6 +31,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.FragmentConst.FEED_SHOP_FRAGMENT
 import com.tokopedia.applink.FragmentConst.REVIEW_SHOP_FRAGMENT
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -98,7 +99,6 @@ import com.tokopedia.shop.common.view.model.ShopShareModel
 import com.tokopedia.shop.common.view.viewmodel.ShopPageFollowingStatusSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
-import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
 import com.tokopedia.shop.home.view.fragment.OldShopPageHomeFragment
 import com.tokopedia.shop.note.view.bottomsheet.ShopNoteBottomSheet
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
@@ -188,7 +188,7 @@ class NewShopPageFragment :
         const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
         const val EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION"
         const val TAB_POSITION_HOME = 0
-        const val TAB_POSITION_FEED = 1
+        const val TAB_POSITION_FEED = 2
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
         const val SHOP_STICKY_LOGIN = "SHOP_STICKY_LOGIN"
         const val SAVED_INITIAL_FILTER = "saved_initial_filter"
@@ -222,6 +222,8 @@ class NewShopPageFragment :
         private const val SHOP_SEARCH_PAGE_NAV_SOURCE = "shop"
         private const val REVIEW_SHOP_FRAGMENT_SHOP_ID = "shop_id"
         private const val REVIEW_SHOP_FRAGMENT_SHOP_DOMAIN = "shop_domain"
+        private const val FEED_SHOP_FRAGMENT_SHOP_ID = "PARAM_SHOP_ID"
+        private const val FEED_SHOP_FRAGMENT_CREATE_POST_URL = "PARAM_CREATE_POST_URL"
 
         @JvmStatic
         fun createInstance() = NewShopPageFragment()
@@ -346,6 +348,8 @@ class NewShopPageFragment :
     private var viewPager: ViewPager2? = null
     private var tabLayout: TabLayout? = null
     private var viewOneTabSeparator: View? = null
+
+    private val feedShopFragmentClassName = Class.forName(FEED_SHOP_FRAGMENT)
 
     override fun getComponent() = activity?.run {
         DaggerShopPageComponent.builder().shopPageModule(ShopPageModule())
@@ -484,7 +488,7 @@ class NewShopPageFragment :
                 val intent = SellerMigrationActivity.createIntent(
                         context = requireContext(),
                         featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
-                        screenName = FeedShopFragment::class.simpleName.orEmpty(),
+                        screenName = feedShopFragmentClassName.simpleName.orEmpty(),
                         appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, shopAppLink, appLinkShopPageFeed))
                 startActivity(intent)
             }
@@ -1449,8 +1453,8 @@ class NewShopPageFragment :
                     )
                 }
                 if (isSellerMigrationEnabled(context)) {
-                    if(isMyShop && viewPagerAdapter?.isFragmentObjectExists(FeedShopFragment::class.java) == true){
-                        val tabFeedPosition = viewPagerAdapter?.getFragmentPosition(FeedShopFragment::class.java)
+                    if(isMyShop && viewPagerAdapter?.isFragmentObjectExists(feedShopFragmentClassName) == true){
+                        val tabFeedPosition = viewPagerAdapter?.getFragmentPosition(feedShopFragmentClassName)
                         if (position == tabFeedPosition) {
                             showBottomSheetSellerMigration()
                         } else {
@@ -1547,8 +1551,8 @@ class NewShopPageFragment :
                 }
             }
             if (shouldOverrideTabToFeed) {
-                selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(FeedShopFragment::class.java) == true) {
-                    viewPagerAdapter?.getFragmentPosition(FeedShopFragment::class.java).orZero()
+                selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(feedShopFragmentClassName) == true) {
+                    viewPagerAdapter?.getFragmentPosition(feedShopFragmentClassName).orZero()
                 } else {
                     selectedPosition
                 }
@@ -1602,9 +1606,13 @@ class NewShopPageFragment :
         ))
 
         if (isShowFeed) {
-            val feedFragment = FeedShopFragment.createInstance(
-                    shopId,
-                    createPostUrl
+            val feedFragment = RouteManager.instantiateFragmentDF(
+                    activity as AppCompatActivity,
+                    FEED_SHOP_FRAGMENT,
+                    Bundle().apply {
+                        putString(FEED_SHOP_FRAGMENT_SHOP_ID, shopId)
+                        putString(FEED_SHOP_FRAGMENT_CREATE_POST_URL, createPostUrl)
+                    }
             )
             listShopPageTabModel.add(ShopPageTabModel(
                     getString(R.string.shop_info_title_tab_feed),
@@ -1727,9 +1735,13 @@ class NewShopPageFragment :
         if (shopProductListFragment is ShopPageProductListFragment) {
             shopProductListFragment.clearCache()
         }
-        val feedfragment: Fragment? = viewPagerAdapter?.getRegisteredFragment(if (shopPageHeaderDataModel?.isOfficial == true) TAB_POSITION_FEED + 1 else TAB_POSITION_FEED)
-        if (feedfragment is FeedShopFragment) {
-            feedfragment.clearCache()
+
+        val feedShopFragment: Fragment? = viewPagerAdapter?.getRegisteredFragment(if (shopPageHeaderDataModel?.isOfficial == true) TAB_POSITION_FEED + 1 else TAB_POSITION_FEED)
+        if (feedShopFragment?.javaClass == feedShopFragmentClassName) {
+            try {
+                val feedShopFragmentClearCacheMethod = feedShopFragmentClassName.getDeclaredMethod("clearCache")
+                feedShopFragmentClearCacheMethod.invoke(feedShopFragment)
+            } catch (e: NoSuchMethodException) {}
         }
 
         val shopPageHomeFragment: Fragment? = viewPagerAdapter?.getRegisteredFragment(TAB_POSITION_HOME)

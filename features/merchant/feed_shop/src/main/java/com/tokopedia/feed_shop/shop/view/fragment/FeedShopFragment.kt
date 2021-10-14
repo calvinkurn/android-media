@@ -1123,6 +1123,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
+    /**
+     * Please be aware for change this function name, make sure to change it in NewShopPageFragment.kt too
+     * since this method its call via reflection
+     */
     fun clearCache() {
         if(::presenter.isInitialized)
             presenter.clearCache()
