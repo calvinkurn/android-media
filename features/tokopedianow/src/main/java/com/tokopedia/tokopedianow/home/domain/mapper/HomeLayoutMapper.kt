@@ -152,14 +152,6 @@ object HomeLayoutMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.mapEducationalInformationData(
-        item: HomeEducationalInformationWidgetUiModel
-    ) {
-        updateItemById(item.visitableId) {
-            HomeLayoutItemUiModel(item.copy(state = HomeLayoutItemState.LOADED), HomeLayoutItemState.LOADED)
-        }
-    }
-
     fun MutableList<HomeLayoutItemUiModel>.mapSharingEducationData(
         item: HomeSharingEducationWidgetUiModel
     ) {
@@ -384,7 +376,7 @@ object HomeLayoutMapper {
             BANNER_CAROUSEL -> mapSliderBannerModel(response, HomeLayoutItemState.LOADED)
             PRODUCT_RECOM -> mapProductRecomDataModel(response, HomeLayoutItemState.LOADED, miniCartData)
             RECENT_PURCHASE -> mapRecentPurchaseUiModel(response, state)
-            EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, state)
+            EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, HomeLayoutItemState.LOADED)
             SHARING_EDUCATION -> mapSharingEducationUiModel(response, state)
             else -> null
         }

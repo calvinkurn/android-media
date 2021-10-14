@@ -42,7 +42,6 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addLoading
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addMoreHomeLayout
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addProductRecomOoc
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addProgressBar
-import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapEducationalInformationData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeCategoryGridData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProductPurchaseData
@@ -413,7 +412,6 @@ class TokoNowHomeViewModel @Inject constructor(
     private suspend fun getTokoNowHomeComponent(item: HomeLayoutUiModel, warehouseId: String) {
         when (item) {
             is HomeTickerUiModel -> getTickerDataAsync(item).await()
-            is HomeEducationalInformationWidgetUiModel -> getEducationalInformationAsync(item).await()
             is HomeSharingEducationWidgetUiModel -> getSharingEducationAsync(item, warehouseId).await()
         }
     }
@@ -466,14 +464,6 @@ class TokoNowHomeViewModel @Inject constructor(
             val tickerList = getTickerUseCase.execute().ticker.tickerList
             val tickerData = TickerMapper.mapTickerData(tickerList)
             homeLayoutItemList.mapTickerData(item, tickerData)
-        }) {
-            homeLayoutItemList.removeItem(item.id)
-        }
-    }
-
-    private fun getEducationalInformationAsync(item: HomeEducationalInformationWidgetUiModel): Deferred<Unit?> {
-        return asyncCatchError(block = {
-            homeLayoutItemList.mapEducationalInformationData(item)
         }) {
             homeLayoutItemList.removeItem(item.id)
         }
