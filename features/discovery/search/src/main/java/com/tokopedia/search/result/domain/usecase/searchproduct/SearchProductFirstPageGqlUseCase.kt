@@ -362,8 +362,8 @@ class SearchProductFirstPageGqlUseCase(
         """
 
         private const val GET_LAST_FILTER_GQL_QUERY = """
-            query GetLastFilter(${'$'}param:String!) {
-              fetchLastFilter(param: ${'$'}param){
+            query GetLastFilter(${'$'}params:String!) {
+              fetchLastFilter(param: ${'$'}params){
                 data {
                   title
                   description

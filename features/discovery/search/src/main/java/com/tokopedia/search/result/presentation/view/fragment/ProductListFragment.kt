@@ -2008,6 +2008,8 @@ class ProductListFragment: BaseDaggerFragment(),
         filterController.setFilter(optionList)
 
         refreshSearchParameter(filterController.getParameter())
+
+        reloadData()
     }
 
     override fun closeLastFilter(lastFilterDataView: LastFilterDataView) {
