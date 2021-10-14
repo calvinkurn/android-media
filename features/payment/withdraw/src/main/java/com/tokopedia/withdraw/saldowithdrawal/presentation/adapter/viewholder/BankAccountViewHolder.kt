@@ -104,7 +104,7 @@ class BankAccountViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private fun getWarningTextColor(warningColor: Int): Int {
         return if (warningColor == WARNING_COLOR_RED)
             com.tokopedia.unifyprinciples.R.color.Unify_R600
-        else com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+        else com.tokopedia.unifyprinciples.R.color.Unify_N700_32
     }
 
     fun getPowerMerchantImageView(): View = ivPremiumAccount
