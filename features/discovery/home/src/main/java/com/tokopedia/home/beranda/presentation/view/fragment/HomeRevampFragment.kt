@@ -2310,7 +2310,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         removeNetworkError()
         homeRecyclerView?.isEnabled = false
         if (::viewModel.isInitialized) {
-            getHomeViewModel().refreshHomeData(isFirstInstall())
+            getHomeViewModel().refreshHomeData()
         }
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
