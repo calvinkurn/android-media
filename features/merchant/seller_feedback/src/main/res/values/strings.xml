@@ -50,5 +50,6 @@
     <string name="feedback_from_order_complaint">Pesanan Dikomplain</string>
     <string name="feedback_from_shop_setting">Pengaturan Toko</string>
     <string name="feedback_from_others">Lainnya</string>
+    <string name="feedback_form_feature_reqeust">Request Fitur</string>
 
 </resources>

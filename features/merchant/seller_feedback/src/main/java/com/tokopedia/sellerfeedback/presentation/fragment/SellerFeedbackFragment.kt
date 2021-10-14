@@ -101,6 +101,7 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
     private var buttonFeedbackGood: Typography? = null
     private var chipFeedback: ChipsUnify? = null
     private var chipReportError: ChipsUnify? = null
+    private var chipFeatureRequest: ChipsUnify? = null
     private var textFieldFeedbackPage: EditText? = null
     private var textAreaFeedbackDetail: TextAreaUnify? = null
     private var buttonSend: UnifyButton? = null
@@ -140,6 +141,7 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
         buttonFeedbackGood = view.findViewById(R.id.button_feedback_good)
         chipFeedback = view.findViewById(R.id.chip_feedback)
         chipReportError = view.findViewById(R.id.chip_report_error)
+        chipFeatureRequest = view.findViewById(R.id.chips_feature_reqeust)
         textFieldFeedbackPage = view.findViewById(R.id.textfield_feedback_page)
         textAreaFeedbackDetail = view.findViewById(R.id.textfield_feedback_detail)
         buttonSend = view.findViewById(R.id.button_send)
@@ -232,7 +234,7 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
         buttonFeedbackNeutral?.setOnClickListener { onClickFeedbackBtn(scoreNeutral) }
         buttonFeedbackGood?.setOnClickListener { onClickFeedbackBtn(scoreGood) }
 
-        feedbackTypeChips = listOfNotNull(chipFeedback, chipReportError)
+        feedbackTypeChips = listOfNotNull(chipFeedback, chipReportError, chipFeatureRequest)
         feedbackTypeChips?.let { chips ->
             chips.forEach { chip ->
                 chip.setOnClickListener {
