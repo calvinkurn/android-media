@@ -1498,11 +1498,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun followUnfollowShop(actionFollow: Boolean) {
         analytics.eventFollowUnfollowShop(actionFollow, shopId.toString())
-        presenter.followUnfollowShop(
-            shopId.toString(),
-            ::onErrorFollowUnfollowShop,
-            onSuccessFollowUnfollowShop()
-        )
+        viewModel.followUnfollowShop(shopId.toString())
     }
 
     private fun onErrorFollowUnfollowShop(throwable: Throwable) {
@@ -1511,19 +1507,17 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    private fun onSuccessFollowUnfollowShop(): (Boolean) -> Unit {
-        return {
-            if (it) {
-                val isFollow = topchatViewState?.isShopFollowed == false
-                if (isFollow) {
-                    onSuccessFollowShopFromBcHandler()
-                    adapter.removeBroadcastHandler()
-                } else {
-                    onSuccessUnFollowShopFromBcHandler()
-                    addBroadCastSpamHandler(isFollow)
-                }
-                isFavoriteShop = isFollow
+    private fun onSuccessFollowUnfollowShop(result: Boolean) {
+        if (result) {
+            val isFollow = topchatViewState?.isShopFollowed == false
+            if (isFollow) {
+                onSuccessFollowShopFromBcHandler()
+                adapter.removeBroadcastHandler()
+            } else {
+                onSuccessUnFollowShopFromBcHandler()
+                addBroadCastSpamHandler(isFollow)
             }
+            isFavoriteShop = isFollow
         }
     }
 
@@ -1908,21 +1902,23 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun requestFollowShop(element: BroadcastSpamHandlerUiModel) {
-        presenter.followUnfollowShop(
+        viewModel.followUnfollowShop(
             action = ToggleFavouriteShopUseCase.Action.FOLLOW,
-            shopId = shopId.toString(),
-            onSuccess = {
-                element.stopFollowShop()
-                onSuccessFollowShopFromBcHandler()
-                adapter.removeBroadcastHandler(element)
-                isFavoriteShop = true
-            },
-            onError = {
-                element.stopFollowShop()
-                onErrorFollowShopFromBcHandler(it)
-                adapter.updateBroadcastHandlerState(element)
-            }
+            shopId = shopId.toString()
         )
+    }
+
+    private fun onSuccessRequestFollow(element: BroadcastSpamHandlerUiModel) {
+        element.stopFollowShop()
+        onSuccessFollowShopFromBcHandler()
+        adapter.removeBroadcastHandler(element)
+        isFavoriteShop = true
+    }
+
+    private fun onErrorRequestFollow(element: BroadcastSpamHandlerUiModel, throwable: Throwable) {
+        element.stopFollowShop()
+        onErrorFollowShopFromBcHandler(throwable)
+        adapter.updateBroadcastHandlerState(element)
     }
 
     override fun requestBlockPromo(element: BroadcastSpamHandlerUiModel?) {
@@ -2314,6 +2310,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 is Fail -> onError(it.throwable)
             }
         })
+
         viewModel.shopFollowing.observe(viewLifecycleOwner, {
             when(it) {
                 is Success -> {
@@ -2324,6 +2321,22 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     }
                 }
                 is Fail -> onErrorGetShopFollowingStatus()
+            }
+        })
+
+        viewModel.followUnfollowShop.observe(viewLifecycleOwner, {
+            val element = it.first
+            val result = it.second
+            if (element != null) {
+                when(result) {
+                    is Success -> onSuccessRequestFollow(element)
+                    is Fail -> onErrorRequestFollow(element, result.throwable)
+                }
+            } else {
+                when(result) {
+                    is Success -> onSuccessFollowUnfollowShop(result.data)
+                    is Fail -> onErrorFollowUnfollowShop(result.throwable)
+                }
             }
         })
     }
