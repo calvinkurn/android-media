@@ -123,7 +123,6 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
                 Observer {
                     lifecycleScope.launch {
                         delay(DELAY_TIME)
-                        //JOb Cancellation exception
                         NetworkErrorHelper.createSnackbarRedWithAction(activity, ErrorHandler.getErrorMessage(context, it)) {
                             getData(CacheType.ALWAYS_CLOUD)
                         }.showRetrySnackbar()
