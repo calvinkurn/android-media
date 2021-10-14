@@ -204,7 +204,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                     public void onSuccess(OpenShopData model) {
                         openShopModel.setShipment(model.getShipment());
                         setCourierModel(model.getShipment());
-                        shopInformation.setShopDistrictId(Integer.parseInt(locationID));
+                        shopInformation.setShopDistrictId(Long.parseLong(locationID));
                         if (selectedAddress == null) {
                             view.refreshLocationViewListener(shopInformation);
                         } else {
@@ -326,7 +326,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
             public void onSuccess(EditShippingCouriers model) {
                 EditShippingPresenterImpl.this.model.setCourier(model.getCourier());
                 setCourierModel(model.courier);
-                shopInformation.setShopDistrictId(Integer.parseInt(districtID));
+                shopInformation.setShopDistrictId(Long.parseLong(districtID));
                 if (selectedAddress == null) {
                     view.refreshLocationViewListener(shopInformation);
                 } else {
