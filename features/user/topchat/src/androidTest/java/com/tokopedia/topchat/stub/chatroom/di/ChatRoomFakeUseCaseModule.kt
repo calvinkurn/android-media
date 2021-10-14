@@ -247,7 +247,7 @@ class ChatRoomFakeUseCaseModule {
     @Provides
     @ChatScope
     fun provideGetExistingMessageIdUseCaseStub(
-        repository: GraphqlRepositoryStub<GetExistingMessageIdUseCaseStub>,
+        repository: GraphqlRepositoryStub,
         dispatchers: CoroutineDispatchers
     ): GetExistingMessageIdUseCaseStub {
         return GetExistingMessageIdUseCaseStub(repository, dispatchers)
@@ -264,7 +264,7 @@ class ChatRoomFakeUseCaseModule {
     @Provides
     @ChatScope
     fun provideGetShopFollowingUseCaseStub(
-        repository: GraphqlRepositoryStub<GetShopFollowingUseCaseStub>,
+        repository: GraphqlRepositoryStub,
         dispatchers: CoroutineDispatchers
     ): GetShopFollowingUseCaseStub {
         return GetShopFollowingUseCaseStub(repository, dispatchers)

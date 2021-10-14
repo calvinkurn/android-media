@@ -7,20 +7,20 @@ import com.tokopedia.topchat.stub.common.GraphqlRepositoryStub
 import javax.inject.Inject
 
 class GetShopFollowingUseCaseStub @Inject constructor(
-    private val repository: GraphqlRepositoryStub<GetShopFollowingUseCaseStub>,
+    private val repository: GraphqlRepositoryStub,
     dispatcher: CoroutineDispatchers
 ): GetShopFollowingUseCase(repository, dispatcher) {
 
     var response: ShopFollowingPojo = ShopFollowingPojo()
         set(value) {
-            repository.createMapResult(this, value)
+            repository.createMapResult(response::class.java, value)
             field = value
         }
 
     var errorMessage = ""
         set(value) {
             if(value.isNotEmpty()) {
-                repository.createErrorMapResult(this, value)
+                repository.createErrorMapResult(response::class.java, value)
             }
             field = value
         }
