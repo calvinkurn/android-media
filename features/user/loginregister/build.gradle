@@ -80,9 +80,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
 
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation(rootProject.ext.miscDependencies.facebook) {
-        exclude group: 'com.android.support'
-    }
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     kapt rootProject.ext.miscDependencies.parceler

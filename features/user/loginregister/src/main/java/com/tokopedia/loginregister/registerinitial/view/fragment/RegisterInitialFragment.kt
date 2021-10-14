@@ -19,7 +19,6 @@ import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
-import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -73,7 +72,6 @@ import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.view.dialog.OvoAccountDialog
 import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
-import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
@@ -178,7 +176,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     @Inject
     lateinit var registerInitialRouter: RegisterInitialRouterHelper
 
-    lateinit var callbackManager: CallbackManager
     lateinit var mGoogleSignInClient: GoogleSignInClient
     lateinit var combineLoginTokenAndValidateToken: LiveData<Unit>
 
@@ -204,7 +201,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         clearData()
-        callbackManager = CallbackManager.Factory.create()
 
         activity?.let {
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -373,24 +369,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             when (it) {
                 is Success -> onSuccessGetProvider(it.data)
                 is Fail -> onFailedGetProvider(it.throwable)
-            }
-        })
-        registerInitialViewModel.getFacebookCredentialResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessGetFacebookCredential(it.data)
-                is Fail -> onFailedGetFacebookCredential(it.throwable)
-            }
-        })
-        registerInitialViewModel.loginTokenFacebookResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessRegisterFacebook()
-                is Fail -> onFailedRegisterFacebook(it.throwable)
-            }
-        })
-        registerInitialViewModel.loginTokenFacebookPhoneResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessRegisterFacebookPhone(it.data)
-                is Fail -> onFailedRegisterFacebookPhone(it.throwable)
             }
         })
         registerInitialViewModel.loginTokenGoogleResponse.observe(viewLifecycleOwner, Observer {
@@ -607,61 +585,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         }
     }
 
-    private fun onSuccessGetFacebookCredential(facebookCredentialData: FacebookCredentialData) {
-        try {
-            if (facebookCredentialData.email.isNotEmpty()) {
-                registerInitialViewModel.registerFacebook(
-                        facebookCredentialData.accessToken.token,
-                        facebookCredentialData.email
-                )
-            } else if (facebookCredentialData.phone.isNotEmpty()) {
-                registerInitialViewModel.registerFacebookPhone(
-                        facebookCredentialData.accessToken.token,
-                        facebookCredentialData.phone
-                )
-            }
-        } catch (e: Exception) {
-            e.message?.let { onErrorRegister(it) }
-        }
-    }
-
-    private fun onFailedGetFacebookCredential(throwable: Throwable) {
-        dismissProgressBar()
-        if (isAdded && activity != null) {
-            throwable.message?.let { onErrorRegister(ErrorHandler.getErrorMessage(context, throwable)) }
-        }
-    }
-
-    private fun onSuccessRegisterFacebook() {
-        registerInitialViewModel.getUserInfo()
-    }
-
-    private fun onFailedRegisterFacebook(throwable: Throwable) {
-        if (throwable is AkamaiErrorException) {
-            showPopupErrorAkamai()
-        } else {
-            val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-            onErrorRegister(errorMessage)
-        }
-    }
-
-    private fun onSuccessRegisterFacebookPhone(loginTokenPojo: LoginTokenPojo) {
-        if (loginTokenPojo.loginToken.action == 1) {
-            goToChooseAccountPageFacebook(loginTokenPojo.loginToken.accessToken)
-        } else {
-            registerInitialViewModel.getUserInfo()
-        }
-    }
-
-    private fun onFailedRegisterFacebookPhone(throwable: Throwable) {
-        if (throwable is AkamaiErrorException) {
-            showPopupErrorAkamai()
-        } else {
-            val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-            onErrorRegister(errorMessage)
-        }
-    }
-
     private fun onSuccessRegisterGoogle() {
         registerInitialViewModel.getUserInfo()
     }
@@ -867,7 +790,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         activity?.let {
-            callbackManager.onActivityResult(requestCode, resultCode, data)
             dismissProgressBar()
 
             when(requestCode) {
@@ -1115,24 +1037,9 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     private fun setDiscoverOnClickListener(provider: ProviderData, loginTextView: LoginTextView) {
         when (provider.id.lowercase(Locale.getDefault())) {
-            LoginConstants.DiscoverLoginId.FACEBOOK -> loginTextView.setOnClickListener { onRegisterFacebookClick() }
             LoginConstants.DiscoverLoginId.GPLUS -> loginTextView.setOnClickListener { onRegisterGoogleClick() }
         }
     }
-
-    private fun onRegisterFacebookClick() {
-        activity?.let {
-            showProgressBar()
-            bottomSheet.dismiss()
-            registerAnalytics.trackClickFacebookButton(it.applicationContext)
-            TrackApp.getInstance().moEngage.sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_FACEBOOK)
-            goToRegisterFacebook()
-        }
-
-    }
-
-    override fun goToRegisterFacebook() {registerInitialViewModel.getFacebookCredential(this, callbackManager)
-        }
 
     private fun onRegisterGoogleClick() {
         activity?.let {
@@ -1237,10 +1144,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     private fun goToChooseAccountPage(accessToken: String, phoneNumber: String) {
         registerInitialRouter.goToChooseAccountPage(this, accessToken, phoneNumber)
-    }
-
-    private fun goToChooseAccountPageFacebook(accessToken: String) {
-        registerInitialRouter.goToChooseAccountPageFacebook(this, accessToken)
     }
 
     private fun showProceedWithPhoneDialog(phone: String) {
@@ -1484,9 +1387,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     override fun onDestroy() {
         super.onDestroy()
         registerInitialViewModel.getProviderResponse.removeObservers(this)
-        registerInitialViewModel.getFacebookCredentialResponse.removeObservers(this)
-        registerInitialViewModel.loginTokenFacebookResponse.removeObservers(this)
-        registerInitialViewModel.loginTokenFacebookPhoneResponse.removeObservers(this)
         registerInitialViewModel.loginTokenGoogleResponse.removeObservers(this)
         registerInitialViewModel.loginTokenAfterSQResponse.removeObservers(this)
         registerInitialViewModel.getUserInfoResponse.removeObservers(this)
