@@ -319,7 +319,8 @@ class AddEditProductDetailViewModel @Inject constructor(
             mIsProductPriceInputError.value = true
             return
         }
-        productPriceMessage = ""
+
+        productPriceMessage = priceAllocationDefaultMessage
         mIsProductPriceInputError.value = false
     }
 
@@ -584,10 +585,17 @@ class AddEditProductDetailViewModel @Inject constructor(
         }
     }
 
+    private fun getMultiLocationPriceAllocationMessage(): String =
+        when {
+            isEditing -> provider.getEditProductPriceMultiLocationMessage().orEmpty()
+            isAdding -> provider.getAddProductPriceMultiLocationMessage().orEmpty()
+            else -> ""
+        }
+
     private fun getMultiLocationStockAllocationMessage(): String =
             when {
-                isEditing -> provider.getEditProductMultiLocationMessage().orEmpty()
-                isAdding -> provider.getAddProductMultiLocationMessage().orEmpty()
+                isEditing -> provider.getEditProductStockMultiLocationMessage().orEmpty()
+                isAdding -> provider.getAddProductStockMultiLocationMessage().orEmpty()
                 else -> ""
             }
 

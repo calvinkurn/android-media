@@ -190,11 +190,19 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
 
     // admin multi location string properties
 
-    fun getAddProductMultiLocationMessage(): String? {
+    fun getAddProductPriceMultiLocationMessage(): String? {
+        return getString(R.string.message_add_product_price_only_main_location)
+    }
+
+    fun getEditProductPriceMultiLocationMessage(): String? {
+        return getString(R.string.message_edit_product_price_only_main_location)
+    }
+
+    fun getAddProductStockMultiLocationMessage(): String? {
         return getString(R.string.message_add_product_stock_only_main_location)
     }
 
-    fun getEditProductMultiLocationMessage(): String? {
+    fun getEditProductStockMultiLocationMessage(): String? {
         return getString(R.string.message_edit_product_stock_only_main_location)
     }
 
