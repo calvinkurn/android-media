@@ -18,7 +18,7 @@ interface BaseChatTypeFactory {
 
     fun type(imageUploadViewModel: ImageUploadViewModel): Int
 
-    fun type(fallbackAttachmentViewModel: FallbackAttachmentViewModel): Int
+    fun type(fallbackAttachmentUiModel: FallbackAttachmentUiModel): Int
 
     fun type(productAttachmentViewModel: ProductAttachmentViewModel): Int
 

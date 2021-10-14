@@ -463,7 +463,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel) -> Unit {
         return {
             val list = it.listChat.filter {
-                !((it is FallbackAttachmentViewModel && it.message.isEmpty()) ||
+                !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
                         (it is MessageViewModel && it.message.isEmpty()))
             }
 
@@ -478,7 +478,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onSuccessGetPreviousChat(page: Int): (ChatroomViewModel) -> Unit {
         return {
             val list = it.listChat.filter {
-                !((it is FallbackAttachmentViewModel && it.message.isEmpty()) ||
+                !((it is FallbackAttachmentUiModel && it.message.isEmpty()) ||
                         (it is MessageViewModel && it.message.isEmpty()))
             }
             if (page == FIRST_PAGE) isFirstPage = false

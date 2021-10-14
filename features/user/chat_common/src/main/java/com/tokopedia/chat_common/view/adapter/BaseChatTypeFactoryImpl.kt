@@ -41,7 +41,7 @@ abstract class BaseChatTypeFactoryImpl(private val imageAnnouncementListener: Im
         return ImageUploadViewHolder.LAYOUT
     }
 
-    override fun type(fallbackAttachmentViewModel: FallbackAttachmentViewModel): Int {
+    override fun type(fallbackAttachmentUiModel: FallbackAttachmentUiModel): Int {
         return FallbackAttachmentViewHolder.LAYOUT
     }
 

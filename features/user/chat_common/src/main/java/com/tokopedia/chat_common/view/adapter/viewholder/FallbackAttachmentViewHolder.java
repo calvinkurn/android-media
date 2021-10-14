@@ -9,14 +9,14 @@ import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.chat_common.R;
-import com.tokopedia.chat_common.data.FallbackAttachmentViewModel;
+import com.tokopedia.chat_common.data.FallbackAttachmentUiModel;
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener;
 
 /**
  * @author by nisie on 5/9/18.
  */
-public class FallbackAttachmentViewHolder extends BaseChatViewHolder<FallbackAttachmentViewModel> {
+public class FallbackAttachmentViewHolder extends BaseChatViewHolder<FallbackAttachmentUiModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_fallback_attachment;
@@ -33,14 +33,14 @@ public class FallbackAttachmentViewHolder extends BaseChatViewHolder<FallbackAtt
     }
 
     @Override
-    public void bind(FallbackAttachmentViewModel viewModel) {
+    public void bind(FallbackAttachmentUiModel viewModel) {
         super.bind(viewModel);
         setMessage(viewModel);
         setClickableUrl();
         setupChatBubbleAlignment(message, viewModel);
     }
 
-    private void setupChatBubbleAlignment(View chatBalloon, FallbackAttachmentViewModel element) {
+    private void setupChatBubbleAlignment(View chatBalloon, FallbackAttachmentUiModel element) {
         if (element.isSender()) {
             setChatRight(chatBalloon);
         } else {
@@ -74,7 +74,7 @@ public class FallbackAttachmentViewHolder extends BaseChatViewHolder<FallbackAtt
         view.setLayoutParams(params);
     }
 
-    private void setMessage(FallbackAttachmentViewModel element) {
+    private void setMessage(FallbackAttachmentUiModel element) {
         if (!element.getMessage().isEmpty()) {
             message.setText(MethodChecker.fromHtml(element.getMessage()));
         }

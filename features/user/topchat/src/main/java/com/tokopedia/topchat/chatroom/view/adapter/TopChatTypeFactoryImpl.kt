@@ -80,8 +80,8 @@ open class TopChatTypeFactoryImpl constructor(
         return ChatMessageUnifyViewHolder.LAYOUT
     }
 
-    override fun type(fallbackAttachmentViewModel: FallbackAttachmentViewModel): Int {
-        return type(fallbackAttachmentViewModel as MessageViewModel)
+    override fun type(fallbackAttachmentUiModel: FallbackAttachmentUiModel): Int {
+        return type(fallbackAttachmentUiModel as MessageViewModel)
     }
 
     override fun type(imageDualAnnouncementViewModel: ImageDualAnnouncementUiModel): Int {

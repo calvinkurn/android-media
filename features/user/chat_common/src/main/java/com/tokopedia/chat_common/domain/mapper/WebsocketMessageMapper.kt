@@ -93,7 +93,7 @@ open class WebsocketMessageMapper @Inject constructor() {
         pojo.attachment?.fallbackAttachment?.let {
             fallbackMessage = it.message
         }
-        return FallbackAttachmentViewModel.Builder()
+        return FallbackAttachmentUiModel.Builder()
             .withResponseFromWs(pojo)
             .withMsg(fallbackMessage)
             .build()

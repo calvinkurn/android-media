@@ -137,7 +137,7 @@ open class GetExistingChatMapper @Inject constructor() {
         chatItemPojoByDateByTime.attachment?.fallback?.let {
             fallbackMessage = it.message
         }
-        return FallbackAttachmentViewModel.Builder()
+        return FallbackAttachmentUiModel.Builder()
             .withResponseFromGQL(chatItemPojoByDateByTime)
             .withMsg(fallbackMessage)
             .build()

@@ -133,7 +133,7 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
         return ChatActionListBubbleViewHolder.LAYOUT
     }
 
-    override fun type(fallbackAttachmentViewModel: FallbackAttachmentViewModel): Int {
+    override fun type(fallbackAttachmentUiModel: FallbackAttachmentUiModel): Int {
         return ChatbotFallbackAttachmentViewHolder.LAYOUT
     }
 
