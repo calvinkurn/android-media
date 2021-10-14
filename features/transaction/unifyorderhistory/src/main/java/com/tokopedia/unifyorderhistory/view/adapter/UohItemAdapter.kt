@@ -34,6 +34,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         const val LAYOUT_EMPTY_STATE = 3
         const val LAYOUT_RECOMMENDATION_TITLE = 4
         const val LAYOUT_RECOMMENDATION_LIST = 5
+        const val LAYOUT_BANNER = 6
     }
 
     interface ActionListener {
@@ -75,6 +76,10 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 val binding = UohRecommendationItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
                 UohRecommendationItemViewHolder(binding, actionListener)
             }
+            LAYOUT_BANNER -> {
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.uoh_tdn_banner_layout, parent, false)
+                UohTdnBannerViewHolder(view)
+            }
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -91,6 +96,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             TYPE_EMPTY -> LAYOUT_EMPTY_STATE
             TYPE_RECOMMENDATION_TITLE -> LAYOUT_RECOMMENDATION_TITLE
             TYPE_RECOMMENDATION_ITEM -> LAYOUT_RECOMMENDATION_LIST
+            TDN_BANNER -> LAYOUT_BANNER
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -116,6 +122,9 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 holder.bind(element)
             }
             is UohRecommendationItemViewHolder -> {
+                holder.bind(element, holder.adapterPosition)
+            }
+            is UohTdnBannerViewHolder -> {
                 holder.bind(element, holder.adapterPosition)
             }
         }

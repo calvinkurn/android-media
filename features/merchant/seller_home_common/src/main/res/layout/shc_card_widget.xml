@@ -83,7 +83,7 @@
             tools:text="Rp999.999.999" />
 
         <com.tokopedia.sellerhomecommon.presentation.view.customview.CardValueCountdownView
-            android:id="@+id/card_value_countdown_view"
+            android:id="@+id/shcCardValueCountdownView"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:visibility="gone"

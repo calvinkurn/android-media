@@ -64,6 +64,7 @@ buildCache {
 
 apply from: 'buildconfig/aar/settings-helper.gradle'
 apply from: 'tools/dynamic_feature_inclusion.gradle'
+//apply from: "buildconfig/appcompile/compile-testing.gradle"
 apply from: "buildconfig/appcompile/compile-libraries.gradle"
 //apply from: "buildconfig/appcompile/compile-libraries-no-op.gradle"
 apply from: "buildconfig/appcompile/compile-customerapp.gradle"

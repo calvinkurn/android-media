@@ -6,17 +6,17 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnATCNonVariantClickListener
 import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnItemClickListener
 import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnItemImpressedListener
-import com.tokopedia.carouselproductcard.CarouselProductCardView
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowBroadmatchBinding
 import com.tokopedia.tokopedianow.search.presentation.listener.BroadMatchListener
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.mapper.mapToLabelGroup
 import com.tokopedia.tokopedianow.searchcategory.presentation.mapper.mapToNonVariant
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 class BroadMatchViewHolder(
     itemView: View,
@@ -28,16 +28,18 @@ class BroadMatchViewHolder(
         val LAYOUT = R.layout.item_tokopedianow_broadmatch
     }
 
+    private var binding: ItemTokopedianowBroadmatchBinding? by viewBinding()
+
     private val titleView by lazy {
-        itemView.findViewById<Typography?>(R.id.tokopediaNowBroadMatchTitle)
+        binding?.tokopediaNowBroadMatchTitle
     }
 
     private val seeAllView by lazy {
-        itemView.findViewById<Typography?>(R.id.tokopediaNowBroadMatchSeeAll)
+        binding?.tokopediaNowBroadMatchSeeAll
     }
 
     private val carouselProductCardView by lazy {
-        itemView.findViewById<CarouselProductCardView?>(R.id.tokopediaNowBroadMatchCarouselProductCard)
+        binding?.tokopediaNowBroadMatchCarouselProductCard
     }
 
     override fun bind(element: BroadMatchDataView?) {

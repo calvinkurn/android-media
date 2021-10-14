@@ -16,6 +16,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.attachinvoice.R
 import com.tokopedia.attachinvoice.analytic.AttachInvoiceAnalytic
 import com.tokopedia.attachinvoice.data.Invoice
+import com.tokopedia.attachinvoice.databinding.FragmentAttachinvoiceAttachInvoiceBinding
 import com.tokopedia.attachinvoice.di.AttachInvoiceComponent
 import com.tokopedia.attachinvoice.view.adapter.AttachInvoiceAdapter
 import com.tokopedia.attachinvoice.view.adapter.AttachInvoiceTypeFactory
@@ -26,8 +27,6 @@ import com.tokopedia.attachinvoice.view.widget.AttachInvoiceItemDecoration
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_attachinvoice_attach_invoice.*
-import kotlinx.android.synthetic.main.fragment_attachinvoice_attach_invoice.view.*
 import javax.inject.Inject
 
 class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFactory>(),
@@ -36,6 +35,10 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
     private val screenName = "attach-invoice"
     private var messageId: String = ""
     private var opponentName: String = ""
+
+    private var _binding: FragmentAttachinvoiceAttachInvoiceBinding? = null
+
+    private val binding get() = _binding!!
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -62,12 +65,17 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_attachinvoice_attach_invoice, container, false).also {
-            initializeArguments(arguments)
-            setupRecyclerView(it)
-            setupObserver()
-        }
+        _binding =  FragmentAttachinvoiceAttachInvoiceBinding.inflate(inflater, container, false)
+        initializeArguments(arguments)
+        setupRecyclerView()
+        setupObserver()
+        return binding.root
     }
 
     override fun getScreenName(): String = screenName
@@ -92,8 +100,8 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
     }
 
     override fun hideAttachButton() {
-        flAttach?.hide()
-        attachShadow?.hide()
+        binding.flAttach.hide()
+        binding.attachShadow.hide()
     }
 
     override fun getOpponentName(): String {
@@ -106,8 +114,8 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
         opponentName = arguments.getString(ApplinkConst.AttachInvoice.PARAM_OPPONENT_NAME, "")
     }
 
-    private fun setupRecyclerView(view: View) {
-        view.recycler_view?.apply {
+    private fun setupRecyclerView() {
+        binding.recyclerView.apply {
             clearItemDecoration()
             addItemDecoration(AttachInvoiceItemDecoration(context))
         }
@@ -130,8 +138,8 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
     }
 
     private fun enableAttachButton(invoice: Invoice) {
-        btnAttach?.isEnabled = true
-        btnAttach.setOnClickListener {
+        binding.btnAttach.isEnabled = true
+        binding.btnAttach.setOnClickListener {
             analytic.trackOnAttachInvoice(invoice)
             val intent = getInvoicePreviewIntent(invoice)
             listener?.onClickAttachInvoice(intent)
@@ -150,7 +158,7 @@ class AttachInvoiceFragment : BaseListFragment<Visitable<*>, AttachInvoiceTypeFa
     }
 
     private fun disableAttachButton() {
-        btnAttach?.isEnabled = false
+        binding.btnAttach.isEnabled = false
     }
 
     private fun isFirstPage(): Boolean {
