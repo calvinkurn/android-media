@@ -41,7 +41,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
         private val registerCheckUseCase: RegisterCheckUseCase,
         private val discoverUseCase: DiscoverUseCase,
         private val activateUserUseCase: ActivateUserUseCase,
-//        private val getFacebookCredentialUseCase: GetFacebookCredentialUseCase,
         private val loginTokenUseCase: LoginTokenUseCase,
         private val getProfileUseCase: GetProfileUseCase,
         private val tickerInfoUseCase: TickerInfoUseCase,
