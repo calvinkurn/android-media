@@ -27,6 +27,7 @@ class UohSendEmailBottomSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        var email = ""
         binding = BottomsheetSendEmailBinding.inflate(LayoutInflater.from(context), null, false)
         binding?.run {
             tfEmail.textFieldInput.addTextChangedListener(object : TextWatcher {
@@ -49,13 +50,13 @@ class UohSendEmailBottomSheet : BottomSheetUnify() {
                         } else {
                             tfEmail.setError(false)
                             tfEmail.setMessage("")
+                            email = s.toString()
                         }
                     }
                 }
 
             })
 
-            val email = "${tfEmail.textFieldInput.text}"
             btnSendEmail.setOnClickListener { listener?.onEmailSent(email)  }
         }
         showCloseIcon = true
