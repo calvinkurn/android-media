@@ -70,10 +70,11 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
         private const val EXTRA_TOASTER_MESSAGE = "extra_toaster_message"
         private const val EXTRA_SHOW_SETTINGS = "extra_show_settings"
 
-        fun createInstance(uri: Uri?, shouldShowSettings: Boolean): SellerFeedbackFragment {
+        fun createInstance(uri: Uri?, shouldShowSettings: Boolean, activityName: String): SellerFeedbackFragment {
             return SellerFeedbackFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(EXTRA_URI_IMAGE, uri)
+                    putString(EXTRA_ACTIVITY_NAME, activityName)
                     putBoolean(EXTRA_SHOW_SETTINGS, shouldShowSettings)
                 }
             }

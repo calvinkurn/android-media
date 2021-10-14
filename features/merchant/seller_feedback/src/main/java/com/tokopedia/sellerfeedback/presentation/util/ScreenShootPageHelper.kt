@@ -18,11 +18,10 @@ object ScreenShootPageHelper {
     private val PAGE_SOM = R.string.feedback_from_som
     private val PAGE_STATISTIC = R.string.feedback_from_statistic
     private val PAGE_CENTRALIZED_PROMO = R.string.feedback_from_centralized_promo
-    private val PAGE_SHOP_DECORATION = R.string.feedback_from_shop_decoration
+    private val PAGE_SHOP = R.string.feedback_from_shop_page
     private val PAGE_REVIEW = R.string.feedback_from_review
     private val PAGE_COMPLAINED_ORDER = R.string.feedback_from_order_complaint
     private val PAGE_SHOP_SETTING = R.string.feedback_from_shop_setting
-    private val PAGE_ADMIN_SETTING = R.string.feedback_from_admin_setting
     private val PAGE_OTHERS = R.string.feedback_from_others
 
     fun getPageList(context: Context): List<String> {
@@ -36,16 +35,18 @@ object ScreenShootPageHelper {
             context.getString(PAGE_SOM),
             context.getString(PAGE_STATISTIC),
             context.getString(PAGE_CENTRALIZED_PROMO),
-            context.getString(PAGE_SHOP_DECORATION),
+            context.getString(PAGE_SHOP),
             context.getString(PAGE_REVIEW),
             context.getString(PAGE_COMPLAINED_ORDER),
             context.getString(PAGE_SHOP_SETTING),
-            context.getString(PAGE_ADMIN_SETTING),
             context.getString(PAGE_OTHERS)
         )
     }
 
     fun getPageByClassName(context: Context, canonicalName: String): String {
+        if (canonicalName.isBlank()) {
+            return context.getString(PAGE_OTHERS)
+        }
         val pageMap = getPagesHasMap(context).entries
             .firstOrNull { it.value.contains(canonicalName) }
         return pageMap?.key ?: context.getString(PAGE_OTHERS)
@@ -62,23 +63,26 @@ object ScreenShootPageHelper {
             getSomPageMapper(context),
             getStatisticPageMapper(context),
             getCentralizedPromoPageMapper(context),
-            getShopDecorationPageMapper(context),
+            getShopPageMapper(context),
             getReviewPageMapper(context),
             getComplainedOrderPageMapper(context),
-            getShopSettingPageMapper(context),
-            getAdminSettingPageMapper(context)
-        )
-    }
-
-    private fun getAdminSettingPageMapper(context: Context): Pair<String, List<String>> {
-        return context.getString(PAGE_ADMIN_SETTING) to listOf(
-            ""
+            getShopSettingPageMapper(context)
         )
     }
 
     private fun getShopSettingPageMapper(context: Context): Pair<String, List<String>> {
         return context.getString(PAGE_SHOP_SETTING) to listOf(
-            ""
+            "com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity",
+            "com.tokopedia.shop.settings.basicinfo.view.activity.ShopSettingsInfoActivity",
+            "com.tokopedia.shop.settings.notes.view.activity.ShopSettingsNotesActivity",
+            "com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity",
+            "com.tokopedia.manageaddress.ui.shoplocation.ShopLocationActivity",
+            "com.tokopedia.editshipping.ui.shopeditaddress.ShopEditAddressActivity",
+            "com.tokopedia.editshipping.ui.shippingeditor.ShippingEditorActivity",
+            "com.tokopedia.activation.ui.ActivationPageActivity",
+            "com.tokopedia.profilecompletion.settingprofile.view.activity.SettingProfileActivity",
+            "com.tokopedia.settingbank.view.activity.SettingBankActivity",
+            "com.tokopedia.settingnotif.usersetting.view.activity.UserNotificationSettingActivity",
         )
     }
 
@@ -94,8 +98,8 @@ object ScreenShootPageHelper {
         )
     }
 
-    private fun getShopDecorationPageMapper(context: Context): Pair<String, List<String>> {
-        return context.getString(PAGE_SHOP_DECORATION) to listOf(
+    private fun getShopPageMapper(context: Context): Pair<String, List<String>> {
+        return context.getString(PAGE_SHOP) to listOf(
             "com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity"
         )
     }
@@ -114,13 +118,25 @@ object ScreenShootPageHelper {
 
     private fun getSomPageMapper(context: Context): Pair<String, List<String>> {
         return context.getString(PAGE_SOM) to listOf(
-            ""
+            "com.tokopedia.sellerorder.list.presentation.activities.SomListActivity",
+            "com.tokopedia.sellerorder.filter.presentation.activity.SomSubFilterActivity",
+            "com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity",
+            "com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity",
+            "com.tokopedia.sellerorder.detail.presentation.activity.SomDetailLogisticInfoActivity",
+            "com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCodeActivity",
+            "com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity",
+            "com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomScanResiActivity"
         )
     }
 
     private fun getProductManagePageMapper(context: Context): Pair<String, List<String>> {
         return context.getString(PAGE_PRODUCT_MANAGE) to listOf(
-            ""
+            "com.tokopedia.product.manage.feature.list.view.activity.ProductManageActivity",
+            "com.tokopedia.product.manage.feature.filter.presentation.activity.ProductManageFilterExpandActivity",
+            "com.tokopedia.product.manage.feature.stockreminder.view.activity.StockReminderActivity",
+            "com.tokopedia.product.manage.feature.etalase.view.activity.EtalasePickerActivity",
+            "com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity",
+            "com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity"
         )
     }
 
@@ -132,7 +148,7 @@ object ScreenShootPageHelper {
 
     private fun getAddProductPageMapper(context: Context): Pair<String, List<String>> {
         return context.getString(PAGE_ADD_PRODUCT) to listOf(
-            ""
+            "com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity"
         )
     }
 

@@ -45,11 +45,10 @@
     <string name="feedback_from_som">Penjualan</string>
     <string name="feedback_from_statistic">Statistik</string>
     <string name="feedback_from_centralized_promo">Iklan dan Promosi</string>
-    <string name="feedback_from_shop_decoration">Dekorasi Toko</string>
+    <string name="feedback_from_shop_page">Toko</string>
     <string name="feedback_from_review">Ulasan</string>
     <string name="feedback_from_order_complaint">Pesanan Dikomplain</string>
     <string name="feedback_from_shop_setting">Pengaturan Toko</string>
-    <string name="feedback_from_admin_setting">Pengaturan Admin</string>
     <string name="feedback_from_others">Lainnya</string>
 
 </resources>

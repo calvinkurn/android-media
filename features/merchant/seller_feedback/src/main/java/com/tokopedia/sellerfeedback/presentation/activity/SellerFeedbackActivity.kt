@@ -29,7 +29,8 @@ class SellerFeedbackActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment {
         val uri = intent.getParcelableExtra<Uri>(EXTRA_URI_IMAGE)
         val shouldShowSetting = intent.getBooleanExtra(SuccessToasterHelper.SHOW_SETTING_BOTTOM_SHEET, false)
-        return SellerFeedbackFragment.createInstance(uri, shouldShowSetting)
+        val activityName = intent.getStringExtra(SellerFeedbackFragment.EXTRA_ACTIVITY_NAME).orEmpty()
+        return SellerFeedbackFragment.createInstance(uri, shouldShowSetting, activityName)
     }
 
     private fun setupToolbar(@ColorInt colorId: Int) {
