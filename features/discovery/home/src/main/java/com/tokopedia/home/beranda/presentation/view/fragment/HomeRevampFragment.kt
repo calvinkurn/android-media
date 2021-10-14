@@ -2977,7 +2977,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         )
         if (feedViewHolder is HomeRecommendationFeedViewHolder) {
             feedViewHolder.showFeedTabShadow(show)
-            feedViewHolder.hidePmProCoachmark()
         }
     }
 
