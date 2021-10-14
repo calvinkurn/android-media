@@ -8,13 +8,14 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetListener
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetView
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.view.TokoNowView
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeProductRecomBinding
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.PRODUCT_RECOM_OOC
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
+import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeProductRecomViewHolder(
     itemView: View,
@@ -27,8 +28,7 @@ class HomeProductRecomViewHolder(
         val LAYOUT = R.layout.item_tokopedianow_home_product_recom
     }
 
-    private val productRecom: RecommendationCarouselWidgetView by lazy { itemView.findViewById(R.id.carouselProductRecom) }
-    private val divider: View by lazy { itemView.findViewById(R.id.divider) }
+    private var binding: ItemTokopedianowHomeProductRecomBinding? by viewBinding()
 
     private var channelId = ""
     private var isOoc = false
@@ -36,7 +36,7 @@ class HomeProductRecomViewHolder(
     override fun bind(element: HomeProductRecomUiModel) {
         channelId = element.id
         isOoc = element.id == PRODUCT_RECOM_OOC
-        productRecom.bind(
+        binding?.carouselProductRecom?.bind(
             carouselData = RecommendationCarouselData(
                 recommendationData = element.recomWidget,
                 state = RecommendationCarouselData.STATE_READY,
@@ -46,10 +46,10 @@ class HomeProductRecomViewHolder(
         setOnScrollListener()
         restoreScrollState()
         if (isOoc) {
-            divider.show()
+            binding?.divider?.show()
             val spaceZero = itemView.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
             val spaceSixTeen = itemView.getDimens(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
-            productRecom.setMargin(spaceZero, spaceSixTeen, spaceZero, spaceZero)
+            binding?.carouselProductRecom?.setMargin(spaceZero, spaceSixTeen, spaceZero, spaceZero)
         }
     }
 
@@ -114,14 +114,14 @@ class HomeProductRecomViewHolder(
     }
 
     private fun setOnScrollListener() {
-        productRecom.setScrollListener { scrollState ->
+        binding?.carouselProductRecom?.setScrollListener { scrollState ->
             tokoNowView?.saveScrollState(adapterPosition, scrollState)
         }
     }
 
     private fun restoreScrollState() {
         val scrollState = tokoNowView?.getScrollState(adapterPosition)
-        productRecom.restoreScrollState(scrollState)
+        binding?.carouselProductRecom?.restoreScrollState(scrollState)
     }
 
     interface HomeProductRecomListener {

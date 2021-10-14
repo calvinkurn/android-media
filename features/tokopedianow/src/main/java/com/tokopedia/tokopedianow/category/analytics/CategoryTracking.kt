@@ -19,6 +19,7 @@ import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLI
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_QUICK_FILTER
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_SEARCH_BAR
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_SEMUA_KATEGORI
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_VIEW_ALL_ON_TOKONOW_CLP_RECOMMENDATION
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.IMPRESSION_BANNER
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.IMPRESSION_ON_PAST_PURCHASE_WIDGET
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.IMPRESSION_PRODUCT
@@ -33,6 +34,7 @@ import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.PRODU
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.SLASH_PRICE
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.TOKONOW_CATEGORY_PAGE_PAST_PURCHASE_WIDGET
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.TOKONOW_CATEGORY_SCREEN
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.WITHOUT_HALAL_LABEL
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.WITHOUT_VARIANT
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.WITH_HALAL_LABEL
@@ -109,6 +111,7 @@ object CategoryTracking {
         const val IMPRESSION_ON_PAST_PURCHASE_WIDGET = "impression on past purchase widget"
         const val CLICK_PRODUCT_ON_PAST_PURCHASE_WIDGET = "click product on past purchase widget"
         const val CLICK_ATC_ON_PAST_PURCHASE_WIDGET = "click atc on past purchase widget"
+        const val CLICK_VIEW_ALL_ON_TOKONOW_CLP_RECOMMENDATION = "click view all on tokonow clp recommendation"
     }
 
     object Category {
@@ -131,6 +134,7 @@ object CategoryTracking {
         const val TOKONOW_CATEGORY_PAGE_PAST_PURCHASE_WIDGET =
             "/tokonow - category page - past_purchase_widget"
         const val LABEL_GROUP_HALAL = "Halal"
+        const val TOKONOW_CATEGORY_SCREEN = "tokonow/category/%s"
     }
 
     fun sendGeneralEvent(dataLayer: Map<String, Any>) {
@@ -604,4 +608,28 @@ object CategoryTracking {
             it["shop_name"] = ""
             it["shop_type"] = ""
         }
+
+    fun sendRecommendationSeeAllClickEvent(categoryIdTracking: String) {
+        sendGeneralEvent(
+            DataLayer.mapOf(
+                EVENT, EVENT_CLICK_TOKONOW,
+                EVENT_ACTION, CLICK_VIEW_ALL_ON_TOKONOW_CLP_RECOMMENDATION,
+                EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
+                EVENT_LABEL, categoryIdTracking,
+                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+            )
+        )
+    }
+
+    fun sendOpenScreenTracking(slug: String) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(
+            String.format(TOKONOW_CATEGORY_SCREEN, slug),
+            mapOf<String, String>(
+                KEY_BUSINESS_UNIT to BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE,
+                KEY_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+            )
+        )
+    }
+
 }

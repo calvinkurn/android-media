@@ -1,0 +1,21 @@
+[
+  {
+    "data": {
+      "getListingParams": {
+        "success": true,
+        "message": "",
+        "data": {
+          "profile_code": "EXPRESS_SAVE",
+          "merchant_code": "tokopedia",
+          "user_id": "5512940",
+          "callback_url": "https://pay-staging.tokopedia.com/v2/payment/register/listing",
+          "hash": "9f3d1fead27adfa92ef4bb394205f8c6dbb7c959",
+          "customer_email": "reza.pramitra@tokopedia.com",
+          "customer_msisdn": "6281380919101",
+          "customer_name": "erdepe",
+          "address_id": "4690950"
+        }
+      }
+    }
+  }
+]

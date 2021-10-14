@@ -2,10 +2,7 @@ package com.tokopedia.play.model
 
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.uimodel.recom.PlayGeneralVideoPlayerParams
-import com.tokopedia.play.view.uimodel.recom.PlayVideoMetaInfoUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayVideoStreamUiModel
+import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play_common.model.PlayBufferControl
 import io.mockk.mockk
 
@@ -24,10 +21,12 @@ class PlayVideoModelBuilder {
 
     fun buildVideoStream(
             id: String = "1",
-            orientation: VideoOrientation = VideoOrientation.Vertical
+            orientation: VideoOrientation = VideoOrientation.Vertical,
+            title: String = "Default Title"
     ) = PlayVideoStreamUiModel(
             id = id,
-            orientation = orientation
+            orientation = orientation,
+            title = title
     )
 
     fun buildYouTubeVideoPlayer(
@@ -47,8 +46,10 @@ class PlayVideoModelBuilder {
     fun buildCompleteGeneralVideoPlayer(
             params: PlayGeneralVideoPlayerParams = buildGeneralVideoPlayerParams(),
             exoPlayer: ExoPlayer = mockk(relaxed = true),
+            playerType: PlayerType = PlayerType.Client
     ) = PlayVideoPlayerUiModel.General.Complete(
             params = params,
             exoPlayer = exoPlayer,
+            playerType = playerType
     )
 }

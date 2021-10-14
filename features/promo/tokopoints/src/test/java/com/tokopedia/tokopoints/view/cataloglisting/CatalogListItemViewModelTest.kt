@@ -137,8 +137,11 @@ class CatalogListItemViewModelTest {
             every { id } returns 1
         }
 
-        coEvery { repository.startSaveCoupon(1) } throws mockk<MessageErrorException> {
-            every { message } returns "title|message|300"
+        coEvery { repository.startSaveCoupon(1) } throws mockk<CatalogGqlError> {
+            every { messageErrorException } returns  mockk{
+                every { message } returns "message"
+            }
+            every { developerMessage } returns  "title|message|300"
         }
         viewModel.startSaveCouponLiveData.observeForever(observer)
         viewModel.startSaveCoupon(item)
@@ -147,9 +150,7 @@ class CatalogListItemViewModelTest {
 
         val result = (viewModel.startSaveCouponLiveData.value as ValidationError<*, *>).data as ValidateMessageDialog
         assert(result.desc == "message")
-        assert(result.item == item)
         assert(result.messageCode == 300)
-        assert(result.title == "title")
     }
 
     @Test
