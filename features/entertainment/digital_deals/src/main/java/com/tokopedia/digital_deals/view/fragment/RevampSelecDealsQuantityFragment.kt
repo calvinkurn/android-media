@@ -25,6 +25,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.deal_item_card.iv_brand
 import kotlinx.android.synthetic.main.deal_item_card.tv_brand_name
 import kotlinx.android.synthetic.main.fragment_brand_detail.toolbar
@@ -41,6 +42,9 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModel: DealsVerifyViewModel
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var dealsAnalytics: DealsAnalytics
@@ -128,7 +132,7 @@ class RevampSelecDealsQuantityFragment: BaseDaggerFragment() {
 
         tv_continue.setOnClickListener {
             dealsAnalytics.sendEcommerceQuantity(dealsDetail.id, currentQuantity, dealsDetail.salesPrice,
-                    dealsDetail.displayName, dealsDetail.brand.title, dealsDetail.categoryId)
+                    dealsDetail.displayName, dealsDetail.brand.title, dealsDetail.categoryId, userSession.userId)
             showProgress()
             verify()
         }
