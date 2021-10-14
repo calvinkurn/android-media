@@ -2,18 +2,15 @@ package com.tokopedia.product.addedit.shipment.presentation.adapter
 
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.logisticCommon.data.model.CPLProductModel
 import com.tokopedia.logisticCommon.data.model.ShipperCPLModel
-import com.tokopedia.logisticCommon.data.response.customproductlogistic.Shipper
 import com.tokopedia.product.addedit.R
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlin.text.StringBuilder
 
 class ShipmentAdapter : RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder>() {
 
@@ -65,7 +62,7 @@ class ShipmentAdapter : RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder>
         shipmentCPLitem.forEach { courier ->
             courier.shipperProduct.forEach { product ->
                 if (product.isActive) {
-                    activatedListIds.add(product.shipperProductId)
+                    activatedListIds.add(product.shipperProductId.toInt())
                 }
             }
         }
@@ -77,7 +74,7 @@ class ShipmentAdapter : RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder>
         shipmentCPLitem.forEach { courier ->
             courier.shipperProduct.forEach { product ->
                 if (product.isActive) {
-                    activatedListIds.add(product.shipperProductId)
+                    activatedListIds.add(product.shipperProductId.toInt())
                 }
             }
         }
