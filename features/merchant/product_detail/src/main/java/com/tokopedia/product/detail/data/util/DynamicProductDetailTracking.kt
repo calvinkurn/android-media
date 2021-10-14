@@ -1466,13 +1466,13 @@ object DynamicProductDetailTracking {
                                         multiOrigin: Boolean, deeplinkUrl: String,
                                         isStockAvailable: String, boType: Int,
                                         affiliateUniqueId: String,
-                                        rateEstimateData: P2RatesEstimateData?,
+                                        ratesEstimateData: P2RatesEstimateData?,
                                         buyerDistrictId: String, sellerDistrictId: String ->
 
             val dimension10 = productInfo?.data?.isCod ?: false
-            val dimension12 = ""
-            val dimension14 = rateEstimateData?.instanLabel ?: ""
-            val dimension16 = rateEstimateData?.etaText ?: ""
+            val dimension12 = ratesEstimateData?.cheapestShippingPrice?.toString() ?: ""
+            val dimension14 = ratesEstimateData?.instanLabel ?: ""
+            val dimension16 = ratesEstimateData?.etaText ?: ""
             val dimension55 = TrackingUtil.getTradeInString(isTradeIn, isDiagnosed)
             val dimension83 = TrackingUtil.getBoTypeString(boType)
             val dimension54 = TrackingUtil.getMultiOriginAttribution(multiOrigin)
