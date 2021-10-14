@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.data.mapper
+package com.tokopedia.mediauploader.common.data.mapper
 
 import com.tokopedia.mediauploader.data.consts.FILE_NOT_FOUND
 import com.tokopedia.mediauploader.data.consts.SOURCE_NOT_FOUND
