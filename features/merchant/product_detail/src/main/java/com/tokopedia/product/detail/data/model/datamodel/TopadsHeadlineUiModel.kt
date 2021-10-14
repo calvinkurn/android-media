@@ -9,18 +9,20 @@ import com.tokopedia.topads.sdk.domain.model.CpmModel
 data class TopadsHeadlineUiModel(
     var cpmModel: CpmModel? = null,
     var topadsHeadLinePage: Int = 0,
-    var productId: String = ""
+    var productId: String = "",
+    var type: String = "",
+    var name: String = ""
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 
-    override fun type(): String = "topads_headline"
+    override fun type(): String = type
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
     }
 
-    override fun name(): String = "topads_headline"
+    override fun name(): String = name
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
 //        return if (newData is PageErrorDataModel) {

@@ -9,9 +9,11 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.pdplayout.Component
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
+import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.TobacoErrorException
@@ -21,8 +23,10 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import javax.inject.Named
 
-open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase,
-                                                   @Named(NAME_LAYOUT_ID_DAGGER) private val layoutIdTest: String) : UseCase<ProductDetailDataModel>() {
+open class GetPdpLayoutUseCase @Inject constructor(
+    private val gqlUseCase: MultiRequestGraphqlUseCase,
+    @Named(NAME_LAYOUT_ID_DAGGER) private val layoutIdTest: String
+) : UseCase<ProductDetailDataModel>() {
 
     companion object {
         val QUERY = """
@@ -315,15 +319,22 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
             }
         """.trimIndent()
 
-        fun createParams(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String, userLocationRequest: UserLocationRequest): RequestParams =
-                RequestParams.create().apply {
-                    putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
-                    putString(ProductDetailCommonConstant.PARAM_SHOP_DOMAIN, shopDomain)
-                    putString(ProductDetailCommonConstant.PARAM_PRODUCT_KEY, productKey)
-                    putString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, whId)
-                    putString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, layoutId)
-                    putObject(ProductDetailCommonConstant.PARAM_USER_LOCATION, userLocationRequest)
-                }
+        fun createParams(
+            productId: String,
+            shopDomain: String,
+            productKey: String,
+            whId: String,
+            layoutId: String,
+            userLocationRequest: UserLocationRequest
+        ): RequestParams =
+            RequestParams.create().apply {
+                putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
+                putString(ProductDetailCommonConstant.PARAM_SHOP_DOMAIN, shopDomain)
+                putString(ProductDetailCommonConstant.PARAM_PRODUCT_KEY, productKey)
+                putString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, whId)
+                putString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, layoutId)
+                putObject(ProductDetailCommonConstant.PARAM_USER_LOCATION, userLocationRequest)
+            }
     }
 
     var requestParams = RequestParams.EMPTY
@@ -335,42 +346,67 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
             requestParams.putString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, layoutIdTest)
         }
 
-        gqlUseCase.addRequest(GraphqlRequest(QUERY, ProductDetailLayout::class.java, requestParams.parameters))
+        gqlUseCase.addRequest(
+            GraphqlRequest(
+                QUERY,
+                ProductDetailLayout::class.java,
+                requestParams.parameters
+            )
+        )
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
 
         val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")
 
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error: List<GraphqlError>? = gqlResponse.getError(ProductDetailLayout::class.java)
-        val data: PdpGetLayout = gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java).data
+        val data: PdpGetLayout =
+            gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java).data
                 ?: PdpGetLayout()
 
         if (gqlResponse.isCached) {
-            ServerLogger.log(Priority.P2, "PDP_CACHE", mapOf("type" to "true", "productId" to productId))
+            ServerLogger.log(
+                Priority.P2,
+                "PDP_CACHE",
+                mapOf("type" to "true", "productId" to productId)
+            )
         } else {
-            ServerLogger.log(Priority.P2, "PDP_CACHE", mapOf("type" to "false", "productId" to productId))
+            ServerLogger.log(
+                Priority.P2,
+                "PDP_CACHE",
+                mapOf("type" to "false", "productId" to productId)
+            )
         }
         val blacklistMessage = data.basicInfo.blacklistMessage
 
         if (error != null && error.isNotEmpty()) {
-            throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "), error.firstOrNull()?.extensions?.code.toString())
+            throw MessageErrorException(error.mapNotNull { it.message }
+                .joinToString(separator = ", "), error.firstOrNull()?.extensions?.code.toString())
         } else if (data.basicInfo.isBlacklisted) {
             gqlUseCase.clearCache()
-            throw TobacoErrorException(blacklistMessage.description, blacklistMessage.title, blacklistMessage.button, blacklistMessage.url)
+            throw TobacoErrorException(
+                blacklistMessage.description,
+                blacklistMessage.title,
+                blacklistMessage.button,
+                blacklistMessage.url
+            )
         }
         return mapIntoModel(data)
     }
 
     private fun mapIntoModel(data: PdpGetLayout): ProductDetailDataModel {
         val initialLayoutData =
-            if (data.basicInfo != null) DynamicProductDetailMapper.mapIntoVisitable(
-                data.components,
-                data.basicInfo.productID
-            ) else DynamicProductDetailMapper.mapIntoVisitable(data.components)
+            DynamicProductDetailMapper.mapIntoVisitable(data.components.plus(generateTopAdsHeadlinesComponent()), data.basicInfo.productID)
 
         val getDynamicProductInfoP1 = DynamicProductDetailMapper.mapToDynamicProductDetailP1(data)
         val p1VariantData = DynamicProductDetailMapper.mapVariantIntoOldDataClass(data)
         return ProductDetailDataModel(getDynamicProductInfoP1, initialLayoutData, p1VariantData)
+    }
+
+    private fun generateTopAdsHeadlinesComponent() : List<Component> {
+        val listOfComponent: MutableList<Component> = mutableListOf()
+        listOfComponent.add(Component(componentName = "separator", type = "separator"))
+        listOfComponent.add(Component(componentName = "topads_headline", type = "topads_headline"))
+        return listOfComponent
     }
 
 }

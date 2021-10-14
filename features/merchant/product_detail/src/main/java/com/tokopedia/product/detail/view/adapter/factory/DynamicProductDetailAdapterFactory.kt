@@ -31,6 +31,6 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductRecomWidgetDataModel): Int
     fun type(data: OneLinersDataModel): Int
     fun type(data: ProductCategoryCarouselDataModel): Int
-    fun type(topadsHeadlineUiModel: TopadsHeadlineUiModel): Int
+    fun type(data: TopadsHeadlineUiModel): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

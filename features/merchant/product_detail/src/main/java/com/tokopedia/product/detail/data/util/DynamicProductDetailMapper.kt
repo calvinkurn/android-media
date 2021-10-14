@@ -235,10 +235,14 @@ object DynamicProductDetailMapper {
                         )
                     }
                 }
+                ProductDetailConstant.TOPADS_HEADLINE -> {
+                    listOfComponent.add(
+                        TopadsHeadlineUiModel(type = component.type, name = component.componentName)
+                    )
+                }
             }
         }
 
-        listOfComponent.add(TopadsHeadlineUiModel(productId = productId))
         return listOfComponent
     }
 
