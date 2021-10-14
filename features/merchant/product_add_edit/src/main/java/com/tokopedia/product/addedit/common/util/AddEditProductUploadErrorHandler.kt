@@ -1,7 +1,7 @@
 package com.tokopedia.product.addedit.common.util
 
-import com.tokopedia.mediauploader.data.mapper.UploaderErrorCodeMapper.state as uploaderErrorState
-import com.tokopedia.mediauploader.data.mapper.UploaderErrorCodeMapper.CommonErrorState
+import com.tokopedia.mediauploader.common.data.mapper.UploaderErrorCodeMapper.state as uploaderErrorState
+import com.tokopedia.mediauploader.common.data.mapper.UploaderErrorCodeMapper.CommonErrorState
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.network.constant.ResponseStatus
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException

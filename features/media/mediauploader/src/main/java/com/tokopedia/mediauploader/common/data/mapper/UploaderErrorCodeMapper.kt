@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.data.mapper
+package com.tokopedia.mediauploader.common.data.mapper
 
 import com.tokopedia.mediauploader.common.data.consts.FILE_NOT_FOUND
 import com.tokopedia.mediauploader.common.data.consts.NETWORK_ERROR
