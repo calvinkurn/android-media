@@ -15,6 +15,7 @@ import com.tokopedia.feedcomponent.view.mapper.TopadsFeedXMapper.cpmModelToFeedX
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.widget.PostDynamicViewNew
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topads.sdk.domain.model.CpmModel
@@ -85,7 +86,7 @@ open class TopAdsHeadlineV2ViewHolder(
         params.height = 0
         params.width = 0
         this.itemView.layoutParams = params
-        hideTopadsView()
+      //  hideTopadsView()
     }
 
     override fun bind(element: TopadsHeadLineV2Model?, payloads: MutableList<Any>) {
@@ -131,6 +132,12 @@ open class TopAdsHeadlineV2ViewHolder(
                 )
             }
             topadsHeadlineUiModel?.let { setImpressionListener(it) }
+            topadsPostDynamic.setMargin(
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_0),
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_12),
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_0),
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_12)
+            )
         } else {
             hideHeadlineView()
         }

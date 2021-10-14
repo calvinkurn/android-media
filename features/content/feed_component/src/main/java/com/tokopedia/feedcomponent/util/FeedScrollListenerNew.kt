@@ -66,13 +66,16 @@ object FeedScrollListenerNew {
         val imageView =
             layoutManager?.findViewByPosition(i)?.findViewById<View>(R.id.post_image)
         if (imageView != null) {
-            val percentVideo: Int
+            var percentVideo: Int = THRESHOLD_VIDEO_HEIGHT_SHOWN
             val visibleVideo: Int = if (rowRect.bottom >= rvRect.bottom) {
                 rvRect.bottom - videoViewRect.top
             } else {
                 videoViewRect.bottom - rvRect.top
             }
-            percentVideo = visibleVideo * TOTAL_VIDEO_HEIGHT_PERCENT / imageView.height
+            try {
+                percentVideo = visibleVideo * TOTAL_VIDEO_HEIGHT_PERCENT / imageView.height
+            } catch (e: Exception) {
+            }
 
             val isStateChanged: Boolean = percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN
             if (isStateChanged && item.isImageImpressedFirst) {
