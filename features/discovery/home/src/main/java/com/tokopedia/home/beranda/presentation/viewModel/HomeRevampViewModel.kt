@@ -854,7 +854,9 @@ open class HomeRevampViewModel @Inject constructor(
             getKeywordSearchUseCase.get().params = getKeywordSearchUseCase.get().createParams(isFirstInstall, userSession.get().deviceId, userSession.get().userId)
             val data = getKeywordSearchUseCase.get().executeOnBackground()
             _searchHint.postValue(data.searchData)
-        }){}
+        }){
+            _searchHint.postValue(SearchPlaceholder())
+        }
     }
 
     fun getOneClickCheckoutHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int){
