@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.di
+package com.tokopedia.mediauploader.common.di
 
 import com.tokopedia.mediauploader.data.FileUploadServices
 import dagger.Module
