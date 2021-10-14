@@ -8,6 +8,7 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.SavedOption
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
+import com.tokopedia.search.result.domain.model.LastFilterModel
 import com.tokopedia.search.result.domain.model.LastFilterModel.LastFilter
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.usecase.savelastfilter.SaveLastFilterInput
@@ -252,4 +253,35 @@ internal class SearchProductLastFilterTest: ProductListPresenterTestFixtures() {
         productListPresenter.closeLastFilter(searchParameter, savedOptionList)
     }
 
+    @Test
+    fun `category id l2 in save last filter param is taken from get last filter`() {
+        val searchParameter = createSearchParameter()
+        val searchProductModel = "searchproduct/lastfilter/last-filter.json"
+            .jsonToObject<SearchProductModel>()
+        val option = Option(key = "dummy_key", value = "dummy_value", name = "dummy_name")
+        val filter = Filter(title = "dummy_title", options = listOf(option))
+
+        `Given search product will return search product model`(searchProductModel)
+        `Given view load data and shown last filter`(searchParameter)
+
+        `When update last filter`(searchParameter, filter, option, true)
+
+        `Then verify save last filter is called`()
+
+        val saveLastFilterInput = saveLastFilterRequestParam.getSaveLastFilterInput()
+        `Then assert category id L2 param is taken from get last filter`(
+            saveLastFilterInput,
+            searchProductModel.lastFilter.data,
+        )
+    }
+
+    private fun `Then assert category id L2 param is taken from get last filter`(
+        saveLastFilterInput: SaveLastFilterInput,
+        lastFilterData: LastFilterModel.Data,
+    ) {
+        assertThat(
+            saveLastFilterInput.categoryIdL2,
+            `is`(lastFilterData.categoryIdL2)
+        )
+    }
 }

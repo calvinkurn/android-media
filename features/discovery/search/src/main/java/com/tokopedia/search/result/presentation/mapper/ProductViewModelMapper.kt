@@ -44,6 +44,7 @@ class ProductViewModelMapper {
         productDataView.defaultView = searchProductHeader.defaultView
         productDataView.bannerDataView = convertToBannerDataView(searchProductData.banner)
         productDataView.lastFilterDataView = convertToLastFilterDataView(searchProductModel)
+        productDataView.categoryIdL2 = searchProductModel.lastFilter.data.categoryIdL2
 
         return productDataView
     }

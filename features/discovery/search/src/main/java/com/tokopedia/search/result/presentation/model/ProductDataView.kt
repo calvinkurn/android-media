@@ -26,6 +26,7 @@ class ProductDataView() : Parcelable {
     var relatedDataView: RelatedDataView? = null
     var totalDataText = ""
     var bannerDataView = BannerDataView()
+    var categoryIdL2 = ""
     var lastFilterDataView = LastFilterDataView()
 
     fun getTotalItem(): Int {

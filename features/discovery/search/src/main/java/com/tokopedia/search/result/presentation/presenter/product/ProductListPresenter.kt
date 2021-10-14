@@ -210,6 +210,7 @@ class ProductListPresenter @Inject constructor(
     private var chooseAddressData: LocalCacheModel? = null
     private var bannerDataView: BannerDataView? = null
     private var shouldShowPMProPopUp = false
+    private var categoryIdL2 = ""
 
     override fun attachView(view: ProductListSectionContract.View) {
         super.attachView(view)
@@ -769,6 +770,7 @@ class ProductListPresenter @Inject constructor(
         bannerDataView = productDataView.bannerDataView
         autoCompleteApplink = productDataView.autocompleteApplink ?: ""
         totalData = productDataView.totalData
+        categoryIdL2 = productDataView.categoryIdL2
 
         doInBackground<ProductDataView>(productDataView, this::sendTrackingNoSearchResult)
 
@@ -2442,6 +2444,7 @@ class ProductListPresenter @Inject constructor(
             action = action,
             lastFilter = savedOptionList,
             mapParameter = createInitializeSearchParam(searchParameter).parameters,
+            categoryIdL2 = categoryIdL2,
         )
 
         val requestParams = RequestParams.create()
