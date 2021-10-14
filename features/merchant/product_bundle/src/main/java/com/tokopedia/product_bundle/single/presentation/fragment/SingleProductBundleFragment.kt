@@ -121,6 +121,7 @@ class SingleProductBundleFragment(
         }
         if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             viewModel.validateAndAddToCart(
+                pageSource,
                 parentProductID,
                 selectedBundleId,
                 selectedProductId.toString(),
@@ -397,6 +398,7 @@ class SingleProductBundleFragment(
             startActivityForResult(intent, LOGIN_REQUEST_CODE)
         } else {
             viewModel.validateAndAddToCart(
+                pageSource,
                 parentProductID,
                 selectedBundleId,
                 selectedProductId.toString(),
