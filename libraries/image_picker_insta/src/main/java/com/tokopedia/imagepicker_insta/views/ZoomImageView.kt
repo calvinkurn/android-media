@@ -236,14 +236,14 @@ class ZoomImageView : androidx.appcompat.widget.AppCompatImageView {
         if (changed) resetZoom()
     }
 
-    fun resetZoom() {
+    fun resetZoom(skipMatrix:Boolean = false) {
         val tempSrc = RectF(0F, 0F, drawableWidth.toFloat(), drawableHeight.toFloat())
         val tempDst = RectF(0F, 0F, viewWidth.toFloat(), viewHeight.toFloat())
 
         baseMatrix.setRectToRect(tempSrc, tempDst, Matrix.ScaleToFit.CENTER)
         updateMinZoom(drawable)
 
-        if (zoomInfo?.matrix != null) {
+        if (zoomInfo?.matrix != null && !skipMatrix) {
             imageMatrix.set(zoomInfo!!.matrix)
         } else {
             val scale = getInitialScale()
