@@ -4,8 +4,8 @@ import com.tokopedia.mediauploader.data.consts.*
 import com.tokopedia.mediauploader.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.data.mapper.ImagePolicyMapper
 import com.tokopedia.mediauploader.data.params.MediaUploaderParam
-import com.tokopedia.mediauploader.data.state.ProgressCallback
-import com.tokopedia.mediauploader.data.state.UploadResult
+import com.tokopedia.mediauploader.common.state.ProgressCallback
+import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.domain.DataPolicyUseCase
 import com.tokopedia.mediauploader.domain.MediaUploaderUseCase
 import com.tokopedia.mediauploader.util.*

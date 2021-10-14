@@ -4,7 +4,7 @@ import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.mediauploader.data.FileUploadServices
 import com.tokopedia.mediauploader.data.entity.MediaUploader
 import com.tokopedia.mediauploader.data.params.MediaUploaderParam
-import com.tokopedia.mediauploader.data.state.ProgressCallback
+import com.tokopedia.mediauploader.common.state.ProgressCallback
 import com.tokopedia.mediauploader.util.UploadRequestBody
 import kotlinx.coroutines.Dispatchers
 import okhttp3.MultipartBody

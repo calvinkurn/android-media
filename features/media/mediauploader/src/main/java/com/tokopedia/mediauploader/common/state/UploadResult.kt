@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.data.state
+package com.tokopedia.mediauploader.common.state
 
 sealed class UploadResult {
     class Success(val uploadId: String): UploadResult()
