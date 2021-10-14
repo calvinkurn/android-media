@@ -16,6 +16,8 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
@@ -31,7 +33,6 @@ import com.tokopedia.review.feature.credibility.presentation.widget.ReviewCredib
 import com.tokopedia.review.feature.inbox.pending.presentation.fragment.ReviewPendingFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
@@ -65,6 +66,7 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
     private var coordinatorLayout: CoordinatorLayout? = null
     private var loadingView: View? = null
     private var loadingBox: ConstraintLayout? = null
+    private var globalError: GlobalError? = null
 
     private var applink = ""
 
@@ -87,7 +89,6 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
         setDismissBehavior()
-        showLoading()
         observeReviewerCredibility()
         getReviewerCredibility()
     }
@@ -119,10 +120,13 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
             loadingView = findViewById(R.id.review_credibility_loading)
             coordinatorLayout = findViewById(R.id.review_credibility_coordinator_layout)
             loadingBox = findViewById(R.id.review_credibility_statistics_loading_box)
+            globalError = findViewById(R.id.review_credibility_error)
         }
     }
 
     private fun getReviewerCredibility() {
+        showLoading()
+        globalError?.hide()
         viewModel.getReviewCredibility(mapSourceToParam(), userId)
     }
 
@@ -130,22 +134,32 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
         viewModel.reviewerCredibility.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onSuccessGetReviewerCredibility(it.data)
-                is Fail -> onFailGetReviewerCredibility(it.throwable)
+                is Fail -> onFailGetReviewerCredibility()
             }
         })
     }
 
     private fun onSuccessGetReviewerCredibility(reviewCredibility: ReviewerCredibilityStatsWrapper) {
         hideLoading()
+        globalError?.hide()
+        showKnob()
         with(reviewCredibility) {
             setupLabels(label)
             setupStatistics(label.subtitle, stats)
         }
     }
 
-    private fun onFailGetReviewerCredibility(throwable: Throwable) {
-        showToasterError(throwable.message ?: getString(R.string.review_toaster_page_error)) {
-            getReviewerCredibility()
+    private fun onFailGetReviewerCredibility() {
+        globalError?.apply {
+            show()
+            hideKnob()
+            setActionClickListener {
+                getReviewerCredibility()
+            }
+            setSecondaryActionClickListener {
+                dismiss()
+                RouteManager.route(context, ApplinkConstInternalGlobal.GENERAL_SETTING)
+            }
         }
     }
 
@@ -224,7 +238,7 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
 
     private fun routeToWebView(url: String): Boolean {
         dismiss()
-        return RouteManager.route(context, ApplinkConst.WEBVIEW, url)
+        return RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
     }
 
     private fun setDismissBehavior() {
@@ -234,24 +248,13 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
     }
 
     private fun showLoading() {
+        showKnob()
         loadingView?.show()
         loadingBox?.setBackgroundResource(R.drawable.bg_review_credibility_statistics_box)
     }
 
     private fun hideLoading() {
         loadingView?.hide()
-    }
-
-    private fun showToasterError(message: String, action: () -> Unit) {
-        coordinatorLayout?.let {
-            Toaster.build(
-                it,
-                message,
-                Toaster.toasterLength,
-                Toaster.TYPE_ERROR,
-                getString(R.string.review_refresh)
-            ) { action.invoke() }.show()
-        }
     }
 
     private fun handleRouting(applink: String) {
@@ -281,6 +284,18 @@ class ReviewCredibilityBottomSheet : BottomSheetUnify(), HasComponent<ReviewCred
 
     private fun isFromInbox(): Boolean {
         return source == ReviewPendingFragment.INBOX_SOURCE
+    }
+
+    private fun showKnob() {
+        knobView.show()
+        bottomSheetHeader.hide()
+        bottomSheetClose.hide()
+    }
+
+    private fun hideKnob() {
+        knobView.hide()
+        bottomSheetHeader.show()
+        bottomSheetClose.show()
     }
 
 }
