@@ -92,12 +92,10 @@ class RechargeHomepageInstrumentTest {
         Thread.sleep(1000)
         onView(withId(R.id.searchbar_textfield)).check(matches(isDisplayed())).perform(typeText("pulsa"))
         Thread.sleep(1000)
-        pressBack()
         val viewInteraction = onView(withId(R.id.recycler_view)).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<DigitalHomePageSearchViewHolder>(
                 0, click())
         )
-        pressBack()
     }
 
     private fun check_banner_section() {

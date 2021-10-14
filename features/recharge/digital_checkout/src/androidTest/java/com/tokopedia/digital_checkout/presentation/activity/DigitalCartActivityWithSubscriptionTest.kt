@@ -154,7 +154,7 @@ class DigitalCartActivityWithSubscriptionTest {
         onView(withId(R.id.tvTotalPaymentLabel)).check(matches(isDisplayed()))
         onView(withId(R.id.tvTotalPaymentLabel)).check(matches(withText("Total Tagihan")))
         onView(withId(R.id.tvTotalPayment)).check(matches(isDisplayed()))
-        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp13.000")))
+        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp16.000")))
     }
 
     private fun validateTypeOnInputView() {
@@ -170,7 +170,7 @@ class DigitalCartActivityWithSubscriptionTest {
         Thread.sleep(1000)
         onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click()).perform(ViewActions.typeText("10000"),
                 ViewActions.closeSoftKeyboard())
-        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp10.500")))
+        onView(withId(R.id.tvTotalPayment)).check(matches(withText("Rp13.500")))
     }
 
     private fun validateCheckoutSummaryOnUi() {
