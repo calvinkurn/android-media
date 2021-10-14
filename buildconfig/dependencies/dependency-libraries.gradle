@@ -70,6 +70,7 @@ ext {
             imageuploader           : ":libraries:imageuploader",
             inappupdate             : ":libraries:inappupdate",
             instrumentation_test    : ":libraries:instrumentation_test",
+            interceptors            : ":libraries:interceptors",
             iris                    : ":libraries:iris",
             irisSession             : ":libraries:iris_session",
             keys                    : ":libraries:keys",

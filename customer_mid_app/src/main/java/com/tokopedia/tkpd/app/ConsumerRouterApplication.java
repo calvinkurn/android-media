@@ -1,5 +1,8 @@
 package com.tokopedia.tkpd.app;
 
+import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
+import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -52,9 +55,12 @@ import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
 import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
+import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGraphql;
+import com.tokopedia.interceptors.refreshtoken.RefreshTokenUseCase;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.kyc.KYCRouter;
@@ -64,7 +70,6 @@ import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loyalty.di.component.TokopointComponent;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
-import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
@@ -101,15 +106,13 @@ import java.util.List;
 import java.util.Map;
 
 import io.hansel.hanselsdk.Hansel;
+import okhttp3.Authenticator;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import retrofit2.Call;
 import retrofit2.Callback;
 import rx.Observable;
 import timber.log.Timber;
-
-import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
-import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
 
 
 /**
@@ -140,19 +143,33 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private FirebaseMessagingManager fcmManager;
 
+    private RefreshTokenUseCase refreshTokenUseCase;
+
     @Override
     public void onCreate() {
         super.onCreate();
         initialiseHansel();
         initFirebase();
         GraphqlClient.setContextData(getApplicationContext());
-        GraphqlClient.init(getApplicationContext());
+        GraphqlClient.init(getApplicationContext(), getAuthenticator());
         NetworkClient.init(getApplicationContext());
         warmUpGQLClient();
         initIris();
         performLibraryInitialisation();
         DeeplinkHandlerActivity.createApplinkDelegateInBackground(ConsumerRouterApplication.this);
         initResourceDownloadManager();
+    }
+
+    private RefreshTokenUseCase getRefreshTokenUseCase() {
+        if(refreshTokenUseCase == null) {
+            GraphqlRepository repository = GraphqlInteractor.getInstance().getGraphqlRepository();
+            refreshTokenUseCase = new RefreshTokenUseCase(repository);
+        }
+        return refreshTokenUseCase;
+    }
+
+    private Authenticator getAuthenticator() {
+        return TkpdAuthenticatorGraphql.Companion.createAuthenticator(this, this, getUserSession(), getRefreshTokenUseCase());
     }
 
     private void warmUpGQLClient() {
