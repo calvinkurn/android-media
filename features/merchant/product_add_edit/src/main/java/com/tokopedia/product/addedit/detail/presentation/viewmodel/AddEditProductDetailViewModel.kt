@@ -566,7 +566,8 @@ class AddEditProductDetailViewModel @Inject constructor(
             setupMultiLocationStockAllocationMessage()
             setupMultiLocationDefaultMinimumStock()
         } else {
-            priceAllocationDefaultMessage = ""
+            priceAllocationDefaultMessage = provider.getPriceTipsMessage()
+            productPriceMessage = provider.getPriceTipsMessage()
             stockAllocationDefaultMessage = ""
             productStockMessage = ""
             minimumStockCount = MIN_PRODUCT_STOCK_LIMIT

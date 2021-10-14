@@ -36,6 +36,10 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
 
     // product price string properties
 
+    fun getPriceTipsMessage(): String {
+        return getString(R.string.label_add_product_price_tips).orEmpty()
+    }
+
     fun getEmptyProductPriceErrorMessage(): String? {
         return getString(R.string.error_empty_product_price)
     }
