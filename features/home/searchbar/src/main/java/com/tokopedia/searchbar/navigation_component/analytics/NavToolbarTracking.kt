@@ -1,6 +1,7 @@
 package com.tokopedia.searchbar.navigation_component.analytics
 
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.searchbar.navigation_component.analytics.TrackingConst.CATEGORY_TOP_NAV
 import com.tokopedia.searchbar.navigation_component.analytics.TrackingConst.DEFAULT_BUSINESS_UNIT
 import com.tokopedia.searchbar.navigation_component.analytics.TrackingConst.DEFAULT_CURRENT_SITE
@@ -19,7 +20,7 @@ object NavToolbarTracking: BaseTrackerConst() {
         trackingBuilder.constructBasicGeneralClick(
                 event = EVENT_CLICK_TOP_NAV,
                 eventCategory = CATEGORY_TOP_NAV,
-                eventAction = if (counter.isMoreThanZero()) {
+                eventAction = if (counter.isMoreThanZero() || counter == NavConstant.ICON_COUNTER_NONE_TYPE) {
                     String.format(ACTION_CLICK_ON_TOP_NAV, componentName, VALUE_RED_DOT)
                 } else {
                     String.format(ACTION_CLICK_ON_TOP_NAV, componentName, DEFAULT_EMPTY) },
