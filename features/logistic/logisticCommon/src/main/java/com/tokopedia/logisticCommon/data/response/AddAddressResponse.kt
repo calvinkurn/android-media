@@ -28,7 +28,7 @@ data class DataAddAddress(
 
         @SuppressLint("Invalid Data Type")
         @SerializedName("addr_id")
-        val addrId: Int = 0,
+        val addrId: Long = 0,
 
         @SerializedName("is_state_chosen_address_change")
         val isStateChosenAddressChange: Boolean = true,

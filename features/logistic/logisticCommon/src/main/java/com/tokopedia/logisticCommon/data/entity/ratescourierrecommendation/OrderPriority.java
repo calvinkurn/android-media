@@ -1,5 +1,7 @@
 package com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation;
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -8,6 +10,7 @@ public class OrderPriority {
     @Expose
     private Boolean isNow;
 
+    @SuppressLint("Invalid Data Type")
     @SerializedName("price")
     @Expose
     private Integer price;

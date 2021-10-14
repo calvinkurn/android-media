@@ -1,5 +1,6 @@
 package com.tokopedia.logisticCommon.data.response.shippingeditor
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class GetShipperListResponse (
@@ -31,6 +32,7 @@ data class Shippers(
 )
 
 data class OnDemand(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("shipper_id")
         var shipperId: Long = -1,
         @SerializedName("shipper_name")
@@ -48,6 +50,7 @@ data class OnDemand(
 )
 
 data class Conventional(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("shipper_id")
         var shipperId: Long = -1,
         @SerializedName("shipper_name")

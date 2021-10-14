@@ -10,7 +10,7 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class SaveAddressDataModel (
-        var id: Int = 0,
+        var id: Long = 0,
         var title: String = "",
         var formattedAddress: String = "",
         var addressName: String = "",
@@ -19,9 +19,9 @@ data class SaveAddressDataModel (
         var address2: String = "",
         var postalCode: String = "",
         var phone: String = "",
-        var cityId: Int = 0,
-        var provinceId: Int = 0,
-        var districtId: Int = 0,
+        var cityId: Long = 0,
+        var provinceId: Long = 0,
+        var districtId: Long = 0,
         var latitude: String = "",
         var longitude: String = "",
         var editDetailAddress: String = "",

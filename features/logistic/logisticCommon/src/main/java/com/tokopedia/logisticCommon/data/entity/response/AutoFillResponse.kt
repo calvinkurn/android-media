@@ -1,4 +1,5 @@
 package com.tokopedia.logisticCommon.data.entity.response
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 
@@ -19,8 +20,10 @@ data class KeroMapsAutofill(
 )
 
 data class Data(
+    @SuppressLint("Invalid Data Type")
     @SerializedName("city_id")
     var cityId: Long = 0,
+    @SuppressLint("Invalid Data Type")
     @SerializedName("district_id")
     var districtId: Long = 0,
     @SerializedName("district_name")
@@ -35,6 +38,7 @@ data class Data(
     var longitude: String = "",
     @SerializedName("postal_code")
     var postalCode: String = "",
+    @SuppressLint("Invalid Data Type")
     @SerializedName("province_id")
     var provinceId: Long = 0,
     @SerializedName("title")

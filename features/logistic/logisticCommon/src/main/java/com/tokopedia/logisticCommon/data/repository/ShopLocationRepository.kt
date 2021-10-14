@@ -17,7 +17,7 @@ class ShopLocationRepository @Inject constructor(@ApplicationContext private val
         return gql.getResponse(request)
     }
 
-    suspend fun setShopLocationStatus(warehouseId: Int, status: Int): SetShopLocationStatusResponse {
+    suspend fun setShopLocationStatus(warehouseId: Long, status: Int): SetShopLocationStatusResponse {
         val param = mapOf(
                 "inputShopLocSetStatus" to listOf(mapOf(
                         "warehouse_id" to warehouseId,
@@ -29,8 +29,8 @@ class ShopLocationRepository @Inject constructor(@ApplicationContext private val
         return gql.getResponse(request)
     }
 
-    suspend fun saveEditShopLocation(shopId: Long, warehouseId: Int, warehouseName: String,
-                                     districtId: Int, latLon: String, email: String,
+    suspend fun saveEditShopLocation(shopId: Long, warehouseId: Long, warehouseName: String,
+                                     districtId: Long, latLon: String, email: String,
                                      addressDetail: String, postalCode: String, phone: String): ShopLocationUpdateWarehouseResponse {
         val param = mapOf(
                 "inputShopLocUpdateWarehouse" to mapOf(
@@ -57,7 +57,7 @@ class ShopLocationRepository @Inject constructor(@ApplicationContext private val
         return gql.getResponse(request)
     }
 
-    suspend fun shopCheckCouriersNewLoc(shopId: Long, districtId: Int): ShopLocCheckCouriersNewLocResponse {
+    suspend fun shopCheckCouriersNewLoc(shopId: Long, districtId: Long): ShopLocCheckCouriersNewLocResponse {
         val param = mapOf("shop_id" to shopId, "district_id" to districtId)
         val request = GraphqlRequest(ShopLocationQuery.shopLocCheckCouriers,
                 ShopLocCheckCouriersNewLocResponse::class.java, param)
