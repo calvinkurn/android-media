@@ -14,13 +14,13 @@ data class TopadsHeadlineUiModel(
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 
-    override fun type(): String = "type"
+    override fun type(): String = "topads_headline"
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
     }
 
-    override fun name(): String = "hiiiii"
+    override fun name(): String = "topads_headline"
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
 //        return if (newData is PageErrorDataModel) {
