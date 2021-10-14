@@ -201,6 +201,13 @@ class ZoomImageView : androidx.appcompat.widget.AppCompatImageView {
             zoomInfo?.bmpHeight = drawable.intrinsicHeight
             zoomInfo?.bmpWidth = drawable.intrinsicWidth
         }
+        Timber.d("update zoom: uri = ${asset?.contentUri}," +
+                "scale=${zoomInfo?.scale}," +
+                "matrix=${zoomInfo?.matrix}," +
+                "bmpW=${zoomInfo?.bmpWidth}," +
+                "bmpH=${zoomInfo?.bmpHeight}," +
+                "left=${zoomInfo?.rectF?.left}," +
+                "top=${zoomInfo?.rectF?.top}")
     }
 
     private fun setScaleAbsolute(scale: Float, x: Float, y: Float) {
