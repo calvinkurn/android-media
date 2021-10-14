@@ -63,7 +63,7 @@ fun createHomeLayoutListForBannerOnly(): List<HomeLayoutResponse> {
                             name = "Banner Tokonow",
                             serverTimeUnix = 0
                     ),
-                    token = "==aff1ed"
+                    token = "==aff1ed" // Dummy token
             )
     )
 }
@@ -76,7 +76,7 @@ fun createHomeLayoutData(): HomeLayoutResponse {
                     name = "Banner Tokonow",
                     serverTimeUnix = 0
             ),
-            token = "==aff1ed"
+            token = "==aff1ed" // Dummy token
     )
 }
 

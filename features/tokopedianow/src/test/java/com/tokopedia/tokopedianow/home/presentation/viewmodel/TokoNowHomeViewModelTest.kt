@@ -30,8 +30,10 @@ import com.tokopedia.tokopedianow.home.domain.model.Header
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
+import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -77,6 +79,23 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetTickerUseCaseCalled()
         verifyGetHomeLayoutResponseSuccess(expectedResponse)
+    }
+
+    @Test
+    fun `when getHomeLayout two times should call use case twice`() {
+        onGetHomeLayoutData_thenReturn(createHomeLayoutList())
+
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            hasSharingEducationBeenRemoved = false
+        )
+
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            hasSharingEducationBeenRemoved = false
+        )
+
+        verifyGetHomeLayoutDataUseCaseCalled(times = 2)
     }
 
     @Test
@@ -143,6 +162,18 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
+    fun `given get keyword error when getKeywordSearch should NOT set keywordSearch value`() {
+        onGetKeywordSearch_thenReturn(NullPointerException())
+
+        viewModel.getKeywordSearch(anyBoolean(), anyString(), anyString())
+
+        verifyGetKeywordSearchUseCaseCalled()
+
+        viewModel.keywordSearch
+            .verifyValueEquals(null)
+    }
+
+    @Test
     fun `when getting chooseAddress should run and give the success result`() {
         onGetChooseAddress_thenReturn(createChooseAddress())
 
@@ -205,6 +236,17 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.getMiniCart(shopId = listOf("123"), warehouseId = "233")
 
         verifyMiniCartFail()
+    }
+
+    @Test
+    fun `when getMiniCart throw exception should set miniCart value fail`(){
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
+        onGetMiniCart_throwException(Exception())
+
+        viewModel.getMiniCart(shopId = listOf("123"), warehouseId = "233")
+
+        viewModel.miniCart
+            .verifyErrorEquals(Fail(Exception()))
     }
 
     @Test
@@ -502,6 +544,32 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
+    fun `given recom items empty when getProductRecomOoc should NOT add product recom to home layout list`() {
+        val recommendationItems = emptyList<RecommendationItem>()
+        val recommendationWidget = RecommendationWidget(
+            recommendationItemList = recommendationItems
+        )
+
+        onGetRecommendation_thenReturn(listOf(recommendationWidget))
+
+        viewModel.getProductRecomOoc()
+
+        viewModel.homeLayoutList
+            .verifyValueEquals(null)
+    }
+
+    @Test
+    fun `given recom widget list empty when getProductRecomOoc should NOT add product recom to home layout list`() {
+        val recommendationWidgetList = emptyList<RecommendationWidget>()
+        onGetRecommendation_thenReturn(recommendationWidgetList)
+
+        viewModel.getProductRecomOoc()
+
+        viewModel.homeLayoutList
+            .verifyValueEquals(null)
+    }
+
+    @Test
     fun `given mini cart item is null when addProductToCart should update product quantity`() {
         val productId = "1"
         val quantity = 5
@@ -770,6 +838,193 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
+    fun `given getMiniCart error when getProductAddToCartQuantity should set atcQuantity fail`() {
+        val productId = "1"
+        val warehouseId = "2"
+        val miniCartError = NullPointerException()
+
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = "1001",
+                layout = "recent_purchase_tokonow",
+                header = Header(
+                    name = "Kamu pernah beli",
+                    serverTimeUnix = 0
+                )
+            )
+        )
+        val recentPurchaseProduct = RepurchaseProduct(
+            id = productId,
+            stock = 5,
+            maxOrder = 4,
+            minOrder = 3
+        )
+        val recentPurchaseResponse = RecentPurchaseData(
+            title = "Kamu pernah beli",
+            products = listOf(recentPurchaseProduct)
+        )
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onGetRecentPurchase_thenReturn(recentPurchaseResponse)
+        onGetMiniCart_thenReturn(miniCartError)
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
+
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            hasSharingEducationBeenRemoved = false
+        )
+        viewModel.onScrollTokoMartHome(2, LocalCacheModel(), false)
+        viewModel.getProductAddToCartQuantity(listOf("1"), warehouseId)
+
+        val expectedResult = Fail(miniCartError)
+
+        verifyGetHomeLayoutDataUseCaseCalled()
+        verifyGetRecentPurchaseUseCaseCalled()
+
+        viewModel.atcQuantity
+            .verifyErrorEquals(expectedResult)
+    }
+
+    @Test
+    fun `given getMiniCart throw exception when getProductAddToCartQuantity should set atcQuantity fail`() {
+        val productId = "1"
+        val warehouseId = "2"
+        val miniCartException = NullPointerException()
+
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = "1001",
+                layout = "recent_purchase_tokonow",
+                header = Header(
+                    name = "Kamu pernah beli",
+                    serverTimeUnix = 0
+                )
+            )
+        )
+        val recentPurchaseProduct = RepurchaseProduct(
+            id = productId,
+            stock = 5,
+            maxOrder = 4,
+            minOrder = 3
+        )
+        val recentPurchaseResponse = RecentPurchaseData(
+            title = "Kamu pernah beli",
+            products = listOf(recentPurchaseProduct)
+        )
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onGetRecentPurchase_thenReturn(recentPurchaseResponse)
+        onGetMiniCart_throwException(miniCartException)
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
+
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            hasSharingEducationBeenRemoved = false
+        )
+        viewModel.onScrollTokoMartHome(2, LocalCacheModel(), false)
+        viewModel.getProductAddToCartQuantity(listOf("1"), warehouseId)
+
+        val expectedResult = Fail(miniCartException)
+
+        verifyGetHomeLayoutDataUseCaseCalled()
+        verifyGetRecentPurchaseUseCaseCalled()
+
+        viewModel.atcQuantity
+            .verifyErrorEquals(expectedResult)
+    }
+
+    @Test
+    fun `given getRepurchaseProduct error when getHomeLayout should NOT add repurchase widget`() {
+        val error = NullPointerException()
+
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = "1001",
+                layout = "recent_purchase_tokonow",
+                header = Header(
+                    name = "Kamu pernah beli",
+                    serverTimeUnix = 0
+                )
+            )
+        )
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onGetRecentPurchase_thenReturn(error)
+
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            hasSharingEducationBeenRemoved = false
+        )
+
+        val homeLayoutItems = listOf(
+            HomeLayoutItemUiModel(
+                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                HomeLayoutItemState.LOADED
+            ),
+        )
+
+        val expectedResult = Success(
+            HomeLayoutListUiModel(
+                items = homeLayoutItems,
+                state = TokoNowLayoutState.SHOW
+            )
+        )
+
+        verifyGetHomeLayoutDataUseCaseCalled()
+        verifyGetRecentPurchaseUseCaseCalled()
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `given getRepurchaseProduct empty when getHomeLayout should NOT add repurchase widget`() {
+        val repurchaseProductResponse = RecentPurchaseData(
+            title = "Kamu pernah beli",
+            products = listOf()
+        )
+
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = "1001",
+                layout = "recent_purchase_tokonow",
+                header = Header(
+                    name = "Kamu pernah beli",
+                    serverTimeUnix = 0
+                )
+            )
+        )
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onGetRecentPurchase_thenReturn(repurchaseProductResponse)
+
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            hasSharingEducationBeenRemoved = false
+        )
+
+        val homeLayoutItems = listOf(
+            HomeLayoutItemUiModel(
+                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                HomeLayoutItemState.LOADED
+            ),
+        )
+
+        val expectedResult = Success(
+            HomeLayoutListUiModel(
+                items = homeLayoutItems,
+                state = TokoNowLayoutState.SHOW
+            )
+        )
+
+        verifyGetHomeLayoutDataUseCaseCalled()
+        verifyGetRecentPurchaseUseCaseCalled()
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
     fun `given shopId is empty when getProductAddToCartQuantity should NOT call get mini cart use case`() {
         val shopId = emptyList<String>()
         val warehouseId = "1"
@@ -780,6 +1035,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         verifyGetMiniCartUseCaseNotCalled()
     }
+
+
 
     @Test
     fun `given warehouseId is 0 when getProductAddToCartQuantity should NOT call get mini cart use case`() {
@@ -1159,12 +1416,66 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
 
         verifyGetHomeLayoutDataUseCaseCalled()
-        verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetMiniCartUseCaseCalled()
         verifyUpdateCartUseCaseCalled()
 
         viewModel.homeAddToCartTracker
             .verifyValueEquals(expected)
+    }
+
+    @Test
+    fun `given update cart error when update product cart item should set miniCartRemove value fail`() {
+        val error = NullPointerException()
+        val warehouseId = "1"
+        val productId = "1"
+        val shopId = "5"
+        val cartId = "1999"
+        val type = TokoNowLayoutType.PRODUCT_RECOM
+
+        val homeRecomResponse = HomeLayoutResponse(
+            id = "1001",
+            layout = "top_carousel_tokonow",
+            header = Header(
+                name = "Lagi Diskon",
+                serverTimeUnix = 0
+            ),
+            grids = listOf(Grid(id = "1"), Grid(id = "2"))
+        )
+
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = "1001",
+                layout = "top_carousel_tokonow",
+                header = Header(
+                    name = "Lagi Diskon",
+                    serverTimeUnix = 0
+                )
+            ),
+            homeRecomResponse
+        )
+
+        val miniCartItems = listOf(MiniCartItem(productId = productId, quantity = 1, cartId = cartId))
+        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onGetMiniCart_thenReturn(miniCartResponse)
+        onUpdateItemCart_thenReturn(error)
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
+
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            hasSharingEducationBeenRemoved = false
+        )
+        viewModel.onScrollTokoMartHome(2, LocalCacheModel(), false)
+        viewModel.getMiniCart(listOf(shopId), warehouseId)
+        viewModel.addProductToCart(productId, 4, shopId, type)
+
+        verifyGetHomeLayoutDataUseCaseCalled()
+        verifyGetMiniCartUseCaseCalled()
+        verifyUpdateCartUseCaseCalled()
+
+        viewModel.miniCartUpdate
+            .verifyErrorEquals(Fail(error))
     }
 
     @Test
@@ -1228,12 +1539,66 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
 
         verifyGetHomeLayoutDataUseCaseCalled()
-        verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetMiniCartUseCaseCalled()
         verifyDeleteCartUseCaseCalled()
 
         viewModel.homeAddToCartTracker
             .verifyValueEquals(expected)
+    }
+
+    @Test
+    fun `given delete cart error when remove product from cart should set miniCartRemove fail`() {
+        val error = NullPointerException()
+        val warehouseId = "1"
+        val productId = "1"
+        val shopId = "5"
+        val cartId = "1999"
+        val type = TokoNowLayoutType.PRODUCT_RECOM
+
+        val homeRecomResponse = HomeLayoutResponse(
+            id = "1001",
+            layout = "top_carousel_tokonow",
+            header = Header(
+                name = "Lagi Diskon",
+                serverTimeUnix = 0
+            ),
+            grids = listOf(Grid(id = "1"), Grid(id = "2"))
+        )
+
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = "1001",
+                layout = "top_carousel_tokonow",
+                header = Header(
+                    name = "Lagi Diskon",
+                    serverTimeUnix = 0
+                )
+            ),
+            homeRecomResponse
+        )
+
+        val miniCartItems = listOf(MiniCartItem(productId = productId, quantity = 1, cartId = cartId))
+        val miniCartResponse = MiniCartSimplifiedData(miniCartItems = miniCartItems)
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onGetMiniCart_thenReturn(miniCartResponse)
+        onRemoveItemCart_thenReturn(error)
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
+
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            hasSharingEducationBeenRemoved = false
+        )
+        viewModel.onScrollTokoMartHome(2, LocalCacheModel(), false)
+        viewModel.getMiniCart(listOf(shopId), warehouseId)
+        viewModel.addProductToCart(productId, 0, shopId, type)
+
+        verifyGetHomeLayoutDataUseCaseCalled()
+        verifyGetMiniCartUseCaseCalled()
+        verifyDeleteCartUseCaseCalled()
+
+        viewModel.miniCartRemove
+            .verifyErrorEquals(Fail(error))
     }
 
     @Test
@@ -1319,7 +1684,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.addProductToCart("3", quantity, shopId, type)
 
         verifyGetHomeLayoutDataUseCaseCalled()
-        verifyGetHomeLayoutDataUseCaseCalled()
         verifyAddToCartUseCaseCalled()
 
         viewModel.homeAddToCartTracker
@@ -1369,7 +1733,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.onScrollTokoMartHome(2, LocalCacheModel(), false)
         viewModel.addProductToCart("3", quantity, shopId, type)
 
-        verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetHomeLayoutDataUseCaseCalled()
         verifyAddToCartUseCaseCalled()
 
@@ -1438,7 +1801,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             productCardUiModel
         )
 
-        verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetRecentPurchaseUseCaseCalled()
         verifyAddToCartUseCaseCalled()
 
@@ -1488,7 +1850,6 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.onScrollTokoMartHome(2, LocalCacheModel(), false)
         viewModel.addProductToCart("4", 2, "100", TokoNowLayoutType.RECENT_PURCHASE)
 
-        verifyGetHomeLayoutDataUseCaseCalled()
         verifyGetRecentPurchaseUseCaseCalled()
         verifyAddToCartUseCaseCalled()
 
@@ -1516,6 +1877,22 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         viewModel.homeAddToCartTracker
             .verifyValueEquals(expected = null)
+    }
+
+    @Test
+    fun `given add to cart error when addProductToCart should set miniCartAdd value fail`() {
+        val error = NullPointerException()
+        val invalidLayoutType = "random layout type"
+        val productId = "4"
+        val quantity = 2
+        val shopId = "100"
+
+        onAddToCart_thenReturn(error)
+
+        viewModel.addProductToCart(productId, quantity, shopId, invalidLayoutType)
+
+        viewModel.miniCartAdd
+            .verifyErrorEquals(Fail(error))
     }
 
     @Test
@@ -1693,7 +2070,96 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             state = TokoNowLayoutState.SHOW
         )
 
+        verifyGetRecentPurchaseUseCaseCalled()
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(Success(expectedResult))
+    }
+
+    @Test
+    fun `given hasSharingEducationBeenRemoved true when getHomeLayout should NOT add sharing education`() {
+        val hasSharingEducationBeenRemoved = true
+        val channelId = "34923"
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = channelId,
+                layout = "tokonow_share",
+                header = Header(
+                    name = "Education",
+                    serverTimeUnix = 0
+                )
+            )
+        )
+        val repurchaseResponse = RecentPurchaseData(
+            title = "Kamu pernah beli",
+            products = listOf(RepurchaseProduct(id = "1", stock = 5, maxOrder = 4, minOrder = 3))
+        )
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onGetRecentPurchase_thenReturn(repurchaseResponse)
+
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            hasSharingEducationBeenRemoved = hasSharingEducationBeenRemoved
+        )
+
+        val items = listOf(
+            HomeLayoutItemUiModel(
+                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                HomeLayoutItemState.LOADED
+            )
+        )
+
+        val expectedResult = HomeLayoutListUiModel(
+            items = items,
+            state = TokoNowLayoutState.SHOW
+        )
+
         verifyGetHomeLayoutDataUseCaseCalled()
+        verifyGetRecentPurchaseUseCaseNotCalled()
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(Success(expectedResult))
+    }
+
+    @Test
+    fun `given repurchase product empty when getHomeLayout should NOT add sharing education widget`() {
+        val channelId = "34923"
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = channelId,
+                layout = "tokonow_share",
+                header = Header(
+                    name = "Education",
+                    serverTimeUnix = 0
+                )
+            )
+        )
+        val repurchaseResponse = RecentPurchaseData(
+            title = "Kamu pernah beli",
+            products = emptyList()
+        )
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onGetRecentPurchase_thenReturn(repurchaseResponse)
+
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            hasSharingEducationBeenRemoved = false
+        )
+
+        val items = listOf(
+            HomeLayoutItemUiModel(
+                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                HomeLayoutItemState.LOADED
+            )
+        )
+
+        val expectedResult = HomeLayoutListUiModel(
+            items = items,
+            state = TokoNowLayoutState.SHOW
+        )
+
         verifyGetRecentPurchaseUseCaseCalled()
 
         viewModel.homeLayoutList
@@ -1739,5 +2205,38 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.onScrollTokoMartHome(1, LocalCacheModel(), false)
 
         verifyGetHomeLayoutDataUseCaseCalled(times = 2)
+    }
+
+    @Test
+    fun `given load more error when scroll tokomart home should set result fail`() {
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = "12345",
+                layout = "tokonow_share",
+                header = Header(
+                    name = "Education",
+                    serverTimeUnix = 0
+                ),
+                token = "==abcd"
+            )
+        )
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            hasSharingEducationBeenRemoved = false
+        )
+
+        val loadMoreError = NullPointerException()
+
+        onGetHomeLayoutData_thenReturn(loadMoreError)
+
+        viewModel.onScrollTokoMartHome(0, LocalCacheModel(), false)
+
+        verifyGetHomeLayoutDataUseCaseCalled(times = 2)
+
+        viewModel.homeLayoutList
+            .verifyErrorEquals(Fail(loadMoreError))
     }
 }

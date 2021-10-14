@@ -212,6 +212,10 @@ abstract class TokoNowHomeViewModelTestFixture {
         coVerify { getRecentPurchaseUseCase.execute(any()) }
     }
 
+    protected fun verifyGetRecentPurchaseUseCaseNotCalled() {
+        coVerify(exactly = 0) { getRecentPurchaseUseCase.execute(any()) }
+    }
+
     protected fun verifyAddToCartUseCaseCalled() {
         verify { addToCartUseCase.execute(any(), any()) }
     }
@@ -235,12 +239,19 @@ abstract class TokoNowHomeViewModelTestFixture {
         coEvery { getHomeLayoutDataUseCase.execute(any(), any(), localCacheModel) } returns layoutResponse
     }
 
-    protected fun onGetHomeLayoutData_thenReturn(error: Throwable) {
-        coEvery { getHomeLayoutDataUseCase.execute(anyString(), any(), any()) } throws error
+    protected fun onGetHomeLayoutData_thenReturn(
+        error: Throwable,
+        localCacheModel: LocalCacheModel = LocalCacheModel()
+    ) {
+        coEvery { getHomeLayoutDataUseCase.execute(any(), any(), localCacheModel) } throws error
     }
 
     protected fun onGetKeywordSearch_thenReturn(keywordSearchResponse: KeywordSearchData) {
         coEvery { getKeywordSearchUseCase.execute(anyBoolean(), anyString(), anyString()) } returns keywordSearchResponse
+    }
+
+    protected fun onGetKeywordSearch_thenReturn(error: Throwable) {
+        coEvery { getKeywordSearchUseCase.execute(anyBoolean(), anyString(), anyString()) } throws error
     }
 
     protected fun onGetChooseAddress_thenReturn(getStateChosenAddressResponse: GetStateChosenAddressQglResponse) {
@@ -287,6 +298,14 @@ abstract class TokoNowHomeViewModelTestFixture {
         }
     }
 
+    protected fun onGetMiniCart_throwException(exception: Throwable) {
+        every {
+            getMiniCartUseCase.execute(any(), any())
+        } answers {
+            throw exception
+        }
+    }
+
     protected fun onGetIsUserLoggedIn_thenReturn(userLoggedIn: Boolean) {
         every { userSession.isLoggedIn } returns userLoggedIn
     }
@@ -303,11 +322,27 @@ abstract class TokoNowHomeViewModelTestFixture {
         }
     }
 
+    protected fun onAddToCart_thenReturn(error: Throwable) {
+        every {
+            addToCartUseCase.execute(any(), any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(error)
+        }
+    }
+
     protected fun onRemoveItemCart_thenReturn(response: RemoveFromCartData) {
         every {
             deleteCartUseCase.execute(any(), any())
         } answers {
             firstArg<(RemoveFromCartData) -> Unit>().invoke(response)
+        }
+    }
+
+    protected fun onRemoveItemCart_thenReturn(error: Throwable) {
+        every {
+            deleteCartUseCase.execute(any(), any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(error)
         }
     }
 
@@ -319,7 +354,19 @@ abstract class TokoNowHomeViewModelTestFixture {
         }
     }
 
+    protected fun onUpdateItemCart_thenReturn(error: Throwable) {
+        every {
+            updateCartUseCase.execute(any(), any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(error)
+        }
+    }
+
     protected fun onGetRecentPurchase_thenReturn(response: RecentPurchaseData) {
         coEvery { getRecentPurchaseUseCase.execute(any()) } returns response
+    }
+
+    protected fun onGetRecentPurchase_thenReturn(error: Throwable) {
+        coEvery { getRecentPurchaseUseCase.execute(any()) } throws error
     }
 }
