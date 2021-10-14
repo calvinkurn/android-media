@@ -138,9 +138,7 @@ class SearchProductFirstPageGqlUseCase(
                     mapOf(GQL.KEY_PARAMS to params)
             )
 
-    private fun MutableList<GraphqlRequest>.addGetLastFilterRequest(
-        params: String,
-    ) {
+    private fun MutableList<GraphqlRequest>.addGetLastFilterRequest(params: String) {
         add(createGetLastFilterRequest(params = params))
     }
 
