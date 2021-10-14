@@ -1,6 +1,7 @@
 package com.tokopedia.mediauploader.image.domain
 
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.mediauploader.common.data.consts.UrlBuilder
 import com.tokopedia.mediauploader.common.state.ProgressCallback
 import com.tokopedia.mediauploader.image.data.ImageUploadServices
 import com.tokopedia.mediauploader.image.data.entity.ImageUploader
@@ -16,13 +17,12 @@ open class GetImageUploaderUseCase @Inject constructor(
 
     override suspend fun execute(params: ImageUploaderParam): ImageUploader {
         if (params.hasNoParams()) throw RuntimeException("No param found")
-
-        val multiPartBodyBuilder = params.imageBody(progressCallback)
+        val (hostUrl, sourceId, _, timeOut) = params
 
         return services.uploadImage(
-            urlToUpload = params.uploadUrl,
-            timeOut = params.timeOut,
-            partBody = multiPartBodyBuilder
+            urlToUpload = UrlBuilder.imageUploadUrl(hostUrl, sourceId),
+            partBody = params.fileBody(progressCallback),
+            timeOut = timeOut
         )
     }
 

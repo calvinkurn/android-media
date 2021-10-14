@@ -55,7 +55,7 @@ interface VideoUploadServices {
     ): VideoLargeUploader
 
     @GET
-    suspend fun isValidChunkLargeUpload(
+    suspend fun chunkCheckerUpload(
         @Url urlToUpload: String,
         @Query(BODY_FILE_NAME) fileName: String,
         @Query(BODY_UPLOAD_ID) uploadId: String,
