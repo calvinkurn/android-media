@@ -1919,7 +1919,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 name = "Banner Tokonow",
                 serverTimeUnix = 0
             ),
-            token = "==advdf299c"
+            token = "==advdf299c" // dummy token
         )
 
         val secondBanner = HomeLayoutResponse(
@@ -2176,7 +2176,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     name = "Education",
                     serverTimeUnix = 0
                 ),
-                token = "==abcd"
+                token = "==abcd" // dummy token
             )
         )
 
@@ -2195,7 +2195,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     name = "Education",
                     serverTimeUnix = 0
                 ),
-                token = ""
+                token = "" // dummy token
             )
         )
 
@@ -2217,7 +2217,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     name = "Education",
                     serverTimeUnix = 0
                 ),
-                token = "==abcd"
+                token = "==abcd" // dummy token
             )
         )
 
@@ -2239,4 +2239,119 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.homeLayoutList
             .verifyErrorEquals(Fail(loadMoreError))
     }
+
+    @Test
+    fun `given home contains progress bar when onScrollTokoMartHome should call use case once`() {
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = "34923",
+                layout = "lego_3_image",
+                header = Header(
+                    name = "Lego Banner",
+                    serverTimeUnix = 0
+                ),
+                token = "==sfvf" // dummy token
+            ),
+            HomeLayoutResponse(
+                id = "11111",
+                layout = "category_tokonow",
+                header = Header(
+                    name = "Category Tokonow",
+                    serverTimeUnix = 0
+                )
+            ),
+            HomeLayoutResponse(
+                id = "2222",
+                layout = "banner_carousel_v2",
+                header = Header(
+                    name = "Banner Tokonow",
+                    serverTimeUnix = 0
+                )
+            )
+        )
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            hasSharingEducationBeenRemoved = false
+        )
+
+        val progressBar = HomeLayoutItemUiModel(
+            HomeProgressBarUiModel,
+            HomeLayoutItemState.LOADED
+        )
+        addHomeLayoutItem(progressBar)
+
+        viewModel.onScrollTokoMartHome(4, LocalCacheModel(), false)
+
+        verifyGetHomeLayoutDataUseCaseCalled(times = 1)
+    }
+
+    @Test
+    fun `given unknown layout when getHomeLayout should not call other use case`() {
+        val layout = "unknown"
+
+        val firstHomeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = "34923",
+                layout = layout,
+                header = Header(
+                    name = "Lego Banner",
+                    serverTimeUnix = 0
+                ),
+                token = "==sfvf" // dummy token
+            )
+        )
+
+        onGetHomeLayoutData_thenReturn(firstHomeLayoutResponse)
+
+        val progressBar = HomeLayoutItemUiModel(
+            HomeProgressBarUiModel,
+            HomeLayoutItemState.NOT_LOADED
+        )
+        addHomeLayoutItem(progressBar)
+
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            hasSharingEducationBeenRemoved = false
+        )
+
+        verifyGetHomeLayoutDataUseCaseCalled()
+
+        // Other Use Case
+        verifyGetCategoryListUseCaseNotCalled()
+        verifyGetRecentPurchaseUseCaseNotCalled()
+    }
+
+    @Test
+    fun `when setProductAddToCartQuantity throw exception should not set homeLayoutList value`() {
+        onGetHomeLayoutItemList_returnNull()
+
+        viewModel.setProductAddToCartQuantity(MiniCartSimplifiedData())
+
+        viewModel.homeLayoutList
+            .verifyValueEquals(null)
+    }
+
+    @Test
+    fun `when removeTickerWidget throw exception should not set homeLayoutList value`() {
+        onGetHomeLayoutItemList_returnNull()
+
+        viewModel.removeTickerWidget("1")
+
+        viewModel.homeLayoutList
+            .verifyValueEquals(null)
+    }
+
+    @Test
+    fun `when removeSharingEducationWidget throw exception should not set homeLayoutList value`() {
+        onGetHomeLayoutItemList_returnNull()
+
+        viewModel.removeSharingEducationWidget("1")
+
+        viewModel.homeLayoutList
+            .verifyValueEquals(null)
+    }
 }
+

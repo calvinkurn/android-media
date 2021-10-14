@@ -18,16 +18,16 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.home.domain.model.GetRecentPurchaseResponse.*
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.domain.model.KeywordSearchData
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
 import com.tokopedia.tokopedianow.home.domain.model.TickerResponse
 import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeLayoutDataUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
-import com.tokopedia.tokopedianow.home.domain.usecase.GetTickerUseCase
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
-import com.tokopedia.tokopedianow.home.domain.model.GetRecentPurchaseResponse.*
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRecentPurchaseUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.GetTickerUseCase
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -46,7 +46,7 @@ import org.junit.Rule
 import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
-import java.lang.reflect.Field
+import java.lang.reflect.Modifier
 
 abstract class TokoNowHomeViewModelTestFixture {
 
@@ -80,7 +80,9 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     protected lateinit var viewModel : TokoNowHomeViewModel
 
-    protected lateinit var privateHomeLayoutItemList: Field
+    private val privateHomeLayoutItemList by lazy {
+        getPrivateField<MutableList<HomeLayoutItemUiModel>>(viewModel, "homeLayoutItemList")
+    }
 
     @Before
     fun setup() {
@@ -100,10 +102,6 @@ abstract class TokoNowHomeViewModelTestFixture {
                 userSession,
                 CoroutineTestDispatchersProvider
         )
-
-        privateHomeLayoutItemList = viewModel::class.java.getDeclaredField("homeLayoutItemList").apply {
-            isAccessible = true
-        }
     }
 
     protected fun verifyGetHomeLayoutResponseSuccess(expectedResponse: HomeLayoutListUiModel) {
@@ -143,11 +141,6 @@ abstract class TokoNowHomeViewModelTestFixture {
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
-    protected fun verifyGetHomeLayoutNullResponse() {
-        val actualResponse = viewModel.homeLayoutList.value
-        Assert.assertNull(actualResponse)
-    }
-
     protected fun verifyGetHomeLayoutResponseFail() {
         val actualResponse = viewModel.homeLayoutList.value
         Assert.assertTrue(actualResponse is Fail)
@@ -170,18 +163,8 @@ abstract class TokoNowHomeViewModelTestFixture {
         coVerify(exactly = times) { getHomeLayoutDataUseCase.execute(any(), any(), localCacheModel) }
     }
 
-    protected fun verifyGetHomeLayoutDataUseCaseNotCalled(
-        localCacheModel: LocalCacheModel = LocalCacheModel()
-    ) {
-        coVerify(exactly = 0) { getHomeLayoutDataUseCase.execute(any(), any(), localCacheModel) }
-    }
-
     protected fun verifyGetTickerUseCaseCalled() {
         coVerify { getTickerUseCase.execute(any()) }
-    }
-
-    protected fun verifyGetTickerUseCaseNotCalled() {
-        coVerify(exactly = 0) { getTickerUseCase.execute(any()) }
     }
 
     protected fun verifyGetChooseAddress() {
@@ -368,5 +351,26 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     protected fun onGetRecentPurchase_thenReturn(error: Throwable) {
         coEvery { getRecentPurchaseUseCase.execute(any()) } throws error
+    }
+
+    protected fun addHomeLayoutItem(item: HomeLayoutItemUiModel) {
+        privateHomeLayoutItemList?.add(item)
+    }
+
+    protected fun onGetHomeLayoutItemList_returnNull() {
+        viewModel.mockPrivateField("homeLayoutItemList", null)
+    }
+
+    private inline fun <reified T>getPrivateField(owner: Any, name: String): T? {
+        return owner::class.java.getDeclaredField(name).let {
+            it.isAccessible = true
+            return@let it.get(owner) as T
+        }
+    }
+
+    private fun Any.mockPrivateField(name: String, value: Any?) {
+        this::class.java.getDeclaredField(name)
+            .also { it.isAccessible = true }
+            .set(this, value)
     }
 }
