@@ -197,12 +197,12 @@ public class RouteManager {
 
     public static Fragment instantiateFragmentDF(@NonNull AppCompatActivity activity, @NonNull String classPathName, @Nullable Bundle extras) {
         boolean isFragmentInstalled = FragmentDFMapper.checkIfFragmentIsInstalled(activity, classPathName);
-        Fragment destinationFragment = null;
-//        if (isFragmentInstalled) {
-//            destinationFragment = instantiateFragment(activity, classPathName, extras);
-//        } else {
-//            destinationFragment = FragmentDFMapper.getFragmentDFDownloader(activity, classPathName, extras);
-//        }
+        Fragment destinationFragment;
+        if (isFragmentInstalled) {
+            destinationFragment = instantiateFragment(activity, classPathName, extras);
+        } else {
+            destinationFragment = FragmentDFMapper.getFragmentDFDownloader(activity, classPathName, extras);
+        }
         if( destinationFragment == null){
             logErrorGetFragmentDF(activity, classPathName);
         }
@@ -211,14 +211,22 @@ public class RouteManager {
 
     private static void logErrorGetFragmentDF(AppCompatActivity activity, String classPathName) {
         try {
-            String sourceClass = "";
+            String sourceClass;
             sourceClass = activity.getClass().getCanonicalName();
+            FragmentDFPattern fragmentDFPattern = FragmentDFMapper.getMatchedFragmentDFPattern(classPathName);
+            String moduleId;
+            if (fragmentDFPattern != null) {
+                moduleId = fragmentDFPattern.getModuleId();
+            } else {
+                moduleId = "module id not found";
+            }
             Map<String, String> messageMap = new HashMap<>();
             messageMap.put("type", "Router Fragment: Fragment Null");
             messageMap.put("source", sourceClass);
             messageMap.put("class_path_name", classPathName);
             messageMap.put("journey", UserJourney.INSTANCE.getReadableJourneyActivity(5));
-            ServerLogger.log(Priority.P2, "DF_FRAGMENT", messageMap);
+            messageMap.put("module_id", moduleId);
+            ServerLogger.log(Priority.P1, "DFM_FRAGMENT_ERROR", messageMap);
         } catch (Exception e) {
             Timber.e(e);
         }
