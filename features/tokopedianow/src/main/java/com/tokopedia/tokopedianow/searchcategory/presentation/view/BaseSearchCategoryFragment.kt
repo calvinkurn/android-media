@@ -39,6 +39,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.ChooseAddressBottomSheetListener
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
@@ -47,6 +48,9 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecomItemTrackingMetadata
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presenter.RecommendationViewModel
+import com.tokopedia.recommendation_widget_common.viewutil.initViewModel
+import com.tokopedia.recommendation_widget_common.viewutil.updateRecomWidgetQtyItemWithMiniCart
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.data.HintData
@@ -134,13 +138,18 @@ abstract class BaseSearchCategoryFragment:
 
     protected abstract val toolbarPageName: String
 
+    private val recomWidgetViewModel by initViewModel {
+        requireContext()
+    }
+
     private val searchCategoryToolbarHeight: Int
         get() {
             val defaultHeight = resources
-                    .getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_status_height)
+                .getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_status_height)
 
             val height = (navToolbar?.height ?: defaultHeight)
-            val padding = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            val padding =
+                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
 
             return height + padding
         }
@@ -217,7 +226,6 @@ abstract class BaseSearchCategoryFragment:
                     applyPadding = false,
             )
         }
-
         viewLifecycleOwner.lifecycle.addObserver(navToolbar)
 
         recyclerView?.addOnScrollListener(createNavRecyclerViewOnScrollListener(navToolbar))
@@ -622,8 +630,7 @@ abstract class BaseSearchCategoryFragment:
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         getViewModel().onViewUpdateCartItems(miniCartSimplifiedData)
-        val registery = LifecycleRegistry(this)
-        registery.currentState = Lifecycle.State.RESUMED
+        context?.let { recomWidgetViewModel.updateRecomWidgetQtyItemWithMiniCart(it) }
     }
 
     private fun updateMiniCartWidgetVisibility(isVisible: Boolean?) {
@@ -991,12 +998,17 @@ abstract class BaseSearchCategoryFragment:
 
     }
 
-    fun goToLogin() {
+
+    protected open fun goToLogin() {
         activity?.let {
             startActivityForResult(
                 RouteManager.getIntent(it, ApplinkConst.LOGIN),
                 REQUEST_CODE_LOGIN
             )
         }
+    }
+
+    override fun setViewToLifecycleOwner(observer: LifecycleObserver) {
+        viewLifecycleOwner.lifecycle.addObserver(observer)
     }
 }

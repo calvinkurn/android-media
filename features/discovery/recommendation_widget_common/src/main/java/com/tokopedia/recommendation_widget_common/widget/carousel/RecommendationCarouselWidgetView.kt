@@ -4,17 +4,14 @@ import android.content.Context
 import android.graphics.Rect
 import android.os.Parcelable
 import android.util.AttributeSet
-import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -25,15 +22,13 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.R
-import com.tokopedia.recommendation_widget_common.di.recomwidget.DaggerRecommendationComponent
-import com.tokopedia.recommendation_widget_common.di.recomwidget.RecommendationWidgetModule
 import com.tokopedia.recommendation_widget_common.presentation.model.RecomItemTrackingMetadata
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.presenter.RecommendationViewModel
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TEXT_OTHER_RECOM
 import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
-import com.tokopedia.recommendation_widget_common.viewutil.getActivityFromContext
+import com.tokopedia.recommendation_widget_common.viewutil.initViewModel
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_FAILED
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_LOADING
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_READY
@@ -91,14 +86,14 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val viewModel: RecommendationViewModel? by lazy {
-        context?.let {
-            initializeViewModel(it)
-        }
+    private val viewModel: RecommendationViewModel by initViewModel {
+        context
     }
 
+
     init {
-        val view = LayoutInflater.from(context).inflate(R.layout.layout_widget_recommendation_carousel, this)
+        val view = LayoutInflater.from(context)
+            .inflate(R.layout.layout_widget_recommendation_carousel, this)
         recyclerView = view.findViewById(R.id.rv_product)
         this.itemView = view
         this.itemContext = view.context
@@ -356,35 +351,6 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         }
     }
 
-    //create viewmodel baru for each recommendation <- wajib
-    private fun initializeViewModel(it: Context): RecommendationViewModel? {
-        val component = DaggerRecommendationComponent.builder()
-            .recommendationWidgetModule(RecommendationWidgetModule())
-            .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
-            .build()
-        component.inject(this)
-        return when (it) {
-            is AppCompatActivity -> {
-                val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
-                viewModelProvider[RecommendationViewModel::class.java]
-            }
-            is ContextThemeWrapper -> {
-                val activity = it.getActivityFromContext()
-                activity?.let {
-                    if (activity is AppCompatActivity) {
-                        val viewModelProvider = ViewModelProviders.of(activity, viewModelFactory)
-                        viewModelProvider[RecommendationViewModel::class.java]
-                    } else {
-                        null
-                    }
-                }
-            }
-            else -> {
-                null
-            }
-        }
-    }
-
     private fun initVar() {
         if (isInitialized) return
         carouselData?.let {
@@ -592,18 +558,18 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    private fun startEvent(owner: LifecycleOwner){
+    fun startEvent(owner: LifecycleOwner) {
         this.lifecycleOwner = owner
         observeLiveData()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    private fun resumeEvent() {
+    fun onWidgetResume() {
         getMiniCartData()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    private fun pauseEvent() {
+    fun pauseEvent() {
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

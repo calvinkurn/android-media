@@ -416,8 +416,4 @@ class TokoNowSearchFragment :
 
         RouteManager.route(context, applink)
     }
-
-    override fun setViewToLifecycleOwner(observer: LifecycleObserver) {
-        viewLifecycleOwner.lifecycle.addObserver(observer)
-    }
 }

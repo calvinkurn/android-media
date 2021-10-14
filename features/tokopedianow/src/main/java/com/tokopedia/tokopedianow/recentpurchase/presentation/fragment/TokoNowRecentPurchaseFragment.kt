@@ -34,6 +34,8 @@ import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecomItemTrackingMetadata
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.viewutil.initViewModel
+import com.tokopedia.recommendation_widget_common.viewutil.updateRecomWidgetQtyItemWithMiniCart
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -116,6 +118,7 @@ class TokoNowRecentPurchaseFragment:
 
     @Inject
     lateinit var viewModel: TokoNowRecentPurchaseViewModel
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -125,6 +128,10 @@ class TokoNowRecentPurchaseFragment:
     private var statusBarBg: View? = null
     private var miniCartWidget: MiniCartWidget? = null
     private val carouselScrollPosition = SparseIntArray()
+
+    private val recomWidgetViewModel by initViewModel {
+        requireContext()
+    }
 
     private val adapter by lazy {
         RecentPurchaseAdapter(
@@ -197,6 +204,7 @@ class TokoNowRecentPurchaseFragment:
         }
         viewModel.setProductAddToCartQuantity(miniCartSimplifiedData)
         setupPadding(miniCartSimplifiedData.isShowMiniCartWidget)
+        context?.let { recomWidgetViewModel.updateRecomWidgetQtyItemWithMiniCart(it) }
     }
 
     override fun onChooseAddressWidgetRemoved() {

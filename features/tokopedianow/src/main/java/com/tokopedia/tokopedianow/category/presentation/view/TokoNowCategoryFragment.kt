@@ -346,8 +346,4 @@ class TokoNowCategoryFragment:
             originalApplink
         }
     }
-
-    override fun setViewToLifecycleOwner(observer: LifecycleObserver) {
-        viewLifecycleOwner.lifecycle.addObserver(observer)
-    }
 }

@@ -1,7 +1,8 @@
 package com.tokopedia.recommendation_widget_common.di.recomwidget
 
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetView
 import dagger.Component
 
 /**
@@ -14,6 +15,8 @@ import dagger.Component
     RecommendationViewModelModule::class
 ], dependencies = [BaseAppComponent::class])
 interface RecommendationComponent {
-    fun inject(view: RecommendationCarouselWidgetView)
+    fun inject(application: BaseMainApplication)
+
+    fun getViewModelFactory(): ViewModelProvider.Factory
 
 }
