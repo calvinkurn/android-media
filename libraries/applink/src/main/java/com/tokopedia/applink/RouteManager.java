@@ -214,18 +214,18 @@ public class RouteManager {
             String sourceClass;
             sourceClass = activity.getClass().getCanonicalName();
             FragmentDFPattern fragmentDFPattern = FragmentDFMapper.getMatchedFragmentDFPattern(classPathName);
-            String moduleId;
+            String moduleName;
             if (fragmentDFPattern != null) {
-                moduleId = fragmentDFPattern.getModuleId();
+                moduleName = fragmentDFPattern.getModuleId();
             } else {
-                moduleId = "module id not found";
+                moduleName = "module name not found";
             }
             Map<String, String> messageMap = new HashMap<>();
             messageMap.put("type", "Router Fragment: Fragment Null");
             messageMap.put("source", sourceClass);
             messageMap.put("class_path_name", classPathName);
             messageMap.put("journey", UserJourney.INSTANCE.getReadableJourneyActivity(5));
-            messageMap.put("module_id", moduleId);
+            messageMap.put("mod_name", moduleName);
             ServerLogger.log(Priority.P1, "DFM_FRAGMENT_ERROR", messageMap);
         } catch (Exception e) {
             Timber.e(e);
