@@ -66,7 +66,7 @@ object FeedScrollListenerNew {
         val imageView =
             layoutManager?.findViewByPosition(i)?.findViewById<View>(R.id.post_image)
         if (imageView != null) {
-            var percentVideo: Int = THRESHOLD_VIDEO_HEIGHT_SHOWN
+            var percentVideo: Int = -1
             val visibleVideo: Int = if (rowRect.bottom >= rvRect.bottom) {
                 rvRect.bottom - videoViewRect.top
             } else {

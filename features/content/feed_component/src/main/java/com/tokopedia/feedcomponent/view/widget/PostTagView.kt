@@ -105,10 +105,10 @@ class PostTagView @JvmOverloads constructor(
             position = POSITION_BOTTOM
         }
         productTagDot.setMargin(
-            dotMarginStart,
-            dotMarginTop,
-            0,
-            0
+                dotMarginStart - DOT_HALF_DIMEN.toPx(),
+                dotMarginTop - DOT_HALF_DIMEN.toPx(),
+                0,
+                0
         )
         productTagExpandedView.setOnClickListener {
             listener?.onPostTagBubbleClick(positionInFeed, product.appLink, product , product.adClickUrl)
@@ -208,10 +208,10 @@ class PostTagView @JvmOverloads constructor(
         }
         if(!initialBubbleVisible){
             productTagDot.setMargin(
-                dotMarginStart,
-                dotMarginTop,
-                0,
-                0
+                    dotMarginStart - DOT_HALF_DIMEN.toPx(),
+                    dotMarginTop - DOT_HALF_DIMEN.toPx(),
+                    0,
+                    0
             )
         }
 
