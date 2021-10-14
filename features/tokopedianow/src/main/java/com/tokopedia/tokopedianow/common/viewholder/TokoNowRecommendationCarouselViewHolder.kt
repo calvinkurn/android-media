@@ -39,18 +39,20 @@ class TokoNowRecommendationCarouselViewHolder(
         val scrollToPosition =
             recommendationCarouselListener?.onGetCarouselScrollPosition(adapterPosition)
         if (element.isBindWithPageName) {
-            recommendationCarouselWidgetBindPageNameListener?.setViewToLifecycleOwner(recomWidget)
-            binding?.tokoNowSearchCategoryRecomCarousel?.bindRecomWithPageName(
-                pageName = element.pageName,
-                widgetBindPageNameListener = this,
-                adapterPosition = adapterPosition,
-                scrollToPosition = scrollToPosition.orZero(),
-                isForceRefresh = element.isFirstLoad,
-                isTokonow = true,
-                categoryIds = element.categoryId,
-                keyword = element.keywords
-            )
-            element.isFirstLoad = false
+            binding?.tokoNowSearchCategoryRecomCarousel?.let {
+                recommendationCarouselWidgetBindPageNameListener?.setViewToLifecycleOwner(it)
+                it.bindRecomWithPageName(
+                    pageName = element.pageName,
+                    widgetBindPageNameListener = this,
+                    adapterPosition = adapterPosition,
+                    scrollToPosition = scrollToPosition.orZero(),
+                    isForceRefresh = element.isFirstLoad,
+                    isTokonow = true,
+                    categoryIds = element.categoryId,
+                    keyword = element.keywords
+                )
+                element.isFirstLoad = false
+            }
         } else {
             binding?.tokoNowSearchCategoryRecomCarousel?.bindRecomWithData(
                 carouselData = element.carouselData,
@@ -201,11 +203,11 @@ class TokoNowRecommendationCarouselViewHolder(
     }
 
     override fun onChannelWidgetEmpty() {
-        recommendationCarouselWidgetView.gone()
+        binding?.tokoNowSearchCategoryRecomCarousel?.gone()
     }
 
     override fun onWidgetFail(pageName: String, e: Throwable) {
-        recommendationCarouselWidgetView.gone()
+        binding?.tokoNowSearchCategoryRecomCarousel?.gone()
     }
 
     override fun onViewRecycled() {
