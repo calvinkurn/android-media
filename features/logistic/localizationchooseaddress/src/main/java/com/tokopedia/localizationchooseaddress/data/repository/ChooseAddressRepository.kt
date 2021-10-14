@@ -32,9 +32,9 @@ class ChooseAddressRepository @Inject constructor(@ApplicationContext private va
 
     suspend fun setStateChosenAddressFromAddress(model: RecipientAddressModel): SetStateChosenAddressQqlResponse {
         val param = StateChooseAddressParam(
-                model.addressStatus, model.id.toInt(), model.recipientName,
+                model.addressStatus, model.id.toLong(), model.recipientName,
                 model.addressName, model.latitude, model.longitude,
-                model.destinationDistrictId.toInt(), model.postalCode,
+                model.destinationDistrictId.toLong(), model.postalCode,
                 true
         )
         val gqlParam = mapOf("input" to param.toMap() )
