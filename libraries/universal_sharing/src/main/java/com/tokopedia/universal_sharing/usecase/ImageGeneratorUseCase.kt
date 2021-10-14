@@ -34,8 +34,7 @@ class ImageGeneratorUseCase constructor(
         private const val SOURCE_ID = "sourceID"
         private const val ARGS = "args"
 
-        //chnage to const val later on
-        var QUERY = """mutation imagenerator_generate_image(${'$'}sourceID:String!, ${'$'}args:[ImageneratorGenerateImageArg]){
+        const val QUERY = """mutation imagenerator_generate_image(${'$'}sourceID:String!, ${'$'}args:[ImageneratorGenerateImageArg]){
               imagenerator_generate_image(sourceID:${'$'}sourceID, args:${'$'}args){
                 image_url
               }

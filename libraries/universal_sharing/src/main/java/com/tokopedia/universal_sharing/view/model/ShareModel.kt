@@ -11,6 +11,7 @@ sealed class ShareModel {
     abstract var appIntent: Intent?
     var ogImgUrl: String? = ""
     var channel: String? = ""
+    var platform: String = "wa"
     var feature: String? = ""
     var campaign: String? = ""
     var shareOnlyLink: Boolean = false
