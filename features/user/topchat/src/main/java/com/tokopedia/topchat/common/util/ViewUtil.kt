@@ -41,6 +41,7 @@ object ViewUtil {
         shadowGravity: Int,
         @ColorRes strokeColor: Int? = null,
         @DimenRes strokeWidth: Int? = null,
+        strokePaddingBottom: Int? = null,
         useViewPadding: Boolean = false,
         pressedDrawable: Drawable? = null
     ): Drawable? {
@@ -128,6 +129,10 @@ object ViewUtil {
             shape = RoundRectShape(outerRadius, null, null)
         }
         drawableLayer.add(shadowDrawable)
+
+        if (strokePaddingBottom != null) {
+            shadowDrawableRect.bottom = strokePaddingBottom
+        }
 
         if (strokeColorValue != null && strokeWidthValue != null) {
             strokeDrawable.apply {

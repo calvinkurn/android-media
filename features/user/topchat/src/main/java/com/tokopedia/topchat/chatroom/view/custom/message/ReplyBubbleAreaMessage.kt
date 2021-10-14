@@ -6,13 +6,13 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ReplyBubbleBinder
 import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout.Companion.DEFAULT_MSG_ORIENTATION
 import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout.Companion.LEFT_MSG_ORIENTATION
 import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout.Companion.RIGHT_MSG_ORIENTATION
@@ -39,6 +39,9 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         defStyleAttr: Int,
         defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes)
+
+    private val bgLeft by lazy { ReplyBubbleBinder.generateLeftBg(this) }
+    private val bgRight by lazy { ReplyBubbleBinder.generateRightBg(this) }
 
     init {
         initLayout()
@@ -175,12 +178,11 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     }
 
     private fun updateBackground() {
-        val drawableRes = when (orientation) {
-            LEFT_MSG_ORIENTATION -> R.drawable.bg_chat_reply_preview_left_bubble
-            RIGHT_MSG_ORIENTATION -> R.drawable.bg_chat_reply_preview_right_bubble
+        val drawable = when (orientation) {
+            LEFT_MSG_ORIENTATION -> bgLeft
+            RIGHT_MSG_ORIENTATION -> bgRight
             else -> null
         } ?: return
-        val drawable = ContextCompat.getDrawable(context, drawableRes)
         background = drawable
     }
 

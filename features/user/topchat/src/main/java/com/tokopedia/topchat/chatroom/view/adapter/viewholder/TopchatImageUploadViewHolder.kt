@@ -41,32 +41,32 @@ class TopchatImageUploadViewHolder(
     override fun getChatBalloonId() = R.id.fl_image_container
 
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
-            chatBalloon,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_topchat_2,
-            R.dimen.dp_topchat_1,
-            Gravity.CENTER,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
-            getStrokeWidthSenderDimenRes()
+        view = chatBalloon,
+        backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
+        topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        topRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+        elevation = R.dimen.dp_topchat_2,
+        shadowRadius = R.dimen.dp_topchat_1,
+        shadowGravity = Gravity.CENTER,
+        strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
+        strokeWidth = getStrokeWidthSenderDimenRes()
     )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
-            chatBalloon,
-            com.tokopedia.unifyprinciples.R.color.Unify_G200,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_topchat_2,
-            R.dimen.dp_topchat_1,
-            Gravity.CENTER,
-            com.tokopedia.unifyprinciples.R.color.Unify_G200,
-            getStrokeWidthSenderDimenRes()
+        view = chatBalloon,
+        backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_G200,
+        topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        topRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+        shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+        elevation = R.dimen.dp_topchat_2,
+        shadowRadius = R.dimen.dp_topchat_1,
+        shadowGravity = Gravity.CENTER,
+        strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_GN50,
+        strokeWidth = getStrokeWidthSenderDimenRes()
     )
 
     private val attachmentUnify get() = attachment as? ImageUnify

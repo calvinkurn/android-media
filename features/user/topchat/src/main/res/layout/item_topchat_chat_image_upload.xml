@@ -16,14 +16,13 @@
 
         <com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
             android:id="@+id/rba_image"
-            android:layout_width="@dimen/dp_topchat_236"
+            android:layout_width="240dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_2"
             android:paddingBottom="@dimen/dp_topchat_27"
             app:layout_constraintEnd_toEndOf="@+id/fl_image_container"
             app:layout_constraintStart_toStartOf="@+id/fl_image_container"
             app:layout_constraintTop_toTopOf="parent"
-            tools:background="@drawable/bg_chat_reply_preview_left_bubble"
             tools:visibility="visible" />
 
         <View

@@ -19,14 +19,12 @@
             android:id="@+id/rba_sticker"
             android:layout_width="@dimen/dp_topchat_224"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/dp_topchat_2"
             android:layout_marginTop="@dimen/unify_space_2"
             android:paddingBottom="@dimen/dp_topchat_27"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:background="@drawable/bg_chat_reply_preview_left_bubble"
             tools:visibility="visible" />
 
         <View
