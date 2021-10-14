@@ -116,21 +116,7 @@ public class GraphqlClient {
     @AnyThread
     public static Function getFunction() {
         if (function == null) {
-            if(canBeInitialized()){
-                init(applicationContext);
-            }
-            else {
-                throw new RuntimeException("Please call init() before using graphql library");
-            }
-        }
-        return function;
-    }
-
-    @AnyThread
-    //Use this method for safe usage
-    public static Function getFunctionWithContext(Context context) {
-        if (!isInitialized()) {
-            init(context);
+            throw new RuntimeException("Please call init() before using graphql library");
         }
         return function;
     }

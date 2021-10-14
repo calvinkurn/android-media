@@ -20,8 +20,8 @@ class RefreshTokenUseCase @Inject constructor(val graphqlRepository: GraphqlRepo
 
     private fun createParams(params: String): Map<String, Any> {
         return mapOf(
-//            "grant_type" to TokenGenerator().encode("refresh_token"),
-//            "refresh_token" to TokenGenerator().encode(params)
+            "grant_type" to TokenUtils.encode("refresh_token"),
+            "refresh_token" to TokenUtils.encode(params)
         )
     }
 
