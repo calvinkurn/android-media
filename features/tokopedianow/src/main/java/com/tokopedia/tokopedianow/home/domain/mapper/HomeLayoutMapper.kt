@@ -86,7 +86,8 @@ object HomeLayoutMapper {
     fun MutableList<HomeLayoutItemUiModel>.mapHomeLayoutList(
         response: List<HomeLayoutResponse>,
         hasTickerBeenRemoved: Boolean,
-        hasSharingEducationBeenRemoved: Boolean
+        hasSharingEducationBeenRemoved: Boolean,
+        miniCartData: MiniCartSimplifiedData?
     ) {
         val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
@@ -98,7 +99,7 @@ object HomeLayoutMapper {
 
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach {
             if (!(hasSharingEducationBeenRemoved && it.layout == SHARING_EDUCATION)) {
-                mapToHomeUiModel(it)?.let { item ->
+                mapToHomeUiModel(it, miniCartData = miniCartData)?.let { item ->
                     add(item)
                 }
             }
@@ -107,11 +108,12 @@ object HomeLayoutMapper {
 
     fun MutableList<HomeLayoutItemUiModel>.addMoreHomeLayout(
         response: List<HomeLayoutResponse>,
-        hasSharingEducationBeenRemoved: Boolean
+        hasSharingEducationBeenRemoved: Boolean,
+        miniCartData: MiniCartSimplifiedData?
     ) {
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach {
             if (!(hasSharingEducationBeenRemoved && it.layout == SHARING_EDUCATION)) {
-                mapToHomeUiModel(it)?.let { item ->
+                mapToHomeUiModel(it, HomeLayoutItemState.LOADED, miniCartData)?.let { item ->
                     add(item)
                 }
             }

@@ -180,7 +180,8 @@ class TokoNowHomeViewModel @Inject constructor(
             homeLayoutItemList.mapHomeLayoutList(
                 homeLayoutResponse,
                 hasTickerBeenRemoved,
-                hasSharingEducationBeenRemoved
+                hasSharingEducationBeenRemoved,
+                miniCartSimplifiedData
             )
 
             getLayoutComponentData(warehouseId)
@@ -223,7 +224,8 @@ class TokoNowHomeViewModel @Inject constructor(
 
                 homeLayoutItemList.addMoreHomeLayout(
                     homeLayoutResponse,
-                    hasSharingEducationBeenRemoved
+                    hasSharingEducationBeenRemoved,
+                    miniCartSimplifiedData
                 )
 
                 getLayoutComponentData(warehouseId)
