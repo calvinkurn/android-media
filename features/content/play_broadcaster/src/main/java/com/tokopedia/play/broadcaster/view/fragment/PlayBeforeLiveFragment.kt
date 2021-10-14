@@ -399,10 +399,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun openBroadcastLivePage() {
-        broadcastCoordinator.navigateToFragment(PlayBroadcastUserInteractionFragment::class.java,
-                Bundle().apply {
-                    putBoolean(PlayBroadcastUserInteractionFragment.KEY_START_COUNTDOWN, true)
-                })
+        broadcastCoordinator.navigateToFragment(PlayBroadcastUserInteractionFragment::class.java)
         analytic.openBroadcastScreen(parentViewModel.channelId)
     }
 

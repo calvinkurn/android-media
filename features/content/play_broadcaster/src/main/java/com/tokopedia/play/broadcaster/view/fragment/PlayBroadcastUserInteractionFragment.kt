@@ -643,8 +643,4 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             PlayInteractiveLeaderBoardBottomSheet::class.java.name) as PlayInteractiveLeaderBoardBottomSheet
         leaderBoardBottomSheet.show(childFragmentManager)
     }
-
-    companion object {
-        const val KEY_START_COUNTDOWN = "start_count_down"
-    }
 }
