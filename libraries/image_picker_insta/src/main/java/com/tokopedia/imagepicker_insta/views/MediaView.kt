@@ -30,7 +30,7 @@ class MediaView @JvmOverloads constructor(
 
     private lateinit var playerView: PlayerView
     private lateinit var playPauseIcon: View
-    lateinit var assetView: ZoomImageView
+    lateinit var assetView: ZoomAssetImageView
     private var simpleExoPlayer: SimpleExoPlayer? = null
     private val isSdkLowerThanN = Build.VERSION.SDK_INT < Build.VERSION_CODES.N
     private lateinit var dataFactory: DefaultDataSourceFactory

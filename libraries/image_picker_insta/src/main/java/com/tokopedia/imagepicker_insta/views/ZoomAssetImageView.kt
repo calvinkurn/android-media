@@ -30,7 +30,7 @@ import kotlin.math.min
  * Source: https://github.com/k1slay/ZoomImageView
  * */
 
-class ZoomImageView : androidx.appcompat.widget.AppCompatImageView {
+class ZoomAssetImageView : androidx.appcompat.widget.AppCompatImageView {
 
     private val textPaint = Paint()
     private val zoomMatrix = Matrix()
@@ -86,12 +86,12 @@ class ZoomImageView : androidx.appcompat.widget.AppCompatImageView {
             }
 
             override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-                onClickListener?.onClick(this@ZoomImageView)
+                onClickListener?.onClick(this@ZoomAssetImageView)
                 return true
             }
 
             override fun onLongPress(e: MotionEvent?) {
-                onLongClickListener?.onLongClick(this@ZoomImageView)
+                onLongClickListener?.onLongClick(this@ZoomAssetImageView)
             }
 
             override fun onScroll(
@@ -116,7 +116,7 @@ class ZoomImageView : androidx.appcompat.widget.AppCompatImageView {
                     flingRunnable.lastX.toInt(), flingRunnable.lastY.toInt(), -velocityX.toInt(),
                     -velocityY.toInt(), 0, maxX, 0, maxY
                 )
-                ViewCompat.postOnAnimation(this@ZoomImageView, flingRunnable)
+                ViewCompat.postOnAnimation(this@ZoomAssetImageView, flingRunnable)
                 return true
             }
 
@@ -144,7 +144,7 @@ class ZoomImageView : androidx.appcompat.widget.AppCompatImageView {
                 panImage((curX - lastX), (curY - lastY))
                 lastX = curX
                 lastY = curY
-                ViewCompat.postOnAnimation(this@ZoomImageView, this)
+                ViewCompat.postOnAnimation(this@ZoomAssetImageView, this)
             }
         }
     }
