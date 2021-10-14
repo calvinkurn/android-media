@@ -143,7 +143,7 @@ class SingleProductBundleViewModel @Inject constructor(
                 )
             }
             else -> addToCart(parentProductID, selectedData.bundleId, selectedData.productId,
-                selectedData.shopId, selectedData.quantity)
+                selectedData.shopId, selectedData.quantity, selectedData.warehouseId)
         }
     }
 
@@ -152,7 +152,8 @@ class SingleProductBundleViewModel @Inject constructor(
         bundleId: String,
         productId: String,
         shopId: String,
-        quantity: Int
+        quantity: Int,
+        warehouseId: String
     ) {
         val customerId = userSession.userId
         launchCatchError(block = {
@@ -167,7 +168,8 @@ class SingleProductBundleViewModel @Inject constructor(
                         isProductParent = productId == parentProductID,
                         productId = productId,
                         quantity = quantity,
-                        shopId = shopId
+                        shopId = shopId,
+                        warehouseId = warehouseId
                     )
                 )
             )

@@ -245,7 +245,7 @@ class ProductBundleViewModel @Inject constructor(
         )
     }
 
-    fun mapBundleItemsToBundleDetails(bundleItems: List<BundleItem>): List<ProductBundleDetail> {
+    fun mapBundleItemsToBundleDetails(warehouseId:String, bundleItems: List<BundleItem>): List<ProductBundleDetail> {
         return bundleItems.map { bundleItem ->
             val productVariant = AtcVariantMapper.mapToProductVariant(bundleItem)
             ProductBundleDetail(
@@ -255,6 +255,7 @@ class ProductBundleViewModel @Inject constructor(
                 productQuantity = bundleItem.quantity,
                 originalPrice = bundleItem.getPreviewOriginalPrice(),
                 bundlePrice = bundleItem.getPreviewBundlePrice(),
+                warehouseId = warehouseId,
                 discountAmount = calculateDiscountPercentage(
                     originalPrice = bundleItem.getPreviewOriginalPrice(),
                     bundlePrice = bundleItem.getPreviewBundlePrice()
@@ -271,7 +272,8 @@ class ProductBundleViewModel @Inject constructor(
                 quantity = ATC_BUNDLE_QUANTITY,
                 shopId = shopId.toString(),
                 isProductParent = parentProductID == productBundleDetail.productId,
-                customerId = userId
+                customerId = userId,
+                warehouseId = productBundleDetail.warehouseId
             )
         }
     }

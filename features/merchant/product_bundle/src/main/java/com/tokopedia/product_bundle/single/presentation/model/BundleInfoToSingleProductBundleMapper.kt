@@ -114,6 +114,7 @@ object BundleInfoToSingleProductBundleMapper {
             shopId = bundleInfo.shopID.toString(),
             quantity = bundleItem.minOrder,
             isSelected = bundleInfo.bundleID.toString() == selectedBundleId,
+            warehouseId = bundleInfo.warehouseID.toString()
         ).apply {
             if (isSelected) isVariantEmpty = emptyVariantProductIds.isNotEmpty()
         }
