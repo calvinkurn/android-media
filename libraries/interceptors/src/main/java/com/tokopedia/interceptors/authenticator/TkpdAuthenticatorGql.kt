@@ -18,7 +18,7 @@ import java.util.regex.Pattern
  * Created by Yoris on 13/10/21.
  */
 
-class TkpdAuthenticatorGraphql(
+class TkpdAuthenticatorGql(
     val context: Context,
     val networkRouter: NetworkRouter,
     val userSession: UserSession,
@@ -127,8 +127,8 @@ class TkpdAuthenticatorGraphql(
             }
         }
 
-        fun createAuthenticator(context: Context, networkRouter: NetworkRouter, userSession: UserSession, refreshTokenUseCaseGql: RefreshTokenUseCase): TkpdAuthenticatorGraphql {
-            return TkpdAuthenticatorGraphql(context, networkRouter, userSession, refreshTokenUseCaseGql)
+        fun createAuthenticator(context: Context, networkRouter: NetworkRouter, userSession: UserSession, refreshTokenUseCaseGql: RefreshTokenUseCase): TkpdAuthenticatorGql {
+            return TkpdAuthenticatorGql(context, networkRouter, userSession, refreshTokenUseCaseGql)
         }
     }
 }
