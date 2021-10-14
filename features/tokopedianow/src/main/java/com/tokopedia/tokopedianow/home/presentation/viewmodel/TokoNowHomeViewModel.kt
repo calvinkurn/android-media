@@ -153,7 +153,7 @@ class TokoNowHomeViewModel @Inject constructor(
                     xDevice = X_DEVICE_RECOMMENDATION_PARAM
                 )
             )
-            if (!recommendationWidgets.first().recommendationItemList.isNullOrEmpty()) {
+            if (recommendationWidgets.first().recommendationItemList.isNotEmpty()) {
                 homeLayoutItemList.addProductRecomOoc(recommendationWidgets.first())
                 val data = HomeLayoutListUiModel(
                     items = homeLayoutItemList,
@@ -164,17 +164,17 @@ class TokoNowHomeViewModel @Inject constructor(
         }) { /* nothing to do */ }
     }
 
-    fun getHomeLayout(localCacheModel: LocalCacheModel?, hasSharingEducationBeenRemoved: Boolean) {
+    fun getHomeLayout(localCacheModel: LocalCacheModel, hasSharingEducationBeenRemoved: Boolean) {
         getHomeLayoutJob?.cancel()
 
         launchCatchError(block = {
             homeLayoutItemList.clear()
 
-            val warehouseId = localCacheModel?.warehouse_id.orEmpty()
+            val warehouseId = localCacheModel.warehouse_id
             val homeLayoutResponse = getHomeLayoutDataUseCase.execute(
                 localCacheModel = localCacheModel
             )
-            channelToken = homeLayoutResponse.firstOrNull()?.token.orEmpty()
+            channelToken = homeLayoutResponse.first().token
 
             homeLayoutItemList.mapHomeLayoutList(
                 homeLayoutResponse,
@@ -207,19 +207,19 @@ class TokoNowHomeViewModel @Inject constructor(
      */
     fun onScrollTokoMartHome(
         lastVisibleItemIndex: Int,
-        localCacheModel: LocalCacheModel?,
+        localCacheModel: LocalCacheModel,
         hasSharingEducationBeenRemoved: Boolean
     ) {
         if(shouldLoadMore(lastVisibleItemIndex)) {
             launchCatchError(block = {
                 showProgressBar()
 
-                val warehouseId = localCacheModel?.warehouse_id.orEmpty()
+                val warehouseId = localCacheModel.warehouse_id
                 val homeLayoutResponse = getHomeLayoutDataUseCase.execute(
                     token = channelToken,
-                    localCacheModel = LocalCacheModel()
+                    localCacheModel = localCacheModel
                 )
-                channelToken = homeLayoutResponse.firstOrNull()?.token.orEmpty()
+                channelToken = homeLayoutResponse.first().token
 
                 homeLayoutItemList.addMoreHomeLayout(
                     homeLayoutResponse,

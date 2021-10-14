@@ -1086,14 +1086,18 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun onScrollTokoMartHome() {
-        val layoutManager = rvHome?.layoutManager as? LinearLayoutManager
-        val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
-        viewModelTokoNow.onScrollTokoMartHome(lastVisibleItemIndex, localCacheModel, false)
+        localCacheModel?.let {
+            val layoutManager = rvHome?.layoutManager as? LinearLayoutManager
+            val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
+            viewModelTokoNow.onScrollTokoMartHome(lastVisibleItemIndex, it, false)
+        }
     }
 
     private fun getHomeLayout() {
-        val isSharingRemoved = SharedPreferencesUtil.isSharingEducationRemoved(activity)
-        viewModelTokoNow.getHomeLayout(localCacheModel, isSharingRemoved)
+        localCacheModel?.let {
+            val isSharingRemoved = SharedPreferencesUtil.isSharingEducationRemoved(activity)
+            viewModelTokoNow.getHomeLayout(it, isSharingRemoved)
+        }
     }
 
     private fun getMiniCart() {
