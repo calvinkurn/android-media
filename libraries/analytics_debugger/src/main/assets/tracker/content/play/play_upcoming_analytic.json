@@ -1,0 +1,36 @@
+{
+  "readme": "Play Viewer - Upcoming Analytics",
+  "mode": "exact",
+  "query": [
+    {
+      "eventAction": "click on ingatkan saya",
+      "event": "clickUpcoming",
+      "eventCategory": "upcoming page",
+      "eventLabel": "\\d+",
+      "sessionIris": ".*",
+      "currentSite": ".*",
+      "userId": ".*",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click on tonton sekarang",
+      "event": "clickUpcoming",
+      "eventCategory": "upcoming page",
+      "eventLabel": "\\d+",
+      "sessionIris": ".*",
+      "currentSite": ".*",
+      "userId": ".*",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "impression on upcoming page",
+      "event": "viewUpcomingIris",
+      "eventCategory": "upcoming page",
+      "eventLabel": "\\d+",
+      "sessionIris": ".*",
+      "currentSite": ".*",
+      "userId": ".*",
+      "businessUnit": "play"
+    }
+  ]
+}
