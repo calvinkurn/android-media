@@ -24,6 +24,18 @@ object ScreenShootPageHelper {
     private val PAGE_SHOP_SETTING = R.string.feedback_from_shop_setting
     private val PAGE_OTHERS = R.string.feedback_from_others
 
+    private const val SELLER_HOME_ACTIVITY =
+        "com.tokopedia.sellerhome.view.activity.SellerHomeActivity"
+    private const val ADD_EDIT_ACTIVITY =
+        "com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity"
+
+    private const val SELLER_HOME_PAGE = "seller_home"
+    private const val PRODUCT_MANAGE_PAGE = "product_manage"
+    private const val CHAT_PAGE = "top_chat"
+    private const val SOM_PAGE = "som"
+    private const val ADD_PRODUCT_PAGE = "add_product"
+    private const val EDIT_PRODUCT_PAGE = "edit_product"
+
     fun getPageList(context: Context): List<String> {
         return listOf(
             context.getString(PAGE_HOME),
@@ -47,9 +59,31 @@ object ScreenShootPageHelper {
         if (canonicalName.isBlank()) {
             return context.getString(PAGE_OTHERS)
         }
+        val pageName =
+            if (canonicalName == SELLER_HOME_ACTIVITY || canonicalName == ADD_EDIT_ACTIVITY) {
+                getPageFromMultipleFragmentPage(context)
+            } else {
+                canonicalName
+            }
         val pageMap = getPagesHasMap(context).entries
-            .firstOrNull { it.value.contains(canonicalName) }
+            .firstOrNull { it.value.contains(pageName) }
         return pageMap?.key ?: context.getString(PAGE_OTHERS)
+    }
+
+    private fun getPageFromMultipleFragmentPage(context: Context): String {
+        val otherPage = context.getString(PAGE_OTHERS)
+        val sharedPref = ScreenshotPreferenceManager(context.applicationContext)
+
+        val pages = listOf(
+            SELLER_HOME_PAGE, PRODUCT_MANAGE_PAGE, CHAT_PAGE, SOM_PAGE,
+            ADD_PRODUCT_PAGE, EDIT_PRODUCT_PAGE
+        )
+        val selectedPage = sharedPref.getSelectedFragment(defVal = otherPage)
+        val page = pages.firstOrNull { it == selectedPage }
+
+        sharedPref.resetSelectedFragment()
+
+        return page ?: otherPage
     }
 
     private fun getPagesHasMap(context: Context): Map<String, List<String>> {
@@ -65,7 +99,6 @@ object ScreenShootPageHelper {
             getCentralizedPromoPageMapper(context),
             getShopPageMapper(context),
             getReviewPageMapper(context),
-            getComplainedOrderPageMapper(context),
             getShopSettingPageMapper(context)
         )
     }
@@ -86,15 +119,11 @@ object ScreenShootPageHelper {
         )
     }
 
-    private fun getComplainedOrderPageMapper(context: Context): Pair<String, List<String>> {
-        return context.getString(PAGE_COMPLAINED_ORDER) to listOf(
-            ""
-        )
-    }
-
     private fun getReviewPageMapper(context: Context): Pair<String, List<String>> {
         return context.getString(PAGE_REVIEW) to listOf(
-            ""
+            "com.tokopedia.review.feature.inbox.presentation.InboxReputationActivity",
+            "com.tokopedia.review.feature.reputationhistory.view.activity.SellerReputationInfoActivity",
+            "com.tokopedia.review.feature.inbox.buyerreview.view.activity.InboxReputationDetailActivity"
         )
     }
 
@@ -125,7 +154,8 @@ object ScreenShootPageHelper {
             "com.tokopedia.sellerorder.detail.presentation.activity.SomDetailLogisticInfoActivity",
             "com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCodeActivity",
             "com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity",
-            "com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomScanResiActivity"
+            "com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomScanResiActivity",
+            SOM_PAGE
         )
     }
 
@@ -136,25 +166,29 @@ object ScreenShootPageHelper {
             "com.tokopedia.product.manage.feature.stockreminder.view.activity.StockReminderActivity",
             "com.tokopedia.product.manage.feature.etalase.view.activity.EtalasePickerActivity",
             "com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity",
-            "com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity"
+            "com.tokopedia.product.manage.feature.campaignstock.ui.activity.CampaignStockActivity",
+            PRODUCT_MANAGE_PAGE
         )
     }
 
     private fun getEditProductPageMapper(context: Context): Pair<String, List<String>> {
         return context.getString(PAGE_EDIT_PRODUCT) to listOf(
-            ""
+            "com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity",
+            EDIT_PRODUCT_PAGE
         )
     }
 
     private fun getAddProductPageMapper(context: Context): Pair<String, List<String>> {
         return context.getString(PAGE_ADD_PRODUCT) to listOf(
-            "com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity"
+            "com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity",
+            ADD_PRODUCT_PAGE
         )
     }
 
     private fun getDiscussPageMapper(context: Context): Pair<String, List<String>> {
         return context.getString(PAGE_DISCUSS) to listOf(
-            ""
+            "com.tokopedia.talk.feature.inbox.presentation.activity.TalkInboxActivity",
+            "com.tokopedia.talk.feature.reply.presentation.activity.TalkReplyActivity",
         )
     }
 
@@ -162,13 +196,15 @@ object ScreenShootPageHelper {
         return context.getString(PAGE_CHAT) to listOf(
             "com.tokopedia.topchat.chatlist.activity.ChatListActivity",
             "com.tokopedia.sellerhome.view.activity.SellerHomeActivity",
-            "com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity"
+            "com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity",
+            CHAT_PAGE
         )
     }
 
     private fun getHomePageMapper(context: Context): Pair<String, List<String>> {
         return context.getString(PAGE_HOME) to listOf(
-            "com.tokopedia.sellerhome.view.activity.SellerHomeActivity"
+            "com.tokopedia.sellerhome.view.activity.SellerHomeActivity",
+            SELLER_HOME_PAGE
         )
     }
 }

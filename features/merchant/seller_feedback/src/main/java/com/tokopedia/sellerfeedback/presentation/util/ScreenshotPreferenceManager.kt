@@ -1,13 +1,16 @@
 package com.tokopedia.sellerfeedback.presentation.util
 
 import android.content.Context
+import com.tokopedia.kotlin.extensions.remove
 
 class ScreenshotPreferenceManager(private val context: Context) {
 
     companion object {
-        private const val SHARED_PREF_NAME = "seller_feedback_toaster_pref"
+        private const val SHARED_PREF_NAME = "seller_feedback_pref"
+        private const val SELECTED_PAGE = "seller_feedback_selected_fragment"
         private const val SCREEN_SHOOT_TRIGGER_ENABLED = "screen_shoot_trigger_enabled"
         private const val FEEDBACK_FORM_SAVED_STATUS = "feedback_form_saved_status"
+        private const val EMPTY_STRING = ""
     }
 
     private val sharedPref by lazy {
@@ -28,6 +31,18 @@ class ScreenshotPreferenceManager(private val context: Context) {
 
     fun setFeedbackFormSavedStatus(isSuccess: Boolean) {
         putBoolean(FEEDBACK_FORM_SAVED_STATUS, isSuccess)
+    }
+
+    fun getSelectedFragment(defVal: String): String {
+        return getString(SELECTED_PAGE, defVal)
+    }
+
+    fun resetSelectedFragment() {
+        sharedPref.remove(SELECTED_PAGE)
+    }
+
+    private fun getString(key: String, defVal: String = EMPTY_STRING): String {
+        return sharedPref.getString(key, defVal) ?: defVal
     }
 
     private fun getBoolean(key: String, defVal: Boolean = false): Boolean {
