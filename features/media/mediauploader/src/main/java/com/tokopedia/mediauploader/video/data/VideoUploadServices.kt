@@ -19,12 +19,13 @@ interface VideoUploadServices {
     * @param: timeOut (string)
     * */
     @Multipart
-    @POST suspend fun simpleUpload(
+    @POST
+    suspend fun simpleUpload(
         @Url urlToUpload: String,
         @Part videoFile: MultipartBody.Part,
         @Part(BODY_FILE_NAME) fileName: RequestBody,
         @Header(HEADER_TIMEOUT) timeOut: String
-    ) : VideoUploader
+    ): VideoUploader
 
     /*
     * Init to instantiated the multi-part large video upload
@@ -35,36 +36,40 @@ interface VideoUploadServices {
     * @param: sourceId (string)
     * */
     @FormUrlEncoded
-    @POST suspend fun initLargeUpload(
+    @POST
+    suspend fun initLargeUpload(
         @Url urlToUpload: String,
         @Field(BODY_FILE_NAME) fileName: String,
         @Field(BODY_SOURCE_ID) sourceId: String
-    ) : VideoLargeUploader
+    ): VideoLargeUploader
 
     @Multipart
-    @POST suspend fun uploadLargeUpload(
+    @POST
+    suspend fun uploadLargeUpload(
         @Url urlToUpload: String,
         @Part(BODY_SOURCE_ID) sourceId: RequestBody,
         @Part(BODY_UPLOAD_ID) uploadId: RequestBody,
         @Part(BODY_PART_NUMBER) partNumber: RequestBody,
         @Part videoFile: MultipartBody.Part,
         @Header(HEADER_TIMEOUT) timeOut: String
-    ) : VideoLargeUploader
+    ): VideoLargeUploader
 
-    @GET suspend fun isValidChunkLargeUpload(
+    @GET
+    suspend fun isValidChunkLargeUpload(
         @Url urlToUpload: String,
         @Query(BODY_FILE_NAME) fileName: String,
         @Query(BODY_UPLOAD_ID) uploadId: String,
         @Query(BODY_PART_NUMBER) partNumber: String
-    ) : VideoLargeUploader
+    ): VideoLargeUploader
 
     @FormUrlEncoded
-    @POST suspend fun completeLargeUpload(
+    @POST
+    suspend fun completeLargeUpload(
         @Url urlToUpload: String,
         @Field(BODY_FILE_NAME) fileName: String,
         @Field(BODY_UPLOAD_ID) uploadId: String,
         @Header(HEADER_AUTH) accessToken: String
-    ) : VideoLargeUploader
+    ): VideoLargeUploader
 
     companion object {
         private const val BODY_FILE_NAME = "file_name"

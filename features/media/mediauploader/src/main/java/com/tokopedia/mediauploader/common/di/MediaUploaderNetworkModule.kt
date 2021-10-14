@@ -7,7 +7,7 @@ import dagger.Provides
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
-@Module (includes = [NetworkModule::class])
+@Module(includes = [NetworkModule::class])
 class MediaUploaderNetworkModule {
 
     @Provides

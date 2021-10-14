@@ -1,8 +1,8 @@
 package com.tokopedia.mediauploader.data.mapper
 
 import com.tokopedia.mediauploader.common.data.consts.FILE_NOT_FOUND
-import com.tokopedia.mediauploader.common.data.consts.SOURCE_NOT_FOUND
 import com.tokopedia.mediauploader.common.data.consts.NETWORK_ERROR
+import com.tokopedia.mediauploader.common.data.consts.SOURCE_NOT_FOUND
 import com.tokopedia.mediauploader.common.data.consts.TIMEOUT_ERROR
 
 /*

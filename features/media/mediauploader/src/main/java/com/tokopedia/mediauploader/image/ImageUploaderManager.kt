@@ -2,6 +2,7 @@ package com.tokopedia.mediauploader.image
 
 import com.tokopedia.mediauploader.common.data.consts.*
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
+import com.tokopedia.mediauploader.common.logger.trackToTimber
 import com.tokopedia.mediauploader.common.util.*
 import com.tokopedia.mediauploader.image.data.mapper.ImagePolicyMapper
 import com.tokopedia.mediauploader.image.data.params.ImageUploaderParam
@@ -9,7 +10,6 @@ import com.tokopedia.mediauploader.common.state.ProgressCallback
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
-import com.tokopedia.mediauploader.util.*
 import java.io.File
 
 class ImageUploaderManager constructor(

@@ -18,13 +18,14 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-@Module class NetworkModule {
+@Module
+class NetworkModule {
 
     @Provides
     @MediaUploaderQualifier
     fun provideOkHttpClientBuilder(
-            @ApplicationContext context: Context,
-            @MediaUploaderQualifier userSession: UserSessionInterface
+        @ApplicationContext context: Context,
+        @MediaUploaderQualifier userSession: UserSessionInterface
     ): OkHttpClient.Builder {
         return OkHttpClient.Builder()
             .connectTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)

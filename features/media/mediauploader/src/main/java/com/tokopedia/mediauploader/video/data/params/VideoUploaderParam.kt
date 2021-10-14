@@ -4,8 +4,8 @@ import com.tokopedia.mediauploader.common.data.params.CommonParam
 import com.tokopedia.mediauploader.common.data.params.ParamValidator
 import com.tokopedia.mediauploader.common.data.params.SourceIdParam
 import com.tokopedia.mediauploader.common.data.params.VideoLargeParam
+import com.tokopedia.mediauploader.common.state.ProgressCallback
 import com.tokopedia.mediauploader.common.util.UploadRequestBody
-import com.tokopedia.mediauploader.data.state.ProgressCallback
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody

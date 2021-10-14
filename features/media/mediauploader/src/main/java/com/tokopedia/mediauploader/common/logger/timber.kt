@@ -1,8 +1,7 @@
-package com.tokopedia.mediauploader.util
+package com.tokopedia.mediauploader.common.logger
 
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import timber.log.Timber
 import java.io.File
 
 const val ERROR_MAX_LENGTH = 1500

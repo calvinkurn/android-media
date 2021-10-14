@@ -1,14 +1,13 @@
 package com.tokopedia.mediauploader.common.util
 
 import android.os.Handler
+import android.os.Looper
+import com.tokopedia.mediauploader.common.state.ProgressCallback
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import okio.BufferedSink
-import android.os.Looper
-import com.tokopedia.mediauploader.common.state.ProgressCallback
 import java.io.File
 import java.io.FileInputStream
-
 
 class UploadRequestBody(
     private val file: File,

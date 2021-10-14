@@ -3,7 +3,7 @@ package com.tokopedia.mediauploader.image.data.params
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.common.data.params.CommonParam
 import com.tokopedia.mediauploader.common.data.params.ParamValidator
-import com.tokopedia.mediauploader.data.state.ProgressCallback
+import com.tokopedia.mediauploader.common.state.ProgressCallback
 import com.tokopedia.mediauploader.common.util.UploadRequestBody
 import okhttp3.MediaType
 import okhttp3.MultipartBody
