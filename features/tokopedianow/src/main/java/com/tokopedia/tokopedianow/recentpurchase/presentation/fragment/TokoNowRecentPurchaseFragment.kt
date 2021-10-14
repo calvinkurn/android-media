@@ -34,7 +34,7 @@ import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecomItemTrackingMetadata
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.viewutil.initViewModel
+import com.tokopedia.recommendation_widget_common.viewutil.initRecomWidgetViewModel
 import com.tokopedia.recommendation_widget_common.viewutil.updateRecomWidgetQtyItemWithMiniCart
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -130,7 +130,7 @@ class TokoNowRecentPurchaseFragment:
     private var miniCartWidget: MiniCartWidget? = null
     private val carouselScrollPosition = SparseIntArray()
 
-    private val recomWidgetViewModel by initViewModel {
+    private val recomWidgetViewModel by initRecomWidgetViewModel {
         requireContext().getActivityFromContext()
     }
 
