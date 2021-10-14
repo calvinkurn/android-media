@@ -57,7 +57,10 @@ class UohSendEmailBottomSheet : BottomSheetUnify() {
 
             })
 
-            btnSendEmail.setOnClickListener { listener?.onEmailSent(email)  }
+            btnSendEmail.setOnClickListener {
+                dismiss()
+                listener?.onEmailSent(email)
+            }
         }
         showCloseIcon = true
         showHeader = true
