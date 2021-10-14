@@ -108,6 +108,7 @@
 /features/content/play_common/                          @tokopedia/android-minionmark-dev
 /features/content/play_broadcaster/                     @tokopedia/android-minionmark-dev
 /features/content/play_widget/                          @tokopedia/android-minionmark-dev
+
 /features/recharge/common_digital                       @tokopedia/android-minionmark-dev
 /features/recharge/common_electronic_money              @tokopedia/android-minionmark-dev
 /features/recharge/common_topup_bills                   @tokopedia/android-minionmark-dev
@@ -115,6 +116,7 @@
 /features/recharge/digital_emoney                       @tokopedia/android-minionmark-dev
 /features/recharge/digital_checkout                     @tokopedia/android-minionmark-dev
 /features/recharge/digital_homepage                     @tokopedia/android-minionmark-dev
+/features/recharge/digital_recommendation               @tokopedia/android-minionmark-dev
 /features/recharge/digital_topup_bills                  @tokopedia/android-minionmark-dev
 /features/recharge/digitalproduct                       @tokopedia/android-minionmark-dev
 /features/recharge/recharge_component                   @tokopedia/android-minionmark-dev
