@@ -41,7 +41,6 @@ class GetProductReviewInitialUseCase @Inject constructor(
                   ratingCount
               }
               reviewCount
-              ratingDisclaimer
             }
         }
         """
@@ -53,6 +52,7 @@ class GetProductReviewInitialUseCase @Inject constructor(
                ratingAverage
                ratingCount
                period
+               ratingDisclaimer
             }
         }
         """
