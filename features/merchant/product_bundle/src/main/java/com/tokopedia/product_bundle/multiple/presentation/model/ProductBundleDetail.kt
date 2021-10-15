@@ -12,7 +12,8 @@ class ProductBundleDetail(
     var bundlePrice: Double = 0.0,
     var discountAmount: Int = 0,
     var productVariant: ProductVariant? = null,
-    var selectedVariantText: String =  ""
+    var selectedVariantText: String =  "",
+    val warehouseId: String = "0"
 ) {
     val hasVariant: Boolean = productVariant?.hasVariant ?: false
 }
