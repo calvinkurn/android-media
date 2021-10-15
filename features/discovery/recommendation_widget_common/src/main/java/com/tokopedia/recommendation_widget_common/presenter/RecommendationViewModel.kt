@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
@@ -13,7 +14,6 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.recommendation_widget_common.dispatcher.RecomWidgetDispatcher
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.*
@@ -31,14 +31,14 @@ import javax.inject.Inject
  * Created by yfsx on 02/08/21.
  */
 open class RecommendationViewModel @Inject constructor(
-    private val dispatcher: RecomWidgetDispatcher,
+    private val dispatcher: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val addToCartUseCase: Lazy<AddToCartUseCase>,
     private val miniCartListSimplifiedUseCase: Lazy<GetMiniCartListSimplifiedUseCase>,
     private val updateCartUseCase: Lazy<UpdateCartUseCase>,
     private val deleteCartUseCase: Lazy<DeleteCartUseCase>,
-) : BaseViewModel(dispatcher.getMainDispatcher()) {
+) : BaseViewModel(dispatcher.main) {
 
     private var getRecommendationJob: Job? = null
 
@@ -146,7 +146,7 @@ open class RecommendationViewModel @Inject constructor(
     }
 
     fun getMiniCart(shopId: String, pageName: String) {
-        launchCatchError(dispatcher.getIODispatcher(), block = {
+        launchCatchError(dispatcher.io, block = {
             miniCartListSimplifiedUseCase.get().setParams(listOf(shopId))
             val result = miniCartListSimplifiedUseCase.get().executeOnBackground()
             val data = result.miniCartItems.associateBy({ it.productId }) {
@@ -205,7 +205,7 @@ open class RecommendationViewModel @Inject constructor(
                 shopId = recomItem.shopId,
                 quantity = quantity
             )
-            val result = withContext(dispatcher.getIODispatcher()) {
+            val result = withContext(dispatcher.io) {
                 addToCartUseCase.get().setParams(atcParam)
                 addToCartUseCase.get().executeOnBackground()
             }

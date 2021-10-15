@@ -7,11 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.recommendation_widget_common.presentation.model.RecomItemTrackingMetadata
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetBindPageNameListener
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetListener
+import com.tokopedia.recommendation_widget_common.widget.carousel.*
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecomCarouselBinding
@@ -22,7 +19,8 @@ class TokoNowRecommendationCarouselViewHolder(
     private val recommendationCarouselListener: TokoNowRecommendationCarouselListener? = null,
     private val recommendationCarouselWidgetBindPageNameListener: TokonowRecomBindPageNameListener? = null
 ) : AbstractViewHolder<TokoNowRecommendationCarouselUiModel>(itemView),
-    RecommendationCarouselWidgetBindPageNameListener, RecommendationCarouselWidgetListener {
+    RecomCarouselWidgetBasicListener, RecommendationCarouselTokonowListener,
+    RecommendationCarouselTokonowPageNameListener {
 
     companion object {
         @LayoutRes
@@ -41,9 +39,10 @@ class TokoNowRecommendationCarouselViewHolder(
         if (element.isBindWithPageName) {
             binding?.tokoNowSearchCategoryRecomCarousel?.let {
                 recommendationCarouselWidgetBindPageNameListener?.setViewToLifecycleOwner(it)
-                it.bindRecomWithPageName(
+                it.bind(
                     pageName = element.pageName,
-                    widgetBindPageNameListener = this,
+                    tokonowPageNameListener = this,
+                    basicListener = this,
                     adapterPosition = adapterPosition,
                     scrollToPosition = scrollToPosition.orZero(),
                     isForceRefresh = element.isFirstLoad,
@@ -54,10 +53,11 @@ class TokoNowRecommendationCarouselViewHolder(
                 element.isFirstLoad = false
             }
         } else {
-            binding?.tokoNowSearchCategoryRecomCarousel?.bindRecomWithData(
+            binding?.tokoNowSearchCategoryRecomCarousel?.bind(
                 carouselData = element.carouselData,
                 adapterPosition = adapterPosition,
-                widgetListener = this,
+                basicListener = this,
+                tokonowListener = this,
                 scrollToPosition = scrollToPosition.orZero(),
             )
             recommendationCarouselListener?.onBindRecommendationCarousel(
@@ -113,20 +113,18 @@ class TokoNowRecommendationCarouselViewHolder(
     }
 
     override fun onRecomTokonowAtcNeedToSendTracker(
-        recommendationItem: RecommendationItem,
-        recomItemTrackingMetadata: RecomItemTrackingMetadata
+        recommendationItem: RecommendationItem
     ) {
         recommendationCarouselWidgetBindPageNameListener?.onRecomTokonowAtcNeedToSendTracker(
-            recommendationItem, recomItemTrackingMetadata
+            recommendationItem
         )
     }
 
     override fun onRecomTokonowDeleteNeedToSendTracker(
-        recommendationItem: RecommendationItem,
-        recomItemTrackingMetadata: RecomItemTrackingMetadata
+        recommendationItem: RecommendationItem
     ) {
         recommendationCarouselWidgetBindPageNameListener?.onRecomTokonowDeleteNeedToSendTracker(
-            recommendationItem, recomItemTrackingMetadata
+            recommendationItem
         )
     }
 
@@ -272,13 +270,11 @@ class TokoNowRecommendationCarouselViewHolder(
         fun onRecomTokonowAtcFailed(throwable: Throwable)
 
         fun onRecomTokonowAtcNeedToSendTracker(
-            recommendationItem: RecommendationItem,
-            recomItemTrackingMetadata: RecomItemTrackingMetadata
+            recommendationItem: RecommendationItem
         )
 
         fun onRecomTokonowDeleteNeedToSendTracker(
-            recommendationItem: RecommendationItem,
-            recomItemTrackingMetadata: RecomItemTrackingMetadata
+            recommendationItem: RecommendationItem
         )
 
         fun onClickItemNonLoginState()

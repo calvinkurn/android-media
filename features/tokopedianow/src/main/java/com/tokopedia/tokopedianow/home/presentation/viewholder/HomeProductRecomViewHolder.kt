@@ -6,8 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecomCarouselWidgetBasicListener
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetListener
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselTokonowListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeProductRecomBinding
@@ -21,7 +22,8 @@ class HomeProductRecomViewHolder(
     itemView: View,
     private val tokoNowView: TokoNowView? = null,
     private val listener: HomeProductRecomListener? = null
-): AbstractViewHolder<HomeProductRecomUiModel>(itemView), RecommendationCarouselWidgetListener {
+) : AbstractViewHolder<HomeProductRecomUiModel>(itemView),
+    RecomCarouselWidgetBasicListener, RecommendationCarouselTokonowListener {
 
     companion object {
         @LayoutRes
@@ -36,12 +38,13 @@ class HomeProductRecomViewHolder(
     override fun bind(element: HomeProductRecomUiModel) {
         channelId = element.id
         isOoc = element.id == PRODUCT_RECOM_OOC
-        binding?.carouselProductRecom?.bindRecomWithData(
+        binding?.carouselProductRecom?.bind(
             carouselData = RecommendationCarouselData(
                 recommendationData = element.recomWidget,
                 state = RecommendationCarouselData.STATE_READY,
             ),
-            widgetListener = this
+            basicListener = this,
+            tokonowListener = this
         )
         setOnScrollListener()
         restoreScrollState()

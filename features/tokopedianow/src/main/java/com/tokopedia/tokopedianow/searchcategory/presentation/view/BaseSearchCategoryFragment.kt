@@ -45,7 +45,6 @@ import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
-import com.tokopedia.recommendation_widget_common.presentation.model.RecomItemTrackingMetadata
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presenter.RecommendationViewModel
 import com.tokopedia.recommendation_widget_common.viewutil.initRecomWidgetViewModel
@@ -142,13 +141,7 @@ abstract class BaseSearchCategoryFragment:
 
     protected abstract val toolbarPageName: String
 
-    private val recomWidgetViewModel: RecommendationViewModel? by initRecomWidgetViewModel {
-        try {
-            requireContext().getActivityFromContext()
-        } catch (e: Exception) {
-            null
-        }
-    }
+    private val recomWidgetViewModel: RecommendationViewModel? by initRecomWidgetViewModel()
 
     private val searchCategoryToolbarHeight: Int
         get() {
@@ -631,7 +624,9 @@ abstract class BaseSearchCategoryFragment:
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         getViewModel().onViewUpdateCartItems(miniCartSimplifiedData)
-        context?.let { recomWidgetViewModel?.updateRecomWidgetQtyItemWithMiniCart(it) }
+        recomWidgetViewModel?.updateRecomWidgetQtyItemWithMiniCart(
+            getViewModel().shopIdLiveData.value ?: ""
+        )
     }
 
     private fun updateMiniCartWidgetVisibility(isVisible: Boolean?) {
@@ -933,8 +928,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onRecomTokonowAtcNeedToSendTracker(
-        recommendationItem: RecommendationItem,
-        recomItemTrackingMetadata: RecomItemTrackingMetadata
+        recommendationItem: RecommendationItem
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             ProductRecommendationTracking.getAddToCartClickProductTracking(
@@ -954,8 +948,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onRecomTokonowDeleteNeedToSendTracker(
-        recommendationItem: RecommendationItem,
-        recomItemTrackingMetadata: RecomItemTrackingMetadata
+        recommendationItem: RecommendationItem
     ) {
     }
 

@@ -32,7 +32,6 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.product.detail.common.AtcVariantHelper
-import com.tokopedia.recommendation_widget_common.presentation.model.RecomItemTrackingMetadata
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presenter.RecommendationViewModel
 import com.tokopedia.recommendation_widget_common.viewutil.initRecomWidgetViewModel
@@ -47,8 +46,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
-import com.tokopedia.searchbar.navigation_component.util.getActivityFromContext
-import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.EXTRA_SELECTED_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.REQUEST_CODE_CATEGORY_FILTER_BOTTOM_SHEET
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -135,13 +132,7 @@ class TokoNowRecentPurchaseFragment:
 
     private var binding by autoClearedNullable<FragmentTokopedianowRecentPurchaseBinding>()
 
-    private val recomWidgetViewModel: RecommendationViewModel? by initRecomWidgetViewModel {
-        try {
-            requireContext().getActivityFromContext()
-        } catch (e: Exception) {
-            null
-        }
-    }
+    private val recomWidgetViewModel: RecommendationViewModel? by initRecomWidgetViewModel()
 
     private val adapter by lazy {
         RecentPurchaseAdapter(
@@ -215,7 +206,7 @@ class TokoNowRecentPurchaseFragment:
         }
         viewModel.setProductAddToCartQuantity(miniCartSimplifiedData)
         setupPadding(miniCartSimplifiedData.isShowMiniCartWidget)
-        context?.let { recomWidgetViewModel?.updateRecomWidgetQtyItemWithMiniCart(it) }
+        recomWidgetViewModel?.updateRecomWidgetQtyItemWithMiniCart(localCacheModel?.shop_id.orEmpty())
     }
 
     override fun onChooseAddressWidgetRemoved() {
@@ -343,14 +334,12 @@ class TokoNowRecentPurchaseFragment:
     }
 
     override fun onRecomTokonowAtcNeedToSendTracker(
-        recommendationItem: RecommendationItem,
-        recomItemTrackingMetadata: RecomItemTrackingMetadata
+        recommendationItem: RecommendationItem
     ) {
     }
 
     override fun onRecomTokonowDeleteNeedToSendTracker(
-        recommendationItem: RecommendationItem,
-        recomItemTrackingMetadata: RecomItemTrackingMetadata
+        recommendationItem: RecommendationItem
     ) {
     }
 

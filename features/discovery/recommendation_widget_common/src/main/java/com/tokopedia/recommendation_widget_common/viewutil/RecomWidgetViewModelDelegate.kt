@@ -11,7 +11,7 @@ import com.tokopedia.recommendation_widget_common.presenter.RecommendationViewMo
  * Created by yfsx on 13/10/21.
  */
 class RecomWidgetViewModelDelegate<T : RecommendationViewModel>(val activity: () -> Activity?) :
-    Lazy<T> {
+    Lazy<T?> {
 
     private var recommendationViewModel: T? = null
 
@@ -19,9 +19,12 @@ class RecomWidgetViewModelDelegate<T : RecommendationViewModel>(val activity: ()
         return recommendationViewModel != null
     }
 
-    override val value: T
-        get() = recommendationViewModel
-            ?: initializeViewModel(activity.invoke()!!).also { recommendationViewModel = it }
+    override val value: T?
+        get() {
+            val act = activity.invoke() ?: return null
+            return recommendationViewModel
+                ?: initializeViewModel(act).also { recommendationViewModel = it }
+        }
 
     private fun initializeViewModel(it: Activity): T {
         val appContext = it.applicationContext as BaseMainApplication

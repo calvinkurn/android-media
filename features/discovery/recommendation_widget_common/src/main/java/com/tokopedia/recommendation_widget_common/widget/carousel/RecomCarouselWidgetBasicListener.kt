@@ -33,9 +33,4 @@ interface RecomCarouselWidgetBasicListener {
 
     fun onChannelWidgetEmpty()
     fun onWidgetFail(pageName: String, e: Throwable)
-    fun onRecomProductCardAddVariantClick(
-        data: RecommendationCarouselData,
-        recomItem: RecommendationItem,
-        adapterPosition: Int
-    )
 }
