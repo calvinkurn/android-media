@@ -49,5 +49,6 @@ data class SingleProductBundleSelectedItem (
         var productId: String = "",
         var quantity: Int = 0,
         var isSelected: Boolean = false,
-        var isVariantEmpty: Boolean = false
+        var isVariantEmpty: Boolean = false,
+        var warehouseId: String = "0"
 )

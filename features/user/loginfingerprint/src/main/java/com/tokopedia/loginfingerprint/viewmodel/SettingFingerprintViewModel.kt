@@ -4,10 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.loginfingerprint.data.model.CheckFingerprintPojo
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.loginfingerprint.constant.BiometricConstant
+import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintResult
 import com.tokopedia.loginfingerprint.data.model.RemoveFingerprintData
+import com.tokopedia.loginfingerprint.di.LoginFingerprintQueryConstant
 import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatusUseCase
 import com.tokopedia.loginfingerprint.domain.usecase.RegisterFingerprintUseCase
 import com.tokopedia.loginfingerprint.domain.usecase.RemoveFingerprintUsecase
@@ -30,8 +33,8 @@ class SettingFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispa
                                                       private val fingerprintPreference: FingerprintPreference)
     : BaseViewModel(dispatcher.main) {
 
-    private val mutableCheckFingerprintStatus = MutableLiveData<Result<CheckFingerprintPojo>>()
-    val checkFingerprintStatus: LiveData<Result<CheckFingerprintPojo>>
+    private val mutableCheckFingerprintStatus = MutableLiveData<Result<CheckFingerprintResult>>()
+    val checkFingerprintStatus: LiveData<Result<CheckFingerprintResult>>
         get() = mutableCheckFingerprintStatus
 
     private val mutableRegisterFingerprintResult = MutableLiveData<Result<RegisterFingerprintResult>>()
@@ -43,65 +46,65 @@ class SettingFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispa
         get() = mutableRemoveFingerprintResult
 
     fun getFingerprintStatus() {
-        checkFingerprintToggleStatusUseCase.checkFingerprint(userSession.userId,
-            onSuccess = {
-                if(it.data.isSuccess && it.data.errorMessage.isEmpty()) {
-                    mutableCheckFingerprintStatus.postValue(Success(it))
-                } else {
-                    mutableCheckFingerprintStatus.postValue(Fail(Throwable("Gagal")))
-                }
-        }, onError = {
-            mutableCheckFingerprintStatus.postValue(Fail(it))
+        launchCatchError(block = {
+            val result = checkFingerprintToggleStatusUseCase(userSession.userId).data
+            if(result.isSuccess && result.errorMessage.isEmpty()) {
+                mutableCheckFingerprintStatus.value = Success(result)
+            } else {
+                mutableCheckFingerprintStatus.value = Fail(Throwable("Gagal"))
+            }
+        },
+        onError = {
+            mutableCheckFingerprintStatus.value = Fail(it)
         })
     }
 
     fun registerFingerprint(){
-        val signature = cryptographyUtils?.generateFingerprintSignature(userSession.userId, userSession.deviceId)
-        signature?.run {
-            if(cryptographyUtils?.getPublicKey()?.isNotEmpty() == true && signature.signature.isNotEmpty()){
-                registerFingerprintUseCase.registerFingerprint(
-                    fingerprintPreference.getOrCreateUniqueId(),
-                    this,
-                    cryptographyUtils.getPublicKey(),
-                    { onSuccessRegisterFP(it) },
-                    onErrorRegisterFP()
-                )
-            }else {
-                onErrorRegisterFP().invoke(MessageErrorException())
+        launchCatchError(block = {
+            val signatureModel = cryptographyUtils?.generateFingerprintSignature(userSession.userId, userSession.deviceId)
+            if(signatureModel != null) {
+                val publicKey = cryptographyUtils?.getPublicKey() ?: ""
+                if(publicKey.isNotEmpty() && signatureModel.signature.isNotEmpty()) {
+                    val params = mapOf(
+                        LoginFingerprintQueryConstant.PARAM_PUBLIC_KEY to publicKey,
+                        LoginFingerprintQueryConstant.PARAM_SIGNATURE to signatureModel.signature,
+                        LoginFingerprintQueryConstant.PARAM_DATETIME to signatureModel.datetime,
+                        BiometricConstant.PARAM_BIOMETRIC_ID to fingerprintPreference.getOrCreateUniqueId()
+                    )
+                    val result = registerFingerprintUseCase(params)
+                    onSuccessRegisterFP(result)
+                } else {
+                    mutableRegisterFingerprintResult.value = Fail(MessageErrorException())
+                }
             }
-        }
+        }, onError = {
+            mutableRegisterFingerprintResult.value = Fail(it)
+        })
     }
 
     fun removeFingerprint() {
-        removeFingerprintUseCase.removeFingerprint(onSuccess = {
-            if(it.data.isSuccess && it.data.error.isEmpty()) {
+        launchCatchError(block = {
+            val result = removeFingerprintUseCase(Unit)
+            if(result.data.isSuccess && result.data.error.isEmpty()) {
                 fingerprintPreference.removeUniqueId()
-                mutableRemoveFingerprintResult.postValue(Success(it.data))
-            }else {
-                mutableRemoveFingerprintResult.postValue(Fail(MessageErrorException(it.data.error)))
+                mutableRemoveFingerprintResult.value = Success(result.data)
+            } else {
+                mutableRemoveFingerprintResult.value = Fail(MessageErrorException(result.data.error))
             }
         }, onError = {
-            mutableRemoveFingerprintResult.postValue(Fail(it))
+            mutableRemoveFingerprintResult.value = Fail(it)
         })
     }
 
     private fun onSuccessRegisterFP(registerFingerprintPojo: RegisterFingerprintPojo) {
         val response = registerFingerprintPojo.data
         if (response.errorMessage.isBlank() && response.success) {
-
             mutableRegisterFingerprintResult.value = Success(registerFingerprintPojo.data)
         } else if (response.errorMessage.isNotBlank()) {
             mutableRegisterFingerprintResult.value = Fail(MessageErrorException(response.errorMessage,
                 ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
         } else {
             mutableRegisterFingerprintResult.value = Fail(MessageErrorException())
-        }
-    }
-
-    private fun onErrorRegisterFP(): (Throwable) -> Unit {
-        return {
-            it.printStackTrace()
-            mutableRegisterFingerprintResult.postValue(Fail(it))
         }
     }
 
