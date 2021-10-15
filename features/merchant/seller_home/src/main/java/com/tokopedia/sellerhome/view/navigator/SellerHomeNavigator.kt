@@ -282,11 +282,11 @@ class SellerHomeNavigator(
 
     private fun setSelectedPage(@FragmentType page: Int) {
         currentSelectedPage = page
-        setSelectedPageSellerFeedback(page)
+        setSelectedPageSellerFeedback()
     }
 
-    private fun setSelectedPageSellerFeedback(page: Int) {
-        val selectedPage = when (page) {
+    fun setSelectedPageSellerFeedback() {
+        val selectedPage = when (currentSelectedPage) {
             FragmentType.HOME -> SellerFeedbackUtil.SELLER_HOME_PAGE
             FragmentType.PRODUCT -> SellerFeedbackUtil.PRODUCT_MANAGE_PAGE
             FragmentType.ORDER -> SellerFeedbackUtil.SOM_PAGE

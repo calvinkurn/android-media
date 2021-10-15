@@ -154,6 +154,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         if (DeviceScreenInfo.isTablet(this)) {
             accelerometerOrientationListener.register()
         }
+        navigator?.setSelectedPageSellerFeedback()
     }
 
     override fun onNewIntent(intent: Intent?) {
