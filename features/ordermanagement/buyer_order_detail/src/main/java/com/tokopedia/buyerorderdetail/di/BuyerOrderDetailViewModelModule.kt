@@ -5,11 +5,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
+import com.tokopedia.digital.digital_recommendation.di.DigitalRecommendationViewModelModule
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-@Module
+@Module(includes = [DigitalRecommendationViewModelModule::class])
 abstract class BuyerOrderDetailViewModelModule {
     @Binds
     @BuyerOrderDetailScope

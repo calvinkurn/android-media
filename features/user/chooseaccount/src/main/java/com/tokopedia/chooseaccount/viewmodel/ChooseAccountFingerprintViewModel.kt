@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chooseaccount.data.AccountListDataModel
 import com.tokopedia.chooseaccount.data.AccountsDataModel
+import com.tokopedia.chooseaccount.di.ChooseAccountQueryConstant
 import com.tokopedia.chooseaccount.domain.usecase.GetFingerprintAccountListUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.usecase.coroutines.Fail
@@ -24,31 +26,29 @@ class ChooseAccountFingerprintViewModel @Inject constructor(
         get() = mutableGetAccountListResponse
 
     fun getAccountListFingerprint(validateToken: String) {
-        getAccountListUseCase.getAccounts(validateToken,
-                ChooseAccountViewModel.LOGIN_TYPE_BIOMETRIC,
-                fingerprintPreference.getUniqueId(),
-                onSuccessGetAccountListBiometric(),
-                onFailedGetAccountListBiometric()
-        )
-    }
-
-    private fun onSuccessGetAccountListBiometric(): (AccountsDataModel) -> Unit {
-        return {
-            when {
-                it.accountListDataModel.errorResponseDataModels.isEmpty() -> {
-                    mutableGetAccountListResponse.value = Success(it.accountListDataModel)
-                }
-                it.accountListDataModel.errorResponseDataModels[0].message.isNotEmpty() -> {
-                    mutableGetAccountListResponse.value = Fail(MessageErrorException(it.accountListDataModel.errorResponseDataModels[0].message))
-                }
-                else -> mutableGetAccountListResponse.value = Fail(RuntimeException())
-            }
-        }
-    }
-
-    private fun onFailedGetAccountListBiometric(): (Throwable) -> Unit {
-        return {
+        launchCatchError(block = {
+            val params = mapOf(
+                ChooseAccountQueryConstant.PARAM_VALIDATE_TOKEN to validateToken,
+                ChooseAccountQueryConstant.PARAM_PHONE to "",
+                ChooseAccountQueryConstant.PARAM_LOGIN_TYPE to ChooseAccountViewModel.LOGIN_TYPE_BIOMETRIC,
+                ChooseAccountQueryConstant.PARAM_DEVICE_BIOMETRIC to fingerprintPreference.getUniqueId()
+            )
+            val result = getAccountListUseCase(params)
+            onSuccessGetAccountListBiometric(result)
+        }, onError = {
             mutableGetAccountListResponse.value = Fail(it)
+        })
+    }
+
+    private fun onSuccessGetAccountListBiometric(data: AccountsDataModel) {
+        when {
+            data.accountListDataModel.errorResponseDataModels.isEmpty() -> {
+                mutableGetAccountListResponse.value = Success(data.accountListDataModel)
+            }
+            data.accountListDataModel.errorResponseDataModels[0].message.isNotEmpty() -> {
+                mutableGetAccountListResponse.value = Fail(MessageErrorException(data.accountListDataModel.errorResponseDataModels[0].message))
+            }
+            else -> mutableGetAccountListResponse.value = Fail(RuntimeException())
         }
     }
 }

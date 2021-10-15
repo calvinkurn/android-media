@@ -1,7 +1,7 @@
 package com.tokopedia.statistic.view.model
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created By @ilhamsuaib on 11/02/21

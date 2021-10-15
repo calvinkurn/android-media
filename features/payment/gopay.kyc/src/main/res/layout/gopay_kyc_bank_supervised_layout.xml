@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/unify_space_12"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/privacyImage"
+        android:layout_width="@dimen/go_pay_kyc_dp_20"
+        android:layout_height="@dimen/go_pay_kyc_dp_20"
+        app:icon_color_light_enable="@color/Unify_NN900"
+        app:icon_color_night_enable="@color/Unify_NN900"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:icon_name="POLICY_PRIVACY"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/bankIndonesiaText"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        android:text="@string/gopay_kyc_privacy_bank_text"
+        android:textColor="@color/Unify_N700_96"
+        android:layout_marginStart="@dimen/unify_space_4"
+        app:layout_constraintStart_toEndOf="@+id/privacyImage"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/gojekPrivacyText"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        app:typographyType="body_3"
+        android:text="@string/gopay_kyc_privacy_policy_gojek_text"
+        android:textColor="@color/Unify_N700_68"
+        android:layout_marginStart="@dimen/unify_space_4"
+        app:layout_constraintStart_toEndOf="@+id/privacyImage"
+        app:layout_constraintTop_toBottomOf="@+id/bankIndonesiaText"
+        app:layout_constraintEnd_toEndOf="@+id/bankIndonesiaText"/>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

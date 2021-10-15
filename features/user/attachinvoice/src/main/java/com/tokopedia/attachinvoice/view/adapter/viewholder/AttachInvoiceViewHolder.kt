@@ -1,18 +1,17 @@
 package com.tokopedia.attachinvoice.view.adapter.viewholder
 
 import android.graphics.Color
-import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.attachinvoice.R
 import com.tokopedia.attachinvoice.data.Invoice
 import com.tokopedia.attachinvoice.data.OrderStatusCode
+import com.tokopedia.attachinvoice.databinding.ItemAttachinvoiceBinding
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.item_attachinvoice.view.*
 
-class AttachInvoiceViewHolder(itemView: View?, val listener: Listener) : AbstractViewHolder<Invoice>(itemView) {
+class AttachInvoiceViewHolder(private val binding: ItemAttachinvoiceBinding, val listener: Listener) : AbstractViewHolder<Invoice>(binding.root) {
 
     interface Listener {
         fun checkCurrentItem(element: Invoice, position: Int)
@@ -53,7 +52,7 @@ class AttachInvoiceViewHolder(itemView: View?, val listener: Listener) : Abstrac
         val radius = 6.toPx().toFloat()
         ImageHandler.loadImageRounded2(
                 itemView.context,
-                itemView.ivThumbnail,
+                binding.ivThumbnail,
                 element.thumbnailUrl,
                 radius
         )
@@ -61,34 +60,34 @@ class AttachInvoiceViewHolder(itemView: View?, val listener: Listener) : Abstrac
 
     private fun bindLabelInvoiceStatus(element: Invoice) {
         val labelType = getLabelType(element.statusId)
-        itemView.labelInfo?.text = element.status
-        itemView.labelInfo?.setLabelType(labelType)
+        binding.labelInfo.text = element.status
+        binding.labelInfo.setLabelType(labelType)
     }
 
     private fun bindTimeStamp(element: Invoice) {
-        itemView.tpTime?.text = element.timeStamp
+        binding.tpTime.text = element.timeStamp
     }
 
     private fun bindInvoiceCode(element: Invoice) {
-        itemView.tpCode?.text = element.code
+        binding.tpCode.text = element.code
     }
 
     private fun bindProductName(element: Invoice) {
-        itemView.tpName?.text = element.productName
+        binding.tpName.text = element.productName
     }
 
     private fun bindProductPrice(element: Invoice) {
-        itemView.tpPrice?.text = element.productPrice
+        binding.tpPrice.text = element.productPrice
     }
 
     private fun bindClick(element: Invoice) {
-        itemView.clContainer?.setOnClickListener {
+        binding.clContainer.setOnClickListener {
             toggle(element)
         }
     }
 
     private fun toggle(element: Invoice) {
-        itemView.rbSelect?.apply {
+        binding.rbSelect.apply {
             val checkState = !isChecked
             isChecked = checkState
             if (isChecked) {
@@ -103,13 +102,13 @@ class AttachInvoiceViewHolder(itemView: View?, val listener: Listener) : Abstrac
 
     private fun stateChecked() {
         val color = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G100)
-        itemView.clContainer?.setBackgroundColor(color)
-        itemView.rbSelect?.isChecked = true
+        binding.clContainer.setBackgroundColor(color)
+        binding.rbSelect.isChecked = true
     }
 
     private fun stateUnchecked() {
-        itemView.clContainer?.setBackgroundColor(Color.TRANSPARENT)
-        itemView.rbSelect?.isChecked = false
+        binding.clContainer.setBackgroundColor(Color.TRANSPARENT)
+        binding.rbSelect.isChecked = false
     }
 
     private fun getLabelType(statusId: Int?): Int {

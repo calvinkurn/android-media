@@ -1,66 +1,26 @@
 package com.tokopedia.loginfingerprint.domain.usecase
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.loginfingerprint.constant.BiometricConstant
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintPojo
-import com.tokopedia.loginfingerprint.data.model.SignatureData
-import com.tokopedia.loginfingerprint.di.LoginFingerprintQueryConstant
-import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 /**
- * Created by Yoris Prayogo on 2020-02-06.
- * Copyright (c) 2020 PT. Tokopedia All rights reserved.
+ * Created by Yoris on 07/10/21.
  */
 
 class RegisterFingerprintUseCase @Inject constructor(
-        private val graphqlUseCase: GraphqlUseCase<RegisterFingerprintPojo>,
-        private var dispatchers: CoroutineDispatchers,
-        private val fingerprintPreferenceManager: FingerprintPreference
-) : CoroutineScope {
+    @ApplicationContext private val repository: GraphqlRepository)
+    : CoroutineUseCase<Map<String, Any>, RegisterFingerprintPojo>(Dispatchers.IO) {
 
-    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
-
-    fun registerFingerprint(
-        uniqueId: String,
-        signature: SignatureData,
-        publicKey: String,
-        onSuccess: (RegisterFingerprintPojo) -> Unit,
-        onError: (Throwable) -> Unit) {
-            launchCatchError(dispatchers.io, {
-                val data =
-                    graphqlUseCase.apply {
-                            setTypeClass(RegisterFingerprintPojo::class.java)
-                            setGraphqlQuery(query)
-                            setRequestParams(createRequestParam(uniqueId, signature, publicKey))
-                    }.executeOnBackground()
-                withContext(dispatchers.main) {
-                    onSuccess(data)
-                }
-            }, {
-                withContext(dispatchers.main) {
-                    onError(it)
-                }
-            })
+    override suspend fun execute(params: Map<String, Any>): RegisterFingerprintPojo {
+        return repository.request(graphqlQuery(), params)
     }
 
-    private fun createRequestParam(uniqueId: String, signature: SignatureData, publicKey: String): Map<String, String>{
-        return mapOf(
-                LoginFingerprintQueryConstant.PARAM_PUBLIC_KEY to publicKey,
-                LoginFingerprintQueryConstant.PARAM_SIGNATURE to signature.signature,
-                LoginFingerprintQueryConstant.PARAM_DATETIME to signature.datetime,
-                BiometricConstant.PARAM_BIOMETRIC_ID to uniqueId
-        )
-    }
-
-    companion object {
-        val query: String = """
+    override fun graphqlQuery(): String = """
             query register_fingerprint (${'$'}publicKey: String!, ${'$'}signature: String!, ${'$'}datetime: String!, ${'$'}device_biometrics: String!){
                 RegisterFingerprint(publicKey: ${'$'}publicKey, signature: ${'$'}signature, datetime: ${'$'}datetime, device_biometrics: ${'$'}device_biometrics) {
                     success
@@ -68,5 +28,4 @@ class RegisterFingerprintUseCase @Inject constructor(
                     errorMessage
                }
             }""".trimIndent()
-    }
 }
