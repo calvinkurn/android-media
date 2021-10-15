@@ -13,8 +13,6 @@ import com.tokopedia.product.detail.data.model.affiliate.AffiliateUIIDRequest
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.data.model.review.ImageReview
-import com.tokopedia.product.detail.data.model.ticker.GeneralTickerDataModel
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.LAYOUT_FLOATING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.track.TrackApp
 
@@ -255,19 +253,6 @@ object DynamicProductDetailMapper {
         fallbackUrl = fallbackUrl.replace("www.", "m.")
         fallbackUrl += "report/"
         return fallbackUrl
-    }
-
-    /**
-     * Ticker is used for show general message like : corona, shipping delay,  etc
-     * since we are using the same GQL as sticky login, we don't want sticky login item so we remove this
-     * LAYOUT_FLOATING should be sticky login
-     * *
-     * update : now it's not used class from sticky login module anymore
-     */
-    fun getTickerInfoData(tickerData: GeneralTickerDataModel.TickerResponse): List<GeneralTickerDataModel.TickerDetailDataModel> {
-        return tickerData.response.tickerDataModels.filter {
-            it.layout != LAYOUT_FLOATING
-        }
     }
 
     fun generateImageReviewUiData(data: ImageReviewGqlResponse.ProductReviewImageListQuery): ImageReview {
