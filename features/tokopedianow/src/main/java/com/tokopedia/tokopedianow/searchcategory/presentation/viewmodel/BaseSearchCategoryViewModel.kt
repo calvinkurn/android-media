@@ -251,7 +251,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open fun processLoadDataWithShopId(shopId: String, warehouseId: String) {
-        this.shopIdMutableLiveData.value = sxhopId
+        this.shopIdMutableLiveData.value = shopId
         this.warehouseId = warehouseId
 
         if (warehouseId.isValidId())
