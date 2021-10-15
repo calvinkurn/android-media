@@ -34,8 +34,9 @@ android {
         execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
 
-    viewBinding {
-        enabled true
+    buildFeatures {
+        buildConfig false
+        viewBinding true
     }
 }
 
