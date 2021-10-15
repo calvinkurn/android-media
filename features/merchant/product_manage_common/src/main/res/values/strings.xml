@@ -16,6 +16,7 @@
     <string name="product_manage_quick_edit_stock_active_product">Produk Aktif</string>
 
     <string name="product_manage_quick_edit_stock_success">Ketersediaan produk \"%1$s\" berhasil diubah.</string>
+    <string name="product_manage_quick_edit_price_ticker_info">Kamu akan mengubah harga lokasi utama saja. Untuk mengubah harga lokasi lain, akses Tokopedia Seller melalui desktop.</string>
 
     <string name="product_manage_campaign_stock_success_toast">Jumlah stok \"%1$s\" berhasil diubah.</string>
     <string name="product_manage_campaign_stock_error_toast">Oops, permintaan kamu tidak dapat diproses,\nSilakan coba lagi, ya!</string>
