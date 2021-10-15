@@ -70,6 +70,15 @@ dependencies {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
 
+    // Instrumentation Test
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation(rootProject.ext.testDependencies.espressoIntents) {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+
 }
 
 project.ext {

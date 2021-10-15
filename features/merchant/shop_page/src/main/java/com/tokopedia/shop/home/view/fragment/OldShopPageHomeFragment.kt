@@ -397,6 +397,15 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         shopHomeAdapter.resumeSliderBannerAutoScroll()
+        checkShowScrollToTopButton()
+    }
+
+    private fun checkShowScrollToTopButton() {
+        if (isShowScrollToTopButton()) {
+            showScrollToTopButton()
+        } else {
+            hideScrollToTopButton()
+        }
     }
 
     private fun loadInitialDataAfterOnViewCreated() {
@@ -933,7 +942,7 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
                     (parentFragment as? NewShopPageFragment)?.expandHeader()
                 }
                 if (firstCompletelyVisibleItemPosition != latestCompletelyVisibleItemIndex)
-                    (parentFragment as? NewShopPageFragment)?.hideScrollToTopButton()
+                    hideScrollToTopButton()
                 latestCompletelyVisibleItemIndex = firstCompletelyVisibleItemPosition
             }
 
@@ -942,7 +951,7 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
                 if(state ==  SCROLL_STATE_IDLE){
                     val firstCompletelyVisibleItemPosition = (layoutManager as? StaggeredGridLayoutManager)?.findFirstCompletelyVisibleItemPositions(null)?.getOrNull(0).orZero()
                     if (firstCompletelyVisibleItemPosition > 0) {
-                        (parentFragment as? NewShopPageFragment)?.showScrollToTopButton()
+                        showScrollToTopButton()
                     }
                 }
             }
@@ -2207,6 +2216,14 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
 
     override fun isShowScrollToTopButton(): Boolean {
         return latestCompletelyVisibleItemIndex > 0
+    }
+
+    private fun hideScrollToTopButton(){
+        (parentFragment as? NewShopPageFragment)?.hideScrollToTopButton()
+    }
+
+    private fun showScrollToTopButton(){
+        (parentFragment as? NewShopPageFragment)?.showScrollToTopButton()
     }
 
     //region play widget

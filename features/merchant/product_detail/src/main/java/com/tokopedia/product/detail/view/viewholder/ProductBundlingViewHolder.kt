@@ -87,9 +87,7 @@ class ProductBundlingViewHolder(
             else -> return false
         }
 
-        if (bundleItems.size < minimumItemCount) return false
-
-        return true
+        return bundleItems.size >= minimumItemCount
     }
 
     private fun hideComponent() {

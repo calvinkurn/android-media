@@ -98,27 +98,39 @@ class VerifyFingerprintActivity: BaseActivity() {
         finishWithCanceled()
     }
 
+    fun onFingerprintValid() {
+        tracker.trackClickOnLoginWithFingerprintSuccessDevice()
+        verifyFingerprint()
+    }
+
+    fun onFingerprintInvalid() {
+        tracker.trackClickOnLoginWithFingerprintFailedDevice("")
+    }
+
+    fun onFingerprintError(errCode: Int, errString: String) {
+        if(errCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON) {
+            tracker.trackButtonCloseVerify()
+        } else {
+            tracker.trackOpenVerifyFingerprintFailed(errString)
+        }
+        if(errCode == BiometricPrompt.ERROR_LOCKOUT) {
+            FingerprintDialogHelper.showFingerprintLockoutDialog(this, onPositiveButtonClick = {
+                onErrorVerifyFingerprint()
+            }, onDismiss = { onErrorVerifyFingerprint() })
+        } else {
+            onErrorVerifyFingerprint()
+        }
+    }
+
     private fun showBiometricPrompt() {
         BiometricPromptHelper.showBiometricPrompt(this,
             onSuccess = {
-                tracker.trackClickOnLoginWithFingerprintSuccessDevice()
-                verifyFingerprint()
+                onFingerprintValid()
             }, onFailed = {
-                tracker.trackClickOnLoginWithFingerprintFailedDevice("")
+                onFingerprintInvalid()
             },
             onError = { errCode, errString ->
-                if(errCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON) {
-                    tracker.trackButtonCloseVerify()
-                } else {
-                    tracker.trackOpenVerifyFingerprintFailed(errString)
-                }
-                if(errCode == BiometricPrompt.ERROR_LOCKOUT) {
-                    FingerprintDialogHelper.showFingerprintLockoutDialog(this, onPositiveButtonClick = {
-                        onErrorVerifyFingerprint()
-                    }, onDismiss = { onErrorVerifyFingerprint() })
-                } else {
-                    onErrorVerifyFingerprint()
-                }
+                onFingerprintError(errCode, errString)
             })
     }
 
