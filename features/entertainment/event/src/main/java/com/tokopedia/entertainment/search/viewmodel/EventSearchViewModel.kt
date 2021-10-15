@@ -71,7 +71,6 @@ class EventSearchViewModel @Inject constructor(private val dispatcher: Coroutine
                     }
                 },
                 onError = {
-                        //https://medium.com/androiddevelopers/cancellation-in-coroutines-aa6b90163629
                         if (it !is CancellationException){
                             errorReport.value = it
                             isItRefreshing.value = false
