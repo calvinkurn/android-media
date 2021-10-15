@@ -22,6 +22,7 @@ import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_BROADCAST_SCHEDULE
@@ -323,7 +324,8 @@ class PlayBroadcastUiMapper(
             PinnedMessageUiModel(
                 id = it.id,
                 message = it.message,
-                isActive = it.status.id == 1
+                isActive = it.status.id == 1,
+                editStatus = PinnedMessageEditStatus.Nothing
             )
         }
     }
@@ -332,7 +334,8 @@ class PlayBroadcastUiMapper(
         return PinnedMessageUiModel(
             id = response.pinnedMessageId,
             message = response.title,
-            isActive = true
+            isActive = true,
+            editStatus = PinnedMessageEditStatus.Nothing,
         )
     }
 

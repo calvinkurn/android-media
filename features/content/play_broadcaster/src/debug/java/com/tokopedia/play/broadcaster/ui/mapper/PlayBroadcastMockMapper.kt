@@ -17,6 +17,7 @@ import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
 import com.tokopedia.play.broadcaster.view.state.Selectable
@@ -287,6 +288,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             id = "",
             message = "",
             isActive = false,
+            editStatus = PinnedMessageEditStatus.Nothing,
         )
     }
 

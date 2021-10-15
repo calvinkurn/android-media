@@ -27,6 +27,8 @@ import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
+import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
+import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showToaster
@@ -55,6 +57,7 @@ import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.hideKeyboard
+import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
@@ -209,31 +212,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             doShowProductInfo()
             analytic.clickProductTagOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
         }
-        val pinnedMessageFormViewListener = object : PinnedMessageFormView.Listener {
-
-            override fun onCloseButtonClicked(view: PinnedMessageFormView) {
-                removePinnedFormView(view)
-            }
-
-            override fun onPinnedMessageSaved(view: PinnedMessageFormView, message: String) {
-                parentViewModel.submitAction(PlayBroadcastUiEvent.SetPinnedMessage(message))
-                removePinnedFormView(view)
-            }
-        }
-        pinnedMessageView.setOnPinnedClickedListener { _, message ->
-            val view = this.view
-            if (view !is ViewGroup) return@setOnPinnedClickedListener
-            val pinnedView = view.findViewWithTag(PINNED_MSG_FORM_TAG) ?: run {
-                val theView = PinnedMessageFormView(view.context).apply {
-                    tag = PINNED_MSG_FORM_TAG
-                }
-                view.addView(theView)
-                theView.visibility = View.VISIBLE
-                clInteraction.visibility = View.GONE
-                theView
-            }
-            pinnedView.setPinnedMessage(message)
-            pinnedView.setListener(pinnedMessageFormViewListener)
+        pinnedMessageView.setOnPinnedClickedListener { _, _ ->
+            parentViewModel.submitAction(PlayBroadcastUiEvent.EditPinnedMessage)
         }
     }
 
@@ -322,10 +302,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     override fun onBackPressed(): Boolean {
-        val pinnedForm = view?.findViewWithTag<PinnedMessageFormView>(PINNED_MSG_FORM_TAG)
         return when {
-            pinnedForm != null -> {
-                removePinnedFormView(pinnedForm)
+            hasPinnedFormView() -> {
+                parentViewModel.submitAction(PlayBroadcastUiEvent.CancelEditPinnedMessage)
                 true
             }
             interactiveSetupView.isShown() -> interactiveSetupView.interceptBackPressed()
@@ -556,13 +535,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         loadingView.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
-    private fun removePinnedFormView(view: PinnedMessageFormView) {
-        val parentView = this@PlayBroadcastUserInteractionFragment.view
-        if (parentView is ViewGroup) parentView.removeView(view)
-        hideKeyboard()
-        clInteraction.visibility = View.VISIBLE
-    }
-
     //region observe
     /**
      * Observe
@@ -672,15 +644,84 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            parentViewModel.uiState.collectLatest {
-                pinnedMessageView.setMode(
-                    if (it.pinnedMessage.isEmpty()) PinnedMessageView.Mode.Empty
-                    else PinnedMessageView.Mode.Filled(it.pinnedMessage)
-                )
+            parentViewModel.uiState.withCache().collectLatest { cachedState ->
+                val state = cachedState.value
+                val prevState = cachedState.prevValue
+                renderPinnedMessageView(prevState?.pinnedMessage, state.pinnedMessage)
             }
         }
     }
     //endregion
+
+    private fun renderPinnedMessageView(
+        prevState: PinnedMessageUiState?,
+        state: PinnedMessageUiState
+    ) {
+        if (prevState == state) return
+
+        if (prevState?.editStatus != PinnedMessageEditStatus.Nothing &&
+            state.editStatus == PinnedMessageEditStatus.Nothing) {
+            hideKeyboard()
+        }
+
+        pinnedMessageView.setMode(
+            if (state.message.isEmpty()) PinnedMessageView.Mode.Empty
+            else PinnedMessageView.Mode.Filled(state.message)
+        )
+
+        when(state.editStatus) {
+            PinnedMessageEditStatus.Editing -> {
+                val pinnedView = getPinnedFormView()
+                pinnedView.setPinnedMessage(state.message)
+                pinnedView.setLoading(false)
+                pinnedView.visibility = View.VISIBLE
+                clInteraction.visibility = View.GONE
+            }
+            PinnedMessageEditStatus.Uploading -> {
+                val pinnedView = getPinnedFormView()
+                pinnedView.setPinnedMessage(state.message)
+                pinnedView.setLoading(true)
+                pinnedView.visibility = View.VISIBLE
+                clInteraction.visibility = View.GONE
+            }
+            PinnedMessageEditStatus.Nothing -> {
+                if (!hasPinnedFormView()) return
+                val pinnedView = getPinnedFormView()
+                pinnedView.visibility = View.GONE
+                clInteraction.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun hasPinnedFormView(): Boolean {
+        return view?.findViewWithTag<View>(PINNED_MSG_FORM_TAG) != null
+    }
+
+    private fun getPinnedFormView(): PinnedMessageFormView {
+        val view = this.view
+        require(view is ViewGroup)
+        val pinnedView = view.findViewWithTag(PINNED_MSG_FORM_TAG) ?: run {
+            val theView = PinnedMessageFormView(view.context).apply {
+                tag = PINNED_MSG_FORM_TAG
+            }
+            view.addView(theView)
+            theView
+        }
+
+        val pinnedMessageFormViewListener = object : PinnedMessageFormView.Listener {
+
+            override fun onCloseButtonClicked(view: PinnedMessageFormView) {
+                parentViewModel.submitAction(PlayBroadcastUiEvent.CancelEditPinnedMessage)
+            }
+
+            override fun onPinnedMessageSaved(view: PinnedMessageFormView, message: String) {
+                parentViewModel.submitAction(PlayBroadcastUiEvent.SetPinnedMessage(message))
+            }
+        }
+
+        pinnedView.setListener(pinnedMessageFormViewListener)
+        return pinnedView
+    }
 
     private fun allowSetupInteractive(): Boolean {
         return parentViewModel.interactiveDurations.isNotEmpty()

@@ -6,7 +6,6 @@ import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.broadcaster.R
@@ -88,10 +87,7 @@ class PinnedMessageFormView : ConstraintLayout {
                 return@setOnKeyListener false
             }
 
-            textFieldPinnedMsg.editText.doOnLayout {
-                textFieldPinnedMsg.editText.requestFocus()
-                textFieldPinnedMsg.editText.showKeyboard()
-            }
+            showInputMethod()
 
             iconClose.setOnClickListener {
                 mListener?.onCloseButtonClicked(this@PinnedMessageFormView)
@@ -112,6 +108,16 @@ class PinnedMessageFormView : ConstraintLayout {
         binding.textFieldPinnedMsg.editText.setText(message)
     }
 
+    fun setLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.loaderLoading.visibility = View.VISIBLE
+            binding.textFieldPinnedMsg.visibility = View.GONE
+        } else {
+            binding.loaderLoading.visibility = View.GONE
+            binding.textFieldPinnedMsg.visibility = View.VISIBLE
+        }
+    }
+
     fun setListener(listener: Listener?) {
         mListener = listener
     }
@@ -124,6 +130,18 @@ class PinnedMessageFormView : ConstraintLayout {
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         mListener = null
+    }
+
+    override fun setVisibility(visibility: Int) {
+        super.setVisibility(visibility)
+        if (visibility == View.VISIBLE) showInputMethod()
+    }
+
+    private fun showInputMethod() {
+        binding.textFieldPinnedMsg.editText.doOnLayout {
+            binding.textFieldPinnedMsg.editText.requestFocus()
+            binding.textFieldPinnedMsg.editText.showKeyboard()
+        }
     }
 
     interface Listener {

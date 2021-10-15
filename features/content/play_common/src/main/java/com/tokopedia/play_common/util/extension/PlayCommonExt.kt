@@ -28,8 +28,12 @@ import androidx.fragment.app.FragmentTransaction
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
+import kotlin.reflect.KProperty1
 
 /**
  * Created by jegul on 03/08/20
@@ -308,4 +312,40 @@ fun Fragment.hideKeyboard() {
 fun View.showKeyboard() {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+}
+
+data class CachedState<T>(val prevValue: T? = null, val value: T) {
+
+    fun <V> isValueChanged(prop: KProperty1<T, V>): Boolean {
+        val prevState = this.prevValue
+        val currState = this.value
+
+        return when {
+            currState == null -> false
+            prevState == null -> true
+            else -> {
+                val prevValue = prop.get(prevState)
+                val currentValue = prop.get(currState)
+                prevValue != currentValue
+            }
+        }
+    }
+}
+
+fun <T: Any> Flow<T>.withCache(): Flow<CachedState<T>> {
+    var cachedValue : T? = null
+    return map {
+        val prevValue = cachedValue
+        cachedValue = it
+        CachedState(prevValue, it)
+    }
+}
+
+fun <T: Any> MutableStateFlow<T>.setValue(fn: T.() -> T) {
+    value = value.fn()
+}
+
+fun <T: Any> MutableStateFlow<T?>.setValueIfNotNull(fn: T.() -> T) {
+    val value = this.value ?: return
+    this.value = value.fn()
 }

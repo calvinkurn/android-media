@@ -7,12 +7,21 @@ data class PinnedMessageUiModel(
     val id: String,
     val message: String,
     val isActive: Boolean,
+    val editStatus: PinnedMessageEditStatus,
 ) {
+
     companion object {
         fun Empty() = PinnedMessageUiModel(
             id = "",
             message = "",
-            isActive = false
+            isActive = false,
+            editStatus = PinnedMessageEditStatus.Nothing,
         )
     }
+}
+
+enum class PinnedMessageEditStatus {
+    Editing,
+    Uploading,
+    Nothing,
 }

@@ -25,9 +25,11 @@ import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastUiEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
+import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
+import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
 import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherException
@@ -54,6 +56,7 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.event.Event
+import com.tokopedia.play_common.util.extension.setValue
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketClosedReason
 import com.tokopedia.play_common.websocket.WebSocketResponse
@@ -178,7 +181,9 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
     private val _configInfo = _observableConfigInfo.asFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
-    private val _pinnedMessage: MutableStateFlow<PinnedMessageUiModel?> = MutableStateFlow(null)
+    private val _pinnedMessage: MutableStateFlow<PinnedMessageUiModel> = MutableStateFlow(
+        PinnedMessageUiModel.Empty()
+    )
 
     private val _channelUiState = _configInfo
         .filterIsInstance<NetworkResult.Success<ConfigurationUiModel>>()
@@ -189,15 +194,20 @@ internal class PlayBroadcastViewModel @Inject constructor(
             )
         }
 
+    private val _pinnedMessageUiState = _pinnedMessage.map {
+        PinnedMessageUiState(
+            message = if (it.isActive) it.message else "",
+            editStatus = it.editStatus
+        )
+    }
+
     val uiState = combine(
         _channelUiState.distinctUntilChanged(),
-        _pinnedMessage
+        _pinnedMessageUiState.distinctUntilChanged(),
     ) { channelState, pinnedMessage ->
         PlayBroadcastUiState(
             channel = channelState,
-            pinnedMessage = if (pinnedMessage?.isActive == true) {
-                pinnedMessage.message
-            } else "",
+            pinnedMessage = pinnedMessage,
         )
     }
 
@@ -277,7 +287,9 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
     fun submitAction(event: PlayBroadcastUiEvent) {
         when (event) {
+            PlayBroadcastUiEvent.EditPinnedMessage -> handleEditPinnedMessage()
             is PlayBroadcastUiEvent.SetPinnedMessage -> handleSetPinnedMessage(event.message)
+            PlayBroadcastUiEvent.CancelEditPinnedMessage -> handleCancelEditPinnedMessage()
         }
     }
 
@@ -726,7 +738,9 @@ internal class PlayBroadcastViewModel @Inject constructor(
             }
             is PinnedMessageSocketResponse -> {
                 val mappedResult = playBroadcastMapper.mapPinnedMessageSocket(result)
-                _pinnedMessage.emit(mappedResult)
+                _pinnedMessage.value = mappedResult.copy(
+                    editStatus = _pinnedMessage.value.editStatus
+                )
             }
         }
     }
@@ -802,19 +816,34 @@ internal class PlayBroadcastViewModel @Inject constructor(
     private fun getPinnedMessage() {
         viewModelScope.launchCatchError(dispatcher.io, block = {
             val activePinned = repo.getActivePinnedMessage(channelId)
-            _pinnedMessage.value = activePinned
+            _pinnedMessage.value = activePinned ?: PinnedMessageUiModel.Empty()
         }) {}
+    }
+
+    private fun handleEditPinnedMessage() {
+        _pinnedMessage.setValue {
+            copy(editStatus = PinnedMessageEditStatus.Editing)
+        }
     }
 
     private fun handleSetPinnedMessage(message: String) {
         viewModelScope.launchCatchError(dispatcher.io, block = {
-            val pinnedMessageId = _pinnedMessage.value?.id
+            _pinnedMessage.setValue {
+                copy(editStatus = PinnedMessageEditStatus.Uploading)
+            }
+            val pinnedMessageId = _pinnedMessage.value.id
             _pinnedMessage.value = repo.setPinnedMessage(
                 id = pinnedMessageId,
                 channelId = channelId,
                 message = message
             )
         }) {}
+    }
+
+    private fun handleCancelEditPinnedMessage() {
+        _pinnedMessage.setValue {
+            copy(editStatus = PinnedMessageEditStatus.Nothing)
+        }
     }
 
     //TODO("Mock Code, Remove This!!!")

@@ -5,5 +5,7 @@ package com.tokopedia.play.broadcaster.ui.event
  */
 sealed class PlayBroadcastUiEvent {
 
+    object EditPinnedMessage : PlayBroadcastUiEvent()
     data class SetPinnedMessage(val message: String) : PlayBroadcastUiEvent()
+    object CancelEditPinnedMessage : PlayBroadcastUiEvent()
 }

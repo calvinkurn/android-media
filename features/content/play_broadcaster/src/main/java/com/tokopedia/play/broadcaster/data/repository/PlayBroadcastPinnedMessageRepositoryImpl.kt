@@ -6,8 +6,8 @@ import com.tokopedia.play.broadcaster.domain.usecase.pinnedmessage.AddPinnedMess
 import com.tokopedia.play.broadcaster.domain.usecase.pinnedmessage.GetPinnedMessagesUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.pinnedmessage.UpdatePinnedMessageUseCase
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
+import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -57,6 +57,7 @@ class PlayBroadcastPinnedMessageRepositoryImpl @Inject constructor(
             id = response.data.messageIds.first(),
             message = message,
             isActive = true,
+            editStatus = PinnedMessageEditStatus.Nothing,
         )
     }
 
@@ -75,9 +76,10 @@ class PlayBroadcastPinnedMessageRepositoryImpl @Inject constructor(
         }.executeOnBackground()
 
         return@withContext PinnedMessageUiModel(
-            id = id,
+            id = response.data.id,
             message = message,
-            isActive = message.isNotBlank()
+            isActive = message.isNotBlank(),
+            editStatus = PinnedMessageEditStatus.Nothing,
         )
     }
 }
