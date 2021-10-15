@@ -90,17 +90,17 @@ open class RecommendationViewModel @Inject constructor(
         keywords: List<String> = listOf()
     ) {
         if (isJobAvailable(getRecommendationJob)) {
-            getRecommendationJob = viewModelScope.launchCatchError(coroutineContext, {
+            getRecommendationJob = viewModelScope.launchCatchError(dispatcher.io, {
                 val result = getRecommendationUseCase.getData(
-                        GetRecommendationRequestParam(
-                                pageNumber = pageNumber,
-                                productIds = productIds,
-                                queryParam = queryParam,
-                                pageName = pageName,
-                                categoryIds = categoryIds,
-                                xSource = xSource,
-                                xDevice = xDevice,
-                                keywords = keywords,
+                    GetRecommendationRequestParam(
+                        pageNumber = pageNumber,
+                        productIds = productIds,
+                        queryParam = queryParam,
+                        pageName = pageName,
+                        categoryIds = categoryIds,
+                        xSource = xSource,
+                        xDevice = xDevice,
+                        keywords = keywords,
                                 isTokonow = isTokonow,
                         ))
                 if (result.isNotEmpty()) {
