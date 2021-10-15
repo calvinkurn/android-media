@@ -132,7 +132,6 @@ import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiM
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.shop.common.constant.SellerHomePermissionGroup
 import com.tokopedia.shop.common.constant.admin_roles.AdminPermissionUrl
-import com.tokopedia.shop.common.util.sellerfeedbackutil.SellerFeedbackUtil
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
@@ -226,8 +225,6 @@ class AddEditProductPreviewFragment :
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
-
-    private var sellerFeedbackUtil: SellerFeedbackUtil? = null
 
     @Inject
     lateinit var viewModel: AddEditProductPreviewViewModel
@@ -533,8 +530,6 @@ class AddEditProductPreviewFragment :
         validateShopLocationWhenPageOpened()
         // stop prepare page PLT monitoring
         stopPreparePagePerformanceMonitoring()
-
-        setupScreenShootGlobalFeedback()
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -561,7 +556,6 @@ class AddEditProductPreviewFragment :
         super.onDestroyView()
         isFragmentVisible = false
         isFragmentFirstTimeLoaded = false
-        sellerFeedbackUtil = null
         removeObservers()
     }
 
@@ -1716,18 +1710,6 @@ class AddEditProductPreviewFragment :
         // launch bottomsheet automatically when fragment loaded
         if (!isProductLimitEligible && isFragmentFirstTimeLoaded) {
             productLimitationTicker?.performClick()
-        }
-    }
-
-    private fun setupScreenShootGlobalFeedback() {
-        context?.let {
-            val currentPage = if (isEditing()) {
-                SellerFeedbackUtil.EDIT_PRODUCT
-            } else {
-                SellerFeedbackUtil.ADD_PRODUCT
-            }
-            sellerFeedbackUtil = SellerFeedbackUtil(it.applicationContext)
-            sellerFeedbackUtil?.setSelectedPage(currentPage)
         }
     }
 }

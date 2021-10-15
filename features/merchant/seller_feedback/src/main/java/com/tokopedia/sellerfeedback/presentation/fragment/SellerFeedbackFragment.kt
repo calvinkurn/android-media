@@ -109,7 +109,6 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
     private var tickerSellerFeedback: Ticker? = null
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
 
-    private var isValidFeedbackPage = false
     private var isValidFeedbackDetail = false
     private var activeScore: Score? = null
     private var feedbackTypeChips: List<ChipsUnify>? = null
@@ -159,6 +158,7 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
         checkPermission()
         showSettings()
         setDefaultFeedbackResultValue()
+        attachScreenshot()
     }
 
     override fun onRequestPermissionsResult(
@@ -240,6 +240,7 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
                 chip.setOnClickListener {
                     chip.chipType = ChipsUnify.TYPE_SELECTED
                     toggleChipsToNormal(chips - chip)
+                    checkButtonSend()
                 }
             }
         }
@@ -251,12 +252,12 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
                 pageClassName
             )
         )
+        checkButtonSend()
         textFieldFeedbackPage?.setOnClickListener {
             val currentValue = textFieldFeedbackPage?.text.toString()
             val bottomSheet = SellerFeedbackPageChooserBottomSheet.createInstance(currentValue)
             bottomSheet.setListener {
                 textFieldFeedbackPage?.setText(it)
-                isValidFeedbackPage = true
                 checkButtonSend()
             }
             activity?.supportFragmentManager?.let { bottomSheet.show(it, null) }
@@ -365,6 +366,7 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
     }
 
     private fun checkButtonSend() {
+        val isValidFeedbackPage = !textFieldFeedbackPage?.text.isNullOrBlank()
         buttonSend?.isEnabled = isValidFeedbackPage &&
                 isValidFeedbackDetail &&
                 activeScore != null &&
