@@ -21,7 +21,7 @@ import javax.inject.Inject
 class AttachVoucherViewModel @Inject constructor(
         private val getVouchersUseCase: GetVoucherUseCase,
         private val dispatcher: CoroutineDispatchers,
-) : BaseViewModel(dispatcher.io) {
+) : BaseViewModel(dispatcher.main) {
 
     val hasNext: Boolean get() = getVouchersUseCase.hasNext
     var isLoading = false
