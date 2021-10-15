@@ -61,6 +61,14 @@ class MultiBundle(parent: View) {
             val viewPrice = prices[index].apply { show() }
             val viewDiscount = discounts[index].apply { show() }
             val viewSlash = slashes[index].apply { show() }
+
+            /**
+             * view1 {+ view2} {+ view3}
+             * iconAdd will join viewGroup with index start from 1 (not 0)
+             * that's why it use [index-1]
+             * when the loop:
+             * 0 -> null, 1 -> take index 0 (iconAdd1), 2 -> take index 1 (iconAdd2)
+             */
             val viewIconAdd = iconAdds.getOrNull(index - 1)?.apply { show() }
 
             viewImage.urlSrc = item.picURL
