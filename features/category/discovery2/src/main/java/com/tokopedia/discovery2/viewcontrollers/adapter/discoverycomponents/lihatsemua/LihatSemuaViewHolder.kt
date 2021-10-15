@@ -147,7 +147,7 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
                 backgroundImageView.setBackgroundColor(Color.parseColor(data.boxColor))
             if(!data.backgroundImageUrl.isNullOrEmpty())
                 backgroundImageView.loadImageWithoutPlaceholder(data.backgroundImageUrl)
-            corners(backgroundImageView,-100, 0, 0,0, 100f)
+            cornersForBackground(backgroundImageView)
             backgroundImageView.show()
         }catch (e:Exception){
             backgroundImageView.hide()
@@ -202,7 +202,7 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
             if (width != null && height != null) {
                 val aspectRatio = width.toFloat() / height.toFloat()
                 fragment.context?.resources?.let {
-                    corners(titleImageView,0,0,0,0,it.getDimension(R.dimen.dp_8))
+                    Utils.corners(titleImageView,0,0,0,0,it.getDimension(R.dimen.dp_8))
                     if (lihatSubTitleTextView.isVisible) {
                         lp.height = it.getDimensionPixelOffset(R.dimen.dp_56)
                         lp.width = (aspectRatio * it.getDimensionPixelOffset(R.dimen.dp_56)).toInt()
@@ -256,13 +256,17 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
         timer.pause()
     }
 
-    fun corners(view:View,leftOffset:Int, topOffset:Int, rightOffset:Int, bottomOffset:Int, radius:Float){
+    fun cornersForBackground(view:View){
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 view.outlineProvider = object : ViewOutlineProvider() {
                     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
                     override fun getOutline(view: View?, outline: Outline?) {
-                        outline?.setRoundRect(leftOffset, topOffset, (view?.width).toZeroIfNull()+rightOffset, (view?.height).toZeroIfNull()+ bottomOffset, radius)
+                        var finalRadius = 100f
+                            if(((view?.height).toZeroIfNull()) != 0) {
+                               finalRadius =  view!!.height.div(2).toFloat()
+                            }
+                        outline?.setRoundRect(-finalRadius.toInt(), 0, (view?.width).toZeroIfNull(), (view?.height).toZeroIfNull(),finalRadius)
                     }
                 }
                 view.clipToOutline = true
