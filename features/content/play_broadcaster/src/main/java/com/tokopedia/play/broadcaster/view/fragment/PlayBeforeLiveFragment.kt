@@ -213,6 +213,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     private fun setupView(view: View) {
         actionBarView.setTitle(getString(R.string.play_action_bar_prepare_final_title))
         btnStartLive.setOnClickListener {
+            analytic.clickStartStreamingOnFinalSetupPage()
             startCountDown()
         }
         llSelectedProduct.setOnClickListener {
@@ -536,7 +537,6 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private fun createLiveStream() {
         prepareViewModel.createLiveStream()
-        analytic.clickStartStreamingOnFinalSetupPage()
     }
 
     private fun deleteBroadcastSchedule() {
