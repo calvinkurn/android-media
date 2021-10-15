@@ -44,10 +44,6 @@ class TickerViewHolder(
         }
     }
 
-    private fun shouldRefreshWhenBack(): Boolean {
-        return refreshableTickerKey.contains(element?.actionKey.orEmpty())
-    }
-
     override fun onDismiss() {}
 
     private fun setupTicker(element: TickerUiModel) {
@@ -61,6 +57,10 @@ class TickerViewHolder(
 
     private fun composeActionText(description: String, actionText: String, actionUrl: String): String {
         return itemView.context.getString(R.string.html_link, description, actionUrl, actionText)
+    }
+
+    private fun shouldRefreshWhenBack(): Boolean {
+        return refreshableTickerKey.contains(element?.actionKey.orEmpty())
     }
 
     interface TickerViewHolderListener {
