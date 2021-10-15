@@ -14,6 +14,7 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import java.lang.IllegalArgumentException
 
 @ExperimentalCoroutinesApi
 class ExtKtTest {
@@ -66,7 +67,7 @@ class ExtKtTest {
         }
     }
 
-    @Test(expected = JsonSyntaxException::class)
+    @Test(expected = IllegalArgumentException::class)
     fun `given map of arbitrary type should throw exception`() {
         runBlockingTest {
             repository.request<String, FooModel>("", "foo")
