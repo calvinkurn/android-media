@@ -205,15 +205,22 @@ class SellerFeedbackFragment : BaseDaggerFragment(),
     }
 
     override fun onClickAddImage() {
-        SellerFeedbackTracking.Click.eventClickPutAttachment()
-        val intent =
-            RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER)
-        val currentSelectedImages = getSelectedImageUrl(imageFeedbackAdapter.getImageFeedbackData())
-        imagePickerMultipleSelectionBuilder.initialSelectedImagePathList = currentSelectedImages
-        imagePickerBuilder.imagePickerMultipleSelectionBuilder = imagePickerMultipleSelectionBuilder
-        intent.putImagePickerBuilder(imagePickerBuilder)
-        intent.putParamPageSource(ImagePickerPageSource.SELLER_FEEDBACK_PAGE)
-        startActivityForResult(intent, REQUEST_CODE_IMAGE)
+        context?.let {
+            if (!permissionCheckerHelper?.hasPermission(it, arrayOf(PERMISSION_READ_EXTERNAL_STORAGE)).orFalse()) {
+                checkPermission()
+                return@let
+            }
+
+            SellerFeedbackTracking.Click.eventClickPutAttachment()
+            val intent =
+                RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER)
+            val currentSelectedImages = getSelectedImageUrl(imageFeedbackAdapter.getImageFeedbackData())
+            imagePickerMultipleSelectionBuilder.initialSelectedImagePathList = currentSelectedImages
+            imagePickerBuilder.imagePickerMultipleSelectionBuilder = imagePickerMultipleSelectionBuilder
+            intent.putImagePickerBuilder(imagePickerBuilder)
+            intent.putParamPageSource(ImagePickerPageSource.SELLER_FEEDBACK_PAGE)
+            startActivityForResult(intent, REQUEST_CODE_IMAGE)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

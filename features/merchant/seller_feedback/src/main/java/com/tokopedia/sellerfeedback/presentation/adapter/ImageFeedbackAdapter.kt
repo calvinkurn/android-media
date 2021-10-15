@@ -11,7 +11,8 @@ import com.tokopedia.sellerfeedback.presentation.viewholder.AddImageFeedbackView
 import com.tokopedia.sellerfeedback.presentation.viewholder.BaseImageFeedbackViewHolder
 import com.tokopedia.sellerfeedback.presentation.viewholder.ImageFeedbackViewHolder
 
-class ImageFeedbackAdapter(private val imageClickListener: BaseImageFeedbackViewHolder.ImageClickListener) : RecyclerView.Adapter<BaseImageFeedbackViewHolder<*>>() {
+class ImageFeedbackAdapter(private val imageClickListener: BaseImageFeedbackViewHolder.ImageClickListener) :
+    RecyclerView.Adapter<BaseImageFeedbackViewHolder<*>>() {
 
     companion object {
         const val TYPE_DEFAULT = 1
@@ -23,14 +24,19 @@ class ImageFeedbackAdapter(private val imageClickListener: BaseImageFeedbackView
 
     private val imageFeedbackData = mutableListOf<BaseImageFeedbackUiModel>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseImageFeedbackViewHolder<*> {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): BaseImageFeedbackViewHolder<*> {
         return when (viewType) {
             TYPE_DEFAULT -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.item_add_image_feedback, parent, false)
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_add_image_feedback, parent, false)
                 AddImageFeedbackViewHolder(view, imageClickListener)
             }
             TYPE_IMAGE -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.item_image_chooser_feedback, parent, false)
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_image_chooser_feedback, parent, false)
                 ImageFeedbackViewHolder(view, imageClickListener)
             }
             else -> throw IllegalArgumentException("Invalid View Type")
@@ -70,7 +76,9 @@ class ImageFeedbackAdapter(private val imageClickListener: BaseImageFeedbackView
     }
 
     fun showAddImageFeedbackBtn() {
-        imageFeedbackData.add(addImageFeedbackUiModel)
+        if (!imageFeedbackData.contains(addImageFeedbackUiModel)) {
+            imageFeedbackData.add(addImageFeedbackUiModel)
+        }
     }
 
     private fun checkAddImageFeedback() {
