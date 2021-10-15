@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.review.R
+import com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
 import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.common.util.toRelativeDate
@@ -30,6 +31,8 @@ class InboxReviewFeedbackViewHolder(view: View,
 
     private var reviewInboxFeedbackImageAdapter: InboxReviewFeedbackImageAdapter? = null
     private val impressHolder = ImpressHolder()
+
+    private val badRatingReason: ReviewBadRatingReasonWidget = itemView.findViewById(R.id.badRatingReasonReview)
 
     override fun bind(element: FeedbackInboxUiModel) {
         reviewInboxFeedbackImageAdapter = InboxReviewFeedbackImageAdapter(feedbackInboxReviewListener)
@@ -54,6 +57,7 @@ class InboxReviewFeedbackViewHolder(view: View,
             setupFeedbackReview(element.reviewText, element.feedbackId, element.productID)
             setImageAttachment(element)
             showKejarUlasanLabel(element.isKejarUlasan)
+            setBadRatingReason(element.badRatingReason)
         }
     }
 
@@ -183,6 +187,10 @@ class InboxReviewFeedbackViewHolder(view: View,
                 }
             }
         }
+    }
+
+    private fun setBadRatingReason(reason: String) {
+        badRatingReason.showBadRatingReason(reason)
     }
 
 }

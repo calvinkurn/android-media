@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
+import com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
 import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.common.util.toRelativeDate
@@ -34,6 +35,7 @@ class ProductFeedbackDetailViewHolder(private val view: View,
     }
 
     private var reviewDetailFeedbackImageAdapter: ReviewDetailFeedbackImageAdapter? = null
+    private val badRatingReason: ReviewBadRatingReasonWidget = view.findViewById(R.id.badRatingReasonReview)
 
     override fun bind(element: FeedbackUiModel) {
         reviewDetailFeedbackImageAdapter = ReviewDetailFeedbackImageAdapter(productFeedbackDetailListener)
@@ -51,6 +53,7 @@ class ProductFeedbackDetailViewHolder(private val view: View,
         setupFeedbackReview(element.reviewText ?: "", element.feedbackID)
         setImageAttachment(element)
         showLabelKejarUlasan(element.isKejarUlasan)
+        setBadRatingReason(element.badRatingReason)
     }
 
     private fun setupVariant(variantName: String) {
@@ -163,5 +166,9 @@ class ProductFeedbackDetailViewHolder(private val view: View,
 
     private fun showLabelKejarUlasan(isKejarUlasan: Boolean) {
         itemView.kejarUlasanLabel?.showWithCondition(isKejarUlasan)
+    }
+
+    private fun setBadRatingReason(reason: String) {
+        badRatingReason.showBadRatingReason(reason)
     }
 }

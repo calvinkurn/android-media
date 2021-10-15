@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
+import com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
 import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.common.util.toRelativeDate
@@ -45,8 +46,11 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
         init()
     }
 
+    private var badRatingReason: ReviewBadRatingReasonWidget? = null
+
     private fun init() {
         View.inflate(context, R.layout.widget_reply_feedback_item, this)
+        badRatingReason = findViewById(R.id.badRatingReasonReview)
     }
 
     fun setData(data: FeedbackUiModel, productReplyUiModel: ProductReplyUiModel) {
@@ -57,6 +61,7 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
         setImageAttachment(data, productReplyUiModel)
         setReplyView(data)
         showKejarUlasanLabel(data.isKejarUlasan)
+        setBadRatingReason(data.bad)
     }
 
     private fun setReplyView(data: FeedbackUiModel) {
@@ -104,6 +109,10 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
 
     private fun showKejarUlasanLabel(isKejarUlasan: Boolean) {
         kejarUlasanLabel?.showWithCondition(isKejarUlasan)
+    }
+
+    private fun setBadRatingReason(reason: String) {
+        badRatingReason?.showBadRatingReason(reason)
     }
 
     override fun onImageItemClicked(imageUrls: List<String>, thumbnailsUrl: List<String>,
