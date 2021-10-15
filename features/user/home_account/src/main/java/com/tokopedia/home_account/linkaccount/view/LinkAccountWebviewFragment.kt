@@ -1,5 +1,6 @@
 package com.tokopedia.home_account.linkaccount.view
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -30,10 +31,26 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
         checkPageFinished()
     }
 
+    private fun checkForStatusQuery(url: String): Boolean {
+        return try {
+            val status = Uri.parse(url).getQueryParameter(KEY_STATUS) ?: ""
+            activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(ApplinkConstInternalGlobal.PARAM_STATUS, status)
+            })
+            activity?.finish()
+            return status.isNotEmpty()
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
         when {
             url.startsWith(BACK_BTN_APPLINK, ignoreCase = true) -> {
                 // Finish activity from webview
+                if(url.contains(KEY_STATUS) && checkForStatusQuery(url)) {
+                    return true
+                }
                 return super.shouldOverrideUrlLoading(webview, BACK_BTN_APPLINK)
             }
             url.contains(GOJEK_LINK, ignoreCase = true) -> {
@@ -88,8 +105,7 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
                 setSecondaryCTAText(getString(R.string.label_secondary_btn_gopay_dialog))
                 setPrimaryCTAClickListener {
                     analytics.trackSkipPopupYes()
-                    val baseUrl = LinkAccountWebViewActivity.getLinkAccountUrl(
-                        ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT)
+                    val baseUrl = LinkAccountWebViewActivity.getLinkAccountUrl("")
                     if(baseUrl != null) {
                         webView?.loadUrl(
                             LinkAccountWebViewActivity.getSuccessUrl(baseUrl).toString()
@@ -115,6 +131,7 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
         const val KEY_URL = "url"
         const val GOJEK_LINK = "https://gojek.link"
         const val BACK_BTN_APPLINK = "tokopedia://back"
+        const val KEY_STATUS = "status"
 
         fun newInstance(url: String): BaseSessionWebViewFragment {
             val fragment = LinkAccountWebviewFragment()

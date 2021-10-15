@@ -133,4 +133,9 @@ interface ICartListView : CustomerView {
     fun reCollapseExpandedDeletedUnavailableItems()
 
     fun sendATCTrackingURLRecent(productModel: CartRecentViewItemHolderData)
+
+    fun isBundleToggleChanged(): Boolean
+
+    fun recreateActivity()
+
 }

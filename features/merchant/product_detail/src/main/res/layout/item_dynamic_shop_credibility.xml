@@ -240,7 +240,6 @@
 
     <include
         android:id="@+id/shop_credibility_shimmering"
-        layout="@layout/item_shimmer_shop_credibility"
-        android:visibility="visible" />
+        layout="@layout/item_shimmer_shop_credibility" />
 
 </LinearLayout>

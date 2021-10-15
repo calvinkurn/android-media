@@ -6,10 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".setting.view.fragment.ShopPageSettingFragment">
 
-    <include
+    <com.tokopedia.empty_state.EmptyStateUnify
         android:id="@+id/error_view"
-        layout="@layout/partial_empty_page_error"
-        android:visibility="gone" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/rv_shop_page_setting"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unifyEmptyStateCTAFullWidth="true"
+        app:unifyEmptyStateDescription="@string/msg_network_error_2"
+        app:unifyEmptyStateImageDrawable="@drawable/unify_globalerrors_connection"
+        app:unifyEmptyStatePrimaryCTAText="@string/title_try_again"
+        app:unifyEmptyStateTitle="@string/msg_network_error_1"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/dashboard_layout"

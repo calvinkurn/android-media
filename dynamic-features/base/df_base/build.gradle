@@ -59,6 +59,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.kategori)
     implementation projectOrAar(rootProject.ext.features.categoryLevels)
     implementation projectOrAar(rootProject.ext.features.findNative)
+    implementation projectOrAar(rootProject.ext.features.affiliateToko)
     //implementation projectOrAar(rootProject.ext.features.agerestriction) //Need to fix the structure
 
     //Content
@@ -112,12 +113,15 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.reviewProduct)
     implementation projectOrAar(rootProject.ext.features.shopPage)
     implementation projectOrAar(rootProject.ext.features.productBundle)
+    implementation projectOrAar(rootProject.ext.features.reviewShop)
+
     //Operational
 
     //Payment
     implementation projectOrAar(rootProject.ext.features.paymentSetting)
     implementation projectOrAar(rootProject.ext.features.instantDebitBca)
     implementation projectOrAar(rootProject.ext.features.pms)
+    implementation projectOrAar(rootProject.ext.features.goPayKyc)
     implementation projectOrAar(rootProject.ext.features.withdraw)
 
     //Promo

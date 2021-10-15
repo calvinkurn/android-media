@@ -211,7 +211,8 @@ open class DynamicPostViewHolder(v: View,
                             "",
                             "",
                             "",
-                            false
+                            false,
+                            ""
                         )
                     }
                 } else{
@@ -624,7 +625,8 @@ open class DynamicPostViewHolder(v: View,
             authorId: String,
             authorType: String,
             postType: String = "",
-            isVideo: Boolean
+            isVideo: Boolean,
+            caption: String
         )
 
         fun onCaptionClick(positionInFeed: Int, redirectUrl: String)

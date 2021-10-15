@@ -33,7 +33,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             PlayChannelData(
                     id = it.id,
                     channelDetail = PlayChannelDetailUiModel(
-                        channelInfo = mapChannelInfo(it.id, it.isLive, it.config, it.title),
+                        channelInfo = mapChannelInfo(it.id, it.isLive, it.config, it.title, it.coverUrl),
                         shareInfo = mapShareInfo(it.share),
                         rtnConfigInfo = mapRealTimeNotificationConfig(
                             it.config.welcomeFormat,
@@ -47,7 +47,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     cartInfo = mapCartInfo(it.config),
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
                     quickReplyInfo = mapQuickReply(it.quickReplies),
-                    videoMetaInfo = if(it.airTime == PlayUpcomingUiModel.COMING_SOON) emptyVideoMetaInfo() else mapVideoMeta(it.video, it.id, extraParams),
+                    videoMetaInfo = if(it.airTime == PlayUpcomingUiModel.COMING_SOON) emptyVideoMetaInfo() else mapVideoMeta(it.video, it.id, it.title, extraParams),
                     statusInfo = mapChannelStatusInfo(it.config, it.title),
                     leaderboardInfo = mapLeaderboardInfo(),
                     upcomingInfo = mapUpcoming(it.title, it.airTime, it.config.reminder.isSet, it.coverUrl, it.startTime)
@@ -59,12 +59,14 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             channelId: String,
             isLive: Boolean,
             configResponse: ChannelDetailsWithRecomResponse.Config,
-            title: String
+            title: String,
+            coverUrl: String
     ) = PlayChannelInfoUiModel(
             id = channelId,
             channelType = if (isLive) PlayChannelType.Live else PlayChannelType.VOD,
             backgroundUrl = configResponse.roomBackground.imageUrl,
             title = title,
+            coverUrl = coverUrl
     )
 
     private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPartnerInfo(
@@ -171,10 +173,11 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     private fun mapVideoMeta(
             videoResponse: ChannelDetailsWithRecomResponse.Video,
             channelId: String,
+            title: String,
             extraParams: ExtraParams
     ) = PlayVideoMetaInfoUiModel(
             videoPlayer = mapVideoPlayer(videoResponse, channelId, extraParams),
-            videoStream = mapVideoStream(videoResponse)
+            videoStream = mapVideoStream(videoResponse, title)
     )
 
     private fun mapVideoPlayer(videoResponse: ChannelDetailsWithRecomResponse.Video, channelId: String, extraParams: ExtraParams) = when (videoResponse.type) {
@@ -191,9 +194,11 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     private fun mapVideoStream(
             videoResponse: ChannelDetailsWithRecomResponse.Video,
+            title: String
     ) = PlayVideoStreamUiModel(
             id = videoResponse.id,
             orientation = VideoOrientation.getByValue(videoResponse.orientation),
+            title = title
     )
 
     private fun mapChannelStatusInfo(
@@ -256,7 +261,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         videoPlayer = PlayVideoPlayerUiModel.Unknown,
         videoStream = PlayVideoStreamUiModel(
             id = "",
-            orientation = VideoOrientation.Unknown
+            orientation = VideoOrientation.Unknown,
+            title = ""
         )
     )
 

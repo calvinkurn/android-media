@@ -106,6 +106,7 @@ import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashb
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementActionListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
+import com.tokopedia.purchase_platform.common.utils.Switch
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounce
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -130,6 +131,7 @@ import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -1116,7 +1118,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val allCartItemDataList = cartAdapter.allCartItemData
         val toBeDeletedProducts = mutableListOf<CartItemHolderData>()
         if (cartItemHolderData.isBundlingItem) {
-            val cartShopHolderData = cartAdapter.getCartShopHolderDataByCartString(cartItemHolderData.cartString)
+            val cartShopHolderData = cartAdapter.getCartShopHolderDataByCartItemHolderData(cartItemHolderData)
             cartShopHolderData?.let {
                 it.productUiModelList.forEach { product ->
                     if (product.isBundlingItem && product.bundleId == cartItemHolderData.bundleId && product.bundleGroupId == cartItemHolderData.bundleGroupId) {
@@ -1698,7 +1700,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData) {
-        val cartShopHolderData = cartAdapter.getCartShopHolderDataByCartString(cartItemHolderData.cartString)
+        val cartShopHolderData = cartAdapter.getCartShopHolderDataByCartItemHolderData(cartItemHolderData)
         cartShopHolderData?.let {
             it.productUiModelList.forEachIndexed { index, data ->
                 if (data.isBundlingItem && data.bundleId == cartItemHolderData.bundleId && data.bundleGroupId == cartItemHolderData.bundleGroupId) {
@@ -1973,11 +1975,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 onNeedToRemoveViewItem(chooseAddressWidgetPosition)
             } else {
                 validateLocalCacheAddress(it, cartData.localizationChooseAddress)
-
-                if (ChooseAddressUtils.isRollOutUser(it)) {
-                    val cartChooseAddressHolderData = CartUiModelMapper.mapChooseAddressUiModel()
-                    cartAdapter.addItem(cartChooseAddressHolderData)
-                }
+                val cartChooseAddressHolderData = CartUiModelMapper.mapChooseAddressUiModel()
+                cartAdapter.addItem(cartChooseAddressHolderData)
             }
         }
     }
@@ -3189,7 +3188,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onCartItemQuantityChanged(cartItemHolderData: CartItemHolderData, newQuantity: Int) {
         if (cartItemHolderData.isBundlingItem) {
-            val cartShopHolderData = cartAdapter.getCartShopHolderDataByCartString(cartItemHolderData.cartString)
+            val cartShopHolderData = cartAdapter.getCartShopHolderDataByCartItemHolderData(cartItemHolderData)
             cartShopHolderData?.let {
                 it.productUiModelList.forEach {
                     if (it.isBundlingItem && it.bundleId == cartItemHolderData.bundleId && it.bundleGroupId == cartItemHolderData.bundleGroupId) {
@@ -3391,6 +3390,23 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             cartPageAnalytics.eventClickUbahInProductBundlingPackageProductCard(cartItemHolderData.bundleId, cartItemHolderData.bundleType)
             val intent = RouteManager.getIntent(it, cartItemHolderData.editBundleApplink)
             startActivityForResult(intent, NAVIGATION_EDIT_BUNDLE)
+        }
+    }
+
+    override fun isBundleToggleChanged(): Boolean {
+        activity?.let {
+            if (!Switch.isBundleToggleOn(it)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    override fun recreateActivity() {
+        try {
+            activity?.recreate()
+        } catch (t: Throwable) {
+            Timber.d(t)
         }
     }
 

@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestListener
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.network.R as networkR
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play_common.R as commonR
@@ -48,28 +49,36 @@ internal fun View.showErrorToaster(
     actionLabel: String = "",
     actionListener: View.OnClickListener = View.OnClickListener {  },
     bottomMargin: Int? = null,
+    showErrorCode: Boolean = true,
 ) {
-    val errMessage = if (customErrMessage == null) {
+    val errMessage = if (customErrMessage == null && showErrorCode) {
         ErrorHandler.getErrorMessage(
             context, err, ErrorHandler.Builder()
                 .className(className)
                 .build()
         )
     } else {
-        val (_, errCode) = ErrorHandler.getErrorMessagePair(
+        val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
             context, err, ErrorHandler.Builder()
                 .className(className)
                 .build()
         )
-        context.getString(
-            commonR.string.play_custom_error_handler_msg,
-            customErrMessage,
-            errCode
-        )
+
+        val finalErrMessage = customErrMessage
+            ?: errMsg
+            ?: context.getString(networkR.string.default_request_error_unknown)
+
+        if (showErrorCode) {
+            context.getString(
+                commonR.string.play_custom_error_handler_msg,
+                finalErrMessage,
+                errCode
+            )
+        } else { finalErrMessage }
     }
     showToaster(
-        errMessage,
-        Toaster.TYPE_ERROR,
+        message = errMessage,
+        type = Toaster.TYPE_ERROR,
         duration = duration,
         actionLabel = actionLabel,
         actionListener = actionListener,
@@ -123,7 +132,7 @@ internal fun Date.toCalendar(): Calendar {
     return calendar
 }
 
-const val DATE_FORMAT_RFC3339 = "yyyy-MM-dd'T'HH:mm:ssXXX"
+const val DATE_FORMAT_RFC3339 = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
 const val DATE_FORMAT_BROADCAST_SCHEDULE = "EEEE, d MMMM y - HH:mm"
 
 internal fun String.toDateWithFormat(format: String): Date {

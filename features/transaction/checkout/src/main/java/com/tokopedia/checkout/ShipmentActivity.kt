@@ -8,13 +8,10 @@ import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.utils.Switch
-import timber.log.Timber
 
 class ShipmentActivity : BaseCheckoutActivity() {
     private var shipmentFragment: ShipmentFragment? = null
     private var oldShipmentFragment: com.tokopedia.checkout.old.view.ShipmentFragment? = null
-
-    private var isBundleToggleOn: Boolean? = null
 
     override fun setupBundlePass(extras: Bundle?) {
         // No-op
@@ -34,28 +31,13 @@ class ShipmentActivity : BaseCheckoutActivity() {
         val pageSource = intent.getStringExtra(CheckoutConstant.EXTRA_CHECKOUT_PAGE_SOURCE)
                 ?: CheckoutConstant.CHECKOUT_PAGE_SOURCE_PDP
         val bundle = intent.extras
-        isBundleToggleOn = Switch.isBundleToggleOn(this)
-        if (isBundleToggleOn == true) {
+        val isBundleToggleOn = Switch.isBundleToggleOn(this)
+        if (isBundleToggleOn) {
             shipmentFragment = ShipmentFragment.newInstance(isOneClickShipment, leasingId, pageSource, bundle)
             return shipmentFragment
         } else {
             oldShipmentFragment = com.tokopedia.checkout.old.view.ShipmentFragment.newInstance(isOneClickShipment, leasingId, pageSource, bundle)
             return oldShipmentFragment
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        validateRecreateCheckout()
-    }
-
-    private fun validateRecreateCheckout() {
-        try {
-            if (isBundleToggleOn != null && isBundleToggleOn != Switch.isBundleToggleOn(this)) {
-                recreate()
-            }
-        } catch (t: Throwable) {
-            Timber.d(t)
         }
     }
 

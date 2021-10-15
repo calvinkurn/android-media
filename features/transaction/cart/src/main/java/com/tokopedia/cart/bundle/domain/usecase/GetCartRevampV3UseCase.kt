@@ -1,6 +1,5 @@
 package com.tokopedia.cart.bundle.domain.usecase
 
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.ShopGroupSimplifiedGqlResponse
@@ -10,7 +9,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
-import java.io.IOException
 import javax.inject.Inject
 
 class GetCartRevampV3UseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
@@ -36,7 +34,6 @@ class GetCartRevampV3UseCase @Inject constructor(@ApplicationContext private val
 
         val request = GraphqlRequest(getQueryCartRevampV3(), ShopGroupSimplifiedGqlResponse::class.java, params)
         val response = graphqlRepository.response(listOf(request)).getSuccessData<ShopGroupSimplifiedGqlResponse>()
-//        val response = Gson().fromJson(getJsonFromResource("cart_dummy.json"), ShopGroupSimplifiedGqlResponse::class.java)
 
         if (response.shopGroupSimplifiedResponse.status == "OK") {
             return response.shopGroupSimplifiedResponse.data
@@ -52,21 +49,6 @@ class GetCartRevampV3UseCase @Inject constructor(@ApplicationContext private val
         const val PARAM_KEY_STATE = "state"
 
         const val PARAM_VALUE_ID = "id"
-    }
-
-    fun getJsonFromResource(path: String): String {
-        var json = ""
-        try {
-            val inputStream = this.javaClass.classLoader!!.getResourceAsStream(path)
-            val size = inputStream.available()
-            val buffer = ByteArray(size)
-            inputStream.read(buffer)
-            inputStream.close()
-            json = String(buffer, Charsets.UTF_8)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return json
     }
 
 }

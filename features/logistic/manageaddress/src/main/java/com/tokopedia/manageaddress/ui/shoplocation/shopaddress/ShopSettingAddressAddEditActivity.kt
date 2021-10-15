@@ -13,7 +13,6 @@ import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.di.DaggerShopLocationComponent
 import com.tokopedia.manageaddress.di.ShopLocationComponent
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationOldUiModel
-import com.tokopedia.shop.settings.address.view.ShopSettingAddressAddEditFragment
 
 class ShopSettingAddressAddEditActivity: BaseSimpleActivity(), HasComponent<ShopLocationComponent> {
     override fun getComponent() = DaggerShopLocationComponent.builder().baseAppComponent(

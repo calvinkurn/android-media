@@ -27,15 +27,15 @@ data class ShopLayoutWidget(
 
     data class Widget(
             @SerializedName("widgetID")
-            val widgetID: String = "",
+            var widgetID: String = "",
             @SerializedName("widgetMasterID")
-            val widgetMasterID: String = "",
+            var widgetMasterID: String = "",
             @SerializedName("layoutOrder")
             val layoutOrder: Int = -1,
             @SerializedName("name")
-            val name: String = "",
+            var name: String = "",
             @SerializedName("type")
-            val type: String = "",
+            var type: String = "",
             @SerializedName("header")
             val header: Header = Header(),
             @SerializedName("data")

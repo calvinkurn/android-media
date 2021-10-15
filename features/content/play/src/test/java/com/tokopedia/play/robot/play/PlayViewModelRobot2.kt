@@ -1,11 +1,13 @@
 package com.tokopedia.play.robot.play
 
+import com.google.android.gms.cast.framework.CastContext
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.robot.Robot
+import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.timer.TimerFactory
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
@@ -58,6 +60,7 @@ class PlayViewModelRobot2(
     private val repo: PlayViewerRepository,
     playAnalytic: PlayNewAnalytic,
     timerFactory: TimerFactory,
+    castPlayerHelper: CastPlayerHelper
 ) : Robot {
 
     val viewModel: PlayViewModel
@@ -87,6 +90,7 @@ class PlayViewModelRobot2(
             repo,
             playAnalytic,
             timerFactory,
+            castPlayerHelper
         )
     }
 
@@ -179,6 +183,7 @@ fun createPlayViewModelRobot(
     repo: PlayViewerRepository = mockk(relaxed = true),
     playAnalytic: PlayNewAnalytic = mockk(relaxed = true),
     timerFactory: TimerFactory = mockk(relaxed = true),
+    castPlayerHelper: CastPlayerHelper = mockk(relaxed = true),
     fn: PlayViewModelRobot2.() -> Unit = {}
 ): PlayViewModelRobot2 {
     return PlayViewModelRobot2(
@@ -205,6 +210,6 @@ fun createPlayViewModelRobot(
         repo = repo,
         playAnalytic = playAnalytic,
         timerFactory = timerFactory,
-
+        castPlayerHelper = castPlayerHelper
     ).apply(fn)
 }

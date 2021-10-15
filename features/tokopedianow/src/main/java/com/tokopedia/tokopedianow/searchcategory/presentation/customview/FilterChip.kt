@@ -2,15 +2,17 @@ package com.tokopedia.tokopedianow.searchcategory.presentation.customview
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.databinding.ChipTokopedianowCategoryFilterBinding
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifyprinciples.Typography
 
 class FilterChip: BaseCustomView, View.OnClickListener {
+
+    private var binding: ChipTokopedianowCategoryFilterBinding? = null
 
     var listener: Listener? = null
     private var state = false
@@ -18,8 +20,6 @@ class FilterChip: BaseCustomView, View.OnClickListener {
             R.attr.category_filter_chip_on,
             R.attr.category_filter_chip_off,
     )
-    private var chipImage: ImageUnify? = null
-    private var chipTitle: Typography? = null
 
     constructor(context: Context): super(context) {
         init()
@@ -38,18 +38,15 @@ class FilterChip: BaseCustomView, View.OnClickListener {
     }
 
     private fun init() {
-        View.inflate(context, R.layout.chip_tokopedianow_category_filter, this)
-
+        binding = ChipTokopedianowCategoryFilterBinding.inflate(LayoutInflater.from(context),this, true)
         background = ContextCompat.getDrawable(context, R.drawable.tokopedianow_category_filter_chip_selector)
-        chipImage = findViewById(R.id.tokoNowCategoryFilterImage)
-        chipTitle = findViewById(R.id.tokoNowCategoryFilterTitle)
 
         setOnClickListener(this)
     }
 
     fun setContent(model: Model) {
-        chipImage?.loadImageRounded(model.imageUrl, 4.0f)
-        chipTitle?.text = model.title
+        binding?.tokoNowCategoryFilterImage?.loadImageRounded(model.imageUrl, 4.0f)
+        binding?.tokoNowCategoryFilterTitle?.text = model.title
         state = model.state
 
         refreshDrawableState()

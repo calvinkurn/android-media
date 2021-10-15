@@ -123,6 +123,11 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
     override fun processInitialGetCartData(cartId: String, initialLoad: Boolean, isLoadingTypeRefresh: Boolean, getCartState: Int) {
         view?.let {
+            if (it.isBundleToggleChanged()) {
+                it.recreateActivity()
+                return
+            }
+
             if (initialLoad) {
                 it.renderLoadGetCartData()
             } else if (!isLoadingTypeRefresh) {
@@ -184,6 +189,11 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     override fun processUpdateCartData(fireAndForget: Boolean, onlyTokoNowProducts: Boolean) {
         view?.let {
             if (!fireAndForget) {
+                if (it.isBundleToggleChanged()) {
+                    it.recreateActivity()
+                    return
+                }
+
                 it.showProgressLoading()
             }
 

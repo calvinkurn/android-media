@@ -498,6 +498,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                @Nullable String cornerId,
                                                @Nullable String deviceId,
                                                @Nullable String leasingId) {
+        if (getView().isBundleToggleChanged()) {
+            getView().recreateActivity();
+            return;
+        }
+
         if (isReloadData) {
             getView().setHasRunningApiCall(true);
             getView().showLoading();
@@ -617,6 +622,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 String deviceId,
                                 String cornerId,
                                 String leasingId) {
+        if (getView().isBundleToggleChanged()) {
+            getView().recreateActivity();
+            return;
+        }
+
         removeErrorShopProduct();
         CheckoutRequest checkoutRequest = generateCheckoutRequest(null,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId

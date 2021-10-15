@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.cart.bundle.view.CartFragment
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity
 import com.tokopedia.purchase_platform.common.utils.Switch
-import timber.log.Timber
 
 class CartActivity : BaseCheckoutActivity() {
 
@@ -13,8 +12,6 @@ class CartActivity : BaseCheckoutActivity() {
     private var oldFragment: com.tokopedia.cart.old.view.CartFragment? = null
     private var cartId: String? = null
     private var productId: Long = 0L
-
-    private var isBundleToggleOn: Boolean? = null
 
     override fun getLayoutRes() = R.layout.activity_cart
 
@@ -53,28 +50,13 @@ class CartActivity : BaseCheckoutActivity() {
         bundle.putString(EXTRA_CART_ID, cartId)
         bundle.putLong(EXTRA_PRODUCT_ID, productId)
         bundle.putBoolean(EXTRA_IS_FROM_CART_ACTIVITY, true)
-        isBundleToggleOn = Switch.isBundleToggleOn(this)
-        if (isBundleToggleOn == true) {
+        val isBundleToggleOn = Switch.isBundleToggleOn(this)
+        if (isBundleToggleOn) {
             fragment = CartFragment.newInstance(bundle, "")
             return fragment
         } else {
             oldFragment = com.tokopedia.cart.old.view.CartFragment.newInstance(bundle, "")
             return oldFragment
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        validateRecreateCart()
-    }
-
-    private fun validateRecreateCart() {
-        try {
-            if (isBundleToggleOn != null && isBundleToggleOn != Switch.isBundleToggleOn(this)) {
-                recreate()
-            }
-        } catch (t: Throwable) {
-            Timber.d(t)
         }
     }
 

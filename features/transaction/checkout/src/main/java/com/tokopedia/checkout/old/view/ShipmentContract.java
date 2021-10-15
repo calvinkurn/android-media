@@ -162,6 +162,10 @@ public interface ShipmentContract {
         void logOnErrorLoadCourier(Throwable throwable, int itemPosition);
 
         void logOnErrorCheckout(Throwable throwable, String request);
+
+        boolean isBundleToggleChanged();
+
+        void recreateActivity();
     }
 
     interface AnalyticsActionListener {
