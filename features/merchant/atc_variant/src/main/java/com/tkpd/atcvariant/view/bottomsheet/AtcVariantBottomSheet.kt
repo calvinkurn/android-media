@@ -525,6 +525,15 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 ?: ""
         val variantTitle = adapter.getHeaderDataModel()?.listOfVariantTitle?.joinToString(separator = ", ")
                 ?: ""
+
+        val ratesEstimateData = variantAggregatorData?.getP2RatesEstimateByProductId(productId)?.p2RatesData
+        val cheapestShippingPrice = ratesEstimateData?.cheapestShippingPrice?.toLong()?.toString() ?: ""
+        val shippingCourier = ratesEstimateData?.title ?: ""
+        val shippingEta = ratesEstimateData?.etaText ?: ""
+
+        val buyerDistrictId = variantAggregatorData?.chosenAddressDistrictId ?: ""
+        val sellerDistrictId = viewModel.getSelectedWarehouse(productId)?.districtId ?: ""
+
         ProductTrackingCommon.eventEcommerceAddToCart(
                 userId = userSessionInterface.userId,
                 cartId = cartId,
@@ -545,7 +554,13 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                         ?: "",
                 bebasOngkirType = variantAggregatorData?.getBebasOngkirStringType(productId) ?: "",
                 pageSource = aggregatorParams?.pageSource ?: "",
-                cdListName = aggregatorParams?.trackerCdListName ?: "")
+                cdListName = aggregatorParams?.trackerCdListName ?: "",
+                isCod = variantAggregatorData?.isCod ?: false,
+                cheapestShippingPrice = cheapestShippingPrice,
+                shippingCourier = shippingCourier,
+                shippingEta = shippingEta,
+                buyerSellerDistrictId = "$buyerDistrictId - $sellerDistrictId"
+        )
     }
 
     private fun onSuccessOcs(result: AddToCartDataModel) {

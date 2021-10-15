@@ -319,7 +319,8 @@ object DynamicProductDetailTracking {
 
         fun eventEcommerceBuy(actionButton: Int, buttonText: String, userId: String,
                               cartId: String, trackerAttribution: String, multiOrigin: Boolean, variantString: String,
-                              productInfo: DynamicProductInfoP1?, boType: Int) {
+                              productInfo: DynamicProductInfoP1?, boType: Int, ratesEstimateData: P2RatesEstimateData?,
+                              buyerDistrictId: String, sellerDistrictId: String) {
             val productId = productInfo?.basic?.productID ?: ""
             val shopId = productInfo?.basic?.shopID ?: ""
             val productName = productInfo?.data?.name ?: ""
@@ -342,6 +343,12 @@ object DynamicProductDetailTracking {
             val categoryId = productInfo?.basic?.category?.detail?.map {
                 it.id
             }?.joinToString("/") ?: ""
+
+            val dimension10 = productInfo?.data?.isCod ?: false
+            val dimension12 = ratesEstimateData?.cheapestShippingPrice?.toLong()?.toString() ?: ""
+            val dimension14 = ratesEstimateData?.title ?: ""
+            val dimension16 = ratesEstimateData?.etaText ?: ""
+            val dimension120 = "$buyerDistrictId - $sellerDistrictId"
 
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.KEY_EVENT, "addToCart",
@@ -367,15 +374,20 @@ object DynamicProductDetailTracking {
                             ProductTrackingConstant.Tracking.CATEGORY, categoryName,
                             ProductTrackingConstant.Tracking.VARIANT, variantString,
                             ProductTrackingConstant.Tracking.QUANTITY, quantity,
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_10, dimension10,
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_12, dimension12,
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_14, dimension14,
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_16, dimension16,
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_38, trackerAttribution,
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_40, "null",
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_45, cartId,
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_54, TrackingUtil.getMultiOriginAttribution(multiOrigin),
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_79, shopId,
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_80, shopName,
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_81, shopType,
-                            ProductTrackingConstant.Tracking.KEY_DIMENSION_45, cartId,
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_82, categoryId,
-                            ProductTrackingConstant.Tracking.KEY_DIMENSION_40, "null",
-                            ProductTrackingConstant.Tracking.KEY_DIMENSION_54, TrackingUtil.getMultiOriginAttribution(multiOrigin),
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_83, boTypeString,
-                            ProductTrackingConstant.Tracking.KEY_DIMENSION_38, trackerAttribution
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_120, dimension120
                     ))))))
         }
 

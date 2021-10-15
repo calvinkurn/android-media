@@ -284,7 +284,9 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                 rates = data.ratesEstimate,
                 reData = data.restrictionInfo,
                 uspImageUrl = data.uniqueSellingPoint.uspBoe.uspIcon,
-                cashBackPercentage = data.isCashback.percentage
+                cashBackPercentage = data.isCashback.percentage,
+                isCod = data.isCod,
+                chosenAddressDistrictId = chosenAddressRequestHelper.getChosenAddress()?.districtId ?: ""
         )
     }
 }
