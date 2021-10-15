@@ -293,13 +293,4 @@
         tools:visibility="visible"
         />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/user_winner_log"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toTopOf="@id/view_pinned"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
-
 </com.tokopedia.play.view.custom.PlayInteractionConstraintLayout>

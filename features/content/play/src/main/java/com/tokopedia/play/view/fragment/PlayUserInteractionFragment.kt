@@ -918,9 +918,6 @@ class PlayUserInteractionFragment @Inject constructor(
                     }
                     RemindToLikeEvent -> likeView.playReminderAnimation()
                     is PreloadLikeBubbleIconEvent -> likeBubbleView.preloadIcons(event.urls)
-                    is UserWinnerLog -> {
-                        view?.findViewById<Typography>(R.id.user_winner_log)?.text = event.data
-                    }
                 }
             }
         }
