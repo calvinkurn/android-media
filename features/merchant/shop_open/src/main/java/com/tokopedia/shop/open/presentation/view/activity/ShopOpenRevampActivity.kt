@@ -133,3 +133,4 @@ class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
         }
     }
 }
+
