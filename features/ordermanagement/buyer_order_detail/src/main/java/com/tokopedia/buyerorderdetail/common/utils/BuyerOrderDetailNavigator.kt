@@ -129,9 +129,15 @@ class BuyerOrderDetailNavigator(
         val intent = RouteManager.getIntent(activity, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, buyerOrderDetailData.productListUiModel.productListHeaderUiModel.shopId)
         intent.putExtra(ApplinkConst.Chat.INVOICE_ID, buyerOrderDetailData.orderStatusUiModel.orderStatusHeaderUiModel.orderId)
         intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, buyerOrderDetailData.orderStatusUiModel.orderStatusInfoUiModel.invoice.invoice)
-        intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, buyerOrderDetailData.productListUiModel.productList.firstOrNull()?.productName.orEmpty())
+        val productName =
+            buyerOrderDetailData.productListUiModel.productList.firstOrNull()?.productName ?:
+            buyerOrderDetailData.productListUiModel.productBundlingList?.firstOrNull()?.bundleItemList?.firstOrNull()?.productName
+        intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, productName.orEmpty())
         intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, buyerOrderDetailData.orderStatusUiModel.orderStatusInfoUiModel.purchaseDate)
-        intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, buyerOrderDetailData.productListUiModel.productList.firstOrNull()?.productThumbnailUrl.orEmpty())
+        val productThumbnail =
+            buyerOrderDetailData.productListUiModel.productList.firstOrNull()?.productThumbnailUrl ?:
+            buyerOrderDetailData.productListUiModel.productBundlingList?.firstOrNull()?.bundleItemList?.firstOrNull()?.productThumbnailUrl
+        intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, productThumbnail.orEmpty())
         intent.putExtra(ApplinkConst.Chat.INVOICE_URL, buyerOrderDetailData.orderStatusUiModel.orderStatusInfoUiModel.invoice.url)
         intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, buyerOrderDetailData.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId)
         intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, buyerOrderDetailData.orderStatusUiModel.orderStatusHeaderUiModel.orderStatus)
