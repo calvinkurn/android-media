@@ -426,14 +426,7 @@ class TokoNowRecentPurchaseFragment:
         return remoteConfigInstance.abTestPlatform
     }
 
-    private fun isNavOld(): Boolean {
-        return try {
-            getAbTestPlatform().getString(ConstantKey.AB_TEST_EXP_NAME, ConstantKey.AB_TEST_VARIANT_OLD) == ConstantKey.AB_TEST_VARIANT_OLD
-        } catch (e: Exception) {
-            e.printStackTrace()
-            true
-        }
-    }
+    private fun isNavOld(): Boolean = false
 
     private fun setupRecyclerView() {
         context?.let {
