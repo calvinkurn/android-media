@@ -81,8 +81,6 @@ object ScreenShootPageHelper {
         val selectedPage = sharedPref.getSelectedFragment(defVal = otherPage)
         val page = pages.firstOrNull { it == selectedPage }
 
-        sharedPref.resetSelectedFragment()
-
         return page ?: otherPage
     }
 

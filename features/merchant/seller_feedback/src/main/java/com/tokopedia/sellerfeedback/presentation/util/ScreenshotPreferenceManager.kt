@@ -37,10 +37,6 @@ class ScreenshotPreferenceManager(private val context: Context) {
         return getString(SELECTED_PAGE, defVal)
     }
 
-    fun resetSelectedFragment() {
-        sharedPref.remove(SELECTED_PAGE)
-    }
-
     private fun getString(key: String, defVal: String = EMPTY_STRING): String {
         return sharedPref.getString(key, defVal) ?: defVal
     }
