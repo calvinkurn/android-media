@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.home.presentation.viewmodel
 
+import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
@@ -7,7 +8,9 @@ import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.visitable.BannerDataModel
+import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
@@ -18,7 +21,9 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTypeFactory
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowLayoutUiModel
 import com.tokopedia.tokopedianow.home.domain.model.GetRecentPurchaseResponse.*
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.domain.model.KeywordSearchData
@@ -28,8 +33,13 @@ import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeLayoutDataUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRecentPurchaseUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetTickerUseCase
+import com.tokopedia.tokopedianow.home.presentation.adapter.HomeTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
+import com.tokopedia.tokopedianow.util.TestUtils.getPrivateField
+import com.tokopedia.tokopedianow.util.TestUtils.getPrivateMethod
+import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -46,7 +56,7 @@ import org.junit.Rule
 import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
-import java.lang.reflect.Modifier
+import kotlin.coroutines.Continuation
 
 abstract class TokoNowHomeViewModelTestFixture {
 
@@ -81,7 +91,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     protected lateinit var viewModel : TokoNowHomeViewModel
 
     private val privateHomeLayoutItemList by lazy {
-        getPrivateField<MutableList<HomeLayoutItemUiModel>>(viewModel, "homeLayoutItemList")
+        viewModel.getPrivateField<MutableList<HomeLayoutItemUiModel>>("homeLayoutItemList")
     }
 
     @Before
@@ -361,16 +371,26 @@ abstract class TokoNowHomeViewModelTestFixture {
         viewModel.mockPrivateField("homeLayoutItemList", null)
     }
 
-    private inline fun <reified T>getPrivateField(owner: Any, name: String): T? {
-        return owner::class.java.getDeclaredField(name).let {
-            it.isAccessible = true
-            return@let it.get(owner) as T
-        }
+    protected fun getLayoutComponentData(warehouseId: String) {
+        viewModel.getPrivateMethod(
+            "getLayoutComponentData",
+            String::class.java,
+            Continuation::class.java
+        ).invoke(viewModel, warehouseId, Continuation<Any>(CoroutineTestDispatchersProvider.io) {})
     }
 
-    private fun Any.mockPrivateField(name: String, value: Any?) {
-        this::class.java.getDeclaredField(name)
-            .also { it.isAccessible = true }
-            .set(this, value)
+    object UnknownHomeLayout: HomeLayoutUiModel("1") {
+        override fun type(typeFactory: HomeTypeFactory?) = 0
+    }
+
+    object UnknownTokoNowLayout: TokoNowLayoutUiModel("1") {
+        override fun type(typeFactory: TokoNowTypeFactory?) = 0
+    }
+
+    object UnknownLayout: HomeComponentVisitable {
+        override fun visitableId(): String? = null
+        override fun equalsWith(b: Any?): Boolean = false
+        override fun getChangePayloadFrom(b: Any?): Bundle? = null
+        override fun type(typeFactory: HomeComponentTypeFactory?) = 0
     }
 }

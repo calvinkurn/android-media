@@ -2353,5 +2353,34 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         viewModel.homeLayoutList
             .verifyValueEquals(null)
     }
+
+    @Test
+    fun `given unknown layout when getLayoutComponentData should not call any use case`() {
+        val unknownLayout = HomeLayoutItemUiModel(
+            UnknownLayout,
+            HomeLayoutItemState.NOT_LOADED
+        )
+        val unknownHomeLayout = HomeLayoutItemUiModel(
+            UnknownHomeLayout,
+            HomeLayoutItemState.NOT_LOADED
+        )
+        val unknownTokoNowLayout = HomeLayoutItemUiModel(
+            UnknownTokoNowLayout,
+            HomeLayoutItemState.NOT_LOADED
+        )
+
+        addHomeLayoutItem(unknownLayout)
+        addHomeLayoutItem(unknownHomeLayout)
+        addHomeLayoutItem(unknownTokoNowLayout)
+
+        getLayoutComponentData(warehouseId = "1")
+
+        verifyGetCategoryListUseCaseNotCalled()
+        verifyGetRecentPurchaseUseCaseNotCalled()
+        verifyGetMiniCartUseCaseNotCalled()
+
+        viewModel.homeLayoutList
+            .verifyValueEquals(null)
+    }
 }
 
