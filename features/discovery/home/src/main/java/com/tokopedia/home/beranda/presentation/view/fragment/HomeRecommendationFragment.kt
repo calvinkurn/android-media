@@ -330,8 +330,6 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         viewModel.loadInitialPage(tabName, recomId, DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE, getLocationParamString())
     }
 
-    override fun onProductWithPmProImpressed(pmProView: View?, position: Int) { }
-
     private fun initListeners() {
         if (view == null) return
         recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
