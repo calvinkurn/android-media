@@ -33,6 +33,7 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
     protected companion object {
         const val EXTRA_PRODUCT_ID = "extra_product_id"
         const val EXTRA_IS_BUNDLING = "extra_is_bundling"
+        const val EXTRA_IS_MULTILOCATION = "extra_is_multilocation"
     }
 
     @Inject
@@ -54,7 +55,9 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
         super.onViewCreated(view, savedInstanceState)
         val productId = arguments?.getString(EXTRA_PRODUCT_ID).orEmpty()
         val isBundling = arguments?.getBoolean(EXTRA_IS_BUNDLING).orFalse()
+        val isMultiLocation = arguments?.getBoolean(EXTRA_IS_MULTILOCATION).orFalse()
 
+        setupTicker(isMultiLocation)
         setupSaveBtn()
         setupVariantList()
         setupBottomSheet()
@@ -128,6 +131,10 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
         btnSave?.setOnClickListener {
             viewModel.saveVariants()
         }
+    }
+
+    private fun setupTicker(isMultiLocation: Boolean) {
+        ticker_product_manage_edit_price_variant_multiloc?.showWithCondition(isMultiLocation)
     }
 
     private fun getData(productId: String, isBundle: Boolean) {
