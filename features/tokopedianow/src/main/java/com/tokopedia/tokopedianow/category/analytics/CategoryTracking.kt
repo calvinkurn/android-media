@@ -635,6 +635,12 @@ object CategoryTracking {
     }
 
     fun sendOOCOpenScreenTracking() {
-        TrackApp.getInstance().gtm.sendScreenAuthenticated(TOKONOW_OOC_SCREEN_NAME)
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(
+            TOKONOW_OOC_SCREEN_NAME,
+            mapOf<String, String>(
+                KEY_BUSINESS_UNIT to BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE,
+                KEY_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+            )
+        )
     }
 }
