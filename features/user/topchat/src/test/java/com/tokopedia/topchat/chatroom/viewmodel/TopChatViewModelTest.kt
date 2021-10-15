@@ -3,16 +3,20 @@ package com.tokopedia.topchat.chatroom.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.*
 import com.tokopedia.topchat.chatroom.domain.usecase.GetExistingMessageIdUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.GetShopFollowingUseCase
+import com.tokopedia.topchat.chatroom.view.viewmodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -29,6 +33,9 @@ class TopChatViewModelTest {
     lateinit var getShopFollowingUseCase: GetShopFollowingUseCase
 
     @RelaxedMockK
+    lateinit var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase
+
+    @RelaxedMockK
     lateinit var remoteConfig: RemoteConfig
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
@@ -36,6 +43,7 @@ class TopChatViewModelTest {
     private val testShopId = "123"
     private val testUserId = "345"
     private val source = "testSource"
+    private val expectedThrowable = Throwable("Oops!")
 
     @Before
     fun before() {
@@ -43,6 +51,7 @@ class TopChatViewModelTest {
         viewModel = TopChatViewModel(
             getExistingMessageIdUseCase,
             getShopFollowingUseCase,
+            toggleFavouriteShopUseCase,
             dispatchers,
             remoteConfig
         )
@@ -93,16 +102,15 @@ class TopChatViewModelTest {
     @Test
     fun should_get_throwable_when_failed_get_message_id() {
         //Given
-        val expectedResult = Throwable("Oops!")
         coEvery {
             getExistingMessageIdUseCase.invoke(any())
-        } throws expectedResult
+        } throws expectedThrowable
 
         //When
         viewModel.getMessageId(testShopId, testUserId, source)
 
         //Then
-        Assert.assertEquals(viewModel.messageId.value, Fail(expectedResult))
+        Assert.assertEquals(viewModel.messageId.value, Fail(expectedThrowable))
     }
 
     @Test
@@ -129,10 +137,9 @@ class TopChatViewModelTest {
     @Test
     fun should_get_throwable_when_failed_get_shop_following() {
         //Given
-        val expectedResult = Throwable("Oops!")
         coEvery {
             getShopFollowingUseCase.invoke(any())
-        } throws expectedResult
+        } throws expectedThrowable
 
         //When
         viewModel.getShopFollowingStatus(testShopId.toLong())
@@ -140,7 +147,82 @@ class TopChatViewModelTest {
         //Then
         Assert.assertEquals(
             viewModel.shopFollowing.value,
-            Fail(expectedResult)
+            Fail(expectedThrowable)
+        )
+    }
+
+    @Test
+    fun should_get_boolean_result_when_success_follow_unfollow_shop() {
+        //Given
+        val booleanResult = true
+        val expectedResult = Pair<BroadcastSpamHandlerUiModel?, Result<Boolean>>(
+            null, Success(booleanResult))
+        coEvery {
+            toggleFavouriteShopUseCase.createObservable(requestParams = any()).toBlocking().first()
+        } returns booleanResult
+
+        //When
+        viewModel.followUnfollowShop(testShopId)
+
+        //Then
+        Assert.assertEquals(
+            viewModel.followUnfollowShop.value,
+            expectedResult
+        )
+    }
+
+    @Test
+    fun should_get_throwable_when_failed_follow_unfollow_shop() {
+        //Given
+        coEvery {
+            toggleFavouriteShopUseCase.createObservable(requestParams = any()).toBlocking().first()
+        } throws expectedThrowable
+
+        //When
+        viewModel.followUnfollowShop(testShopId)
+
+        //Then
+        Assert.assertEquals(
+            (viewModel.followUnfollowShop.value?.second as Fail).throwable.message,
+            expectedThrowable.message
+        )
+    }
+
+    @Test
+    fun should_get_boolean_result_when_success_request_follow_shop() {
+        //Given
+        val booleanResult = true
+        val broadcastSpamHandlerUiModelTest = mockk<BroadcastSpamHandlerUiModel>(relaxed = true)
+        val expectedResult = Pair(broadcastSpamHandlerUiModelTest, Success(booleanResult))
+        coEvery {
+            toggleFavouriteShopUseCase.createObservable(requestParams = any()).toBlocking().first()
+        } returns booleanResult
+
+        //When
+        viewModel.followUnfollowShop(testShopId, element = broadcastSpamHandlerUiModelTest)
+
+        //Then
+        Assert.assertEquals(
+            viewModel.followUnfollowShop.value,
+            expectedResult
+        )
+    }
+
+    @Test
+    fun should_get_throwable_when_failed_request_follow_shop() {
+        //Given
+        val broadcastSpamHandlerUiModelTest = mockk<BroadcastSpamHandlerUiModel>(relaxed = true)
+        coEvery {
+            toggleFavouriteShopUseCase.createObservable(requestParams = any()).toBlocking().first()
+        } throws expectedThrowable
+
+        //When
+        viewModel.followUnfollowShop(testShopId, element = broadcastSpamHandlerUiModelTest)
+
+        //Then
+        Assert.assertEquals(
+            (viewModel.followUnfollowShop.value?.second as Fail).throwable.message,
+            expectedThrowable.message
         )
     }
 }

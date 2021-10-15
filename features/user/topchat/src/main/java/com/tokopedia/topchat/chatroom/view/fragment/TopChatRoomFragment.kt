@@ -1904,7 +1904,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun requestFollowShop(element: BroadcastSpamHandlerUiModel) {
         viewModel.followUnfollowShop(
             action = ToggleFavouriteShopUseCase.Action.FOLLOW,
-            shopId = shopId.toString()
+            shopId = shopId.toString(),
+            element = element
         )
     }
 
