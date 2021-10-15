@@ -28,7 +28,7 @@ class DateFilterAdapterFactoryImpl(
 
     override fun type(item: DateFilterItem.MonthPickerItem): Int = MonthPickerViewHolder.RES_LAYOUT
 
-    override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
+    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             DateFilterClickViewHolder.RES_LAYOUT -> DateFilterClickViewHolder(
                 parent,
