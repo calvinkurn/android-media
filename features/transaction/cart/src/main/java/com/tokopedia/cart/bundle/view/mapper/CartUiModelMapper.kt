@@ -348,7 +348,6 @@ object CartUiModelMapper {
                 } else {
                     cartDetail.bundleDetail.bundleMaxOrder
                 }
-                originalQuantity = product.productQuantity
                 quantity = getBundleProductQuantity(cartDetail, product)
                 bundleId = cartDetail.bundleDetail.bundleId
                 bundleType = cartDetail.bundleDetail.bundleType

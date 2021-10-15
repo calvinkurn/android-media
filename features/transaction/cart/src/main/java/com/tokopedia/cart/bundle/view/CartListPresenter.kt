@@ -450,7 +450,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                     cartId = cartItemHolderData.cartId
                     notes = cartItemHolderData.notes
                     if (cartItemHolderData.isBundlingItem) {
-                        quantity = cartItemHolderData.originalQuantity
+                        quantity = cartItemHolderData.quantity * cartItemHolderData.bundleQuantity
                     } else {
                         quantity = cartItemHolderData.quantity
                     }

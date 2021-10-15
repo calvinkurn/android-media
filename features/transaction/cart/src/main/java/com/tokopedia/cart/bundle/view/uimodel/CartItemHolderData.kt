@@ -36,7 +36,6 @@ data class CartItemHolderData(
         var productWeight: Int = 0,
         var parentId: String = "",
         var productCashBack: String = "",
-        var originalQuantity: Int = 0,
         var quantity: Int = 0,
         var notes: String = "",
         var maxNotesLength: Int = 0,
