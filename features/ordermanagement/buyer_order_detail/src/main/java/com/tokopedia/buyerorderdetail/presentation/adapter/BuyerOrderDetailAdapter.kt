@@ -209,4 +209,12 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
             notifyItemChanged(index, oldItem to newItem)
         }
     }
+
+    fun removeDigitalRecommendation() {
+        val index = visitables.indexOfLast { it is DigitalRecommendationUiModel }
+        if (index != -1) {
+            visitables.removeAt(index)
+            notifyItemRemoved(index)
+        }
+    }
 }

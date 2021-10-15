@@ -23,6 +23,7 @@ import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActivity
 import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailContentAnimator
@@ -55,7 +56,10 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.ProductViewListener, TickerViewHolder.TickerViewHolderListener {
+class BuyerOrderDetailFragment : BaseDaggerFragment(),
+        ProductViewHolder.ProductViewListener,
+        TickerViewHolder.TickerViewHolderListener,
+        DigitalRecommendationViewHolder.ActionListener {
 
     companion object {
         @JvmStatic
@@ -98,7 +102,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         SaveInstanceCacheManager(requireContext(), true)
     }
     private val typeFactory: BuyerOrderDetailTypeFactory by lazy {
-        BuyerOrderDetailTypeFactory(this, navigator, this, digitalRecommendationData)
+        BuyerOrderDetailTypeFactory(this, navigator, this, digitalRecommendationData, this)
     }
     private val adapter: BuyerOrderDetailAdapter by lazy {
         BuyerOrderDetailAdapter(typeFactory)
@@ -207,6 +211,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     override fun onClickShipmentInfoTnC() {
         BuyerOrderDetailTracker.eventClickSeeShipmentInfoTNC(viewModel.getOrderStatusId(), viewModel.getOrderId())
+    }
+
+    override fun hideDigitalRecommendation() {
+        adapter.removeDigitalRecommendation()
     }
 
     private fun restoreFragmentState(savedInstanceState: Bundle) {

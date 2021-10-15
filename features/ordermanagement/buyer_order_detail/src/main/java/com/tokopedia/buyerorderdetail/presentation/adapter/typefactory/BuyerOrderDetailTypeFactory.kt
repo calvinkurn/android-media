@@ -13,7 +13,8 @@ class BuyerOrderDetailTypeFactory(
         private val productViewListener: ProductViewHolder.ProductViewListener,
         private val navigator: BuyerOrderDetailNavigator,
         private val tickerViewHolderListener: TickerViewHolder.TickerViewHolderListener,
-        private val digitalRecommendationData: DigitalRecommendationData
+        private val digitalRecommendationData: DigitalRecommendationData,
+        private val digitalRecommendationListener: DigitalRecommendationViewHolder.ActionListener
 ) : BaseAdapterTypeFactory() {
 
     fun type(awbInfoUiModel: ShipmentInfoUiModel.AwbInfoUiModel): Int {
@@ -96,7 +97,7 @@ class BuyerOrderDetailTypeFactory(
             ThinDashedDividerViewHolder.LAYOUT -> ThinDashedDividerViewHolder(parent)
             ThinDividerViewHolder.LAYOUT -> ThinDividerViewHolder(parent)
             TickerViewHolder.LAYOUT -> TickerViewHolder(parent, navigator, tickerViewHolderListener)
-            DigitalRecommendationViewHolder.LAYOUT -> DigitalRecommendationViewHolder(parent, digitalRecommendationData)
+            DigitalRecommendationViewHolder.LAYOUT -> DigitalRecommendationViewHolder(parent, digitalRecommendationData, digitalRecommendationListener)
             else -> super.createViewHolder(parent, type)
         }
     }
