@@ -228,6 +228,7 @@ ext {
             sellerorder                     : ":features:transaction:sellerorder",
             buyerorder                      : ":features:transaction:buyerorder",
             oneclickcheckout                : ":features:transaction:oneclickcheckout",
+            wishlist                        : ":features:transaction:wishlist",
             snapshot                        : ":features:ordermanagement:snapshot",
             ordermanagementhistory          : ":features:ordermanagement:orderhistory",
             buyerorderdetail                : ":features:ordermanagement:buyer_order_detail",

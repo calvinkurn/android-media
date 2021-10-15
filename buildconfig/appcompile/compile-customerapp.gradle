@@ -206,6 +206,7 @@ includeIfEnabled("features:transaction:promo_checkout_marketplace")
 includeIfEnabled("features:transaction:sellerorder")
 includeIfEnabled("features:transaction:oneclickcheckout")
 includeIfEnabled("features:transaction:minicart")
+includeIfEnabled("features:transaction:wishlist")
 
 includeIfEnabled("features:communication:push-notification-common")
 

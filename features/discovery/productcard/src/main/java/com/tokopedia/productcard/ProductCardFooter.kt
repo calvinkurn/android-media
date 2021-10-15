@@ -33,6 +33,9 @@ internal fun View.renderProductCardFooter(
         buttonRemoveFromWishlist?.hide()
         renderSimilarProductButton(productCardModel)
     }
+
+    buttonSecondary?.showWithCondition(productCardModel.hasSecondaryButton)
+    buttonTambahKeranjang?.showWithCondition(productCardModel.hasTambahKeranjangButton)
 }
 
 internal fun renderStockBar(progressBarStock: ProgressBarUnify?, textViewStock: Typography?, productCardModel: ProductCardModel) {
