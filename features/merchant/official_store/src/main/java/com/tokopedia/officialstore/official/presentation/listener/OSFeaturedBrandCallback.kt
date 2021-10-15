@@ -10,8 +10,9 @@ import com.tokopedia.officialstore.official.presentation.dynamic_channel.Dynamic
  * Created by yfsx on 5/31/21.
  */
 class OSFeaturedBrandCallback (private val dcEventHandler: DynamicChannelEventHandler, private val tracking: OfficialStoreTracking?): FeaturedBrandListener {
-    override fun onSeeAllClicked(channelModel: ChannelModel, position: Int) {
+    override fun onSeeAllClicked(channelModel: ChannelModel, position: Int, applink: String) {
         tracking?.eventClickAllFeaturedBrand(dcEventHandler.getOSCategory()?.title ?: "")
+        dcEventHandler.goToApplink(applink)
     }
 
     override fun onLegoItemImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {

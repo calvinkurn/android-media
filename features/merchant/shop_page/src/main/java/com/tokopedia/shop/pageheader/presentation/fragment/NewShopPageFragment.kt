@@ -98,7 +98,7 @@ import com.tokopedia.shop.common.view.viewmodel.ShopPageFollowingStatusSharedVie
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
-import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
+import com.tokopedia.shop.home.view.fragment.OldShopPageHomeFragment
 import com.tokopedia.shop.note.view.bottomsheet.ShopNoteBottomSheet
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
@@ -114,6 +114,7 @@ import com.tokopedia.shop.common.util.ShopUtil.isUsingNewShareBottomSheet
 import com.tokopedia.shop.common.util.ShopUtil.joinStringWithDelimiter
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageFab
 import com.tokopedia.shop.common.view.model.ShopPageFabConfig
+import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.pageheader.presentation.NewShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
@@ -1430,7 +1431,7 @@ class NewShopPageFragment :
 
             override fun onTabSelected(tab: TabLayout.Tab) {
                 val position = tab.position
-                viewPager?.setCurrentItem(position, false)
+                viewPager?.setCurrentItem(position, true)
                 tabLayout?.getTabAt(position)?.let{
                     viewPagerAdapter?.handleSelectedTab(it, true)
                 }
@@ -1457,10 +1458,8 @@ class NewShopPageFragment :
                         hideBottomSheetSellerMigration()
                     }
                 }
-                viewPager?.post {
-                    checkIfShouldShowOrHideScrollToTopButton(position)
-                    checkIfShouldShowOrHideShopPageFab(position)
-                }
+                hideScrollToTopButton()
+                hideShopPageFab()
                 isTabClickByUser = false
             }
         })
@@ -1516,10 +1515,18 @@ class NewShopPageFragment :
         var selectedPosition = viewPager?.currentItem.orZero()
         if (tabLayout?.tabCount == 0) {
             if (shouldOverrideTabToHome) {
-                selectedPosition = if (viewPagerAdapter?.isFragmentObjectExists(ShopPageHomeFragment::class.java) == true) {
-                    viewPagerAdapter?.getFragmentPosition(ShopPageHomeFragment::class.java).orZero()
+                selectedPosition = if(!isUsingNewShopHomeTab()) {
+                    if (viewPagerAdapter?.isFragmentObjectExists(OldShopPageHomeFragment::class.java) == true) {
+                        viewPagerAdapter?.getFragmentPosition(OldShopPageHomeFragment::class.java).orZero()
+                    } else {
+                        selectedPosition
+                    }
                 } else {
-                    selectedPosition
+                    if (viewPagerAdapter?.isFragmentObjectExists(ShopPageHomeFragment::class.java) == true) {
+                        viewPagerAdapter?.getFragmentPosition(ShopPageHomeFragment::class.java).orZero()
+                    } else {
+                        selectedPosition
+                    }
                 }
             }
             if (shouldOverrideTabToReview) {
@@ -1624,21 +1631,43 @@ class NewShopPageFragment :
 
     private fun getHomeFragment(): Fragment? {
         return if (isShowHomeTab()) {
-            ShopPageHomeFragment.createInstance(
-                    shopId,
-                    shopPageHeaderDataModel?.isOfficial ?: false,
-                    shopPageHeaderDataModel?.isGoldMerchant ?: false,
-                    shopPageHeaderDataModel?.shopName.orEmpty(),
-                    shopAttribution ?: "",
-                    shopRef
-            ).apply {
-                shopViewModel?.productListData?.let {
-                    setInitialProductListData(it)
+            if(!isUsingNewShopHomeTab()) {
+                OldShopPageHomeFragment.createInstance(
+                        shopId,
+                        shopPageHeaderDataModel?.isOfficial ?: false,
+                        shopPageHeaderDataModel?.isGoldMerchant ?: false,
+                        shopPageHeaderDataModel?.shopName.orEmpty(),
+                        shopAttribution ?: "",
+                        shopRef
+                ).apply {
+                    shopViewModel?.productListData?.let {
+                        setInitialProductListData(it)
+                    }
+                }
+            } else{
+                ShopPageHomeFragment.createInstance(
+                        shopId,
+                        shopPageHeaderDataModel?.isOfficial ?: false,
+                        shopPageHeaderDataModel?.isGoldMerchant ?: false,
+                        shopPageHeaderDataModel?.shopName.orEmpty(),
+                        shopAttribution ?: "",
+                        shopRef
+                ).apply {
+                    shopViewModel?.productListData?.let {
+                        setInitialProductListData(it)
+                    }
+                    shopViewModel?.homeWidgetLayoutData?.let{
+                        setListWidgetLayoutData(it)
+                    }
                 }
             }
         } else {
             null
         }
+    }
+
+    private fun isUsingNewShopHomeTab(): Boolean {
+        return ShopUtil.isUsingNewShopHomeTab()
     }
 
     private fun onErrorGetShopPageTabData(e: Throwable?) {
@@ -1698,6 +1727,9 @@ class NewShopPageFragment :
 
         val shopPageHomeFragment: Fragment? = viewPagerAdapter?.getRegisteredFragment(TAB_POSITION_HOME)
         if (shopPageHomeFragment is ShopPageHomeFragment) {
+            shopPageHomeFragment.clearCache()
+        }
+        if (shopPageHomeFragment is OldShopPageHomeFragment) {
             shopPageHomeFragment.clearCache()
         }
         isRefresh = true

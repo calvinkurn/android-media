@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/logoutLayout"
     android:layout_width="match_parent"
     android:layout_height="@dimen/setting_card_height"
     android:layout_marginTop="@dimen/setting_logout_margin_top"
-    android:background="?attr/selectableItemBackground"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:background="?attr/selectableItemBackground">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/logoutTitle"
@@ -13,11 +14,11 @@
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/setting_logout_margin_start"
         android:gravity="center_vertical"
-        android:textColor="@color/Unify_G500"
         android:text="@string/setting_logout"
+        android:textColor="@color/Unify_G500"
+        app:layout_constraintStart_toStartOf="parent"
         app:typographyType="body_1"
-        app:typographyWeight="reguler"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:typographyWeight="reguler" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/appVersionText"
@@ -26,9 +27,9 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:gravity="center_vertical"
         android:textColor="@color/Unify_N700_32"
+        app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="body_1"
         app:typographyWeight="reguler"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:text="Versi 2.69"/>
+        tools:text="Versi 2.69" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

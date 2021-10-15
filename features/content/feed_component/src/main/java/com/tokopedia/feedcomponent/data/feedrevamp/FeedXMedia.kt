@@ -2,6 +2,7 @@ package com.tokopedia.feedcomponent.data.feedrevamp
 
 import android.view.View
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 
 data class FeedXMedia(
     @SerializedName("id")

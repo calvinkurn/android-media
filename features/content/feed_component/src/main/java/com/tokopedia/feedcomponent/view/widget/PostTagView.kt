@@ -8,9 +8,8 @@ import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMediaTagging
+import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.util.util.*
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
@@ -24,14 +23,15 @@ private const val PRODUCT_DOT_ONE_SEC = 1000L
 private const val POSITION_TOP = 1
 private const val POSITION_BOTTOM = 2
 private const val POINTER_HEIGHT = 8
+private const val POINTER_ACTUAL_WIDTH = 79
 private const val BUBBLE_HEIGHT = 52
 private const val DOT_HALF_DIMEN = 8
 private const val CENTER_POS_X = 0.5
-private const val THRESHOLD_POS_Y_TO_INFLATE_TAGGING_BUBBLE_DOWNWARD = 0.75
+private const val THRESHOLD_POS_Y_TO_INFLATE_TAGGING_BUBBLE_DOWNWARD = 0.70
 
 class PostTagView @JvmOverloads constructor(
     context: Context,
-    feedXMediaTagging: FeedXMediaTagging,
+    feedXMediaTagging: com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
 ) : ConstraintLayout(context, attrs, defStyleAttr), LifecycleObserver {
@@ -53,7 +53,7 @@ class PostTagView @JvmOverloads constructor(
     private var postImageWidth: Int = 0
     private var postImageHeight: Int = 0
     private var position: Int = 0
-    private var feedXTag: FeedXMediaTagging = feedXMediaTagging
+    private var feedXTag: com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging = feedXMediaTagging
     private var initialBubbleVisible: Boolean
 
     init {
@@ -126,13 +126,13 @@ class PostTagView @JvmOverloads constructor(
                     0)
             } else {
                 productTagExpandedView.setMargin(bubbleMarginStart,
-                    (dotMarginTop - DOT_HALF_DIMEN.toPx()) - BUBBLE_HEIGHT.toPx(),
+                    (dotMarginTop - POINTER_HEIGHT.toPx() - BUBBLE_HEIGHT.toPx()),
                     0,
                     0)
             }
 
             finalPointerView.setMargin(
-                dotMarginStart - DOT_HALF_DIMEN.toPx(),
+                dotMarginStart - POINTER_ACTUAL_WIDTH / 2,
                 0,
                 0,
                 0
@@ -157,8 +157,10 @@ class PostTagView @JvmOverloads constructor(
             if (position == POSITION_BOTTOM) {
                 params.setMargins(bubbleMarginStart, dotMarginTop + POINTER_HEIGHT.toPx(), 0, 0)
             } else {
-                params.setMargins(bubbleMarginStart, dotMarginTop - BUBBLE_HEIGHT.toPx(), 0, 0)
-
+                params.setMargins(bubbleMarginStart,
+                    dotMarginTop - POINTER_HEIGHT.toPx() - BUBBLE_HEIGHT.toPx(),
+                    0,
+                    0)
             }
             productTagExpandedView.layoutParams = params
             showBubbleViewWithAnimation(productTagExpandedView, position, finalPointerView)

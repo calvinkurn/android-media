@@ -37,6 +37,7 @@ import org.junit.Rule
 import org.junit.Test
 import java.io.File
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
+import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
 
 class NewShopPageViewModelTest {
 
@@ -139,7 +140,13 @@ class NewShopPageViewModelTest {
 
     @Test
     fun `check whether shopPageP1Data value is Success`() {
-        coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1()
+        coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1(
+                shopInfoHomeTypeData = ShopPageGetHomeType(
+                        homeLayoutData = ShopPageGetHomeType.HomeLayoutData(
+                                widgetIdList = listOf(ShopPageGetHomeType.HomeLayoutData.WidgetIdList())
+                        )
+                )
+        )
         coEvery { getShopPageHeaderLayoutUseCase.get().executeOnBackground() } returns ShopPageHeaderLayoutResponse()
         coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct(
                 data = listOf(ShopProduct(),ShopProduct())
@@ -158,8 +165,7 @@ class NewShopPageViewModelTest {
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
         assert(shopPageViewModel.productListData.data.size == 2)
-
-
+        assert(shopPageViewModel.homeWidgetLayoutData.widgetIdList.isNotEmpty())
     }
 
     @Test

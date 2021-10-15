@@ -98,7 +98,6 @@ public interface ApplinkConst {
     String DISCOVERY_NEW_USER = "tokopedia://discovery/pengguna-baru";
     String HOME_EXPLORE = "tokopedia://jump";
     String PROMO = "tokopedia://promo";
-    String PROMO_CATEGORY = "tokopedia://promo/{promo_id}";
     String PROMO_WITH_DASH = "tokopedia://promo/{promo_id}/";
     String PROMO_DETAIL = "tokopedia://promo/{slug}";
     String DISCOVERY_CATEGORY = "tokopedia://category";
@@ -226,12 +225,16 @@ public interface ApplinkConst {
 
     String TC_LANDING = "tokopedia://tc-landing";
 
+    String HOST_PLAY_NOTIF_VIDEO = "play-notif-video";
     String PLAY_NOTIFICATION_VIDEO = "tokopedia://play-notif-video";
     String INBOX_TICKET = "tokopedia://customercare";
     String TICKET_DETAIL = "tokopedia://customercare/{ticket_id}";
 
     String OVO_REGISTER_INIT = "tokopedia://ovo-reg-init";
     String OVO_FINAL_PAGE = "tokopedia://ovo-final";
+    String HOST_OVOUPGRADE = "ovoupgrade";
+    String OVOUPGRADE = "tokopedia://ovoupgrade";
+    String OVOUPGRADE_STATUS = "tokopedia://ovoupgradestatus/{status}/{message}";
 
     String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
 
@@ -269,6 +272,7 @@ public interface ApplinkConst {
     String NOTIFICATION = "tokopedia://notification";
     String NOTIFICATION_TROUBLESHOOTER = "tokopedia://notification-troubleshooter";
     String PMS = "tokopedia://buyer/payment";
+    String GOPAY_KYC = "tokopedia://payment/gopayKyc";
     String PURCHASE_ORDER = "tokopedia://buyer/order";
     String PURCHASE_ORDER_DETAIL = "tokopedia://buyer/order/{order_id}";
     String PURCHASE_CONFIRMED = "tokopedia://buyer/confirmed";
@@ -316,6 +320,10 @@ public interface ApplinkConst {
     String AFFILIATE_CREATE_POST = "tokopedia://affiliate/create_post/{product_id}/{ad_id}";
     String AFFILIATE_DRAFT_POST = "tokopedia://affiliate/draft/{draft_id}";
     String AFFILIATE_DEFAULT_CREATE_POST = "tokopedia://affiliate/create_post/";
+    String AFFILIATE_PRODUCT_PICKER_FROM_SHOP_NO_PARAM = "tokopedia://productpickerfromshop";
+    String AFFILIATE_PRODUCT_PICKER_FROM_SHOP_HOST = "productpickerfromshop";
+    String AFFILIATE_DEFAULT_CREATE_POST_V2 = "tokopedia://affiliate/create_post_v2";
+    String AFFILIATE_DASHBOARD = "tokopedia://affiliate/dashboard";
     String AFFILIATE_ONBOARDING = "tokopedia://affiliate/onboarding";
     String AFFILIATE_PRODUCT = "tokopedia://affiliate/product/{product_id}";
     String AFFILIATE = "tokopedia://affiliate";
@@ -343,6 +351,10 @@ public interface ApplinkConst {
 
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
 
+    String HOME_CREDIT = "home-credit";
+    String FINTECH = "fintech";
+    String KTP = "ktp";
+    String SELFIE = "selfie";
     String HOME_CREDIT_KTP_WITHOUT_TYPE = "tokopedia://fintech/home-credit/ktp";
     String HOME_CREDIT_KTP_WITH_TYPE = "tokopedia://fintech/home-credit/ktp/{type}";
     String HOME_CREDIT_SELFIE_WITHOUT_TYPE = "tokopedia://fintech/home-credit/selfie";
@@ -446,6 +458,7 @@ public interface ApplinkConst {
     String DISCOVERY = "tokopedia://discovery";
 
     String MONEYIN = "tokopedia://money_in/device_validation";
+    String IMAGE_PICKER_V2 = "tokopedia://image-picker/v2";
 
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";
@@ -458,7 +471,6 @@ public interface ApplinkConst {
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
         String SHOP_PAGE_PRODUCTS_CREATE_SHOWCASE = "sellerapp://shop/showcase-create";
-        String SALES = "sellerapp://sales";
         String TOPADS_CREDIT = "sellerapp://topads/buy";
         String TOPADS_AUTO_TOPUP = "sellerapp://topads/auto-topup";
         String TOPADS_PRODUCT_CREATE = "sellerapp://topads/create";

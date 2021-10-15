@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
@@ -20,9 +21,11 @@ import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCa
 import com.tokopedia.tokopedianow.categoryfilter.presentation.uimodel.CategoryFilterChip
 import com.tokopedia.tokopedianow.categoryfilter.presentation.view.CategoryFilterChipView
 import com.tokopedia.tokopedianow.categoryfilter.presentation.viewmodel.TokoNowCategoryFilterViewModel
+import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowCategoryFilterBinding
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class TokoNowCategoryFilterBottomSheet : BottomSheetUnify() {
@@ -46,17 +49,18 @@ class TokoNowCategoryFilterBottomSheet : BottomSheetUnify() {
     @Inject
     lateinit var viewModel:  TokoNowCategoryFilterViewModel
 
+    private var binding by autoClearedNullable<BottomsheetTokopedianowCategoryFilterBinding>()
+
     private var filterChipViewList = mutableListOf<CategoryFilterChipView>()
     private var accordionFilter: AccordionUnify? = null
     private var btnApply: UnifyButton? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val itemView = View.inflate(context,
-            R.layout.bottomsheet_tokopedianow_category_filter, null)
+        binding = BottomsheetTokopedianowCategoryFilterBinding.inflate(LayoutInflater.from(context))
         val title = context?.getString(R.string.tokopedianow_category_filter_title).orEmpty()
         clearContentPadding = true
-        setChild(itemView)
+        setChild(binding?.root)
         setTitle(title)
     }
 
@@ -84,8 +88,8 @@ class TokoNowCategoryFilterBottomSheet : BottomSheetUnify() {
     }
 
     private fun initView() {
-        accordionFilter = view?.findViewById(R.id.accordion_filter)
-        btnApply = view?.findViewById(R.id.btn_apply)
+        accordionFilter = binding?.accordionFilter
+        btnApply = binding?.btnApply
     }
 
     private fun setupActionButton() {

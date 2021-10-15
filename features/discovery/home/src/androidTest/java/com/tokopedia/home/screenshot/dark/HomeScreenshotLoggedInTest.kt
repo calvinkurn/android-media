@@ -17,7 +17,6 @@ import com.tokopedia.home.screenshot.HomeScreenshotTestHelper.getWidgetScreensho
 import com.tokopedia.home.screenshot.HomeScreenshotTestHelper.turnOffAnimation
 import com.tokopedia.home_component.util.HomeNetworkUtil
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.CHOOSE_ADDRESS_ROLLENCE_KEY
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey.BALANCE_EXP
 import com.tokopedia.remoteconfig.RollenceKey.BALANCE_VARIANT_NEW
@@ -137,9 +136,6 @@ class HomeScreenshotLoggedInTest {
         RemoteConfigInstance.getInstance().abTestPlatform.setString(
                 NAVIGATION_EXP_TOP_NAV,
                 NAVIGATION_VARIANT_REVAMP)
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                CHOOSE_ADDRESS_ROLLENCE_KEY,
-                CHOOSE_ADDRESS_ROLLENCE_KEY)
         RemoteConfigInstance.getInstance().abTestPlatform.setString(
                 BALANCE_EXP,
                 BALANCE_VARIANT_NEW)
