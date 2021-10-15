@@ -122,7 +122,13 @@ object CartUiModelMapper {
                 }
                 maximumWeightWording = availableGroup.shop.maximumWeightWording
                 maximumShippingWeight = availableGroup.shop.maximumShippingWeight
-                isAllSelected = availableGroup.checkboxState
+                if (availableGroup.checkboxState) {
+                    isAllSelected = availableGroup.checkboxState
+                    isPartialSelected = false
+                } else {
+                    isAllSelected = false
+                    isPartialSelected = isPartialSelected(availableGroup)
+                }
                 isCollapsible = isTokoNow && cartData.availableSection.availableGroupGroups.size > 1 && productUiModelList.size > 1
                 isCollapsed = isCollapsible
                 isError = false
@@ -133,6 +139,18 @@ object CartUiModelMapper {
         }
 
         return cartShopHolderDataList
+    }
+
+    private fun isPartialSelected(availableGroup: AvailableGroup): Boolean {
+        cartDetailLoop@ for (cartDetail in availableGroup.cartDetails) {
+            productLoop@ for (product in cartDetail.products) {
+                if (product.isCheckboxState) {
+                    return true
+                }
+            }
+        }
+
+        return false
     }
 
     fun mapUnavailableShopUiModel(context: Context?, cartData: CartData): Pair<List<Any>, DisabledAccordionHolderData?> {
@@ -210,7 +228,8 @@ object CartUiModelMapper {
                     }
                     maximumWeightWording = unavailableGroup.shop.maximumWeightWording
                     maximumShippingWeight = unavailableGroup.shop.maximumShippingWeight
-                    isAllSelected = cartData.isGlobalCheckboxState
+                    isAllSelected = false
+                    isPartialSelected = false
                     isCollapsible = isTokoNow && cartData.availableSection.availableGroupGroups.size > 1 && productUiModelList.size > 1
                     isCollapsed = isCollapsible
                     isError = true
