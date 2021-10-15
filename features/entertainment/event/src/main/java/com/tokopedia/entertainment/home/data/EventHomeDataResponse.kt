@@ -1,6 +1,7 @@
 package com.tokopedia.entertainment.home.data
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class EventHomeDataResponse(
@@ -65,13 +66,14 @@ data class EventHomeDataResponse(
                         @SerializedName("display_name")
                         val displayName: String = "",
                         @SerializedName("id")
-                        val id: Int = 0,
+                        val id: String = "0",
                         @SerializedName("rating")
                         val rating: Int = 0,
                         @SerializedName("image_app")
                         val imageApp: String = "",
                         @SerializedName("location")
                         val location: String = "",
+                        @SuppressLint("Invalid Data Type")
                         @SerializedName("price")
                         val price: String = "",
                         @SerializedName("sales_price")
@@ -121,7 +123,7 @@ data class EventHomeDataResponse(
                     @SerializedName("display_name")
                     val displayName: String = "",
                     @SerializedName("id")
-                    val id: Int = 0,
+                    val id: String = "0",
                     @SerializedName("name")
                     val name: String = ""
             )
