@@ -14,8 +14,8 @@ import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
-import kotlin.math.min
 import kotlinx.android.synthetic.main.layout_hotel_image_slider.view.*
+import kotlin.math.min
 
 /**
  * @author by jessica on 25/03/19

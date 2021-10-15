@@ -49,10 +49,10 @@ import com.tokopedia.hotel.hoteldetail.util.HotelShare
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
+import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
+import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.getDimens
-import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.mapviewer.activity.MapViewerActivity
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
