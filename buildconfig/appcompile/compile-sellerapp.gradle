@@ -26,9 +26,6 @@ includeIfEnabled("features:content:play_common")
 includeIfEnabled("features:content:play_broadcaster")
 includeIfEnabled("features:content:play_widget")
 
-includeIfEnabled("features:recharge:common_digital")
-includeIfEnabled("features:recharge:digitalproduct")
-
 includeIfEnabled("features:discovery:discovery_common")
 includeIfEnabled("features:discovery:category_common")
 includeIfEnabled("features:discovery:productcard")
