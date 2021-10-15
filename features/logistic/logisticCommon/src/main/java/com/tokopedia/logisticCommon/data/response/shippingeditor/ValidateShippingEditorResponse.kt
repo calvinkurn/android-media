@@ -34,8 +34,7 @@ data class UiContent(
         var body: List<String> = listOf(),
         @SerializedName("ticker")
         var ticker: TickerContent = TickerContent(),
-        @SerializedName("heade" +
-                "r_location")
+        @SerializedName("header_location")
         var headerLocation: String = "",
         @SerializedName("warehouses")
         var warehouses: List<Warehouses> = listOf(),

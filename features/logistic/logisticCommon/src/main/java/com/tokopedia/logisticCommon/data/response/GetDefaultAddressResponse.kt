@@ -1,5 +1,6 @@
 package com.tokopedia.logisticCommon.data.response
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class GetDefaultAddressResponse (
@@ -13,6 +14,7 @@ data class GetDefaultAddress(
 )
 
 data class DefaultAddressData(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("addr_id")
         var addressId: Long = 0,
         @SerializedName("receiver_name")
