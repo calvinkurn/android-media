@@ -23,6 +23,9 @@ import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.ReviewInboxInstance
 import com.tokopedia.review.common.ReviewInboxConstants
@@ -42,10 +45,13 @@ import com.tokopedia.review.feature.inbox.pending.di.DaggerReviewPendingComponen
 import com.tokopedia.review.feature.inbox.pending.di.ReviewPendingComponent
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.ReviewPendingAdapter
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.ReviewPendingAdapterTypeFactory
+import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingCredibilityUiModel
+import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingEmptyUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingOvoIncentiveUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
 import com.tokopedia.review.feature.inbox.pending.presentation.viewmodel.ReviewPendingViewModel
+import com.tokopedia.review.feature.inbox.pending.util.ReviewPendingPreference
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoBottomSheetBuilder
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
@@ -67,6 +73,8 @@ class ReviewPendingFragment :
     companion object {
         const val PARAM_RATING = "rating"
         const val CREATE_REVIEW_REQUEST_CODE = 420
+        const val INBOX_SOURCE = "inbox"
+        const val COACH_MARK_SHOWN = false
         fun createNewInstance(reviewInboxListener: ReviewInboxListener): ReviewPendingFragment {
             return ReviewPendingFragment().apply {
                 this.reviewInboxListener = reviewInboxListener
@@ -82,6 +90,7 @@ class ReviewPendingFragment :
     private var reviewInboxListener: ReviewInboxListener? = null
     private var source: String = ""
     private var containerListener: InboxFragmentContainer? = null
+    private var reviewPendingPreference: ReviewPendingPreference? = null
 
     private var binding by autoCleared<FragmentReviewPendingBinding>()
 
@@ -207,6 +216,7 @@ class ReviewPendingFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initSharedPrefs()
         initView()
         showFullPageLoading()
     }
@@ -297,6 +307,11 @@ class ReviewPendingFragment :
         )
     }
 
+    override fun onReviewCredibilityWidgetClicked() {
+        goToCredibility()
+        ReviewPendingTracking.trackOnCredibilityClicked(viewModel.getUserId())
+    }
+
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
         reviewInboxListener?.reloadCounter()
@@ -316,6 +331,14 @@ class ReviewPendingFragment :
 
     override fun callInitialLoadAutomatically(): Boolean {
         return false
+    }
+
+    override fun shouldShowCoachMark(): Boolean {
+        return reviewPendingPreference?.isShowCoachMark() ?: false
+    }
+
+    override fun updateCoachMark() {
+        reviewPendingPreference?.updateSharedPrefs(COACH_MARK_SHOWN)
     }
 
     private fun initView() {
@@ -427,8 +450,15 @@ class ReviewPendingFragment :
                     hideFullPageLoading()
                     hideError()
                     hideLoading()
+                    if (it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE && shouldShowCredibility()) {
+                        with(it.data.credibilityWidget) {
+                            addCredibilityWidget(imageURL, labelTitle, labelSubtitle)
+                        }
+                    }
                     if (it.data.list.isEmpty() && it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
-                        showEmptyState()
+                        with(it.data.emptyState) {
+                            handleEmptyState(imageURL, labelTitle, labelSubtitle)
+                        }
                     } else {
                         renderReviewData(
                             ReviewPendingMapper.mapProductRevWaitForFeedbackResponseToReviewPendingUiModel(
@@ -553,4 +583,77 @@ class ReviewPendingFragment :
         RouteManager.route(context, ApplinkConst.HOME)
     }
 
+    private fun goToCredibility() {
+        RouteManager.route(
+            context,
+            ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY,
+            viewModel.getUserId(),
+            INBOX_SOURCE
+        )
+    }
+
+    private fun addCredibilityWidget(imageUrl: String, title: String, subtitle: String) {
+        (adapter as? ReviewPendingAdapter)?.insertCredibilityWidget(
+            ReviewPendingCredibilityUiModel(
+                imageUrl,
+                title,
+                subtitle
+            )
+        )
+    }
+
+    private fun initSharedPrefs() {
+        reviewPendingPreference = ReviewPendingPreference(context)
+    }
+
+    private fun shouldShowCredibility(): Boolean {
+        return isNewCredibilityEnabled() && isNewReadingExperienceEnabled()
+    }
+
+    private fun isNewCredibilityEnabled(): Boolean {
+        getAbTestPlatform()?.let {
+            return it.getString(
+                RollenceKey.EXPERIMENT_NAME_REVIEW_CREDIBILITY,
+                RollenceKey.VARIANT_REVIEW_CREDIBILITY_WITHOUT_BOTTOM_SHEET
+            ) == RollenceKey.VARIANT_REVIEW_CREDIBILITY_WITH_BOTTOM_SHEET
+        }
+        return false
+    }
+
+    private fun isNewReadingExperienceEnabled(): Boolean {
+        getAbTestPlatform()?.let {
+            return it.getString(
+                RollenceKey.EXPERIMENT_NAME_REVIEW_PRODUCT_READING,
+                RollenceKey.VARIANT_OLD_REVIEW_PRODUCT_READING
+            ) == RollenceKey.VARIANT_NEW_REVIEW_PRODUCT_READING
+        }
+        return false
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform? {
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform
+        } catch (e: java.lang.IllegalStateException) {
+            null
+        }
+    }
+
+    private fun showCredibilityEmptyState(imageUrl: String, title: String, subtitle: String) {
+        (adapter as? ReviewPendingAdapter)?.insertEmptyModel(
+            ReviewPendingEmptyUiModel(
+                imageUrl,
+                title,
+                subtitle
+            )
+        )
+    }
+
+    private fun handleEmptyState(emptyImageUrl: String, labelTitle: String, labelSubtitle: String) {
+        if (shouldShowCredibility()) {
+            showCredibilityEmptyState(emptyImageUrl, labelTitle, labelSubtitle)
+            showList()
+        } else {
+            showEmptyState()
+        }
+    }
 }

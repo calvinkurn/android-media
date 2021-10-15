@@ -98,7 +98,6 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     //Temporary (disscussion/talk, review/ulasan)
     private var performanceMonitoringP2Other: PerformanceMonitoring? = null
     private var performanceMonitoringP2Login: PerformanceMonitoring? = null
-    private var performanceMonitoringFull: PerformanceMonitoring? = null
 
     var productDetailLoadTimeMonitoringListener: ProductDetailLoadTimeMonitoringListener? = null
 
@@ -120,11 +119,6 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     fun stopMonitoringP2Login() {
         performanceMonitoringP2Login?.stopTrace()
         Embrace.getInstance().endEvent(ProductDetailConstant.PDP_P2_LOGIN_TRACE)
-    }
-
-    fun stopMonitoringFull() {
-        performanceMonitoringFull?.stopTrace()
-        Embrace.getInstance().endEvent(ProductDetailConstant.PDP_P3_TRACE)
     }
 
     fun startMonitoringPltNetworkRequest() {
@@ -316,9 +310,6 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         if (userSessionInterface?.isLoggedIn == true) {
             performanceMonitoringP2Login = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_LOGIN_TRACE)
             Embrace.getInstance().startEvent(ProductDetailConstant.PDP_P2_LOGIN_TRACE, null, false)
-
-            performanceMonitoringFull = PerformanceMonitoring.start(ProductDetailConstant.PDP_P3_TRACE)
-            Embrace.getInstance().startEvent(ProductDetailConstant.PDP_P3_TRACE, null, false)
         }
     }
 
