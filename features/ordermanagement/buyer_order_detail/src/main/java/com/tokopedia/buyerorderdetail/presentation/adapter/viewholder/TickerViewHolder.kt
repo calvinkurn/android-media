@@ -18,6 +18,10 @@ class TickerViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_ticker
+
+        private val refreshableTickerKey = listOf(
+            BuyerOrderDetailMiscConstant.TICKER_KEY_SELLER_ORDER_EXTENSION
+        )
     }
 
     private var element: TickerUiModel? = null
@@ -34,10 +38,14 @@ class TickerViewHolder(
     }
 
     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-        navigator.openAppLink(linkUrl.toString(), false)
+        navigator.openAppLink(linkUrl.toString(), shouldRefreshWhenBack())
         if (element?.actionKey == BuyerOrderDetailMiscConstant.TICKER_KEY_SHIPPING_INFO) {
             listener.onClickShipmentInfoTnC()
         }
+    }
+
+    private fun shouldRefreshWhenBack(): Boolean {
+        return refreshableTickerKey.contains(element?.actionKey.orEmpty())
     }
 
     override fun onDismiss() {}
