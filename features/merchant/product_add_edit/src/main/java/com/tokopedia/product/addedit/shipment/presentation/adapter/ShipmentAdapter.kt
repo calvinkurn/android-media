@@ -57,24 +57,24 @@ class ShipmentAdapter : RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder>
         notifyDataSetChanged()
     }
 
-    fun checkActivatedSpIds(): List<Int> {
-        val activatedListIds = mutableListOf<Int>()
+    fun checkActivatedSpIds(): List<Long> {
+        val activatedListIds = mutableListOf<Long>()
         shipmentCPLitem.forEach { courier ->
             courier.shipperProduct.forEach { product ->
                 if (product.isActive) {
-                    activatedListIds.add(product.shipperProductId.toInt())
+                    activatedListIds.add(product.shipperProductId)
                 }
             }
         }
         return activatedListIds
     }
 
-    fun getActivateSpIds(): List<Int> {
-        val activatedListIds = mutableListOf<Int>()
+    fun getActivateSpIds(): List<Long> {
+        val activatedListIds = mutableListOf<Long>()
         shipmentCPLitem.forEach { courier ->
             courier.shipperProduct.forEach { product ->
                 if (product.isActive) {
-                    activatedListIds.add(product.shipperProductId.toInt())
+                    activatedListIds.add(product.shipperProductId)
                 }
             }
         }
