@@ -1536,7 +1536,13 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     override fun onClickEditPriceButton(product: ProductUiModel) {
-        val editPriceBottomSheet = context?.let { ProductManageQuickEditPriceFragment.createInstance(product, this) }
+        val editPriceBottomSheet = context?.let {
+            ProductManageQuickEditPriceFragment.createInstance(
+                it,
+                product,
+                userSession.isMultiLocationShop,
+                this)
+        }
         editPriceBottomSheet?.show(childFragmentManager, BOTTOM_SHEET_TAG)
         ProductManageTracking.eventEditPrice(product.id)
     }
