@@ -449,7 +449,11 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                     productId = cartItemHolderData.productId
                     cartId = cartItemHolderData.cartId
                     notes = cartItemHolderData.notes
-                    quantity = cartItemHolderData.quantity
+                    if (cartItemHolderData.isBundlingItem) {
+                        quantity = cartItemHolderData.originalQuantity
+                    } else {
+                        quantity = cartItemHolderData.quantity
+                    }
                     bundleInfo = BundleInfo().apply {
                         bundleId = cartItemHolderData.bundleId.toZeroStringIfNullOrBlank()
                         bundleGroupId = cartItemHolderData.bundleGroupId.toZeroStringIfNullOrBlank()

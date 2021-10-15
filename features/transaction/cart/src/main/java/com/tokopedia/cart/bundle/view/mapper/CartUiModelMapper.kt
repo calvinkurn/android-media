@@ -348,16 +348,8 @@ object CartUiModelMapper {
                 } else {
                     cartDetail.bundleDetail.bundleMaxOrder
                 }
-                quantity = if (cartDetail.bundleDetail.bundleQty > 0) {
-                    val tmpQty = product.productQuantity / cartDetail.bundleDetail.bundleQty
-                    if (tmpQty > 0) {
-                        tmpQty
-                    } else {
-                        1
-                    }
-                } else {
-                    1
-                }
+                originalQuantity = product.productQuantity
+                quantity = getBundleProductQuantity(cartDetail, product)
                 bundleId = cartDetail.bundleDetail.bundleId
                 bundleType = cartDetail.bundleDetail.bundleType
                 bundleGroupId = cartDetail.bundleDetail.bundleGroupId
@@ -406,6 +398,19 @@ object CartUiModelMapper {
             isFreeShipping = product.freeShipping.eligible
             campaignId = product.campaignId
             warehouseId = product.warehouseId
+        }
+    }
+
+    private fun getBundleProductQuantity(cartDetail: CartDetail, product: Product): Int {
+        if (cartDetail.bundleDetail.bundleQty > 0) {
+            val tmpQty = product.productQuantity / cartDetail.bundleDetail.bundleQty
+            if (tmpQty > 0) {
+                return tmpQty
+            } else {
+                return 1
+            }
+        } else {
+            return 1
         }
     }
 
