@@ -1,5 +1,6 @@
 package com.tokopedia.unifyorderhistory.domain
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.unifyorderhistory.data.model.FlightResendEmail
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -13,7 +14,7 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 07/08/20.
  */
-class FlightResendEmailUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) {
+class FlightResendEmailUseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) {
     suspend fun executeSuspend(invoiceId: String, email: String): Result<FlightResendEmail.Data> {
         return try {
             val request = GraphqlRequest(QUERY, FlightResendEmail.Data::class.java, generateParam(invoiceId, email))

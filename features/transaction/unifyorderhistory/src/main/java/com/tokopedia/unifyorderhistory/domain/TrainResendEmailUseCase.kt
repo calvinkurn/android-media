@@ -1,5 +1,6 @@
 package com.tokopedia.unifyorderhistory.domain
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_INPUT
 import com.tokopedia.unifyorderhistory.data.model.TrainResendEmail
 import com.tokopedia.unifyorderhistory.data.model.TrainResendEmailParam
@@ -14,7 +15,7 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 08/08/20.
  */
-class TrainResendEmailUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) {
+class TrainResendEmailUseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) {
     suspend fun executeSuspend(param: TrainResendEmailParam): Result<TrainResendEmail.Data> {
         return try {
             val request = GraphqlRequest(QUERY, TrainResendEmail.Data::class.java, generateParam(param))

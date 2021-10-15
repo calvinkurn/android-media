@@ -1,5 +1,6 @@
 package com.tokopedia.unifyorderhistory.domain
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.unifyorderhistory.data.model.RechargeSetFailData
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -13,7 +14,7 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 10/08/20.
  */
-class RechargeSetFailUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) {
+class RechargeSetFailUseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) {
     suspend fun executeSuspend(orderId: Int): Result<RechargeSetFailData.Data> {
         return try {
             val request = GraphqlRequest(QUERY, RechargeSetFailData.Data::class.java, generateParam(orderId))

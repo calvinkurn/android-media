@@ -1,5 +1,6 @@
 package com.tokopedia.unifyorderhistory.domain
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.unifyorderhistory.util.UohConsts.PARAM_INPUT
 import com.tokopedia.unifyorderhistory.data.model.UohListParam
 import com.tokopedia.unifyorderhistory.data.model.UohListOrder
@@ -14,7 +15,7 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 03/07/20.
  */
-class UohListUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) {
+class UohListUseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) {
     suspend fun executeSuspend(param: UohListParam): Result<UohListOrder.Data.UohOrders> {
         return try {
             val request = GraphqlRequest(QUERY, UohListOrder.Data::class.java, generateParam(param))

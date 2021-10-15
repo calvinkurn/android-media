@@ -1,5 +1,6 @@
 package com.tokopedia.unifyorderhistory.domain
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.unifyorderhistory.util.UohConsts.LS_PRINT_GQL_PARAM_ACTION
 import com.tokopedia.unifyorderhistory.util.UohConsts.LS_PRINT_GQL_PARAM_BUSINESS_CODE
 import com.tokopedia.unifyorderhistory.util.UohConsts.LS_PRINT_GQL_PARAM_UUID
@@ -18,7 +19,7 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 04/08/20.
  */
-class LsPrintFinishOrderUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) {
+class LsPrintFinishOrderUseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) {
     suspend fun executeSuspend(verticalId: String): Result<LsPrintData.Data> {
         return try {
             val request = GraphqlRequest(QUERY, LsPrintData.Data::class.java, generateParam(verticalId))
