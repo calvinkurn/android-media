@@ -1260,7 +1260,7 @@ class PlayViewModel @Inject constructor(
 
     private fun setLeaderboardBadgeState(leaderboardInfo: PlayLeaderboardInfoUiModel) {
         if(leaderboardInfo.leaderboardWinners.isNotEmpty()) {
-            _leaderboardUserBadgeState.value = _leaderboardUserBadgeState.value.copy(showLeaderboard = true)
+            _leaderboardUserBadgeState.setValue { copy(showLeaderboard = true) }
         }
     }
 
@@ -1614,10 +1614,11 @@ class PlayViewModel @Inject constructor(
             )
             delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
 
-            _observableUserWinnerStatus.value?.let {
-                if(it.interactiveId.toString() == activeInteractiveId) handleUserWinnerStatus(it)
-                else waitingForSocketOrDuration(activeInteractive, activeInteractiveId)
-            } ?: kotlin.run {
+            val winnerStatus = _observableUserWinnerStatus.value
+            if(winnerStatus != null && winnerStatus.interactiveId.toString() == activeInteractiveId){
+                handleUserWinnerStatus(winnerStatus)
+            }
+            else {
                 waitingForSocketOrDuration(activeInteractive, activeInteractiveId)
             }
         }) {}
@@ -1629,7 +1630,9 @@ class PlayViewModel @Inject constructor(
                 _interactive.value = PlayInteractiveUiState.NoInteractive
         }
 
-        _leaderboardUserBadgeState.value = _leaderboardUserBadgeState.value.copy(showLeaderboard = true, shouldRefreshData = true)
+        _leaderboardUserBadgeState.setValue {
+            copy(showLeaderboard = true, shouldRefreshData = true)
+        }
 
         winnerStatus?.let {
             val activeInteractiveId = repo.getActiveInteractiveId() ?: return
@@ -1651,7 +1654,7 @@ class PlayViewModel @Inject constructor(
             else {
                 setNoInteractive()
             }
-        } ?: kotlin.run {
+        } ?: run {
             setNoInteractive()
         }
     }
@@ -1917,7 +1920,7 @@ class PlayViewModel @Inject constructor(
     private fun handleRefreshLeaderboard() {
         if(_leaderboardUserBadgeState.value.shouldRefreshData) {
             _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Loading
-            _leaderboardUserBadgeState.value = _leaderboardUserBadgeState.value.copy(shouldRefreshData = false)
+            _leaderboardUserBadgeState.setValue { copy(shouldRefreshData = false) }
         }
 
         checkLeaderboard(channelId)
