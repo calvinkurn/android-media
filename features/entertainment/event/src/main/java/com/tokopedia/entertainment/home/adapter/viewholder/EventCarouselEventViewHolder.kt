@@ -14,6 +14,7 @@ import com.tokopedia.entertainment.home.adapter.viewmodel.EventCarouselModel
 import com.tokopedia.entertainment.home.adapter.viewmodel.EventItemModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carouse.view.*
 import kotlinx.android.synthetic.main.ent_layout_viewholder_event_carousel_adapter_item.view.*
@@ -56,6 +57,7 @@ class EventCarouselEventViewHolder(itemView: View,
         val TAG = EventCarouselEventViewHolder::class.java.simpleName
 
         const val EMPTY_DATE = "0"
+        const val RESET_SPACE = 0
     }
 
     class InnerItemAdapter(val carouselListener: TrackingListener,
@@ -91,7 +93,17 @@ class EventCarouselEventViewHolder(itemView: View,
                     text = dateFormated
                 }
             }
-            holder.view.event_price.text = item.price
+
+            holder.view.event_price.apply {
+                if (item.isFree){
+                    text = resources.getString(R.string.ent_free_price)
+                    holder.view.tg_event_home_start_from.gone()
+                    setMargin(RESET_SPACE, RESET_SPACE, RESET_SPACE, RESET_SPACE)
+                } else {
+                    text = item.price
+                    holder.view.tg_event_home_start_from.show()
+                }
+            }
             holder.view.setOnClickListener {
                 carouselListener.clickTopEventProduct(item, productNames,
                         position + 1)

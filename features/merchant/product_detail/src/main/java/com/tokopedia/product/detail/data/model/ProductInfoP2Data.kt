@@ -17,6 +17,7 @@ import com.tokopedia.product.detail.data.model.review.MostHelpfulReviewData
 import com.tokopedia.product.detail.data.model.review.ProductRatingCount
 import com.tokopedia.product.detail.data.model.shop.ProductShopBadge
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureP2
+import com.tokopedia.product.detail.data.model.ticker.ProductTicker
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
@@ -127,7 +128,13 @@ data class ProductInfoP2Data(
 
         @SerializedName("rating")
         @Expose
-        var rating: ProductRatingCount = ProductRatingCount()
+        var rating: ProductRatingCount = ProductRatingCount(),
+
+        @SerializedName("ticker")
+        @Expose
+        var ticker: ProductTicker = ProductTicker()
+
+
 ) {
     data class Response(
             @SerializedName("pdpGetData")
