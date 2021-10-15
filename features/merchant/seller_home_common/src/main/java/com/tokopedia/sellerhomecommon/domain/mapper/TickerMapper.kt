@@ -15,7 +15,6 @@ class TickerMapper @Inject constructor() : BaseResponseMapper<GetTickerResponse,
     override fun mapRemoteDataToUiData(response: GetTickerResponse, isFromCache: Boolean): List<TickerItemUiModel> {
         return response.ticker?.tickers.orEmpty().map {
             TickerItemUiModel(
-                    color = it.color,
                     id = it.id.orEmpty(),
                     message = Utils.fromHtmlWithoutExtraSpace(it.message.orEmpty()),
                     title = Utils.fromHtmlWithoutExtraSpace(it.title.orEmpty()),
