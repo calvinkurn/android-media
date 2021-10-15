@@ -489,7 +489,9 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     // do nothing, preventing break if mainPhoto not in the first item
                 }
                 IMAGE_COUNTER_FIRST -> {
-                    binding?.ivFirstPhotoPreview?.loadImage(item.urlMax300)
+                    binding?.ivFirstPhotoPreview?.loadImage(item.urlMax300){
+                        setPlaceHolder(com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
+                    }
                     binding?.ivFirstPhotoPreview?.setOnClickListener {
                         onPhotoClicked()
                         openImagePreview(imageList, imageIndex, binding?.ivFirstPhotoPreview)
@@ -497,7 +499,9 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     imageCounter++
                 }
                 IMAGE_COUNTER_SECOND -> {
-                    binding?.ivSecondPhotoPreview?.loadImage(item.urlMax300)
+                    binding?.ivSecondPhotoPreview?.loadImage(item.urlMax300){
+                        setPlaceHolder(com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
+                    }
                     binding?.ivSecondPhotoPreview?.setOnClickListener {
                         onPhotoClicked()
                         openImagePreview(imageList, imageIndex, binding?.ivSecondPhotoPreview)
@@ -505,7 +509,9 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     imageCounter++
                 }
                 IMAGE_COUNTER_THIRD -> {
-                    binding?.ivThirdPhotoPreview?.loadImage(item.urlMax300)
+                    binding?.ivThirdPhotoPreview?.loadImage(item.urlMax300){
+                        setPlaceHolder(com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
+                    }
                     binding?.ivThirdPhotoPreview?.setOnClickListener {
                         onPhotoClicked()
                         openImagePreview(imageList, imageIndex, binding?.ivThirdPhotoPreview)
@@ -514,7 +520,9 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 }
             }
             if (item.mainPhoto) {
-                binding?.ivMainPhotoPreview?.loadImage(item.urlMax300)
+                binding?.ivMainPhotoPreview?.loadImage(item.urlMax300){
+                    setPlaceHolder(com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
+                }
                 binding?.ivMainPhotoPreview?.setOnClickListener {
                     onPhotoClicked()
                     openImagePreview(imageList, imageIndex, binding?.ivMainPhotoPreview)
