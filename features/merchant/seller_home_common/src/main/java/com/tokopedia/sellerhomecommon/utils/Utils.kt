@@ -13,6 +13,6 @@ object Utils {
     }
 
     fun fromHtmlWithoutExtraSpace(text: String): String {
-        return text.replace(Regex("\n|(<p.*?>)|</p.*?>"), "")
+        return text.replace(Regex("<p.*?>|</p.*?>|\\n*\$"), "")
     }
 }
