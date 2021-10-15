@@ -61,7 +61,7 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
         setImageAttachment(data, productReplyUiModel)
         setReplyView(data)
         showKejarUlasanLabel(data.isKejarUlasan)
-        setBadRatingReason(data.bad)
+        setBadRatingReason(data.badRatingReason)
     }
 
     private fun setReplyView(data: FeedbackUiModel) {
