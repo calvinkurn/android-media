@@ -5,7 +5,6 @@ import com.tokopedia.graphql.data.GqlParam
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.util.LoggingUtils
-import com.tokopedia.graphql.util.toMapParam
 import com.tokopedia.network.exception.MessageErrorException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

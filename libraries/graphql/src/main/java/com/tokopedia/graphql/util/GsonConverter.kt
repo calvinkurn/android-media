@@ -5,9 +5,11 @@ import com.google.gson.internal.LinkedTreeMap
 import java.lang.IllegalArgumentException
 import java.lang.NullPointerException
 import java.lang.reflect.Type
+import kotlin.math.ceil
 
 
 class GsonConverter : JsonDeserializer<Map<String, Any>> {
+
     override fun deserialize(
         json: JsonElement?,
         typeOfT: Type?,
@@ -21,13 +23,12 @@ class GsonConverter : JsonDeserializer<Map<String, Any>> {
     private fun read(json: JsonElement): Any {
         if (json.isJsonArray) {
             val list: MutableList<Any> = ArrayList()
-            val arr: JsonArray = json.getAsJsonArray()
+            val arr: JsonArray = json.asJsonArray
             for (anArr in arr) {
                 list.add(read(anArr))
             }
             return list
-        }
-        else if (json.isJsonObject) {
+        } else if (json.isJsonObject) {
             val map: MutableMap<String, Any> = LinkedTreeMap()
             val obj: JsonObject = json.asJsonObject
             val entitySet = obj.entrySet()
@@ -37,20 +38,24 @@ class GsonConverter : JsonDeserializer<Map<String, Any>> {
             return map
         } else if (json.isJsonPrimitive) {
             val prim: JsonPrimitive = json.asJsonPrimitive
-            if (prim.isBoolean) {
-                return prim.asBoolean
-            } else if (prim.isString) {
-                return prim.asString
-            } else if (prim.isNumber) {
-                val num = prim.asNumber
-                return if (Math.ceil(num.toDouble()) == num.toLong().toDouble()) {
-                    num.toLong()
+            when {
+                prim.isBoolean -> {
+                    return prim.asBoolean
                 }
-                else {
-                    num.toDouble()
+                prim.isString -> {
+                    return prim.asString
+                }
+                prim.isNumber -> {
+                    val num = prim.asNumber
+                    return if (ceil(num.toDouble()) == num.toLong().toDouble()) {
+                        num.toLong()
+                    } else {
+                        num.toDouble()
+                    }
                 }
             }
         }
+
         return json
     }
 }
