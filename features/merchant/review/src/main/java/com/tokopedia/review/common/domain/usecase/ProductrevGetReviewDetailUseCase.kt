@@ -37,6 +37,7 @@ class ProductrevGetReviewDetailUseCase @Inject constructor(graphqlRepository: Gr
                       reviewerName
                       sentAsAnonymous
                       badRatingReasonFmt
+                      ratingDisclaimer
                     }
                     response {
                       responseText
