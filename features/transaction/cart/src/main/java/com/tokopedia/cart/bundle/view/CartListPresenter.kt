@@ -1222,7 +1222,8 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         var hasChanges = false
         view?.getAllCartDataList()?.let {
             for (cartItemHolderData in it) {
-                if (cartItemHolderData.quantity != cartItemHolderData.originalQty || cartItemHolderData.notes != cartItemHolderData.originalNotes) {
+                if (cartItemHolderData.quantity != cartItemHolderData.originalQty || cartItemHolderData.notes != cartItemHolderData.originalNotes ||
+                        (cartItemHolderData.isBundlingItem && cartItemHolderData.bundleQuantity != cartItemHolderData.originalBundleQuantity)) {
                     hasChanges = true
                     break
                 }
