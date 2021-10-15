@@ -33,6 +33,7 @@ import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringLi
 import com.tokopedia.review.common.util.*
 import com.tokopedia.review.feature.reviewdetail.analytics.ProductReviewDetailTracking
 import com.tokopedia.review.feature.reviewdetail.di.component.ReviewProductDetailComponent
+import com.tokopedia.review.feature.reviewdetail.util.SellerReviewDetailPreference
 import com.tokopedia.review.feature.reviewdetail.util.mapper.SellerReviewProductDetailMapper
 import com.tokopedia.review.feature.reviewdetail.view.adapter.*
 import com.tokopedia.review.feature.reviewdetail.view.bottomsheet.PopularTopicsBottomSheet
@@ -119,6 +120,8 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     private var reviewSellerPerformanceMonitoringListener: ReviewSellerPerformanceMonitoringListener? = null
 
+    private var sharedPreference: SellerReviewDetailPreference? = null
+
     override fun getScreenName(): String = context?.getString(R.string.title_review_detail_page).orEmpty()
 
     override fun onAttach(context: Context) {
@@ -157,6 +160,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         viewModelProductReviewDetail?.setChipFilterDateText(chipFilterBundle)
         initToolbar()
         initViewBottomSheet()
+        initSharedPrefs()
         startNetworkRequestPerformanceMonitoring()
         stopPreparePerformancePageMonitoring()
         observeLiveData()
@@ -407,6 +411,14 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         initBottomSheetFilterPeriod(view, title, filterDetailItemUnify)
     }
 
+    override fun shouldShowTickerForRatingDisclaimer(): Boolean {
+        return sharedPreference?.shouldShowTicker(productID) ?: true
+    }
+
+    override fun updateSharedPreference() {
+        sharedPreference?.updateSharedPrefs(productID)
+    }
+
     private fun initBottomSheetFilterPeriod(view: View, title: String, filterPeriodItemUnify: ArrayList<ListItemUnify>) {
         tracking.eventClickTimeFilter(userSession.shopId.orEmpty(), productID.toString())
         bottomSheetPeriodDetail?.apply {
@@ -637,6 +649,10 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         endlessRecyclerViewScrollListener?.resetState()
         reviewSellerDetailAdapter.removeReviewNotFound()
         reviewSellerDetailAdapter.showLoading()
+    }
+
+    private fun initSharedPrefs() {
+        sharedPreference = SellerReviewDetailPreference(context)
     }
 
 }

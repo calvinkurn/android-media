@@ -41,6 +41,7 @@ class GetProductReviewInitialUseCase @Inject constructor(
                   ratingCount
               }
               reviewCount
+              ratingDisclaimer
             }
         }
         """

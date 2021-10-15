@@ -118,6 +118,7 @@ object SellerReviewProductDetailMapper {
             ratingAvg = productFeedbackDetailResponse.ratingAverage
             reviewCount = productFeedbackDetailResponse.ratingCount
             chipFilter = chipFilterString
+            tickerText = productFeedbackDetailResponse.ratingDisclaimer
         }
     }
 
