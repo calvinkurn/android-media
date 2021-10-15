@@ -317,8 +317,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
                     emptyStateProductView.hide()
                     telcoTelcoProductView.show()
 
-                    val hasTitle = it.product.dataCollections.size > 1
-                    val showTitle = hasTitle && !telcoFilterData.isFilterSelected()
+                    val showTitle = !telcoFilterData.isFilterSelected()
 
                     renderSortFilter(it.product.id, it.filterTagComponents)
                     telcoTelcoProductView.renderProductList(productType, showTitle,

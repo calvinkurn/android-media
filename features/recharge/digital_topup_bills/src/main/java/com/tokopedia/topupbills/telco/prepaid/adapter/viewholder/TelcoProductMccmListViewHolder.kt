@@ -2,7 +2,6 @@ package com.tokopedia.topupbills.telco.prepaid.adapter.viewholder
 
 import android.view.Gravity
 import android.view.View
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -11,7 +10,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.telco.common.awaitNextGlobalLayout
 import com.tokopedia.topupbills.telco.data.TelcoCatalogDataCollection
 import com.tokopedia.topupbills.telco.data.TelcoProduct
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType.PRODUCT_MCCM
@@ -51,7 +49,7 @@ class TelcoProductMccmListViewHolder(itemView: View, val listener: OnClickListen
                     override fun onTrackSpecialProductImpression(itemProduct: TelcoProduct, position: Int) {
                         // do nothing
                     }
-                }, null))
+                }, null, element.products.size == SINGLE_MCCM))
                 telco_mccm_rv.adapter = adapter
 
                 telco_mccm_rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -127,5 +125,7 @@ class TelcoProductMccmListViewHolder(itemView: View, val listener: OnClickListen
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_telco_mccm_list_section_product
+
+        private const val SINGLE_MCCM = 1
     }
 }
