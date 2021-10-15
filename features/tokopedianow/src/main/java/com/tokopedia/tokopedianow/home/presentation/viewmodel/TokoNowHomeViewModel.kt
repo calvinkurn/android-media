@@ -107,7 +107,7 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _miniCartRemove
     val homeAddToCartTracker: LiveData<HomeAddToCartTracker>
         get() = _homeAddToCartTracker
-    val productAddToCartQuantity: LiveData<Result<HomeLayoutListUiModel>>
+    val atcQuantity: LiveData<Result<HomeLayoutListUiModel>>
         get() = _productAddToCartQuantity
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()

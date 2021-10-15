@@ -43,6 +43,7 @@ class HomeAccountUserViewModel @Inject constructor(
     private val getCentralizedUserAssetConfigUseCase: GetCentralizedUserAssetConfigUseCase,
     private val getBalanceAndPointUseCase: GetBalanceAndPointUseCase,
     private val getTokopointsBalanceAndPointUseCase: GetTokopointsBalanceAndPointUseCase,
+    private val getSaldoBalanceUseCase: GetSaldoBalanceUseCase,
     private val getCoBrandCCBalanceAndPointUseCase: GetCoBrandCCBalanceAndPointUseCase,
     private val getWalletEligibleUseCase: GetWalletEligibleUseCase,
     private val getLinkStatusUseCase: GetLinkStatusUseCase,
@@ -217,11 +218,22 @@ class HomeAccountUserViewModel @Inject constructor(
 
     fun getBalanceAndPoint(walletId: String) {
         launchCatchError(block = {
-            if(walletId == AccountConstants.WALLET.TOKOPOINT) {
-                val result = getTokopointsBalanceAndPointUseCase(Unit)
-                setBalanceAndPointValue(result.data, walletId)
-            } else {
-                getOtherBalanceAndPoint(walletId)
+            when (walletId) {
+                AccountConstants.WALLET.TOKOPOINT -> {
+                    val result = getTokopointsBalanceAndPointUseCase(Unit)
+                    setBalanceAndPointValue(result.data, walletId)
+                }
+                AccountConstants.WALLET.SALDO -> {
+                    val result = getSaldoBalanceUseCase(Unit)
+                    setBalanceAndPointValue(result.data, walletId)
+                }
+                AccountConstants.WALLET.CO_BRAND_CC -> {
+                    val result = getCoBrandCCBalanceAndPointUseCase(Unit)
+                    setBalanceAndPointValue(result.data, walletId)
+                }
+                else -> {
+                    getOtherBalanceAndPoint(walletId)
+                }
             }
         }, onError = {
             _balanceAndPoint.value = ResultBalanceAndPoint.Fail(it, walletId)
@@ -238,9 +250,6 @@ class HomeAccountUserViewModel @Inject constructor(
             }
             AccountConstants.WALLET.OVO -> {
                 getBalanceAndPointUseCase(OVO_PARTNER_CODE)
-            }
-            AccountConstants.WALLET.CO_BRAND_CC -> {
-                getCoBrandCCBalanceAndPointUseCase(Unit)
             }
             else -> {
                 BalanceAndPointDataModel()

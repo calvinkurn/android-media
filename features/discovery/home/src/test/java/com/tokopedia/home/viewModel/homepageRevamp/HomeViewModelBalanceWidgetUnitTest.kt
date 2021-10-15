@@ -166,6 +166,9 @@ class HomeViewModelBalanceWidgetUnitTest{
     fun `When get walletapp and getTokopoint success on refresh then show walletapp and tokopoint success state`(){
         every { userSessionInterface.isLoggedIn } returns true
 
+        coEvery{ getWalletEligibilityUseCase.executeOnBackground() } returns WalletStatus(
+            isGoPointsEligible = false
+        )
         coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData(
             TokopointsDrawerList(
                 "false",
@@ -197,7 +200,8 @@ class HomeViewModelBalanceWidgetUnitTest{
             getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase,
             getCoroutineWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
             getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
-            getWalletAppBalanceUseCase = getWalletAppBalanceUseCase
+            getWalletAppBalanceUseCase = getWalletAppBalanceUseCase,
+            getWalletEligibilityUseCase = getWalletEligibilityUseCase
         )
         homeViewModel.setWalletAppRollence(true)
 
@@ -288,7 +292,9 @@ class HomeViewModelBalanceWidgetUnitTest{
     @Test
     fun `When get old wallet and getTokopoint success on refresh then show wallet and tokopoint success state`(){
         every { userSessionInterface.isLoggedIn } returns true
-
+        coEvery{ getWalletEligibilityUseCase.executeOnBackground() } returns WalletStatus(
+            isGoPointsEligible = false
+        )
         coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData(
                 TokopointsDrawerList(
                         "false",
@@ -312,7 +318,8 @@ class HomeViewModelBalanceWidgetUnitTest{
                 getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase,
                 getCoroutineWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
                 getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
-                getWalletAppBalanceUseCase = getWalletAppBalanceUseCase
+                getWalletAppBalanceUseCase = getWalletAppBalanceUseCase,
+                getWalletEligibilityUseCase = getWalletEligibilityUseCase
         )
         homeViewModel.setWalletAppRollence(false)
 
@@ -366,6 +373,9 @@ class HomeViewModelBalanceWidgetUnitTest{
     @Test
     fun `When get walletapp success and type is not linked show Wallet App Not Linked Type section`(){
         every { userSessionInterface.isLoggedIn } returns true
+        coEvery{ getWalletEligibilityUseCase.executeOnBackground() } returns WalletStatus(
+            isGoPointsEligible = false
+        )
         coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData()
         coEvery{ getWalletAppBalanceUseCase.executeOnBackground() } returns WalletAppData(
             WalletappGetBalance(
@@ -386,7 +396,8 @@ class HomeViewModelBalanceWidgetUnitTest{
             getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase,
             getCoroutineWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
             getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
-            getWalletAppBalanceUseCase = getWalletAppBalanceUseCase
+            getWalletAppBalanceUseCase = getWalletAppBalanceUseCase,
+            getWalletEligibilityUseCase = getWalletEligibilityUseCase
         )
 
         homeViewModel.setWalletAppRollence(true)
@@ -400,7 +411,9 @@ class HomeViewModelBalanceWidgetUnitTest{
     fun `When get old wallet success and type is OVO on refresh then show OVO Wallet Type section`(){
         every { userSessionInterface.isLoggedIn } returns true
         coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData()
-
+        coEvery{ getWalletEligibilityUseCase.executeOnBackground() } returns WalletStatus(
+            isGoPointsEligible = false
+        )
         coEvery{ getCoroutineWalletBalanceUseCase.executeOnBackground() } returns WalletBalanceModel(
                 link = true,
                 walletType = HomeBalanceModel.OVO_WALLET_TYPE
@@ -413,7 +426,8 @@ class HomeViewModelBalanceWidgetUnitTest{
                 getHomeUseCase = getHomeUseCase,
                 getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase,
                 getCoroutineWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
-                getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase
+                getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
+                getWalletEligibilityUseCase = getWalletEligibilityUseCase
         )
 
         homeViewModel.setWalletAppRollence(false)
@@ -427,7 +441,9 @@ class HomeViewModelBalanceWidgetUnitTest{
     fun `When get old wallet success and type is OVO and need to show topup on refresh then show OVO Wallet With Topup Type section`(){
         every { userSessionInterface.isLoggedIn } returns true
         coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData()
-
+        coEvery{ getWalletEligibilityUseCase.executeOnBackground() } returns WalletStatus(
+            isGoPointsEligible = false
+        )
         coEvery{ getCoroutineWalletBalanceUseCase.executeOnBackground() } returns WalletBalanceModel(
                 link = true,
                 walletType = HomeBalanceModel.OVO_WALLET_TYPE,
@@ -441,7 +457,8 @@ class HomeViewModelBalanceWidgetUnitTest{
                 getHomeUseCase = getHomeUseCase,
                 getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase,
                 getCoroutineWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
-                getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase
+                getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
+                getWalletEligibilityUseCase = getWalletEligibilityUseCase
         )
 
         homeViewModel.setWalletAppRollence(false)
@@ -455,7 +472,9 @@ class HomeViewModelBalanceWidgetUnitTest{
     fun `When get old wallet success and type is OTHER on refresh then show Other Wallet Type section`(){
         every { userSessionInterface.isLoggedIn } returns true
         coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData()
-
+        coEvery{ getWalletEligibilityUseCase.executeOnBackground() } returns WalletStatus(
+            isGoPointsEligible = false
+        )
         coEvery{ getCoroutineWalletBalanceUseCase.executeOnBackground() } returns WalletBalanceModel(
                 link = true,
                 walletType = ""
@@ -468,7 +487,8 @@ class HomeViewModelBalanceWidgetUnitTest{
                 getHomeUseCase = getHomeUseCase,
                 getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase,
                 getCoroutineWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
-                getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase
+                getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
+                getWalletEligibilityUseCase = getWalletEligibilityUseCase
         )
 
         homeViewModel.setWalletAppRollence(false)
@@ -482,7 +502,9 @@ class HomeViewModelBalanceWidgetUnitTest{
     fun `When get old wallet data success is not linked on refresh then show pending cashback section`(){
         every { userSessionInterface.isLoggedIn } returns true
         coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData()
-
+        coEvery{ getWalletEligibilityUseCase.executeOnBackground() } returns WalletStatus(
+            isGoPointsEligible = false
+        )
         coEvery{ getCoroutineWalletBalanceUseCase.executeOnBackground() } returns WalletBalanceModel(
                 walletType = OVO_WALLET_TYPE,
                 link = false
@@ -497,7 +519,8 @@ class HomeViewModelBalanceWidgetUnitTest{
                 getHomeUseCase = getHomeUseCase,
                 getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase,
                 getCoroutineWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
-                getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase
+                getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
+                getWalletEligibilityUseCase = getWalletEligibilityUseCase
         )
 
         homeViewModel.setWalletAppRollence(false)
@@ -534,6 +557,9 @@ class HomeViewModelBalanceWidgetUnitTest{
     @Test
     fun `When getTokopoint data success on refresh then show all tokopoints widget`(){
         every { userSessionInterface.isLoggedIn } returns true
+        coEvery{ getWalletEligibilityUseCase.executeOnBackground() } returns WalletStatus(
+            isGoPointsEligible = false
+        )
         coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData(
                 TokopointsDrawerList(
                         "false",
@@ -552,7 +578,8 @@ class HomeViewModelBalanceWidgetUnitTest{
                 getHomeUseCase = getHomeUseCase,
                 getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase,
                 getCoroutineWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
-                getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase
+                getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
+                getWalletEligibilityUseCase = getWalletEligibilityUseCase
         )
 
         homeViewModel.refresh(true)
@@ -566,6 +593,9 @@ class HomeViewModelBalanceWidgetUnitTest{
     @Test
     fun `When getTokopoint data with rewards success on refresh then show all tokopoints widget with rewards section`(){
         every { userSessionInterface.isLoggedIn } returns true
+        coEvery{ getWalletEligibilityUseCase.executeOnBackground() } returns WalletStatus(
+            isGoPointsEligible = false
+        )
         coEvery{ getCoroutineWalletBalanceUseCase.executeOnBackground() } returns WalletBalanceModel()
         coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData(
                 TokopointsDrawerList(
@@ -585,7 +615,8 @@ class HomeViewModelBalanceWidgetUnitTest{
                 getHomeUseCase = getHomeUseCase,
                 getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase,
                 getCoroutineWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
-                getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase
+                getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
+                getWalletEligibilityUseCase = getWalletEligibilityUseCase
         )
 
         homeViewModel.refresh(true)
@@ -667,6 +698,9 @@ class HomeViewModelBalanceWidgetUnitTest{
     @Test
     fun `When getWallet data success on retry then show wallet widget success state`(){
         every { userSessionInterface.isLoggedIn } returns true
+        coEvery{ getWalletEligibilityUseCase.executeOnBackground() } returns WalletStatus(
+            isGoPointsEligible = false
+        )
         coEvery{ getCoroutineWalletBalanceUseCase.executeOnBackground() } returns WalletBalanceModel()
         coEvery{ getHomeTokopointsListDataUseCase.executeOnBackground() } returns TokopointsDrawerListHomeData()
         getHomeUseCase.buildBalanceHomeData(balanceType = 2)
@@ -676,7 +710,8 @@ class HomeViewModelBalanceWidgetUnitTest{
                 getHomeUseCase = getHomeUseCase,
                 getHomeTokopointsListDataUseCase = getHomeTokopointsListDataUseCase,
                 getCoroutineWalletBalanceUseCase = getCoroutineWalletBalanceUseCase,
-                getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase
+                getCoroutinePendingCashbackUseCase = getCoroutinePendingCashbackUseCase,
+                getWalletEligibilityUseCase = getWalletEligibilityUseCase
         )
 
         homeViewModel.onRefreshTokoCash()

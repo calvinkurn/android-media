@@ -117,6 +117,7 @@
     <string name="feed_component_unfollow">Unfollow</string>
     <string name="feed_component_not_interested">Tidak Tertarik</string>
     <string name="feed_common_terjual">Terjual</string>
+    <string name="feed_component_edit">Ubah</string>
 
     <!--Follow Functionalities ASSETS-->
     <string name="feed_component_unfollow_success_toast">Berhasil berhenti mengikuti toko ini</string>

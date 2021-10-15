@@ -5,6 +5,7 @@ import com.tokopedia.home_account.view.adapter.delegate.FundsAndInvestmentShimme
 import com.tokopedia.home_account.view.adapter.delegate.FundsAndInvestmentSubtitleDelegate
 import com.tokopedia.home_account.view.adapter.delegate.FundsAndInvestmentTitleDelegate
 import com.tokopedia.home_account.view.adapter.delegate.FundsAndInvestmentWalletDelegate
+import com.tokopedia.home_account.view.adapter.uimodel.SubtitleUiModel
 import com.tokopedia.home_account.view.adapter.uimodel.WalletShimmeringUiModel
 import com.tokopedia.home_account.view.adapter.uimodel.WalletUiModel
 import com.tokopedia.home_account.view.listener.WalletListener
@@ -92,6 +93,14 @@ class HomeAccountFundsAndInvestmentAdapter(
         }
     }
 
+    fun removeSubtitle() {
+        val subtitleIndex = getSubtitleIndex()
+        if (subtitleIndex >= 0) {
+            removeItemAt(subtitleIndex)
+            notifyItemRemoved(subtitleIndex)
+        }
+    }
+
     fun changeItemToShimmer(walletShimmeringUiModel: WalletShimmeringUiModel) {
         val items = getItems().toMutableList()
         items.forEach {
@@ -123,5 +132,25 @@ class HomeAccountFundsAndInvestmentAdapter(
             }
         }
         return false
+    }
+
+    fun getSubtitleIndex(): Int {
+        val items = getItems().toMutableList()
+        items.forEach {
+            if (it is SubtitleUiModel) {
+                return items.indexOf(it)
+            }
+        }
+        return -1
+    }
+
+    fun moveWalletAboveSubtitle(walletUiModel: WalletUiModel) {
+        val subtitleIndex = getSubtitleIndex()
+        if (subtitleIndex >= 0) {
+            removeById(walletUiModel.id)
+            addItem(subtitleIndex, walletUiModel)
+        } else {
+            addItemAndAnimateChanges(walletUiModel)
+        }
     }
 }

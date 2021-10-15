@@ -17,6 +17,7 @@ import com.tokopedia.sellerappwidget.view.model.ChatUiModel
 import com.tokopedia.sellerappwidget.view.state.chat.*
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 
 /**
  * Created By @ilhamsuaib on 01/12/20
@@ -26,7 +27,11 @@ class ChatAppWidget : AppWidgetProvider() {
 
     private var userSession: UserSessionInterface? = null
 
-    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+    override fun onUpdate(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetIds: IntArray
+    ) {
         initUserSession(context)
         userSession?.let {
             if (it.isLoggedIn) {
@@ -53,14 +58,24 @@ class ChatAppWidget : AppWidgetProvider() {
         }
 
         if (intent.action != AppWidgetManager.ACTION_APPWIDGET_UPDATE
-                || intent.action != AppWidgetManager.ACTION_APPWIDGET_DISABLED) {
+            || intent.action != AppWidgetManager.ACTION_APPWIDGET_DISABLED
+        ) {
             AppWidgetHelper.setChatAppWidgetEnabled(context, true)
         }
 
-        super.onReceive(context, intent)
+        try {
+            super.onReceive(context, intent)
+        } catch (e: Exception) {
+            Timber.w(e)
+        }
     }
 
-    override fun onAppWidgetOptionsChanged(context: Context, appWidgetManager: AppWidgetManager?, appWidgetId: Int, newOptions: Bundle?) {
+    override fun onAppWidgetOptionsChanged(
+        context: Context,
+        appWidgetManager: AppWidgetManager?,
+        appWidgetId: Int,
+        newOptions: Bundle?
+    ) {
         initUserSession(context)
         userSession?.let {
             if (!it.isLoggedIn) {
@@ -113,12 +128,13 @@ class ChatAppWidget : AppWidgetProvider() {
         val bundle = intent.getBundleExtra(Const.Extra.BUNDLE)
         val chatItemItem: ChatItemUiModel? = bundle?.getParcelable(Const.Extra.CHAT_ITEM)
         val chatId = chatItemItem?.messageId ?: 0
-        val chatRoomIntent = RouteManager.getIntent(context, ApplinkConst.TOPCHAT, chatId.toString()).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        }
+        val chatRoomIntent =
+            RouteManager.getIntent(context, ApplinkConst.TOPCHAT, chatId.toString()).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
 
         AppWidgetTracking.getInstance(context)
-                .sendEventClickItemChatWidget()
+            .sendEventClickItemChatWidget()
 
         context.startActivity(chatRoomIntent)
     }
@@ -135,7 +151,7 @@ class ChatAppWidget : AppWidgetProvider() {
         }
 
         AppWidgetTracking.getInstance(context)
-                .sendEventClickRefreshButtonChatWidget()
+            .sendEventClickRefreshButtonChatWidget()
 
         GetChatExecutor.run(context, true)
     }
@@ -162,9 +178,19 @@ class ChatAppWidget : AppWidgetProvider() {
 
             widgetIds.forEach { widgetId ->
                 when {
-                    chat.chats.isEmpty() -> ChatWidgetEmptyState.setupEmptyState(context, remoteViews, widgetId)
+                    chat.chats.isEmpty() -> ChatWidgetEmptyState.setupEmptyState(
+                        context,
+                        remoteViews,
+                        widgetId
+                    )
                     else -> {
-                        ChatWidgetSuccessState.setupSuccessState(context, remoteViews, userSession, chat, widgetId)
+                        ChatWidgetSuccessState.setupSuccessState(
+                            context,
+                            remoteViews,
+                            userSession,
+                            chat,
+                            widgetId
+                        )
                     }
                 }
 
@@ -197,7 +223,12 @@ class ChatAppWidget : AppWidgetProvider() {
             ChatWidgetNoLoginState.setupNoLoginState(context, awm, widgetIds)
         }
 
-        private fun getIsUserLoggedIn(context: Context, awm: AppWidgetManager, userSession: UserSessionInterface, widgetIds: IntArray): Boolean {
+        private fun getIsUserLoggedIn(
+            context: Context,
+            awm: AppWidgetManager,
+            userSession: UserSessionInterface,
+            widgetIds: IntArray
+        ): Boolean {
             if (!userSession.isLoggedIn) {
                 ChatWidgetNoLoginState.setupNoLoginState(context, awm, widgetIds)
             }

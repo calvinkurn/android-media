@@ -177,12 +177,10 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
             }
             REQUEST_CODE_GET_DISTRICT_RECOM -> {
                 val discomModel = data?.getParcelableExtra<DistrictRecommendationAddress>(DISTRICT_RECOMMENDATION_ADDRESS)
-                val latitude = data?.getDoubleExtra(LATITUDE, 0.0)
-                val longitude = data?.getDoubleExtra(LONGITUDE, 0.0)
                 if (discomModel != null) {
                     val param = StateChooseAddressParam(
                         ADDRESS_STATUS_FROM_DISCOM, null, "", "",
-                        latitude.toString(), longitude.toString(), discomModel.districtId, "",
+                        "", "", discomModel.districtId, "",
                         isSupportWarehouseLoc
                     )
                     viewModel.setStateChosenAddress(param)

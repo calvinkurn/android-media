@@ -109,13 +109,13 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         isRecreated = (savedInstanceState != null)
 
         initStreamer()
+        initView()
 
         if (savedInstanceState != null) {
             populateSavedState(savedInstanceState)
             requestPermission()
         }
 
-        initView()
         setupView()
 
         getConfiguration()

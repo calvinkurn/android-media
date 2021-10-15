@@ -2,6 +2,9 @@ package com.tokopedia.home_account.di
 
 import android.content.Context
 import com.google.gson.Gson
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.pref.AccountPreference
@@ -71,5 +74,13 @@ class HomeAccountUserModules(val context: Context) {
     fun provideMenuGenerator(@HomeAccountUserContext context: Context): StaticMenuGenerator {
         return StaticMenuGenerator(context)
     }
+
+    @HomeAccountUserScope
+    @Provides
+    fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
+
+    @HomeAccountUserScope
+    @Provides
+    fun provideMultiRequestGraphql(): MultiRequestGraphqlUseCase = GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
 
 }

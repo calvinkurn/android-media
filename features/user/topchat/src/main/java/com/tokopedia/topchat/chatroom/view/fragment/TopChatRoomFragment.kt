@@ -43,7 +43,7 @@ import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.SendableViewModel.Companion.SENDING_TEXT
-import com.tokopedia.chat_common.data.preview.ProductPreview
+import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.*
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
@@ -458,7 +458,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun initLoadMoreListener() {
         rvScrollListener = object : LoadMoreTopBottomScrollListener(rvLayoutManager) {
             override fun loadMoreTop() {
-                showTopLoading()
+                rv?.post {
+                    showTopLoading()
+                }
                 presenter.loadTopChat(messageId, ::onErrorGetTopChat, ::onSuccessGetTopChat)
             }
 
