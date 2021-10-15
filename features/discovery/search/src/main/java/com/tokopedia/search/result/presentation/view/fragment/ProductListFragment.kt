@@ -1021,7 +1021,7 @@ class ProductListFragment: BaseDaggerFragment(),
         val queryParams = filterController.getParameter().addFilterOrigin()
         refreshSearchParameter(queryParams)
 
-        updateLastFilter(filter, option, isQuickFilterSelectedReversed)
+        updateLastFilter()
 
         reloadData()
 
