@@ -108,6 +108,9 @@
     <string name="payment_title_activity_dest_bank">Pilih Bank Tujuan</string>
     <string name="payment_title_upload_proof">Unggah Bukti Pembayaran</string>
 
+    <string name="title_gopay_kyc">GoPay Kyc</string>
+
+
     <!-- Payment Withdraw-->
     <string name="payment_title_withdraw">Penarikan Saldo</string>
     <string name="payment_title_auto_withdraw">Pengaturan Saldo</string>
@@ -124,6 +127,7 @@
     <string name="title_review_detail">Review Detail</string>
     <string name="title_create_review">Create Review</string>
     <string name="title_review_reminder">Review Reminder</string>
+    <string name="title_review_credibility">Review Credibility</string>
   
     <!-- Inactive Phone -->
     <string name="title_update_inactive_phone">Inactive Phone</string>

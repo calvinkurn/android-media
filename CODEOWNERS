@@ -20,7 +20,6 @@
 /features/discovery/image_search/                   	@tokopedia/android-miniondave-dev
 /features/discovery/similarsearch/                  	@tokopedia/android-miniondave-dev
 /features/discovery/autocomplete/                   	@tokopedia/android-miniondave-dev
-/features/digital/digital_browse/                   	@tokopedia/@android-minionmark-dev
 /features/discovery/global_nav_widget/              	@tokopedia/android-miniondave-dev
 /features/discovery/global_nav_widget_samples/      	@tokopedia/android-miniondave-dev
 /features/home/dynamicbanner/                          	@tokopedia/android-miniondave-dev
@@ -110,6 +109,7 @@
 /features/content/play_common/                          @tokopedia/android-minionmark-dev
 /features/content/play_broadcaster/                     @tokopedia/android-minionmark-dev
 /features/content/play_widget/                          @tokopedia/android-minionmark-dev
+
 /features/recharge/common_digital                       @tokopedia/android-minionmark-dev
 /features/recharge/common_electronic_money              @tokopedia/android-minionmark-dev
 /features/recharge/common_topup_bills                   @tokopedia/android-minionmark-dev
@@ -117,6 +117,7 @@
 /features/recharge/digital_emoney                       @tokopedia/android-minionmark-dev
 /features/recharge/digital_checkout                     @tokopedia/android-minionmark-dev
 /features/recharge/digital_homepage                     @tokopedia/android-minionmark-dev
+/features/recharge/digital_recommendation               @tokopedia/android-minionmark-dev
 /features/recharge/digital_topup_bills                  @tokopedia/android-minionmark-dev
 /features/recharge/digitalproduct                       @tokopedia/android-minionmark-dev
 /features/recharge/recharge_component                   @tokopedia/android-minionmark-dev

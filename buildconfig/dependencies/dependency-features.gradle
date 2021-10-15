@@ -46,6 +46,7 @@ ext {
             playWidget                      : ":features:content:play_widget",
             commonTopupBills                : ":features:recharge:common_topup_bills",
             commonDigital                   : ":features:recharge:common_digital",
+            digitalRecommendation           : ":features:recharge:digital_recommendation",
             digitalEmoney                   : ":features:recharge:digital_emoney",
             digitalBrizzi                   : ":features:recharge:digital_brizzi",
             commonElectronicMoney           : ":features:recharge:common_electronic_money",
@@ -188,6 +189,7 @@ ext {
             payment                         : ":features:payment:payment",
             paymentSetting                  : ":features:payment:payment_setting",
             pms                             : ":features:payment:pms",
+            goPayKyc                        : ":features:payment:gopay.kyc",
             withdraw                        : ":features:payment:withdraw",
 
             gallery                         : ":features:merchant:gallery",

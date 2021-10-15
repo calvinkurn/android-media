@@ -135,7 +135,8 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                     if (!viewModel.isProductBundleAvailable(bundleInfo)) return@forEach
                     // map product bundle info to product bundle master and details
                     val bundleMaster = viewModel.mapBundleInfoToBundleMaster(bundleInfo)
-                    val bundleDetail = viewModel.mapBundleItemsToBundleDetails(bundleInfo.bundleItems)
+                    val warehouseId = bundleInfo.warehouseID.toString()
+                    val bundleDetail = viewModel.mapBundleItemsToBundleDetails(warehouseId, bundleInfo.bundleItems)
                     // update product bundle map
                     viewModel.updateProductBundleMap(bundleMaster, bundleDetail)
                 }

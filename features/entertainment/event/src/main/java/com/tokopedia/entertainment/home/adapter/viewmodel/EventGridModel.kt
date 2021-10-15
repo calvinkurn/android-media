@@ -14,6 +14,7 @@ class EventGridModel(var layout: EventHomeDataResponse.Data.EventHome.Layout =
 
     var id : String = ""
     var title : String = ""
+    var isFree = 1
     var items : MutableList<EventItemModel> = mutableListOf()
 
     init {
@@ -31,7 +32,8 @@ class EventGridModel(var layout: EventHomeDataResponse.Data.EventHome.Layout =
                         it.schedule,
                         it.isLiked,
                         it.appUrl,
-                        it.seoUrl
+                        it.seoUrl,
+                        it.isFree == isFree
                 ))
             }
         }

@@ -9,11 +9,11 @@ import com.tokopedia.atc_common.data.model.request.ProductDetail
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
 import com.tokopedia.product_bundle.common.data.model.request.InventoryDetail
 import com.tokopedia.product_bundle.common.data.model.request.ProductData
 import com.tokopedia.product_bundle.common.data.model.request.RequestData
@@ -245,7 +245,7 @@ class ProductBundleViewModel @Inject constructor(
         )
     }
 
-    fun mapBundleItemsToBundleDetails(bundleItems: List<BundleItem>): List<ProductBundleDetail> {
+    fun mapBundleItemsToBundleDetails(warehouseId:String, bundleItems: List<BundleItem>): List<ProductBundleDetail> {
         return bundleItems.map { bundleItem ->
             val productVariant = AtcVariantMapper.mapToProductVariant(bundleItem)
             ProductBundleDetail(
@@ -255,6 +255,7 @@ class ProductBundleViewModel @Inject constructor(
                 productQuantity = bundleItem.quantity,
                 originalPrice = bundleItem.getPreviewOriginalPrice(),
                 bundlePrice = bundleItem.getPreviewBundlePrice(),
+                warehouseId = warehouseId,
                 discountAmount = calculateDiscountPercentage(
                     originalPrice = bundleItem.getPreviewOriginalPrice(),
                     bundlePrice = bundleItem.getPreviewBundlePrice()
@@ -271,7 +272,8 @@ class ProductBundleViewModel @Inject constructor(
                 quantity = ATC_BUNDLE_QUANTITY,
                 shopId = shopId.toString(),
                 isProductParent = parentProductID == productBundleDetail.productId,
-                customerId = userId
+                customerId = userId,
+                warehouseId = productBundleDetail.warehouseId
             )
         }
     }
@@ -352,7 +354,9 @@ class ProductBundleViewModel @Inject constructor(
         if (!isProductVariantSelectionComplete(productBundleDetails)) {
             isAddToCartInputValid = false
             errorMessageLiveData.value = rscProvider.getProductVariantNotSelected()
-        } else if (selectedProductBundleMaster.bundleId == selectedBundleId &&
+        } else if (
+            pageSource == PAGE_SOURCE_CART &&
+            selectedProductBundleMaster.bundleId == selectedBundleId &&
             variantProductNotChanged(productBundleDetails)) {
                 isAddToCartInputValid = false
                 addToCartResultLiveData.value = AddToCartDataResult(
