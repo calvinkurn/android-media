@@ -1,14 +1,20 @@
 package com.tokopedia.topchat.chatroom.view.activity
 
+import android.app.Activity
+import android.app.Instrumentation
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.DrawableMatcher
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.base.blockPromo
+import com.tokopedia.topchat.chatroom.view.activity.base.setFollowing
 import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.matchers.withTotalItem
 import org.hamcrest.CoreMatchers.not
@@ -252,4 +258,92 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         assertSnackbarText(context.getString(R.string.topchat_desc_empty_text_box))
     }
 
+    @Test
+    fun should_show_follow_toaster_when_click_header_menu_follow_toko() {
+
+        //Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(false)
+        launchChatRoomActivity()
+
+        //When
+        onView(withId(com.tokopedia.chat_common.R.id.header_menu)).perform(click())
+        onView(withText("Follow Toko")).perform(click())
+
+        //Then
+        assertSnackbarText(context.getString(R.string.title_success_follow_shop))
+    }
+
+    @Test
+    fun should_show_unfollow_toaster_when_click_header_menu_following() {
+
+        //Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(true)
+        launchChatRoomActivity()
+
+        //When
+        onView(withId(com.tokopedia.chat_common.R.id.header_menu)).perform(click())
+        onView(withText("Following")).perform(click())
+
+        //Then
+        assertSnackbarText(context.getString(R.string.title_success_unfollow_shop))
+    }
+
+    @Test
+    fun should_show_error_toaster_when_click_header_menu_follow_and_failed() {
+
+        //Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(false)
+        toggleFavouriteShopUseCaseStub.isError = true
+        launchChatRoomActivity()
+
+        //When
+        onView(withId(com.tokopedia.chat_common.R.id.header_menu)).perform(click())
+        onView(withText("Follow Toko")).perform(click())
+
+        //Then
+        onView(withSubstring("Oops!")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun should_toaster_when_click_header_menu_follow_toko_from_broadcast_spam_handler() {
+        // Given
+        getChatUseCase.response = firstPageChatBroadcastAsBuyer.blockPromo(false)
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(false)
+        launchChatRoomActivity()
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(
+            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+        )
+
+        //When
+        onView(withId(R.id.btn_follow_shop)).perform(click())
+
+        // Then
+        assertSnackbarText(context.getString(R.string.title_success_follow_shop))
+    }
+
+    @Test
+    fun should_error_toaster_when_click_header_menu_follow_toko_from_broadcast_spam_handler_and_failed() {
+        // Given
+        getChatUseCase.response = firstPageChatBroadcastAsBuyer.blockPromo(false)
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getShopFollowingUseCaseStub.response = getShopFollowingStatus.setFollowing(false)
+        toggleFavouriteShopUseCaseStub.isError = true
+        launchChatRoomActivity()
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(
+            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+        )
+
+        //When
+        onView(withId(R.id.btn_follow_shop)).perform(click())
+
+        // Then
+        onView(withSubstring("Oops!")).check(matches(isDisplayed()))
+    }
 }

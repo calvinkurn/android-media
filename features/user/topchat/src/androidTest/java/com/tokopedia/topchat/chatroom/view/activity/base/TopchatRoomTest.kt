@@ -129,6 +129,9 @@ abstract class TopchatRoomTest {
     @Inject
     protected lateinit var getExistingMessageIdUseCaseNewStub: GetExistingMessageIdUseCaseStub
 
+    @Inject
+    protected lateinit var toggleFavouriteShopUseCaseStub: ToggleFavouriteShopUseCaseStub
+
     protected open lateinit var activity: TopChatRoomActivityStub
 
     protected var firstPageChatAsBuyer = GetExistingChatPojo()
@@ -225,6 +228,7 @@ abstract class TopchatRoomTest {
         getShopFollowingUseCaseStub.response = getShopFollowingStatus
         getTemplateChatRoomUseCase.response = generateTemplateResponse(true)
         getExistingMessageIdUseCaseNewStub.response = existingMessageIdResponse
+        toggleFavouriteShopUseCaseStub.response = true
     }
 
     private fun setupDummyImageChatService() {
