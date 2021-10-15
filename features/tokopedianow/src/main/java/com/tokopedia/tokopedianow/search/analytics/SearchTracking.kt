@@ -34,6 +34,7 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKON
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_NO_SEARCH_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_SEARCH_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_BROAD_MATCH
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_OOC_SCREEN_NAME
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ORGANIC
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
@@ -115,6 +116,7 @@ object SearchTracking {
         const val RECOM_LIST_PAGE_EMPTY_SEARCH =
             "/${RECOM_LIST_PAGE} - tokonow - rekomendasi untuk anda - empty_search - %s"
         const val TOKONOW_BROAD_MATCH = "/tokonow - broad match"
+        const val TOKONOW_OOC_SCREEN_NAME = "search result tokonow"
     }
 
     fun sendGeneralEvent(dataLayer: Map<String, Any>) {
@@ -623,5 +625,9 @@ object SearchTracking {
                 KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
             )
         )
+    }
+
+    fun sendOOCOpenScreenTracking() {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(TOKONOW_OOC_SCREEN_NAME)
     }
 }
