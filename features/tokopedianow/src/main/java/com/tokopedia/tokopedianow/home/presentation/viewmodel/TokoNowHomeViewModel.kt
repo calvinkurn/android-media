@@ -87,6 +87,10 @@ class TokoNowHomeViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.io) {
 
+    companion object {
+        private const val DEFAULT_INDEX = 1
+    }
+
     val homeLayoutList: LiveData<Result<HomeLayoutListUiModel>>
         get() = _homeLayoutList
     val keywordSearch: LiveData<SearchPlaceholder>
@@ -630,7 +634,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private fun shouldLoadMore(lastVisibleItemIndex: Int): Boolean {
         val allItemsLoaded = channelToken.isEmpty()
         val isLoading = homeLayoutItemList.map { it.layout }.contains(HomeProgressBarUiModel)
-        val scrolledToBottom = lastVisibleItemIndex == homeLayoutItemList.count() - 1
+        val scrolledToBottom = lastVisibleItemIndex == homeLayoutItemList.count() - DEFAULT_INDEX
         return scrolledToBottom && !isLoading && !allItemsLoaded
     }
 
