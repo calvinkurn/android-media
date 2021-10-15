@@ -13,6 +13,7 @@ import com.tokopedia.review.feature.reviewdetail.view.adapter.OverallRatingDetai
 import com.tokopedia.review.feature.reviewdetail.view.model.OverallRatingDetailUiModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 
 
@@ -51,9 +52,19 @@ class OverallRatingDetailViewHolder(val view: View,
             }
         }
 
-        ticker.shouldShowWithAction(!element?.tickerText.isNullOrEmpty() && listener.shouldShowTickerForRatingDisclaimer()) {
-            ticker.setHtmlDescription(element?.tickerText ?: "")
-            listener.updateSharedPreference()
+        ticker.apply {
+            shouldShowWithAction(!element?.tickerText.isNullOrEmpty() && listener.shouldShowTickerForRatingDisclaimer()) {
+                setHtmlDescription(element?.tickerText ?: "")
+                setDescriptionClickEvent (object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        // No Op
+                    }
+
+                    override fun onDismiss() {
+                        listener.updateSharedPreference()
+                    }
+                })
+            }
         }
     }
 
