@@ -41,13 +41,14 @@ class ProductRecomWidgetViewHolder(
             recomWidget.bindTemporaryHeader(itemView.context.getString(R.string.title_other_product))
         } else {
             element.recomWidgetData?.let {
-                recomWidget.bindRecomWithData(
+                recomWidget.bind(
                     carouselData = RecommendationCarouselData(
                         it,
                         RecommendationCarouselData.STATE_READY
                     ),
                     adapterPosition = adapterPosition,
-                    widgetListener = this
+                    basicListener = this,
+                    tokonowListener = this
                 )
             }
         }
