@@ -167,50 +167,6 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
     }
 
     @Test
-    fun `on success request follow and unfollow shop`() {
-        //Given
-        val onError: (Throwable) -> Unit = mockk(relaxed = true)
-        val onSuccess: (Boolean) -> Unit = mockk(relaxed = true)
-        val slot = slot<Subscriber<Boolean>>()
-        every {
-            toggleFavouriteShopUseCase.execute(any(), capture(slot))
-        } answers {
-            val subs = slot.captured
-            subs.onNext(true)
-        }
-
-        // When
-        presenter.followUnfollowShop(exShopId.toString(), onError, onSuccess)
-
-        // Then
-        verify { onSuccess.invoke(true) }
-    }
-
-    @Test
-    fun `on error request follow and unfollow shop`() {
-        //Given
-        val onError: (Throwable) -> Unit = mockk(relaxed = true)
-        val onSuccess: (Boolean) -> Unit = mockk(relaxed = true)
-        val throwable = Throwable()
-        val slot = slot<Subscriber<Boolean>>()
-        every {
-            toggleFavouriteShopUseCase.execute(any(), capture(slot))
-        } answers {
-            val subs = slot.captured
-            subs.onError(throwable)
-        }
-
-        // When
-        presenter.followUnfollowShop(
-            exShopId.toString(), onError, onSuccess,
-            ToggleFavouriteShopUseCase.Action.FOLLOW
-        )
-
-        // Then
-        verify { onError.invoke(throwable) }
-    }
-
-    @Test
     fun `check hasEmptyAttachmentPreview`() {
         // When
         presenter.addAttachmentPreview(sendAbleProductPreview)

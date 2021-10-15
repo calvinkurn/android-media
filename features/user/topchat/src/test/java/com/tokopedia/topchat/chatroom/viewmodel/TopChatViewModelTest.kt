@@ -225,4 +225,48 @@ class TopChatViewModelTest {
             expectedThrowable.message
         )
     }
+
+    @Test
+    fun should_get_boolean_result_when_success_request_follow_shop_with_action() {
+        //Given
+        val booleanResult = true
+        val broadcastSpamHandlerUiModelTest = mockk<BroadcastSpamHandlerUiModel>(relaxed = true)
+        val expectedResult = Pair(broadcastSpamHandlerUiModelTest, Success(booleanResult))
+        coEvery {
+            toggleFavouriteShopUseCase.createObservable(requestParams = any()).toBlocking().first()
+        } returns booleanResult
+
+        //When
+        viewModel.followUnfollowShop(
+            action = ToggleFavouriteShopUseCase.Action.FOLLOW,
+            shopId = testShopId,
+            element = broadcastSpamHandlerUiModelTest)
+
+        //Then
+        Assert.assertEquals(
+            viewModel.followUnfollowShop.value,
+            expectedResult
+        )
+    }
+
+    @Test
+    fun should_get_throwable_when_failed_request_follow_shop_with_action() {
+        //Given
+        val broadcastSpamHandlerUiModelTest = mockk<BroadcastSpamHandlerUiModel>(relaxed = true)
+        coEvery {
+            toggleFavouriteShopUseCase.createObservable(requestParams = any()).toBlocking().first()
+        } throws expectedThrowable
+
+        //When
+        viewModel.followUnfollowShop(
+            action = ToggleFavouriteShopUseCase.Action.FOLLOW,
+            shopId = testShopId,
+            element = broadcastSpamHandlerUiModelTest)
+
+        //Then
+        Assert.assertEquals(
+            (viewModel.followUnfollowShop.value?.second as Fail).throwable.message,
+            expectedThrowable.message
+        )
+    }
 }

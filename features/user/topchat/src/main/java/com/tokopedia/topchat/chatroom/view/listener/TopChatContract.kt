@@ -127,13 +127,6 @@ interface TopChatContract {
             onSuccessDeleteConversation: () -> Unit
         )
 
-        fun followUnfollowShop(
-            shopId: String,
-            onError: (Throwable) -> Unit,
-            onSuccess: (Boolean) -> Unit,
-            action: ToggleFavouriteShopUseCase.Action? = null
-        )
-
         fun sendAttachmentsAndMessage(
             messageId: String, sendMessage: String,
             startTime: String, opponentId: String,
