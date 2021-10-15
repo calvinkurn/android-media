@@ -23,9 +23,7 @@ object ChannelWidgetUtil {
         dividerTop: DividerUnify?,
         dividerBottom: DividerUnify?
     ) {
-        //TODO delete hardcoded divider
-//        when(channelModel?.channelConfig?.dividerType) {
-        when(1) {
+        when(channelModel?.channelConfig?.dividerType) {
             ChannelConfig.DIVIDER_NO_DIVIDER -> {
                 dividerTop?.invisible()
                 dividerBottom?.gone()

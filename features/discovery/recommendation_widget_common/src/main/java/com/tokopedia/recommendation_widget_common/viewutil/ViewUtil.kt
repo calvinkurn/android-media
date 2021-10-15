@@ -31,18 +31,17 @@ private fun getContrastColor(@ColorInt color: Int): Int {
 }
 
 object ChannelWidgetUtil {
+    private const val DIVIDER_NO_DIVIDER = 0
+    private const val DIVIDER_TOP = 1
+    private const val DIVIDER_BOTTOM = 2
+    private const val DIVIDER_TOP_AND_BOTTOM = 3
+
     fun validateHomeComponentDivider(
         dividerType: Int,
         dividerTop: DividerUnify?,
         dividerBottom: DividerUnify?
     ) {
-        val DIVIDER_NO_DIVIDER = 0
-        val DIVIDER_TOP = 1
-        val DIVIDER_BOTTOM = 2
-        val DIVIDER_TOP_AND_BOTTOM = 3
-        //TODO delete hardcoded divider
-//        when(channelModel?.channelConfig?.dividerType) {
-        when(1) {
+        when(dividerType) {
             DIVIDER_NO_DIVIDER -> {
                 dividerTop?.invisible()
                 dividerBottom?.gone()

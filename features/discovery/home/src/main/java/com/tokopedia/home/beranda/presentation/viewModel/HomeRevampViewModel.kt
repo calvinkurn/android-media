@@ -334,7 +334,8 @@ open class HomeRevampViewModel @Inject constructor(
                     updateWidget(dataModel.copy(
                             id = bestSellerDataModel.id,
                             pageName = dataModel.pageName,
-                            widgetParam = bestSellerDataModel.widgetParam
+                            widgetParam = bestSellerDataModel.widgetParam,
+                            dividerType = bestSellerDataModel.dividerType
                     ), index)
                 } else {
                     deleteWidget(bestSellerDataModel, index)
@@ -368,6 +369,7 @@ open class HomeRevampViewModel @Inject constructor(
                                 it.copy(isActivated = filterChip.name == it.name
                                         && filterChip.isActivated)
                             },
+                            dividerType = bestSellerDataModel.dividerType,
                             chipsPosition = (selectedChipsPosition+1)
                     )
                     updateWidget(newModel, index)

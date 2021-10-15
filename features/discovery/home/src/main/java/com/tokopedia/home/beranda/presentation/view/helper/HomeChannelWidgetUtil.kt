@@ -13,9 +13,7 @@ object HomeChannelWidgetUtil {
         dividerTop: DividerUnify?,
         dividerBottom: DividerUnify?
     ) {
-        //TODO delete hardcode divider type
-//        when(channelModel?.dividerType) {
-        when(1) {
+        when(channelModel?.dividerType) {
             ChannelConfig.DIVIDER_NO_DIVIDER -> {
                 dividerTop?.invisible()
                 dividerBottom?.gone()
