@@ -624,11 +624,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             setActionListener(this@UohListFragment)
         }
 
-        /*sini
-        uohBottomSheetKebabMenuAdapter = UohBottomSheetKebabMenuAdapter().apply {
-            setActionListener(this@UohListFragment)
-        }*/
-
         addEndlessScrollListener()
     }
 
