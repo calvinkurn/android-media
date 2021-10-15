@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imgShcAnnouncement"
             android:layout_width="@dimen/layout_lvl7"
             android:layout_height="@dimen/layout_lvl7"

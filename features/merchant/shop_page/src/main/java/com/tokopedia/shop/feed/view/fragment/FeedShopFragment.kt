@@ -324,6 +324,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             loadInitialData()
         }
         registerBroadcastReceiver()
+        reshowFloatingActionButton()
     }
 
     override fun loadData(page: Int) {

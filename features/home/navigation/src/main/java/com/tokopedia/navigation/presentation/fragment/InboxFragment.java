@@ -47,15 +47,12 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel;
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener;
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener;
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -86,7 +83,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private static final String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
     private static final int REQUEST_FROM_PDP = 138;
     private static final String className = "com.tokopedia.navigation.presentation.fragment.InboxFragment";
-    private static final String AB_TEST_INBOX_KEY = "Inbox Talk Release";
     private static final String PAGE_SOURCE_KEY = "pageSource";
     private static final String PAGE_SOURCE = "review inbox";
 
@@ -367,14 +363,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             case DISCUSSION_MENU:
                 if (getActivity() != null
                         && getActivity().getApplicationContext() != null) {
-                    if (useNewPage()) {
-                        InboxGtmTracker.getInstance().sendNewPageInboxTalkTracking(getContext(), presenter.getUserId(), talkUnreadCount);
-                    } else {
-                        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("clickInboxChat",
-                                "inbox - talk",
-                                "click on diskusi product",
-                                ""));
-                    }
+                    InboxGtmTracker.getInstance().sendNewPageInboxTalkTracking(getContext(), presenter.getUserId(), talkUnreadCount);
                     RouteManager.route(getActivity(), ApplinkConstInternalGlobal.INBOX_TALK);
                 }
                 break;
@@ -535,25 +524,5 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     public void onTopAdsImageViewClicked(@org.jetbrains.annotations.Nullable String applink) {
         if (applink == null) return;
         RouteManager.route(getContext(), applink);
-    }
-
-    @Nullable
-    private AbTestPlatform getAbTestPlatform() {
-        if (remoteConfigInstance == null) {
-            remoteConfigInstance = new RemoteConfigInstance(getActivity().getApplication());
-        }
-        try {
-            return remoteConfigInstance.getABTestPlatform();
-        } catch (IllegalStateException exception) {
-            return null;
-        }
-    }
-
-    private Boolean useNewPage() {
-        if (getAbTestPlatform() == null) {
-            return false;
-        }
-        String remoteConfigValue = getAbTestPlatform().getString(AB_TEST_INBOX_KEY);
-        return !remoteConfigValue.isEmpty();
     }
 }
