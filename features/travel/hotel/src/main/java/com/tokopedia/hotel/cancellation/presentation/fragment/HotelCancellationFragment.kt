@@ -78,7 +78,8 @@ class HotelCancellationFragment : HotelBaseFragment() {
 
 
     override fun onErrorRetryClicked() {
-        binding?.containerError?.root?.hide()
+        hideErrorContainer()
+
         showLoadingState()
         getCancellationData()
     }
@@ -132,8 +133,7 @@ class HotelCancellationFragment : HotelBaseFragment() {
 
     private fun convertDynamicError(error: Throwable){
         hideLoadingState()
-        binding?.hotelCancellationContainer?.gone()
-        binding?.containerError?.root?.visible()
+        showErrorContainer()
         try {
             val gson = Gson()
             val itemType = object : TypeToken<HotelCancellationError>() {}.type
@@ -151,7 +151,7 @@ class HotelCancellationFragment : HotelBaseFragment() {
                     it.setActionClickListener {
                         RouteManager.route(this,errorData.content.actionButton.firstOrNull()?.uri)
                     }
-                    if(errorData.content.actionButton.size >= 2){
+                    if(errorData.content.actionButton.lastIndex == 1){
                         it.errorSecondaryAction.show()
                         it.errorSecondaryAction.text = errorData.content.actionButton.lastOrNull()?.label ?: ""
                         (it.errorSecondaryAction as UnifyButton).buttonType = HotelCancellationButtonEnum
@@ -172,8 +172,7 @@ class HotelCancellationFragment : HotelBaseFragment() {
     }
 
     private fun initView(hotelCancellationModel: HotelCancellationModel) {
-        binding?.hotelCancellationContainer?.visible()
-        binding?.containerError?.root?.gone()
+        hideErrorContainer()
 
         hotelCancellationModel.property.let {
             binding?.layoutHotelCancellationSummary?.hotelCancellationPropertyName?.text = it.name
@@ -287,6 +286,15 @@ class HotelCancellationFragment : HotelBaseFragment() {
         trackingHotelUtil.viewHotelCancellationPage(requireContext(), invoiceId, hotelCancellationModel, HOTEL_CANCELLATION_SCREEN_NAME)
     }
 
+    private fun showErrorContainer(){
+        binding?.hotelCancellationContainer?.gone()
+        binding?.containerError?.root?.visible()
+    }
+
+    private fun hideErrorContainer(){
+        binding?.hotelCancellationContainer?.visible()
+        binding?.containerError?.root?.gone()
+    }
     companion object {
         const val HOTEL_CANCELLATION_SCREEN_NAME = "/hotel/ordercancel"
         const val ADD_LINE_SPACING = 6f
