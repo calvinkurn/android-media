@@ -1,12 +1,20 @@
 apply from: "$rootProject.projectDir/buildconfig/jacoco.gradle"
 
-def fileExecute = [
+def javaFileExecute = [
         '**/*ViewModel.*',
-        '**/*Presenter.*'
+        '**/*ViewModel$*$**.*',
+        '**/*Presenter.*',
+        '**/*Presenter$**.*'
+]
+def kotlinFileExecute = [
+        '**/*ViewModel.*',
+        '**/*ViewModel$*$**.*',
+        '**/*Presenter.*',
+        '**/*Presenter$*$**.*'
 ]
 
-def javaClasses = fileTree(dir: "$project.buildDir/intermediates/javac/debug/classes", includes: fileExecute)
-def kotlinClasses = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", includes: fileExecute)
+def javaClasses = fileTree(dir: "$project.buildDir/intermediates/javac/debug/classes", includes: javaFileExecute)
+def kotlinClasses = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", includes: kotlinFileExecute)
 def javaSrc = "$project.projectDir/src/main/java"
 def kotlinSrc = "$project.projectDir/src/main/kotlin"
 def executionDataFiles = fileTree(dir: project.buildDir, includes: ['jacoco/testDebugUnitTest.exec', 'outputs/code-coverage/connected/*coverage.ec'])

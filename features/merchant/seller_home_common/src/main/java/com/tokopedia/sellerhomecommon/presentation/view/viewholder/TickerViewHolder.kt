@@ -6,21 +6,21 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.databinding.ShcTickerWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TickerWidgetUiModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
-import kotlinx.android.synthetic.main.shc_ticker_widget.view.*
 
 /**
  * Created By @ilhamsuaib on 10/08/20
  */
 
 class TickerViewHolder(
-        itemView: View?,
-        private val listener: Listener
+    itemView: View,
+    private val listener: Listener
 ) : AbstractViewHolder<TickerWidgetUiModel>(itemView) {
 
     companion object {
@@ -28,9 +28,11 @@ class TickerViewHolder(
         val RES_LAYOUT = R.layout.shc_ticker_widget
     }
 
+    private val binding by lazy { ShcTickerWidgetBinding.bind(itemView) }
+
     override fun bind(element: TickerWidgetUiModel) {
         val tickerData = element.data
-        with(itemView.tickerViewShc) {
+        with(binding.tickerViewShc) {
             val tickers = tickerData?.tickers.orEmpty().map {
                 TickerData(it.title, it.message, Ticker.TYPE_ANNOUNCEMENT, true, it)
             }

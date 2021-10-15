@@ -2871,7 +2871,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void setChosenAddressForTradeInDropOff(Intent intent) {
         Activity activity = getActivity();
         RecipientAddressModel recipientAddressModel = shipmentPresenter.getRecipientAddressModel();
-        if (activity != null && isTradeInByDropOff() && ChooseAddressUtils.INSTANCE.isRollOutUser(activity) && recipientAddressModel != null) {
+        if (activity != null && isTradeInByDropOff() && recipientAddressModel != null) {
             LocationDataModel locationDataModel = recipientAddressModel.getLocationDataModel();
             ChosenAddress chosenAddress;
             if (locationDataModel != null) {

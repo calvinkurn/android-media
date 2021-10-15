@@ -3,12 +3,10 @@ package com.tokopedia.statistic.view.customview
 import android.content.Context
 import android.util.AttributeSet
 import android.view.Gravity
-import android.view.View
+import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.tokopedia.kotlin.extensions.view.getResColor
-import com.tokopedia.statistic.R
-
-import kotlinx.android.synthetic.main.view_stc_date_text_field.view.*
+import com.tokopedia.statistic.databinding.ViewStcDateTextFieldBinding
 
 /**
  * Created By @ilhamsuaib on 16/06/20
@@ -19,8 +17,11 @@ class DateTextFieldView(
     attrs: AttributeSet?
 ) : LinearLayout(context, attrs) {
 
+    private val binding: ViewStcDateTextFieldBinding
+
     init {
-        View.inflate(context, R.layout.view_stc_date_text_field, this)
+        val inflater = LayoutInflater.from(context)
+        binding = ViewStcDateTextFieldBinding.inflate(inflater, this, true)
     }
 
     var isActive: Boolean = false
@@ -31,20 +32,20 @@ class DateTextFieldView(
             } else {
                 context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N150)
             }
-            horLineDtf.setBackgroundColor(color)
+            binding.horLineDtf.setBackgroundColor(color)
         }
 
     var label: String = ""
         set(value) {
             field = value
-            tvStcDateLabel.text = value
+            binding.tvStcDateLabel.text = value
         }
 
-    var hint: String = tvStcDateText.text.toString()
+    var hint: String = binding.tvStcDateText.text.toString()
         set(value) {
             field = value
-            tvStcDateText.text = value
-            tvStcDateText.setTextColor(
+            binding.tvStcDateText.text = value
+            binding.tvStcDateText.setTextColor(
                 context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
             )
         }
@@ -52,8 +53,8 @@ class DateTextFieldView(
     var valueStr: String = ""
         set(value) {
             field = value
-            tvStcDateText.text = value
-            tvStcDateText.setTextColor(
+            binding.tvStcDateText.text = value
+            binding.tvStcDateText.setTextColor(
                 context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
             )
         }
@@ -61,6 +62,6 @@ class DateTextFieldView(
     var labelGravity: Int = Gravity.START
         set(value) {
             field = value
-            tvStcDateLabel.gravity = value
+            binding.tvStcDateLabel.gravity = value
         }
 }

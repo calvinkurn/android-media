@@ -32,9 +32,10 @@ class PlayBroadcastUpdateChannelUseCase @Inject constructor(private val updateCh
             try {
                 response = updateChannelUseCase.executeOnBackground()
             } catch (throwable: Throwable) {
-                if (throwable is UnknownHostException || throwable is SocketTimeoutException) throw DefaultNetworkThrowable()
+                if (throwable is UnknownHostException || throwable is SocketTimeoutException) throw throwable
                 else {
                     if (retryCount++ < DefaultUseCaseHandler.MAX_RETRY) withRetry()
+                    else throw throwable
                 }
             }
         }
