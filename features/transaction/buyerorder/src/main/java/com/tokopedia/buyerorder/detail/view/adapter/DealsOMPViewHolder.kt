@@ -45,7 +45,7 @@ class DealsOMPViewHolder(private val setEventDetails: ItemsAdapter.SetEventDetai
 
             tv_brand_name.text = metadata.productName
 
-            setEventDetails.sendThankYouEvent(metadata, ItemsAdapter.ITEM_DEALS, orderDetails)
+            setEventDetails.sendOpenScreenDeals(true)
 
             if (metadata.endTime.isNullOrEmpty()){
                 ll_valid.gone()

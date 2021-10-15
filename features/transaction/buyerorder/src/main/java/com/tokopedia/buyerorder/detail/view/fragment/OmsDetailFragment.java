@@ -631,6 +631,11 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
+    public void sendOpenScreenDeals(Boolean isOmp){
+        orderListAnalytics.sendOpenScreenDeals(isOmp);
+    }
+
+    @Override
     public void showRetryButtonToaster(String msg) {
         if (getView() != null) {
             Toaster.build(getView(), msg, Toaster.LENGTH_INDEFINITE, Toaster.TYPE_NORMAL, "Oke", v1 -> { }).show();

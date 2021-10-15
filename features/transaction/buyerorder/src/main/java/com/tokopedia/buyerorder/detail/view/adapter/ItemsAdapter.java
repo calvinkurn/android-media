@@ -428,6 +428,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
                 if (itemType == ITEM_DEALS) {
                     setEventDetails.sendThankYouEvent(metaDataInfo, ITEM_DEALS, orderDetails);
+                    setEventDetails.sendOpenScreenDeals(false);
                     final MetaDataInfo metaDataInfo1 = metaDataInfo;
                     if (!TextUtils.isEmpty(metaDataInfo.getEndDate())) {
                         validDate.setText(" ".concat(metaDataInfo.getEndDate()));
@@ -682,6 +683,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         void sendThankYouEvent(MetaDataInfo metaDataInfo, int categoryType, OrderDetails orderDetails);
 
+        void sendOpenScreenDeals(Boolean isOMP);
+
         void showRetryButtonToaster(String msg);
 
 
@@ -737,6 +740,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             if (metaDataInfo != null) {
                 setEventDetails.sendThankYouEvent(metaDataInfo, ITEM_DEALS, orderDetails);
+                setEventDetails.sendOpenScreenDeals(false);
                 setEventDetails.setDetailTitle(context.getResources().getString(R.string.purchase_detail));
                 if (!TextUtils.isEmpty(metaDataInfo.getEndDate())) {
                     validDate.setText(" ".concat(metaDataInfo.getEndDate()));
