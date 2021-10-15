@@ -208,30 +208,6 @@
             tools:text="Rp250.000"
             tools:visibility="visible" />
 
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/product_bundling_group_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            app:constraint_referenced_ids="product_bundling_image_1, product_bundling_price_1, product_bundling_discount_1, product_bundling_slash_1"
-            tools:visibility="gone" />
-
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/product_bundling_group_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            app:constraint_referenced_ids="product_bundling_image_2, product_bundling_price_2, product_bundling_discount_2, product_bundling_slash_2, product_bundling_icon_add_1"
-            tools:visibility="gone" />
-
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/product_bundling_group_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            app:constraint_referenced_ids="product_bundling_image_3, product_bundling_price_3, product_bundling_discount_3, product_bundling_slash_3, product_bundling_icon_add_2"
-            tools:visibility="gone" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </HorizontalScrollView>
