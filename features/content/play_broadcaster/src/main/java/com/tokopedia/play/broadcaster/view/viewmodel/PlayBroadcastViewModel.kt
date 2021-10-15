@@ -185,15 +185,6 @@ internal class PlayBroadcastViewModel @Inject constructor(
             )
         }
 
-//    private val _channelUiState = flow {
-//        emit(
-//            PlayChannelUiState(
-//                canStream = false,
-//                tnc = emptyList(),
-//            )
-//        )
-//    }
-
     val uiState = _channelUiState.map {
         PlayBroadcastUiState(channel = it)
     }
