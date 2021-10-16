@@ -1,11 +1,14 @@
 package com.tokopedia.mediauploader.image
 
+import com.tokopedia.mediauploader.UploaderManager
 import com.tokopedia.mediauploader.common.data.consts.*
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
-import com.tokopedia.mediauploader.common.logger.trackToTimber
 import com.tokopedia.mediauploader.common.state.ProgressCallback
 import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.mediauploader.common.util.*
+import com.tokopedia.mediauploader.common.util.getFileExtension
+import com.tokopedia.mediauploader.common.util.isMaxBitmapResolution
+import com.tokopedia.mediauploader.common.util.isMaxFileSize
+import com.tokopedia.mediauploader.common.util.isMinBitmapResolution
 import com.tokopedia.mediauploader.image.data.mapper.ImagePolicyMapper
 import com.tokopedia.mediauploader.image.data.params.ImageUploadParam
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
@@ -15,15 +18,28 @@ import java.io.File
 class ImageUploaderManager constructor(
     private val imagePolicyUseCase: GetImagePolicyUseCase,
     private val imageUploaderUseCase: GetImageUploaderUseCase
-) {
+) : UploaderManager {
 
-    suspend fun requestPolicy(sourceId: String): SourcePolicy {
-        val policyData = imagePolicyUseCase(sourceId)
-        return ImagePolicyMapper.mapToSourcePolicy(policyData.dataPolicy)
+    override suspend operator fun invoke(
+        file: File,
+        sourceId: String,
+        progress: ProgressCallback?
+    ): UploadResult {
+        return validate(file, sourceId) { policy ->
+            // track progress bar
+            setProgressUploader(progress)
+
+            // upload file
+            upload(file, sourceId, policy)
+        }.also { result ->
+            if (result is UploadResult.Error) {
+                setError(listOf(result.message), sourceId, file)
+            }
+        }
     }
 
-    suspend fun post(
-        fileToUpload: File,
+    override suspend fun upload(
+        file: File,
         sourceId: String,
         policy: SourcePolicy
     ): UploadResult {
@@ -31,7 +47,7 @@ class ImageUploaderManager constructor(
         val uploaderParams = ImageUploadParam(
             hostUrl = policy.host,
             sourceId = sourceId,
-            file = fileToUpload,
+            file = file,
             timeOut = policy.timeOut.toString(),
         )
 
@@ -48,7 +64,7 @@ class ImageUploaderManager constructor(
 
         return upload.data?.let {
             UploadResult.Success(it.uploadId)
-        }?: setError(error, sourceId, fileToUpload)
+        }?: setError(error, sourceId, file)
     }
 
     /*
@@ -56,10 +72,10 @@ class ImageUploaderManager constructor(
     * - file not sound
     * - source not sound
     * */
-    suspend inline fun validate(
+    override suspend fun validate(
         file: File,
         sourceId: String,
-        onUpload: (sourcePolicy: SourcePolicy) -> UploadResult
+        onUpload: suspend (sourcePolicy: SourcePolicy) -> UploadResult
     ): UploadResult {
         // sourceId empty validation
         if (sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
@@ -68,7 +84,11 @@ class ImageUploaderManager constructor(
         val filePath = file.path
 
         // request policy by sourceId
-        val sourcePolicy = requestPolicy(sourceId)
+        val policyData = imagePolicyUseCase(sourceId)
+
+        val sourcePolicy = ImagePolicyMapper.mapToSourcePolicy(
+            policyData.dataPolicy
+        )
 
         val onError = if (sourcePolicy.imagePolicy != null) {
             // get acceptable extension based on policy
@@ -83,15 +103,14 @@ class ImageUploaderManager constructor(
 
             setError(listOf(
                 when {
-                    !file.exists() ->
-                        FILE_NOT_FOUND
-                    !extensions.contains(getFileExtension(filePath)) ->
+                    !file.exists() -> FILE_NOT_FOUND
+                    !extensions.contains(filePath.getFileExtension()) ->
                         formatNotAllowedMessage(sourcePolicy.imagePolicy.extension)
-                    isMaxFileSize(filePath, maxFileSize) ->
+                    file.isMaxFileSize(maxFileSize) ->
                         maxFileSizeMessage(maxFileSize)
-                    isMaxBitmapResolution(filePath, maxRes.width, maxRes.height) ->
+                    filePath.isMaxBitmapResolution(maxRes.width, maxRes.height) ->
                         maxResBitmapMessage(maxRes.width, maxRes.height)
-                    isMinBitmapResolution(filePath, minRes.width, minRes.height) ->
+                    filePath.isMinBitmapResolution(minRes.width, minRes.height) ->
                         minResBitmapMessage(minRes.width, minRes.height)
                     else -> ""
                 }
@@ -105,33 +124,6 @@ class ImageUploaderManager constructor(
         } else {
             onUpload(sourcePolicy)
         }
-    }
-
-    /*
-    * common error tracker and expose to user
-    * */
-    fun setError(message: List<String>, sourceId: String, fileToUpload: File): UploadResult {
-        val errorMessages = mutableListOf<String>()
-
-        // this validation to preventing overload logging on scalyr if error message is empty
-        if (message.isNotEmpty()) {
-            errorMessages.addAll(message)
-
-            // add the `Kode Error:` as prefix
-            val messages = errorMessages.map {
-                it.addPrefix()
-            }.toList()
-
-            trackToTimber(fileToUpload, sourceId, messages)
-        } else {
-            // if error message "really" empty, adding a network error message as general message
-            errorMessages.add(NETWORK_ERROR)
-        }
-
-        // get the first (as readable) error message and add the prefix
-        val errorMessage = errorMessages.first().addPrefix()
-
-        return UploadResult.Error(errorMessage)
     }
 
     fun setProgressUploader(progress: ProgressCallback?) {

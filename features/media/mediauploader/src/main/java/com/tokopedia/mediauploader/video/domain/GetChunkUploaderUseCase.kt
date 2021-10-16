@@ -4,15 +4,15 @@ import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.mediauploader.common.data.consts.UrlBuilder
 import com.tokopedia.mediauploader.common.util.requestBody
 import com.tokopedia.mediauploader.video.data.VideoUploadServices
-import com.tokopedia.mediauploader.video.data.entity.VideoLargeUploader
+import com.tokopedia.mediauploader.video.data.entity.LargeUploader
 import com.tokopedia.mediauploader.video.data.params.ChunkUploadParam
 import kotlinx.coroutines.Dispatchers
 
 class GetChunkUploaderUseCase constructor(
     private val services: VideoUploadServices
-) : CoroutineUseCase<ChunkUploadParam, VideoLargeUploader>(Dispatchers.IO) {
+) : CoroutineUseCase<ChunkUploadParam, LargeUploader>(Dispatchers.IO) {
 
-    override suspend fun execute(params: ChunkUploadParam): VideoLargeUploader {
+    override suspend fun execute(params: ChunkUploadParam): LargeUploader {
         val (sourceId, uploadId, partNumber, file, timeOut) = params
 
         return services.uploadLargeUpload(

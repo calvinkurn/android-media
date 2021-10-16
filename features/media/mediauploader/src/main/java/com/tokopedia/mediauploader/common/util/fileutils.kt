@@ -3,24 +3,24 @@ package com.tokopedia.mediauploader.common.util
 import android.graphics.BitmapFactory
 import java.io.File
 
-fun getFileExtension(filePath: String): String {
-    val lastIndexOf = filePath.lastIndexOf(".")
-    return if (lastIndexOf == -1) "" else filePath.substring(lastIndexOf)
+fun String.getFileExtension(): String {
+    val lastIndexOf = this.lastIndexOf(".")
+    return if (lastIndexOf == -1) "" else this.substring(lastIndexOf)
 }
 
-fun isMaxFileSize(filePath: String, maxFileSize: Int): Boolean {
-    return File(filePath).length() > maxFileSize
+fun File.isMaxFileSize(maxFileSize: Int): Boolean {
+    return this.length() > maxFileSize
 }
 
-fun isMaxBitmapResolution(filePath: String, maxWidth: Int, maxHeight: Int): Boolean {
-    val bitmapOptions = getBitmapOptions(filePath)
+fun String.isMaxBitmapResolution(maxWidth: Int, maxHeight: Int): Boolean {
+    val bitmapOptions = getBitmapOptions(this)
     val width = bitmapOptions.outWidth
     val height = bitmapOptions.outHeight
     return width > maxWidth && height > maxHeight
 }
 
-fun isMinBitmapResolution(filePath: String, minWidth: Int, minHeight: Int): Boolean {
-    val bitmapOptions = getBitmapOptions(filePath)
+fun String.isMinBitmapResolution(minWidth: Int, minHeight: Int): Boolean {
+    val bitmapOptions = getBitmapOptions(this)
     val width = bitmapOptions.outWidth
     val height = bitmapOptions.outHeight
     return width < minWidth && height < minHeight

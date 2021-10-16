@@ -8,7 +8,7 @@ import com.tokopedia.mediauploader.image.data.ImageUploadServices
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
 import com.tokopedia.mediauploader.video.data.VideoUploadServices
-import com.tokopedia.mediauploader.video.domain.GetSingleUploaderUseCase
+import com.tokopedia.mediauploader.video.domain.GetSimpleUploaderUseCase
 import com.tokopedia.mediauploader.video.domain.GetVideoPolicyUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -67,8 +67,8 @@ class MediaUploaderModule {
     @MediaUploaderQualifier
     fun provideGetSingleVideoUploaderUseCase(
         services: VideoUploadServices
-    ): GetSingleUploaderUseCase {
-        return GetSingleUploaderUseCase(services)
+    ): GetSimpleUploaderUseCase {
+        return GetSimpleUploaderUseCase(services)
     }
 
 }

@@ -5,18 +5,18 @@ import com.tokopedia.mediauploader.common.data.consts.UrlBuilder
 import com.tokopedia.mediauploader.common.state.ProgressCallback
 import com.tokopedia.mediauploader.common.util.requestBody
 import com.tokopedia.mediauploader.video.data.VideoUploadServices
-import com.tokopedia.mediauploader.video.data.entity.VideoUploader
+import com.tokopedia.mediauploader.video.data.entity.SimpleUploader
 import com.tokopedia.mediauploader.video.data.params.SimpleUploadParam
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
-class GetSingleUploaderUseCase @Inject constructor(
+class GetSimpleUploaderUseCase @Inject constructor(
     private val services: VideoUploadServices
-) : CoroutineUseCase<SimpleUploadParam, VideoUploader>(Dispatchers.IO) {
+) : CoroutineUseCase<SimpleUploadParam, SimpleUploader>(Dispatchers.IO) {
 
     var progressCallback: ProgressCallback? = null
 
-    override suspend fun execute(params: SimpleUploadParam): VideoUploader {
+    override suspend fun execute(params: SimpleUploadParam): SimpleUploader {
         val (sourceId, file, timeOut) = params
 
         return services.simpleUpload(

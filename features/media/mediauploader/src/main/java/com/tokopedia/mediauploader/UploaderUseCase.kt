@@ -10,6 +10,8 @@ import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
+import com.tokopedia.mediauploader.video.VideoUploaderManager
+import com.tokopedia.mediauploader.video.domain.*
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -25,12 +27,29 @@ import android.util.Log.getStackTraceString as getStackTraceMessage
 
 class UploaderUseCase @Inject constructor(
     imagePolicyUseCase: GetImagePolicyUseCase,
-    imageUploaderUseCase: GetImageUploaderUseCase
+    imageUploaderUseCase: GetImageUploaderUseCase,
+    policyUseCase: GetVideoPolicyUseCase,
+    simpleUseCase: GetSimpleUploaderUseCase,
+    initUseCase: InitVideoUploaderUseCase,
+    checkerUseCase: GetChunkCheckerUseCase,
+    uploaderUseCase: GetChunkUploaderUseCase,
+    completeUseCase: SetCompleteUploaderUseCase,
+    abortUseCase: SetAbortUploaderUseCase
 ) : CoroutineUseCase<RequestParams, UploadResult>(Dispatchers.IO) {
 
-    private val uploaderManager = ImageUploaderManager(
+    private val imageUploader = ImageUploaderManager(
         imagePolicyUseCase,
         imageUploaderUseCase
+    )
+
+    private val videoUploader = VideoUploaderManager(
+        policyUseCase,
+        simpleUseCase,
+        initUseCase,
+        checkerUseCase,
+        uploaderUseCase,
+        completeUseCase,
+        abortUseCase
     )
 
     private var progressUploader: ProgressCallback? = null
@@ -40,24 +59,18 @@ class UploaderUseCase @Inject constructor(
 
     override suspend fun execute(params: RequestParams): UploadResult {
         val sourceId = params.getString(PARAM_SOURCE_ID, "")
-        val fileToUpload = params.getObject(PARAM_FILE_PATH) as File
+        val file = params.getObject(PARAM_FILE_PATH) as File
 
+        return imageUploader(file, sourceId)
+    }
+
+    private suspend fun imageUploader(file: File, sourceId: String): UploadResult {
         return try {
-            uploaderManager.validate(fileToUpload, sourceId) { sourcePolicy ->
-                // track progress bar
-                uploaderManager.setProgressUploader(progressUploader)
-
-                // upload file
-                uploaderManager.post(fileToUpload, sourceId, sourcePolicy)
-            }.also { result ->
-                if (result is UploadResult.Error) {
-                    uploaderManager.setError(listOf(result.message), sourceId, fileToUpload)
-                }
-            }
+            imageUploader(file, sourceId, progressUploader)
         } catch (e: SocketTimeoutException) {
-            uploaderManager.setError(listOf(TIMEOUT_ERROR), sourceId, fileToUpload)
+            imageUploader.setError(listOf(TIMEOUT_ERROR), sourceId, file)
         } catch (e: StreamResetException) {
-            uploaderManager.setError(listOf(TIMEOUT_ERROR), sourceId, fileToUpload)
+            imageUploader.setError(listOf(TIMEOUT_ERROR), sourceId, file)
         } catch (e: Exception) {
             if (e !is UnknownHostException &&
                 e !is SocketException &&
@@ -71,10 +84,11 @@ class UploaderUseCase @Inject constructor(
                     trackToTimber(sourceId, getStackTraceMessage(e).take(ERROR_MAX_LENGTH).trim())
                 }
             }
-            return uploaderManager.setError(listOf(NETWORK_ERROR), sourceId, fileToUpload)
+            return imageUploader.setError(listOf(NETWORK_ERROR), sourceId, file)
         }
     }
 
+    // Public Method
     fun trackProgress(progress: (percentage: Int) -> Unit) {
         this.progressUploader = object : ProgressCallback {
             override fun onProgress(percentage: Int) {
@@ -83,6 +97,7 @@ class UploaderUseCase @Inject constructor(
         }
     }
 
+    // Public Method
     fun createParams(sourceId: String, filePath: File): RequestParams {
         return RequestParams.create().apply {
             putString(PARAM_SOURCE_ID, sourceId)
@@ -91,7 +106,6 @@ class UploaderUseCase @Inject constructor(
     }
 
     companion object {
-        // key of params
         const val PARAM_SOURCE_ID = "source_id"
         const val PARAM_FILE_PATH = "file_path"
     }
