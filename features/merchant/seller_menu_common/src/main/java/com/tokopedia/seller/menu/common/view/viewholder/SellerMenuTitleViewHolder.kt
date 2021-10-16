@@ -7,10 +7,12 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
+import com.tokopedia.seller.menu.common.databinding.ItemSellerMenuTitleOtherSectionBinding
+import com.tokopedia.seller.menu.common.databinding.ItemSellerMenuTitleSectionBinding
 import com.tokopedia.seller.menu.common.view.uimodel.SectionTitleUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SectionTitleUiModel.SectionTitleType
 import com.tokopedia.seller.menu.common.view.uimodel.SectionTitleUiModel.SectionTitleType.*
-import kotlinx.android.synthetic.main.item_seller_menu_title_section.view.*
+import com.tokopedia.unifyprinciples.Typography
 
 class SellerMenuTitleViewHolder(
         itemView: View,
@@ -33,14 +35,19 @@ class SellerMenuTitleViewHolder(
         }
     }
 
+    private var textTitle: Typography? = null
+    private var textCta: Typography? = null
+
     override fun bind(menu: SectionTitleUiModel) {
-        itemView.textTitle?.shouldShowWithAction(!menu.title.isNullOrBlank()) {
-            itemView.textTitle.text = menu.title
+        val layoutType = getLayout(menu.type)
+        setupBinding(layoutType)
+        textTitle?.shouldShowWithAction(!menu.title.isNullOrBlank()) {
+            textTitle?.text = menu.title
         }
 
-        if (getLayout(menu.type) == SECTION_WITH_CTA_LAYOUT) {
-            itemView.textCta?.shouldShowWithAction(!menu.ctaText.isNullOrBlank()) {
-                itemView.textCta.text = menu.ctaText
+        if (layoutType == SECTION_WITH_CTA_LAYOUT) {
+            textCta?.shouldShowWithAction(!menu.ctaText.isNullOrBlank()) {
+                textCta?.text = menu.ctaText
             }
         }
 
@@ -49,6 +56,17 @@ class SellerMenuTitleViewHolder(
                 RouteManager.route(itemView.context, appLink)
                 trackClickSection(menu)
             }
+        }
+    }
+
+    private fun setupBinding(layoutType: Int) {
+        if (layoutType == SECTION_WITH_CTA_LAYOUT) {
+            val binding = ItemSellerMenuTitleSectionBinding.bind(itemView)
+            textTitle = binding.textTitle
+            textCta = binding.textCta
+        } else {
+            val binding = ItemSellerMenuTitleOtherSectionBinding.bind(itemView)
+            textTitle = binding.textTitle
         }
     }
 

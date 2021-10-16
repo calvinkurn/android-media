@@ -14,6 +14,7 @@ import com.tokopedia.loginfingerprint.domain.usecase.RemoveFingerprintUsecase
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -25,7 +26,8 @@ class SettingFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispa
                                                       private val registerFingerprintUseCase: RegisterFingerprintUseCase,
                                                       private val removeFingerprintUseCase: RemoveFingerprintUsecase,
                                                       private val cryptographyUtils: Cryptography?,
-                                                      private val checkFingerprintToggleStatusUseCase: CheckFingerprintToggleStatusUseCase)
+                                                      private val checkFingerprintToggleStatusUseCase: CheckFingerprintToggleStatusUseCase,
+                                                      private val fingerprintPreference: FingerprintPreference)
     : BaseViewModel(dispatcher.main) {
 
     private val mutableCheckFingerprintStatus = MutableLiveData<Result<CheckFingerprintPojo>>()
@@ -58,9 +60,10 @@ class SettingFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispa
         signature?.run {
             if(cryptographyUtils?.getPublicKey()?.isNotEmpty() == true && signature.signature.isNotEmpty()){
                 registerFingerprintUseCase.registerFingerprint(
+                    fingerprintPreference.getOrCreateUniqueId(),
                     this,
                     cryptographyUtils.getPublicKey(),
-                    onSuccessRegisterFP(),
+                    { onSuccessRegisterFP(it) },
                     onErrorRegisterFP()
                 )
             }else {
@@ -72,6 +75,7 @@ class SettingFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispa
     fun removeFingerprint() {
         removeFingerprintUseCase.removeFingerprint(onSuccess = {
             if(it.data.isSuccess && it.data.error.isEmpty()) {
+                fingerprintPreference.removeUniqueId()
                 mutableRemoveFingerprintResult.postValue(Success(it.data))
             }else {
                 mutableRemoveFingerprintResult.postValue(Fail(MessageErrorException(it.data.error)))
@@ -81,18 +85,16 @@ class SettingFingerprintViewModel @Inject constructor(dispatcher: CoroutineDispa
         })
     }
 
-    private fun onSuccessRegisterFP(): (RegisterFingerprintPojo) -> Unit {
-        return {
-            val response = it.data
-            if (response.errorMessage.isBlank() && response.success) {
+    private fun onSuccessRegisterFP(registerFingerprintPojo: RegisterFingerprintPojo) {
+        val response = registerFingerprintPojo.data
+        if (response.errorMessage.isBlank() && response.success) {
 
-                mutableRegisterFingerprintResult.value = Success(it.data)
-            } else if (response.errorMessage.isNotBlank()) {
-                mutableRegisterFingerprintResult.value = Fail(MessageErrorException(response.errorMessage,
-                    ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
-            } else {
-                mutableRegisterFingerprintResult.value = Fail(MessageErrorException())
-            }
+            mutableRegisterFingerprintResult.value = Success(registerFingerprintPojo.data)
+        } else if (response.errorMessage.isNotBlank()) {
+            mutableRegisterFingerprintResult.value = Fail(MessageErrorException(response.errorMessage,
+                ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
+        } else {
+            mutableRegisterFingerprintResult.value = Fail(MessageErrorException())
         }
     }
 

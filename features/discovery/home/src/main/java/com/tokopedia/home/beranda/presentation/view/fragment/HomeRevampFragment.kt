@@ -103,7 +103,6 @@ import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.IS_SUCCESS_RESET
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
 import com.tokopedia.home.constant.HomePerformanceConstant
-import com.tokopedia.home.widget.FloatingTextButton
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.model.ChannelGrid
@@ -203,7 +202,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         FragmentListener,
         HomeEggListener,
         HomeTabFeedListener,
-        HomeInspirationListener,
         HomeFeedsListener,
         HomeReviewListener,
         PopularKeywordListener,
@@ -334,7 +332,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var userSession: UserSessionInterface
     private lateinit var root: FrameLayout
     private lateinit var refreshLayout: ToggleableSwipeRefreshLayout
-    private lateinit var floatingTextButton: FloatingTextButton
     private lateinit var onEggScrollListener: RecyclerView.OnScrollListener
     private lateinit var irisAnalytics: Iris
     private lateinit var irisSession: IrisSession
@@ -446,11 +443,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun isChooseAddressRollenceActive(): Boolean {
-        return if (context == null) {
-            true
-        } else {
-            ChooseAddressUtils.isRollOutUser(context)
-        }
+        return true
     }
 
     private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {
@@ -699,7 +692,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         )
 
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout)
-        floatingTextButton = view.findViewById(R.id.recom_action_button)
         stickyLoginView = view.findViewById(R.id.sticky_login_text)
         root = view.findViewById(R.id.root)
         if (arguments != null) {
@@ -1198,20 +1190,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         initEggTokenScrollListener()
         initStickyLogin()
 
-        floatingTextButton.setOnClickListener { view: View? ->
-            scrollToRecommendList()
-            HomePageTracking.eventClickJumpRecomendation()
-        }
-        KeyboardHelper.setKeyboardVisibilityChangedListener(root, object : KeyboardHelper.OnKeyboardVisibilityChangedListener {
-            override fun onKeyboardShown() {
-                floatingTextButton.forceHide()
-            }
-
-            override fun onKeyboardHide() {
-                floatingTextButton.resetState()
-            }
-        })
-
         context?.let {
             if (isRegisteredFromStickyLogin(it)) gotoNewUserZone()
         }
@@ -1322,11 +1300,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             chooseAddressAbTestCondition(
                     ifChooseAddressActive = {
                         if (!validateChooseAddressWidget()) {
-                            getHomeViewModel().refresh(isFirstInstall())
+                            getHomeViewModel().refresh(isFirstInstall = isFirstInstall())
                         }
                     },
                     ifChooseAddressNotActive = {
-                        getHomeViewModel().refresh(isFirstInstall())
+                        getHomeViewModel().refresh(isFirstInstall = isFirstInstall())
                     }
             )
 
@@ -1792,7 +1770,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun adjustHomeBackgroundHeight(currentContext: Context) {
-        val isChooseAddressShow = ChooseAddressUtils.isRollOutUser(currentContext)
+        val isChooseAddressShow = true
         if (isChooseAddressShow && (isEligibleGopay != null && isEligibleGopay == true)) {
             val layoutParams = backgroundViewImage.layoutParams
             layoutParams.height =
@@ -2035,7 +2013,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun configureHomeFlag(homeFlag: HomeFlag) {
-        floatingTextButton.visibility = if (homeFlag.getFlag(HomeFlag.TYPE.HAS_RECOM_NAV_BUTTON) && showRecomendation) View.VISIBLE else View.GONE
         initAutoRefreshHandler()
         if (isEnableToAutoRefresh(homeFlag)) {
             autoRefreshFlag = homeFlag
@@ -2298,6 +2275,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     .setLocalCacheModel(localCacheModel)
             )
             chooseAddressWidgetInitialized = false
+            getHomeViewModel().refresh(forceRefresh = true, isFirstInstall = isFirstInstall())
         }
     }
 
@@ -2332,7 +2310,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         removeNetworkError()
         homeRecyclerView?.isEnabled = false
         if (::viewModel.isInitialized) {
-            getHomeViewModel().refreshHomeData(isFirstInstall())
+            getHomeViewModel().refreshHomeData()
         }
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
@@ -2940,10 +2918,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     override fun onFeedContentScrolled(dy: Int, totalScrollY: Int) {}
 
     override fun onFeedContentScrollStateChanged(newState: Int) {}
-
-    override fun onGoToProductDetailFromInspiration(productId: String, imageSource: String, name: String, price: String) {
-        goToProductDetail(productId)
-    }
 
     private fun goToProductDetail(productId: String) {
         activity?.startActivity(getProductIntent(productId))

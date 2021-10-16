@@ -29,31 +29,23 @@ object ChooseAddressUtils {
     private const val locationRequestFastestInterval = 2 * 1000L
 
     fun getLocalizingAddressData(context: Context): LocalCacheModel? {
-        return if (isRollOutUser(context)) {
-            if (hasLocalizingAddressOnCache(context)) {
-                val chooseAddressPref = ChooseAddressSharePref(context)
-                chooseAddressPref.getLocalCacheData()
-            } else {
-                if (isLoginUser(context)) {
-                    ChooseAddressConstant.emptyAddress
-                } else {
-                    ChooseAddressConstant.defaultAddress
-                }
-            }
+        return if (hasLocalizingAddressOnCache(context)) {
+            val chooseAddressPref = ChooseAddressSharePref(context)
+            chooseAddressPref.getLocalCacheData()
         } else {
-            ChooseAddressConstant.emptyAddress
-        }
-    }
-
-    fun getLocalizingAddressDataDirectly(context: Context): LocalCacheModel? {
-        return if (isRollOutUser(context)) {
             if (isLoginUser(context)) {
                 ChooseAddressConstant.emptyAddress
             } else {
                 ChooseAddressConstant.defaultAddress
             }
-        } else {
+        }
+    }
+
+    fun getLocalizingAddressDataDirectly(context: Context): LocalCacheModel? {
+        return if (isLoginUser(context)) {
             ChooseAddressConstant.emptyAddress
+        } else {
+            ChooseAddressConstant.defaultAddress
         }
     }
 
@@ -66,14 +58,6 @@ object ChooseAddressUtils {
     fun isLoginUser(context: Context): Boolean {
         val userSession: UserSessionInterface = UserSession(context)
         return userSession.isLoggedIn
-    }
-
-    /**
-     * Rollence key
-     */
-    fun isRollOutUser(context: Context?): Boolean {
-        val rollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY, "")
-        return rollenceValue == ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY
     }
 
     /**
@@ -117,11 +101,9 @@ object ChooseAddressUtils {
 
     fun updateLocalizingAddressDataFromOther(context: Context, addressId: String, cityId: String, districtId: String, lat: String, long: String, label: String,
                                              postalCode: String, shopId: String, warehouseId: String) {
-        if (isRollOutUser(context)) {
-            val chooseAddressPref = ChooseAddressSharePref(context)
-            val localData = setLocalizingAddressData(addressId, cityId, districtId, lat, long, label, postalCode, shopId, warehouseId)
-            chooseAddressPref.setLocalCache(localData)
-        }
+        val chooseAddressPref = ChooseAddressSharePref(context)
+        val localData = setLocalizingAddressData(addressId, cityId, districtId, lat, long, label, postalCode, shopId, warehouseId)
+        chooseAddressPref.setLocalCache(localData)
     }
 
     /**

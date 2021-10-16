@@ -200,9 +200,9 @@ class ShopHomeNplCampaignViewHolder(
     }
 
     private fun setRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
+        hideAllRemindMeLayout()
         isRemindMe = model.data?.firstOrNull()?.isRemindMe
         isRemindMe?.let {
-            hideAllRemindMeLayout()
             layoutRemindMe?.show()
             layoutRemindMe?.setOnClickListener {
                 if (loaderRemindMe?.isVisible == false) {
@@ -269,7 +269,7 @@ class ShopHomeNplCampaignViewHolder(
 
     private fun setWidgetImpressionListener(model: ShopHomeNewProductLaunchCampaignUiModel) {
         model.data?.firstOrNull()?.let {
-            itemView.addOnImpressionListener(model) {
+            itemView.addOnImpressionListener(model.impressHolder) {
                 shopHomeCampaignNplWidgetListener.onImpressionCampaignNplWidget(adapterPosition, model)
             }
         }

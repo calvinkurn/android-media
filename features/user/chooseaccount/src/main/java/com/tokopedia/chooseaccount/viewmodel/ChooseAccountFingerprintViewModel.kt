@@ -5,15 +5,17 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chooseaccount.data.AccountListDataModel
 import com.tokopedia.chooseaccount.data.AccountsDataModel
-import com.tokopedia.chooseaccount.domain.usecase.GetAccountListUseCase
+import com.tokopedia.chooseaccount.domain.usecase.GetFingerprintAccountListUseCase
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class ChooseAccountFingerprintViewModel @Inject constructor(
-        private val getAccountsListUseCase: GetAccountListUseCase,
+        private val getAccountListUseCase: GetFingerprintAccountListUseCase,
+        private val fingerprintPreference: FingerprintPreference,
         dispatcher: CoroutineDispatchers
 ): BaseChooseAccountViewModel(dispatcher) {
 
@@ -22,10 +24,11 @@ class ChooseAccountFingerprintViewModel @Inject constructor(
         get() = mutableGetAccountListResponse
 
     fun getAccountListFingerprint(validateToken: String) {
-        getAccountsListUseCase.getAccounts(validateToken,
+        getAccountListUseCase.getAccounts(validateToken,
                 ChooseAccountViewModel.LOGIN_TYPE_BIOMETRIC,
-            onSuccessGetAccountListBiometric(),
-            onFailedGetAccountListBiometric()
+                fingerprintPreference.getUniqueId(),
+                onSuccessGetAccountListBiometric(),
+                onFailedGetAccountListBiometric()
         )
     }
 

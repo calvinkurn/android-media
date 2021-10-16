@@ -3,7 +3,6 @@ package com.tokopedia.remoteconfig
 object RollenceKey {
 
     //    Shop Page
-    const val AB_TEST_ROLLOUT_NEW_SHOP_ETALASE = "etalase_revamp_new"
     const val NAVIGATION_EXP_TOP_NAV = "new_glmenu"
     const val NAVIGATION_EXP_TOP_NAV2 = "new_glmenu2"
     const val NAVIGATION_VARIANT_OLD = "Existing Navigation"
@@ -15,6 +14,8 @@ object RollenceKey {
     const val AB_TEST_SHOP_REVIEW = "review_shop"
     const val OLD_REVIEW_SHOP = "old_review_shop"
     const val NEW_REVIEW_SHOP = "new_review_shop"
+
+    const val AB_TEST_SHOP_NEW_HOME_TAB = "shop_layout_engine"
 
     //    Add Edit Product
     const val HAMPERS_AB_TEST_KEY = "hampers_android"

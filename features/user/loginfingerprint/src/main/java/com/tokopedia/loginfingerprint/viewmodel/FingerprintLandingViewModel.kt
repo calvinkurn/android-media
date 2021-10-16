@@ -10,6 +10,7 @@ import com.tokopedia.loginfingerprint.domain.usecase.VerifyFingerprintUseCase
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -19,7 +20,8 @@ import javax.inject.Inject
 class FingerprintLandingViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                                       private val userSession: UserSessionInterface,
                                                       private val verifyFingerprintUseCase: VerifyFingerprintUseCase,
-                                                      private val cryptographyUtils: Cryptography?)
+                                                      private val cryptographyUtils: Cryptography?,
+                                                      private val fingerprintPreference: FingerprintPreference)
     : BaseViewModel(dispatcher.main){
 
     private val mutableVerifyFingerprint = MutableLiveData<Result<VerifyFingerprint>>()
@@ -27,7 +29,7 @@ class FingerprintLandingViewModel @Inject constructor(dispatcher: CoroutineDispa
         get() = mutableVerifyFingerprint
 
     fun verifyFingerprint() {
-        val signature = cryptographyUtils?.generateFingerprintSignature(userSession.adsId, userSession.deviceId)
+        val signature = cryptographyUtils?.generateFingerprintSignature(fingerprintPreference.getUniqueId(), userSession.deviceId)
         signature?.run {
             verifyFingerprintUseCase.verifyFingerprint(this, onSuccessVerifyFP(), onErrorVerifyFP())
         }

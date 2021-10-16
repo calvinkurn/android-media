@@ -49,9 +49,16 @@ class AccountHeaderMapper(
                         data.setTokopointData(it.statusFilteredData.points.externalCurrencyAmountStr, it.statusFilteredData.points.pointsAmountStr, it.statusFilteredData.points.iconImageURL)
                     }
                 }
+                walletAppData?.let {
+                    data.setWalletAppData(it)
+                }
                 saldoPojo?.let {
                     val totalSaldo = it.saldo.buyerUsable + it.saldo.sellerUsable
-                    if (totalSaldo > 0 || isGetTokopointsError || tokopointsStatusFilteredPojo?.tokopointsStatusFiltered?.statusFilteredData?.points?.pointsAmount.isZero()) {
+                    if (totalSaldo > 0 ||
+                        isGetTokopointsError ||
+                        tokopointsStatusFilteredPojo?.tokopointsStatusFiltered?.statusFilteredData?.points?.pointsAmount.isZero() ||
+                        (isEligibleForWalletApp && data.profileWalletAppDataModel.gopayPointsBalance.isEmpty() && data.profileWalletAppDataModel.gopayBalance.isEmpty())
+                    ) {
                         val saldoValue = convertPriceValueToIdrFormat(totalSaldo, false) ?: ""
                         data.setSaldoData(
                             saldo =saldoValue
@@ -72,9 +79,7 @@ class AccountHeaderMapper(
                             isLoading = false
                     )
                 }
-                walletAppData?.let {
-                    data.setWalletAppData(it)
-                }
+
                 data.profileWalletAppDataModel.isWalletAppFailed = isWalletAppError
                 data.profileWalletAppDataModel.isEligibleForWalletApp = isEligibleForWalletApp
                 data.profileSaldoDataModel.isGetSaldoError = isSaldoError

@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.report.R
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.data.util.MerchantReportTracking
+import com.tokopedia.report.databinding.FragmentProductReportBinding
 import com.tokopedia.report.di.MerchantReportComponent
 import com.tokopedia.report.view.activity.ProductReportFormActivity
 import com.tokopedia.report.view.activity.ReportInputDetailActivity
@@ -28,7 +29,7 @@ import com.tokopedia.report.view.adapter.ReportFormAdapter
 import com.tokopedia.report.view.customview.UnifyDialog
 import com.tokopedia.report.view.viewmodel.ProductReportSubmitViewModel
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_product_report.*
+import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
 class ProductReportSubmitFragment : BaseDaggerFragment() {
@@ -38,6 +39,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
     private var dialogSubmit: UnifyDialog? = null
     private var productId: String = "0"
     private val tracking by lazy { MerchantReportTracking() }
+    private var binding by autoCleared<FragmentProductReportBinding>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -59,7 +61,8 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_product_report, container, false)
+        binding = FragmentProductReportBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,18 +73,18 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
             cacheManager.get(ProductReportFormActivity.REASON_OBJECT, ProductReportReason::class.java)
 
         }
-        recycler_view.clearItemDecoration()
+        binding.recyclerView.clearItemDecoration()
         reason?.let {reasonItem ->
             val popupField = reasonItem.additionalFields.firstOrNull { additionalField -> additionalField.type == "popup" }
             if (popupField != null && activity != null){
-                dialogSubmit = UnifyDialog(activity!!, UnifyDialog.HORIZONTAL_ACTION, UnifyDialog.NO_HEADER).apply {
+                dialogSubmit = UnifyDialog(requireActivity(), UnifyDialog.HORIZONTAL_ACTION, UnifyDialog.NO_HEADER).apply {
                     setTitle(popupField.value)
                     setDescription(popupField.detail)
                     setOk(getString(R.string.label_report))
                     setSecondary(getString(R.string.report_cancel))
                     setOkOnClickListner(View.OnClickListener {
                         dismiss()
-                        loading_view?.visible()
+                        binding.loadingView.visible()
                         viewModel.submitReport(productId.toLongOrZero(),
                                 reasonItem.categoryId, adapter.inputs, this@ProductReportSubmitFragment::onSuccessSubmit,
                                 this@ProductReportSubmitFragment::onFailSubmit)
@@ -96,13 +99,13 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
 
             adapter = ReportFormAdapter(reasonItem, tracking, this::openInputDetail,
                     this::openPhotoPicker, this::onSubmitClicked)
-            recycler_view.adapter = adapter
+            binding.recyclerView.adapter = adapter
         }
     }
 
     private fun onSuccessSubmit(isSuccess: Boolean){
         tracking.eventReportLaporDisclaimer(adapter.trackingReasonLabel, isSuccess)
-        loading_view?.gone()
+        binding.loadingView.gone()
         if (!isSuccess){
             view?.let {
                 Toaster.showErrorWithAction(it, getString(R.string.fail_to_report),
@@ -121,7 +124,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
     }
 
     private fun onFailSubmit(throwable: Throwable?){
-        loading_view?.gone()
+        binding.loadingView.gone()
         tracking.eventReportLaporDisclaimer(adapter.trackingReasonLabel, false)
         view?.let {
             Toaster.showErrorWithAction(it, ErrorHandler.getErrorMessage(activity, throwable),
@@ -140,7 +143,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
             val total = adapter.itemCount - 1
             var valid = true
             for (i in 1..total){
-                val holder = recycler_view.findViewHolderForAdapterPosition(i-1)
+                val holder = binding.recyclerView.findViewHolderForAdapterPosition(i-1)
                 if ( holder is ReportFormAdapter.ValidateViewHolder)
                     valid = valid and holder.validate()
             }

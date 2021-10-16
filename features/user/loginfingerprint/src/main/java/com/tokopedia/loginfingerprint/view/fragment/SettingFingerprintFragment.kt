@@ -24,6 +24,7 @@ import com.tokopedia.loginfingerprint.tracker.BiometricTracker
 import com.tokopedia.loginfingerprint.view.dialog.FingerprintDialogHelper
 import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
 import com.tokopedia.loginfingerprint.viewmodel.SettingFingerprintViewModel
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -43,6 +44,9 @@ class SettingFingerprintFragment(val listener: AuthenticationFingerprintCallback
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var fingerprintPreference: FingerprintPreference
 
     @Inject
     lateinit var tracker: BiometricTracker

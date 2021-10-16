@@ -7,6 +7,7 @@ import com.tokopedia.loginfingerprint.data.model.VerifyFingerprintPojo
 import com.tokopedia.loginfingerprint.domain.usecase.VerifyFingerprintUseCase
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -35,6 +36,7 @@ class FingerprintLandingViewModelTest {
 
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
     private val cryptographyUtils = mockk<Cryptography>(relaxed = true)
+    val fingerprintPreferenceManager = mockk<FingerprintPreference>(relaxed = true)
 
     private val throwable = mockk<Throwable>(relaxed = true)
 
@@ -44,7 +46,8 @@ class FingerprintLandingViewModelTest {
             CoroutineTestDispatchersProvider,
             userSession,
             verifyFingerprintUseCase,
-            cryptographyUtils
+            cryptographyUtils,
+            fingerprintPreferenceManager
         )
 
         viewModel.verifyFingerprint.observeForever(verifyFingerprintObserver)

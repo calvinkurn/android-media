@@ -3,6 +3,7 @@ package com.tokopedia.tokopoints.view.tokopointhome
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.mvcwidget.MVC_REWARD_MULTISHOP_QUERY
 import com.tokopedia.tokopoints.di.TokoPointScope
 import com.tokopedia.tokopoints.view.model.rewardintro.IntroResponse
 import com.tokopedia.tokopoints.view.model.rewardtopsection.RewardResponse
@@ -12,7 +13,6 @@ import com.tokopedia.tokopoints.view.model.usersaving.UserSavingResponse
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.APIVERSION
 import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.REWARDS_SOURCE
-import com.tokopedia.tokopoints.view.util.TP_STATUS_MATCHING_QUERY
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -25,7 +25,6 @@ class TokopointsHomeUsecase @Inject constructor(@Named(CommonConstant.GQLQuery.T
                                                    @Named(CommonConstant.GQLQuery.TP_GQL_HOME_PAGE_SECTION) val tp_gql_homepage_section: String,
                                                    @Named(CommonConstant.GQLQuery.TP_GQL_REWARD_INTRO) val tp_gql_reward_intro: String,
                                                    @Named(CommonConstant.GQLQuery.TP_GQL_REWARD_USESAVING) val tp_gql_usersaving: String) {
-
 
     @Inject
     lateinit var mGetTokoPointDetailUseCase: MultiRequestGraphqlUseCase
@@ -42,6 +41,7 @@ class TokopointsHomeUsecase @Inject constructor(@Named(CommonConstant.GQLQuery.T
     @Inject
     lateinit var mGetStatusMatchingUsecase: MultiRequestGraphqlUseCase
 
+    @GqlQuery("TpHomePageSection", TP_HOMEPAGE_SECTION)
     suspend fun getTokoPointDetailData() = withContext(Dispatchers.IO) {
         mGetTokoPointDetailUseCase.clearRequest()
         //Main details
@@ -49,11 +49,13 @@ class TokopointsHomeUsecase @Inject constructor(@Named(CommonConstant.GQLQuery.T
                 RewardResponse::class.java, false)
         mGetTokoPointDetailUseCase.addRequest(request1)
         //Section
-        val request4 = GraphqlRequest(tp_gql_homepage_section,
-                TokopointsSectionOuter::class.java, false)
+        val variables: MutableMap<String, Any> = HashMap()
+        variables[CommonConstant.GraphqlVariableKeys.APIVERSION] = "2.0.0"
+        val request4 = GraphqlRequest(
+            String.format(TpHomePageSection.GQL_QUERY,MVC_REWARD_MULTISHOP_QUERY),
+                TokopointsSectionOuter::class.java, variables,false)
         mGetTokoPointDetailUseCase.addRequest(request4)
         mGetTokoPointDetailUseCase.executeOnBackground()
-
     }
 
     suspend fun getRewardIntroData() = withContext(Dispatchers.IO) {

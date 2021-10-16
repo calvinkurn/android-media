@@ -137,13 +137,13 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     protected fun verifyGetCategoryListResponseSuccess(expectedResponse: HomeLayoutItemUiModel) {
         val homeLayoutList = viewModel.homeLayoutList.value
-        val actualResponse = (homeLayoutList as Success).data.items.find { it.layout is TokoNowCategoryGridUiModel }
+        val actualResponse = (homeLayoutList as Success).data.items.find { it?.layout is TokoNowCategoryGridUiModel }
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
     protected fun verifyGetBannerResponseSuccess(expectedResponse: HomeLayoutItemUiModel) {
         val homeLayoutList = viewModel.homeLayoutList.value
-        val actualResponse = (homeLayoutList as Success).data.items.find { it.layout is BannerDataModel }
+        val actualResponse = (homeLayoutList as Success).data.items.find { it?.layout is BannerDataModel }
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 

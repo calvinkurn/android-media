@@ -29,6 +29,10 @@ class OutOfCoverageViewHolder(
                 outOfCoverageListener.onReturnClick()
             }
 
+            override fun onGetNoAddressEmptyStateEventCategoryTracker(): String {
+                return ""
+            }
+
         }
     }
 

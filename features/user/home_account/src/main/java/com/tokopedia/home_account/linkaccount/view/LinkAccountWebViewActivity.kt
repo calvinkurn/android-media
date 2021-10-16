@@ -139,9 +139,15 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Link
 
     override fun getNewFragment(): Fragment {
         var url = intent.getStringExtra(KEY_URL) ?: ""
+        val source = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_SOURCE) ?: ""
+
         if(url.isEmpty()) {
             val redirection = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_LD) ?: ApplinkConst.HOME
-            url = getLinkAccountUrl(redirection).toString()
+            val uri = getLinkAccountUrl(redirection)
+            url = uri.toString()
+            if(source.isNotEmpty() && url.isNotEmpty()) {
+                url = "$url&source=$source"
+            }
         }
         return LinkAccountWebviewFragment.newInstance(url)
     }
