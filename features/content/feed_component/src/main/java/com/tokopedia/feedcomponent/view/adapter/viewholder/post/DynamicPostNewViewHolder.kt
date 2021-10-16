@@ -19,6 +19,7 @@ import com.tokopedia.feedcomponent.view.widget.PostDynamicViewNew
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.user.session.UserSessionInterface
+import java.lang.Exception
 
 private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
 private const val BROADCAST_FEED = "BROADCAST_FEED"
@@ -107,7 +108,10 @@ open class DynamicPostNewViewHolder(
                 .getInstance(context.applicationContext)
                 .unregisterReceiver(receiver)
         }
-        postDynamicView?.detach(false, visitable as DynamicPostUiModel)
+        try {
+            postDynamicView?.detach(false, visitable as DynamicPostUiModel)
+        } catch (e: Exception) {
+        }
     }
 
     fun onItemAttach(context: Context?) {

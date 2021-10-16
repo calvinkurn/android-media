@@ -782,29 +782,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     R.drawable.ic_thumb_filled
                                 )
                             )
-                            doOnLayout {
-                                imageWidth = width
-                                imageHeight = height
-                                feedMedia.tagging.forEachIndexed { index, feedXMediaTagging ->
-                                    val productTagView = PostTagView(context, feedXMediaTagging)
-                                    productTagView.postDelayed({
-                                        productTagView.bindData(listener,
-                                            globalCardProductList,
-                                            imageWidth,
-                                            imageHeight,
-                                            positionInFeed)
 
-                                    }, TIME_SECOND)
-
-
-                                    layout.addView(productTagView)
-                                }
-
-                            }
-                            imagePostListener.userImagePostImpression(
-                                positionInFeed,
-                                pageControl.indicatorCurrentPosition
-                            )
                             if (feedXCard.isTopAds) {
                                 likedText.hide()
                                 captionText.hide()
@@ -817,7 +795,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 val topAdsProductName = findViewById<Typography>(R.id.top_ads_product_name)
                                 val textViewPrice = findViewById<Typography>(R.id.top_ads_price)
                                 val textViewSlashedPrice =
-                                    findViewById<Typography>(R.id.top_ads_slashed_price)
+                                        findViewById<Typography>(R.id.top_ads_slashed_price)
                                 val labelDiscount = findViewById<Label>(R.id.top_ads_label_discount)
                                 val labelCashback = findViewById<Label>(R.id.top_ads_label_cashback)
 
@@ -835,25 +813,25 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     topAdsProductName.text = context.getString(R.string.feeds_sek_sekarang)
                                     topAdsProductName.setTypeface(null,Typeface.BOLD)
                                     topAdsProductName.setTextColor(
-                                        MethodChecker.getColor(
-                                            context,
-                                            com.tokopedia.unifyprinciples.R.color.Unify_NN600
-                                        )
+                                            MethodChecker.getColor(
+                                                    context,
+                                                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                                            )
                                     )
                                     topAdsProductName.show()
                                     val constraintSet = ConstraintSet()
                                     constraintSet.clone(topAdsCard)
                                     constraintSet.connect(
-                                        topAdsProductName.id,
-                                        ConstraintSet.TOP,
-                                        topAdsCard.id,
-                                        ConstraintSet.TOP
+                                            topAdsProductName.id,
+                                            ConstraintSet.TOP,
+                                            topAdsCard.id,
+                                            ConstraintSet.TOP
                                     )
                                     constraintSet.connect(
-                                        topAdsProductName.id,
-                                        ConstraintSet.BOTTOM,
-                                        topAdsCard.id,
-                                        ConstraintSet.BOTTOM
+                                            topAdsProductName.id,
+                                            ConstraintSet.BOTTOM,
+                                            topAdsCard.id,
+                                            ConstraintSet.BOTTOM
                                     )
                                     constraintSet.applyTo(topAdsCard)
                                 } else if (feedMedia.variant == TOPADS_VARIANT_EXPERIMENT_INFO) {
@@ -888,6 +866,31 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     }
                                 }
                             }
+
+                            doOnLayout {
+                                imageWidth = width
+                                imageHeight = height
+                                feedMedia.tagging.forEachIndexed { index, feedXMediaTagging ->
+                                    val productTagView = PostTagView(context, feedXMediaTagging)
+                                    productTagView.postDelayed({
+                                        productTagView.bindData(listener,
+                                            globalCardProductList,
+                                            imageWidth,
+                                            imageHeight,
+                                            positionInFeed)
+
+                                    }, TIME_SECOND)
+
+
+                                    layout.addView(productTagView)
+                                }
+
+                            }
+                            imagePostListener.userImagePostImpression(
+                                positionInFeed,
+                                pageControl.indicatorCurrentPosition
+                            )
+
                             val gd = GestureDetector(
                                 context,
                                 object : GestureDetector.SimpleOnGestureListener() {

@@ -3,6 +3,7 @@ package com.tokopedia.feedcomponent.view.adapter.viewholder.topads
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.ViewFlipper
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -17,12 +18,14 @@ import com.tokopedia.feedcomponent.view.mapper.TopadsFeedXMapper.cpmModelToFeedX
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.widget.PostDynamicViewNew
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
+import java.lang.Exception
 
 const val TOPADS_VARIANT_EXPERIMENT_CLEAN = 2
 const val TOPADS_VARIANT_EXPERIMENT_INFO = 3
@@ -39,6 +42,7 @@ open class TopAdsHeadlineV2ViewHolder(
     private val topadsHeadlineView =  TopAdsHeadlineView(itemView.context)
     private val topadsPostDynamic: PostDynamicViewNew = view.findViewById(R.id.item_post_dynamic_view)
     private val topadsContainer: ViewFlipper = view.findViewById(R.id.ads_container)
+    private val container : LinearLayout = view.findViewById(R.id.container_ll)
     private var topadsHeadlineUiModel: TopadsHeadLineV2Model? = null
     private var impressHolder: ImpressHolder? = null
 
@@ -132,6 +136,12 @@ open class TopAdsHeadlineV2ViewHolder(
                     imagePostListener, topAdsHeadlineListener
                 )
             }
+            container.setMargin(
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_0),
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_12),
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_0),
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_12)
+            )
             topadsHeadlineUiModel?.let { setImpressionListener(it) }
         } else {
             removeTopadsView()
@@ -154,6 +164,9 @@ open class TopAdsHeadlineV2ViewHolder(
     }
 
     fun onItemDetach(context: Context, visitable: Visitable<*>) {
-        topadsPostDynamic.detach(false,visitable)
+        try {
+            topadsPostDynamic.detach(false, visitable)
+        } catch (e: Exception) {
+        }
     }
 }
