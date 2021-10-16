@@ -41,9 +41,6 @@ class ProductPostTagViewHolderNew(
     private lateinit var star: IconUnify
     private lateinit var menuBtn: IconUnify
     private lateinit var card: CardUnify
-    private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
-        TopAdsUrlHitter(mainView.context)
-    }
 
     override fun bind(item: ProductPostTagViewModelNew) {
         productLayout = itemView.findViewById(R.id.productLayout)
@@ -70,9 +67,9 @@ class ProductPostTagViewHolderNew(
             label.text = item.discountFmt
             productPrice.text = item.priceDiscountFmt
 
-        } else {
-            productPrice.text = item.priceFmt
         }
+        productPrice.text = item.priceFmt
+
         freeShipping.showWithCondition(item.isFreeShipping)
         if (item.isFreeShipping) {
             freeShipping.loadImage(item.freeShippingURL)

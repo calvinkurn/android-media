@@ -63,8 +63,9 @@ object DynamicFeedNewMapper {
     }
 
     private fun mapCardHeadline(posts: MutableList<Visitable<*>>) {
-        val topadsHeadlineUiModel = TopadsHeadlineUiModel(topadsHeadLinePage = TopAdsHeadlineActivityCounter.page++)
-        val topadsHeadlineUiModelV2 = TopadsHeadLineV2Model(topadsHeadLinePage = TopAdsHeadlineActivityCounter.page++)
+        val headLinePge = TopAdsHeadlineActivityCounter.page++
+        val topadsHeadlineUiModel = TopadsHeadlineUiModel(topadsHeadLinePage = headLinePge)
+        val topadsHeadlineUiModelV2 = TopadsHeadLineV2Model(topadsHeadLinePage = headLinePge)
         posts.add(topadsHeadlineUiModel)
         posts.add(topadsHeadlineUiModelV2)
     }

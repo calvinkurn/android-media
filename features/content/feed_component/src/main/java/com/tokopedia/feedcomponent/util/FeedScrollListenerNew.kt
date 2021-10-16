@@ -79,9 +79,7 @@ object FeedScrollListenerNew {
             }
             val isStateChanged: Boolean = percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN
             if (isStateChanged && item.isImageImpressedFirst) {
-                if (!isTopads) {
                     item.isImageImpressedFirst = false
-                }
                 Objects.requireNonNull(recyclerView.adapter)
                     .notifyItemChanged(i, PAYLOAD_POST_TOPADS_VISIBLE)
             }

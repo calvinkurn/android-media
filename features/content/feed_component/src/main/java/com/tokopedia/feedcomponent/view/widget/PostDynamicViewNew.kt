@@ -71,6 +71,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
 import android.graphics.Paint
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import java.lang.Exception
 
 
@@ -724,17 +726,19 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 } else {
                     pageControl.hide()
                 }
-                imagePostListener.userCarouselImpression(
-                    feedXCard.id,
-                    media[0],
-                    0,
-                    feedXCard.typename,
-                    feedXCard.followers.isFollowed,
-                    feedXCard.author.id,
-                    positionInFeed,
-                    feedXCard.cpmData,
-                    feedXCard.listProduct
-                )
+                if (media.isNotEmpty()) {
+                    imagePostListener.userCarouselImpression(
+                            feedXCard.id,
+                            media[0],
+                            0,
+                            feedXCard.typename,
+                            feedXCard.followers.isFollowed,
+                            feedXCard.author.id,
+                            positionInFeed,
+                            feedXCard.cpmData,
+                            feedXCard.listProduct
+                    )
+                }
 
                 media.forEach { feedMedia ->
                     val tags = feedMedia.tagging
@@ -815,8 +819,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 val textViewSlashedPrice =
                                     findViewById<Typography>(R.id.top_ads_slashed_price)
                                 val labelDiscount = findViewById<Label>(R.id.top_ads_label_discount)
-                                val labelPrice = findViewById<Label>(R.id.top_ads_label_cashback)
-                               // val group = findViewById<Group>(R.id.group)
+                                val labelCashback = findViewById<Label>(R.id.top_ads_label_cashback)
 
                                 topAdsCard.show()
                                 topAdsCard.setOnClickListener {
@@ -824,11 +827,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     listener?.onClickSekSekarang(feedXCard.id,feedXCard.shopId, TYPE_TOPADS_HEADLINE_NEW,feedXCard.followers.isFollowed, positionInFeed)
                                 }
                                 if (feedMedia.variant == TOPADS_VARIANT_EXPERIMENT_CLEAN) {
-                                   // group.hide()
                                     textViewPrice.hide()
                                     textViewSlashedPrice.hide()
                                     labelDiscount.hide()
-                                    labelPrice.hide()
+                                    labelCashback.hide()
 
                                     topAdsProductName.text = context.getString(R.string.feeds_sek_sekarang)
                                     topAdsProductName.setTypeface(null,Typeface.BOLD)
@@ -855,26 +857,34 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     )
                                     constraintSet.applyTo(topAdsCard)
                                 } else if (feedMedia.variant == TOPADS_VARIANT_EXPERIMENT_INFO) {
-                                   // group.show()
+                                    val prioOne = feedMedia.slashedPrice.isNotEmpty()
+                                    val prioTwo = feedMedia.cashBackFmt.isNotEmpty()
+
                                     topAdsProductName.weightType = Typography.REGULAR
                                     topAdsProductName.displayTextOrHide(feedMedia.productName)
                                     textViewPrice.displayTextOrHide(feedMedia.price)
-                                    if (feedMedia.slashedPrice.isNotEmpty()) {
+                                    if ((prioOne && prioTwo) || prioOne) {
                                         textViewSlashedPrice.show()
                                         textViewSlashedPrice.text = feedMedia.slashedPrice
                                         textViewSlashedPrice.paintFlags = textViewSlashedPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+
+                                        if (feedMedia.discountPercentage.isNotEmpty()) {
+                                            labelDiscount.show()
+                                            labelDiscount.text = feedMedia.discountPercentage
+                                        } else {
+                                            labelDiscount.hide()
+                                        }
+                                        labelCashback.hide()
                                     }
-                                    if (feedMedia.discountPercentage.isNotEmpty()) {
-                                        labelDiscount.show()
-                                        labelDiscount.text = feedMedia.discountPercentage
-                                    } else {
-                                        labelDiscount.hide()
-                                    }
-                                    if (feedMedia.cashBackFmt.isNotEmpty()) {
-                                        labelPrice.show()
-                                        labelPrice.text = feedMedia.cashBackFmt
-                                    } else {
-                                        labelPrice.hide()
+                                    else {
+                                        if (prioTwo) {
+                                            labelCashback.show()
+                                            labelCashback.text = feedMedia.cashBackFmt
+                                        } else {
+                                            textViewSlashedPrice.hide()
+                                            labelDiscount.hide()
+                                            labelCashback.hide()
+                                        }
                                     }
                                 }
                             }
@@ -1349,7 +1359,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     fun detach(
-        fromSlide: Boolean = false, model: DynamicPostUiModel? = null
+        fromSlide: Boolean = false, model: Visitable<*>? = null
     ) {
         if (handlerAnim != null) {
             handlerAnim = null
@@ -1359,8 +1369,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
         if (!fromSlide) {
             carouselView.activeIndex = 0
-            model?.feedXCard?.media?.firstOrNull()?.canPlay = false
-            model?.feedXCard?.media?.firstOrNull()?.isImageImpressedFirst = true
+            if (model is DynamicPostUiModel) {
+                model?.feedXCard?.media?.firstOrNull()?.canPlay = false
+                model?.feedXCard?.media?.firstOrNull()?.isImageImpressedFirst = true
+            }
+            else if (model is TopadsHeadLineV2Model){
+                model?.feedXCard?.media?.firstOrNull()?.canPlay = false
+                model?.feedXCard?.media?.firstOrNull()?.isImageImpressedFirst = true
+            }
         }
         if (videoPlayer != null) {
             videoPlayer?.pause()

@@ -65,8 +65,11 @@ class FeedPlusAdapter(
                 holder.itemView.context, list[holder.adapterPosition]
             )
         }
-        if (holder is (TopAdsHeadlineV2ViewHolder) && holder.adapterPosition < list.size && holder.adapterPosition != RecyclerView.NO_POSITION) {
-            (holder as TopAdsHeadlineV2ViewHolder).onItemDetach()
+
+        else if (holder is TopAdsHeadlineV2ViewHolder && holder.adapterPosition < list.size && holder.adapterPosition != RecyclerView.NO_POSITION) {
+            (holder as TopAdsHeadlineV2ViewHolder).onItemDetach(
+                    holder.itemView.context, list[holder.adapterPosition]
+            )
         }
     }
 

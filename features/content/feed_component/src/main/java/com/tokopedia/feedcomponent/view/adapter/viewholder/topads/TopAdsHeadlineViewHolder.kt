@@ -45,7 +45,7 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
     }
 
     private fun fetchTopadsHeadlineAds(topadsHeadLinePage: Int) {
-        topadsHeadlineView.getHeadlineAds(getHeadlineAdsParam(topadsHeadLinePage), this::onSuccessResponse, this::hideHeadlineView)
+        topadsHeadlineView.getHeadlineAds(getHeadlineAdsParam(topadsHeadLinePage), this::onSuccessResponse, this::removeTopadsView)
     }
 
     private fun getHeadlineAdsParam(topadsHeadLinePage: Int): String {
@@ -71,7 +71,6 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
     private fun hideHeadlineView() {
         topadsHeadlineView.hideShimmerView()
         topadsHeadlineView.hide()
-       // hideTopadsView()
     }
 
     override fun bind(element: TopadsHeadlineUiModel?) {
@@ -95,6 +94,8 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
                 topadsHeadlineView.displayAds(it)
             }
             topadsHeadlineUiModel?.let { setImpressionListener(it) }
+        } else {
+            removeTopadsView()
         }
     }
 
@@ -116,7 +117,10 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
         }
     }
 
-    private fun hideTopadsView(){
+    private fun removeTopadsView(){
+        topadsHeadlineView.hideShimmerView()
+        topadsHeadlineView.hide()
+        this.itemView.hide()
         topAdsHeadlineListener?.hideTopadsView(adapterPosition)
     }
 }

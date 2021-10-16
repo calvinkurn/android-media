@@ -139,25 +139,30 @@ object TopadsFeedXMapper {
         if (!merchantVoucher.isNullOrEmpty()){
             cashback=merchantVoucher[0]
         }
+        val isDiscount = product.campaign.discountPercentage > 0
+
         product.run {
             return FeedXProduct(
                 appLink = applinks,
-                discount = product.campaign.discountPercentage,
+                discount = campaign.discountPercentage,
                 cashbackFmt = cashback,
                 isBebasOngkir = freeOngkir.isActive,
                 isCashback = isProductCashback,
                 bebasOngkirURL = freeOngkir.imageUrl,
                 name = name,
-                priceOriginalFmt = priceFormat,
+                priceOriginalFmt = campaign.originalPrice,
                 priceFmt = priceFormat,
-                isDiscount = false,
+                isDiscount = isDiscount,
                 coverURL = imageProduct.imageUrl,
                 id = id,
                 webLink = applinks,
                 authorName = authorName,
                 isTopads = true,
-                adClickUrl = imageProduct.imageClickUrl
-            )
+                adClickUrl = imageProduct.imageClickUrl,
+                star = productRating,
+                totalSold = countSold.toIntOrNull()?:0,
+                discountFmt = if (product.campaign.discountPercentage != 0) "${product.campaign.discountPercentage}%" else "",
+                    )
         }
     }
 }

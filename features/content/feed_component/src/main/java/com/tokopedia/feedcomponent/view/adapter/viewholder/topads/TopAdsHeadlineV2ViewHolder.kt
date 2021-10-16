@@ -1,9 +1,11 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.topads
 
+import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ViewFlipper
 import androidx.annotation.LayoutRes
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
@@ -15,7 +17,6 @@ import com.tokopedia.feedcomponent.view.mapper.TopadsFeedXMapper.cpmModelToFeedX
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.widget.PostDynamicViewNew
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topads.sdk.domain.model.CpmModel
@@ -55,7 +56,7 @@ open class TopAdsHeadlineV2ViewHolder(
     }
 
     private fun fetchTopadsHeadlineAds(topadsHeadLinePage: Int) {
-        topadsHeadlineView.getHeadlineAds(getHeadlineAdsParam(topadsHeadLinePage), this::onSuccessResponse, this::hideHeadlineView)
+        topadsHeadlineView.getHeadlineAds(getHeadlineAdsParam(topadsHeadLinePage), this::onSuccessResponse, this::removeTopadsView)
     }
 
     private fun getHeadlineAdsParam(topadsHeadLinePage: Int): String {
@@ -86,7 +87,6 @@ open class TopAdsHeadlineV2ViewHolder(
         params.height = 0
         params.width = 0
         this.itemView.layoutParams = params
-      //  hideTopadsView()
     }
 
     override fun bind(element: TopadsHeadLineV2Model?, payloads: MutableList<Any>) {
@@ -104,6 +104,7 @@ open class TopAdsHeadlineV2ViewHolder(
     }
 
     override fun bind(element: TopadsHeadLineV2Model?) {
+        topadsContainer.displayedChild = SHOW_SHIMMER
         topadsHeadlineUiModel = element
         impressHolder = topadsHeadlineUiModel?.impressHolder
         topadsHeadlineUiModel?.run {
@@ -132,14 +133,8 @@ open class TopAdsHeadlineV2ViewHolder(
                 )
             }
             topadsHeadlineUiModel?.let { setImpressionListener(it) }
-            topadsPostDynamic.setMargin(
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_0),
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_12),
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_0),
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_12)
-            )
         } else {
-            hideHeadlineView()
+            removeTopadsView()
         }
     }
 
@@ -149,11 +144,16 @@ open class TopAdsHeadlineV2ViewHolder(
         }
     }
 
-    private fun hideTopadsView(){
+    private fun removeTopadsView(){
+        this.itemView.hide()
+        val params: ViewGroup.LayoutParams = this.itemView.layoutParams
+        params.height = 0
+        params.width = 0
+        this.itemView.layoutParams = params
         topAdsHeadlineListener?.hideTopadsView(adapterPosition)
     }
 
-    fun onItemDetach() {
-        topadsPostDynamic.detach(false)
+    fun onItemDetach(context: Context, visitable: Visitable<*>) {
+        topadsPostDynamic.detach(false,visitable)
     }
 }

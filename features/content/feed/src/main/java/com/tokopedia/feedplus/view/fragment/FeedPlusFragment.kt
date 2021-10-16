@@ -719,7 +719,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
             LinearLayoutManager.VERTICAL,
             false
         )
+        recyclerView.setItemViewCacheSize(20)
+        recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = layoutManager
+        adapter.setHasStableIds(true)
         recyclerView.adapter = adapter
         swipeToRefresh.setOnRefreshListener(this)
         infoBottomSheet = TopAdsInfoBottomSheet.newInstance(activity)
@@ -3252,10 +3255,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 recyclerView.post {
                     adapter.notifyItemRemoved(position)
                 }
-            }
-            if (adapter.getlist().isEmpty()) {
-                showRefresh()
-                onRefresh()
             }
         }
     }

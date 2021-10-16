@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ads_container"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:measureAllChildren="false"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/transparent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/dp_16">
 
-    <include layout="@layout/item_post_shimmer"/>
+    <ViewFlipper
+        android:id="@+id/ads_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:measureAllChildren="false">
 
-    <include layout="@layout/item_dynamic_post_new"/>
+        <include layout="@layout/item_post_shimmer" />
 
-</ViewFlipper>
+        <include layout="@layout/item_dynamic_post_new" />
+
+    </ViewFlipper>
+</LinearLayout>
