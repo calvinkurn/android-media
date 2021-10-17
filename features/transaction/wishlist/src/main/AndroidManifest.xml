@@ -4,7 +4,7 @@
 
     <application>
         <activity
-            android:name=".view.activity.RevampedWishlistActivity"
+            android:name=".view.activity.WishlistV2Activity"
             android:label="@string/page_name_wishlist"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
