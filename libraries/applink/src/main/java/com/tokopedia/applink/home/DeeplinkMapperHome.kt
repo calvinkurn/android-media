@@ -76,7 +76,7 @@ object DeeplinkMapperHome {
             return getBrandlistInternal(deeplink)
         } else if (deeplink.startsWithPattern(ApplinkConst.OFFICIAL_STORE_CATEGORY) && uri.pathSegments.size == 1) {
             if(isOsExperiment()) {
-                return UriUtil.buildUriAppendParams("${ApplinkConsInternalHome.INTERNAL_HOME}/officialstore", mapOf())
+                return ApplinkConsInternalHome.HOME_OFFICIAL_STORE
             } else {
                 val params = UriUtil.destructureUriToMap(ApplinkConst.OFFICIAL_STORE_CATEGORY, Uri.parse(deeplink), true)
                 params[EXTRA_TAB_POSITION] = TAB_POSITION_OS
