@@ -1112,8 +1112,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             findViewById<CardView>(R.id.product_tagging_parent).showWithCondition(tagProducts.isNotEmpty())
 
 
-            if (handlerAnim == null)
+            if (handlerAnim == null) {
                 handlerAnim = Handler(Looper.getMainLooper())
+            }
             handlerAnim?.postDelayed({
                 showViewWithSlideAnimation(layoutLihatProdukParent)
                 video_tag_text.visible()
@@ -1448,19 +1449,20 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     item.resetView()
                 }
             }
-            if (handlerAnim == null)
+            if (handlerAnim == null) {
                 handlerAnim = Handler(Looper.getMainLooper())
+            }
             if (!productTagText.isVisible && tagProducts.isNotEmpty()) {
                 showViewWithSlideAnimation(layoutLihatProdukParent)
                 handlerAnim?.postDelayed({
                     productTagText.apply {
                         visible()
                     }
-
                 }, TIME_SECOND)
             }
-            if (handlerHide == null)
+            if (handlerHide == null) {
                 handlerHide = Handler(Looper.getMainLooper())
+            }
             handlerHide?.postDelayed({
                 productTagText.apply {
                     if (!shouldContinueToShowLihatProduct(layout)) {

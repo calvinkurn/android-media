@@ -122,6 +122,10 @@ open class TopAdsHeadlineV2ViewHolder(
 
     private fun showHeadlineView(cpmModel: CpmModel?) {
         this.itemView.show()
+        val params = itemView.layoutParams
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT
+        itemView.layoutParams = params
         val layoutType = cpmModel?.data?.firstOrNull()?.cpm?.layout
         if (layoutType == TOPADS_VARIANT_EXPERIMENT_CLEAN || layoutType == TOPADS_VARIANT_EXPERIMENT_INFO) {
             topadsContainer.displayedChild = VARIANT_EXPERIMENT
