@@ -12,4 +12,5 @@
     <string name="path_shop_showcase_add" translatable="false">/shop-showcase-add</string>
     <string name="path_shop_showcase_edit" translatable="false">/shop-showcase-edit</string>
     <string name="path_statistic_dashboard">/statistic_dashboard</string>
+    <string name="path_official_store" translatable="false">/official-store</string>
 </resources>

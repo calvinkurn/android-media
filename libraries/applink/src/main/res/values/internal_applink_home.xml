@@ -7,5 +7,4 @@
     <string name="path_favorite" translatable="false">/favorite</string>
     <string name="path_inbox" translatable="false">/inbox</string>
     <string name="path_navigation" translatable="false">/navigation</string>
-    <string name="path_official_store" translatable="false">/official-store</string>
 </resources>
