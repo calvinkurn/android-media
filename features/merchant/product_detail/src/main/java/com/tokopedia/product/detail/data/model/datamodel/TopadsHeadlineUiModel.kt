@@ -25,9 +25,6 @@ data class TopadsHeadlineUiModel(
     override fun name(): String = name
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
-//        return if (newData is PageErrorDataModel) {
-//            errorCode == newData.errorMessage
-//        } else false
         return false
     }
 
