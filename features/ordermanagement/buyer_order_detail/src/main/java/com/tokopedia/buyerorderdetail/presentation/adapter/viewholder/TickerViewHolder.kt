@@ -48,15 +48,27 @@ class TickerViewHolder(
 
     private fun setupTicker(element: TickerUiModel) {
         (itemView as? Ticker)?.apply {
-            val tickerDescription = composeActionText(element.description, element.actionText, element.actionUrl)
+            val tickerDescription = composeDescriptionText(element.description, element.actionText, element.actionUrl)
             setHtmlDescription(tickerDescription)
             setDescriptionClickEvent(this@TickerViewHolder)
             tickerType = Utils.mapTickerType(element.type)
         }
     }
 
-    private fun composeActionText(description: String, actionText: String, actionUrl: String): String {
-        return itemView.context.getString(R.string.html_link, description, actionUrl, actionText)
+    private fun composeDescriptionText(description: String, actionText: String, actionUrl: String): String {
+        return if (actionText.isNotBlank() && actionUrl.isNotBlank()) {
+            itemView.context.getString(R.string.html_link, description, actionUrl, actionText).trim()
+        } else {
+            StringBuilder().apply {
+                if (description.isNotBlank()) {
+                    append("$description.")
+                }
+                if (actionText.isNotBlank()) {
+                    if (isNotBlank()) append(" ")
+                    append("$actionText.")
+                }
+            }.toString()
+        }
     }
 
     private fun shouldRefreshWhenBack(): Boolean {
