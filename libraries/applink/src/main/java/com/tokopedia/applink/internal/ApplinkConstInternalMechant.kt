@@ -36,4 +36,6 @@ object ApplinkConstInternalMechant {
 
     //com.tokopedia.statistic.presentation.view.activity.StatisticActivity
     const val MERCHANT_STATISTIC_DASHBOARD = "$INTERNAL_MERCHANT/statistic_dashboard"
+
+    const val MERCHANT_OFFICIAL_STORE = "$INTERNAL_MERCHANT/official-store"
 }

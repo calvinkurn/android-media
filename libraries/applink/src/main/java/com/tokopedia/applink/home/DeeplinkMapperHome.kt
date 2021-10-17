@@ -65,22 +65,26 @@ object DeeplinkMapperHome {
 
         // tokopedia://official-store
         if (uri.host == Uri.parse(ApplinkConst.OFFICIAL_STORE).host && uri.pathSegments.isEmpty())
-            if(isOsExperiment()) {
-                return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf())
+            return if(isOsExperiment()) {
+                ApplinkConstInternalMechant.MERCHANT_OFFICIAL_STORE
             } else {
-                return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_OS))
+                UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_OS))
             }
         else if (deeplink.startsWith(ApplinkConst.OFFICIAL_STORES) && uri.pathSegments.isEmpty())
-            return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_OS))
+            return if(isOsExperiment()) {
+                ApplinkConstInternalMechant.MERCHANT_OFFICIAL_STORE
+            } else {
+                UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_OS))
+            }
         else if (deeplink.startsWith(ApplinkConst.BRAND_LIST)) {
             return getBrandlistInternal(deeplink)
         } else if (deeplink.startsWithPattern(ApplinkConst.OFFICIAL_STORE_CATEGORY) && uri.pathSegments.size == 1) {
-            if(isOsExperiment()) {
-                return ApplinkConsInternalHome.HOME_OFFICIAL_STORE
+            return if(isOsExperiment()) {
+                ApplinkConstInternalMechant.MERCHANT_OFFICIAL_STORE
             } else {
                 val params = UriUtil.destructureUriToMap(ApplinkConst.OFFICIAL_STORE_CATEGORY, Uri.parse(deeplink), true)
                 params[EXTRA_TAB_POSITION] = TAB_POSITION_OS
-                return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, params.toMap())
+                UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, params.toMap())
             }
         }
         return deeplink

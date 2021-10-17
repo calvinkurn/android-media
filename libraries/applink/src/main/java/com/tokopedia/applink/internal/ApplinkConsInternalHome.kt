@@ -21,6 +21,4 @@ object ApplinkConsInternalHome {
     const val HOME_INBOX = "$INTERNAL_HOME/inbox"
 
     const val HOME_NAVIGATION = "$INTERNAL_HOME/navigation"
-
-    const val HOME_OFFICIAL_STORE = "$INTERNAL_HOME/officialstore"
 }
