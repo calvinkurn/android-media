@@ -23,13 +23,10 @@ import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.officialstore.ApplinkConstant
-import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
+import com.tokopedia.officialstore.*
 import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CACHE
 import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CLOUD
 import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_PREPARING_OS_CONTAINER
-import com.tokopedia.officialstore.OfficialStoreInstance
-import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.category.data.model.OfficialStoreCategories
@@ -72,6 +69,7 @@ class OfficialHomeContainerFragment
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeContainerFragment().apply { arguments = bundle }
         const val KEY_CATEGORY = "key_category"
+        private const val PARAM_HOME = "home"
 
     }
     private val queryHashingKey = "android_do_query_hashing"
@@ -430,11 +428,14 @@ class OfficialHomeContainerFragment
     private fun getToolbarIcons(): IconBuilder {
         val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
                         .addIcon(getInboxIcon()) {}
-
+        if(activity?.javaClass?.simpleName == OfficialStoreActivity::class.simpleName)
+        {
+            maintoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
+            statusbar.visibility = View.GONE
+        }
         if (!useNewInbox) {
             icons.addIcon(IconList.ID_NOTIFICATION) {}
         }
-
         icons.apply {
             addIcon(IconList.ID_CART) {}
             addIcon(IconList.ID_NAV_GLOBAL) {}

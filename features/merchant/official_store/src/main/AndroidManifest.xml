@@ -6,7 +6,7 @@
             android:label="@string/label_official_store"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/TokopediaTransparentStatus">
+            android:theme="@style/Theme.White">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
