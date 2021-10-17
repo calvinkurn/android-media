@@ -47,31 +47,31 @@ class OfficialStoreActivity : AppCompatActivity(), OfficialStorePerformanceMonit
                 0,
                 null
             )
-            officialStorePageLoadTimePerformanceCallback!!.startMonitoring(OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY)
-            officialStorePageLoadTimePerformanceCallback!!.startPreparePagePerformanceMonitoring()
+            officialStorePageLoadTimePerformanceCallback?.startMonitoring(OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY)
+            officialStorePageLoadTimePerformanceCallback?.startPreparePagePerformanceMonitoring()
         }
     }
 
     override fun stopOfficialStorePerformanceMonitoring(isCache: Boolean) {
         if (officialStorePageLoadTimePerformanceCallback != null) {
             if (isCache) {
-                officialStorePageLoadTimePerformanceCallback!!.addAttribution(
+                officialStorePageLoadTimePerformanceCallback?.addAttribution(
                     PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
                     PERFORMANCE_MONITORING_CACHE_VALUE
                 )
             } else {
-                officialStorePageLoadTimePerformanceCallback!!.addAttribution(
+                officialStorePageLoadTimePerformanceCallback?.addAttribution(
                     PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
                     PERFORMANCE_MONITORING_NETWORK_VALUE
                 )
             }
-            officialStorePageLoadTimePerformanceCallback!!.stopRenderPerformanceMonitoring()
-            officialStorePageLoadTimePerformanceCallback!!.stopMonitoring()
+            officialStorePageLoadTimePerformanceCallback?.stopRenderPerformanceMonitoring()
+            officialStorePageLoadTimePerformanceCallback?.stopMonitoring()
             officialStorePageLoadTimePerformanceCallback = null
         }
     }
 
-    override fun getOfficialStorePageLoadTimePerformanceInterface(): PageLoadTimePerformanceInterface {
-        return officialStorePageLoadTimePerformanceCallback!!
+    override fun getOfficialStorePageLoadTimePerformanceInterface(): PageLoadTimePerformanceInterface? {
+        return officialStorePageLoadTimePerformanceCallback
     }
 }

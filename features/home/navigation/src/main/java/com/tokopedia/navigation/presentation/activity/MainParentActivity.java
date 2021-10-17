@@ -463,7 +463,9 @@ public class MainParentActivity extends BaseActivity implements
                 startHomePerformanceMonitoring();
                 break;
             case OS_MENU:
-                startOfficialStorePerformanceMonitoring();
+                if(!isOsExperiment) {
+                    startOfficialStorePerformanceMonitoring();
+                }
         }
     }
 
