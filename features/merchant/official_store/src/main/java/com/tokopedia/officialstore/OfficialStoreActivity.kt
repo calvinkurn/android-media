@@ -14,13 +14,13 @@ class OfficialStoreActivity : AppCompatActivity(), OfficialStorePerformanceMonit
     private var officialStorePageLoadTimePerformanceCallback : PageLoadTimePerformanceCallback? = null
 
     companion object {
-        private const val OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY = "mp_official_store"
+        private const val OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY = "mp_official_store_activity"
         private const val OFFICIAL_STORE_PERFORMANCE_MONITORING_PREPARE_METRICS =
-            "official_store_plt_start_page_metrics"
+            "official_store_activity_plt_start_page_metrics"
         private const val OFFICIAL_STORE_PERFORMANCE_MONITORING_NETWORK_METRICS =
-            "official_store_plt_network_request_page_metrics"
+            "official_store_activity_plt_network_request_page_metrics"
         private const val OFFICIAL_STORE_PERFORMANCE_MONITORING_RENDER_METRICS =
-            "official_store_plt_render_page_metrics"
+            "official_store_activity_plt_render_page_metrics"
         private const val PERFORMANCE_MONITORING_CACHE_ATTRIBUTION = "dataSource"
         private const val PERFORMANCE_MONITORING_CACHE_VALUE = "Cache"
         private const val PERFORMANCE_MONITORING_NETWORK_VALUE = "Network"
