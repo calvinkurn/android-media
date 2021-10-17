@@ -19,7 +19,7 @@ class ImageGeneratorUseCase constructor(
     override suspend fun executeOnBackground(): String {
         val gqlRequest = GraphqlRequest(QUERY, ImageGeneratorModel.Response::class.java, params)
         val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
-            .Builder(CacheType.ALWAYS_CLOUD).build())
+            .Builder(CacheType.CACHE_FIRST).build())
 
         val response = gqlResponse.getData<ImageGeneratorModel.Response>(ImageGeneratorModel.Response::class.java)
         if (!TextUtils.isEmpty(response.imageGeneratorModel.imageUrl)) {

@@ -361,7 +361,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
             getImageFromMedia(true)
             setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.PDP_SOURCE_ID)
             addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.IS_BEBAS_ONGKIR, isBebasOngkir.toString())
-            addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_PRICE, productData.priceText)
+            addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_PRICE, productData.priceText.replace("Rp", ""))
             addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_RATING, productRating)
             addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.IS_BEBAS_ONGKIR, isBebasOngkir.toString())
             addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_TITLE, productData.productName ?: "")
