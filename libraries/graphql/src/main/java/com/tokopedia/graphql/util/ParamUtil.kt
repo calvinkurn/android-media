@@ -47,11 +47,3 @@ fun getParamBoolean(
         else -> defaultValue
     }
 }
-
-fun <T> T.toMapParam(): Map<String, Any> {
-    val gsonBuilder = GsonBuilder()
-    gsonBuilder.registerTypeAdapter(object: TypeToken<Map<String, Any>>(){}.type, GsonConverter())
-    val gson = gsonBuilder.create()
-    val json = gson.toJson(this)
-    return gson.fromJson(json, object : TypeToken<Map<String, Any>>() {}.type)
-}
