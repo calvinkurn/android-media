@@ -21,12 +21,12 @@ import com.laku6.tradeinsdk.api.Laku6TradeIn
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.authentication.AuthKey
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.common_tradein.model.HomeResult
+import com.tokopedia.common_tradein.model.HomeResult.PriceState
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
-import com.tokopedia.keys.Keys
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.TradeInAnalytics
@@ -37,8 +37,6 @@ import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInAddressFragment
 import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInFinalPriceFragment
 import com.tokopedia.tradein.view.viewcontrollers.fragment.TradeInInitialPriceFragment
-import com.tokopedia.common_tradein.model.HomeResult
-import com.tokopedia.common_tradein.model.HomeResult.PriceState
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel
 import com.tokopedia.tradein.viewmodel.liveState.GoToCheckout
 import com.tokopedia.tradein.viewmodel.liveState.GoToHargaFinal
@@ -297,7 +295,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
     private fun init() {
         setLaku6()
         intent.data?.lastPathSegment?.let {
-            if (it == TRADEIN_SELLER_CHECK || it == FINAL_PRICE)
+            if (it == TRADEIN_INITIAL_PRICE || it == FINAL_PRICE)
                 askPermissions()
             else {
                 setFragment()
