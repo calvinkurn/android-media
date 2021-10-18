@@ -227,8 +227,18 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                     }
 
                     view?.let { v ->
-                        Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), it.throwable),
-                                Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                        var throwable = it.throwable
+                        if (throwable.message.isNullOrEmpty()) {
+                            throwable = MessageErrorException(getString(R.string.selection_null_product_error))
+                        }
+                        val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+                            requireContext(),
+                            throwable,
+                            ErrorHandler.Builder()
+                                .className(this::class.java.simpleName)
+                                .build()
+                        )
+                        Toaster.build(v, errorMessage.orEmpty(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                 getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                     }
                 }
@@ -272,7 +282,14 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                 is Fail -> {
                     view?.let { v ->
                         commonTopupBillsAnalytics.clickViewErrorToasterTelcoAddBills(categoryName)
-                        Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), it.throwable),
+                        val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+                            requireContext(),
+                            it.throwable,
+                            ErrorHandler.Builder()
+                                .className(this::class.java.simpleName)
+                                .build()
+                        )
+                        Toaster.build(v, errorMessage.orEmpty(),
                                 Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                 getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                     }
@@ -1017,6 +1034,20 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         updateFavoriteNumberInputField()
     }
 
+    override fun showErrorMessage(error: Throwable) {
+        view?.let { v ->
+            val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+                requireContext(),
+                error,
+                ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
+            Toaster.build(v, errorMessage.orEmpty()
+                ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        }
+    }
+
     private fun updateFavoriteNumberInputField() {
         if (favoriteNumbers.isNotEmpty()) {
             if (adapter.data.isNotEmpty()) {
@@ -1031,7 +1062,14 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
 
     override fun onEnquiryError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+            val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+                requireContext(),
+                error,
+                ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
+            Toaster.build(v, errorMessage.orEmpty(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }
@@ -1050,14 +1088,28 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
 
     override fun onCheckVoucherError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+            val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+                requireContext(),
+                error,
+                ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
+            Toaster.build(v, errorMessage.orEmpty(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }
 
     override fun onExpressCheckoutError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+            val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+                requireContext(),
+                error,
+                ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
+            Toaster.build(v, errorMessage.orEmpty(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }

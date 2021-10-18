@@ -9,9 +9,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
-import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductGridCardBinding
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseProductUiModel
+import com.tokopedia.utils.view.binding.viewBinding
 
 class RepurchaseProductViewHolder(
     itemView: View,
@@ -25,12 +26,10 @@ class RepurchaseProductViewHolder(
         private const val PARAM_CATEGORY_L1 = "category_l1"
     }
 
-    private val productCard: ProductCardGridView? by lazy {
-        itemView.findViewById(R.id.tokoNowGridProductCard)
-    }
+    private var binding: ItemTokopedianowProductGridCardBinding? by viewBinding()
 
     override fun bind(item: RepurchaseProductUiModel) {
-        productCard?.apply {
+        binding?.tokoNowGridProductCard?.apply {
             setProductModel(item.productCard)
 
             setOnClickListener {

@@ -6,9 +6,10 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchSuggestionBinding
 import com.tokopedia.tokopedianow.search.presentation.listener.SuggestionListener
 import com.tokopedia.tokopedianow.search.presentation.model.SuggestionDataView
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 class SuggestionViewHolder(
         itemView: View,
@@ -21,8 +22,7 @@ class SuggestionViewHolder(
         val LAYOUT = R.layout.item_tokopedianow_search_suggestion
     }
 
-    private val suggestionText: Typography? =
-            itemView.findViewById(R.id.tokoNowSearchSuggestionText)
+    private var binding: ItemTokopedianowSearchSuggestionBinding? by viewBinding()
 
     override fun bind(element: SuggestionDataView) {
         bindSuggestionView(element)
@@ -30,10 +30,12 @@ class SuggestionViewHolder(
 
     private fun bindSuggestionView(element: SuggestionDataView) {
         itemView.shouldShowWithAction(element.text.isNotEmpty()) {
-            suggestionText?.text = Html.fromHtml(element.text)
-            suggestionText?.setOnClickListener {
-                if (element.query.isNotEmpty()) {
-                    suggestionListener.onSuggestionClicked(element)
+            binding?.apply {
+                tokoNowSearchSuggestionText.text = Html.fromHtml(element.text)
+                tokoNowSearchSuggestionText.setOnClickListener {
+                    if (element.query.isNotEmpty()) {
+                        suggestionListener.onSuggestionClicked(element)
+                    }
                 }
             }
         }

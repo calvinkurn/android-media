@@ -2,8 +2,8 @@ package com.tokopedia.loyalty.view.activity;
 
 import android.app.Dialog;
 import android.app.IntentService;
-import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -12,13 +12,10 @@ import android.view.View;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.Toolbar;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.loyalty.view.widget.TouchViewPager2;
 import com.tokopedia.device.info.DeviceConnectionInfo;
 import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.loyalty.R;
@@ -32,6 +29,8 @@ import com.tokopedia.loyalty.view.fragment.PromoListFragment;
 import com.tokopedia.loyalty.view.presenter.IPromoListActivityPresenter;
 import com.tokopedia.loyalty.view.util.PromoTrackingUtil;
 import com.tokopedia.loyalty.view.view.IPromoListActivityView;
+import com.tokopedia.loyalty.view.widget.TouchViewPager2;
+import com.tokopedia.track.TrackApp;
 
 import java.util.List;
 
@@ -43,11 +42,8 @@ import javax.inject.Inject;
 
 public class PromoListActivity extends BaseActivity implements IPromoListActivityView, PromoListFragment.OnFragmentInteractionListener {
 
-    private static final String EXTRA_AUTO_SELECTED_MENU_ID = "EXTRA_AUTO_SELECTED_MENU_ID";
-    private static final String EXTRA_AUTO_SELECTED_CATEGORY_ID = "EXTRA_AUTO_SELECTED_CATEGORY_ID";
-
-    private static final String PROMO_NATIVE_QUERY_CATEGORY_ID = "categoryID";
     private static final String PROMO_NATIVE_QUERY_MENU_ID = "menuID";
+    private static final String PROMO_NATIVE_QUERY_CATEGORY_ID = "categoryID";
 
     public static final String DEFAULT_AUTO_SELECTED_CATEGORY_ID = "0";
     public static final String DEFAULT_AUTO_SELECTED_MENU_ID = "0";
@@ -68,59 +64,44 @@ public class PromoListActivity extends BaseActivity implements IPromoListActivit
     @Inject
     PromoTrackingUtil promoTrackingUtil;
 
-    public static Intent newInstance(Context context, String menuId, String categoryId) {
-        return new Intent(context, PromoListActivity.class)
-                .putExtra(EXTRA_AUTO_SELECTED_MENU_ID, menuId)
-                .putExtra(EXTRA_AUTO_SELECTED_CATEGORY_ID, categoryId);
-    }
-
-    public static Intent newInstance(Context context) {
-        return new Intent(context, PromoListActivity.class)
-                .putExtra(EXTRA_AUTO_SELECTED_MENU_ID, DEFAULT_AUTO_SELECTED_MENU_ID)
-                .putExtra(EXTRA_AUTO_SELECTED_CATEGORY_ID, DEFAULT_AUTO_SELECTED_CATEGORY_ID);
-    }
-
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putString(EXTRA_AUTO_SELECTED_MENU_ID, autoSelectedMenuId);
-        savedInstanceState.putString(EXTRA_AUTO_SELECTED_CATEGORY_ID, autoSelectedCategoryId);
-
+        savedInstanceState.putString(PROMO_NATIVE_QUERY_MENU_ID, autoSelectedMenuId);
+        savedInstanceState.putString(PROMO_NATIVE_QUERY_CATEGORY_ID, autoSelectedCategoryId);
         super.onSaveInstanceState(savedInstanceState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        autoSelectedMenuId = savedInstanceState.getString(EXTRA_AUTO_SELECTED_MENU_ID);
-        autoSelectedCategoryId = savedInstanceState.getString(EXTRA_AUTO_SELECTED_CATEGORY_ID);
-    }
-
-    @SuppressWarnings("unused")
-    @DeepLink({ApplinkConst.PROMO_LIST, ApplinkConst.PROMO})
-    public static Intent getAppLinkIntent(Context context, Bundle extras) {
-        String autoSelectedMenuId = extras.getString(
-                PROMO_NATIVE_QUERY_MENU_ID, DEFAULT_AUTO_SELECTED_MENU_ID
-        );
-        String autoSelectedCategoryId = extras.getString(
-                PROMO_NATIVE_QUERY_CATEGORY_ID, DEFAULT_AUTO_SELECTED_CATEGORY_ID
-        );
-        return PromoListActivity.newInstance(context, autoSelectedMenuId, autoSelectedCategoryId);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getIntent().getExtras() != null) {
-            setupBundlePass(getIntent().getExtras());
+        if (savedInstanceState == null) {
+            getMenuAndCategory();
+        } else {
+            autoSelectedMenuId = savedInstanceState.getString(PROMO_NATIVE_QUERY_MENU_ID);
+            autoSelectedCategoryId = savedInstanceState.getString(PROMO_NATIVE_QUERY_CATEGORY_ID);
         }
         setContentView(getContentId());
         initialPresenter();
         initView();
         setActionVar();
+        trackCampaign(getIntent().getData());
     }
 
-    protected void setupBundlePass(Bundle extras) {
-        autoSelectedMenuId = extras.getString(EXTRA_AUTO_SELECTED_MENU_ID);
-        autoSelectedCategoryId = extras.getString(EXTRA_AUTO_SELECTED_CATEGORY_ID);
+    private void trackCampaign(Uri uri){
+        //track campaign in case there is utm/gclid in url
+        TrackApp.getInstance().getGTM().sendCampaign(this, uri.toString(), getScreenName(), false);
+    }
+
+    private void getMenuAndCategory(){
+        Uri data = getIntent().getData();
+        autoSelectedMenuId = data.getQueryParameter(PROMO_NATIVE_QUERY_MENU_ID);
+        if (TextUtils.isEmpty(autoSelectedMenuId)){
+            autoSelectedMenuId = DEFAULT_AUTO_SELECTED_MENU_ID;
+        }
+        autoSelectedCategoryId = data.getQueryParameter(PROMO_NATIVE_QUERY_CATEGORY_ID);
+        if (TextUtils.isEmpty(autoSelectedCategoryId)){
+            autoSelectedCategoryId = DEFAULT_AUTO_SELECTED_CATEGORY_ID;
+        }
     }
 
     protected void initialPresenter() {
