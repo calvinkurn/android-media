@@ -1,80 +1,35 @@
 package com.tokopedia.notifications.inApp.usecase
 
-import android.app.Application
 import android.text.TextUtils
 import com.tokopedia.notifications.common.CMConstant
-import com.tokopedia.notifications.common.IrisAnalyticsEvents
-import com.tokopedia.notifications.common.IrisAnalyticsEvents.sendInAppEvent
 import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
 
-class GetInAppListUseCase(private val application: Application,
-                          private val repositoryManager: RepositoryManager) {
+class GetInAppListUseCase(private val repositoryManager: RepositoryManager) {
 
     private val HOURS_24_IN_MILLIS: Long = 24 * 60 * 60 * 1000L
 
     suspend fun getInAPPListByScreenName(screenName: String, isActivity: Boolean): List<CMInApp>? {
         return withContext(Dispatchers.IO) {
             synchronized(this) {
-                getInAPPData(screenName, isActivity)
+                getActiveInAppData(screenName, isActivity)
             }
         }
     }
 
-    private fun getInAPPData(screenName: String, isActivity: Boolean): List<CMInApp>? {
-        synchronized(this) {
-            val inAppDataList = getDataFromStore(screenName, isActivity)
-            if (inAppDataList != null) {
-                deleteCompletedInAPPOnlyIfExpired(inAppDataList)
-                deleteExpiredInAPP(inAppDataList)
-                return inAppDataList.filter {
-                    isInActiveTimeFrame(it)
-                            && it.freq > 0
-                            && !it.isShown
-                }
-            }
-            return null
-        }
-    }
-
-    private fun deleteCompletedInAPPOnlyIfExpired(inAppList : List<CMInApp>){
-        inAppList.filter {
-            !it.isShown()
-        }.forEach {
-            if(it.freq == 0){
-                if(it.endTime == 0L || it.endTime < System.currentTimeMillis())
-                    RepositoryManager.getInstance().inAppDataDao?.deleteRecord(it.id)
-            }
-        }
-    }
-
-    private fun deleteExpiredInAPP(inAppList : List<CMInApp>){
-        inAppList.filter {
-            !it.isShown()
-        }.forEach {
-            if(it.endTime != 0L && it.endTime < System.currentTimeMillis()){
-                if(it.freq > 0 && it.lastShownTime == 0L){
-                    sendInAppEvent(application.applicationContext,
-                            IrisAnalyticsEvents.INAPP_EXPIRED, it)
-                }
-                RepositoryManager.getInstance().inAppDataDao?.deleteRecord(it.id)
-            }
-        }
-    }
-
-    /*
-    We can show test inApp in Case 24Hr Master frequency exhausted
+    /**
+    *   We can show test inApp in Case 24Hr Master frequency exhausted
     */
-    private fun getDataFromStore(key: String, isActivity: Boolean): List<CMInApp>? {
+    private fun getActiveInAppData(key: String, isActivity: Boolean): List<CMInApp>? {
         val inAppDataDao = repositoryManager.inAppDataDao ?: return null
 
         val list: List<CMInApp>? = if (isMasterFrequencyAvailable()) {
-            inAppDataDao.getDataForScreen(key)
+            inAppDataDao.getActiveDataForScreen(key, System.currentTimeMillis())
         } else
-            inAppDataDao.getDataForScreenTestCampaign(key)
+            inAppDataDao.getActiveDataForScreenTestCampaign(key, System.currentTimeMillis())
 
         val finalList: MutableList<CMInApp> = ArrayList()
         list?.forEach { cmInApp ->
@@ -115,17 +70,6 @@ class GetInAppListUseCase(private val application: Application,
                 cacheHandler.saveLongValue(CMConstant.INAPP_DISPLAY_COUNTER, 0)
                 true
             }
-        }
-    }
-
-    private fun isInActiveTimeFrame(inAppData: CMInApp): Boolean {
-        return if (inAppData.startTime == 0L && inAppData.endTime == 0L) {
-            true
-        } else {
-            //check how to get current time stamp
-            return inAppData.startTime <= System.currentTimeMillis()
-                    && (inAppData.endTime >= System.currentTimeMillis()
-                    || inAppData.endTime == 0L)
         }
     }
 

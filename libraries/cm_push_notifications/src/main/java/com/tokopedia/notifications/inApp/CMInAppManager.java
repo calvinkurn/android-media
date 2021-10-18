@@ -24,8 +24,7 @@ import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager
 import com.tokopedia.notifications.inApp.ruleEngine.rulesinterpreter.RuleInterpreterImpl;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.DataConsumerImpl;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
-import com.tokopedia.notifications.inApp.usecase.InAppDataProvider;
-import com.tokopedia.notifications.inApp.usecase.InAppFetchListener;
+import com.tokopedia.notifications.inApp.usecase.InAppLocalDatabaseController;
 import com.tokopedia.notifications.inApp.viewEngine.CMActivityLifeCycle;
 import com.tokopedia.notifications.inApp.viewEngine.CMInAppController;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor;
@@ -129,8 +128,13 @@ public class CMInAppManager implements CmInAppListener,
 //                isActivity
 //        );
         //TODO new way to fetch InApp from Local Database
-        InAppDataProvider.Companion.getInstance(application, RepositoryManager.getInstance())
-                .getInAppData(name, isActivity, inAppList -> CMInAppManager.this.notificationsDataResult((List<CMInApp>) inAppList, entityHashCode, name));
+        InAppLocalDatabaseController.Companion.getInstance(application, RepositoryManager.getInstance())
+                .clearExpiredInApp();
+        InAppLocalDatabaseController.Companion.getInstance(application, RepositoryManager.getInstance())
+                .getInAppData(name, isActivity, inAppList ->
+                        CMInAppManager.this.notificationsDataResult((List<CMInApp>) inAppList,
+                                entityHashCode, name)
+                );
     }
 
     @Override
@@ -140,7 +144,7 @@ public class CMInAppManager implements CmInAppListener,
                 CMInApp cmInApp = inAppDataList.get(0);
                 sendEventInAppPrepared(cmInApp);
                 if (checkForOtherSources(cmInApp, entityHashCode, screenName)) return;
-                if(canShowDialog()) {
+                if (canShowDialog()) {
                     showDialog(cmInApp);
                 }
             }
@@ -257,7 +261,7 @@ public class CMInAppManager implements CmInAppListener,
                     Map<String, String> messageMap = new HashMap<>();
                     messageMap.put("type", "validation");
                     messageMap.put("reason", "application_null");
-                    messageMap.put("data",  "");
+                    messageMap.put("data", "");
                     ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
                 }
             }
@@ -271,8 +275,7 @@ public class CMInAppManager implements CmInAppListener,
                 messageMap.put("data", data.toString()
                         .substring(0, (Math.min(data.toString().length(), CMConstant.TimberTags.MAX_LIMIT))));
                 ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
-            }
-            else {
+            } else {
                 Map<String, String> messageMap = new HashMap<>();
                 messageMap.put("type", "exception");
                 messageMap.put("err", Log.getStackTraceString

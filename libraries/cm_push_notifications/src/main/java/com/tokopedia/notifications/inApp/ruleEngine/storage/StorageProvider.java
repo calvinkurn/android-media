@@ -98,23 +98,6 @@ public class StorageProvider implements InterfaceDataStore {
         }
     }
 
-    @Override
-    public Completable putDataToStore(final List<CMInApp> inAppDataRecords) {
-        return Completable.fromAction(new Action0() {
-            @Override
-            public void call() {
-                for (CMInApp inApp : inAppDataRecords) {
-                    CMInApp oldData = inAppDataDao.getInAppData(inApp.id);
-                    if (oldData != null) {
-                        Timber.d(TAG + " in-app LIST NotificationId - " + inApp.id + " insert fail - it is already present");
-                    } else {
-                        Timber.d(TAG + " in-app LIST NotificationId - " + inApp.id + " insert success");
-                    }
-                }
-                inAppDataDao.insert(inAppDataRecords);
-            }
-        }).subscribeOn(Schedulers.io());
-    }
 
     @Override
     public List<CMInApp> getDataFromStore(String key, boolean isActivity) {
