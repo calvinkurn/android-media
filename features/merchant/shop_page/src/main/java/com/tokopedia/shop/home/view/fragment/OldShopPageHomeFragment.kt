@@ -131,6 +131,7 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
         ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener,
         ShopHomeCarouselProductListener,
         ShopHomeCampaignNplWidgetListener,
+        ShopHomeFlashSaleWidgetListener,
         ShopProductChangeGridSectionListener,
         SortFilterBottomSheet.Callback,
         PlayWidgetListener,
@@ -244,6 +245,7 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
                 shopHomeCarouselProductListener= this,
                 shopProductEtalaseListViewHolderListener= this,
                 shopHomeCampaignNplWidgetListener= this,
+                shopHomeFlashSaleWidgetListener = this,
                 shopProductChangeGridSectionListener= this,
                 playWidgetCoordinator = playWidgetCoordinator,
                 isShowTripleDot = !_isMyShop,
@@ -2462,6 +2464,22 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
         true
     } catch (e: PackageManager.NameNotFoundException) {
         false
+    }
+
+    override fun onClickTncFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onClickSeeAllFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onClickFlashSaleReminder(model: ShopHomeFlashSaleUiModel) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onTimerFinished(model: ShopHomeFlashSaleUiModel) {
+        TODO("Not yet implemented")
     }
     //endregion
 }

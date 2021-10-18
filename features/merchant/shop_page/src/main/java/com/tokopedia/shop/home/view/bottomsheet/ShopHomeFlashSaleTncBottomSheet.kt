@@ -8,12 +8,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
+import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.adapter.ShopHomeFlashSaleTncAdapter
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeFlashSaleTncBottomSheetViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -29,7 +35,6 @@ class ShopHomeFlashSaleTncBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private var campaignId = ""
     private var flashSaleTncView: RecyclerView? = null
     private var flashSaleTncAdapter: ShopHomeFlashSaleTncAdapter? = null
 
@@ -70,7 +75,6 @@ class ShopHomeFlashSaleTncBottomSheet : BottomSheetUnify() {
         bottomSheetTitle.text = context?.getString(R.string.shop_page_label_purchase_tnc)
         initView(view)
         observeLiveData()
-//        flashSaleTncAdapter?.setTncDescriptions(getFlashSaleTermsAndConditions(context))
     }
 
     private fun observeLiveData() {
@@ -79,9 +83,18 @@ class ShopHomeFlashSaleTncBottomSheet : BottomSheetUnify() {
                 is Success -> {
                     val data = it.data
                     bottomSheetTitle.text = data.title
+                    flashSaleTncAdapter?.setTncDescriptions(data.listMessage)
+                    flashSaleTncView?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+                    val measuredHeight = flashSaleTncView?.measuredHeight.orZero()
+                    val bottomSheetHeaderHeight = bottomSheetHeader.height
+                    if ((measuredHeight + bottomSheetHeaderHeight) > getHalfDeviceScreen()) {
+                        flashSaleTncView?.layoutParams?.height = getHalfDeviceScreen() - bottomSheetHeaderHeight
+                    }
                 }
                 is Fail -> {
-
+                    val error = it.throwable
+                    val errorMessage = ErrorHandler.getErrorMessage(context, error)
+                    showToasterError(errorMessage)
                 }
             }
         })
@@ -92,5 +105,13 @@ class ShopHomeFlashSaleTncBottomSheet : BottomSheetUnify() {
         flashSaleTncView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         flashSaleTncAdapter = ShopHomeFlashSaleTncAdapter()
         flashSaleTncView?.adapter = flashSaleTncAdapter
+    }
+
+    private fun getHalfDeviceScreen(): Int = getScreenHeight() / 2
+
+    private fun showToasterError(message: String) {
+        view?.let {
+            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
     }
 }

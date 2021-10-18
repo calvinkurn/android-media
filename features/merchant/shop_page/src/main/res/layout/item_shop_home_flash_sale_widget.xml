@@ -77,7 +77,7 @@
                 app:srcCompat="@drawable/bg_rounded_rect_flash_sale_count_down_view" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tgp_flash_sale_timer_title"
+                android:id="@+id/tgp_flash_sale_timer_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_8"
@@ -93,9 +93,45 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_4"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/tgp_flash_sale_timer_title"
+                app:layout_constraintLeft_toRightOf="@id/tgp_flash_sale_timer_desc"
                 app:layout_constraintTop_toTopOf="parent"
                 app:timer_unify_single_variant="alternate" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/flash_sale_reminder_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            android:background="@drawable/bg_rounded_rect_flash_sale_reminde_me"
+            android:paddingHorizontal="@dimen/unify_space_8"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_remind_me_bell"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_fs_remind_me_true" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tgp_remind_me"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/unify_space_8"
+                android:layout_marginStart="@dimen/unify_space_4"
+                android:text="@string/shop_page_label_remind_me"
+                android:textColor="@color/light_N700_68"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/iv_remind_me_bell"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_3"
+                app:typographyWeight="bold" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView

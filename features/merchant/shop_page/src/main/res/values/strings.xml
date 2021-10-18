@@ -321,4 +321,7 @@
     <string name="shop_page_label_started_in">Dimulai dalam</string>
     <string name="shop_page_label_ends_in">Berakhir dalam</string>
     <string name="shop_page_label_purchase_tnc">S&amp;K Pembelian</string>
+    <string name="shop_page_label_remind_me">Ingatkan</string>
+    <string name="shop_page_label_thousand">rb</string>
+    <string name="shop_page_label_million">jt</string>
 </resources>

@@ -7,13 +7,12 @@ class ShopHomeFlashSaleUiModel(
     override val layoutOrder: Int,
     override val name: String,
     override val type: String,
-    override val header: BaseShopHomeWidgetUiModel.Header,
+    override val header: Header,
     val data: List<FlashSaleItem>? = null
 ) : BaseShopHomeWidgetUiModel() {
     override fun type(typeFactory: ShopHomeAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
-
     data class FlashSaleItem(
         val campaignId: String = "",
         val name: String = "",
@@ -25,6 +24,7 @@ class ShopHomeFlashSaleUiModel(
         val timeCounter: String = "",
         var totalNotify: Int = 0,
         val totalNotifyWording: String = "",
-        val productList: List<ShopHomeProductUiModel> = listOf()
+        val productList: List<ShopHomeProductUiModel> = listOf(),
+        var isRemindMe: Boolean = false
     )
 }

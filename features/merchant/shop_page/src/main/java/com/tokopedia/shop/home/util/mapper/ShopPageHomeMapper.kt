@@ -6,6 +6,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.home.WidgetName.FLASH_SALE_TOKO
 import com.tokopedia.shop.home.WidgetName.IS_SHOW_ETALASE_NAME
+import com.tokopedia.shop.home.WidgetName.NEW_PRODUCT_LAUNCH_CAMPAIGN
 import com.tokopedia.shop.home.WidgetName.PRODUCT
 import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_TWO_ROWS
 import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
@@ -243,8 +244,11 @@ object ShopPageHomeMapper {
                 mapToProductWidgetUiModel(widgetResponse, isMyOwnProduct)
             }
             CAMPAIGN.toLowerCase() -> {
-                // TODO: add new function mapToCampaignUIModel
-                mapToNewProductLaunchCampaignUiModel(widgetResponse, isLoggedIn)
+                when(widgetResponse.name) {
+                    FLASH_SALE_TOKO -> mapToFlashSaleUiModel(widgetResponse)
+                    NEW_PRODUCT_LAUNCH_CAMPAIGN -> mapToNewProductLaunchCampaignUiModel(widgetResponse, isLoggedIn)
+                    else -> null
+                }
             }
             DYNAMIC.toLowerCase(Locale.getDefault()) -> mapCarouselPlayWidget(widgetResponse)
             PERSONALIZATION.toLowerCase(Locale.getDefault()) -> mapToProductPersonalizationUiModel(widgetResponse, isMyOwnProduct)
@@ -277,16 +281,6 @@ object ShopPageHomeMapper {
             header = mapToHeaderModel(widgetResponse.header),
             showcaseListItem = mapToShowcaseListItemUiModel(widgetResponse.data, widgetResponse.name, widgetResponse.header)
     )
-
-    private fun mapToCampaignUiModel(
-        widgetResponse: ShopLayoutWidget.Widget,
-        isLoggedIn: Boolean
-    ) {
-        when(widgetResponse.name) {
-            FLASH_SALE_TOKO -> {}
-            else -> {}
-        }
-    }
 
     private fun mapToNewProductLaunchCampaignUiModel(
             widgetResponse: ShopLayoutWidget.Widget,
