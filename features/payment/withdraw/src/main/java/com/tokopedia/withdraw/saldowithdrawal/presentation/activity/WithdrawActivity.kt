@@ -41,15 +41,8 @@ class WithdrawActivity : BaseSimpleActivity(), WithdrawalFragmentCallback,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setSecureWindowFlag()
         updateHeaderTitle(getString(R.string.swd_activity_withdraw))
         initInjector()
-    }
-
-    private fun setSecureWindowFlag() {
-        if (GlobalConfig.APPLICATION_TYPE == GlobalConfig.CONSUMER_APPLICATION || GlobalConfig.APPLICATION_TYPE == GlobalConfig.SELLER_APPLICATION) {
-            runOnUiThread { window.addFlags(WindowManager.LayoutParams.FLAG_SECURE) }
-        }
     }
 
     private fun initInjector() {
