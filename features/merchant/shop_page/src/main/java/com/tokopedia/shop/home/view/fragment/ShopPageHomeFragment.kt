@@ -102,6 +102,7 @@ import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
 import com.tokopedia.shop.home.view.bottomsheet.PlayWidgetSellerActionBottomSheet
+import com.tokopedia.shop.home.view.bottomsheet.ShopHomeFlashSaleTncBottomSheet
 import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomSheet
 import com.tokopedia.shop.home.view.listener.*
 import com.tokopedia.shop.home.view.model.*
@@ -139,6 +140,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener,
         ShopHomeCarouselProductListener,
         ShopHomeCampaignNplWidgetListener,
+        ShopHomeFlashSaleWidgetListener,
         ShopProductChangeGridSectionListener,
         SortFilterBottomSheet.Callback,
         PlayWidgetListener,
@@ -163,6 +165,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         const val REGISTER_VALUE = "REGISTER"
         const val UNREGISTER_VALUE = "UNREGISTER"
         const val NPL_REMIND_ME_CAMPAIGN_ID = "NPL_REMIND_ME_CAMPAIGN_ID"
+        const val FLASH_SALE_REMIND_ME_CAMPAIGN_ID = "FLASH_SALE_REMIND_ME_CAMPAIGN_ID"
         private const val CUSTOMER_APP_PACKAGE = "com.tokopedia.tkpd"
         private const val PLAY_WIDGET_NEWLY_BROADCAST_SCROLL_DELAY = 40L
         private const val LOAD_WIDGET_ITEM_PER_PAGE = 3
@@ -254,6 +257,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopHomeCarouselProductListener= this,
                 shopProductEtalaseListViewHolderListener= this,
                 shopHomeCampaignNplWidgetListener= this,
+                shopHomeFlashSaleWidgetListener = this,
                 shopProductChangeGridSectionListener= this,
                 playWidgetCoordinator = playWidgetCoordinator,
                 isShowTripleDot = !_isMyShop,
@@ -428,6 +432,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         shopHomeAdapter.updateShopHomeWidgetContentData(mapWidgetContentData)
         checkProductWidgetWishListStatus(mapWidgetContentData.values.toList())
         checkCampaignNplWidgetRemindMeStatus(mapWidgetContentData.values.toList())
+        checkFlashSaleWidgetRemindMeStatus(mapWidgetContentData.values.toList())
     }
 
     private fun observeShopChangeProductGridSharedViewModel() {
@@ -621,6 +626,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             }
         })
 
+        viewModel?.campaignFlashSaleStatusData?.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Success -> {
+                    onSuccessGetCampaignFlashSaleRemindMeStatusData(it.data)
+                }
+            }
+        })
+
         viewModel?.checkCampaignNplRemindMeStatusData?.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
@@ -634,6 +647,24 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     (it.throwable as? CheckCampaignNplException)?.let { checkCampaignException ->
                         val errorMessage = ErrorHandler.getErrorMessage(context, checkCampaignException)
                         onFailCheckCampaignNplNotifyMe(checkCampaignException.campaignId, errorMessage)
+                    }
+                }
+            }
+        })
+
+        viewModel?.checkCampaignFlashSaleRemindMeStatusData?.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.success) {
+                        onSuccessCheckCampaignFlashSaleNotifyMe(it.data)
+                    } else {
+                        onFailCheckCampaignFlashSaleNotifyMe(it.data.campaignId,it.data.errorMessage)
+                    }
+                }
+                is Fail -> {
+                    (it.throwable as? CheckCampaignNplException)?.let { checkCampaignException ->
+                        val errorMessage = ErrorHandler.getErrorMessage(context, checkCampaignException)
+                        onFailCheckCampaignFlashSaleNotifyMe(checkCampaignException.campaignId, errorMessage)
                     }
                 }
             }
@@ -745,6 +776,46 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopHomeAdapter.showNplRemindMeLoading(data.campaignId)
                 handleClickRemindMe(it)
                 setNplRemindMeClickedCampaignId("")
+            }
+        }
+    }
+
+    private fun onFailCheckCampaignFlashSaleNotifyMe(campaignId: String, errorMessage: String) {
+        view?.let {
+            Toaster.build(it,
+                errorMessage,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(R.string.shop_string_ok)
+            ).show()
+        }
+        shopHomeAdapter.updateRemindMeStatusCampaignFlashSaleWidgetData(campaignId)
+    }
+
+    private fun onSuccessCheckCampaignFlashSaleNotifyMe(data: CheckCampaignNotifyMeUiModel) {
+        val isRegisterCampaign = data.action.toLowerCase() == NotifyMeAction.REGISTER.action.toLowerCase()
+        shopHomeAdapter.updateRemindMeStatusCampaignFlashSaleWidgetData(
+            data.campaignId,
+            isRegisterCampaign,
+            true
+        )
+        view?.let {
+            Toaster.build(
+                it,
+                data.message,
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_NORMAL
+            ).show()
+        }
+    }
+
+    private fun onSuccessGetCampaignFlashSaleRemindMeStatusData(data: GetCampaignNotifyMeUiModel) {
+        shopHomeAdapter.updateRemindMeStatusCampaignFlashSaleWidgetData(data.campaignId, data.isAvailable)
+        if (getFlashSaleRemindMeClickedCampaignId() == data.campaignId && !data.isAvailable) {
+            val flashSaleCampaignModel = shopHomeAdapter.getFlashSaleCampaignUiModel(data.campaignId)
+            flashSaleCampaignModel?.let {
+                handleFlashSaleClickReminder(it)
+                setFlashSaleRemindMeClickedCampaignId("")
             }
         }
     }
@@ -934,6 +1005,20 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     nplCampaignUiModel.data?.firstOrNull()?.let { nplCampaignItem ->
                         if (nplCampaignItem.statusCampaign.equals(StatusCampaign.UPCOMING.statusCampaign, ignoreCase = true))
                             viewModel?.getCampaignNplRemindMeStatus(nplCampaignItem)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun checkFlashSaleWidgetRemindMeStatus(listWidgetContentData: List<BaseShopHomeWidgetUiModel?>) {
+        viewModel?.let {
+            if (it.isLogin) {
+                val listCampaignFlashSaleUiModel = listWidgetContentData.filterIsInstance<ShopHomeFlashSaleUiModel>()
+                listCampaignFlashSaleUiModel.forEach { flashSaleCampaignUiModel ->
+                    flashSaleCampaignUiModel.data?.firstOrNull()?.let { flashSaleItem ->
+                        if (flashSaleItem.statusCampaign.equals(StatusCampaign.UPCOMING.statusCampaign, ignoreCase = true))
+                            viewModel?.getCampaignRemindMeStatus(flashSaleItem.campaignId)
                     }
                 }
             }
@@ -2154,6 +2239,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
+    override fun onClickTncFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
+        model.data?.firstOrNull()?.let { showFlashTncSaleBottomSheet(it.campaignId) }
+    }
+
+    override fun onClickSeeAllFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
+        context?.run {
+            if (shopId.isNotBlank() && model.header.etalaseId.isNotBlank()) {
+                RouteManager.route(this, ApplinkConst.SHOP_ETALASE, shopId, model.header.etalaseId)
+            }
+        }
+    }
+
     private fun showNplCampaignTncBottomSheet(campaignId: String, statusCampaign: String, ruleID: String) {
         val bottomSheet = ShopHomeNplCampaignTncBottomSheet.createInstance(
                 campaignId,
@@ -2164,6 +2261,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 ruleID
         )
         bottomSheet.show(childFragmentManager, "")
+    }
+
+    private fun showFlashTncSaleBottomSheet(campaignId: String) {
+        val bottomSheet = ShopHomeFlashSaleTncBottomSheet.createInstance(campaignId)
+        bottomSheet.show(childFragmentManager,"")
     }
 
     override fun onClickRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
@@ -2179,6 +2281,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
+    override fun onClickFlashSaleReminder(model: ShopHomeFlashSaleUiModel) {
+        viewModel?.let {
+            val campaignId = model.data?.firstOrNull()?.campaignId.orEmpty()
+            if (it.isLogin) {
+                handleFlashSaleClickReminder(model)
+            } else {
+                setFlashSaleRemindMeClickedCampaignId(campaignId)
+                redirectToLoginPage()
+            }
+        }
+    }
+
     private fun handleClickRemindMe(model: ShopHomeNewProductLaunchCampaignUiModel) {
         val isRemindMe = model.data?.firstOrNull()?.isRemindMe ?: false
         val action = if (isRemindMe) {
@@ -2188,6 +2302,17 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
         val campaignId = model.data?.firstOrNull()?.campaignId ?: ""
         viewModel?.clickRemindMe(campaignId, action)
+    }
+
+    private fun handleFlashSaleClickReminder(model: ShopHomeFlashSaleUiModel) {
+        val isRemindMe = model.data?.firstOrNull()?.isRemindMe ?: false
+        val action = if (isRemindMe) {
+            UNREGISTER_VALUE
+        } else {
+            REGISTER_VALUE
+        }
+        val campaignId = model.data?.firstOrNull()?.campaignId ?: ""
+        viewModel?.clickFlashSaleReminder(campaignId, action)
     }
 
     override fun onClickCtaCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
@@ -2252,8 +2377,19 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
+    // npl widget
     override fun onTimerFinished(model: ShopHomeNewProductLaunchCampaignUiModel) {
         shopHomeAdapter.removeShopHomeCampaignNplWidget(model)
+        endlessRecyclerViewScrollListener.resetState()
+        shopHomeAdapter.removeProductList()
+        shopHomeAdapter.showLoading()
+        viewModel?.getShopPageHomeWidgetLayoutData(shopId)
+        scrollToTop()
+    }
+
+    // flash sale widget
+    override fun onTimerFinished(model: ShopHomeFlashSaleUiModel) {
+        shopHomeAdapter.removeShopHomeFlashSaleWidget(model)
         endlessRecyclerViewScrollListener.resetState()
         shopHomeAdapter.removeProductList()
         shopHomeAdapter.showLoading()
@@ -2267,6 +2403,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun getNplRemindMeClickedCampaignId(): String {
         return PersistentCacheManager.instance.get(NPL_REMIND_ME_CAMPAIGN_ID, String::class.java, "").orEmpty()
+    }
+
+    private fun setFlashSaleRemindMeClickedCampaignId(campaignId: String) {
+        PersistentCacheManager.instance.put(FLASH_SALE_REMIND_ME_CAMPAIGN_ID, campaignId)
+    }
+
+    private fun getFlashSaleRemindMeClickedCampaignId(): String {
+        return PersistentCacheManager.instance.get(FLASH_SALE_REMIND_ME_CAMPAIGN_ID, String::class.java, "").orEmpty()
     }
 
     private fun changeProductListGridView(gridType: ShopProductViewGridType) {

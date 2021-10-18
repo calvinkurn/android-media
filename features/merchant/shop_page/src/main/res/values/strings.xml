@@ -314,4 +314,14 @@
     <string name="shop_page_showcase_all_text">Semua Etalase</string>
     <string name="shop_page_showcase_featured_product_count_text">%1$s Produk</string>
 
+    <!-- flash sale -->
+    <string name="shop_page_label_flash_sale_toko">Flash Sale Toko</string>
+    <string name="shop_page_label_flash_sale">Flash Sale</string>
+    <string name="shop_page_label_see_all">Lihat Semua</string>
+    <string name="shop_page_label_started_in">Dimulai dalam</string>
+    <string name="shop_page_label_ends_in">Berakhir dalam</string>
+    <string name="shop_page_label_purchase_tnc">S&amp;K Pembelian</string>
+    <string name="shop_page_label_remind_me">Ingatkan</string>
+    <string name="shop_page_label_thousand">rb</string>
+    <string name="shop_page_label_million">jt</string>
 </resources>
