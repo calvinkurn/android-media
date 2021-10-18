@@ -2,4 +2,6 @@
 <resources>
     <string name="page_name_wishlist">Wishlist</string>
     <string name="content_desc_wishlist_checkbox">checkbox pilih wishlist</string>
+    <string name="hint_cari_wishlist">Cari di Wishlist</string>
+    <string name="error_message_minimum_search_keyword">Masukkan min. 1 karakter di kolom pencarian.</string>
 </resources>
