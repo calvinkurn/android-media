@@ -50,7 +50,6 @@ class TokoNowChooseAddressWidgetViewHolder(
                 }
 
                 override fun onLocalizingAddressLoginSuccess() {
-                    tokoNowView.refreshLayoutPage()
                 }
 
                 override fun getLocalizingAddressHostFragment(): Fragment = fragment

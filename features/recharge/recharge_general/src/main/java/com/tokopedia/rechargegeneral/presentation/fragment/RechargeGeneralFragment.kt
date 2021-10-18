@@ -9,13 +9,11 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -804,15 +802,15 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                         view.post {
                             if (view != null) {
                                 val wMeasureSpec =
-                                    View.MeasureSpec.makeMeasureSpec(view.width, View.MeasureSpec.EXACTLY)
+                                        View.MeasureSpec.makeMeasureSpec(view.width, View.MeasureSpec.EXACTLY)
                                 val hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
                                 view.measure(wMeasureSpec, hMeasureSpec)
 
                                 if (pager.layoutParams.height != view.measuredHeight) {
                                     pager.layoutParams = (pager.layoutParams)
-                                        .also { lp ->
-                                            lp.height = view.measuredHeight
-                                        }
+                                            .also { lp ->
+                                                lp.height = view.measuredHeight
+                                            }
                                 }
                             }
                         }
@@ -1218,6 +1216,18 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                     if (description.isNotEmpty()) {
                         ticker_recharge_general_product_info.show()
                         ticker_recharge_general_product_info.setHtmlDescription(description)
+                        ticker_recharge_general_product_info.setDescriptionClickEvent(object : TickerCallback {
+                            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                                context?.let {
+                                    RouteManager.route(it, attributes.detailUrl)
+                                }
+                            }
+
+                            override fun onDismiss() {
+                                // no op
+                            }
+
+                        })
                     } else {
                         ticker_recharge_general_product_info.hide()
                     }

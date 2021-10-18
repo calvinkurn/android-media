@@ -205,7 +205,12 @@
     <string name="pdp_pcs_builder">%1d pcs</string>
     <string name="pdp_total_stock_static">Jumlah Barang:</string>
 
+    <string name="pdp_bundling_button_see">Lihat Paket</string>
+    <string name="pdp_bundling_saving">Hemat</string>
+    <string name="pdp_bundling_quantity">(Total %1s barang)</string>
+
     <string name="pdp_choose_variant">Pilih Varian</string>
+
     <string name="pdp_review_rating_and_review_count">%s rating • %s ulasan</string>
     <string name="pdp_review_rating_only_count">%s rating (tanpa ulasan)</string>
 

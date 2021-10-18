@@ -665,7 +665,8 @@ open class DynamicPostViewHolder(v: View,
             type: String = "",
             isFollowed: Boolean = false,
             shopId: String = "",
-            video: Boolean
+            video: Boolean,
+            isTopads:Boolean = false
         )
 
         fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)
@@ -679,9 +680,10 @@ open class DynamicPostViewHolder(v: View,
             itemPosition: Int
         )
         fun onPostTagBubbleClick(
-            positionInFeed: Int,
-            redirectUrl: String,
-            postTagItem: FeedXProduct
+                positionInFeed: Int,
+                redirectUrl: String,
+                postTagItem: FeedXProduct,
+                adClickUrl: String
         )
         fun onPostTagItemBSImpression(
             activityId: String,
@@ -706,15 +708,14 @@ open class DynamicPostViewHolder(v: View,
         fun onImageClicked(activityId: String, type: String, isFollowed: Boolean, shopId: String)
 
         fun onTagClicked(
-            postId: Int,
-            products: List<FeedXProduct>,
-            listener: DynamicPostListener,
-            id: String,
-            type: String,
-            isFollowed: Boolean,
-            isVideo: Boolean = false,
-            positionInFeed: Int
-
+                postId: Int,
+                products: List<FeedXProduct>,
+                listener: DynamicPostListener,
+                id: String,
+                type: String,
+                isFollowed: Boolean,
+                isVideo: Boolean = false,
+                positionInFeed: Int
         )
 
         fun onReadMoreClicked(
@@ -736,6 +737,10 @@ open class DynamicPostViewHolder(v: View,
         fun onImpressionTracking(feedXCard: FeedXCard, positionInFeed: Int)
 
         fun onHashtagClickedFeed(hashtagText: String, feedXCard: FeedXCard)
+
+        fun onFollowClickAds(positionInFeed: Int, shopId: String, adId: String)
+
+        fun onClickSekSekarang(postId: String, shopId: String, type: String, isFollowed: Boolean, positionInFeed: Int)
 
     }
 }

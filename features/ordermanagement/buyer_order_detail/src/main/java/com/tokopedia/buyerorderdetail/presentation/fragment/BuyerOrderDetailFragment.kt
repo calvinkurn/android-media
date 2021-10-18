@@ -24,6 +24,7 @@ import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActi
 import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailContentAnimator
@@ -58,6 +59,7 @@ import javax.inject.Inject
 
 class BuyerOrderDetailFragment : BaseDaggerFragment(),
         ProductViewHolder.ProductViewListener,
+        ProductBundlingViewHolder.Listener,
         TickerViewHolder.TickerViewHolderListener,
         DigitalRecommendationViewHolder.ActionListener {
 
@@ -102,7 +104,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
         SaveInstanceCacheManager(requireContext(), true)
     }
     private val typeFactory: BuyerOrderDetailTypeFactory by lazy {
-        BuyerOrderDetailTypeFactory(this, navigator, this, digitalRecommendationData, this)
+        BuyerOrderDetailTypeFactory(this, this, navigator, this, digitalRecommendationData, this)
     }
     private val adapter: BuyerOrderDetailAdapter by lazy {
         BuyerOrderDetailAdapter(typeFactory)
@@ -130,10 +132,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
     }
     private val stickyActionButtonHandler: BuyerOrderDetailStickyActionButtonHandler by lazy {
         BuyerOrderDetailStickyActionButtonHandler(
-                bottomSheetManager,
-                cacheManager,
-                navigator,
-                viewModel
+            bottomSheetManager,
+            cacheManager,
+            navigator,
+            viewModel
         )
     }
 
@@ -207,6 +209,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
         adapter.updateItem(product, productCopy)
         viewModel.addSingleToCart(productCopy)
         trackBuyAgainProduct()
+    }
+
+    override fun onPurchaseAgainButtonClicked(uiModel: ProductListUiModel.ProductUiModel) {
+        onBuyAgainButtonClicked(uiModel)
     }
 
     override fun onClickShipmentInfoTnC() {
@@ -353,8 +359,8 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
     private fun onSuccessGetBuyerOrderDetail(data: BuyerOrderDetailUiModel) {
         val orderId = viewModel.getOrderId()
         stickyActionButton?.setupActionButtons(
-                data.actionButtonsUiModel,
-                containerBuyerOrderDetail?.isStickyActionButtonsShowed() ?: false
+            data.actionButtonsUiModel,
+            containerBuyerOrderDetail?.isStickyActionButtonsShowed() ?: false
         )
         setupToolbarMenu(!containsAskSellerButton(data.actionButtonsUiModel) && orderId.isNotBlank() && orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID)
         adapter.updateItems(data)
@@ -404,8 +410,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
     private fun onFailedAddToCart(throwable: Throwable) {
         val errorMessage = context?.let {
             ErrorHandler.getErrorMessage(it, throwable)
-        }
-                ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information).orEmpty()
+        } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information).orEmpty()
         showErrorToaster(errorMessage)
     }
 
@@ -431,8 +436,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
     private fun EmptyStateUnify.showMessageExceptionError(throwable: Throwable) {
         val errorMessage = context?.let {
             ErrorHandler.getErrorMessage(it, throwable)
-        }
-                ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information).orEmpty()
+        } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information).orEmpty()
         setDescription(errorMessage)
         contentVisibilityAnimator.animateToEmptyStateError()
     }
@@ -468,8 +472,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
     private fun Throwable.showErrorToaster() {
         val errorMessage = context?.let {
             ErrorHandler.getErrorMessage(it, this)
-        }
-                ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information).orEmpty()
+        } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information).orEmpty()
         showErrorToaster(errorMessage)
     }
 
