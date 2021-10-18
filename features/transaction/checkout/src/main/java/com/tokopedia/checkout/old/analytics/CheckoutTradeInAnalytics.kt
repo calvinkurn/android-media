@@ -1,7 +1,10 @@
 package com.tokopedia.checkout.old.analytics
 
 import android.app.Activity
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.*
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventAction
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventLabel
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName.CLICK_TRADEIN
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
 

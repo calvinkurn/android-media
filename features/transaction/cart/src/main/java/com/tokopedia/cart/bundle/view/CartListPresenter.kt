@@ -8,8 +8,6 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.bundle.data.model.request.AddCartToWishlistRequest
 import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.CartData
-import com.tokopedia.cart.bundle.view.uimodel.PromoSummaryData
-import com.tokopedia.cart.bundle.view.uimodel.PromoSummaryDetailData
 import com.tokopedia.cart.bundle.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.bundle.domain.model.updatecart.UpdateAndValidateUseData
 import com.tokopedia.cart.bundle.domain.usecase.*
@@ -965,7 +963,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             setPosition(position.toString())
         }
         val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
-            setActionField(enhancedECommerceActionField.actionFieldMap)
+            setActionField(enhancedECommerceActionField.getActionFieldMap())
             addProduct(enhancedECommerceProductCartMapData.getProduct())
         }
         stringObjectMap["currencyCode"] = "IDR"
@@ -1009,7 +1007,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             setPosition(position.toString())
         }
         val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
-            setActionField(enhancedECommerceActionField.actionFieldMap)
+            setActionField(enhancedECommerceActionField.getActionFieldMap())
             addProduct(enhancedECommerceProductCartMapData.getProduct())
         }
         stringObjectMap["currencyCode"] = "IDR"
@@ -1055,9 +1053,9 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 addProduct(enhancedECommerceProductCartMapData.getProduct())
             }
             setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR)
-            setActionField(enhancedECommerceActionField.actionFieldMap)
+            setActionField(enhancedECommerceActionField.getActionFieldMap())
         }
-        checkoutMapData[EnhancedECommerceCheckout.KEY_CHECKOUT] = enhancedECommerceCheckout.checkoutMap
+        checkoutMapData[EnhancedECommerceCheckout.KEY_CHECKOUT] = enhancedECommerceCheckout.getCheckoutMap()
         return checkoutMapData
     }
 
@@ -1133,7 +1131,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             setVariant("")
         }
         val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
-            setActionField(enhancedECommerceActionField.actionFieldMap)
+            setActionField(enhancedECommerceActionField.getActionFieldMap())
             addProduct(enhancedECommerceProductCartMapData.getProduct())
         }
         stringObjectMap["currencyCode"] = "IDR"
@@ -1161,7 +1159,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
         }
         val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
-            setActionField(enhancedECommerceActionField.actionFieldMap)
+            setActionField(enhancedECommerceActionField.getActionFieldMap())
             addProduct(enhancedECommerceProductCartMapData.getProduct())
         }
         stringObjectMap["currencyCode"] = "IDR"
@@ -1202,7 +1200,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         }
 
         val enhancedECommerceAdd = EnhancedECommerceAdd().apply {
-            setActionField(enhancedECommerceActionField.actionFieldMap)
+            setActionField(enhancedECommerceActionField.getActionFieldMap())
             addProduct(enhancedECommerceProductCartMapData.getProduct())
         }
         stringObjectMap["currencyCode"] = "IDR"
