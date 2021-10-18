@@ -54,21 +54,10 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         return BuildConfig.VERSION_CODE;
     }
 
-    @Override
-    public void registerActivityLifecycleCallbacks() {
-        super.registerActivityLifecycleCallbacks();
-        registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.BottomSheetListener() {
-            @Override
-            public void onFeedbackClicked(Uri uri, String className, boolean isFromScreenshot) {
-                openFeedbackForm(uri, className, isFromScreenshot);
-            }
-        }));
-    }
-
     public void initConfigValues() {
         setVersionCode();
         setVersionName();
-
+        registerScreenshootObserver();
         GlobalConfig.APPLICATION_TYPE = 3;
         GlobalConfig.PACKAGE_APPLICATION = "com.tokopedia.intl";
         initFileDirConfig();
@@ -127,5 +116,14 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         intent.putExtra("EXTRA_IS_CLASS_NAME", className);
         intent.putExtra("EXTRA_IS_FROM_SCREENSHOT", isFromScreenshot);
         getApplicationContext().startActivity(intent);
+    }
+
+    private void registerScreenshootObserver() {
+        registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.BottomSheetListener() {
+            @Override
+            public void onFeedbackClicked(Uri uri, String className, boolean isFromScreenshot) {
+                openFeedbackForm(uri, className, isFromScreenshot);
+            }
+        }));
     }
 }

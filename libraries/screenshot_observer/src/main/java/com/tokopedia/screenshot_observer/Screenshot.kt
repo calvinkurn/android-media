@@ -39,6 +39,7 @@ open class Screenshot @JvmOverloads constructor(
     )
     private val bottomSheetFeedback: BottomSheetUnify
     private var isInitBottomSheet = true
+    private var isShowBottomSheet = false
 
     init {
         mHandlerThread.start()
@@ -90,13 +91,17 @@ open class Screenshot @JvmOverloads constructor(
                 setChild(viewBottomSheet)
             }
             isInitBottomSheet = false
+
+            bottomSheetFeedback.setOnDismissListener {
+                isShowBottomSheet = false
+
+            }
         }
 
-        bottomSheetFeedback.dialog?.let {
-            if (!it.isShowing) {
-                val fm = (activity as AppCompatActivity).supportFragmentManager
-                bottomSheetFeedback.show(fm, "")
-            }
+        if (!isShowBottomSheet) {
+            val fm = (activity as AppCompatActivity).supportFragmentManager
+            bottomSheetFeedback.show(fm, "")
+            isShowBottomSheet = true
         }
     }
 
