@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -1290,14 +1291,18 @@ class DiscoveryFragment :
         val layoutParams = FrameLayout.LayoutParams(height,width)
         view.layoutParams = layoutParams
 
-        parentLayout.setBackgroundColor(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G900))
+        context?.let {
+            parentLayout.setBackgroundColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G900))
+        }
         parentLayout.addView(view)
         parentLayout.requestFocus()
     }
 
     fun hideCustomContent(){
         showSystemUi()
-        parentLayout.setBackgroundColor(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        context?.let {
+            parentLayout.setBackgroundColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
         coordinatorLayout.show()
         if(parentLayout.childCount>1){
             parentLayout.removeViewAt(1)
