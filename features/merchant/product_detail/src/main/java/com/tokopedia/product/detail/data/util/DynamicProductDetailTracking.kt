@@ -1483,7 +1483,7 @@ object DynamicProductDetailTracking {
 
             val dimension10 = productInfo?.data?.isCod ?: false
             val dimension12 = ratesEstimateData?.cheapestShippingPrice?.toString() ?: ""
-            val dimension14 = ratesEstimateData?.instanLabel ?: ""
+            val dimension14 = ratesEstimateData?.title ?: ""
             val dimension16 = ratesEstimateData?.etaText ?: ""
             val dimension55 = TrackingUtil.getTradeInString(isTradeIn, isDiagnosed)
             val dimension83 = TrackingUtil.getBoTypeString(boType)
