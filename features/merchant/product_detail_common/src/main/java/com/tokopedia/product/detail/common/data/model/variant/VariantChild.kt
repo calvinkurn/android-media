@@ -99,7 +99,7 @@ data class VariantChild(
     val discountPercentage: String
         get() {
             return if (campaign?.isActive == true) {
-                campaign.discountedPercentage.toString()
+                campaign.discountedPercentage?.toInt().toString()
             } else {
                 ""
             }
