@@ -8,6 +8,7 @@ import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherLis
  */
 
 data class EmptyStateUiModel(
+        val isEligible: Boolean,
         val isActiveVoucher: Boolean,
         val onSeeHistoryClicked: () -> Unit = {},
         val onCreateVoucherClicked: () -> Unit = {},

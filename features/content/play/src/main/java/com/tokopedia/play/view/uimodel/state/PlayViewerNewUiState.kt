@@ -6,6 +6,7 @@ import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
+import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 
 /**
  * Created by jegul on 28/06/21
@@ -55,8 +56,8 @@ data class PlayPartnerUiState(
 )
 
 data class PlayWinnerBadgeUiState(
-    val leaderboards: List<PlayLeaderboardUiModel>,
-    val shouldShow: Boolean,
+    val leaderboards: PlayLeaderboardWrapperUiModel,
+    val shouldShow: Boolean
 )
 
 enum class PlayLikeMode {

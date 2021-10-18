@@ -260,4 +260,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_ADD_BILLS_SBM = "android_main_app_enable_add_bills_sbm";
 
     public static final String ENABLE_CART_CHECKOUT_BUNDLING = "android_enable_cart_checkout_bundling";
+    public static final String ENABLE_NEW_CONTENT_CREATION_FLOW = "app_android_feed_cc_feature_flag";
+
 }
