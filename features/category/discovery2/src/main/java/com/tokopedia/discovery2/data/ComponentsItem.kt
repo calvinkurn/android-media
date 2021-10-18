@@ -59,6 +59,7 @@ data class ComponentsItem(
         var pageEndPoint: String = "",
         var pagePath: String = "",
         var parentComponentId: String = "",
+        var parentComponentName: String? = null,
         var parentComponentPosition: Int = 0,
         var parentFilterComponentId: String? = null,
         var cpmData: CpmModel? = null,

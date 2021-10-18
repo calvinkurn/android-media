@@ -26,7 +26,11 @@ class MerchantVoucherGQLRepository @Inject constructor() : BaseRepository(), Mer
         val componentProperties = response.data.component?.properties
         val creativeName = response.data.component?.creativeName ?: ""
         val nextPage = response.data.component?.compAdditionalInfo?.nextPage
-        val list = DiscoveryDataMapper().mapDataItemToMerchantVoucherComponent(componentData, ComponentNames.MerchantVoucherCarouselItem.componentName, componentProperties, creativeName)
+        val subComponentName = when(productComponentName){
+            ComponentNames.MerchantVoucherList.componentName -> ComponentNames.MerchantVoucherListItem.componentName
+            else -> ComponentNames.MerchantVoucherCarouselItem.componentName
+        }
+        val list = DiscoveryDataMapper().mapDataItemToMerchantVoucherComponent(componentData, subComponentName, componentProperties, creativeName)
         return Pair(list,nextPage)
     }
 }

@@ -6,12 +6,14 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.MultipleShopMVCCarousel.CAROUSEL_ITEM_DESIGN
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.analytics.merchantvoucher.DiscoMerchantAnalytics
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.multishopmvc.MvcMultiShopView
@@ -27,6 +29,7 @@ class MerchantVoucherCarouselItemViewHolder (itemView: View, val fragment: Fragm
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         merchantVoucherCarouselItemViewModel = discoveryBaseViewModel as MerchantVoucherCarouselItemViewModel
         setupView(merchantVoucherCarouselItemViewModel.components.design)
+        setupMargins(merchantVoucherCarouselItemViewModel.components.name)
     }
 
     private fun setupView(design: String) {
@@ -42,6 +45,20 @@ class MerchantVoucherCarouselItemViewHolder (itemView: View, val fragment: Fragm
         parentView.layoutParams = params
     }
 
+    private fun setupMargins(componentName:String?){
+        if(ComponentNames.MerchantVoucherListItem.componentName == componentName){
+            fragment.context?.let {
+                parentView.setMargin(
+                    it.resources.getDimensionPixelOffset(R.dimen.dp_12),
+                    0,
+                    it.resources.getDimensionPixelOffset(R.dimen.dp_12),
+                    0
+                )
+            }
+        }else{
+                parentView.setMargin(0,0,0,0)
+        }
+    }
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let { lifecycle ->
