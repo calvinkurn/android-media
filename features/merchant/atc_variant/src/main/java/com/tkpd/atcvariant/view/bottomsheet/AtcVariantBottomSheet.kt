@@ -43,6 +43,7 @@ import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -531,7 +532,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         val shippingCourier = ratesEstimateData?.title ?: ""
         val shippingEta = ratesEstimateData?.etaText ?: ""
 
-        val buyerDistrictId = variantAggregatorData?.chosenAddressDistrictId ?: ""
+        val buyerDistrictId = context?.let { ChooseAddressUtils.getLocalizingAddressData(it)?.district_id ?: "" } ?: ""
         val sellerDistrictId = viewModel.getSelectedWarehouse(productId)?.districtId ?: ""
 
         ProductTrackingCommon.eventEcommerceAddToCart(
