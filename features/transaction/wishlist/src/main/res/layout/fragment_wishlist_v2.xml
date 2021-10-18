@@ -127,9 +127,9 @@
                 android:id="@+id/sort_loader_wishlist_3"
                 android:layout_width="@dimen/dp_86"
                 android:layout_height="@dimen/dp_31"
-                app:loader_type="rect"
+                android:layout_marginStart="@dimen/dp_4"
                 android:layout_toEndOf="@id/sort_loader_wishlist_2"
-                android:layout_marginStart="@dimen/dp_4"/>
+                app:loader_type="rect" />
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/sort_loader_wishlist_4"
@@ -178,5 +178,33 @@
             android:visibility="visible"/>
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/rl_empty_state"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/wishlist_navtoolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone">
+
+        <com.tokopedia.carousel.CarouselUnify
+            android:id="@+id/carousel_empty_state"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/button_empty_state"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/button_empty_state_wishlist"
+            app:layout_constraintTop_toBottomOf="@id/carousel_empty_state"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

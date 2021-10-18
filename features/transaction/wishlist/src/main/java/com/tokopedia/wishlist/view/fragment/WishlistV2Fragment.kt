@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -32,13 +33,18 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.carousel.CarouselUnify
+import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.R
+import com.tokopedia.wishlist.data.model.WishlistV2EmptyStateData
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.data.model.WishlistV2Params
 import com.tokopedia.wishlist.data.model.WishlistV2Response
@@ -254,7 +260,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                             renderWishlist(wishlistV2.items)
 
                         } else {
-                            // renderEmpty()
+                            renderEmpty()
                         }
                     }
                 }
@@ -270,6 +276,36 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     private fun updateTotalLabel(totalData: Int) {
         binding?.run {
             wishlistCountLabel.text = getString(R.string.wishlist_count_label, totalData)
+
+    private fun renderEmpty() {
+        val itemParam = { view: View, data: Any ->
+            val img = view.findViewById<ImageUnify>(R.id.empty_state_img)
+            val text = view.findViewById<Typography>(R.id.empty_state_desc)
+
+            img.setImageDrawable(MethodChecker.getDrawable(requireActivity(), (data as WishlistV2EmptyStateData).img))
+            text.text = data.desc
+        }
+
+        val items = ArrayList<Any>().apply {
+            add(WishlistV2EmptyStateData(R.drawable.ic_wishlist_empty_state_1, "Mau simpan barang untuk beli nanti? Bandingkan harga dan spesifikasinya? Di sini tempatnya!"))
+            add(WishlistV2EmptyStateData(R.drawable.ic_wishlist_empty_state_2, "Lagi lihat-lihat, ada barang yang kamu suka? Klik ikon hati buat simpan di Wishlist."))
+            add(WishlistV2EmptyStateData(R.drawable.ic_wishlist_empty_state_3, "Akses Wishlist-mu kapan saja, masuk dari menu navigasi dan halaman Keranjang."))
+
+        }
+        binding?.apply {
+            wishlistNavtoolbar.visibility = View.GONE
+            rvWishlist.visibility = View.GONE
+            clWishlistHeader.visibility = View.GONE
+            rlEmptyState.visibility = View.VISIBLE
+        }
+
+        binding?.carouselEmptyState?.apply {
+            indicatorPosition = CarouselUnify.INDICATOR_BC
+            freeMode = false
+            centerMode = true
+            slideToScroll = 1
+            infinite = false
+            addItems(R.layout.wishlist_empty_state_layout, items, itemParam)
         }
     }
 
