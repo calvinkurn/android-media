@@ -7,12 +7,15 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
+import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.IS_USE_REGULAR_FLOW
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.SOURCE_INACTIVE_PHONE
 import com.tokopedia.updateinactivephone.domain.data.VerifyNewPhoneDataModel
+import com.tokopedia.updateinactivephone.features.onboarding.regular.InactivePhoneRegularActivity
 import com.tokopedia.updateinactivephone.features.onboarding.withpin.InactivePhoneWithPinActivity
 import com.tokopedia.updateinactivephone.features.submitnewphone.BaseInactivePhoneSubmitDataFragment
 import com.tokopedia.usecase.coroutines.Fail
@@ -98,7 +101,14 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
             REQUEST_CODE_PHONE_VERIFICATION -> {
                 hideLoading()
                 if (resultCode == Activity.RESULT_OK) {
-                    onSuccessValidatePhoneNumber()
+                    val isUseRegularFlow = data?.extras?.getBoolean(IS_USE_REGULAR_FLOW).orFalse()
+                    inactivePhoneUserDataModel?.validateToken = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
+
+                    if (isUseRegularFlow) {
+                        gotoRegularFlow()
+                    } else {
+                        onSuccessValidatePhoneNumber()
+                    }
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
@@ -197,6 +207,16 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
             }
 
             it.finish()
+        }
+    }
+
+    private fun gotoRegularFlow() {
+        context?.let {
+            inactivePhoneUserDataModel?.let { data ->
+                val intent = InactivePhoneRegularActivity.createIntent(it, data)
+                startActivity(intent)
+                activity?.finish()
+            }
         }
     }
 

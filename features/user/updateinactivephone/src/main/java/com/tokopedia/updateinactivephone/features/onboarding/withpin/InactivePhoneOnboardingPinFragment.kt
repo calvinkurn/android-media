@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.EXPEDITED
+import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.IS_USE_REGULAR_FLOW
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.SOURCE_INACTIVE_PHONE
 import com.tokopedia.updateinactivephone.features.onboarding.BaseInactivePhoneOnboardingFragment
 import com.tokopedia.updateinactivephone.features.onboarding.regular.InactivePhoneRegularActivity
@@ -105,7 +106,6 @@ class InactivePhoneOnboardingPinFragment : BaseInactivePhoneOnboardingFragment()
     companion object {
         private const val REQUEST_CODE_OTP_EMAIL = 101
         private const val REQUEST_CODE_VALIDATE_PIN = 102
-        private const val IS_USE_REGULAR_FLOW = "isUseRegularFlow"
 
         fun instance(bundle: Bundle): Fragment {
             return InactivePhoneOnboardingPinFragment().apply {
