@@ -824,10 +824,11 @@ internal class PlayBroadcastViewModel @Inject constructor(
     }
 
     private fun handleSetPinnedMessage(message: String) {
+        _pinnedMessage.setValue {
+            copy(editStatus = PinnedMessageEditStatus.Uploading)
+        }
+
         viewModelScope.launchCatchError(dispatcher.io, block = {
-            _pinnedMessage.setValue {
-                copy(editStatus = PinnedMessageEditStatus.Uploading)
-            }
             val pinnedMessageId = _pinnedMessage.value.id
             _pinnedMessage.value = repo.setPinnedMessage(
                 id = pinnedMessageId,
