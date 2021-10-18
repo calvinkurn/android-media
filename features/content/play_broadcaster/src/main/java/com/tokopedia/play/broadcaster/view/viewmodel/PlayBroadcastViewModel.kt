@@ -841,6 +841,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
     }
 
     private fun handleCancelEditPinnedMessage() {
+        if (_pinnedMessage.value.editStatus == PinnedMessageEditStatus.Uploading) return
         _pinnedMessage.setValue {
             copy(editStatus = PinnedMessageEditStatus.Nothing)
         }
