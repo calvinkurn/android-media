@@ -348,16 +348,17 @@ object CartUiModelMapper {
                 } else {
                     cartDetail.bundleDetail.bundleMaxOrder
                 }
-                originalQuantity = product.productQuantity
                 quantity = getBundleProductQuantity(cartDetail, product)
                 bundleId = cartDetail.bundleDetail.bundleId
                 bundleType = cartDetail.bundleDetail.bundleType
                 bundleGroupId = cartDetail.bundleDetail.bundleGroupId
-                bundleQuantity = when {
+                val tmpBundleQuantity = when {
                     minOrder > cartDetail.bundleDetail.bundleQty -> minOrder
                     maxOrder < cartDetail.bundleDetail.bundleQty -> maxOrder
                     else -> cartDetail.bundleDetail.bundleQty
                 }
+                bundleQuantity = tmpBundleQuantity
+                originalBundleQuantity = tmpBundleQuantity
                 bundleTitle = cartDetail.bundleDetail.bundleName
                 bundlePrice = cartDetail.bundleDetail.bundlePrice
                 bundleSlashPriceLabel = cartDetail.bundleDetail.slashPriceLabel

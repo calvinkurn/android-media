@@ -35,12 +35,8 @@ class ProductBundleActivity : BaseSimpleActivity() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val viewModelProvider by lazy {
-        ViewModelProvider(this, viewModelFactory)
-    }
-
     private val viewModel by lazy {
-        viewModelProvider.get(ProductBundleViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory).get(ProductBundleViewModel::class.java)
     }
 
     private val entryPointFragment = EntrypointFragment()
