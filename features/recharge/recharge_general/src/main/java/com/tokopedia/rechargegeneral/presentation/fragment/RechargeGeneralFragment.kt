@@ -229,15 +229,18 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                     }
 
                     view?.let { v ->
+                        var throwable = it.throwable
+                        if (throwable.message.isNullOrEmpty()) {
+                            throwable = MessageErrorException(getString(R.string.selection_null_product_error))
+                        }
                         val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
                             requireContext(),
-                            it.throwable,
+                            throwable,
                             ErrorHandler.Builder()
                                 .className(this::class.java.simpleName)
                                 .build()
                         )
-                        Toaster.build(v, errorMessage ?: getString(R.string.selection_null_product_error),
-                                Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                        Toaster.build(v, errorMessage.orEmpty(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                 getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                     }
                 }
