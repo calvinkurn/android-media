@@ -214,8 +214,19 @@ class PlayBeforeLiveFragment @Inject constructor(
         actionBarView.setTitle(getString(R.string.play_action_bar_prepare_final_title))
         btnStartLive.setOnClickListener {
             analytic.clickStartStreamingOnFinalSetupPage()
+            val schedule = scheduleViewModel.schedule
+            if (schedule is BroadcastScheduleUiModel.Scheduled) {
+                val currentTime = Date()
+                if (currentTime.before(schedule.time)) {
+                    getEarlyLiveStreamDialog().show()
+                    analytic.viewDialogConfirmStartLiveBeforeScheduledOnFinalSetupPage()
+                    return@setOnClickListener
+                }
+            }
+
             startCountDown()
         }
+
         llSelectedProduct.setOnClickListener {
             openEditProductPage()
             analytic.clickEditProductTaggingOnFinalSetupPage()
@@ -439,27 +450,13 @@ class PlayBeforeLiveFragment @Inject constructor(
         }
     }
 
-    private fun startStreaming() {
-        val schedule = scheduleViewModel.schedule
-        if (schedule is BroadcastScheduleUiModel.Scheduled) {
-            val currentTime = Date()
-            if (currentTime.before(schedule.time)) {
-                getEarlyLiveStreamDialog().show()
-                analytic.viewDialogConfirmStartLiveBeforeScheduledOnFinalSetupPage()
-                return
-            }
-        }
-
-        createLiveStream()
-    }
-
     private fun getEarlyLiveStreamDialog(): DialogUnify {
         if (!::earlyLiveStreamDialog.isInitialized) {
             earlyLiveStreamDialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setPrimaryCTAText(getString(R.string.play_broadcast_start_streaming_action))
                 setPrimaryCTAClickListener {
                     analytic.clickStartLiveOnBeforeScheduledDialog()
-                    createLiveStream()
+                    startCountDown()
                     dismiss()
                 }
                 setSecondaryCTAText(getString(R.string.play_broadcast_cancel_streaming_action))
@@ -514,7 +511,7 @@ class PlayBeforeLiveFragment @Inject constructor(
             override fun onTick(milisUntilFinished: Long) {}
 
             override fun onFinish() {
-                startStreaming()
+                createLiveStream()
             }
 
             override fun onCancelLiveStream() {
