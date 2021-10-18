@@ -2,21 +2,20 @@ package com.tokopedia.sellerhomecommon.presentation.adapter
 
 import android.graphics.Color
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.databinding.ShcItemMultiLineMetricBinding
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineMetricUiModel
-import kotlinx.android.synthetic.main.shc_item_multi_line_metric.view.*
 
 /**
  * Created By @ilhamsuaib on 27/10/20
  */
 
 class MultiLineMetricsAdapter(
-        private val listener: MetricsListener
+    private val listener: MetricsListener
 ) : RecyclerView.Adapter<MultiLineMetricsAdapter.ViewHolder>() {
 
     var items: List<MultiLineMetricUiModel> = emptyList()
@@ -24,9 +23,10 @@ class MultiLineMetricsAdapter(
     private var recyclerViewWidth = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.shc_item_multi_line_metric, parent, false)
-        return ViewHolder(view)
+        val binding = ShcItemMultiLineMetricBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false
+        )
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int = items.size
@@ -44,12 +44,14 @@ class MultiLineMetricsAdapter(
         recyclerViewWidth = width
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(
+        private val binding: ShcItemMultiLineMetricBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: MultiLineMetricUiModel, recyclerViewWidth: Int) {
             val summary = item.summary
 
-            with(itemView) {
+            with(binding) {
                 val cardWidth = getCardWidth(recyclerViewWidth)
                 containerShcCardMetric.layoutParams.width = cardWidth
 
@@ -64,14 +66,14 @@ class MultiLineMetricsAdapter(
                     viewShcMetricsColor.setBackgroundColor(Color.TRANSPARENT)
                 }
 
-                setOnClickListener {
+                root.setOnClickListener {
                     listener.onItemClickListener(item, adapterPosition)
                 }
 
                 val isMetricError = item.errorMsg.isNotEmpty() || item.isError ||
                         item.linePeriod.currentPeriod.isEmpty()
                 if (isMetricError) {
-                    tvShcMetricsValue.text = context.getString(R.string.shc_failed_to_load)
+                    tvShcMetricsValue.text = root.context.getString(R.string.shc_failed_to_load)
                     tvShcMetricsSubValue.text = ""
                 }
             }

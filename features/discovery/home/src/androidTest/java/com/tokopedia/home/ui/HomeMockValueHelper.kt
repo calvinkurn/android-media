@@ -1,6 +1,5 @@
 package com.tokopedia.home.ui
 
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 
@@ -20,7 +19,6 @@ object HomeMockValueHelper {
     fun setupAbTestRemoteConfig(
         inboxRollence: Boolean = true,
         navigationRollence: Boolean = true,
-        chooseAddressRollence: Boolean = true,
         balanceWidgetRollence: Boolean = true,
         homeRollence: Boolean = true,
         walletAppRollence: Boolean = true,
@@ -37,12 +35,6 @@ object HomeMockValueHelper {
             RemoteConfigInstance.getInstance().abTestPlatform.setString(
                 RollenceKey.NAVIGATION_EXP_TOP_NAV,
                 RollenceKey.NAVIGATION_VARIANT_REVAMP
-            )
-        }
-        if (chooseAddressRollence) {
-            RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY,
-                ChooseAddressConstant.CHOOSE_ADDRESS_ROLLENCE_KEY
             )
         }
         if (balanceWidgetRollence) {

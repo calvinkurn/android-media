@@ -11,7 +11,9 @@ data class ShopHomeNewProductLaunchCampaignUiModel(
         override val type: String = "",
         override val header: BaseShopHomeWidgetUiModel.Header = BaseShopHomeWidgetUiModel.Header(),
         val data: List<NewProductLaunchCampaignItem>? = null
-) : BaseShopHomeWidgetUiModel, ImpressHolder() {
+) : BaseShopHomeWidgetUiModel(){
+
+    val impressHolder = ImpressHolder()
 
     companion object{
         const val TOTAL_NOTIFY_WORDING_FORMAT_FOR_REPLACED = "{{number_of_users}}"

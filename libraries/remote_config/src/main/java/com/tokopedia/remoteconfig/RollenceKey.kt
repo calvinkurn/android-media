@@ -15,6 +15,8 @@ object RollenceKey {
     const val OLD_REVIEW_SHOP = "old_review_shop"
     const val NEW_REVIEW_SHOP = "new_review_shop"
 
+    const val AB_TEST_SHOP_NEW_HOME_TAB = "shop_layout_engine"
+
     //    Add Edit Product
     const val HAMPERS_AB_TEST_KEY = "hampers_android"
     const val PRODUCT_LIMITATION_AB_TEST_KEY = "product_limit"
@@ -73,4 +75,8 @@ object RollenceKey {
     const val SBM_ADD_BILLS_KEY = "sbm_addbills2"
     const val SBM_ADD_BILLS_FALSE = "sbm_addbills_False"
     const val SBM_ADD_BILLS_TRUE = "sbm_addbills_True"
+
+    const val EXPERIMENT_NAME_REVIEW_CREDIBILITY = "review_credibility"
+    const val VARIANT_REVIEW_CREDIBILITY_WITHOUT_BOTTOM_SHEET = "without_bottomsheet"
+    const val VARIANT_REVIEW_CREDIBILITY_WITH_BOTTOM_SHEET = "with_bottomsheet"
 }
