@@ -2228,6 +2228,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     AtcVariantHelper.pdpToAtcVariant(
                             context = it,
                             pageSource = AtcVariantHelper.PDP_PAGESOURCE,
+                            productId = viewModel.getDynamicProductInfoP1!!.basic.productID,
                             productInfoP1 = viewModel.getDynamicProductInfoP1!!,
                             warehouseId = warehouseId ?: "",
                             pdpSession = viewModel.getDynamicProductInfoP1?.pdpSession ?: "",
