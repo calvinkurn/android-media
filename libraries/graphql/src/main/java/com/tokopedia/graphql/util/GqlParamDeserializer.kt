@@ -8,7 +8,7 @@ import java.lang.reflect.Type
 import kotlin.math.ceil
 
 
-class GsonConverter : JsonDeserializer<Map<String, Any>> {
+class GqlParamDeserializer : JsonDeserializer<Map<String, Any>> {
 
     override fun deserialize(
         json: JsonElement?,

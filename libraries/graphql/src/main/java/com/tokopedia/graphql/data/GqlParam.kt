@@ -2,7 +2,7 @@ package com.tokopedia.graphql.data
 
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.graphql.util.GsonConverter
+import com.tokopedia.graphql.util.GqlParamDeserializer
 
 interface GqlParam {
 
@@ -10,7 +10,7 @@ interface GqlParam {
         val builder = GsonBuilder()
         builder.registerTypeAdapter(
             object : TypeToken<Map<String, Any>>() {}.type,
-            GsonConverter()
+            GqlParamDeserializer()
         )
 
         val gson = builder.create()

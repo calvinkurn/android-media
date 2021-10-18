@@ -66,16 +66,4 @@ class ParamUtilTest {
         val output = nestedDummyModel.toMapParam().toMap()
         Assert.assertEquals(expectedOutput, output)
     }
-
-    @Test(expected = ClassCastException::class)
-    fun `convert String object to map should throw error`() {
-        val dummyString = "foo model"
-        dummyString.toMapParam()
-    }
-
-    @Test(expected = ClassCastException::class)
-    fun `convert Int object to map should throw error`() {
-        val dummyInt = 1
-        dummyInt.toMapParam()
-    }
 }
