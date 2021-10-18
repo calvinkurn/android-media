@@ -5,6 +5,7 @@ import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.CURR
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_CURRENT_SITE
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_PRODUCT_ID
+import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
@@ -179,8 +180,8 @@ object ProductTrackingCommon {
             variantName: String, isMultiOrigin: Boolean,
             shopType: String = "", shopName: String = "",
             categoryName: String = "", categoryId: String = "", bebasOngkirType: String = "", pageSource: String = "",
-            cdListName: String = "", isCod: Boolean, cheapestShippingPrice: String,
-            shippingCourier: String, shippingEta: String, buyerSellerDistrictId: String
+            cdListName: String = "", isCod: Boolean, ratesEstimateData: P2RatesEstimateData?,
+            buyerDistrictId: String, sellerDistrictId: String
     ) {
         val generateButtonActionString = when (buttonAction) {
             ProductDetailCommonConstant.OCS_BUTTON -> "$buttonText ocs"
@@ -192,6 +193,11 @@ object ProductTrackingCommon {
             true -> "tokopedia"
             else -> "regular"
         }
+
+        val cheapestShippingPrice = ratesEstimateData?.cheapestShippingPrice?.toLong()?.toString() ?: ""
+        val shippingCourier = ratesEstimateData?.title ?: ""
+        val shippingEta = ratesEstimateData?.etaText ?: ""
+        val buyerSellerDistrictId = "$buyerDistrictId - $sellerDistrictId"
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 ProductTrackingConstant.Tracking.KEY_EVENT, "addToCart",

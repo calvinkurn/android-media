@@ -528,10 +528,6 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 ?: ""
 
         val ratesEstimateData = variantAggregatorData?.getP2RatesEstimateByProductId(productId)?.p2RatesData
-        val cheapestShippingPrice = ratesEstimateData?.cheapestShippingPrice?.toLong()?.toString() ?: ""
-        val shippingCourier = ratesEstimateData?.title ?: ""
-        val shippingEta = ratesEstimateData?.etaText ?: ""
-
         val buyerDistrictId = context?.let { ChooseAddressUtils.getLocalizingAddressData(it)?.district_id ?: "" } ?: ""
         val sellerDistrictId = viewModel.getSelectedWarehouse(productId)?.districtId ?: ""
 
@@ -557,10 +553,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 pageSource = aggregatorParams?.pageSource ?: "",
                 cdListName = aggregatorParams?.trackerCdListName ?: "",
                 isCod = variantAggregatorData?.isCod ?: false,
-                cheapestShippingPrice = cheapestShippingPrice,
-                shippingCourier = shippingCourier,
-                shippingEta = shippingEta,
-                buyerSellerDistrictId = "$buyerDistrictId - $sellerDistrictId"
+                ratesEstimateData = ratesEstimateData,
+                buyerDistrictId = buyerDistrictId,
+                sellerDistrictId = sellerDistrictId
         )
     }
 

@@ -1477,7 +1477,7 @@ object DynamicProductDetailTracking {
                                         isTradeIn: Boolean, isDiagnosed: Boolean,
                                         multiOrigin: Boolean, deeplinkUrl: String,
                                         isStockAvailable: String, boType: Int,
-                                        affiliateUniqueId: String,
+                                        affiliateUniqueId: String, uuid: String,
                                         ratesEstimateData: P2RatesEstimateData?,
                                         buyerDistrictId: String, sellerDistrictId: String ->
 
@@ -1490,6 +1490,7 @@ object DynamicProductDetailTracking {
             val dimension54 = TrackingUtil.getMultiOriginAttribution(multiOrigin)
             val dimension38 = trackerAttribution ?: ProductTrackingConstant.Tracking.DEFAULT_VALUE
             val dimension98 = if (isStockAvailable == "0") "not available" else "available"
+            val dimension113 = if (affiliateUniqueId.isNotBlank()) "$affiliateUniqueId - $uuid" else ""
             val dimension120 = "$buyerDistrictId - $sellerDistrictId"
 
             val categoryFormatted = TrackingUtil.getEnhanceCategoryFormatted(productInfo?.basic?.category?.detail)
@@ -1513,7 +1514,7 @@ object DynamicProductDetailTracking {
                     dimension81 = productInfo?.shopTypeString ?: "",
                     dimension98 = dimension98,
                     dimension90 = if (affiliateUniqueId.isNotBlank()) "affiliate" else null,
-                    dimension113 = affiliateUniqueId,
+                    dimension113 = dimension113,
                     dimension120 = dimension120,
                     index = 1
             ))
@@ -1525,7 +1526,7 @@ object DynamicProductDetailTracking {
                                                   isTradeIn: Boolean, isDiagnosed: Boolean,
                                                   multiOrigin: Boolean, deeplinkUrl: String,
                                                   isStockAvailable: String, boType: Int,
-                                                  affiliateUniqueId: String,
+                                                  affiliateUniqueId: String, uuid: String,
                                                   ratesEstimateData: P2RatesEstimateData?,
                                                   buyerDistrictId: String,
                                                   sellerDistrictId: String ->
@@ -1548,7 +1549,7 @@ object DynamicProductDetailTracking {
 
             val products = generateProduct(irisSessionId, trackerListName, productInfo,
                 trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl,
-                isStockAvailable, boType, affiliateUniqueId, ratesEstimateData, buyerDistrictId,
+                isStockAvailable, boType, affiliateUniqueId, uuid, ratesEstimateData, buyerDistrictId,
                 sellerDistrictId)
 
             ProductDetailViewsBundler
@@ -1610,6 +1611,7 @@ object DynamicProductDetailTracking {
                              isStockAvailable: String,
                              boType: Int,
                              affiliateUniqueId: String,
+                             uuid: String,
                              ratesEstimateData: P2RatesEstimateData?,
                              buyerDistrictId: String,
                              sellerDistrictId: String) {
@@ -1618,7 +1620,7 @@ object DynamicProductDetailTracking {
                     val sentBundle = generateProductViewBundle(
                             irisSessionId, trackerListName, it, shopInfo,
                             trackerAttribution, isTradeIn, isDiagnosed, multiOrigin, deeplinkUrl,
-                            isStockAvailable, boType, affiliateUniqueId, ratesEstimateData,
+                            isStockAvailable, boType, affiliateUniqueId, uuid, ratesEstimateData,
                             buyerDistrictId, sellerDistrictId
                     )
                     sendTrackingBundle(
