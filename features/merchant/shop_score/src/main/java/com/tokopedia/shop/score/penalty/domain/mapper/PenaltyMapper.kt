@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.ACTIVE_PENALTY_DETAIL
 import com.tokopedia.shop.score.common.ShopScoreConstant.FINISHED_IN
@@ -22,10 +23,7 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.START
 import com.tokopedia.shop.score.common.ShopScoreConstant.START_ACTIVE_PENALTY_DETAIL
 import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_SORT
 import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_TYPE_PENALTY
-import com.tokopedia.shop.score.penalty.domain.response.ShopPenaltySummaryTypeWrapper
-import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailResponse
-import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltySummaryResponse
-import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyTypesResponse
+import com.tokopedia.shop.score.penalty.domain.response.*
 import com.tokopedia.shop.score.penalty.presentation.model.*
 import javax.inject.Inject
 import kotlin.math.abs
@@ -135,7 +133,7 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
         )
     }
 
-    private fun mapToCardShopPenalty(penaltySummary: ShopScorePenaltySummaryResponse.ShopScorePenaltySummary.Result): ItemCardShopPenaltyUiModel {
+    private fun mapToCardShopPenalty(penaltySummary: ShopScorePenaltySummary.Result): ItemCardShopPenaltyUiModel {
         return ItemCardShopPenaltyUiModel(totalPenalty = penaltySummary.penaltyAmount, hasPenalty = penaltySummary.penaltyAmount.isMoreThanZero(), deductionPoints = penaltySummary.penalty)
     }
 
@@ -145,10 +143,10 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
         return ItemPeriodDetailPenaltyUiModel(periodDetail = "$startDate - $endDate")
     }
 
-    private fun mapToSortFilterPenalty(penaltyTypes: List<ShopScorePenaltyTypesResponse.ShopScorePenaltyTypes.Result>, typeId: Int): List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper> {
+    private fun mapToSortFilterPenalty(penaltyTypes: List<ShopScorePenaltyTypes.Result>, typeId: Int): List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper> {
         return mutableListOf<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>().apply {
             penaltyTypes.map {
-                add(ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper(title = it.name, isSelected = it.id == typeId, idFilter = it.id))
+                add(ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper(title = it.name, isSelected = it.id == typeId.toString(), idFilter = it.id.toIntOrZero()))
             }
         }
     }
@@ -247,11 +245,11 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
         return Triple(visitablePenaltyPage, shopScorePenaltyDetailResponse.hasPrev, shopScorePenaltyDetailResponse.hasNext)
     }
 
-    private fun mapToPenaltyFilterBottomSheet(penaltyTypes: List<ShopScorePenaltyTypesResponse.ShopScorePenaltyTypes.Result>,
+    private fun mapToPenaltyFilterBottomSheet(penaltyTypes: List<ShopScorePenaltyTypes.Result>,
                                               sortBy: Int, typeId: Int): List<PenaltyFilterUiModel> {
         return mutableListOf<PenaltyFilterUiModel>().apply {
-            add(PenaltyFilterUiModel(title = TITLE_SORT, isDividerVisible = true, chipsFilerList = mapToChipsSortFilter(sortBy)))
-            add(PenaltyFilterUiModel(title = TITLE_TYPE_PENALTY, chipsFilerList = mapToChipsTypePenaltyFilter(penaltyTypes, typeId)))
+            add(PenaltyFilterUiModel(title = TITLE_SORT, isDividerVisible = true, chipsFilterList = mapToChipsSortFilter(sortBy)))
+            add(PenaltyFilterUiModel(title = TITLE_TYPE_PENALTY, chipsFilterList = mapToChipsTypePenaltyFilter(penaltyTypes, typeId)))
         }
     }
 
@@ -262,17 +260,17 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
         }
     }
 
-    private fun mapToChipsTypePenaltyFilter(penaltyTypes: List<ShopScorePenaltyTypesResponse.ShopScorePenaltyTypes.Result>, typeId: Int): List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel> {
+    private fun mapToChipsTypePenaltyFilter(penaltyTypes: List<ShopScorePenaltyTypes.Result>, typeId: Int): List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel> {
         return mutableListOf<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>().apply {
             penaltyTypes.map {
-                add(PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(it.name, isSelected = it.id == typeId, value = it.id))
+                add(PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(it.name, isSelected = it.id == typeId.toString(), value = it.id.toIntOrZero()))
             }
         }
     }
 
     fun mapToSortFilterItemFromPenaltyList(penaltyFilterList: List<PenaltyFilterUiModel>): List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper> {
         val mapItemSortFilterWrapper = mutableListOf<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>()
-        penaltyFilterList.find { it.title == TITLE_TYPE_PENALTY }?.chipsFilerList?.map {
+        penaltyFilterList.find { it.title == TITLE_TYPE_PENALTY }?.chipsFilterList?.map {
             mapItemSortFilterWrapper.add(ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper(
                     title = it.title,
                     isSelected = it.isSelected,

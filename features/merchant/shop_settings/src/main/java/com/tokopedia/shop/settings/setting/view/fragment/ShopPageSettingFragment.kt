@@ -6,9 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +18,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
@@ -34,6 +34,7 @@ import com.tokopedia.shop.settings.analytics.ShopPageTrackingShopPageSetting
 import com.tokopedia.shop.settings.analytics.model.CustomDimensionShopPageSetting
 import com.tokopedia.shop.settings.common.di.Constant
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
+import com.tokopedia.shop.settings.databinding.FragmentShopPageSettingBinding
 import com.tokopedia.shop.settings.setting.data.*
 import com.tokopedia.shop.settings.setting.view.adapter.ShopPageSettingAdapter
 import com.tokopedia.shop.settings.setting.view.viewmodel.ShopPageSettingViewModel
@@ -41,6 +42,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -53,8 +55,6 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
         const val SHOP_DOMAIN = "domain"
-        const val SHOP_NAME_PLACEHOLDER = "{{shop_name}}"
-        const val SHOP_LOCATION_PLACEHOLDER = "{{shop_location}}"
         const val SELLER_CENTER_URL = "https://seller.tokopedia.com/edu/"
 
         private const val VIEW_CONTENT = 1
@@ -73,14 +73,14 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     @Inject
     @Named(Constant.SHOP_SETTING_VIEW_MODEL_FACTORY)
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private var shopPageSettingViewModel: ShopPageSettingViewModel? = null
 
-    private lateinit var errorView: View
-    private lateinit var dashboardView: View
-    private lateinit var shopPageSettingView: RecyclerView
-    private lateinit var retryMessageView: TextView
-    private lateinit var retryButton: View
-    private lateinit var loadingView: View
+    private var binding by autoClearedNullable<FragmentShopPageSettingBinding>()
+
+    private var shopPageSettingViewModel: ShopPageSettingViewModel? = null
+    private var errorView: EmptyStateUnify? = null
+    private var dashboardView: LinearLayout? = null
+    private var shopPageSettingView: RecyclerView? = null
+    private var loadingView: View? = null
     private val isOfficial: Boolean
         get() = shopInfo?.goldOS?.isOfficial == 1
     private val isGold: Boolean
@@ -135,33 +135,31 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_shop_page_setting, container, false)
+                              savedInstanceState: Bundle?): View {
+        binding = FragmentShopPageSettingBinding.inflate(inflater, container, false)
+        return binding?.root as View
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // setup views
-        errorView = view.findViewById(R.id.error_view)
-        dashboardView = view.findViewById(R.id.dashboard_layout)
-        dashboardView.setOnClickListener { onDashboardClick() }
-        shopPageSettingView = view.findViewById(R.id.rv_shop_page_setting)
-        retryMessageView = view.findViewById(com.tokopedia.abstraction.R.id.message_retry)
-        retryButton = view.findViewById(com.tokopedia.abstraction.R.id.button_retry)
-        loadingView = view.findViewById(R.id.loader_shop_page_setting)
+        errorView = binding?.errorView
+        dashboardView = binding?.dashboardLayout
+        dashboardView?.setOnClickListener { onDashboardClick() }
+        shopPageSettingView = binding?.rvShopPageSetting
+        loadingView = binding?.loaderShopPageSetting
 
         // setup shop page setting recycler view
-        val shopPageSettingView: RecyclerView = view.findViewById(R.id.rv_shop_page_setting)
+        val shopPageSettingView = binding?.rvShopPageSetting
         val linearLayoutManager = LinearLayoutManager(activity)
         val shopPageSettingAdapter = ShopPageSettingAdapter(this, this, this, this)
-        shopPageSettingView.apply {
+        shopPageSettingView?.apply {
             setHasFixedSize(true)
             layoutManager = linearLayoutManager
             adapter = shopPageSettingAdapter
         }
-        shopPageSettingView.addItemDecoration(DividerItemDecoration(activity))
+        shopPageSettingView?.addItemDecoration(DividerItemDecoration(activity))
 
         // create contents for shop page setting page
         val shopPageSettingList = mutableListOf<ShopPageSetting>()
@@ -197,8 +195,8 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
 
     private fun onErrorGetShopInfo(e: Throwable?) {
         setViewState(VIEW_ERROR)
-        retryMessageView.text = ErrorHandler.getErrorMessage(activity, e)
-        retryButton.setOnClickListener { getShopInfo() }
+        errorView?.emptyStateDescription = ErrorHandler.getErrorMessage(activity, e)
+        errorView?.setPrimaryCTAClickListener { getShopInfo() }
     }
 
     private fun getShopInfo(isRefresh: Boolean = false) {
@@ -213,22 +211,22 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     private fun setViewState(viewState: Int) {
         when (viewState) {
             VIEW_LOADING -> {
-                errorView.hide()
-                loadingView.visible()
-                dashboardView.visible()
-                shopPageSettingView.gone()
+                errorView?.hide()
+                loadingView?.visible()
+                dashboardView?.visible()
+                shopPageSettingView?.gone()
             }
             VIEW_ERROR -> {
-                errorView.visible()
-                loadingView.gone()
-                dashboardView.hide()
-                shopPageSettingView.hide()
+                errorView?.visible()
+                loadingView?.gone()
+                dashboardView?.hide()
+                shopPageSettingView?.hide()
             }
             else -> {
-                errorView.hide()
-                loadingView.gone()
-                dashboardView.visible()
-                shopPageSettingView.visible()
+                errorView?.hide()
+                loadingView?.gone()
+                dashboardView?.visible()
+                shopPageSettingView?.visible()
             }
         }
     }

@@ -93,7 +93,7 @@ class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFini
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     val input = textFieldInput.text.toString()
-                    val price = CurrencyFormatHelper.convertRupiahToInt(input)
+                    val price = CurrencyFormatHelper.convertRupiahToLong(input)
 
                     if(price < MINIMUM_PRICE) {
                         showErrorPriceTooLow()
@@ -138,7 +138,10 @@ class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFini
     }
 
     private fun isPriceValid() {
-        product = product?.copy(minPrice = product?.minPrice?.copy(price = CurrencyFormatHelper.convertRupiahToInt(quickEditPriceTextField.textFieldInput.text.toString()).toString()))
+        product = product?.copy(
+            minPrice = product?.minPrice?.copy(
+                price = CurrencyFormatHelper.convertRupiahToLong(
+                    quickEditPriceTextField.textFieldInput.text.toString()).toString()))
         when {
             isPriceTooLow() -> {
                 showErrorPriceTooLow()
