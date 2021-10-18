@@ -1716,7 +1716,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 val intentCancelOrder = RouteManager.getIntent(context, URLDecoder.decode(dotMenu.appURL, UohConsts.UTF_8)).apply {
                     putExtra(BuyerConsts.PARAM_SHOP_NAME, cancelOrderQueryParam.shopName)
                     putExtra(BuyerConsts.PARAM_INVOICE, cancelOrderQueryParam.invoice)
-                    putExtra(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT, orderData.metadata.listProducts as Serializable?)
                     putExtra(BuyerConsts.PARAM_ORDER_ID, cancelOrderQueryParam.orderId)
                     putExtra(BuyerConsts.PARAM_SHOP_ID, cancelOrderQueryParam.shopId)
                     putExtra(BuyerConsts.PARAM_BOUGHT_DATE, orderData.metadata.paymentDateStr)
