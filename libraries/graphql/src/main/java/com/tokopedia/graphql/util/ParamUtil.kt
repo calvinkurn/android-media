@@ -1,6 +1,8 @@
 package com.tokopedia.graphql.util
 
 import android.os.Bundle
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 /**
  * @author by nisie on 12/02/19.
@@ -37,4 +39,10 @@ fun getParamBoolean(paramName: String,
         arguments != null -> arguments.getBoolean(paramName, defaultValue)
         else -> defaultValue
     }
+}
+
+fun <T> T.toMapParam(): Map<String, Any> {
+    val gson = Gson()
+    val json = gson.toJson(this)
+    return gson.fromJson(json, object : TypeToken<Map<String, Any>>() {}.type)
 }

@@ -45,7 +45,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_pdp_emoney.R
-import com.tokopedia.recharge_pdp_emoney.databinding.ActivityEmoneyBinding
 import com.tokopedia.recharge_pdp_emoney.databinding.FragmentEmoneyPdpBinding
 import com.tokopedia.recharge_pdp_emoney.databinding.ItemEmoneyProductBinding
 import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
@@ -94,6 +93,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     lateinit var userSession: UserSessionInterface
 
     private var emoneyCardNumber = ""
+    private var issuerId = ""
     lateinit var detailPassData: DigitalCategoryDetailPassData
 
     private lateinit var localCacheHandler: LocalCacheHandler
@@ -108,6 +108,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         arguments?.let {
             detailPassData = it.getParcelable(EXTRA_PARAM_DIGITAL_CATEGORY_DETAIL_PASS_DATA)
                     ?: DigitalCategoryDetailPassData.Builder().build()
+            issuerId = detailPassData.operatorId ?: ""
         }
         activity?.let {
             localCacheHandler = LocalCacheHandler(context, EMONEY_PDP_PREFERENCES_NAME)
@@ -133,6 +134,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
             emoneyCardNumber = savedInstanceState.getString(EXTRA_USER_INPUT_EMONEY_NUMBER) ?: ""
             detailPassData = savedInstanceState.getParcelable(EXTRA_EMONEY_DETAIL_PASS_DATA)
                     ?: DigitalCategoryDetailPassData.Builder().build()
+            issuerId = detailPassData.operatorId ?: ""
         }
 
         loadData()
@@ -325,8 +327,8 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     private fun trackSelectedTab(tabPosition: Int) {
         when (tabPosition) {
-            0 -> EmoneyPdpAnalyticsUtils.clickRecentTransactionTab(userSession.userId)
-            1 -> EmoneyPdpAnalyticsUtils.clickPromoTab(userSession.userId)
+            0 -> EmoneyPdpAnalyticsUtils.clickRecentTransactionTab(userSession.userId, getIssuerName(issuerId))
+            1 -> EmoneyPdpAnalyticsUtils.clickPromoTab(userSession.userId, getIssuerName(issuerId))
         }
     }
 
@@ -463,14 +465,14 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     override fun onClickCheckBalance() {
-        EmoneyPdpAnalyticsUtils.clickCheckSaldoButton(userSession.userId)
+        EmoneyPdpAnalyticsUtils.clickCheckSaldoButton(userSession.userId, getIssuerName(issuerId))
         val intent = RouteManager.getIntent(activity,
                 ApplinkConsInternalDigital.SMARTCARD, DigitalExtraParam.EXTRA_NFC_FROM_PDP, "false")
         startActivityForResult(intent, REQUEST_CODE_EMONEY_PDP_CHECK_SALDO)
     }
 
     override fun onClickCameraIcon() {
-        EmoneyPdpAnalyticsUtils.clickCameraIcon(userSession.userId)
+        EmoneyPdpAnalyticsUtils.clickCameraIcon(userSession.userId, getIssuerName(issuerId))
         val intent = RouteManager.getIntent(activity, ApplinkConsInternalDigital.CAMERA_OCR)
         startActivityForResult(intent, REQUEST_CODE_EMONEY_PDP_CAMERA_OCR)
     }
@@ -482,7 +484,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     override fun onRemoveNumberIconClick() {
-        EmoneyPdpAnalyticsUtils.clickClearCardNumber(userSession.userId)
+        EmoneyPdpAnalyticsUtils.clickClearCardNumber(userSession.userId, getIssuerName(issuerId))
         showCoachMark(false)
         emoneyCardNumber = ""
         showRecentNumberAndPromo()
@@ -490,7 +492,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
 
     override fun onInputNumberChanged(inputNumber: String) {
         // call be to get operator name
-        EmoneyPdpAnalyticsUtils.clickChangeCardNumber(inputNumber, userSession.userId)
+        EmoneyPdpAnalyticsUtils.clickChangeCardNumber(inputNumber, userSession.userId, getIssuerName(issuerId))
         if (inputNumber.length == MAX_CHAR_EMONEY_CARD_NUMBER) {
             emoneyPdpViewModel.getSelectedOperator(inputNumber, getString(R.string.recharge_pdp_emoney_number_error_not_found))
         } else if (inputNumber.isNotEmpty()) {
@@ -524,6 +526,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     private fun loadProducts(prefix: RechargePrefix) {
         // to be changed to operator.id // NEED ACTION
         showProducts()
+        issuerId = prefix.key
         binding.emoneyPdpProductWidget.showShimmering()
         binding.emoneyBuyWidgetLayout.hide()
         emoneyPdpViewModel.getProductFromOperator(detailPassData.menuId.toIntOrZero(), prefix.key)
@@ -573,7 +576,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     override fun onClickSeeDetailProduct(product: CatalogProduct) {
-        EmoneyPdpAnalyticsUtils.clickSeeProductDetail(product.attributes.pricePlain, userSession.userId)
+        EmoneyPdpAnalyticsUtils.clickSeeProductDetail(getIssuerName(issuerId), product.attributes.pricePlain, userSession.userId)
         val bottomSheet = EmoneyProductDetailBottomSheet(product)
         bottomSheet.show(childFragmentManager, TAG)
     }
@@ -664,6 +667,15 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         }
     }
 
+    private fun getIssuerName(issuerId: String): String {
+        return when(issuerId){
+            ISSUER_ID_EMONEY -> ISSUER_NAME_EMONEY
+            ISSUER_ID_BRIZZI -> ISSUER_NAME_BRIZZI
+            ISSUER_ID_TAP_CASH -> ISSUER_NAME_TAPCASH
+            else -> ""
+        }
+    }
+
     companion object {
         private const val TAG = "EmoneyProductDetailBottomSheet"
 
@@ -682,6 +694,14 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         private const val EXTRA_PARAM_DIGITAL_CATEGORY_DETAIL_PASS_DATA = "EXTRA_PARAM_PASS_DATA"
         private const val EXTRA_USER_INPUT_EMONEY_NUMBER = "EXTRA_USER_INPUT_EMONEY_NUMBER"
         private const val EXTRA_EMONEY_DETAIL_PASS_DATA = "EXTRA_EMONEY_DETAIL_PASS_DATA"
+
+        const val ISSUER_ID_EMONEY = "578"
+        const val ISSUER_ID_BRIZZI = "1015"
+        const val ISSUER_ID_TAP_CASH = "2606"
+
+        const val ISSUER_NAME_EMONEY = "emoney"
+        const val ISSUER_NAME_BRIZZI = "brizzi"
+        const val ISSUER_NAME_TAPCASH = "tapcash"
 
         fun newInstance(digitalCategoryDetailPassData: DigitalCategoryDetailPassData)
                 : EmoneyPdpFragment {

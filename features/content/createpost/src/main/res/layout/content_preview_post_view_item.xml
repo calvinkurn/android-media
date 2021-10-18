@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_2"
+    >
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/content_preview_page_image"
+            android:layout_width="@dimen/dp_160"
+            android:layout_height="@dimen/dp_160"
+            android:scaleType="fitXY"
+            tools:srcCompat="@tools:sample/avatars"
+            app:unify_image_corner_radius="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/content_preview_page_product_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/layout_lvl3"
+                android:layout_marginStart="@dimen/unify_space_8"
+                android:layout_marginBottom="@dimen/unify_space_8"
+                android:minWidth="@dimen/layout_lvl3"
+                app:cardBackgroundColor="@color/Unify_NN900"
+                app:cardCornerRadius="@dimen/dp_12"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                    <com.tokopedia.iconunify.IconUnify
+                        android:id="@+id/content_video_tag_button"
+                        android:layout_width="@dimen/dp_16"
+                        android:layout_height="@dimen/dp_16"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="@dimen/dp_4"
+                        android:layout_marginEnd="@dimen/dp_4"
+                        app:icon_color_light_enable="@color/Unify_N0"
+                        app:icon_color_night_enable="@color/Unify_N0"
+                        app:icon_name="PRODUCT"
+                        app:unify_image_type="circle" />
+
+            </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+

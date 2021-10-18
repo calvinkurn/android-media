@@ -19,7 +19,8 @@ object DetailMapper {
                 harga_start = "Mulai dari",
                 harga_now = event.price,
                 app_url = event.appUrl,
-                category_id = event.childCategoryIds
+                category_id = event.childCategoryIds,
+                isFree = event.isFree == 1
         )
     }
 }

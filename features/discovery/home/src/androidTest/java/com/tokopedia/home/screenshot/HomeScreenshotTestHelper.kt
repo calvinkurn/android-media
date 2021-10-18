@@ -43,7 +43,8 @@ object HomeScreenshotTestHelper {
                 ScreenshotModel(name = "RechargeReminder"),
                 ScreenshotModel(name = "SalamReminder"),
                 ScreenshotModel(name = "HomeWidget2"),
-                ScreenshotModel(name = "HomeFeaturedShop")
+                ScreenshotModel(name = "HomeFeaturedShop"),
+                ScreenshotModel(name = "PlayWidget")
         )
     }
 

@@ -3,7 +3,6 @@ package com.tokopedia.tokopedianow.home.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.domain.model.GetHomeLayoutResponse
 import com.tokopedia.tokopedianow.home.domain.query.GetHomeLayoutData
@@ -21,8 +20,12 @@ class GetHomeLayoutDataUseCase @Inject constructor(
 ): GraphqlUseCase<GetHomeLayoutResponse>(graphqlRepository) {
 
     companion object {
-        private const val PARAM_CHANNEL_ID = "channelId"
-        private const val LOCATION = "location"
+        private const val PARAM_TOKEN = "token"
+        private const val PARAM_NUM_OF_CHANNEL = "numOfChannel"
+        private const val PARAM_LOCATION = "location"
+
+        private const val DEFAULT_TOKEN = ""
+        private const val DEFAULT_NUM_OF_CHANNEL = 10
     }
 
     init {
@@ -30,15 +33,19 @@ class GetHomeLayoutDataUseCase @Inject constructor(
         setTypeClass(GetHomeLayoutResponse::class.java)
     }
 
-    suspend fun execute(channelId: String?, localCacheModel: LocalCacheModel?): HomeLayoutResponse {
+    suspend fun execute(
+        token: String = DEFAULT_TOKEN,
+        numOfChannel: Int = DEFAULT_NUM_OF_CHANNEL,
+        localCacheModel: LocalCacheModel?
+    ): List<HomeLayoutResponse> {
         setRequestParams(RequestParams.create().apply {
-            putString(PARAM_CHANNEL_ID, channelId)
-            putString(LOCATION, mapLocation(localCacheModel))
+            putString(PARAM_TOKEN, token)
+            putInt(PARAM_NUM_OF_CHANNEL, numOfChannel)
+            putString(PARAM_LOCATION, mapLocation(localCacheModel))
         }.parameters)
 
         val response = executeOnBackground().response
-        val data = response.data.firstOrNull()
-        return data ?: throw MessageErrorException()
+        return response.data
     }
 
     private fun mapLocation(localCacheModel: LocalCacheModel?): String {

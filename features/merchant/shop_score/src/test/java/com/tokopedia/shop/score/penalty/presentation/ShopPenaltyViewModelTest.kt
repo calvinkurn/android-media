@@ -75,16 +75,13 @@ class ShopPenaltyViewModelTest: ShopPenaltyViewModelTestFixture() {
     @Test
     fun `when getDataPenalty should return success`() {
         runBlocking {
-            val shopPenaltySummaryTypeWrapper = ShopPenaltySummaryTypeWrapper()
-            onGetShopPenaltySummaryTypesUseCase_thenReturn(shopPenaltySummaryTypeWrapper)
+            onGetShopPenaltyDetailMergeUseCase_thenReturn()
 
-            val shopScorePenaltyDetail = ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail()
-            onGetShopPenaltyDetailUseCase_thenReturn(shopScorePenaltyDetail)
+            onGetShopPenaltyDetailMergeUseCase_thenReturn()
 
             penaltyViewModel.getDataPenalty()
 
-            verifyGetShopPenaltySummaryTypesUseCaseCalled()
-            verifyGetShopPenaltyDetailUseCaseCaseCalled()
+            verifyGetShopPenaltyDetailMergeUseCaseCalled()
             val actualResult = (penaltyViewModel.penaltyPageData.observeAwaitValue() as Success).data
             assertTrue(penaltyViewModel.penaltyPageData.observeAwaitValue() is Success)
             assertNotNull(actualResult)
@@ -95,13 +92,11 @@ class ShopPenaltyViewModelTest: ShopPenaltyViewModelTestFixture() {
     fun `when getDataPenalty should return Fail`() {
         runBlocking {
             val exception = MessageErrorException()
-            onGetShopPenaltySummaryTypesUseCaseError_thenReturn(exception)
-            onGetShopPenaltyDetailUseCaseError_thenReturn(exception)
+            onGetShopPenaltyDetailMergeUseCaseError_thenReturn(exception)
 
             penaltyViewModel.getDataPenalty()
 
-            verifyGetShopPenaltySummaryTypesUseCaseCalled()
-            verifyGetShopPenaltyDetailUseCaseCaseCalled()
+            verifyGetShopPenaltyDetailMergeUseCaseCalled()
             val actualResult = (penaltyViewModel.penaltyPageData.observeAwaitValue() as Fail).throwable::class
             val expectedResult = exception::class
             assertTrue(penaltyViewModel.penaltyPageData.observeAwaitValue() is Fail)
@@ -114,8 +109,8 @@ class ShopPenaltyViewModelTest: ShopPenaltyViewModelTestFixture() {
         runBlocking {
             val sortBy = 1
             val penaltyFilterList = mutableListOf<PenaltyFilterUiModel>().apply {
-                add(PenaltyFilterUiModel(title = ShopScoreConstant.TITLE_SORT, isDividerVisible = true, chipsFilerList = penaltyMapper.mapToChipsSortFilter(sortBy)))
-                add(PenaltyFilterUiModel(title = ShopScoreConstant.TITLE_TYPE_PENALTY, chipsFilerList = mapToChipsTypePenaltyFilterDummy()))
+                add(PenaltyFilterUiModel(title = ShopScoreConstant.TITLE_SORT, isDividerVisible = true, chipsFilterList = penaltyMapper.mapToChipsSortFilter(sortBy)))
+                add(PenaltyFilterUiModel(title = ShopScoreConstant.TITLE_TYPE_PENALTY, chipsFilterList = mapToChipsTypePenaltyFilterDummy()))
             }
 
             penaltyViewModel.getFilterPenalty(penaltyFilterList)
@@ -131,8 +126,8 @@ class ShopPenaltyViewModelTest: ShopPenaltyViewModelTestFixture() {
         runBlocking {
             val sortBy = 0
             val penaltyFilterList = mutableListOf<PenaltyFilterUiModel>().apply {
-                add(PenaltyFilterUiModel(title = ShopScoreConstant.TITLE_SORT, isDividerVisible = true, chipsFilerList = penaltyMapper.mapToChipsSortFilter(sortBy)))
-                add(PenaltyFilterUiModel(title = ShopScoreConstant.TITLE_TYPE_PENALTY, chipsFilerList = mapToChipsTypePenaltyFilterDummy()))
+                add(PenaltyFilterUiModel(title = ShopScoreConstant.TITLE_SORT, isDividerVisible = true, chipsFilterList = penaltyMapper.mapToChipsSortFilter(sortBy)))
+                add(PenaltyFilterUiModel(title = ShopScoreConstant.TITLE_TYPE_PENALTY, chipsFilterList = mapToChipsTypePenaltyFilterDummy()))
             }
 
             penaltyViewModel.resetFilterSelected()
@@ -143,12 +138,12 @@ class ShopPenaltyViewModelTest: ShopPenaltyViewModelTestFixture() {
 
             val expectedResultSortFilter = penaltyFilterList.find { it.title == ShopScoreConstant.TITLE_SORT }
 
-            actualResultData.find { it.title == ShopScoreConstant.TITLE_SORT }?.chipsFilerList?.forEachIndexed { index, chipsFilterPenaltyUiModel ->
-                assertEquals(expectedResultSortFilter?.chipsFilerList?.getOrNull(index)?.isSelected, chipsFilterPenaltyUiModel.isSelected)
+            actualResultData.find { it.title == ShopScoreConstant.TITLE_SORT }?.chipsFilterList?.forEachIndexed { index, chipsFilterPenaltyUiModel ->
+                assertEquals(expectedResultSortFilter?.chipsFilterList?.getOrNull(index)?.isSelected, chipsFilterPenaltyUiModel.isSelected)
             }
 
-            actualResultData.find { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }?.chipsFilerList?.forEachIndexed { index, chipsFilterPenaltyUiModel ->
-                assertEquals(expectedResultTypePenalty?.chipsFilerList?.getOrNull(index)?.isSelected, chipsFilterPenaltyUiModel.isSelected)
+            actualResultData.find { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }?.chipsFilterList?.forEachIndexed { index, chipsFilterPenaltyUiModel ->
+                assertEquals(expectedResultTypePenalty?.chipsFilterList?.getOrNull(index)?.isSelected, chipsFilterPenaltyUiModel.isSelected)
             }
         }
     }
@@ -187,8 +182,8 @@ class ShopPenaltyViewModelTest: ShopPenaltyViewModelTestFixture() {
         val sortBy = 1
 
         val penaltyFilterList = mutableListOf<PenaltyFilterUiModel>().apply {
-            add(PenaltyFilterUiModel(title = ShopScoreConstant.TITLE_SORT, isDividerVisible = true, chipsFilerList = penaltyMapper.mapToChipsSortFilter(sortBy)))
-            add(PenaltyFilterUiModel(title = ShopScoreConstant.TITLE_TYPE_PENALTY, chipsFilerList = mapToChipsTypePenaltyFilterDummy()))
+            add(PenaltyFilterUiModel(title = ShopScoreConstant.TITLE_SORT, isDividerVisible = true, chipsFilterList = penaltyMapper.mapToChipsSortFilter(sortBy)))
+            add(PenaltyFilterUiModel(title = ShopScoreConstant.TITLE_TYPE_PENALTY, chipsFilterList = mapToChipsTypePenaltyFilterDummy()))
         }
 
         val sortFilterItemWrapperList = penaltyMapper.mapToSortFilterItemFromPenaltyList(penaltyFilterList)
