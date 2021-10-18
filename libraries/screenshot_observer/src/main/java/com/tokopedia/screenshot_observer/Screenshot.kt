@@ -37,12 +37,16 @@ open class Screenshot @JvmOverloads constructor(
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
         Manifest.permission.READ_EXTERNAL_STORAGE
     )
+    private val bottomSheetFeedback: BottomSheetUnify
+    private var isInitBottomSheet = true
 
     init {
         mHandlerThread.start()
         mHandler = Handler(mHandlerThread.looper)
         mContentResolver = contentResolver
         mContentObserver = ScreenshotObserver(mHandler, contentResolver, this)
+
+        bottomSheetFeedback = BottomSheetUnify()
     }
 
     private fun register() {
@@ -70,25 +74,30 @@ open class Screenshot @JvmOverloads constructor(
         if (activity == null) {
             return
         }
+        if (isInitBottomSheet) {
+            val viewBottomSheet =
+                View.inflate(activity, R.layout.bottomsheet_action_screenshot, null).apply {
+                    btn_add_feedback.setOnClickListener {
+                        listener?.onFeedbackClicked(uri, className, true)
+                        bottomSheetFeedback.dismiss()
+                    }
+                    btn_dismiss.setOnClickListener {
+                        bottomSheetFeedback.dismiss()
+                    }
+                }
 
-        val bottomSheetFeedback = BottomSheetUnify()
-        val viewBottomSheet =
-            View.inflate(activity, R.layout.bottomsheet_action_screenshot, null).apply {
-                btn_add_feedback.setOnClickListener {
-                    listener?.onFeedbackClicked(uri, className, true)
-                    bottomSheetFeedback.dismiss()
-                }
-                btn_dismiss.setOnClickListener {
-                    bottomSheetFeedback.dismiss()
-                }
+            bottomSheetFeedback.apply {
+                setChild(viewBottomSheet)
             }
-
-        bottomSheetFeedback.apply {
-            setChild(viewBottomSheet)
+            isInitBottomSheet = false
         }
 
-        val fm = (activity as AppCompatActivity).supportFragmentManager
-        bottomSheetFeedback.show(fm, "")
+        bottomSheetFeedback.dialog?.let {
+            if (!it.isShowing) {
+                val fm = (activity as AppCompatActivity).supportFragmentManager
+                bottomSheetFeedback.show(fm, "")
+            }
+        }
     }
 
     fun unregister() {
