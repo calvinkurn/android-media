@@ -1,6 +1,11 @@
 package com.tokopedia.oneclickcheckout.order.analytics
 
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.*
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.CustomDimension
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventAction
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.Key
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
 import javax.inject.Inject
 

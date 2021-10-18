@@ -1,6 +1,8 @@
 package com.tokopedia.oneclickcheckout.payment.analytics
 
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.*
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventAction
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
 
 class PaymentListingAnalytics : TransactionAnalytics() {
