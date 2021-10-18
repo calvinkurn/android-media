@@ -3,6 +3,7 @@ package com.tokopedia.tkpd
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.CompoundButton
@@ -30,7 +31,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_testapp)
-
         userSession = UserSession(this)
 
         if (userSession.deviceId.isNullOrEmpty()) {
@@ -41,12 +41,12 @@ class MainActivity : AppCompatActivity() {
         val toggleDarkMode = findViewById<CheckBox>(R.id.toggle_dark_mode)
 
         toggleDarkMode.isChecked = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-        toggleDarkMode.setOnCheckedChangeListener { view: CompoundButton?, state: Boolean ->
+        toggleDarkMode.setOnCheckedChangeListener { _: CompoundButton?, state: Boolean ->
             AppCompatDelegate.setDefaultNightMode(if (state) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
         }
 
         loginButton.setOnClickListener {
-            if (!userSession.isLoggedIn()) {
+            if (!userSession.isLoggedIn) {
                 startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
             } else {
                 Toast.makeText(this, "Already logged in", Toast.LENGTH_SHORT).show()
@@ -54,9 +54,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        //still use old testapp logout process,
-        // because real logout module still contains core_legacy
-        // that will dramatically slows down compile time if included
+        /* use mainapp login use case */
         logoutButton.setOnClickListener {
             val logoutIntent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.LOGOUT).apply {
                 putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, false)
@@ -89,6 +87,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        setLoginStatus()
         when (requestCode) {
             REQUEST_CODE_LOGIN -> {
                 if (userSession.isLoggedIn) {
@@ -108,6 +107,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun setLoginStatus() {
+        if(userSession.isLoggedIn) {
+            val identity = if(userSession.email.isNotEmpty()) userSession.email else userSession.phoneNumber
+            loginButton?.text = "Logged in as:\n${identity}"
+            logoutButton.visibility = View.VISIBLE
+        } else {
+            loginButton?.text = "Login"
+            logoutButton.visibility = View.GONE
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setLoginStatus()
+    }
+
     fun goTo() {
         /* @example: open groupchat module;
          * startActivity(PlayActivity.getCallingIntent(this, "668", true))
@@ -115,5 +130,6 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
+        RouteManager.route(this, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT)
     }
 }
