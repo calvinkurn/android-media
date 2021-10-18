@@ -374,7 +374,7 @@ object DynamicProductDetailTracking {
                             ProductTrackingConstant.Tracking.CATEGORY, categoryName,
                             ProductTrackingConstant.Tracking.VARIANT, variantString,
                             ProductTrackingConstant.Tracking.QUANTITY, quantity,
-                            ProductTrackingConstant.Tracking.KEY_DIMENSION_10, dimension10,
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_10, dimension10.toString(),
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_12, dimension12,
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_14, dimension14,
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_16, dimension16,

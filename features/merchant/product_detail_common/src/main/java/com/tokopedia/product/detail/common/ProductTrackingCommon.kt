@@ -220,7 +220,7 @@ object ProductTrackingCommon {
                         ProductTrackingConstant.Tracking.CATEGORY, categoryName,
                         ProductTrackingConstant.Tracking.VARIANT, variantName,
                         ProductTrackingConstant.Tracking.QUANTITY, quantity,
-                        ProductTrackingConstant.Tracking.KEY_DIMENSION_10, isCod,
+                        ProductTrackingConstant.Tracking.KEY_DIMENSION_10, isCod.toString(),
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_12, cheapestShippingPrice,
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_14, shippingCourier,
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_16, shippingEta,
