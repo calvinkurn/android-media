@@ -54,7 +54,7 @@ buildCache {
     remote(HttpBuildCache) {
         url = "${ci_url}"
         push = isCiServer
-        enabled = true
+        enabled = enableRemoteCache
         credentials {
             username = "${ci_username}"
             password = "${ci_password}"

@@ -452,6 +452,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().addToCartRepurchaseWidgetTrackingLiveData.observe(
             ::sendAddToCartRepurchaseProductTrackingEvent
         )
+        getViewModel().oocOpenScreenTrackingEvent.observe(::sendOOCOpenScreenTracking)
     }
 
     protected open fun onShopIdUpdated(shopId: String) {
@@ -938,4 +939,6 @@ abstract class BaseSearchCategoryFragment:
     ) {
 
     }
+
+    protected abstract fun sendOOCOpenScreenTracking(isTracked: Boolean)
 }
