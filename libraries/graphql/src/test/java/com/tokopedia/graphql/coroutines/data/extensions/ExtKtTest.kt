@@ -1,11 +1,8 @@
 package com.tokopedia.graphql.coroutines.data.extensions
 
-import com.google.gson.JsonSyntaxException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.MockUtil
 import com.tokopedia.graphql.domain.example.FooModel
-import com.tokopedia.graphql.domain.example.NestedFooModel
-import com.tokopedia.graphql.util.toMapParam
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -14,7 +11,6 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import java.lang.IllegalArgumentException
 
 @ExperimentalCoroutinesApi
 class ExtKtTest {
