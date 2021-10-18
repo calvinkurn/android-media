@@ -28,7 +28,7 @@ class GsonConverter : JsonDeserializer<Map<String, Any>> {
             return list
         }
         else if (json.isJsonObject) {
-            val map: MutableMap<String, Any> = LinkedTreeMap()
+            val map: MutableMap<String, Any> = mutableMapOf()
             val obj: JsonObject = json.asJsonObject
             val entitySet = obj.entrySet()
             for ((key, value) in entitySet) {

@@ -2,6 +2,7 @@ package com.tokopedia.graphql.util
 
 import android.os.Bundle
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 
 /**
@@ -42,7 +43,9 @@ fun getParamBoolean(paramName: String,
 }
 
 fun <T> T.toMapParam(): Map<String, Any> {
-    val gson = Gson()
+    val gsonBuilder = GsonBuilder()
+    gsonBuilder.registerTypeAdapter(object: TypeToken<Map<String, Any>>(){}.type, GsonConverter())
+    val gson = gsonBuilder.create()
     val json = gson.toJson(this)
     return gson.fromJson(json, object : TypeToken<Map<String, Any>>() {}.type)
 }
