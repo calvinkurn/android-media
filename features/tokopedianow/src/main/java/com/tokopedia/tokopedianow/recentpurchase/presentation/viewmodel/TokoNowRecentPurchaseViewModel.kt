@@ -405,7 +405,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
             val productList = getProductList()
             layoutList.removeLoading()
 
-            if (productList.isNullOrEmpty()) {
+            if (productList.isEmpty()) {
                 addEmptyState(id = EMPTY_STATE_NO_RESULT)
             } else {
                 layoutList.addSortFilter()
