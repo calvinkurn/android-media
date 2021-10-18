@@ -145,7 +145,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @Keep
-class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, CartItemAdapter.ActionListener,
+open class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, CartItemAdapter.ActionListener,
         RefreshHandler.OnRefreshHandlerListener, CartToolbarListener,
         TickerAnnouncementActionListener, SellerCashbackListener {
 
