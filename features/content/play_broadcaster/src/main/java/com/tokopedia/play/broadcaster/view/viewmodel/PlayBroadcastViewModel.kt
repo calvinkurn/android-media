@@ -881,11 +881,19 @@ internal class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
+    fun getBeforeLiveCountDownDuration(): Int {
+        val configInfo = _observableConfigInfo.value
+        return if(configInfo is NetworkResult.Success) configInfo.data.countDown.toInt()
+                else DEFAULT_BEFORE_LIVE_COUNT_DOWN
+    }
+
     companion object {
 
         private const val INTERACTIVE_GQL_CREATE_DELAY = 3000L
         private const val INTERACTIVE_GQL_LEADERBOARD_DELAY = 3000L
 
         private const val START_COUNTDOWN_DELAY = 1000L
+
+        private const val DEFAULT_BEFORE_LIVE_COUNT_DOWN = 5
     }
 }

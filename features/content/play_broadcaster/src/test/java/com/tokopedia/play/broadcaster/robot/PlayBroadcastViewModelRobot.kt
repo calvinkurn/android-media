@@ -27,6 +27,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.lang.reflect.Field
 
 /**
  * Created by jegul on 06/10/21
@@ -96,4 +97,12 @@ internal class PlayBroadcastViewModelRobot(
     }
 
     fun getConfig() = viewModel.getConfiguration()
+
+    fun getViewModel() = viewModel
+
+    fun <T> getViewModelPrivateField(name: String): T {
+        val field = viewModel.javaClass.getDeclaredField(name)
+        field.isAccessible = true
+        return field.get(viewModel) as T
+    }
 }
