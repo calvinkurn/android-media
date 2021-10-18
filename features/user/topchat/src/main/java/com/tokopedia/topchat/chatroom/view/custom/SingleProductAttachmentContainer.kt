@@ -329,7 +329,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         if (product.hasColorVariant()) {
             ll_variant_color?.show()
             tv_variant_color?.text = ellipsizeLongText(
-                product.colorVariant, 6)
+                product.colorVariant, MAX_VARIANT_LABEL_CHAR)
         } else {
             ll_variant_color?.hide()
         }
@@ -337,7 +337,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         if (product.hasSizeVariant()) {
             ll_variant_size?.show()
             tv_variant_size?.text = ellipsizeLongText(
-                product.sizeVariant, 6)
+                product.sizeVariant, MAX_VARIANT_LABEL_CHAR)
         } else {
             ll_variant_size?.hide()
         }
@@ -665,6 +665,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     companion object {
         private const val DEFAULT_WIDTH_MULTIPLIER = 0.83f
+        private const val MAX_VARIANT_LABEL_CHAR = 6
         private val LAYOUT = R.layout.item_topchat_product_card
     }
 }

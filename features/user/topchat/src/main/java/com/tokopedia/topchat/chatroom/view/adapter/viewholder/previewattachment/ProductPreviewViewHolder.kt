@@ -72,7 +72,7 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
         if (model.hasColorVariant()) {
             productColorVariant.show()
             productColorVariantValue?.text = ellipsizeLongText(
-                productPreview.colorVariant, 5)
+                productPreview.colorVariant, MAX_VARIANT_LABEL_CHAR)
         } else {
             productColorVariant?.hide()
         }
@@ -80,7 +80,7 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
         val productHasSizeVariant = model.hasSizeVariant()
         productSizeVariant?.shouldShowWithAction(productHasSizeVariant) {
             productSizeVariantValue?.text = ellipsizeLongText(
-                productPreview.sizeVariant, 5)
+                productPreview.sizeVariant, MAX_VARIANT_LABEL_CHAR)
         }
     }
 
@@ -97,6 +97,7 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
     }
 
     companion object {
+        private const val MAX_VARIANT_LABEL_CHAR = 5
         val LAYOUT = R.layout.item_product_preview
     }
 }
