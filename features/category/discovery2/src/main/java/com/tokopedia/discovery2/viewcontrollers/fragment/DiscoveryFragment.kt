@@ -1290,14 +1290,14 @@ class DiscoveryFragment :
         val layoutParams = FrameLayout.LayoutParams(height,width)
         view.layoutParams = layoutParams
 
-        parentLayout.setBackgroundColor(Color.BLACK)
+        parentLayout.setBackgroundColor(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G900))
         parentLayout.addView(view)
         parentLayout.requestFocus()
     }
 
     fun hideCustomContent(){
         showSystemUi()
-        parentLayout.setBackgroundColor(Color.WHITE)
+        parentLayout.setBackgroundColor(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         coordinatorLayout.show()
         if(parentLayout.childCount>1){
             parentLayout.removeViewAt(1)
