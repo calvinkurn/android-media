@@ -805,6 +805,6 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
         private const val START_COUNTDOWN_DELAY = 1000L
 
-        private const val DEFAULT_BEFORE_LIVE_COUNT_DOWN = 3
+        private const val DEFAULT_BEFORE_LIVE_COUNT_DOWN = 5
     }
 }
