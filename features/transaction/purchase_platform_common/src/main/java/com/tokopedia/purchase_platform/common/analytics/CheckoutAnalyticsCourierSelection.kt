@@ -1,710 +1,670 @@
-package com.tokopedia.purchase_platform.common.analytics;
+package com.tokopedia.purchase_platform.common.analytics
 
-import android.text.TextUtils;
-
-import com.tokopedia.analyticconstant.DataLayer;
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.CustomDimension;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventAction;
-import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory;
-import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventLabel;
-import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName;
-import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey;
-
+import android.text.TextUtils
+import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey
+import com.tokopedia.track.TrackApp
+import java.util.*
+import javax.inject.Inject
 
 /**
  * @author anggaprasetiyo on 06/06/18.
  */
-public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
-
-    @Inject
-    public CheckoutAnalyticsCourierSelection() {
-    }
-
-    public void eventClickAtcCourierSelectionClickBackArrow() {
+class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnalytics() {
+    fun eventClickAtcCourierSelectionClickBackArrow() {
         sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_BACK_ARROW
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_BACK_ARROW
+        )
     }
 
-    public void eventClickAtcCourierSelectionClickGantiAlamatAtauKirimKeBeberapaAlamat() {
+    fun eventClickAtcCourierSelectionClickGantiAlamatAtauKirimKeBeberapaAlamat() {
         sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_GANTI_ALAMAT_ATAU_KIRIM_KE_BEBERAPA_ALAMAT
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_GANTI_ALAMAT_ATAU_KIRIM_KE_BEBERAPA_ALAMAT
+        )
     }
 
-    public void eventClickAtcCourierSelectionClickKuponSayaFromGunakanKodePromoAtauKupon() {
+    fun eventClickAtcCourierSelectionClickKuponSayaFromGunakanKodePromoAtauKupon() {
         sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_KUPON_SAYA_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_KUPON_SAYA_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON
+        )
     }
 
-    public void eventClickAtcCourierSelectionClickKodePromoFromGunakanKodePromoAtauKupon() {
+    fun eventClickAtcCourierSelectionClickKodePromoFromGunakanKodePromoAtauKupon() {
         sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_KODE_PROMO_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_KODE_PROMO_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON
+        )
     }
 
-    public void eventClickAtcCourierSelectionClickSubtotal() {
+    fun eventClickAtcCourierSelectionClickSubtotal() {
         sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_SUBTOTAL
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_SUBTOTAL
+        )
     }
 
-    public void eventClickAtcCourierSelectionClickAsuransiPengiriman() {
+    fun eventClickAtcCourierSelectionClickAsuransiPengiriman() {
         sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_ASURANSI_PENGIRIMAN
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_ASURANSI_PENGIRIMAN
+        )
     }
 
-    public void eventClickAtcCourierSelectionClickDropship() {
+    fun eventClickAtcCourierSelectionClickDropship() {
         sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_DROPSHIP
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_DROPSHIP
+        )
     }
 
-    @Deprecated
-    public void eventClickAtcCourierSelectionClickKuponFromGunakanKodePromoAtauKupon() {
+    @Deprecated("")
+    fun eventClickAtcCourierSelectionClickKuponFromGunakanKodePromoAtauKupon() {
         sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_KUPON_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_KUPON_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON
+        )
     }
 
-    public void eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess(String errorMessage) {
+    fun eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess(errorMessage: String) {
         sendEventCategoryActionLabel(
-                EventName.CLICK_ATC,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
-                EventLabel.NOT_SUCCESS + " - " + errorMessage
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
+                ConstantTransactionAnalytics.EventLabel.NOT_SUCCESS + " - " + errorMessage
+        )
     }
 
-    public void eventViewAtcCourierSelectionImpressionOnPopUpKupon() {
+    fun eventViewAtcCourierSelectionImpressionOnPopUpKupon() {
         sendEventCategoryActionLabel(
-                EventName.VIEW_ATC,
-                EventCategory.COURIER_SELECTION,
-                EventAction.IMPRESSION_ON_POP_UP_KUPON,
-                EventLabel.KUOTA_PENUKARAN
-        );
+                ConstantTransactionAnalytics.EventName.VIEW_ATC,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.IMPRESSION_ON_POP_UP_KUPON,
+                ConstantTransactionAnalytics.EventLabel.KUOTA_PENUKARAN
+        )
     }
 
-    @Deprecated
-    public void eventClickAtcCourierSelectionClickGunakanKodeFormGunakanKodePromoAtauKupon() {
+    @Deprecated("")
+    fun eventClickAtcCourierSelectionClickGunakanKodeFormGunakanKodePromoAtauKupon() {
         sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_GUNAKAN_KODE_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_KODE_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON
+        )
     }
 
-    public void eventViewPromoCourierSelectionValidationErrorVoucherPromoFromGunakanKodePromoAtauKupon(String errorMessage) {
+    fun eventViewPromoCourierSelectionValidationErrorVoucherPromoFromGunakanKodePromoAtauKupon(errorMessage: String?) {
         sendEventCategoryActionLabel(
-                EventName.VIEW_PROMO,
-                EventCategory.COURIER_SELECTION,
-                EventAction.VALIDATION_ERROR_VOUCHER_PROMO_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
+                ConstantTransactionAnalytics.EventName.VIEW_PROMO,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.VALIDATION_ERROR_VOUCHER_PROMO_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
                 errorMessage
-        );
+        )
     }
 
-    public void eventClickCouponCourierSelectionClickKuponFromKuponSaya(String couponName) {
+    fun eventClickCouponCourierSelectionClickKuponFromKuponSaya(couponName: String?) {
         sendEventCategoryActionLabel(
-                EventName.CLICK_COUPON,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_KUPON_FROM_KUPON_SAYA,
+                ConstantTransactionAnalytics.EventName.CLICK_COUPON,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_KUPON_FROM_KUPON_SAYA,
                 couponName
-        );
+        )
     }
 
-    public void eventClickCourierSelectionClickBackArrowFromGunakanKodePromoAtauKupon() {
+    fun eventClickCourierSelectionClickBackArrowFromGunakanKodePromoAtauKupon() {
         sendEventCategoryAction(
-                EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_BACK_ARROW_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_BACK_ARROW_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON
+        )
     }
 
-    public void sendEnhancedECommerceCheckout(Map<String, Object> cartMap,
-                                              Map<String, String> tradeInCustomDimension,
-                                              String transactionId,
-                                              String eventCategory,
-                                              String eventAction,
-                                              String eventLabel) {
-        Map<String, Object> dataLayer = DataLayer.mapOf(
-                ConstantTransactionAnalytics.Key.EVENT, EventName.CHECKOUT,
-                ConstantTransactionAnalytics.Key.EVENT_CATEGORY, eventCategory,
-                ConstantTransactionAnalytics.Key.EVENT_ACTION, eventAction,
-                ConstantTransactionAnalytics.Key.EVENT_LABEL, eventLabel,
-                ConstantTransactionAnalytics.Key.E_COMMERCE, cartMap,
-                ConstantTransactionAnalytics.Key.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
-        );
-        if (tradeInCustomDimension != null && tradeInCustomDimension.size() > 0) {
-            dataLayer.putAll(tradeInCustomDimension);
+    fun sendEnhancedECommerceCheckout(cartMap: Map<String, Any>,
+                                      tradeInCustomDimension: Map<String, String>?,
+                                      transactionId: String?,
+                                      eventCategory: String,
+                                      eventAction: String,
+                                      eventLabel: String) {
+        val dataLayer = getGtmData(
+                ConstantTransactionAnalytics.EventName.CHECKOUT,
+                eventCategory,
+                eventAction,
+                eventLabel
+        )
+        dataLayer[ConstantTransactionAnalytics.Key.E_COMMERCE] = cartMap
+        dataLayer[ConstantTransactionAnalytics.Key.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        if (tradeInCustomDimension != null && tradeInCustomDimension.isNotEmpty()) {
+            dataLayer.putAll(tradeInCustomDimension)
         }
         if (!TextUtils.isEmpty(transactionId)) {
-            dataLayer.put(ConstantTransactionAnalytics.Key.PAYMENT_ID, transactionId);
+            dataLayer[ConstantTransactionAnalytics.Key.PAYMENT_ID] = transactionId!!
         }
-        sendEnhancedEcommerce(dataLayer);
+        sendEnhancedEcommerce(dataLayer)
     }
 
-    public void flushEnhancedECommerceCheckout() {
-        Map<String, Object> dataLayer = DataLayer.mapOf(
+    fun flushEnhancedECommerceCheckout() {
+        val dataLayer = DataLayer.mapOf(
                 ConstantTransactionAnalytics.Key.E_COMMERCE, null,
                 ConstantTransactionAnalytics.Key.CURRENT_SITE, null
-        );
-        sendEnhancedEcommerce(dataLayer);
+        )
+        sendEnhancedEcommerce(dataLayer)
     }
 
-    public void eventClickCourierSelectionClickPilihAlamatLain() {
+    fun eventClickCourierSelectionClickPilihAlamatLain() {
         sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_PILIH_ALAMAT_LAIN
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_PILIH_ALAMAT_LAIN
+        )
     }
 
-    public void eventClickCourierSelectionClickTopDonasi() {
+    fun eventClickCourierSelectionClickTopDonasi() {
         sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_TOP_DONASI
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_TOP_DONASI
+        )
     }
 
     //PHASE 2
-
-    public void eventClickCouponCourierSelectionClickGunakanKodeFormGunakanKodePromoAtauKuponSuccess() {
+    fun eventClickCouponCourierSelectionClickGunakanKodeFormGunakanKodePromoAtauKuponSuccess() {
         sendEventCategoryActionLabel(
-                EventName.CLICK_COUPON,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_GUNAKAN_KODE_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
-                EventLabel.SUCCESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COUPON,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_KODE_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
+                ConstantTransactionAnalytics.EventLabel.SUCCESS
+        )
     }
 
-    public void eventClickCouponCourierSelectionClickGunakanKodeFormGunakanKodePromoAtauKuponFailed() {
+    fun eventClickCouponCourierSelectionClickGunakanKodeFormGunakanKodePromoAtauKuponFailed() {
         sendEventCategoryActionLabel(
-                EventName.CLICK_COUPON,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_GUNAKAN_KODE_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
-                EventLabel.FAILED
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COUPON,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_KODE_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
+                ConstantTransactionAnalytics.EventLabel.FAILED
+        )
     }
 
-    public void eventClickCouponCourierSelectionClickKuponFromGunakanKodePromoAtauKuponSuccess() {
+    fun eventClickCouponCourierSelectionClickKuponFromGunakanKodePromoAtauKuponSuccess() {
         sendEventCategoryActionLabel(
-                EventName.CLICK_COUPON,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_KUPON_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
-                EventLabel.SUCCESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COUPON,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_KUPON_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
+                ConstantTransactionAnalytics.EventLabel.SUCCESS
+        )
     }
 
-    public void eventClickCouponCourierSelectionClickKuponFromGunakanKodePromoAtauKuponFailed() {
+    fun eventClickCouponCourierSelectionClickKuponFromGunakanKodePromoAtauKuponFailed() {
         sendEventCategoryActionLabel(
-                EventName.CLICK_COUPON,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_KUPON_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
-                EventLabel.FAILED
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COUPON,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_KUPON_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
+                ConstantTransactionAnalytics.EventLabel.FAILED
+        )
     }
 
-    public void eventClickBuyCourierSelectionClickPilihMetodePembayaranCourierNotComplete() {
+    fun eventClickBuyCourierSelectionClickPilihMetodePembayaranCourierNotComplete() {
         sendEventCategoryActionLabel(
-                EventName.CLICK_BUY,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
-                EventLabel.COURIER_NOT_COMPLETE
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_BUY,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
+                ConstantTransactionAnalytics.EventLabel.COURIER_NOT_COMPLETE
+        )
     }
 
-    public void eventClickBuyPromoRedState() {
+    fun eventClickBuyPromoRedState() {
         sendEventCategoryActionLabel(
-                EventName.CLICK_BUY,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
-                EventLabel.NOT_SUCCESS + " - " + EventLabel.PROMO_RED_STATE
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_BUY,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
+                ConstantTransactionAnalytics.EventLabel.NOT_SUCCESS + " - " + ConstantTransactionAnalytics.EventLabel.PROMO_RED_STATE
+        )
     }
 
-    public void eventClickBuyCourierSelectionClickBayarFailedDropshipper() {
+    fun eventClickBuyCourierSelectionClickBayarFailedDropshipper() {
         sendEventCategoryActionLabel(
-                EventName.CLICK_BUY,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_BAYAR,
-                EventLabel.FAILED_DROPSHIPPER
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_BUY,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_BAYAR,
+                ConstantTransactionAnalytics.EventLabel.FAILED_DROPSHIPPER
+        )
     }
 
     //Robin Hood
-    public void eventClickCourierCourierSelectionClickXPadaDurasiPengiriman() {
+    fun eventClickCourierCourierSelectionClickXPadaDurasiPengiriman() {
         sendEventCategoryAction(
-                EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_X_PADA_DURASI_PENGIRIMAN
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_X_PADA_DURASI_PENGIRIMAN
+        )
     }
 
-    public void eventClickCourierCourierSelectionClickChecklistPilihDurasiPengiriman(String eventLabelDuration) {
+    fun eventClickCourierCourierSelectionClickChecklistPilihDurasiPengiriman(eventLabelDuration: String?) {
         sendEventCategoryActionLabel(
-                EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
                 eventLabelDuration
-        );
+        )
     }
 
-    public void eventViewCourierCourierSelectionViewPreselectedCourierOption(String eventLabelPreselectedCourierPartner) {
+    fun eventViewCourierCourierSelectionViewPreselectedCourierOption(eventLabelPreselectedCourierPartner: String?) {
         sendEventCategoryActionLabel(
-                EventName.VIEW_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.VIEW_PRESELECTED_COURIER_OPTION,
+                ConstantTransactionAnalytics.EventName.VIEW_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.VIEW_PRESELECTED_COURIER_OPTION,
                 eventLabelPreselectedCourierPartner
-        );
+        )
     }
 
-    public void eventClickCourierCourierSelectionClickUbahKurir(String label) {
+    fun eventClickCourierCourierSelectionClickUbahKurir(label: String?) {
         sendEventCategoryActionLabel(
-                EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_UBAH_KURIR,
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_UBAH_KURIR,
                 label
-        );
+        )
     }
 
-    public void eventClickCourierCourierSelectionClickXPadaKurirPengiriman() {
+    fun eventClickCourierCourierSelectionClickXPadaKurirPengiriman() {
         sendEventCategoryAction(
-                EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_X_PADA_KURIR_PENGIRIMAN
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_X_PADA_KURIR_PENGIRIMAN
+        )
     }
 
-    public void eventClickCourierCourierSelectionClickUbahDurasi() {
+    fun eventClickCourierCourierSelectionClickUbahDurasi() {
         sendEventCategoryAction(
-                EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_UBAH_DURASI
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_UBAH_DURASI
+        )
     }
 
     // Year End Promo
-    public void eventViewPreselectedCourierOption(int shippingProductId) {
+    fun eventViewPreselectedCourierOption(shippingProductId: Int) {
         sendEventCategoryActionLabel(
-                EventName.VIEW_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.VIEW_PRESELECTED_COURIER_OPTION,
-                String.valueOf(shippingProductId)
-        );
+                ConstantTransactionAnalytics.EventName.VIEW_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.VIEW_PRESELECTED_COURIER_OPTION, shippingProductId.toString())
     }
 
-    public void eventViewDuration(boolean isCourierPromo, String duration) {
-        String eventLabel = isCourierPromo ? EventLabel.PROMO + EventLabel.SEPARATOR + duration
-                : EventLabel.NON_PROMO + EventLabel.SEPARATOR + duration;
+    fun eventViewDuration(isCourierPromo: Boolean, duration: String) {
+        val eventLabel = if (isCourierPromo) ConstantTransactionAnalytics.EventLabel.PROMO + ConstantTransactionAnalytics.EventLabel.SEPARATOR + duration else ConstantTransactionAnalytics.EventLabel.NON_PROMO + ConstantTransactionAnalytics.EventLabel.SEPARATOR + duration
         sendEventCategoryActionLabel(
-                EventName.VIEW_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.VIEW_DURATION,
+                ConstantTransactionAnalytics.EventName.VIEW_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.VIEW_DURATION,
                 eventLabel
-        );
+        )
     }
 
-    public void eventViewCourierOption(boolean isCourierPromo, int shippingProductId) {
-        String eventLabel = isCourierPromo ? EventLabel.PROMO + EventLabel.SEPARATOR + shippingProductId
-                : EventLabel.NON_PROMO + EventLabel.SEPARATOR + shippingProductId;
+    fun eventViewCourierOption(isCourierPromo: Boolean, shippingProductId: Int) {
+        val eventLabel = if (isCourierPromo) ConstantTransactionAnalytics.EventLabel.PROMO + ConstantTransactionAnalytics.EventLabel.SEPARATOR + shippingProductId else ConstantTransactionAnalytics.EventLabel.NON_PROMO + ConstantTransactionAnalytics.EventLabel.SEPARATOR + shippingProductId
         sendEventCategoryActionLabel(
-                EventName.VIEW_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.VIEW_COURIER_OPTION,
+                ConstantTransactionAnalytics.EventName.VIEW_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.VIEW_COURIER_OPTION,
                 eventLabel
-        );
+        )
     }
 
-    public void eventClickChecklistPilihDurasiPengiriman(boolean isCourierPromo, String duration, boolean isCod, String shippingPriceMin, String shippingPriceHigh) {
-        String eventLabel = (isCourierPromo ? EventLabel.PROMO : EventLabel.NON_PROMO)
-                + EventLabel.SEPARATOR + duration
-                + EventLabel.SEPARATOR + (isCod ? EventLabel.COD : "")
-                + EventLabel.SEPARATOR + shippingPriceMin
-                + EventLabel.SEPARATOR + shippingPriceHigh;
+    fun eventClickChecklistPilihDurasiPengiriman(isCourierPromo: Boolean, duration: String, isCod: Boolean, shippingPriceMin: String, shippingPriceHigh: String) {
+        val eventLabel = ((if (isCourierPromo) ConstantTransactionAnalytics.EventLabel.PROMO else ConstantTransactionAnalytics.EventLabel.NON_PROMO)
+                + ConstantTransactionAnalytics.EventLabel.SEPARATOR + duration
+                + ConstantTransactionAnalytics.EventLabel.SEPARATOR + (if (isCod) ConstantTransactionAnalytics.EventLabel.COD else "")
+                + ConstantTransactionAnalytics.EventLabel.SEPARATOR + shippingPriceMin
+                + ConstantTransactionAnalytics.EventLabel.SEPARATOR + shippingPriceHigh)
         sendEventCategoryActionLabel(
-                EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
                 eventLabel
-        );
+        )
     }
 
-    public void eventClickChangeCourierOption(boolean isCourierPromo, int shippingProductId, boolean isCod) {
-        String eventLabel = (isCourierPromo ? EventLabel.PROMO : EventLabel.NON_PROMO)
-                + EventLabel.SEPARATOR + shippingProductId
-                + EventLabel.SEPARATOR + (isCod ? EventLabel.COD : "");
+    fun eventClickChangeCourierOption(isCourierPromo: Boolean, shippingProductId: Int, isCod: Boolean) {
+        val eventLabel = ((if (isCourierPromo) ConstantTransactionAnalytics.EventLabel.PROMO else ConstantTransactionAnalytics.EventLabel.NON_PROMO)
+                + ConstantTransactionAnalytics.EventLabel.SEPARATOR + shippingProductId
+                + ConstantTransactionAnalytics.EventLabel.SEPARATOR + if (isCod) ConstantTransactionAnalytics.EventLabel.COD else "")
         sendEventCategoryActionLabel(
-                EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_CHANGE_COURIER_OPTION,
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_CHANGE_COURIER_OPTION,
                 eventLabel
-        );
+        )
     }
 
     //on success use merchant voucher from list
-    public void eventClickUseMerchantVoucherSuccess(String promoCode, String promoId, Boolean isFromList) {
-        String eventAction = isFromList ? EventAction.CLICK_GUNAKAN_ON_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER : EventAction.CLICK_GUNAKAN_FROM_PILIH_MERCHANT_VOUCHER;
-        Map<String, Object> eventMap = createEventMap(
-                EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
+    fun eventClickUseMerchantVoucherSuccess(promoCode: String, promoId: String, isFromList: Boolean) {
+        val eventAction = if (isFromList) ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_ON_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER else ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_FROM_PILIH_MERCHANT_VOUCHER
+        val eventMap = createEventMap(
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 eventAction,
-                EventLabel.SUCCESS + " - " + promoCode
-        );
-        eventMap.put(ConstantTransactionAnalytics.Key.PROMO_ID, promoId);
-
-        TrackApp.getInstance().getGTM().sendGeneralEvent(eventMap);
+                ConstantTransactionAnalytics.EventLabel.SUCCESS + " - " + promoCode
+        )
+        eventMap[ConstantTransactionAnalytics.Key.PROMO_ID] = promoId
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
 
     //impression on user merchant voucher list
-    public void eventImpressionUseMerchantVoucher(String voucherId, Map<String, Object> ecommerceMap) {
-        Map<String, Object> eventMap = createEventMap(
-                EventName.PROMO_VIEW,
-                EventCategory.COURIER_SELECTION,
-                EventAction.IMPRESSION_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER,
+    fun eventImpressionUseMerchantVoucher(voucherId: String, ecommerceMap: Map<String, Any>) {
+        val eventMap = createEventMap(
+                ConstantTransactionAnalytics.EventName.PROMO_VIEW,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.IMPRESSION_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER,
                 ""
-        );
-        eventMap.put(ConstantTransactionAnalytics.Key.PROMO_ID, voucherId);
-        eventMap.put(ConstantTransactionAnalytics.Key.E_COMMERCE, ecommerceMap);
-
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
+        )
+        eventMap[ConstantTransactionAnalytics.Key.PROMO_ID] = voucherId
+        eventMap[ConstantTransactionAnalytics.Key.E_COMMERCE] = ecommerceMap
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventMap)
     }
 
     //on merchant voucher click detail
-    public void eventClickDetailMerchantVoucher(Map<String, Object> ecommerceMap, String voucherId, String promoCode) {
-        Map<String, Object> eventMap = createEventMap(
-                EventName.PROMO_CLICK,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER,
+    fun eventClickDetailMerchantVoucher(ecommerceMap: Map<String, Any>, voucherId: String, promoCode: String) {
+        val eventMap = createEventMap(
+                ConstantTransactionAnalytics.EventName.PROMO_CLICK,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER,
                 promoCode
-        );
-        eventMap.put(ConstantTransactionAnalytics.Key.PROMO_ID, voucherId);
-        eventMap.put(ConstantTransactionAnalytics.Key.E_COMMERCE, ecommerceMap);
-
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
+        )
+        eventMap[ConstantTransactionAnalytics.Key.PROMO_ID] = voucherId
+        eventMap[ConstantTransactionAnalytics.Key.E_COMMERCE] = ecommerceMap
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventMap)
     }
 
     //on error use merchant voucher
-    public void eventClickUseMerchantVoucherError(String errorMsg, String promoId, Boolean isFromList) {
-        String eventAction = isFromList ? EventAction.CLICK_GUNAKAN_ON_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER : EventAction.CLICK_GUNAKAN_FROM_PILIH_MERCHANT_VOUCHER;
-        Map<String, Object> eventMap = createEventMap(
-                EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
+    fun eventClickUseMerchantVoucherError(errorMsg: String?, promoId: String, isFromList: Boolean) {
+        val eventAction = if (isFromList) ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_ON_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER else ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_FROM_PILIH_MERCHANT_VOUCHER
+        val eventMap = createEventMap(
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 eventAction,
-                EventLabel.ERROR + " - " + errorMsg
-        );
-        eventMap.put(ConstantTransactionAnalytics.Key.PROMO_ID, promoId);
-
-        TrackApp.getInstance().getGTM().sendGeneralEvent(eventMap);
+                ConstantTransactionAnalytics.EventLabel.ERROR + " - " + errorMsg
+        )
+        eventMap[ConstantTransactionAnalytics.Key.PROMO_ID] = promoId
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
 
-    private Map<String, Object> createEventMap(String event, String category, String action, String label) {
-        Map<String, Object> eventMap = new HashMap<>();
-        eventMap.put(ConstantTransactionAnalytics.Key.EVENT, event);
-        eventMap.put(ConstantTransactionAnalytics.Key.EVENT_CATEGORY, category);
-        eventMap.put(ConstantTransactionAnalytics.Key.EVENT_ACTION, action);
-        eventMap.put(ConstantTransactionAnalytics.Key.EVENT_LABEL, label);
-        return eventMap;
+    private fun createEventMap(event: String, category: String, action: String, label: String): MutableMap<String, Any> {
+        val eventMap: MutableMap<String, Any> = HashMap()
+        eventMap[ConstantTransactionAnalytics.Key.EVENT] = event
+        eventMap[ConstantTransactionAnalytics.Key.EVENT_CATEGORY] = category
+        eventMap[ConstantTransactionAnalytics.Key.EVENT_ACTION] = action
+        eventMap[ConstantTransactionAnalytics.Key.EVENT_LABEL] = label
+        return eventMap
     }
 
-    public void eventCancelPromoStackingLogistic() {
+    fun eventCancelPromoStackingLogistic() {
         sendEventCategoryAction(
                 "",
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_X_ON_PROMO_STACKING_LOGISTIC
-        );
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_X_ON_PROMO_STACKING_LOGISTIC
+        )
     }
 
     // Logistic Promo
-    public void eventClickPromoLogisticTicker(String promoCode) {
+    fun eventClickPromoLogisticTicker(promoCode: String?) {
         sendEventCategoryActionLabel(
-                EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_PROMO_LOGISTIC_TICKER,
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_PROMO_LOGISTIC_TICKER,
                 promoCode
-        );
+        )
     }
 
-    public void eventClickLanjutkanTerapkanPromoError(String errorMsg) {
-        String label = EventLabel.ERROR + " - " + errorMsg;
+    fun eventClickLanjutkanTerapkanPromoError(errorMsg: String) {
+        val label = ConstantTransactionAnalytics.EventLabel.ERROR + " - " + errorMsg
         sendEventCategoryActionLabel(
-                EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_LANJUTKAN_TERAPKAN_PROMO,
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_LANJUTKAN_TERAPKAN_PROMO,
                 label
-        );
-    }
-
-    public void eventClickBatalTerapkanPromo(String promoCode) {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_BATAL_TERAPKAN_PROMO,
-                promoCode
-        );
+        )
     }
 
     // Promo not eligible bottomsheet
-    public void eventClickLanjutkanOnErrorPromoConfirmation() {
+    fun eventClickLanjutkanOnErrorPromoConfirmation() {
         sendEventCategoryAction(
-                EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_LANJUTKAN_ON_ERROR_PROMO_CONFIRMATION
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_LANJUTKAN_ON_ERROR_PROMO_CONFIRMATION
+        )
     }
 
-    public void eventClickBatalOnErrorPromoConfirmation() {
+    fun eventClickBatalOnErrorPromoConfirmation() {
         sendEventCategoryAction(
-                EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_BATAL_ON_ERROR_PROMO_CONFIRMATION
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_BATAL_ON_ERROR_PROMO_CONFIRMATION
+        )
     }
 
-    public void eventViewPopupErrorPromoConfirmation() {
+    fun eventViewPopupErrorPromoConfirmation() {
         sendEventCategoryAction(
-                EventName.VIEW_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.VIEW_POP_UP_ERROR_PROMO_CONFIRMATION
-        );
+                ConstantTransactionAnalytics.EventName.VIEW_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.VIEW_POP_UP_ERROR_PROMO_CONFIRMATION
+        )
     }
 
-    public void eventViewPromoLogisticTicker(String promoCode) {
+    fun eventViewPromoLogisticTicker(promoCode: String?) {
         sendEventCategoryActionLabel(
-                EventName.VIEW_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.VIEW_PROMO_LOGISTIC_TICKER,
+                ConstantTransactionAnalytics.EventName.VIEW_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.VIEW_PROMO_LOGISTIC_TICKER,
                 promoCode
-        );
+        )
     }
 
-    public void eventViewCourierImpressionErrorCourierNoAvailable() {
+    fun eventViewCourierImpressionErrorCourierNoAvailable() {
         sendEventCategoryAction(
-                EventName.VIEW_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.IMPRESSION_ERROR_COURIER_NO_AVAILABLE
-        );
+                ConstantTransactionAnalytics.EventName.VIEW_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.IMPRESSION_ERROR_COURIER_NO_AVAILABLE
+        )
     }
 
-    public void eventViewHelpPopUpAfterErrorInCheckout() {
+    fun eventViewHelpPopUpAfterErrorInCheckout() {
         sendEventCategoryAction(
-                EventName.VIEW_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.VIEW_HELP_POP_UP_AFTER_ERROR_IN_CHECKOUT
-        );
+                ConstantTransactionAnalytics.EventName.VIEW_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.VIEW_HELP_POP_UP_AFTER_ERROR_IN_CHECKOUT
+        )
     }
 
-    public void eventClickReportOnHelpPopUpInCheckout() {
+    fun eventClickReportOnHelpPopUpInCheckout() {
         sendEventCategoryAction(
-                EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_REPORT_ON_HELP_POP_UP_IN_CHECKOUT
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_REPORT_ON_HELP_POP_UP_IN_CHECKOUT
+        )
     }
 
-    public void eventClickCloseOnHelpPopUpInCheckout() {
+    fun eventClickCloseOnHelpPopUpInCheckout() {
         sendEventCategoryAction(
-                EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_CLOSE_ON_HELP_POP_UP_IN_CHECKOUT
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_CLOSE_ON_HELP_POP_UP_IN_CHECKOUT
+        )
     }
 
-    public void eventViewInformationAndWarningTickerInCheckout(String tickerId) {
+    fun eventViewInformationAndWarningTickerInCheckout(tickerId: String?) {
         sendEventCategoryActionLabel(
-                EventName.VIEW_COURIER_IRIS,
-                EventCategory.COURIER_SELECTION,
-                EventAction.VIEW_INFORMATION_AND_WARNING_TICKER_IN_CHECKOUT,
+                ConstantTransactionAnalytics.EventName.VIEW_COURIER_IRIS,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.VIEW_INFORMATION_AND_WARNING_TICKER_IN_CHECKOUT,
                 tickerId
-        );
+        )
     }
 
-    public void eventViewPromoAfterAdjustItem(String msg) {
+    fun eventViewPromoAfterAdjustItem(msg: String?) {
         sendEventCategoryActionLabel(
-                EventName.VIEW_COURIER_IRIS,
-                EventCategory.COURIER_SELECTION,
-                EventAction.VIEW_PROMO_MESSAGE,
+                ConstantTransactionAnalytics.EventName.VIEW_COURIER_IRIS,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.VIEW_PROMO_MESSAGE,
                 msg
-        );
+        )
     }
 
-    public void eventViewPromoLogisticTickerDisable(String promoCode) {
+    fun eventViewPromoLogisticTickerDisable(promoCode: String?) {
         sendEventCategoryActionLabel(
-                EventName.VIEW_COURIER_IRIS,
-                EventCategory.COURIER_SELECTION,
-                EventAction.VIEW_PROMO_LOGISTIC_TICKER_DISABLE,
+                ConstantTransactionAnalytics.EventName.VIEW_COURIER_IRIS,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.VIEW_PROMO_LOGISTIC_TICKER_DISABLE,
                 promoCode
-        );
+        )
     }
 
-    public void eventViewPopupPriceIncrease(String eventLabel) {
-        sendEventCategoryActionLabel(EventName.VIEW_COURIER_IRIS,
-                EventCategory.COURIER_SELECTION,
-                EventAction.VIEW_POP_UP_PRICE_INCREASE,
-                eventLabel);
+    fun eventViewPopupPriceIncrease(eventLabel: String?) {
+        sendEventCategoryActionLabel(ConstantTransactionAnalytics.EventName.VIEW_COURIER_IRIS,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.VIEW_POP_UP_PRICE_INCREASE,
+                eventLabel)
     }
 
-    public void eventClickCheckboxDonation(boolean check) {
+    fun eventClickCheckboxDonation(check: Boolean) {
         sendEventCategoryActionLabel(
-                EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_DONATION,
-                check ? "check" : "uncheck"
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_DONATION,
+                if (check) "check" else "uncheck"
+        )
     }
 
-    public void eventViewAutoCheckDonation(String userId) {
-        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
-                EventName.VIEW_COURIER_IRIS,
-                EventCategory.COURIER_SELECTION,
-                EventAction.VIEW_AUTO_CHECK_ON_DONATION,
+    fun eventViewAutoCheckDonation(userId: String) {
+        val gtmMap = getGtmData(
+                ConstantTransactionAnalytics.EventName.VIEW_COURIER_IRIS,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.VIEW_AUTO_CHECK_ON_DONATION,
                 ""
-        );
-        gtmMap.put(ExtraKey.USER_ID, userId);
-        sendGeneralEvent(gtmMap);
+        )
+        gtmMap[ExtraKey.USER_ID] = userId
+        sendGeneralEvent(gtmMap)
     }
 
-    public void eventViewCampaignDialog(long productId, String userId) {
-        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
-                EventName.VIEW_COURIER_IRIS,
-                EventCategory.COURIER_SELECTION,
-                EventAction.VIEW_POP_UP_MESSAGE_TIMER,
-                String.valueOf(productId)
-        );
-        gtmMap.put(ExtraKey.USER_ID, userId);
-        sendGeneralEvent(gtmMap);
+    fun eventViewCampaignDialog(productId: Long, userId: String) {
+        val gtmMap = getGtmData(
+                ConstantTransactionAnalytics.EventName.VIEW_COURIER_IRIS,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.VIEW_POP_UP_MESSAGE_TIMER, productId.toString())
+        gtmMap[ExtraKey.USER_ID] = userId
+        sendGeneralEvent(gtmMap)
     }
 
-    public void eventClickBelanjaLagiOnDialog(long productId, String userId) {
-        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
-                EventName.VIEW_COURIER_IRIS,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_BELANJA_LAGI_ON_POP_UP,
-                String.valueOf(productId)
-        );
-        gtmMap.put(ExtraKey.USER_ID, userId);
-        sendGeneralEvent(gtmMap);
+    fun eventClickBelanjaLagiOnDialog(productId: Long, userId: String) {
+        val gtmMap = getGtmData(
+                ConstantTransactionAnalytics.EventName.VIEW_COURIER_IRIS,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_BELANJA_LAGI_ON_POP_UP, productId.toString())
+        gtmMap[ExtraKey.USER_ID] = userId
+        sendGeneralEvent(gtmMap)
     }
 
-    public void eventViewSummaryTransactionTickerCourierNotComplete(String userId) {
-        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
-                EventName.VIEW_COURIER_IRIS,
-                EventCategory.COURIER_SELECTION,
-                EventAction.VIEW_SUMMARY_TRANSACTION_TICKER_COURIER_NOT_COMPLETE,
+    fun eventViewSummaryTransactionTickerCourierNotComplete(userId: String) {
+        val gtmMap = getGtmData(
+                ConstantTransactionAnalytics.EventName.VIEW_COURIER_IRIS,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.VIEW_SUMMARY_TRANSACTION_TICKER_COURIER_NOT_COMPLETE,
                 ""
-        );
-        gtmMap.put(ExtraKey.USER_ID, userId);
-        sendGeneralEvent(gtmMap);
+        )
+        gtmMap[ExtraKey.USER_ID] = userId
+        sendGeneralEvent(gtmMap)
     }
 
-    public void clickCekOnSummaryTransactionTickerCourierNotComplete(String userId) {
-        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
-                EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_CEK_ON_SUMMARY_TRANSACTION_TICKER_COURIER_NOT_COMPLETE,
+    fun clickCekOnSummaryTransactionTickerCourierNotComplete(userId: String) {
+        val gtmMap = getGtmData(
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_CEK_ON_SUMMARY_TRANSACTION_TICKER_COURIER_NOT_COMPLETE,
                 ""
-        );
-        gtmMap.put(ExtraKey.USER_ID, userId);
-        sendGeneralEvent(gtmMap);
+        )
+        gtmMap[ExtraKey.USER_ID] = userId
+        sendGeneralEvent(gtmMap)
     }
 
     // TokoNow
-
-    public void eventViewTickerProductLevelErrorInCheckoutPage(String shopId, String errorMessage) {
-        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
-                EventName.VIEW_COURIER_IRIS,
-                EventCategory.COURIER_SELECTION,
-                EventAction.VIEW_TICKER_PRODUCT_LEVEL_ERROR_IN_CHECKOUT_PAGE,
-                shopId + " - " + errorMessage
-        );
-        gtmMap.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
-        gtmMap.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
-        sendGeneralEvent(gtmMap);
+    fun eventViewTickerProductLevelErrorInCheckoutPage(shopId: String, errorMessage: String) {
+        val gtmMap = getGtmData(
+                ConstantTransactionAnalytics.EventName.VIEW_COURIER_IRIS,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.VIEW_TICKER_PRODUCT_LEVEL_ERROR_IN_CHECKOUT_PAGE,
+                "$shopId - $errorMessage"
+        )
+        gtmMap[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmMap[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmMap)
     }
 
-    public void eventViewTickerOrderLevelErrorInCheckoutPage(String shopId, String errorMessage) {
-        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
-                EventName.VIEW_COURIER_IRIS,
-                EventCategory.COURIER_SELECTION,
-                EventAction.VIEW_TICKER_ORDER_LEVEL_ERROR_IN_CHECKOUT_PAGE,
-                shopId + " - " + errorMessage
-        );
-        gtmMap.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
-        gtmMap.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
-        sendGeneralEvent(gtmMap);
+    fun eventViewTickerOrderLevelErrorInCheckoutPage(shopId: String, errorMessage: String) {
+        val gtmMap = getGtmData(
+                ConstantTransactionAnalytics.EventName.VIEW_COURIER_IRIS,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.VIEW_TICKER_ORDER_LEVEL_ERROR_IN_CHECKOUT_PAGE,
+                "$shopId - $errorMessage"
+        )
+        gtmMap[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmMap[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmMap)
     }
 
-    public void eventViewTickerPaymentLevelErrorInCheckoutPage(String shopId, String errorMessage) {
-        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
-                EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.VIEW_TICKER_PAYMENT_LEVEL_ERROR_IN_CHECKOUT_PAGE,
-                shopId + " - " + errorMessage
-        );
-        gtmMap.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
-        gtmMap.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
-        sendGeneralEvent(gtmMap);
+    fun eventViewTickerPaymentLevelErrorInCheckoutPage(shopId: String, errorMessage: String) {
+        val gtmMap = getGtmData(
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.VIEW_TICKER_PAYMENT_LEVEL_ERROR_IN_CHECKOUT_PAGE,
+                "$shopId - $errorMessage"
+        )
+        gtmMap[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmMap[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmMap)
     }
 
-    public void eventClickLihatOnTickerErrorOrderLevelErrorInCheckoutPage(String shopId, String errorMessage) {
-        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
-                EventName.CLICK_COURIER,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_LIHAT_ON_TICKER_ORDER_LEVEL_ERROR_IN_CHECKOUT_PAGE,
-                shopId + " - " + errorMessage
-        );
-        gtmMap.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
-        gtmMap.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
-        sendGeneralEvent(gtmMap);
+    fun eventClickLihatOnTickerErrorOrderLevelErrorInCheckoutPage(shopId: String, errorMessage: String) {
+        val gtmMap = getGtmData(
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_LIHAT_ON_TICKER_ORDER_LEVEL_ERROR_IN_CHECKOUT_PAGE,
+                "$shopId - $errorMessage"
+        )
+        gtmMap[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmMap[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmMap)
     }
 
-    public void eventClickRefreshWhenErrorLoadCourier() {
-        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
-                EventName.VIEW_COURIER_IRIS,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_REFRESH_WHEN_ERROR_LOAD_COURIER,
+    fun eventClickRefreshWhenErrorLoadCourier() {
+        val gtmMap = getGtmData(
+                ConstantTransactionAnalytics.EventName.VIEW_COURIER_IRIS,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.CLICK_REFRESH_WHEN_ERROR_LOAD_COURIER,
                 ""
-        );
-        gtmMap.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
-        gtmMap.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
-        sendGeneralEvent(gtmMap);
+        )
+        gtmMap[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmMap[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmMap)
     }
 
-    public void eventViewErrorInCourierSection(String errorMessage) {
-        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
-                EventName.VIEW_COURIER_IRIS,
-                EventCategory.COURIER_SELECTION,
-                EventAction.VIEW_ERROR_IN_COURIER_SECTION,
+    fun eventViewErrorInCourierSection(errorMessage: String) {
+        val gtmMap = getGtmData(
+                ConstantTransactionAnalytics.EventName.VIEW_COURIER_IRIS,
+                ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.EventAction.VIEW_ERROR_IN_COURIER_SECTION,
                 errorMessage
-        );
-        gtmMap.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
-        gtmMap.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
-        sendGeneralEvent(gtmMap);
+        )
+        gtmMap[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmMap[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmMap)
     }
 }

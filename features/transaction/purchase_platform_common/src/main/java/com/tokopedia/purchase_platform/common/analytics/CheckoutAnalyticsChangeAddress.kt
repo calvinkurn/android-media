@@ -1,378 +1,331 @@
-package com.tokopedia.purchase_platform.common.analytics;
+package com.tokopedia.purchase_platform.common.analytics
 
-import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics;
-
-import javax.inject.Inject;
-
-import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventAction;
-import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory;
-import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventLabel;
-import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName;
-
+import javax.inject.Inject
 
 /**
  * @author anggaprasetiyo on 05/06/18.
  */
-public class CheckoutAnalyticsChangeAddress extends TransactionAnalytics {
-    @Inject
-    public CheckoutAnalyticsChangeAddress() {
+class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytics() {
+    fun eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat() {
+        sendEventCategoryAction(
+                ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_TAMBAH_ALAMAT_BARU_FROM_GANTI_ALAMAT
+        )
     }
 
-    public void eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat() {
+    fun eventClickAtcCartChangeAddressClickUbahFromPilihAlamatLainnya() {
         sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_TAMBAH_ALAMAT_BARU_FROM_GANTI_ALAMAT
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_UBAH_FROM_PILIH_ALAMAT_LAINNYA
+        )
     }
 
-    public void eventClickAtcCartChangeAddressClickUbahFromPilihAlamatLainnya() {
+    fun eventClickAtcCartChangeAddressClickChecklistAlamatFromPilihAlamatLainnya() {
         sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_UBAH_FROM_PILIH_ALAMAT_LAINNYA
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_ALAMAT_FROM_PILIH_ALAMAT_LAINNYA
+        )
     }
 
-    public void eventClickAtcCartChangeAddressClickChecklistAlamatFromPilihAlamatLainnya() {
+    fun eventViewAtcCartChangeAddressImpressionChangeAddress() {
         sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_CHECKLIST_ALAMAT_FROM_PILIH_ALAMAT_LAINNYA
-        );
+                ConstantTransactionAnalytics.EventName.VIEW_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.IMPRESSION_CHANGE_ADDRESS
+        )
     }
 
-    public void eventViewAtcCartChangeAddressImpressionChangeAddress() {
+    fun eventClickAtcCartChangeAddressCartChangeAddressSubmitSearchFromPilihAlamatLainnya() {
         sendEventCategoryAction(
-                EventName.VIEW_ATC,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.IMPRESSION_CHANGE_ADDRESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.SUBMIT_SEARCH_FROM_PILIH_ALAMAT_LAINNYA
+        )
     }
 
-    public void eventClickAtcCartChangeAddressCartChangeAddressSubmitSearchFromPilihAlamatLainnya() {
+    fun eventClickAtcCartChangeAddressClickArrowBackFromGantiAlamat() {
         sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.SUBMIT_SEARCH_FROM_PILIH_ALAMAT_LAINNYA
-        );
-    }
-    public void eventClickAtcCartChangeAddressClickArrowBackFromGantiAlamat() {
-        sendEventCategoryAction(
-                EventName.CLICK_ATC,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_ARROW_BACK_FROM_GANTI_ALAMAT
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_ATC,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_ARROW_BACK_FROM_GANTI_ALAMAT
+        )
     }
 
-    public void eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman() {
+    fun eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman() {
         sendEventCategoryAction(
-                EventName.CLICK_SHIPPING,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_TAMBAH_FROM_ALAMAT_PENGIRIMAN
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_TAMBAH_FROM_ALAMAT_PENGIRIMAN
+        )
     }
 
-    public void eventClickShippingCartChangeAddressClickSimpanFromTambahAlamat() {
+    fun eventClickShippingCartChangeAddressClickKotaAtauKecamatanPadaTambahAddress() {
         sendEventCategoryAction(
-                EventName.CLICK_SHIPPING,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_SIMPAN_FROM_TAMBAH_ALAMAT
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_KOTA_ATAU_KECAMATAN_PADA_TAMBAH_ADDRESS
+        )
     }
 
-    public void eventClickShippingCartChangeAddressClickKotaAtauKecamatanPadaTambahAddress() {
+    fun eventClickShippingCartChangeAddressClickKodePosPadaTambahAddress() {
         sendEventCategoryAction(
-                EventName.CLICK_SHIPPING,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_KOTA_ATAU_KECAMATAN_PADA_TAMBAH_ADDRESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_KODE_POS_PADA_TAMBAH_ADDRESS
+        )
     }
 
-    public void eventClickShippingCartChangeAddressClickKodePosPadaTambahAddress() {
+    fun eventClickShippingCartChangeAddressClickTandaiLokasiPadaTambahAddress() {
         sendEventCategoryAction(
-                EventName.CLICK_SHIPPING,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_KODE_POS_PADA_TAMBAH_ADDRESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_TANDAI_LOKASI_PADA_TAMBAH_ADDRESS
+        )
     }
 
-    public void eventClickShippingCartChangeAddressClickTandaiLokasiPadaTambahAddress() {
-        sendEventCategoryAction(
-                EventName.CLICK_SHIPPING,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_TANDAI_LOKASI_PADA_TAMBAH_ADDRESS
-        );
-    }
-
-    public void eventClickShippingCartChangeAddressClickTambahAlamatFromTambah() {
-        sendEventCategoryAction(
-                EventName.CLICK_SHIPPING,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_TAMBAH_ALAMAT_FROM_TAMBAH
-        );
-    }
-
-    public void eventClickShippingCartChangeAddressClickChecklistKotaAtauKecamatanPadaTambahAddress(String districtName) {
+    fun eventClickShippingCartChangeAddressClickChecklistKotaAtauKecamatanPadaTambahAddress(districtName: String?) {
         sendEventCategoryActionLabel(
-                EventName.CLICK_SHIPPING,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_CHECKLIST_KOTA_ATAU_KECAMATAN_PADA_TAMBAH_ADDRESS,
+                ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_KOTA_ATAU_KECAMATAN_PADA_TAMBAH_ADDRESS,
                 districtName
-        );
+        )
     }
 
-    public void eventClickShippingCartChangeAddressClickXPojokKananKotaAtauKecamatanPadaTambahAddress() {
+    fun eventClickShippingCartChangeAddressClickXPojokKananKotaAtauKecamatanPadaTambahAddress() {
         sendEventCategoryAction(
-                EventName.CLICK_SHIPPING,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_X_POJOK_KANAN_KOTA_ATAU_KECAMATAN_PADA_TAMBAH_ADDRESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_X_POJOK_KANAN_KOTA_ATAU_KECAMATAN_PADA_TAMBAH_ADDRESS
+        )
     }
 
-    public void eventClickShippingCartChangeAddressClickXPojokKiriKotaAtauKecamatanPadaTambahAddress() {
+    fun eventClickShippingCartChangeAddressClickXPojokKiriKotaAtauKecamatanPadaTambahAddress() {
         sendEventCategoryAction(
-                EventName.CLICK_SHIPPING,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_X_POJOK_KIRI_KOTA_ATAU_KECAMATAN_PADA_TAMBAH_ADDRESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_X_POJOK_KIRI_KOTA_ATAU_KECAMATAN_PADA_TAMBAH_ADDRESS
+        )
     }
 
-    public void eventClickShippingCartChangeAddressClickChecklistKodePosPAdaTambahAddress() {
+    fun eventClickShippingCartChangeAddressClickChecklistKodePosPAdaTambahAddress() {
         sendEventCategoryAction(
-                EventName.CLICK_SHIPPING,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_CHECKLIST_KODE_POS_PADA_TAMBAH_ADDRESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_KODE_POS_PADA_TAMBAH_ADDRESS
+        )
     }
 
-    public void eventClickShippingCartChangeAddressClickFillKodePosPadaTambahAddress(String eventLabel) {
+    fun eventClickShippingCartChangeAddressClickFillKodePosPadaTambahAddress(eventLabel: String?) {
         sendEventCategoryActionLabel(
-                EventName.CLICK_SHIPPING,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_FILL_KODE_POS_PADA_TAMBAH_ADDRESS,
+                ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_FILL_KODE_POS_PADA_TAMBAH_ADDRESS,
                 eventLabel
-        );
+        )
     }
 
-    public void eventViewShippingCartChangeAddressViewValidationErrorNotFill(String errorMessage) {
+    fun eventViewShippingCartChangeAddressViewValidationErrorNotFill(errorMessage: String?) {
         sendEventCategoryActionLabel(
-                EventName.VIEW_SHIPPING,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.VIEW_VALIDATION_ERROR_NOT_FILL,
+                ConstantTransactionAnalytics.EventName.VIEW_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.VIEW_VALIDATION_ERROR_NOT_FILL,
                 errorMessage
-        );
+        )
     }
 
-    public void eventClickShippingCartChangeAddressClickDropdownSuggestionTandaiLokasiPadaTambahAddress() {
+    fun eventClickShippingCartChangeAddressClickDropdownSuggestionTandaiLokasiPadaTambahAddress() {
         sendEventCategoryAction(
-                EventName.CLICK_SHIPPING,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_DROPDOWN_SUGGESTION_TANDAI_LOKASI_PADA_TAMBAH_ADDRESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_DROPDOWN_SUGGESTION_TANDAI_LOKASI_PADA_TAMBAH_ADDRESS
+        )
     }
 
-    public void eventClickShippingCartChangeAddressClickVTandaiLokasiPadaTambahAddress() {
+    fun eventClickShippingCartChangeAddressClickVTandaiLokasiPadaTambahAddress() {
         sendEventCategoryAction(
-                EventName.CLICK_SHIPPING,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_V_TANDAI_LOKASI_PADA_TAMBAH_ADDRESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_V_TANDAI_LOKASI_PADA_TAMBAH_ADDRESS
+        )
     }
 
-    public void eventClickShippingCartChangeAddressClickBackArrowTandaiLokasiPadaTambahAddress() {
+    fun eventClickShippingCartChangeAddressClickBackArrowTandaiLokasiPadaTambahAddress() {
         sendEventCategoryAction(
-                EventName.CLICK_SHIPPING,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_BACK_ARROW_TANDAI_LOKASI_PADA_TAMBAH_ADDRESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_BACK_ARROW_TANDAI_LOKASI_PADA_TAMBAH_ADDRESS
+        )
     }
 
-    public void eventClickShippingCartChangeAddressClickPinButtonFromTandaiLokasi() {
+    fun eventClickShippingCartChangeAddressClickPinButtonFromTandaiLokasi() {
         sendEventCategoryAction(
-                EventName.CLICK_SHIPPING,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_PIN_BUTTON_FROM_TANDAI_LOKASI
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_PIN_BUTTON_FROM_TANDAI_LOKASI
+        )
     }
 
-    public void eventViewShippingCartChangeAddressViewValidationErrorTandaiLokasi(String errorMessage) {
+    fun eventViewShippingCartChangeAddressViewValidationErrorTandaiLokasi(errorMessage: String?) {
         sendEventCategoryActionLabel(
-                EventName.VIEW_SHIPPING,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.VIEW_VALIDATION_ERROR_TANDAI_LOKASI,
+                ConstantTransactionAnalytics.EventName.VIEW_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.VIEW_VALIDATION_ERROR_TANDAI_LOKASI,
                 errorMessage
-        );
+        )
     }
 
-    public void eventClickShippingCartChangeAddressClickRadioButtonFromPilihAlamatLainnya() {
+    fun eventClickShippingCartChangeAddressClickRadioButtonFromPilihAlamatLainnya() {
         sendEventCategoryAction(
-                EventName.CLICK_SHIPPING,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_RADIO_BUTTON_FROM_PILIH_ALAMAT_LAINNYA
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_RADIO_BUTTON_FROM_PILIH_ALAMAT_LAINNYA
+        )
     }
 
-    public void eventClickCourierCartChangeAddressClickAlamatSebagaiPadaTambahAddress() {
+    fun eventClickCourierCartChangeAddressClickAlamatSebagaiPadaTambahAddress() {
         sendEventCategoryAction(
-                EventName.CLICK_COURIER,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS
+        )
     }
 
-    public void eventClickCourierCartChangeAddressClickChecklistAlamatSebagaiPadaTambahAddress() {
+    fun eventClickCourierCartChangeAddressClickChecklistAlamatSebagaiPadaTambahAddress() {
         sendEventCategoryAction(
-                EventName.CLICK_COURIER,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_CHECKLIST_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS
+        )
     }
 
-    public void eventClickCourierCartChangeAddressClickNamaPadaTambahAddress() {
+    fun eventClickCourierCartChangeAddressClickNamaPadaTambahAddress() {
         sendEventCategoryAction(
-                EventName.CLICK_COURIER,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_NAMA_PADA_TAMBAH_ADDRESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_NAMA_PADA_TAMBAH_ADDRESS
+        )
     }
 
-    public void eventClickCourierCartChangeAddressClickTeleponPadaTambahAddress() {
+    fun eventClickCourierCartChangeAddressClickTeleponPadaTambahAddress() {
         sendEventCategoryAction(
-                EventName.CLICK_COURIER,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_TELEPON_PADA_TAMBAH_ADDRESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_TELEPON_PADA_TAMBAH_ADDRESS
+        )
     }
 
-    public void eventClickCourierCartChangeAddressClickAlamatPadaTambahAddress() {
+    fun eventClickCourierCartChangeAddressClickAlamatPadaTambahAddress() {
         sendEventCategoryAction(
-                EventName.CLICK_COURIER,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_ALAMAT_PADA_TAMBAH_ADDRESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_ALAMAT_PADA_TAMBAH_ADDRESS
+        )
     }
 
-
-    public void eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahAddress() {
+    fun eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahAddress() {
         sendEventCategoryAction(
-                EventName.CLICK_COURIER,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS
+        )
     }
 
-    public void eventClickCourierCartChangeAddressErrorValidationNamaPadaTambahAddress() {
+    fun eventClickCourierCartChangeAddressErrorValidationNamaPadaTambahAddress() {
         sendEventCategoryAction(
-                EventName.CLICK_COURIER,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS
+        )
     }
 
-    public void eventClickCourierCartChangeAddressErrorValidationTeleponPadaTambahAddress() {
+    fun eventClickCourierCartChangeAddressErrorValidationTeleponPadaTambahAddress() {
         sendEventCategoryAction(
-                EventName.CLICK_COURIER,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.VALIDATION_ERROR_TELEPON_PADA_TAMBAH_ADDRESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.VALIDATION_ERROR_TELEPON_PADA_TAMBAH_ADDRESS
+        )
     }
 
-    public void eventClickCourierCartChangeAddressErrorValidationKotaKecamatanPadaTambahAddress() {
+    fun eventClickCourierCartChangeAddressErrorValidationKotaKecamatanPadaTambahAddress() {
         sendEventCategoryAction(
-                EventName.CLICK_COURIER,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.VALIDATION_ERROR_KOTA_KECAMATAN_PADA_TAMBAH_ADDRESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.VALIDATION_ERROR_KOTA_KECAMATAN_PADA_TAMBAH_ADDRESS
+        )
     }
 
-    public void eventClickCourierCartChangeAddressErrorValidationKodePosPadaTambahAddress() {
+    fun eventClickCourierCartChangeAddressErrorValidationKodePosPadaTambahAddress() {
         sendEventCategoryAction(
-                EventName.CLICK_COURIER,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.VALIDATION_ERROR_KODE_POS_PADA_TAMBAH_ADDRESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.VALIDATION_ERROR_KODE_POS_PADA_TAMBAH_ADDRESS
+        )
     }
 
-    public void eventClickCourierCartChangeAddressErrorValidationAlamatPadaTambahAddress() {
+    fun eventClickCourierCartChangeAddressErrorValidationAlamatPadaTambahAddress() {
         sendEventCategoryAction(
-                EventName.CLICK_COURIER,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.VALIDATION_ERROR_ALAMAT_PADA_TAMBAH_ADDRESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.VALIDATION_ERROR_ALAMAT_PADA_TAMBAH_ADDRESS
+        )
     }
 
-    public void eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahSuccess() {
+    fun eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahSuccess() {
         sendEventCategoryActionLabel(
-                EventName.CLICK_COURIER,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_TAMBAH_ALAMAT_FROM_TAMBAH,
-                EventLabel.SUCCESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_TAMBAH_ALAMAT_FROM_TAMBAH,
+                ConstantTransactionAnalytics.EventLabel.SUCCESS
+        )
     }
 
-    public void eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahNotSuccess() {
+    fun eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahNotSuccess() {
         sendEventCategoryActionLabel(
-                EventName.CLICK_COURIER,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_TAMBAH_ALAMAT_FROM_TAMBAH,
-                EventLabel.NOT_SUCCESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_COURIER,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_TAMBAH_ALAMAT_FROM_TAMBAH,
+                ConstantTransactionAnalytics.EventLabel.NOT_SUCCESS
+        )
     }
 
-    public void eventSearchResultNotFound(String query) {
+    fun eventSearchResultNotFound(query: String) {
         sendEventCategoryActionLabel(
-                EventName.CLICK_ADDRESS,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.SEARCH_NOT_FOUND,
+                ConstantTransactionAnalytics.EventName.CLICK_ADDRESS,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.SEARCH_NOT_FOUND,
                 query
-        );
+        )
     }
 
     //PHASE 2
 
-    public void eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruSuccess() {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_ADDRESS,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_TAMBAH_FROM_TAMBAH_ALAMAT_BARU,
-                EventLabel.SUCCESS
-        );
-    }
-
-    public void eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruFailed() {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_ADDRESS,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_TAMBAH_FROM_TAMBAH_ALAMAT_BARU,
-                EventLabel.FAILED
-        );
-    }
-
-
-    public void eventClickAddressCartChangeAddressCartChangeAddressSubmitSearchFromPilihAlamatLainnya() {
+    fun eventClickAddressCartChangeAddressCartChangeAddressSubmitSearchFromPilihAlamatLainnya() {
         sendEventCategoryAction(
-                EventName.CLICK_ADDRESS,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.SUBMIT_SEARCH_FROM_PILIH_ALAMAT_LAINNYA
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_ADDRESS,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.SUBMIT_SEARCH_FROM_PILIH_ALAMAT_LAINNYA
+        )
     }
 
-    public void eventClickAddressCartChangeAddressClickButtonSimpanFromEditSuccess() {
+    fun eventClickAddressCartChangeAddressClickButtonSimpanFromEditSuccess() {
         sendEventCategoryActionLabel(
-                EventName.CLICK_ADDRESS,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_BUTTON_SIMPAN_FROM_EDIT,
-                EventLabel.SUCCESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_ADDRESS,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_BUTTON_SIMPAN_FROM_EDIT,
+                ConstantTransactionAnalytics.EventLabel.SUCCESS
+        )
     }
 
-    public void eventClickAddressCartChangeAddressClickButtonSimpanFromEditNotSuccess() {
+    fun eventClickAddressCartChangeAddressClickButtonSimpanFromEditNotSuccess() {
         sendEventCategoryActionLabel(
-                EventName.CLICK_ADDRESS,
-                EventCategory.CART_CHANGE_ADDRESS,
-                EventAction.CLICK_BUTTON_SIMPAN_FROM_EDIT,
-                EventLabel.NOT_SUCCESS
-        );
+                ConstantTransactionAnalytics.EventName.CLICK_ADDRESS,
+                ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
+                ConstantTransactionAnalytics.EventAction.CLICK_BUTTON_SIMPAN_FROM_EDIT,
+                ConstantTransactionAnalytics.EventLabel.NOT_SUCCESS
+        )
     }
 }
