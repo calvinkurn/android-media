@@ -28,6 +28,7 @@ import com.tokopedia.common_tradein.model.HomeResult.PriceState
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.TradeInAnalytics
 import com.tokopedia.tradein.TradeInGTMConstants
@@ -215,6 +216,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
                     Manifest.permission.VIBRATE),
                     MY_PERMISSIONS_REQUEST_READ_PHONE_STATE)
         } else {
+            progress_bar_layout.show()
             viewModel.getMaxPrice(laku6TradeIn, 0)
         }
     }
@@ -356,6 +358,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
                         return
                     }
                 }
+                progress_bar_layout.show()
                 viewModel.getMaxPrice(laku6TradeIn, 0)
             } else {
                 showToast(getString(R.string.tradein_requires_permission_for_diagnostic),
