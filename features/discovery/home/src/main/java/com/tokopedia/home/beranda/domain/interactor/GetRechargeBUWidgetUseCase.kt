@@ -72,7 +72,7 @@ class GetRechargeBUWidgetUseCase @Inject constructor(
                       product_id
                       operator_id
                       business_unit
-                      item_label
+                      item_type
                       item_label
                       client_number
                       category_id
