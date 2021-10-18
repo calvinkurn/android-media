@@ -426,7 +426,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
                 )
             )
 
-            if (!recommendationWidgets.first().recommendationItemList.isNullOrEmpty()) {
+            if (recommendationWidgets.first().recommendationItemList.isNotEmpty()) {
                 layoutList.addProductRecom(pageName, recommendationWidgets.first())
 
                 val layout = RepurchaseLayoutUiModel(
