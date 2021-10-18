@@ -534,7 +534,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         })
     }
 
-    private fun createProductListRequestParam(page: Int = INITIAL_PAGE): GetRepurchaseProductListParam {
+    private fun createProductListRequestParam(page: Int): GetRepurchaseProductListParam {
         val warehouseID = localCacheModel?.warehouse_id.orEmpty()
         val totalScan = productListMeta?.totalScan.orZero()
         val categoryIds = selectedCategoryFilter?.id
