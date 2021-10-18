@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
-//apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'com.google.firebase.crashlytics'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
-//apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.gms.google-services'
 apply from: "$rootDir/buildconfig/aar/local-aar.gradle"
 apply plugin: 'io.hansel.preprocessor'
 
@@ -108,10 +108,17 @@ dependencies {
     })
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
 
+    /*
+        Do not remove this dependencies
+    */
+    implementation project(rootProject.ext.features.chooseaccount)
+    implementation project(rootProject.ext.features.otp)
+    implementation project(rootProject.ext.features.loginregister)
+    implementation project(rootProject.ext.features.logout)
+
     //you can delete below line if you use old login, then Build -> Switch to TestApp again
     //you have to DELETE, not only COMMENT, because testapp plugins still add it to compile list even when commented
     //logintestapp should not appear in compile-testapp-plugin.gradle if it is successfully excluded
-    implementation projectOrAar(rootProject.ext.features.logintestapp)
 
     //you can delete below line if you are not using developer options, then Build -> Switch to TestApp again
     //you have to DELETE, not only COMMENT, because testapp plugins still add it to compile list even when commented
