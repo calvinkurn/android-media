@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.android.gms.security.ProviderInstaller;
+import com.google.firebase.FirebaseApp;
 import com.tkpd.remoteresourcerequest.task.ResourceDownloadManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -24,7 +25,6 @@ import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
@@ -40,6 +40,7 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.network.DataSource;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
@@ -71,6 +72,8 @@ public class MyApplication extends BaseMainApplication
         setVersionCode();
         initFileDirConfig();
 
+        /* Use Staging Environment, because we use real login usecase */
+        TokopediaUrl.Companion.setEnvironment(this, Env.STAGING);
         TokopediaUrl.Companion.init(this); // generate base url
 
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
@@ -113,6 +116,7 @@ public class MyApplication extends BaseMainApplication
 
         IrisAnalytics.Companion.getInstance(this).initialize();
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
+        FirebaseApp.initializeApp(this);
     }
 
 

@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.tokopedia.application.MyApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalTestApp
 import com.tokopedia.tkpd.helper.logout
 import com.tokopedia.tkpd.network.DataSource
@@ -36,7 +37,6 @@ class MainActivity : AppCompatActivity() {
             userSession.deviceId = DataSource.MOCK_DEVICE_ID
         }
 
-        val fullLoginOption = findViewById<CheckBox>(R.id.fullLoginOption)
         val loginButton = findViewById<Button>(R.id.loginButton)
         val toggleDarkMode = findViewById<CheckBox>(R.id.toggle_dark_mode)
 
@@ -47,11 +47,7 @@ class MainActivity : AppCompatActivity() {
 
         loginButton.setOnClickListener {
             if (!userSession.isLoggedIn()) {
-                if (fullLoginOption.isChecked) {
-                    startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
-                } else {
-                    startActivityForResult(RouteManager.getIntent(this, ApplinkConstInternalTestApp.LOGIN), REQUEST_CODE_LOGIN)
-                }
+                startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
             } else {
                 Toast.makeText(this, "Already logged in", Toast.LENGTH_SHORT).show()
                 goTo()
@@ -62,7 +58,10 @@ class MainActivity : AppCompatActivity() {
         // because real logout module still contains core_legacy
         // that will dramatically slows down compile time if included
         logoutButton.setOnClickListener {
-            logout(application as MyApplication)
+            val logoutIntent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.LOGOUT).apply {
+                putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, false)
+            }
+            startActivityForResult(logoutIntent, REQUEST_CODE_LOGOUT)
         }
 
         testGqlButton.setOnClickListener {
@@ -78,7 +77,14 @@ class MainActivity : AppCompatActivity() {
         button.setOnClickListener {
             goTo()
         }
+    }
 
+    private fun openTestAppLogout() {
+        logout(application as MyApplication)
+    }
+
+    private fun openTestAppLogin() {
+        startActivityForResult(RouteManager.getIntent(this, ApplinkConstInternalTestApp.LOGIN), REQUEST_CODE_LOGIN)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
