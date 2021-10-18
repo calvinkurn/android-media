@@ -170,7 +170,6 @@ class TokoNowHomeViewModel @Inject constructor(
 
     fun getHomeLayout(localCacheModel: LocalCacheModel, hasSharingEducationBeenRemoved: Boolean) {
         getHomeLayoutJob?.cancel()
-
         launchCatchError(block = {
             homeLayoutItemList.clear()
 
