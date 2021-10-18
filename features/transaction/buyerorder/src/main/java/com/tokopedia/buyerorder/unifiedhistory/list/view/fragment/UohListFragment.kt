@@ -178,7 +178,6 @@ import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 /**
  * Created by fwidjaja on 29/06/20.
