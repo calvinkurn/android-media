@@ -75,7 +75,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         )
     }
 
-    fun eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess(errorMessage: String) {
+    fun eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess(errorMessage: String?) {
         sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
@@ -266,8 +266,8 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         )
     }
 
-    fun eventClickCourierCourierSelectionClickUbahKurir(label: String?) {
-        sendEventCategoryActionLabel(
+    fun eventClickCourierCourierSelectionClickUbahKurir(label: String) {
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_UBAH_KURIR,
@@ -299,7 +299,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
                 ConstantTransactionAnalytics.EventAction.VIEW_PRESELECTED_COURIER_OPTION, shippingProductId.toString())
     }
 
-    fun eventViewDuration(isCourierPromo: Boolean, duration: String) {
+    fun eventViewDuration(isCourierPromo: Boolean, duration: String?) {
         val eventLabel = if (isCourierPromo) ConstantTransactionAnalytics.EventLabel.PROMO + ConstantTransactionAnalytics.EventLabel.SEPARATOR + duration else ConstantTransactionAnalytics.EventLabel.NON_PROMO + ConstantTransactionAnalytics.EventLabel.SEPARATOR + duration
         sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.VIEW_COURIER,
@@ -319,7 +319,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         )
     }
 
-    fun eventClickChecklistPilihDurasiPengiriman(isCourierPromo: Boolean, duration: String, isCod: Boolean, shippingPriceMin: String, shippingPriceHigh: String) {
+    fun eventClickChecklistPilihDurasiPengiriman(isCourierPromo: Boolean, duration: String?, isCod: Boolean, shippingPriceMin: String, shippingPriceHigh: String) {
         val eventLabel = ((if (isCourierPromo) ConstantTransactionAnalytics.EventLabel.PROMO else ConstantTransactionAnalytics.EventLabel.NON_PROMO)
                 + ConstantTransactionAnalytics.EventLabel.SEPARATOR + duration
                 + ConstantTransactionAnalytics.EventLabel.SEPARATOR + (if (isCod) ConstantTransactionAnalytics.EventLabel.COD else "")
@@ -450,8 +450,8 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         )
     }
 
-    fun eventViewPromoLogisticTicker(promoCode: String?) {
-        sendEventCategoryActionLabel(
+    fun eventViewPromoLogisticTicker(promoCode: String) {
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.VIEW_COURIER,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.VIEW_PROMO_LOGISTIC_TICKER,
@@ -491,8 +491,8 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         )
     }
 
-    fun eventViewInformationAndWarningTickerInCheckout(tickerId: String?) {
-        sendEventCategoryActionLabel(
+    fun eventViewInformationAndWarningTickerInCheckout(tickerId: String) {
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.VIEW_COURIER_IRIS,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.VIEW_INFORMATION_AND_WARNING_TICKER_IN_CHECKOUT,
@@ -500,8 +500,8 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         )
     }
 
-    fun eventViewPromoAfterAdjustItem(msg: String?) {
-        sendEventCategoryActionLabel(
+    fun eventViewPromoAfterAdjustItem(msg: String) {
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.VIEW_COURIER_IRIS,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.VIEW_PROMO_MESSAGE,
@@ -509,8 +509,8 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         )
     }
 
-    fun eventViewPromoLogisticTickerDisable(promoCode: String?) {
-        sendEventCategoryActionLabel(
+    fun eventViewPromoLogisticTickerDisable(promoCode: String) {
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.VIEW_COURIER_IRIS,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.VIEW_PROMO_LOGISTIC_TICKER_DISABLE,
@@ -518,8 +518,8 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         )
     }
 
-    fun eventViewPopupPriceIncrease(eventLabel: String?) {
-        sendEventCategoryActionLabel(ConstantTransactionAnalytics.EventName.VIEW_COURIER_IRIS,
+    fun eventViewPopupPriceIncrease(eventLabel: String) {
+        sendGeneralEvent(ConstantTransactionAnalytics.EventName.VIEW_COURIER_IRIS,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.VIEW_POP_UP_PRICE_INCREASE,
                 eventLabel)
