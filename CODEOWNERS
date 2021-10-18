@@ -55,6 +55,7 @@
 /features/merchant/review_product/                      @tokopedia/android-minionstuart-dev
 /features/merchant/reputation_common/                   @tokopedia/android-minionstuart-dev
 /features/merchant/review/                              @tokopedia/android-minionstuart-dev
+/features/merchant/review_shop/                         @tokopedia/android-minionken-dev
 /features/merchant/review_inbox/                        @tokopedia/android-minionstuart-dev
 /features/merchant/seller_migration_common/             @tokopedia/android-minionstuart-dev
 /features/merchant/seller_active_common/                @tokopedia/android-minionstuart-dev
@@ -78,6 +79,7 @@
 /features/merchant/youtube_common/                      @tokopedia/android-minionken-dev
 /features/merchant/voucher_creation/                    @tokopedia/android-minionken-dev
 /features/tokopedianow/                                 @tokopedia/android-minionken-dev
+/features/merchant/product_bundle/                      @tokopedia/android-minionken-dev
 
 /features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionskywalker-dev
 /features/top_ads/top_ads_free_claim/                   @tokopedia/android-minionskywalker-dev

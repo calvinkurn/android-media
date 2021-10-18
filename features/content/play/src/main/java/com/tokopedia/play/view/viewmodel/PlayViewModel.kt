@@ -39,10 +39,7 @@ import com.tokopedia.play.util.video.state.*
 import com.tokopedia.play.view.monitoring.PlayVideoLatencyPerformanceMonitoring
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
-import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
-import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
+import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.*
@@ -59,6 +56,7 @@ import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play_common.model.dto.interactive.isScheduled
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
+import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.sse.*
 import com.tokopedia.play_common.sse.model.SSEAction
@@ -156,7 +154,8 @@ class PlayViewModel @Inject constructor(
     private val _bottomInsets = MutableStateFlow(emptyMap<BottomInsetsType, BottomInsetsState>())
     private val _status = MutableStateFlow(PlayStatusType.Active)
     private val _interactive = MutableStateFlow<PlayInteractiveUiState>(PlayInteractiveUiState.NoInteractive)
-    private val _leaderboardInfo = MutableStateFlow(PlayLeaderboardInfoUiModel())
+    private val _leaderboardInfo = MutableStateFlow<PlayLeaderboardWrapperUiModel>(PlayLeaderboardWrapperUiModel.Unknown)
+    private val _leaderboardUserBadgeState = MutableStateFlow(PlayLeaderboardBadgeUiState())
     private val _likeInfo = MutableStateFlow(PlayLikeInfoUiModel())
     private val _channelReport = MutableStateFlow(PlayChannelReportUiModel())
     private val _cartInfo = MutableStateFlow(PlayCartInfoUiModel())
@@ -184,13 +183,13 @@ class PlayViewModel @Inject constructor(
     }
 
     private val _winnerBadgeUiState = combine(
-        _leaderboardInfo, _bottomInsets, _status, _channelDetail
-    ) { leaderboardInfo, bottomInsets, status, channelDetail ->
+        _leaderboardInfo, _bottomInsets, _status, _channelDetail, _leaderboardUserBadgeState
+    ) { leaderboardInfo, bottomInsets, status, channelDetail, leaderboardUserBadgeState ->
         PlayWinnerBadgeUiState(
-            leaderboards = leaderboardInfo.leaderboardWinners,
+            leaderboards = leaderboardInfo,
             shouldShow = !bottomInsets.isAnyShown &&
                     status.isActive &&
-                    leaderboardInfo.leaderboardWinners.isNotEmpty() &&
+                    leaderboardUserBadgeState.showLeaderboard &&
                     channelDetail.channelInfo.channelType.isLive,
         )
     }
@@ -416,6 +415,7 @@ class PlayViewModel @Inject constructor(
     private val _observableOnboarding = MutableLiveData<Event<Unit>>() /**Added**/
     private val _observableUpcomingInfo = MutableLiveData<PlayUpcomingUiModel>()
     private val _observableCastState = MutableLiveData<PlayCastUiModel>()
+    private val _observableUserWinnerStatus = MutableLiveData<PlayUserWinnerStatusUiModel>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableProductSheetContent) {
             if (it is PlayResult.Success) {
@@ -731,6 +731,7 @@ class PlayViewModel @Inject constructor(
             ClickLikeAction -> handleClickLike(isFromLogin = false)
             ClickShareAction -> handleClickShare()
             ClickCartAction -> handleClickCart(isFromLogin = false)
+            RefreshLeaderboard -> handleRefreshLeaderboard()
         }
     }
 
@@ -1079,8 +1080,10 @@ class PlayViewModel @Inject constructor(
         _observableQuickReply.value = quickReplyInfo
     }
 
-    private fun handleLeaderboardInfo(leaderboardInfo: PlayLeaderboardInfoUiModel) {
+    private fun handleLeaderboardInfo(leaderboardInfo: PlayLeaderboardWrapperUiModel) {
         _leaderboardInfo.value = leaderboardInfo
+        if(leaderboardInfo is PlayLeaderboardWrapperUiModel.Success)
+            setLeaderboardBadgeState(leaderboardInfo.data)
     }
 
     /**
@@ -1247,8 +1250,18 @@ class PlayViewModel @Inject constructor(
         if (!isInteractiveAllowed) return
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
-            _leaderboardInfo.value = interactiveLeaderboard
-        }) {}
+            _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
+
+            setLeaderboardBadgeState(interactiveLeaderboard)
+        }) {
+            _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Error
+        }
+    }
+
+    private fun setLeaderboardBadgeState(leaderboardInfo: PlayLeaderboardInfoUiModel) {
+        if(leaderboardInfo.leaderboardWinners.isNotEmpty()) {
+            _leaderboardUserBadgeState.setValue { copy(showLeaderboard = true) }
+        }
     }
 
     private fun checkInteractive(channelId: String) {
@@ -1288,7 +1301,9 @@ class PlayViewModel @Inject constructor(
 
             try {
                 val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
-                _leaderboardInfo.value = interactiveLeaderboard
+                _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
+                setLeaderboardBadgeState(interactiveLeaderboard)
+
                 _interactive.value = PlayInteractiveUiState.NoInteractive
             } catch (e: Throwable) {}
         }
@@ -1357,6 +1372,7 @@ class PlayViewModel @Inject constructor(
             val socketMapper = PlaySocketMapper(message)
             socketMapper.mapping()
         }
+
         when (result) {
             is TotalLike -> {
                 val (totalLike, totalLikeFmt) = playSocketToModelMapper.mapTotalLike(result)
@@ -1488,6 +1504,16 @@ class PlayViewModel @Inject constructor(
                     _uiEvent.emit(PreloadLikeBubbleIconEvent(config.bubbleMap.keys))
                 }
             }
+            is UserWinnerStatus -> {
+                val interactiveState = _interactiveUiState.firstOrNull() ?: return@withContext
+
+                val winnerStatus = playSocketToModelMapper.mapUserWinnerStatus(result)
+                _observableUserWinnerStatus.value = winnerStatus
+
+                if(interactiveState.interactive is PlayInteractiveUiState.Finished) {
+                    handleUserWinnerStatus(winnerStatus)
+                }
+            }
         }
     }
 
@@ -1568,73 +1594,69 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleInteractiveOngoingFinished() {
-        fun setInteractiveToFinished(interactiveId: String) {
-            repo.setFinished(interactiveId)
-
-            _interactive.value = PlayInteractiveUiState.Finished(
-                    info = R.string.play_interactive_finish_initial_text,
-            )
-        }
-
-        suspend fun showCoachMark(leaderboard: PlayLeaderboardInfoUiModel) {
-            _uiEvent.emit(
-                    ShowCoachMarkWinnerEvent(
-                            leaderboard.config.loserMessage,
-                            leaderboard.config.loserDetail
-                    )
-            )
-        }
-
-        suspend fun fetchLeaderboard(
-            channelId: String,
-            interactive: PlayCurrentInteractiveModel,
-            isUserJoined: Boolean
-        ) = coroutineScope {
-            _interactive.value = PlayInteractiveUiState.Finished(
-                    info = R.string.play_interactive_finish_loading_winner_text,
-            )
-
-            delay(interactive.endGameDelayInMs)
-
-            val deferredDelay = async { delay(INTERACTIVE_FINISH_MESSAGE_DELAY) }
-            val deferredInteractiveLeaderboard = async { repo.getInteractiveLeaderboard(channelId) }
-
-            deferredDelay.await()
-            val interactiveLeaderboard = deferredInteractiveLeaderboard.await()
-
-            val currentLeaderboard = interactiveLeaderboard.leaderboardWinners.first()
-            val userInLeaderboard = currentLeaderboard.winners.firstOrNull()
-
-            _interactive.value = PlayInteractiveUiState.NoInteractive
-            _leaderboardInfo.value = interactiveLeaderboard
-
-            if (userInLeaderboard != null && isUserJoined) {
-                if (userInLeaderboard.id == userId) {
-                    _uiEvent.emit(
-                            ShowWinningDialogEvent(
-                                    userInLeaderboard.imageUrl,
-                                    interactiveLeaderboard.config.winnerMessage,
-                                    interactiveLeaderboard.config.winnerDetail
-                            )
-                    )
-                } else showCoachMark(interactiveLeaderboard)
-            }
+        suspend fun waitingForSocketOrDuration(activeInteractive: PlayCurrentInteractiveModel, activeInteractiveId: String) {
+            delay(activeInteractive.endGameDelayInMs)
+            repo.setFinished(activeInteractiveId)
+            handleUserWinnerStatus(null)
         }
 
         viewModelScope.launchCatchError(block = {
             val activeInteractiveId = repo.getActiveInteractiveId() ?: return@launchCatchError
-            val isUserJoined = repo.hasJoined(activeInteractiveId)
             val activeInteractive = repo.getDetail(activeInteractiveId) ?: return@launchCatchError
 
-            setInteractiveToFinished(activeInteractiveId)
+            _interactive.value = PlayInteractiveUiState.Finished(
+                info = R.string.play_interactive_finish_initial_text,
+            )
             delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
 
-            try {
-                fetchLeaderboard(channelId, activeInteractive, isUserJoined)
-            } catch (e: Throwable) {
-                _interactive.value = PlayInteractiveUiState.NoInteractive
+            _interactive.value = PlayInteractiveUiState.Finished(
+                info = R.string.play_interactive_finish_loading_winner_text,
+            )
+            delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
+
+            val winnerStatus = _observableUserWinnerStatus.value
+            if(winnerStatus != null && winnerStatus.interactiveId.toString() == activeInteractiveId){
+                handleUserWinnerStatus(winnerStatus)
+            }
+            else {
+                waitingForSocketOrDuration(activeInteractive, activeInteractiveId)
             }
         }) {}
+    }
+
+    private suspend fun handleUserWinnerStatus(winnerStatus: PlayUserWinnerStatusUiModel?) {
+        fun setNoInteractive() {
+            if(_interactive.value is PlayInteractiveUiState.Finished)
+                _interactive.value = PlayInteractiveUiState.NoInteractive
+        }
+
+        _leaderboardUserBadgeState.setValue {
+            copy(showLeaderboard = true, shouldRefreshData = true)
+        }
+
+        winnerStatus?.let {
+            val activeInteractiveId = repo.getActiveInteractiveId() ?: return
+            val isUserJoined = repo.hasJoined(activeInteractiveId)
+
+            if(winnerStatus.interactiveId.toString() == activeInteractiveId && isUserJoined) {
+                setNoInteractive()
+                repo.setFinished(activeInteractiveId)
+
+                _uiEvent.emit(
+                    if(winnerStatus.userId.toString() == userId){
+                        ShowWinningDialogEvent(winnerStatus.imageUrl, winnerStatus.winnerTitle, winnerStatus.winnerText)
+                    }
+                    else {
+                        ShowCoachMarkWinnerEvent(winnerStatus.loserTitle, winnerStatus.loserText)
+                    }
+                )
+            }
+            else {
+                setNoInteractive()
+            }
+        } ?: run {
+            setNoInteractive()
+        }
     }
 
     private fun handleWinnerBadgeClicked(height: Int) {
@@ -1893,6 +1915,15 @@ class PlayViewModel @Inject constructor(
                  if (isFromLogin) AllowedWhenInactiveEvent(event) else event
             )
         }
+    }
+
+    private fun handleRefreshLeaderboard() {
+        if(_leaderboardUserBadgeState.value.shouldRefreshData) {
+            _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Loading
+            _leaderboardUserBadgeState.setValue { copy(shouldRefreshData = false) }
+        }
+
+        checkLeaderboard(channelId)
     }
 
     /**
