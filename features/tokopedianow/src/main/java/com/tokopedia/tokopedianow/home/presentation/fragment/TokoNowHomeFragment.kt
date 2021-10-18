@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2
 import com.tokopedia.applink.RouteManager
@@ -476,11 +477,11 @@ class TokoNowHomeFragment: Fragment(),
     override fun onPromoAllClick(channelModel: ChannelModel) {}
 
     override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {
-        if (!isFirstImpressionOnBanner) {
-            isFirstImpressionOnBanner = true
+        isFirstImpressionOnBanner = if (!isFirstImpressionOnBanner) {
+            true
         } else {
             analytics.onImpressBannerPromo(userSession.userId, channelModel)
-            isFirstImpressionOnBanner = false
+            false
         }
     }
 
@@ -598,8 +599,8 @@ class TokoNowHomeFragment: Fragment(),
             it.lifecycleOwner = viewLifecycleOwner
             it.setStickyAction(object : StickyLoginAction {
                 override fun onClick() {
-                    context?.let {
-                        val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
+                    context?.let { context ->
+                        val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
                         startActivityForResult(intent, REQUEST_CODE_LOGIN_STICKY_LOGIN)
                     }
                 }
@@ -651,8 +652,8 @@ class TokoNowHomeFragment: Fragment(),
         hideStickyLogin()
         rvLayoutManager?.setScrollEnabled(true)
         carouselScrollState.clear()
-        loadLayout()
         isRefreshed = true
+        loadLayout()
     }
 
     private fun setupUi() {
@@ -785,7 +786,7 @@ class TokoNowHomeFragment: Fragment(),
 
             when(it) {
                 is Success -> {
-                    loadHomeLayout(it.data)
+                    onSuccessGetHomeLayout(it.data)
                 }
                 is Fail -> {
                     showFailedToFetchData()
@@ -988,17 +989,13 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    private fun loadHomeLayout(data: HomeLayoutListUiModel) {
+    private fun onSuccessGetHomeLayout(data: HomeLayoutListUiModel) {
         when (data.state) {
             TokoNowLayoutState.SHOW -> onShowHomeLayout(data)
             TokoNowLayoutState.HIDE -> onHideHomeLayout(data)
             TokoNowLayoutState.LOADING -> onLoadingHomeLayout(data)
-            TokoNowLayoutState.LOAD_MORE -> {
-                rvHome?.post {
-                    showHomeLayout(data)
-                }
-            }
-            TokoNowLayoutState.UPDATE -> showHomeLayout(data)
+            TokoNowLayoutState.LOADED -> getProductAddToCartQuantity()
+            else -> showHomeLayout(data)
         }
     }
 
@@ -1006,6 +1003,10 @@ class TokoNowHomeFragment: Fragment(),
         showHomeLayout(data)
         loadHeaderBackground()
         checkAddressDataAndServiceArea()
+        showHideChooseAddress()
+    }
+
+    private fun showHideChooseAddress() {
         if (!isChooseAddressWidgetShowed()) {
             adapter.removeHomeChooseAddressWidget()
         }
@@ -1017,28 +1018,8 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun onShowHomeLayout(data: HomeLayoutListUiModel) {
-        val initialLoad = data.isInitialLoad
-        val isLoadDataFinished = data.isLoadDataFinished
         showHomeLayout(data)
-
-        when {
-            initialLoad -> {
-                showHeaderBackground()
-                loadNextItem(data)
-            }
-            isLoadDataFinished -> {
-                getProductAddToCartQuantity()
-                rvHome?.post { addLoadMoreListener() }
-            }
-            !isLoadDataFinished -> loadNextItem(data)
-        }
-    }
-
-    private fun loadNextItem(data: HomeLayoutListUiModel) {
-        rvHome?.post {
-            val index = data.nextItemIndex
-            loadVisibleLayoutData(index)
-        }
+        showHeaderBackground()
     }
 
     private fun checkAddressDataAndServiceArea() {
@@ -1049,12 +1030,22 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun showHomeLayout(data: HomeLayoutListUiModel) {
-        val items = data.items.toMutableList().map { it.layout }
+        val items = mutableListOf<Visitable<*>>()
+        val iterator = data.items.iterator()
+
+        while(iterator.hasNext()) {
+            iterator.next()?.let {
+                items.add(it.layout)
+            }
+        }
+
         adapter.submitList(items)
     }
 
     private fun addLoadMoreListener() {
-        rvHome?.addOnScrollListener(loadMoreListener)
+        rvHome?.post {
+            rvHome?.addOnScrollListener(loadMoreListener)
+        }
     }
 
     private fun removeLoadMoreListener() {
@@ -1088,29 +1079,24 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun addScrollListener() {
+        addLoadMoreListener()
         addNavBarScrollListener()
         addHomeComponentScrollListener()
     }
 
-    private fun loadVisibleLayoutData(index: Int?) {
-        val warehouseId = localCacheModel?.warehouse_id.orEmpty()
-        val layoutManager = rvHome?.layoutManager as? LinearLayoutManager
-        val firstVisibleItemIndex = layoutManager?.findFirstVisibleItemPosition().orZero()
-        val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
-        viewModelTokoNow.getLayoutData(index, warehouseId, firstVisibleItemIndex, lastVisibleItemIndex, localCacheModel)
-    }
-
-    private fun loadMoreLayoutData() {
-        val warehouseId = localCacheModel?.warehouse_id.orEmpty()
-        val layoutManager = rvHome?.layoutManager as? LinearLayoutManager
-        val firstVisibleItemIndex = layoutManager?.findFirstVisibleItemPosition().orZero()
-        val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
-        viewModelTokoNow.getMoreLayoutData(warehouseId, firstVisibleItemIndex, lastVisibleItemIndex, localCacheModel)
+    private fun onScrollTokoMartHome() {
+        localCacheModel?.let {
+            val layoutManager = rvHome?.layoutManager as? LinearLayoutManager
+            val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
+            viewModelTokoNow.onScrollTokoMartHome(lastVisibleItemIndex, it, false)
+        }
     }
 
     private fun getHomeLayout() {
-        val isSharingRemoved = SharedPreferencesUtil.isSharingEducationRemoved(activity)
-        viewModelTokoNow.getHomeLayout(localCacheModel, isSharingRemoved)
+        localCacheModel?.let {
+            val isSharingRemoved = SharedPreferencesUtil.isSharingEducationRemoved(activity)
+            viewModelTokoNow.getHomeLayout(it, isSharingRemoved)
+        }
     }
 
     private fun getMiniCart() {
@@ -1127,11 +1113,6 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun loadLayout() {
         viewModelTokoNow.getLoadingState()
-    }
-
-    //  because searchHint has not been discussed so for current situation we only use hardcoded placeholder
-    private fun getSearchHint() {
-        viewModelTokoNow.getKeywordSearch(isFirstInstall(), userSession.deviceId, userSession.userId)
     }
 
     private fun checkIfChooseAddressWidgetDataUpdated() {
@@ -1204,7 +1185,7 @@ class TokoNowHomeFragment: Fragment(),
                                     data.keyword.orEmpty()
                             )
                     ),
-                    searchbarClickCallback = ::onSearchBarClick,
+                    searchbarClickCallback = { onSearchBarClick() },
                     searchbarImpressionCallback = {},
                     durationAutoTransition = durationAutoTransition,
                     shouldShowTransition = shouldShowTransition()
@@ -1212,7 +1193,7 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    private fun onSearchBarClick(hint: String) {
+    private fun onSearchBarClick() {
         analytics.onClickSearchBar()
         RouteManager.route(context,
                 getAutoCompleteApplinkPattern(),
@@ -1232,14 +1213,6 @@ class TokoNowHomeFragment: Fragment(),
     private fun shouldShowTransition(): Boolean {
         val abTestValue = getAbTestPlatform().getString(AB_TEST_AUTO_TRANSITION_KEY, "")
         return abTestValue == AUTO_TRANSITION_VARIANT
-    }
-
-    private fun String?.safeEncodeUtf8(): String {
-        return try {
-            this?.encodeToUtf8().orEmpty()
-        } catch (throwable: Throwable) {
-            ""
-        }
     }
 
     private fun createNavBarScrollListener(): NavRecyclerViewScrollListener? {
@@ -1279,7 +1252,7 @@ class TokoNowHomeFragment: Fragment(),
         return object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                loadMoreLayoutData()
+                onScrollTokoMartHome()
             }
         }
     }
@@ -1329,7 +1302,7 @@ class TokoNowHomeFragment: Fragment(),
             //set the Image Url of the Image that represents page
             setOgImageUrl(shareHomeTokonow?.ogImageUrl ?: "")
         }
-        universalShareBottomSheet?.show(fragmentManager, this, screenshotDetector)
+        universalShareBottomSheet?.show(childFragmentManager, this, screenshotDetector)
     }
 
     private fun linkerDataMapper(shareHomeTokonow: ShareHomeTokonow?): LinkerShareData {

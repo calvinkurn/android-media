@@ -1248,11 +1248,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             chooseAddressAbTestCondition(
                     ifChooseAddressActive = {
                         if (!validateChooseAddressWidget()) {
-                            getHomeViewModel().refresh(isFirstInstall())
+                            getHomeViewModel().refresh(isFirstInstall = isFirstInstall())
                         }
                     },
                     ifChooseAddressNotActive = {
-                        getHomeViewModel().refresh(isFirstInstall())
+                        getHomeViewModel().refresh(isFirstInstall = isFirstInstall())
                     }
             )
 
@@ -2177,6 +2177,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     .setLocalCacheModel(localCacheModel)
             )
             chooseAddressWidgetInitialized = false
+            getHomeViewModel().refresh(forceRefresh = true, isFirstInstall = isFirstInstall())
         }
     }
 
@@ -2211,7 +2212,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         removeNetworkError()
         homeRecyclerView?.isEnabled = false
         if (::viewModel.isInitialized) {
-            getHomeViewModel().refreshHomeData(isFirstInstall())
+            getHomeViewModel().refreshHomeData()
         }
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()

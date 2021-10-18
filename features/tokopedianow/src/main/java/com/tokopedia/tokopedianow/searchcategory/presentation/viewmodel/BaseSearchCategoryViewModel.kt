@@ -219,6 +219,9 @@ abstract class BaseSearchCategoryViewModel(
         LiveData<Triple<Int, String, TokoNowProductCardUiModel>> =
         addToCartRepurchaseWidgetTrackingMutableLiveData
 
+    protected val oocOpenScreenTrackingMutableEvent = SingleLiveEvent<Boolean>()
+    val oocOpenScreenTrackingEvent: LiveData<Boolean> = oocOpenScreenTrackingMutableEvent
+
     init {
         updateQueryParams()
 
@@ -286,10 +289,15 @@ abstract class BaseSearchCategoryViewModel(
         updateHeaderBackgroundVisibility(false)
         updateMiniCartVisibility(false)
 
+        sendOutOfCoverageTrackingEvent()
         createVisitableListWithOutOfCoverageView()
         clearVisitableListLiveData()
         updateVisitableListLiveData()
         showPageContent()
+    }
+
+    protected fun sendOutOfCoverageTrackingEvent() {
+        oocOpenScreenTrackingMutableEvent.value = true
     }
 
     private fun createVisitableListWithOutOfCoverageView() {
