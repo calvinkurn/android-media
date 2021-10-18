@@ -7,7 +7,6 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -22,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
+import com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
 import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.toRelativeDate
 import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
@@ -94,6 +94,8 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
     private var reviewSellerPerformanceMonitoringListener:
             ReviewSellerPerformanceMonitoringListener? = null
 
+    private var badRatingReasonWidget: ReviewBadRatingReasonWidget? = null
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         reviewSellerPerformanceMonitoringListener =
@@ -135,6 +137,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
         observeUpdateReviewReply()
         observeInsertTemplateReviewReply()
         observeLiveData()
+        badRatingReasonWidget = view.findViewById(R.id.review_reply_bad_rating_reason)
     }
 
     override fun getScreenName(): String {
@@ -401,6 +404,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
 
             feedbackUiModel?.let { feedback ->
                 feedbackItemReplyWidget?.setData(feedback, productReply)
+                badRatingReasonWidget?.showBadRatingReason(feedback.badRatingReason)
             }
         }
         reviewReplyTextBoxWidget?.setReplyAction()
