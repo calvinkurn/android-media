@@ -21,7 +21,8 @@ import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveConfigUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.PostInteractiveCreateSessionUseCase
 import com.tokopedia.play.broadcaster.pusher.*
-import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastUiEvent
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
@@ -211,13 +212,9 @@ internal class PlayBroadcastViewModel @Inject constructor(
         )
     }
 
-    //TODO("This is mock code")
-//    val uiState = _pinnedMessage.map { pinnedMessage ->
-//        PlayBroadcastUiState(
-//            channel = PlayChannelUiState(true, emptyList()),
-//            pinnedMessage = pinnedMessage?.message.orEmpty(),
-//        )
-//    }
+    private val _uiEvent = MutableSharedFlow<PlayBroadcastEvent>(extraBufferCapacity = 100)
+    val uiEvent: Flow<PlayBroadcastEvent>
+        get() = _uiEvent
 
     private val ingestUrl: String
         get() = hydraConfigStore.getIngestUrl()
@@ -285,11 +282,11 @@ internal class PlayBroadcastViewModel @Inject constructor(
         livePusherMediator.destroy()
     }
 
-    fun submitAction(event: PlayBroadcastUiEvent) {
+    fun submitAction(event: PlayBroadcastAction) {
         when (event) {
-            PlayBroadcastUiEvent.EditPinnedMessage -> handleEditPinnedMessage()
-            is PlayBroadcastUiEvent.SetPinnedMessage -> handleSetPinnedMessage(event.message)
-            PlayBroadcastUiEvent.CancelEditPinnedMessage -> handleCancelEditPinnedMessage()
+            PlayBroadcastAction.EditPinnedMessage -> handleEditPinnedMessage()
+            is PlayBroadcastAction.SetPinnedMessage -> handleSetPinnedMessage(event.message)
+            PlayBroadcastAction.CancelEditPinnedMessage -> handleCancelEditPinnedMessage()
         }
     }
 
@@ -837,7 +834,12 @@ internal class PlayBroadcastViewModel @Inject constructor(
                 channelId = channelId,
                 message = message
             )
-        }) {}
+        }) {
+            _pinnedMessage.setValue {
+                copy(editStatus = PinnedMessageEditStatus.Editing)
+            }
+            _uiEvent.emit(PlayBroadcastEvent.ShowError(it))
+        }
     }
 
     private fun handleCancelEditPinnedMessage() {
@@ -845,11 +847,6 @@ internal class PlayBroadcastViewModel @Inject constructor(
         _pinnedMessage.setValue {
             copy(editStatus = PinnedMessageEditStatus.Nothing)
         }
-    }
-
-    //TODO("Mock Code, Remove This!!!")
-    fun doSomething() {
-        getPinnedMessage()
     }
 
     /**

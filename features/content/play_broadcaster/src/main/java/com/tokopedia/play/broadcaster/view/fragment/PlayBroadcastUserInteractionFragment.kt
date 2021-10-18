@@ -13,15 +13,14 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
-import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastUiEvent
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
@@ -38,7 +37,6 @@ import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoar
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
-import com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
@@ -64,6 +62,7 @@ import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.play_common.R as commonR
@@ -170,9 +169,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
-
-        //TODO("This is mock code")
-        parentViewModel.doSomething()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -209,8 +205,20 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             doShowProductInfo()
             analytic.clickProductTagOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
         }
-        pinnedMessageView.setOnPinnedClickedListener { _, _ ->
-            parentViewModel.submitAction(PlayBroadcastUiEvent.EditPinnedMessage)
+        pinnedMessageView.setOnPinnedClickedListener { _, message ->
+            parentViewModel.submitAction(PlayBroadcastAction.EditPinnedMessage)
+
+            if (message.isBlank()) {
+                analytic.clickAddPinChatMessage(
+                    channelId = parentViewModel.channelId,
+                    titleChannel = parentViewModel.channelTitle,
+                )
+            } else {
+                analytic.clickEditPinChatMessage(
+                    channelId = parentViewModel.channelId,
+                    titleChannel = parentViewModel.channelTitle,
+                )
+            }
         }
     }
 
@@ -273,6 +281,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeInteractiveConfig()
         observeCreateInteractiveSession()
         observeUiState()
+        observeUiEvent()
     }
 
     override fun onDestroy() {
@@ -283,7 +292,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     override fun onBackPressed(): Boolean {
         return when {
             hasPinnedFormView() -> {
-                parentViewModel.submitAction(PlayBroadcastUiEvent.CancelEditPinnedMessage)
+                parentViewModel.submitAction(PlayBroadcastAction.CancelEditPinnedMessage)
                 true
             }
             interactiveSetupView.isShown() -> interactiveSetupView.interceptBackPressed()
@@ -630,6 +639,16 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
         }
     }
+
+    private fun observeUiEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            parentViewModel.uiEvent.collect { event ->
+                when (event) {
+                    is PlayBroadcastEvent.ShowError -> showErrorToaster(event.error)
+                }
+            }
+        }
+    }
     //endregion
 
     private fun renderPinnedMessageView(
@@ -638,9 +657,18 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     ) {
         if (prevState == state) return
 
-        if (prevState?.editStatus != PinnedMessageEditStatus.Nothing &&
+        if (state.editStatus != PinnedMessageEditStatus.Editing) hideKeyboard()
+
+        /**
+         * Pinned Message success uploading
+         */
+        if (prevState?.editStatus == PinnedMessageEditStatus.Uploading &&
             state.editStatus == PinnedMessageEditStatus.Nothing) {
-            hideKeyboard()
+
+            analytic.clickSavePinChatMessage(
+                channelId = parentViewModel.channelId,
+                titleChannel = parentViewModel.channelTitle,
+            )
         }
 
         pinnedMessageView.setMode(
@@ -649,24 +677,19 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         )
 
         when(state.editStatus) {
-            PinnedMessageEditStatus.Editing -> {
-                val pinnedView = getPinnedFormView()
-                pinnedView.setPinnedMessage(state.message)
-                pinnedView.setLoading(false)
-                pinnedView.visibility = View.VISIBLE
-                clInteraction.visibility = View.GONE
-            }
+            PinnedMessageEditStatus.Editing,
             PinnedMessageEditStatus.Uploading -> {
-                val pinnedView = getPinnedFormView()
-                pinnedView.setPinnedMessage(state.message)
-                pinnedView.setLoading(true)
-                pinnedView.visibility = View.VISIBLE
+                val formView = getPinnedFormView()
+                if (formView.visibility != View.VISIBLE) formView.setPinnedMessage(state.message)
+                else interactiveView.cancelCoachMark()
+                formView.setLoading(state.editStatus == PinnedMessageEditStatus.Uploading)
+                formView.visibility = View.VISIBLE
                 clInteraction.visibility = View.GONE
             }
             PinnedMessageEditStatus.Nothing -> {
                 if (!hasPinnedFormView()) return
-                val pinnedView = getPinnedFormView()
-                pinnedView.visibility = View.GONE
+                val formView = getPinnedFormView()
+                formView.visibility = View.GONE
                 clInteraction.visibility = View.VISIBLE
             }
         }
@@ -690,11 +713,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         val pinnedMessageFormViewListener = object : PinnedMessageFormView.Listener {
 
             override fun onCloseButtonClicked(view: PinnedMessageFormView) {
-                parentViewModel.submitAction(PlayBroadcastUiEvent.CancelEditPinnedMessage)
+                parentViewModel.submitAction(PlayBroadcastAction.CancelEditPinnedMessage)
             }
 
             override fun onPinnedMessageSaved(view: PinnedMessageFormView, message: String) {
-                parentViewModel.submitAction(PlayBroadcastUiEvent.SetPinnedMessage(message))
+                hideKeyboard()
+                parentViewModel.submitAction(PlayBroadcastAction.SetPinnedMessage(message))
             }
         }
 
@@ -731,7 +755,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         when (state) {
             is BroadcastInteractiveInitState.NoPrevious -> {
                 analytic.onImpressInteractiveTool(parentViewModel.channelId)
-                interactiveView.setInit(state.showOnBoarding)
+                interactiveView.setInit(state.showOnBoarding && !hasPinnedFormView())
             }
             BroadcastInteractiveInitState.Loading -> interactiveView.setLoading()
             is BroadcastInteractiveInitState.HasPrevious -> {
