@@ -86,4 +86,8 @@
     <string name="play_will_start_on">Akan mulai dalam</string>
     <string name="play_failed_remind_me">Oops, gagal tersambung</string>
     <string name="play_try_again">Coba Lagi</string>
+
+    <string name="play_connecting_chromecast">Connecting to Chromecast</string>
+    <string name="play_casting_chromecast">Casting to Chromecast</string>
+    <string name="play_disconnect_chromecast">Disconnected from Chromecast</string>
 </resources>

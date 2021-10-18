@@ -70,7 +70,7 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
 
     fun setupChooseAddressWidget(remoteConfig: RemoteConfig, isMyShop: Boolean) {
         chooseAddressWidget?.apply {
-            val isRollOutUser = ChooseAddressUtils.isRollOutUser(view.context)
+            val isRollOutUser = true
             val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
                     ShopPageConstant.ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET,
                     true

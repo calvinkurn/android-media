@@ -701,19 +701,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         if (url.contains(HCI_CAMERA_KTP)) {
             mJsHciCallbackFuncName = uri.getLastPathSegment();
-            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE);
-            if (queryParam != null)
-                intent.putExtra(CUST_OVERLAY_URL, queryParam);
-            startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE);
+            routeToHomeCredit(ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE, queryParam, headerText);
             return true;
         } else if (url.contains(HCI_CAMERA_SELFIE)) {
             mJsHciCallbackFuncName = uri.getLastPathSegment();
-            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE);
-            if (queryParam != null)
-                intent.putExtra(CUST_OVERLAY_URL, queryParam);
-            if (headerText != null)
-                intent.putExtra(CUST_HEADER, headerText);
-            startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE);
+            routeToHomeCredit(ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE, queryParam, headerText);
             return true;
         } else if (PARAM_WEBVIEW_BACK.equalsIgnoreCase(url)
                 && getActivity() != null) {
@@ -793,6 +785,15 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         finishActivityIfBackPressedDisabled(hasMoveToNativePage);
         return hasMoveToNativePage;
+    }
+
+    private void routeToHomeCredit(String appLink, String overlayUrl, String headerText) {
+        Intent intent = RouteManager.getIntent(getActivity(), appLink);
+        if (overlayUrl != null)
+            intent.putExtra(CUST_OVERLAY_URL, overlayUrl);
+        if (headerText != null)
+            intent.putExtra(CUST_HEADER, headerText);
+        startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE);
     }
 
     private boolean redirectToExternalAppAndFinish(Activity activity, Uri uri) {

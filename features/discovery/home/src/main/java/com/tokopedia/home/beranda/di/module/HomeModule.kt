@@ -2,7 +2,6 @@ package com.tokopedia.home.beranda.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.common_wallet.balance.data.CacheUtil
@@ -10,7 +9,6 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
-import com.tokopedia.home.beranda.data.datasource.remote.GeolocationRemoteDataSource
 import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
 import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitableFactory
@@ -49,7 +47,7 @@ class HomeModule {
 
     @HomeScope
     @Provides
-    fun homeRevampRepository(geolocationRemoteDataSource: Lazy<GeolocationRemoteDataSource>,
+    fun homeRevampRepository(
                        homeRemoteDataSource: HomeRemoteDataSource,
                        homeCachedDataSource: HomeCachedDataSource,
                        homeDefaultDataSource: HomeDefaultDataSource,
@@ -60,7 +58,6 @@ class HomeModule {
             homeCachedDataSource,
             homeRemoteDataSource,
             homeDefaultDataSource,
-            geolocationRemoteDataSource,
             dynamicChannelDataMapper,
             context,
             remoteConfig)

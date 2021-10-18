@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowSortFilterBinding
 import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.SORT_VALUE
 import com.tokopedia.tokopedianow.sortfilter.presentation.adapter.SortFilterAdapter
 import com.tokopedia.tokopedianow.sortfilter.presentation.differ.SortFilterDiffer
@@ -19,6 +20,7 @@ import com.tokopedia.tokopedianow.sortfilter.presentation.uimodel.SortFilterUiMo
 import com.tokopedia.tokopedianow.sortfilter.presentation.viewholder.SortFilterViewHolder.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class TokoNowSortFilterBottomSheet :
     BottomSheetUnify(),
@@ -34,13 +36,15 @@ class TokoNowSortFilterBottomSheet :
         }
     }
 
+    private var binding by autoClearedNullable<BottomsheetTokopedianowSortFilterBinding>()
+
     private var rvSort: RecyclerView? = null
     private var btnApplyFilter: UnifyButton? = null
     private var sortValue: Int = FREQUENTLY_BOUGHT
     private var listTitles: List<SortFilterUiModel> = listOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initView(inflater, container)
+        initView()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -91,20 +95,20 @@ class TokoNowSortFilterBottomSheet :
         )
     }
 
-    private fun initView(inflater: LayoutInflater, container: ViewGroup?) {
+    private fun initView() {
         clearContentPadding = true
         showCloseIcon = true
         isDragable = false
         isHideable = false
-        setupItemView(inflater, container)
+        setupItemView()
         setTitle(getString(R.string.tokopedianow_sort_filter_title_bottomsheet))
     }
 
-    private fun setupItemView(inflater: LayoutInflater, container: ViewGroup?) {
-        val itemView = inflater.inflate(R.layout.bottomsheet_tokopedianow_sort_filter, container)
-        rvSort = itemView.findViewById(R.id.rv_sort_based_on_buying)
-        btnApplyFilter = itemView.findViewById(R.id.btnApplyFilter)
-        setChild(itemView)
+    private fun setupItemView() {
+        binding = BottomsheetTokopedianowSortFilterBinding.inflate(LayoutInflater.from(context))
+        rvSort = binding?.rvSortBasedOnBuying
+        btnApplyFilter = binding?.btnApplyFilter
+        setChild(binding?.root)
     }
 
     private fun setupRecyclerView() {
