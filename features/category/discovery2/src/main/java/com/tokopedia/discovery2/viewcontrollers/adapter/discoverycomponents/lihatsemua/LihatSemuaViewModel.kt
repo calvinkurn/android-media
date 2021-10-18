@@ -12,7 +12,7 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import java.util.*
 
-class LihatSemuaViewModel(val application: Application, val component: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
+class LihatSemuaViewModel(private val application: Application, val component: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
     private val itemData: MutableLiveData<ComponentsItem> = MutableLiveData()
     var timerWithBannerCounter: CountDownTimer? = null
     private val restartStoppedTimerEvent: SingleLiveEvent<Boolean> = SingleLiveEvent()
@@ -54,10 +54,9 @@ class LihatSemuaViewModel(val application: Application, val component: Component
                         }
                     }
                 } else {
-//                    TODO:: setup timer to 0:00:00 and make sure to ignore this timer finish call
                     timerSetToZero = true
                     timerUnify.targetDate = Calendar.getInstance().apply {
-                        timeInMillis += 500
+                        timeInMillis += 1000
                     }
                 }
             }

@@ -60,7 +60,7 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
                     setupBackgroundImage(data)
                     setupLihat(data, componentItem, backgroundImageView.isVisible)
                     setupTextColours(backgroundImageView.isVisible)
-                    setupTimer(data)
+                    setupTimer(data,backgroundImageView.isVisible)
                     setupPadding(backgroundImageView.isVisible, titleImageViewParent.isVisible)
                 }
             })
@@ -98,8 +98,9 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
         sendGtmEvent(componentsItem)
     }
 
-    private fun setupTimer(data: DataItem) {
+    private fun setupTimer(data: DataItem,isBackgroundPresent: Boolean) {
         if (!data.endDate.isNullOrEmpty() || !data.startDate.isNullOrEmpty()) {
+            timer.timerVariant = if(isBackgroundPresent) TimerUnifySingle.VARIANT_ALTERNATE else TimerUnifySingle.VARIANT_MAIN
             lihatSemuaViewModel.startTimer(timer)
             timer.show()
         } else {
@@ -113,6 +114,9 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
             if(!Utils.isFutureSale(data.startDate?:"",TIMER_DATE_FORMAT) && !data.subtitle_1.isNullOrEmpty()){
                 subtitle = data.subtitle_1
             }
+        }
+        if(Utils.isSaleOver(data.endDate?:"", TIMER_DATE_FORMAT) && subtitle.equals(BERAKHIR_DALAM,ignoreCase = true)){
+            subtitle = SUDAH_BERAKHIR
         }
         lihatSubTitleTextView.setTextAndCheckShow(subtitle)
     }
@@ -274,5 +278,10 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
         }catch (e:Exception){
 
         }
+    }
+
+    companion object{
+        const val BERAKHIR_DALAM = "Berakhir dalam"
+        const val SUDAH_BERAKHIR = "Sudah berakhir"
     }
 }
