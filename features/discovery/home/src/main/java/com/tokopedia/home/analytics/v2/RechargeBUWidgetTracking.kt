@@ -59,11 +59,15 @@ object RechargeBUWidgetTracking : BaseTracking() {
                     name = "/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${getHeaderName(data.channel)}",
                     position = position.toString()
             )
+            //empty supposed to be userType next dev.
+            val eventLabel = " - ${getHeaderName(data.channel)} - ${data.data.items.firstOrNull()?.trackingData?.itemType} - $position - " +
+                    "${data.data.items.firstOrNull()?.trackingData?.categoryId} - ${data.data.items.firstOrNull()?.trackingData?.operatorId} - " +
+                    "${data.data.items.firstOrNull()?.trackingData?.productId}"
             trackingQueue.putEETracking(getBasicPromotionClick(
                     Event.PROMO_CLICK,
                     RECHARGE_BU_WIDGET_EVENT_CATEGORY,
                     Action.CLICK_ON.format("$RECHARGE_BU_WIDGET_BANNER_CARD $RECHARGE_BU_WIDGET_NAME"),
-                    "${data.channel.id} - ${getHeaderName(data.channel)}",
+                    eventLabel,
                     listOf(promotion),
                     userId,
                     currentSite = RECHARGE_BU_WIDGET_CURRENT_SITE,
