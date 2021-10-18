@@ -15,7 +15,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
 
     @Deprecated("")
     fun eventClickAtcCartClickKuponFromGunakanKodePromoAtauKupon() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_KUPON_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON
@@ -23,7 +23,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventClickAtcCartClickKodePromoFromGunakanPromoAtauKupon() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_KODE_PROMO_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON
@@ -31,7 +31,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventClickAtcCartClickKuponSayaFromGunakanPromoAtauKupon() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_KUPON_SAYA_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON
@@ -40,7 +40,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
 
     @Deprecated("")
     fun eventClickAtcCartClickGunakanKodeFormGunakanKodePromoAtauKupon() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_KODE_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON
@@ -48,7 +48,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventClickAtcCartClickShop(shopId: String, shopName: String) {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_SHOP,
@@ -56,8 +56,8 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         )
     }
 
-    fun eventClickAtcCartClickProductName(productName: String?) {
-        sendEventCategoryActionLabel(
+    fun eventClickAtcCartClickProductName(productName: String) {
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_PRODUCT_NAME,
@@ -66,7 +66,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventClickAtcCartClickButtonPlus() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_BUTTON_PLUS
@@ -74,7 +74,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventClickAtcCartClickButtonMinus() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_BUTTON_MIN
@@ -82,7 +82,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventClickAtcCartClickTrashBin() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_TRASH_BIN
@@ -90,7 +90,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventClickAtcCartClickArrowBack() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_ARROW_BACK
@@ -98,7 +98,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventClickAtcCartClickBelanjaSekarangOnEmptyCart() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_BELANJA_SEKARANG_ON_EMPTY_CART
@@ -106,7 +106,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventViewAtcCartImpressionCartEmpty() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.VIEW_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.IMPRESSION_CART_EMPTY
@@ -115,7 +115,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
 
     @Deprecated("")
     fun eventClickAtcCartClickArrowBackFromHapus() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_ARROW_BACK_FROM_HAPUS
@@ -123,15 +123,15 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventClickAtcCartClickTulisCatatan() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_TULIS_CATATAN
         )
     }
 
-    fun eventClickAtcCartClickInputQuantity(qty: String?) {
-        sendEventCategoryActionLabel(
+    fun eventClickAtcCartClickInputQuantity(qty: String) {
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_INPUT_QUANTITY,
@@ -141,7 +141,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
 
     @Deprecated("")
     fun eventClickAtcCartClickXFromGunakanKodePromoAtauKupon() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_X_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON
@@ -149,7 +149,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventViewAtcCartImpressionOnPopUpKupon() {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.VIEW_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.IMPRESSION_ON_POP_UP_KUPON,
@@ -259,7 +259,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
 
     //PHASE 2
     fun eventClickCheckoutCartClickCheckoutFailed() {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_CHECKOUT,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_CHECKOUT,
@@ -268,7 +268,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventClickCouponCartClickGunakanKodeFormGunakanKodePromoAtauKuponSuccess() {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COUPON,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_KODE_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
@@ -277,7 +277,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventClickCouponCartClickGunakanKodeFormGunakanKodePromoAtauKuponFailed() {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COUPON,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_KODE_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
@@ -286,7 +286,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventClickCouponCartClickKuponFromGunakanKodePromoAtauKuponSuccess() {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COUPON,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_KUPON_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
@@ -295,7 +295,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventClickCouponCartClickKuponFromGunakanKodePromoAtauKuponFailed() {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COUPON,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_KUPON_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
@@ -378,7 +378,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventViewCartListFinishRender() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.VIEW_CART,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.VIEW_CART_LIST
@@ -448,7 +448,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventClickMoreLikeThis() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_MORE_LIKE_THIS
@@ -456,7 +456,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventViewErrorWhenCheckout(errorMessage: String) {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.VIEW_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.VIEW_ERROR_ON_CHECKOUT,
@@ -464,8 +464,8 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         )
     }
 
-    fun eventViewInformationAndWarningTickerInCart(tickerId: String?) {
-        sendEventCategoryActionLabel(
+    fun eventViewInformationAndWarningTickerInCart(tickerId: String) {
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.VIEW_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.VIEW_INFORMATION_AND_WARNING_TICKER_IN_CART,
@@ -474,7 +474,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventClickAddWishlistOnProductRecommendation() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION
@@ -482,7 +482,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventClickAddWishlistOnProductRecommendationEmptyCart() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_EMPTY_CART
@@ -490,7 +490,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventClickRemoveWishlistOnProductRecommendation() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION
@@ -498,7 +498,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventClickRemoveWishlistOnProductRecommendationEmptyCart() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION_EMPTY_CART
@@ -519,8 +519,8 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         sendEnhancedEcommerce(dataLayer)
     }
 
-    fun eventAddWishlistAvailableSection(isEmptyCart: Boolean, productId: String?) {
-        sendEventCategoryActionLabel(
+    fun eventAddWishlistAvailableSection(isEmptyCart: Boolean, productId: String) {
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CART,
                 if (isEmptyCart) ConstantTransactionAnalytics.EventCategory.EMPTY_CART else ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.ADD_WISHLIST_AVAILABLE_SECTION,
@@ -528,8 +528,8 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         )
     }
 
-    fun eventAddWishlistUnavailableSection(isEmptyCart: Boolean, productId: String?) {
-        sendEventCategoryActionLabel(
+    fun eventAddWishlistUnavailableSection(isEmptyCart: Boolean, productId: String) {
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CART,
                 if (isEmptyCart) ConstantTransactionAnalytics.EventCategory.EMPTY_CART else ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.ADD_WISHLIST_UNAVAILABLE_SECTION,
@@ -537,8 +537,8 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         )
     }
 
-    fun eventRemoveWishlistUnvailableSection(isEmptyCart: Boolean, productId: String?) {
-        sendEventCategoryActionLabel(
+    fun eventRemoveWishlistUnvailableSection(isEmptyCart: Boolean, productId: String) {
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CART,
                 if (isEmptyCart) ConstantTransactionAnalytics.EventCategory.EMPTY_CART else ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.REMOVE_WISHLIST_UNAVAILABLE_SECTION,
@@ -546,8 +546,8 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         )
     }
 
-    fun eventAddWishlistLastSeenSection(isEmptyCart: Boolean, productId: String?) {
-        sendEventCategoryActionLabel(
+    fun eventAddWishlistLastSeenSection(isEmptyCart: Boolean, productId: String) {
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CART,
                 if (isEmptyCart) ConstantTransactionAnalytics.EventCategory.EMPTY_CART else ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.ADD_WISHLIST_LAST_SEEN,
@@ -555,8 +555,8 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         )
     }
 
-    fun eventRemoveWishlistLastSeenSection(isEmptyCart: Boolean, productId: String?) {
-        sendEventCategoryActionLabel(
+    fun eventRemoveWishlistLastSeenSection(isEmptyCart: Boolean, productId: String) {
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CART,
                 if (isEmptyCart) ConstantTransactionAnalytics.EventCategory.EMPTY_CART else ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.REMOVE_WISHLIST_LAST_SEEN,
@@ -564,8 +564,8 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         )
     }
 
-    fun eventAddWishlistWishlistsSection(isEmptyCart: Boolean, productId: String?) {
-        sendEventCategoryActionLabel(
+    fun eventAddWishlistWishlistsSection(isEmptyCart: Boolean, productId: String) {
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CART,
                 if (isEmptyCart) ConstantTransactionAnalytics.EventCategory.EMPTY_CART else ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.ADD_WISHLIST_WISHLIST,
@@ -573,8 +573,8 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         )
     }
 
-    fun eventRemoveWishlistWishlistsSection(isEmptyCart: Boolean, productId: String?) {
-        sendEventCategoryActionLabel(
+    fun eventRemoveWishlistWishlistsSection(isEmptyCart: Boolean, productId: String) {
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CART,
                 if (isEmptyCart) ConstantTransactionAnalytics.EventCategory.EMPTY_CART else ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.REMOVE_WISHLIST_WISHLIST,
@@ -583,7 +583,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventClickBrowseButtonOnTickerProductContainTobacco() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_BROWSE_BUTTON_ON_TICKER_PRODUCT_CONTAIN_TOBACCO
@@ -591,7 +591,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventViewTickerProductContainTobacco() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.VIEW_ATC_IRIS,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.VIEW_TICKER_PRODUCT_CONTAIN_TOBACCO
@@ -599,7 +599,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventClickHapusButtonOnProductContainTobacco() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_HAPUS_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO
@@ -607,7 +607,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventClickTrashIconButtonOnProductContainTobacco() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_TRASH_ICON_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO
@@ -615,12 +615,12 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     // Cart Revamp
-    fun eventViewRemainingStockInfo(userId: String, productId: String?) {
+    fun eventViewRemainingStockInfo(userId: String, productId: String) {
         val gtmData = getGtmData(
                 ConstantTransactionAnalytics.EventName.VIEW_ATC_IRIS,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.VIEW_REMAINING_STOCK_INFO,
-                productId!!
+                productId
         )
         gtmData[ExtraKey.USER_ID] = userId
         sendGeneralEvent(gtmData)
@@ -736,7 +736,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         sendGeneralEvent(gtmData)
     }
 
-    fun eventViewErrorPageWhenLoadCart(userId: String, errorType: String?) {
+    fun eventViewErrorPageWhenLoadCart(userId: String, errorType: String) {
         val gtmData = getGtmData(
                 ConstantTransactionAnalytics.EventName.VIEW_ATC_IRIS,
                 ConstantTransactionAnalytics.EventCategory.CART,
@@ -818,7 +818,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
 
     // Global checkbox resurrection
     fun eventCheckUncheckGlobalCheckbox(isCheck: Boolean) {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_CHECKOUT,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_PILIH_SEMUA_PRODUK,
@@ -827,7 +827,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     fun eventClickGlobalDelete() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_HAPUS_ON_TOP_RIGHT_CORNER
@@ -835,12 +835,12 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     }
 
     // TokoNow
-    fun eventViewToasterErrorInCartPage(errorMessage: String?) {
+    fun eventViewToasterErrorInCartPage(errorMessage: String) {
         val gtmData = getGtmData(
                 ConstantTransactionAnalytics.EventName.VIEW_CART_IRIS,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.VIEW_TOASTER_ERROR_IN_CART_PAGE,
-                errorMessage!!
+                errorMessage
         )
         gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
@@ -859,36 +859,36 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         sendGeneralEvent(gtmData)
     }
 
-    fun eventClickCollapsedProductImage(shopId: String?) {
+    fun eventClickCollapsedProductImage(shopId: String) {
         val gtmData = getGtmData(
                 ConstantTransactionAnalytics.EventName.CLICK_CART,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_ON_PRODUCT_IMAGE_ON_COLLAPSE_VIEW,
-                shopId!!
+                shopId
         )
         gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
         sendGeneralEvent(gtmData)
     }
 
-    fun eventClickLihatSelengkapnyaOnNowProduct(shopId: String?) {
+    fun eventClickLihatSelengkapnyaOnNowProduct(shopId: String) {
         val gtmData = getGtmData(
                 ConstantTransactionAnalytics.EventName.CLICK_CART,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_LIHAT_SELENGKAPNYA_FOR_NOW_PRODUCT,
-                shopId!!
+                shopId
         )
         gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
         sendGeneralEvent(gtmData)
     }
 
-    fun eventClickLihatOnPlusLainnyaOnNowProduct(shopId: String?) {
+    fun eventClickLihatOnPlusLainnyaOnNowProduct(shopId: String) {
         val gtmData = getGtmData(
                 ConstantTransactionAnalytics.EventName.CLICK_CART,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_LIHAT_ON_PLUS_LAINNYA_ON_NOW_PRODUCT,
-                shopId!!
+                shopId
         )
         gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
@@ -898,7 +898,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     // Bundling
     // TrackerId: 21780
     fun eventClickUbahInProductBundlingPackageProductCard(bundlingId: String, bundlingType: String) {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_UBAH_IN_PRODUCT_BUNDLING_PACKAGE_PRODUCT_CARD,
@@ -908,7 +908,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
 
     // TrackerId: 21781
     fun eventClickMoreLikeThisOnBundleProduct(bundlingId: String, bundlingType: String) {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_LIHAT_BARANG_SERUPA_FOR_UNAVAILABLE_BUNDLE_PACKAGE,

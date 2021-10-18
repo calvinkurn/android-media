@@ -11,7 +11,7 @@ import javax.inject.Inject
  */
 class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnalytics() {
     fun eventClickAtcCourierSelectionClickBackArrow() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_BACK_ARROW
@@ -19,7 +19,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventClickAtcCourierSelectionClickGantiAlamatAtauKirimKeBeberapaAlamat() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_GANTI_ALAMAT_ATAU_KIRIM_KE_BEBERAPA_ALAMAT
@@ -27,7 +27,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventClickAtcCourierSelectionClickKuponSayaFromGunakanKodePromoAtauKupon() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_KUPON_SAYA_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON
@@ -35,7 +35,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventClickAtcCourierSelectionClickKodePromoFromGunakanKodePromoAtauKupon() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_KODE_PROMO_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON
@@ -43,7 +43,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventClickAtcCourierSelectionClickSubtotal() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_SUBTOTAL
@@ -51,7 +51,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventClickAtcCourierSelectionClickAsuransiPengiriman() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_ASURANSI_PENGIRIMAN
@@ -59,7 +59,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventClickAtcCourierSelectionClickDropship() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_DROPSHIP
@@ -68,7 +68,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
 
     @Deprecated("")
     fun eventClickAtcCourierSelectionClickKuponFromGunakanKodePromoAtauKupon() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_KUPON_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON
@@ -76,7 +76,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess(errorMessage: String) {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
@@ -85,7 +85,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventViewAtcCourierSelectionImpressionOnPopUpKupon() {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.VIEW_ATC,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.IMPRESSION_ON_POP_UP_KUPON,
@@ -95,7 +95,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
 
     @Deprecated("")
     fun eventClickAtcCourierSelectionClickGunakanKodeFormGunakanKodePromoAtauKupon() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_KODE_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON
@@ -121,7 +121,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventClickCourierSelectionClickBackArrowFromGunakanKodePromoAtauKupon() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_BACK_ARROW_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON
@@ -160,7 +160,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventClickCourierSelectionClickPilihAlamatLain() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_PILIH_ALAMAT_LAIN
@@ -168,7 +168,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventClickCourierSelectionClickTopDonasi() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_TOP_DONASI
@@ -177,7 +177,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
 
     //PHASE 2
     fun eventClickCouponCourierSelectionClickGunakanKodeFormGunakanKodePromoAtauKuponSuccess() {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COUPON,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_KODE_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
@@ -186,7 +186,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventClickCouponCourierSelectionClickGunakanKodeFormGunakanKodePromoAtauKuponFailed() {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COUPON,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_KODE_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
@@ -195,7 +195,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventClickCouponCourierSelectionClickKuponFromGunakanKodePromoAtauKuponSuccess() {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COUPON,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_KUPON_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
@@ -204,7 +204,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventClickCouponCourierSelectionClickKuponFromGunakanKodePromoAtauKuponFailed() {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COUPON,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_KUPON_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
@@ -213,7 +213,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventClickBuyCourierSelectionClickPilihMetodePembayaranCourierNotComplete() {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_BUY,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
@@ -222,7 +222,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventClickBuyPromoRedState() {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_BUY,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
@@ -231,7 +231,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventClickBuyCourierSelectionClickBayarFailedDropshipper() {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_BUY,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_BAYAR,
@@ -241,7 +241,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
 
     //Robin Hood
     fun eventClickCourierCourierSelectionClickXPadaDurasiPengiriman() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_X_PADA_DURASI_PENGIRIMAN
@@ -276,7 +276,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventClickCourierCourierSelectionClickXPadaKurirPengiriman() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_X_PADA_KURIR_PENGIRIMAN
@@ -284,7 +284,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventClickCourierCourierSelectionClickUbahDurasi() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_UBAH_DURASI
@@ -293,7 +293,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
 
     // Year End Promo
     fun eventViewPreselectedCourierOption(shippingProductId: Int) {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.VIEW_COURIER,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.VIEW_PRESELECTED_COURIER_OPTION, shippingProductId.toString())
@@ -301,7 +301,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
 
     fun eventViewDuration(isCourierPromo: Boolean, duration: String) {
         val eventLabel = if (isCourierPromo) ConstantTransactionAnalytics.EventLabel.PROMO + ConstantTransactionAnalytics.EventLabel.SEPARATOR + duration else ConstantTransactionAnalytics.EventLabel.NON_PROMO + ConstantTransactionAnalytics.EventLabel.SEPARATOR + duration
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.VIEW_COURIER,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.VIEW_DURATION,
@@ -311,7 +311,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
 
     fun eventViewCourierOption(isCourierPromo: Boolean, shippingProductId: Int) {
         val eventLabel = if (isCourierPromo) ConstantTransactionAnalytics.EventLabel.PROMO + ConstantTransactionAnalytics.EventLabel.SEPARATOR + shippingProductId else ConstantTransactionAnalytics.EventLabel.NON_PROMO + ConstantTransactionAnalytics.EventLabel.SEPARATOR + shippingProductId
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.VIEW_COURIER,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.VIEW_COURIER_OPTION,
@@ -325,7 +325,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
                 + ConstantTransactionAnalytics.EventLabel.SEPARATOR + (if (isCod) ConstantTransactionAnalytics.EventLabel.COD else "")
                 + ConstantTransactionAnalytics.EventLabel.SEPARATOR + shippingPriceMin
                 + ConstantTransactionAnalytics.EventLabel.SEPARATOR + shippingPriceHigh)
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
@@ -337,7 +337,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         val eventLabel = ((if (isCourierPromo) ConstantTransactionAnalytics.EventLabel.PROMO else ConstantTransactionAnalytics.EventLabel.NON_PROMO)
                 + ConstantTransactionAnalytics.EventLabel.SEPARATOR + shippingProductId
                 + ConstantTransactionAnalytics.EventLabel.SEPARATOR + if (isCod) ConstantTransactionAnalytics.EventLabel.COD else "")
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_CHANGE_COURIER_OPTION,
@@ -398,7 +398,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventCancelPromoStackingLogistic() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 "",
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_X_ON_PROMO_STACKING_LOGISTIC
@@ -417,7 +417,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
 
     fun eventClickLanjutkanTerapkanPromoError(errorMsg: String) {
         val label = ConstantTransactionAnalytics.EventLabel.ERROR + " - " + errorMsg
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_LANJUTKAN_TERAPKAN_PROMO,
@@ -427,7 +427,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
 
     // Promo not eligible bottomsheet
     fun eventClickLanjutkanOnErrorPromoConfirmation() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_LANJUTKAN_ON_ERROR_PROMO_CONFIRMATION
@@ -435,7 +435,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventClickBatalOnErrorPromoConfirmation() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_BATAL_ON_ERROR_PROMO_CONFIRMATION
@@ -443,7 +443,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventViewPopupErrorPromoConfirmation() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.VIEW_COURIER,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.VIEW_POP_UP_ERROR_PROMO_CONFIRMATION
@@ -460,7 +460,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventViewCourierImpressionErrorCourierNoAvailable() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.VIEW_COURIER,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.IMPRESSION_ERROR_COURIER_NO_AVAILABLE
@@ -468,7 +468,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventViewHelpPopUpAfterErrorInCheckout() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.VIEW_COURIER,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.VIEW_HELP_POP_UP_AFTER_ERROR_IN_CHECKOUT
@@ -476,7 +476,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventClickReportOnHelpPopUpInCheckout() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_REPORT_ON_HELP_POP_UP_IN_CHECKOUT
@@ -484,7 +484,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventClickCloseOnHelpPopUpInCheckout() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_CLOSE_ON_HELP_POP_UP_IN_CHECKOUT
@@ -526,7 +526,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     }
 
     fun eventClickCheckboxDonation(check: Boolean) {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_DONATION,

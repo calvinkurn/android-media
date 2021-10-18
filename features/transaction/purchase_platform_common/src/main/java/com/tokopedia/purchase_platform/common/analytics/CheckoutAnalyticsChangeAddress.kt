@@ -7,7 +7,7 @@ import javax.inject.Inject
  */
 class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytics() {
     fun eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_TAMBAH_ALAMAT_BARU_FROM_GANTI_ALAMAT
@@ -15,7 +15,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickAtcCartChangeAddressClickUbahFromPilihAlamatLainnya() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_UBAH_FROM_PILIH_ALAMAT_LAINNYA
@@ -23,7 +23,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickAtcCartChangeAddressClickChecklistAlamatFromPilihAlamatLainnya() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_ALAMAT_FROM_PILIH_ALAMAT_LAINNYA
@@ -31,7 +31,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventViewAtcCartChangeAddressImpressionChangeAddress() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.VIEW_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.IMPRESSION_CHANGE_ADDRESS
@@ -39,7 +39,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickAtcCartChangeAddressCartChangeAddressSubmitSearchFromPilihAlamatLainnya() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.SUBMIT_SEARCH_FROM_PILIH_ALAMAT_LAINNYA
@@ -47,7 +47,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickAtcCartChangeAddressClickArrowBackFromGantiAlamat() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_ARROW_BACK_FROM_GANTI_ALAMAT
@@ -55,7 +55,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_TAMBAH_FROM_ALAMAT_PENGIRIMAN
@@ -63,7 +63,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickShippingCartChangeAddressClickKotaAtauKecamatanPadaTambahAddress() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_KOTA_ATAU_KECAMATAN_PADA_TAMBAH_ADDRESS
@@ -71,7 +71,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickShippingCartChangeAddressClickKodePosPadaTambahAddress() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_KODE_POS_PADA_TAMBAH_ADDRESS
@@ -79,15 +79,15 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickShippingCartChangeAddressClickTandaiLokasiPadaTambahAddress() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_TANDAI_LOKASI_PADA_TAMBAH_ADDRESS
         )
     }
 
-    fun eventClickShippingCartChangeAddressClickChecklistKotaAtauKecamatanPadaTambahAddress(districtName: String?) {
-        sendEventCategoryActionLabel(
+    fun eventClickShippingCartChangeAddressClickChecklistKotaAtauKecamatanPadaTambahAddress(districtName: String) {
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_KOTA_ATAU_KECAMATAN_PADA_TAMBAH_ADDRESS,
@@ -96,7 +96,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickShippingCartChangeAddressClickXPojokKananKotaAtauKecamatanPadaTambahAddress() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_X_POJOK_KANAN_KOTA_ATAU_KECAMATAN_PADA_TAMBAH_ADDRESS
@@ -104,7 +104,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickShippingCartChangeAddressClickXPojokKiriKotaAtauKecamatanPadaTambahAddress() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_X_POJOK_KIRI_KOTA_ATAU_KECAMATAN_PADA_TAMBAH_ADDRESS
@@ -112,15 +112,15 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickShippingCartChangeAddressClickChecklistKodePosPAdaTambahAddress() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_KODE_POS_PADA_TAMBAH_ADDRESS
         )
     }
 
-    fun eventClickShippingCartChangeAddressClickFillKodePosPadaTambahAddress(eventLabel: String?) {
-        sendEventCategoryActionLabel(
+    fun eventClickShippingCartChangeAddressClickFillKodePosPadaTambahAddress(eventLabel: String) {
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_FILL_KODE_POS_PADA_TAMBAH_ADDRESS,
@@ -128,8 +128,8 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
         )
     }
 
-    fun eventViewShippingCartChangeAddressViewValidationErrorNotFill(errorMessage: String?) {
-        sendEventCategoryActionLabel(
+    fun eventViewShippingCartChangeAddressViewValidationErrorNotFill(errorMessage: String) {
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.VIEW_SHIPPING,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.VIEW_VALIDATION_ERROR_NOT_FILL,
@@ -138,7 +138,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickShippingCartChangeAddressClickDropdownSuggestionTandaiLokasiPadaTambahAddress() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_DROPDOWN_SUGGESTION_TANDAI_LOKASI_PADA_TAMBAH_ADDRESS
@@ -146,7 +146,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickShippingCartChangeAddressClickVTandaiLokasiPadaTambahAddress() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_V_TANDAI_LOKASI_PADA_TAMBAH_ADDRESS
@@ -154,7 +154,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickShippingCartChangeAddressClickBackArrowTandaiLokasiPadaTambahAddress() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_BACK_ARROW_TANDAI_LOKASI_PADA_TAMBAH_ADDRESS
@@ -162,15 +162,15 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickShippingCartChangeAddressClickPinButtonFromTandaiLokasi() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_PIN_BUTTON_FROM_TANDAI_LOKASI
         )
     }
 
-    fun eventViewShippingCartChangeAddressViewValidationErrorTandaiLokasi(errorMessage: String?) {
-        sendEventCategoryActionLabel(
+    fun eventViewShippingCartChangeAddressViewValidationErrorTandaiLokasi(errorMessage: String) {
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.VIEW_SHIPPING,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.VIEW_VALIDATION_ERROR_TANDAI_LOKASI,
@@ -179,7 +179,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickShippingCartChangeAddressClickRadioButtonFromPilihAlamatLainnya() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_SHIPPING,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_RADIO_BUTTON_FROM_PILIH_ALAMAT_LAINNYA
@@ -187,7 +187,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickCourierCartChangeAddressClickAlamatSebagaiPadaTambahAddress() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS
@@ -195,7 +195,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickCourierCartChangeAddressClickChecklistAlamatSebagaiPadaTambahAddress() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS
@@ -203,7 +203,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickCourierCartChangeAddressClickNamaPadaTambahAddress() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_NAMA_PADA_TAMBAH_ADDRESS
@@ -211,7 +211,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickCourierCartChangeAddressClickTeleponPadaTambahAddress() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_TELEPON_PADA_TAMBAH_ADDRESS
@@ -219,7 +219,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickCourierCartChangeAddressClickAlamatPadaTambahAddress() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_ALAMAT_PADA_TAMBAH_ADDRESS
@@ -227,7 +227,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahAddress() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS
@@ -235,7 +235,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickCourierCartChangeAddressErrorValidationNamaPadaTambahAddress() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS
@@ -243,7 +243,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickCourierCartChangeAddressErrorValidationTeleponPadaTambahAddress() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.VALIDATION_ERROR_TELEPON_PADA_TAMBAH_ADDRESS
@@ -251,7 +251,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickCourierCartChangeAddressErrorValidationKotaKecamatanPadaTambahAddress() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.VALIDATION_ERROR_KOTA_KECAMATAN_PADA_TAMBAH_ADDRESS
@@ -259,7 +259,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickCourierCartChangeAddressErrorValidationKodePosPadaTambahAddress() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.VALIDATION_ERROR_KODE_POS_PADA_TAMBAH_ADDRESS
@@ -267,7 +267,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickCourierCartChangeAddressErrorValidationAlamatPadaTambahAddress() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.VALIDATION_ERROR_ALAMAT_PADA_TAMBAH_ADDRESS
@@ -275,7 +275,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahSuccess() {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_TAMBAH_ALAMAT_FROM_TAMBAH,
@@ -284,7 +284,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahNotSuccess() {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_TAMBAH_ALAMAT_FROM_TAMBAH,
@@ -293,7 +293,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventSearchResultNotFound(query: String) {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ADDRESS,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.SEARCH_NOT_FOUND,
@@ -304,7 +304,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     //PHASE 2
 
     fun eventClickAddressCartChangeAddressCartChangeAddressSubmitSearchFromPilihAlamatLainnya() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ADDRESS,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.SUBMIT_SEARCH_FROM_PILIH_ALAMAT_LAINNYA
@@ -312,7 +312,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickAddressCartChangeAddressClickButtonSimpanFromEditSuccess() {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ADDRESS,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_BUTTON_SIMPAN_FROM_EDIT,
@@ -321,7 +321,7 @@ class CheckoutAnalyticsChangeAddress @Inject constructor() : TransactionAnalytic
     }
 
     fun eventClickAddressCartChangeAddressClickButtonSimpanFromEditNotSuccess() {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ADDRESS,
                 ConstantTransactionAnalytics.EventCategory.CART_CHANGE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_BUTTON_SIMPAN_FROM_EDIT,

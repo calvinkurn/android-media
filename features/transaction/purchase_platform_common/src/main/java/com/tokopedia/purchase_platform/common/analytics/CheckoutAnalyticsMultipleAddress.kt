@@ -7,7 +7,7 @@ import javax.inject.Inject
  */
 class CheckoutAnalyticsMultipleAddress @Inject constructor() : TransactionAnalytics() {
     fun eventClickAddressCartMultipleAddressClickPlusFromMultiple() {
-        sendEventCategoryAction(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ADDRESS,
                 ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_PLUS_FROM_MULTIPLE
@@ -15,7 +15,7 @@ class CheckoutAnalyticsMultipleAddress @Inject constructor() : TransactionAnalyt
     }
 
     fun eventClickAddressCartMultipleAddressClickButtonSimpanSuccess() {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ADDRESS,
                 ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_BUTTON_SIMPAN,
@@ -24,7 +24,7 @@ class CheckoutAnalyticsMultipleAddress @Inject constructor() : TransactionAnalyt
     }
 
     fun eventClickAddressCartMultipleAddressClickButtonSimpanNotSuccess() {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ADDRESS,
                 ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_BUTTON_SIMPAN,
@@ -33,7 +33,7 @@ class CheckoutAnalyticsMultipleAddress @Inject constructor() : TransactionAnalyt
     }
 
     fun eventClickAddressCartMultipleAddressClickButtonSimpanFromEditSuccess() {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ADDRESS,
                 ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_BUTTON_SIMPAN_FROM_EDIT,
@@ -42,7 +42,7 @@ class CheckoutAnalyticsMultipleAddress @Inject constructor() : TransactionAnalyt
     }
 
     fun eventClickAddressCartMultipleAddressClickButtonSimpanFromEditNotSuccess() {
-        sendEventCategoryActionLabel(
+        sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ADDRESS,
                 ConstantTransactionAnalytics.EventCategory.CART_MULTIPLE_ADDRESS,
                 ConstantTransactionAnalytics.EventAction.CLICK_BUTTON_SIMPAN_FROM_EDIT,

@@ -34,6 +34,11 @@ abstract class TransactionAnalytics {
         )
     }
 
+    protected fun sendGeneralEvent(eventData: Map<String, Any>) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventData)
+    }
+
+    @Deprecated("This method is not optimized for kotlin", ReplaceWith("sendGeneralEvent()"))
     protected fun sendEventCategoryActionLabel(event: String, eventCategory: String,
                                                eventAction: String, eventLabel: String?) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
@@ -41,6 +46,7 @@ abstract class TransactionAnalytics {
         )
     }
 
+    @Deprecated("This method is not optimized for kotlin", ReplaceWith("sendGeneralEvent()"))
     protected fun sendEventCategoryAction(event: String, eventCategory: String,
                                           eventAction: String) {
         sendEventCategoryActionLabel(event, eventCategory, eventAction, "")
@@ -52,10 +58,6 @@ abstract class TransactionAnalytics {
 
     protected fun sendEnhancedEcommerce(eventName: String, bundle: Bundle) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventName, bundle)
-    }
-
-    protected fun sendGeneralEvent(eventData: Map<String, Any>) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(eventData)
     }
 
     protected fun getGtmData(event: String, eventCategory: String,
