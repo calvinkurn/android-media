@@ -277,8 +277,13 @@ object UriUtil {
         val stringBuilder = StringBuilder(uri)
         if (queryParameters != null && queryParameters.isNotEmpty()) {
             stringBuilder.append("?")
+            var queryCounter = 0
             for ((key, value) in queryParameters) {
+                if (queryCounter > 0) {
+                    stringBuilder.append("&")
+                }
                 stringBuilder.append(key).append("=").append(value)
+                queryCounter++
             }
         }
         return stringBuilder.toString()

@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.data.PieData
@@ -12,27 +12,28 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.tokopedia.charts.R
 import com.tokopedia.charts.config.PieChartConfig
+import com.tokopedia.charts.databinding.ViewPieChartBinding
 import com.tokopedia.charts.model.PieChartConfigModel
 import com.tokopedia.charts.model.PieChartEntry
 import com.tokopedia.charts.view.adapter.PieChartLegendAdapter
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import kotlinx.android.synthetic.main.view_pie_chart.view.*
 
 /**
  * Created By @ilhamsuaib on 07/07/20
  */
 
 class PieChartView(
-        context: Context,
-        attrs: AttributeSet?
+    context: Context,
+    attrs: AttributeSet?
 ) : LinearLayout(context, attrs) {
 
     companion object {
         const val SIZE_UNDEFINED = -3
     }
 
+    private var binding: ViewPieChartBinding? = null
     var config: PieChartConfigModel = PieChartConfig.getDefaultConfig()
         private set
 
@@ -41,7 +42,9 @@ class PieChartView(
     }
 
     init {
-        View.inflate(context, R.layout.view_pie_chart, this)
+        binding = ViewPieChartBinding.inflate(
+            LayoutInflater.from(context), this, true
+        )
     }
 
     fun init(config: PieChartConfigModel? = null) {
@@ -78,40 +81,43 @@ class PieChartView(
             it.setDrawValues(config.showXValueEnabled)
         }
 
-        pieChart.data = mData
+        binding?.pieChart?.data = mData
 
         if (config.legendEnabled) {
-            rvPieChartLegend.visible()
+            binding?.rvPieChartLegend?.visible()
             legendAdapter.setLegends(chartEntries)
         } else {
-            rvPieChartLegend.gone()
+            binding?.rvPieChartLegend?.gone()
         }
 
         setOnEmpty(chartEntries)
     }
 
     private fun setOnEmpty(chartEntries: List<PieChartEntry>) {
-        val isEmpty = chartEntries.sumBy { it.value } == 0
-        if (isEmpty) {
-            pieChart.gone()
-            vPieChartEmpty.visible()
+        binding?.run {
+            val isEmpty = chartEntries.sumOf { it.value } == 0
+            if (isEmpty) {
+                pieChart.gone()
+                vPieChartEmpty.visible()
 
-            val emptyDrawableRes: Drawable? = context.getResDrawable(R.drawable.shape_charts_pie_empty)
-            emptyDrawableRes?.let {
-                vPieChartEmpty.background = it
+                val emptyDrawableRes: Drawable? =
+                    context.getResDrawable(R.drawable.shape_charts_pie_empty)
+                emptyDrawableRes?.let {
+                    vPieChartEmpty.background = it
+                }
+            } else {
+                pieChart.visible()
+                vPieChartEmpty.gone()
             }
-        } else {
-            pieChart.visible()
-            vPieChartEmpty.gone()
         }
     }
 
     fun invalidateChart() {
-        pieChart.invalidate()
+        binding?.pieChart?.invalidate()
     }
 
     private fun setupLegend() {
-        rvPieChartLegend.run {
+        binding?.rvPieChartLegend?.run {
             layoutManager = object : LinearLayoutManager(context) {
                 override fun canScrollVertically(): Boolean = false
             }
@@ -119,7 +125,7 @@ class PieChartView(
         }
     }
 
-    private fun setupPieChart() = with(pieChart) {
+    private fun setupPieChart() = binding?.pieChart?.run {
         description.isEnabled = false
         setDrawCenterText(false)
         setDrawEntryLabels(config.showYValueEnabled)
@@ -152,7 +158,7 @@ class PieChartView(
         setupDonutChart()
     }
 
-    private fun setupDonutChart() = with(pieChart) {
+    private fun setupDonutChart() = binding?.pieChart?.run {
         if (config.donutStyleConfig.isEnabled) {
             isDrawHoleEnabled = true
 
@@ -167,7 +173,7 @@ class PieChartView(
         }
     }
 
-    private fun setupAnimation() = with(pieChart) {
+    private fun setupAnimation() = binding?.pieChart?.run{
         when {
             (config.xAnimationDuration > 0 && config.yAnimationDuration > 0) -> {
                 animateXY(config.xAnimationDuration, config.yAnimationDuration)
