@@ -8,6 +8,7 @@ object WishlistV2Consts {
     const val TYPE_GRID = "grid"
     const val TYPE_LOADER_LIST = "loader_list"
     const val TYPE_LOADER_GRID = "loader_grid"
+    const val TYPE_EMPTY_STATE = "empty_state"
 
     const val PARAMS = "params"
 }

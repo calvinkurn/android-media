@@ -52,6 +52,7 @@ import com.tokopedia.wishlist.databinding.FragmentWishlistV2Binding
 import com.tokopedia.wishlist.di.DaggerWishlistV2Component
 import com.tokopedia.wishlist.di.WishlistV2Module
 import com.tokopedia.wishlist.util.WishlistUtils
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_STATE
 import com.tokopedia.wishlist.util.WishlistV2LayoutPreference
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 import com.tokopedia.wishlist.view.adapter.WishlistV2FilterBottomSheetAdapter
@@ -260,6 +261,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                             renderWishlist(wishlistV2.items)
 
                         } else {
+                            hideLoader()
                             renderEmpty()
                         }
                     }
@@ -278,21 +280,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             wishlistCountLabel.text = getString(R.string.wishlist_count_label, totalData)
 
     private fun renderEmpty() {
-        val itemParam = { view: View, data: Any ->
-            val img = view.findViewById<ImageUnify>(R.id.empty_state_img)
-            val text = view.findViewById<Typography>(R.id.empty_state_desc)
-
-            img.setImageDrawable(MethodChecker.getDrawable(requireActivity(), (data as WishlistV2EmptyStateData).img))
-            text.text = data.desc
+        val emptyData = arrayListOf<WishlistV2TypeLayoutData>().apply {
+            add(WishlistV2TypeLayoutData("",  TYPE_EMPTY_STATE))
         }
-
-        val items = ArrayList<Any>().apply {
-            add(WishlistV2EmptyStateData(R.drawable.ic_wishlist_empty_state_1, "Mau simpan barang untuk beli nanti? Bandingkan harga dan spesifikasinya? Di sini tempatnya!"))
-            add(WishlistV2EmptyStateData(R.drawable.ic_wishlist_empty_state_2, "Lagi lihat-lihat, ada barang yang kamu suka? Klik ikon hati buat simpan di Wishlist."))
-            add(WishlistV2EmptyStateData(R.drawable.ic_wishlist_empty_state_3, "Akses Wishlist-mu kapan saja, masuk dari menu navigasi dan halaman Keranjang."))
-
-        }
-        binding?.apply {
+        binding?.run {
             wishlistNavtoolbar.visibility = View.GONE
             rvWishlist.visibility = View.GONE
             clWishlistHeader.visibility = View.GONE
@@ -307,6 +298,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             infinite = false
             addItems(R.layout.wishlist_empty_state_layout, items, itemParam)
         }
+        wishlistV2Adapter.addList(emptyData)
     }
 
     private fun showLoader() {

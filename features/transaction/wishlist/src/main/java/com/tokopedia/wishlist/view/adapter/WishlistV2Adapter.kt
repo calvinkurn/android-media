@@ -4,13 +4,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
+import com.tokopedia.wishlist.databinding.WishlistV2EmptyStateBinding
 import com.tokopedia.wishlist.databinding.WishlistV2ListItemBinding
 import com.tokopedia.wishlist.databinding.WishlistV2GridItemBinding
 import com.tokopedia.wishlist.databinding.WishlistV2LoaderListItemBinding
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_STATE
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_GRID
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LOADER_GRID
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LOADER_LIST
+import com.tokopedia.wishlist.view.adapter.viewholder.WishlistV2EmptyStateViewHolder
 import com.tokopedia.wishlist.view.adapter.viewholder.WishlistV2ListItemViewHolder
 import com.tokopedia.wishlist.view.adapter.viewholder.WishlistV2GridItemViewHolder
 import com.tokopedia.wishlist.view.adapter.viewholder.WishlistV2ListLoaderViewHolder
@@ -34,7 +37,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     interface ActionListener {
-
+//        fun onCariBarangClicked()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -56,6 +59,10 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 val binding = WishlistV2GridItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
                 WishlistV2GridItemViewHolder(binding, actionListener)
             }
+            LAYOUT_EMPTY_STATE -> {
+                val binding = WishlistV2EmptyStateBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                WishlistV2EmptyStateViewHolder(binding, actionListener)
+            }
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -68,6 +75,9 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }
             is WishlistV2GridItemViewHolder -> {
                 holder.bind(element, holder.adapterPosition)
+            }
+            is WishlistV2EmptyStateViewHolder -> {
+                holder.bind(element)
             }
         }
     }
@@ -82,6 +92,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             TYPE_LOADER_GRID -> LAYOUT_LOADER_GRID
             TYPE_LIST -> LAYOUT_LIST
             TYPE_GRID -> LAYOUT_GRID
+            TYPE_EMPTY_STATE -> LAYOUT_EMPTY_STATE
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
