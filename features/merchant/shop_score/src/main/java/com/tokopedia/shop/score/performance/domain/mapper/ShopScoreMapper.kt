@@ -160,7 +160,6 @@ class ShopScoreMapper @Inject constructor(
                 mapToHeaderShopPerformance(
                     shopScoreWrapperResponse.shopScoreLevelResponse?.result,
                     powerMerchantData,
-                    isOfficialStore,
                     shopAge,
                     shopInfoPeriodUiModel.dateShopCreated
                 )
@@ -170,12 +169,13 @@ class ShopScoreMapper @Inject constructor(
                 addAll(
                     mapToItemDetailPerformanceUiModel(
                         shopScoreResult.shopScoreDetail, shopAge,
-                        shopScore
+                        shopScore,
+                        shopInfoPeriodUiModel.dateShopCreated
                     )
                 )
             }
 
-            if (isShowProtectedParameter(shopAge.toInt())) {
+            if (isShowProtectedParameter(shopAge.toInt(), shopInfoPeriodUiModel.dateShopCreated)) {
                 add(getProtectedParameterSection(shopScoreResult?.shopScoreDetail, shopAge.toInt()))
             }
 
@@ -262,7 +262,6 @@ class ShopScoreMapper @Inject constructor(
     private fun mapToHeaderShopPerformance(
         shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?,
         powerMerchantResponse: GoldGetPMOStatusResponse.GoldGetPMOSStatus.Data?,
-        isOfficialStore: Boolean,
         shopAge: Long,
         dateShopCreated: String
     ): HeaderShopPerformanceUiModel {
@@ -499,7 +498,8 @@ class ShopScoreMapper @Inject constructor(
     private fun mapToItemDetailPerformanceUiModel(
         shopScoreLevelList: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?,
         shopAge: Long,
-        shopScore: Long
+        shopScore: Long,
+        dateShopCreated: String
     ): List<ItemDetailPerformanceUiModel> {
         return mutableListOf<ItemDetailPerformanceUiModel>().apply {
 
@@ -513,7 +513,8 @@ class ShopScoreMapper @Inject constructor(
                 OPEN_TOKOPEDIA_SELLER_KEY
             )
 
-            val isShowProtectedParameter = isShowProtectedParameter(shopAge.toInt())
+            val isShowProtectedParameter =
+                isShowProtectedParameter(shopAge.toInt(), dateShopCreated)
 
             val shopScoreLevelFilter =
                 shopScoreLevelList?.filter { it.identifier in multipleFilterShopScore }
@@ -909,8 +910,8 @@ class ShopScoreMapper @Inject constructor(
         )
     }
 
-    private fun isShowProtectedParameter(shopAge: Int): Boolean {
-        return shopAge in SHOP_AGE_THREE..SHOP_AGE_FIFTY_NINE
+    private fun isShowProtectedParameter(shopAge: Int, dateShopCreated: String): Boolean {
+        return shopAge in GoldMerchantUtil.getNNStartShowProtectedParameterNewSeller(dateShopCreated)..SHOP_AGE_FIFTY_NINE
     }
 
     private fun getProtectedParameterDaysDate(shopAge: Int): String {
