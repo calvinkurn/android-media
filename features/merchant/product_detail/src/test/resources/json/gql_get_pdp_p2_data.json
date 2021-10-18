@@ -1,0 +1,844 @@
+ {
+      "pdpGetData": {
+        "bebasOngkir": {
+          "images": [
+            {
+              "boType": 1,
+              "imageURL": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png",
+              "tokoCabangImageURL": ""
+            }
+          ],
+          "products": [
+            {
+              "boType": 1,
+              "productID": "518076286"
+            },
+            {
+              "boType": 1,
+              "productID": "948021897"
+            },
+            {
+              "boType": 1,
+              "productID": "518076293"
+            },
+            {
+              "boType": 1,
+              "productID": "518076287"
+            }
+          ]
+        },
+        "cartRedirection": {
+          "alternate_copy": [
+            {
+              "cart_type": "remind_me",
+              "color": "secondary_gray",
+              "text": "Cek Wishlist Kamu"
+            },
+            {
+              "cart_type": "update_cart",
+              "color": "primary_green",
+              "text": "Simpan Perubahan"
+            }
+          ],
+          "data": [
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "normal",
+                  "color": "secondary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "Beli"
+                },
+                {
+                  "cart_type": "normal",
+                  "color": "primary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": true,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "hide_floating_button": false,
+              "product_id": "518076286",
+              "unavailable_buttons": []
+            },
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "normal",
+                  "color": "secondary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "Beli"
+                },
+                {
+                  "cart_type": "normal",
+                  "color": "primary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": true,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "hide_floating_button": false,
+              "product_id": "518076287",
+              "unavailable_buttons": [
+                "byme"
+              ]
+            },
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "normal",
+                  "color": "secondary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "Beli"
+                },
+                {
+                  "cart_type": "normal",
+                  "color": "primary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": true,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "hide_floating_button": false,
+              "product_id": "518076293",
+              "unavailable_buttons": [
+                "byme"
+              ]
+            },
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "normal",
+                  "color": "secondary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "Beli"
+                },
+                {
+                  "cart_type": "normal",
+                  "color": "primary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": true,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "hide_floating_button": false,
+              "product_id": "948021897",
+              "unavailable_buttons": [
+                "byme"
+              ]
+            }
+          ],
+          "error_message": [],
+          "status": "OK"
+        },
+        "error": {
+          "Code": 0,
+          "DevMessage": "",
+          "Message": ""
+        },
+        "installmentCalculation": {
+          "data": {
+            "credit_card": [],
+            "non_credit_card": [],
+            "tnc": []
+          },
+          "message": ""
+        },
+        "installmentRecommendation": {
+          "data": {
+            "monthly_price": 0,
+            "os_monthly_price": 0,
+            "partner_code": "",
+            "subtitle": ""
+          }
+        },
+        "merchantVoucherSummary": {
+          "animatedInfo": [],
+          "isShown": false
+        },
+        "mostHelpFulReviewData": {
+          "list": [
+            {
+              "imageAttachments": [],
+              "likeDislike": {
+                "TotalDislike": 0,
+                "TotalLike": 0,
+                "isShowable": false
+              },
+              "message": "cepat sampainya... pas coba goreng telor minyak sedikit hasilnya bagus... ",
+              "productRating": 5,
+              "reviewCreateTime": "5 bulan lalu",
+              "reviewId": "365658089",
+              "user": {
+                "fullName": "Suyanto Lumbantoruan",
+                "image": "https://accounts.tokopedia.com/image/v1/u/6194395/user_thumbnail/desktop",
+                "userId": "6194395"
+              },
+              "variant": {
+                "name": "Hijau"
+              }
+            }
+          ]
+        },
+        "nearestWarehouse": [
+          {
+            "product_id": "518076286",
+            "warehouse_info": {
+              "district_id": "2286",
+              "geolocation": "-6.139826999999968,106.766233",
+              "is_fulfillment": false,
+              "postal_code": "14460",
+              "warehouse_id": "88868"
+            }
+          },
+          {
+            "product_id": "518076287",
+            "warehouse_info": {
+              "district_id": "2286",
+              "geolocation": "-6.139826999999968,106.766233",
+              "is_fulfillment": false,
+              "postal_code": "14460",
+              "warehouse_id": "88868"
+            }
+          },
+          {
+            "product_id": "518076293",
+            "warehouse_info": {
+              "district_id": "2286",
+              "geolocation": "-6.139826999999968,106.766233",
+              "is_fulfillment": false,
+              "postal_code": "14460",
+              "warehouse_id": "88868"
+            }
+          },
+          {
+            "product_id": "948021897",
+            "warehouse_info": {
+              "district_id": "2286",
+              "geolocation": "-6.139826999999968,106.766233",
+              "is_fulfillment": false,
+              "postal_code": "14460",
+              "warehouse_id": "88868"
+            }
+          }
+        ],
+        "ppGetItemDetailPage": {
+          "program": {
+            "iconURL": "",
+            "isAppLink": true,
+            "linkURL": "",
+            "partnerLogo": "",
+            "partnerText": "",
+            "protectionAvailable": false,
+            "subTitle": "",
+            "subTitlePDP": "",
+            "title": "",
+            "titlePDP": ""
+          }
+        },
+        "productView": "94932",
+        "ratesEstimate": [
+          {
+            "bottomsheet": {
+              "buttonCopy": "",
+              "iconURL": "",
+              "subtitle": "",
+              "title": ""
+            },
+            "data": {
+              "cheapestShippingPrice": 0,
+              "courierLabel": "Same Day",
+              "destination": "Dikirim ke <b>Ujung Pandang, Kota Makassar</b>",
+              "eTAText": "Estimasi tiba 22 - 25 Sep",
+              "errors": [],
+              "icon": "https://ecs7.tokopedia.net/img/pdp/info/icon/courier@3x.png",
+              "subtitle": "Kurir lainnya: ",
+              "title": "Tersedia Bebas Ongkir",
+              "totalService": 3
+            },
+            "products": [
+              "518076286",
+              "518076287",
+              "518076293",
+              "948021897",
+              "449682965"
+            ],
+            "warehouseID": "88868"
+          }
+        ],
+        "rating": {
+          "ratingScore": "4.6",
+          "totalRating": "382",
+          "totalReviewTextAndImage": "169"
+        },
+        "reputationShop": {
+          "badge": "https://ecs7.tokopedia.net/img/repsys/diamond-4.gif",
+          "badgeHD": "https://ecs7.tokopedia.net/img/repsys/diamond-4-hd.gif",
+          "score": "315.545",
+          "scoreMap": "19"
+        },
+        "restrictionInfo": {
+          "message": "",
+          "restrictionData": []
+        },
+        "reviewImage": {
+          "detail": {
+            "imageCount": "64",
+            "imageCountFmt": "Lainnya 60+",
+            "images": [
+              {
+                "description": "",
+                "imageAttachmentID": 45016337,
+                "reviewID": 454917261,
+                "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/8/17/4990714b-5e3a-48c2-8dbd-806658cea14d.jpg",
+                "uriThumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/bjFkPX/2021/8/17/4990714b-5e3a-48c2-8dbd-806658cea14d.jpg"
+              },
+              {
+                "description": "",
+                "imageAttachmentID": 31471687,
+                "reviewID": 333237415,
+                "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/2/22/8f11f945-8175-42b2-a05a-d60a41cfce9c.jpg",
+                "uriThumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/bjFkPX/2021/2/22/8f11f945-8175-42b2-a05a-d60a41cfce9c.jpg"
+              },
+              {
+                "description": "",
+                "imageAttachmentID": 31471686,
+                "reviewID": 333237415,
+                "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/2/22/2f40dac3-663a-4910-8bb5-d93fcd75c05c.jpg",
+                "uriThumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/bjFkPX/2021/2/22/2f40dac3-663a-4910-8bb5-d93fcd75c05c.jpg"
+              },
+              {
+                "description": "",
+                "imageAttachmentID": 30359106,
+                "reviewID": 323405951,
+                "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/2/5/409fd1ca-27be-4545-8489-65a00be91420.jpg",
+                "uriThumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/bjFkPX/2021/2/5/409fd1ca-27be-4545-8489-65a00be91420.jpg"
+              },
+              {
+                "description": "",
+                "imageAttachmentID": 30359105,
+                "reviewID": 323405951,
+                "uriLarge": "https://ecs7.tokopedia.net/img/cache/600/bjFkPX/2021/2/5/469ef842-5149-4fe9-9aa8-fa10cda1fb25.jpg",
+                "uriThumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/bjFkPX/2021/2/5/469ef842-5149-4fe9-9aa8-fa10cda1fb25.jpg"
+              }
+            ],
+            "reviews": [
+              {
+                "isAnonymous": true,
+                "isReportable": false,
+                "isUpdated": false,
+                "message": "cuma buat goreng telor ceplok aja lengkeeet bgt pdahal udh sesuai instruksi step nya 1-1 diikutin ",
+                "rating": 1,
+                "ratingDescription": "",
+                "reviewId": 333237415,
+                "reviewer": {
+                  "fullName": "a***s",
+                  "profilePicture": "https://ecs7.tokopedia.net/img/cache/100-square/default_v3-usrnophoto.png",
+                  "url": "",
+                  "userID": 0
+                },
+                "time_format": {
+                  "date_time_fmt1": ""
+                },
+                "updateTime": 0
+              },
+              {
+                "isAnonymous": true,
+                "isReportable": false,
+                "isUpdated": false,
+                "message": "pengiriman cepat, ukuran pas, bahan kuat dan kokoh, harga terjangkau",
+                "rating": 5,
+                "ratingDescription": "",
+                "reviewId": 323405951,
+                "reviewer": {
+                  "fullName": "V***a",
+                  "profilePicture": "https://ecs7.tokopedia.net/img/cache/100-square/default_v3-usrnophoto.png",
+                  "url": "",
+                  "userID": 0
+                },
+                "time_format": {
+                  "date_time_fmt1": ""
+                },
+                "updateTime": 0
+              },
+              {
+                "isAnonymous": true,
+                "isReportable": false,
+                "isUpdated": false,
+                "message": "",
+                "rating": 5,
+                "ratingDescription": "",
+                "reviewId": 454917261,
+                "reviewer": {
+                  "fullName": "T***i",
+                  "profilePicture": "https://ecs7.tokopedia.net/img/cache/100-square/default_v3-usrnophoto.png",
+                  "url": "",
+                  "userID": 0
+                },
+                "time_format": {
+                  "date_time_fmt1": ""
+                },
+                "updateTime": 0
+              }
+            ]
+          },
+          "hasNext": true,
+          "hasPrev": false,
+          "list": [
+            {
+              "imageID": 45016337,
+              "imageSibling": [
+                45016337
+              ],
+              "reviewID": 454917261
+            },
+            {
+              "imageID": 31471686,
+              "imageSibling": [
+                31471686,
+                31471687
+              ],
+              "reviewID": 333237415
+            },
+            {
+              "imageID": 31471687,
+              "imageSibling": [
+                31471686,
+                31471687
+              ],
+              "reviewID": 333237415
+            },
+            {
+              "imageID": 30359105,
+              "imageSibling": [
+                30359105,
+                30359106
+              ],
+              "reviewID": 323405951
+            }
+          ]
+        },
+        "shopCommitment": {
+          "error": {
+            "message": ""
+          },
+          "result": {
+            "isNowActive": false,
+            "staticMessages": {
+              "pdpMessage": ""
+            }
+          }
+        },
+        "shopFeature": {
+          "IsGoApotik": false
+        },
+        "shopInfo": {
+          "activeProduct": "1023",
+          "badgeURL": "https://images.tokopedia.net/img/official_store/badge_os.png",
+          "closedInfo": {
+            "closedNote": "",
+            "detail": {
+              "openDateUTC": "0"
+            },
+            "reason": "This store is preparing become Official Store",
+            "until": ""
+          },
+          "createInfo": {
+            "epochShopCreated": "1467904553",
+            "epochShopCreatedUTC": "1467879353",
+            "openSince": "July 2016",
+            "shopCreated": "2016-07-07"
+          },
+          "isAllowManage": 0,
+          "isFreeReturns": 0,
+          "location": "Jakarta Utara",
+          "shipmentInfo": [
+            {
+              "awbStatus": 0,
+              "code": "anteraja",
+              "image": "https://ecs7.tokopedia.net/img/kurir-anteraja.png",
+              "isAvailable": 1,
+              "isPickup": 0,
+              "maxAddFee": 0,
+              "name": "AnterAja",
+              "product": [
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Reguler",
+                  "shipProdID": "45",
+                  "uiHidden": false
+                },
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Next Day",
+                  "shipProdID": "46",
+                  "uiHidden": false
+                },
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Same Day",
+                  "shipProdID": "49",
+                  "uiHidden": false
+                }
+              ],
+              "shipmentID": "23"
+            },
+            {
+              "awbStatus": 0,
+              "code": "lion",
+              "image": "https://ecs7.tokopedia.net/img/kurir-lionparcel.png",
+              "isAvailable": 1,
+              "isPickup": 0,
+              "maxAddFee": 0,
+              "name": "Lion Parcel",
+              "product": [
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Reguler",
+                  "shipProdID": "47",
+                  "uiHidden": false
+                }
+              ],
+              "shipmentID": "24"
+            },
+            {
+              "awbStatus": 0,
+              "code": "grab",
+              "image": "https://ecs7.tokopedia.net/img/kurir-grab.png",
+              "isAvailable": 1,
+              "isPickup": 0,
+              "maxAddFee": 0,
+              "name": "GrabExpress",
+              "product": [
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Same Day",
+                  "shipProdID": "24",
+                  "uiHidden": false
+                },
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Instant",
+                  "shipProdID": "37",
+                  "uiHidden": false
+                }
+              ],
+              "shipmentID": "13"
+            },
+            {
+              "awbStatus": 0,
+              "code": "jnt",
+              "image": "https://ecs7.tokopedia.net/img/kurir-jnt.png",
+              "isAvailable": 1,
+              "isPickup": 0,
+              "maxAddFee": 0,
+              "name": "J&T",
+              "product": [
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Reguler",
+                  "shipProdID": "27",
+                  "uiHidden": false
+                }
+              ],
+              "shipmentID": "14"
+            },
+            {
+              "awbStatus": 0,
+              "code": "gojek",
+              "image": "https://ecs7.tokopedia.net/img/kurir-gosend.png",
+              "isAvailable": 1,
+              "isPickup": 0,
+              "maxAddFee": 0,
+              "name": "GoSend",
+              "product": [
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Same Day",
+                  "shipProdID": "20",
+                  "uiHidden": false
+                },
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Instant Courier",
+                  "shipProdID": "28",
+                  "uiHidden": false
+                }
+              ],
+              "shipmentID": "10"
+            },
+            {
+              "awbStatus": 0,
+              "code": "custom_1261882_1261882",
+              "image": "https://ecs7.tokopedia.net/img/kurir-custom.png",
+              "isAvailable": 1,
+              "isPickup": 0,
+              "maxAddFee": 0,
+              "name": "Custom Logistik",
+              "product": [
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Service Normal",
+                  "shipProdID": "999",
+                  "uiHidden": false
+                }
+              ],
+              "shipmentID": "999"
+            },
+            {
+              "awbStatus": 0,
+              "code": "sicepat",
+              "image": "https://ecs7.tokopedia.net/img/kurir-sicepat.png",
+              "isAvailable": 1,
+              "isPickup": 0,
+              "maxAddFee": 0,
+              "name": "SiCepat",
+              "product": [
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Regular Package",
+                  "shipProdID": "18",
+                  "uiHidden": false
+                },
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "BEST",
+                  "shipProdID": "33",
+                  "uiHidden": false
+                },
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "GOKIL",
+                  "shipProdID": "43",
+                  "uiHidden": false
+                },
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Regular Package",
+                  "shipProdID": "44",
+                  "uiHidden": true
+                },
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "HALU",
+                  "shipProdID": "51",
+                  "uiHidden": false
+                }
+              ],
+              "shipmentID": "11"
+            },
+            {
+              "awbStatus": 0,
+              "code": "jne",
+              "image": "https://ecs7.tokopedia.net/img/kurir-jne.png",
+              "isAvailable": 1,
+              "isPickup": 0,
+              "maxAddFee": 0,
+              "name": "JNE",
+              "product": [
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Reguler",
+                  "shipProdID": "1",
+                  "uiHidden": false
+                },
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "OKE",
+                  "shipProdID": "2",
+                  "uiHidden": false
+                },
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "YES",
+                  "shipProdID": "6",
+                  "uiHidden": false
+                },
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "JNE Trucking",
+                  "shipProdID": "22",
+                  "uiHidden": false
+                }
+              ],
+              "shipmentID": "1"
+            }
+          ],
+          "shippingLoc": {
+            "addressStreet": "",
+            "cityID": "0",
+            "cityName": "",
+            "countryName": "",
+            "districtID": "0",
+            "districtName": "",
+            "latitude": "",
+            "longitude": "",
+            "postalCode": "",
+            "provinceID": "0",
+            "provinceName": ""
+          },
+          "shopAssets": {
+            "avatar": "https://images.tokopedia.net/img/cache/215-square/shops-1/2020/6/24/1261882/1261882_7902b001-5bc7-4f39-aae7-c8a43d9084bc.jpg",
+            "cover": "https://images.tokopedia.net/img/cache/1190/HEpYhz/2020/10/31/b5a7a44e-c65a-45db-a2f0-b4842760ef12.jpg"
+          },
+          "shopCore": {
+            "description": "Jam operasional utk pengiriman :Hari :Senin - Sabtu : 08.00 - 20.00 WiB ALL KIRIMMinggu : 09.00 - 17.00 WIB GOJEK N J&amp;T KRM LANGSUNG",
+            "domain": "pamosroom-living",
+            "name": "Pamosroom Living",
+            "shopID": "1261882",
+            "tagLine": "Customer satisfaction is our top priority",
+            "url": "https://www.tokopedia.com/pamosroom-living"
+          },
+          "shopLastActive": "1632124754",
+          "shopStats": {
+            "productSold": "579867",
+            "totalShowcase": "26",
+            "totalTx": "152127"
+          },
+          "shopTerms": "0",
+          "shopTier": 2,
+          "shopType": 1,
+          "statusInfo": {
+            "isIdle": false,
+            "shopStatus": 1,
+            "statusMessage": "",
+            "statusTitle": ""
+          }
+        },
+        "shopPackSpeed": {
+          "hour": 4,
+          "speedFmt": "4 Jam"
+        },
+        "shopRatingsQuery": {
+          "ratingScore": 4.800000190734863
+        },
+        "shopTopChatSpeed": {
+          "messageResponseTime": "1"
+        },
+        "uniqueSellingPoint": {
+          "bebasOngkirExtra": {
+            "icon": "https://images.tokopedia.net/img/pdp/icon/usp/boextoped.png"
+          }
+        },
+        "ticker": {
+          "tickerInfo": [
+            {
+              "productIDs": [
+                "948021897",
+                "518076293"
+              ],
+              "tickerData": [
+                {
+                  "action": "applink",
+                  "actionBottomSheet": {
+                    "buttonLink": "",
+                    "buttonText": "",
+                    "message": "",
+                    "reason": "",
+                    "title": ""
+                  },
+                  "actionLink": "https://www.tokopedia.com/rekomendasi/2086995432?ref=recom_oos",
+                  "color": "warning",
+                  "link": "Cari Barang Serupa",
+                  "message": "Untuk sementara barang ini tidak dijual. Kamu bisa wishlist barang ini atau Cari Barang Serupa.",
+                  "tickerType": 3,
+                  "title": "barang tidak tersedia"
+                }
+              ]
+            },
+            {
+              "productIDs": [
+                "518076286"
+              ],
+              "tickerData": [
+                {
+                  "action": "applink",
+                  "actionBottomSheet": {
+                    "buttonLink": "",
+                    "buttonText": "",
+                    "message": "",
+                    "reason": "",
+                    "title": ""
+                  },
+                  "actionLink": "https://www.tokopedia.com/rekomendasi/2086995432?ref=recom_oos",
+                  "color": "general",
+                  "link": "Cari Barang Serupa",
+                  "message": "ticker 1 message",
+                  "tickerType": 3,
+                  "title": "ticker 1 title"
+                },
+                {
+                  "action": "applink",
+                  "actionBottomSheet": {
+                    "buttonLink": "",
+                    "buttonText": "",
+                    "message": "",
+                    "reason": "",
+                    "title": ""
+                  },
+                  "actionLink": "https://www.tokopedia.com/rekomendasi/2086995432?ref=recom_oos",
+                  "color": "general",
+                  "link": "Cari Barang Serupa",
+                  "message": "ticker 2 message",
+                  "tickerType": 3,
+                  "title": "ticker 2 title"
+                }
+              ]
+            }
+          ]
+        },
+        "upcomingCampaigns": [],
+        "validateTradeIn": {
+          "isDiagnosed": false,
+          "isEligible": false,
+          "message": "",
+          "remainingPrice": "0",
+          "useKyc": false,
+          "usedPrice": "0",
+          "widgetString": ""
+        },
+        "wishlistCount": "360"
+      }
+ }
