@@ -287,7 +287,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         launchCatchError(block = {
             val response = withContext(coroutineDispatcherProvider.io) {
                 submitReviewUseCase.setParams(reputationId = reputationId, productId =
-                productId, shopId = shopId, reputationScore = reputationScore, rating = rating, reviewText = reviewText, isAnonymous = isAnonymous, utmSource = utmSource)
+                productId, shopId = shopId, reputationScore = reputationScore, rating = rating, reviewText = reviewText, isAnonymous = isAnonymous, utmSource = utmSource, badRatingCategoryIds = selectedBadRatingCategories.toList())
                 submitReviewUseCase.executeOnBackground()
             }
             if (response.productrevSuccessIndicator != null) {
@@ -318,7 +318,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                         }
                     }
                 }
-                submitReviewUseCase.setParams(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, uploadIdList, utmSource)
+                submitReviewUseCase.setParams(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, uploadIdList, utmSource, selectedBadRatingCategories.toList())
                 submitReviewUseCase.executeOnBackground()
             }
             if (response.productrevSuccessIndicator != null) {
