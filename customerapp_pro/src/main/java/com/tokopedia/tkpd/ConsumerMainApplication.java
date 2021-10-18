@@ -54,10 +54,15 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         return BuildConfig.VERSION_CODE;
     }
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        registerScreenshootObserver();
+    }
+
     public void initConfigValues() {
         setVersionCode();
         setVersionName();
-        registerScreenshootObserver();
         GlobalConfig.APPLICATION_TYPE = 3;
         GlobalConfig.PACKAGE_APPLICATION = "com.tokopedia.intl";
         initFileDirConfig();
