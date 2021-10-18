@@ -6,6 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecomCarouselBinding
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowServerErrorBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowServerErrorViewHolder(
     itemView: View,
@@ -17,14 +20,10 @@ class TokoNowServerErrorViewHolder(
         val LAYOUT = R.layout.item_tokopedianow_server_error
     }
 
-    private var emptyStateFailedToFetchData: GlobalError? = null
-
-    init {
-        emptyStateFailedToFetchData = itemView.findViewById(R.id.empty_state_failed_to_fetch_data)
-    }
+    private var binding: ItemTokopedianowServerErrorBinding? by viewBinding()
 
     override fun bind(item: TokoNowServerErrorUiModel) {
-        emptyStateFailedToFetchData?.setActionClickListener {
+        binding?.emptyStateFailedToFetchData?.setActionClickListener {
             listener.onClickRetryButton()
         }
     }
