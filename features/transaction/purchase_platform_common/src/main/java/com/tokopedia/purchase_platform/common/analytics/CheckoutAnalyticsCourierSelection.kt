@@ -4,7 +4,6 @@ import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey
 import com.tokopedia.track.TrackApp
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -349,7 +348,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     //on success use merchant voucher from list
     fun eventClickUseMerchantVoucherSuccess(promoCode: String, promoId: String, isFromList: Boolean) {
         val eventAction = if (isFromList) ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_ON_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER else ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_FROM_PILIH_MERCHANT_VOUCHER
-        val eventMap = createEventMap(
+        val eventMap = getGtmData(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 eventAction,
@@ -361,7 +360,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
 
     //impression on user merchant voucher list
     fun eventImpressionUseMerchantVoucher(voucherId: String, ecommerceMap: Map<String, Any>) {
-        val eventMap = createEventMap(
+        val eventMap = getGtmData(
                 ConstantTransactionAnalytics.EventName.PROMO_VIEW,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.IMPRESSION_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER,
@@ -374,7 +373,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
 
     //on merchant voucher click detail
     fun eventClickDetailMerchantVoucher(ecommerceMap: Map<String, Any>, voucherId: String, promoCode: String) {
-        val eventMap = createEventMap(
+        val eventMap = getGtmData(
                 ConstantTransactionAnalytics.EventName.PROMO_CLICK,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.CLICK_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER,
@@ -388,7 +387,7 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     //on error use merchant voucher
     fun eventClickUseMerchantVoucherError(errorMsg: String?, promoId: String, isFromList: Boolean) {
         val eventAction = if (isFromList) ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_ON_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER else ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_FROM_PILIH_MERCHANT_VOUCHER
-        val eventMap = createEventMap(
+        val eventMap = getGtmData(
                 ConstantTransactionAnalytics.EventName.CLICK_COURIER,
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 eventAction,
@@ -396,15 +395,6 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         )
         eventMap[ConstantTransactionAnalytics.Key.PROMO_ID] = promoId
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
-    }
-
-    private fun createEventMap(event: String, category: String, action: String, label: String): MutableMap<String, Any> {
-        val eventMap: MutableMap<String, Any> = HashMap()
-        eventMap[ConstantTransactionAnalytics.Key.EVENT] = event
-        eventMap[ConstantTransactionAnalytics.Key.EVENT_CATEGORY] = category
-        eventMap[ConstantTransactionAnalytics.Key.EVENT_ACTION] = action
-        eventMap[ConstantTransactionAnalytics.Key.EVENT_LABEL] = label
-        return eventMap
     }
 
     fun eventCancelPromoStackingLogistic() {

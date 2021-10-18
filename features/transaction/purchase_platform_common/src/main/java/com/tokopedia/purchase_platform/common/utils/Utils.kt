@@ -28,8 +28,7 @@ object Utils {
             return SpannableStringBuilder("").toString()
         }
         val replacedText = text.replace("&amp;", "&")
-        val result: Spanned
-        result = when {
+        val result: Spanned = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> Html.fromHtml(replacedText, Html.FROM_HTML_MODE_LEGACY)
             else -> Html.fromHtml(replacedText)
         }

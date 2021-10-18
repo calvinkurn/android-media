@@ -5,11 +5,6 @@ package com.tokopedia.purchase_platform.common.analytics
  */
 object ConstantTransactionAnalytics {
     object Key {
-        //        companion object {
-        const val EVENT = "event"
-        const val EVENT_CATEGORY = "eventCategory"
-        const val EVENT_ACTION = "eventAction"
-        const val EVENT_LABEL = "eventLabel"
         const val PROMO_ID = "promoId"
         const val E_COMMERCE = "ecommerce"
         const val PAYMENT_ID = "payment_id"
@@ -21,7 +16,6 @@ object ConstantTransactionAnalytics {
         const val POSITION = "position"
         const val PROMO_ID_ = "promo_id"
         const val PROMO_CODE = "promo_code"
-//        }
     }
 
     object EventName {
@@ -64,7 +58,6 @@ object ConstantTransactionAnalytics {
     }
 
     object EventCategory {
-        //        companion object {
         const val CART = "cart"
         const val EMPTY_CART = "empty cart"
         const val COURIER_SELECTION = "courier selection"
@@ -80,7 +73,6 @@ object ConstantTransactionAnalytics {
         const val PURCHASE_SETTING = "purchase setting"
         const val PURCHASE_PROTECTION_OCC = "fin - order summary occ"
         const val ORDER_SUMMARY = "order summary"
-//        }
     }
 
     object EventAction {
@@ -122,7 +114,6 @@ object ConstantTransactionAnalytics {
         const val CLICK_HAPUS_FROM_TRASH_BIN = "click hapus from trash bin"
         const val CLICK_HAPUS_PRODUK_BERKENDALA = "click hapus produk berkendala"
         const val CLICK_HAPUS_FROM_HAPUS_PRODUK_BERKENDALA = "click hapus from hapus produk berkendala"
-        const val CLICK_SIMPAN_FROM_TAMBAH_ALAMAT = "click simpan from tambah alamat"
         const val VALIDATION_ERROR_VOUCHER_PROMO_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON = "validation error voucher promo from gunakan kode promo atau kupon"
         const val CLICK_KUPON_FROM_KUPON_SAYA = "click kupon from kupon saya"
         const val CLICK_BACK_ARROW_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON = "click back arrow from gunakan kode promo atau kupon"
@@ -176,7 +167,6 @@ object ConstantTransactionAnalytics {
         const val CLICK_PILIH_SEMUA_PRODUK = "click pilih semua produk"
         const val CLICK_BAYAR = "click bayar"
         const val CLICK_UBAH_KURIR = "click ubah kurir"
-        const val CLICK_TAMBAH_FROM_TAMBAH_ALAMAT_BARU = "click tambah from tambah alamat baru"
         const val VIEW_ERROR_ON_CHECKOUT = "view error when checkout"
 
         //ROBINHOOD
@@ -215,7 +205,6 @@ object ConstantTransactionAnalytics {
         //PROMO STACKING
         const val CLICK_PROMO_LOGISTIC_TICKER = "click promo logistic ticker"
         const val CLICK_LANJUTKAN_TERAPKAN_PROMO = "click lanjutkan di pop up terapkan promo"
-        const val CLICK_BATAL_TERAPKAN_PROMO = "click batal di pop up terapkan promo"
         const val VIEW_PROMO_LOGISTIC_TICKER = "view promo logistic ticker"
         const val CLICK_X_ON_PROMO_STACKING_LOGISTIC = "click x on promo stacking logistic"
         const val VIEW_INFORMATION_AND_WARNING_TICKER_IN_CHECKOUT = "view information and warning ticker in checkout"

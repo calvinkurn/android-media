@@ -387,7 +387,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
 
     //impression on user merchant voucher list
     fun eventImpressionUseMerchantVoucher(voucherId: String, ecommerceMap: Map<String, Any>) {
-        val eventMap = createEventMap(
+        val eventMap = getGtmData(
                 ConstantTransactionAnalytics.EventName.PROMO_VIEW,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.IMPRESSION_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER,
@@ -401,7 +401,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     //on success use merchant voucher from list
     fun eventClickUseMerchantVoucherSuccess(promoCode: String, promoId: String, isFromList: Boolean) {
         val eventAction = if (isFromList) ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_ON_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER else ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_FROM_PILIH_MERCHANT_VOUCHER
-        val eventMap = createEventMap(
+        val eventMap = getGtmData(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 eventAction,
@@ -414,7 +414,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
     //on error use merchant voucher
     fun eventClickUseMerchantVoucherFailed(errorMessage: String?, promoId: String, isFromList: Boolean) {
         val eventAction = if (isFromList) ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_ON_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER else ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_FROM_PILIH_MERCHANT_VOUCHER
-        val eventMap = createEventMap(
+        val eventMap = getGtmData(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 eventAction,
@@ -426,7 +426,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
 
     //on merchant voucher click detail
     fun eventClickDetailMerchantVoucher(ecommerceMap: Map<String, Any>, voucherId: String, promoCode: String) {
-        val eventMap = createEventMap(
+        val eventMap = getGtmData(
                 ConstantTransactionAnalytics.EventName.PROMO_CLICK,
                 ConstantTransactionAnalytics.EventCategory.CART,
                 ConstantTransactionAnalytics.EventAction.CLICK_MERCHANT_VOUCHER_FROM_PILIH_MERCHANT_VOUCHER,
@@ -435,15 +435,6 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         eventMap[ConstantTransactionAnalytics.Key.PROMO_ID] = voucherId
         eventMap[ConstantTransactionAnalytics.Key.E_COMMERCE] = ecommerceMap
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(eventMap)
-    }
-
-    private fun createEventMap(event: String, category: String, action: String, label: String): MutableMap<String, Any> {
-        val eventMap: MutableMap<String, Any> = HashMap()
-        eventMap[ConstantTransactionAnalytics.Key.EVENT] = event
-        eventMap[ConstantTransactionAnalytics.Key.EVENT_CATEGORY] = category
-        eventMap[ConstantTransactionAnalytics.Key.EVENT_ACTION] = action
-        eventMap[ConstantTransactionAnalytics.Key.EVENT_LABEL] = label
-        return eventMap
     }
 
     fun enhancedEcommerceViewRecommendationOnCart(cartMap: Map<String, Any>) {

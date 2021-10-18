@@ -27,9 +27,6 @@ data class VoucherOrdersItem(
         @SerializedName("type")
         val type: String? = null,
 
-        @SerializedName("benefit_details")
-        val benefitDetails: List<BenefitDetailsItem?>? = null,
-
         @SerializedName("success")
         val success: Boolean? = null,
 
