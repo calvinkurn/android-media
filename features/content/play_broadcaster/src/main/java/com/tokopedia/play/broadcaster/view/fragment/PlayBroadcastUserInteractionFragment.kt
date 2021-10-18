@@ -73,7 +73,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val ivShareLink: AppCompatImageView by detachableView(R.id.iv_share_link)
     private val flProductTag: FrameLayout by detachableView(R.id.fl_product_tag)
     private val pmvMetrics: PlayMetricsView by detachableView(R.id.pmv_metrics)
-    private val countdownTimer: PlayTimerCountDown by detachableView(R.id.countdown_timer)
     private val loadingView: FrameLayout by detachableView(R.id.loading_view)
     private val errorLiveNetworkLossView: View by detachableView(R.id.error_live_view)
     private val debugView: PlayLivePusherDebugView by detachableView(R.id.live_debug_view)
@@ -171,9 +170,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         setupInsets()
         setupObserve()
 
-        if (arguments?.getBoolean(KEY_START_COUNTDOWN) == true) {
-            startCountDown()
-        }
+        parentViewModel.startLiveCountDownTimer()
 
         if (GlobalConfig.DEBUG) setupDebugView(view)
     }
@@ -257,24 +254,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeEvent()
         observeInteractiveConfig()
         observeCreateInteractiveSession()
-    }
-
-    private fun startCountDown() {
-        val animationProperty = PlayTimerCountDown.AnimationProperty.Builder()
-                .setFullRotationInterval(TIMER_ROTATION_INTERVAL)
-                .setTextCountDownInterval(TIMER_TEXT_COUNTDOWN_INTERVAL)
-                .setTotalCount(TIMER_ANIMATION_TOTAL_COUNT)
-                .build()
-
-        countdownTimer.visible()
-        countdownTimer.startCountDown(animationProperty, object : PlayTimerCountDown.Listener {
-            override fun onTick(milisUntilFinished: Long) {}
-
-            override fun onFinish() {
-                countdownTimer.gone()
-                parentViewModel.startLiveCountDownTimer()
-            }
-        })
     }
 
     override fun onDestroy() {
@@ -663,13 +642,5 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             requireContext().classLoader,
             PlayInteractiveLeaderBoardBottomSheet::class.java.name) as PlayInteractiveLeaderBoardBottomSheet
         leaderBoardBottomSheet.show(childFragmentManager)
-    }
-
-    companion object {
-        const val KEY_START_COUNTDOWN = "start_count_down"
-
-        private const val TIMER_ROTATION_INTERVAL = 3000L
-        private const val TIMER_TEXT_COUNTDOWN_INTERVAL = 2000L
-        private const val TIMER_ANIMATION_TOTAL_COUNT = 3
     }
 }
