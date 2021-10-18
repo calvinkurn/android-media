@@ -178,5 +178,7 @@
     <string name="feed_product_tag_up">Product Tag Pointer Up</string>
     <string name="feed_product_tag_down">Product Tag Pointer Down</string>
 
+    <string name="feeds_sek_sekarang">Cek Sekarang</string>
+    <string name="feeds_ads_text">Ad</string>
 
 </resources>
