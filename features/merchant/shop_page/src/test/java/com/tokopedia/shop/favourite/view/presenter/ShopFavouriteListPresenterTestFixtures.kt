@@ -42,6 +42,6 @@ open class ShopFavouriteListPresenterTestFixtures {
                 CoroutineTestDispatchersProvider
         )
 
-        shopFavouriteListPresenter.attachView(shopFavouriteListView)
+//        shopFavouriteListPresenter.attachView(shopFavouriteListView)
     }
 }
