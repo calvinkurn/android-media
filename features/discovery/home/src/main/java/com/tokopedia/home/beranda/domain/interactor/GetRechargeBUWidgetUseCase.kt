@@ -68,6 +68,16 @@ class GetRechargeBUWidgetUseCase @Inject constructor(
                       action
                       data
                     }
+                    tracking_data{
+                      product_id
+                      operator_id
+                      business_unit
+                      item_label
+                      item_label
+                      client_number
+                      category_id
+                      category_name
+                    }
                   }
                 }
             }
