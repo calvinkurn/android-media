@@ -25,15 +25,18 @@ open class InactivePhoneVerificationMethodFragment : VerificationMethodFragment(
         showLoading()
         val otpType = otpData.otpType.toString()
         if (otpData.userIdEnc.isNotEmpty()) {
-            viewmodel.getVerificationMethod2FA(
+            viewmodel.getVerificationMethodInactive(
                 otpType = otpType,
+                msisdn = otpData.msisdn,
+                email = otpData.email,
                 validateToken = otpData.accessToken,
                 userIdEnc = otpData.userIdEnc)
         } else {
-            viewmodel.getVerificationMethod(
+            viewmodel.getVerificationMethodInactive(
                 otpType = otpType,
                 userId = otpData.userId,
                 msisdn = otpData.msisdn,
+                validateToken = otpData.accessToken,
                 email = otpData.email
             )
         }

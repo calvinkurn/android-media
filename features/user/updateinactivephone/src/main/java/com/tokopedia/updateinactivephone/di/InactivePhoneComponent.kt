@@ -2,22 +2,19 @@ package com.tokopedia.updateinactivephone.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.updateinactivephone.di.module.InactivePhoneModule
-import com.tokopedia.updateinactivephone.di.module.InactivePhoneUseCaseModule
 import com.tokopedia.updateinactivephone.di.module.InactivePhoneViewModelModule
-import com.tokopedia.updateinactivephone.features.accountlist.InactivePhoneAccountListActivity
 import com.tokopedia.updateinactivephone.features.InactivePhoneActivity
+import com.tokopedia.updateinactivephone.features.accountlist.InactivePhoneAccountListActivity
 import com.tokopedia.updateinactivephone.features.onboarding.BaseInactivePhoneOnboardingFragment
+import com.tokopedia.updateinactivephone.features.onboarding.regular.InactivePhoneOnboardingFragment
 import com.tokopedia.updateinactivephone.features.submitnewphone.BaseInactivePhoneSubmitDataFragment
 import com.tokopedia.updateinactivephone.features.submitnewphone.regular.InactivePhoneDataUploadFragment
-import com.tokopedia.updateinactivephone.features.onboarding.regular.InactivePhoneOnboardingFragment
 import dagger.Component
 
 @ActivityScope
 @Component(modules = [
     InactivePhoneModule::class,
-    InactivePhoneUseCaseModule::class,
     InactivePhoneViewModelModule::class
 ], dependencies = [
     BaseAppComponent::class

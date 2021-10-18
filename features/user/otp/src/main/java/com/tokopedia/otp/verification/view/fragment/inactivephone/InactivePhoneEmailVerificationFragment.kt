@@ -47,7 +47,37 @@ open class InactivePhoneEmailVerificationFragment : VerificationFragment() {
     }
 
     override fun setFooterText(spannable: Spannable?) {
-        super.setFooterText(getEmailFooterSpan())
+        context?.let {
+            val resendText = it.getString(R.string.validation_resend)
+            val useRegularFlowText = it.getString(R.string.inactive_phone_text_footer_email_challenge_action)
+            val spannableChild = SpannableString("$resendText atau\n$useRegularFlowText")
+            setResendOtpFooterSpan(resendText, spannableChild)
+            setUseRegularInactivePhoneFooter(useRegularFlowText, spannableChild)
+
+            super.setFooterText(spannableChild)
+        }
+    }
+
+    private fun setUseRegularInactivePhoneFooter(message: String, spannable: Spannable) {
+        spannable.apply {
+            setSpan(
+                object : ClickableSpan() {
+                    override fun onClick(view: View) {
+                        viewModel.done = true
+                        analytics.trackClickRequestChangePhoneNumberOnPin()
+                        gotoRegularFlow()
+                    }
+
+                    override fun updateDrawState(ds: TextPaint) {
+                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
+                        ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+                    }
+                },
+                this.indexOf(message),
+                this.length,
+                0
+            )
+        }
     }
 
     private fun getEmailFooterSpan(): SpannableString {

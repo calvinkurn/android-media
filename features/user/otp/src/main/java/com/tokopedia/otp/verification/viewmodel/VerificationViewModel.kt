@@ -26,6 +26,7 @@ import javax.inject.Inject
 open class VerificationViewModel @Inject constructor(
         private val getVerificationMethodUseCase: GetVerificationMethodUseCase,
         private val getVerificationMethodUseCase2FA: GetVerificationMethodUseCase2FA,
+        private val getVerificationMethodInactivePhoneUseCase: GetVerificationMethodInactivePhoneUseCase,
         private val otpValidateUseCase: OtpValidateUseCase,
         private val otpValidateUseCase2FA: OtpValidateUseCase2FA,
         private val sendOtpUseCase: SendOtpUseCase,
@@ -89,6 +90,38 @@ open class VerificationViewModel @Inject constructor(
             TkpdIdlingResource.increment()
             val params = getVerificationMethodUseCase.getParams(otpType, userId, msisdn, email)
             val data = getVerificationMethodUseCase.getData(params).data
+            when {
+                data.success -> {
+                    _getVerificationMethodResult.value = Success(data)
+                    TkpdIdlingResource.decrement()
+                }
+                data.errorMessage.isNotEmpty() -> {
+                    _getVerificationMethodResult.value = Fail(MessageErrorException(data.errorMessage))
+                    TkpdIdlingResource.decrement()
+                }
+                else -> {
+                    _getVerificationMethodResult.value = Fail(Throwable())
+                    TkpdIdlingResource.decrement()
+                }
+            }
+        }, onError = {
+            _getVerificationMethodResult.value = Fail(it)
+            TkpdIdlingResource.decrement()
+        })
+    }
+
+    fun getVerificationMethodInactive(
+            otpType: String,
+            userId: String = "",
+            msisdn: String = "",
+            email: String = "",
+            validateToken: String= "",
+            userIdEnc: String = ""
+    ) {
+        launchCatchError(block = {
+            TkpdIdlingResource.increment()
+            val params = getVerificationMethodInactivePhoneUseCase.getParams(otpType, userId, msisdn, email, validateToken, userIdEnc)
+            val data = getVerificationMethodInactivePhoneUseCase.getData(params).data
             when {
                 data.success -> {
                     _getVerificationMethodResult.value = Success(data)

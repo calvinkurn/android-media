@@ -43,8 +43,8 @@ open class InactivePhonePinVerificationFragment : VerificationFragment() {
     }
 
     private fun getPinFooterSpan(): SpannableString {
-        val msgMeta = context?.getString(R.string.inactive_phone_text_footer_email_challenge_meta).orEmpty()
-        val msgAction = context?.getString(R.string.inactive_phone_text_footer_email_challenge_action).orEmpty()
+        val msgMeta = context?.getString(R.string.inactive_phone_text_footer_pin_challenge_meta).orEmpty()
+        val msgAction = context?.getString(R.string.inactive_phone_text_footer_pin_challenge_action).orEmpty()
 
         return SpannableString("$msgMeta \n $msgAction").apply {
             setSpan(

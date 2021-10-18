@@ -87,6 +87,7 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
             showLoading()
 
             inactivePhoneUserDataModel?.let {
+                it.newPhoneNumber = viewBinding?.textPhoneNumber?.text.orEmpty()
                 viewModel.userValidation(it)
             }
         }
@@ -112,7 +113,6 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
 
     private fun onSuccessPhoneValidation() {
         inactivePhoneUserDataModel?.let {
-            it.newPhoneNumber = viewBinding?.textPhoneNumber?.text.orEmpty()
             viewModel.submitNewPhoneNumber(it)
         }
     }

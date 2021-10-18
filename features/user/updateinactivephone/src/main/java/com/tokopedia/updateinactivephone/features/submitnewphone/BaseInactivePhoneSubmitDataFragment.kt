@@ -7,16 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.databinding.FragmentInactivePhoneDataUploadBinding
-import com.tokopedia.updateinactivephone.di.DaggerInactivePhoneComponent
 import com.tokopedia.updateinactivephone.di.InactivePhoneComponentBuilder
-import com.tokopedia.updateinactivephone.di.module.InactivePhoneModule
 import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
 import com.tokopedia.updateinactivephone.features.InactivePhoneTracker
 import com.tokopedia.updateinactivephone.features.InactivePhoneWithPinTracker
