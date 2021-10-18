@@ -41,6 +41,7 @@ object ReadReviewTrackingConstants {
     const val EVENT_ACTION_CLICK_PRODUCT_INFO_THREE_DOTS = "click - 3 dots beside the product link on the review card"
     const val EVENT_ACTION_CLICK_TOPIC_RATING = "click - topic rating"
     const val EVENT_ACTION_IMPRESS_TOPIC_RATING = "impression - topic rating"
+    const val EVENT_ACTION_CLICK_USER_NAME = "click - reviewer name"
 
     const val EVENT_LABEL_CLICK_POSITIVE_REVIEW_PERCENTAGE = "positive_review:%s;rating:%d;ulasan:%d;"
     const val EVENT_LABEL_CLICK_FILTER = "filter_name:%s;is_active:%s;"
@@ -56,6 +57,7 @@ object ReadReviewTrackingConstants {
     const val EVENT_LABEL_CLICK_IMAGE = "feedback_id:%s;"
     const val EVENT_LABEL_CLICK_REPORT_REVIEW = "feedback_id:%s;"
     const val EVENT_LABEL_IMPRESSION = "count_rating:%d;count_ulasan:%d;"
+    const val EVENT_LABEL_CLICK_USER_NAME = "feedback_id:%s;user_id:%s;statistics:%s;"
 
     const val EVENT_CATEGORY = "product detail page - review"
     const val EVENT_CATEGORY_SHOP_REVIEW = "shop page - buyer - review"

@@ -50,7 +50,7 @@ open class ExternalRegisterInitialFragment: BaseDaggerFragment() {
     private fun registerPushNotif() {
         if (isHitRegisterPushNotif && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             activity?.let {
-                RegisterPushNotifService.startService(it.applicationContext)
+                RegisterPushNotifService.startService(it.applicationContext, REGISTER_PUSH_NOTIF_SERVICE_JOB_ID)
             }
         }
     }
@@ -87,5 +87,9 @@ open class ExternalRegisterInitialFragment: BaseDaggerFragment() {
     fun onSuccessRegister(){
         registerPushNotif()
         saveFirstInstallTime()
+    }
+
+    companion object {
+        private const val REGISTER_PUSH_NOTIF_SERVICE_JOB_ID = 3048
     }
 }

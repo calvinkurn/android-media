@@ -24,6 +24,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -47,6 +48,14 @@ import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCa
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.ConstantKey
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger
+import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger.ATC_QUANTITY_ERROR
+import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger.CHOOSE_ADDRESS_ERROR
+import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger.ErrorType.ERROR_ADD_TO_CART
+import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger.ErrorType.ERROR_CHOOSE_ADDRESS
+import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger.ErrorType.ERROR_LAYOUT
+import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger.LOAD_LAYOUT_ERROR
+import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger.LOAD_MORE_ERROR
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.recentpurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_OOC
@@ -65,6 +74,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolde
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder.*
+import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRecentPurchaseBinding
 import com.tokopedia.tokopedianow.datefilter.presentation.activity.TokoNowDateFilterActivity.Companion.EXTRA_SELECTED_DATE_FILTER
 import com.tokopedia.tokopedianow.datefilter.presentation.activity.TokoNowDateFilterActivity.Companion.REQUEST_CODE_DATE_FILTER_BOTTOMSHEET
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
@@ -75,6 +85,7 @@ import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFi
 import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.SORT_VALUE
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 import javax.inject.Inject
 
@@ -114,6 +125,8 @@ class TokoNowRecentPurchaseFragment:
     private var miniCartWidget: MiniCartWidget? = null
     private val carouselScrollPosition = SparseIntArray()
 
+    private var binding by autoClearedNullable<FragmentTokopedianowRecentPurchaseBinding>()
+
     private val adapter by lazy {
         RecentPurchaseAdapter(
             RecentPurchaseAdapterTypeFactory(
@@ -139,7 +152,8 @@ class TokoNowRecentPurchaseFragment:
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_tokopedianow_recent_purchase, container, false)
+        binding = FragmentTokopedianowRecentPurchaseBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -288,6 +302,10 @@ class TokoNowRecentPurchaseFragment:
         openATCVariantBottomSheet(productId, shopId)
     }
 
+    override fun onSeeMoreClick(data: RecommendationCarouselData, applink: String) {
+        RouteManager.route(context, applink)
+    }
+
     override fun onClickSortFilter() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalTokopediaNow.SORT_FILTER)
         val selectedFilter = viewModel.getSelectedSortFilter()
@@ -331,11 +349,11 @@ class TokoNowRecentPurchaseFragment:
     }
 
     private fun initView() {
-        swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
-        rvRecentPurchase = view?.findViewById(R.id.rv_recent_purchase)
-        navToolbar = view?.findViewById(R.id.nav_toolbar)
-        statusBarBg = view?.findViewById(R.id.status_bar_bg)
-        miniCartWidget = view?.findViewById(R.id.mini_cart_widget)
+        swipeRefreshLayout = binding?.swipeRefreshLayout
+        rvRecentPurchase = binding?.rvRecentPurchase
+        navToolbar = binding?.navToolbar
+        statusBarBg = binding?.statusBarBg
+        miniCartWidget = binding?.miniCartWidget
     }
 
     private fun setupStatusBar() {
@@ -447,8 +465,9 @@ class TokoNowRecentPurchaseFragment:
         observe(viewModel.getLayout) {
             removeScrollListeners()
 
-            if(it is Success) {
-                onSuccessGetLayout(it.data)
+            when(it) {
+                is Success -> onSuccessGetLayout(it.data)
+                is Fail -> logGetLayoutError(it.throwable)
             }
 
             addScrollListeners()
@@ -457,16 +476,18 @@ class TokoNowRecentPurchaseFragment:
 
         observe(viewModel.loadMore) {
             removeScrollListeners()
-            if(it is Success) {
-                submitList(it.data)
+            when(it) {
+                is Success -> submitList(it.data)
+                is Fail -> logLoadMoreError(it.throwable)
             }
             addScrollListeners()
         }
 
         observe(viewModel.atcQuantity) {
             removeScrollListeners()
-            if(it is Success) {
-                submitList(it.data)
+            when(it) {
+                is Success -> submitList(it.data)
+                is Fail -> logATCQuantityError(it.throwable)
             }
             addScrollListeners()
         }
@@ -479,27 +500,14 @@ class TokoNowRecentPurchaseFragment:
         }
 
         observe(viewModel.chooseAddress) {
-            if (it is Success) {
-                it.data.let { chooseAddressData ->
-                    ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                        context = requireContext(),
-                        addressId = chooseAddressData.data.addressId.toString(),
-                        cityId = chooseAddressData.data.cityId.toString(),
-                        districtId = chooseAddressData.data.districtId.toString(),
-                        lat = chooseAddressData.data.latitude,
-                        long = chooseAddressData.data.longitude,
-                        label = String.format("%s %s", chooseAddressData.data.addressName, chooseAddressData.data.receiverName),
-                        postalCode = chooseAddressData.data.postalCode,
-                        warehouseId = chooseAddressData.tokonow.warehouseId.toString(),
-                        shopId = chooseAddressData.tokonow.shopId.toString()
-                    )
+            when(it) {
+                is Success -> {
+                    setupChooseAddress(it.data)
                 }
-                checkIfChooseAddressWidgetDataUpdated()
-                checkStateNotInServiceArea(
-                    warehouseId = it.data.tokonow.warehouseId
-                )
-            } else {
-                showEmptyState(EMPTY_STATE_OOC)
+                is Fail -> {
+                    showEmptyState(EMPTY_STATE_OOC)
+                    logChooseAddressError(it.throwable)
+                }
             }
         }
 
@@ -553,6 +561,67 @@ class TokoNowRecentPurchaseFragment:
         }
     }
 
+    private fun setupChooseAddress(data: GetStateChosenAddressResponse) {
+        data.let { chooseAddressData ->
+            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                context = requireContext(),
+                addressId = chooseAddressData.data.addressId.toString(),
+                cityId = chooseAddressData.data.cityId.toString(),
+                districtId = chooseAddressData.data.districtId.toString(),
+                lat = chooseAddressData.data.latitude,
+                long = chooseAddressData.data.longitude,
+                label = String.format(
+                    "%s %s",
+                    chooseAddressData.data.addressName,
+                    chooseAddressData.data.receiverName
+                ),
+                postalCode = chooseAddressData.data.postalCode,
+                warehouseId = chooseAddressData.tokonow.warehouseId.toString(),
+                shopId = chooseAddressData.tokonow.shopId.toString()
+            )
+        }
+        checkIfChooseAddressWidgetDataUpdated()
+        checkStateNotInServiceArea(
+            warehouseId = data.tokonow.warehouseId
+        )
+    }
+
+    private fun logGetLayoutError(throwable: Throwable) {
+        TokoMartRepurchaseErrorLogger.logExceptionToScalyr(
+            throwable = throwable,
+            errorType = ERROR_LAYOUT,
+            deviceId = userSession.deviceId,
+            description = LOAD_LAYOUT_ERROR
+        )
+    }
+
+    private fun logLoadMoreError(throwable: Throwable) {
+        TokoMartRepurchaseErrorLogger.logExceptionToScalyr(
+            throwable = throwable,
+            errorType = ERROR_LAYOUT,
+            deviceId = userSession.deviceId,
+            description = LOAD_MORE_ERROR
+        )
+    }
+
+    private fun logATCQuantityError(throwable: Throwable) {
+        TokoMartRepurchaseErrorLogger.logExceptionToScalyr(
+            throwable = throwable,
+            errorType = ERROR_ADD_TO_CART,
+            deviceId = userSession.deviceId,
+            description = ATC_QUANTITY_ERROR
+        )
+    }
+
+    private fun logChooseAddressError(throwable: Throwable) {
+        TokoMartRepurchaseErrorLogger.logExceptionToScalyr(
+            throwable = throwable,
+            errorType = ERROR_CHOOSE_ADDRESS,
+            deviceId = userSession.deviceId,
+            description = CHOOSE_ADDRESS_ERROR
+        )
+    }
+
     private fun removeScrollListeners() {
         rvRecentPurchase?.removeOnScrollListener(loadMoreListener)
     }
@@ -595,12 +664,10 @@ class TokoNowRecentPurchaseFragment:
 
     private fun isChooseAddressWidgetShowed(): Boolean {
         val remoteConfig = FirebaseRemoteConfigImpl(context)
-        val isRollOutUser = ChooseAddressUtils.isRollOutUser(context)
-        val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
+        return remoteConfig.getBoolean(
             TokoNowChooseAddressWidgetViewHolder.ENABLE_CHOOSE_ADDRESS_WIDGET,
             true
         )
-        return isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled
     }
 
     private fun checkAddressDataAndServiceArea() {

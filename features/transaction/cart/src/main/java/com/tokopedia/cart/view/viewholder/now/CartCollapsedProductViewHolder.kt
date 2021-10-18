@@ -9,7 +9,9 @@ import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 
@@ -27,12 +29,12 @@ class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBi
     }
 
     private fun renderPrice(cartItemHolderData: CartItemHolderData) {
-        val productPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemHolderData.cartItemData.originData.pricePlanInt, false)
+        val productPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemHolderData.cartItemData.originData.pricePlanInt, false).removeDecimalSuffix()
         viewBinding.textProductPrice.text = productPrice
     }
 
     private fun renderImage(cartItemHolderData: CartItemHolderData) {
-        ImageHandler.loadImageWithoutPlaceholder(viewBinding.imageProduct, cartItemHolderData.cartItemData.originData.productImage)
+        viewBinding.imageProduct.loadImage(cartItemHolderData.cartItemData.originData.productImage)
         viewBinding.imageProduct.setOnClickListener {
             val position = adapterPosition
             if (parentPosition != RecyclerView.NO_POSITION && position != RecyclerView.NO_POSITION) {

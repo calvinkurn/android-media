@@ -433,7 +433,9 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view)?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                showLoading()
+                rv?.post {
+                    showLoading()
+                }
                 if (totalItemsCount > 1) {
                     loadData(page)
                 }
