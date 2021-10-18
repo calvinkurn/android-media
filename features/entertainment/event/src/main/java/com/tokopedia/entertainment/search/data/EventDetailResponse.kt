@@ -258,7 +258,10 @@ data class EventDetailResponse(
 					val isFeatured: Int = 0,
 
 					@field:SerializedName("is_promo")
-					val isPromo: Int = 0
+					val isPromo: Int = 0,
+
+					@field:SerializedName("is_free")
+					val isFree: Int = 0
 			)
 		}
 	}

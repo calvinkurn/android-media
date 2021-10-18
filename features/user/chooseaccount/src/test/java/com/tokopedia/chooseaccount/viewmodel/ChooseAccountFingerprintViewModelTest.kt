@@ -11,7 +11,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
 import org.hamcrest.CoreMatchers
@@ -47,9 +47,7 @@ class ChooseAccountFingerprintViewModelTest {
     fun `on Success Get Account List`() {
         val resp = AccountsDataModel()
 
-        every { getAccountListUseCase.getAccounts(any(), any(), any(), any(), any()) } answers {
-            arg<(AccountsDataModel) -> Unit>(3).invoke(resp)
-        }
+        coEvery { getAccountListUseCase.invoke(any()) } returns resp
 
         viewModel.getAccountListFingerprint("abc123")
 
@@ -62,9 +60,7 @@ class ChooseAccountFingerprintViewModelTest {
         val accountList = AccountListDataModel(errorResponseDataModels = listOf(ErrorResponseDataModel("error", message = msg)))
         val resp = AccountsDataModel(accountListDataModel = accountList)
 
-        every { getAccountListUseCase.getAccounts(any(), any(), any(), any(), any()) } answers {
-            arg<(AccountsDataModel) -> Unit>(3).invoke(resp)
-        }
+        coEvery { getAccountListUseCase.invoke(any()) } returns resp
 
         viewModel.getAccountListFingerprint("abc123")
 
@@ -80,9 +76,7 @@ class ChooseAccountFingerprintViewModelTest {
     fun `on Error Get Account List`() {
         val error = Throwable()
 
-        every { getAccountListUseCase.getAccounts(any(), any(), any(), any(), any()) } answers {
-            arg<(Throwable) -> Unit>(4).invoke(error)
-        }
+        coEvery { getAccountListUseCase.invoke(any()) } throws error
 
         viewModel.getAccountListFingerprint("abc123")
 

@@ -36,6 +36,7 @@ import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.customer_mid_app.R;
+import com.tokopedia.flight.orderlist.data.cloud.entity.Route;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
@@ -273,6 +274,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openNativeThankYouPage(linkSegment, defaultBundle);
                     screenName = "";
                     break;
+                case DeepLinkChecker.SALDO_DEPOSIT:
+                    openSaldoDeposit();
+                    screenName = "";
+                    break;
                 case DeepLinkChecker.LOGIN_BY_QR:
                     openLoginByQr(uriData);
                     screenName = "";
@@ -291,6 +296,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 context.finish();
             }
         }
+    }
+
+    private void openSaldoDeposit() {
+        RouteManager.route(context, ApplinkConst.SALDO);
     }
 
     private void openLoginByQr(Uri uriData) {

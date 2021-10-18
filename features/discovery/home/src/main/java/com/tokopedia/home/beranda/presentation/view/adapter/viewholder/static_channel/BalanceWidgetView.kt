@@ -6,9 +6,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
@@ -18,6 +16,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.Ba
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel.Companion.TYPE_STATE_2
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceAdapter
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.layoutmanager.NpaGridLayoutManager
 import com.tokopedia.home.util.ViewUtils
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -32,7 +31,7 @@ class BalanceWidgetView: FrameLayout {
     private val itemContext: Context
     private var listener: HomeCategoryListener? = null
     private var rvBalance: RecyclerView? = null
-    private var layoutManager: GridLayoutManager? = null
+    private var layoutManager: NpaGridLayoutManager? = null
     private var balanceAdapter: BalanceAdapter? = null
     private lateinit var containerWidget: FrameLayout
 
@@ -110,12 +109,12 @@ class BalanceWidgetView: FrameLayout {
         }
     }
 
-    private fun getLayoutManager(element: HomeBalanceModel): GridLayoutManager {
+    private fun getLayoutManager(element: HomeBalanceModel): NpaGridLayoutManager {
         val spanCount = when(element.balanceType) {
             HomeBalanceModel.TYPE_STATE_2 -> LAYOUT_SPAN_2
             else -> LAYOUT_SPAN_3
         }
-        return GridLayoutManager(itemView.context, spanCount)
+        return NpaGridLayoutManager(itemView.context, spanCount)
     }
 
     fun startRotationForPosition(position: Int) {

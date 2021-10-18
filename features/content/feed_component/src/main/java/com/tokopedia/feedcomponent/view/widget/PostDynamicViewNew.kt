@@ -3,6 +3,7 @@ package com.tokopedia.feedcomponent.view.widget
 import android.annotation.SuppressLint
 import android.animation.LayoutTransition
 import android.content.Context
+import android.graphics.Typeface
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
@@ -19,6 +20,7 @@ import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -37,19 +39,27 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.TagsItem
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
+import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE_NEW
 import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.feedcomponent.util.TimeConverter
-import com.tokopedia.feedcomponent.util.util.*
+import com.tokopedia.feedcomponent.util.util.doOnLayout
+import com.tokopedia.feedcomponent.util.util.productThousandFormatted
+import com.tokopedia.feedcomponent.util.util.showViewWithSlideAnimation
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TOPADS_VARIANT_EXPERIMENT_CLEAN
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TOPADS_VARIANT_EXPERIMENT_INFO
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineListener
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -60,6 +70,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
+import android.graphics.Paint
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
+import java.lang.Exception
 
 
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
@@ -121,6 +135,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private var videoListener: VideoViewHolder.VideoViewListener? = null
     private lateinit var gridPostListener: GridPostAdapter.GridItemListener
     private lateinit var imagePostListener: ImagePostViewHolder.ImagePostListener
+    private var topAdsListener:TopAdsHeadlineListener? = null
     private var positionInFeed: Int = 0
     var isMute = true
     private var videoPlayer: FeedExoPlayer? = null
@@ -165,13 +180,15 @@ class PostDynamicViewNew @JvmOverloads constructor(
         adapterPosition: Int,
         userSession: UserSessionInterface,
         feedXCard: FeedXCard,
-        imagePostListener: ImagePostViewHolder.ImagePostListener
+        imagePostListener: ImagePostViewHolder.ImagePostListener,
+        topAdsListener: TopAdsHeadlineListener?= null
     ) {
         this.listener = dynamicPostListener
         this.gridPostListener = gridItemListener
         this.videoListener = videoListener
         this.positionInFeed = adapterPosition
         this.imagePostListener = imagePostListener
+        this.topAdsListener = topAdsListener
         bindFollow(feedXCard)
         bindItems(feedXCard)
         bindCaption(feedXCard)
@@ -202,18 +219,19 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 feedXCard.typename,
                 feedXCard.followers.isFollowed,
                 feedXCard.author.id,
-                isVideo(feedXCard.media.firstOrNull())
+                isVideo(feedXCard.media.firstOrNull()),
+                feedXCard.isTopAds
             )
         }
     }
 
     private fun bindTracking(feedXCard: FeedXCard) {
-        if (feedXCard.typename == TYPE_FEED_X_CARD_POST) {
-            addOnImpressionListener(feedXCard.impressHolder) {
-                listener?.onImpressionTracking(feedXCard, positionInFeed)
+        if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW ) {
+                addOnImpressionListener(feedXCard.impressHolder) {
+                    listener?.onImpressionTracking(feedXCard, positionInFeed)
+                }
             }
         }
-    }
 
     fun bindLike(feedXCard: FeedXCard) {
         bindLike(
@@ -235,7 +253,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.followers,
             feedXCard.typename,
             feedXCard.media.firstOrNull()?.type ?: "",
-            feedXCard.text
+            feedXCard.text,
+            feedXCard.isTopAds,
+            feedXCard.adId,
+            feedXCard.shopId,
+            feedXCard.cpmData
         )
     }
 
@@ -247,7 +269,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
         followers: FeedXFollowers,
         type: String,
         mediaType: String,
-        caption: String
+        caption: String,
+        isTopads:Boolean,
+        adId:String,
+        shopId: String,
+        cpmData: CpmData
     ) {
         val isFollowed = followers.isFollowed
         val count = followers.count
@@ -262,6 +288,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
         } else {
             followCount.text =
                 context.getString(R.string.feed_header_follow_count_less_text)
+        }
+        if (isTopads){
+            followCount.text = context.getString(R.string.feeds_ads_text)
         }
         followCount.showWithCondition(!isFollowed || followers.transitionFollow)
         shopImage.setImageUrl(author.logoURL)
@@ -278,6 +307,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val text = if (followers.transitionFollow) {
             endIndex += SPACE
             context.getString(R.string.kol_Action_following_color)
+        } else if (followers.isFollowed && isTopads) {
+            context.getString(
+                R.string.kol_Action_following_color
+            )
         } else {
             context.getString(
                 R.string.feed_component_follow
@@ -307,6 +340,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     false
 
                 )
+                sendHeaderTopadsEvent(positionInFeed,author.appLink,cpmData,true)
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -322,10 +356,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
         if (startIndex < spannableString.length && endIndex <= spannableString.length) {
             spannableString.setSpan(object : ClickableSpan() {
                 override fun onClick(widget: View) {
-                    listener?.onHeaderActionClick(
-                        positionInFeed, author.id,
-                        authorType, isFollowed, type, isVideo
-                    )
+                    if (isTopads) {
+                        listener?.onFollowClickAds(positionInFeed, shopId, adId)
+                    } else {
+                        listener?.onHeaderActionClick(
+                            positionInFeed, author.id,
+                            authorType, isFollowed, type, isVideo
+                        )
+                    }
                 }
 
                 override fun updateDrawState(ds: TextPaint) {
@@ -346,10 +384,17 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
-        spannableString.setSpan(cs, 0, authorName.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        try {
+            spannableString.setSpan(cs, 0, authorName.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        } catch (e: Exception) {
+        }
         shopName.text = spannableString
         shopName.movementMethod = LinkMovementMethod.getInstance()
         followers.transitionFollow = false
+
+        shopBadge.setOnClickListener {
+            sendHeaderTopadsEvent(positionInFeed, author.appLink, cpmData, true)
+        }
         shopImage.setOnClickListener {
             listener?.onAvatarClick(
                 positionInFeed,
@@ -363,6 +408,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 isVideo,
                 false
             )
+            sendHeaderTopadsEvent(positionInFeed,author.appLink,cpmData,true)
         }
         shopMenuIcon.setOnClickListener {
             listener?.onMenuClick(
@@ -680,15 +726,20 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 } else {
                     pageControl.hide()
                 }
-                imagePostListener.userCarouselImpression(
-                    feedXCard.id,
-                    media[0],
-                    0,
-                    feedXCard.typename,
-                    feedXCard.followers.isFollowed,
-                    feedXCard.author.id,
-                    positionInFeed
-                )
+                if (media.isNotEmpty()) {
+                    imagePostListener.userCarouselImpression(
+                            feedXCard.id,
+                            media[0],
+                            0,
+                            feedXCard.typename,
+                            feedXCard.followers.isFollowed,
+                            feedXCard.author.id,
+                            positionInFeed,
+                            feedXCard.cpmData,
+                            feedXCard.listProduct
+                    )
+                }
+
                 media.forEach { feedMedia ->
                     val tags = feedMedia.tagging
                     val tagProducts = mutableListOf<FeedXProduct>()
@@ -731,6 +782,91 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     R.drawable.ic_thumb_filled
                                 )
                             )
+
+                            if (feedXCard.isTopAds) {
+                                likedText.hide()
+                                captionText.hide()
+                                commentButton.invisible()
+                                likeButton.invisible()
+                                timestampText.hide()
+                                seeAllCommentText.hide()
+                                shopMenuIcon.hide()
+                                val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
+                                val topAdsProductName = findViewById<Typography>(R.id.top_ads_product_name)
+                                val textViewPrice = findViewById<Typography>(R.id.top_ads_price)
+                                val textViewSlashedPrice =
+                                        findViewById<Typography>(R.id.top_ads_slashed_price)
+                                val labelDiscount = findViewById<Label>(R.id.top_ads_label_discount)
+                                val labelCashback = findViewById<Label>(R.id.top_ads_label_cashback)
+
+                                topAdsCard.show()
+                                topAdsCard.setOnClickListener {
+                                    RouteManager.route(context,feedMedia.appLink)
+                                    listener?.onClickSekSekarang(feedXCard.id,feedXCard.shopId, TYPE_TOPADS_HEADLINE_NEW,feedXCard.followers.isFollowed, positionInFeed)
+                                }
+                                if (feedMedia.variant == TOPADS_VARIANT_EXPERIMENT_CLEAN) {
+                                    textViewPrice.hide()
+                                    textViewSlashedPrice.hide()
+                                    labelDiscount.hide()
+                                    labelCashback.hide()
+
+                                    topAdsProductName.text = context.getString(R.string.feeds_sek_sekarang)
+                                    topAdsProductName.setTypeface(null,Typeface.BOLD)
+                                    topAdsProductName.setTextColor(
+                                            MethodChecker.getColor(
+                                                    context,
+                                                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                                            )
+                                    )
+                                    topAdsProductName.show()
+                                    val constraintSet = ConstraintSet()
+                                    constraintSet.clone(topAdsCard)
+                                    constraintSet.connect(
+                                            topAdsProductName.id,
+                                            ConstraintSet.TOP,
+                                            topAdsCard.id,
+                                            ConstraintSet.TOP
+                                    )
+                                    constraintSet.connect(
+                                            topAdsProductName.id,
+                                            ConstraintSet.BOTTOM,
+                                            topAdsCard.id,
+                                            ConstraintSet.BOTTOM
+                                    )
+                                    constraintSet.applyTo(topAdsCard)
+                                } else if (feedMedia.variant == TOPADS_VARIANT_EXPERIMENT_INFO) {
+                                    val prioOne = feedMedia.slashedPrice.isNotEmpty()
+                                    val prioTwo = feedMedia.cashBackFmt.isNotEmpty()
+
+                                    topAdsProductName.weightType = Typography.REGULAR
+                                    topAdsProductName.displayTextOrHide(feedMedia.productName)
+                                    textViewPrice.displayTextOrHide(feedMedia.price)
+                                    if ((prioOne && prioTwo) || prioOne) {
+                                        textViewSlashedPrice.show()
+                                        textViewSlashedPrice.text = feedMedia.slashedPrice
+                                        textViewSlashedPrice.paintFlags = textViewSlashedPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+
+                                        if (feedMedia.discountPercentage.isNotEmpty()) {
+                                            labelDiscount.show()
+                                            labelDiscount.text = feedMedia.discountPercentage
+                                        } else {
+                                            labelDiscount.hide()
+                                        }
+                                        labelCashback.hide()
+                                    }
+                                    else {
+                                        if (prioTwo) {
+                                            labelCashback.show()
+                                            labelCashback.text = feedMedia.cashBackFmt
+                                        } else {
+                                            textViewSlashedPrice.hide()
+                                            labelDiscount.hide()
+                                            labelCashback.hide()
+                                        }
+                                    }
+                                }
+                            }
+
                             doOnLayout {
                                 imageWidth = width
                                 imageHeight = height
@@ -816,8 +952,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                                             override fun onAnimationRepeat(animation: Animation) {}
                                         })
-                                        like_anim.visible()
-                                        like_anim.startAnimation(pulseFade)
+                                        if (!feedXCard.isTopAds) {
+                                            like_anim.visible()
+                                            like_anim.startAnimation(pulseFade)
+                                        }
                                         return true
                                     }
 
@@ -847,14 +985,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             productTag?.setOnClickListener {
                                 listener?.let { listener ->
                                     listener.onTagClicked(
-                                        postId,
-                                        tagProducts,
-                                        listener,
-                                        feedXCard.author.id,
-                                        feedXCard.typename,
-                                        feedXCard.followers.isFollowed,
-                                        false,
-                                        positionInFeed
+                                            postId,
+                                            tagProducts,
+                                            listener,
+                                            feedXCard.author.id,
+                                            feedXCard.typename,
+                                            feedXCard.followers.isFollowed,
+                                            false,
+                                            positionInFeed
                                     )
                                 }
                             }
@@ -886,13 +1024,15 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     override fun onActiveIndexChanged(prev: Int, current: Int) {
                         pageControl.setCurrentIndicator(current)
                         imagePostListener.userCarouselImpression(
-                            feedXCard.id,
-                            media[current],
-                            current,
-                            feedXCard.typename,
-                            feedXCard.followers.isFollowed,
-                            feedXCard.author.id,
-                            positionInFeed
+                                feedXCard.id,
+                                media[current],
+                                current,
+                                feedXCard.typename,
+                                feedXCard.followers.isFollowed,
+                                feedXCard.author.id,
+                                positionInFeed,
+                                feedXCard.cpmData,
+                                feedXCard.listProduct
                         )
                         if (media[current].type == TYPE_IMAGE) {
                             videoPlayer?.pause()
@@ -927,14 +1067,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
             video_tag_text?.setOnClickListener {
                 listener?.let { listener ->
                     listener.onTagClicked(
-                        postId.toIntOrZero(),
-                        products,
-                        listener,
-                        id,
-                        type,
-                        isFollowed,
-                        true,
-                        positionInFeed
+                            postId.toIntOrZero(),
+                            products,
+                            listener,
+                            id,
+                            type,
+                            isFollowed,
+                            true,
+                            positionInFeed
                     )
                 }
             }
@@ -972,8 +1112,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             findViewById<CardView>(R.id.product_tagging_parent).showWithCondition(tagProducts.isNotEmpty())
 
 
-            if (handlerAnim == null)
+            if (handlerAnim == null) {
                 handlerAnim = Handler(Looper.getMainLooper())
+            }
             handlerAnim?.postDelayed({
                 showViewWithSlideAnimation(layoutLihatProdukParent)
                 video_tag_text.visible()
@@ -1091,7 +1232,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
         gridList.adapter = adapter
         setGridListPadding(feedXCard.products.size)
-
         val totalProducts = feedXCard.products.size
         var totalProductsImpressed = totalProducts
         if (totalProducts > MAX_FEED_SIZE) {
@@ -1103,11 +1243,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val listToBeImpressed = feedXCard.products.subList(0, totalProductsImpressed)
 
         imagePostListener.userProductImpression(
-            positionInFeed,
-            feedXCard.id,
-            feedXCard.typename,
-            feedXCard.author.id,
-            listToBeImpressed
+                positionInFeed,
+                feedXCard.id,
+                feedXCard.typename,
+                feedXCard.author.id,
+                listToBeImpressed
         )
     }
 
@@ -1223,7 +1363,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     fun detach(
-        fromSlide: Boolean = false, model: DynamicPostUiModel? = null
+        fromSlide: Boolean = false, model: Visitable<*>? = null
     ) {
         if (handlerAnim != null) {
             handlerAnim = null
@@ -1233,8 +1373,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
         if (!fromSlide) {
             carouselView.activeIndex = 0
-            model?.feedXCard?.media?.firstOrNull()?.canPlay = false
-            model?.feedXCard?.media?.firstOrNull()?.isImageImpressedFirst = true
+            if (model is DynamicPostUiModel) {
+                model?.feedXCard?.media?.firstOrNull()?.canPlay = false
+                model?.feedXCard?.media?.firstOrNull()?.isImageImpressedFirst = true
+            }
+            else if (model is TopadsHeadLineV2Model){
+                model?.feedXCard?.media?.firstOrNull()?.canPlay = false
+                model?.feedXCard?.media?.firstOrNull()?.isImageImpressedFirst = true
+            }
         }
         if (videoPlayer != null) {
             videoPlayer?.pause()
@@ -1303,19 +1449,20 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     item.resetView()
                 }
             }
-            if (handlerAnim == null)
+            if (handlerAnim == null) {
                 handlerAnim = Handler(Looper.getMainLooper())
+            }
             if (!productTagText.isVisible && tagProducts.isNotEmpty()) {
                 showViewWithSlideAnimation(layoutLihatProdukParent)
                 handlerAnim?.postDelayed({
                     productTagText.apply {
                         visible()
                     }
-
                 }, TIME_SECOND)
             }
-            if (handlerHide == null)
+            if (handlerHide == null) {
                 handlerHide = Handler(Looper.getMainLooper())
+            }
             handlerHide?.postDelayed({
                 productTagText.apply {
                     if (!shouldContinueToShowLihatProduct(layout)) {
@@ -1356,5 +1503,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
         }
         return isInflatedBubbleShowing
+    }
+
+    private fun sendHeaderTopadsEvent(positionInFeed: Int, appLink: String, cpmData: CpmData, isNewVariant: Boolean) {
+        topAdsListener?.onTopAdsHeadlineAdsClick(positionInFeed, appLink, cpmData, isNewVariant)
     }
 }

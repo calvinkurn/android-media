@@ -37,6 +37,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.action.ClickChildViewWithIdAction
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.domain.pojo.FavoriteData.Companion.IS_FOLLOW
+import com.tokopedia.topchat.chatroom.domain.pojo.GetExistingMessageIdPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.background.ChatBackgroundResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
@@ -129,6 +130,9 @@ abstract class TopchatRoomTest {
     @Inject
     protected lateinit var addWishListUseCase: AddWishListUseCaseStub
 
+    @Inject
+    protected lateinit var getExistingMessageIdUseCaseNewStub: GetExistingMessageIdUseCaseStub
+
     protected open lateinit var activity: TopChatRoomActivityStub
 
     protected var firstPageChatAsBuyer = GetExistingChatPojo()
@@ -143,6 +147,7 @@ abstract class TopchatRoomTest {
     protected var orderProgressResponse = OrderProgressResponse()
     protected var chatBackgroundResponse = ChatBackgroundResponse()
     protected var chatRoomSettingResponse = RoomSettingResponse()
+    protected var existingMessageIdResponse = GetExistingMessageIdPojo()
 
     object ProductPreviewAttribute {
         const val productName = "Testing Attach Product 1"
@@ -223,6 +228,7 @@ abstract class TopchatRoomTest {
         chatSrwUseCase.response = chatSrwResponse
         getShopFollowingUseCaseStub.response = getShopFollowingStatus
         getTemplateChatRoomUseCase.response = generateTemplateResponse(true)
+        getExistingMessageIdUseCaseNewStub.response = existingMessageIdResponse
     }
 
     private fun setupDummyImageChatService() {

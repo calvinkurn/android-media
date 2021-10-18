@@ -1,0 +1,31 @@
+[
+  {
+    "data": {
+      "keroAddrSetStateChosenAddress": {
+        "data": {
+          "is_success": 1,
+          "chosen_address": {
+            "addr_id": 2,
+            "receiver_name": "User 1",
+            "addr_name": "Address 2",
+            "district": 2,
+            "city": 1,
+            "city_name": "Kab. Aceh Barat",
+            "district_name": "Woyla",
+            "status": 2,
+            "latitude": "2",
+            "longitude": "2",
+            "postal_code": "2"
+          },
+          "tokonow": {
+            "shop_id": 11530573,
+            "warehouse_id": 10
+          }
+        },
+        "status": "",
+        "config": "",
+        "server_process_time": ""
+      }
+    }
+  }
+]
