@@ -16,7 +16,7 @@ data class TelcoCatalogDataCollection(
         @Expose
         val products: List<TelcoProduct> = listOf())
     : Parcelable, Visitable<TelcoProductAdapterFactory> {
-    private val mccmTitles = listOf("Promo Special Buat Kamu", "Promo Pulsa Hari Ini")
+    private val mccmTitles = "Promo Special Buat Kamu"
 
     override fun type(typeFactoryProduct: TelcoProductAdapterFactory) = typeFactoryProduct.type(this)
 
