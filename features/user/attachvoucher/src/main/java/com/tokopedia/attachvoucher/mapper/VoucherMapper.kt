@@ -34,7 +34,7 @@ class VoucherMapper @Inject constructor() {
                     merchantVoucherAmount = voucherAmount,
                     minimumSpend = voucher.voucherMinimumAmt,
                     merchantVoucherOwner = voucherOwner,
-                    validThru = voucher.voucherFinishTime,
+                    validThru = convertToUnix(voucher.voucherFinishTime),
                     tnc = voucher.tnc,
                     merchantVoucherBanner = voucherBanner,
                     merchantVoucherStatus = voucherStatus,
