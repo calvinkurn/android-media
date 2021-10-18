@@ -113,6 +113,7 @@ import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.network.TokenErrorException
+import com.tokopedia.sessioncommon.util.ConnectivityUtils
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
@@ -173,6 +174,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var isShowTicker: Boolean = false
     private var isShowBanner: Boolean = false
     private var isEnableFingerprint = true
+    private var isEnableSilentVerif = false
     private var isHitRegisterPushNotif: Boolean = false
     private var isEnableEncryptConfig: Boolean = false
     private var activityShouldEnd = true
@@ -566,6 +568,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             isEnableFingerprint = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_LOGIN_FP, true)
             isHitRegisterPushNotif = firebaseRemoteConfig.getBoolean(LoginConstants.RemoteConfigKey.KEY_REGISTER_PUSH_NOTIF, false)
             isEnableEncryptConfig = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_LOGIN_ENCRYPTION)
+            isEnableSilentVerif = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_SILENT_VERIFICATION)
         }
     }
 
@@ -1812,6 +1815,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
+    private fun handleSilentVerificationFlow() {
+
+    }
+
     private fun onSuccessRegisterCheck(): (RegisterCheckData) -> Unit {
         return {
             trackSuccessValidate()
@@ -1820,7 +1827,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
                 userSession.tempPhoneNumber = partialRegisterInputView?.textValue
                 if (it.isExist) {
-                    goToLoginPhoneVerifyPage(it.view.replace("-", ""))
+                    if(isEnableSilentVerif && ConnectivityUtils.isSilentVerificationPossible(activity)) {
+                        handleSilentVerificationFlow()
+                    } else {
+                        goToLoginPhoneVerifyPage(it.view.replace("-", ""))
+                    }
                 } else {
                     analytics.trackerOnPhoneNumberNotExist()
                     goToRegisterPhoneVerifyPage(it.view.replace("-", ""))
