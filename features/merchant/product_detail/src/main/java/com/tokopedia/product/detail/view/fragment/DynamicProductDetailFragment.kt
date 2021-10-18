@@ -2698,8 +2698,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 deeplinkUrl = deeplinkUrl,
                 isStockAvailable = viewModel.getDynamicProductInfoP1?.getFinalStock() ?: "0",
                 boType = boType,
-                affiliateUniqueId = if (affiliateUniqueId.isNotBlank()) "$affiliateUniqueId - $uuid" else "",
-                uuid = uuid
+                affiliateUniqueId = affiliateUniqueId,
+                uuid = uuid,
                 ratesEstimateData = viewModel.getP2RatesEstimateByProductId(),
                 buyerDistrictId = viewModel.getUserLocationCache().district_id,
                 sellerDistrictId = viewModel.getMultiOriginByProductId().districtId
