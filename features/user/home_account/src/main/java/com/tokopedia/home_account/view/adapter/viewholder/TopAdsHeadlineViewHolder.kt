@@ -4,31 +4,33 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.home_account.R
+import com.tokopedia.home_account.databinding.ItemTopadsHeadlineBinding
 import com.tokopedia.home_account.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.utils.*
-import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.binding.viewBinding
 
-const val TOPADS_HEADLINE_VALUE_SRC = "account"
-class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionInterface) : BaseViewHolder(view) {
+class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionInterface) :
+    BaseViewHolder(view) {
 
-    private val topadsHeadlineView: TopAdsHeadlineView = view.findViewById(R.id.topads_headline_view)
+    private val binding: ItemTopadsHeadlineBinding? by viewBinding()
+
     private var topadsHeadlineUiModel: TopadsHeadlineUiModel? = null
 
-    companion object {
-        @LayoutRes
-        val LAYOUT = R.layout.item_topads_headline
-    }
-
     private fun fetchTopadsHeadlineAds(topadsHeadLinePage: Int) {
-        topadsHeadlineView.getHeadlineAds(getHeadlineAdsParam(topadsHeadLinePage), this::onSuccessResponse, this::hideHeadlineView)
+        binding?.topadsHeadlineView?.getHeadlineAds(
+            getHeadlineAdsParam(topadsHeadLinePage),
+            this::onSuccessResponse,
+            this::hideHeadlineView
+        )
     }
 
     private fun getHeadlineAdsParam(topadsHeadLinePage: Int): String {
-        return UrlParamHelper.generateUrlParamString(mutableMapOf(
+        return UrlParamHelper.generateUrlParamString(
+            mutableMapOf(
                 PARAM_DEVICE to VALUE_DEVICE,
                 PARAM_PAGE to topadsHeadLinePage,
                 PARAM_EP to VALUE_EP,
@@ -37,7 +39,8 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
                 PARAM_SRC to TOPADS_HEADLINE_VALUE_SRC,
                 PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
                 PARAM_USER_ID to userSession.userId
-        ))
+            )
+        )
     }
 
     private fun onSuccessResponse(cpmModel: CpmModel) {
@@ -48,8 +51,8 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
     }
 
     private fun hideHeadlineView() {
-        topadsHeadlineView.hideShimmerView()
-        topadsHeadlineView.hide()
+        binding?.topadsHeadlineView?.hideShimmerView()
+        binding?.topadsHeadlineView?.hide()
     }
 
     fun bind(element: TopadsHeadlineUiModel?) {
@@ -65,9 +68,15 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
     }
 
     private fun showHeadlineView(cpmModel: CpmModel) {
-        topadsHeadlineView.hideShimmerView()
-        topadsHeadlineView.show()
-        topadsHeadlineView.displayAds(cpmModel)
+        binding?.topadsHeadlineView?.hideShimmerView()
+        binding?.topadsHeadlineView?.show()
+        binding?.topadsHeadlineView?.displayAds(cpmModel)
     }
 
+    companion object {
+        @LayoutRes
+        val LAYOUT = R.layout.item_topads_headline
+
+        const val TOPADS_HEADLINE_VALUE_SRC = "account"
+    }
 }
