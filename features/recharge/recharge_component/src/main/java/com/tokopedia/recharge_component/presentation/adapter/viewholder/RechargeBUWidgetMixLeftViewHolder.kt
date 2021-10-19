@@ -80,6 +80,12 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
             setSnapEffect()
             setHeaderComponent(element)
             setChannelDivider(element)
+
+            if (!isCacheData) {
+                itemView.addOnImpressionListener(element) {
+                    listener.onRechargeBUWidgetImpression(dataModel, adapterPosition)
+                }
+            }
         } else {
             itemView.recharge_bu_content_shimmering.show()
             val source = element.channel.widgetParam.removePrefix("?section=")
@@ -92,9 +98,6 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
     }
 
     override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-        if(!isCacheData){
-            listener.onRechargeBUWidgetImpression(dataModel, position - 1)
-        }
     }
 
     override fun onProductCardClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
