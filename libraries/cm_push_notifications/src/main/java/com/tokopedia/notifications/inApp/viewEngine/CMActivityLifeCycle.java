@@ -16,6 +16,7 @@ import com.tokopedia.notifications.utils.NotificationCancelManager;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,8 +27,6 @@ import timber.log.Timber;
  */
 public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbacks {
 
-    public static final String IRIS_ANALYTICS_APP_SITE_OPEN = "appSiteOpen";
-    private static final String IRIS_ANALYTICS_EVENT_KEY = "event";
     private final CmActivityLifecycleHandler lifecycleHandler;
     private final NotificationCancelManager cancelManager;
 
@@ -42,9 +41,7 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
         try {
             if (activity != null && activityCount == 0) {
-                trackIrisEventForAppOpen(activity);
-                if (RulesManager.getInstance() != null)
-                    RulesManager.getInstance().updateVisibleStateForAlreadyShown();
+                lifecycleHandler.onFirstScreenOpen(new WeakReference<>(activity));
             }
             activityCount++;
             lifecycleHandler.onActivityCreatedInternalForPush(activity);
@@ -100,11 +97,6 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
         }
     }
 
-    private void trackIrisEventForAppOpen(Activity activity) {
-        Iris instance = IrisAnalytics.Companion.getInstance(activity);
-        Map<String, Object> map = new HashMap<>();
-        map.put(IRIS_ANALYTICS_EVENT_KEY, IRIS_ANALYTICS_APP_SITE_OPEN);
-        instance.saveEvent(map);
-    }
+
 
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.notifications.data
 
 import android.app.Application
+import android.util.Log
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.notifications.PushController
@@ -17,14 +18,21 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper.loadRawString as loa
 
 object AmplificationDataSource {
 
+    var isRunning = false
+
     private val useCase by lazy {
         GraphqlUseCase<AmplificationNotifier>(
             GraphqlInteractor.getInstance().graphqlRepository
         )
     }
 
+
     @JvmStatic
     fun invoke(application: Application) {
+        Log.d("AmplificationDataSource", "Start amp: $isRunning")
+        if(isRunning)
+            return
+        isRunning = true
         val cacheManager = NextFetchCacheManager(application)
         val currentTime = System.currentTimeMillis()
         val userSession = UserSession(application)
@@ -33,13 +41,17 @@ object AmplificationDataSource {
         * preventing amplification data request
         * if user haven't login yet
         * */
-        if (!userSession.isLoggedIn) return
+        if (!userSession.isLoggedIn) {
+            isRunning = false
+            return
+        }
 
         /*
         * preventing multiple fetching of amplification data
         * check based-on `next_fetch` from payload
         * */
         if (currentTime <= cacheManager.getNextFetch()) {
+            isRunning = false
             return
         }
 
@@ -47,16 +59,19 @@ object AmplificationDataSource {
         val amplificationUseCase = AmplificationUseCase(useCase, query)
         RepositoryManager.initRepository(application)
 
-        amplificationUseCase.execute {
+        amplificationUseCase.execute(
+                {
+                    val webHook = it.webhookAttributionNotifier
+                    pushData(application, webHook)
+                    inAppData(webHook)
 
-            val webHook = it.webhookAttributionNotifier
-            pushData(application, webHook)
-            inAppData(webHook)
-
-            // save `next_fetch` time data
-            val nextFetchTime = webHook.nextFetch
-            cacheManager.saveNextFetch(nextFetch(nextFetchTime))
-        }
+                    // save `next_fetch` time data
+                    val nextFetchTime = webHook.nextFetch
+                    cacheManager.saveNextFetch(nextFetch(nextFetchTime))
+                    isRunning = false
+                },{
+                    isRunning = false
+        })
     }
 
     private fun pushData(application: Application, amplification: Amplification) {
