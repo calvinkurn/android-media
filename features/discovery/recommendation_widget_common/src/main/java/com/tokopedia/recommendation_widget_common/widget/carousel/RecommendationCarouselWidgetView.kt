@@ -488,19 +488,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     private fun destroyEvent() {
-        lifecycleOwner?.let {
-            viewModel?.getRecommendationLiveData?.removeObservers(it)
-            viewModel?.errorGetRecommendation?.removeObservers(it)
-            viewModel?.atcRecomTokonow?.removeObservers(it)
-            viewModel?.atcRecomTokonowSendTracker?.removeObservers(it)
-            viewModel?.atcRecomTokonowResetCard?.removeObservers(it)
-            viewModel?.atcRecomTokonowNonLogin?.removeObservers(it)
-            viewModel?.refreshMiniCartDataTriggerByPageName?.removeObservers(it)
-            viewModel?.deleteCartRecomTokonowSendTracker?.removeObservers(it)
-            viewModel?.minicartError?.removeObservers(it)
-            viewModel?.miniCartData?.removeObservers(it)
-            viewModel?.refreshUIMiniCartData?.removeObservers(it)
-        }
+
     }
 
     private fun observeLiveData() {

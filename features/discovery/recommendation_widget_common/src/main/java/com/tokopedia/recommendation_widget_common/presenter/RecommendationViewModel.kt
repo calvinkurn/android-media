@@ -24,6 +24,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import dagger.Lazy
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -89,8 +90,8 @@ open class RecommendationViewModel @Inject constructor(
         isTokonow: Boolean = false,
         keywords: List<String> = listOf()
     ) {
-        if (isJobAvailable(getRecommendationJob)) {
-            getRecommendationJob = viewModelScope.launchCatchError(dispatcher.io, {
+        if (isJobAvailable(getRecommendationJob) && isActive) {
+            getRecommendationJob = viewModelScope.launchCatchError(block = {
                 val result = getRecommendationUseCase.getData(
                     GetRecommendationRequestParam(
                         pageNumber = pageNumber,
@@ -146,7 +147,7 @@ open class RecommendationViewModel @Inject constructor(
     }
 
     fun getMiniCart(shopId: String, pageName: String) {
-        launchCatchError(dispatcher.io, block = {
+        launchCatchError(block = {
             miniCartListSimplifiedUseCase.get().setParams(listOf(shopId))
             val result = miniCartListSimplifiedUseCase.get().executeOnBackground()
             val data = result.miniCartItems.associateBy({ it.productId }) {

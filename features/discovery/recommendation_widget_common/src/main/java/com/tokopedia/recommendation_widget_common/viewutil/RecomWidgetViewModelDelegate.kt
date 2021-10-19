@@ -4,7 +4,7 @@ import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.recommendation_widget_common.di.recomwidget.RecommendationComponentInstance
+import com.tokopedia.recommendation_widget_common.di.recomwidget.DaggerRecommendationComponent
 import com.tokopedia.recommendation_widget_common.presenter.RecommendationViewModel
 
 /**
@@ -28,7 +28,10 @@ class RecomWidgetViewModelDelegate<T : RecommendationViewModel>(val activity: ()
 
     private fun initializeViewModel(it: Activity): T {
         val appContext = it.applicationContext as BaseMainApplication
-        val component = RecommendationComponentInstance.getRecomWidgetComponent(appContext)
+        val component = DaggerRecommendationComponent.builder().baseAppComponent(
+            (appContext).baseAppComponent
+        ).build()
+        component.inject(appContext)
         val viewModelFactory = component.getViewModelFactory()
         val viewModelProvider = ViewModelProvider(it as AppCompatActivity, viewModelFactory)
         return viewModelProvider[RecommendationViewModel::class.java] as T
