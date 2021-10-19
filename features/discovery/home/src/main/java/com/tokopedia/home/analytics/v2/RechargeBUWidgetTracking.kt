@@ -21,32 +21,38 @@ object RechargeBUWidgetTracking : BaseTracking() {
             data: RechargeBUWidgetDataModel,
             userId: String
     ) {
-        var position = ""
+        var position = 0
         val persoType = data.channel.trackingAttributionModel.persoType.toIntOrZero()
         val promotions = data.data.items.mapIndexed { index, item ->
-            position = (index + 1).toString()
+            position = index + 1
             val productName = if (item.mediaUrlType == IMAGE_TYPE_FULL) item.subtitle else item.title
             Promotion(
                 id = "${data.channel.id}_0_0_$persoType",
                 creative = "${getHeaderName(data.channel)} - $productName",
                 name = "/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${getHeaderName(data.channel)}",
-                position = position
+                position = position.toString()
             )
         }
         //empty supposed to be userType next dev.
-        val eventLabel = " - ${getHeaderName(data.channel)} - ${data.data.items.firstOrNull()?.trackingData?.itemType} - $position - " +
-                "${data.data.items.firstOrNull()?.trackingData?.categoryId} - ${data.data.items.firstOrNull()?.trackingData?.operatorId} - " +
-                "${data.data.items.firstOrNull()?.trackingData?.productId}"
-        trackingQueue.putEETracking(getBasicPromotionView(
-                Event.PROMO_VIEW,
-                RECHARGE_BU_WIDGET_EVENT_CATEGORY,
-                Action.IMPRESSION_ON.format("$RECHARGE_BU_WIDGET_BANNER_CARD $RECHARGE_BU_WIDGET_NAME"),
-                eventLabel,
-                promotions,
-                userId,
-                currentSite = RECHARGE_BU_WIDGET_CURRENT_SITE,
-                businessUnit = RECHARGE_BU_WIDGET_BUSINESS_UNIT
-        ) as? HashMap<String, Any>)
+        val item = data.data.items[position]
+        if (position < data.data.items.size) {
+            val eventLabel =
+                " - ${getHeaderName(data.channel)} - ${item.trackingData.itemType} - $position - " +
+                        "${item.trackingData.categoryId} - ${item.trackingData.operatorId} - " +
+                        "${item.trackingData?.productId} - ${item.label2}"
+            trackingQueue.putEETracking(
+                getBasicPromotionView(
+                    Event.PROMO_VIEW,
+                    RECHARGE_BU_WIDGET_EVENT_CATEGORY,
+                    Action.IMPRESSION_ON.format("$RECHARGE_BU_WIDGET_BANNER_CARD $RECHARGE_BU_WIDGET_NAME"),
+                    eventLabel,
+                    promotions,
+                    userId,
+                    currentSite = RECHARGE_BU_WIDGET_CURRENT_SITE,
+                    businessUnit = RECHARGE_BU_WIDGET_BUSINESS_UNIT
+                ) as? HashMap<String, Any>
+            )
+        }
     }
 
     fun homeRechargeBUWidgetProductCardClickTracker(
@@ -66,9 +72,9 @@ object RechargeBUWidgetTracking : BaseTracking() {
                     position = position.toString()
             )
             //empty supposed to be userType next dev.
-            val eventLabel = " - ${getHeaderName(data.channel)} - ${data.data.items.firstOrNull()?.trackingData?.itemType} - $position - " +
-                    "${data.data.items.firstOrNull()?.trackingData?.categoryId} - ${data.data.items.firstOrNull()?.trackingData?.operatorId} - " +
-                    "${data.data.items.firstOrNull()?.trackingData?.productId}"
+            val eventLabel = " - ${getHeaderName(data.channel)} - ${item.trackingData.itemType} - $position - " +
+                    "${item.trackingData.categoryId} - ${item.trackingData.operatorId} - " +
+                    "${item.trackingData.productId} - ${item.label2}"
             trackingQueue.putEETracking(getBasicPromotionClick(
                     Event.PROMO_CLICK,
                     RECHARGE_BU_WIDGET_EVENT_CATEGORY,
