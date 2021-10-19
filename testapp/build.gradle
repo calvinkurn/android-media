@@ -115,10 +115,7 @@ dependencies {
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.loginregister)
     implementation project(rootProject.ext.features.logout)
-
-    //you can delete below line if you use old login, then Build -> Switch to TestApp again
-    //you have to DELETE, not only COMMENT, because testapp plugins still add it to compile list even when commented
-    //logintestapp should not appear in compile-testapp-plugin.gradle if it is successfully excluded
+    implementation projectOrAar(rootProject.ext.libraries.deviceFingerprint)
 
     //you can delete below line if you are not using developer options, then Build -> Switch to TestApp again
     //you have to DELETE, not only COMMENT, because testapp plugins still add it to compile list even when commented
