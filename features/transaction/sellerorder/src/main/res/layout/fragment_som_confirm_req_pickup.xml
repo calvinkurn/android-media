@@ -156,8 +156,8 @@
 
                             <ImageView
                                 android:id="@+id/iv_courier"
-                                android:layout_width="@dimen/dp_72"
-                                android:layout_height="@dimen/dp_72"
+                                android:layout_width="72dp"
+                                android:layout_height="72dp"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="@id/tv_courier_name_service"
                                 tools:ignore="ContentDescription"
@@ -291,7 +291,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="@dimen/dp_1"
                                     android:background="@color/Unify_N75"
-                                    android:layout_marginTop="@dimen/dp_3"
+                                    android:layout_marginTop="3dp"
                                     android:layout_below="@id/tv_schedule"
                                     android:visibility="visible"/>
 

@@ -290,6 +290,7 @@ object ApplinkConstInternalGlobal {
     const val WEBVIEW_BACK_HOME = "$INTERNAL_GLOBAL/webviewbackhome"
 
     const val IMAGE_PICKER = "$INTERNAL_GLOBAL/image-picker"
+    const val IMAGE_PICKER_V2 = "$INTERNAL_GLOBAL/image-picker/v2/"
 
     const val IMAGE_EDITOR = "$INTERNAL_GLOBAL/image-editor"
 
@@ -511,4 +512,7 @@ object ApplinkConstInternalGlobal {
     // LinkAccountWebViewActivity
     // tokopedia-android-internal://global/link-account-webview
     const val LINK_ACCOUNT_WEBVIEW = "$INTERNAL_GLOBAL/link-account-webview"
+
+    //TkpdYoutubeVideoActivity
+    const val YOUTUBE_VIDEO = "$INTERNAL_GLOBAL/youtube-video"
 }

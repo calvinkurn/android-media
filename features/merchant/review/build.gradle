@@ -29,6 +29,7 @@ android {
                     pathSources + 'reviewlist',
                     pathSources + 'reviewreply',
                     pathSources + 'createreputation',
+                    pathSources + 'credibility',
                     pathSources + 'reading',
                     pathSources + 'gallery',
                     pathSources + 'imagepreview',

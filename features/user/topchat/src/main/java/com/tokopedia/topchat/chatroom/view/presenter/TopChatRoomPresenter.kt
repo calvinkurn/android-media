@@ -20,7 +20,7 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_M
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_API
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_WEBSOCKET
-import com.tokopedia.chat_common.data.preview.ProductPreview
+import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
@@ -103,7 +103,6 @@ open class TopChatRoomPresenter @Inject constructor(
     private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
     private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
     private var replyChatUseCase: ReplyChatUseCase,
-    private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
     private var getShopFollowingUseCase: GetShopFollowingUseCase,
     private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
     private var addToCartUseCase: AddToCartUseCase,
@@ -332,18 +331,6 @@ open class TopChatRoomPresenter @Inject constructor(
 
     private fun updateRoomMetaData(roomMetaData: RoomMetaData) {
         this.roomMetaData = roomMetaData
-    }
-
-    override fun getMessageId(
-        toUserId: String,
-        toShopId: String,
-        source: String,
-        onError: (Throwable) -> Unit,
-        onSuccessGetMessageId: (String) -> Unit
-    ) {
-        getExistingMessageIdUseCase.getMessageId(
-            toShopId, toUserId, source, onSuccessGetMessageId, onError
-        )
     }
 
     override fun loadTopChat(

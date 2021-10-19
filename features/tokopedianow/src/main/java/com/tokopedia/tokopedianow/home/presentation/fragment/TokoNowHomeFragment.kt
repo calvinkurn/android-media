@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2
 import com.tokopedia.applink.RouteManager
@@ -99,6 +100,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.*
+import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowHomeBinding
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingEducationWidgetViewHolder.*
@@ -117,6 +119,7 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
 
@@ -163,6 +166,8 @@ class TokoNowHomeFragment: Fragment(),
 
     @Inject
     lateinit var analytics: HomeAnalytics
+
+    private var binding by autoClearedNullable<FragmentTokopedianowHomeBinding>()
 
     private val adapter by lazy {
         HomeAdapter(
@@ -233,8 +238,9 @@ class TokoNowHomeFragment: Fragment(),
         )
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_tokopedianow_home, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = FragmentTokopedianowHomeBinding.inflate(inflater, container, false)
+        return binding?.root as View
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -474,11 +480,11 @@ class TokoNowHomeFragment: Fragment(),
     override fun onPromoAllClick(channelModel: ChannelModel) {}
 
     override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {
-        if (!isFirstImpressionOnBanner) {
-            isFirstImpressionOnBanner = true
+        isFirstImpressionOnBanner = if (!isFirstImpressionOnBanner) {
+            true
         } else {
             analytics.onImpressBannerPromo(userSession.userId, channelModel)
-            isFirstImpressionOnBanner = false
+            false
         }
     }
 
@@ -596,8 +602,8 @@ class TokoNowHomeFragment: Fragment(),
             it.lifecycleOwner = viewLifecycleOwner
             it.setStickyAction(object : StickyLoginAction {
                 override fun onClick() {
-                    context?.let {
-                        val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
+                    context?.let { context ->
+                        val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
                         startActivityForResult(intent, REQUEST_CODE_LOGIN_STICKY_LOGIN)
                     }
                 }
@@ -649,19 +655,19 @@ class TokoNowHomeFragment: Fragment(),
         hideStickyLogin()
         rvLayoutManager?.setScrollEnabled(true)
         carouselScrollState.clear()
-        loadLayout()
         isRefreshed = true
+        loadLayout()
     }
 
     private fun setupUi() {
         view?.apply {
-            ivHeaderBackground = findViewById(R.id.view_background_image)
-            navToolbar = findViewById(R.id.navToolbar)
-            statusBarBackground = findViewById(R.id.status_bar_bg)
-            rvHome = findViewById(R.id.rv_home)
-            swipeLayout = findViewById(R.id.swipe_refresh_layout)
-            miniCartWidget = findViewById(R.id.mini_cart_widget)
-            stickyLoginTokonow = findViewById(R.id.sticky_login_tokonow)
+            ivHeaderBackground = binding?.viewBackgroundImage
+            navToolbar = binding?.navToolbar
+            statusBarBackground = binding?.statusBarBg
+            rvHome = binding?.rvHome
+            swipeLayout = binding?.swipeRefreshLayout
+            miniCartWidget = binding?.miniCartWidget
+            stickyLoginTokonow = binding?.stickyLoginTokonow
         }
     }
 
@@ -790,7 +796,7 @@ class TokoNowHomeFragment: Fragment(),
 
             when(it) {
                 is Success -> {
-                    loadHomeLayout(it.data)
+                    onSuccessGetHomeLayout(it.data)
                 }
                 is Fail -> {
                     showFailedToFetchData()
@@ -993,17 +999,13 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    private fun loadHomeLayout(data: HomeLayoutListUiModel) {
+    private fun onSuccessGetHomeLayout(data: HomeLayoutListUiModel) {
         when (data.state) {
             TokoNowLayoutState.SHOW -> onShowHomeLayout(data)
             TokoNowLayoutState.HIDE -> onHideHomeLayout(data)
             TokoNowLayoutState.LOADING -> onLoadingHomeLayout(data)
-            TokoNowLayoutState.LOAD_MORE -> {
-                rvHome?.post {
-                    showHomeLayout(data)
-                }
-            }
-            TokoNowLayoutState.UPDATE -> showHomeLayout(data)
+            TokoNowLayoutState.LOADED -> getProductAddToCartQuantity()
+            else -> showHomeLayout(data)
         }
     }
 
@@ -1011,6 +1013,10 @@ class TokoNowHomeFragment: Fragment(),
         showHomeLayout(data)
         loadHeaderBackground()
         checkAddressDataAndServiceArea()
+        showHideChooseAddress()
+    }
+
+    private fun showHideChooseAddress() {
         if (!isChooseAddressWidgetShowed()) {
             adapter.removeHomeChooseAddressWidget()
         }
@@ -1022,28 +1028,8 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun onShowHomeLayout(data: HomeLayoutListUiModel) {
-        val initialLoad = data.isInitialLoad
-        val isLoadDataFinished = data.isLoadDataFinished
         showHomeLayout(data)
-
-        when {
-            initialLoad -> {
-                showHeaderBackground()
-                loadNextItem(data)
-            }
-            isLoadDataFinished -> {
-                getProductAddToCartQuantity()
-                rvHome?.post { addLoadMoreListener() }
-            }
-            !isLoadDataFinished -> loadNextItem(data)
-        }
-    }
-
-    private fun loadNextItem(data: HomeLayoutListUiModel) {
-        rvHome?.post {
-            val index = data.nextItemIndex
-            loadVisibleLayoutData(index)
-        }
+        showHeaderBackground()
     }
 
     private fun checkAddressDataAndServiceArea() {
@@ -1054,12 +1040,26 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun showHomeLayout(data: HomeLayoutListUiModel) {
-        val items = data.items.toMutableList().map { it.layout }
-        adapter.submitList(items)
+        try {
+            val items = mutableListOf<Visitable<*>>()
+            val iterator = data.items.iterator()
+
+            while(iterator.hasNext()) {
+                iterator.next()?.let {
+                    items.add(it.layout)
+                }
+            }
+
+            adapter.submitList(items)
+        } catch (e: Exception) {
+
+        }
     }
 
     private fun addLoadMoreListener() {
-        rvHome?.addOnScrollListener(loadMoreListener)
+        rvHome?.post {
+            rvHome?.addOnScrollListener(loadMoreListener)
+        }
     }
 
     private fun removeLoadMoreListener() {
@@ -1093,29 +1093,24 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun addScrollListener() {
+        addLoadMoreListener()
         addNavBarScrollListener()
         addHomeComponentScrollListener()
     }
 
-    private fun loadVisibleLayoutData(index: Int?) {
-        val warehouseId = localCacheModel?.warehouse_id.orEmpty()
-        val layoutManager = rvHome?.layoutManager as? LinearLayoutManager
-        val firstVisibleItemIndex = layoutManager?.findFirstVisibleItemPosition().orZero()
-        val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
-        viewModelTokoNow.getLayoutData(index, warehouseId, firstVisibleItemIndex, lastVisibleItemIndex, localCacheModel)
-    }
-
-    private fun loadMoreLayoutData() {
-        val warehouseId = localCacheModel?.warehouse_id.orEmpty()
-        val layoutManager = rvHome?.layoutManager as? LinearLayoutManager
-        val firstVisibleItemIndex = layoutManager?.findFirstVisibleItemPosition().orZero()
-        val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
-        viewModelTokoNow.getMoreLayoutData(warehouseId, firstVisibleItemIndex, lastVisibleItemIndex, localCacheModel)
+    private fun onScrollTokoMartHome() {
+        localCacheModel?.let {
+            val layoutManager = rvHome?.layoutManager as? LinearLayoutManager
+            val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
+            viewModelTokoNow.onScrollTokoMartHome(lastVisibleItemIndex, it, false)
+        }
     }
 
     private fun getHomeLayout() {
-        val isSharingRemoved = SharedPreferencesUtil.isSharingEducationRemoved(activity)
-        viewModelTokoNow.getHomeLayout(localCacheModel, isSharingRemoved)
+        localCacheModel?.let {
+            val isSharingRemoved = SharedPreferencesUtil.isSharingEducationRemoved(activity)
+            viewModelTokoNow.getHomeLayout(it, isSharingRemoved)
+        }
     }
 
     private fun getMiniCart() {
@@ -1132,11 +1127,6 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun loadLayout() {
         viewModelTokoNow.getLoadingState()
-    }
-
-    //  because searchHint has not been discussed so for current situation we only use hardcoded placeholder
-    private fun getSearchHint() {
-        viewModelTokoNow.getKeywordSearch(isFirstInstall(), userSession.deviceId, userSession.userId)
     }
 
     private fun checkIfChooseAddressWidgetDataUpdated() {
@@ -1159,12 +1149,10 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun isChooseAddressWidgetShowed(): Boolean {
         val remoteConfig = FirebaseRemoteConfigImpl(context)
-        val isRollOutUser = ChooseAddressUtils.isRollOutUser(context)
-        val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
-                TokoNowChooseAddressWidgetViewHolder.ENABLE_CHOOSE_ADDRESS_WIDGET,
-                true
+        return remoteConfig.getBoolean(
+            TokoNowChooseAddressWidgetViewHolder.ENABLE_CHOOSE_ADDRESS_WIDGET,
+            true
         )
-        return isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled
     }
 
     private fun updateCurrentPageLocalCacheModelData() {
@@ -1211,7 +1199,7 @@ class TokoNowHomeFragment: Fragment(),
                                     data.keyword.orEmpty()
                             )
                     ),
-                    searchbarClickCallback = ::onSearchBarClick,
+                    searchbarClickCallback = { onSearchBarClick() },
                     searchbarImpressionCallback = {},
                     durationAutoTransition = durationAutoTransition,
                     shouldShowTransition = shouldShowTransition()
@@ -1219,7 +1207,7 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    private fun onSearchBarClick(hint: String) {
+    private fun onSearchBarClick() {
         analytics.onClickSearchBar()
         RouteManager.route(context,
                 getAutoCompleteApplinkPattern(),
@@ -1239,14 +1227,6 @@ class TokoNowHomeFragment: Fragment(),
     private fun shouldShowTransition(): Boolean {
         val abTestValue = getAbTestPlatform().getString(AB_TEST_AUTO_TRANSITION_KEY, "")
         return abTestValue == AUTO_TRANSITION_VARIANT
-    }
-
-    private fun String?.safeEncodeUtf8(): String {
-        return try {
-            this?.encodeToUtf8().orEmpty()
-        } catch (throwable: Throwable) {
-            ""
-        }
     }
 
     private fun createNavBarScrollListener(): NavRecyclerViewScrollListener? {
@@ -1286,7 +1266,7 @@ class TokoNowHomeFragment: Fragment(),
         return object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                loadMoreLayoutData()
+                onScrollTokoMartHome()
             }
         }
     }
@@ -1336,7 +1316,7 @@ class TokoNowHomeFragment: Fragment(),
             //set the Image Url of the Image that represents page
             setOgImageUrl(shareHomeTokonow?.ogImageUrl ?: "")
         }
-        universalShareBottomSheet?.show(fragmentManager, this, screenshotDetector)
+        universalShareBottomSheet?.show(childFragmentManager, this, screenshotDetector)
     }
 
     private fun linkerDataMapper(shareHomeTokonow: ShareHomeTokonow?): LinkerShareData {
