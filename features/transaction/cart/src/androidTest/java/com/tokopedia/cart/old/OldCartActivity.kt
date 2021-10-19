@@ -44,7 +44,7 @@ class OldCartActivity : BaseCheckoutActivity() {
         bundle.putString(EXTRA_CART_ID, cartId)
         bundle.putLong(EXTRA_PRODUCT_ID, productId)
         bundle.putBoolean(EXTRA_IS_FROM_CART_ACTIVITY, true)
-        oldFragment = CartFragment.newInstance(bundle, "")
+        oldFragment = OldCartFragment.newInstance(bundle, "")
         return oldFragment
     }
 
