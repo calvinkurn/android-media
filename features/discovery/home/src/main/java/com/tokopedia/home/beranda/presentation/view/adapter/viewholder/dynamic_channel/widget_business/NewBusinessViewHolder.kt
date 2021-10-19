@@ -13,6 +13,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.BusinessUnitTracking
 import com.tokopedia.home.beranda.data.model.HomeWidget
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.BusinessUnitAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitDataModel
@@ -90,7 +91,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
     }
 
     override fun bind(element: NewBusinessUnitWidgetDataModel?) {
-        setChannelDivider(element)
+        setChannelDivider(element?.channel)
         setHeaderComponent(element)
         adapterBusinessWidget.setPositionWidgetOnHome(adapterPosition)
         performanceMonitoring?.startTrace(performanceTraceName)
@@ -161,9 +162,9 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
         }
     }
 
-    private fun setChannelDivider(element: NewBusinessUnitWidgetDataModel?) {
+    private fun setChannelDivider(element: DynamicHomeChannel.Channels?) {
         HomeChannelWidgetUtil.validateHomeComponentDivider(
-            channelModel = element?.channel,
+            channelModel = element,
             dividerTop = dividerTop,
             dividerBottom = dividerBottom
         )

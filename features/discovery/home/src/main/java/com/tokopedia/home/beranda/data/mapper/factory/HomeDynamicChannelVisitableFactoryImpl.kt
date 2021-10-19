@@ -178,7 +178,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     createCategoryIconComponent(channel, position, isCache)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_BEST_SELLING -> {
-                    createBestSellingWidget(channel, position)
+                    createBestSellingWidget(channel)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL_V2 -> {
                     createBannerChannel(channel, position)
@@ -316,14 +316,13 @@ class HomeDynamicChannelVisitableFactoryImpl(
         if (!isCache) {
             visitableList.add(NewBusinessUnitWidgetDataModel(
                 channel = channel,
-                position = position,
                 isCache = false,
                 channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, position))
             )
         }
     }
 
-    private fun createBestSellingWidget(channel: DynamicHomeChannel.Channels, position: Int){
+    private fun createBestSellingWidget(channel: DynamicHomeChannel.Channels){
 
         if(!isCache) {
             visitableList.add(BestSellerDataModel(id = channel.id, pageName = channel.pageName, widgetParam = channel.widgetParam, dividerType = channel.dividerType)
