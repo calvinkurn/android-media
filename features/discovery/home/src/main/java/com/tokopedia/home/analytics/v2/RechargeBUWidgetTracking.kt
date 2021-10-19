@@ -1,11 +1,9 @@
 package com.tokopedia.home.analytics.v2
 
-import android.os.Bundle
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import kotlin.collections.HashMap
 
 object RechargeBUWidgetTracking : BaseTracking() {
     private const val RECHARGE_BU_WIDGET_CLICK_EVENT = "clickHomepage"
@@ -22,12 +20,9 @@ object RechargeBUWidgetTracking : BaseTracking() {
     fun homeRechargeBUWidgetImpressionTracker(
             trackingQueue: TrackingQueue,
             data: RechargeBUWidgetDataModel,
+            position: Int,
             userId: String
     ) {
-        var position = 0
-        data.data.items.mapIndexed { index, item ->
-            position = index + 1
-        }
         //empty supposed to be userType next dev.
         val item = data.data.items[position]
         if (position < data.data.items.size) {
@@ -44,14 +39,14 @@ object RechargeBUWidgetTracking : BaseTracking() {
                 put(CurrentSite.KEY, RECHARGE_BU_WIDGET_CURRENT_SITE)
                 put(RECHARGE_BU_WIDGET_ITEM_LIST_KEY, item.trackingData.itemType)
                 put(RECHARGE_BU_WIDGET_ITEMS_KEY, arrayListOf(
-                    Bundle().also {
-                        it.putInt("index", position)
-                        it.putString("item_brand", item.trackingData.operatorId)
-                        it.putString("item_category" , item.trackingData.categoryId)
-                        it.putString("item_id", item.id)
-                        it.putString("item_name","/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${getHeaderName(data.channel)}")
-                        it.putString("item_variant", item.trackingData.itemType)
-                        it.putString("price", item.label2)
+                    HashMap<String, Any>().also {
+                        it["index"] = (position + 1).toString()
+                        it["item_brand"] = item.trackingData.operatorId
+                        it["item_category"] = item.trackingData.categoryId
+                        it["item_id"] = item.id
+                        it["item_name"] = "/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${getHeaderName(data.channel)}"
+                        it["item_variant"] = item.trackingData.itemType
+                        it["price"] = item.label2
                     }
                 ))
                 put(UserId.KEY, userId)
@@ -81,14 +76,14 @@ object RechargeBUWidgetTracking : BaseTracking() {
                 put(CurrentSite.KEY, RECHARGE_BU_WIDGET_CURRENT_SITE)
                 put(RECHARGE_BU_WIDGET_ITEM_LIST_KEY, item.trackingData.itemType)
                 put(RECHARGE_BU_WIDGET_ITEMS_KEY, arrayListOf(
-                    Bundle().also {
-                        it.putInt("index", position)
-                        it.putString("item_brand", item.trackingData.operatorId)
-                        it.putString("item_category" , item.trackingData.categoryId)
-                        it.putString("item_id", item.id)
-                        it.putString("item_name","/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${getHeaderName(data.channel)}")
-                        it.putString("item_variant", item.trackingData.itemType)
-                        it.putString("price", item.label2)
+                    HashMap<String, Any>().also {
+                        it["index"] = (position + 1).toString()
+                        it["item_brand"] = item.trackingData.operatorId
+                        it["item_category"] = item.trackingData.categoryId
+                        it["item_id"] = item.id
+                        it["item_name"] = "/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${getHeaderName(data.channel)}"
+                        it["item_variant"] = item.trackingData.itemType
+                        it["price"] = item.label2
                     }
                 ))
                 put(UserId.KEY, userId)
