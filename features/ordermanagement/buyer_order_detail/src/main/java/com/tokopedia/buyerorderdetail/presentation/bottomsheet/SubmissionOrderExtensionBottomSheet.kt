@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderExtensionTracker
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailOrderExtension
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderExtensionConstant
 import com.tokopedia.buyerorderdetail.databinding.OrderExtensionSubmissionExtendsBottomsheetBinding
@@ -36,7 +37,6 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
 
     private var binding: OrderExtensionSubmissionExtendsBottomsheetBinding? = null
     private var confirmedCancelledOrderDialog: OrderExtensionDialog? = null
-    private var isOrderExtended: Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,8 +121,16 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
                 toasterComponent.setToasterNormal(
                     orderExtensionRespondUiModel.messageCode,
                     orderExtensionRespondUiModel.message
-                ) {
-
+                ) { isOrderExtended ->
+                    if (isOrderExtended) {
+                        BuyerOrderExtensionTracker.eventAcceptOrderExtension(
+                            getOrderId()
+                        )
+                    } else {
+                        BuyerOrderExtensionTracker.eventRejectOrderExtension(
+                            getOrderId()
+                        )
+                    }
                 }
             }
             BuyerOrderExtensionConstant.RespondMessageCode.STATUS_CHANGE -> {
@@ -156,15 +164,18 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private fun getOrderId(): String {
+        return getRespondInfo().value?.orderId.orEmpty()
+    }
+
     private fun showConfirmedCancelledOrderDialog() {
-        val orderId = getRespondInfo().value?.orderId.orEmpty()
         confirmedCancelledOrderDialog = getInstanceDialog().value
         confirmedCancelledOrderDialog?.getDialog()?.run {
             setPrimaryCTAClickListener {
-                buyerOrderDetailExtensionViewModel.requestRespond(orderId)
+                buyerOrderDetailExtensionViewModel.requestRespond(getOrderId(), CANCEL_ACTION)
             }
             setSecondaryCTAClickListener {
-                buyerOrderDetailExtensionViewModel.requestRespond(orderId)
+                buyerOrderDetailExtensionViewModel.requestRespond(getOrderId(), EXTENSION_ACTION)
             }
             show()
         }
@@ -196,6 +207,9 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
 
         const val KEY_ITEM_RESPOND_INFO = "key_item_respond_info"
         private const val KEY_CACHE_MANAGER_ID = "extra_cache_manager_id"
+
+        private const val EXTENSION_ACTION = 1
+        private const val CANCEL_ACTION = 0
 
         fun newInstance(cacheManagerId: String): SubmissionOrderExtensionBottomSheet {
             return SubmissionOrderExtensionBottomSheet().apply {

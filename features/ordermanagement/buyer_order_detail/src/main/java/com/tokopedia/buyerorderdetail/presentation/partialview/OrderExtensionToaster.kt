@@ -17,11 +17,9 @@ class OrderExtensionToaster(
     fun setToasterNormal(
         messageCode: Int,
         message: String,
-        sendTracker: (() -> Unit)? = null
+        sendTracker: ((Boolean) -> Unit)? = null
     ) {
-        val isOrderExtended =
-            messageCode ==
-                    BuyerOrderExtensionConstant.RespondMessageCode.SUCCESS
+        val isOrderExtended = messageCode == BuyerOrderExtensionConstant.RespondMessageCode.SUCCESS
         val toasterType =
             if (messageCode ==
                 BuyerOrderExtensionConstant.RespondMessageCode.SUCCESS
@@ -31,7 +29,7 @@ class OrderExtensionToaster(
                 Toaster.TYPE_ERROR
             }
 
-        sendTracker?.invoke()
+        sendTracker?.invoke(isOrderExtended)
 
         showToasterCommon(
             message = message,
