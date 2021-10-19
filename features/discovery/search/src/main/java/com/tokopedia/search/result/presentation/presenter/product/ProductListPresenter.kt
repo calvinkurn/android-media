@@ -201,7 +201,8 @@ class ProductListPresenter @Inject constructor(
     private var suggestionDataView: SuggestionDataView? = null
     private var relatedDataView: RelatedDataView? = null
     override val quickFilterOptionList = mutableListOf<Option>()
-    private var dynamicFilterModel: DynamicFilterModel? = null
+    override var dynamicFilterModel: DynamicFilterModel? = null
+        private set
     private var threeDotsProductItem: ProductItemDataView? = null
     private var firstProductPositionWithBOELabel = -1
     private var hasFullThreeDotsOptions = false

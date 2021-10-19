@@ -29,6 +29,8 @@ data class SavedOption(
     )
 
     companion object {
+        const val SORT_SAVED_OPTION_TITLE = "sort"
+
         fun create(option: Option, filterList: List<Filter>) =
             SavedOption(
                 key = option.key,
@@ -36,5 +38,14 @@ data class SavedOption(
                 name = option.name,
                 title = filterList.find { it.options.contains(option) }?.title ?: "",
             )
+
+        fun create(sort: Sort): SavedOption {
+            return SavedOption(
+                key = sort.key,
+                value = sort.value,
+                name = sort.name,
+                title = SORT_SAVED_OPTION_TITLE,
+            )
+        }
     }
 }

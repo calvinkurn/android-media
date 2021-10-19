@@ -119,6 +119,7 @@ interface ProductListSectionContract {
         val userId: String
         val isUserLoggedIn: Boolean
         val deviceId: String
+        val dynamicFilterModel: DynamicFilterModel?
         fun onPriceFilterTickerDismissed()
         val isTickerHasDismissed: Boolean
         fun hasNextPage(): Boolean

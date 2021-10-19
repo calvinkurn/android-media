@@ -1829,10 +1829,15 @@ class ProductListFragment: BaseDaggerFragment(),
 
     private fun updateLastFilter() {
         val mapParameter = searchParameter?.getSearchParameterMap() ?: mapOf()
+        val appliedSort = presenter?.dynamicFilterModel?.getAppliedSort(mapParameter)
+
+        val savedOptionFromFilter = filterController.getActiveSavedOptionList()
+        val savedOptionFromSort = appliedSort?.let { listOf(SavedOption.create(it)) } ?: listOf()
+        val savedOptionList = savedOptionFromFilter + savedOptionFromSort
 
         presenter?.updateLastFilter(
             mapParameter,
-            filterController.getActiveSavedOptionList(),
+            savedOptionList,
         )
     }
 
