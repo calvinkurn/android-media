@@ -242,14 +242,6 @@ public class CMInAppManager implements CmInAppListener,
         sendPushEvent(inAppData, IrisAnalyticsEvents.INAPP_RECEIVED, null);
     }
 
-    public void dataConsumed(long id) {
-        RulesManager.getInstance().dataConsumed(id);
-    }
-
-    public void viewDismissed(long id) {
-        RulesManager.getInstance().viewDismissed(id);
-    }
-
     public void handlePushPayload(RemoteMessage remoteMessage) {
         try {
             CMInApp cmInApp = CmInAppBundleConvertor.getCmInApp(remoteMessage);

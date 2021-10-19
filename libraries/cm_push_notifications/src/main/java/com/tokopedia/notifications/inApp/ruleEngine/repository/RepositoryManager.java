@@ -25,9 +25,9 @@ public class RepositoryManager implements StorageProvider.StorageProviderListene
     private CMRemoteConfigUtils cmRemoteConfigUtils;
 
     RepositoryManager(Application application) {
+        this.application = application;
         RoomNotificationDB db = getRoomNotificationDB();
         this.storageProvider = new StorageProvider(db.inAppDataDao(), db.elapsedTimeDao(), this);
-        this.application = application;
         cacheHandler = new CMNotificationCacheHandler(application.getApplicationContext());
         cmRemoteConfigUtils = new CMRemoteConfigUtils(application.getApplicationContext());
     }
