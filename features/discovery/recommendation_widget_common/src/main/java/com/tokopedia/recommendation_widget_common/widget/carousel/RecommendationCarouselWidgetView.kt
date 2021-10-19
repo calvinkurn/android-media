@@ -252,6 +252,11 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 recomItem = recomItem,
                 adapterPosition = adapterPosition
             )
+            tokonowPageNameListener?.onRecomProductCardAddVariantClick(
+                data = it,
+                recomItem = recomItem,
+                adapterPosition = adapterPosition
+            )
         }
     }
 
