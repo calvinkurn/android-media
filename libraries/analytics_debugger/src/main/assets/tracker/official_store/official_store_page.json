@@ -18,6 +18,7 @@
     },
     {
       "eventCategory": ".*",
+      "item_list": ".*",
       "event": "select_content",
       "eventAction": "category - click",
       "sessionIris" : ".*",
@@ -32,6 +33,7 @@
     },
     {
       "eventCategory": ".*",
+      "item_list": ".*",
       "event": "view_item",
       "eventAction": "banner - impression",
       "sessionIris" : ".*",
@@ -46,6 +48,7 @@
     },
     {
       "eventCategory": ".*",
+      "item_list": ".*",
       "affinityLabel": ".*",
       "attribution": ".*",
       "shopId": ".*",
@@ -65,6 +68,7 @@
     },
     {
       "eventCategory": ".*",
+      "item_list": ".*",
       "event": "select_content",
       "eventAction": "click - shop - all brands - login|click - shop - all brands - nonlogin",
       "sessionIris" : ".*",
@@ -146,6 +150,7 @@
         "item_name": ".*"
       }],
       "eventCategory": ".*",
+      "item_list": ".*",
       "affinityLabel" : ".*",
       "attribution" : ".*",
       "shopId" : ".*",
@@ -158,6 +163,7 @@
     },
     {
       "eventCategory": ".*",
+      "item_list": ".*",
       "event": "view_item",
       "eventAction": "impression banner dynamic channel left carousel",
       "sessionIris" : ".*",
@@ -210,6 +216,7 @@
     },
     {
       "eventCategory": ".*",
+      "item_list": ".*",
       "affinityLabel" : ".*",
       "attribution" : ".*",
       "shopId" : ".*",
@@ -229,6 +236,7 @@
     },
     {
       "eventCategory": ".*",
+      "item_list": ".*",
       "event": "view_item",
       "eventAction": "dynamic channel - impression",
       "sessionIris" : ".*",

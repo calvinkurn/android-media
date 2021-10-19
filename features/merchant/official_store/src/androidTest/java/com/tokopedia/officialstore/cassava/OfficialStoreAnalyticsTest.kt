@@ -68,7 +68,7 @@ class OfficialStoreAnalyticsTest {
         initTest()
         doActivityTest()
         assertCassava()
-        addDebugEnd()
+//        addDebugEnd()
     }
 
     private fun initTest() {
@@ -90,8 +90,8 @@ class OfficialStoreAnalyticsTest {
         onView(withId(R.id.tablayout)).perform(selectTabAtPosition(0))
         // 2. scroll and click item at OS
         // Scroll to bottom first and then back to top for load all data (recom case)
-        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
-        onView(firstView(withId(R.id.recycler_view))).perform(ViewActions.swipeUp())
+        val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.os_child_recycler_view)
+        onView(firstView(withId(R.id.os_child_recycler_view))).perform(ViewActions.swipeUp())
         Thread.sleep(2500)
         recyclerView.layoutManager?.smoothScrollToPosition(recyclerView, null, 0)
         Thread.sleep(2500)
