@@ -17,13 +17,12 @@ class BottomSheetNavigator(val childFragmentManager: FragmentManager) {
         modelClass: Class<T>,
         bundle: Bundle,
         pdpSimulationCallback: PdpSimulationCallback,
-        productUrl: String
+        productId: String
     ) {
         when {
 
 
             modelClass.isAssignableFrom(PayLaterActionStepsBottomSheet::class.java) -> {
-                bundle.putString(PayLaterActionStepsBottomSheet.PRODUCT_URL, productUrl)
                 PayLaterActionStepsBottomSheet.show(
                     bundle,
                     pdpSimulationCallback,
@@ -34,12 +33,14 @@ class BottomSheetNavigator(val childFragmentManager: FragmentManager) {
             modelClass.isAssignableFrom(PayLaterFaqBottomSheet::class.java) ->
                 PayLaterFaqBottomSheet.show(bundle, pdpSimulationCallback, childFragmentManager)
 
-            modelClass.isAssignableFrom(PayLaterTokopediaGopayBottomsheet::class.java) ->
+            modelClass.isAssignableFrom(PayLaterTokopediaGopayBottomsheet::class.java) -> {
+                bundle.putString(PayLaterActionStepsBottomSheet.PRODUCT_URL, productId)
                 PayLaterTokopediaGopayBottomsheet.show(
                     bundle,
                     pdpSimulationCallback,
                     childFragmentManager
                 )
+            }
 
             modelClass.isAssignableFrom(CreditCardsListBottomSheet::class.java) ->
                 CreditCardsListBottomSheet.show(bundle, pdpSimulationCallback, childFragmentManager)

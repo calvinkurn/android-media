@@ -298,7 +298,7 @@ class PdpSimulationFragment : BaseDaggerFragment(),
     }
 
     override fun <T : Any> openBottomSheet(bundle: Bundle, modelClass: Class<T>) {
-        bottomSheetNavigator.showBottomSheet(modelClass, bundle, this, productUrl)
+        bottomSheetNavigator.showBottomSheet(modelClass, bundle, this,productId =  productId)
     }
 
     override fun sendAnalytics(pdpSimulationEvent: PdpSimulationEvent) {

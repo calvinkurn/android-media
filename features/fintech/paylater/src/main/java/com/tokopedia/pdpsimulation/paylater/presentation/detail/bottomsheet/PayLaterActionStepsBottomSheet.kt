@@ -40,7 +40,6 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     private var pdpSimulationCallback: PdpSimulationCallback? = null
     private val childLayoutRes = R.layout.paylater_action_steps_bottomsheet_widget
     private var actionUrl: String = ""
-    private var productUrl: String = ""
     private var partnerName: String? = ""
     private var listOfSteps: ArrayList<String>? = ArrayList()
     private var noteData: String = ""
@@ -58,7 +57,6 @@ class PayLaterActionStepsBottomSheet : BottomSheetUnify() {
     private fun getArgumentData() {
         arguments?.let {
             val payLaterItemProductData: Detail? = it.getParcelable(STEPS_DATA)
-            productUrl = it.getString(PRODUCT_URL) ?: ""
             setDataFromArguments(payLaterItemProductData)
         } ?: dismiss()
     }

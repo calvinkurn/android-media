@@ -10,8 +10,12 @@ import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
+import kotlinx.android.synthetic.main.paylater_card_activation_purchase.*
 
 class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
+
+    private var pdpSimulationCallback: PdpSimulationCallback? = null
+
 
     init {
         setShowListener {
@@ -35,6 +39,25 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
         super.onCreate(savedInstanceState)
         setDefaultParams()
         initBottomSheet()
+
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        initListners()
+        sendImpressionAnalytics()
+    }
+
+    private fun sendImpressionAnalytics() {
+
+    }
+
+    private fun initListners() {
+        btnRegister.setOnClickListener {
+            sendClickAnalytics()
+        }
+    }
+
+    private fun sendClickAnalytics() {
 
     }
 
@@ -63,7 +86,11 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
             pdpSimulationCallback: PdpSimulationCallback,
             childFragmentManager: FragmentManager
         ) {
-            PayLaterTokopediaGopayBottomsheet().show(childFragmentManager, TAG)
+            val payLaterTokopediaGopayBottomsheet = PayLaterTokopediaGopayBottomsheet().apply {
+                arguments = bundle
+            }
+            payLaterTokopediaGopayBottomsheet.show(childFragmentManager, TAG)
+            payLaterTokopediaGopayBottomsheet.pdpSimulationCallback = pdpSimulationCallback
         }
     }
 

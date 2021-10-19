@@ -74,6 +74,8 @@ class PdpSimulationAnalytics @Inject constructor(
             )
             is PdpSimulationEvent.PayLater.SelectedPayLater -> sendPayLaterImpressionEvent()
             is PdpSimulationEvent.PayLater.TenureListImpression -> sendSortFilterTenureImpression(event.tenure)
+            is PdpSimulationEvent.PayLater.GopayBottomSheetButtonClick -> TODO()
+            is PdpSimulationEvent.PayLater.GopayBottomSheetImpression -> TODO()
         }
     }
 
@@ -324,6 +326,9 @@ class PdpSimulationAnalytics @Inject constructor(
         const val EVENT_PAY_LATER_TAB_IMPRESSION =
             "sim vcc - impression pdp paylater simulation page"
         const val EVENT_LABEL_PAY_LATER_TAB_IMPRESSION = "pdp paylater simulation page"
+
+        const val EVENT_IMPRESSION_GOPAY_BOTTOMSHEET = "sim vcc - impression sambungin akun"
+        const val EVENT_CLICK_GOPAY_BOTTOMSHEET = "sim vcc - click sambungin akun"
 
         // Credit Card --> CC
         const val EVENT_ACTION_CC_TAB_CLICK = "sim cc - click tab"
