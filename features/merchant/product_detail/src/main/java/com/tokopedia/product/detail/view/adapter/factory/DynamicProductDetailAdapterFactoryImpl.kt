@@ -116,13 +116,12 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
         return ProductCategoryCarouselViewHolder.LAYOUT
     }
 
-<<<<<<< HEAD
     override fun type(topadsHeadlineUiModel: TopadsHeadlineUiModel): Int {
         return TopAdsHeadlineViewHolder.LAYOUT;
-=======
+    }
+
     override fun type(data: ProductBundlingDataModel): Int {
         return ProductBundlingViewHolder.LAYOUT
->>>>>>> origin/release_candidate
     }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
