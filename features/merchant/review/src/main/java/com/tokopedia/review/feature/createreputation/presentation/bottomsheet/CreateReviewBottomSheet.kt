@@ -581,6 +581,9 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun onSuccessGetBadRatingCategories(categories: List<BadRatingCategory>) {
         badRatingCategoriesAdapter.setData(categories)
+        if (!isGoodRating()) {
+            badRatingCategoryRecyclerView?.show()
+        }
     }
 
     private fun onFailGetBadRatingCategories(throwable: Throwable) {
@@ -1190,6 +1193,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         badRatingCategoryRecyclerView?.apply {
             layoutManager = GridLayoutManager(context, 2, RecyclerView.VERTICAL, false)
             adapter = badRatingCategoriesAdapter
+            addItemDecoration(ReviewBadRatingItemDecoration())
         }
     }
 }

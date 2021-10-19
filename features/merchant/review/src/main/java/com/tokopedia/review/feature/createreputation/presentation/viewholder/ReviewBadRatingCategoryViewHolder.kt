@@ -20,12 +20,13 @@ class ReviewBadRatingCategoryViewHolder(itemView: View) : RecyclerView.ViewHolde
                 val checkBox = findViewById<CheckboxUnify>(R.id.review_bad_rating_category_checkbox)
                 checkBox.apply {
                     setOnCheckedChangeListener { compoundButton, b ->
-                        // Handle Check Change
+                        badRatingCategoryListener.onBadRatingCategoryClicked(description, checkBox.isChecked, this@with.id)
                     }
                 }
                 setOnClickListener {
-                    badRatingCategoryListener.onBadRatingCategoryClicked(description, checkBox.isChecked, this@with.id)
+                    checkBox.isChecked = !checkBox.isChecked
                 }
+                setBackgroundResource(R.drawable.bg_review_highlighted_topic)
             }
         }
     }
