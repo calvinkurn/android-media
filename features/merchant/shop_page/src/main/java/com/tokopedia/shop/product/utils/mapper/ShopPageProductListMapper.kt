@@ -72,20 +72,22 @@ object ShopPageProductListMapper {
                     it.etalaseId = etalaseId
                     it.labelGroupList = labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
                     it.etalaseType = etalaseType
-                    if(it.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN) {
-                        it.isUpcoming  = campaign.isUpcoming
-                        if (!campaign.isUpcoming) {
-                            val viewCount = stats.viewCount
-                            if (viewCount >= THRESHOLD_VIEW_COUNT)
-                                it.pdpViewCount = String.format(POSTFIX_VIEW_COUNT, viewCount.thousandFormatted())
-                            it.stockLabel = labelGroupList.firstOrNull { labelGroup ->
-                                labelGroup.position.isEmpty()
-                            }?.title ?: ""
-                            it.stockBarPercentage = campaign.stockSoldPercentage.toInt()
+                    when (it.etalaseType) {
+                        ShopEtalaseTypeDef.ETALASE_CAMPAIGN, ShopEtalaseTypeDef.ETALASE_FLASH_SALE -> {
+                            it.isUpcoming  = campaign.isUpcoming
+                            if (!campaign.isUpcoming) {
+                                val viewCount = stats.viewCount
+                                if (viewCount >= THRESHOLD_VIEW_COUNT)
+                                    it.pdpViewCount = String.format(POSTFIX_VIEW_COUNT, viewCount.thousandFormatted())
+                                it.stockLabel = labelGroupList.firstOrNull { labelGroup ->
+                                    labelGroup.position.isEmpty()
+                                }?.title ?: ""
+                                it.stockBarPercentage = campaign.stockSoldPercentage.toInt()
+                            }
+                            it.hideGimmick = campaign.hideGimmick
+                            it.displayedPrice = campaign.discountedPriceFmt.toFloatOrZero().getCurrencyFormatted()
+                            it.originalPrice = campaign.originalPriceFmt.toFloatOrZero().getCurrencyFormatted()
                         }
-                        it.hideGimmick = campaign.hideGimmick
-                        it.displayedPrice = campaign.discountedPriceFmt.toFloatOrZero().getCurrencyFormatted()
-                        it.originalPrice = campaign.originalPriceFmt.toFloatOrZero().getCurrencyFormatted()
                     }
                 }
             }
