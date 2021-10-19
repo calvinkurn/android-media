@@ -16,8 +16,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.checkout.R
+import com.tokopedia.checkout.bundle.view.viewholder.ShipmentButtonPaymentViewHolder
 import com.tokopedia.checkout.old.view.viewholder.PromoCheckoutViewHolder
-import com.tokopedia.checkout.old.view.viewholder.ShipmentButtonPaymentViewHolder
 import com.tokopedia.checkout.old.view.viewholder.ShipmentItemViewHolder
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
@@ -75,7 +75,7 @@ class CheckoutPageRobot {
 
     fun clickChooseDuration() {
         onView(withId(R.id.rv_shipment))
-                .perform(RecyclerViewActions.actionOnHolderItem(isA(ShipmentItemViewHolder::class.java),
+                .perform(RecyclerViewActions.actionOnHolderItem(isA(com.tokopedia.checkout.bundle.view.viewholder.ShipmentItemViewHolder::class.java),
                         clickOnViewChild(R.id.layout_state_no_selected_shipping)))
     }
 
