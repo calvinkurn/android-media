@@ -1035,21 +1035,6 @@ class ProductListFragment: BaseDaggerFragment(),
             filterController.setFilter(option, isQuickFilterSelected)
     }
 
-    private fun updateLastFilter(
-        filter: Filter,
-        option: Option,
-        isQuickFilterSelectedReversed: Boolean,
-    ) {
-        val searchParameterMap = searchParameter?.getSearchParameterMap() ?: mapOf()
-
-        presenter?.updateLastFilter(
-            searchParameterMap,
-            filter,
-            option,
-            isQuickFilterSelectedReversed
-        )
-    }
-
     private fun trackEventSearchResultQuickFilter(filterName: String, filterValue: String, isSelected: Boolean) {
         SearchTracking.trackEventClickQuickFilter(filterName, filterValue, isSelected, getUserId())
     }
@@ -2017,6 +2002,6 @@ class ProductListFragment: BaseDaggerFragment(),
 
         productListAdapter?.removeLastFilterWidget()
 
-        presenter?.closeLastFilter(searchParameterMap, lastFilterDataView.filterList)
+        presenter?.closeLastFilter(searchParameterMap)
     }
 }

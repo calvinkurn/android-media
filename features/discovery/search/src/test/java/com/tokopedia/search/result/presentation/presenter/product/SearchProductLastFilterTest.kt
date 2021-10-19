@@ -34,7 +34,7 @@ internal class SearchProductLastFilterTest: ProductListPresenterTestFixtures() {
     private val saveLastFilterRequestParam by lazy { saveLastFilterRequestParamSlot.captured }
 
     @Test
-    fun `update last filter will send param as update`() {
+    fun `update last filter will send search param and saved option list`() {
         val searchParameter = createSearchParameter()
         val savedOptionList = createSavedOptionList()
 
@@ -43,19 +43,11 @@ internal class SearchProductLastFilterTest: ProductListPresenterTestFixtures() {
         `Then verify save last filter is called`()
 
         val saveLastFilterInput = saveLastFilterRequestParam.getSaveLastFilterInput()
-        `Then assert input params action`(saveLastFilterInput, SaveLastFilterInput.Update)
         `Then assert input params contains filters and params`(
             saveLastFilterInput,
             savedOptionList,
             searchParameter,
         )
-    }
-
-    private fun `When update last filter`(
-        searchParameter: Map<String, Any>,
-        savedOptionList: List<SavedOption>,
-    ) {
-        productListPresenter.updateLastFilter(searchParameter, savedOptionList)
     }
 
     private fun createSearchParameter() = mapOf<String, Any>(
@@ -77,6 +69,13 @@ internal class SearchProductLastFilterTest: ProductListPresenterTestFixtures() {
             name = "dummy_title_$suffix",
         )
 
+    private fun `When update last filter`(
+        searchParameter: Map<String, Any>,
+        savedOptionList: List<SavedOption>,
+    ) {
+        productListPresenter.updateLastFilter(searchParameter, savedOptionList)
+    }
+
     private fun `Then verify save last filter is called`() {
         verify {
             saveLastFilterUseCase.execute(
@@ -89,13 +88,6 @@ internal class SearchProductLastFilterTest: ProductListPresenterTestFixtures() {
     private fun RequestParams.getSaveLastFilterInput() =
         parameters[INPUT_PARAMS] as SaveLastFilterInput
 
-    private fun `Then assert input params action`(
-        saveLastFilterInput: SaveLastFilterInput,
-        expectedAction: SaveLastFilterInput.Action,
-    ) {
-        assertThat(saveLastFilterInput.action, `is`(expectedAction.toString()))
-    }
-
     private fun `Then assert input params contains filters and params`(
         saveLastFilterInput: SaveLastFilterInput,
         savedOptionList: List<SavedOption>,
@@ -107,55 +99,6 @@ internal class SearchProductLastFilterTest: ProductListPresenterTestFixtures() {
         searchParameter.forEach { (key, value) ->
             assertThat(mapParameter[key], `is`(value.toString()))
         }
-    }
-
-    @Test
-    fun `update last filter when applying filter will send param as create`() {
-        val searchParameter = createSearchParameter()
-        val option = Option(key = "dummy_key", value = "dummy_value", name = "dummy_name")
-        val filter = Filter(title = "dummy_title", options = listOf(option))
-
-        `When update last filter`(searchParameter, filter, option, true)
-
-        `Then verify save last filter is called`()
-
-        val saveLastFilterInput = saveLastFilterRequestParam.getSaveLastFilterInput()
-
-        `Then assert input params action`(saveLastFilterInput, SaveLastFilterInput.Create)
-        `Then assert input params contains filters and params`(
-            saveLastFilterInput,
-            listOf(SavedOption.create(option, listOf(filter))),
-            searchParameter,
-        )
-    }
-
-    private fun `When update last filter`(
-        searchParameter: Map<String, Any>,
-        filter: Filter,
-        option: Option,
-        isFilterApplied: Boolean,
-    ) {
-        productListPresenter.updateLastFilter(searchParameter, filter, option, isFilterApplied)
-    }
-
-    @Test
-    fun `update last filter when removing filter will send param as delete`() {
-        val searchParameter = createSearchParameter()
-        val option = Option(key = "dummy_key", value = "dummy_value", name = "dummy_name")
-        val filter = Filter(title = "dummy_title", options = listOf(option))
-
-        `When update last filter`(searchParameter, filter, option, false)
-
-        `Then verify save last filter is called`()
-
-        val saveLastFilterInput = saveLastFilterRequestParam.getSaveLastFilterInput()
-
-        `Then assert input params action`(saveLastFilterInput, SaveLastFilterInput.Delete)
-        `Then assert input params contains filters and params`(
-            saveLastFilterInput,
-            listOf(SavedOption.create(option, listOf(filter))),
-            searchParameter,
-        )
     }
 
     @Test
@@ -223,21 +166,19 @@ internal class SearchProductLastFilterTest: ProductListPresenterTestFixtures() {
         val searchParameter = createSearchParameter()
         val searchProductModel = "searchproduct/lastfilter/last-filter.json"
             .jsonToObject<SearchProductModel>()
-        val savedOptionList = searchProductModel.lastFilter.data.filters
 
         `Given search product will return search product model`(searchProductModel)
         `Given view load data and shown last filter`(searchParameter)
 
-        `When user close last filter`(searchParameter, savedOptionList)
+        `When user close last filter`(searchParameter)
 
         `Then verify save last filter is called`()
 
         val saveLastFilterInput = saveLastFilterRequestParam.getSaveLastFilterInput()
 
-        `Then assert input params action`(saveLastFilterInput, SaveLastFilterInput.Delete)
         `Then assert input params contains filters and params`(
             saveLastFilterInput,
-            savedOptionList,
+            listOf(),
             searchParameter,
         )
     }
@@ -246,11 +187,8 @@ internal class SearchProductLastFilterTest: ProductListPresenterTestFixtures() {
         productListPresenter.loadData(searchParameter)
     }
 
-    private fun `When user close last filter`(
-        searchParameter: Map<String, Any>,
-        savedOptionList: List<SavedOption>,
-    ) {
-        productListPresenter.closeLastFilter(searchParameter, savedOptionList)
+    private fun `When user close last filter`(searchParameter: Map<String, Any>) {
+        productListPresenter.closeLastFilter(searchParameter)
     }
 
     @Test
@@ -258,13 +196,12 @@ internal class SearchProductLastFilterTest: ProductListPresenterTestFixtures() {
         val searchParameter = createSearchParameter()
         val searchProductModel = "searchproduct/lastfilter/last-filter.json"
             .jsonToObject<SearchProductModel>()
-        val option = Option(key = "dummy_key", value = "dummy_value", name = "dummy_name")
-        val filter = Filter(title = "dummy_title", options = listOf(option))
+        val savedOptionList = createSavedOptionList()
 
         `Given search product will return search product model`(searchProductModel)
         `Given view load data and shown last filter`(searchParameter)
 
-        `When update last filter`(searchParameter, filter, option, true)
+        `When update last filter`(searchParameter, savedOptionList)
 
         `Then verify save last filter is called`()
 

@@ -21,26 +21,15 @@ class SaveLastFilterInput(
     @Expose
     val categoryIdL2: String = "",
 
-    action: Action = Create,
     mapParameter: Map<String?, Any> = mapOf(),
 ) {
 
     @SerializedName(ACTION)
     @Expose
-    val action = action.toString()
+    @Deprecated("should not have action anymore")
+    val action = "update"
 
     @SerializedName(PARAM)
     @Expose
     val param: String = UrlParamUtils.generateUrlParamString(mapParameter)
-
-    sealed class Action
-    object Create: Action() {
-        override fun toString() = ACTION_CREATE
-    }
-    object Update: Action() {
-        override fun toString() = ACTION_UPDATE
-    }
-    object Delete: Action() {
-        override fun toString() = ACTION_DELETE
-    }
 }

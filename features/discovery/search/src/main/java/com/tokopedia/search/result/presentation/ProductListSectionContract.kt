@@ -154,15 +154,6 @@ interface ProductListSectionContract {
             searchParameter: Map<String, Any>,
             savedOptionList: List<SavedOption>,
         )
-        fun updateLastFilter(
-            searchParameter: Map<String, Any>,
-            filter: Filter,
-            option: Option,
-            isFilterApplied: Boolean,
-        )
-        fun closeLastFilter(
-            searchParameter: Map<String, Any>,
-            savedOptionList: List<SavedOption>,
-        )
+        fun closeLastFilter(searchParameter: Map<String, Any>)
     }
 }
