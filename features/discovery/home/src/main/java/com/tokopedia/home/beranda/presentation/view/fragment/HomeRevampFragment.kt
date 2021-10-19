@@ -1282,6 +1282,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_RESUME_HOME)
             getHomeViewModel().isFirstLoad = false
         }
+        manageCoachmarkOnFragmentVisible(isVisibleToUser = false)
     }
 
     private fun startTokopointRotation(rotateNow: Boolean = false) {
