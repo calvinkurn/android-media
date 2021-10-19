@@ -11,6 +11,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
     private const val RECHARGE_BU_WIDGET_CLICK_EVENT = "clickHomepage"
     private const val RECHARGE_BU_WIDGET_EVENT_CATEGORY = "homepage"
     private const val RECHARGE_BU_WIDGET_NAME = "dynamic channel bu carousel"
+    private const val RECHARGE_BU_WIDGET_NEW_NAME = "new bu widget"
     private const val RECHARGE_BU_WIDGET_BUSINESS_UNIT = "home \u0026 browse"
     private const val RECHARGE_BU_WIDGET_CURRENT_SITE = "tokopediamarketplace"
     private const val RECHARGE_BU_WIDGET_BANNER = "banner"
@@ -43,7 +44,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
             trackingQueue.putEETracking(
                 getBasicPromotionView(
                     Event.PROMO_VIEW,
-                    RECHARGE_BU_WIDGET_EVENT_CATEGORY,
+                    "$RECHARGE_BU_WIDGET_EVENT_CATEGORY - $RECHARGE_BU_WIDGET_NEW_NAME",
                     Action.IMPRESSION_ON.format("$RECHARGE_BU_WIDGET_BANNER_CARD $RECHARGE_BU_WIDGET_NAME"),
                     eventLabel,
                     promotions,
@@ -77,7 +78,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
                     "${item.trackingData.productId} - ${item.label2}"
             trackingQueue.putEETracking(getBasicPromotionClick(
                     Event.PROMO_CLICK,
-                    RECHARGE_BU_WIDGET_EVENT_CATEGORY,
+                "$RECHARGE_BU_WIDGET_EVENT_CATEGORY - $RECHARGE_BU_WIDGET_NEW_NAME",
                     Action.CLICK_ON.format("$RECHARGE_BU_WIDGET_BANNER_CARD $RECHARGE_BU_WIDGET_NAME"),
                     eventLabel,
                     listOf(promotion),
