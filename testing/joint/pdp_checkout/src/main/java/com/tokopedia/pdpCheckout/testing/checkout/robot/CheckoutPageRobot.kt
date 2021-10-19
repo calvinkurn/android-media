@@ -109,7 +109,7 @@ class CheckoutPageRobot {
      * @param message additional promo message if available
      */
     fun assertHasSingleShipmentSelected(title: String, originalPrice: String? = null,
-                                                       discountedPrice: String? = null, eta: String, message: String? = null) {
+                                        discountedPrice: String? = null, eta: String, message: String? = null) {
         scrollRecyclerViewToFirstOrder()
         onView(withId(R.id.rv_shipment))
                 .perform(RecyclerViewActions.actionOnHolderItem(isA(ShipmentItemViewHolder::class.java), object : ViewAction {
