@@ -2,22 +2,18 @@ package com.tokopedia.tkpd
 
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import com.tokopedia.application.MyApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalTestApp
-import com.tokopedia.tkpd.helper.logout
-import com.tokopedia.tkpd.network.DataSource
 import com.tokopedia.tkpd.testgql.TestGqlUseCase
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.main_testapp.*
@@ -33,15 +29,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.main_testapp)
         userSession = UserSession(this)
 
-        if (userSession.deviceId.isNullOrEmpty()) {
-            userSession.deviceId = DataSource.MOCK_DEVICE_ID
+        if (TokopediaUrl.getInstance().GQL.contains("staging")) {
+            testapp_environment?.text = "STAGING"
+            testapp_environment?.setBackgroundColor(Color.parseColor("#e67e22"))
+        } else {
+            testapp_environment?.text = "PRODUCTION"
+            testapp_environment?.setBackgroundColor(Color.parseColor("#27ae60"))
         }
 
-        val loginButton = findViewById<Button>(R.id.loginButton)
-        val toggleDarkMode = findViewById<CheckBox>(R.id.toggle_dark_mode)
-
-        toggleDarkMode.isChecked = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-        toggleDarkMode.setOnCheckedChangeListener { _: CompoundButton?, state: Boolean ->
+        toggle_dark_mode.isChecked = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+        toggle_dark_mode.setOnCheckedChangeListener { _: CompoundButton?, state: Boolean ->
             AppCompatDelegate.setDefaultNightMode(if (state) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
         }
 
@@ -62,27 +59,13 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(logoutIntent, REQUEST_CODE_LOGOUT)
         }
 
-        testGqlButton.setOnClickListener {
-            TestGqlUseCase().execute()
-        }
+        testGqlButton.setOnClickListener { TestGqlUseCase().execute() }
 
         devOptButton.setOnClickListener {
             RouteManager.route(this, ApplinkConst.DEVELOPER_OPTIONS)
         }
 
-        val button = findViewById<Button>(R.id.button)
-
-        button.setOnClickListener {
-            goTo()
-        }
-    }
-
-    private fun openTestAppLogout() {
-        logout(application as MyApplication)
-    }
-
-    private fun openTestAppLogin() {
-        startActivityForResult(RouteManager.getIntent(this, ApplinkConstInternalTestApp.LOGIN), REQUEST_CODE_LOGIN)
+        goToButton.setOnClickListener { goTo() }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

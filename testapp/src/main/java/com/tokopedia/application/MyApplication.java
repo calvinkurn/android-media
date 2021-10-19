@@ -28,6 +28,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
+import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.LinkerManager;
@@ -37,10 +38,8 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.tkpd.ActivityFrameMetrics;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.network.DataSource;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
-import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
@@ -72,8 +71,6 @@ public class MyApplication extends BaseMainApplication
         setVersionCode();
         initFileDirConfig();
 
-        /* Use Staging Environment, because we use real login usecase */
-        TokopediaUrl.Companion.setEnvironment(this, Env.STAGING);
         TokopediaUrl.Companion.init(this); // generate base url
 
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
@@ -298,7 +295,7 @@ public class MyApplication extends BaseMainApplication
 
     @Override
     public FingerprintModel getFingerprintModel() {
-        return DataSource.generateFingerprintModel();
+        return FingerprintModelGenerator.generateFingerprintModel(this);
     }
 
     @Override
