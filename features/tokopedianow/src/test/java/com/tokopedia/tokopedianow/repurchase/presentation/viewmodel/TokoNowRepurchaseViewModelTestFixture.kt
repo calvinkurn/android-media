@@ -59,8 +59,6 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
     @RelaxedMockK
     lateinit var deleteCartUseCase: DeleteCartUseCase
     @RelaxedMockK
-    lateinit var getRecommendationUseCase: GetRecommendationUseCase
-    @RelaxedMockK
     lateinit var getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -82,7 +80,6 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
                 addToCartUseCase,
                 updateCartUseCase,
                 deleteCartUseCase,
-                getRecommendationUseCase,
                 getChooseAddressWarehouseLocUseCase,
                 userSession,
                 CoroutineTestDispatchersProvider
@@ -195,10 +192,6 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
         }
     }
 
-    protected fun onGetProductRecommendation_thenReturn(response: List<RecommendationWidget>) {
-        coEvery { getRecommendationUseCase.getData(any()) } returns response
-    }
-
     protected fun onGetCategoryList_thenReturn(categoryListResponse: CategoryListResponse) {
         coEvery { getCategoryListUseCase.execute("1", TokoNowRecentPurchaseFragment.CATEGORY_LEVEL_DEPTH) } returns categoryListResponse
     }
@@ -289,10 +282,6 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
 
     protected fun verifyGetCategoryListUseCaseCalled(){
         coVerify(exactly = 1) { getCategoryListUseCase.execute("1", TokoNowRecentPurchaseFragment.CATEGORY_LEVEL_DEPTH) }
-    }
-
-    protected fun verifyGetProductRecommendatioUseCaseCalled(){
-        coVerify { getRecommendationUseCase.getData(any()) }
     }
 
     protected fun onGetLayoutList_thenReturnNull() {

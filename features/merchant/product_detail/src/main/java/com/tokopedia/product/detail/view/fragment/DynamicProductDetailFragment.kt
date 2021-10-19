@@ -112,7 +112,6 @@ import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
 import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequestRates
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_DIRECTED_FROM_MANAGE_OR_PDP
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString

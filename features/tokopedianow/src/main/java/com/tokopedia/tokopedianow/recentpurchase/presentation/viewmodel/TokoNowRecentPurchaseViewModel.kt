@@ -23,10 +23,8 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
-import com.tokopedia.tokopedianow.common.constant.ConstantValue
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_OOC_PARAM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -47,7 +45,6 @@ import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutM
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addLayoutList
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addLoading
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addProduct
-import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addProductRecom
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addRecomWidget
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addServerErrorState
 import com.tokopedia.tokopedianow.recentpurchase.domain.mapper.RepurchaseLayoutMapper.addSortFilter
@@ -81,7 +78,6 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     private val addToCartUseCase: AddToCartUseCase,
     private val updateCartUseCase: UpdateCartUseCase,
     private val deleteCartUseCase: DeleteCartUseCase,
-    private val getRecommendationUseCase: GetRecommendationUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     private val userSession: UserSessionInterface,
     dispatcher: CoroutineDispatchers
@@ -415,29 +411,6 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         }) {
             addEmptyState(ERROR_STATE_FAILED_TO_FETCH_DATA)
         }
-    }
-
-    private fun getProductRecomAsync(pageName: String): Deferred<Unit?> {
-        return asyncCatchError(block = {
-            val recommendationWidgets = getRecommendationUseCase.getData(
-                GetRecommendationRequestParam(
-                    pageName = pageName,
-                    xSource = ConstantValue.X_SOURCE_RECOMMENDATION_PARAM,
-                    xDevice = ConstantValue.X_DEVICE_RECOMMENDATION_PARAM
-                )
-            )
-
-            if (recommendationWidgets.first().recommendationItemList.isNotEmpty()) {
-                layoutList.addProductRecom(pageName, recommendationWidgets.first())
-
-                val layout = RepurchaseLayoutUiModel(
-                    layoutList = layoutList,
-                    state = TokoNowLayoutState.UPDATE
-                )
-
-                _getLayout.postValue(Success(layout))
-            }
-        }) { /* nothing to do */ }
     }
 
     private fun getCategoryGridAsync(): Deferred<Unit?> {
