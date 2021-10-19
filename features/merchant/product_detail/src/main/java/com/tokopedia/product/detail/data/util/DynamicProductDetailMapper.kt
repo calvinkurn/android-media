@@ -61,21 +61,9 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.PRODUCT_LIST -> {
                     when (component.componentName) {
                         PDP_7 ->
-                            listOfComponent.add(
-                                ProductRecomWidgetDataModel(
-                                    type = component.type,
-                                    name = component.componentName,
-                                    position = index
-                                )
-                            )
+                            listOfComponent.add(ProductRecomWidgetDataModel(type = component.type, name = component.componentName, position = index))
                         else ->
-                            listOfComponent.add(
-                                ProductRecommendationDataModel(
-                                    type = component.type,
-                                    name = component.componentName,
-                                    position = index
-                                )
-                            )
+                            listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
                     }
                 }
                 ProductDetailConstant.VARIANT -> {

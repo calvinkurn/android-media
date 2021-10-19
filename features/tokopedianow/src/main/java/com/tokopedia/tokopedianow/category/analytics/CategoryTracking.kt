@@ -3,7 +3,6 @@ package com.tokopedia.tokopedianow.category.analytics
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.ADD_QUANTITY_ON_BOTTOM_SHEET
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.APPLY_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Action.CLICK_APPLY_FILTER
@@ -414,81 +413,24 @@ object CategoryTracking {
                 ECOMMERCE, DataLayer.mapOf(
                     ADD, DataLayer.mapOf(
                         PRODUCTS, DataLayer.listOf(
-                            productItemDataView.getAsATCObjectDataLayer(
-                                categoryId,
-                                cartId,
-                                quantity
-                            )
+                            productItemDataView.getAsATCObjectDataLayer(categoryId, cartId, quantity)
                         )
                     ),
                     CURRENCYCODE, IDR,
                 ),
             )
-        )
-    }
-
-    fun sendAddToCartEventRecommendationItem(
-        recommendationItem: RecommendationItem,
-        categoryId: String,
-        userId: String
-    ) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-            DataLayer.mapOf(
-                EVENT, SearchCategoryTrackingConst.Event.ADD_TO_CART,
-                EVENT_ACTION, Action.ADD_TO_CART,
-                EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
-                EVENT_LABEL, categoryId,
-                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
-                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
-                USER_ID, userId,
-                ECOMMERCE,
-                DataLayer.mapOf(
-                    ADD,
-                    DataLayer.mapOf(
-                        PRODUCTS, DataLayer.listOf(
-                            recommendationItem.getAsATCObjectDataLayer(
-                                categoryId,
-                                recommendationItem.cartId,
-                                recommendationItem.minOrder
-                            )
-                        )
-                    ),
-                    CURRENCYCODE, IDR,
-                ),
-            )
-        )
-    }
-
-    private fun RecommendationItem.getAsATCObjectDataLayer(
-        categoryId: String,
-        cartId: String,
-        quantity: Int,
-    ): Any {
-        return DataLayer.mapOf(
-            "brand", NONE_OTHER,
-            "category", NONE_OTHER,
-            "category_id", categoryId,
-            "dimension45", cartId,
-            "id", productId,
-            "name", name,
-            "price", priceInt,
-            "quantity", quantity,
-            "shop_id", shopId,
-            "shop_name", shopName,
-            "shop_type", TOKO_NOW,
-            "variant", NONE_OTHER
         )
     }
 
     private fun ProductItemDataView.getAsATCObjectDataLayer(
-        categoryId: String,
-        cartId: String,
-        quantity: Int,
+            categoryId: String,
+            cartId: String,
+            quantity: Int,
     ): Any {
         return DataLayer.mapOf(
-            "brand", NONE_OTHER,
-            "category", NONE_OTHER,
-            "category_id", categoryId,
+                "brand", NONE_OTHER,
+                "category", NONE_OTHER,
+                "category_id", categoryId,
                 "dimension45", cartId,
                 "id", id,
                 "name", name,

@@ -537,16 +537,14 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 PDP_7 -> {
                     (mapOfData[data.pageName] as? ProductRecomWidgetDataModel)?.run {
                         recomWidgetData = data
-                        cardModel =
-                            data.recommendationItemList.toProductCardModels(hasThreeDots = true)
+                        cardModel = data.recommendationItemList.toProductCardModels(hasThreeDots = true)
                         filterData = mapToAnnotateChip(data)
                     }
                 }
                 else -> {
                     (mapOfData[data.pageName] as? ProductRecommendationDataModel)?.run {
                         recomWidgetData = data
-                        cardModel =
-                            data.recommendationItemList.toProductCardModels(hasThreeDots = true)
+                        cardModel = data.recommendationItemList.toProductCardModels(hasThreeDots = true)
                         filterData = mapToAnnotateChip(data)
                     }
                 }
