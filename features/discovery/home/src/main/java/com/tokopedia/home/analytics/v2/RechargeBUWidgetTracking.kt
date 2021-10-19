@@ -23,9 +23,9 @@ object RechargeBUWidgetTracking : BaseTracking() {
             position: Int,
             userId: String
     ) {
-        //empty supposed to be userType next dev.
-        val item = data.data.items[position]
         if (position < data.data.items.size) {
+            val item = data.data.items[position]
+            //empty supposed to be userType next dev.
             val eventLabel =
                 " - ${getHeaderName(data.channel)} - ${item.trackingData.itemType} - $position - " +
                         "${item.trackingData.categoryId} - ${item.trackingData.operatorId} - " +
