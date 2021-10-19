@@ -22,7 +22,6 @@
 
     <string name="feedback_form_detail_error_empty">Wajib diisi</string>
 
-    <string name="feedback_form_toast_success_submit">Feedback-mu berhasil dikirim. Terima kasih, ya!</string>
     <string name="feedback_form_toaster_fail_upload">Oops, gambar gagal di upload</string>
     <string name="feedback_form_toaster_fail_submit">Oops, feedback gagal di kirim</string>
     <string name="feedback_form_toaster_fail_network">Cek dan pastikan internetmu lancar, mohon cek berkala</string>
@@ -34,8 +33,8 @@
     <string name="feedback_form_settings_title">Pengaturan Feedback</string>
     <string name="feedback_from_feedback_trigger">Feedback Trigger</string>
     <string name="feedback_form_feedback_trigger_desc">Form feedback bisa muncul setelah screenshot</string>
-    <string name="feedback_from_screenshoot_tigger_enabled_success_message">Feedback-mu terkirim. Ambil screenshot untuk memunculkan form feedback lagi.</string>
-    <string name="feedback_from_screenshoot_tigger_disabled_success_message">Feedback-mu terkirim. Agar lebih mudah, aktifkan Feedback Trigger.</string>
+    <string name="feedback_form_screenshoot_tigger_enabled_success_message">Feedback-mu terkirim. Ambil screenshot untuk memunculkan form feedback lagi.</string>
+    <string name="feedback_form_screenshoot_tigger_disabled_success_message">Feedback-mu terkirim. Agar lebih mudah, aktifkan Feedback Trigger.</string>
     <string name="feedback_from_home">Home</string>
     <string name="feedback_from_chat">Chat</string>
     <string name="feedback_from_discuss">Diskusi</string>

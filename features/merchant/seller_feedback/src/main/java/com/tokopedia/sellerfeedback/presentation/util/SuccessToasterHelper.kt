@@ -60,9 +60,9 @@ object SuccessToasterHelper {
         isScreenShootTriggerEnabled: Boolean
     ): String {
         return if (isScreenShootTriggerEnabled) {
-            context.getString(R.string.feedback_from_screenshoot_tigger_enabled_success_message)
+            context.getString(R.string.feedback_form_screenshoot_tigger_enabled_success_message)
         } else {
-            context.getString(R.string.feedback_from_screenshoot_tigger_disabled_success_message)
+            context.getString(R.string.feedback_form_screenshoot_tigger_disabled_success_message)
         }
     }
 
