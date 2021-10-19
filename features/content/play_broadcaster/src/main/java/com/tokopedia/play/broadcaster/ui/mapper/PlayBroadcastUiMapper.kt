@@ -12,6 +12,8 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
+import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
+import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConfig
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConnection
 import com.tokopedia.play.broadcaster.type.EtalaseType
@@ -20,6 +22,8 @@ import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
+import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_BROADCAST_SCHEDULE
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
@@ -310,6 +314,28 @@ class PlayBroadcastUiMapper(
             config.videoHeight,
             config.fps,
             config.videoBitrate
+        )
+    }
+
+    override fun mapPinnedMessage(
+        response: GetPinnedMessageResponse.Data
+    ): List<PinnedMessageUiModel> {
+        return response.pinnedMessages.map {
+            PinnedMessageUiModel(
+                id = it.id,
+                message = it.message,
+                isActive = it.status.id == 1,
+                editStatus = PinnedMessageEditStatus.Nothing
+            )
+        }
+    }
+
+    override fun mapPinnedMessageSocket(response: PinnedMessageSocketResponse): PinnedMessageUiModel {
+        return PinnedMessageUiModel(
+            id = response.pinnedMessageId,
+            message = response.title,
+            isActive = true,
+            editStatus = PinnedMessageEditStatus.Nothing,
         )
     }
 

@@ -6,35 +6,40 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
+import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
+import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
-import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
-import com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
+import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFormView
+import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
 import com.tokopedia.play.broadcaster.view.partial.BroadcastInteractiveSetupViewComponent
@@ -43,20 +48,24 @@ import com.tokopedia.play.broadcaster.view.partial.ChatListViewComponent
 import com.tokopedia.play.broadcaster.view.state.PlayLiveCountDownTimerState
 import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
-import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
 import com.tokopedia.play_common.detachableview.detachableView
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
+import com.tokopedia.play_common.util.extension.hideKeyboard
+import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.play_common.R as commonR
 
 /**
  * Created by mzennis on 25/05/20.
@@ -68,6 +77,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
+    private val clInteraction: ConstraintLayout by detachableView(R.id.cl_interaction)
     private val viewTimer: PlayTimerView by detachableView(R.id.view_timer)
     private val viewStatInfo: PlayStatInfoView by detachableView(R.id.view_stat_info)
     private val ivShareLink: AppCompatImageView by detachableView(R.id.iv_share_link)
@@ -76,6 +86,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val loadingView: FrameLayout by detachableView(R.id.loading_view)
     private val errorLiveNetworkLossView: View by detachableView(R.id.error_live_view)
     private val debugView: PlayLivePusherDebugView by detachableView(R.id.live_debug_view)
+    private val pinnedMessageView: PinnedMessageView by detachableView(R.id.pinned_msg_view)
 
     private val actionBarView by viewComponent {
         ActionBarViewComponent(it, object : ActionBarViewComponent.Listener {
@@ -194,6 +205,21 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             doShowProductInfo()
             analytic.clickProductTagOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
         }
+        pinnedMessageView.setOnPinnedClickedListener { _, message ->
+            parentViewModel.submitAction(PlayBroadcastAction.EditPinnedMessage)
+
+            if (message.isBlank()) {
+                analytic.clickAddPinChatMessage(
+                    channelId = parentViewModel.channelId,
+                    titleChannel = parentViewModel.channelTitle,
+                )
+            } else {
+                analytic.clickEditPinChatMessage(
+                    channelId = parentViewModel.channelId,
+                    titleChannel = parentViewModel.channelTitle,
+                )
+            }
+        }
     }
 
     private fun setupInsets() {
@@ -254,6 +280,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeEvent()
         observeInteractiveConfig()
         observeCreateInteractiveSession()
+        observeUiState()
+        observeUiEvent()
     }
 
     override fun onDestroy() {
@@ -262,8 +290,14 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     override fun onBackPressed(): Boolean {
-        return if (interactiveSetupView.isShown()) interactiveSetupView.interceptBackPressed()
-        else showDialogWhenActionClose()
+        return when {
+            hasPinnedFormView() -> {
+                parentViewModel.submitAction(PlayBroadcastAction.CancelEditPinnedMessage)
+                true
+            }
+            interactiveSetupView.isShown() -> interactiveSetupView.interceptBackPressed()
+            else -> showDialogWhenActionClose()
+        }
     }
 
     /**
@@ -595,7 +629,102 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
         })
     }
+
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            parentViewModel.uiState.withCache().collectLatest { cachedState ->
+                val state = cachedState.value
+                val prevState = cachedState.prevValue
+                renderPinnedMessageView(prevState?.pinnedMessage, state.pinnedMessage)
+            }
+        }
+    }
+
+    private fun observeUiEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            parentViewModel.uiEvent.collect { event ->
+                when (event) {
+                    is PlayBroadcastEvent.ShowError -> showErrorToaster(event.error)
+                }
+            }
+        }
+    }
     //endregion
+
+    private fun renderPinnedMessageView(
+        prevState: PinnedMessageUiState?,
+        state: PinnedMessageUiState
+    ) {
+        if (prevState == state) return
+
+        if (state.editStatus != PinnedMessageEditStatus.Editing) hideKeyboard()
+
+        /**
+         * Pinned Message success uploading
+         */
+        if (prevState?.editStatus == PinnedMessageEditStatus.Uploading &&
+            state.editStatus == PinnedMessageEditStatus.Nothing) {
+
+            analytic.clickSavePinChatMessage(
+                channelId = parentViewModel.channelId,
+                titleChannel = parentViewModel.channelTitle,
+            )
+        }
+
+        pinnedMessageView.setMode(
+            if (state.message.isEmpty()) PinnedMessageView.Mode.Empty
+            else PinnedMessageView.Mode.Filled(state.message)
+        )
+
+        when(state.editStatus) {
+            PinnedMessageEditStatus.Editing,
+            PinnedMessageEditStatus.Uploading -> {
+                val formView = getPinnedFormView()
+                if (formView.visibility != View.VISIBLE) formView.setPinnedMessage(state.message)
+                else interactiveView.cancelCoachMark()
+                formView.setLoading(state.editStatus == PinnedMessageEditStatus.Uploading)
+                formView.visibility = View.VISIBLE
+                clInteraction.visibility = View.GONE
+            }
+            PinnedMessageEditStatus.Nothing -> {
+                if (!hasPinnedFormView()) return
+                val formView = getPinnedFormView()
+                formView.visibility = View.GONE
+                clInteraction.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun hasPinnedFormView(): Boolean {
+        return view?.findViewWithTag<View>(PINNED_MSG_FORM_TAG) != null
+    }
+
+    private fun getPinnedFormView(): PinnedMessageFormView {
+        val view = this.view
+        require(view is ViewGroup)
+        val pinnedView = view.findViewWithTag(PINNED_MSG_FORM_TAG) ?: run {
+            val theView = PinnedMessageFormView(view.context).apply {
+                tag = PINNED_MSG_FORM_TAG
+            }
+            view.addView(theView)
+            theView
+        }
+
+        val pinnedMessageFormViewListener = object : PinnedMessageFormView.Listener {
+
+            override fun onCloseButtonClicked(view: PinnedMessageFormView) {
+                parentViewModel.submitAction(PlayBroadcastAction.CancelEditPinnedMessage)
+            }
+
+            override fun onPinnedMessageSaved(view: PinnedMessageFormView, message: String) {
+                hideKeyboard()
+                parentViewModel.submitAction(PlayBroadcastAction.SetPinnedMessage(message))
+            }
+        }
+
+        pinnedView.setListener(pinnedMessageFormViewListener)
+        return pinnedView
+    }
 
     private fun allowSetupInteractive(): Boolean {
         return parentViewModel.interactiveDurations.isNotEmpty()
@@ -626,7 +755,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         when (state) {
             is BroadcastInteractiveInitState.NoPrevious -> {
                 analytic.onImpressInteractiveTool(parentViewModel.channelId)
-                interactiveView.setInit(state.showOnBoarding)
+                interactiveView.setInit(state.showOnBoarding && !hasPinnedFormView())
             }
             BroadcastInteractiveInitState.Loading -> interactiveView.setLoading()
             is BroadcastInteractiveInitState.HasPrevious -> {
@@ -642,5 +771,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             requireContext().classLoader,
             PlayInteractiveLeaderBoardBottomSheet::class.java.name) as PlayInteractiveLeaderBoardBottomSheet
         leaderBoardBottomSheet.show(childFragmentManager)
+    }
+
+    companion object {
+        private const val PINNED_MSG_FORM_TAG = "PINNED_MSG_FORM"
     }
 }

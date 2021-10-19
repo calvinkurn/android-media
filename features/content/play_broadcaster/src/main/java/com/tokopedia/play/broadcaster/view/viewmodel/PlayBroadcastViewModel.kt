@@ -15,16 +15,22 @@ import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocket
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocketMapper
 import com.tokopedia.play.broadcaster.domain.model.*
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
+import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
+import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveConfigUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.PostInteractiveCreateSessionUseCase
 import com.tokopedia.play.broadcaster.pusher.*
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
+import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
+import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
+import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
 import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherException
@@ -51,6 +57,7 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.event.Event
+import com.tokopedia.play_common.util.extension.setValue
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketClosedReason
 import com.tokopedia.play_common.websocket.WebSocketResponse
@@ -84,7 +91,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
     private val playBroadcastMapper: PlayBroadcastMapper,
     private val channelInteractiveMapper: PlayChannelInteractiveMapper,
     private val interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper,
-    private val channelRepo: PlayBroadcastChannelRepository,
+    private val repo: PlayBroadcastRepository,
 ) : ViewModel() {
 
     val isFirstStreaming: Boolean
@@ -175,6 +182,9 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
     private val _configInfo = _observableConfigInfo.asFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+    private val _pinnedMessage = MutableStateFlow<PinnedMessageUiModel>(
+        PinnedMessageUiModel.Empty()
+    )
 
     private val _channelUiState = _configInfo
         .filterIsInstance<NetworkResult.Success<ConfigurationUiModel>>()
@@ -185,9 +195,26 @@ internal class PlayBroadcastViewModel @Inject constructor(
             )
         }
 
-    val uiState = _channelUiState.map {
-        PlayBroadcastUiState(channel = it)
+    private val _pinnedMessageUiState = _pinnedMessage.map {
+        PinnedMessageUiState(
+            message = if (it.isActive) it.message else "",
+            editStatus = it.editStatus
+        )
     }
+
+    val uiState = combine(
+        _channelUiState.distinctUntilChanged(),
+        _pinnedMessageUiState.distinctUntilChanged(),
+    ) { channelState, pinnedMessage ->
+        PlayBroadcastUiState(
+            channel = channelState,
+            pinnedMessage = pinnedMessage,
+        )
+    }
+
+    private val _uiEvent = MutableSharedFlow<PlayBroadcastEvent>(extraBufferCapacity = 100)
+    val uiEvent: Flow<PlayBroadcastEvent>
+        get() = _uiEvent
 
     private val ingestUrl: String
         get() = hydraConfigStore.getIngestUrl()
@@ -255,6 +282,14 @@ internal class PlayBroadcastViewModel @Inject constructor(
         livePusherMediator.destroy()
     }
 
+    fun submitAction(event: PlayBroadcastAction) {
+        when (event) {
+            PlayBroadcastAction.EditPinnedMessage -> handleEditPinnedMessage()
+            is PlayBroadcastAction.SetPinnedMessage -> handleSetPinnedMessage(event.message)
+            PlayBroadcastAction.CancelEditPinnedMessage -> handleCancelEditPinnedMessage()
+        }
+    }
+
     fun getCurrentSetupDataStore(): PlayBroadcastSetupDataStore {
         return mDataStore.getSetupDataStore()
     }
@@ -263,7 +298,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             _observableConfigInfo.value = NetworkResult.Loading
 
-            val configUiModel = channelRepo.getChannelConfiguration()
+            val configUiModel = repo.getChannelConfiguration()
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
 
             if (!configUiModel.streamAllowed) return@launchCatchError
@@ -400,6 +435,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
     fun startLiveStream(withTimer: Boolean = true) {
         livePusherMediator.startLiveStreaming(ingestUrl, withTimer)
+        getPinnedMessage()
         if (withTimer) {
             // TODO("find the best way to trigger engagement tools")
             getInteractiveConfig()
@@ -617,24 +653,29 @@ internal class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
+    private suspend fun getSocketCredential(): GetSocketCredentialResponse.SocketCredential = try {
+        withContext(dispatcher.io) {
+            return@withContext getSocketCredentialUseCase.executeOnBackground()
+        }
+    } catch (e: Throwable) {
+        GetSocketCredentialResponse.SocketCredential()
+    }
+
     private fun startWebSocket() {
-        viewModelScope.launch {
-            val socketCredential = try {
-                withContext(dispatcher.io) {
-                    return@withContext getSocketCredentialUseCase.executeOnBackground()
+        socketJob?.cancel()
+        socketJob = viewModelScope.launch {
+            val socketCredential = getSocketCredential()
+
+            if (!isActive) return@launch
+            connectWebSocket(
+                channelId = channelId,
+                socketCredential = socketCredential
+            )
+
+            playBroadcastWebSocket.listenAsFlow()
+                .collect {
+                    handleWebSocketResponse(it, channelId, socketCredential)
                 }
-            } catch (e: Throwable) {
-                GetSocketCredentialResponse.SocketCredential()
-            }
-
-            socketJob = launch {
-                playBroadcastWebSocket.listenAsFlow()
-                    .collect {
-                        handleWebSocketResponse(it, channelId, socketCredential)
-                    }
-            }
-
-            connectWebSocket(channelId,socketCredential)
         }
     }
 
@@ -691,6 +732,12 @@ internal class PlayBroadcastViewModel @Inject constructor(
             is ChannelInteractive -> {
                 val currentInteractive = channelInteractiveMapper.mapInteractive(result)
                 handleActiveInteractiveFromNetwork(currentInteractive)
+            }
+            is PinnedMessageSocketResponse -> {
+                val mappedResult = playBroadcastMapper.mapPinnedMessageSocket(result)
+                _pinnedMessage.value = mappedResult.copy(
+                    editStatus = _pinnedMessage.value.editStatus
+                )
             }
         }
     }
@@ -761,6 +808,46 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
     private fun setInteractiveId(id: String) {
         getCurrentSetupDataStore().setInteractiveId(id)
+    }
+
+    private fun getPinnedMessage() {
+        viewModelScope.launchCatchError(dispatcher.io, block = {
+            val activePinned = repo.getActivePinnedMessage(channelId)
+            _pinnedMessage.value = activePinned ?: PinnedMessageUiModel.Empty()
+        }) {}
+    }
+
+    private fun handleEditPinnedMessage() {
+        _pinnedMessage.setValue {
+            copy(editStatus = PinnedMessageEditStatus.Editing)
+        }
+    }
+
+    private fun handleSetPinnedMessage(message: String) {
+        _pinnedMessage.setValue {
+            copy(editStatus = PinnedMessageEditStatus.Uploading)
+        }
+
+        viewModelScope.launchCatchError(dispatcher.io, block = {
+            val pinnedMessageId = _pinnedMessage.value.id
+            _pinnedMessage.value = repo.setPinnedMessage(
+                id = pinnedMessageId,
+                channelId = channelId,
+                message = message
+            )
+        }) {
+            _pinnedMessage.setValue {
+                copy(editStatus = PinnedMessageEditStatus.Editing)
+            }
+            _uiEvent.emit(PlayBroadcastEvent.ShowError(it))
+        }
+    }
+
+    private fun handleCancelEditPinnedMessage() {
+        if (_pinnedMessage.value.editStatus == PinnedMessageEditStatus.Uploading) return
+        _pinnedMessage.setValue {
+            copy(editStatus = PinnedMessageEditStatus.Nothing)
+        }
     }
 
     /**

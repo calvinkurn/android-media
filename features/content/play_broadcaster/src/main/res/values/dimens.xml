@@ -96,4 +96,8 @@
     <dimen name="play_interactive_gift_width">27dp</dimen>
     <dimen name="play_interactive_gift_height">29dp</dimen>
     <dimen name="play_interactive_setup_top_margin">100dp</dimen>
+
+    <!--Pinned Message-->
+    <dimen name="play_bro_pinned_msg_empty_radius">8dp</dimen>
+    <dimen name="play_bro_pinned_msg_loading_size">52dp</dimen>
 </resources>
