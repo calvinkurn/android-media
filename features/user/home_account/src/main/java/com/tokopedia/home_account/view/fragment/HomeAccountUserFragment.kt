@@ -60,6 +60,7 @@ import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.databinding.HomeAccountUserFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.linkaccount.view.LinkAccountWebViewActivity
+import com.tokopedia.home_account.linkaccount.view.LinkAccountWebviewFragment
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
@@ -290,7 +291,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW).apply {
                 putExtra(
                     ApplinkConstInternalGlobal.PARAM_LD,
-                    ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT
+                    LinkAccountWebviewFragment.BACK_BTN_APPLINK
                 )
             }
             startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
@@ -613,7 +614,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             }
         }
         adapter?.notifyItemChanged(0)
-        viewModel.getGopayWalletEligible()
         getBalanceAndPoints(centralizedUserAssetConfig)
     }
 
@@ -622,6 +622,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             if (it.id != AccountConstants.WALLET.GOPAY
             ) {
                 viewModel.getBalanceAndPoint(it.id)
+            } else {
+                viewModel.getGopayWalletEligible()
             }
         }
     }
