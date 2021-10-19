@@ -363,18 +363,9 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
     }
 
     private fun mapIntoModel(data: PdpGetLayout): ProductDetailDataModel {
-        val initialLayoutData =
-            DynamicProductDetailMapper.mapIntoVisitable(data.components.plus(generateTopAdsHeadlinesComponent()), data.basicInfo.productID)
-
+        val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(data = data.components, data?.basicInfo?.productID)
         val getDynamicProductInfoP1 = DynamicProductDetailMapper.mapToDynamicProductDetailP1(data)
         val p1VariantData = DynamicProductDetailMapper.mapVariantIntoOldDataClass(data)
         return ProductDetailDataModel(getDynamicProductInfoP1, initialLayoutData, p1VariantData)
-    }
-
-    private fun generateTopAdsHeadlinesComponent() : List<Component> {
-        val listOfComponent: MutableList<Component> = mutableListOf()
-        listOfComponent.add(Component(componentName = "separator", type = "separator"))
-        listOfComponent.add(Component(componentName = "topads_headline", type = "topads_headline"))
-        return listOfComponent
     }
 }

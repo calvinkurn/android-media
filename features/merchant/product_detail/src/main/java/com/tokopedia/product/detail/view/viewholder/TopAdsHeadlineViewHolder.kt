@@ -13,6 +13,8 @@ import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
 
 const val TOPADS_HEADLINE_VALUE_SRC = "inbox"
+const val PRODUCT_ID = "product_id"
+
 
 class TopAdsHeadlineViewHolder(view: View, val userId: String) :
     AbstractViewHolder<TopadsHeadlineUiModel>(view) {
@@ -44,7 +46,8 @@ class TopAdsHeadlineViewHolder(view: View, val userId: String) :
                 PARAM_ITEM to VALUE_ITEM,
                 PARAM_SRC to TOPADS_HEADLINE_VALUE_SRC,
                 PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
-                PARAM_USER_ID to userId
+                PARAM_USER_ID to userId,
+                PRODUCT_ID to topadsHeadlineUiModel?.productId
 
             )
         )

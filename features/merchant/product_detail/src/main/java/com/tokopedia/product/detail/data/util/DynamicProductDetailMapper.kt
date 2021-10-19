@@ -24,7 +24,7 @@ object DynamicProductDetailMapper {
      * except info type
      * If data already complete at P1 call, assign the value here.
      */
-    fun mapIntoVisitable(data: List<Component>): MutableList<DynamicPdpDataModel> {
+    fun mapIntoVisitable(data: List<Component>, productId : String): MutableList<DynamicPdpDataModel> {
         val listOfComponent: MutableList<DynamicPdpDataModel> = mutableListOf()
         data.forEachIndexed { index, component ->
             when (component.type) {
@@ -64,7 +64,7 @@ object DynamicProductDetailMapper {
                         PDP_7 ->
                             listOfComponent.add(ProductRecomWidgetDataModel(type = component.type, name = component.componentName, position = index))
                         SHOPADS_CAROUSEL -> {
-                            listOfComponent.add(TopadsHeadlineUiModel(type = component.type, name = component.componentName))
+                            listOfComponent.add(TopadsHeadlineUiModel(type = component.type, name = component.componentName, productId = productId))
                         }
                         else ->
                             listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
