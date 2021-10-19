@@ -73,21 +73,6 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         generateConsumerAppNetworkKeys();
     }
 
-    @Override
-    public void registerActivityLifecycleCallbacks() {
-        super.registerActivityLifecycleCallbacks();
-        String versionName = BuildConfig.VERSION_NAME;
-        if (versionName.endsWith("-alpha")) {
-            registerActivityLifecycleCallbacks(new AlphaObserver());
-            registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.BottomSheetListener() {
-                @Override
-                public void onFeedbackClicked(Uri uri, String className, boolean isFromScreenshot) {
-                    openFeedbackForm(uri, className, isFromScreenshot);
-                }
-            }));
-        }
-    }
-
     public String getOriginalPackageApp() {
         return new String(new char[]{
                 99, 111, 109, 46, 116, 111, 107, 111, 112, 101,
@@ -119,6 +104,8 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         CheckAndTraceAppStartIfEnabled();
         super.onCreate();
         setupAppScreenMode();
+        setupAlphaObserver();
+
     }
 
     public void CheckAndTraceAppStartIfEnabled() {
@@ -167,5 +154,18 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         intent.putExtra("EXTRA_IS_CLASS_NAME", className);
         intent.putExtra("EXTRA_IS_FROM_SCREENSHOT", isFromScreenshot);
         getApplicationContext().startActivity(intent);
+    }
+
+    private void setupAlphaObserver() {
+        String versionName = BuildConfig.VERSION_NAME;
+        if (versionName.endsWith("-alpha")) {
+            registerActivityLifecycleCallbacks(new AlphaObserver());
+            registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.BottomSheetListener() {
+                @Override
+                public void onFeedbackClicked(Uri uri, String className, boolean isFromScreenshot) {
+                    openFeedbackForm(uri, className, isFromScreenshot);
+                }
+            }));
+        }
     }
 }
