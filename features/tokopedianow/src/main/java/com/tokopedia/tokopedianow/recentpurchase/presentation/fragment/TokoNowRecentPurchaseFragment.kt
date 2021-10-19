@@ -686,8 +686,9 @@ class TokoNowRecentPurchaseFragment:
     }
 
     private fun onDateFilterActivityResult(data: Intent?) {
-        val selectedFilter = data?.getParcelableExtra<SelectedDateFilter>(EXTRA_SELECTED_DATE_FILTER)
-        viewModel.applyDateFilter(selectedFilter)
+        data?.getParcelableExtra<SelectedDateFilter>(EXTRA_SELECTED_DATE_FILTER)?.let {
+            viewModel.applyDateFilter(it)
+        }
     }
 
     private fun onSuccessGetLayout(data: RepurchaseLayoutUiModel) {

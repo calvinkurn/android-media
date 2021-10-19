@@ -58,6 +58,9 @@ class TokoNowCategoryFragment:
 
     override val toolbarPageName = "TokoNow Category"
 
+    override val oocPageName: String
+        get() = "tokonow - category page"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -354,5 +357,9 @@ class TokoNowCategoryFragment:
         val categorySlug = uri.lastPathSegment ?: return
 
         CategoryTracking.sendOpenScreenTracking(categorySlug)
+    }
+
+    override fun sendOOCOpenScreenTracking(isTracked: Boolean) {
+        CategoryTracking.sendOOCOpenScreenTracking()
     }
 }

@@ -69,12 +69,12 @@ class RechargeHomepageInstrumentTest {
         check_favorite_section()
         check_category_section()
         check_trustmark_section()
-        check_reminder_section()
         check_dual_banners_section()
         check_lego_banners_section()
         check_product_cards_section()
         check_single_banner_section()
         check_product_banner_section()
+        check_reminder_section()
 
         assertThat(
                 getAnalyticsWithQuery(gtmLogDBSource, context, SUBHOME_ANALYTIC_VALIDATOR_QUERY),
@@ -92,12 +92,10 @@ class RechargeHomepageInstrumentTest {
         Thread.sleep(1000)
         onView(withId(R.id.searchbar_textfield)).check(matches(isDisplayed())).perform(typeText("pulsa"))
         Thread.sleep(1000)
-        pressBack()
         val viewInteraction = onView(withId(R.id.recycler_view)).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<DigitalHomePageSearchViewHolder>(
                 0, click())
         )
-        pressBack()
     }
 
     private fun check_banner_section() {
@@ -158,9 +156,9 @@ class RechargeHomepageInstrumentTest {
 
     private fun check_dual_banners_section() {
         onView(withId(R.id.recycler_view)).perform(
-                RecyclerViewActions.scrollToPosition<RechargeHomepageDualBannersViewHolder>(8)
+                RecyclerViewActions.scrollToPosition<RechargeHomepageDualBannersViewHolder>(9)
         )
-        Thread.sleep(1000)
+        Thread.sleep(3000)
         onView(withId(R.id.view_recharge_home_dual_banners_container)).check(matches(isDisplayed()))
         onView(withId(R.id.view_recharge_home_dual_banners_image_1)).check(matches(isDisplayed())).perform(click())
         Thread.sleep(1000)

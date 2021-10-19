@@ -36,6 +36,7 @@ import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.SLASH
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.TOKONOW_CATEGORY_PAGE_PAST_PURCHASE_WIDGET
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.TOKONOW_CATEGORY_SCREEN
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.TOKONOW_OOC_SCREEN_NAME
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.WITHOUT_HALAL_LABEL
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.WITHOUT_VARIANT
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.WITH_HALAL_LABEL
@@ -136,6 +137,7 @@ object CategoryTracking {
             "/tokonow - category page - past_purchase_widget"
         const val LABEL_GROUP_HALAL = "Halal"
         const val TOKONOW_CATEGORY_SCREEN = "tokonow/category/%s"
+        const val TOKONOW_OOC_SCREEN_NAME = "tokonow/category"
     }
 
     fun sendGeneralEvent(dataLayer: Map<String, Any>) {
@@ -690,4 +692,13 @@ object CategoryTracking {
         )
     }
 
+    fun sendOOCOpenScreenTracking() {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(
+            TOKONOW_OOC_SCREEN_NAME,
+            mapOf<String, String>(
+                KEY_BUSINESS_UNIT to BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE,
+                KEY_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+            )
+        )
+    }
 }

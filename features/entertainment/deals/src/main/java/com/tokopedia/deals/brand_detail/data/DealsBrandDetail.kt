@@ -1,5 +1,6 @@
 package com.tokopedia.deals.brand_detail.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -161,6 +162,7 @@ data class Product(
         @SerializedName("no_promo")
         @Expose
         val noPromo : Boolean = false,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
         val price : String = "",
