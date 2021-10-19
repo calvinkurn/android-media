@@ -158,7 +158,12 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
 
     override fun onLinkAccountClicked() {
         homeAccountAnalytics.trackClickHubungkanLinkAccountPage()
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW)
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW).apply {
+            putExtra(
+                ApplinkConstInternalGlobal.PARAM_LD,
+                LinkAccountWebviewFragment.BACK_BTN_APPLINK
+            )
+        }
         startActivityForResult(intent, LINK_ACCOUNT_WEBVIEW_REQUEST)
     }
 
@@ -186,10 +191,18 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
         )
     }
 
+    private fun getIndonesiaLocale() : Locale {
+        return try {
+            Locale("id", "ID")
+        }catch (e: Exception) {
+            Locale.getDefault()
+        }
+    }
+
     private fun formatDate(mDate: String): String {
         return try {
-            val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).parse(mDate) ?: ""
-            SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(date)
+            val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", getIndonesiaLocale()).parse(mDate) ?: ""
+            SimpleDateFormat("dd MMM yyyy", getIndonesiaLocale()).format(date)
         } catch (e: Exception) {
             mDate
         }

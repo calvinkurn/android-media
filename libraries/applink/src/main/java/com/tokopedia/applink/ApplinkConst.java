@@ -33,6 +33,7 @@ public interface ApplinkConst {
     String SHOP_ETALASE = "tokopedia://shop/{shop_id}/etalase/{etalase_id}";
     String SHOP_TALK = "tokopedia://shop/{shop_id}/talk";
     String SHOP_ETALASE_WITH_KEYWORD_AND_SORT = "tokopedia://shop/{shop_id}/etalase/{etalase_id}/?search={search}&sort={sort}";
+    String PRODUCT_BUNDLE = "tokopedia://product-bundle/{product_id}";
     String SHOP_REVIEW = "tokopedia://shop/{shop_id}/review";
     String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";
     String SHOP_INFO = "tokopedia://shop/{shop_id}/info";
@@ -272,6 +273,7 @@ public interface ApplinkConst {
     String NOTIFICATION = "tokopedia://notification";
     String NOTIFICATION_TROUBLESHOOTER = "tokopedia://notification-troubleshooter";
     String PMS = "tokopedia://buyer/payment";
+    String GOPAY_KYC = "tokopedia://payment/gopayKyc";
     String PURCHASE_ORDER = "tokopedia://buyer/order";
     String PURCHASE_ORDER_DETAIL = "tokopedia://buyer/order/{order_id}";
     String PURCHASE_CONFIRMED = "tokopedia://buyer/confirmed";
