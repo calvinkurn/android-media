@@ -1997,68 +1997,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check tokomart home appLink then should return tokopedia internal tokomart home in customerapp`() {
-        val expectedDeepLink = ApplinkConstInternalTokopediaNow.HOME
-        val actualDeeplink = ApplinkConst.TokoMart.HOME
-        assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
-    }
-
-    @Test
-    fun `check tokomart repurchase appLink then should return tokopedia internal tokomart repurchase in customerapp`() {
-        val expectedDeepLink = ApplinkConstInternalTokopediaNow.REPURCHASE
-        val actualDeeplink = ApplinkConst.TokoMart.REPURCHASE
-        assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
-    }
-
-    @Test
-    fun `check tokomart search appLink then should return tokopedia internal tokomart search in customerapp`() {
-        val queryParams = "?q=keju"
-        val expectedDeepLink = ApplinkConstInternalTokopediaNow.SEARCH + queryParams
-        val actualDeeplink = ApplinkConst.TokoMart.SEARCH + queryParams
-        assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
-    }
-
-    @Test
-    fun `check tokomart L1 L2 category appLink then should return tokopedia internal tokomart category in customerapp`() {
-        val categoryIdL1 = "123"
-        val categoryIdL2 = "456"
-        val expectedDeepLink =
-            "${ApplinkConstInternalTokopediaNow.CATEGORY}?category_l1=${categoryIdL1}&category_l2=${categoryIdL2}"
-        val appLink = "${ApplinkConst.TokoMart.CATEGORY}/$categoryIdL1/$categoryIdL2"
-        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
-    }
-
-    @Test
-    fun `check tokomart L1 category appLink then should return tokopedia internal tokomart category in customerapp`() {
-        val categoryIdL1 = "123"
-        val expectedDeepLink =
-            "${ApplinkConstInternalTokopediaNow.CATEGORY}?category_l1=${categoryIdL1}"
-        val appLink = "${ApplinkConst.TokoMart.CATEGORY}/$categoryIdL1"
-        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
-    }
-
-    @Test
-    fun `check tokomart L1 L2 category appLink with query param then should return tokopedia internal tokomart category in customerapp`() {
-        val categoryIdL1 = "123"
-        val categoryIdL2 = "456"
-        val queryParam = "official=true"
-        val expectedDeepLink =
-            "${ApplinkConstInternalTokopediaNow.CATEGORY}?category_l1=${categoryIdL1}&category_l2=${categoryIdL2}&$queryParam"
-        val appLink = "${ApplinkConst.TokoMart.CATEGORY}/$categoryIdL1/$categoryIdL2?$queryParam"
-        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
-    }
-
-    @Test
-    fun `check tokomart L1 category appLink with query param then should return tokopedia internal tokomart category in customerapp`() {
-        val categoryIdL1 = "123"
-        val queryParam = "official=true"
-        val expectedDeepLink =
-            "${ApplinkConstInternalTokopediaNow.CATEGORY}?category_l1=${categoryIdL1}&$queryParam"
-        val appLink = "${ApplinkConst.TokoMart.CATEGORY}/$categoryIdL1?$queryParam"
-        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
-    }
-
-    @Test
     fun `check manual ads creation applink`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://topads/create-manual-ads"
         assertEqualsDeepLinkMapper(
