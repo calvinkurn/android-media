@@ -1,9 +1,9 @@
 package com.tokopedia.home.analytics.v2
 
+import android.os.Bundle
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
-import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetProductCardViewHolder.Companion.IMAGE_TYPE_FULL
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
 
@@ -16,6 +16,8 @@ object RechargeBUWidgetTracking : BaseTracking() {
     private const val RECHARGE_BU_WIDGET_CURRENT_SITE = "tokopediamarketplace"
     private const val RECHARGE_BU_WIDGET_BANNER = "banner"
     private const val RECHARGE_BU_WIDGET_BANNER_CARD = "banner card"
+    private const val RECHARGE_BU_WIDGET_ITEM_LIST_KEY = "item_list"
+    private const val RECHARGE_BU_WIDGET_ITEMS_KEY = "items"
 
     fun homeRechargeBUWidgetImpressionTracker(
             trackingQueue: TrackingQueue,
@@ -23,16 +25,8 @@ object RechargeBUWidgetTracking : BaseTracking() {
             userId: String
     ) {
         var position = 0
-        val persoType = data.channel.trackingAttributionModel.persoType.toIntOrZero()
-        val promotions = data.data.items.mapIndexed { index, item ->
+        data.data.items.mapIndexed { index, item ->
             position = index + 1
-            val productName = if (item.mediaUrlType == IMAGE_TYPE_FULL) item.subtitle else item.title
-            Promotion(
-                id = "${data.channel.id}_0_0_$persoType",
-                creative = "${getHeaderName(data.channel)} - $productName",
-                name = "/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${getHeaderName(data.channel)}",
-                position = position.toString()
-            )
         }
         //empty supposed to be userType next dev.
         val item = data.data.items[position]
@@ -41,18 +35,28 @@ object RechargeBUWidgetTracking : BaseTracking() {
                 " - ${getHeaderName(data.channel)} - ${item.trackingData.itemType} - $position - " +
                         "${item.trackingData.categoryId} - ${item.trackingData.operatorId} - " +
                         "${item.trackingData?.productId} - ${item.label2}"
-            trackingQueue.putEETracking(
-                getBasicPromotionView(
-                    Event.PROMO_VIEW,
-                    "$RECHARGE_BU_WIDGET_EVENT_CATEGORY - $RECHARGE_BU_WIDGET_NEW_NAME",
-                    Action.IMPRESSION_ON.format("$RECHARGE_BU_WIDGET_BANNER_CARD $RECHARGE_BU_WIDGET_NAME"),
-                    eventLabel,
-                    promotions,
-                    userId,
-                    currentSite = RECHARGE_BU_WIDGET_CURRENT_SITE,
-                    businessUnit = RECHARGE_BU_WIDGET_BUSINESS_UNIT
-                ) as? HashMap<String, Any>
-            )
+            val bundle = Bundle().apply {
+                putString(Event.KEY, Event.PRODUCT_VIEW)
+                putString(Action.KEY, Action.IMPRESSION_ON.format("$RECHARGE_BU_WIDGET_BANNER_CARD $RECHARGE_BU_WIDGET_NAME"))
+                putString(Category.KEY, "$RECHARGE_BU_WIDGET_EVENT_CATEGORY - $RECHARGE_BU_WIDGET_NEW_NAME")
+                putString(Label.KEY, eventLabel)
+                putString(BusinessUnit.KEY, RECHARGE_BU_WIDGET_BUSINESS_UNIT)
+                putString(CurrentSite.KEY, RECHARGE_BU_WIDGET_CURRENT_SITE)
+                putString(RECHARGE_BU_WIDGET_ITEM_LIST_KEY, item.trackingData.itemType)
+                putParcelableArrayList(RECHARGE_BU_WIDGET_ITEMS_KEY, arrayListOf(
+                    Bundle().also {
+                        it.putInt("index", position)
+                        it.putString("item_brand", item.trackingData.operatorId)
+                        it.putString("item_category" , item.trackingData.categoryId)
+                        it.putString("item_id", item.id)
+                        it.putString("item_name","/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${getHeaderName(data.channel)}")
+                        it.putString("item_variant", item.trackingData.itemType)
+                        it.putString("price", item.label2)
+                    }
+                ))
+                putString(UserId.KEY, userId)
+            }
+            getTracker().sendEnhanceEcommerceEvent(Event.PRODUCT_VIEW, bundle)
         }
     }
 
@@ -63,29 +67,33 @@ object RechargeBUWidgetTracking : BaseTracking() {
             userId: String
     ) {
         if (position < data.data.items.size) {
-            val persoType = data.channel.trackingAttributionModel.persoType.toIntOrZero()
             val item = data.data.items[position]
-            val productName = if (item.mediaUrlType == IMAGE_TYPE_FULL) item.subtitle else item.title
-            val promotion = Promotion(
-                    id = "${data.channel.id}_0_0_$persoType",
-                    creative = "${getHeaderName(data.channel)} - $productName",
-                    name = "/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${getHeaderName(data.channel)}",
-                    position = position.toString()
-            )
             //empty supposed to be userType next dev.
             val eventLabel = " - ${getHeaderName(data.channel)} - ${item.trackingData.itemType} - $position - " +
                     "${item.trackingData.categoryId} - ${item.trackingData.operatorId} - " +
                     "${item.trackingData.productId} - ${item.label2}"
-            trackingQueue.putEETracking(getBasicPromotionClick(
-                    Event.PROMO_CLICK,
-                "$RECHARGE_BU_WIDGET_EVENT_CATEGORY - $RECHARGE_BU_WIDGET_NEW_NAME",
-                    Action.CLICK_ON.format("$RECHARGE_BU_WIDGET_BANNER_CARD $RECHARGE_BU_WIDGET_NAME"),
-                    eventLabel,
-                    listOf(promotion),
-                    userId,
-                    currentSite = RECHARGE_BU_WIDGET_CURRENT_SITE,
-                    businessUnit = RECHARGE_BU_WIDGET_BUSINESS_UNIT
-            ) as? HashMap<String, Any>)
+            val bundle = Bundle().apply {
+                putString(Event.KEY, Event.PRODUCT_CLICK)
+                putString(Action.KEY, Action.CLICK_ON.format("$RECHARGE_BU_WIDGET_BANNER_CARD $RECHARGE_BU_WIDGET_NAME"))
+                putString(Category.KEY, "$RECHARGE_BU_WIDGET_EVENT_CATEGORY - $RECHARGE_BU_WIDGET_NEW_NAME")
+                putString(Label.KEY, eventLabel)
+                putString(BusinessUnit.KEY, RECHARGE_BU_WIDGET_BUSINESS_UNIT)
+                putString(CurrentSite.KEY, RECHARGE_BU_WIDGET_CURRENT_SITE)
+                putString(RECHARGE_BU_WIDGET_ITEM_LIST_KEY, item.trackingData.itemType)
+                putParcelableArrayList(RECHARGE_BU_WIDGET_ITEMS_KEY, arrayListOf(
+                    Bundle().also {
+                        it.putInt("index", position)
+                        it.putString("item_brand", item.trackingData.operatorId)
+                        it.putString("item_category" , item.trackingData.categoryId)
+                        it.putString("item_id", item.id)
+                        it.putString("item_name","/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${getHeaderName(data.channel)}")
+                        it.putString("item_variant", item.trackingData.itemType)
+                        it.putString("price", item.label2)
+                    }
+                ))
+                putString(UserId.KEY, userId)
+            }
+            getTracker().sendEnhanceEcommerceEvent(Event.PRODUCT_CLICK, bundle)
         }
     }
 
