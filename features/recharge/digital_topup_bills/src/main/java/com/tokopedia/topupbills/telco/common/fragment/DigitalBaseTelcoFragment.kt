@@ -454,6 +454,13 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         }
     }
 
+    override fun showErrorMessage(error: Throwable) {
+        view?.let { v ->
+            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error)
+                ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        }
+    }
+
     private fun sendOpenScreenTracking() {
         rechargeAnalytics.eventOpenScreen(
             userSession.userId,
