@@ -144,7 +144,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private val castView by viewComponentOrNull(isEagerInit = true) { CastViewComponent(it, this) }
     private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
     private val rtnView by viewComponentOrNull { RealTimeNotificationViewComponent(it, this) }
-    private val likeBubbleView by viewComponent { LikeBubbleViewComponent(it, R.id.view_like_bubble, multipleLikesIconCacheStorage) }
+    private val likeBubbleView by viewComponent { LikeBubbleViewComponent(
+        it, R.id.view_like_bubble, viewLifecycleOwner.lifecycleScope, multipleLikesIconCacheStorage) }
 
     /**
      * Interactive
