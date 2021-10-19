@@ -19,11 +19,12 @@ object AmplificationDataSource {
 
     private val useCase by lazy {
         GraphqlUseCase<AmplificationNotifier>(
-                GraphqlInteractor.getInstance().graphqlRepository
+            GraphqlInteractor.getInstance().graphqlRepository
         )
     }
 
-    @JvmStatic fun invoke(application: Application) {
+    @JvmStatic
+    fun invoke(application: Application) {
         val cacheManager = NextFetchCacheManager(application)
         val currentTime = System.currentTimeMillis()
         val userSession = UserSession(application)

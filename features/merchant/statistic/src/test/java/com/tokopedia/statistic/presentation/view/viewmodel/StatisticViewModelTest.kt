@@ -9,7 +9,6 @@ import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
-import com.tokopedia.statistic.domain.usecase.GetUserRoleUseCase
 import com.tokopedia.statistic.utils.TestConst
 import com.tokopedia.statistic.view.viewmodel.StatisticViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -50,9 +49,6 @@ class StatisticViewModelTest {
     lateinit var getTickerUseCase: GetTickerUseCase
 
     @RelaxedMockK
-    lateinit var getUserRoleUseCase: GetUserRoleUseCase
-
-    @RelaxedMockK
     lateinit var getCardDataUseCase: GetCardDataUseCase
 
     @RelaxedMockK
@@ -91,20 +87,19 @@ class StatisticViewModelTest {
         MockKAnnotations.init(this)
 
         viewModel = StatisticViewModel(
-                userSession,
-                { getTickerUseCase },
-                { getUserRoleUseCase },
-                { getLayoutUseCase },
-                { getCardDataUseCase },
-                { getLineGraphDataUseCase },
-                { getMultiLineGraphUseCase },
-                { getProgressDataUseCase },
-                { getPostDataUseCase },
-                { getCarouselDataUseCase },
-                { getTableDataUseCase },
-                { getPieChartDataUseCase },
-                { getBarChartDataUseCase },
-                CoroutineTestDispatchersProvider
+            userSession,
+            { getTickerUseCase },
+            { getLayoutUseCase },
+            { getCardDataUseCase },
+            { getLineGraphDataUseCase },
+            { getMultiLineGraphUseCase },
+            { getProgressDataUseCase },
+            { getPostDataUseCase },
+            { getCarouselDataUseCase },
+            { getTableDataUseCase },
+            { getPieChartDataUseCase },
+            { getBarChartDataUseCase },
+            CoroutineTestDispatchersProvider
         )
 
         dynamicParameter = getDynamicParameter()
@@ -116,10 +111,10 @@ class StatisticViewModelTest {
 
     private fun getDynamicParameter(): DynamicParameterModel {
         return DynamicParameterModel(
-                startDate = "15-07-20202",
-                endDate = "21-07-20202",
-                pageSource = TestConst.PAGE_SOURCE,
-                dateType = DateFilterType.DATE_TYPE_DAY
+            startDate = "15-07-20202",
+            endDate = "21-07-20202",
+            pageSource = TestConst.PAGE_SOURCE,
+            dateType = DateFilterType.DATE_TYPE_DAY
         )
     }
 
@@ -246,64 +241,6 @@ class StatisticViewModelTest {
     }
 
     @Test
-    fun `should success when get user role`() = runBlocking {
-        val userId = "123456"
-        val userRoles = listOf("a", "b", "c")
-        getUserRoleUseCase.params = GetUserRoleUseCase.createParam(userId)
-
-        every {
-            userSession.userId
-        } returns userId.toString()
-
-        coEvery {
-            getUserRoleUseCase.executeOnBackground()
-        } returns userRoles
-
-        viewModel.getUserRole()
-
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
-        coVerify {
-            userSession.userId
-        }
-
-        coVerify {
-            getUserRoleUseCase.executeOnBackground()
-        }
-
-        assertEquals(Success(userRoles), viewModel.userRole.value)
-    }
-
-    @Test
-    fun `when failed to get user role then throws exception`() = runBlocking {
-        val userId = "123456"
-        val throwable = RuntimeException("error message")
-        getUserRoleUseCase.params = GetUserRoleUseCase.createParam(userId)
-
-        every {
-            userSession.userId
-        } returns userId.toString()
-
-        coEvery {
-            getUserRoleUseCase.executeOnBackground()
-        } throws throwable
-
-        viewModel.getUserRole()
-
-        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
-        coVerify {
-            userSession.userId
-        }
-
-        coVerify {
-            getUserRoleUseCase.executeOnBackground()
-        }
-
-        assert(viewModel.userRole.value is Fail)
-    }
-
-    @Test
     fun `should success when get card widget data`() = runBlocking {
         val dataKeys = listOf("a", "b", "c")
 
@@ -350,8 +287,10 @@ class StatisticViewModelTest {
     fun `should success when get line graph widget data`() = runBlocking {
         val dataKeys = listOf("x", "y", "z")
 
-        val lineGraphDataResult = listOf(LineGraphDataUiModel(), LineGraphDataUiModel(), LineGraphDataUiModel())
-        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val lineGraphDataResult =
+            listOf(LineGraphDataUiModel(), LineGraphDataUiModel(), LineGraphDataUiModel())
+        getLineGraphDataUseCase.params =
+            GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getLineGraphDataUseCase.executeOnBackground()
@@ -375,7 +314,8 @@ class StatisticViewModelTest {
         val dataKeys = listOf("x", "y", "z")
         val throwable = MessageErrorException("error message")
 
-        getLineGraphDataUseCase.params = GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getLineGraphDataUseCase.params =
+            GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getLineGraphDataUseCase.executeOnBackground()
@@ -397,7 +337,8 @@ class StatisticViewModelTest {
         val dataKeys = listOf(anyString(), anyString())
         val result = listOf(MultiLineGraphDataUiModel(), MultiLineGraphDataUiModel())
 
-        getMultiLineGraphUseCase.params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getMultiLineGraphUseCase.params =
+            GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getMultiLineGraphUseCase.executeOnBackground()
@@ -423,7 +364,8 @@ class StatisticViewModelTest {
     fun `should failed when get multi line graph widget data`() = runBlocking {
         val dataKeys = listOf(anyString(), anyString())
 
-        getMultiLineGraphUseCase.params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getMultiLineGraphUseCase.params =
+            GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getMultiLineGraphUseCase.executeOnBackground()
@@ -444,7 +386,8 @@ class StatisticViewModelTest {
     fun `should success when get progress widget data`() = runBlocking {
         val dateStr = "15-07-2020"
         val dataKeys = listOf("x", "y", "z")
-        val progressDataList = listOf(ProgressDataUiModel(), ProgressDataUiModel(), ProgressDataUiModel())
+        val progressDataList =
+            listOf(ProgressDataUiModel(), ProgressDataUiModel(), ProgressDataUiModel())
 
         getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(dateStr, dataKeys)
 
@@ -543,7 +486,12 @@ class StatisticViewModelTest {
     @Test
     fun `should success when get carousel widget data`() = runBlocking {
         val dataKeys = listOf(anyString(), anyString(), anyString(), anyString())
-        val carouselList = listOf(CarouselDataUiModel(), CarouselDataUiModel(), CarouselDataUiModel(), CarouselDataUiModel())
+        val carouselList = listOf(
+            CarouselDataUiModel(),
+            CarouselDataUiModel(),
+            CarouselDataUiModel(),
+            CarouselDataUiModel()
+        )
 
         getCarouselDataUseCase.params = GetCarouselDataUseCase.getRequestParams(dataKeys)
 
@@ -594,7 +542,8 @@ class StatisticViewModelTest {
         )
         val result = listOf(TableDataUiModel(), TableDataUiModel())
 
-        getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getTableDataUseCase.params =
+            GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getTableDataUseCase.executeOnBackground()
@@ -620,7 +569,8 @@ class StatisticViewModelTest {
             TableAndPostDataKey("y", "y", 6, 3)
         )
 
-        getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getTableDataUseCase.params =
+            GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getTableDataUseCase.executeOnBackground()
@@ -642,7 +592,8 @@ class StatisticViewModelTest {
         val dataKeys = listOf(anyString(), anyString())
         val result = listOf(PieChartDataUiModel(), PieChartDataUiModel())
 
-        getPieChartDataUseCase.params = GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getPieChartDataUseCase.params =
+            GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getPieChartDataUseCase.executeOnBackground()
@@ -665,7 +616,8 @@ class StatisticViewModelTest {
     fun `should failed when get pie chart widget data`() = runBlocking {
         val dataKeys = listOf(anyString(), anyString())
 
-        getPieChartDataUseCase.params = GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getPieChartDataUseCase.params =
+            GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getPieChartDataUseCase.executeOnBackground()
@@ -687,7 +639,8 @@ class StatisticViewModelTest {
         val dataKeys = listOf(anyString(), anyString())
         val result = listOf(BarChartDataUiModel(), BarChartDataUiModel())
 
-        getBarChartDataUseCase.params = GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getBarChartDataUseCase.params =
+            GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getBarChartDataUseCase.executeOnBackground()
@@ -710,7 +663,8 @@ class StatisticViewModelTest {
     fun `should failed when get bar chart widget data`() = runBlocking {
         val dataKeys = listOf(anyString(), anyString())
 
-        getBarChartDataUseCase.params = GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        getBarChartDataUseCase.params =
+            GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
         coEvery {
             getBarChartDataUseCase.executeOnBackground()

@@ -19,21 +19,19 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.internal_review.common.InternalReviewUtils
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracking
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
 import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
-import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.IndentedSettingTitleUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleMenuUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.databinding.FragmentMenuSettingBinding
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.view.adapter.MenuSettingAdapter
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.OtherSettingsUiModel
@@ -43,15 +41,11 @@ import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.internal_review.common.InternalReviewUtils
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
-import kotlinx.android.synthetic.main.fragment_menu_setting.*
-import kotlinx.android.synthetic.main.setting_logout.view.*
-import kotlinx.android.synthetic.main.setting_tc.view.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), SettingTrackingListener, MenuSettingAdapter.Listener {
+class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
+    SettingTrackingListener, MenuSettingAdapter.Listener {
 
     companion object {
         private const val APPLINK_FORMAT = "%s?url=%s%s"
@@ -101,8 +95,15 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         adapter as? MenuSettingAdapter
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_menu_setting, container, false)
+    private var binding by autoClearedNullable<FragmentMenuSettingBinding>()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentMenuSettingBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -115,12 +116,16 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         setupView()
     }
 
-    override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory = OtherMenuAdapterTypeFactory(this)
+    override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory =
+        OtherMenuAdapterTypeFactory(this)
 
     override fun createAdapterInstance(): BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory> {
         var isShowScreenRecorder = false
         context?.let {
-            isShowScreenRecorder = FirebaseRemoteConfigImpl(it).getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
+            isShowScreenRecorder = FirebaseRemoteConfigImpl(it).getBoolean(
+                RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER,
+                false
+            )
         }
         return MenuSettingAdapter(context, this, isShowScreenRecorder, adapterTypeFactory)
     }
@@ -131,9 +136,9 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
     override fun initInjector() {
         DaggerSellerHomeComponent.builder()
-                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
     }
 
     override fun loadData(page: Int) {}
@@ -155,7 +160,9 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
 
     override fun onNoAccess() {
-        showToasterError(context?.getString(R.string.seller_menu_admin_no_permission_oops).orEmpty())
+        showToasterError(
+            context?.getString(R.string.seller_menu_admin_no_permission_oops).orEmpty()
+        )
     }
 
     override fun onDestroyView() {
@@ -165,7 +172,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
     private fun observeShopSettingAccess() {
         menuSettingViewModel.shopSettingAccessLiveData.observe(viewLifecycleOwner) { result ->
-            when(result) {
+            when (result) {
                 is Success -> {
                     menuSettingAdapter?.showSuccessAccessMenus(result.data)
                 }
@@ -178,7 +185,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
 
     private fun setupView() {
-        recycler_view.layoutManager = LinearLayoutManager(context)
+        binding?.recyclerView?.layoutManager = LinearLayoutManager(context)
         menuSettingAdapter?.populateInitialMenus(userSession.isShopOwner)
         if (!userSession.isShopOwner) {
             menuSettingViewModel.checkShopSettingAccess()
@@ -189,12 +196,13 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
 
     private fun setupLogoutView() {
-        logoutLayout?.run {
-            sendSettingShopInfoImpressionTracking(logoutUiModel) {
+        binding?.layoutLogout?.run {
+            logoutLayout.sendSettingShopInfoImpressionTracking(logoutUiModel) {
                 it.sendShopInfoImpressionData()
             }
-            appVersionText.text = getString(R.string.setting_application_version, GlobalConfig.VERSION_NAME)
-            setOnClickListener {
+            appVersionText.text =
+                getString(R.string.setting_application_version, GlobalConfig.VERSION_NAME)
+            root.setOnClickListener {
                 logoutUiModel.sendSettingShopInfoClickTracking()
                 showLogoutDialog()
             }
@@ -202,14 +210,14 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
 
     private fun setupExtraSettingView() {
-        tcLayout?.run {
-            settingTC?.run {
+        binding?.tcLayout?.run {
+            settingTC.run {
                 setOnClickListener {
                     termsAndConditionUiModel.sendSettingShopInfoClickTracking()
                     showTermsAndConditions()
                 }
             }
-            settingPrivacy?.run {
+            settingPrivacy.run {
                 setOnClickListener {
                     privacyPolicyUiModel.sendSettingShopInfoClickTracking()
                     showPrivacyPolicy()
@@ -219,7 +227,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
 
     private fun addOrChangePassword() {
-        var intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.HAS_PASSWORD)
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.HAS_PASSWORD)
         startActivity(intent)
     }
 
@@ -227,20 +235,36 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         val urlPlayStore = URL_PLAY_STORE_HOST + activity?.application?.packageName
         val sendIntent = Intent()
         sendIntent.action = Intent.ACTION_SEND
-        sendIntent.putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.msg_share_apps).toString() + "\n" + urlPlayStore)
+        sendIntent.putExtra(
+            Intent.EXTRA_TEXT,
+            resources.getString(R.string.msg_share_apps) + "\n" + urlPlayStore
+        )
         sendIntent.type = "text/plain"
-        activity?.startActivity(Intent.createChooser(sendIntent, resources.getText(R.string.title_share)))
+        activity?.startActivity(
+            Intent.createChooser(
+                sendIntent,
+                resources.getText(R.string.title_share)
+            )
+        )
     }
 
     private fun reviewApplication() {
-        InternalReviewUtils.saveFlagHasOpenedReviewApp(activity?.applicationContext, userSession.userId)
+        InternalReviewUtils.saveFlagHasOpenedReviewApp(
+            activity?.applicationContext,
+            userSession.userId
+        )
         val uri = Uri.parse(MARKET_DETAIL_HOST + activity?.application?.packageName)
         val goToMarket = Intent(Intent.ACTION_VIEW, uri)
         goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
         try {
             startActivity(goToMarket)
         } catch (e: ActivityNotFoundException) {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(URL_PLAY_STORE_HOST + activity?.application?.packageName)))
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse(URL_PLAY_STORE_HOST + activity?.application?.packageName)
+                )
+            )
         }
     }
 
@@ -258,8 +282,8 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                 progressDialog.dismiss()
                 activity?.finish()
             }
-            setNegativeButton(context.getString(R.string.seller_home_cancel)) {
-                dialogInterface, _ -> dialogInterface.dismiss()
+            setNegativeButton(context.getString(R.string.seller_home_cancel)) { dialogInterface, _ ->
+                dialogInterface.dismiss()
             }
             show()
         }
@@ -276,13 +300,15 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
 
     private fun showTermsAndConditions() {
-        val termUrl = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, MOBILE_DOMAIN, PATH_TERM_CONDITION)
+        val termUrl =
+            String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, MOBILE_DOMAIN, PATH_TERM_CONDITION)
         val intent = RouteManager.getIntent(context, termUrl)
         context?.startActivity(intent)
     }
 
     private fun showPrivacyPolicy() {
-        val privacyUrl = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, MOBILE_DOMAIN, PATH_PRIVACY_POLICY)
+        val privacyUrl =
+            String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, MOBILE_DOMAIN, PATH_PRIVACY_POLICY)
         val intent = RouteManager.getIntent(context, privacyUrl)
         context?.startActivity(intent)
     }
