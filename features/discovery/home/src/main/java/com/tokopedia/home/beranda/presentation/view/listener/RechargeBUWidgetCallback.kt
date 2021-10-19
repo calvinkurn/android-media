@@ -13,7 +13,7 @@ class RechargeBUWidgetCallback (val context: Context?,
 
     override fun onRechargeBUWidgetImpression(data: RechargeBUWidgetDataModel, position: Int) {
         homeCategoryListener.getTrackingQueueObj()?.let { trackingQueue ->
-            RechargeBUWidgetTracking.homeRechargeBUWidgetImpressionTracker(trackingQueue, data, position, homeCategoryListener.userId)
+            RechargeBUWidgetTracking.homeRechargeBUWidgetImpressionTracker(trackingQueue, data, position - 1, homeCategoryListener.userId)
         }
     }
 

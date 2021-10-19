@@ -87,7 +87,9 @@ class RechargeBUWidgetMixTopViewHolder(
     }
 
     override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-
+        if(!isCacheData){
+            listener.onRechargeBUWidgetImpression(dataModel, adapterPosition)
+        }
     }
 
     override fun onProductCardClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
