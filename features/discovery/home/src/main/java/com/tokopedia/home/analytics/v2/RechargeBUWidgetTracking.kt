@@ -38,7 +38,6 @@ object RechargeBUWidgetTracking : BaseTracking() {
                 Label.KEY to eventLabel,
                 BusinessUnit.KEY to RECHARGE_BU_WIDGET_BUSINESS_UNIT,
                 CurrentSite.KEY to RECHARGE_BU_WIDGET_CURRENT_SITE,
-                RECHARGE_BU_WIDGET_ITEM_LIST_KEY to item.trackingData.itemType,
                 RECHARGE_BU_WIDGET_ITEMS_KEY to arrayListOf(
                     hashMapOf<String, Any>(
                         "index" to  (position + 1).toString(),
