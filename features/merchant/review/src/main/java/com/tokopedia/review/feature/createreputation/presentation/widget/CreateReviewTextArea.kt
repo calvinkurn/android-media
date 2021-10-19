@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.createreputation.presentation.widget
 
 import android.content.Context
+import android.graphics.Rect
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
@@ -29,6 +30,11 @@ class CreateReviewTextArea : BaseCustomView {
 
     override fun clearFocus() {
         createReviewEditText.clearFocus()
+    }
+
+    override fun requestFocus(direction: Int, previouslyFocusedRect: Rect?): Boolean {
+        createReviewEditText.requestFocus()
+        return super.requestFocus(direction, previouslyFocusedRect)
     }
 
     private fun init() {

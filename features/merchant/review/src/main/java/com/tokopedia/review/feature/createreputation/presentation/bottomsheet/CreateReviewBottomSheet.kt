@@ -68,6 +68,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         const val GOOD_RATING_THRESHOLD = 2
         const val CREATE_REVIEW_TEXT_AREA_BOTTOM_SHEET_TAG = "CreateReviewTextAreaBottomSheet"
         const val TEMPLATES_ROW_COUNT = 2
+        const val BAD_RATING_OTHER_ID = 6
         fun createInstance(
             rating: Int,
             productId: String,
@@ -296,6 +297,9 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     ) {
         if (isSelected) {
             createReviewViewModel.addBadRatingCategory(badRatingCategoryId.toString())
+            if (badRatingCategoryId == BAD_RATING_OTHER_ID) {
+                textArea?.requestFocus()
+            }
         } else {
             createReviewViewModel.removeBadRatingCategory(badRatingCategoryId.toString())
         }
