@@ -47,5 +47,13 @@ data class FeedXProduct(
         @SerializedName("totalSold")
         var totalSold: Int = 0,
         @SerializedName("webLink")
-        var webLink: String = ""
-)
+        var webLink: String = "",
+
+        //TopadsHeadline
+        var variant: Int = 1,
+        var productName : String= "",
+        val slashedPrice : String = "",
+        val authorName : String = "",
+        val isTopads: Boolean = false,
+        val adClickUrl: String = ""
+        )

@@ -41,13 +41,13 @@
 
     </RelativeLayout>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/layout_value_location"
         android:text="@string/desc_delivery_location"
         android:textColor="@color/Unify_N300"
-        android:textSize="@dimen/sp_12" />
+        app:typographyType="body_3" />
 
     <!-- Map -->
 </RelativeLayout>

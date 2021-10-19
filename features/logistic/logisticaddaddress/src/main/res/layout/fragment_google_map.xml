@@ -67,7 +67,7 @@
             android:layout_centerHorizontal="true"
             android:background="@drawable/cards_ui_2_lg">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/pointer_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -75,8 +75,7 @@
                 android:layout_toStartOf="@+id/pointer_submit"
                 android:text="@string/wait_generate_address"
                 android:padding="10dp"
-                android:textSize="14sp"
-                />
+                app:typographyType="body_2" />
 
             <RelativeLayout
                 android:id="@+id/pointer_submit"

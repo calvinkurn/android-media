@@ -662,5 +662,36 @@
                 app:unifyButtonVariant="ghost"/>
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
+            android:orientation="horizontal">
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAllCaps="false"
+                android:layout_marginEnd="@dimen/dp_4"
+                android:id="@+id/btn_always_old_cart_checkout"
+                android:text="Old Cart Checkout"
+                app:unifyButtonType="alternate"
+                app:unifyButtonSize="medium"
+                app:unifyButtonVariant="ghost"/>
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAllCaps="false"
+                android:layout_marginStart="@dimen/dp_4"
+                android:id="@+id/btn_always_new_cart_checkout"
+                android:text="New Cart Checkout Bundling"
+                app:unifyButtonType="alternate"
+                app:unifyButtonSize="medium"
+                app:unifyButtonVariant="ghost"/>
+        </LinearLayout>
+
     </LinearLayout>
 </ScrollView>

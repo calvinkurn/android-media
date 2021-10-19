@@ -23,17 +23,16 @@
             android:layout_gravity="left"
             android:contentDescription="null"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_N700"
             android:textSize="14sp"
-            android:textStyle="bold"
             android:gravity="center_vertical"
             android:layout_gravity="center_vertical"
             android:layout_weight="0.9"
-            android:layout_marginLeft="5dp"/>
+            android:layout_marginLeft="5dp" />
 
     </LinearLayout>
     <LinearLayout
@@ -46,13 +45,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/courier_unavailable_warning"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/info_shipping_unavailable"
             android:layout_marginLeft="5dp"
             android:visibility="gone"
+            app:typographyType="body_2"
             tools:visibility="visible"/>
 
         <LinearLayout
@@ -70,14 +70,13 @@
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/ic_settings_24dp"
                 android:contentDescription="@string/title_edit"/>
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="@dimen/dp_3"
                 android:text="@string/shop_shipping_additional_option"
                 android:textSize="16dp"
-                android:textStyle="bold"
                 android:textColor="@color/Unify_G700"/>
         </LinearLayout>
     </LinearLayout>

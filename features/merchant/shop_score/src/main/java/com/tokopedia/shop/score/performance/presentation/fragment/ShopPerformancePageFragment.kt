@@ -47,7 +47,7 @@ import com.tokopedia.shop.score.performance.presentation.viewmodel.ShopPerforman
 import com.tokopedia.shop.score.performance.presentation.widget.PenaltyDotBadge
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -79,7 +79,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         )
     }
 
-    private val binding: FragmentShopPerformanceBinding? by viewBinding()
+    private var binding by autoClearedNullable<FragmentShopPerformanceBinding>()
 
     private var shopScoreWrapperResponse: ShopScoreWrapperResponse? = null
     private var isNewSeller = false
@@ -112,7 +112,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_shop_performance, container, false)
+        binding = FragmentShopPerformanceBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -563,13 +564,14 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun showCoachMark() {
-        coachMark?.isDismissed = false
-
-        binding?.rvShopPerformance?.post {
-            if (getCoachMarkItems().value.isNotEmpty()) {
-                coachMark?.showCoachMark(getCoachMarkItems().value)
+        try {
+            binding?.rvShopPerformance?.post {
+                coachMark?.isDismissed = false
+                if (getCoachMarkItems().value.isNotEmpty()) {
+                    coachMark?.showCoachMark(getCoachMarkItems().value)
+                }
             }
-        }
+        } catch (ignored: Exception) {}
     }
 
     private fun getPositionLastItemCoachMark(): Int? {

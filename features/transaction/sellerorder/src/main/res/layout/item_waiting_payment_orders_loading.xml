@@ -10,7 +10,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/loader1"
-        android:layout_width="@dimen/dp_194"
+        android:layout_width="194dp"
         android:layout_height="10dp"
         app:corners="5"
         app:layout_constraintStart_toStartOf="parent"
@@ -18,7 +18,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/loader2"
-        android:layout_width="@dimen/dp_194"
+        android:layout_width="194dp"
         android:layout_height="10dp"
         android:layout_marginTop="12dp"
         app:corners="5"
@@ -36,7 +36,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/loader4"
-        android:layout_width="@dimen/dp_208"
+        android:layout_width="208dp"
         android:layout_height="10dp"
         android:layout_marginStart="@dimen/dp_13"
         android:layout_marginTop="@dimen/layout_lvl4"

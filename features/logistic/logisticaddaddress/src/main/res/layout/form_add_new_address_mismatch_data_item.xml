@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/edit_add_address_container_mismatch"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -94,7 +95,7 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_alamat_info_mismatch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -102,7 +103,7 @@
         android:paddingLeft="2dp"
         android:text="@string/min_5_char"
         android:textColor="@color/Unify_N700_68"
-        android:textSize="@dimen/sp_12" />
+        app:typographyType="body_3" />
 
     <LinearLayout
         android:id="@+id/ll_detail_alamat"
@@ -111,18 +112,19 @@
         android:layout_marginTop="24dp"
         android:orientation="vertical">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/detail_alamat"
             android:textColor="@color/Unify_N700_68"
-            android:textSize="@dimen/sp_12" />
+            app:typographyType="body_3" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_detail_alamat_mismatch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_N700_68"
+            app:typographyType="body_1"
             android:textSize="@dimen/sp_16" />
 
     </LinearLayout>
