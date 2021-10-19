@@ -34,7 +34,7 @@ import javax.inject.Inject
 open class RecomWidgetViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
-    private val getRecommendationUseCase: GetRecommendationUseCase,
+    private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
     private val addToCartUseCase: Lazy<AddToCartUseCase>,
     private val miniCartListSimplifiedUseCase: Lazy<GetMiniCartListSimplifiedUseCase>,
     private val updateCartUseCase: Lazy<UpdateCartUseCase>,
@@ -43,8 +43,8 @@ open class RecomWidgetViewModel @Inject constructor(
 
     private var getRecommendationJob: Job? = null
 
-    private val _getRecommendationLiveData = MutableLiveData<Result<RecommendationWidget>>()
-    val getRecommendationLiveData: LiveData<Result<RecommendationWidget>>
+    private val _getRecommendationLiveData = MutableLiveData<RecommendationWidget>()
+    val getRecommendationLiveData: LiveData<RecommendationWidget>
         get() = _getRecommendationLiveData
 
     private val _errorGetRecommendation = SingleLiveEvent<RecomErrorModel>()
@@ -92,7 +92,7 @@ open class RecomWidgetViewModel @Inject constructor(
     ) {
         if (isJobAvailable(getRecommendationJob) && isActive) {
             getRecommendationJob = viewModelScope.launchCatchError(block = {
-                val result = getRecommendationUseCase.getData(
+                val result = getRecommendationUseCase.get().getData(
                     GetRecommendationRequestParam(
                         pageNumber = pageNumber,
                         productIds = productIds,
@@ -102,14 +102,16 @@ open class RecomWidgetViewModel @Inject constructor(
                         xSource = xSource,
                         xDevice = xDevice,
                         keywords = keywords,
-                                isTokonow = isTokonow,
-                        ))
+                        isTokonow = isTokonow,
+                    ))
                 if (result.isNotEmpty()) {
                     val recomWidget = result[0]
                     if (isTokonow) {
                         mappingMiniCartDataToRecommendation(recomWidget)
                     }
-                    _getRecommendationLiveData.postValue(recomWidget.asSuccess())
+                    _getRecommendationLiveData.postValue(recomWidget)
+                } else {
+                    _errorGetRecommendation.postValue(RecomErrorModel(pageName = pageName))
                 }
             }) {
                 _errorGetRecommendation.postValue(
@@ -165,19 +167,19 @@ open class RecomWidgetViewModel @Inject constructor(
             _atcRecomTokonowNonLogin.value = recomItem
         } else {
             if (recomItem.quantity == quantity) return
-            val miniCartItem = miniCartData.value?.get(recomItem.productId.toString())
             if (quantity == 0) {
-                deleteRecomItemFromCart(recomItem, miniCartItem)
+                deleteRecomItemFromCart(recomItem)
             } else if (recomItem.quantity == 0) {
                 atcRecomNonVariant(recomItem, quantity)
             } else {
-                updateRecomCartNonVariant(recomItem, quantity, miniCartItem)
+                updateRecomCartNonVariant(recomItem, quantity)
             }
         }
     }
 
-    fun deleteRecomItemFromCart(recomItem: RecommendationItem, miniCartItem: MiniCartItem?) {
+    private fun deleteRecomItemFromCart(recomItem: RecommendationItem) {
         launchCatchError(block = {
+            val miniCartItem = miniCartData.value?.get(recomItem.productId.toString())
             miniCartItem?.let {
                 deleteCartUseCase.get().setParams(listOf(miniCartItem.cartId))
                 val result = deleteCartUseCase.get().executeOnBackground()
@@ -199,7 +201,7 @@ open class RecomWidgetViewModel @Inject constructor(
         }
     }
 
-    fun atcRecomNonVariant(recomItem: RecommendationItem, quantity: Int) {
+    private fun atcRecomNonVariant(recomItem: RecommendationItem, quantity: Int) {
         launchCatchError(block = {
             val atcParam = AddToCartRequestParams(
                 productId = recomItem.productId,
@@ -230,12 +232,12 @@ open class RecomWidgetViewModel @Inject constructor(
         }
     }
 
-    fun updateRecomCartNonVariant(
+    private fun updateRecomCartNonVariant(
         recomItem: RecommendationItem,
-        quantity: Int,
-        miniCartItem: MiniCartItem?
+        quantity: Int
     ) {
         launchCatchError(block = {
+            val miniCartItem = miniCartData.value?.get(recomItem.productId.toString())
             miniCartItem?.let {
                 val copyOfMiniCartItem =
                     UpdateCartRequest(cartId = it.cartId, quantity = quantity, notes = it.notes)

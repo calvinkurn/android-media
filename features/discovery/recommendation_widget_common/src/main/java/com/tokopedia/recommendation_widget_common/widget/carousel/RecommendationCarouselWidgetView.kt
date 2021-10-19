@@ -507,24 +507,19 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         lifecycleOwner?.let { owner ->
             viewModel?.getRecommendationLiveData?.observe(owner, Observer {
                 widgetMetadata.isForceRefresh = false
-                it.doSuccessOrFail({ recom ->
-                    if (recom.data.pageName == widgetMetadata.pageName) {
-                        if (recom.data.recommendationItemList.isNotEmpty()) {
-                            bindWidgetWithData(
-                                RecommendationCarouselData(
-                                    recommendationData = recom.data,
-                                    state = STATE_READY,
-                                    isUsingWidgetViewModel = true
-                                )
+                if (it.pageName == widgetMetadata.pageName) {
+                    if (it.recommendationItemList.isNotEmpty()) {
+                        bindWidgetWithData(
+                            RecommendationCarouselData(
+                                recommendationData = it,
+                                state = STATE_READY,
+                                isUsingWidgetViewModel = true
                             )
-                        } else {
-                            basicListener?.onChannelWidgetEmpty()
-                        }
+                        )
+                    } else {
+                        basicListener?.onChannelWidgetEmpty()
                     }
-                }, { throwable ->
-                    basicListener?.onWidgetFail(pageName = widgetMetadata.pageName, e = throwable)
-
-                })
+                }
             })
 
             viewModel?.errorGetRecommendation?.observe(owner, {
