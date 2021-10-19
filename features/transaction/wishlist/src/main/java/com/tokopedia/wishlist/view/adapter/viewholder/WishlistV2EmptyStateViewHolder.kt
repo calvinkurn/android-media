@@ -19,7 +19,7 @@ class WishlistV2EmptyStateViewHolder(private val binding: WishlistV2EmptyStateBi
     private val items = ArrayList<Any>().apply {
         add(WishlistV2EmptyStateData(R.string.empty_state_img_1, R.string.empty_state_desc_1))
         add(WishlistV2EmptyStateData(R.string.empty_state_img_2, R.string.empty_state_desc_2))
-        add(WishlistV2EmptyStateData(R.string.empty_state_img_2, R.string.empty_state_desc_3))
+        add(WishlistV2EmptyStateData(R.string.empty_state_img_3, R.string.empty_state_desc_3))
 
     }
 

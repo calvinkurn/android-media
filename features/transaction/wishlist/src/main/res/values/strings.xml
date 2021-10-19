@@ -14,4 +14,8 @@
     <string name="empty_state_img_1">https://images.tokopedia.net/img/android/wishlist_v2/wishlist_v2_empty_state_1.png</string>
     <string name="empty_state_img_2">https://images.tokopedia.net/img/android/wishlist_v2/wishlist_v2_empty_state_2.png</string>
     <string name="empty_state_img_3">https://images.tokopedia.net/img/android/wishlist_v2/wishlist_v2_empty_state_3.png</string>
+    <string name="empty_state_img_not_found">https://images.tokopedia.net/img/android/wishlist_v2/wishlist_v2_empty_state_not_found.png</string>
+    <string name="empty_state_not_found_button">Cari di Tokopedia</string>
+    <string name="empty_state_not_found_title">Oops, barang itu nggak ada di Wishlist-mu</string>
+    <string name="empty_state_not_found_description">Mau coba cari %1$s di Tokopedia?</string>
 </resources>

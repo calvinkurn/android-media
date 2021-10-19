@@ -48,6 +48,7 @@ import com.tokopedia.wishlist.databinding.FragmentWishlistBinding
 import com.tokopedia.wishlist.di.DaggerWishlistV2Component
 import com.tokopedia.wishlist.di.WishlistV2Module
 import com.tokopedia.wishlist.util.WishlistUtils
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_NOT_FOUND
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_STATE
 import com.tokopedia.wishlist.util.WishlistV2LayoutPreference
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
@@ -422,6 +423,11 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             e.printStackTrace()
             false
         }
+    private fun onWishlistSearchNotFound(keyword: String) {
+        val listItem = arrayListOf<WishlistV2TypeLayoutData>().apply {
+            add(WishlistV2TypeLayoutData(keyword, TYPE_EMPTY_NOT_FOUND))
+        }
+        wishlistV2Adapter.addList(listItem)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
