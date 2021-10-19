@@ -197,10 +197,38 @@ public class RouteManager {
 
     public static Fragment instantiateFragmentDF(@NonNull AppCompatActivity activity, @NonNull String classPathName, @Nullable Bundle extras) {
         boolean isFragmentInstalled = FragmentDFMapper.checkIfFragmentIsInstalled(activity, classPathName);
+        Fragment destinationFragment;
         if (isFragmentInstalled) {
-            return instantiateFragment(activity, classPathName, extras);
+            destinationFragment = instantiateFragment(activity, classPathName, extras);
         } else {
-            return FragmentDFMapper.getFragmentDFDownloader(activity, classPathName, extras);
+            destinationFragment = FragmentDFMapper.getFragmentDFDownloader(activity, classPathName, extras);
+        }
+        if( destinationFragment == null){
+            logErrorGetFragmentDF(activity, classPathName);
+        }
+        return destinationFragment;
+    }
+
+    private static void logErrorGetFragmentDF(AppCompatActivity activity, String classPathName) {
+        try {
+            String sourceClass;
+            sourceClass = activity.getClass().getCanonicalName();
+            FragmentDFPattern fragmentDFPattern = FragmentDFMapper.getMatchedFragmentDFPattern(classPathName);
+            String moduleName;
+            if (fragmentDFPattern != null) {
+                moduleName = fragmentDFPattern.getModuleId();
+            } else {
+                moduleName = "module name not found";
+            }
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "Router Fragment: Fragment Null");
+            messageMap.put("source", sourceClass);
+            messageMap.put("class_path_name", classPathName);
+            messageMap.put("journey", UserJourney.INSTANCE.getReadableJourneyActivity(5));
+            messageMap.put("mod_name", moduleName);
+            ServerLogger.log(Priority.P1, "DFM_FRAGMENT_ERROR", messageMap);
+        } catch (Exception e) {
+            Timber.e(e);
         }
     }
 

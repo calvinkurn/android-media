@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="12dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginBottom="4dp"
+    app:card_type="border">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/icSomProductBundling"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/waiting_order_recycler_margin_top"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_som_product_bundling" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvSomBundleName"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/waiting_order_recycler_margin_top"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintBottom_toBottomOf="@+id/icSomProductBundling"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/icSomProductBundling"
+            app:layout_constraintTop_toTopOf="@+id/icSomProductBundling"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:text="Paket Tahun Baru" />
+
+        <View
+            android:id="@+id/horLineSomBundle1"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/waiting_order_recycler_margin_top"
+            android:background="@color/Unify_NN50"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/icSomProductBundling" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSomProductBundling"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@+id/horLineSomBundle1"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_waiting_payment_order" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>
