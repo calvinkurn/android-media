@@ -6,6 +6,8 @@ import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.adapter.model.*
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey.THANK_STACKED_CASHBACK_TITLE
+import com.tokopedia.thankyou_native.domain.model.BundleGroupItem
+import com.tokopedia.thankyou_native.domain.model.PurchaseItem
 
 class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
 
@@ -142,14 +144,45 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         if (thanksPageData.shopOrder.isNotEmpty())
             visitableList.add(PurchasedProductTag())
         var currentIndex = 0
+        val bundleToProductMap = mutableMapOf<String, ArrayList<OrderedItem>>()
+        var bundleMap: MutableMap<String, BundleGroupItem>
         thanksPageData.shopOrder.forEach { shopOrder ->
+
             if (currentIndex > 0)
                 visitableList.add(ShopDivider())
             val orderedItemList = arrayListOf<OrderedItem>()
             var totalProductProtectionForShop = 0.0
+
+            bundleMap = shopOrder.bundleGroupList.associateBy({it.groupId}, {it}).toMutableMap()
+
             shopOrder.purchaseItemList.forEach { purchasedItem ->
-                orderedItemList.add(OrderedItem(purchasedItem.productName, purchasedItem.quantity,
-                        purchasedItem.priceStr, purchasedItem.totalPriceStr, purchasedItem.isBBIProduct))
+                val bundleGroupId = purchasedItem.bundleGroupId
+                if (bundleGroupId.isNotEmpty()) {
+                    if (bundleToProductMap.containsKey(bundleGroupId))
+                        bundleToProductMap[bundleGroupId]?.add(createOrderItem(purchasedItem))
+                     else bundleToProductMap[bundleGroupId] = arrayListOf(createOrderItem(purchasedItem))
+                }
+            }
+
+            shopOrder.purchaseItemList.forEach { purchasedItem ->
+                val bundleGroupId = purchasedItem.bundleGroupId
+                if (bundleGroupId.isEmpty())
+                    orderedItemList.add(createOrderItem(purchasedItem, OrderItemType.SINGLE_PRODUCT))
+                else {
+                    if (bundleToProductMap.containsKey(bundleGroupId)) {
+                        // add bundle data name
+                        orderedItemList.add(OrderedItem(
+                            bundleMap[bundleGroupId]?.bundleTitle ?: "",
+                            null,
+                            bundleMap[bundleGroupId]?.totalPrice?.toString() ?: "",
+                            bundleMap[bundleGroupId]?.totalPriceStr ?: "",
+                            false, OrderItemType.BUNDLE)
+                        )
+                        orderedItemList.addAll(bundleToProductMap[bundleGroupId]?: arrayListOf())
+                        bundleToProductMap.remove(bundleGroupId)
+                    }
+                }
+
                 totalProductProtectionForShop += purchasedItem.productPlanProtection
             }
 
@@ -186,8 +219,14 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                     shopOrder.address)
             visitableList.add(shopInvoice)
             currentIndex++
+
+            bundleToProductMap.clear()
+            bundleMap.clear()
         }
     }
+
+    private fun createOrderItem(purchasedItem: PurchaseItem, orderItemType: OrderItemType = OrderItemType.BUNDLE_PRODUCT) = OrderedItem(purchasedItem.productName, purchasedItem.quantity,
+        purchasedItem.priceStr, purchasedItem.totalPriceStr, purchasedItem.isBBIProduct, orderItemType)
 
 }
 
