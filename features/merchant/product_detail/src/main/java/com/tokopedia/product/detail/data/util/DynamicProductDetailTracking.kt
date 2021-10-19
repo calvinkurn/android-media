@@ -357,11 +357,13 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Tracking.KEY_LABEL, if (actionButton == ProductDetailCommonConstant.ATC_BUTTON) "" else "fitur : $generateButtonActionString",
                     ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productId,
                     ProductTrackingConstant.Tracking.KEY_LAYOUT, "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};",
-                    ProductTrackingConstant.Tracking.KEY_USER_ID, userId,
+                    ProductTrackingConstant.Tracking.KEY_HIT_USER_ID, userId,
                     ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER, shopId,
                     ProductTrackingConstant.Tracking.KEY_SHOP_TYPE, shopType,
                     ProductTrackingConstant.Tracking.KEY_ISLOGGIN, (userId.isNotEmpty()).toString(),
-
+                    ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
+                    ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.CURRENT_SITE,
+                    ProductTrackingConstant.Tracking.KEY_COMPONENT, "",
                     ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.CURRENCY_CODE, ProductTrackingConstant.Tracking.CURRENCY_DEFAULT_VALUE,
                     ProductTrackingConstant.Tracking.KEY_ADD, DataLayer.mapOf(
@@ -374,6 +376,10 @@ object DynamicProductDetailTracking {
                             ProductTrackingConstant.Tracking.CATEGORY, categoryName,
                             ProductTrackingConstant.Tracking.VARIANT, variantString,
                             ProductTrackingConstant.Tracking.QUANTITY, quantity,
+                            ProductTrackingConstant.Tracking.KEY_PRODUCT_CATEGORY_ID, categoryId,
+                            ProductTrackingConstant.Tracking.KEY_PRODUCT_SHOP_ID, shopId,
+                            ProductTrackingConstant.Tracking.KEY_PRODUCT_SHOP_NAME, shopName,
+                            ProductTrackingConstant.Tracking.KEY_PRODUCT_SHOP_TYPE, shopType,
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_10, dimension10.toString(),
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_12, dimension12,
                             ProductTrackingConstant.Tracking.KEY_DIMENSION_14, dimension14,
@@ -1482,9 +1488,10 @@ object DynamicProductDetailTracking {
                                         buyerDistrictId: String, sellerDistrictId: String ->
 
             val dimension10 = productInfo?.data?.isCod ?: false
-            val dimension12 = ratesEstimateData?.cheapestShippingPrice?.toString() ?: ""
+            val dimension12 = ratesEstimateData?.cheapestShippingPrice?.toLong()?.toString() ?: ""
             val dimension14 = ratesEstimateData?.title ?: ""
             val dimension16 = ratesEstimateData?.etaText ?: ""
+            val dimension53 = productInfo?.data?.campaign?.discountedPrice?.toLong()?.toString() ?: ""
             val dimension55 = TrackingUtil.getTradeInString(isTradeIn, isDiagnosed)
             val dimension83 = TrackingUtil.getBoTypeString(boType)
             val dimension54 = TrackingUtil.getMultiOriginAttribution(multiOrigin)
@@ -1508,6 +1515,7 @@ object DynamicProductDetailTracking {
                     dimension14 = dimension14,
                     dimension16 = dimension16,
                     dimension38 = dimension38,
+                    dimension53 = dimension53,
                     dimension55 = dimension55,
                     dimension54 = dimension54,
                     dimension83 = dimension83,
@@ -1585,17 +1593,18 @@ object DynamicProductDetailTracking {
                             categoryIdLevel3,
                             categoryNameLevel1,
                             irisSessionId,
-                            null,
+                            ProductTrackingConstant.Tracking.CURRENT_SITE,
                             ProductDetailViewsBundler.KEY,
                             "product page",
                             "view product page",
                             label,
-                            null,
+                            ProductTrackingConstant.Tracking.BUSINESS_UNIT,
                             null,
                             productInfo?.isProductVariant().toString(),
                             productInfo?.data?.campaign?.campaignID,
                             "product status:${productInfo?.basic?.status?.toLowerCase()};" + "shop status:${shopInfo?.statusInfo?.shopStatus};",
-                            productInfo?.getFinalStock()
+                            productInfo?.getFinalStock(),
+                            trackerAttribution ?: ProductTrackingConstant.Tracking.DEFAULT_VALUE
                     )
         }
 

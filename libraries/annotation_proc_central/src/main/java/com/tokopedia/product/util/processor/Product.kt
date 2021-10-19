@@ -33,6 +33,7 @@ object ProductTrackingConstant {
         const val KEY_DIMENSION_14 = "dimension14"
         const val KEY_DIMENSION_16 = "dimension16"
         const val KEY_DIMENSION_38 = "dimension38"
+        const val KEY_DIMENSION_53 = "dimension53"
         const val KEY_DIMENSION_54 = "dimension54"
         const val KEY_DIMENSION_55 = "dimension55"
         const val KEY_DIMENSION_81 = "dimension81"
@@ -78,7 +79,6 @@ data class Product(
         @DefaultValueString("IDR")
         @Key(Param.CURRENCY)
         val currency: String?,
-        @DefaultValueString(ProductTrackingConstant.Tracking.DEFAULT_VALUE)
         @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_10)
         val dimension10: String,
         @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_12)
@@ -87,8 +87,11 @@ data class Product(
         val dimension14: String,
         @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_16)
         val dimension16: String,
+        @DefaultValueString(ProductTrackingConstant.Tracking.DEFAULT_VALUE)
         @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_38)
         val dimension38: String,
+        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_53)
+        val dimension53: String,
         @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_55)
         val dimension55: String,
         @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_54)
