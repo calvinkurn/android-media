@@ -64,7 +64,6 @@
                 android:textSize="@dimen/sp_16"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:maxEms="12"
                 app:layout_constraintBottom_toTopOf="@+id/banner_description"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
