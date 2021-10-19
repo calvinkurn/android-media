@@ -30,7 +30,8 @@ class CMInAppController(private val listenerOnNewInApp: OnNewInAppDataStoreListe
                     }
                     val isStored = putDataToStore(updatedCMInApp)
                     launch(Dispatchers.Main) {
-                        if (isStored) listenerOnNewInApp.onNewInAppDataStored()
+                        if (isStored && cmInApp.isAmplification)
+                            listenerOnNewInApp.onNewInAppDataStored()
                     }
                 }, onError = {
             val messageMap: MutableMap<String, String> = HashMap()
