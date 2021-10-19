@@ -67,6 +67,7 @@ object ProductDetailConstant {
     const val VARIANT = "variant"
     const val PDP_3 = "pdp_3"
     const val PDP_7 = "pdp_7"
+    const val SHOPADS_CAROUSEL = "shopads_carousel"
     const val PRODUCT_VARIANT_INFO = "variant"
     const val PRODUCT_WHOLESALE_INFO = "wholesale"
     const val PRODUCT_SHOP_CREDIBILITY = "shop_credibility"
@@ -90,7 +91,6 @@ object ProductDetailConstant {
     const val BEST_SELLER = "best_seller"
     const val STOCK_ASSURANCE = "stock_assurance"
     const val ONE_LINERS = "one_liners"
-    const val TOPADS_HEADLINE = "topads_headline"
 
     //Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
