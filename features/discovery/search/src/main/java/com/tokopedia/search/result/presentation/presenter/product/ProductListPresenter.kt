@@ -19,6 +19,13 @@ import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.GET
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_FIRST_PAGE_USE_CASE
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_LOAD_MORE_USE_CASE
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_GET_LAST_FILTER_WIDGET
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_GLOBAL_NAV
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_HEADLINE_ADS
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_PRODUCT_ADS
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartParams
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartResult
@@ -425,15 +432,20 @@ class ProductListPresenter @Inject constructor(
 
     private fun createSearchProductRequestParams(requestParams: RequestParams): RequestParams {
         val isLocalSearch: Boolean = isLocalSearch()
-        val isSkipGlobalNavWidget = isLocalSearch || view.isAnyFilterActive || view.isAnySortActive
+        val hasFilter = view.isAnyFilterActive
+        val hasSort = view.isAnySortActive
+        val isSkipGlobalNavWidget = isLocalSearch || hasFilter || hasSort
+        val isSkipGetLastFilterWidget = hasFilter || hasSort
 
         return RequestParams.create().apply {
-            putObject(SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS, requestParams.parameters)
-            putBoolean(SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_PRODUCT_ADS, isLocalSearch)
-            putBoolean(SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_HEADLINE_ADS, isLocalSearch)
-            putBoolean(SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL, isLocalSearch)
-            putBoolean(SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET, isLocalSearch)
-            putBoolean(SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_GLOBAL_NAV, isSkipGlobalNavWidget)
+            putObject(SEARCH_PRODUCT_PARAMS, requestParams.parameters)
+
+            putBoolean(SEARCH_PRODUCT_SKIP_PRODUCT_ADS, isLocalSearch)
+            putBoolean(SEARCH_PRODUCT_SKIP_HEADLINE_ADS, isLocalSearch)
+            putBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL, isLocalSearch)
+            putBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET, isLocalSearch)
+            putBoolean(SEARCH_PRODUCT_SKIP_GLOBAL_NAV, isSkipGlobalNavWidget)
+            putBoolean(SEARCH_PRODUCT_SKIP_GET_LAST_FILTER_WIDGET, isSkipGetLastFilterWidget)
         }
     }
 

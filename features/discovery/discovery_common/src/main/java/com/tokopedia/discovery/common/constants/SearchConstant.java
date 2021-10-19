@@ -91,6 +91,7 @@ public interface SearchConstant {
         String SEARCH_PRODUCT_SKIP_GLOBAL_NAV = "skip_global_nav";
         String SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL = "skip_inspiration_carousel";
         String SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET = "skip_inspiration_widget";
+        String SEARCH_PRODUCT_SKIP_GET_LAST_FILTER_WIDGET = "skip_last_filter";
     }
 
     interface HeadlineAds {

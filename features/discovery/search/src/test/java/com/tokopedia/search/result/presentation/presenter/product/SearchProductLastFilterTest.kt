@@ -3,8 +3,7 @@ package com.tokopedia.search.result.presentation.presenter.product
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.SaveLastFilter.INPUT_PARAMS
-import com.tokopedia.filter.common.data.Filter
-import com.tokopedia.filter.common.data.Option
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_GET_LAST_FILTER_WIDGET
 import com.tokopedia.filter.common.data.SavedOption
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
@@ -119,9 +118,10 @@ internal class SearchProductLastFilterTest: ProductListPresenterTestFixtures() {
 
     private fun `Given search product will return search product model`(
         searchProductModel: SearchProductModel,
+        requestParamsSlot: CapturingSlot<RequestParams> = slot(),
     ) {
         every {
-            searchProductFirstPageUseCase.execute(any(), any())
+            searchProductFirstPageUseCase.execute(capture(requestParamsSlot), any())
         } answers {
             secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
         }
@@ -159,6 +159,50 @@ internal class SearchProductLastFilterTest: ProductListPresenterTestFixtures() {
 
         val allOptionNameMatchers = lastFilter.data.filters.map { containsString(it.name) }
         assertThat(lastFilterDataView.optionNames(), allOf(allOptionNameMatchers))
+    }
+
+    @Test
+    fun `do not get last filter from API if view has active filter`() {
+        val requestParamsSlot = slot<RequestParams>()
+
+        `Given search product will return search product model`(
+            SearchProductModel(),
+            requestParamsSlot
+        )
+        `Given view has active filter`()
+
+        `When load data`()
+
+        `Then assert request params will skip get last filter`(requestParamsSlot.captured)
+    }
+
+    private fun `Given view has active filter`() {
+        every { productListView.isAnyFilterActive } returns true
+    }
+
+    private fun `Then assert request params will skip get last filter`(requestParams: RequestParams) {
+        val isSkipGetLastFilter = requestParams.parameters[SEARCH_PRODUCT_SKIP_GET_LAST_FILTER_WIDGET]
+
+        assertThat(isSkipGetLastFilter, `is`(true))
+    }
+
+    @Test
+    fun `do not get last filter from API if view has active sort`() {
+        val requestParamsSlot = slot<RequestParams>()
+
+        `Given search product will return search product model`(
+            SearchProductModel(),
+            requestParamsSlot
+        )
+        `Given view has active sort`()
+
+        `When load data`()
+
+        `Then assert request params will skip get last filter`(requestParamsSlot.captured)
+    }
+
+    private fun `Given view has active sort`() {
+        every { productListView.isAnySortActive } returns true
     }
 
     @Test

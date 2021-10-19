@@ -65,7 +65,7 @@ class SearchProductFirstPageGqlUseCase(
             addGlobalNavRequest(requestParams, query, params)
             addInspirationCarouselRequest(requestParams, params)
             addInspirationWidgetRequest(requestParams, params)
-            addGetLastFilterRequest(params)
+            addGetLastFilterRequest(requestParams, params)
         }
 
         graphqlUseCase.clearRequest()
@@ -138,8 +138,12 @@ class SearchProductFirstPageGqlUseCase(
                     mapOf(GQL.KEY_PARAMS to params)
             )
 
-    private fun MutableList<GraphqlRequest>.addGetLastFilterRequest(params: String) {
-        add(createGetLastFilterRequest(params = params))
+    private fun MutableList<GraphqlRequest>.addGetLastFilterRequest(
+        requestParams: RequestParams,
+        params: String,
+    ) {
+        if (!requestParams.isSkipGetLastFilterWidget())
+            add(createGetLastFilterRequest(params = params))
     }
 
     @GqlQuery("GetLastFilter", GET_LAST_FILTER_GQL_QUERY)
