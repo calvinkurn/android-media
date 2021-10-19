@@ -15,8 +15,7 @@ import com.tokopedia.tokopedianow.categorylist.analytic.CategoryListAnalytics
 import com.tokopedia.tokopedianow.categorylist.presentation.uimodel.CategoryListChildUiModel
 import com.tokopedia.tokopedianow.categorylist.presentation.uimodel.CategoryListChildUiModel.CategoryType
 import com.tokopedia.tokopedianow.categorylist.presentation.uimodel.CategoryListItemUiModel
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryListBinding
 
 class CategoryListView : LinearLayout {
 
@@ -53,10 +52,7 @@ class CategoryListView : LinearLayout {
     }
 
     private fun createCategoryItemView(categoryLevel1: CategoryListItemUiModel, categoryL2: CategoryListChildUiModel): View {
-        return LayoutInflater.from(context).inflate(R.layout.item_tokopedianow_category_list, this, false).apply {
-            val textTitle = findViewById<Typography>(R.id.textTitle)
-            val imageCategory = findViewById<ImageUnify>(R.id.imageCategory)
-
+        val binding = ItemTokopedianowCategoryListBinding.inflate(LayoutInflater.from(context), this, false).apply {
             textTitle.text = categoryL2.name
             textTitle.setWeight(categoryL2.textWeight)
             textTitle.setTextColor(ContextCompat.getColor(context, categoryL2.textColorId))
@@ -72,13 +68,12 @@ class CategoryListView : LinearLayout {
                 listener.onClickCategoryItem()
             }
         }
+        return binding.root
     }
 
     private fun createCategoryTextView(categoryLevel1: CategoryListItemUiModel, categoryL2: CategoryListChildUiModel): View {
-        return LayoutInflater.from(context).inflate(R.layout.item_tokopedianow_category_list, this, false).apply {
-            val textTitle = findViewById<Typography>(R.id.textTitle)
-            val verticalMargin = context.resources.getDimensionPixelSize(
-                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+        val binding = ItemTokopedianowCategoryListBinding.inflate(LayoutInflater.from(context), this, false).apply {
+            val verticalMargin = context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
 
             textTitle.text = context.getString(R.string.tokopedianow_all_category_text_format, categoryL2.name)
             textTitle.setWeight(categoryL2.textWeight)
@@ -92,6 +87,7 @@ class CategoryListView : LinearLayout {
 
             setMargin(0, verticalMargin, 0, verticalMargin)
         }
+        return binding.root
     }
 
     interface CategoryListListener {

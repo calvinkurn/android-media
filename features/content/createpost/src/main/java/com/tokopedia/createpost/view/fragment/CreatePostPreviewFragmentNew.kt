@@ -124,7 +124,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         productAdapter.removeEmpty()
         createPostModel.maxProduct = 5
         val pos = "(${getLatestTotalProductCount()}/${createPostModel.maxProduct})"
-        image_position_text.text = String.format(
+        image_position_text?.text = String.format(
             requireContext().getString(R.string.feed_content_position_text),
             pos
         )
@@ -542,10 +542,15 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         removeExtraTagListElement(mediaModel)
 
         val pos = "(${getLatestTotalProductCount()}/${createPostModel.maxProduct})"
-        image_position_text.text = String.format(
-            requireContext().getString(R.string.feed_content_position_text),
-            pos
-        )
+
+        try {
+            image_position_text?.text = String.format(
+                    requireContext().getString(R.string.feed_content_position_text),
+                    pos
+            )
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
 
         if (getLatestTotalProductCount() == 5)
             disableProductIcon()
