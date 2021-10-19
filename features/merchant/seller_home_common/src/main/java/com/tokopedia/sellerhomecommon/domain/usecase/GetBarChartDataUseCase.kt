@@ -29,7 +29,7 @@ class GetBarChartDataUseCase(
 
     override suspend fun executeOnBackground(): List<BarChartDataUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, GetBarChartDataResponse::class.java, params.parameters)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val errors = gqlResponse.getError(GetBarChartDataResponse::class.java)
         if (errors.isNullOrEmpty()) {

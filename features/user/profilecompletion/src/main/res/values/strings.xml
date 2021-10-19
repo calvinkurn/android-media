@@ -29,6 +29,7 @@
 
     <!-- PROFILE COMPLETION -->
     <string name="title_profile_completion">Lengkapi Profil</string>
+    <string name="user_id_label">User ID: %1$s</string>
 
     <!-- SETTING PROFILE -->
     <string name="title_setting_profile">Data Diri</string>

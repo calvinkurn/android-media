@@ -5,9 +5,11 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachcommon.data.ResultProduct
+import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ReplyChatViewModel
-import com.tokopedia.chat_common.data.preview.ProductPreview
+import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -42,7 +44,6 @@ import io.mockk.mockkObject
 import io.mockk.spyk
 import okhttp3.Interceptor
 import okhttp3.WebSocket
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import rx.subjects.PublishSubject
@@ -71,9 +72,6 @@ abstract class BaseTopChatRoomPresenterTest {
 
     @RelaxedMockK
     protected lateinit var replyChatUseCase: ReplyChatUseCase
-
-    @RelaxedMockK
-    protected lateinit var getExistingMessageIdUseCase: GetExistingMessageIdUseCase
 
     @RelaxedMockK
     protected lateinit var getShopFollowingUseCase: GetShopFollowingUseCase
@@ -241,13 +239,16 @@ abstract class BaseTopChatRoomPresenterTest {
             )
         }
 
-        val imageUploadViewModel = ImageUploadViewModel(
-            exMessageId,
-            "123123",
-            "123987",
-            "https://ecs.tokopedia.com/image.jpg",
-            "123"
-        )
+        val imageUploadViewModel = ImageUploadViewModel.Builder()
+            .withMsgId(exMessageId)
+            .withFromUid("123123")
+            .withAttachmentId("123987")
+            .withAttachmentType(AttachmentType.Companion.TYPE_IMAGE_UPLOAD)
+            .withReplyTime(SendableViewModel.SENDING_TEXT)
+            .withStartTime("123")
+            .withIsDummy(true)
+            .withImageUrl("https://ecs.tokopedia.com/image.jpg")
+            .build()
 
         val readParam = TopChatWebSocketParam.generateParamRead(exMessageId)
         val replyChatViewModelApiSuccess = generateReplyChatViewModelApi()
@@ -272,7 +273,6 @@ abstract class BaseTopChatRoomPresenterTest {
                 topChatRoomWebSocketMessageMapper,
                 getTemplateChatRoomUseCase,
                 replyChatUseCase,
-                getExistingMessageIdUseCase,
                 getShopFollowingUseCase,
                 toggleFavouriteShopUseCase,
                 addToCartUseCase,

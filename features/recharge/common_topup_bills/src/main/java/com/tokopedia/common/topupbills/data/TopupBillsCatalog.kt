@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 class TopupBillsCatalog(
         @SerializedName("id")
         @Expose
-        val id: Int = 0,
+        val id: String = "",
         @SerializedName("name")
         @Expose
         val name: String = "",

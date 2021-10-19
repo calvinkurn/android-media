@@ -154,6 +154,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private var incentiveHelper = ""
     private var isReviewIncomplete = false
     private var thankYouBottomSheetText = ""
+    private var imagesFedIntoPicker = arrayListOf<String>()
+    private var thankYouBottomSheetImage = ""
 
     override fun stopPreparePerfomancePageMonitoring() {
         reviewPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
@@ -400,10 +402,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     override fun onAddImageClick() {
         clearFocusAndHideSoftInput(view)
+        imagesFedIntoPicker = createReviewViewModel.getSelectedImagesUrl()
         context?.let {
             val builder = ImagePickerBuilder.getSquareImageBuilder(it)
                 .withSimpleEditor()
-                .withSimpleMultipleSelection(initialImagePathList = createReviewViewModel.getSelectedImagesUrl())
+                .withSimpleMultipleSelection(initialImagePathList = imagesFedIntoPicker)
                 .apply {
                     title = getString(R.string.image_picker_title)
                 }
@@ -496,7 +499,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val result = ImagePickerResultExtractor.extract(data)
                     val selectedImage = result.imageUrlOrPathList
-                    val imagesFedIntoPicker = result.imagesFedIntoPicker
                     createReviewViewModel.clearImageData()
 
                     CreateReviewTracking.reviewOnImageUploadTracker(
@@ -677,6 +679,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         }
         data?.productrevIncentiveOvo?.let {
             thankYouBottomSheetText = it.bottomSheetText
+            thankYouBottomSheetImage = it.thankYouImage
             it.ticker.let {
                 ovoPointsTicker?.apply {
                     visibility = View.VISIBLE
@@ -727,7 +730,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     data,
                     this@CreateReviewFragment,
                     getThankYouFormTrackerData(),
-                    thankYouBottomSheetText
+                    thankYouBottomSheetText,
+                    thankYouBottomSheetImage
                 )
             }
         }

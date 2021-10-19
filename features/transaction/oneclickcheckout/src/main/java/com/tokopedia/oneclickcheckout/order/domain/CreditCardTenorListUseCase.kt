@@ -18,7 +18,7 @@ class CreditCardTenorListUseCase @Inject constructor(@ApplicationContext private
 
     suspend fun executeSuspend(param: CreditCardTenorListRequest): CreditCardTenorListData {
         val request = GraphqlRequest(QUERY, CreditCardTenorListResponse::class.java, generateParam(param))
-        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<CreditCardTenorListResponse>()
+        val response = graphqlRepository.response(listOf(request)).getSuccessData<CreditCardTenorListResponse>()
         return mapCreditCardTenorListData(response.ccTenorList)
     }
 

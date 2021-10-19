@@ -34,7 +34,7 @@ object StatisticTracker {
     }
 
     fun sendCardImpressionEvent(model: CardWidgetUiModel, position: Int) {
-        val state = model.data?.state.orEmpty()
+        val state = model.data?.state?.name.orEmpty()
         val cardValue = model.data?.value ?: "0"
 
         val eventMap = TrackingHelper.createMap(
@@ -51,7 +51,7 @@ object StatisticTracker {
     }
 
     fun sendClickCardEvent(model: CardWidgetUiModel) {
-        val state = model.data?.state.orEmpty()
+        val state = model.data?.state?.name.orEmpty()
         val cardValue = model.data?.value ?: "0"
 
         val map = TrackingHelper.createMap(

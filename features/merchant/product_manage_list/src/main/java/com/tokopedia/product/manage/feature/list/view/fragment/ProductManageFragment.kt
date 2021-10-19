@@ -1476,7 +1476,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         if (product.hasStockReserved) {
             context?.run {
                 startActivityForResult(
-                        CampaignStockActivity.createIntent(this, userSession.shopId, arrayOf(product.id)),
+                        CampaignStockActivity.createIntent(this, userSession.shopId, arrayOf(product.id), product.isProductBundling),
                         REQUEST_CODE_CAMPAIGN_STOCK)
             }
         } else {
@@ -1487,7 +1487,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     override fun onClickEditVariantPriceButton(product: ProductUiModel) {
-        val editVariantBottomSheet = QuickEditVariantPriceBottomSheet.createInstance(product.id) { result ->
+        val editVariantBottomSheet = QuickEditVariantPriceBottomSheet.createInstance(product.id, product.isProductBundling) { result ->
             viewModel.editVariantsPrice(result)
         }
         editVariantBottomSheet.show(childFragmentManager, QuickEditVariantPriceBottomSheet.TAG)
@@ -1502,7 +1502,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                         REQUEST_CODE_CAMPAIGN_STOCK)
             }
         } else {
-            val editVariantStockBottomSheet = QuickEditVariantStockBottomSheet.createInstance(product.id, ::onClickCampaignInfo) { result ->
+            val editVariantStockBottomSheet = QuickEditVariantStockBottomSheet.createInstance(product.id, product.isProductBundling, ::onClickCampaignInfo) { result ->
                 viewModel.editVariantsStock(result)
             }
             editVariantStockBottomSheet.show(childFragmentManager, QuickEditVariantStockBottomSheet.TAG)

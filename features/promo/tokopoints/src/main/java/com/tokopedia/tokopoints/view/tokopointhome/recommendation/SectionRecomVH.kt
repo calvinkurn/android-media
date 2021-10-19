@@ -8,10 +8,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.adapter.CarouselItemDecorationNew
+import com.tokopedia.tokopoints.view.model.homeresponse.RecommendationWrapper
+import com.tokopedia.tokopoints.view.model.homeresponse.RewardsRecommendation
 import com.tokopedia.tokopoints.view.recommwidget.RewardsRecommAdapter
-import com.tokopedia.tokopoints.view.tokopointhome.RecommendationWrapper
 import com.tokopedia.tokopoints.view.tokopointhome.RewardsRecomListener
-import com.tokopedia.tokopoints.view.tokopointhome.RewardsRecommendation
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
 
 class SectionRecomVH(val view: View , val listener: RewardsRecomListener) : RecyclerView.ViewHolder(view) {

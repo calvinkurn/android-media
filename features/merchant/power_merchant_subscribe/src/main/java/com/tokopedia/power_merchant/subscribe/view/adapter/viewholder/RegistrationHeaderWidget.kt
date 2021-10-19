@@ -4,16 +4,16 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.gm.common.constant.KYCStatusId
-import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
+import com.tokopedia.power_merchant.subscribe.databinding.WidgetPmRegistrationHeaderBinding
 import com.tokopedia.power_merchant.subscribe.view.adapter.RegistrationTermAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.RegistrationTermUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetRegistrationHeaderUiModel
-import kotlinx.android.synthetic.main.widget_pm_registration_header.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created By @ilhamsuaib on 02/03/21
@@ -32,12 +32,14 @@ class RegistrationHeaderWidget(
         RegistrationTermAdapter(this::onTermCtaClickedListener)
     }
 
+    private val binding: WidgetPmRegistrationHeaderBinding? by viewBinding()
+
     override fun bind(element: WidgetRegistrationHeaderUiModel) {
         setupView(element)
         setupTermsList(element)
     }
 
-    private fun setupView(element: WidgetRegistrationHeaderUiModel) = with(itemView) {
+    private fun setupView(element: WidgetRegistrationHeaderUiModel) = binding?.run {
         tvPmHeaderTerms.setOnSectionHeaderClickListener { isExpanded ->
             setOnExpandChanged(isExpanded, element)
         }
@@ -48,7 +50,7 @@ class RegistrationHeaderWidget(
         return element.registrationTerms.all { it.isChecked }
     }
 
-    private fun setOnExpandChanged(isExpanded: Boolean, element: WidgetRegistrationHeaderUiModel) = with(itemView) {
+    private fun setOnExpandChanged(isExpanded: Boolean, element: WidgetRegistrationHeaderUiModel) = binding?.run {
         rvPmRegistrationTerm.isVisible = isExpanded
         tvPmHeaderTerms.setExpanded(isExpanded)
         if (isExpanded) {
@@ -67,11 +69,11 @@ class RegistrationHeaderWidget(
         val isEligibleShopScore = !shopInfo.isNewSeller && (shopInfo.isEligibleShopScore() || shopInfo.isEligibleShopScorePmPro())
         val hasActiveProduct = shopInfo.isNewSeller && shopInfo.hasActiveProduct
         val isTickerVisible = shopInfo.kycStatusId == KYCStatusId.PENDING && (isEligibleShopScore || hasActiveProduct)
-        itemView.tickerPmHeader.isVisible = isTickerVisible
+        binding?.tickerPmHeader?.isVisible = isTickerVisible
     }
 
     private fun setupTermsList(element: WidgetRegistrationHeaderUiModel) {
-        with(itemView.rvPmRegistrationTerm) {
+        binding?.rvPmRegistrationTerm?.run {
             layoutManager = object : LinearLayoutManager(context) {
                 override fun canScrollVertically(): Boolean = false
             }

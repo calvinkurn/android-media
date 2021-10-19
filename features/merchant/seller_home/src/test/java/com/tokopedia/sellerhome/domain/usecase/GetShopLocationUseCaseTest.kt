@@ -55,13 +55,13 @@ class GetShopLocationUseCaseTest {
         getShopLocationUseCase.params = params
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         val actualShopLocation = getShopLocationUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         val expectedShopLocation = ShippingLoc(13)
@@ -74,14 +74,14 @@ class GetShopLocationUseCaseTest {
         getShopLocationUseCase.params = params
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
         val actualShopLocation = getShopLocationUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertNull(actualShopLocation)

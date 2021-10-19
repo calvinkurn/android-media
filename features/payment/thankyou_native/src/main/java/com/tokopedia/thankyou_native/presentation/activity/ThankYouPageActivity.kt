@@ -72,21 +72,12 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setSecureWindowFlag()
         updateTitle("")
         component.inject(this)
         sendOpenScreenEvent(intent.data)
         idlingResource = TkpdIdlingResourceProvider.provideIdlingResource("Purchase")
         idlingResource?.increment()
     }
-
-
-    private fun setSecureWindowFlag() {
-        if (GlobalConfig.APPLICATION_TYPE == GlobalConfig.CONSUMER_APPLICATION || GlobalConfig.APPLICATION_TYPE == GlobalConfig.SELLER_APPLICATION) {
-            runOnUiThread { window.addFlags(WindowManager.LayoutParams.FLAG_SECURE) }
-        }
-    }
-
 
     override fun getLayoutRes() = R.layout.thank_activity_thank_you
 

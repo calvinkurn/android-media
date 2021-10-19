@@ -454,7 +454,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
         // When
-        orderSummaryPageViewModel.chooseInstallment(term2)
+        orderSummaryPageViewModel.chooseInstallment(term2, listOf(term1, term2))
 
         // Then
         assertEquals(term2.copy(isSelected = true), orderSummaryPageViewModel.orderPayment.value.creditCard.selectedTerm)
@@ -479,7 +479,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns occPrompt
 
         // When
-        orderSummaryPageViewModel.chooseInstallment(term2)
+        orderSummaryPageViewModel.chooseInstallment(term2, listOf(term1, term2))
 
         // Then
         assertEquals(OccGlobalEvent.Prompt(occPrompt), orderSummaryPageViewModel.globalEvent.value)
@@ -504,7 +504,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         coEvery { updateCartOccUseCase.executeSuspend(any()) } throws response
 
         // When
-        orderSummaryPageViewModel.chooseInstallment(term2)
+        orderSummaryPageViewModel.chooseInstallment(term2, listOf(term1, term2))
 
         // Then
         assertEquals(OccGlobalEvent.TriggerRefresh(errorMessage = responseMessage, shouldTriggerAnalytics = true), orderSummaryPageViewModel.globalEvent.value)
@@ -528,7 +528,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         coEvery { updateCartOccUseCase.executeSuspend(any()) } throws response
 
         // When
-        orderSummaryPageViewModel.chooseInstallment(term2)
+        orderSummaryPageViewModel.chooseInstallment(term2, listOf(term1, term2))
 
         // Then
         assertEquals(OccGlobalEvent.Error(response), orderSummaryPageViewModel.globalEvent.value)
@@ -550,7 +550,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(availableTerms = listOf(term1, term2), selectedTerm = term1))
 
         // When
-        orderSummaryPageViewModel.chooseInstallment(term2)
+        orderSummaryPageViewModel.chooseInstallment(term2, listOf(term1, term2))
 
         // Then
         assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
@@ -571,7 +571,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(availableTerms = listOf(term1, term2), selectedTerm = term1))
 
         // When
-        orderSummaryPageViewModel.chooseInstallment(term2)
+        orderSummaryPageViewModel.chooseInstallment(term2, listOf(term1, term2))
 
         // Then
         assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
@@ -968,55 +968,122 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
-    fun `Get Occ Cart Success With Afpb is true then get tenor list fee`() {
+    fun `Afpb get tenor list fee success`() {
         // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 10000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 1000, shipperProductId = 1, serviceName = "service")
         val additionalData = OrderPaymentCreditCardAdditionalData(profileCode = "TKPD_DEFAULT", totalProductPrice = "52000")
-        val paymentCreditCard = OrderPayment(creditCard = OrderPaymentCreditCard(isAfpb = true, additionalData = additionalData))
-        val response = OrderData(payment = paymentCreditCard)
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(isAfpb = true, additionalData = additionalData, selectedTerm = OrderPaymentInstallmentTerm()))
+
         val creditCardTenorListData = CreditCardTenorListData(tenorList = listOf(
-            TenorListData(type = "FULL", amount = 8500F, bank = "014", fee = 1500F, rate = 0F)))
+                TenorListData(type = "FULL", amount = 12500.0, bank = "014", fee = 1500.0, rate = 0.0)))
         val ccTenorListRequest = mapOf("INPUT" to CreditCardTenorListRequest("", 123,
-            52000.0, 5000.0, "TKPD_DEFAULT", 0.0, listOf(CartDetailsItem(1, 45000F))))
+                52000.0, 0.0, "TKPD_DEFAULT", 0.0, listOf(CartDetailsItem(1, 11000.0))))
 
         every { userSessionInterface.userId } returns "123"
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
-        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
-
-        every { creditCardTenorListUseCase.generateParam(any())} returns ccTenorListRequest
+        every { creditCardTenorListUseCase.generateParam(any()) } returns ccTenorListRequest
         coEvery { creditCardTenorListUseCase.executeSuspend(any()) } returns creditCardTenorListData
 
         // When
-        orderSummaryPageViewModel.getOccCart(true, "")
-        orderSummaryPageViewModel.adjustAdminFee()
+        orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(paymentCreditCard, orderSummaryPageViewModel.orderPayment.value)
-        assertEquals(OccGlobalEvent.AdjustAdminFeeSuccess(creditCardTenorListData), orderSummaryPageViewModel.globalEvent.value)
+        assertEquals(1500.0, orderSummaryPageViewModel.orderTotal.value.orderCost.paymentFee, 0.0)
+        assertEquals(12500.0, orderSummaryPageViewModel.orderTotal.value.orderCost.totalPrice, 0.0)
+        assertEquals(OccButtonState.NORMAL, orderSummaryPageViewModel.orderTotal.value.buttonState)
+        assertEquals(OrderPaymentInstallmentTerm(
+                term = 0,
+                isSelected = true,
+                isEnable = true,
+                isError = false,
+                fee = 1500.0,
+                monthlyAmount = 12500.0
+        ), orderSummaryPageViewModel.orderPayment.value.creditCard.selectedTerm)
+        assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
 
     @Test
     fun `Afpb get tenor list fee error`() {
         // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 10000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 1000, shipperProductId = 1, serviceName = "service")
         val additionalData = OrderPaymentCreditCardAdditionalData(profileCode = "TKPD_DEFAULT", totalProductPrice = "52000")
-        val paymentCreditCard = OrderPayment(creditCard = OrderPaymentCreditCard(isAfpb = true, additionalData = additionalData))
-        val response = OrderData(payment = paymentCreditCard)
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(isAfpb = true, additionalData = additionalData, selectedTerm = OrderPaymentInstallmentTerm()))
+
         val creditCardTenorListData = CreditCardTenorListData(errorMsg = "Invalid Siggy(00)")
         val ccTenorListRequest = mapOf("INPUT" to CreditCardTenorListRequest("", 123,
-            52000.0, 5000.0, "TEST_DEFAULT", 0.0, listOf(CartDetailsItem(1, 45000F))))
+                52000.0, 0.0, "TKPD_DEFAULT", 0.0, listOf(CartDetailsItem(1, 11000.0))))
 
         every { userSessionInterface.userId } returns "123"
-        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
-        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
-
-        every { creditCardTenorListUseCase.generateParam(any())} returns ccTenorListRequest
+        every { creditCardTenorListUseCase.generateParam(any()) } returns ccTenorListRequest
         coEvery { creditCardTenorListUseCase.executeSuspend(any()) } returns creditCardTenorListData
 
         // When
-        orderSummaryPageViewModel.getOccCart(true, "")
-        orderSummaryPageViewModel.adjustAdminFee()
+        orderSummaryPageViewModel.calculateTotal()
 
         // Then
-        assertEquals(paymentCreditCard, orderSummaryPageViewModel.orderPayment.value)
+        assertEquals(0.0, orderSummaryPageViewModel.orderTotal.value.orderCost.paymentFee, 0.0)
+        assertEquals(11000.0, orderSummaryPageViewModel.orderTotal.value.orderCost.totalPrice, 0.0)
+        assertEquals(OccButtonState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
+        assertEquals(null, orderSummaryPageViewModel.orderPayment.value.creditCard.selectedTerm)
         assertEquals(OccGlobalEvent.AdjustAdminFeeError, orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Afpb get tenor list fee failed`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 10000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 1000, shipperProductId = 1, serviceName = "service")
+        val additionalData = OrderPaymentCreditCardAdditionalData(profileCode = "TKPD_DEFAULT", totalProductPrice = "52000")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(isAfpb = true, additionalData = additionalData, selectedTerm = OrderPaymentInstallmentTerm()))
+
+        every { userSessionInterface.userId } returns "123"
+        coEvery { creditCardTenorListUseCase.executeSuspend(any()) } throws Exception()
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(0.0, orderSummaryPageViewModel.orderTotal.value.orderCost.paymentFee, 0.0)
+        assertEquals(11000.0, orderSummaryPageViewModel.orderTotal.value.orderCost.totalPrice, 0.0)
+        assertEquals(OccButtonState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
+        assertEquals(null, orderSummaryPageViewModel.orderPayment.value.creditCard.selectedTerm)
+        assertEquals(OccGlobalEvent.AdjustAdminFeeError, orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Afpb get tenor list fee success without selected term`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(OrderProduct(orderQuantity = 1, productPrice = 10000)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 1000, shipperProductId = 1, serviceName = "service")
+        val additionalData = OrderPaymentCreditCardAdditionalData(profileCode = "TKPD_DEFAULT", totalProductPrice = "52000")
+        orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(isAfpb = true, additionalData = additionalData))
+
+        val creditCardTenorListData = CreditCardTenorListData(tenorList = listOf(
+                TenorListData(type = "FULL", amount = 12500.0, bank = "014", fee = 1500.0, rate = 0.0)))
+        val ccTenorListRequest = mapOf("INPUT" to CreditCardTenorListRequest("", 123,
+                52000.0, 0.0, "TKPD_DEFAULT", 0.0, listOf(CartDetailsItem(1, 11000.0))))
+
+        every { userSessionInterface.userId } returns "123"
+        every { creditCardTenorListUseCase.generateParam(any()) } returns ccTenorListRequest
+        coEvery { creditCardTenorListUseCase.executeSuspend(any()) } returns creditCardTenorListData
+
+        // When
+        orderSummaryPageViewModel.calculateTotal()
+
+        // Then
+        assertEquals(0.0, orderSummaryPageViewModel.orderTotal.value.orderCost.paymentFee, 0.0)
+        assertEquals(11000.0, orderSummaryPageViewModel.orderTotal.value.orderCost.totalPrice, 0.0)
+        assertEquals(OccButtonState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
+        assertEquals(null, orderSummaryPageViewModel.orderPayment.value.creditCard.selectedTerm)
+        assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
     }
 }

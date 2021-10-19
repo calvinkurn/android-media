@@ -3,13 +3,13 @@ package com.tokopedia.logisticorder.view.shipping_confirmation.view.confirmshipm
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.logisticorder.R;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.CourierSelectionModel;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.CourierServiceModel;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.List;
 
@@ -71,7 +71,7 @@ public class OrderServiceAdapter extends RecyclerView.Adapter<OrderServiceAdapte
 
         private ViewGroup servicePlaceHolder;
 
-        private TextView serviceName;
+        private Typography serviceName;
 
         OrderServiceViewHolder(View itemView) {
             super(itemView);

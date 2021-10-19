@@ -75,6 +75,8 @@ object TrackingConstant {
     const val CLICK_WIDGET_MILESTONE_MINIMIZE =
         "click widget milestone - higher level - minimize view"
     const val CLICK_WIDGET_MILESTONE_SHARE = "click widget milestone - share"
+    const val IMPRESSION_TICKER = "impression ticker"
+    const val CLICK_TICKER_HYPERLINK = "click ticker - hyperlink"
 
     //search
     const val CLICK_SEARCH = "clickSearch"
@@ -114,4 +116,11 @@ object TrackingConstant {
     const val SHOP_TYPE_PM = "PM"
     const val SHOP_TYPE_OS = "OS"
     const val VIEW_SHOP_SCORE_IRIS = "viewShopScoreIris"
+
+    //ticker
+    const val TICKER_ANNOUNCEMENT = "announcement"
+    const val TICKER_WARNING = "warning"
+    const val TICKER_INFO = "info"
+    const val TICKER_DANGER = "danger"
+
 }

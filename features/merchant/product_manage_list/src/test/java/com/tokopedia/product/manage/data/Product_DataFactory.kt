@@ -44,7 +44,8 @@ fun createProductUiModel(
     topAds: TopAdsInfo? = null,
     access: ProductManageAccess? = createShopOwnerAccess(),
     isCampaign: Boolean = false,
-    campaignTypeList: List<ProductCampaignType>? = emptyList()
+    campaignTypeList: List<ProductCampaignType>? = emptyList(),
+    isProductBundling: Boolean = false,
 ): ProductUiModel {
     return ProductUiModel(
         id,
@@ -64,6 +65,7 @@ fun createProductUiModel(
         topAds,
         access,
         isCampaign,
-        campaignTypeList
+        campaignTypeList,
+        isProductBundling
     )
 }

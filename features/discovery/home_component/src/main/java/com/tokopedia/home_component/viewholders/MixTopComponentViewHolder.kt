@@ -254,7 +254,16 @@ class MixTopComponentViewHolder(
         visitables.addAll(channelProductData)
         if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty()) {
             if(channel.channelViewAllCard.id != DEFAULT_VIEW_ALL_ID && channel.channelViewAllCard.contentType.isNotBlank() && channel.channelViewAllCard.contentType != CONTENT_DEFAULT) {
-                visitables.add(CarouselViewAllCardDataModel(channel.channelHeader.applink, channel.channelViewAllCard, this))
+                visitables.add(
+                    CarouselViewAllCardDataModel(
+                        channel.channelHeader.applink,
+                        channel.channelViewAllCard,
+                        this,
+                        channel.channelBanner.imageUrl,
+                        channel.channelBanner.gradientColor,
+                        channel.layout
+                    )
+                )
             }
             else {
                 visitables.add(CarouselSeeMorePdpDataModel(channel.channelHeader.applink, channel.channelHeader.backImage, this))

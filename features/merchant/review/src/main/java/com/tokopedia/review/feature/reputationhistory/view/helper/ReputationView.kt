@@ -3,9 +3,7 @@ package com.tokopedia.review.feature.reputationhistory.view.helper
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.FrameLayout
-import com.tokopedia.review.feature.reputationhistory.view.helper.ReputationView.ReputationUiModel
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.annotation.LayoutRes
 import com.tokopedia.media.loader.loadImage
@@ -23,7 +21,7 @@ class ReputationView(context: Context, attrs: AttributeSet) : FrameLayout(
     private var reputationBadge: AppCompatImageView? = null
 
     @LayoutRes
-    private val defaultLayoutId: Int = R.layout.reputation_item_view_reputation
+    private val defaultLayoutId = R.layout.reputation_item_view_reputation
 
     fun init(data: ReputationShopUiModel) {
         reputationPoints?.text = String.format(
@@ -33,13 +31,6 @@ class ReputationView(context: Context, attrs: AttributeSet) : FrameLayout(
         )
         reputationBadge?.loadImage(data.badgeReputationUrl)
     }
-
-    data class ReputationUiModel(
-        @JvmField
-        var reputationBadgeUrl: String? = "",
-        @JvmField
-        var reputationScore: String = ""
-    )
 
     init {
         LayoutInflater.from(context).inflate(defaultLayoutId, this)

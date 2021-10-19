@@ -42,7 +42,7 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
 
     private val pdpCoverAdapter = PlayCoverProductAdapter(
             coverProductListener = object : PlayCoverProductViewHolder.Listener {
-                override fun onProductCoverClicked(productId: Long, imageUrl: String) {
+                override fun onProductCoverClicked(productId: String, imageUrl: String) {
                     mListener?.onChooseProductCover(this@PlayCoverImageChooserBottomSheet, productId, imageUrl)
                     analytic.clickAddCoverFromPdpSource()
                 }
@@ -183,7 +183,7 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
     }
 
     interface Listener {
-        fun onChooseProductCover(bottomSheet: PlayCoverImageChooserBottomSheet, productId: Long, imageUrl: String)
+        fun onChooseProductCover(bottomSheet: PlayCoverImageChooserBottomSheet, productId: String, imageUrl: String)
         fun onGetFromCamera(bottomSheet: PlayCoverImageChooserBottomSheet)
         fun onChooseFromGalleryClicked(bottomSheet: PlayCoverImageChooserBottomSheet)
     }

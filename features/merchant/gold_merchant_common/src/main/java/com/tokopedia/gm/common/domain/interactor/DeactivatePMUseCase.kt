@@ -19,7 +19,7 @@ class DeactivatePMUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): Boolean {
         val gqlRequest = GraphqlRequest(QUERY, DeactivationPowerMerchantResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
         val gqlErrors = gqlResponse.getError(DeactivationPowerMerchantResponse::class.java)
 
         if (gqlErrors.isNullOrEmpty()) {

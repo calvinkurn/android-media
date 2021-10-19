@@ -19,6 +19,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getOppositeMargin
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
@@ -77,6 +78,13 @@ class ChatMessageUnifyViewHolder(
         R.dimen.dp_topchat_1,
         Gravity.CENTER
     )
+
+    override fun bind(msg: MessageViewModel, payloads: MutableList<Any>) {
+        if (payloads.isEmpty()) return
+        when (payloads.first()) {
+            Payload.REBIND -> bind(msg)
+        }
+    }
 
     override fun bind(msg: MessageViewModel) {
         fxChat?.listener = chatMsgListener

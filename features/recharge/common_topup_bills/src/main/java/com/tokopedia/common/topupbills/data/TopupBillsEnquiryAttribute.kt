@@ -13,6 +13,9 @@ data class TopupBillsEnquiryAttribute (
     @SerializedName("ProductID")
     @Expose
     val productId: String = "",
+    @SerializedName("ClientNumber")
+    @Expose
+    val clientNumber: String = "",
     @SerializedName("Price")
     @Expose
     val price: String = "",

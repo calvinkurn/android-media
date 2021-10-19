@@ -4,7 +4,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.GetShopReputationUseCase
 import com.tokopedia.shop.common.domain.GetShopNoteUseCase
-import com.tokopedia.shop.info.domain.usecase.GetShopStatisticUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
@@ -24,8 +23,6 @@ abstract class ShopInfoViewModelTestFixture {
     @RelaxedMockK
     lateinit var getShopInfoUseCase: GQLGetShopInfoUseCase
     @RelaxedMockK
-    lateinit var getShopStatisticsUseCase: GetShopStatisticUseCase
-    @RelaxedMockK
     lateinit var getShopReputationUseCase: GetShopReputationUseCase
     @RelaxedMockK
     lateinit var userSessionInterface: UserSessionInterface
@@ -43,7 +40,6 @@ abstract class ShopInfoViewModelTestFixture {
                 userSessionInterface,
                 getShopNotesUseCase,
                 getShopInfoUseCase,
-                getShopStatisticsUseCase,
                 getShopReputationUseCase,
                 testCoroutineDispatcherProvider
         )

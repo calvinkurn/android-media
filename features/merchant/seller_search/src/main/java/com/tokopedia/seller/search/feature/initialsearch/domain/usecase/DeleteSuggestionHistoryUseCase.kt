@@ -32,7 +32,7 @@ class DeleteSuggestionHistoryUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): DeleteHistoryResponse.DeleteHistory {
         val gqlRequest = GraphqlRequest(gqlQuery, DeleteHistoryResponse::class.java, params)
-        val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = graphQlRepository.response(listOf(gqlRequest))
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error.isNullOrEmpty()) {
             return gqlResponse.getData<DeleteHistoryResponse>(DeleteHistoryResponse::class.java).deleteHistory

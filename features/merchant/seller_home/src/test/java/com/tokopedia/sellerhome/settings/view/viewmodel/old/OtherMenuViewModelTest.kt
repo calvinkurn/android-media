@@ -35,6 +35,7 @@ import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -419,7 +420,6 @@ class OtherMenuViewModelTest {
             getShopOperationalUseCase.executeOnBackground()
         } returns uiModel
 
-        mViewModel.setErrorStateMapDefaultValue()
         mViewModel.getShopOperational()
 
         val expectedResult = SettingResponseState.SettingSuccess(uiModel)
@@ -436,7 +436,6 @@ class OtherMenuViewModelTest {
             getShopOperationalUseCase.executeOnBackground()
         } throws error
 
-        mViewModel.setErrorStateMapDefaultValue()
         mViewModel.getShopOperational()
 
         val expectedResult = SettingResponseState.SettingError(error)
@@ -450,7 +449,6 @@ class OtherMenuViewModelTest {
         val badgeUrl = "www.abc.com"
         onGetShopBadge_thenReturn(badgeUrl)
 
-        mViewModel.setErrorStateMapDefaultValue()
         mViewModel.getShopBadge()
 
         verifyGetShopBadgeCalled()
@@ -463,7 +461,6 @@ class OtherMenuViewModelTest {
         val error = IllegalStateException()
         onGetShopBadge_thenThrow(error)
 
-        mViewModel.setErrorStateMapDefaultValue()
         mViewModel.getShopBadge()
 
         verifyGetShopBadgeCalled()
@@ -476,7 +473,6 @@ class OtherMenuViewModelTest {
         val shopFollowers = 10L
         onGetShopTotalFollowers_thenReturn(shopFollowers)
 
-        mViewModel.setErrorStateMapDefaultValue()
         mViewModel.getShopTotalFollowers()
 
         verifyGetShopTotalFollowersCalled()
@@ -489,7 +485,6 @@ class OtherMenuViewModelTest {
         val error = IllegalStateException()
         onGetShopTotalFollowers_thenThrow(error)
 
-        mViewModel.setErrorStateMapDefaultValue()
         mViewModel.getShopTotalFollowers()
 
         verifyGetShopTotalFollowersCalled()
@@ -502,7 +497,6 @@ class OtherMenuViewModelTest {
         val userShopInfoWrapper = UserShopInfoWrapper(ShopType.OfficialStore)
         onGetUserShopInfo_thenReturn(userShopInfoWrapper)
 
-        mViewModel.setErrorStateMapDefaultValue()
         mViewModel.getUserShopInfo()
 
         verifyGetUserShopInfoCalled()
@@ -514,7 +508,6 @@ class OtherMenuViewModelTest {
         val error = IllegalStateException()
         onGetUserShopInfo_thenThrow(error)
 
-        mViewModel.setErrorStateMapDefaultValue()
         mViewModel.getUserShopInfo()
 
         verifyGetUserShopInfoCalled()
@@ -527,7 +520,6 @@ class OtherMenuViewModelTest {
         val uiModel = OthersBalance()
         onGetBalance_thenReturn(uiModel)
 
-        mViewModel.setErrorStateMapDefaultValue()
         mViewModel.getBalanceInfo()
 
         verifyGetBalanceCalled()
@@ -539,7 +531,6 @@ class OtherMenuViewModelTest {
         val error = IllegalStateException()
         onGetBalance_thenThrow(error)
 
-        mViewModel.setErrorStateMapDefaultValue()
         mViewModel.getBalanceInfo()
 
         verifyGetBalanceCalled()
@@ -552,7 +543,6 @@ class OtherMenuViewModelTest {
         val topAdsKredit = 100f
         onGetTopAdsKredit_thenReturn(topAdsKredit)
 
-        mViewModel.setErrorStateMapDefaultValue()
         mViewModel.getKreditTopAds()
 
         verifyGetTopAdsKreditCalled()
@@ -564,7 +554,6 @@ class OtherMenuViewModelTest {
         val error = IllegalStateException()
         onGetTopAdsKredit_thenThrow(error)
 
-        mViewModel.setErrorStateMapDefaultValue()
         mViewModel.getKreditTopAds()
 
         verifyGetTopAdsKreditCalled()
@@ -595,6 +584,68 @@ class OtherMenuViewModelTest {
         val expectedResult = Fail(error)
         mViewModel.isTopAdsAutoTopupLiveData.verifyErrorEquals(expectedResult)
     }
+
+    @Test
+    fun `when shop badge live data is loading and shop total followers is also loading, should show shimmer`() =
+        coroutineTestRule.runBlockingTest {
+
+            coEvery {
+                getShopBadgeUseCase.executeOnBackground()
+            } coAnswers {
+                delay(1000L)
+                ""
+            }
+            coEvery {
+                getShopTotalFollowersUseCase.executeOnBackground()
+            } coAnswers {
+                delay(1000L)
+                10L
+            }
+
+            mViewModel.getShopBadge()
+
+            advanceTimeBy(100L)
+
+            mViewModel.getShopTotalFollowers()
+
+            advanceTimeBy(100L)
+
+            mViewModel.shopTotalFollowersLiveData.observeOnce {
+                assert(mViewModel.shopBadgeFollowersShimmerLiveData.value == true)
+            }
+
+        }
+
+    @Test
+    fun `when shop followers live data is loading and shop badge is also loading, should show shimmer`() =
+        coroutineTestRule.runBlockingTest {
+
+            coEvery {
+                getShopBadgeUseCase.executeOnBackground()
+            } coAnswers {
+                delay(1000L)
+                ""
+            }
+            coEvery {
+                getShopTotalFollowersUseCase.executeOnBackground()
+            } coAnswers {
+                delay(1000L)
+                10L
+            }
+
+            mViewModel.getShopTotalFollowers()
+
+            advanceTimeBy(100L)
+
+            mViewModel.getShopBadge()
+
+            advanceTimeBy(100L)
+
+            mViewModel.shopBadgeLiveData.observeOnce {
+                assert(mViewModel.shopBadgeFollowersShimmerLiveData.value == true)
+            }
+
+        }
 
     private suspend fun onGetShopBadge_thenReturn(shopBadge: String) {
         coEvery { getShopBadgeUseCase.executeOnBackground() } returns shopBadge

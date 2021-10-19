@@ -3,6 +3,7 @@ package com.tokopedia.sellerhome.analytic
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.ticker.Ticker
 
 /**
  * Created By @ilhamsuaib on 2020-02-11
@@ -692,22 +693,36 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
-    fun sendHomeTickerCtaClickEvent(shopType: String) {
+    fun sendHomeTickerCtaClickEvent(tickerId: String,
+                                    tickerType: Int) {
         val eventMap = createEventMap(
-            event = TrackingConstant.CLICK_SHOP_SCORE,
-            category = TrackingConstant.ACTION_CLICK_LEARN_MORE,
-            action = TrackingConstant.CATEGORY_COMMUNICATION_PERIOD_HOME,
-            label = shopType
+            event = TrackingConstant.CLICK_HOMEPAGE,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinToString(" - "),
+            action = TrackingConstant.CLICK_TICKER_HYPERLINK,
+            label = arrayOf(
+                tickerId,
+                getTickerTypeString(tickerType)
+            ).joinToString(" - ")
         )
         TrackingHelper.sendGeneralEvent(eventMap)
     }
 
-    fun sendHomeTickerImpressionEvent(shopType: String) {
+    fun sendHomeTickerImpressionEvent(tickerId: String,
+                                      tickerType: Int) {
         val eventMap = createEventMap(
-            event = TrackingConstant.VIEW_SHOP_SCORE_IRIS,
-            category = TrackingConstant.IMPRESS_LEARN_MORE,
-            action = TrackingConstant.CATEGORY_COMMUNICATION_PERIOD_HOME,
-            label = shopType
+            event = TrackingConstant.VIEW_HOMEPAGE_IRIS,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinToString(" - "),
+            action = TrackingConstant.IMPRESSION_TICKER,
+            label = arrayOf(
+                tickerId,
+                getTickerTypeString(tickerType)
+            ).joinToString(" - ")
         )
 
         TrackingHelper.sendGeneralEvent(eventMap)
@@ -851,6 +866,16 @@ object SellerHomeTracking {
         type: String
     ): Int {
         return recommendations?.filter { it.type == type }?.size.orZero()
+    }
+
+    private fun getTickerTypeString(tickerType: Int?): String {
+        return when(tickerType) {
+            Ticker.TYPE_ANNOUNCEMENT -> TrackingConstant.TICKER_ANNOUNCEMENT
+            Ticker.TYPE_ERROR -> TrackingConstant.TICKER_DANGER
+            Ticker.TYPE_INFORMATION -> TrackingConstant.TICKER_INFO
+            Ticker.TYPE_WARNING -> TrackingConstant.TICKER_WARNING
+            else -> ""
+        }
     }
 
     private fun createEventMap(

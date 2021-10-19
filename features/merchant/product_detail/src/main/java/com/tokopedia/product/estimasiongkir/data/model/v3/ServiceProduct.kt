@@ -12,10 +12,6 @@ data class ServiceProduct(
         @Expose
         val id: Int = 0,
 
-        @SerializedName("shipper_product_id")
-        @Expose
-        val productId: Int = 0,
-
         @SerializedName("shipper_product_name")
         @Expose
         val productName: String = "",

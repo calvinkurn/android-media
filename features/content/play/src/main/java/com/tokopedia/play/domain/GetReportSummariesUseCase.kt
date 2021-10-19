@@ -21,7 +21,7 @@ class GetReportSummariesUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): ReportSummaries {
         val gqlRequest = GraphqlRequest(GetReportSummariesUseCaseQuery.GQL_QUERY, ReportSummaries.Response::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
 
         return gqlResponse.getData<ReportSummaries.Response>(ReportSummaries.Response::class.java).reportSummaries

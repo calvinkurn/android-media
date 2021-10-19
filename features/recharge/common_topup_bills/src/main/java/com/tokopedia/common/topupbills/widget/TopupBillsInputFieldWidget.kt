@@ -113,6 +113,10 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
         input_label.text = label
     }
 
+    fun getLabel(): String {
+        return input_label.text.toString()
+    }
+
     fun setHint(hint: String) {
         ac_input.hint = hint
     }

@@ -33,9 +33,6 @@ data class ChatReplies(
         @SerializedName("hasNextAfter")
         val hasNextAfter: Boolean = false,
         @Expose
-        @SerializedName("attachmentIDs")
-        val attachmentIds: String = "",
-        @Expose
         @SerializedName("textareaReply")
         val textAreaReply: Int = 0,
         @Expose
@@ -43,8 +40,18 @@ data class ChatReplies(
         val showTimeMachine: Int = 0,
         @Expose
         @SerializedName("block")
-        val block: Block = Block()
-)
+        val block: Block = Block(),
+        @SerializedName("replyIDsAttachment")
+        val replyIDs: String = "",
+) {
+        fun getInterlocutorContact(): Contact {
+                return contacts.firstOrNull { contact -> contact.isInterlocutor } ?: Contact()
+        }
+
+        fun getSenderContact(): Contact {
+                return contacts.firstOrNull { contact -> !contact.isInterlocutor } ?: Contact()
+        }
+}
 
 data class Contact(
         @Expose

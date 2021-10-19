@@ -19,11 +19,10 @@ import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataMode
 import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
-import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
+import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.domain.usecase.CheckHasOvoAccUseCase
-import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
@@ -47,6 +46,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -72,10 +72,10 @@ class RegisterInitialViewModel @Inject constructor(
         @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
         private val rawQueries: Map<String, String>,
-        dispatcherProvider: CoroutineDispatchers) : BaseViewModel(dispatcherProvider.main) {
+        private val dispatcherProvider: CoroutineDispatchers) : BaseViewModel(dispatcherProvider.main) {
 
-    private val mutableGetProviderResponse = MutableLiveData<Result<ArrayList<DiscoverItemDataModel>>>()
-    val getProviderResponse: LiveData<Result<ArrayList<DiscoverItemDataModel>>>
+    private val mutableGetProviderResponse = MutableLiveData<Result<DiscoverData>>()
+    val getProviderResponse: LiveData<Result<DiscoverData>>
         get() = mutableGetProviderResponse
 
     private val mutableGetFacebookCredentialResponse = MutableLiveData<Result<FacebookCredentialData>>()
@@ -157,13 +157,15 @@ class RegisterInitialViewModel @Inject constructor(
     var idlingResourceProvider = TkpdIdlingResourceProvider.provideIdlingResource("REGISTER_INITIAL")
 
     fun getProvider() {
-        discoverUseCase.execute(
-                DiscoverUseCase.getParamRegister(),
-                resultUsecaseCoroutineToSubscriber(
-                        onSuccessGetProvider(),
-                        onFailedGetProvider()
-                )
-        )
+        launchCatchError(block = {
+            val result = discoverUseCase(PARAM_DISCOVER_REGISTER)
+
+            withContext(dispatcherProvider.main) {
+                mutableGetProviderResponse.value = Success(result.data)
+            }
+        }, onError = {
+            mutableGetProviderResponse.value = Fail(it)
+        })
     }
 
     fun getFacebookCredential(fragment: Fragment, callbackManager: CallbackManager) {
@@ -396,22 +398,6 @@ class RegisterInitialViewModel @Inject constructor(
         })
     }
 
-    private fun onSuccessGetProvider(): (DiscoverDataModel) -> Unit {
-        return {
-            if (!it.providers.isEmpty()) {
-                mutableGetProviderResponse.value = Success(it.providers)
-            } else {
-                mutableGetProviderResponse.value = Fail(Throwable())
-            }
-        }
-    }
-
-    private fun onFailedGetProvider(): (Throwable) -> Unit {
-        return {
-            mutableGetProviderResponse.value = Fail(it)
-        }
-    }
-
     private fun onSuccessGetFacebookEmailCredential(): (FacebookCredentialData) -> Unit {
         return {
             mutableGetFacebookCredentialResponse.value = Success(it)
@@ -618,7 +604,6 @@ class RegisterInitialViewModel @Inject constructor(
         registerRequestUseCase.cancelJobs()
         registerCheckUseCase.cancelJobs()
         tickerInfoUseCase.unsubscribe()
-        discoverUseCase.unsubscribe()
         loginTokenUseCase.unsubscribe()
         getProfileUseCase.unsubscribe()
     }
@@ -631,5 +616,6 @@ class RegisterInitialViewModel @Inject constructor(
     companion object {
         val OS_TYPE_ANDROID = "1"
         val REG_TYPE_EMAIL = "email"
+        private const val PARAM_DISCOVER_REGISTER = "register"
     }
 }

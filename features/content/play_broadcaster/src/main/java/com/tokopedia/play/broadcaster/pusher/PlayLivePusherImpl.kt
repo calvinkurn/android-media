@@ -10,6 +10,7 @@ import com.tokopedia.play.broadcaster.pusher.camera.CameraInfo
 import com.tokopedia.play.broadcaster.pusher.camera.CameraManager
 import com.tokopedia.play.broadcaster.pusher.camera.CameraType
 import com.tokopedia.play.broadcaster.util.deviceinfo.DeviceInfoUtil
+import com.tokopedia.play.broadcaster.util.extension.safeExecute
 import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
 import com.wmspanel.libstream.*
 import org.json.JSONObject
@@ -65,18 +66,19 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
 
     override fun startPreview(surfaceView: SurfaceAspectRatioView) {
         if (streamer == null) createStreamer(surfaceView)
+        streamer?.setSurface(surfaceView.surfaceHolder.surface)
         safeStartPreview()
     }
 
     override fun stopPreview() {
-        streamer?.stopAudioCapture()
-        streamer?.stopVideoCapture()
+        streamer?.safeExecute { stopAudioCapture() }
+        streamer?.safeExecute { stopVideoCapture() }
     }
 
     override fun switchCamera() {
         if (!isSwitchCameraSupported()) return
         pauseCalculateAdaptiveBitrate()
-        streamer?.flip()
+        streamer?.safeExecute { flip() }
 
         resumeCalculateAdaptiveBitrate()
     }
@@ -98,6 +100,7 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
     }
 
     override fun reconnect() {
+        releaseConnection()
         createConnection()
     }
 
@@ -108,10 +111,11 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
     }
 
     override fun release() {
-        streamer?.release()
+        pauseCalculateAdaptiveBitrate()
+        cancelStatsJob()
+        streamer?.safeExecute { release() }
         mListener = null
         mBitrateAdapter = null
-        mHandler = null
         streamer = null
     }
 
@@ -131,45 +135,41 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
             return
         }
         val lastState = mState
-        when(state) {
-            Streamer.CONNECTION_STATE.IDLE -> broadcastState(PlayLivePusherState.Idle)
-            Streamer.CONNECTION_STATE.INITIALIZED,
-            Streamer.CONNECTION_STATE.SETUP -> {
-                // ignored
-            }
-            Streamer.CONNECTION_STATE.CONNECTED -> mStatistic.init(streamer, connectionId)
-            Streamer.CONNECTION_STATE.RECORD -> {
-                when {
-                    lastState.isError -> broadcastState(PlayLivePusherState.Recovered)
-                    isPushStarted -> broadcastState(PlayLivePusherState.Resumed)
-                    else -> {
-                        broadcastState(PlayLivePusherState.Started)
-                        isPushStarted = true
-                    }
+        when(status) {
+            Streamer.STATUS.CONN_FAIL -> broadcastState(
+                PlayLivePusherState.Error(
+                    if (isPushStarted) "network: network fail" else "connect fail: Can not connect to server"
+                )
+            )
+            Streamer.STATUS.AUTH_FAIL -> broadcastState(PlayLivePusherState.Error("connect fail: Can not connect to server authentication failure, please check stream credentials."))
+            Streamer.STATUS.UNKNOWN_FAIL -> {
+                // let’s ignore when last state nya stopped
+                if (state == Streamer.CONNECTION_STATE.DISCONNECTED && (lastState is PlayLivePusherState.Stopped || lastState is PlayLivePusherState.Paused)) return
+                if (info?.length().orZero() > 0) {
+                    broadcastState(PlayLivePusherState.Error("network: reason ${info?.toString()}"))
                 }
-            }
-            Streamer.CONNECTION_STATE.DISCONNECTED -> {
-                if (lastState is PlayLivePusherState.Paused) return // ignore and just call resume()
-                if (status == null) {
+                else {
                     broadcastState(PlayLivePusherState.Error("network: unknown network fail"))
-                    return
                 }
-                when(status) {
-                    Streamer.STATUS.CONN_FAIL -> broadcastState(
-                        PlayLivePusherState.Error(
-                            if (isPushStarted) "network: network fail" else "connect fail: Can not connect to server"
-                        )
-                    )
-                    Streamer.STATUS.AUTH_FAIL -> broadcastState(PlayLivePusherState.Error("connect fail: Can not connect to server authentication failure, please check stream credentials."))
-                    Streamer.STATUS.UNKNOWN_FAIL -> {
-                        if (info?.length().orZero() > 0) {
-                            broadcastState(PlayLivePusherState.Error("network: unknown network fail"))
-                        } else {
-                            broadcastState(PlayLivePusherState.Error("network: reason ${info?.toString()}"))
-                        }
-                    }
-                    Streamer.STATUS.SUCCESS -> {
+            }
+            Streamer.STATUS.SUCCESS -> {
+                when(state) {
+                    Streamer.CONNECTION_STATE.IDLE -> broadcastState(PlayLivePusherState.Idle)
+                    Streamer.CONNECTION_STATE.INITIALIZED,
+                    Streamer.CONNECTION_STATE.SETUP,
+                    Streamer.CONNECTION_STATE.DISCONNECTED -> {
                         // ignored
+                    }
+                    Streamer.CONNECTION_STATE.CONNECTED -> mStatistic.init(streamer, connectionId)
+                    Streamer.CONNECTION_STATE.RECORD -> {
+                        when {
+                            lastState.isError -> broadcastState(PlayLivePusherState.Recovered)
+                            isPushStarted -> broadcastState(PlayLivePusherState.Resumed)
+                            else -> {
+                                broadcastState(PlayLivePusherState.Started)
+                                isPushStarted = true
+                            }
+                        }
                     }
                 }
             }
@@ -265,8 +265,8 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
     }
 
     private fun configureStreamer(config: PlayLivePusherConfig) {
-        streamer?.changeAudioConfig(PlayLivePusherUtil.getAudioConfig(config))
-        streamer?.changeVideoConfig(PlayLivePusherUtil.getVideoConfig(config))
+        streamer?.safeExecute { changeAudioConfig(PlayLivePusherUtil.getAudioConfig(config)) }
+        streamer?.safeExecute { changeVideoConfig(PlayLivePusherUtil.getVideoConfig(config)) }
     }
 
     private fun getCameraConfig(cameraInfo: CameraInfo, cameraSize: Streamer.Size): CameraConfig {
@@ -284,8 +284,8 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
 
     private fun safeStartPreview() {
         Handler().postDelayed({
-            streamer?.startVideoCapture()
-            streamer?.startAudioCapture()
+            streamer?.safeExecute { startVideoCapture() }
+            streamer?.safeExecute { startAudioCapture() }
         }, SAFE_OPEN_CAMERA_DELAY)
     }
 
@@ -299,11 +299,15 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
         mConnection.connectionId = streamer?.createConnection(mConnection)
     }
 
-    private fun stopStream() {
+    private fun releaseConnection() {
         try {
-            mConnection.connectionId?.let { id -> streamer?.releaseConnection(id) }
+            mConnection.connectionId?.let { id -> streamer?.safeExecute { releaseConnection(id) } }
         } catch (ignored: IllegalStateException) {}
 
+    }
+
+    private fun stopStream() {
+        releaseConnection()
         stopCalculateAdaptiveBitrate()
         cancelStatsJob()
     }

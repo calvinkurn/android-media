@@ -3,12 +3,18 @@ package com.tokopedia.tokopedianow.searchcategory.data
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.utils.UrlParamUtils.generateUrlParamString
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.tokopedianow.home.domain.model.GetRecentPurchaseResponse
+import com.tokopedia.tokopedianow.home.domain.query.GetRecentPurchase
+import com.tokopedia.tokopedianow.home.domain.usecase.GetRecentPurchaseUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.GetRecentPurchaseUseCase.Companion.PARAM_CAT_ID
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.CategoryFilterModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.DynamicChannelModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.QuickFilterModel
+import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.tokopedianow.searchcategory.utils.TYPE
+import com.tokopedia.tokopedianow.searchcategory.utils.WAREHOUSE_ID
 import com.tokopedia.usecase.RequestParams
 
 internal fun getTokonowQueryParam(requestParams: RequestParams): Map<String?, Any> {
@@ -38,6 +44,32 @@ internal fun createDynamicChannelRequest(type: String) = GraphqlRequest(
         DynamicChannelModel::class.java,
         mapOf(TYPE to type)
 )
+
+internal fun createRecentPurchaseRequest(params: Map<String, Any>): GraphqlRequest {
+    val warehouseID = params[WAREHOUSE_ID]?.toString() ?: ""
+    val queryParam = createRecentPurchaseQueryParam(params)
+
+    return GraphqlRequest(
+        GetRecentPurchase.QUERY,
+        GetRecentPurchaseResponse::class.java,
+        mapOf(
+            GetRecentPurchaseUseCase.PARAM_WAREHOUSE_ID to warehouseID,
+            GetRecentPurchaseUseCase.PARAM_QUERY_PARAM to queryParam,
+        )
+    )
+}
+
+private fun createRecentPurchaseQueryParam(params: Map<String, Any>): String {
+    val categoryID = params[CATEGORY_ID]?.toString() ?: ""
+
+    val queryParamList = listOf(
+        if (categoryID.isNotEmpty()) "$PARAM_CAT_ID=$categoryID" else ""
+    )
+
+    return queryParamList
+        .filter(String::isNotEmpty)
+        .joinToString(separator = "&")
+}
 
 private const val ACE_SEARCH_PRODUCT_QUERY = """
     query aceSearchProductV4(${'$'}params: String!) {

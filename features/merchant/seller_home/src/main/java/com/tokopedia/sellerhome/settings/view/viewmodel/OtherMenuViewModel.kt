@@ -163,7 +163,9 @@ class OtherMenuViewModel @Inject constructor(
             val successCount = map?.count { it.value }.orZero()
             if (successCount == map?.count().orZero()) {
                 launch(coroutineContext) {
-                    swipeSecondaryInfoGentlyWithDelay()
+                    withContext(dispatcher.main) {
+                        swipeSecondaryInfoGentlyWithDelay()
+                    }
                 }
             } else {
                 value = false
@@ -198,7 +200,6 @@ class OtherMenuViewModel @Inject constructor(
         getBalanceInfoData()
         getKreditTopAdsData()
         getIsTopAdsAutoTopup()
-        getShopShareInfoData()
     }
 
     fun onShownMultipleError(isShown: Boolean = false) {
@@ -282,11 +283,51 @@ class OtherMenuViewModel @Inject constructor(
     }
 
     fun startToggleTopadsCredit() {
-        if (topadsTopupToggleJob == null || topadsTopupToggleJob?.isCompleted == true) {
+        if (topadsTopupToggleJob?.isCompleted != false) {
             topadsTopupToggleJob =
                 launchCatchError(block = {
                     toggleTopadsTopupWithDelay()
                 }) {}
+        }
+    }
+
+    fun getShopShareInfoData() {
+        launchCatchError(
+            block = {
+                val shopShareInfo = withContext(dispatcher.io) {
+                    shopShareInfoUseCase.execute(userSession.shopId)
+                }
+                _shopShareInfoLiveData.value = shopShareInfo
+            },
+            onError = {
+                _shopShareInfoLiveData.value = null
+            }
+        )
+    }
+
+    fun setErrorStateMapDefaultValue() {
+        if (_errorStateMap.value == null) {
+            _errorStateMap.value = mutableMapOf(
+                OtherMenuDataType.Badge to false,
+                OtherMenuDataType.Followers to false,
+                OtherMenuDataType.Status to false,
+                OtherMenuDataType.Operational to false,
+                OtherMenuDataType.Saldo to false,
+                OtherMenuDataType.Topads to false,
+                OtherMenuDataType.FreeShipping to false
+            )
+        }
+    }
+
+    fun setSuccessStateMapDefaultValue() {
+        if (_secondarySuccessStateMap.value == null) {
+            _secondarySuccessStateMap.value = mutableMapOf(
+                OtherMenuDataType.Badge to false,
+                OtherMenuDataType.Followers to false,
+                OtherMenuDataType.Status to false,
+                OtherMenuDataType.Operational to false,
+                OtherMenuDataType.FreeShipping to false
+            )
         }
     }
 
@@ -300,8 +341,8 @@ class OtherMenuViewModel @Inject constructor(
                 if (freeShippingDisabled || inTransitionPeriod) {
                     false to ""
                 } else {
-                    val userId = userSession.userId.toIntOrZero()
-                    val shopId = userSession.shopId.toIntOrZero()
+                    val userId = userSession.userId.toLongOrZero()
+                    val shopId = userSession.shopId.toLongOrZero()
                     val params =
                         GetShopFreeShippingStatusUseCase.createRequestParams(userId, listOf(shopId))
                     getShopFreeShippingInfoUseCase.execute(params).first().let {
@@ -320,7 +361,7 @@ class OtherMenuViewModel @Inject constructor(
             block = {
                 val badgeUrl = withContext(dispatcher.io) {
                     getShopBadgeUseCase.params =
-                        GetShopBadgeUseCase.createRequestParams(userSession.shopId.toIntOrZero())
+                        GetShopBadgeUseCase.createRequestParams(userSession.shopId.toLongOrZero())
                     getShopBadgeUseCase.executeOnBackground()
                 }
                 _shopBadgeLiveData.value = SettingResponseState.SettingSuccess(badgeUrl)
@@ -336,7 +377,7 @@ class OtherMenuViewModel @Inject constructor(
             block = {
                 val totalFollowers = withContext(dispatcher.io) {
                     getShopTotalFollowersUseCase.params =
-                        GetShopTotalFollowersUseCase.createRequestParams(userSession.shopId.toIntOrZero())
+                        GetShopTotalFollowersUseCase.createRequestParams(userSession.shopId.toLongOrZero())
                     getShopTotalFollowersUseCase.executeOnBackground().let { shopFollowers ->
                         if (shopFollowers == Constant.INVALID_NUMBER_OF_FOLLOWERS) {
                             throw MessageErrorException(INVALID_FOLLOWERS_ERROR_MESSAGE)
@@ -360,7 +401,7 @@ class OtherMenuViewModel @Inject constructor(
             block = {
                 val userShopInfoWrapper = withContext(dispatcher.io) {
                     getUserShopInfoUseCase.params =
-                        GetUserShopInfoUseCase.createRequestParams(userSession.shopId.toIntOrZero())
+                        GetUserShopInfoUseCase.createRequestParams(userSession.shopId.toLongOrZero())
                     getUserShopInfoUseCase.executeOnBackground()
                 }
                 _userShopInfoLiveData.value = SettingResponseState.SettingSuccess(
@@ -410,7 +451,7 @@ class OtherMenuViewModel @Inject constructor(
             block = {
                 val topAdsBalanceFormatted = withContext(dispatcher.io) {
                     topAdsDashboardDepositUseCase.params =
-                        TopAdsDashboardDepositUseCase.createRequestParams(userSession.shopId.toIntOrZero())
+                        TopAdsDashboardDepositUseCase.createRequestParams(userSession.shopId.toLongOrZero())
                     val topAdsBalance = topAdsDashboardDepositUseCase.executeOnBackground()
                     _kreditTopAdsLiveData.postValue(topAdsBalance)
                     topAdsBalance.getCurrencyFormatted()
@@ -440,52 +481,10 @@ class OtherMenuViewModel @Inject constructor(
         )
     }
 
-    private fun getShopShareInfoData() {
-        launchCatchError(
-            block = {
-                val shopShareInfo = withContext(dispatcher.io) {
-                    shopShareInfoUseCase.execute(userSession.shopId)
-                }
-                _shopShareInfoLiveData.value = shopShareInfo
-            },
-            onError = {
-                _shopShareInfoLiveData.value = null
-            }
-        )
-    }
-
-    fun setErrorStateMapDefaultValue() {
-        if (_errorStateMap.value == null) {
-            _errorStateMap.value = mutableMapOf(
-                OtherMenuDataType.Badge to false,
-                OtherMenuDataType.Followers to false,
-                OtherMenuDataType.Status to false,
-                OtherMenuDataType.Operational to false,
-                OtherMenuDataType.Saldo to false,
-                OtherMenuDataType.Topads to false,
-                OtherMenuDataType.FreeShipping to false
-            )
-        }
-    }
-
-    fun setSuccessStateMapDefaultValue() {
-        if (_secondarySuccessStateMap.value == null) {
-            _secondarySuccessStateMap.value = mutableMapOf(
-                OtherMenuDataType.Badge to false,
-                OtherMenuDataType.Followers to false,
-                OtherMenuDataType.Status to false,
-                OtherMenuDataType.Operational to false,
-                OtherMenuDataType.FreeShipping to false
-            )
-        }
-    }
-
     private suspend fun swipeSecondaryInfoGentlyWithDelay() {
-        withContext(dispatcher.main) {
-            delay(GENTLY_SWIPE_DELAY)
-            if (_shouldSwipeSecondaryInfoGently.value == false) {
-                _shouldSwipeSecondaryInfoGently.postValue(true)
-            }
+        delay(GENTLY_SWIPE_DELAY)
+        if (_shouldSwipeSecondaryInfoGently.value == false) {
+            _shouldSwipeSecondaryInfoGently.postValue(true)
         }
     }
 

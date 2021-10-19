@@ -7,8 +7,7 @@ import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
 import com.tokopedia.chat_common.data.WebsocketEvent
-import com.tokopedia.chat_common.data.preview.ProductPreview
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
@@ -27,6 +26,7 @@ object TopChatWebSocketParam {
         messageText: String,
         startTime: String,
         attachments: List<SendablePreview>,
+        localId: String,
         intention: String? = null,
         userLocationInfo: LocalCacheModel? = null
     ): String {
@@ -34,7 +34,8 @@ object TopChatWebSocketParam {
             addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
         }
         val data = JsonObject().apply {
-            addProperty("message_id", thisMessageId.toLong())
+            addProperty("local_id", localId)
+            addProperty("message_id", thisMessageId.toLongOrZero())
             addProperty("message", messageText)
             addProperty("source", "inbox")
             addProperty("start_time", startTime)
@@ -56,12 +57,14 @@ object TopChatWebSocketParam {
         toUid: String,
         productPreview: ProductPreview,
         message: String,
-        userLocationInfo: LocalCacheModel
+        userLocationInfo: LocalCacheModel,
+        localId: String
     ): JsonObject {
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
         val data = JsonObject()
         data.addProperty("message_id", messageId.toLong())
+        data.addProperty("local_id", localId)
         data.addProperty("message", product.productUrl)
         data.addProperty("start_time", startTime)
         data.addProperty("to_uid", toUid)

@@ -4,9 +4,6 @@ import com.tokopedia.additional_check.data.GetObjectPojo
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 /**

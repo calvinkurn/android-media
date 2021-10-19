@@ -36,7 +36,7 @@ class GetShopFilterBottomSheetDataUseCase @Inject constructor(
     override suspend fun executeOnBackground(): DynamicFilterModel {
         val request = GraphqlRequest(GQL_QUERY, GqlDynamicFilterResponse::class.java, params)
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-        val gqlResponse = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+        val gqlResponse = graphqlRepository.response(listOf(request), cacheStrategy)
         val error = gqlResponse.getError(GqlDynamicFilterResponse::class.java)
         if (error == null || error.isEmpty()) {
             return gqlResponse.getData<GqlDynamicFilterResponse>(GqlDynamicFilterResponse::class.java).dynamicFilterModel

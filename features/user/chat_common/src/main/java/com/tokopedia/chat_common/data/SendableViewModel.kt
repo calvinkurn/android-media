@@ -1,45 +1,23 @@
 package com.tokopedia.chat_common.data
 
+import com.tokopedia.chat_common.domain.pojo.ChatItemPojo
+import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
+import com.tokopedia.chat_common.domain.pojo.Reply
 import java.text.SimpleDateFormat
 import java.util.*
 
-/**
- * @author by nisie on 5/16/18.
- */
-open class SendableViewModel
-/**
- * Constructor for WebSocketResponse / API Response
- * [ChatWebSocketListenerImpl]
- * [GetReplyListUseCase]
- *
- * @param messageId      messageId
- * @param fromUid        userId of sender
- * @param from           name of sender
- * @param fromRole       role of sender
- * @param attachmentId   attachment id
- * @param attachmentType attachment type.
- * @param replyTime      replytime in unixtime
- * @param startTime      date time when sending / uploading data. Used to validate temporary
- * sending messages
- * @see AttachmentType for attachment types.
- */
-constructor(
-        messageId: String, fromUid: String, from: String, fromRole: String, attachmentId: String,
-        attachmentType: String, replyTime: String, startTime: String, var isRead: Boolean,
-        var isDummy: Boolean, val isSender: Boolean, message: String, source: String,
-        replyId: String = ""
-) : BaseChatViewModel(
-        messageId, fromUid, from, fromRole,
-        attachmentId, attachmentType, replyTime, message,
-        source,
-        replyId = replyId
-) {
+open class SendableViewModel constructor(
+    builder: Builder<*, *>
+) : BaseChatViewModel(builder) {
 
-    var startTime: String protected set
+    var startTime: String = builder.startTime
+    var isRead: Boolean = builder.isRead
+    var isDummy: Boolean = builder.isDummy
+    val isSender: Boolean = builder.isSender
+
     var isShowRole = true
 
     init {
-        this.startTime = startTime
         this.fromRole = checkRole(fromRole)
     }
 
@@ -66,9 +44,62 @@ constructor(
 
         fun generateStartTime(): String {
             val date = SimpleDateFormat(
-                    SendableViewModel.START_TIME_FORMAT, Locale.US)
+                SendableViewModel.START_TIME_FORMAT, Locale.US
+            )
             date.timeZone = TimeZone.getTimeZone("UTC")
             return date.format(Calendar.getInstance().time)
+        }
+    }
+
+    abstract class Builder<
+            out B : Builder<B, UI>,
+            out UI : SendableViewModel
+            > : BaseChatViewModel.Builder<B, UI>() {
+
+        internal var startTime: String = ""
+        internal var isRead: Boolean = false
+        internal var isDummy: Boolean = false
+        internal var isSender: Boolean = true
+
+        override fun withResponseFromGQL(reply: Reply): B {
+            return super.withResponseFromGQL(reply).also {
+                withIsDummy(false)
+                withIsRead(reply.isRead)
+                withIsSender(!reply.isOpposite)
+            }
+        }
+
+        override fun withResponseFromWs(reply: ChatSocketPojo): B {
+            return super.withResponseFromWs(reply).also {
+                withIsSender(!reply.isOpposite)
+                withStartTime(reply.startTime)
+            }
+        }
+
+        override fun withResponseFromAPI(reply: ChatItemPojo): B {
+            return super.withResponseFromAPI(reply).also {
+                withIsSender(true)
+            }
+        }
+
+        fun withStartTime(startTime: String): B {
+            this.startTime = startTime
+            return self()
+        }
+
+        fun withIsRead(isRead: Boolean): B {
+            this.isRead = isRead
+            return self()
+        }
+
+        fun withIsDummy(isDummy: Boolean): B {
+            this.isDummy = isDummy
+            return self()
+        }
+
+        fun withIsSender(isSender: Boolean): B {
+            this.isSender = isSender
+            return self()
         }
     }
 }

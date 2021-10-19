@@ -177,7 +177,7 @@ class ProductViewHolder(
         campaignCountText?.run {
             showWithCondition(shouldShowCampaignCount)
             if (shouldShowCampaignCount) {
-                text = String.format(getString(com.tokopedia.product.manage.common.R.string.product_manage_campaign_count), product.campaignTypeList?.count().orZero())
+                text = String.format(getString(com.tokopedia.product.manage.common.R.string.product_manage_campaign_count), product.getCampaignTypeCount())
                 setOnClickListener {
                     product.campaignTypeList?.let {
                         campaignListener.onClickCampaignInfo(it)

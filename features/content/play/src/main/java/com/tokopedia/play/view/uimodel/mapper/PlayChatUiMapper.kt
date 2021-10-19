@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.uimodel.mapper
 
+import com.tokopedia.play.di.PlayScope
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -8,6 +9,7 @@ import javax.inject.Inject
 /**
  * Created by jegul on 01/02/21
  */
+@PlayScope
 class PlayChatUiMapper @Inject constructor(
         private val userSession: UserSessionInterface
 ) {

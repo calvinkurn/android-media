@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_pdp_emoney.R
+import com.tokopedia.recharge_pdp_emoney.databinding.WidgetEmoneyPdpCheckoutViewBinding
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.widget_emoney_pdp_checkout_view.view.*
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -20,30 +20,32 @@ class EmoneyPdpBottomCheckoutWidget @JvmOverloads constructor(@NotNull context: 
         set(value) {
             field = value
             listener?.run {
-                emoneyPdpCheckoutViewButton.setOnClickListener {
+                binding.emoneyPdpCheckoutViewButton.setOnClickListener {
                     onClickNextBuyButton()
                 }
             }
         }
 
+    private val binding : WidgetEmoneyPdpCheckoutViewBinding
+    
     init {
-        LayoutInflater.from(context).inflate(R.layout.widget_emoney_pdp_checkout_view, this, true)
+        binding = WidgetEmoneyPdpCheckoutViewBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
     fun onBuyButtonLoading(isLoading: Boolean) {
-        emoneyPdpCheckoutViewButton.isLoading = isLoading
+        binding.emoneyPdpCheckoutViewButton.isLoading = isLoading
     }
 
     fun setVisibilityLayout(show: Boolean) {
         if (show) {
-            emoneyPdpCheckoutViewLayout.show()
+            binding.emoneyPdpCheckoutViewLayout.show()
         } else {
-            emoneyPdpCheckoutViewLayout.hide()
+            binding.emoneyPdpCheckoutViewLayout.hide()
         }
     }
 
     fun setTotalPrice(price: String) {
-        emoneyPdpCheckoutViewTotalPayment.text = price
+        binding.emoneyPdpCheckoutViewTotalPayment.text = price
     }
 
     interface ActionListener {

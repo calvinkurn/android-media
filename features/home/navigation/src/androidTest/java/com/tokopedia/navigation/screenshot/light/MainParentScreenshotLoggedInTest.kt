@@ -25,7 +25,6 @@ class MainParentScreenshotLoggedInTest {
     val TAG = "MainParentScreenshotTest"
     val KEY_FIRST_VIEW_NAVIGATION = "KEY_FIRST_VIEW_NAVIGATION"
     val KEY_FIRST_VIEW_NAVIGATION_ONBOARDING = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING"
-    val CHOOSE_ADDRESS_ROLLENCE_KEY = "hyperlocal_android"
 
     @get:Rule
     var activityRule = object: ActivityTestRule<MainParentActivity>(MainParentActivity::class.java) {
@@ -44,8 +43,6 @@ class MainParentScreenshotLoggedInTest {
     private fun setupHomeEnvironment() {
         val userSession = UserSession(context)
         userSession.setFirstTimeUserOnboarding(false)
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                RollenceKey.HOME_EXP, RollenceKey.HOME_VARIANT_REVAMP)
     }
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -76,14 +73,8 @@ class MainParentScreenshotLoggedInTest {
                 RollenceKey.NAVIGATION_EXP_TOP_NAV,
                 RollenceKey.NAVIGATION_VARIANT_REVAMP)
         RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                CHOOSE_ADDRESS_ROLLENCE_KEY,
-                CHOOSE_ADDRESS_ROLLENCE_KEY)
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
                 RollenceKey.BALANCE_EXP,
                 RollenceKey.BALANCE_VARIANT_NEW)
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                RollenceKey.HOME_EXP,
-                RollenceKey.HOME_VARIANT_REVAMP)
     }
 
     private fun fileName(suffix: String? = null): String {

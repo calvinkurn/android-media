@@ -7,6 +7,7 @@ import com.tokopedia.productcard.ProductCardModel.LabelGroupVariant
 import com.tokopedia.productcard.ProductCardModel.NonVariant
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
+import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.domain.model.GetRecentPurchaseResponse.*
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
@@ -45,7 +46,7 @@ object RecentPurchaseMapper {
             TokoNowProductCardUiModel(
                 it.id,
                 it.shop.id,
-                it.maxOrder.toInt(),
+                it.maxOrder,
                 it.parentProductId,
                 createProductCardModel(it, miniCartData),
                 TokoNowLayoutType.RECENT_PURCHASE
@@ -54,7 +55,7 @@ object RecentPurchaseMapper {
     }
     
     private fun createProductCardModel(
-        product: Product,
+        product: RepurchaseProduct,
         miniCartData: MiniCartSimplifiedData? = null
     ): ProductCardModel {
         val quantity = getAddToCartQuantity(product.id, miniCartData)
@@ -83,20 +84,20 @@ object RecentPurchaseMapper {
                 labelGroupVariantList = mapLabelGroupVariant(product),
                 nonVariant = NonVariant(
                     quantity = quantity,
-                    minQuantity = product.minOrder.toInt(),
-                    maxQuantity = product.maxOrder.toInt()
+                    minQuantity = product.minOrder,
+                    maxQuantity = product.maxOrder
                 )
             )
         }
     }
     
-    private fun mapLabelGroup(response: Product): List<LabelGroup> {
+    private fun mapLabelGroup(response: RepurchaseProduct): List<LabelGroup> {
         return response.labelGroup.map {
             LabelGroup(it.position, it.title, it.type, it.url)
         }
     }
 
-    private fun mapLabelGroupVariant(response: Product): List<LabelGroupVariant> {
+    private fun mapLabelGroupVariant(response: RepurchaseProduct): List<LabelGroupVariant> {
         return response.labelGroupVariant.map {
             LabelGroupVariant(it.typeVariant, it.title, it.type, it.hexColor)
         }

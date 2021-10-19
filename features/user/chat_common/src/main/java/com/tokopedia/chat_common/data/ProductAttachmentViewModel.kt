@@ -7,60 +7,53 @@ import com.tokopedia.chat_common.domain.pojo.productattachment.PlayStoreData
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
 import com.tokopedia.chat_common.domain.pojo.productattachment.TopchatProductRating
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
-import java.util.*
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 /**
- * @author by nisie on 5/14/18.
+ * Primary constructor, use [Builder] class to create this instance.
  */
-open class ProductAttachmentViewModel : SendableViewModel,
-        Visitable<BaseChatTypeFactory>,
-        DeferredAttachment {
+open class ProductAttachmentViewModel protected constructor(
+    builder: Builder
+) : SendableViewModel(builder), Visitable<BaseChatTypeFactory>, DeferredAttachment {
 
     override var isLoading: Boolean = true
     override var isError: Boolean = false
     override val id: String get() = attachmentId
 
-    var productId: String = "0"
+    var productId: String = builder.productId
         private set
-    var productName: String = ""
+    var productName: String = builder.productName
         private set
-    var productPrice: String = ""
+    var productPrice: String = builder.productPrice
         private set
-    var dateTimeInMilis: Long = 0
+    var dateTimeInMilis: Long = builder.replyTime.toLongOrZero()
         private set
-    var productUrl: String = ""
+    var productUrl: String = builder.productUrl
         private set
-    var productImage: String = ""
+    var productImage: String = builder.productImage
         private set
-    var canShowFooter: Boolean = false
+    var canShowFooter: Boolean = builder.canShowFooter
         private set
-    var blastId: Long = 0
+    var priceInt: Long = builder.priceInt
         private set
-    var priceInt: Long = 0
+    var category: String = builder.category
         private set
-    var category: String = ""
+    var dropPercentage: String = builder.dropPercentage
         private set
-    var dropPercentage: String = ""
+    var priceBefore: String = builder.priceBefore
         private set
-    var priceBefore: String = ""
-        private set
-    var shopId: Long = 0
-    var freeShipping: FreeShipping = FreeShipping()
-    var playStoreData: PlayStoreData = PlayStoreData()
-    var categoryId: Long = 0
-    var minOrder: Int = 1
-    var variants: List<AttachmentVariant> = emptyList()
-    var colorVariantId: String = ""
-    var colorVariant: String = ""
-    var colorHexVariant: String = ""
-    var sizeVariantId: String = ""
-    var sizeVariant: String = ""
-    var remainingStock: Int = 1
-    var status: Int = 0
-    var wishList: Boolean = false
-    var rating: TopchatProductRating = TopchatProductRating()
-    var isPreOrder: Boolean = false
-    var images: List<String> = emptyList()
+    var shopId: Long = builder.shopId
+    var freeShipping: FreeShipping = builder.freeShipping
+    var playStoreData: PlayStoreData = builder.playStoreData
+    var categoryId: Long = builder.categoryId
+    var minOrder: Int = builder.minOrder
+    var variants: List<AttachmentVariant> = builder.variants
+    var remainingStock: Int = builder.remainingStock
+    var status: Int = builder.status
+    var wishList: Boolean = builder.wishList
+    var rating: TopchatProductRating = builder.rating
+    var isPreOrder: Boolean = builder.isPreOrder
+    var images: List<String> = builder.images
         get() {
             return if (field.isNotEmpty()) {
                 field
@@ -68,6 +61,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
                 listOf(productImage)
             }
         }
+
     val hasDiscount: Boolean
         get() {
             return priceBefore.isNotEmpty() && dropPercentage.isNotEmpty()
@@ -77,6 +71,21 @@ open class ProductAttachmentViewModel : SendableViewModel,
     var isFulfillment: Boolean = false
     var urlTokocabang: String = ""
     var parentId: String = "0"
+
+    var colorVariantId: String = ""
+    var colorVariant: String = ""
+    var colorHexVariant: String = ""
+    var sizeVariantId: String = ""
+    var sizeVariant: String = ""
+
+    init {
+        if (variants.isNotEmpty()) {
+            setupVariantsField()
+        }
+        if (!builder.needSync) {
+            finishLoading()
+        }
+    }
 
     override fun updateData(attribute: Any?) {
         if (attribute is ProductAttachmentAttributes) {
@@ -117,149 +126,6 @@ open class ProductAttachmentViewModel : SendableViewModel,
         this.isError = true
     }
 
-    constructor(
-            messageId: String, fromUid: String, from: String, fromRole: String,
-            attachmentId: String, attachmentType: String, replyTime: String, startTime: String,
-            isRead: Boolean, isDummy: Boolean, isSender: Boolean, message: String,
-            source: String
-    ) : super(
-            messageId, fromUid, from, fromRole,
-            attachmentId, attachmentType, replyTime, startTime,
-            isRead, isDummy, isSender, message,
-            source
-    ) {
-    }
-
-    /**
-     * Constructor for API response.
-     *
-     * @param messageId      message Id
-     * @param fromUid        user id of sender
-     * @param from           username of sender
-     * @param fromRole       role of sender
-     * @param attachmentId   attachment id
-     * @param attachmentType attachment type. Please refer to
-     * [AttachmentType] types
-     * @param replyTime      replytime in unixtime
-     * @param isRead         is message already read by opponent
-     * @param productId      product id
-     * @param productName    product name
-     * @param productPrice   product price
-     * @param productUrl     product url
-     * @param productImage   product image url
-     */
-    constructor(
-            messageId: String, fromUid: String, from: String, fromRole: String,
-            attachmentId: String, attachmentType: String, replyTime: String, isRead: Boolean,
-            productId: String, productName: String, productPrice: String, productUrl: String,
-            productImage: String, isSender: Boolean, message: String, canShowFooter: Boolean,
-            blastId: Long, productPriceInt: Long, category: String, variants: List<AttachmentVariant>,
-            dropPercentage: String, priceBefore: String, shopId: Long, freeShipping: FreeShipping,
-            categoryId: Long, playStoreData: PlayStoreData, minOrder: Int, remainingStock: Int,
-            status: Int, wishList: Boolean, images: List<String>, source: String,
-            rating: TopchatProductRating, replyId: String
-    ) : super(
-            messageId = messageId,
-            fromUid = fromUid,
-            from = from,
-            fromRole = fromRole,
-            attachmentId = attachmentId,
-            attachmentType = attachmentType,
-            replyTime = replyTime,
-            startTime = "",
-            isRead = isRead,
-            isDummy = false,
-            isSender = isSender,
-            message = message,
-            source = source,
-            replyId = replyId
-    ) {
-        this.productId = productId
-        this.productName = productName
-        this.productPrice = productPrice
-        this.dateTimeInMilis = java.lang.Long.parseLong(replyTime)
-        this.productUrl = productUrl
-        this.productImage = productImage
-        this.canShowFooter = canShowFooter
-        this.blastId = blastId
-        this.priceInt = productPriceInt
-        this.category = category
-        this.dropPercentage = dropPercentage
-        this.priceBefore = priceBefore
-        this.shopId = shopId
-        this.freeShipping = freeShipping
-        this.categoryId = categoryId
-        this.playStoreData = playStoreData
-        this.minOrder = minOrder
-        this.remainingStock = remainingStock
-        this.status = status
-        this.rating = rating
-        if (variants.isNotEmpty()) {
-            this.variants = variants
-            setupVariantsField()
-        }
-        this.wishList = wishList
-        this.images = images
-    }
-
-    /**
-     * Constructor for WebSocket.
-     *
-     * @param messageId      message Id
-     * @param fromUid        user id of sender
-     * @param from           username of sender
-     * @param fromRole       role of sender
-     * @param attachmentId   attachment id
-     * @param attachmentType attachment type. Please refer to
-     * [AttachmentType] types
-     * @param replyTime      replytime in unixtime
-     * @param productId      product id
-     * @param productName    product name
-     * @param productPrice   product price
-     * @param productUrl     product url
-     * @param productImage   product image url
-     * @param startTime
-     */
-    constructor(
-            messageId: String, fromUid: String, from: String, fromRole: String,
-            attachmentId: String, attachmentType: String, replyTime: String, productId: String,
-            productName: String, productPrice: String, productUrl: String, productImage: String,
-            isSender: Boolean, message: String, startTime: String, canShowFooter: Boolean,
-            blastId: Long, productPriceInt: Long, category: String, variants: List<AttachmentVariant>,
-            dropPercentage: String, priceBefore: String, shopId: Long, freeShipping: FreeShipping,
-            categoryId: Long, playStoreData: PlayStoreData, remainingStock: Int, status: Int,
-            source: String, rating: TopchatProductRating
-    ) : super(
-            messageId, fromUid, from, fromRole,
-            attachmentId, attachmentType, replyTime, startTime,
-            false, false, isSender, message,
-            source
-    ) {
-        this.productId = productId
-        this.productName = productName
-        this.productPrice = productPrice
-        this.dateTimeInMilis = java.lang.Long.parseLong(replyTime)
-        this.productUrl = productUrl
-        this.productImage = productImage
-        this.canShowFooter = canShowFooter
-        this.blastId = blastId
-        this.priceInt = productPriceInt
-        this.category = category
-        this.dropPercentage = dropPercentage
-        this.priceBefore = priceBefore
-        this.shopId = shopId
-        this.freeShipping = freeShipping
-        this.categoryId = categoryId
-        this.playStoreData = playStoreData
-        this.remainingStock = remainingStock
-        this.status = status
-        this.rating = rating
-        if (variants.isNotEmpty()) {
-            this.variants = variants
-            setupVariantsField()
-        }
-    }
-
     private fun setupVariantsField() {
         for (variant in variants) {
             val variantOption = variant.options
@@ -272,37 +138,6 @@ open class ProductAttachmentViewModel : SendableViewModel,
                 sizeVariant = variantOption.value
             }
         }
-    }
-
-    /**
-     * Constructor for sending product attachment.
-     *
-     * @param loginID      current user id.
-     * @param productId    product id
-     * @param productName  product name
-     * @param productPrice product price
-     * @param productUrl   product url
-     * @param productImage product image url
-     * @param startTime    send time to validate dummy mesages.
-     */
-    constructor(
-            loginID: String, productId: String, productName: String, productPrice: String,
-            productUrl: String, productImage: String, startTime: String, canShowFooter: Boolean,
-            shopId: Long
-    ) : super(
-            "", loginID, "", "",
-            "", AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT, SENDING_TEXT, startTime,
-            false, true, true, productUrl,
-            ""
-    ) {
-        this.productId = productId
-        this.productName = productName
-        this.productPrice = productPrice
-        this.dateTimeInMilis = Date().time
-        this.productUrl = productUrl
-        this.productImage = productImage
-        this.canShowFooter = canShowFooter
-        this.shopId = shopId
     }
 
     override fun type(typeFactory: BaseChatTypeFactory): Int {
@@ -369,7 +204,7 @@ open class ProductAttachmentViewModel : SendableViewModel,
         return productId.toString()
     }
 
-    override fun finishLoading() {
+    final override fun finishLoading() {
         this.isLoading = false
         this.isError = false
     }
@@ -442,5 +277,182 @@ open class ProductAttachmentViewModel : SendableViewModel,
         const val statusWarehouse = 3
 
         const val NO_PRODUCT_ID = "0"
+    }
+
+    open class Builder : SendableViewModel.Builder<Builder, ProductAttachmentViewModel>() {
+
+        internal var productId: String = "0"
+        internal var productName: String = ""
+        internal var productPrice: String = ""
+        internal var dateTimeInMilis: Long = 0
+        internal var productUrl: String = ""
+        internal var productImage: String = ""
+        internal var canShowFooter: Boolean = false
+        internal var priceInt: Long = 0
+        internal var category: String = ""
+        internal var dropPercentage: String = ""
+        internal var priceBefore: String = ""
+        internal var shopId: Long = 0
+        internal var freeShipping: FreeShipping = FreeShipping()
+        internal var categoryId: Long = 0
+        internal var playStoreData: PlayStoreData = PlayStoreData()
+        internal var minOrder: Int = 1
+        internal var remainingStock: Int = 1
+        internal var status: Int = 0
+        internal var rating: TopchatProductRating = TopchatProductRating()
+        internal var variants: List<AttachmentVariant> = emptyList()
+        internal var wishList: Boolean = false
+        internal var isPreOrder: Boolean = false
+        internal var images: List<String> = emptyList()
+        internal var needSync: Boolean = true
+
+        fun withProductAttributesResponse(product: ProductAttachmentAttributes): Builder {
+            withProductId(product.productId)
+            withProductName(product.productProfile.name)
+            withProductPrice(product.productProfile.price)
+            withDateTimeInMilis(replyTime.toLongOrZero())
+            withProductUrl(product.productProfile.url)
+            withProductImage(product.productProfile.imageUrl)
+            withPriceInt(product.productProfile.priceInt)
+            withCategory(product.productProfile.category)
+            withVariants(product.productProfile.variant ?: emptyList())
+            withDropPercentage(product.productProfile.dropPercentage)
+            withPriceBefore(product.productProfile.priceBefore)
+            withShopId(product.productProfile.shopId)
+            withFreeShipping(product.productProfile.freeShipping)
+            withCategoryId(product.productProfile.categoryId)
+            withPlayStoreData(product.productProfile.playStoreData)
+            withMinOrder(product.productProfile.minOrder)
+            withRemainingStock(product.productProfile.remainingStock)
+            withStatus(product.productProfile.status)
+            withWishList(product.productProfile.wishList)
+            withImages(product.productProfile.images)
+            withRating(product.productProfile.rating)
+            return self()
+        }
+
+        fun withProductId(productId: String): Builder {
+            this.productId = productId
+            return self()
+        }
+
+        fun withProductName(productName: String): Builder {
+            this.productName = productName
+            return self()
+        }
+
+        fun withProductPrice(productPrice: String): Builder {
+            this.productPrice = productPrice
+            return self()
+        }
+
+        fun withDateTimeInMilis(dateTimeInMilis: Long): Builder {
+            this.dateTimeInMilis = dateTimeInMilis
+            return self()
+        }
+
+        fun withProductUrl(productUrl: String): Builder {
+            this.productUrl = productUrl
+            return self()
+        }
+
+        fun withProductImage(productImage: String): Builder {
+            this.productImage = productImage
+            return self()
+        }
+
+        fun withCanShowFooter(canShowFooter: Boolean): Builder {
+            this.canShowFooter = canShowFooter
+            return self()
+        }
+
+        fun withPriceInt(priceInt: Long): Builder {
+            this.priceInt = priceInt
+            return self()
+        }
+
+        fun withCategory(category: String): Builder {
+            this.category = category
+            return self()
+        }
+
+        fun withDropPercentage(dropPercentage: String): Builder {
+            this.dropPercentage = dropPercentage
+            return self()
+        }
+
+        fun withPriceBefore(priceBefore: String): Builder {
+            this.priceBefore = priceBefore
+            return self()
+        }
+
+        fun withShopId(shopId: Long): Builder {
+            this.shopId = shopId
+            return self()
+        }
+
+        fun withFreeShipping(freeShipping: FreeShipping): Builder {
+            this.freeShipping = freeShipping
+            return self()
+        }
+
+        fun withCategoryId(categoryId: Long): Builder {
+            this.categoryId = categoryId
+            return self()
+        }
+
+        fun withPlayStoreData(playStoreData: PlayStoreData): Builder {
+            this.playStoreData = playStoreData
+            return self()
+        }
+
+        fun withMinOrder(minOrder: Int): Builder {
+            this.minOrder = minOrder
+            return self()
+        }
+
+        fun withRemainingStock(remainingStock: Int): Builder {
+            this.remainingStock = remainingStock
+            return self()
+        }
+
+        fun withStatus(status: Int): Builder {
+            this.status = status
+            return self()
+        }
+
+        fun withRating(rating: TopchatProductRating): Builder {
+            this.rating = rating
+            return self()
+        }
+
+        fun withVariants(variants: List<AttachmentVariant>): Builder {
+            this.variants = variants
+            return self()
+        }
+
+        fun withWishList(wishList: Boolean): Builder {
+            this.wishList = wishList
+            return self()
+        }
+
+        fun withIsPreOrder(isPreOrder: Boolean): Builder {
+            this.isPreOrder = isPreOrder
+            return self()
+        }
+
+        fun withImages(images: List<String>): Builder {
+            this.images = images
+            return self()
+        }
+
+        fun withNeedSync(needSync: Boolean): Builder {
+            this.needSync = needSync
+            return self()
+        }
+
+        override fun build(): ProductAttachmentViewModel {
+            return ProductAttachmentViewModel(this)
+        }
     }
 }

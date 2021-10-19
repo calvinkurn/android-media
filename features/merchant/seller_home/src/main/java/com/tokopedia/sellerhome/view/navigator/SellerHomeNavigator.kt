@@ -157,7 +157,13 @@ class SellerHomeNavigator(
         homeFragment = SellerHomeFragment.newInstance()
         productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
         chatFragment = sellerHomeRouter?.getChatListFragment()
-        somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_ALL_ORDER, "0", "", "")
+        somListFragment = sellerHomeRouter?.getSomListFragment(
+            context,
+            SomTabConst.STATUS_ALL_ORDER,
+            SomTabConst.DEFAULT_ORDER_TYPE_FILTER,
+            "",
+            ""
+        )
         otherSettingsFragment =
             if (useRevampedOtherMenu()) {
                 OtherMenuFragment.createInstance()
@@ -237,7 +243,13 @@ class SellerHomeNavigator(
     }
 
     private fun setupSellerOrderPage(page: PageFragment): Fragment? {
-        somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage, page.orderType, page.keywordSearch, page.orderId)
+        somListFragment = sellerHomeRouter?.getSomListFragment(
+            context,
+            page.tabPage,
+            page.orderType,
+            page.keywordSearch,
+            page.orderId
+        )
         return somListFragment
     }
 

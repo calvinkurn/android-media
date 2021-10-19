@@ -11,7 +11,6 @@ object ShopScoreTrackingConstant {
     const val CURRENT_SITE = "currentSite"
     const val USER_ID = "userId"
 
-    const val COMMUNICATION_PERIOD_OLD_SHOP_SCORE = "communication period - old shop score page"
     const val TRANSITION_PERIOD_SHOP_SCORE = "transition period - shop score page"
     const val SHOP_SCORE_PAGE = "shop score page"
     const val TRANSITION_PERIOD_PENALTY_PAGE = "transition period - penalty page"

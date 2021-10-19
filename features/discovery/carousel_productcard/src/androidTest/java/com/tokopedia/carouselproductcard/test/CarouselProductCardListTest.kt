@@ -8,7 +8,7 @@ internal class CarouselProductCardListTest {
 
     @Rule
     @JvmField
-    val activityTestRule = ActivityTestRule<CarouselProductCardListActivityTest>(CarouselProductCardListActivityTest::class.java)
+    val activityTestRule = ActivityTestRule(CarouselProductCardListActivityTest::class.java)
 
     @Test
     fun test() { }

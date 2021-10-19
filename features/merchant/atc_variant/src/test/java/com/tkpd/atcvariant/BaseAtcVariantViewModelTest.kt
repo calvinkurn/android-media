@@ -116,6 +116,14 @@ abstract class BaseAtcVariantViewModelTest {
         }
     }
 
+    fun assertStockCopy(expectedStockCopy: String) {
+        val currentStockCopy = viewModel.stockCopy.value
+
+        Assert.assertNotNull(currentStockCopy)
+        Assert.assertEquals(currentStockCopy, expectedStockCopy)
+
+    }
+
     fun decideFailValueHitGqlAggregator() {
         coEvery {
             aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), false)
@@ -158,7 +166,6 @@ abstract class BaseAtcVariantViewModelTest {
                          cashBackPercentage: Int,
                          uspImageUrl: String,
                          isTokoCabang: Boolean,
-                         expectedEmptyOrInnactiveCopy: String,
                          expectedMinOrder: Int) {
 
         visitables.forEach {
@@ -182,7 +189,6 @@ abstract class BaseAtcVariantViewModelTest {
                     Assert.assertEquals(currentSelectedLevelOne, expectedSelectedOptionIdsLevelOne)
                     Assert.assertEquals(currentSelectedLevelTwo, expectedSelectedOptionIdsLevelTwo)
                     Assert.assertTrue(it.mapOfSelectedVariant.values.toList().containsAll(listOf(expectedSelectedOptionIdsLevelOne, expectedSelectedOptionIdsLevelOne, expectedSelectedOptionIdsLevelTwo)))
-                    Assert.assertEquals(it.emptyOrInactiveCopy, expectedEmptyOrInnactiveCopy)
                 }
                 is VariantQuantityDataModel -> {
                     Assert.assertEquals(it.quantity, expectedQuantity)

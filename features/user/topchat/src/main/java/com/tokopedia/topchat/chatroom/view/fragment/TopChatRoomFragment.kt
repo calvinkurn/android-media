@@ -42,7 +42,8 @@ import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
-import com.tokopedia.chat_common.data.preview.ProductPreview
+import com.tokopedia.chat_common.data.SendableViewModel.Companion.SENDING_TEXT
+import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.*
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
@@ -127,6 +128,8 @@ import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import kotlinx.coroutines.Dispatchers
@@ -170,6 +173,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     @Inject
     lateinit var sellerReviewHelper: TopChatSellerReviewHelper
+
+    @Inject
+    lateinit var viewModel: TopChatViewModel
 
     private lateinit var fpm: PerformanceMonitoring
     private lateinit var customMessage: String
@@ -341,6 +347,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
+    override fun showPreviewMsg(previewMsg: SendableViewModel) {
+        adapter.addHeaderDateIfDifferent(previewMsg)
+        adapter.addNewMessage(previewMsg)
+        topchatViewState?.scrollToBottom()
+    }
+
     override fun removeSrwBubble() {
         adapter.removeSrwBubble()
     }
@@ -436,6 +448,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         onReplyBoxEmpty()
         initKeyboardListener(view)
         removeAttachmentIfNecessary(savedInstanceState)
+        setupObservers()
     }
 
     private fun setupBackground() {
@@ -451,7 +464,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun initLoadMoreListener() {
         rvScrollListener = object : LoadMoreTopBottomScrollListener(rvLayoutManager) {
             override fun loadMoreTop() {
-                showTopLoading()
+                rv?.post {
+                    showTopLoading()
+                }
                 presenter.loadTopChat(messageId, ::onErrorGetTopChat, ::onSuccessGetTopChat)
             }
 
@@ -562,13 +577,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             presenter.connectWebSocket(messageId)
             presenter.getOrderProgress(messageId)
         } else {
-            presenter.getMessageId(
-                toUserId,
-                toShopId,
-                source,
-                onError(),
-                onSuccessGetMessageId()
-            )
+            viewModel.getMessageId(toUserId, toShopId, source)
         }
     }
 
@@ -631,13 +640,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         presenter.initAttachmentPreview()
     }
 
-    private fun onSuccessGetMessageId(): (String) -> Unit {
-        return {
-            this.messageId = it
-            loadInitialData()
-            if(chatRoomFlexModeListener?.isFlexMode() == true) {
-                chatRoomFlexModeListener?.onSuccessGetMessageId(msgId = it)
-            }
+    private fun onSuccessGetMessageId(messageId: String) {
+        this.messageId = messageId
+        loadInitialData()
+        if(chatRoomFlexModeListener?.isFlexMode() == true) {
+            chatRoomFlexModeListener?.onSuccessGetMessageId(msgId = messageId)
         }
     }
 
@@ -783,6 +790,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
+    private fun onError(throwable: Throwable) {
+        hideLoading()
+        view?.let {
+            showSnackbarError(ErrorHandler.getErrorMessage(it.context, throwable))
+        }
+    }
+
     private fun onErrorInitiateData(throwable: Throwable) {
         hideLoading()
         showGetListError(throwable)
@@ -801,7 +815,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onImageAnnouncementClicked(viewModel: ImageAnnouncementViewModel) {
-        analytics.trackClickImageAnnouncement(viewModel.blastId.toString(), viewModel.attachmentId)
+        analytics.trackClickImageAnnouncement(viewModel.broadcastBlastId.toString(), viewModel.attachmentId)
         super.onImageAnnouncementClicked(viewModel)
     }
 
@@ -836,7 +850,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
-        super.onReceiveMessageEvent(visitable)
+        val chatBubble = visitable as? BaseChatViewModel
+        val hasPreviewOnList = adapter.hasPreviewOnList(chatBubble?.localId)
+        if (chatBubble != null && hasPreviewOnList) {
+            adapter.updatePreviewFromWs(visitable, chatBubble.localId)
+        } else {
+            viewState?.removeDummyIfExist(visitable)
+            viewState?.onReceiveMessageEvent(visitable)
+        }
         topchatViewState?.scrollDownWhenInBottom()
         isMoveItemInboxToTop = true
     }
@@ -1385,13 +1406,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun generateChatViewModelWithImage(imageUrl: String): ImageUploadViewModel {
-        return ImageUploadViewModel(
-            messageId,
-            opponentId,
-            (System.currentTimeMillis() / SECOND_DIVIDER).toString(),
-            imageUrl,
-            SendableViewModel.generateStartTime()
-        )
+        return ImageUploadViewModel.Builder()
+            .withRoomMetaData(presenter.roomMetaData)
+            .withAttachmentType(AttachmentType.Companion.TYPE_IMAGE_UPLOAD)
+            .withReplyTime(SENDING_TEXT)
+            .withStartTime(SendableViewModel.generateStartTime())
+            .withIsDummy(true)
+            .withImageUrl(imageUrl)
+            .build()
     }
 
     private fun showDialogConfirmToAbortUpload() {
@@ -2285,6 +2307,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if(isNecessary) {
             topchatViewState?.clearAttachmentPreview()
         }
+    }
+
+    private fun setupObservers() {
+        viewModel.messageId.observe(viewLifecycleOwner, {
+            when(it) {
+                is Success -> onSuccessGetMessageId(it.data)
+                is Fail -> onError(it.throwable)
+            }
+        })
     }
 
     override fun changeAddress(attachment: HeaderCtaButtonAttachment) {

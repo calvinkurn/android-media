@@ -89,7 +89,7 @@ class PlayCoverSetupViewModel @Inject constructor(
         return coverTitle.isNotBlank() && coverTitle.length <= maxTitleChars
     }
 
-    suspend fun getOriginalImageUrl(productId: Long, resizedImageUrl: String): String? = withContext(dispatcher.io) {
+    suspend fun getOriginalImageUrl(productId: String, resizedImageUrl: String): String = withContext(dispatcher.io) {
         val originalImageUrlList = getOriginalProductImageUseCase.apply {
             params = GetOriginalProductImageUseCase.createParams(productId)
         }.executeOnBackground()
@@ -135,7 +135,7 @@ class PlayCoverSetupViewModel @Inject constructor(
         )
     }
 
-    fun setCroppingProductCover(productId: Long, imageUrl: String) {
+    fun setCroppingProductCover(productId: String, imageUrl: String) {
         setupDataStore.updateCoverState(
                 CoverSetupState.Cropping.Product(productId, imageUrl)
         )

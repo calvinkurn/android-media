@@ -122,9 +122,8 @@ class HomeViewModelOvoUnitTest{
         homeViewModel.refresh(true)
 
         assert(
-            homeViewModel.homeDataModel.let {
-                it.list.isNotEmpty() && it.list.filterIsInstance<HomeHeaderOvoDataModel>().firstOrNull()?.headerDataModel?.tokopointsDrawerHomeData == null
-            }
+            homeViewModel.homeDataModel.list.isNotEmpty() &&
+                    homeViewModel.homeDataModel.list.filterIsInstance<HomeHeaderOvoDataModel>().firstOrNull()?.headerDataModel?.tokopointsDrawerHomeData == null
         )
     }
 
@@ -194,7 +193,7 @@ class HomeViewModelOvoUnitTest{
     @Test
     fun `Test Tokocash Only Get success data Tokocash`(){
         val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
-        every { userSessionInterface.isLoggedIn } returns false
+        every { userSessionInterface.isLoggedIn } returns true
         coEvery{ getCoroutineWalletBalanceUseCase.executeOnBackground() } returns WalletBalanceModel()
 
         getHomeUseCase.givenGetHomeDataReturn(
@@ -211,9 +210,10 @@ class HomeViewModelOvoUnitTest{
         homeViewModel.homeLiveData.observeForever(observerHome)
         homeViewModel.refresh(true)
 
-        homeViewModel.homeDataModel.let {
-            it.list.isNotEmpty() && it.list.filterIsInstance<HomeHeaderOvoDataModel>().firstOrNull()?.headerDataModel?.homeHeaderWalletActionData != null
-        }
+        assert(
+            homeViewModel.homeDataModel.list.isNotEmpty() &&
+                    homeViewModel.homeDataModel.list.filterIsInstance<HomeHeaderOvoDataModel>().firstOrNull()?.headerDataModel?.homeHeaderWalletActionData != null
+        )
     }
 
     @Test
@@ -235,9 +235,10 @@ class HomeViewModelOvoUnitTest{
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         homeViewModel.refresh(true)
-        homeViewModel.homeDataModel.let {
-            it.list.isNotEmpty() && it.list.filterIsInstance<HomeHeaderOvoDataModel>().firstOrNull()?.headerDataModel?.homeHeaderWalletActionData == null
-        }
+        assert(
+            homeViewModel.homeDataModel.list.isNotEmpty() &&
+                    homeViewModel.homeDataModel.list.filterIsInstance<HomeHeaderOvoDataModel>().firstOrNull()?.headerDataModel?.homeHeaderWalletActionData == null
+        )
     }
 
     @Test
