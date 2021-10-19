@@ -28,8 +28,8 @@ class ProductrevSubmitReviewUseCase @Inject constructor(graphqlRepository: Graph
         const val SUBMIT_REVIEW_QUERY_CLASS_NAME = "SubmitReview"
         const val SUBMIT_REVIEW_MUTATION =
             """
-                mutation productrevSubmitReviewV2(${'$'}reputationID: String!,${'$'}productID: String!, ${'$'}shopID: String!, ${'$'}reputationScore: Int, ${'$'}rating: Int!, ${'$'}reviewText: String, ${'$'}isAnonymous: Boolean, ${'$'}attachmentIDs: [String], ${'$'}utmSource: String, ${'$'}badRatingCategoryIDs: String) {
-                  productrevSubmitReviewV2(reputationID: ${'$'}reputationID, productID: ${'$'}productID , shopID: ${'$'}shopID, reputationScore: ${'$'}reputationScore, rating: ${'$'}rating, reviewText: ${'$'}reviewText , isAnonymous: ${'$'}isAnonymous, attachmentIDs: ${'$'}attachmentIDs, utmSource: ${'$'}utmSource, ${'$'}badRatingCategoryIDs: badRatingCategoryIDs) {
+                mutation productrevSubmitReviewV2(${'$'}reputationID: String!,${'$'}productID: String!, ${'$'}shopID: String!, ${'$'}reputationScore: Int, ${'$'}rating: Int!, ${'$'}reviewText: String, ${'$'}isAnonymous: Boolean, ${'$'}attachmentIDs: [String], ${'$'}utmSource: String, ${'$'}badRatingCategoryIDs: [String]) {
+                  productrevSubmitReviewV2(reputationID: ${'$'}reputationID, productID: ${'$'}productID , shopID: ${'$'}shopID, reputationScore: ${'$'}reputationScore, rating: ${'$'}rating, reviewText: ${'$'}reviewText , isAnonymous: ${'$'}isAnonymous, attachmentIDs: ${'$'}attachmentIDs, utmSource: ${'$'}utmSource, badRatingCategoryIDs: ${'$'}badRatingCategoryIDs) {
                     success
                     feedbackID
                   }
