@@ -23,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
@@ -35,7 +36,7 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
     @Inject
     lateinit var buyerOrderDetailExtensionViewModel: BuyerOrderDetailExtensionViewModel
 
-    private var binding: OrderExtensionSubmissionExtendsBottomsheetBinding? = null
+    private var binding by autoClearedNullable<OrderExtensionSubmissionExtendsBottomsheetBinding>()
     private var confirmedCancelledOrderDialog: OrderExtensionDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +50,7 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         binding =
-            OrderExtensionSubmissionExtendsBottomsheetBinding.inflate(LayoutInflater.from(context))
+            OrderExtensionSubmissionExtendsBottomsheetBinding.inflate(inflater, container, false)
         setChild(binding?.root)
         setTitle(getString(R.string.order_extension_title_submission_extends_bottom_sheet))
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -202,7 +203,6 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding = null
         toasterComponent.activity.clear()
     }
 
