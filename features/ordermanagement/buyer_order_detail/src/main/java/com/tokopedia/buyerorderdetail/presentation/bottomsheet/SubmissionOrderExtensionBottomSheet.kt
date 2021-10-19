@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderExtensionTracker
-import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailOrderExtension
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailOrderExtensionConstant
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderExtensionConstant
 import com.tokopedia.buyerorderdetail.databinding.OrderExtensionSubmissionExtendsBottomsheetBinding
 import com.tokopedia.buyerorderdetail.di.DaggerBuyerOrderDetailComponent
@@ -57,7 +57,7 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupTextView()
+        setupView()
         setupCta()
         observeRespond()
     }
@@ -99,10 +99,12 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun setupTextView() = binding?.run {
+    private fun setupView() = binding?.run {
         val respondInfo = getRespondInfo().value
         tvSubmissionExtendsTitle.text = respondInfo?.confirmationTitle.orEmpty()
         tvSubmissionExtendsReason.text = respondInfo?.reasonExtension.orEmpty()
+        dividerSubmissionExtends.setBackgroundResource(R.drawable.ic_divider_submission_extends)
+        submissionExtendsIndicator.setBackgroundResource(R.drawable.ic_reason_submission_extends)
     }
 
     private fun setupCta() = binding?.run {
@@ -146,7 +148,7 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
             context?.let {
                 OrderExtensionDialog(
                     it,
-                    DialogUnify.WITH_ILLUSTRATION
+                    DialogUnify.VERTICAL_ACTION
                 ).apply {
                     setTitle(getString(R.string.order_extension_title_confirmed_order_cancelled))
                     setDescription(
@@ -157,8 +159,8 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
                             respondInfo?.newDeadline.orEmpty(),
                         )
                     )
-                    setImageUrl(BuyerOrderDetailOrderExtension.Image.CONFIRMED_CANCELLED_ORDER_URL)
                     setDialogSecondaryCta()
+                    setImageUrl(BuyerOrderDetailOrderExtensionConstant.Image.CONFIRMED_CANCELLED_ORDER_URL)
                 }
             }
         }
@@ -170,7 +172,9 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
 
     private fun showConfirmedCancelledOrderDialog() {
         confirmedCancelledOrderDialog = getInstanceDialog().value
-        confirmedCancelledOrderDialog?.getDialog()?.run {
+        confirmedCancelledOrderDialog?.getDialog()?.apply {
+            setPrimaryCTAText(getString(R.string.order_extension_order_cancelled))
+            setSecondaryCTAText(getString(R.string.order_extension_btn_secondary))
             setPrimaryCTAClickListener {
                 buyerOrderDetailExtensionViewModel.requestRespond(getOrderId(), CANCEL_ACTION)
             }

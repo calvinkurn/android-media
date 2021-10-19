@@ -7,14 +7,14 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.buyerorderdetail.R
-import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailOrderExtension
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailOrderExtensionConstant
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderExtensionConstant
 import com.tokopedia.buyerorderdetail.databinding.FragmentBuyerOrderExtensionBinding
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
+import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderExtensionActivity
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.SubmissionOrderExtensionBottomSheet
 import com.tokopedia.buyerorderdetail.presentation.dialog.OrderExtensionDialog
 import com.tokopedia.buyerorderdetail.presentation.model.OrderExtensionRespondInfoUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.OrderExtensionRespondUiModel
 import com.tokopedia.buyerorderdetail.presentation.partialview.OrderExtensionToaster
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailExtensionViewModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -63,8 +63,10 @@ class BuyerOrderExtensionFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setDataFromArguments()
-        observeRespondInfo()
-        loadRespondInfo()
+//        observeRespondInfo()
+//        loadRespondInfo()
+        showSubmissionOrderExtension(OrderExtensionRespondInfoUiModel(messageCode = 1))
+//        showOrderHasBeenDialog()
     }
 
     override fun onDestroyView() {
@@ -131,6 +133,9 @@ class BuyerOrderExtensionFragment : BaseDaggerFragment() {
         )
         val bottomSheet =
             SubmissionOrderExtensionBottomSheet.newInstance(cacheManager?.id.orEmpty())
+        bottomSheet.setOnDismissListener {
+            (activity as? BuyerOrderExtensionActivity)?.setResultFinish()
+        }
         bottomSheet.show(childFragmentManager)
     }
 
@@ -138,19 +143,20 @@ class BuyerOrderExtensionFragment : BaseDaggerFragment() {
         val confirmedCancelledOrderDialog = context?.let {
             OrderExtensionDialog(
                 it,
-                DialogUnify.WITH_ILLUSTRATION
+                DialogUnify.SINGLE_ACTION
             ).apply {
                 setTitle(getString(R.string.order_extension_title_order_has_been_sent))
                 setDescription(getString(R.string.order_extension_desc_order_has_been_sent))
-                setImageUrl(BuyerOrderDetailOrderExtension.Image.ORDER_HAS_BEEN_SENT_URL)
+                setImageUrl(BuyerOrderDetailOrderExtensionConstant.Image.ORDER_HAS_BEEN_SENT_URL)
             }
         }
         confirmedCancelledOrderDialog?.getDialog()?.run {
+            setPrimaryCTAText(getString(R.string.label_understand))
             setPrimaryCTAClickListener {
                 dismiss()
             }
             setOnDismissListener {
-
+                (activity as? BuyerOrderExtensionActivity)?.setResultFinish()
             }
             show()
         }

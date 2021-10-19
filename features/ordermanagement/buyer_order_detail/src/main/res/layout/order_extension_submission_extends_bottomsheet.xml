@@ -10,8 +10,6 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -70,7 +68,6 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl6"
-        android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toStartOf="@id/guidelineBtn"
         app:layout_constraintTop_toBottomOf="@id/tvSubmissionExtendsReason"
@@ -78,6 +75,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:unifyButtonType="alternate"
         app:unifyButtonVariant="ghost"
+        app:unifyButtonSize="medium"
         android:textColor="@color/Unify_N700_68"
         android:text="@string/order_extension_order_cancelled" />
 
@@ -94,7 +92,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl6"
         android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvSubmissionExtendsReason"
@@ -102,6 +99,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled"
+        app:unifyButtonSize="medium"
         android:textColor="@color/Unify_N700_68"
         android:text="@string/order_extension_btn_secondary" />
 

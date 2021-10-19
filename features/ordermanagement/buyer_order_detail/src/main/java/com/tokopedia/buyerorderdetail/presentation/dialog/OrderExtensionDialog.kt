@@ -1,7 +1,10 @@
 package com.tokopedia.buyerorderdetail.presentation.dialog
 
 import android.content.Context
+import android.view.ViewGroup
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.unifycomponents.UnifyButton
 
 class OrderExtensionDialog(
@@ -22,7 +25,7 @@ class OrderExtensionDialog(
     fun getDialog() = dialogUnify
 
     fun setDescription(description: String) {
-        dialogUnify?.setDescription(description)
+        dialogUnify?.setDescription(MethodChecker.fromHtml(description))
     }
 
     fun setTitle(title: String) {
@@ -34,8 +37,12 @@ class OrderExtensionDialog(
     }
 
     fun setDialogSecondaryCta() {
-        dialogUnify?.dialogSecondaryCTA?.apply {
-            buttonVariant = UnifyButton.Variant.TEXT_ONLY
+        dialogUnify?.dialogSecondaryLongCTA?.apply {
+            val btnParams = this.layoutParams as? ViewGroup.MarginLayoutParams
+            btnParams?.topMargin =
+                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+            layoutParams = btnParams
+            buttonVariant = UnifyButton.Variant.GHOST
             buttonType = UnifyButton.Type.ALTERNATE
         }
     }
