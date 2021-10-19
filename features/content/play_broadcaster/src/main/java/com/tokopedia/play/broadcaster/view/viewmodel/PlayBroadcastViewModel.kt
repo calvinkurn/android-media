@@ -182,7 +182,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
     private val _configInfo = _observableConfigInfo.asFlow()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
-    private val _pinnedMessage: MutableStateFlow<PinnedMessageUiModel> = MutableStateFlow(
+    private val _pinnedMessage = MutableStateFlow<PinnedMessageUiModel>(
         PinnedMessageUiModel.Empty()
     )
 
