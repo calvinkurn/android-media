@@ -16,9 +16,9 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.checkout.R
-import com.tokopedia.checkout.view.viewholder.PromoCheckoutViewHolder
-import com.tokopedia.checkout.view.viewholder.ShipmentButtonPaymentViewHolder
-import com.tokopedia.checkout.view.viewholder.ShipmentItemViewHolder
+import com.tokopedia.checkout.old.view.viewholder.PromoCheckoutViewHolder
+import com.tokopedia.checkout.old.view.viewholder.ShipmentButtonPaymentViewHolder
+import com.tokopedia.checkout.old.view.viewholder.ShipmentItemViewHolder
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.unifyprinciples.Typography
@@ -109,7 +109,7 @@ class CheckoutPageRobot {
      * @param message additional promo message if available
      */
     fun assertHasSingleShipmentSelected(title: String, originalPrice: String? = null,
-                                                       discountedPrice: String? = null, eta: String, message: String? = null) {
+                                        discountedPrice: String? = null, eta: String, message: String? = null) {
         scrollRecyclerViewToFirstOrder()
         onView(withId(R.id.rv_shipment))
                 .perform(RecyclerViewActions.actionOnHolderItem(isA(ShipmentItemViewHolder::class.java), object : ViewAction {
