@@ -120,7 +120,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     private var productListMeta: RepurchaseProductListMeta? = null
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
     private var selectedCategoryFilter: SelectedSortFilter? = null
-    private var selectedDateFilter: SelectedDateFilter? = SelectedDateFilter()
+    private var selectedDateFilter: SelectedDateFilter = SelectedDateFilter()
     private var selectedSortFilter: Int = FREQUENTLY_BOUGHT
     private var layoutList: MutableList<Visitable<*>> = mutableListOf()
 
@@ -273,7 +273,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         }
     }
 
-    fun applyDateFilter(selectedFilter: SelectedDateFilter?) {
+    fun applyDateFilter(selectedFilter: SelectedDateFilter) {
         launchCatchError(block = {
             setDateFilter(selectedFilter)
             val productList = getProductList()
@@ -359,7 +359,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         _getLayout.postValue(Success(layout))
     }
 
-    private fun setDateFilter(selectedFilter: SelectedDateFilter?) {
+    private fun setDateFilter(selectedFilter: SelectedDateFilter) {
         layoutList.setDateFilter(selectedFilter)
         layoutList.removeEmptyStateNoHistory()
         layoutList.removeAllProduct()
@@ -539,8 +539,8 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         val totalScan = productListMeta?.totalScan.orZero()
         val categoryIds = selectedCategoryFilter?.id
         val sort = selectedSortFilter
-        val dateStart = selectedDateFilter?.startDate
-        val dateEnd = selectedDateFilter?.endDate
+        val dateStart = selectedDateFilter.startDate
+        val dateEnd = selectedDateFilter.endDate
 
         return GetRepurchaseProductListParam(
             warehouseID = warehouseID,
