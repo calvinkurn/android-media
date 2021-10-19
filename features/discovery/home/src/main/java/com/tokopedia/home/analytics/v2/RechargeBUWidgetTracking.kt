@@ -14,6 +14,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
     private const val RECHARGE_BU_WIDGET_CURRENT_SITE = "tokopediamarketplace"
     private const val RECHARGE_BU_WIDGET_BANNER = "banner"
     private const val RECHARGE_BU_WIDGET_BANNER_CARD = "banner card"
+    private const val RECHARGE_BU_WIDGET_PRODUCT_CARD = "product card"
     private const val RECHARGE_BU_WIDGET_ITEM_LIST_KEY = "item_list"
     private const val RECHARGE_BU_WIDGET_ITEMS_KEY = "items"
 
@@ -32,7 +33,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
                         "${item.trackingData.productId} - ${item.label2}"
             val tracker = HashMap<String, Any>().apply {
                 put(Event.KEY, Event.PRODUCT_VIEW)
-                put(Action.KEY, Action.IMPRESSION_ON.format("$RECHARGE_BU_WIDGET_BANNER_CARD $RECHARGE_BU_WIDGET_NAME"))
+                put(Action.KEY, Action.IMPRESSION_ON.format("$RECHARGE_BU_WIDGET_PRODUCT_CARD $RECHARGE_BU_WIDGET_NAME"))
                 put(Category.KEY, "$RECHARGE_BU_WIDGET_EVENT_CATEGORY - $RECHARGE_BU_WIDGET_NEW_NAME")
                 put(Label.KEY, eventLabel)
                 put(BusinessUnit.KEY, RECHARGE_BU_WIDGET_BUSINESS_UNIT)
@@ -69,7 +70,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
                     "${item.trackingData.productId} - ${item.label2}"
             val bundle = HashMap<String, Any>().apply {
                 put(Event.KEY, Event.PRODUCT_CLICK)
-                put(Action.KEY, Action.CLICK_ON.format("$RECHARGE_BU_WIDGET_BANNER_CARD $RECHARGE_BU_WIDGET_NAME"))
+                put(Action.KEY, Action.CLICK_ON.format("$RECHARGE_BU_WIDGET_PRODUCT_CARD $RECHARGE_BU_WIDGET_NAME"))
                 put(Category.KEY, "$RECHARGE_BU_WIDGET_EVENT_CATEGORY - $RECHARGE_BU_WIDGET_NEW_NAME")
                 put(Label.KEY, eventLabel)
                 put(BusinessUnit.KEY, RECHARGE_BU_WIDGET_BUSINESS_UNIT)
