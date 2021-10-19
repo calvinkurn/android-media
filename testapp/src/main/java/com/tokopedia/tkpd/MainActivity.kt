@@ -113,6 +113,5 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-        RouteManager.route(this, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT)
     }
 }
