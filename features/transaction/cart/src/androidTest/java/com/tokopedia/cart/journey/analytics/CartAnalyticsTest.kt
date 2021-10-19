@@ -1,10 +1,14 @@
 package com.tokopedia.cart.journey.analytics
 
+import android.util.Log
+import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.cart.CartActivity
+import com.tokopedia.cart.bundle.view.CartIdlingResource
 import com.tokopedia.cart.robot.cartPage
 import com.tokopedia.cart.test.R
-import com.tokopedia.cart.old.OldCartActivity
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -18,7 +22,7 @@ import org.junit.Test
 class CartAnalyticsTest {
 
     @get:Rule
-    var activityRule = object : IntentsTestRule<OldCartActivity>(OldCartActivity::class.java, false, false) {
+    var activityRule = object : IntentsTestRule<CartActivity>(CartActivity::class.java, false, false) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
@@ -27,13 +31,17 @@ class CartAnalyticsTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
+    private var idlingResource: IdlingResource? = null
+
     @get:Rule
     var cassavaRule = CassavaTestRule()
 
     @Before
     fun setup() {
+        idlingResource = CartIdlingResource.getIdlingResource()
+        IdlingRegistry.getInstance().register(idlingResource)
         setupGraphqlMockResponse {
-            addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.cart_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.cart_bundle_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(UPDATE_CART_KEY, InstrumentationMockHelper.getRawString(context, R.raw.update_cart_response), MockModelConfig.FIND_BY_CONTAINS)
         }
     }
@@ -43,8 +51,15 @@ class CartAnalyticsTest {
         activityRule.launchActivity(null)
 
         cartPage {
+            Log.i("qwertyuiop", "waiting")
             waitForData()
+            Log.i("qwertyuiop", "start click button")
             clickBuyButton()
+            Log.i("qwertyuiop", "done click button")
+            Log.i("qwertyuiop", "start click button 2")
+            clickBuyButton()
+            Log.i("qwertyuiop", "done click button 2")
+            waitForData()
         } validateAnalytics  {
             hasPassedAnalytics(cassavaRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
         }
@@ -55,11 +70,12 @@ class CartAnalyticsTest {
 
     @After
     fun cleanup() {
+        IdlingRegistry.getInstance().unregister(idlingResource)
         if (activityRule.activity?.isDestroyed == false) activityRule.finishActivity()
     }
 
     companion object {
-        private const val GET_CART_LIST_KEY = "cart_revamp"
+        private const val GET_CART_LIST_KEY = "cart_revamp_v3"
         private const val UPDATE_CART_KEY = "update_cart_v2"
 
         private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/cart.json"

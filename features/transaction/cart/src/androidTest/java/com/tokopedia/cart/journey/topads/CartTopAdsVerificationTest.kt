@@ -10,9 +10,9 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
+import com.tokopedia.cart.CartActivity
 import com.tokopedia.cart.R
 import com.tokopedia.cart.bundle.view.viewholder.CartRecommendationViewHolder
-import com.tokopedia.cart.old.OldCartActivity
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -28,7 +28,7 @@ class CartTopAdsVerificationTest {
     private var topAdsCount = 0
 
     @get:Rule
-    var activityRule = object : ActivityTestRule<OldCartActivity>(OldCartActivity::class.java) {
+    var activityRule = object : ActivityTestRule<CartActivity>(CartActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupTopAdsDetector()
