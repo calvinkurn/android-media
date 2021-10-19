@@ -2,29 +2,27 @@ package com.tokopedia.shop.info.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.data.model.ShopInfoData
+import com.tokopedia.shop.common.domain.GetShopNoteUseCase
+import com.tokopedia.shop.common.domain.GetShopReputationUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_INFO_SOURCE
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
-import com.tokopedia.shop.common.domain.GetShopReputationUseCase
-import com.tokopedia.shop.common.domain.GetShopNoteUseCase
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.shop.info.data.model.ShopStatisticsResp
-import com.tokopedia.shop.info.domain.usecase.GetShopStatisticUseCase
 import com.tokopedia.shop.note.view.model.ShopNoteUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ShopInfoViewModel @Inject constructor(private val userSessionInterface: UserSessionInterface,
                                             private val getShopNoteUseCase: GetShopNoteUseCase,
                                             private val getShopInfoUseCase: GQLGetShopInfoUseCase,
-                                            private val getShopStatisticUseCase: GetShopStatisticUseCase,
                                             private val getShopReputationUseCase: GetShopReputationUseCase,
                                             private val coroutineDispatcherProvider: CoroutineDispatchers
 ): BaseViewModel(coroutineDispatcherProvider.main){
@@ -32,7 +30,6 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
 
     val shopNotesResp = MutableLiveData<Result<List<ShopNoteUiModel>>>()
-    val shopStatisticsResp = MutableLiveData<ShopStatisticsResp>()
     val shopInfo = MutableLiveData<ShopInfoData>()
     val shopBadgeReputation = MutableLiveData<Result<ShopBadge>>()
 
@@ -90,28 +87,6 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
         }) {}
     }
 
-    fun getShopStats(shopId: String) {
-        launchCatchError(block = {
-            coroutineScope{
-                val getShopStatisticRespAsync = async(coroutineDispatcherProvider.io) {
-                    getShopStatistics(shopId)
-                }
-                val getShopReputationRespAsync = async(coroutineDispatcherProvider.io) {
-                    getShopReputation(shopId)
-                }
-
-                shopStatisticsResp.postValue(concatResp(
-                        getShopStatisticRespAsync.await(),
-                        getShopReputationRespAsync.await())
-                )
-            }
-        }) {}
-    }
-
-    private fun concatResp(shopStatisticsResp: ShopStatisticsResp, shopBadge: ShopBadge?): ShopStatisticsResp {
-        return shopStatisticsResp.copy(shopReputation = shopBadge)
-    }
-
     private suspend fun getShopReputation(shopId: String) : ShopBadge?{
         getShopReputationUseCase.params = GetShopReputationUseCase.createParams(shopId.toInt())
         return try {
@@ -121,9 +96,4 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
         }
     }
 
-    private suspend fun getShopStatistics(shopId: String) : ShopStatisticsResp {
-        getShopStatisticUseCase.params = GetShopStatisticUseCase.createParams(shopId.toInt())
-        getShopStatisticUseCase.isFromCacheFirst = false
-        return getShopStatisticUseCase.executeOnBackground()
-    }
 }

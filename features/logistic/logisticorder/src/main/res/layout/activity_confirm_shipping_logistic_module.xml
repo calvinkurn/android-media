@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_view"
@@ -7,112 +7,143 @@
     android:background="@color/Unify_N0">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/courier_layout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="@id/padding_top"
+        app:layout_constraintStart_toEndOf="@id/padding_left"
+        app:layout_constraintLeft_toRightOf="@id/padding_left"
+        app:layout_constraintEnd_toStartOf="@id/padding_right"
+        app:layout_constraintRight_toLeftOf="@id/padding_right">
 
-        <LinearLayout
-            android:id="@+id/courier_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
-            android:padding="@dimen/dp_10">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/courier_lbl"
+                android:layout_width="0dp"
                 android:layout_weight="1"
-                android:text="@string/title_courier_logistic_module" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:text="@string/title_courier_logistic_module"
+                app:typographyType="body_2" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/courier_name"
+                android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_marginTop="@dimen/dp_10"
                 android:gravity="end"
                 android:text="@string/title_choose_logistic_module"
                 android:textColor="@color/Unify_G400"
+                app:typographyType="body_2"
                 tools:text="Jne Reguler" />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginStart="@dimen/dp_10"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_marginBottom="@dimen/dp_10"
-            android:background="@color/Unify_N100" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/dp_10">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="8"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/label_awb_number_logistic_module" />
-
-                <EditText
-                    android:id="@+id/barcode_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/label_insert_awb_logistic_module"
-                    android:inputType="textCapCharacters"
-                    android:textSize="@dimen/sp_12" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:id="@+id/icon_scan"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    app:srcCompat="@drawable/ic_barcode_logistic_module" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp_10"
+        android:background="@color/Unify_N100"
+        app:layout_constraintEnd_toStartOf="@id/padding_right"
+        app:layout_constraintLeft_toRightOf="@id/padding_left"
+        app:layout_constraintRight_toLeftOf="@id/padding_right"
+        app:layout_constraintStart_toEndOf="@id/padding_left"
+        app:layout_constraintTop_toBottomOf="@id/courier_layout" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/barcode_lbl"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
+        android:layout_marginTop="@dimen/dp_10"
+        android:text="@string/label_awb_number_logistic_module"
+        app:layout_constraintLeft_toRightOf="@id/padding_left"
+        app:layout_constraintStart_toEndOf="@id/padding_left"
+        app:layout_constraintRight_toLeftOf="@id/padding_right"
+        app:layout_constraintEnd_toStartOf="@id/padding_right"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:typographyType="body_2" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_10"
-            android:gravity="center_horizontal"
-            android:text="Biaya pergantian kurir sepenuhnya ditanggung Penjual" />
+    <EditText
+        android:id="@+id/barcode_edit_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/label_insert_awb_logistic_module"
+        android:inputType="textCapCharacters"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintHorizontal_weight="8"
+        app:layout_constraintEnd_toStartOf="@id/icon_scan"
+        app:layout_constraintLeft_toRightOf="@id/padding_left"
+        app:layout_constraintRight_toLeftOf="@id/icon_scan"
+        app:layout_constraintStart_toEndOf="@id/padding_left"
+        app:layout_constraintTop_toBottomOf="@id/barcode_lbl" />
 
-        <TextView
-            android:id="@+id/confirm_button"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_44"
-            android:background="@drawable/green_button_rounded_unify_logistic_module"
-            android:gravity="center"
-            android:text="Konfirmasi"
-            android:textColor="@color/Unify_N0" />
 
-    </LinearLayout>
+    <ImageView
+        android:id="@+id/icon_scan"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/barcode_edit_text"
+        app:layout_constraintEnd_toStartOf="@id/padding_right"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintVertical_weight="1"
+        app:layout_constraintLeft_toRightOf="@id/barcode_edit_text"
+        app:layout_constraintRight_toLeftOf="@id/padding_right"
+        app:layout_constraintStart_toEndOf="@id/barcode_edit_text"
+        app:layout_constraintTop_toTopOf="@id/barcode_lbl"
+        app:srcCompat="@drawable/ic_barcode_logistic_module" />
 
-</RelativeLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:gravity="center_horizontal"
+        android:text="@string/confirm_shipping_confirm_description"
+        app:layout_constraintBottom_toTopOf="@id/confirm_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/confirm_button"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_44"
+        android:background="@drawable/green_button_rounded_unify_logistic_module"
+        android:gravity="center"
+        android:text="@string/confirm_shipping_confirm_button"
+        android:textColor="@color/Unify_N0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="body_2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/padding_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="@dimen/dp_10" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/padding_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/dp_10" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/padding_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/dp_10" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 

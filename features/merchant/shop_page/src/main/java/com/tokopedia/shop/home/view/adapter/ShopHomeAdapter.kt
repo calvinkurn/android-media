@@ -480,7 +480,7 @@ class ShopHomeAdapter(
         val newList = getNewVisitableItems()
         listWidgetContentData.onEach { widgetContentData ->
             newList.filterIsInstance<BaseShopHomeWidgetUiModel>().indexOfFirst {
-                widgetContentData.key.first == it.widgetId && widgetContentData.key.second == it.widgetMasterId
+                widgetContentData.key.first == it.widgetId
             }.let{ position ->
                 if (position >= 0 && position < newList.size) {
                     if(widgetContentData.value != null){
@@ -499,7 +499,7 @@ class ShopHomeAdapter(
     fun updateShopHomeWidgetStateToLoading(listWidgetLayout: MutableList<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>) {
         listWidgetLayout.onEach { widgetLayout ->
             visitables.filterIsInstance<BaseShopHomeWidgetUiModel>().firstOrNull {
-                widgetLayout.widgetId == it.widgetId && widgetLayout.widgetMasterId == it.widgetMasterId
+                widgetLayout.widgetId == it.widgetId
             }?.let{
                 it.widgetState = WidgetState.LOADING
             }
@@ -548,7 +548,7 @@ class ShopHomeAdapter(
         val newList = getNewVisitableItems()
         listShopWidgetLayout.onEach { shopWidgetLayout ->
             newList.filterIsInstance<BaseShopHomeWidgetUiModel>().indexOfFirst {
-                shopWidgetLayout.widgetId == it.widgetId && shopWidgetLayout.widgetMasterId == it.widgetMasterId
+                shopWidgetLayout.widgetId == it.widgetId
             }.let { position ->
                 newList.removeAt(position)
             }

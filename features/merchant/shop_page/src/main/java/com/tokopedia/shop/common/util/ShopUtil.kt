@@ -9,7 +9,6 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_ROLLOUT_NEW_SHOP_ETALASE
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_NEW_HOME_TAB
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_REVIEW
 import com.tokopedia.remoteconfig.RollenceKey.NEW_REVIEW_SHOP
@@ -28,7 +27,6 @@ import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.SHOP_NAME_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.TYPE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.USER_ID_KEY
-import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -99,20 +97,6 @@ object ShopUtil {
                 AB_TEST_SHOP_FOLLOW_BUTTON_KEY,
                 AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD
         )
-    }
-
-    fun isShouldCheckShopType(): Boolean {
-        val shopEtalaseRevampKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
-                AB_TEST_ROLLOUT_NEW_SHOP_ETALASE,
-                ""
-        )
-        return shopEtalaseRevampKey.equals(AB_TEST_ROLLOUT_NEW_SHOP_ETALASE, true)
-    }
-
-    fun isNotRegularMerchant(shopPageHeaderDataModel: ShopPageHeaderDataModel?): Boolean {
-        return shopPageHeaderDataModel?.let { shop ->
-            shop.isGoldMerchant || shop.isOfficial
-        } ?: false
     }
 
     fun isUsingNewShareBottomSheet(context: Context): Boolean {

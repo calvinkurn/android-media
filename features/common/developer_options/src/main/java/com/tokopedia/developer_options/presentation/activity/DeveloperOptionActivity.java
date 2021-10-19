@@ -54,7 +54,10 @@ import com.tokopedia.developer_options.utils.SellerInAppReview;
 import com.tokopedia.devicefingerprint.appauth.AppAuthKt;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.RollenceKey;
 import com.tokopedia.unifycomponents.TextFieldUnify;
 import com.tokopedia.unifycomponents.UnifyButton;
@@ -334,8 +337,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         UnifyButton buttonResetOnboardingNavigation = findViewById(R.id.resetOnboardingNavigation);
         UnifyButton alwaysOldButton = findViewById(R.id.buttonAlwaysOldNavigation);
         UnifyButton alwaysNewNavigation = findViewById(R.id.buttonAlwaysNewNavigation);
-        UnifyButton alwaysOldHome = findViewById(R.id.buttonAlwaysOldHome);
-        UnifyButton alwaysNewHome = findViewById(R.id.buttonAlwaysNewHome);
         alwaysOldBalanceWidget = findViewById(R.id.buttonAlwaysOldBalanceWidget);
         System.out.println("++ line 332");
         UnifyButton alwaysNewBalanceWidget = findViewById(R.id.buttonAlwaysNewBalanceWidget);
@@ -346,7 +347,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         TextFieldUnify inputRollenceVariant = findViewById(R.id.input_rollence_variant);
         UnifyButton btnApplyRollence = findViewById(R.id.btn_apply_rollence);
 
-        findViewById(R.id.pdp_dev_btn).setOnClickListener(v->{
+        findViewById(R.id.pdp_dev_btn).setOnClickListener(v -> {
             Intent intent = new Intent(this, ProductDetailDevActivity.class);
             startActivity(intent);
         });
@@ -381,10 +382,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         String VARIANT_OLD = RollenceKey.NAVIGATION_VARIANT_OLD;
         String VARIANT_REVAMP = RollenceKey.NAVIGATION_VARIANT_REVAMP;
 
-        String EXP_HOME = RollenceKey.HOME_EXP;
-        String HOME_VARIANT_OLD = RollenceKey.HOME_VARIANT_OLD;
-        String HOME_VARIANT_REVAMP = RollenceKey.HOME_VARIANT_REVAMP;
-
         String EXP_BALANCE_WIDGET = RollenceKey.BALANCE_EXP;
         String BALANCE_WIDGET_VARIANT_OLD = RollenceKey.BALANCE_VARIANT_OLD;
         String BALANCE_WIDGET_VARIANT_REVAMP = RollenceKey.BALANCE_VARIANT_NEW;
@@ -405,22 +402,6 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
-        alwaysOldHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_HOME, HOME_VARIANT_OLD);
-                Toast.makeText(DeveloperOptionActivity.this, "Home: Old", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        alwaysNewHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_HOME, HOME_VARIANT_REVAMP);
-                Toast.makeText(DeveloperOptionActivity.this, "Home: Revamped", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         alwaysOldBalanceWidget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -437,7 +418,7 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
-        btnApplyRollence.setOnClickListener(new View.OnClickListener(){
+        btnApplyRollence.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (inputRollenceKey.getTextFieldInput().getText().length() < 1) {
@@ -449,6 +430,18 @@ public class DeveloperOptionActivity extends BaseActivity {
                     Toast.makeText(DeveloperOptionActivity.this, "Rollence Key Applied", Toast.LENGTH_SHORT).show();
                 }
             }
+        });
+
+        findViewById(R.id.btn_always_old_cart_checkout).setOnClickListener(v -> {
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+            remoteConfig.setString(RemoteConfigKey.ENABLE_CART_CHECKOUT_BUNDLING, "false");
+            Toast.makeText(DeveloperOptionActivity.this, "Applied", Toast.LENGTH_SHORT).show();
+        });
+
+        findViewById(R.id.btn_always_new_cart_checkout).setOnClickListener(v -> {
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+            remoteConfig.setString(RemoteConfigKey.ENABLE_CART_CHECKOUT_BUNDLING, "true");
+            Toast.makeText(DeveloperOptionActivity.this, "Applied", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -750,7 +743,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     }
 
     public Object getOrNull(String[] list, int index) {
-        if (index >= 0 && index <= list.length - 1)  {
+        if (index >= 0 && index <= list.length - 1) {
             return list[index];
         } else {
             return null;

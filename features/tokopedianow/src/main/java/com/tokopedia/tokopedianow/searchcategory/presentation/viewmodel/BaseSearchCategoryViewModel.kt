@@ -224,6 +224,9 @@ abstract class BaseSearchCategoryViewModel(
         LiveData<Triple<Int, String, TokoNowProductCardUiModel>> =
         addToCartRepurchaseWidgetTrackingMutableLiveData
 
+    protected val oocOpenScreenTrackingMutableEvent = SingleLiveEvent<Boolean>()
+    val oocOpenScreenTrackingEvent: LiveData<Boolean> = oocOpenScreenTrackingMutableEvent
+
     init {
         updateQueryParams()
 
@@ -300,10 +303,15 @@ abstract class BaseSearchCategoryViewModel(
         updateHeaderBackgroundVisibility(false)
         updateMiniCartVisibility(false)
 
+        sendOutOfCoverageTrackingEvent()
         createVisitableListWithOutOfCoverageView()
         clearVisitableListLiveData()
         updateVisitableListLiveData()
         showPageContent()
+    }
+
+    protected fun sendOutOfCoverageTrackingEvent() {
+        oocOpenScreenTrackingMutableEvent.value = true
     }
 
     private fun createVisitableListWithOutOfCoverageView() {
@@ -1155,15 +1163,7 @@ abstract class BaseSearchCategoryViewModel(
                 getRecommendationUseCase.getData(getRecommendationRequestParam)
 
         updateRecommendationList(recommendationListData)
-
-        val recommendationData = recommendationList.firstOrNull() ?: RecommendationWidget()
-
-        element.carouselData = RecommendationCarouselData(
-                state = RecommendationCarouselData.STATE_READY,
-                recommendationData = recommendationData
-        )
-
-        updateVisitableWithIndex(listOf(adapterPosition))
+        updateVisitableListForRecommendationCarousel(element, adapterPosition)
     }
 
     protected open fun createRecommendationRequestParam(
@@ -1203,6 +1203,25 @@ abstract class BaseSearchCategoryViewModel(
         val quantity = cartService.getProductQuantity(productId, parentProductId)
 
         recommendationItem.quantity = quantity
+    }
+
+    protected open suspend fun updateVisitableListForRecommendationCarousel(
+        element: TokoNowRecommendationCarouselUiModel,
+        adapterPosition: Int,
+    ) {
+        val recommendationData = recommendationList.firstOrNull() ?: RecommendationWidget()
+
+        if (recommendationData.recommendationItemList.isEmpty()) {
+            visitableList.remove(element)
+            suspendUpdateVisitableListLiveData()
+        } else {
+            element.carouselData = RecommendationCarouselData(
+                state = RecommendationCarouselData.STATE_READY,
+                recommendationData = recommendationData
+            )
+
+            updateVisitableWithIndex(listOf(adapterPosition))
+        }
     }
 
     protected open suspend fun getRecommendationCarouselError(

@@ -521,7 +521,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun onSuccessRegisterCheckFingerprint(data: RegisterCheckFingerprintResult) {
         activity?.let {
-            if (isEnableFingerprint && isEnableFingerprintRollout() && data.isRegistered) {
+            if (isEnableFingerprint && data.isRegistered) {
                 enableFingerprint()
             } else {
                 disableFingerprint()
@@ -1255,14 +1255,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         return remoteConfigInstance.abTestPlatform
     }
 
-    fun isEnableFingerprintRollout(): Boolean {
-        if (Build.VERSION.SDK_INT == OS_11) {
-            return getAbTestPlatform().getString(SessionConstants.Rollout.ROLLOUT_LOGIN_FINGERPRINT_11).isNotEmpty()
-        }
-        return getAbTestPlatform().getString(SessionConstants.Rollout.ROLLOUT_LOGIN_FINGERPRINT).isNotEmpty()
-    }
-
-
     fun isEnableEncryptRollout(): Boolean {
         val rolloutKey = if (GlobalConfig.isSellerApp()) {
             SessionConstants.Rollout.ROLLOUT_LOGIN_ENCRYPTION_SELLER
@@ -1927,7 +1919,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private fun registerPushNotif() {
         if (isHitRegisterPushNotif && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             activity?.let {
-                RegisterPushNotifService.startService(it.applicationContext)
+                RegisterPushNotifService.startService(it.applicationContext, REGISTER_PUSH_NOTIF_SERVICE_JOB_ID)
             }
         }
     }
@@ -2002,6 +1994,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         private const val SOCMED_BUTTON_CORNER_SIZE = 10
 
         private const val OS_11 = 30
+        private const val REGISTER_PUSH_NOTIF_SERVICE_JOB_ID = 3049
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = LoginEmailPhoneFragment()

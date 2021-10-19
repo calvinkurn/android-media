@@ -96,6 +96,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     private var containerCheckBox: RelativeLayout? = null
 
     lateinit var adapter: SmartBillsAdapter
+    lateinit var adapterAccordion: SmartBillsAdapter
 
     @Inject
     lateinit var smartBillsAnalytics: SmartBillsAnalytics
@@ -184,7 +185,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
                         renderList(bills)
                         listAccordion = getAccordionSection(it.data.sections)
-                        renderList(listAccordion)
+                        renderAccordionList(listAccordion)
                         smartBillsAnalytics.impressionAllProducts(bills)
 
                         // Auto select bills based on data
@@ -421,6 +422,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 rv_smart_bills_items.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 rv_smart_bills_items.adapter = adapter
                 rv_smart_bills_items.addItemDecoration(DividerSBMItemDecoration(context))
+                initAccordion()
                 smart_bills_checkout_view.listener = this
                 smart_bills_checkout_view.setBuyButtonLabel(getString(R.string.smart_bills_checkout_view_button_label))
                 updateCheckoutView()
@@ -430,9 +432,35 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         }
     }
 
+    private fun initAccordion(){
+        rv_smart_bills_accordion?.apply {
+            resertAccordion()
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            adapter = adapterAccordion
+            addItemDecoration(DividerSBMItemDecoration(context))
+        }
+    }
+
+    private fun renderAccordionList(listSection: List<Section>){
+        rv_smart_bills_accordion?.apply {
+            show()
+            adapterAccordion.clearAllElements()
+            adapterAccordion.addElement(listSection)
+            adapterAccordion.notifyDataSetChanged()
+        }
+    }
+
+    private fun resertAccordion(){
+        rv_smart_bills_accordion?.apply {
+            hide()
+            adapterAccordion.clearAllElements()
+        }
+    }
+
     private fun resetInitialState(){
         tv_smart_bills_title.show()
         containerCheckBox?.hide()
+        resertAccordion()
         view_smart_bills_shimmering.show()
         smart_bills_checkout_view.setVisibilityLayout(true)
         toggleAllItems(false)
@@ -484,6 +512,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
     override fun createAdapterInstance(): BaseListAdapter<RechargeBillsModel, SmartBillsAdapterFactory> {
         adapter = SmartBillsAdapter(adapterTypeFactory, this)
+        adapterAccordion = SmartBillsAdapter(adapterTypeFactory, this)
         return adapter as BaseListAdapter<RechargeBillsModel, SmartBillsAdapterFactory>
     }
 

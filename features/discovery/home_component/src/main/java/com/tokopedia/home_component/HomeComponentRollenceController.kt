@@ -9,14 +9,11 @@ import com.tokopedia.remoteconfig.RollenceKey
 object HomeComponentRollenceController {
 
     private var rollenceLego4BannerValue: String = ""
-    private var rollenceCategoryWidgetValue: String = ""
     private var rollenceLego2BannerValue: String = ""
 
     fun fetchHomeComponentRollenceValue() {
         rollenceLego4BannerValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_LEGO4BANNER_EXP, RollenceKey.HOME_COMPONENT_LEGO4BANNER_OLD)
-        rollenceCategoryWidgetValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_CATEGORYWIDGET_EXP, RollenceKey.HOME_COMPONENT_CATEGORYWIDGET_OLD)
         rollenceLego2BannerValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_LEGO2BANNER_EXP, RollenceKey.HOME_COMPONENT_LEGO2BANNER_OLD)
-
     }
 
     private fun getRollenceValueLego4Banner(): String {
@@ -27,24 +24,11 @@ object HomeComponentRollenceController {
         return if (rollenceLego2BannerValue.isNotEmpty()) rollenceLego2BannerValue else RollenceKey.HOME_COMPONENT_LEGO2BANNER_OLD
     }
 
-    private fun getRollenceValueCategoryWidget(): String {
-        return if (rollenceCategoryWidgetValue.isNotEmpty()) rollenceCategoryWidgetValue else RollenceKey.HOME_COMPONENT_CATEGORYWIDGET_OLD
-    }
-
     fun isHomeComponentLego4BannerUsingRollenceVariant(): Boolean {
         return getRollenceValueLego4Banner() == RollenceKey.HOME_COMPONENT_LEGO4BANNER_VARIANT
     }
 
     fun isHomeComponentLego2BannerUsingRollenceVariant(): Boolean {
         return getRollenceValueLego2Banner() == RollenceKey.HOME_COMPONENT_LEGO2BANNER_VARIANT
-    }
-
-    fun checkCategoryWidgetRollenceType(isTypeControl: () -> Unit = {}, isTypeTextInside: () -> Unit = {}, isTypeTextBox: () -> Unit = {}) {
-        when (getRollenceValueCategoryWidget()) {
-            RollenceKey.HOME_COMPONENT_CATEGORYWIDGET_OLD -> isTypeControl.invoke()
-            RollenceKey.HOME_COMPONENT_CATEGORYWIDGET_VARIANT_TEXT_BOX -> isTypeTextBox.invoke()
-            RollenceKey.HOME_COMPONENT_CATEGORYWIDGET_VARIANT_TEXT_INSIDE -> isTypeTextInside.invoke()
-            else -> isTypeControl.invoke()
-        }
     }
 }

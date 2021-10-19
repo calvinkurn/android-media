@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.util.withCache
@@ -30,6 +31,7 @@ import com.tokopedia.play.view.viewcomponent.UpcomingActionButtonViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingTimerViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -156,7 +158,36 @@ class PlayUpcomingFragment @Inject constructor(
                             ) { actionButton.onButtonClick() }
                         }
                     }
-                    is ShowToasterEvent -> handleToasterEvent(event)
+                    is ShowInfoEvent -> {
+                        doShowToaster(
+                            toasterType = Toaster.TYPE_NORMAL,
+                            message = getTextFromUiString(event.message)
+                        )
+                    }
+                    is ShowErrorEvent -> {
+                        val errMessage = if (event.errMessage == null) {
+                            ErrorHandler.getErrorMessage(
+                                context, event.error, ErrorHandler.Builder()
+                                    .className(PlayViewModel::class.java.simpleName)
+                                    .build()
+                            )
+                        } else {
+                            val (_, errCode) = ErrorHandler.getErrorMessagePair(
+                                context, event.error, ErrorHandler.Builder()
+                                    .className(PlayViewModel::class.java.simpleName)
+                                    .build()
+                            )
+                            getString(
+                                commonR.string.play_custom_error_handler_msg,
+                                getTextFromUiString(event.errMessage),
+                                errCode
+                            )
+                        }
+                        doShowToaster(
+                            toasterType = Toaster.TYPE_ERROR,
+                            message = errMessage
+                        )
+                    }
                     else -> { }
                 }
             }
@@ -254,17 +285,6 @@ class PlayUpcomingFragment @Inject constructor(
     private fun copyToClipboard(content: String) {
         (requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
             .setPrimaryClip(ClipData.newPlainText("play-room", content))
-    }
-
-    private fun handleToasterEvent(event: ShowToasterEvent) {
-        val text = getTextFromUiString(event.message)
-        doShowToaster(
-            toasterType = when (event) {
-                is ShowToasterEvent.Info -> Toaster.TYPE_NORMAL
-                is ShowToasterEvent.Error -> Toaster.TYPE_ERROR
-            },
-            message = text
-        )
     }
 
     private fun doShowToaster(

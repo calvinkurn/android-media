@@ -121,7 +121,7 @@ class ProductVariantPriceViewHolder(
         itemView.textFieldPrice.run {
             priceTextWatcher = object: TextWatcher {
                 override fun afterTextChanged(input: Editable) {
-                    val price = CurrencyFormatHelper.convertRupiahToInt(input.toString()).toDouble()
+                    val price = CurrencyFormatHelper.convertRupiahToLong(input.toString()).toDouble()
                     priceMap[variant.id] = price
 
                     removeTextFieldPriceListeners()

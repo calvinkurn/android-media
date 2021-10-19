@@ -20,6 +20,7 @@ import com.tokopedia.sellerappwidget.view.model.OrderUiModel
 import com.tokopedia.sellerappwidget.view.state.order.*
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 
 /**
  * Created By @ilhamsuaib on 16/11/20
@@ -29,7 +30,11 @@ class OrderAppWidget : AppWidgetProvider() {
 
     private var userSession: UserSessionInterface? = null
 
-    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+    override fun onUpdate(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetIds: IntArray
+    ) {
         initUserSession(context)
         userSession?.let {
             if (it.isLoggedIn) {
@@ -57,14 +62,24 @@ class OrderAppWidget : AppWidgetProvider() {
         }
 
         if (intent.action != AppWidgetManager.ACTION_APPWIDGET_UPDATE
-                || intent.action != AppWidgetManager.ACTION_APPWIDGET_DISABLED) {
+            || intent.action != AppWidgetManager.ACTION_APPWIDGET_DISABLED
+        ) {
             AppWidgetHelper.setOrderAppWidgetEnabled(context, true)
         }
 
-        super.onReceive(context, intent)
+        try {
+            super.onReceive(context, intent)
+        } catch (e: Exception) {
+            Timber.w(e)
+        }
     }
 
-    override fun onAppWidgetOptionsChanged(context: Context, appWidgetManager: AppWidgetManager?, appWidgetId: Int, newOptions: Bundle?) {
+    override fun onAppWidgetOptionsChanged(
+        context: Context,
+        appWidgetManager: AppWidgetManager?,
+        appWidgetId: Int,
+        newOptions: Bundle?
+    ) {
         initUserSession(context)
         userSession?.let {
             if (!it.isLoggedIn) {
@@ -103,7 +118,7 @@ class OrderAppWidget : AppWidgetProvider() {
         val appLink = intent.data?.toString().orEmpty()
         val appWidgetTracking = AppWidgetTracking.getInstance(context)
         val isSmallWidget = intent.getBundleExtra(Const.Extra.BUNDLE)
-                ?.getString(Const.Extra.WIDGET_SIZE) == WidgetSize.SMALL
+            ?.getString(Const.Extra.WIDGET_SIZE) == WidgetSize.SMALL
         when (appLink) {
             ApplinkConstInternalSellerapp.SELLER_HOME -> {
                 appWidgetTracking.sendEventClickSellerIconOrderWidget()
@@ -141,7 +156,7 @@ class OrderAppWidget : AppWidgetProvider() {
         }
 
         AppWidgetTracking.getInstance(context)
-                .sendEventClickSwitchButtonOrderWidget()
+            .sendEventClickSwitchButtonOrderWidget()
     }
 
     private fun refreshWidget(context: Context) {
@@ -162,10 +177,13 @@ class OrderAppWidget : AppWidgetProvider() {
         }
 
         AppWidgetTracking.getInstance(context)
-                .sendEventClickRefreshButtonOrderWidget()
+            .sendEventClickRefreshButtonOrderWidget()
 
         val cacheHandler = AppWidgetHelper.getCacheHandler(context)
-        val lastSelectedOrderStatusId = cacheHandler.getInt(Const.SharedPrefKey.LAST_SELECTED_ORDER_TYPE, DEFAULT_ORDER_STATUS_ID)
+        val lastSelectedOrderStatusId = cacheHandler.getInt(
+            Const.SharedPrefKey.LAST_SELECTED_ORDER_TYPE,
+            DEFAULT_ORDER_STATUS_ID
+        )
         GetOrderExecutor.run(context, lastSelectedOrderStatusId, true)
     }
 
@@ -173,12 +191,13 @@ class OrderAppWidget : AppWidgetProvider() {
         val bundle = intent.getBundleExtra(Const.Extra.BUNDLE)
         val orderItem: OrderItemUiModel? = bundle?.getParcelable(Const.Extra.ORDER_ITEM)
         val orderId = orderItem?.orderId ?: "0"
-        val orderDetailIntent = RouteManager.getIntent(context, ApplinkConstInternalOrder.ORDER_DETAIL, orderId).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        }
+        val orderDetailIntent =
+            RouteManager.getIntent(context, ApplinkConstInternalOrder.ORDER_DETAIL, orderId).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
 
         AppWidgetTracking.getInstance(context)
-                .sendEventClickItemOrderWidget()
+            .sendEventClickItemOrderWidget()
 
         context.startActivity(orderDetailIntent)
     }
@@ -190,7 +209,8 @@ class OrderAppWidget : AppWidgetProvider() {
 
         fun setOnSuccess(context: Context, order: OrderUiModel, orderStatusId: Int) {
             val appWidgetManager = AppWidgetManager.getInstance(context)
-            val widgetIds = AppWidgetHelper.getAppWidgetIds<OrderAppWidget>(context, appWidgetManager)
+            val widgetIds =
+                AppWidgetHelper.getAppWidgetIds<OrderAppWidget>(context, appWidgetManager)
 
             val userSession: UserSessionInterface = UserSession(context)
 
@@ -202,9 +222,20 @@ class OrderAppWidget : AppWidgetProvider() {
 
             widgetIds.forEach { widgetId ->
                 when {
-                    order.orders.isNullOrEmpty() -> OrderWidgetEmptyState.setupEmptyState(context, remoteViews, widgetId)
+                    order.orders.isNullOrEmpty() -> OrderWidgetEmptyState.setupEmptyState(
+                        context,
+                        remoteViews,
+                        widgetId
+                    )
                     else -> {
-                        OrderWidgetSuccessState.setupSuccessState(context, remoteViews, userSession, order, orderStatusId, widgetId)
+                        OrderWidgetSuccessState.setupSuccessState(
+                            context,
+                            remoteViews,
+                            userSession,
+                            order,
+                            orderStatusId,
+                            widgetId
+                        )
                     }
                 }
 
@@ -237,7 +268,12 @@ class OrderAppWidget : AppWidgetProvider() {
             OrderWidgetNoLoginState.setupNoLoginState(context, awm, widgetIds)
         }
 
-        private fun getIsUserLoggedIn(context: Context, awm: AppWidgetManager, userSession: UserSessionInterface, widgetIds: IntArray): Boolean {
+        private fun getIsUserLoggedIn(
+            context: Context,
+            awm: AppWidgetManager,
+            userSession: UserSessionInterface,
+            widgetIds: IntArray
+        ): Boolean {
             if (!userSession.isLoggedIn) {
                 OrderWidgetNoLoginState.setupNoLoginState(context, awm, widgetIds)
             }

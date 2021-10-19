@@ -671,9 +671,8 @@ class ShopHomeViewModel @Inject constructor(
             val mapShopHomeWidgetData = mutableMapOf<Pair<String, String>, BaseShopHomeWidgetUiModel?>().apply{
                 listWidgetLayout.onEach {
                     val widgetLayoutId = it.widgetId
-                    val widgetLayoutMasterId = it.widgetMasterId
                     val matchedWidget = listShopHomeWidget.firstOrNull { shopHomeWidget ->
-                        shopHomeWidget.widgetId == widgetLayoutId && shopHomeWidget.widgetMasterId == widgetLayoutMasterId
+                        shopHomeWidget.widgetId == widgetLayoutId
                     }
                     if (matchedWidget != null) {
                         put(Pair(it.widgetId, it.widgetMasterId), matchedWidget)

@@ -45,6 +45,12 @@ class GetChatUseCaseStub @Inject constructor(
             alterDateToToday(response)
         }
 
+    var isError = false
+        set(value) {
+            gqlUseCase.isError = value
+            field = value
+        }
+
     /**
      * <!--- Start Broadcast responses --->
      */

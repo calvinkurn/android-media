@@ -46,7 +46,7 @@ data class RechargeGeneralDynamicField(
     class Validation(
             @SerializedName("id")
             @Expose
-            val id: Int = 0,
+            val id: String = "0",
             @SerializedName("title")
             @Expose
             val title: String = "",

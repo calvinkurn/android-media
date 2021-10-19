@@ -21,14 +21,6 @@ import dagger.Provides
 @Module
 class HomeAccountUserUsecaseModules {
 
-    @HomeAccountUserScope
-    @Provides
-    fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
-
-    @HomeAccountUserScope
-    @Provides
-    fun provideMultiRequestGraphql(): MultiRequestGraphqlUseCase = GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
-
     @Provides
     fun provideSafeSettingUseCase(@HomeAccountUserContext context: Context,
                                   graphqlRepository: GraphqlRepository): SafeSettingProfileUseCase {

@@ -382,13 +382,24 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
 
     private fun adjustRecyclerViewPadding(viewBinding: LayoutBottomsheetMiniCartListBinding) {
         with(viewBinding) {
-            if (rvMiniCartList.canScrollVertically(-1) || rvMiniCartList.canScrollVertically(1)) {
+            if (rvMiniCartList.canScrollVertically(-1) || rvMiniCartList.canScrollVertically(1) || isBottomSheetFullPage(viewBinding)) {
                 rvMiniCartList.setPadding(0, 0, 0, rvMiniCartList.resources?.getDimensionPixelSize(R.dimen.dp_64)
                         ?: 0)
             } else {
                 rvMiniCartList.setPadding(0, 0, 0, 0)
             }
         }
+    }
+
+    private fun isBottomSheetFullPage(viewBinding: LayoutBottomsheetMiniCartListBinding): Boolean {
+        val displayMetrics = Resources.getSystem().displayMetrics
+        bottomSheet?.activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+
+        val bottomSheetHeight = (bottomSheet?.bottomSheetWrapper?.parent as? View)?.height ?: 0
+        val recyclerViewPaddingBottom = viewBinding.rvMiniCartList.resources?.getDimensionPixelSize(R.dimen.dp_64)
+                ?: 0
+        val displayHeight = displayMetrics?.heightPixels ?: 0
+        return bottomSheetHeight != 0 && displayHeight != 0 && (bottomSheetHeight + (recyclerViewPaddingBottom / 2)) >= displayHeight
     }
 
     private fun cancelAllDebounceJob() {

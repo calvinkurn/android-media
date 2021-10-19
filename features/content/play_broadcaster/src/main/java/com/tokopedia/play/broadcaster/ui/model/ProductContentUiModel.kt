@@ -12,12 +12,12 @@ import com.tokopedia.play.broadcaster.view.state.SelectableState
 sealed class ProductUiModel
 
 data class ProductContentUiModel(
-        val id: Long,
+        val id: String,
         val name: String,
         val imageUrl: String,
         val originalImageUrl: String,
         val stock: ProductStock,
-        val isSelectedHandler: (Long) -> Boolean,
+        val isSelectedHandler: (String) -> Boolean,
         val isSelectable: (Boolean) -> SelectableState,
         val transitionName: String? = null
 ) : ProductUiModel() {
@@ -37,7 +37,7 @@ data class ProductContentUiModel(
 
         fun createFromData(
                 data: ProductData,
-                isSelectedHandler: (Long) -> Boolean = { false },
+                isSelectedHandler: (String) -> Boolean = { false },
                 isSelectable: (Boolean) -> SelectableState = { NotSelectable(Throwable()) },
                 transitionName: String? = null): ProductContentUiModel {
 

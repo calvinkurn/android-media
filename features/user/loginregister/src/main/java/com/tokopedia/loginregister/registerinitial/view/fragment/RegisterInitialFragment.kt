@@ -1465,7 +1465,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private fun registerPushNotif() {
         if (isHitRegisterPushNotif && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             activity?.let {
-                RegisterPushNotifService.startService(it.applicationContext)
+                RegisterPushNotifService.startService(it.applicationContext, REGISTER_PUSH_NOTIF_SERVICE_JOB_ID)
             }
         }
     }
@@ -1549,6 +1549,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         private const val TERM_AND_COND_END_SIZE = 54
         private const val PRIVACY_POLICY_START_SIZE = 61
         private const val PRIVACY_POLICY_END_SIZE = 78
+        private const val REGISTER_PUSH_NOTIF_SERVICE_JOB_ID = 3047
 
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 

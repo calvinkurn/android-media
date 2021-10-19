@@ -4,6 +4,7 @@ import com.tokopedia.mvcwidget.views.MvcDetailView
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.di.module.DispatcherModule
 import com.tokopedia.mvcwidget.di.module.ViewModelModule
+import com.tokopedia.mvcwidget.multishopmvc.verticallist.MerchantCouponFragment
 import dagger.Component
 import javax.inject.Scope
 
@@ -16,4 +17,5 @@ annotation class MvcScope
 interface MvcComponent {
     fun inject(view: MvcView)
     fun inject(view: MvcDetailView)
+    fun inject(view: MerchantCouponFragment)
 }

@@ -1,340 +1,467 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    tools:context=".view.TrackingPageFragment">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible">
+        android:visibility="visible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/lbl_ref_num"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/Unify_N0"
-                android:paddingStart="@dimen/dp_20"
-                android:paddingLeft="@dimen/dp_20"
-                android:paddingTop="@dimen/dp_16"
-                android:paddingEnd="@dimen/dp_20"
-                android:paddingRight="@dimen/dp_20"
-                android:paddingBottom="@dimen/dp_8">
+                android:text="@string/label_reference_number"
+                android:textColor="@color/Unify_N300"
+                app:layout_constraintLeft_toRightOf="@id/left_padding"
+                app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/top_padding"
+                app:typographyType="body_2" />
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/label_reference_number"
-                        android:textColor="@color/Unify_N300" />
-
-                    <TextView
-                        android:id="@+id/reference_number"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/Unify_N700_68"
-                        android:textSize="@dimen/sp_18"
-                        android:textStyle="bold"
-                        tools:text="486118" />
-
-                </LinearLayout>
-
-            </LinearLayout>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/reference_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dp_8"
+                android:textColor="@color/Unify_N700_68"
+                android:textSize="@dimen/sp_18"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toRightOf="@id/left_padding"
+                app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/lbl_ref_num"
+                app:typographyType="heading_3"
+                tools:text="486118" />
 
             <View
-                android:layout_width="match_parent"
+                android:id="@+id/ref_layout_separator"
+                android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:background="@color/Unify_N100" />
+                android:background="@color/Unify_N100"
+                app:layout_constraintTop_toBottomOf="@id/reference_number"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                />
 
-            <LinearLayout
-                android:id="@+id/description_layout"
-                android:layout_width="match_parent"
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/lbl_delivery_date"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@color/Unify_N0"
-                android:paddingStart="@dimen/dp_20"
-                android:paddingLeft="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                android:paddingTop="@dimen/dp_8"
+                android:text="@string/label_delivery_date"
+                android:textColor="@color/Unify_N200"
+                app:layout_constraintEnd_toEndOf="@id/center"
+                app:layout_constraintLeft_toRightOf="@id/left_padding"
+                app:layout_constraintRight_toLeftOf="@id/center"
+                app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/ref_layout_separator"
+                app:typographyType="body_2" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/delivery_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                android:textColor="@color/Unify_N700_68"
+                app:layout_constraintEnd_toEndOf="@id/center"
+                app:layout_constraintLeft_toRightOf="@id/left_padding"
+                app:layout_constraintRight_toLeftOf="@id/center"
+                app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/lbl_delivery_date"
+                app:typographyType="body_2"
+                tools:text="1 February 2017" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/lbl_seller_courier_tracking"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
                 android:paddingTop="@dimen/dp_16"
-                android:paddingEnd="@dimen/dp_20"
-                android:paddingRight="@dimen/dp_20"
-                android:paddingBottom="@dimen/dp_16">
+                android:text="@string/label_seller_courier_tracking"
+                android:textColor="@color/Unify_N200"
+                app:layout_constraintEnd_toEndOf="@id/center"
+                app:layout_constraintLeft_toRightOf="@id/left_padding"
+                app:layout_constraintRight_toLeftOf="@id/center"
+                app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/delivery_date"
+                app:typographyType="body_2" />
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_8"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/store_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                android:textColor="@color/Unify_N700_68"
+                app:layout_constraintEnd_toEndOf="@id/center"
+                app:layout_constraintLeft_toRightOf="@id/left_padding"
+                app:layout_constraintRight_toLeftOf="@id/center"
+                app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/lbl_seller_courier_tracking"
+                app:typographyType="body_2"
+                tools:text="Nama Penjual" />
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/store_address"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                android:textColor="@color/Unify_N700_68"
+                app:layout_constraintEnd_toEndOf="@id/center"
+                app:layout_constraintLeft_toRightOf="@id/left_padding"
+                app:layout_constraintRight_toLeftOf="@id/center"
+                app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/store_name"
+                app:typographyType="body_2"
+                tools:text="Bandung" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/label_delivery_date"
-                            android:textColor="@color/Unify_N200" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/lbl_service_code"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:paddingTop="@dimen/dp_8"
+                android:text="@string/label_service_code"
+                android:textColor="@color/Unify_N200"
+                app:layout_constraintBaseline_toBaselineOf="@id/lbl_delivery_date"
+                app:layout_constraintEnd_toStartOf="@id/right_padding"
+                app:layout_constraintLeft_toRightOf="@id/center"
+                app:layout_constraintRight_toLeftOf="@id/right_padding"
+                app:layout_constraintStart_toEndOf="@id/center"
+                app:layout_constraintTop_toBottomOf="@id/ref_layout_separator"
+                app:typographyType="body_2" />
 
-                        <TextView
-                            android:id="@+id/delivery_date"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/Unify_N700_68"
-                            tools:text="1 February 2017" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/service_code"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:textColor="@color/Unify_N700_68"
+                app:layout_constraintEnd_toStartOf="@id/right_padding"
+                app:layout_constraintLeft_toRightOf="@id/center"
+                app:layout_constraintRight_toLeftOf="@id/right_padding"
+                app:layout_constraintStart_toEndOf="@id/center"
+                app:layout_constraintTop_toBottomOf="@id/lbl_service_code"
+                app:typographyType="body_2"
+                tools:text="REG15" />
 
-                    </LinearLayout>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/lbl_buyer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:paddingTop="@dimen/dp_16"
+                android:text="@string/label_buyer"
+                android:textColor="@color/Unify_N200"
+                app:layout_constraintBaseline_toBaselineOf="@id/lbl_seller_courier_tracking"
+                app:layout_constraintEnd_toStartOf="@id/right_padding"
+                app:layout_constraintLeft_toRightOf="@id/center"
+                app:layout_constraintRight_toLeftOf="@id/right_padding"
+                app:layout_constraintStart_toEndOf="@id/center"
+                app:layout_constraintTop_toBottomOf="@id/service_code"
+                app:typographyType="body_2" />
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:orientation="vertical">
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/buyer_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:textColor="@color/Unify_N700_68"
+                app:layout_constraintEnd_toStartOf="@id/right_padding"
+                app:layout_constraintLeft_toRightOf="@id/center"
+                app:layout_constraintRight_toLeftOf="@id/right_padding"
+                app:layout_constraintStart_toEndOf="@id/center"
+                app:layout_constraintTop_toBottomOf="@id/lbl_buyer"
+                app:typographyType="body_2"
+                tools:text="Saiful Jamil" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/label_seller_courier_tracking"
-                            android:textColor="@color/Unify_N200" />
-
-                        <TextView
-                            android:id="@+id/store_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/Unify_N700_68"
-                            tools:text="Toko Maju Pantang Mundur" />
-
-                        <TextView
-                            android:id="@+id/store_address"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/Unify_N700_68"
-                            tools:text="Bandung" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_8"
-                    android:layout_marginLeft="@dimen/dp_8"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/label_service_code"
-                            android:textColor="@color/Unify_N200" />
-
-                        <TextView
-                            android:id="@+id/service_code"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/Unify_N700_68"
-                            tools:text="REG15" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/label_buyer"
-                            android:textColor="@color/Unify_N200" />
-
-                        <TextView
-                            android:id="@+id/buyer_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/Unify_N700_68"
-                            tools:text="Saiful Jamil" />
-
-                        <TextView
-                            android:id="@+id/buyer_location"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/Unify_N700_68"
-                            tools:text="Grogol Petamburan Jakarta" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </LinearLayout>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/buyer_location"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:textColor="@color/Unify_N700_68"
+                app:layout_constraintEnd_toStartOf="@id/right_padding"
+                app:layout_constraintLeft_toRightOf="@id/center"
+                app:layout_constraintRight_toLeftOf="@id/right_padding"
+                app:layout_constraintStart_toEndOf="@id/center"
+                app:layout_constraintTop_toBottomOf="@id/buyer_name"
+                app:typographyType="body_2"
+                tools:text="Grogol Petamburan Jakarta" />
 
             <View
-                android:layout_width="match_parent"
+                android:id="@+id/detail_layout_separator"
+                android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:background="@color/Unify_N100" />
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@color/Unify_N100"
+                app:layout_constraintTop_toBottomOf="@id/description_barrier"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                />
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/lbl_tracking_status"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/Unify_N0"
-                android:orientation="vertical"
-                android:paddingStart="@dimen/dp_20"
-                android:paddingLeft="@dimen/dp_20"
-                android:paddingTop="@dimen/dp_16"
-                android:paddingEnd="@dimen/dp_20"
-                android:paddingRight="@dimen/dp_20"
-                android:paddingBottom="@dimen/dp_16">
+                android:layout_marginTop="@dimen/dp_16"
+                android:text="@string/label_tracking_status"
+                android:textColor="@color/Unify_N300"
+                app:layout_constraintLeft_toRightOf="@id/left_padding"
+                app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/detail_layout_separator"
+                app:typographyType="body_2" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/label_tracking_status"
-                    android:textColor="@color/Unify_N300" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/current_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_Y500"
+                app:layout_constraintLeft_toRightOf="@id/left_padding"
+                app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/lbl_tracking_status"
+                app:typographyType="body_2"
+                tools:text="On Process" />
 
-                <TextView
-                    android:id="@+id/current_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/Unify_Y500"
-                    tools:text="On Process" />
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ticker_info_courier"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                app:closeButtonVisibility="gone"
+                app:layout_constraintEnd_toStartOf="@id/right_padding"
+                app:layout_constraintLeft_toRightOf="@id/left_padding"
+                app:layout_constraintRight_toLeftOf="@id/right_padding"
+                app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/current_status"
+                app:tickerShapeType="loose" />
 
-                <LinearLayout
-                    android:id="@+id/ticker_info_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:visibility="visible">
+            <View
+                android:id="@+id/ticker_layout_separator"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@color/Unify_N100"
+                app:layout_constraintEnd_toStartOf="@id/right_padding"
+                app:layout_constraintLeft_toRightOf="@id/left_padding"
+                app:layout_constraintRight_toLeftOf="@id/right_padding"
+                app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/ticker_info_courier" />
 
-                    <com.tokopedia.unifycomponents.ticker.Ticker
-                        android:id="@+id/ticker_info_courier"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:tickerShapeType="loose"
-                        app:closeButtonVisibility="gone"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/tracking_history"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_16"
+                app:layout_constraintLeft_toRightOf="@id/left_padding"
+                app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintRight_toLeftOf="@id/right_padding"
+                app:layout_constraintEnd_toStartOf="@id/right_padding"
+                app:layout_constraintTop_toBottomOf="@id/ticker_layout_separator"
+                tools:visibility="gone" />
 
-                </LinearLayout>
+            <ImageView
+                android:id="@+id/img_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_32"
+                app:layout_constraintLeft_toRightOf="@id/left_padding"
+                app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/tracking_history"
+                app:srcCompat="@drawable/info"
+                tools:ignore="VectorDrawableCompat" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:background="@color/Unify_N100" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/notification_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:paddingEnd="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_8"
+                android:text="@string/warning_no_courier_change"
+                app:layout_constraintEnd_toStartOf="@id/right_padding"
+                app:layout_constraintLeft_toRightOf="@id/img_info"
+                app:layout_constraintRight_toLeftOf="@id/right_padding"
+                app:layout_constraintStart_toEndOf="@id/img_info"
+                app:layout_constraintTop_toTopOf="@id/img_info"
+                app:typographyType="body_2" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/tracking_history"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
-                    tools:visibility="gone" />
-
-                <LinearLayout
-                    android:id="@+id/empty_update_notification"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:background="@color/Unify_N0"
-                    android:orientation="vertical"
-                    android:padding="@dimen/dp_16"
-                    android:visibility="gone">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:srcCompat="@drawable/info"
-                            tools:ignore="VectorDrawableCompat" />
-
-                        <TextView
-                            android:id="@+id/notification_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/dp_8"
-                            android:layout_marginLeft="@dimen/dp_8"
-                            android:text="@string/warning_no_courier_change" />
-
-                    </LinearLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/notification_help_step"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_16"
-                        tools:visibility="gone" />
-
-                </LinearLayout>
-
-            </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/notification_help_step"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                app:layout_constraintEnd_toStartOf="@id/right_padding"
+                app:layout_constraintLeft_toRightOf="@id/left_padding"
+                app:layout_constraintRight_toLeftOf="@id/right_padding"
+                app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/notification_text"
+                tools:visibility="visible" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/live_tracking_button"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
                 android:text="@string/label_live_tracking"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@id/right_padding"
+                app:layout_constraintLeft_toRightOf="@id/left_padding"
+                app:layout_constraintRight_toLeftOf="@id/right_padding"
+                app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/notification_help_step"
                 app:unifyButtonSize="medium"
                 app:unifyButtonVariant="filled"
-                android:visibility="gone"/>
+                tools:visibility="visible" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/retry_pickup_button"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="12dp"
-                android:layout_marginRight="@dimen/dp_16"
                 android:text="@string/find_new_driver"
                 android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@id/right_padding"
+                app:layout_constraintLeft_toRightOf="@id/left_padding"
+                app:layout_constraintRight_toLeftOf="@id/right_padding"
+                app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/live_tracking_button"
                 app:unifyButtonSize="medium"
                 app:unifyButtonVariant="ghost"
                 tools:visibility="visible" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_retry_status"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_16"
                 android:gravity="center"
                 android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/bottom_padding"
+                app:layout_constraintEnd_toStartOf="@id/right_padding"
+                app:layout_constraintLeft_toRightOf="@id/left_padding"
+                app:layout_constraintRight_toLeftOf="@id/right_padding"
+                app:layout_constraintStart_toEndOf="@id/left_padding"
+                app:layout_constraintTop_toBottomOf="@id/retry_pickup_button"
+                app:typographyType="body_2"
                 tools:text="Tunggu xx:xx untuk mencari driver baru"
                 tools:visibility="visible" />
 
-        </LinearLayout>
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/left_padding"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="@dimen/dp_20" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/right_padding"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="@dimen/dp_20" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/top_padding"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="@dimen/dp_16" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/bottom_padding"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_end="@dimen/dp_16" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/description_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="lbl_delivery_date,delivery_date,lbl_seller_courier_tracking,store_name,store_address,lbl_service_code,service_code,lbl_buyer,buyer_name,buyer_location" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/ticker_info_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:constraint_referenced_ids="ticker_info_courier" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/empty_update_notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="img_info,notification_text,notification_help_step" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/description_barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="buyer_location,store_address"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/main_progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
         android:layout_centerInParent="true"
-        android:layout_marginTop="-6dp"
         android:max="100"
-        android:visibility="visible" />
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="circular" />
 
-</RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

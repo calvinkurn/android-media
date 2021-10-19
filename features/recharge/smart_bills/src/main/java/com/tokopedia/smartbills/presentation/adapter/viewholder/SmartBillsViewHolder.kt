@@ -110,7 +110,7 @@ class SmartBillsViewHolder(val view: View,
                 } else this.gone()
             }
 
-            if(!element.amountText.isNullOrEmpty()) {
+            if(!element.amountText.isNullOrEmpty() && accordionType != PAID_TYPE) {
                 tv_smart_bills_item_price.show()
                 tv_smart_bills_item_price.text = if (accordionType != ACTION_TYPE)
                     element.amountText else getString(R.string.smart_bills_clustering_price)

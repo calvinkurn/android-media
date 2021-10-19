@@ -3,7 +3,6 @@ package com.tokopedia.remoteconfig
 object RollenceKey {
 
     //    Shop Page
-    const val AB_TEST_ROLLOUT_NEW_SHOP_ETALASE = "etalase_revamp_new"
     const val NAVIGATION_EXP_TOP_NAV = "new_glmenu"
     const val NAVIGATION_EXP_TOP_NAV2 = "new_glmenu2"
     const val NAVIGATION_VARIANT_OLD = "Existing Navigation"
@@ -30,11 +29,6 @@ object RollenceKey {
     // Merchant Voucher Creation
     const val BROADCAST_VOUCHER_AB_TEST_KEY = "broadcast_voucher"
 
-    //home
-    const val HOME_VARIANT_REVAMP = "home revamp"
-    const val HOME_VARIANT_OLD = "Existing Home"
-    const val HOME_EXP = "Home Revamp 2021"
-
     const val BALANCE_EXP = "Balance Widget"
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
@@ -51,13 +45,8 @@ object RollenceKey {
     const val HOME_COMPONENT_LEGO2BANNER_EXP = "lego2_bleeding"
     const val HOME_COMPONENT_LEGO2BANNER_OLD = "lego2_round"
     const val HOME_COMPONENT_LEGO2BANNER_VARIANT = "lego2_bleeding"
-    const val HOME_COMPONENT_CATEGORYWIDGET_EXP = "cat_test"
-    const val HOME_COMPONENT_CATEGORYWIDGET_OLD = "control"
-    const val HOME_COMPONENT_CATEGORYWIDGET_VARIANT_TEXT_INSIDE = "text_inside"
-    const val HOME_COMPONENT_CATEGORYWIDGET_VARIANT_TEXT_BOX = "text_box"
     // end of home component rollence section
 
-    const val POWER_MERCHANT_PRO_POP_UP = "pm_pro"
     const val NAVIGATION_VARIANT_REVAMP = "new_glmenu"
     const val NAVIGATION_VARIANT_REVAMP2 = "new_glmenu2"
 
@@ -85,4 +74,8 @@ object RollenceKey {
     const val SBM_ADD_BILLS_KEY = "sbm_addbills2"
     const val SBM_ADD_BILLS_FALSE = "sbm_addbills_False"
     const val SBM_ADD_BILLS_TRUE = "sbm_addbills_True"
+
+    const val EXPERIMENT_NAME_REVIEW_CREDIBILITY = "review_credibility"
+    const val VARIANT_REVIEW_CREDIBILITY_WITHOUT_BOTTOM_SHEET = "without_bottomsheet"
+    const val VARIANT_REVIEW_CREDIBILITY_WITH_BOTTOM_SHEET = "with_bottomsheet"
 }
