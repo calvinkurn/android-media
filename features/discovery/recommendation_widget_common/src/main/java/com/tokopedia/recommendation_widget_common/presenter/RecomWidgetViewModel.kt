@@ -31,7 +31,7 @@ import javax.inject.Inject
 /**
  * Created by yfsx on 02/08/21.
  */
-open class RecommendationViewModel @Inject constructor(
+open class RecomWidgetViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
     private val getRecommendationUseCase: GetRecommendationUseCase,

@@ -5,12 +5,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.recommendation_widget_common.di.recomwidget.DaggerRecommendationComponent
-import com.tokopedia.recommendation_widget_common.presenter.RecommendationViewModel
+import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetViewModel
 
 /**
  * Created by yfsx on 13/10/21.
  */
-class RecomWidgetViewModelDelegate<T : RecommendationViewModel>(val activity: () -> Activity?) :
+class RecomWidgetViewModelDelegate<T : RecomWidgetViewModel>(val activity: () -> Activity?) :
     Lazy<T?> {
 
     private var recommendationViewModel: T? = null
@@ -34,6 +34,6 @@ class RecomWidgetViewModelDelegate<T : RecommendationViewModel>(val activity: ()
         component.inject(appContext)
         val viewModelFactory = component.getViewModelFactory()
         val viewModelProvider = ViewModelProvider(it as AppCompatActivity, viewModelFactory)
-        return viewModelProvider[RecommendationViewModel::class.java] as T
+        return viewModelProvider[RecomWidgetViewModel::class.java] as T
     }
 }

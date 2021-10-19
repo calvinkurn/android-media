@@ -46,7 +46,7 @@ import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.presenter.RecommendationViewModel
+import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetViewModel
 import com.tokopedia.recommendation_widget_common.viewutil.initRecomWidgetViewModel
 import com.tokopedia.recommendation_widget_common.viewutil.updateRecomWidgetQtyItemWithMiniCart
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
@@ -59,7 +59,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_CART
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
-import com.tokopedia.searchbar.navigation_component.util.getActivityFromContext
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
@@ -141,7 +140,7 @@ abstract class BaseSearchCategoryFragment:
 
     protected abstract val toolbarPageName: String
 
-    private val recomWidgetViewModel: RecommendationViewModel? by initRecomWidgetViewModel()
+    private val recomWidgetViewModel: RecomWidgetViewModel? by initRecomWidgetViewModel()
 
     private val searchCategoryToolbarHeight: Int
         get() {

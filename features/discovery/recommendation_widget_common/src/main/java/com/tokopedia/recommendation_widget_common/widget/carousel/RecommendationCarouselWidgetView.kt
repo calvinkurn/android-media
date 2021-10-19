@@ -24,7 +24,7 @@ import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.presenter.RecommendationViewModel
+import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetViewModel
 import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
 import com.tokopedia.recommendation_widget_common.viewutil.initRecomWidgetViewModel
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_FAILED
@@ -83,7 +83,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val viewModel: RecommendationViewModel? by initRecomWidgetViewModel()
+    private val viewModel: RecomWidgetViewModel? by initRecomWidgetViewModel()
 
     init {
         val view = LayoutInflater.from(context)
