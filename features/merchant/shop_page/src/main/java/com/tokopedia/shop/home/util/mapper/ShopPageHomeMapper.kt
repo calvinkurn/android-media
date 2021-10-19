@@ -1,23 +1,29 @@
 package com.tokopedia.shop.home.util.mapper
 
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
+import com.tokopedia.shop.home.WidgetName.IS_SHOW_ETALASE_NAME
 import com.tokopedia.shop.home.WidgetName.PRODUCT
+import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_TWO_ROWS
 import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
 import com.tokopedia.shop.home.WidgetType.CAMPAIGN
 import com.tokopedia.shop.home.WidgetType.DISPLAY
 import com.tokopedia.shop.home.WidgetType.DYNAMIC
 import com.tokopedia.shop.home.WidgetType.PERSONALIZATION
+import com.tokopedia.shop.home.WidgetType.SHOWCASE
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.ShopHomeCampaignNplTncModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeShowcaseListBaseWidgetViewHolder
+import com.tokopedia.shop.home.data.model.ShopLayoutWidgetV2
 import com.tokopedia.shop.home.view.model.*
+import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import java.util.*
-import kotlin.math.roundToInt
 
 object ShopPageHomeMapper {
     private const val PRODUCT_RATING_DIVIDER = 20
@@ -233,6 +239,7 @@ object ShopPageHomeMapper {
             }
             DYNAMIC.toLowerCase(Locale.getDefault()) -> mapCarouselPlayWidget(widgetResponse)
             PERSONALIZATION.toLowerCase(Locale.getDefault()) -> mapToProductPersonalizationUiModel(widgetResponse, isMyOwnProduct)
+            SHOWCASE.toLowerCase(Locale.getDefault()) -> mapToShowcaseListUiModel(widgetResponse)
             else -> {
                 null
             }
@@ -249,6 +256,17 @@ object ShopPageHomeMapper {
             type = widgetResponse.type,
             header = mapToHeaderModel(widgetResponse.header),
             productList = mapToWidgetProductListPersonalization(widgetResponse.data, isMyProduct)
+    )
+
+    private fun mapToShowcaseListUiModel(
+            widgetResponse: ShopLayoutWidget.Widget
+    ) = ShopHomeShowcaseListSliderUiModel(
+            widgetId = widgetResponse.widgetID,
+            layoutOrder = widgetResponse.layoutOrder,
+            name = widgetResponse.name,
+            type = widgetResponse.type,
+            header = mapToHeaderModel(widgetResponse.header),
+            showcaseListItem = mapToShowcaseListItemUiModel(widgetResponse.data, widgetResponse.name, widgetResponse.header)
     )
 
     private fun mapToNewProductLaunchCampaignUiModel(
@@ -430,6 +448,28 @@ object ShopPageHomeMapper {
         }
     }
 
+    private fun mapToShowcaseListItemUiModel(
+            data: List<ShopLayoutWidget.Widget.Data>,
+            widgetName: String,
+            widgetHeader: ShopLayoutWidget.Widget.Header
+    ): List<ShopHomeShowcaseListItemUiModel> {
+        val uiModelData = data.map {
+            ShopHomeShowcaseListItemUiModel().apply {
+                id = it.linkId.toString()
+                imageUrl = it.imageUrl
+                appLink = it.appLink
+                name = it.showcaseName
+                viewType = widgetName
+                isShowEtalaseName = widgetHeader.isShowEtalaseName == IS_SHOW_ETALASE_NAME
+            }
+        }
+        return if (widgetName == SHOWCASE_SLIDER_TWO_ROWS) {
+            ShopHomeShowcaseListBaseWidgetViewHolder.getReorderShowcasePositionForTwoRowsSlider(uiModelData)
+        } else {
+            uiModelData
+        }
+    }
+
     private fun mapToWidgetProductListItemViewModel(
             data: List<ShopLayoutWidget.Widget.Data>,
             isMyOwnProduct: Boolean
@@ -485,4 +525,57 @@ object ShopPageHomeMapper {
             type = model.type,
             header = mapToHeaderModel(model.header)
     )
+
+    fun mapToListShopHomeWidget(
+            responseWidgetData: List<ShopLayoutWidget.Widget>,
+            myShop: Boolean,
+            isLoggedIn: Boolean
+    ): List<BaseShopHomeWidgetUiModel> {
+        return mutableListOf<BaseShopHomeWidgetUiModel>().apply {
+            responseWidgetData.filter { it.data.isNotEmpty() || it.type.equals(DYNAMIC, ignoreCase = true) || it.name == VOUCHER_STATIC}.onEach {
+                val widgetUiModel = mapToWidgetUiModel(it, myShop, isLoggedIn)
+                widgetUiModel?.let { model ->
+                    model.widgetMasterId = it.widgetMasterID
+                    add(model)
+                }
+            }
+        }
+    }
+
+    fun mapToShopHomeWidgetLayoutData(response: ShopPageGetHomeType.HomeLayoutData): ShopPageHomeWidgetLayoutUiModel {
+        return ShopPageHomeWidgetLayoutUiModel(
+                layoutId =  response.layoutId,
+                masterLayoutId =  response.masterLayoutId.toIntOrZero().toString(),
+                listWidgetLayout =  response.widgetIdList.map {
+                    ShopPageHomeWidgetLayoutUiModel.WidgetLayout(
+                            it.widgetId,
+                            it.widgetMasterId,
+                            it.widgetType,
+                            it.widgetName
+                    )
+                }
+        )
+    }
+
+    fun mapShopHomeWidgetLayoutToListShopHomeWidget(
+            listWidgetLayout: List<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>,
+            myShop: Boolean,
+            isLoggedIn: Boolean
+    ): List<BaseShopHomeWidgetUiModel> {
+        return mutableListOf<BaseShopHomeWidgetUiModel>().apply {
+            listWidgetLayout.onEach {
+                mapToWidgetUiModel(
+                        ShopLayoutWidget.Widget(
+                                widgetID = it.widgetId,
+                                type = it.widgetType,
+                                name = it.widgetName
+                        ), myShop, isLoggedIn
+                )?.let{ resModel ->
+                    resModel.widgetMasterId = it.widgetMasterId
+                    add(resModel)
+                }
+            }
+        }
+    }
+
 }

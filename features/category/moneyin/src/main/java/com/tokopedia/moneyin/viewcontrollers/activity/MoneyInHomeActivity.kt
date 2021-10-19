@@ -140,7 +140,7 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
 
     private fun setTradeInParams() {
         if (intent.hasExtra(TradeInParams::class.java.simpleName)) {
-            moneyInHomeViewModel.tradeInParams = intent.getParcelableExtra(TradeInParams::class.java.simpleName)
+            moneyInHomeViewModel.tradeInParams = intent.getParcelableExtra(TradeInParams::class.java.simpleName) ?: TradeInParams()
         }
     }
 
@@ -295,7 +295,7 @@ open class MoneyInHomeActivity : BaseMoneyInActivity<MoneyInHomeViewModel>(), Tr
         var campaignId = MoneyinConstants.CAMPAIGN_ID_PROD
         if (TokopediaUrl.getInstance().TYPE == Env.STAGING) campaignId = MoneyinConstants.CAMPAIGN_ID_STAGING
         laku6TradeIn = Laku6TradeIn.getInstance(context, campaignId,
-                MoneyinConstants.APPID, Keys.AUTH_TRADE_IN_API_KEY_MA, TokopediaUrl.getInstance().TYPE == Env.STAGING, TEST_TYPE, AuthKey.SAFETYNET_KEY_TRADE_IN)
+                TokopediaUrl.getInstance().TYPE == Env.STAGING, TEST_TYPE)
         requestPermission()
     }
 

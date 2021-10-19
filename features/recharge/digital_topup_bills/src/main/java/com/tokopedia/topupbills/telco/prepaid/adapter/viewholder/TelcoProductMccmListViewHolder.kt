@@ -38,7 +38,7 @@ class TelcoProductMccmListViewHolder(itemView: View, val listener: OnClickListen
                 }
 
                 telco_mccm_rv.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-                adapter = TelcoProductAdapter(context, TelcoProductAdapterFactory(PRODUCT_MCCM, object : TelcoProductViewHolder.OnClickListener {
+                adapter = TelcoProductAdapter(context, TelcoProductAdapterFactory(PRODUCT_MCCM, object : TelcoProductViewHolder.ActionListener {
                     override fun onClickItemProduct(element: TelcoProduct, position: Int) {
                         listener?.onClickMccm(element, position)
                     }
@@ -47,6 +47,9 @@ class TelcoProductMccmListViewHolder(itemView: View, val listener: OnClickListen
                         listener?.onClickLihatDetail(element, position)
                     }
 
+                    override fun onTrackSpecialProductImpression(itemProduct: TelcoProduct, position: Int) {
+                        // do nothing
+                    }
                 }, null))
                 telco_mccm_rv.adapter = adapter
 

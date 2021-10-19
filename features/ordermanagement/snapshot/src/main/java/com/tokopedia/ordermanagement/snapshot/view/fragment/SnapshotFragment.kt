@@ -152,7 +152,7 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
 
     private fun observingData() {
         snapshotAdapter.showLoader()
-        snapshotViewModel.snapshotResponse.observe(viewLifecycleOwner, { result ->
+        snapshotViewModel.snapshotResponse.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     SnapshotIdlingResource.decrement()
@@ -164,12 +164,28 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
                         visible()
                         text = getString(R.string.btn_snapshot_to_pdp_label)
                         setOnClickListener {
-                            RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, result.data.orderDetail.productId)
+                            RouteManager.route(
+                                context,
+                                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                                result.data.orderDetail.productId
+                            )
                             userSession.userId?.let { userId ->
                                 if (isSnapshotFromSOM) {
-                                    SnapshotAnalytics.clickSeeProductPageFromSOM(result.data.orderDetail.productId, userId)
+                                    SnapshotAnalytics.clickSeeProductPageFromSOM(
+                                        result.data.orderDetail.productId,
+                                        userId
+                                    )
                                 } else {
-                                    SnapshotAnalytics.clickLihatHalamanProduk(result.data.orderDetail.productId, userId)
+                                    with(result.data) {
+                                        SnapshotAnalytics.clickSeeProductPageFromBOM(
+                                            orderDetail.orderId,
+                                            orderDetail.productId,
+                                            orderDetail.productName,
+                                            orderDetail.childCatId,
+                                            orderDetail.productPrice,
+                                            userId
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -180,7 +196,7 @@ class SnapshotFragment : BaseDaggerFragment(), SnapshotAdapter.ActionListener, R
                     showToaster(getString(R.string.snapshot_error_common), Toaster.TYPE_ERROR)
                 }
             }
-        })
+        }
     }
 
     private fun showToaster(message: String, type: Int) {

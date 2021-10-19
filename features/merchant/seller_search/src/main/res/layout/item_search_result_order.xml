@@ -12,8 +12,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivSearchResultOrder"
-        android:layout_width="@dimen/dp_48"
-        android:layout_height="@dimen/dp_48"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:unify_image_corner_radius="4"/>

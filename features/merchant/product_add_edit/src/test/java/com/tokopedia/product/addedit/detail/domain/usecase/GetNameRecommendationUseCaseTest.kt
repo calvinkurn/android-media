@@ -53,12 +53,12 @@ class GetNameRecommendationUseCaseTest {
 
         runBlocking {
             coEvery {
-                graphqlRepository.getReseponse(any(), any())
+                graphqlRepository.response(any(), any())
             } returns createMockGraphQlSuccessResponse()
 
             val response = getSearchShopProductUseCase.executeOnBackground()
             coVerify {
-                graphqlRepository.getReseponse(any(), any())
+                graphqlRepository.response(any(), any())
             }
             Assert.assertNotNull(response)
             Assert.assertNotEquals(0, response.size)
@@ -73,7 +73,7 @@ class GetNameRecommendationUseCaseTest {
 
         runBlocking {
             coEvery {
-                graphqlRepository.getReseponse(any(), any())
+                graphqlRepository.response(any(), any())
             } returns createMockGraphQlErrorResponse()
         }
     }

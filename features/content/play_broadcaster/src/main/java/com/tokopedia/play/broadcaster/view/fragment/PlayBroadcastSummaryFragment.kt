@@ -18,7 +18,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.util.extension.getDialog
-import com.tokopedia.play.broadcaster.util.extension.showToaster
+import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.SummaryInfoViewComponent
@@ -31,7 +31,6 @@ import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -195,7 +194,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                     summaryInfoView.showError { it.onRetry() }
                     analytic.viewErrorOnReportPage(
                             channelId = parentViewModel.channelId,
-                            titleChannel = parentViewModel.title,
+                            titleChannel = parentViewModel.channelTitle,
                             errorMessage = it.error.localizedMessage?:getString(R.string.play_broadcaster_default_error)
                     )
                 }
@@ -216,11 +215,12 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                 }
                 is NetworkResult.Fail -> {
                     btnSaveVideo.isLoading = false
-                    view?.showToaster(
-                            message = it.error.localizedMessage?:getString(R.string.play_broadcaster_default_error),
-                            type = Toaster.TYPE_ERROR,
-                            actionLabel = getString(R.string.play_broadcast_try_again),
-                            actionListener = View.OnClickListener { view -> it.onRetry() }
+                    view?.showErrorToaster(
+                        err = it.error,
+                        customErrMessage = it.error.localizedMessage
+                            ?: getString(R.string.play_broadcaster_default_error),
+                        actionLabel = getString(R.string.play_broadcast_try_again),
+                        actionListener = View.OnClickListener { view -> it.onRetry() }
                     )
                 }
             }
@@ -236,11 +236,12 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                 }
                 is NetworkResult.Fail -> {
                     btnDeleteVideo.isLoading = false
-                    view?.showToaster(
-                            message = it.error.localizedMessage?:getString(R.string.play_broadcaster_default_error),
-                            type = Toaster.TYPE_ERROR,
-                            actionLabel = getString(R.string.play_broadcast_try_again),
-                            actionListener = View.OnClickListener { view -> it.onRetry() }
+                    view?.showErrorToaster(
+                        err = it.error,
+                        customErrMessage = it.error.localizedMessage
+                            ?: getString(R.string.play_broadcaster_default_error),
+                        actionLabel = getString(R.string.play_broadcast_try_again),
+                        actionListener = View.OnClickListener { view -> it.onRetry() }
                     )
                 }
             }

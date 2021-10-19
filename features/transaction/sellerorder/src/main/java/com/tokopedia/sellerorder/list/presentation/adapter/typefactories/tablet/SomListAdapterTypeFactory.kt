@@ -11,7 +11,7 @@ class SomListAdapterTypeFactory(
         emptyStateListener: SomListOrderEmptyViewHolder.SomListEmptyStateListener
 ) : com.tokopedia.sellerorder.list.presentation.adapter.typefactories.SomListAdapterTypeFactory(orderItemListener, emptyStateListener) {
 
-    override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
+    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             SomListOrderViewHolder.LAYOUT -> com.tokopedia.sellerorder.list.presentation.adapter.viewholders.tablet.SomListOrderViewHolder(parent, orderItemListener)
             else -> super.createViewHolder(parent, type)

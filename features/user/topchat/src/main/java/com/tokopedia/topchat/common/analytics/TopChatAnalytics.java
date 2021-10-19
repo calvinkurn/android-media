@@ -10,7 +10,6 @@ import androidx.collection.ArrayMap;
 import com.tokopedia.abstraction.processor.ProductListClickBundler;
 import com.tokopedia.abstraction.processor.ProductListClickProduct;
 import com.tokopedia.abstraction.processor.ProductListImpressionBundler;
-import com.tokopedia.abstraction.processor.ProductListImpressionProduct;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.atc_common.domain.model.response.DataModel;
@@ -27,8 +26,6 @@ import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import androidx.annotation.Nullable;
-
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -697,7 +694,8 @@ public class TopChatAnalytics {
     ) {
         String eventLabel = "buyer - " +
                 shopId + " - " + userId + " - " +
-                productIds + " - " + element.getContent();
+                productIds + " - " + element.getContent()
+                + " - " + element.getIntent();
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 createGeneralEvent(
                         Name.CHAT_DETAIL,

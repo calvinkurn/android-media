@@ -397,6 +397,7 @@ class SellerFeedbackFragment : BaseDaggerFragment(), BaseImageFeedbackViewHolder
         imagePickerMultipleSelectionBuilder.initialSelectedImagePathList = currentSelectedImages
         imagePickerBuilder.imagePickerMultipleSelectionBuilder = imagePickerMultipleSelectionBuilder
         intent.putImagePickerBuilder(imagePickerBuilder)
+        intent.putParamPageSource(ImagePickerPageSource.SELLER_FEEDBACK_PAGE)
         startActivityForResult(intent, REQUEST_CODE_IMAGE)
     }
 

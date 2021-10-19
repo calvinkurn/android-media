@@ -6,6 +6,7 @@ import android.graphics.drawable.*
 import android.util.TypedValue
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.home_component.R
 import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.gone
@@ -59,6 +60,22 @@ fun View.setGradientBackground(colorArray: ArrayList<String>) {
     } catch (e: Exception) {
 
     }
+}
+
+//function check is gradient all white, if empty default color is white
+fun getGradientBackgroundViewAllWhite(colorArray: ArrayList<String>) : Boolean {
+    val colorWhite = "#FFFFFF"
+    if (colorArray.isNotEmpty()) {
+        if (colorArray.size > 1) {
+            val colorArrayNotWhite = colorArray.filter { it != colorWhite }
+            if (colorArrayNotWhite.isNotEmpty())
+                return false
+            return true
+        } else {
+            return colorArray[0].equals(colorWhite, true)
+        }
+    } else
+        return true
 }
 
 fun convertDpToPixel(dp: Float, context: Context): Int {

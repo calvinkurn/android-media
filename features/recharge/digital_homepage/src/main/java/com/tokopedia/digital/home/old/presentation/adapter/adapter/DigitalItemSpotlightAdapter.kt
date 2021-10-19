@@ -1,15 +1,14 @@
 package com.tokopedia.digital.home.old.presentation.adapter.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.digital.home.R
+import com.tokopedia.digital.home.databinding.LayoutDigitalHomeSpotlightItemBinding
 import com.tokopedia.digital.home.old.model.DigitalHomePageSectionModel
 import com.tokopedia.digital.home.old.presentation.util.DigitalHomepageTrackingActionConstant.SPOTLIGHT_BANNER_CLICK
 import com.tokopedia.digital.home.old.presentation.listener.OnItemBindListener
-import com.tokopedia.kotlin.extensions.view.loadImage
-import kotlinx.android.synthetic.main.layout_digital_home_spotlight_item.view.*
+import com.tokopedia.home_component.util.loadImage
 
 class DigitalItemSpotlightAdapter(val items: List<DigitalHomePageSectionModel.Item>, val onItemBindListener: OnItemBindListener)
     : RecyclerView.Adapter<DigitalItemSpotlightAdapter.DigitalItemSpotlightViewHolder>() {
@@ -19,7 +18,7 @@ class DigitalItemSpotlightAdapter(val items: List<DigitalHomePageSectionModel.It
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): DigitalItemSpotlightViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_digital_home_spotlight_item, parent, false)
+        val view = LayoutDigitalHomeSpotlightItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return DigitalItemSpotlightViewHolder(view)
     }
 
@@ -27,10 +26,10 @@ class DigitalItemSpotlightAdapter(val items: List<DigitalHomePageSectionModel.It
         return items.size
     }
 
-    class DigitalItemSpotlightViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
+    class DigitalItemSpotlightViewHolder(val binding: LayoutDigitalHomeSpotlightItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(element: DigitalHomePageSectionModel.Item, onItemBindListener: OnItemBindListener) {
-            itemView.spotlight_image.loadImage(element.mediaUrl)
-            itemView.spotlight_name.text = element.title
+            binding.spotlightImage.loadImage(element.mediaUrl)
+            binding.spotlightName.text = element.title
             itemView.setOnClickListener {
                 onItemBindListener.onSectionItemClicked(element, adapterPosition, SPOTLIGHT_BANNER_CLICK)
             }

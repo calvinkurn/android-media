@@ -33,6 +33,7 @@ import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.SHOP_TYPE_OS
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.SHOP_TYPE_PM
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.SHOP_TYPE_RM
+import com.tokopedia.shop.score.databinding.FragmentShopScoreDetailBinding
 import com.tokopedia.shop.score.detail_old.analytics.ShopScoreDetailTracking
 import com.tokopedia.shop.score.detail_old.di.component.DaggerShopScoreComponent
 import com.tokopedia.shop.score.detail_old.view.model.ShopScoreDetailItem
@@ -44,10 +45,12 @@ import com.tokopedia.shop.score.detail_old.view.viewmodel.ShopScoreDetailViewMod
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_shop_score_detail.*
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class ShopScoreDetailFragment : Fragment() {
+
+    private val binding: FragmentShopScoreDetailBinding? by viewBinding()
 
     @Inject
     lateinit var viewModel: ShopScoreDetailViewModel
@@ -90,7 +93,7 @@ class ShopScoreDetailFragment : Fragment() {
     }
 
     private fun setupTickerShopScore(shopInfoPeriodUiModel: ShopInfoPeriodUiModel) {
-        ticker_info_shop_score?.apply {
+        binding?.tickerInfoShopScore?.run {
             showWithCondition(shopInfoPeriodUiModel.periodType == COMMUNICATION_PERIOD)
             if (isVisible) {
                 ShopScoreDetailTracking.impressHereTickerOldShopScoreDetail(viewModel.userSession.userId, getTypeShop())
@@ -129,7 +132,7 @@ class ShopScoreDetailFragment : Fragment() {
     private fun setupRecyclerView() {
         adapter = ShopScoreDetailAdapter()
 
-        with(recycler_view_shop_score_detail) {
+        binding?.recyclerViewShopScoreDetail?.run {
             adapter = this@ShopScoreDetailFragment.adapter
             layoutManager = LinearLayoutManager(context)
             isNestedScrollingEnabled = false
@@ -138,14 +141,14 @@ class ShopScoreDetailFragment : Fragment() {
 
     private fun setDescriptionText() {
         val description = getString(R.string.description_shop_score_gold_badge_state, GM_BADGE_TITLE)
-        description_shop_score_detail_gold_badge_info.text = description
+        binding?.descriptionShopScoreDetailGoldBadgeInfo?.text = description
     }
 
     private fun setupClickListeners() {
-        button_go_to_seller_center.setOnClickListener {
+        binding?.buttonGoToSellerCenter?.setOnClickListener {
             goToSellerCenter()
         }
-        button_go_to_complete_information.setOnClickListener {
+        binding?.buttonGoToCompleteInformation?.setOnClickListener {
             goToCompleteInformation()
         }
     }
@@ -157,7 +160,7 @@ class ShopScoreDetailFragment : Fragment() {
     private fun renderShopScoreSummary(viewModel: ShopScoreDetailSummary?) {
         setNoGravity()
         val stringConcat = buildStringSummary(viewModel)
-        text_view_shop_score_summary_detail_tittle?.text = MethodChecker.fromHtml(stringConcat)
+        binding?.textViewShopScoreSummaryDetailTittle?.text = MethodChecker.fromHtml(stringConcat)
     }
 
     private fun renderShopScoreState(type: ShopType) {
@@ -174,16 +177,16 @@ class ShopScoreDetailFragment : Fragment() {
     private fun emptyState() {
         context?.let {
             val color = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-            scrollview?.setBackgroundColor(color)
+            binding?.scrollview?.setBackgroundColor(color)
         }
 
-        container_view?.visibility = View.GONE
+        binding?.containerView?.visibility = View.GONE
         setGravityCenter()
 
         NetworkErrorHelper
                 .showEmptyState(
                         activity,
-                        main_frame,
+                        binding?.mainFrame,
                         getString(R.string.error_title_shop_score_failed),
                         getString(R.string.error_subtitle_shop_score_failed),
                         getString(R.string.label_try_again),
@@ -193,13 +196,13 @@ class ShopScoreDetailFragment : Fragment() {
 
     private fun showLoading() {
         setGravityCenter()
-        loading?.visibility = View.VISIBLE
-        container_view?.visibility = View.GONE
+        binding?.loading?.visibility = View.VISIBLE
+        binding?.containerView?.visibility = View.GONE
     }
 
     private fun dismissLoading() {
-        loading?.visibility = View.GONE
-        container_view?.visibility = View.VISIBLE
+        binding?.loading?.visibility = View.GONE
+        binding?.containerView?.visibility = View.VISIBLE
     }
 
     private fun setGravityCenter() {
@@ -208,7 +211,7 @@ class ShopScoreDetailFragment : Fragment() {
                 ViewGroup.LayoutParams.WRAP_CONTENT
         )
         params.gravity = Gravity.CENTER
-        main_frame?.layoutParams = params
+        binding?.mainFrame?.layoutParams = params
     }
 
     private fun setNoGravity() {
@@ -216,11 +219,11 @@ class ShopScoreDetailFragment : Fragment() {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         )
-        main_frame?.layoutParams = params
+        binding?.mainFrame?.layoutParams = params
     }
 
     private fun setShopScoreGoldBadgeState(icon: Drawable) {
-        image_view_gold_badge?.setImageDrawable(icon)
+        binding?.imageViewGoldBadge?.setImageDrawable(icon)
     }
 
     private fun buildStringSummary(summary: ShopScoreDetailSummary?): String {

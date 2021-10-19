@@ -3,24 +3,31 @@ package com.tokopedia.search.result.domain.usecase.searchproduct
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL
-import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.*
+import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.HEADLINE_ITEM_VALUE_FIRST_PAGE
+import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.search.result.domain.model.*
+import com.tokopedia.search.result.domain.model.GlobalSearchNavigationModel
+import com.tokopedia.search.result.domain.model.QuickFilterModel
+import com.tokopedia.search.result.domain.model.SearchInspirationCarouselModel
+import com.tokopedia.search.result.domain.model.SearchInspirationWidgetModel
+import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
-import com.tokopedia.topads.sdk.domain.TopAdsParams
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import rx.Emitter
 import rx.Emitter.BackpressureMode.BUFFER
 import rx.Observable
 import rx.functions.Func1
-import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
@@ -46,12 +53,13 @@ class SearchProductFirstPageGqlUseCase(
 
         val query = getQueryFromParameters(searchProductParams)
         val params = UrlParamUtils.generateUrlParamString(searchProductParams)
+        val headlineAdsParams = createHeadlineParams(searchProductParams, HEADLINE_ITEM_VALUE_FIRST_PAGE)
 
         val graphqlRequestList = graphqlRequests {
             addAceSearchProductRequest(params)
             addQuickFilterRequest(query, params)
             addProductAdsRequest(requestParams, params)
-            addHeadlineAdsRequest(requestParams, searchProductParams)
+            addHeadlineAdsRequest(requestParams, headlineAdsParams)
             addGlobalNavRequest(requestParams, query, params)
             addInspirationCarouselRequest(requestParams, params)
             addInspirationWidgetRequest(requestParams, params)
@@ -73,17 +81,6 @@ class SearchProductFirstPageGqlUseCase(
         return parameters[SearchApiConst.Q]?.toString() ?: ""
     }
 
-    private fun createHeadlineParams(parameters: Map<String?, Any?>): String {
-        val headlineParams = HashMap(parameters)
-
-        headlineParams[TopAdsParams.KEY_EP] = HEADLINE
-        headlineParams[TopAdsParams.KEY_TEMPLATE_ID] = HEADLINE_TEMPLATE_VALUE
-        headlineParams[TopAdsParams.KEY_ITEM] = HEADLINE_ITEM_VALUE
-        headlineParams[TopAdsParams.KEY_HEADLINE_PRODUCT_COUNT] = HEADLINE_PRODUCT_COUNT
-
-        return UrlParamUtils.generateUrlParamString(headlineParams)
-    }
-
     private fun MutableList<GraphqlRequest>.addQuickFilterRequest(query: String, params: String) {
         add(createQuickFilterRequest(query = query, params = params))
     }
@@ -93,20 +90,6 @@ class SearchProductFirstPageGqlUseCase(
                     QUICK_FILTER_QUERY,
                     QuickFilterModel::class.java,
                     mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
-            )
-
-    private fun MutableList<GraphqlRequest>.addHeadlineAdsRequest(requestParams: RequestParams, searchProductParams: Map<String?, Any?>) {
-        if (!requestParams.isSkipHeadlineAds()) {
-            val headlineParams = createHeadlineParams(searchProductParams)
-            add(createHeadlineAdsRequest(headlineParams = headlineParams))
-        }
-    }
-
-    private fun createHeadlineAdsRequest(headlineParams: String) =
-            GraphqlRequest(
-                    HEADLINE_ADS_QUERY,
-                    HeadlineAdsModel::class.java,
-                    mapOf(GQL.KEY_HEADLINE_PARAMS to headlineParams)
             )
 
     private fun MutableList<GraphqlRequest>.addGlobalNavRequest(requestParams: RequestParams, query: String, params: String) {
@@ -206,7 +189,6 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     companion object {
-        private const val HEADLINE_PRODUCT_COUNT = 3
         private const val TDN_TIMEOUT: Long = 2_000
 
         private const val QUICK_FILTER_QUERY = """
@@ -242,100 +224,6 @@ class SearchProductFirstPageGqlUseCase(
                                 }
                             }
                         }
-                    }
-                }
-            }
-        """
-
-        private const val HEADLINE_ADS_QUERY = """
-            query HeadlineAds(${'$'}headline_params: String!) {
-                headlineAds: displayAdsV3(displayParams: ${'$'}headline_params) {
-                    status {
-                        error_code
-                        message
-                    }
-                    header {
-                        process_time
-                        total_data
-                    }
-                    data {
-                        id
-                        ad_ref_key
-                        redirect
-                        ad_click_url
-                        headline {
-                            template_id
-                            name
-                            image {
-                                full_url
-                                full_ecs
-                            }
-                            shop {
-                                id
-                                name
-                                domain
-                                tagline
-                                slogan
-                                location
-                                city
-                                gold_shop
-                                gold_shop_badge
-                                shop_is_official
-                                pm_pro_shop
-                                merchant_vouchers
-                                product {
-                                    id
-                                    name
-                                    price_format
-                                    applinks
-                                    product_cashback
-                                    product_cashback_rate
-                                    product_new_label
-                                    count_review_format
-                                    rating_average
-                                    label_group {
-                                        title
-                                        type
-                                        position
-                                        url
-                                    }
-                                    free_ongkir {
-                                        is_active
-                                        img_url
-                                    }
-                                    image_product{
-                                        product_id
-                                        product_name
-                                        image_url
-                                        image_click_url
-                                    }
-                                    campaign {
-                                        original_price
-                                        discount_percentage
-                                    }
-                                }
-                                image_shop {
-                                    cover
-                                    s_url
-                                    xs_url
-                                    cover_ecs
-                                    s_ecs
-                                    xs_ecs
-                                }
-                            }
-                            badges {
-                                image_url
-                                show
-                                title
-                            }
-                            button_text
-                            promoted_text
-                            description
-                            uri
-                            layout
-                            position
-                        }
-                        applinks
                     }
                 }
             }

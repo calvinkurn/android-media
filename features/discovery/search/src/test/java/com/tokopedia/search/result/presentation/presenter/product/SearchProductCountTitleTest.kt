@@ -29,6 +29,16 @@ internal class SearchProductCountTitleTest: ProductListPresenterTestFixtures() {
         `Verify SearchProductCountViewModel is at the top of visitableList`()
     }
 
+    @Test
+    fun `Show ProductCountViewModel in Navigation Revamp2`() {
+        `Given Search Product API will return SearchProductModel`(searchProductCommonResponseJSON.jsonToObject())
+        `Given AB Test return navigation revamp2`()
+        setUp()
+        `Given visitable list will be captured`()
+        `When Load Data`()
+        `Verify SearchProductCountViewModel is at the top of visitableList`()
+    }
+
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
         every { searchProductFirstPageUseCase.execute(any(), any()) }.answers {
             secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
@@ -39,6 +49,12 @@ internal class SearchProductCountTitleTest: ProductListPresenterTestFixtures() {
         every {
             productListView.abTestRemoteConfig?.getString(RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD)
         }.answers { RollenceKey.NAVIGATION_VARIANT_REVAMP }
+    }
+
+    private fun `Given AB Test return navigation revamp2`() {
+        every {
+            productListView.abTestRemoteConfig?.getString(RollenceKey.NAVIGATION_EXP_TOP_NAV2, RollenceKey.NAVIGATION_VARIANT_OLD)
+        }.answers { RollenceKey.NAVIGATION_VARIANT_REVAMP2 }
     }
 
     private fun `Given visitable list will be captured`() {

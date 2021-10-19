@@ -109,7 +109,6 @@ interface ProductListSectionContract {
         fun trackEventClickSeeMoreBroadMatch(broadMatchItemDataView: BroadMatchDataView)
         fun trackEventClickSeeMoreDynamicProductCarousel(dynamicProductCarousel: BroadMatchDataView, type: String)
         fun modifyApplinkToSearchResult(applink: String): String
-        fun showPowerMerchantProPopUp()
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -133,6 +132,7 @@ interface ProductListSectionContract {
         fun openFilterPage(searchParameter: Map<String, Any>?)
         val isBottomSheetFilterEnabled: Boolean
         fun onBottomSheetFilterDismissed()
+        fun onApplySortFilter(mapParameter: Map<String, Any>)
         fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView)
         fun onBroadMatchItemClick(broadMatchItemDataView: BroadMatchItemDataView)
         fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView)

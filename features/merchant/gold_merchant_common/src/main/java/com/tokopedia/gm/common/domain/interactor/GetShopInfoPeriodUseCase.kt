@@ -6,7 +6,6 @@ import com.tokopedia.gm.common.data.source.cloud.model.ShopInfoByIDResponse
 import com.tokopedia.gm.common.data.source.cloud.model.ShopInfoPeriodWrapperResponse
 import com.tokopedia.gm.common.domain.mapper.ShopScoreCommonMapper
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
@@ -19,7 +18,7 @@ import javax.inject.Inject
 class GetShopInfoPeriodUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val shopScoreCommonMapper: ShopScoreCommonMapper
-) : GraphqlUseCase<ShopInfoPeriodUiModel>(graphqlRepository) {
+) : BaseGqlUseCase<ShopInfoPeriodUiModel>() {
 
     companion object {
         const val SHOP_ID = "shopIDs"
@@ -72,7 +71,7 @@ class GetShopInfoPeriodUseCase @Inject constructor(
 
         val requests = mutableListOf(shopInfoRequest, periodTypeRequest)
         try {
-            val gqlResponse = graphqlRepository.getReseponse(requests)
+            val gqlResponse = graphqlRepository.response(requests, cacheStrategy)
             if (gqlResponse.getError(ShopInfoByIDResponse::class.java).isNullOrEmpty()) {
                 shopInfoPeriodWrapperResponse.shopInfoByIDResponse = gqlResponse.getData<ShopInfoByIDResponse>(ShopInfoByIDResponse::class.java).shopInfoByID
             } else {

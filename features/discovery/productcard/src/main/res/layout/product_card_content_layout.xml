@@ -19,8 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="small"
-        tools:text="di Setelan anak laki-laki"
-        />
+        tools:text="di Setelan anak laki-laki" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewGimmick"

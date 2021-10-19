@@ -256,12 +256,12 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         presenter.onCuratedCampaignCardClicked(curatedCampaignDataView)
     }
 
-    override fun trackEventClickCuratedCampaignCard(userId: String, label: String, type: String) {
-        AutocompleteTracking.eventClickCuratedCampaignCard(userId, label, type)
+    override fun trackEventClickCuratedCampaignCard(userId: String, label: String, type: String, campaignCode: String) {
+        AutocompleteTracking.eventClickCuratedCampaignCard(userId, label, type, campaignCode)
     }
 
-    override fun onCuratedCampaignCardImpressed(userId: String, label: String, type: String) {
-        AutocompleteTracking.impressedCuratedCampaign(iris, userId, label, type)
+    override fun onCuratedCampaignCardImpressed(userId: String, label: String, type: String, campaignCode: String) {
+        AutocompleteTracking.impressedCuratedCampaign(iris, userId, label, type, campaignCode)
     }
 
     override fun onRecentViewClicked(item: BaseItemInitialStateSearch) {

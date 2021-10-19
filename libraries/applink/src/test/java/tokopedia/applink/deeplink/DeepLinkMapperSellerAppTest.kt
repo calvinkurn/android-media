@@ -4,8 +4,11 @@ import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.shopscore.DeepLinkMapperShopScore
 import com.tokopedia.config.GlobalConfig
+import io.mockk.every
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -24,8 +27,20 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check home appLink then should return tokopedia internal seller home in sellerapp`() {
+    fun `check home appLink login then return seller home in sellerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome"
+        every {
+            DeeplinkMapperHome.isLoginAndHasShop(context)
+        } returns true
+        assertEqualsDeepLinkMapper(ApplinkConst.HOME, expectedDeepLink)
+    }
+
+    @Test
+    fun `check home appLink not login then return seller home in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/welcome"
+        every {
+            DeeplinkMapperHome.isLoginAndHasShop(context)
+        } returns false
         assertEqualsDeepLinkMapper(ApplinkConst.HOME, expectedDeepLink)
     }
 
@@ -109,6 +124,12 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     fun `check power merchant subscribe appLink then should return tokopedia internal power merchant subscribe in sellerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/power-merchant-subscribe"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE, expectedDeepLink)
+    }
+
+    @Test
+    fun `check pm benefit package appLink then should return tokopedia internal pm benefit package in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/pm-benefit-package"
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.PM_BENEFIT_PACKAGE, expectedDeepLink)
     }
 
     @Test
@@ -217,6 +238,18 @@ class DeepLinkMapperSellerAppTest: DeepLinkMapperTestFixture() {
     fun `check seller history internal appLink then should return seller home seller history in sellerapp with search param`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/sellerhome-som-allorder?search=product"
         assertEqualsDeepLinkMapper("${ApplinkConstInternalOrder.HISTORY}?search=product", expectedDeepLink)
+    }
+
+    @Test
+    fun `check review reminder then should return tokopedia internal review reminder`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/review-reminder"
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.REVIEW_REMINDER , expectedDeepLink)
+    }
+
+    @Test
+    fun `check review reminder previous then should return tokopedia internal review reminder`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/review-reminder"
+        assertEqualsDeepLinkMapper(ApplinkConst.REVIEW_REMINDER_PREVIOUS , expectedDeepLink)
     }
 
     @Test

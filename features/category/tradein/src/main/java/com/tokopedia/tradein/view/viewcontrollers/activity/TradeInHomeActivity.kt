@@ -139,7 +139,11 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
         })
         viewModel.homeResultData.observe(this, Observer { homeResult: HomeResult ->
             if (!homeResult.isSuccess) {
-                setNotElligible(getString(R.string.not_elligible))
+                setNotElligible(
+                    if(homeResult.displayMessage.isNotEmpty())
+                        homeResult.displayMessage
+                    else
+                        getString(R.string.not_elligible))
             } else {
                 when (homeResult.priceStatus) {
                     PriceState.DIAGNOSED_INVALID -> {
@@ -241,7 +245,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
                                     .commit()
                             tradeInAnalytics.viewInitialPricePage(
                                     deviceDisplayName
-                                            ?: "none/other", minPrice, maxPrice, productId.toString())
+                                            ?: "none/other", minPrice, maxPrice, productId)
                         }
                     }
                 }
@@ -291,10 +295,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
     }
 
     private fun init() {
-        var campaignId = TradeinConstants.CAMPAIGN_ID_PROD
-        if (TokopediaUrl.getInstance().TYPE == Env.STAGING) campaignId = TradeinConstants.CAMPAIGN_ID_STAGING
-        laku6TradeIn = Laku6TradeIn.getInstance(this, campaignId,
-                TradeinConstants.APPID, Keys.AUTH_TRADE_IN_API_KEY_MA, TokopediaUrl.getInstance().TYPE == Env.STAGING, TRADEIN_EXCHANGE, AuthKey.SAFETYNET_KEY_TRADE_IN)
+        setLaku6()
         intent.data?.lastPathSegment?.let {
             if (it == TRADEIN_SELLER_CHECK || it == FINAL_PRICE)
                 askPermissions()
@@ -307,6 +308,13 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
 
         //init sessionid
         viewModel.initSessionId(laku6TradeIn)
+    }
+
+    private fun setLaku6() {
+        var campaignId = TradeinConstants.CAMPAIGN_ID_PROD
+        if (TokopediaUrl.getInstance().TYPE == Env.STAGING) campaignId = TradeinConstants.CAMPAIGN_ID_STAGING
+        laku6TradeIn = Laku6TradeIn.getInstance(this, campaignId,
+            TokopediaUrl.getInstance().TYPE == Env.STAGING, TRADEIN_EXCHANGE)
     }
 
     private fun getTradeInParams() {
@@ -365,6 +373,8 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
             viewModel.tradeInParams.deviceId = imei
             viewModel.getIMEI(laku6TradeIn, imei)
         } else {
+            if(!::laku6TradeIn.isInitialized)
+                setLaku6()
             laku6TradeIn.startGUITest()
         }
     }
@@ -438,7 +448,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>() {
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount > 0) {
             if (currentFragment is TradeInInitialPriceFragment)
-                tradeInAnalytics.initialPricePageBackButtonClick(viewModel.tradeInParams.productId.toString())
+                tradeInAnalytics.initialPricePageBackButtonClick(viewModel.tradeInParams.productId)
             else if (currentFragment is TradeInFinalPriceFragment)
                 tradeInAnalytics.clickFinalPriceBack()
             supportFragmentManager.popBackStack()

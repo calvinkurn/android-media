@@ -66,7 +66,7 @@ data class BasicInfo(
 
     fun getDefaultOngkirDouble(): Double = defaultOngkirEstimation.toDoubleOrNull() ?: DEFAULT_PRICE_MINIMUM_SHIPPING
     fun getWeightUnit(): Float = if (weightUnit.toLowerCase() == KG) weight.toFloat() else weight.toFloat() / KILO
-    fun getProductId(): Int = productID.toIntOrNull() ?: 0
+    fun getProductId(): Long = productID.toLongOrNull() ?: 0
     fun getShopId(): Int = shopID.toIntOrNull() ?: 0
     fun isActive(): Boolean {
         return status == ProductStatusTypeDef.ACTIVE

@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatroom.domain.mapper
 
 import androidx.collection.ArrayMap
 import com.tokopedia.chat_common.data.AttachmentType
+import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceSentPojo
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
 import com.tokopedia.common.network.util.CommonUtil
@@ -33,13 +34,26 @@ class ChatAttachmentMapper @Inject constructor() {
 
     private fun parseAttribute(attachment: Attachment) {
         attachment.parsedAttributes = when (attachment.type) {
-            AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT.toInt() -> convertToProductAttachment(attachment)
-            AttachmentType.Companion.TYPE_INVOICE_SEND.toInt() -> convertToInvoiceAttachment(attachment)
+            AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT.toInt() -> {
+                convertToProductAttachment(attachment)
+            }
+            AttachmentType.Companion.TYPE_INVOICE_SEND.toInt() -> {
+                convertToInvoiceAttachment(attachment)
+            }
             AttachmentType.Companion.TYPE_REVIEW_REMINDER.toInt() -> {
                 convertToReviewReminderAttachment(attachment)
             }
+            AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT.toInt() -> {
+                convertToImageAnnouncementAttachment(attachment)
+            }
             else -> null
         }
+    }
+
+    private fun convertToImageAnnouncementAttachment(
+        attachment: Attachment
+    ): ImageAnnouncementPojo {
+        return CommonUtil.fromJson(attachment.attributes, ImageAnnouncementPojo::class.java)
     }
 
     private fun convertToInvoiceAttachment(attachment: Attachment): InvoiceSentPojo {

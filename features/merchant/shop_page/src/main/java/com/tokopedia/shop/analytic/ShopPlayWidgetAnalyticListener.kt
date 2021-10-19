@@ -35,11 +35,14 @@ class ShopPlayWidgetAnalyticListener(
     private val shopName: String
         get() = userSession.shopName
 
-    private val isPlayWidgetSellerApp: Boolean
-        get() = GlobalConfig.isSellerApp()
+    private val currentSite: String
+        get() = if (GlobalConfig.isSellerApp()) "tokopediaseller" else "tokopediamarketplace"
+
+    private val isOwnShop: Boolean
+        get() = shopId == userSession.shopId
 
     override fun onImpressPlayWidget(view: PlayWidgetView, item: PlayWidgetUiModel, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
-        if (!isPlayWidgetSellerApp) return
+        if (!isOwnShop) return
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
                 event = PROMO_VIEW,
                 eventCategory = SHOP_PAGE_SELLER,
@@ -56,7 +59,7 @@ class ShopPlayWidgetAnalyticListener(
         )
                 .appendUserId(userId)
                 .appendBusinessUnit("play")
-                .appendCurrentSite("tokopediaseller")
+                .appendCurrentSite(currentSite)
                 .appendShopId(shopId)
                 .build()
 
@@ -64,7 +67,7 @@ class ShopPlayWidgetAnalyticListener(
     }
 
     override fun onClickViewAll(view: PlayWidgetMediumView, verticalWidgetPosition: Int, businessWidgetPosition: Int,) {
-        if (isPlayWidgetSellerApp) return
+        if (isOwnShop) return
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         EVENT to CLICK_SHOP_PAGE,
@@ -72,7 +75,7 @@ class ShopPlayWidgetAnalyticListener(
                         EVENT_ACTION to "click view all play",
                         EVENT_LABEL to "$shopId - Tokopedia Play - $businessWidgetPosition",
                         BUSINESS_UNIT to "ads solution",
-                        CURRENT_SITE to "tokopediamarketplace",
+                        CURRENT_SITE to currentSite,
                         USER_ID to userId
                 )
         )
@@ -85,7 +88,7 @@ class ShopPlayWidgetAnalyticListener(
             verticalWidgetPosition: Int,
             businessWidgetPosition: Int,
     ) {
-        if (isPlayWidgetSellerApp) return
+        if (isOwnShop) return
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
                 event = PROMO_VIEW,
                 eventCategory = SHOP_PAGE_BUYER,
@@ -111,7 +114,7 @@ class ShopPlayWidgetAnalyticListener(
             verticalWidgetPosition: Int,
             businessWidgetPosition: Int,
     ) {
-        if (isPlayWidgetSellerApp) return
+        if (isOwnShop) return
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
                 event = PROMO_CLICK,
                 eventCategory = SHOP_PAGE_BUYER,
@@ -138,7 +141,7 @@ class ShopPlayWidgetAnalyticListener(
             verticalWidgetPosition: Int,
             businessWidgetPosition: Int,
     ) {
-        val trackerMap = if (isPlayWidgetSellerApp) {
+        val trackerMap = if (isOwnShop) {
             BaseTrackerBuilder().constructBasicPromotionView(
                     event = PROMO_VIEW,
                     eventCategory = SHOP_PAGE_SELLER,
@@ -155,7 +158,7 @@ class ShopPlayWidgetAnalyticListener(
             )
                     .appendUserId(userId)
                     .appendBusinessUnit("play")
-                    .appendCurrentSite("tokopediaseller")
+                    .appendCurrentSite(currentSite)
                     .appendShopId(shopId)
                     .build()
         } else {
@@ -186,7 +189,7 @@ class ShopPlayWidgetAnalyticListener(
             verticalWidgetPosition: Int,
             businessWidgetPosition: Int,
     ) {
-        val trackerMap = if (isPlayWidgetSellerApp) {
+        val trackerMap = if (isOwnShop) {
             BaseTrackerBuilder().constructBasicPromotionClick(
                     event = PROMO_CLICK,
                     eventCategory = SHOP_PAGE_SELLER,
@@ -203,7 +206,7 @@ class ShopPlayWidgetAnalyticListener(
             )
                     .appendUserId(userId)
                     .appendBusinessUnit("play")
-                    .appendCurrentSite("tokopediaseller")
+                    .appendCurrentSite(currentSite)
                     .appendShopId(shopId)
                     .build()
         } else {
@@ -234,7 +237,7 @@ class ShopPlayWidgetAnalyticListener(
             verticalWidgetPosition: Int,
             businessWidgetPosition: Int,
     ) {
-        if (isPlayWidgetSellerApp) return
+        if (isOwnShop) return
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         EVENT to CLICK_SHOP_PAGE,
@@ -242,7 +245,7 @@ class ShopPlayWidgetAnalyticListener(
                         EVENT_ACTION to "click ${if (!isRemindMe && userId.isNotBlank()) "on remove " else ""}remind me",
                         EVENT_LABEL to "${item.channelId} - $channelPositionInList - $businessWidgetPosition",
                         BUSINESS_UNIT to "ads solution",
-                        CURRENT_SITE to "tokopediamarketplace",
+                        CURRENT_SITE to currentSite,
                         USER_ID to userId
                 )
         )
@@ -255,7 +258,7 @@ class ShopPlayWidgetAnalyticListener(
             verticalWidgetPosition: Int,
             businessWidgetPosition: Int,
     ) {
-        if (isPlayWidgetSellerApp) return
+        if (isOwnShop) return
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         EVENT to CLICK_SHOP_PAGE,
@@ -263,14 +266,13 @@ class ShopPlayWidgetAnalyticListener(
                         EVENT_ACTION to "click other content",
                         EVENT_LABEL to "$shopId - $businessWidgetPosition",
                         BUSINESS_UNIT to "ads solution",
-                        CURRENT_SITE to "tokopediamarketplace",
+                        CURRENT_SITE to currentSite,
                         USER_ID to userId
                 )
         )
     }
 
     override fun onClickMoreActionChannel(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
-        if (!isPlayWidgetSellerApp) return
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         EVENT to CLICK_SHOP_PAGE,
@@ -278,7 +280,7 @@ class ShopPlayWidgetAnalyticListener(
                         EVENT_ACTION to "click option button on card - widget play",
                         EVENT_LABEL to "$shopId - ${item.channelId} - $verticalWidgetPosition - $channelPositionInList - $businessWidgetPosition",
                         BUSINESS_UNIT to "play",
-                        CURRENT_SITE to "tokopediaseller",
+                        CURRENT_SITE to currentSite,
                         USER_ID to userId,
                         SHOP_ID to shopId
                 )
@@ -286,7 +288,6 @@ class ShopPlayWidgetAnalyticListener(
     }
 
     override fun onClickDeleteChannel(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
-        if (!isPlayWidgetSellerApp) return
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         EVENT to CLICK_SHOP_PAGE,
@@ -294,7 +295,7 @@ class ShopPlayWidgetAnalyticListener(
                         EVENT_ACTION to "click delete on card - widget play",
                         EVENT_LABEL to "$shopId - ${item.channelId} - $verticalWidgetPosition - $channelPositionInList - $businessWidgetPosition - ${getChannelStatusValue(item.channelType)}}",
                         BUSINESS_UNIT to "play",
-                        CURRENT_SITE to "tokopediaseller",
+                        CURRENT_SITE to currentSite,
                         USER_ID to userId,
                         SHOP_ID to shopId
                 )
@@ -302,7 +303,6 @@ class ShopPlayWidgetAnalyticListener(
     }
 
     fun onImpressMoreActionChannel(item: PlayWidgetMediumChannelUiModel) {
-        if (!isPlayWidgetSellerApp) return
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         EVENT to VIEW_SHOP_PAGE_IRIS,
@@ -310,7 +310,7 @@ class ShopPlayWidgetAnalyticListener(
                         EVENT_ACTION to "view bottom sheet - widget play",
                         EVENT_LABEL to "$shopId - ${item.channelId}",
                         BUSINESS_UNIT to "play",
-                        CURRENT_SITE to "tokopediaseller",
+                        CURRENT_SITE to currentSite,
                         USER_ID to userId,
                         SHOP_ID to shopId
                 )
@@ -318,7 +318,6 @@ class ShopPlayWidgetAnalyticListener(
     }
 
     fun onClickMoreActionShareLinkChannel(channelId: String) {
-        if (!isPlayWidgetSellerApp) return
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         EVENT to CLICK_SHOP_PAGE,
@@ -326,7 +325,7 @@ class ShopPlayWidgetAnalyticListener(
                         EVENT_ACTION to "click share on bottom sheet - widget play",
                         EVENT_LABEL to "$shopId - $channelId",
                         BUSINESS_UNIT to "play",
-                        CURRENT_SITE to "tokopediaseller",
+                        CURRENT_SITE to currentSite,
                         USER_ID to userId,
                         SHOP_ID to shopId
                 )
@@ -334,7 +333,6 @@ class ShopPlayWidgetAnalyticListener(
     }
 
     fun onClickMoreActionPerformaChannel(channelId: String) {
-        if (!isPlayWidgetSellerApp) return
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         EVENT to CLICK_SHOP_PAGE,
@@ -342,7 +340,7 @@ class ShopPlayWidgetAnalyticListener(
                         EVENT_ACTION to "click lihat performa - widget play",
                         EVENT_LABEL to "$shopId - $channelId",
                         BUSINESS_UNIT to "play",
-                        CURRENT_SITE to "tokopediaseller",
+                        CURRENT_SITE to currentSite,
                         USER_ID to userId,
                         SHOP_ID to shopId
                 )
@@ -350,7 +348,7 @@ class ShopPlayWidgetAnalyticListener(
     }
 
     fun onClickMoreActionDeleteChannel(channelId: String) {
-        if (!isPlayWidgetSellerApp) return
+        if (!isOwnShop) return
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         EVENT to CLICK_SHOP_PAGE,
@@ -358,7 +356,7 @@ class ShopPlayWidgetAnalyticListener(
                         EVENT_ACTION to "click delete on bottom sheet - widget play",
                         EVENT_LABEL to "$shopId - $channelId",
                         BUSINESS_UNIT to "play",
-                        CURRENT_SITE to "tokopediaseller",
+                        CURRENT_SITE to currentSite,
                         USER_ID to userId,
                         SHOP_ID to shopId
                 )
@@ -366,7 +364,6 @@ class ShopPlayWidgetAnalyticListener(
     }
 
     fun onImpressDialogDeleteChannel(channelId: String) {
-        if (!isPlayWidgetSellerApp) return
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         EVENT to VIEW_SHOP_PAGE_IRIS,
@@ -374,7 +371,7 @@ class ShopPlayWidgetAnalyticListener(
                         EVENT_ACTION to "view confirm on pop up delete - widget play",
                         EVENT_LABEL to "$shopId - $channelId",
                         BUSINESS_UNIT to "play",
-                        CURRENT_SITE to "tokopediaseller",
+                        CURRENT_SITE to currentSite,
                         USER_ID to userId,
                         SHOP_ID to shopId
                 )
@@ -382,7 +379,6 @@ class ShopPlayWidgetAnalyticListener(
     }
 
     fun onClickDialogDeleteChannel(channelId: String) {
-        if (!isPlayWidgetSellerApp) return
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         EVENT to CLICK_SHOP_PAGE,
@@ -390,7 +386,7 @@ class ShopPlayWidgetAnalyticListener(
                         EVENT_ACTION to "click delete on pop up delete - widget play",
                         EVENT_LABEL to "$shopId - $channelId",
                         BUSINESS_UNIT to "play",
-                        CURRENT_SITE to "tokopediaseller",
+                        CURRENT_SITE to currentSite,
                         USER_ID to userId,
                         SHOP_ID to shopId
                 )
@@ -398,7 +394,6 @@ class ShopPlayWidgetAnalyticListener(
     }
 
     fun onImpressErrorDeleteChannel(channelId: String, errorMessage: String) {
-        if (!isPlayWidgetSellerApp) return
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         EVENT to VIEW_SHOP_PAGE_IRIS,
@@ -406,7 +401,7 @@ class ShopPlayWidgetAnalyticListener(
                         EVENT_ACTION to "error state on shop page seller - widget play",
                         EVENT_LABEL to "$shopId - $channelId - $errorMessage",
                         BUSINESS_UNIT to "play",
-                        CURRENT_SITE to "tokopediaseller",
+                        CURRENT_SITE to currentSite,
                         USER_ID to userId,
                         SHOP_ID to shopId
                 )

@@ -4,7 +4,7 @@
 
     <application>
         <activity
-            android:name=".view.activity.ChangePhoneNumberWarningActivity"
+            android:name=".features.ChangePhoneNumberActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize">
@@ -21,7 +21,7 @@
         </activity>
 
         <activity
-            android:name=".view.activity.ChangePhoneNumberInputActivity"
+            android:name=".features.webview.ChangePhoneNumberWebViewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize" />

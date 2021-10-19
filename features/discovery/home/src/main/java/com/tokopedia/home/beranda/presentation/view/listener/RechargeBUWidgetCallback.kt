@@ -43,7 +43,7 @@ class RechargeBUWidgetCallback (val context: Context?,
         }
 
         context?.let {
-            RouteManager.route(it, data.data.bannerApplink)
+            RouteManager.route(it, data.data.applink)
         }
     }
 

@@ -20,6 +20,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
@@ -32,6 +33,7 @@ class OfficialHomeMapper (
         private const val BANNER_POSITION = 0
         private const val BENEFIT_POSITION = 1
         private const val FEATURE_SHOP_POSITION = 2
+        private const val RECOM_WIDGET_POSITION = 3
     }
 
     fun mappingBanners(banner: OfficialStoreBanners, adapter: OfficialHomeAdapter?, categoryName: String?) {
@@ -94,7 +96,8 @@ class OfficialHomeMapper (
                         DynamicChannelIdentifiers.LAYOUT_MIX_LEFT,
                         DynamicChannelIdentifiers.LAYOUT_MIX_TOP,
                         DynamicChannelIdentifiers.LAYOUT_FEATURED_BRAND,
-                        DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP
+                        DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP,
+                        DynamicChannelIdentifiers.LAYOUT_BEST_SELLING
                 )
                 availableLegoBannerScreens = setOf(
                         DynamicChannelIdentifiers.LAYOUT_6_IMAGE,
@@ -109,7 +112,8 @@ class OfficialHomeMapper (
                         DynamicChannelIdentifiers.LAYOUT_MIX_LEFT,
                         DynamicChannelIdentifiers.LAYOUT_MIX_TOP,
                         DynamicChannelIdentifiers.LAYOUT_FEATURED_BRAND,
-                        DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP
+                        DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP,
+                        DynamicChannelIdentifiers.LAYOUT_BEST_SELLING
                 )
             }
 
@@ -135,6 +139,10 @@ class OfficialHomeMapper (
                                     channelModel = OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(officialStore.channel, position),
                                     state = FeaturedShopDataModel.STATE_LOADING,
                                     page = FeaturedShopDataModel.PAGE_OS))
+                        }
+                        DynamicChannelIdentifiers.LAYOUT_BEST_SELLING -> {
+                            val channel = officialStore.channel
+                            views.add(BestSellerDataModel(id = channel.id, widgetParam = channel.widgetParam, pageName = channel.pageName))
                         }
                         else -> views.add(DynamicChannelDataModel(officialStore))
                     }
@@ -269,5 +277,17 @@ class OfficialHomeMapper (
             }
         }
         action.invoke(newList.toMutableList())
+    }
+
+    fun mappingRecomWidget(data: BestSellerDataModel, adapter: OfficialHomeAdapter?) {
+        listOfficialStore.run {
+            val index = indexOfFirst { it is BestSellerDataModel }
+
+            removeAll{ it is BestSellerDataModel }
+            if(index == -1) add(RECOM_WIDGET_POSITION, data)
+            else set(index, data)
+
+            adapter?.submitList(this.toMutableList())
+        }
     }
 }

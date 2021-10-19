@@ -13,6 +13,7 @@ import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.play_common.util.PlayConnectionCommon
 
@@ -27,6 +28,7 @@ open class PlayVideoPlayer(val context: Context) {
 
     var listener: VideoPlayerListener? = null
     var videoUrl: String? = null
+    var shouldCache: Boolean = false
 
     var maxDurationCellularInSeconds: Int? = null
 
@@ -56,7 +58,7 @@ open class PlayVideoPlayer(val context: Context) {
     fun start() {
         if (videoUrl == null || videoUrl?.isBlank() == true) return
 
-        val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl))
+        val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl), shouldCache)
 
         exoPlayer.playWhenReady = true
         exoPlayer.prepare(mediaSource,true, false)
@@ -84,8 +86,11 @@ open class PlayVideoPlayer(val context: Context) {
         fun onIsPlayingChanged(isPlaying: Boolean)
     }
 
-    private fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {
-        val dataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))
+    private fun getMediaSourceBySource(context: Context, uri: Uri, shouldCache: Boolean): MediaSource {
+        val defaultDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))
+        val dataSourceFactory = if (shouldCache) {
+            CacheDataSourceFactory(PlayWidgetVideoCache.getInstance(context), defaultDataSourceFactory)
+        } else defaultDataSourceFactory
         val mediaSourceFactory = when (val type = Util.inferContentType(uri)) {
             C.TYPE_SS -> SsMediaSource.Factory(dataSourceFactory)
             C.TYPE_DASH -> DashMediaSource.Factory(dataSourceFactory)

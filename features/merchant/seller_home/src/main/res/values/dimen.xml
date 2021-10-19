@@ -4,9 +4,6 @@
     <dimen name="sah_medium_widget_height">180dp</dimen>
     <dimen name="sah_status_bar_height">24dp</dimen>
     <dimen name="sah_status_bar_elevation">4dp</dimen>
-    <dimen name="sah_thematic_width">98dp</dimen>
-    <dimen name="sah_thematic_height">44dp</dimen>
-    <dimen name="sah_thematic_translation_x">-12dp</dimen>
     <dimen name="sah_keyboard_height_estimation">200dp</dimen>
     <dimen name="sah_dimen_1dp">1dp</dimen>
     <dimen name="sah_dimen_4dp">4dp</dimen>
@@ -62,4 +59,22 @@
     <dimen name="centralized_promo_first_voucher_bottomsheet_item_title_margin_start">12dp</dimen>
     <dimen name="centralized_promo_first_voucher_bottomsheet_item_padding_bottom">24dp</dimen>
     <dimen name="centralized_promo_first_voucher_bottomsheet_padding_bottom">24dp</dimen>
+
+    <dimen name="sah_new_other_shop_avatar_border">1.5dp</dimen>
+    <dimen name="sah_new_other_balance_card_height">74dp</dimen>
+    <dimen name="sah_new_other_topads_auto_debit_fold_width">6dp</dimen>
+    <dimen name="sah_new_other_topads_auto_debit_fold_translation_y">-1dp</dimen>
+    <dimen name="sah_new_other_topads_auto_debit_icon_padding">5.5dp</dimen>
+    <dimen name="sah_new_other_header_background_height">154dp</dimen>
+    <dimen name="sah_new_other_shop_secondary_info_height">72dp</dimen>
+    <dimen name="sah_new_other_item_shop_info_margin">2dp</dimen>
+    <dimen name="sah_new_other_item_shop_shimmer_title_width">78dp</dimen>
+    <dimen name="sah_new_other_item_shop_shimmer_desc_width">112dp</dimen>
+    <dimen name="sah_new_other_item_shop_shimmer_width">92dp</dimen>
+    <dimen name="sah_new_other_item_error_margin">6dp</dimen>
+    <dimen name="sah_new_other_item_shop_follower_shimmer_width">62dp</dimen>
+    <dimen name="sah_new_other_header_shop_name_margin_bottom">11dp</dimen>
+    <dimen name="sah_new_other_header_share_width">18dp</dimen>
+    <dimen name="sah_new_other_layout_animation_start_margin_top">200dp</dimen>
+    <dimen name="sah_new_other_balance_info_shimmer_width">112dp</dimen>
 </resources>

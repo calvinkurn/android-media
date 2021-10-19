@@ -137,6 +137,7 @@ import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragmen
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
+import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
@@ -176,7 +177,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         ProductManageQuickEditStockFragment.OnFinishedListener,
         ProductManageMoreMenuViewHolder.ProductManageMoreMenuListener,
         ProductManageListListener, ProductManageAddEditMenuBottomSheet.AddEditMenuClickListener,
-        ProductCampaignInfoListener {
+        ProductCampaignInfoListener, SellerHomeFragmentListener {
 
     private val defaultItemAnimator by lazy { DefaultItemAnimator() }
 
@@ -943,7 +944,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         if (shouldScrollToTop) {
             shouldScrollToTop = false
             recycler_view?.addOneTimeGlobalLayoutListener {
-                recycler_view?.smoothScrollToPosition(0)
+                recycler_view?.smoothScrollToPosition(RV_TOP_POSITION)
             }
         }
         renderCheckedView()
@@ -1475,7 +1476,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         if (product.hasStockReserved) {
             context?.run {
                 startActivityForResult(
-                        CampaignStockActivity.createIntent(this, userSession.shopId, arrayOf(product.id)),
+                        CampaignStockActivity.createIntent(this, userSession.shopId, arrayOf(product.id), product.isProductBundling),
                         REQUEST_CODE_CAMPAIGN_STOCK)
             }
         } else {
@@ -1486,7 +1487,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     override fun onClickEditVariantPriceButton(product: ProductUiModel) {
-        val editVariantBottomSheet = QuickEditVariantPriceBottomSheet.createInstance(product.id) { result ->
+        val editVariantBottomSheet = QuickEditVariantPriceBottomSheet.createInstance(product.id, product.isProductBundling) { result ->
             viewModel.editVariantsPrice(result)
         }
         editVariantBottomSheet.show(childFragmentManager, QuickEditVariantPriceBottomSheet.TAG)
@@ -1501,7 +1502,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                         REQUEST_CODE_CAMPAIGN_STOCK)
             }
         } else {
-            val editVariantStockBottomSheet = QuickEditVariantStockBottomSheet.createInstance(product.id, ::onClickCampaignInfo) { result ->
+            val editVariantStockBottomSheet = QuickEditVariantStockBottomSheet.createInstance(product.id, product.isProductBundling, ::onClickCampaignInfo) { result ->
                 viewModel.editVariantsStock(result)
             }
             editVariantStockBottomSheet.show(childFragmentManager, QuickEditVariantStockBottomSheet.TAG)
@@ -1916,6 +1917,12 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 }
                 else -> super.onActivityResult(requestCode, resultCode, it)
             }
+        }
+    }
+
+    override fun onScrollToTop() {
+        recycler_view?.post {
+            recycler_view?.smoothScrollToPosition(RV_TOP_POSITION)
         }
     }
 
@@ -2466,6 +2473,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         private const val TICKER_ENTER_LEAVE_ANIMATION_DELAY = 10L
 
         private const val START_SPAN_INDEX = 5
+
+        private const val RV_TOP_POSITION = 0
     }
 
 }

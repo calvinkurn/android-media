@@ -17,8 +17,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.imagepicker.common.ImagePickerBuilder.Companion.getOriginalImageBuilder
+import com.tokopedia.imagepicker.common.ImagePickerPageSource
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor.extract
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.pms.R
 import com.tokopedia.pms.analytics.PmsAnalytics
@@ -153,6 +155,7 @@ class UploadProofPaymentFragment : BaseDaggerFragment(), UploadProofPaymentContr
         val intent =
             RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.IMAGE_PICKER)
         intent.putImagePickerBuilder(builder)
+        intent.putParamPageSource(ImagePickerPageSource.UPLOAD_PROOF_PAYMENT_PAGE)
         startActivityForResult(intent, REQUEST_CODE_IMAGE_PROOF)
     }
 

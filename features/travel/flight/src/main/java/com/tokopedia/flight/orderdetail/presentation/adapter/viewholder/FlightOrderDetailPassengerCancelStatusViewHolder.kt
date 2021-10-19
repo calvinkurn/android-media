@@ -1,21 +1,20 @@
 package com.tokopedia.flight.orderdetail.presentation.adapter.viewholder
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.flight.R
+import com.tokopedia.flight.databinding.ItemFlightOrderDetailPassengerCancelStatusBinding
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailPassengerCancelStatusModel
 import com.tokopedia.flight.orderdetail.presentation.utils.OrderDetailUtils
 import com.tokopedia.flight.orderlist.constant.FlightCancellationStatus
-import kotlinx.android.synthetic.main.item_flight_order_detail_passenger_cancel_status.view.*
 
 /**
  * @author by furqan on 30/10/2020
  */
-class FlightOrderDetailPassengerCancelStatusViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+class FlightOrderDetailPassengerCancelStatusViewHolder(val binding: ItemFlightOrderDetailPassengerCancelStatusBinding) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(passengerCancellationStatus: FlightOrderDetailPassengerCancelStatusModel) {
-        with(itemView) {
+        with(binding) {
             tgFlightOrderPassengerCancelStatus.text = passengerCancellationStatus.statusStr
 
             when (passengerCancellationStatus.status) {

@@ -379,6 +379,19 @@
             app:unifyButtonType="main"
             app:unifyButtonSize="medium" />
 
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_shared_pref_editor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:gravity="center"
+            android:padding="@dimen/spacing_lvl3"
+            android:text="@string/shared_pref_editor"
+            app:unifyButtonType="main"
+            app:unifyButtonSize="medium" />
+
         <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/toggle_seller_app_review"
             android:layout_width="match_parent"
@@ -586,35 +599,6 @@
                 app:unifyButtonVariant="ghost"/>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
-            android:orientation="horizontal">
-
-            <com.tokopedia.unifycomponents.UnifyButton
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="@dimen/dp_4"
-                android:id="@+id/buttonAlwaysOldHome"
-                android:text="@string/always_old_home"
-                app:unifyButtonType="alternate"
-                app:unifyButtonSize="medium"
-                app:unifyButtonVariant="ghost"/>
-
-            <com.tokopedia.unifycomponents.UnifyButton
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="@dimen/dp_4"
-                android:id="@+id/buttonAlwaysNewHome"
-                android:text="@string/always_new_home"
-                app:unifyButtonType="alternate"
-                app:unifyButtonSize="medium"
-                app:unifyButtonVariant="ghost"/>
-        </LinearLayout>
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -690,8 +674,8 @@
                 android:layout_weight="1"
                 android:textAllCaps="false"
                 android:layout_marginEnd="@dimen/dp_4"
-                android:id="@+id/btn_always_old_notifcenter"
-                android:text="@string/always_old_notif"
+                android:id="@+id/btn_always_old_cart_checkout"
+                android:text="Old Cart Checkout"
                 app:unifyButtonType="alternate"
                 app:unifyButtonSize="medium"
                 app:unifyButtonVariant="ghost"/>
@@ -702,8 +686,8 @@
                 android:layout_weight="1"
                 android:textAllCaps="false"
                 android:layout_marginStart="@dimen/dp_4"
-                android:id="@+id/btn_always_new_notifcenter"
-                android:text="@string/always_new_notif"
+                android:id="@+id/btn_always_new_cart_checkout"
+                android:text="New Cart Checkout Bundling"
                 app:unifyButtonType="alternate"
                 app:unifyButtonSize="medium"
                 app:unifyButtonVariant="ghost"/>

@@ -16,12 +16,6 @@ sealed class InteractionEvent {
     object SendChat : InteractionEvent() {
         override val needLogin: Boolean = true
     }
-    data class Like(val shouldLike: Boolean) : InteractionEvent() {
-        override val needLogin: Boolean = true
-    }
-    data class Follow(val partnerId: Long, val partnerAction: PartnerFollowAction) : InteractionEvent() {
-        override val needLogin: Boolean = true
-    }
     data class DoActionProduct(val product: PlayProductUiModel.Product, val action: ProductAction, val type: BottomInsetsType) : InteractionEvent() {
         override val needLogin: Boolean = true
     }

@@ -201,7 +201,10 @@ yang ditemukan</string>
     <string name="topchat_desc_dual_announcement_first_image">First Banner Announcement</string>
     <string name="topchat_desc_dual_announcement_second_image">Second Banner Announcement</string>
     <string name="topchat_desc_close_invoice_preview">Close Invoice Preview</string>
+    <string name="topchat_desc_checkmark">Checkmark status</string>
     <string name="topchat_desc_voucher_type">Voucher Type</string>
+    <string name="topchat_desc_broadcast_icon">Broadcast Icon</string>
+    <string name="topchat_content_desc_blocked_icon">Blocked Icon</string>
     <string name="title_topchat_srw_load_failed">Oops, konten gagal ditampilkan</string>
     <string name="desc_topchat_srw_load_failed">Yuk, klik ikon disamping untuk coba lagi!</string>
     <string name="content_desc_close_voucher_btn">Close Voucher Button</string>

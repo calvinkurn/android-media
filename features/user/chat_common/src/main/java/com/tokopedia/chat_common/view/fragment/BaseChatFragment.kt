@@ -41,7 +41,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         , BaseChatActivityListener
         , AttachmentMenu.AttachmentMenuListener {
 
-    open lateinit var viewState: BaseChatViewState
+    open var viewState: BaseChatViewState? = null
 
     protected var messageId: String = ""
     protected var opponentId = ""
@@ -202,20 +202,20 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     override fun onReceiveStartTypingEvent() {
-        viewState.onShowStartTyping()
+        viewState?.onShowStartTyping()
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
-        viewState.removeDummyIfExist(visitable)
-        viewState.onReceiveMessageEvent(visitable)
+        viewState?.removeDummyIfExist(visitable)
+        viewState?.onReceiveMessageEvent(visitable)
     }
 
     override fun onReceiveStopTypingEvent() {
-        viewState.onShowStopTyping()
+        viewState?.onShowStopTyping()
     }
 
     override fun onReceiveReadEvent() {
-        viewState.onReceiveRead()
+        viewState?.onReceiveRead()
     }
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
@@ -236,12 +236,12 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun onDestroy() {
         super.onDestroy()
-        viewState.clear()
+        viewState?.clear()
     }
 
     override fun onBackPressed(): Boolean {
-        if (viewState.isAttachmentMenuVisible()) {
-            viewState.hideAttachmentMenu()
+        if (viewState?.isAttachmentMenuVisible() == true) {
+            viewState?.hideAttachmentMenu()
             return true
         }
         return false

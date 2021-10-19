@@ -27,6 +27,8 @@ import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_CREATE
 import com.tokopedia.topads.common.data.internal.ParamObject.ADDED_PRODUCTS
 import com.tokopedia.topads.common.data.internal.ParamObject.BID_TYPE
+import com.tokopedia.topads.common.data.internal.ParamObject.BUDGET_LIMITED
+import com.tokopedia.topads.common.data.internal.ParamObject.DAILY_BUDGET
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
 import com.tokopedia.topads.common.data.internal.ParamObject.NAME_EDIT
 import com.tokopedia.topads.common.data.internal.ParamObject.POSITIVE_CREATE
@@ -442,6 +444,9 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     private fun getGroupData() : HashMap<String, Any?> {
         var dataMap = HashMap<String, Any?>()
 
+        dataMap[BUDGET_LIMITED] = toggle?.isChecked
+
+        dataMap[DAILY_BUDGET] = daily_budget.textFieldInput.text.toString().replace(".","")
         dataMap[ParamObject.GROUP_NAME] = stepperModel?.groupName ?: ""
         dataMap[GROUPID] = ""
         dataMap[NAME_EDIT] = true

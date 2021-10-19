@@ -22,8 +22,9 @@ class PayLaterActionStepViewHolder(val view: View) : RecyclerView.ViewHolder(vie
     companion object {
         private val LAYOUT_ID = R.layout.paylater_action_step_bottomsheet_item
 
-        fun getViewHolder(inflater: LayoutInflater, parent: ViewGroup) = PayLaterActionStepViewHolder(
+        fun getViewHolder(inflater: LayoutInflater, parent: ViewGroup) =
+            PayLaterActionStepViewHolder(
                 inflater.inflate(LAYOUT_ID, parent, false)
-        )
+            )
     }
 }

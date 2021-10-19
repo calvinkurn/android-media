@@ -68,6 +68,12 @@ object ShopPageGqlQueryConstant {
                     url
                   }
                 }
+                suggestion {
+                  text
+                  query
+                  response_code
+                  keyword_process
+                }
                 totalData
         """.trimIndent()
 

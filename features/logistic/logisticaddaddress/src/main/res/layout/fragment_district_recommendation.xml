@@ -38,13 +38,13 @@
             android:contentDescription="@string/current_location"
             app:srcCompat="@drawable/ic_current_location" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_discom_current_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/iv_discom_current_location"
             android:text="@string/tv_current_location_text"
-            android:textSize="@dimen/sp_14" />
+            app:typographyType="body_2"/>
 
     </RelativeLayout>
 
@@ -55,7 +55,7 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:background="@color/Unify_N100" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -63,6 +63,7 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
         android:text="@string/message_advice_search_address"
+        app:typographyType="body_3"
         android:textSize="@dimen/sp_12"
         android:visibility="gone" />
 
@@ -84,13 +85,12 @@
         android:layout_marginStart="@dimen/dp_16"
         android:orientation="vertical">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_discom_title_popular_city"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/kota_populer"
-            android:textSize="@dimen/sp_16"
-            android:textStyle="bold" />
+            app:typographyType="heading_4" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_discom_chips_popular_city"

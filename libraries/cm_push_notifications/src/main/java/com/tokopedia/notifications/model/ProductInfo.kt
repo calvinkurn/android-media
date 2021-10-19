@@ -13,37 +13,37 @@ data class ProductInfo(
         @SerializedName("productId")
         @ColumnInfo(name = "productId")
         @Expose
-        var productId: Int?,
+        var productId: Int? = 0,
 
         @SerializedName("productTitle")
         @ColumnInfo(name = "productTitle")
         @Expose
-        var productTitle: String,
+        var productTitle: String = "",
 
         @SerializedName("productImg")
         @ColumnInfo(name = "productImg")
         @Expose
-        var productImage: String,
+        var productImage: String = "",
 
         @SerializedName("actualPrice")
         @ColumnInfo(name = "actualPrice")
         @Expose
-        var productActualPrice: String?,
+        var productActualPrice: String? = "",
 
         @SerializedName("currentPrice")
         @ColumnInfo(name = "currentPrice")
         @Expose
-        var productCurrentPrice: String,
+        var productCurrentPrice: String = "",
 
         @SerializedName("droppedPercent")
         @ColumnInfo(name = "droppedPercent")
         @Expose
-        var productPriceDroppedPercentage: String?,
+        var productPriceDroppedPercentage: String? = "",
 
         @SerializedName("message")
         @ColumnInfo(name = "message")
         @Expose
-        var productMessage: String,
+        var productMessage: String = "",
 
         @SerializedName("stockMessage")
         @ColumnInfo(name = "stockMessage")
@@ -53,12 +53,12 @@ data class ProductInfo(
         @SerializedName("buttonTxt")
         @ColumnInfo(name = "buttonTxt")
         @Expose
-        var productButtonMessage: String,
+        var productButtonMessage: String = "",
 
         @SerializedName("shopId")
         @ColumnInfo(name = "shopId")
         @Expose
-        var shopId: Int?,
+        var shopId: Int? = 0,
 
         @SerializedName("appLink")
         @ColumnInfo(name = "appLink")

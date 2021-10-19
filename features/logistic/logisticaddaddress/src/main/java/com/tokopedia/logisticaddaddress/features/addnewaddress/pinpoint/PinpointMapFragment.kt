@@ -765,7 +765,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         if (requestCode == FINISH_FLAG && resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 if (data.hasExtra(EXTRA_ADDRESS_NEW)) {
-                    val newAddress = data.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
+                    val newAddress = data.getParcelableExtra(EXTRA_ADDRESS_NEW) ?: SaveAddressDataModel()
                     finishActivity(newAddress)
                 } else if (data.hasExtra(EXTRA_DETAIL_ADDRESS_LATEST)) {
                     val latestDetailAddress = data.getStringExtra(EXTRA_DETAIL_ADDRESS_LATEST)

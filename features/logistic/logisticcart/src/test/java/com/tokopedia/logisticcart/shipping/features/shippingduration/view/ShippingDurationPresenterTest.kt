@@ -1,243 +1,294 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
+import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticcart.datamock.DummyProvider
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertNull
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
+import org.junit.Before
+import org.junit.Test
 import rx.Observable
 
-object ShippingDurationPresenterTest : Spek({
+class ShippingDurationPresenterTest {
 
-    val ratesUseCase: GetRatesUseCase = mockk(relaxed = true)
-    val ratesApiUseCase: GetRatesApiUseCase = mockk(relaxed = true)
-    val responseConverter: RatesResponseStateConverter = mockk()
-    val courierConverter: ShippingCourierConverter = mockk(relaxed = true)
+    private val ratesUseCase: GetRatesUseCase = mockk(relaxed = true)
+    private val ratesApiUseCase: GetRatesApiUseCase = mockk(relaxed = true)
+    private val responseConverter: RatesResponseStateConverter = mockk()
+    private val courierConverter: ShippingCourierConverter = mockk(relaxed = true)
     val view: ShippingDurationContract.View = mockk(relaxed = true)
     lateinit var presenter: ShippingDurationPresenter
 
-    beforeEachTest {
+    private val shipmentDetailData: ShipmentDetailData = DummyProvider.getShipmentDetailData()
+    private val shopShipments: List<ShopShipment> = DummyProvider.getShopShipments()
+    val products: List<Product> = DummyProvider.getProducts()
+    val address: RecipientAddressModel = DummyProvider.getAddress()
+
+    @Before
+    fun setup() {
         presenter = ShippingDurationPresenter(ratesUseCase, ratesApiUseCase,
                 responseConverter, courierConverter)
     }
 
-    Feature("load courier recommendation default") {
+    @Test
+    fun `When load courier recommendation return success data Then view shows positive data`() {
 
-        lateinit var shipmentDetailData: ShipmentDetailData
-        lateinit var shopShipments: List<ShopShipment>
-        lateinit var products: List<Product>
-        lateinit var address: RecipientAddressModel
+        val shippingData = DummyProvider.getShippingRecommendationDataWithState()
+        presenter.attachView(view)
 
-        beforeEachTest {
-            presenter.attachView(view)
+        // Given
+        every { ratesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
+        every {
+            responseConverter.fillState(any(), shopShipments, any(), 0)
+        } returns shippingData
 
-            shipmentDetailData = DummyProvider.getShipmentDetailData()
-            shopShipments = DummyProvider.getShopShipments()
-            products = DummyProvider.getProducts()
-            address = DummyProvider.getAddress()
-        }
+        // When
+        presenter.loadCourierRecommendation(shipmentDetailData, 0,
+                shopShipments, -1, false, false, "",
+                products, "1479278-30-740525-99367774", false, address, false, 0, "")
 
-        Scenario("fetch data then show data") {
-
-            val shippingData = DummyProvider.getShippingRecommendationDataWithState()
-
-            Given("observable returning success data") {
-                every { ratesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
-                every {
-                    responseConverter.fillState(any(), shopShipments, any(), 0)
-                } returns shippingData
-            }
-
-            When("executed") {
-                presenter.loadCourierRecommendation(shipmentDetailData, 0,
-                        shopShipments, -1, false, false, "",
-                        products, "1479278-30-740525-99367774", false, address, false, 0, "")
-            }
-
-            Then("view shows positive data") {
-                verify {
-                    view.showData(any(), any(), any())
-                }
-            }
-
-        }
-
-        Scenario("fetch data then show courier caused by 504") {
-
-            val shippingData = DummyProvider.getShippingRecommendationDataWithState()
-            shippingData.errorId = "504"
-            shippingData.errorMessage = "Error test"
-
-            Given("observable returning 504 error id") {
-                every { ratesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
-                every {
-                    responseConverter.fillState(any(), shopShipments, any(), 0)
-                } returns shippingData
-            }
-
-            When("executed") {
-                presenter.loadCourierRecommendation(shipmentDetailData, 0,
-                        shopShipments, -1, false, false, "",
-                        products, "1479278-30-740525-99367774", false, address, false, 0, "")
-            }
-
-            Then("view shows no courier page from errorMessage") {
-                verify {
-                    view.showNoCourierAvailable(shippingData.errorMessage)
-                }
-            }
-        }
-
-        Scenario("fetch data with empty services") {
-            val shippingData = ShippingRecommendationData()
-
-            Given("observable returns empty services") {
-                every { ratesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
-                every {
-                    responseConverter.fillState(any(), shopShipments, any(), 0)
-                } returns shippingData
-            }
-
-            When("executed") {
-                presenter.loadCourierRecommendation(shipmentDetailData, 0,
-                        shopShipments, -1, false, false, "",
-                        products, "1479278-30-740525-99367774", false, address, false, 0, "")
-            }
-
-            Then("view shows no courier page") {
-                verify {
-                    view.showNoCourierAvailable(any())
-                }
-            }
-        }
-
-        Scenario("fetch data then throwing error") {
-            val err = Throwable("Unexpected error")
-            Given("execute usecase gives error") {
-                every { ratesUseCase.execute(any()) } returns Observable.error(err)
-            }
-
-            When("executed") {
-                presenter.loadCourierRecommendation(shipmentDetailData, 0,
-                        shopShipments, -1, false, false, "",
-                        products, "1479278-30-740525-99367774", false, address, false, 0, "")
-            }
-
-            Then("view shows error page") {
-                verify {
-                    view.showErrorPage(any())
-                }
-            }
-        }
-
-    }
-
-    Feature("get courier item data") {
-
-        Scenario("on callled trigger courier converter") {
-            val courierModelWithOneRecc: List<ShippingCourierUiModel> = listOf(
-                    ShippingCourierUiModel().apply {
-                        productData = ProductData().apply {
-                            isRecommend = true
-                        }
-                    }
-            )
-
-            When("called") {
-                presenter.getCourierItemData(courierModelWithOneRecc)
-            }
-
-            Then("courier converter is called") {
-                verify {
-                    courierConverter.convertToCourierItemData(any())
-                }
-            }
-        }
-
-        Scenario("on called return null") {
-            val courierWithNoRecc: List<ShippingCourierUiModel> = listOf(
-                    ShippingCourierUiModel().apply {
-                        productData = ProductData()
-                    }
-            )
-            var actual: CourierItemData? = null
-
-            When("called") {
-                actual = presenter.getCourierItemData(courierWithNoRecc)
-            }
-
-            Then("null is returned") {
-                assertNull(actual)
-            }
+        // Then
+        verify {
+            view.showData(any(), any(), any())
         }
     }
 
-    Feature("get courier item data with id") {
-        Scenario("on called trigger courier converter") {
-            val spId = 24
-            val courierModelWithId: List<ShippingCourierUiModel> = listOf(
-                    ShippingCourierUiModel().apply {
-                        productData = ProductData().apply {
-                            shipperProductId = spId
-                        }
-                    }
-            )
+    @Test
+    fun `When load courier recommendation using rates api return success data Then view shows positive data`() {
 
-            When("called") {
-                presenter.getCourierItemDataById(spId, courierModelWithId)
-            }
-
-            Then("courier converter is called") {
-                verify {
-                    courierConverter.convertToCourierItemData(any())
-                }
-            }
+        val shippingData = DummyProvider.getShippingRecommendationDataWithState()
+        val addressData = address.apply {
+            locationDataModel = LocationDataModel()
         }
+        presenter.attachView(view)
 
-        Scenario("on called return null") {
-            val sId = 38
-            val courierModelNoId: List<ShippingCourierUiModel> = listOf(
+        // Given
+        every { ratesApiUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
+        every {
+            responseConverter.fillState(any(), shopShipments, any(), 0)
+        } returns shippingData
+
+        // When
+        presenter.loadCourierRecommendation(shipmentDetailData, 0,
+            shopShipments, -1, false, false, "",
+            products, "1479278-30-740525-99367774", true, addressData, false, 0, "")
+
+        // Then
+        verify {
+            view.showData(any(), any(), any())
+        }
+    }
+
+    @Test
+    fun `When load courier recommendation return 504 error id Then view shows no courier page from errorMessage`() {
+
+        val shippingData = DummyProvider.getShippingRecommendationDataWithState()
+        shippingData.errorId = "504"
+        shippingData.errorMessage = "Error test"
+        presenter.attachView(view)
+
+        // Given
+        every { ratesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
+        every {
+            responseConverter.fillState(any(), shopShipments, any(), 0)
+        } returns shippingData
+
+        // When
+        presenter.loadCourierRecommendation(shipmentDetailData, 0,
+                shopShipments, -1, false, false, "",
+                products, "1479278-30-740525-99367774", false, address, false, 0, "")
+
+        // Then
+        verify {
+            view.showNoCourierAvailable(shippingData.errorMessage)
+        }
+    }
+
+    @Test
+    fun `When load courier recommendation return empty services Then view shows no courier page`() {
+        val shippingData = ShippingRecommendationData()
+        presenter.attachView(view)
+
+        // Given
+        every { ratesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
+        every {
+            responseConverter.fillState(any(), shopShipments, any(), 0)
+        } returns shippingData
+
+        // When
+        presenter.loadCourierRecommendation(shipmentDetailData, 0,
+                shopShipments, -1, false, false, "",
+                products, "1479278-30-740525-99367774", false, address, false, 0, "")
+
+        // Then
+        verify {
+            view.showNoCourierAvailable(any())
+        }
+    }
+
+    @Test
+    fun `When load courier recommendation return error error id Then view shows error page`() {
+        val err = Throwable("Unexpected error")
+        presenter.attachView(view)
+
+        // Given
+        every { ratesUseCase.execute(any()) } returns Observable.error(err)
+
+        // When
+        presenter.loadCourierRecommendation(shipmentDetailData, 0,
+                shopShipments, -1, false, false, "",
+                products, "1479278-30-740525-99367774", false, address, false, 0, "")
+
+        // Then
+        verify {
+            view.showErrorPage(any())
+        }
+    }
+
+    @Test
+    fun `When load courier recommendation without selected courier Then response converter fill state without selected spId`() {
+        val shippingData = DummyProvider.getShippingRecommendationDataWithState()
+        presenter.attachView(view)
+
+        // Given
+        every { ratesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
+        every {
+            responseConverter.fillState(any(), shopShipments, 0, 0)
+        } returns shippingData
+
+        val shipmentDetailData = DummyProvider.getShipmentDetailData()
+        shipmentDetailData.selectedCourier = null
+
+        // When
+        presenter.loadCourierRecommendation(shipmentDetailData, 0,
+                shopShipments, -1, false, false, "",
+                products, "1479278-30-740525-99367774", false, address, false, 0, "")
+
+        // Then
+        verify {
+            responseConverter.fillState(any(), shopShipments, 0, 0)
+        }
+    }
+
+    @Test
+    fun `When load courier recommendation and promo courier is disabled Then isPromo flag is zero and promocode in every product is empty`() {
+        val shippingData = DummyProvider.getShippingRecommendationDataWithState()
+        val shippingDurationUIModels = shippingData.shippingDurationUiModels
+        val productsShipping = shippingDurationUIModels.map { it.serviceData.products }
+        presenter.attachView(view)
+
+        // Given
+        every { ratesApiUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
+        every {
+            responseConverter.fillState(any(), shopShipments, 0, 0)
+        } returns shippingData
+        every {view.isDisableCourierPromo()} returns true
+
+        val shipmentDetailData = DummyProvider.getShipmentDetailData()
+        shipmentDetailData.selectedCourier = null
+
+        // When
+        presenter.loadCourierRecommendation(shipmentDetailData, 0,
+            shopShipments, -1, false, false, "",
+            products, "1479278-30-740525-99367774", true, address, false, 0, "")
+
+        // Then
+        assertEquals(shippingDurationUIModels.filter { it.serviceData.isPromo == 0 }.size, shippingDurationUIModels.size)
+        assertEquals(productsShipping.filter { product -> product.any { item -> item.promoCode.isEmpty() } }.size, productsShipping.size)
+    }
+
+    @Test
+    fun `When get courier item data trigger courier converter Then courier converter is called`() {
+        // Given
+        val courierModelWithOneRecc: List<ShippingCourierUiModel> = listOf(
+                ShippingCourierUiModel().apply {
+                    productData = ProductData().apply {
+                        isRecommend = true
+                    }
+                }
+        )
+
+        // When
+        presenter.getCourierItemData(courierModelWithOneRecc)
+
+        // Then
+        verify {
+            courierConverter.convertToCourierItemData(any())
+        }
+    }
+
+    @Test
+    fun `When get courier item data return null Then null is returned`() {
+        // Given
+        val courierWithNoRecc: List<ShippingCourierUiModel> = listOf(
+                ShippingCourierUiModel().apply {
+                    productData = ProductData()
+                }
+        )
+
+        // When
+        val actual = presenter.getCourierItemData(courierWithNoRecc)
+
+        // Then
+        assertNull(actual)
+    }
+
+    @Test
+    fun `When get courier item data with id trigger courier converter Then courier converter is called`() {
+        // Given
+        val spId = 24
+        val courierModelWithId: List<ShippingCourierUiModel> = listOf(
+                ShippingCourierUiModel().apply {
+                    productData = ProductData().apply {
+                        shipperProductId = spId
+                    }
+                }
+        )
+
+        // When
+        presenter.getCourierItemDataById(spId, courierModelWithId)
+
+        // Then
+        verify {
+            courierConverter.convertToCourierItemData(any())
+        }
+    }
+
+    @Test
+    fun `When get courier item data with id return null Then null is returned`() {
+        // Given
+        val sId = 38
+        val courierModelNoId: List<ShippingCourierUiModel> = listOf(
                 ShippingCourierUiModel().apply {
                     productData = ProductData().apply {
                         shipperProductId = 24
                     }
                 }
-            )
-            var actual: CourierItemData? = null
+        )
 
-            When("called") {
-                actual = presenter.getCourierItemDataById(sId, courierModelNoId)
-            }
+        // When
+        val actual = presenter.getCourierItemDataById(sId, courierModelNoId)
 
-            Then("null is returned") {
-                assertNull(actual)
-            }
-        }
+        // Then
+        assertNull(actual)
     }
 
-    Feature("basic presenter") {
+    @Test
+    fun `When presenter detached Then all usecases is unsubscribed`() {
+        // When
+        presenter.detachView()
 
-        Scenario("detached") {
-
-            When("presenter detached") {
-                presenter.detachView()
-            }
-
-            Then("all usecases is unsubscribed") {
-                verify {
-                    ratesUseCase.unsubscribe()
-                    ratesApiUseCase.unsubscribe()
-                }
-            }
-
+        // Then
+        verify {
+            ratesUseCase.unsubscribe()
+            ratesApiUseCase.unsubscribe()
         }
     }
-})
+}

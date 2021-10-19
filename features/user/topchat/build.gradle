@@ -11,7 +11,7 @@ repositories {
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
@@ -34,7 +34,6 @@ android {
 }
 
 dependencies {
-    implementation projectOrAar(rootProject.ext.features.attachcommon)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
     implementation projectOrAar(rootProject.ext.features.atc_common)
@@ -107,6 +106,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.analyticAnnotationCentral)
     implementation projectOrAar(rootProject.ext.features.productManageCommon)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
+    implementation rootProject.ext.miscDependencies.window
     implementation rootProject.ext.testDependencies.espressoIdlingResource
 
     androidTestImplementation rootProject.ext.playServicesDependencies.analytics

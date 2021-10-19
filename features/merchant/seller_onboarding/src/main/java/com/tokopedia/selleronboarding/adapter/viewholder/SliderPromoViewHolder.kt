@@ -1,18 +1,12 @@
 package com.tokopedia.selleronboarding.adapter.viewholder
 
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.selleronboarding.R
+import com.tokopedia.selleronboarding.databinding.SobSliderPromoViewHolderBinding
 import com.tokopedia.selleronboarding.model.SobSliderPromoUiModel
-import com.tokopedia.selleronboarding.utils.IMG_DEVICE_SCREEN_PERCENT
-import com.tokopedia.selleronboarding.utils.SobImageSliderUrl
-import com.tokopedia.selleronboarding.utils.setupMarginTitleSob
-import kotlinx.android.synthetic.main.partial_view_holder_observer.view.*
-import kotlinx.android.synthetic.main.sob_slider_message_view_holder.view.*
-import kotlinx.android.synthetic.main.sob_slider_promo_view_holder.view.*
+import com.tokopedia.selleronboarding.utils.OnboardingConst
 
 /**
  * Created By @ilhamsuaib on 20/07/21
@@ -24,41 +18,29 @@ class SliderPromoViewHolder(itemView: View) : AbstractViewHolder<SobSliderPromoU
         val RES_LAYOUT = R.layout.sob_slider_promo_view_holder
     }
 
-    private val animatorObserver by lazy {
+    private val binding by lazy {
+        SobSliderPromoViewHolderBinding.bind(itemView)
+    }
+    private val animObserver by lazy {
         itemView.findViewById<View>(R.id.viewObserver)
     }
 
     override fun bind(element: SobSliderPromoUiModel) {
-        with(itemView) {
-            viewTreeObserver.addOnPreDrawListener {
-                tvSobSliderPromoTitle?.alpha = animatorObserver.alpha
-                tvSobSliderPromoTitle?.translationY = animatorObserver.translationY
+        with(binding) {
+            root.viewTreeObserver.addOnPreDrawListener {
+                tvSobSliderPromoTitle.alpha = animObserver.alpha
+                tvSobSliderPromoTitle.translationY = animObserver.translationY
 
-                imgSobPromo?.scaleX = animatorObserver.scaleX
-                imgSobPromo?.scaleY = animatorObserver.scaleY
-                imgSobPromo?.alpha = animatorObserver.alpha
+                imgSobPromo.scaleX = animObserver.scaleX
+                imgSobPromo.scaleY = animObserver.scaleY
+                imgSobPromo.alpha = animObserver.alpha
 
                 return@addOnPreDrawListener true
             }
 
-            imgSobPromo?.loadImage(SobImageSliderUrl.IMG_ADS_PROMOTION) {
+            imgSobPromo.loadImage(OnboardingConst.ImageUrl.IMG_ADS_PROMOTION) {
                 setPlaceHolder(R.drawable.img_sob_ads_promotion)
             }
-            setupMarginTitleSob { setMarginPromoTitle() }
-        }
-    }
-
-    private fun setMarginPromoTitle() {
-        with(itemView) {
-            val tvSobCurrentView = tvSobSliderPromoTitle?.layoutParams as? ConstraintLayout.LayoutParams
-            tvSobCurrentView?.topToTop = ConstraintSet.PARENT_ID
-            tvSobCurrentView?.topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
-            tvSobSliderPromoTitle?.layoutParams = tvSobCurrentView
-
-            val imgSobCurrentView = imgSobPromo?.layoutParams as? ConstraintLayout.LayoutParams
-            imgSobCurrentView?.matchConstraintPercentHeight = IMG_DEVICE_SCREEN_PERCENT
-            imgSobCurrentView?.topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
-            imgSobPromo?.layoutParams = imgSobCurrentView
         }
     }
 }

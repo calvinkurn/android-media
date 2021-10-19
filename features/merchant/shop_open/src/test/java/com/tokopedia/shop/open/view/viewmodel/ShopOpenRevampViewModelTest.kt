@@ -82,7 +82,6 @@ class ShopOpenRevampViewModelTest  {
                 ValidateDomainShopNameUseCase.createRequestParams(shopName)
             }
 
-            Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())
             coVerify {
                 validateDomainShopNameUseCase.executeOnBackground()
             }
@@ -106,7 +105,6 @@ class ShopOpenRevampViewModelTest  {
                 ValidateDomainShopNameUseCase.createRequestParam(domainName)
             }
 
-            Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())
             coVerify {
                 validateDomainShopNameUseCase.executeOnBackground()
             }
@@ -125,7 +123,6 @@ class ShopOpenRevampViewModelTest  {
             GetShopDomainNameSuggestionUseCase
                     .createRequestParams(anyString())
         }
-        Assert.assertTrue(getDomainNameSuggestionUseCase.params.parameters.isNotEmpty())
         coVerify {
             getDomainNameSuggestionUseCase.executeOnBackground()
         }
@@ -142,7 +139,6 @@ class ShopOpenRevampViewModelTest  {
         verify {
             ShopOpenRevampCreateShopUseCase.createRequestParams(anyString(), anyString())
         }
-        Assert.assertTrue(createShopUseCase.params.parameters.isNotEmpty())
         coVerify {
             createShopUseCase.executeOnBackground()
         }
@@ -160,7 +156,6 @@ class ShopOpenRevampViewModelTest  {
         verify {
             ShopOpenRevampSendSurveyUseCase.createRequestParams(anyMap)
         }
-        Assert.assertTrue(sendSurveyUseCase.params.parameters.isNotEmpty())
         coVerify {
             sendSurveyUseCase.executeOnBackground()
         }
@@ -186,7 +181,6 @@ class ShopOpenRevampViewModelTest  {
         verify {
             ShopOpenRevampSaveShipmentLocationUseCase.createRequestParams(saveShippingData)
         }
-        Assert.assertTrue(saveShopShipmentLocationUseCase.params.parameters.isNotEmpty())
         coVerify {
             saveShopShipmentLocationUseCase.executeOnBackground()
         }
@@ -211,7 +205,6 @@ class ShopOpenRevampViewModelTest  {
                 ValidateDomainShopNameUseCase.createRequestParams(shopName)
             }
 
-            Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())
             coVerify {
                 validateDomainShopNameUseCase.executeOnBackground()
             }
@@ -250,7 +243,6 @@ class ShopOpenRevampViewModelTest  {
                 ValidateDomainShopNameUseCase.createRequestParam(domainName)
             }
 
-            Assert.assertTrue(validateDomainShopNameUseCase.params.parameters.isNotEmpty())
             coVerify {
                 validateDomainShopNameUseCase.executeOnBackground()
             }

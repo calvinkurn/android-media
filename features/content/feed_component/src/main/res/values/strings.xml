@@ -14,8 +14,8 @@
     <string name="post_time_yesterday_at">Kemarin pukul\u0020</string>
 
     <!--Post Time new-->
-    <string name="post_time_just_now_new">1 mnt</string>
-    <string name="post_time_minutes_ago_new">mnt</string>
+    <string name="post_time_just_now_new">1 menit</string>
+    <string name="post_time_minutes_ago_new">menit</string>
     <string name="post_time_hours_ago_new">jam </string>
     <string name="post_time_days_ago">hari</string>
     <string name="post_time_hour_new">\u0020pukul\u0020</string>
@@ -107,6 +107,7 @@
     <string name="content_desc_caption">text caption</string>
     <string name="content_product_bs_title">Dalam post ini</string>
 
+
     <string name="feed_color_pojo_dms_hex_black_value">#000000</string>
     <string name="feed_color_pojo_dms_hex_white_value">#fff</string>
 
@@ -116,6 +117,7 @@
     <string name="feed_component_unfollow">Unfollow</string>
     <string name="feed_component_not_interested">Tidak Tertarik</string>
     <string name="feed_common_terjual">Terjual</string>
+    <string name="feed_component_edit">Ubah</string>
 
     <!--Follow Functionalities ASSETS-->
     <string name="feed_component_unfollow_success_toast">Berhasil berhenti mengikuti toko ini</string>
@@ -146,9 +148,9 @@
     <string name="feed_component_liked_count_text_only_me">Disukai olehmu</string>
     <string name="feed_component_liked_by_text">Disukai oleh %s dan  <![CDATA["<font color='#212121'><b>%s lainnya</b></font> ]]></string>
     <string name="feed_component_liked_by_text_me">Disukai olehmu dan <![CDATA["<font color='#212121'><b>%s lainnya</b></font> ]]></string>
-    <string name="feed_component_see_all_comments">Lihat Semua %s Komentar</string>
+    <string name="feed_component_see_all_comments">Lihat semua %s komentar</string>
     <string name="feed_component_add_comment">Comment as %s…</string>
-    <string name="feed_component_read_more_button">Selengkapnya</string>
+    <string name="feed_component_read_more_button">selengkapnya</string>
 
     <!-- REPORT BOTTOMSHEET -->
     <string name="feed_common_reason_type_spam" translatable="false">spam</string>
@@ -171,5 +173,12 @@
     <!--POST-->
     <string name="feed_post_tag_text">Lihat Produk</string>
 
+    <!--PRODUCT TAGGING VIEW-->
+    <string name="feed_product_tag_dot">Product Tag Pointer Dot</string>
+    <string name="feed_product_tag_up">Product Tag Pointer Up</string>
+    <string name="feed_product_tag_down">Product Tag Pointer Down</string>
+
+    <string name="feeds_sek_sekarang">Cek Sekarang</string>
+    <string name="feeds_ads_text">Ad</string>
 
 </resources>

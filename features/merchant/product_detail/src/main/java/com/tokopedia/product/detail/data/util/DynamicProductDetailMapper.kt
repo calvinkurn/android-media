@@ -13,8 +13,6 @@ import com.tokopedia.product.detail.data.model.affiliate.AffiliateUIIDRequest
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.data.model.review.ImageReview
-import com.tokopedia.product.detail.data.model.ticker.GeneralTickerDataModel
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.LAYOUT_FLOATING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.track.TrackApp
 
@@ -109,7 +107,7 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.ONE_LINERS -> {
                     listOfComponent.add(
-                        OneLinersDataModel(type = component.type, name = component.componentName)
+                            OneLinersDataModel(type = component.type, name = component.componentName)
                     )
                 }
                 ProductDetailConstant.CATEGORY_CAROUSEL -> {
@@ -125,6 +123,9 @@ object DynamicProductDetailMapper {
                                         applink = carouselData.applink,
                                         categoryList = carouselData.categoryCarouselList))
                     }
+                }
+                ProductDetailConstant.PRODUCT_BUNDLING -> {
+                    listOfComponent.add(ProductBundlingDataModel(type = component.type, name = component.componentName))
                 }
             }
         }
@@ -257,19 +258,6 @@ object DynamicProductDetailMapper {
         return fallbackUrl
     }
 
-    /**
-     * Ticker is used for show general message like : corona, shipping delay,  etc
-     * since we are using the same GQL as sticky login, we don't want sticky login item so we remove this
-     * LAYOUT_FLOATING should be sticky login
-     * *
-     * update : now it's not used class from sticky login module anymore
-     */
-    fun getTickerInfoData(tickerData: GeneralTickerDataModel.TickerResponse): List<GeneralTickerDataModel.TickerDetailDataModel> {
-        return tickerData.response.tickerDataModels.filter {
-            it.layout != LAYOUT_FLOATING
-        }
-    }
-
     fun generateImageReviewUiData(data: ImageReviewGqlResponse.ProductReviewImageListQuery): ImageReview {
         val result = mutableListOf<ImageReviewItem>()
 
@@ -312,30 +300,19 @@ object DynamicProductDetailMapper {
         return if (affiliateUniqueString.isNotBlank()) AffiliateUIIDRequest(trackerID = uuid, uuid = affiliateUniqueString, irisSessionID = TrackApp.getInstance().gtm.irisSessionId) else null
     }
 
-    fun determineSelectedOptionIds(variantData: ProductVariant, selectedChild: VariantChild?): Pair<Boolean, MutableMap<String, String>> {
-        val shouldAutoSelect = variantData.autoSelectedOptionIds()
+    fun determineSelectedOptionIds(variantData: ProductVariant, selectedChild: VariantChild?): MutableMap<String, String> {
         val isParent = selectedChild == null
-        val selectedOptionIds = when {
+        return when {
             isParent -> {
-                if (shouldAutoSelect.isNotEmpty()) {
-                    //if product parent and able to auto select, do auto select
-                    AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, shouldAutoSelect)
-                } else {
-                    //if product parent, dont update selected variant
-                    AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
-                }
-            }
-            selectedChild?.isBuyable == true -> {
-                AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, selectedChild.optionIds)
-            }
-            shouldAutoSelect.isNotEmpty() -> {
-                AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, shouldAutoSelect)
-            }
-            else -> {
                 AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
             }
+            else -> {
+                if (selectedChild == null) {
+                    AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
+                } else {
+                    AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, selectedChild.optionIds)
+                }
+            }
         }
-
-        return shouldAutoSelect.isNotEmpty() to selectedOptionIds
     }
 }

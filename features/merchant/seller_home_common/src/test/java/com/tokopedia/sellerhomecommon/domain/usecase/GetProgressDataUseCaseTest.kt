@@ -57,13 +57,13 @@ class GetProgressDataUseCaseTest {
         val successResponse = TestHelper.createSuccessResponse<GetProgressDataResponse>(SUCCESS_RESPONSE)
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         val progressData = getProgressDataUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertTrue(!progressData.isNullOrEmpty())
@@ -75,14 +75,14 @@ class GetProgressDataUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<GetProgressDataResponse>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
         val progressData = getProgressDataUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertTrue(progressData.isNullOrEmpty())

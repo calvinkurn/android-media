@@ -44,7 +44,7 @@
                 android:layout_height="@dimen/layout_lvl0"
                 android:layout_marginBottom="@dimen/play_dp_18"
                 android:background="@drawable/bg_play_cover"
-                app:cornerRadius="@dimen/spacing_lvl3"
+                app:rImg_cornerRadius="@dimen/spacing_lvl3"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintDimensionRatio="W, 9:16"

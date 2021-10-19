@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/unify_space_4">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/goPayKtpBullet"
+        android:layout_width="@dimen/unify_space_8"
+        android:layout_height="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/go_pay_kyc_dp_6"
+        android:scaleType="centerInside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/goPayKycBulletInstruction"
+        app:srcCompat="@drawable/ic_gopay_bullet_dot_black"
+        app:unify_image_corner_radius="0"
+        app:unify_image_type="rect" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/goPayKycBulletInstruction"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/goPayKtpBullet"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        tools:text="Pastikan seluruh bagian wajah &amp; e-KTP kamu terlihat jelas dan tidak terpotong." />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

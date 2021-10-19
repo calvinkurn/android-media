@@ -42,7 +42,7 @@ class ValidateUserProfileUseCase @Inject constructor(
                     parameter.toMap()
             )
 
-            return@withContext graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+            return@withContext graphqlRepository.response(listOf(request), cacheStrategy)
         }
 
         response.getError(UserProfileValidatePojo::class.java)?.let {

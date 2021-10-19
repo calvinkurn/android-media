@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.mvcwidget.views.MvcTokomemberFollowOneActionView
+    <com.tokopedia.mvcwidget.views.followViews.MvcTokomemberFollowOneActionView
         android:id="@+id/one_action_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,7 +16,7 @@
         android:visibility="gone"
         tools:visibility="visible" />
 
-    <com.tokopedia.mvcwidget.views.MvcTokomemberFollowTwoActionsView
+    <com.tokopedia.mvcwidget.views.followViews.MvcTokomemberFollowTwoActionsView
         android:id="@+id/two_action_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

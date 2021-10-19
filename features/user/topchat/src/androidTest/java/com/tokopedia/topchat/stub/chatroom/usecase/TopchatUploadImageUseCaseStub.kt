@@ -13,11 +13,17 @@ class TopchatUploadImageUseCaseStub @Inject constructor(
         dispatchers: CoroutineDispatchers
 ): TopchatUploadImageUseCase(uploadImageUseCase, chatImageServerUseCase, dispatchers) {
 
+    var isError: Boolean = false
+
     override fun upload(
             image: ImageUploadViewModel,
             onSuccess: (String, ImageUploadViewModel) -> Unit,
             onError: (Throwable, ImageUploadViewModel) -> Unit
     ) {
-        onSuccess.invoke("DummyUploadId", image)
+        if (!isError) {
+            onSuccess.invoke("DummyUploadId", image)
+        } else {
+            onError.invoke(IllegalStateException("Some error"), image)
+        }
     }
 }

@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
+import com.tokopedia.topads.common.data.response.HeadlineInfoResponse
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_ACTIVATE
@@ -66,7 +67,7 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
     private var priceSpent: String? = "0"
     private var groupStatus: String? = ""
     private var groupName: String? = ""
-    private var priceDaily = 0.0F
+    private var priceDaily = 0
     private var groupTotal = 0
     private var isDataChanged = false
 
@@ -189,25 +190,25 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
     }
 
     private fun loadData() {
-        viewModel.getGroupInfo(resources, groupId.toString(), HEADLINE_DETAIL_PAGE, ::onSuccessGroupInfo)
+        viewModel.getHeadlineInfo(resources, groupId.toString(), ::onSuccessGroupInfo)
     }
 
-    private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
+    private fun onSuccessGroupInfo(data: HeadlineInfoResponse.TopAdsGetPromoHeadline.Data) {
         groupStatus = data.status
         groupName = data.groupName
         groupTotal = data.groupTotal.toInt()
-        priceDaily = data.daiyBudget
+        priceDaily = data.priceDaily
         group_name.text = groupName
         btn_switch.setOnCheckedChangeListener(null)
         btn_switch.isChecked = data.status == ACTIVE || data.status == TIDAK_TAMPIL
         btn_switch.setOnCheckedChangeListener(this)
-        if (priceDaily == 0.0F) {
+        if (priceDaily == 0) {
             progress_status1.text = TopAdsDashboardConstant.TIDAK_DIBATASI
             progress_status2.visibility = View.GONE
             progress_bar.visibility = View.GONE
         } else {
             progress_status2.visibility = View.VISIBLE
-            progress_status2.text = String.format(resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), priceDaily.toInt())
+            progress_status2.text = String.format(resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), priceDaily)
             progress_status1.text = priceSpent
             progress_bar.visibility = View.VISIBLE
 
@@ -237,7 +238,7 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(), HasCompon
         }
 
         private fun getBundleArguments() {
-            groupId = intent?.extras?.getInt(GROUP_ID)
+            groupId = intent?.extras?.getString(GROUP_ID)?.toInt()
             priceSpent = intent?.extras?.getString(TopAdsDashboardConstant.PRICE_SPEND)
         }
 

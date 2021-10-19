@@ -6,6 +6,12 @@ repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
 
+android {
+    viewBinding {
+        enabled true
+    }
+}
+
 buildscript {
     repositories {
         google()
@@ -30,6 +36,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.coreNetwork)
+    implementation projectOrAar(rootProject.ext.libraries.webview)
 
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
 

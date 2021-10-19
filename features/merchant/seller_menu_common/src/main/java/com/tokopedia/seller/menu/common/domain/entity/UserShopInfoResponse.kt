@@ -2,6 +2,7 @@ package com.tokopedia.seller.menu.common.domain.entity
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCore
 
 data class UserShopInfoResponse(
         @Expose
@@ -38,6 +39,18 @@ data class UserShopInfoResponse(
                 @Expose
                 @SerializedName("goldOS")
                 val goldOS: GoldOS = GoldOS(),
+                @Expose
+                @SerializedName("shopSnippetURL")
+                val shopSnippetUrl: String = "",
+                @Expose
+                @SerializedName("location")
+                val location: String = "",
+                @Expose
+                @SerializedName("branchLinkDomain")
+                val branchLinkDomain: String = "",
+                @Expose
+                @SerializedName("shopCore")
+                val shopCore: ShopCore = ShopCore(),
                 @Expose
                 @SerializedName("statsByDate")
                 val statsByDate: List<StatsByDate> = listOf()

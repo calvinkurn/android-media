@@ -4,17 +4,17 @@ import android.graphics.Paint
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.flight.R
+import com.tokopedia.flight.databinding.ItemFlightOrderDetailSimpleBinding
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailSimpleModel
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.item_flight_order_detail_simple.view.*
 
 /**
  * @author by furqan on 12/11/2020
  */
-class FlightOrderDetailSimpleViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+class FlightOrderDetailSimpleViewHolder(val binding: ItemFlightOrderDetailSimpleBinding) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(element: FlightOrderDetailSimpleModel) {
-        with(itemView) {
+        with(binding) {
             tgFlightOrderSimpleLeft.text = element.leftValue
             tgFlightOrderSimpleRight.text = element.rightValue
 

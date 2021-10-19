@@ -7,9 +7,10 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.mvcwidget.MvcData
-import com.tokopedia.mvcwidget.MvcSource
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 
@@ -35,6 +36,10 @@ class ProductMerchantVoucherSummaryViewHolder(val view: View, val listener:Dynam
         merchantVoucher?.addOnImpressionListener(ImpressHolder()){
             merchantVoucher?.sendImpressionTrackerForPdp()
         }
+
+        view.addOnImpressionListener(element.impressHolder){
+            listener.onImpressComponent(getComponentTrackData(element))
+        }
     }
 
     private fun initMerchantVoucher() {
@@ -42,9 +47,13 @@ class ProductMerchantVoucherSummaryViewHolder(val view: View, val listener:Dynam
     }
 
     private fun setMerchantVoucher(animatedInfos: List<AnimatedInfos>, shopId: String) {
-        merchantVoucher?.setData(MvcData(animatedInfos), shopId, MvcSource.PDP) {
+        merchantVoucher?.setData(MvcData(animatedInfos), shopId, MvcSource.PDP,{
             listener.onMerchantVoucherSummaryClicked(shopId, MvcSource.PDP)
-        }
+        })
         merchantVoucher?.show()
     }
+
+    private fun getComponentTrackData(
+        element: ProductMerchantVoucherSummaryDataModel
+    ) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
 }

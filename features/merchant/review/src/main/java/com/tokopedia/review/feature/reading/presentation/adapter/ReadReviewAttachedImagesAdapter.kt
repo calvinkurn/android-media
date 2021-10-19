@@ -8,7 +8,10 @@ import com.tokopedia.review.feature.reading.data.ProductReviewAttachments
 import com.tokopedia.review.feature.reading.presentation.adapter.viewholder.ReadReviewAttachedImageViewHolder
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewAttachedImagesListener
 
-class ReadReviewAttachedImagesAdapter(private val imageClickListener: ReadReviewAttachedImagesListener) : RecyclerView.Adapter<ReadReviewAttachedImageViewHolder>() {
+class ReadReviewAttachedImagesAdapter(
+    private val imageClickListener: ReadReviewAttachedImagesListener,
+    private val viewHolderPosition: Int
+) : RecyclerView.Adapter<ReadReviewAttachedImageViewHolder>() {
 
     private var attachedImages: List<String> = listOf()
     private var productReview: ProductReview = ProductReview()
@@ -24,7 +27,7 @@ class ReadReviewAttachedImagesAdapter(private val imageClickListener: ReadReview
     }
 
     override fun onBindViewHolder(holder: ReadReviewAttachedImageViewHolder, position: Int) {
-        holder.bind(attachedImages[position], imageClickListener, productReview, shopId)
+        holder.bind(attachedImages[position], imageClickListener, productReview, shopId, viewHolderPosition)
     }
 
     fun setData(attachedImages: List<ProductReviewAttachments>, productReview: ProductReview, shopId: String) {

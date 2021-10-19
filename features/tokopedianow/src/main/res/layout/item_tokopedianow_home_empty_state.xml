@@ -6,28 +6,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.tokopedia.tokopedianow.common.view.NoAddressEmptyStateView
-        android:id="@+id/empty_state_no_address"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"/>
-
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
-        android:layout_below="@id/empty_state_no_address"
-        android:background="@color/Unify_N50"
-        android:visibility="gone"/>
-
-    <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/empty_state_failed_to_fetch_data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        app:globalerrors_type="SERVER_ERROR"
-        android:visibility="gone"/>
-
     <com.tokopedia.empty_state.EmptyStateUnify
         android:id="@+id/empty_state_no_address_and_local_cache"
         android:layout_width="match_parent"

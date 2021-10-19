@@ -20,8 +20,8 @@ class PromoCheckoutActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment {
         val pageSource = intent.getIntExtra(ARGS_PAGE_SOURCE, 0)
-        val promoRequest = intent.getParcelableExtra(ARGS_PROMO_REQUEST) as PromoRequest
-        val validateUseRequest = intent.getParcelableExtra(ARGS_VALIDATE_USE_REQUEST) as ValidateUsePromoRequest
+        val promoRequest = intent.getParcelableExtra(ARGS_PROMO_REQUEST) as? PromoRequest ?: PromoRequest()
+        val validateUseRequest = intent.getParcelableExtra(ARGS_VALIDATE_USE_REQUEST) as? ValidateUsePromoRequest ?: ValidateUsePromoRequest()
         val bboPromoCodes = intent.getStringArrayListExtra(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
         val promoMvcLockCourierFlow = intent.getBooleanExtra(ARGS_PROMO_MVC_LOCK_COURIER_FLOW, false)
         val chosenAddress: ChosenAddress? = intent.getParcelableExtra(ARGS_CHOSEN_ADDRESS)

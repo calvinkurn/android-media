@@ -5,6 +5,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerReviewPendingView
+import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.common.presentation.InboxUnifiedRemoteConfig
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
@@ -16,6 +17,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
 
     companion object {
         val LAYOUT = R.layout.item_review_pending
+        const val ANIMATION_DELAY = 200L
     }
 
     override fun bind(element: ReviewPendingUiModel) {
@@ -29,7 +31,7 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
             }
             showDate(timestamp.createTimeFormatted)
             showNew(status.seen)
-            showIncentive(status.isEligible)
+            showIncentive(status.isEligible, status.incentiveLabel)
         }
     }
 
@@ -66,8 +68,8 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
     private fun setListener(reputationId: String, productId: String, inboxReviewId: String, seen: Boolean, isEligible: Boolean) {
         itemView.setOnClickListener {
             reviewPendingItemListener.trackCardClicked(reputationId, productId, isEligible)
-            itemView.reviewPendingStars.renderInitialReviewWithData(5)
-            Handler().postDelayed({ itemView.context?.let { reviewPendingItemListener.onStarsClicked(reputationId, productId, 5, inboxReviewId, seen) } }, 200)
+            itemView.reviewPendingStars.renderInitialReviewWithData(ReviewInboxConstants.RATING_5)
+            invokeListener(reputationId, productId, ReviewInboxConstants.RATING_5, inboxReviewId, seen)
         }
     }
 
@@ -77,11 +79,15 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
             setListener(object : AnimatedRatingPickerReviewPendingView.AnimatedReputationListener {
                 override fun onClick(position: Int) {
                     reviewPendingItemListener.trackStarsClicked(reputationId, productId, position, isEligible)
-                    Handler().postDelayed({ itemView.context?.let { reviewPendingItemListener.onStarsClicked(reputationId, productId, position, inboxReviewId, seen) } }, 200)
+                    invokeListener(reputationId, productId, position, inboxReviewId, seen)
                 }
             })
             show()
         }
+    }
+
+    private fun invokeListener(reputationId: String, productId: String, position: Int, inboxReviewId: String, seen: Boolean) {
+        Handler().postDelayed({ itemView.context?.let { reviewPendingItemListener.onStarsClicked(reputationId, productId, position, inboxReviewId, seen) } }, ANIMATION_DELAY)
     }
 
     private fun showDate(date: String) {
@@ -99,9 +105,12 @@ class ReviewPendingViewHolder(view: View, private val reviewPendingItemListener:
         }
     }
 
-    private fun showIncentive(isEligible: Boolean) {
+    private fun showIncentive(isEligible: Boolean, incentiveLabel: String) {
         if (isEligible) {
-            itemView.reviewPendingOvoIncentiveLabel.show()
+            itemView.reviewPendingOvoIncentiveLabel.apply {
+                setLabel(incentiveLabel)
+                show()
+            }
             return
         }
         itemView.reviewPendingOvoIncentiveLabel.hide()

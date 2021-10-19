@@ -24,6 +24,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
@@ -153,10 +154,21 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
                is NetworkResult.Success -> {
                    showError(false)
                    btnRefresh.isLoading = false
-                   leaderboardAdapter.setItemsAndAnimateChanges(it.data.leaderboardWinners)
+                   if(needRebindLeaderboard()) {
+                       leaderboardAdapter.setItems(it.data.leaderboardWinners)
+                       leaderboardAdapter.notifyDataSetChanged()
+                   }
+                   else {
+                       leaderboardAdapter.setItemsAndAnimateChanges(it.data.leaderboardWinners)
+                   }
                }
            }
         })
+    }
+
+    private fun needRebindLeaderboard(): Boolean {
+        val liveState = parentViewModel.observableLiveViewState.value
+        return liveState != null && (liveState is PlayLiveViewState.Stopped || liveState is PlayLiveViewState.Error)
     }
 
     private fun setupDialog(dialog: Dialog) {

@@ -50,6 +50,10 @@ interface ChatbotContract {
         fun loadChatHistory()
 
         fun startNewSession()
+
+        fun blockTyping()
+
+        fun enableTyping()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {

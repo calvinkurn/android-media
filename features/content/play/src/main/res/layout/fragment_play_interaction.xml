@@ -77,6 +77,18 @@
         />
 
     <include
+        android:id="@+id/view_like_bubble"
+        layout="@layout/view_like_bubble"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl9"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/layout_lvl7"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/view_like"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
+        />
+
+    <include
         android:id="@+id/view_like"
         layout="@layout/view_like"
         android:layout_width="wrap_content"
@@ -114,9 +126,8 @@
         tools:visibility="visible"
         />
 
-    <include
+    <com.tokopedia.play.view.custom.PlayChatListView
         android:id="@+id/view_chat_list"
-        layout="@layout/view_chat_list"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
@@ -136,7 +147,7 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/view_chat_list"
+        app:layout_constraintBottom_toTopOf="@id/view_real_time_notification"
         app:layout_constraintStart_toStartOf="@id/view_size"
         tools:visibility="visible"
         />
@@ -204,6 +215,16 @@
         app:layout_constraintTop_toBottomOf="@id/view_toolbar"
         />
 
+    <androidx.mediarouter.app.MediaRouteButton
+        android:id="@+id/btn_play_cast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/view_pip_control"
+        app:layout_constraintTop_toBottomOf="@id/view_toolbar"
+        app:layout_goneMarginEnd="@dimen/spacing_lvl2"
+        app:mediaRouteButtonTint="@color/Neutral_N0"
+        />
+
     <include
         android:id="@+id/view_end_live_info"
         layout="@layout/view_end_live_info"
@@ -252,6 +273,21 @@
         app:layout_constraintEnd_toEndOf="@id/view_size"
         app:layout_constraintStart_toStartOf="@id/view_size"
         tools:visibility="visible"
+        />
+
+    <include
+        android:id="@+id/view_real_time_notification"
+        layout="@layout/view_real_time_notification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:visibility="invisible"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="@id/view_chat_list"
+        app:layout_constraintStart_toStartOf="@id/view_size"
+        app:layout_constraintTop_toTopOf="@id/view_chat_list"
+        app:layout_constraintHorizontal_bias="0"
+        app:rcl_cornerRadius="@dimen/play_real_time_notif_radius"
         />
 
     <include

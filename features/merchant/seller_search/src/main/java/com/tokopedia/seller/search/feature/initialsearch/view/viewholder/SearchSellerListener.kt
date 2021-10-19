@@ -13,7 +13,7 @@ interface HistorySearchListener {
 
 interface FaqSearchListener {
     fun onFaqItemClicked(data: FaqSellerSearchUiModel, position: Int)
-    fun onFaqMoreClicked(element: TitleHasMoreSellerSearchUiModel, position: Int)
+    fun onFaqMoreClicked(element: TitleHasMoreSellerSearchUiModel)
 }
 
 interface NavigationSearchListener {
@@ -22,12 +22,17 @@ interface NavigationSearchListener {
 
 interface OrderSearchListener {
     fun onOrderItemClicked(data: OrderSellerSearchUiModel, position: Int)
-    fun onOrderMoreClicked(element: TitleHasMoreSellerSearchUiModel, position: Int)
+    fun onOrderMoreClicked(element: TitleHasMoreSellerSearchUiModel)
 }
 
 interface ProductSearchListener {
     fun onProductItemClicked(data: ProductSellerSearchUiModel, position: Int)
-    fun onProductMoreClicked(element: TitleHasMoreSellerSearchUiModel, position: Int)
+    fun onProductMoreClicked(element: TitleHasMoreSellerSearchUiModel)
+}
+
+interface ArticleSearchListener {
+    fun onArticleItemClicked(data: ArticleSellerSearchUiModel, position: Int)
+    fun onArticleMoreClicked(element: TitleHasMoreSellerSearchUiModel)
 }
 
 interface HighlightSuggestionSearchListener {

@@ -1,39 +1,46 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder
 
+import android.annotation.SuppressLint
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.MessageViewModel
-import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.util.ChatTimeConverter
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
 
 object ChatMessageViewHolderBinder {
 
+    @SuppressLint("ClickableViewAccessibility")
     fun bindChatMessage(
-            chat: MessageViewModel,
-            fxChat: FlexBoxChatLayout?,
-            movementMethod: ChatLinkHandlerMovementMethod
+        chat: MessageViewModel,
+        fxChat: FlexBoxChatLayout?
     ) {
         val htmlMessage = MethodChecker.fromHtml(chat.message)
         fxChat?.setMessage(htmlMessage)
-        fxChat?.setMovementMethod(movementMethod)
+    }
+
+    fun bindOnTouchMessageListener(
+        fxChat: FlexBoxChatLayout?,
+        onTouchListener: MessageOnTouchListener
+    ) {
+        fxChat?.setMessageOnTouchListener(onTouchListener)
     }
 
     fun bindHour(
-            viewModel: MessageViewModel,
-            fxChat: FlexBoxChatLayout?
+        viewModel: MessageViewModel,
+        fxChat: FlexBoxChatLayout?
     ) {
         val hourTime = getHourTime(viewModel.replyTime)
         fxChat?.setHourTime(hourTime)
     }
 
     fun bindHourTextView(
-            viewModel: MessageViewModel,
-            hour: TextView?
+        viewModel: MessageViewModel,
+        hour: TextView?
     ) {
         val hourTime = getHourTime(viewModel.replyTime)
         hour?.text = hourTime

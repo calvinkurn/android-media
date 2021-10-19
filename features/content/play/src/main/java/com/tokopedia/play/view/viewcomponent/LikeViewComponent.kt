@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.viewcomponent
 
 import android.animation.Animator
+import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
@@ -8,7 +9,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.play.R
-import com.tokopedia.play.view.uimodel.recom.PlayLikeStatusInfoUiModel
+import com.tokopedia.play.util.animation.DefaultAnimatorListener
+import com.tokopedia.play.view.uimodel.state.PlayLikeMode
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
 
@@ -16,65 +18,110 @@ import com.tokopedia.unifyprinciples.Typography
  * Created by jegul on 03/08/20
  */
 class LikeViewComponent(
-        container: ViewGroup,
-        @IdRes idRes: Int,
-        private val listener: Listener
+    container: ViewGroup,
+    @IdRes idRes: Int,
+    private val listener: Listener
 ) : ViewComponent(container, idRes) {
 
-    val clickAreaView: View
-        get() = vLikeClickArea
-
     private val animationLike = findViewById<LottieAnimationView>(R.id.animation_like)
-    private val vLikeClickArea = findViewById<View>(R.id.v_like_click_area)
     private val tvTotalLikes = findViewById<Typography>(R.id.tv_total_likes)
 
-    private val likeAnimatorListener = object : Animator.AnimatorListener {
+    private var mode: PlayLikeMode = PlayLikeMode.Unknown
 
-        override fun onAnimationRepeat(animation: Animator?) {
+    private val singleLikeAnimatorListener = object : DefaultAnimatorListener() {
+
+        override fun onAnimationEnd(animation: Animator) {
+            animationLike.isClickable = true
         }
 
-        override fun onAnimationEnd(animation: Animator?) {
-            vLikeClickArea.isClickable = true
-        }
-
-        override fun onAnimationCancel(animation: Animator?) {
-        }
-
-        override fun onAnimationStart(animation: Animator?) {
-            vLikeClickArea.isClickable = false
+        override fun onAnimationStart(animation: Animator) {
+            animationLike.isClickable = false
         }
     }
 
-    init {
-        animationLike.addAnimatorListener(likeAnimatorListener)
+    private val reminderLikeAnimatorListener = object : DefaultAnimatorListener() {
+
+        override fun onAnimationStart(animation: Animator) {
+            animationLike.isClickable = true
+        }
+
+        override fun onAnimationEnd(isCancelled: Boolean, animation: Animator) {
+            if (!isCancelled) setIsLiked(false)
+            animationLike.removeAnimatorListener(this)
+        }
+    }
+
+    fun setMode(mode: PlayLikeMode) {
+        this.mode = mode
+        when (mode) {
+            PlayLikeMode.Single -> animationLike.addAnimatorListener(singleLikeAnimatorListener)
+            PlayLikeMode.Multiple -> animationLike.removeAnimatorListener(singleLikeAnimatorListener)
+            else -> {}
+        }
     }
 
     fun setEnabled(isEnabled: Boolean) {
         if (isEnabled) {
-            vLikeClickArea.setOnClickListener {
+            animationLike.setOnClickListener {
                 val shouldLike = animationLike.progress == START_ANIMATED_PROGRESS
                 listener.onLikeClicked(this, shouldLike)
             }
         } else {
-            vLikeClickArea.setOnClickListener {  }
+            animationLike.setOnClickListener {  }
         }
     }
 
-    fun setTotalLikes(totalLikes: PlayLikeStatusInfoUiModel) {
-        tvTotalLikes.text = totalLikes.totalLikeFormatted
+    fun setTotalLikes(totalLikes: String) {
+        tvTotalLikes.text = totalLikes
     }
 
-    fun playLikeAnimation(shouldLike: Boolean, animate: Boolean) {
-        if (!shouldLike) animationLike.progress = START_ANIMATED_PROGRESS
-        else {
-            if (animate) animationLike.playAnimation()
-            else animationLike.progress = END_ANIMATED_PROGRESS
+    fun setIsLiked(isLiked: Boolean) {
+        if (isLiked) {
+            animationLike.setAnimation(R.raw.anim_spam_like)
+            animationLike.progress = END_ANIMATED_PROGRESS
+        } else {
+            animationLike.setAnimation(R.raw.anim_outline_spam_like)
+            animationLike.progress = START_ANIMATED_PROGRESS
         }
+    }
+
+    fun playLikeAnimation(isPrevLiked: Boolean) {
+        animationLike.cancelAnimation()
+        if (!isPrevLiked) animationLike.setAnimation(R.raw.anim_outline_spam_like)
+        else animationLike.setAnimation(R.raw.anim_spam_like)
+
+        animationLike.repeatCount = 0
+        animationLike.progress = START_ANIMATED_PROGRESS
+
+        animationLike.removeAllAnimatorListeners()
+        if (mode == PlayLikeMode.Single) animationLike.addAnimatorListener(singleLikeAnimatorListener)
+
+        animationLike.playAnimation()
+
+        /**
+         * Test Haptic when animation like is playing
+         * This haptic is currently not forced and will only play if user enabled it from settings
+         */
+        animationLike.isHapticFeedbackEnabled = true
+        animationLike.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+    }
+
+    fun playReminderAnimation() {
+        animationLike.cancelAnimation()
+        animationLike.setAnimation(R.raw.anim_shaking_thumb)
+        animationLike.repeatCount = 3
+        animationLike.removeAllAnimatorListeners()
+        animationLike.addAnimatorListener(reminderLikeAnimatorListener)
+        animationLike.playAnimation()
+    }
+
+    fun getClickAreaView(): View {
+        return animationLike
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
-        animationLike.removeAnimatorListener(likeAnimatorListener)
+        animationLike.removeAnimatorListener(singleLikeAnimatorListener)
     }
 
     private companion object {

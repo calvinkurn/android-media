@@ -8,22 +8,32 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.factory.PostListAdapt
  */
 
 sealed class PostItemUiModel(
-        open val title: String = "",
-        open val appLink: String = "",
-        open val url: String = "",
-        open val featuredMediaUrl: String = "",
-        open val subtitle: String = "",
-        open val textEmphasizeType: Int = PostListDataUiModel.IMAGE_EMPHASIZED
+    open val title: String = "",
+    open val appLink: String = "",
+    open val url: String = "",
+    open val featuredMediaUrl: String = "",
+    open val subtitle: String = "",
+    open val textEmphasizeType: Int = PostListDataUiModel.IMAGE_EMPHASIZED,
+    open val isPinned: Boolean = false
 ) : Visitable<PostListAdapterTypeFactory> {
 
     data class PostImageEmphasizedUiModel(
-            override val title: String = "",
-            override val appLink: String = "",
-            override val url: String = "",
-            override val featuredMediaUrl: String = "",
-            override val subtitle: String = "",
-            override val textEmphasizeType: Int = PostListDataUiModel.IMAGE_EMPHASIZED
-    ) : PostItemUiModel(title, appLink, url, featuredMediaUrl, subtitle, textEmphasizeType) {
+        override val title: String = "",
+        override val appLink: String = "",
+        override val url: String = "",
+        override val featuredMediaUrl: String = "",
+        override val subtitle: String = "",
+        override val textEmphasizeType: Int = PostListDataUiModel.IMAGE_EMPHASIZED,
+        override val isPinned: Boolean = false
+    ) : PostItemUiModel(
+        title,
+        appLink,
+        url,
+        featuredMediaUrl,
+        subtitle,
+        textEmphasizeType,
+        isPinned
+    ) {
 
         override fun type(typeFactory: PostListAdapterTypeFactory): Int {
             return typeFactory.type(this)
@@ -31,16 +41,25 @@ sealed class PostItemUiModel(
     }
 
     data class PostTextEmphasizedUiModel(
-            override val title: String = "",
-            override val appLink: String = "",
-            override val url: String = "",
-            override val featuredMediaUrl: String = "",
-            override val subtitle: String = "",
-            override val textEmphasizeType: Int = PostListDataUiModel.TEXT_EMPHASIZED ,
-            val stateMediaUrl: String = "",
-            val stateText: String = "",
-            val shouldShowUnderLine: Boolean = false
-    ) : PostItemUiModel(title, appLink, url, featuredMediaUrl, subtitle, textEmphasizeType) {
+        override val title: String = "",
+        override val appLink: String = "",
+        override val url: String = "",
+        override val featuredMediaUrl: String = "",
+        override val subtitle: String = "",
+        override val textEmphasizeType: Int = PostListDataUiModel.TEXT_EMPHASIZED,
+        override val isPinned: Boolean = false,
+        val stateMediaUrl: String = "",
+        val stateText: String = "",
+        val shouldShowUnderLine: Boolean = false
+    ) : PostItemUiModel(
+        title,
+        appLink,
+        url,
+        featuredMediaUrl,
+        subtitle,
+        textEmphasizeType,
+        isPinned
+    ) {
 
         override fun type(typeFactory: PostListAdapterTypeFactory): Int {
             return typeFactory.type(this)

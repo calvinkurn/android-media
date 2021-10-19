@@ -31,7 +31,7 @@
 
             <ImageView
                 android:id="@+id/img_shipment_item"
-                android:layout_width="@dimen/dp_52"
+                android:layout_width="@dimen/dp_64"
                 android:layout_height="@dimen/dp_40"
                 android:layout_marginStart="@dimen/dp_16"
                 app:layout_constraintStart_toStartOf="parent"

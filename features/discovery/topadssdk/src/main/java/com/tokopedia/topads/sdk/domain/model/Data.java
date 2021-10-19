@@ -24,6 +24,7 @@ public class Data implements Parcelable {
     private static final String KEY_SHOP_CLICK_URL = "shop_click_url";
     private static final String KEY_SHOP = "shop";
     private static final String KEY_PRODUCT = "product";
+    private static final String KEY_TAG = "tag";
 
     @SerializedName(KEY_ID)
     @Expose
@@ -56,6 +57,10 @@ public class Data implements Parcelable {
     @SerializedName(KEY_SHOP_CLICK_URL)
     @Expose
     private String shopClickUrl = "";
+
+    @SerializedName(KEY_TAG)
+    @Expose
+    private int tag = 0;
 
     @SerializedName(KEY_SHOP)
     @Expose
@@ -94,6 +99,9 @@ public class Data implements Parcelable {
         if(!object.isNull(KEY_SHOP_CLICK_URL)) {
             setShopClickUrl(object.getString(KEY_SHOP_CLICK_URL));
         }
+        if(!object.isNull(KEY_TAG)){
+            setTag(object.getInt(KEY_TAG));
+        }
         if(!object.isNull(KEY_PRODUCT)) {
             setProduct(new Product(object.getJSONObject(KEY_PRODUCT)));
         }
@@ -111,6 +119,7 @@ public class Data implements Parcelable {
         productClickUrl = in.readString();
         productWishlistUrl = in.readString();
         shopClickUrl = in.readString();
+        tag = in.readInt();
         shop = in.readParcelable(Shop.class.getClassLoader());
         product = in.readParcelable(Product.class.getClassLoader());
         favorit = in.readByte() != 0;
@@ -126,6 +135,7 @@ public class Data implements Parcelable {
         dest.writeString(productClickUrl);
         dest.writeString(productWishlistUrl);
         dest.writeString(shopClickUrl);
+        dest.writeInt(tag);
         dest.writeParcelable(shop, flags);
         dest.writeParcelable(product, flags);
         dest.writeByte((byte) (favorit ? 1 : 0));
@@ -234,5 +244,13 @@ public class Data implements Parcelable {
 
     public void setProductWishlistUrl(String productWishlistUrl) {
         this.productWishlistUrl = productWishlistUrl;
+    }
+
+    public int getTag() {
+        return tag;
+    }
+
+    public void setTag(int tag) {
+        this.tag = tag;
     }
 }

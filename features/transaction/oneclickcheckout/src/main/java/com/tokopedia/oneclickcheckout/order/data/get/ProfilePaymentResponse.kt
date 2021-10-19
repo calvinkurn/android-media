@@ -89,7 +89,15 @@ class PaymentCreditCard(
         @SerializedName("is_expired")
         val isExpired: Boolean = false,
         @SerializedName("tnc_info")
-        val tncInfo: String = ""
+        val tncInfo: String = "",
+        @SerializedName("is_afpb")
+        val isAfpb: Boolean = false,
+        @SerializedName("unix_timestamp")
+        val unixTimestamp: String = "",
+        @SerializedName("token_id")
+        val tokenId: String = "",
+        @SerializedName("tenor_signature")
+        val tenorSignature: String = ""
 )
 
 class PaymentCreditCardsNumber(

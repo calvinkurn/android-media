@@ -3,6 +3,8 @@ package com.tokopedia.recharge_credit_card.di
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.authentication.HEADER_USER_AGENT
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.config.GlobalConfig
@@ -78,6 +80,11 @@ class RechargeCCModule {
                             chuckerInterceptor: ChuckerInterceptor): MutableList<Interceptor> {
         val listInterceptor = mutableListOf<Interceptor>()
         listInterceptor.add(fingerprintInterceptor)
+        listInterceptor.add(Interceptor { chain ->
+            val newRequest = chain.request().newBuilder()
+            newRequest.addHeader(HEADER_USER_AGENT, getUserAgent())
+            chain.proceed(newRequest.build())
+        })
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             listInterceptor.add(httpLoggingInterceptor)
@@ -94,4 +101,7 @@ class RechargeCCModule {
             updateInterceptors(interceptors, context)
         }
     }
+
+    fun getUserAgent(): String = AuthHelper.getUserAgent()
+
 }

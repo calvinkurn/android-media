@@ -21,15 +21,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/shop_name"
             app:unify_image_type="circle"
-            tools:srcCompat="@drawable/ic_affiliate_video" />
+            tools:srcCompat="@drawable/ic_affiliate_video"
+            tools:visibility="gone" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/shop_badge"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
+            android:layout_width="@dimen/dp_14"
+            android:layout_height="@dimen/dp_14"
+            android:layout_marginTop="@dimen/dp_8"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/follow_count"
             app:layout_constraintStart_toEndOf="@id/shop_image"
@@ -39,29 +40,30 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/shop_name"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_4"
             android:textColor="@color/Unify_N700"
+            android:lineSpacingExtra="@dimen/dp_0"
+            android:paddingBottom="@dimen/dp_2"
             app:layout_constraintBottom_toBottomOf="@id/shop_badge"
             app:layout_constraintEnd_toStartOf="@id/menu_button"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@id/shop_badge"
             app:layout_constraintTop_toTopOf="@id/shop_badge"
-            app:typographyType="heading_6"
+            app:typographyType="heading_5"
             tools:text="Fellow Official" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/follow_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
             android:text="@string/kol_action_follow"
             android:textColor="@color/Unify_NN600"
-            app:layout_constraintStart_toEndOf="@id/shop_image"
+            app:layout_constraintStart_toStartOf="@id/shop_badge"
             app:layout_constraintTop_toBottomOf="@id/shop_name"
-            app:typographyType="small" />
+            app:typographyType="body_3"
+            tools:visibility="visible"/>
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/menu_button"
@@ -147,7 +149,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/like_button"
-        app:typographyType="body_3"
+        app:typographyType="body_2"
         tools:text="Disukai oleh iggregory, baseus, dan 1.710 lainnya" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -161,7 +163,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/liked_text"
-        app:typographyType="body_3"
+        app:typographyType="body_2"
         tools:text="      Fellow Official Fellow - Stagg EKG Electric Pour Over Kettle (Matte Black)... selengkapnya" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -170,7 +172,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"
         android:textColor="@color/Unify_N700_32"
-        android:textSize="@dimen/unify_font_10"
+        app:typographyType="body_3"
         app:layout_constraintStart_toStartOf="@id/caption_text"
         app:layout_constraintTop_toBottomOf="@id/caption_text"
         tools:text="17 Oktober 2020" />
@@ -184,7 +186,7 @@
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="@id/timestamp_text"
         app:layout_constraintTop_toBottomOf="@id/timestamp_text"
-        app:typographyType="body_3"
+        app:typographyType="body_2"
         tools:text="Lihat semua 4 komentar"
         tools:visibility="visible" />
 

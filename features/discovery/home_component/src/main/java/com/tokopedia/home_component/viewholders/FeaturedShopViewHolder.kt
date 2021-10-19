@@ -21,6 +21,7 @@ import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.adapter.FeaturedShopAdapter
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.home_featured_shop.view.*
@@ -104,17 +105,25 @@ class FeaturedShopViewHolder(
 
     private fun setHeaderComponent(element: FeaturedShopDataModel) {
         var textColor = ContextCompat.getColor(itemView.context, R.color.Unify_N50)
-        if(element.channelModel.channelBanner.textColor.isNotEmpty()){
+        if (element.channelModel.channelBanner.textColor.isNotEmpty()) {
             try {
                 textColor = Color.parseColor(element.channelModel.channelBanner.textColor)
-            } catch (e: IllegalArgumentException) { }
+            } catch (e: IllegalArgumentException) {
+            }
         }
         itemView.featured_shop_background.setGradientBackground(element.channelModel.channelBanner.gradientColor)
-        itemView.featured_shop_background.setOnClickListener{
+        itemView.featured_shop_background.setOnClickListener {
             listener.onFeaturedShopBannerBackgroundClicked(element.channelModel)
         }
         itemView.banner_title?.text = element.channelModel.channelBanner.title
-        itemView.banner_description?.text = element.channelModel.channelBanner.description
+        itemView.banner_description?.let {
+            if (element.channelModel.channelBanner.description.isNotEmpty()) {
+                it.show()
+                it.text = element.channelModel.channelBanner.description
+            } else {
+                it.gone()
+            }
+        }
         itemView.banner_title?.setTextColor(textColor)
         itemView.banner_description?.setTextColor(textColor)
         itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {

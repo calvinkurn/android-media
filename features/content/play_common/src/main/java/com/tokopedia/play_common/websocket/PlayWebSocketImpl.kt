@@ -30,7 +30,7 @@ class PlayWebSocketImpl(
     private val gson: Gson = Gson()
 
     private val webSocketFlow: MutableSharedFlow<WebSocketAction?> = MutableSharedFlow(
-            extraBufferCapacity = 50
+            extraBufferCapacity = 100
     )
 
     private var mWebSocket: WebSocket? = null
@@ -58,7 +58,7 @@ class PlayWebSocketImpl(
 
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
             mWebSocket = null
-            webSocketFlow.tryEmit(WebSocketAction.Closed(WebSocketClosedReason.Error))
+            webSocketFlow.tryEmit(WebSocketAction.Closed(WebSocketClosedReason.Error(t)))
         }
     }
 

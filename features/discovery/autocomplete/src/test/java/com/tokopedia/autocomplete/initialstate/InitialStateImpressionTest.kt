@@ -80,14 +80,7 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
         val initialStateData = initialStateWithShowMoreResponse.jsonToObject<InitialStateUniverse>().data
         `Given view already get initial state`(initialStateData)
 
-        val item = CuratedCampaignDataView(
-                imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/8/24/4814934/4814934_8de36a7f-e5e3-4053-8089-1f42cdb17030_1414_1414",
-                applink = "tokopedia://product/20100686",
-                url = "/bgsport/bola-sepak-3",
-                title = "Waktu Indonesia Belanja",
-                subtitle = "Flashsale Rp50 rb & Cashback 90%"
-        )
-        `Then verify initial state impression is called`(item)
+        `Then verify initial state impression is called`()
         `Then verify list impression data`(initialStateData)
 
         `When see more recent search is clicked`()
@@ -95,9 +88,14 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
         `Then verify recent search impressed the hidden item`(initialStateData)
     }
 
-    private fun `Then verify initial state impression is called`(curatedCampaignDataView: CuratedCampaignDataView) {
+    private fun `Then verify initial state impression is called`() {
         verifyOrder {
-            initialStateView.onCuratedCampaignCardImpressed(curatedCampaignDataView)
+            initialStateView.onCuratedCampaignCardImpressed(
+                "0",
+                capture(slotCuratedCampaignLabel),
+                capture(slotCuratedCampaignType),
+                capture(slotCuratedCampaignCode)
+            )
             initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
             initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
             initialStateView.onSeeMoreRecentSearchImpressed(any())
@@ -106,17 +104,14 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
         }
     }
 
-    private fun InitialStateContract.View.onCuratedCampaignCardImpressed(curatedCampaignDataView: CuratedCampaignDataView) {
-        val expectedLabel = "${curatedCampaignDataView.title} - ${curatedCampaignDataView.applink}"
-        val userId = "0"
-        onCuratedCampaignCardImpressed(userId, expectedLabel, curatedCampaignDataView.type)
-    }
-
     private fun `Then verify list impression data`(initialStateData: List<InitialStateData>) {
         val recentViewItemList = slotRecentViewItemList.captured
         val recentSearchItemList = slotRecentSearchItemList.last()
         val popularSearchTrackingModel = slotPopularSearchTrackingModel.captured
         val dynamicSectionTrackingModel = slotDynamicSectionTrackingModel.captured
+        val curatedCampaignLabel = slotCuratedCampaignLabel.captured
+        val curatedCampaignType = slotCuratedCampaignType.captured
+        val curatedCampaignCode = slotCuratedCampaignCode.captured
 
         val recentViewListResponse = getDataLayerForRecentView(initialStateData[1].items)
         val recentSearchListResponse = getDataLayerForPromo(initialStateData[2].items.take(3))
@@ -127,6 +122,18 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
         assert(recentSearchItemList.containsAll(recentSearchListResponse))
         popularSearchTrackingModel.assertTrackerModel(popularSearchListResponse, initialStateData[3])
         dynamicSectionTrackingModel.assertTrackerModel(dynamicSectionResponse, initialStateData[4])
+
+        val curatedCampaignItem = initialStateData[0].items[0]
+        val expectedCuratedCampaignLabel = "${curatedCampaignItem.title} - ${curatedCampaignItem.applink}"
+        assert(curatedCampaignLabel == expectedCuratedCampaignLabel) {
+            "curated campaign label is \"$curatedCampaignLabel\", expected is \"$expectedCuratedCampaignLabel\""
+        }
+        assert(curatedCampaignType == curatedCampaignItem.type) {
+            "curated campaign type is \"$curatedCampaignType\", expected is \"${curatedCampaignItem.type}\""
+        }
+        assert(curatedCampaignCode == curatedCampaignItem.campaignCode) {
+            "curated campaign code is \"$curatedCampaignCode\", expected is \"${curatedCampaignItem.campaignCode}\""
+        }
     }
 
     private fun `When see more recent search is clicked`() {

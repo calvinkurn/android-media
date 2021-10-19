@@ -7,12 +7,14 @@ import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
+import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
@@ -83,6 +85,7 @@ interface TopChatContract {
          */
         fun removeSrwBubble(productId: String)
         fun expandSrwBubble()
+        fun showPreviewMsg(previewMsg: SendableViewModel)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -96,14 +99,6 @@ interface TopChatContract {
             messageId: String,
             onError: (Throwable) -> Unit,
             onSuccessGetExistingMessage: (ChatroomViewModel, ChatReplies) -> Unit
-        )
-
-        fun getMessageId(
-            toUserId: String,
-            toShopId: String,
-            source: String,
-            onError: (Throwable) -> Unit,
-            onSuccessGetMessageId: (String) -> Unit
         )
 
         fun readMessage()
@@ -254,5 +249,6 @@ interface TopChatContract {
             onSendingMessage: () -> Unit
         )
         fun adjustInterlocutorWarehouseId(msgId: String)
+        fun sendSrwFrom(attachment: HeaderCtaButtonAttachment, opponentId: String)
     }
 }

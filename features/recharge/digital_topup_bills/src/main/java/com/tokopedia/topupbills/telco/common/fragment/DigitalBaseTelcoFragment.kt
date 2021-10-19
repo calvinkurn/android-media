@@ -17,6 +17,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.data.*
+import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
@@ -43,7 +44,6 @@ import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
 import com.tokopedia.topupbills.telco.common.di.DigitalTelcoComponent
 import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
 import com.tokopedia.topupbills.telco.common.viewmodel.SharedTelcoViewModel
-import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.prepaid.widget.DigitalClientNumberWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -285,9 +285,9 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                     }
                 } else if (requestCode == REQUEST_CODE_CART_DIGITAL) {
                     if (data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
-                        val message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)
-                        if (!TextUtils.isEmpty(message)) {
-                            showErrorCartDigital(message)
+                        val throwable = data.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE) as Throwable
+                        if (!TextUtils.isEmpty(throwable.message)) {
+                            showErrorCartDigital(ErrorHandler.getErrorMessage(context, throwable))
                         }
                     }
                 } else if (requestCode == REQUEST_CODE_LOGIN) {
@@ -451,6 +451,13 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                 Toaster.TYPE_ERROR,
                 getString(com.tokopedia.resources.common.R.string.general_label_ok)
             ).show()
+        }
+    }
+
+    override fun showErrorMessage(error: Throwable) {
+        view?.let { v ->
+            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error)
+                ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 

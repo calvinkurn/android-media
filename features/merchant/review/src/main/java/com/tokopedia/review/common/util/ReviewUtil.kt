@@ -59,8 +59,7 @@ object ReviewUtil {
     }
 
     fun formatReviewCollapse(context: Context, review: String): CharSequence? {
-        val formattedText = HtmlLinkHelper(context, review).spannedString ?: ""
-        return HtmlLinkHelper(context, formattedText.replace("(\r\n|\n)".toRegex(), "<br />") + "<br />" + context.getString(R.string.review_reading_collapse)).spannedString
+        return HtmlLinkHelper(context, review.replace("(\r\n|\n)".toRegex(), "<br />") + "<br />" + context.getString(R.string.review_reading_collapse)).spannedString
     }
 }
 

@@ -3,6 +3,7 @@ package com.tokopedia.cassavatest
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.GsonBuilder
+import com.tokopedia.analyticsdebugger.cassava.AnalyticsMapParser
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaRepository
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaSource
 import com.tokopedia.analyticsdebugger.cassava.data.api.CassavaApi
@@ -37,14 +38,14 @@ fun deleteCassavaDb(context: Context) =
  *
  * @return the list of Validator
  */
-@Deprecated("Consider using Cassava Test Rule")
+@Deprecated("Please refactor to Cassava Test Rule as soon as possible")
 fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
                           queryId: String,
                           isFromNetwork: Boolean,
                           shouldSendResult: Boolean = true): List<Validator> {
     val cassavaQuery = getQuery(InstrumentationRegistry.getInstrumentation().context, queryId, isFromNetwork)
     val validators = cassavaQuery.query.map { it.toDefaultValidator() }
-    val validationResult = ValidatorEngine(gtmLogDBSource)
+    val validationResult = ValidatorEngine(gtmLogDBSource, AnalyticsMapParser())
             .computeRx(validators, cassavaQuery.mode.value)
             .toBlocking()
             .first()
@@ -53,23 +54,23 @@ fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
     return validationResult
 }
 
-@Deprecated("Consider using Cassava Test Rule")
+@Deprecated("Please refactor to Cassava Test Rule as soon as possible")
 fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
                           context: Context,
                           queryFileName: String): List<Validator> {
     val cassavaQuery = getQuery(context, queryFileName)
     val validators = cassavaQuery.query.map { it.toDefaultValidator() }
-    return ValidatorEngine(gtmLogDBSource)
+    return ValidatorEngine(gtmLogDBSource, AnalyticsMapParser())
             .computeRx(validators, cassavaQuery.mode.value)
             .toBlocking()
             .first()
 }
 
-@Deprecated("Consider using Cassava Test Rule")
+@Deprecated("Please refactor to Cassava Test Rule as soon as possible")
 fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource, queryString: String): List<Validator> {
     val cassavaQuery = getQuery(InstrumentationRegistry.getInstrumentation().context, queryString)
     val validators = cassavaQuery.query.map { it.toDefaultValidator() }
-    return ValidatorEngine(gtmLogDBSource)
+    return ValidatorEngine(gtmLogDBSource, AnalyticsMapParser())
             .computeRx(validators, cassavaQuery.mode.value)
             .toBlocking()
             .first()
@@ -98,10 +99,12 @@ internal fun sendTestResult(journeyId: String, testResult: List<Validator>) {
                         token = InstrumentationRegistry.getInstrumentation().context
                                 .getString(com.tokopedia.keys.R.string.thanos_token_key),
                         data = testResult.map {
+                            val cassavaResult: Boolean = it.status == Status.SUCCESS
+
                             ValidationResultData(
                                     dataLayerId = it.id,
-                                    result = it.status == Status.SUCCESS,
-                                    errorMessage = it.errors
+                                    result = cassavaResult,
+                                    errorMessage = if (!cassavaResult) it.errors else ""
                             )
                         }.toList()
                 )

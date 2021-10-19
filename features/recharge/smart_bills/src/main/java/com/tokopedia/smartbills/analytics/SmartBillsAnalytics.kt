@@ -2,6 +2,9 @@ package com.tokopedia.smartbills.analytics
 
 import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addGeneralClick
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addGeneralView
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addGeneralViewAddBills
 import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.*
 import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.EnhanceEccomerce.Companion.NONE
 import com.tokopedia.smartbills.analytics.SmartBillsAnalyticConstants.EnhanceEccomerce.Companion.SHOP_ID
@@ -269,9 +272,114 @@ class SmartBillsAnalytics {
         return list
     }
 
+    //Add Bills Tracking
+    //#1
+    fun clickTambahTagihan() {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click tambah tagihan button",
+                TrackAppUtils.EVENT_LABEL, ""
+        )
+        data.addGeneralClick()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#2
+    fun viewBottomsheetCatalog() {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "view - mau tambah tagihan",
+                TrackAppUtils.EVENT_LABEL, "bottom sheet sbm add bills"
+        )
+        data.addGeneralView()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#3
+    fun clickCloseBottomsheetCatalog() {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click x - mau tambah tagihan",
+                TrackAppUtils.EVENT_LABEL, "bottom sheet sbm add bills"
+        )
+        data.addGeneralClick()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#4
+    fun clickCategoryBottomsheetCatalog(category: String) {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click category - mau tambah tagihan",
+                TrackAppUtils.EVENT_LABEL, String.format("%s - %s", "bottom sheet sbm add bills", category)
+        )
+        data.addGeneralClick()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#14
+    fun clickViewShowToasterTelcoAddBills(category: String) {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "view add bills success - toaster box",
+                TrackAppUtils.EVENT_LABEL, category)
+        data.addGeneralViewAddBills()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#16
+    fun clickKebab(category: String) {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click kebab menu",
+                TrackAppUtils.EVENT_LABEL, category)
+        data.addGeneralClick()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#17
+    fun clickHapusTagihan(category: String) {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click hapus tagihan",
+                TrackAppUtils.EVENT_LABEL, category)
+        data.addGeneralClick()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#18
+    fun clickBatalHapusTagihan() {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click batal",
+                TrackAppUtils.EVENT_LABEL, "delete confirmation pop up")
+        data.addGeneralClick()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#19
+    fun clickConfirmHapusTagihan() {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click hapus",
+                TrackAppUtils.EVENT_LABEL, "delete confirmation pop up")
+        data.addGeneralClick()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#20
+    fun viewDeleteBillSuccess() {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "view delete bill success",
+                TrackAppUtils.EVENT_LABEL, "delete bottom sheet")
+        data.addGeneralClick()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#23
+    fun viewCloseBottomSheet() {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click x",
+                TrackAppUtils.EVENT_LABEL, "delete bottom sheet")
+        data.addGeneralClick()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
     companion object {
 
         const val CATEGORY_SMART_BILLS = "digital - smart bill management"
+        const val CATEGORY_SMART_BILLS_ADD_BILLS = "digital - smart bill management - add bills"
 
         const val SCREEN_NAME_INITAL = "/initial-sbm-page"
         const val SCREEN_NAME_DETAIL = "/detail-sbm-page"

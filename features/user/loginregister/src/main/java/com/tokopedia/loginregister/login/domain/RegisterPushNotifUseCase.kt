@@ -1,42 +1,57 @@
 package com.tokopedia.loginregister.login.domain
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.loginregister.login.di.LoginQueryConstant
-import com.tokopedia.loginregister.login.domain.pojo.RegisterPushNotifData
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.loginregister.login.di.LoginModule.Companion.NAMED_DISPATCHERS_IO
 import com.tokopedia.loginregister.login.domain.pojo.RegisterPushNotifPojo
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Created by Ade Fulki on 17/09/20.
  */
 
-class RegisterPushNotifUseCase @Inject constructor(
-        private val rawQueries: Map<String, String>,
-        graphqlRepository: GraphqlRepository
-) : GraphqlUseCase<RegisterPushNotifPojo>(graphqlRepository) {
+data class RegisterPushNotifParamsModel(
+    var publicKey: String = "",
+    var signature: String = "",
+    var datetime: String = ""
+)
 
-    fun executeCoroutines(
-            publicKey: String,
-            signature: String,
-            datetime: String,
-            onSuccess: (RegisterPushNotifData) -> Unit,
-            onError: (Throwable) -> Unit
-    ) {
-        rawQueries[LoginQueryConstant.QUERY_REGISTER_PUSH_NOTIF]?.let { query ->
-            setRequestParams(mapOf(
-                    LoginQueryConstant.PARAM_PUBLIC_KEY to publicKey,
-                    LoginQueryConstant.PARAM_SIGNATURE to signature,
-                    LoginQueryConstant.PARAM_DATETIME to datetime
-            ))
-            setTypeClass(RegisterPushNotifPojo::class.java)
-            setGraphqlQuery(query)
-            execute({
-                onSuccess.invoke(it.data)
-            }, {
-                onError.invoke(it)
-            })
-        }
+class RegisterPushNotifUseCase @Inject constructor(
+    val repository: GraphqlRepository,
+    @Named(NAMED_DISPATCHERS_IO)
+    coroutineDispatcher: CoroutineDispatcher
+) : CoroutineUseCase<RegisterPushNotifParamsModel, RegisterPushNotifPojo>(coroutineDispatcher) {
+
+    override suspend fun execute(params: RegisterPushNotifParamsModel): RegisterPushNotifPojo {
+        return repository.request(graphqlQuery(), createParams(params))
     }
 
+    private fun createParams(params: RegisterPushNotifParamsModel): Map<String, Any> = mapOf(
+        PARAM_PUBLIC_KEY to params.publicKey,
+        PARAM_SIGNATURE to params.signature,
+        PARAM_DATETIME to params.datetime
+    )
+
+    override fun graphqlQuery(): String = """
+        query registerPushnotif(${'$'}publicKey : String!, ${'$'}signature : String!, ${'$'}datetime : String!) {
+          RegisterPushnotif(
+            publicKey: ${'$'}publicKey
+            signature: ${'$'}signature
+            datetime: ${'$'}datetime
+          ){
+            success
+            errorMessage
+            message
+          }
+        }
+    """.trimIndent()
+
+    companion object {
+        private const val PARAM_SIGNATURE = "signature"
+        private const val PARAM_DATETIME = "datetime"
+        private const val PARAM_PUBLIC_KEY = "publicKey"
+    }
 }

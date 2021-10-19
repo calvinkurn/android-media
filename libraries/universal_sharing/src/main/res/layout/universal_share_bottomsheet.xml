@@ -11,7 +11,7 @@
         app:typographyType="body_2"
         android:layout_marginStart="@dimen/dp_16"
         android:text="@string/img_options_heading"
-        android:textColor="@color/clr_31353B"
+        android:textColor="@color/Unify_N700"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
     <androidx.recyclerview.widget.RecyclerView
@@ -20,6 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_12"
+        android:paddingEnd="@dimen/dp_10"
+        android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@+id/img_options_heading"
         app:layout_constraintLeft_toLeftOf="parent"/>
     <com.tokopedia.unifycomponents.ImageUnify
@@ -48,11 +50,14 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/thumb_nail_title"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_250"
         android:layout_height="@dimen/dp_19"
         android:text="@string/tn_title"
-        android:textColor="@color/clr_31353B"
+        android:textColor="@color/Unify_N700"
         android:textSize="@dimen/sp_14"
+        android:ellipsize="end"
+        android:lines="1"
+        android:maxLines="1"
         app:typographyType="body_2"
         app:typographyWeight="bold"
         app:layout_constraintTop_toTopOf="@id/thumb_nail_image"
@@ -64,7 +69,7 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_19"
         android:text="@string/tokopedia_link"
-        android:textColor="@color/clr_31353B"
+        android:textColor="@color/Unify_N700"
         android:textSize="@dimen/sp_14"
         app:typographyType="body_3"
         android:layout_marginStart="@dimen/dp_16"
@@ -80,7 +85,7 @@
         android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/thumb_nail_image"
-        android:background="@color/clr_E5E7E9"
+        android:background="@color/Unify_N75"
         />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -115,7 +120,7 @@
         android:id="@+id/copy_link_txtv"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_18"
-        android:textColor="@color/clr_31353B"
+        android:textColor="@color/Unify_N700"
         android:textSize="@dimen/sp_12"
         app:typographyType="body_3"
         android:elevation="@dimen/dp_1"
@@ -146,7 +151,7 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_18"
         android:visibility="gone"
-        android:textColor="@color/clr_31353B"
+        android:textColor="@color/Unify_N700"
         android:textSize="@dimen/sp_12"
         app:typographyType="body_3"
         android:elevation="@dimen/dp_1"
@@ -175,7 +180,7 @@
         android:id="@+id/email_link_txtv"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_18"
-        android:textColor="@color/clr_31353B"
+        android:textColor="@color/Unify_N700"
         android:textSize="@dimen/sp_12"
         app:typographyType="body_3"
         android:elevation="@dimen/dp_1"
@@ -204,7 +209,7 @@
         android:id="@+id/others_link_txtv"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_18"
-        android:textColor="@color/clr_31353B"
+        android:textColor="@color/Unify_N700"
         android:textSize="@dimen/sp_12"
         app:typographyType="body_3"
         android:elevation="@dimen/dp_1"

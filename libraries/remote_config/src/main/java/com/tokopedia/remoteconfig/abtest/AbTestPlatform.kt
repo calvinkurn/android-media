@@ -10,9 +10,10 @@ import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.remoteconfig.GraphqlHelper
 import com.tokopedia.remoteconfig.R
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RollenceKey.EXPERIMENT_NAME_TOKOPOINT
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV2
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP2
 import com.tokopedia.remoteconfig.abtest.data.AbTestVariantPojo
 import com.tokopedia.remoteconfig.abtest.data.FeatureVariantAnalytics
 import com.tokopedia.remoteconfig.abtest.data.RolloutFeatureVariants
@@ -84,7 +85,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         if (GlobalConfig.PACKAGE_APPLICATION == CONSUMER_PRO_APPLICATION_PACKAGE) {
             when (key) {
                 NAVIGATION_EXP_TOP_NAV -> return NAVIGATION_VARIANT_REVAMP
-                EXPERIMENT_NAME_TOKOPOINT -> return EXPERIMENT_NAME_TOKOPOINT
+                NAVIGATION_EXP_TOP_NAV2 -> return NAVIGATION_VARIANT_REVAMP2
             }
         }
         val cacheValue: String = this.sharedPreferences.getString(key, defaultValue)?: defaultValue
@@ -119,7 +120,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         return mutableSetOf<String>().apply {
             for ((key, value) in sharedPreferences.all){
                 val valueClassType = value?.let { it::class.java }
-                if ((key.equals(keyName, true) || keyName.isEmpty()) && valueClassType == String::class.java)
+                if ((key.contains(keyName, true) || keyName.isEmpty()) && valueClassType == String::class.java)
                     add(key)
             }
         }

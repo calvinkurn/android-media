@@ -18,7 +18,6 @@ object ProductDetailConstant {
     const val PDP_P2_OTHER_TRACE = "mp_pdp_p2_other"
     const val PDP_P2_LOGIN_TRACE = "mp_pdp_p2_login"
     const val PDP_P2_DATA_TRACE = "mp_pdp_p2_data"
-    const val PDP_P3_TRACE = "mp_pdp_p3"
 
     const val PDP_RESULT_PLT_PREPARE_METRICS = "pdp_result_plt_prepare_metrics"
     const val PDP_RESULT_PLT_NETWORK_METRICS = "pdp_result_plt_network_metrics"
@@ -90,6 +89,7 @@ object ProductDetailConstant {
     const val BEST_SELLER = "best_seller"
     const val STOCK_ASSURANCE = "stock_assurance"
     const val ONE_LINERS = "one_liners"
+    const val PRODUCT_BUNDLING = "product_bundling"
 
     //Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
@@ -135,12 +135,6 @@ object ProductDetailConstant {
     const val HIDE_VALUE = 0F
     const val FADE_IN_VIDEO_THUMBNAIL_DURATION = 200L
 
-
-    //General Ticker
-    const val LAYOUT_FLOATING = "floating"
-    const val PARAMS_PAGE = "page"
-    const val PARAMS_PAGE_PDP = "pdp"
-
     const val ELIGIBLE_TRADE_IN = 1
 
     const val BS_SHIPMENT_ERROR_TAG = "BS_SHIPMENT_ERROR_TAG"
@@ -163,4 +157,7 @@ object ProductDetailConstant {
     const val TOOLBAR_ELEVATION = 10F
 
     const val DEFAULT_PRICE_MINIMUM_SHIPPING = 30000.0
+
+    const val REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING = "android_enable_pdp_custom_sharing"
+    const val REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING = true
 }

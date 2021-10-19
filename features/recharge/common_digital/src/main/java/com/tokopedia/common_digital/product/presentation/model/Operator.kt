@@ -76,10 +76,13 @@ class Operator() : Parcelable, BaseWidgetItem {
         this.defaultProductId = `in`.readInt()
         this.rule = `in`.readParcelable(Rule::class.java.classLoader)
         this.prefixList = `in`.createStringArrayList()
-        this.clientNumberList = ArrayList()
-        `in`.readList(this.clientNumberList, ClientNumber::class.java.classLoader)
+        val clientNumberListTemp = ArrayList<ClientNumber>()
+        `in`.readList(clientNumberListTemp, ClientNumber::class.java.classLoader)
+        this.clientNumberList = clientNumberListTemp
         this.productList = ArrayList()
-        `in`.readList(this.productList, Product::class.java.classLoader)
+        val productListTemp = ArrayList<Product>()
+        `in`.readList(productListTemp, Product::class.java.classLoader)
+        this.productList = productListTemp
         this.ussdCode = `in`.readString()
     }
 

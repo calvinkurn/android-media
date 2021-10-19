@@ -5,12 +5,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.chat_common.data.MessageViewModel
-import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getOppositeMargin
@@ -25,11 +25,12 @@ abstract class ChatMessageViewHolder(
     protected open val fxChat: FlexBoxChatLayout? = itemView?.findViewById(R.id.fxChat)
     protected open val msgContainer: ConstraintLayout? = itemView?.findViewById(R.id.cl_msg_container)
     protected val topMarginOpposite: Float = getOppositeMargin(itemView?.context)
-    private val movementMethod = ChatLinkHandlerMovementMethod(listener)
+    private val onTouchListener = MessageOnTouchListener(listener)
 
     override fun bind(message: MessageViewModel) {
         verifyReplyTime(message)
-        ChatMessageViewHolderBinder.bindChatMessage(message, fxChat, movementMethod)
+        ChatMessageViewHolderBinder.bindChatMessage(message, fxChat)
+        ChatMessageViewHolderBinder.bindOnTouchMessageListener(fxChat, onTouchListener)
         ChatMessageViewHolderBinder.bindHour(message, fxChat)
         bindMargin(message)
         bindClick()

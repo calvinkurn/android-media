@@ -31,6 +31,9 @@ internal open class InitialStatePresenterTestFixtures {
     protected val slotRecentSearchItemList = mutableListOf<MutableList<Any>>()
     protected val slotPopularSearchTrackingModel = slot<DynamicInitialStateItemTrackingModel>()
     protected val slotDynamicSectionTrackingModel = slot<DynamicInitialStateItemTrackingModel>()
+    protected val slotCuratedCampaignType = slot<String>()
+    protected val slotCuratedCampaignLabel = slot<String>()
+    protected val slotCuratedCampaignCode = slot<String>()
 
     protected lateinit var initialStatePresenter: InitialStatePresenter
 

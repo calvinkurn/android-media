@@ -21,7 +21,7 @@ class GetPMInterruptDataUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): PowerMerchantInterruptUiModel {
         val gqlRequest = GraphqlRequest(QUERY, PMInterruptDataResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val gqlErrors = gqlResponse.getError(PMInterruptDataResponse::class.java)
         if (gqlErrors.isNullOrEmpty()) {

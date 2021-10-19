@@ -8,8 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
  */
 interface PlayWidgetInternalListener {
 
-    fun onWidgetAttached(widgetCardsContainer: RecyclerView)
-
     fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView)
 
     fun onWidgetDetached(widget: View)

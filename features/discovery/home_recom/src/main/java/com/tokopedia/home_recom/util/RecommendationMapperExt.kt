@@ -45,7 +45,7 @@ fun List<RecommendationWidget>.mapDataModel(): List<HomeRecommendationDataModel>
 
 fun ProductInfoDataModel.mapToRecommendationTracking(): RecommendationItem{
     return RecommendationItem(
-            productId = productDetailData?.id ?: -1,
+            productId = productDetailData?.id?.toLong() ?: 0,
             position = 0,
             name = productDetailData?.name ?: "",
             appUrl = productDetailData?.appUrl ?: "",
@@ -70,7 +70,7 @@ fun ProductInfoDataModel.mapToRecommendationTracking(): RecommendationItem{
             cartId = "",
             shopId = productDetailData?.shop?.id ?: -1,
             shopName = productDetailData?.shop?.name ?: "",
-            shopType = if (productDetailData?.shop?.isGold == true) "gold_merchant" else "reguler",
+            shopType = if (productDetailData?.shop?.isGold == true) STRING_GOLD_MERCHANT else STRING_REGULER,
             quantity = productDetailData?.minOrder ?: -1,
             header = "",
             pageName = "",
@@ -145,7 +145,7 @@ fun List<RecommendationFilterChipsEntity.RecommendationSortChip>.toSort(): List<
 fun List<Option>.getCountSelected(): Int{
     var selectedCount = 0
     forEach { opt ->
-        selectedCount += if(opt.inputState == "true") 1 else 0
+        selectedCount += if(opt.inputState == STRING_TRUE) 1 else 0
     }
     return selectedCount
 }
@@ -160,7 +160,7 @@ fun List<RecommendationFilterChipsEntity.RecommendationFilterChip>.getSelectedOp
     val listOption = mutableListOf<RecommendationFilterChipsEntity.Option>()
     forEach {
         it.options.forEach { opt ->
-            if(opt.isActivated || opt.inputType == "true") listOption.add(opt)
+            if(opt.isActivated || opt.inputType == STRING_TRUE) listOption.add(opt)
         }
     }
     return listOption
@@ -179,13 +179,18 @@ fun List<RecommendationFilterChipsEntity.RecommendationFilterChip>.getOption(): 
 fun Map<String, String>.isActivated(key: String, value: String): Boolean{
     if(!this.containsKey(key)) return false
     // check if separator # (241,242,243#10#11) for case city_ids
-    return if(this[key]?.contains("#") == true){
+    return if(this[key]?.contains(IDENTIFIER_HASH) == true){
         val values = mutableListOf<String>()
         // saved to values [(241,242,243), 10, 11]
-        values.addAll(this[key]?.split("#") ?: listOf())
+        values.addAll(this[key]?.split(IDENTIFIER_HASH) ?: listOf())
         // check is inside values
         values.any { it == value }
     } else {
         this[key] == value
     }
 }
+
+private const val STRING_GOLD_MERCHANT = "gold_merchant"
+private const val STRING_REGULER = "reguler"
+private const val IDENTIFIER_HASH = "#"
+private const val STRING_TRUE = "true"

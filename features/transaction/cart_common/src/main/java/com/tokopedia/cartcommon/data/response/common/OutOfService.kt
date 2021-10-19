@@ -2,7 +2,7 @@ package com.tokopedia.cartcommon.data.response.common
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class OutOfService(
@@ -19,6 +19,7 @@ data class OutOfService(
         @SerializedName("title")
         val title: String = ""
 ) : Parcelable {
+
     companion object {
         const val ID_MAINTENANCE = "1"
         const val ID_OVERLOAD = "2"

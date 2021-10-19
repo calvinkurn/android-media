@@ -12,6 +12,8 @@ import com.tokopedia.buyerorder.unifiedhistory.list.domain.*
 import com.tokopedia.buyerorder.unifiedhistory.list.view.viewmodel.UohListViewModel
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -67,6 +69,9 @@ class UohListViewModelTest {
     lateinit var rechargeSetFailUseCase: RechargeSetFailUseCase
 
     @RelaxedMockK
+    lateinit var topAdsImageViewUseCase: TopAdsImageViewUseCase
+
+    @RelaxedMockK
     lateinit var atcUseCase: AddToCartUseCase
 
     @Before
@@ -75,7 +80,7 @@ class UohListViewModelTest {
         uohListViewModel = UohListViewModel(dispatcher, uohListUseCase,
                 getRecommendationUseCase, uohFinishOrderUseCase, atcMultiProductsUseCase,
                 lsPrintFinishOrderUseCase, flightResendEmailUseCase, trainResendEmailUseCase,
-                rechargeSetFailUseCase, atcUseCase)
+                rechargeSetFailUseCase, topAdsImageViewUseCase, atcUseCase)
 
         val order1 = UohListOrder.Data.UohOrders.Order(orderUUID = "abc", verticalID = "",
                 verticalCategory = "", userID = "", status = "", verticalStatus = "", searchableText = "",
@@ -491,5 +496,35 @@ class UohListViewModelTest {
         //then
         assert(uohListViewModel.atcResult.value is Success)
         assert((uohListViewModel.atcResult.value as Success<AddToCartDataModel>).data.data.message.isNotEmpty())
+    }
+
+    // tdn
+    @Test
+    fun tdn_shouldReturnSuccess() {
+        //given
+        coEvery { topAdsImageViewUseCase.getImageData(any()) }.answers{
+            arrayListOf(TopAdsImageViewModel(imageUrl = "url"))
+        }
+
+        //when
+        uohListViewModel.loadTdnBanner()
+
+        //then
+        assert(uohListViewModel.tdnBannerResult.value is Success)
+        assert((uohListViewModel.tdnBannerResult.value as Success<TopAdsImageViewModel>).data.imageUrl == "url")
+    }
+
+    @Test
+    fun tdn_shouldReturnEmpty() {
+        //given
+        coEvery { topAdsImageViewUseCase.getImageData(any()) }.answers{
+            arrayListOf()
+        }
+
+        //when
+        uohListViewModel.loadTdnBanner()
+
+        //then
+        assert(uohListViewModel.tdnBannerResult.value == null)
     }
 }

@@ -4,22 +4,22 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellation.data.FlightCancellationPassengerEntity
-import kotlinx.android.synthetic.main.item_flight_booking_amenity.view.*
+import com.tokopedia.flight.databinding.ItemFlightBookingAmenityBinding
 
 /**
  * @author by furqan on 20/07/2020
  */
-class FlightCancellationChooseReasonViewHolder(itemView: View,
+class FlightCancellationChooseReasonViewHolder(val binding: ItemFlightBookingAmenityBinding,
                                                private val listener: Listener)
-    : AbstractViewHolder<FlightCancellationPassengerEntity.Reason>(itemView) {
+    : AbstractViewHolder<FlightCancellationPassengerEntity.Reason>(binding.root) {
 
     override fun bind(element: FlightCancellationPassengerEntity.Reason) {
-        with(itemView) {
-            tv_title.text = element.title
+        with(binding) {
+            tvTitle.text = element.title
             if (listener.isItemChecked(element)) {
-                image_checked.visibility = View.VISIBLE
+                imageChecked.visibility = View.VISIBLE
             } else {
-                image_checked.visibility = View.GONE
+                imageChecked.visibility = View.GONE
             }
         }
     }

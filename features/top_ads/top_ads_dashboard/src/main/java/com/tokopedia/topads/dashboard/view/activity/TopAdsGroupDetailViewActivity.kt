@@ -22,6 +22,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.DAILY_BUDGET
@@ -421,16 +422,16 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         btn_switch.isChecked = data.status == "published"
         btn_switch.setOnCheckedChangeListener(this)
         if (priceDaily == 0.0F) {
-            progress_status1.text = TopAdsDashboardConstant.TIDAK_DIBATASI
-            progress_status2.visibility = View.GONE
-            progress_bar.visibility = View.GONE
+            daily_budget_spent.text = TopAdsDashboardConstant.TIDAK_DIBATASI
+            daily_budget.visibility = View.GONE
+            daily_budget_progress_bar.visibility = View.GONE
         } else {
-            progress_status2.visibility = View.VISIBLE
-            progress_status2.text = String.format(resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), priceDaily.toInt())
-            progress_status1.text = priceSpent
-            progress_bar.visibility = View.VISIBLE
+            daily_budget.visibility = View.VISIBLE
+            daily_budget.text = String.format(resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), priceDaily.toInt())
+            daily_budget_spent.text = priceSpent
+            daily_budget_progress_bar.visibility = View.VISIBLE
             Utils.convertMoneyToValue(priceSpent ?: "0").let {
-                progress_bar.setValue(it, false)
+                daily_budget_progress_bar.setValue(it, false)
             }
         }
         renderTabAndViewPager()
@@ -492,7 +493,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
 
     private fun getBundleArguments() {
-        groupId = intent?.extras?.getInt(GROUP_ID)
+        groupId = intent?.extras?.getString(GROUP_ID)?.toIntOrZero()
         priceSpent = intent?.extras?.getString(TopAdsDashboardConstant.PRICE_SPEND)
         isWhiteListedUser = intent?.extras?.getBoolean(ISWHITELISTEDUSER)?:false
     }

@@ -29,6 +29,7 @@
     <string name="path_gold_merchant_membership" translatable="false">/gold-merchant-membership</string>
     <string name="path_gold_merchant_redirect" translatable="false">/gold-merchant-redirect</string>
     <string name="path_power_merchant_subscribe" translatable="false">/power-merchant-subscribe</string>
+    <string name="path_pm_benefit_package" translatable="false">/pm-benefit-package</string>
 
     <string name="path_atc_variant" translatable="false">/atc-variant/.*\\/.*\\/</string>
     <string name="path_product_category_picker" translatable="false">/product-category-picker/.*\\/</string>
@@ -43,7 +44,9 @@
     <string name="path_reserved_stock" translatable="false">/reserved-stock/.*\\/.*\\/</string>
     <string name="path_set_cashback" translatable="false">/set-cashback/.*\\/</string>
     <string name="path_create_review" translatable="false">/product-review/create/.*\\/.*\\/</string>
+    <string name="path_review_credibility" translatable="false">/review/credibility/.*\\/.*\\/</string>
     <string name="path_product_review_gallery" translatable="false">/product/.*\\/review/gallery</string>
+    <string name="path_product_review_gallery_old" translatable="false">/product/.*\\/review/gallery-old</string>
     <string name="path_product_report" translatable="false">/product-report/.*\\/</string>
     <string name="path_store_setting" translatable="false">/store-setting</string>
     <string name="path_qr_scanner" translatable="false">/qr-scanner/.*\\/</string>
@@ -71,7 +74,6 @@
     <string name="path_review_detail_buyer" translatable="false">/review/detail/.*\\/</string>
     <string name="path_reputation_detail" translatable="false">/reputation/.*\\/</string>
     <string name="path_review_report" translatable="false">/review-report</string>
-    <string name="path_review_reminder" translatable="false">/review-reminder</string>
 
     <string name="path_seller_review_page" translatable="false">/seller-review-page</string>
     <string name="path_seller_review_detail_page" translatable="false">/seller-review-detail</string>

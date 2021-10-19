@@ -32,7 +32,7 @@ private const val TAG = "CassavaWishlistTest"
 
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST_ITEM = "tracker/wishlist/wishlist_item.json"
 private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST_ADD_TO_CART = "tracker/wishlist/wishlist_addtocart.json"
-private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST_DELETE_ITEM = "tracker/wishlist/wishlist_item_action_delete.json"
+private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST_BATALKAN_DELETE_ITEM = "tracker/wishlist/wishlist_item_batalkan_hapus_wishlist.json"
 
 class CassavaWishlistTest {
 
@@ -94,12 +94,12 @@ class CassavaWishlistTest {
     }
 
     @Test
-    fun testDeleteWishlist() {
+    fun testCancelDeleteWishlist() {
         initTestWithLogin()
         login()
-        scrollToItemPositionDeleteItem(0)
+        scrollToItemPositionCancelDeleteItem(0)
 
-        doCassavaDeleteItem()
+        doCassavaCancelDeleteItem()
 
         onFinishTest()
 
@@ -140,17 +140,12 @@ class CassavaWishlistTest {
         logTestMessage("Done UI Test")
     }
 
-    private fun scrollToItemPositionDeleteItem(pos: Int) {
+    private fun scrollToItemPositionCancelDeleteItem(pos: Int) {
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
         scrollHomeRecyclerViewToPosition(recyclerView, pos)
         clickDeleteItem()
         waitDeleteDialog()
         clickCancelDelete()
-        waitDeleteDialog()
-        clickDeleteItem()
-        waitDeleteDialog()
-        clickConfirmDelete()
-        waitDeleteDialog()
         waitDeleteDialog()
         activityRule.activity.finish()
         logTestMessage("Done UI Test")
@@ -175,10 +170,10 @@ class CassavaWishlistTest {
                 hasAllSuccess())
     }
 
-    private fun doCassavaDeleteItem() {
+    private fun doCassavaCancelDeleteItem() {
         waitForData()
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST_DELETE_ITEM),
-                hasAllSuccess())
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_WISHLIST_BATALKAN_DELETE_ITEM),
+            hasAllSuccess())
     }
 
     private fun checkItemsAndBanner(homeRecyclerView: RecyclerView, i: Int) {
@@ -244,17 +239,6 @@ class CassavaWishlistTest {
         } catch (e: PerformException) {
             e.printStackTrace()
             logTestMessage("Click FAILED cancelDelete")
-        }
-    }
-
-    private fun clickConfirmDelete() {
-        try {
-            Espresso.onView(firstView(ViewMatchers.withId(R.id.dialog_btn_secondary)))
-                    .perform(ViewActions.click())
-            logTestMessage("Click SUCCESS ConfirmDelete")
-        } catch (e: PerformException) {
-            e.printStackTrace()
-            logTestMessage("Click FAILED ConfirmDelete")
         }
     }
 

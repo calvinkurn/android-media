@@ -8,10 +8,13 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselEm
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselFeaturedShopCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselProductCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
+import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselViewAllCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselEmptyCardViewHolder
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselFeaturedShopViewHolder
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselProductCardViewHolder
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselSeeMorePdpViewHolder
+import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselViewAllCardViewHolder
+
 
 /**
  * @author by yoasfs on 09/06/20
@@ -36,6 +39,10 @@ class CommonCarouselProductCardTypeFactoryImpl(private val channels: ChannelMode
         return CarouselFeaturedShopViewHolder.LAYOUT
     }
 
+    override fun type(dataModel: CarouselViewAllCardDataModel): Int {
+        return CarouselViewAllCardViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             CarouselProductCardViewHolder.LAYOUT -> {
@@ -49,6 +56,9 @@ class CommonCarouselProductCardTypeFactoryImpl(private val channels: ChannelMode
             }
             CarouselFeaturedShopViewHolder.LAYOUT -> {
                 CarouselFeaturedShopViewHolder(parent, channels)
+            }
+            CarouselViewAllCardViewHolder.LAYOUT -> {
+                CarouselViewAllCardViewHolder(parent, channels)
             }
             else -> {
                 super.createViewHolder(parent, type)

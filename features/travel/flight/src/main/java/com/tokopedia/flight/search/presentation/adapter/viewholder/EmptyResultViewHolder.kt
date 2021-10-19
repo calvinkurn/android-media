@@ -4,15 +4,15 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.flight.R
 import com.tokopedia.flight.common.view.model.EmptyResultModel
-import kotlinx.android.synthetic.main.item_flight_empty_search.view.*
+import com.tokopedia.flight.databinding.ItemFlightEmptySearchBinding
 
 /**
  * @author by furqan on 20/04/2020
  */
-class EmptyResultViewHolder(itemView: View) : AbstractViewHolder<EmptyResultModel>(itemView) {
+class EmptyResultViewHolder(val binding: ItemFlightEmptySearchBinding) : AbstractViewHolder<EmptyResultModel>(binding.root) {
 
     override fun bind(element: EmptyResultModel) {
-        with(itemView) {
+        with(binding) {
             if (element.iconRes != 0) {
                 ivFlightEmpty.setImageResource(element.iconRes)
             }

@@ -20,6 +20,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.mockk
@@ -51,6 +52,12 @@ open class CategoryTestFixtures {
     protected val userSession = mockk<UserSessionInterface>(relaxed = true).also {
         every { it.isLoggedIn } returns true
     }
+    protected val cartService = CartService(
+        addToCartUseCase,
+        updateCartUseCase,
+        deleteCartUseCase,
+        userSession
+    )
     protected lateinit var tokoNowCategoryViewModel: TokoNowCategoryViewModel
 
     @Before
@@ -82,9 +89,7 @@ open class CategoryTestFixtures {
                 getFilterUseCase,
                 getProductCountUseCase,
                 getMiniCartListSimplifiedUseCase,
-                addToCartUseCase,
-                updateCartUseCase,
-                deleteCartUseCase,
+                cartService,
                 getWarehouseUseCase,
                 getRecommendationUseCase,
                 getCategoryListUseCase,

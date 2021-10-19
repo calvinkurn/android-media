@@ -12,6 +12,12 @@ import javax.inject.Inject
 /**
  * Created by jegul on 20/01/21
  */
+/*
+multiple_like{
+  icon
+  background_color
+}
+ */
 @GqlQuery(GetChannelDetailsWithRecomUseCase.QUERY_NAME, GetChannelDetailsWithRecomUseCase.QUERY)
 class GetChannelDetailsWithRecomUseCase @Inject constructor(
         gqlRepository: GraphqlRepository
@@ -50,6 +56,8 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                 data {
                   id
                   title
+                  cover_url
+                  start_time
                   is_live
                   partner {
                     id
@@ -80,6 +88,15 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                   }
                   quick_replies
                   configurations {
+                    welcome_format{
+                        type
+                        copy
+                        background_color
+                        icon
+                    }
+                    real_time_notif {
+                        lifespan
+                    }
                     show_cart
                     show_pinned_product
                     ping_interval
@@ -117,6 +134,10 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                     room_background{
                       image_url
                     }
+                    multiple_like{
+                      icon
+                      background_color
+                    }
                   }
                   app_link
                   web_link
@@ -128,6 +149,7 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                     meta_description
                     is_show_button
                   }
+                  air_time
                 }
               }
             }

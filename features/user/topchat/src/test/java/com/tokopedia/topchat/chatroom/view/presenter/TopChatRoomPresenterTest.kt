@@ -58,13 +58,10 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
     fun `on success send sticker through websocket`() {
         // Given
         val mockOnSendingMessage: () -> Unit = mockk(relaxed = true)
-        val stickerContract = CommonUtil.toJson(
-            exSticker.generateWebSocketPayload(
-                exMessageId, exOpponentId, exStartTime, emptyList()
-            )
-        )
+        val stickerReq = slot<String>()
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every { RxWebSocket.send(capture(stickerReq), listInterceptor) } just Runs
 
         // When
         presenter.connectWebSocket(exMessageId)
@@ -73,8 +70,8 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         )
 
         // Then
+        verify { RxWebSocket.send(stickerReq.captured, listInterceptor) }
         verify(exactly = 1) { mockOnSendingMessage.invoke() }
-        verify(exactly = 1) { RxWebSocket.send(stickerContract, listInterceptor) }
         verify(exactly = 1) { view.clearAttachmentPreviews() }
     }
 
@@ -107,7 +104,9 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
         every {
-            TopChatWebSocketParam.generateParamSendMessage(any(), any(), any(), any(), any())
+            TopChatWebSocketParam.generateParamSendMessage(
+                any(), any(), any(), any(), any(), any(), any()
+            )
         } returns paramSendMessage
 
         // When
@@ -242,7 +241,7 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         // Given
         val msgObj = JsonObject()
         every {
-            sendAbleProductPreview.generateMsgObj(any(), any(), any(), any(), any())
+            sendAbleProductPreview.generateMsgObj(any(), any(), any(), any(), any(), any())
         } returns msgObj
 
         // When
@@ -260,7 +259,7 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         // Given
         val msgAttachment = CommonUtil.toJson("WebsocketVoucherPayload")
         every {
-            sendAbleProductPreview.generateMsgObj(any(), any(), any(), any(), any())
+            sendAbleProductPreview.generateMsgObj(any(), any(), any(), any(), any(), any())
         } returns msgAttachment
 
         // When
@@ -438,13 +437,13 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
     @Test
     fun `on success loadAttachmentData`() {
         // Given
-        val roomModel = ChatroomViewModel(attachmentIds = "3213, 3123")
+        val roomModel = ChatroomViewModel(replyIDs = "3213, 3123")
         val mapSuccessAttachment = ArrayMap<String, Attachment>().apply {
             put("test_attachment", Attachment())
         }
         every {
             chatAttachmentUseCase.getAttachments(
-                exMessageId.toLongOrZero(), roomModel.attachmentIds,
+                exMessageId.toLongOrZero(), roomModel.replyIDs,
                 any(), captureLambda(), any()
             )
         } answers {
@@ -466,14 +465,14 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
     @Test
     fun `on error loadAttachmentData`() {
         // Given
-        val roomModel = ChatroomViewModel(attachmentIds = "3213, 3123")
+        val roomModel = ChatroomViewModel(replyIDs = "3213, 3123")
         val mapErrorAttachment = ArrayMap<String, Attachment>().apply {
             put("test_error_attachment", Attachment())
         }
         val throwable = Throwable()
         every {
             chatAttachmentUseCase.getAttachments(
-                exMessageId.toLongOrZero(), roomModel.attachmentIds, any(),
+                exMessageId.toLongOrZero(), roomModel.replyIDs, any(),
                 any(), captureLambda()
             )
         } answers {
@@ -724,11 +723,7 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
     fun `onGoingStockUpdate added`() {
         // Given
         val productId = "123"
-        val product = ProductAttachmentViewModel(
-            "", productId, "",
-            "", "", "",
-            "", false, 1
-        )
+        val product = ProductAttachmentViewModel.Builder().build()
 
         // When
         presenter.addOngoingUpdateProductStock(productId, product, 0, null)

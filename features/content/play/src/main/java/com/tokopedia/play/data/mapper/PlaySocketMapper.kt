@@ -6,6 +6,8 @@ import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.data.*
+import com.tokopedia.play.data.multiplelikes.UpdateMultipleLikeConfig
+import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.websocket.WebSocketResponse
@@ -61,6 +63,15 @@ class PlaySocketMapper(
             PlaySocketType.ChannelInteractive.value -> {
                 return mapToChannelInteractive()
             }
+            PlaySocketType.RealTimeNotification.value -> {
+                return mapToRealTimeNotification()
+            }
+            PlaySocketType.UpdateConfigMultipleLike.value -> {
+                return mapToUpdateMultipleLikeConfig()
+            }
+            PlaySocketType.UserWinnerStatus.value -> {
+                return mapToUserWinnerStatus()
+            }
         }
         return null
     }
@@ -107,6 +118,18 @@ class PlaySocketMapper(
 
     private fun mapToChannelInteractive(): ChannelInteractive? {
         return convertToModel(webSocketResponse.jsonObject, ChannelInteractive::class.java)
+    }
+
+    private fun mapToRealTimeNotification(): RealTimeNotification? {
+        return convertToModel(webSocketResponse.jsonObject, RealTimeNotification::class.java)
+    }
+
+    private fun mapToUpdateMultipleLikeConfig(): UpdateMultipleLikeConfig? {
+        return convertToModel(webSocketResponse.jsonObject, UpdateMultipleLikeConfig::class.java)
+    }
+
+    private fun mapToUserWinnerStatus(): UserWinnerStatus? {
+        return convertToModel(webSocketResponse.jsonObject, UserWinnerStatus::class.java)
     }
 
     private fun <T> convertToModel(jsonElement: JsonElement?, classOfT: Class<T>): T? {

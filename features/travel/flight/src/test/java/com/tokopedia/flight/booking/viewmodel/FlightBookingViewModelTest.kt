@@ -214,7 +214,7 @@ class FlightBookingViewModelTest {
     @Test
     fun getProfile_failedToFetch_profileShouldFail() {
         // given
-        coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable("Failed to Fetch") }
+        coEvery { graphqlRepository.response(any(), any()) } coAnswers { throw Throwable("Failed to Fetch") }
 
         // when
         viewModel.getProfile("")
@@ -236,7 +236,7 @@ class FlightBookingViewModelTest {
                 ),
                 mapOf(),
                 false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // when
         viewModel.getProfile("")
@@ -272,7 +272,7 @@ class FlightBookingViewModelTest {
                 ),
                 mapOf(),
                 false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // when
         viewModel.getProfile("")
@@ -306,7 +306,7 @@ class FlightBookingViewModelTest {
                 ),
                 mapOf(),
                 false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // when
         viewModel.getProfile("")
@@ -341,7 +341,7 @@ class FlightBookingViewModelTest {
                 ),
                 mapOf(),
                 false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
         viewModel.getProfile("")
         val userName = "Dummy User Name"
         val bookingParam = DUMMY_BOOKING_MODEL
@@ -1215,13 +1215,13 @@ class FlightBookingViewModelTest {
                 FlightCancelVoucher.Response::class.java to FlightCancelVoucher.Response()
         )
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any()) } returns gqlResponse
 
         // when
         viewModel.onCancelAppliedVoucher("")
 
         // then
-        coVerify { graphqlRepository.getReseponse(any(), any()) }
+        coVerify { graphqlRepository.response(any(), any()) }
     }
 
     @Test
@@ -1243,7 +1243,7 @@ class FlightBookingViewModelTest {
             flightBookingMealMetaViewModels = arrayListOf()
             flightBookingLuggageMetaViewModels = arrayListOf()
         }
-        coEvery { graphqlRepository.getReseponse(any()) } coAnswers { throw Throwable() }
+        coEvery { graphqlRepository.response(any()) } coAnswers { throw Throwable() }
 
         // when
         viewModel.setPassengerModels(arrayListOf(passenger))
@@ -1304,7 +1304,7 @@ class FlightBookingViewModelTest {
                 )
         )
         val gqlReponseVoucher = GraphqlResponse(responseCheckVoucher, mapOf(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returnsMany listOf(gqlResponseVerify, gqlReponseVoucher)
+        coEvery { graphqlRepository.response(any(), any()) } returnsMany listOf(gqlResponseVerify, gqlReponseVoucher)
 
         // when
         viewModel.setPassengerModels(arrayListOf(passenger))
@@ -1366,7 +1366,7 @@ class FlightBookingViewModelTest {
                     title = "title"
                 })
         ))
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseVerify andThenThrows gqlVoucherException
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseVerify andThenThrows gqlVoucherException
 
         // when
         viewModel.setPassengerModels(arrayListOf(passenger))
@@ -1403,7 +1403,7 @@ class FlightBookingViewModelTest {
             flightBookingMealMetaViewModels = arrayListOf()
             flightBookingLuggageMetaViewModels = arrayListOf()
         }
-        coEvery { graphqlRepository.getReseponse(any()) } coAnswers { throw Throwable() }
+        coEvery { graphqlRepository.response(any()) } coAnswers { throw Throwable() }
 
         // when
         viewModel.pastVerifyParam = "nothing"
@@ -1442,7 +1442,7 @@ class FlightBookingViewModelTest {
                 )
         )
         val gqlResponse = GraphqlResponse(atcResponse, mapOf(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // when
         viewModel.pastVerifyParam = "nothing"
@@ -1528,7 +1528,7 @@ class FlightBookingViewModelTest {
                 )
         )
         val gqlReponseVoucher = GraphqlResponse(responseCheckVoucher, mapOf(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returnsMany listOf(gqlResponseVerify, gqlReponseVoucher) andThenThrows Throwable("Failed to Fetch")
+        coEvery { graphqlRepository.response(any(), any()) } returnsMany listOf(gqlResponseVerify, gqlReponseVoucher) andThenThrows Throwable("Failed to Fetch")
 
         // when
         viewModel.setPassengerModels(arrayListOf(passenger))
@@ -1590,7 +1590,7 @@ class FlightBookingViewModelTest {
                 FlightCheckoutData.Response::class.java to FlightCheckoutData.Response(DUMMY_CHECKOUT)
         )
         val gqlResponseCheckout = GraphqlResponse(responseCheckout, mapOf(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returnsMany listOf(gqlResponseVerify, gqlReponseVoucher, gqlResponseCheckout)
+        coEvery { graphqlRepository.response(any(), any()) } returnsMany listOf(gqlResponseVerify, gqlReponseVoucher, gqlResponseCheckout)
 
         // when
         viewModel.setPassengerModels(arrayListOf(passenger))
@@ -1616,7 +1616,7 @@ class FlightBookingViewModelTest {
     @Test
     fun addToCart_failedAddToCart() {
         // given
-        coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable("Failed") }
+        coEvery { graphqlRepository.response(any(), any()) } coAnswers { throw Throwable("Failed") }
 
         // when
         viewModel.addToCart("", idempotencyKey = "")
@@ -1636,7 +1636,7 @@ class FlightBookingViewModelTest {
                 mapOf(),
                 false
         )
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // when
         viewModel.addToCart("", idempotencyKey = "")
@@ -1819,7 +1819,7 @@ class FlightBookingViewModelTest {
             ),
             mapOf(),
             false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { gqlResponse }
+        coEvery { graphqlRepository.response(any(), any()) } coAnswers { gqlResponse }
 
         //when
         viewModel.onCancelAppliedVoucher("")
@@ -1838,7 +1838,7 @@ class FlightBookingViewModelTest {
             ),
             mapOf(),
             false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { gqlResponse }
+        coEvery { graphqlRepository.response(any(), any()) } coAnswers { gqlResponse }
 
         //when
         viewModel.onCancelAppliedVoucher("")
@@ -1852,7 +1852,7 @@ class FlightBookingViewModelTest {
     @Test
     fun cancelVoucher_returnFailed(){
         // given
-        coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable() }
+        coEvery { graphqlRepository.response(any(), any()) } coAnswers { throw Throwable() }
 
         //when
         viewModel.onCancelAppliedVoucher("")

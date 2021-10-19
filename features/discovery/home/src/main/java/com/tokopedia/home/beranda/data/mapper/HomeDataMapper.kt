@@ -19,26 +19,14 @@ class HomeDataMapper(
         private val trackingQueue: TrackingQueue,
         private val homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper
 ) {
-    fun mapToHomeViewModel(homeData: HomeData?, isCache: Boolean): HomeDataModel{
-        BenchmarkHelper.beginSystraceSection(TRACE_MAP_TO_HOME_VIEWMODEL)
-        if (homeData == null) return HomeDataModel(isCache = isCache)
-        val addLoadingMore = homeData.token.isNotEmpty()
-        val factory: HomeVisitableFactory = homeVisitableFactory.buildVisitableList(
-                homeData, isCache, trackingQueue, context, homeDynamicChannelDataMapper)
-                .addBannerVisitable()
-                .addTickerVisitable()
-                .addUserWalletVisitable()
-                .addDynamicIconVisitable()
-
-
-        factory.addDynamicChannelVisitable(addLoadingMore, true)
-                .build()
-
-        BenchmarkHelper.endSystraceSection()
-        return HomeDataModel(homeData.homeFlag, factory.build(), isCache, addLoadingMore)
+    companion object {
+        private const val ATF_ERROR_MESSAGE = "Showing cache data because atf is error"
+        private const val DC_ERROR_MESSAGE = "Showing cache data because dynamic channel is error"
+        private const val SHIMMERING_CHANNEL_ID_0 = "0"
+        private const val SHIMMERING_CHANNEL_ID_1 = "1"
     }
 
-    fun mapToHomeRevampViewModel(homeData: HomeData?, isCache: Boolean, addShimmeringChannel: Boolean = false, isLoadingAtf: Boolean = false): HomeDataModel{
+    fun mapToHomeRevampViewModel(homeData: HomeData?, isCache: Boolean, addShimmeringChannel: Boolean = false, isLoadingAtf: Boolean = false, haveCachedData: Boolean = false): HomeDataModel{
         BenchmarkHelper.beginSystraceSection(TRACE_MAP_TO_HOME_VIEWMODEL_REVAMP)
         if (homeData == null) return HomeDataModel(isCache = isCache)
         var processingAtf = homeData.atfData?.isProcessingAtf?: false
@@ -47,6 +35,13 @@ class HomeDataMapper(
         if (isCache) {
             processingAtf = false
             processingDynamicChannel = false
+        } else {
+            if (homeData.atfData?.dataList?.isEmpty() == true && haveCachedData ) {
+                throw IllegalStateException(ATF_ERROR_MESSAGE)
+            }
+            if (homeData.dynamicHomeChannel.channels.isEmpty() && haveCachedData) {
+                throw IllegalStateException(DC_ERROR_MESSAGE)
+            }
         }
         val firstPage = homeData.token.isNotEmpty()
         val factory: HomeVisitableFactory = homeVisitableFactory.buildVisitableList(
@@ -62,10 +57,9 @@ class HomeDataMapper(
         BenchmarkHelper.endSystraceSection()
         val mutableVisitableList = factory.build().toMutableList()
         if (addShimmeringChannel && mutableVisitableList.size > 1) {
-            mutableVisitableList.add(ShimmeringChannelDataModel("0"))
-            mutableVisitableList.add(ShimmeringChannelDataModel("1"))
+            mutableVisitableList.add(ShimmeringChannelDataModel(SHIMMERING_CHANNEL_ID_0))
+            mutableVisitableList.add(ShimmeringChannelDataModel(SHIMMERING_CHANNEL_ID_1))
         }
-        val isChooseAddressActive = ChooseAddressUtils.isRollOutUser(context)
 
         return HomeDataModel(
                 homeFlag = homeData.homeFlag,
@@ -74,7 +68,7 @@ class HomeDataMapper(
                 isFirstPage = firstPage,
                 isProcessingAtf = processingAtf,
                 isProcessingDynamicChannle = processingDynamicChannel,
-                homeChooseAddressData = HomeChooseAddressData(isActive = isChooseAddressActive)
+                homeChooseAddressData = HomeChooseAddressData(true)
         )
     }
 }

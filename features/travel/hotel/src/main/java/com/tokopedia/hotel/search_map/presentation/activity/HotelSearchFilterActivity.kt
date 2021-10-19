@@ -23,7 +23,7 @@ class HotelSearchFilterActivity : BaseSimpleActivity() {
     override fun getTagFragment(): String = HotelSearchFilterFragment.TAG
 
     override fun getNewFragment(): Fragment {
-        return HotelSearchFilterFragment.createInstance(intent.getStringExtra(CommonParam.ARG_CACHE_FILTER_ID))
+        return HotelSearchFilterFragment.createInstance(intent.getStringExtra(CommonParam.ARG_CACHE_FILTER_ID) ?: "")
     }
 
     companion object {

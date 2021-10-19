@@ -39,12 +39,14 @@ import com.tokopedia.common_category.interfaces.QuickFilterListener
 import com.tokopedia.common_category.model.filter.DAFilterQueryType
 import com.tokopedia.common_category.util.ParamMapToUrl
 import com.tokopedia.core.gcm.GCMHandler
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilter
@@ -58,6 +60,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.android.synthetic.main.fragment_catalog_detail_product_listing.*
+import java.util.*
 import javax.inject.Inject
 
 class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
@@ -147,6 +150,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             viewModel = viewModelProvider.get(CatalogDetailProductListingViewModel::class.java)
             fetchProductData(getProductListParams(getPage()))
             viewModel.fetchQuickFilters(getQuickFilterParams())
+            fetchDynamicFilter(getDynamicFilterParams())
             viewModel.catalogUrl = catalogUrl
         }
     }
@@ -189,9 +193,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     private fun observeData() {
 
-        viewModel.sortFilterItems.observe(viewLifecycleOwner, {
-            if (it.isNotEmpty()) {
-                setQuickFilter(it)
+        viewModel.quickFilterClicked.observe(viewLifecycleOwner, Observer {
+            viewModel.quickFilterModel.value?.let {
+                processQuickFilter(it.data)
             }
         })
 
@@ -225,9 +229,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                             showNoDataScreen(true)
                         }
                     }
-                    sortFilterBottomSheet = SortFilterBottomSheet()
                     hideRefreshLayout()
-                    reloadFilter(getDynamicFilterParams())
                 }
 
                 is Fail -> {
@@ -265,6 +267,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             when (it) {
                 is Success -> {
                     startFilter(it.data.data)
+                    viewModel.quickFilterModel.value = it.data
                 }
 
                 is Fail -> {
@@ -285,7 +288,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             headerTitle.text = getString(R.string.catalog_search_product_count_text,totalProductsCount)
     }
 
-    private fun reloadFilter(param: RequestParams) {
+    private fun fetchDynamicFilter(param: RequestParams) {
         viewModel.fetchDynamicAttribute(param)
     }
 
@@ -301,24 +304,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     override fun getAdapter(): BaseCategoryAdapter? {
         return productNavListAdapter
-    }
-
-    override fun reloadData() {
-        if (productNavListAdapter == null) {
-            return
-        }
-        showRefreshLayout()
-        productNavListAdapter?.clearData()
-        viewModel.list.clear()
-        if(viewModel.list.size == 0)
-            productNavListAdapter?.addShimmer()
-        layout_no_data?.hide()
-        resetPage()
-        loadMoreTriggerListener?.resetState()
-        viewModel.searchParametersMap.value = searchParameter.getSearchParameterHashMap()
-        fetchProductData(getProductListParams(getPage()))
-        viewModel.fetchQuickFilters(getQuickFilterParams())
-        setSortFilterIndicatorCounter()
     }
 
     override fun getDepartMentId(): String {
@@ -493,36 +478,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         RouteManager.route(context, ApplinkConst.LOGIN)
     }
 
-    override fun onQuickFilterSelected(option: Option) {
-        if (!isQuickFilterSelected(option)) {
-            val filter = getAllFilterParameters()
-            filter[option.key] = option.value
-            applyFilterToSearchParameter(filter)
-            setSelectedFilter(filter)
-            reloadData()
-            CatalogDetailAnalytics.sendEvent(
-                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                    CatalogDetailAnalytics.ActionKeys.CLICK_QUICK_FILTER,
-                    "$catalogId - ${CatalogUtil.getSortFilterAnalytics(viewModel.searchParametersMap.value)}",
-                    userSession.userId)
-        } else {
-            val filter = getAllFilterParameters()
-            filter.remove(option.key)
-            applyFilterToSearchParameter(filter)
-            setSelectedFilter(filter)
-            reloadData()
-        }
-    }
-
-    private fun getAllFilterParameters(): HashMap<String, String> {
-        return if (filterController == null) HashMap() else HashMap(filterController.getParameter())
-    }
-
-    override fun isQuickFilterSelected(option: Option): Boolean {
-        return getSelectedFilter().containsKey(option.key)
-    }
-
     override fun onChangeList() {
         product_recyclerview.requestLayout()
     }
@@ -597,15 +552,80 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         return view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)
     }
 
+    override fun reloadData() {
+        if (productNavListAdapter == null) {
+            return
+        }
+        showRefreshLayout()
+        productNavListAdapter?.clearData()
+        viewModel.list.clear()
+        if(viewModel.list.size == 0)
+            productNavListAdapter?.addShimmer()
+        layout_no_data?.hide()
+        resetPage()
+        loadMoreTriggerListener?.resetState()
+        fetchProductData(getProductListParams(getPage()))
+        viewModel.quickFilterClicked.value = true
+        setSortFilterIndicatorCounter()
+    }
+
     /*********************************   Sort Filter ******************************/
+
+    override fun onQuickFilterSelected(option: Option) {
+        val isQuickFilterSelectedReversed = !isQuickFilterSelected(option)
+        setFilterToQuickFilterController(option, isQuickFilterSelectedReversed)
+
+        val queryParams = viewModel.filterController?.getParameter()
+        queryParams?.let {
+            refreshSearchParameters(queryParams)
+            refreshFilterControllers(HashMap(queryParams))
+        }
+        reloadData()
+        if(isQuickFilterSelectedReversed){
+            CatalogDetailAnalytics.sendEvent(
+                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                    CatalogDetailAnalytics.ActionKeys.CLICK_QUICK_FILTER,
+                    "$catalogId - ${CatalogUtil.getSortFilterAnalytics(viewModel.searchParametersMap.value)}",
+                    userSession.userId)
+        }
+    }
+
+    fun refreshSearchParameters(queryParams: Map<String, String>) {
+        viewModel.searchParameter.apply {
+            getSearchParameterHashMap().clear()
+            getSearchParameterHashMap().putAll(queryParams)
+            getSearchParameterHashMap()[SearchApiConst.ORIGIN_FILTER] =
+                    SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
+        }
+    }
+
+    private fun refreshFilterControllers(queryParams: HashMap<String, String>) {
+        val params = HashMap(queryParams)
+        params[SearchApiConst.ORIGIN_FILTER] =
+                SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
+
+        viewModel.filterController?.refreshMapParameter(params)
+    }
+
+    private fun setFilterToQuickFilterController(option: Option, isQuickFilterSelected: Boolean) {
+        if (option.isCategoryOption)
+            viewModel.filterController?.setFilter(option, isQuickFilterSelected, true)
+        else
+            viewModel.filterController?.setFilter(option, isQuickFilterSelected)
+    }
+
+    override fun isQuickFilterSelected(option: Option): Boolean {
+        return viewModel.filterController?.getFilterViewState(option.uniqueId) ?: return false
+    }
 
     private var searchSortFilter: SortFilter? = null
 
     private fun initSearchQuickSortFilter(rootView: View) {
         searchSortFilter = rootView.findViewById(R.id.search_product_quick_sort_filter)
         if(viewModel.searchParametersMap.value == null) {
-            viewModel.searchParametersMap.value = searchParameter.getSearchParameterHashMap()
             addDefaultSelectedSort()
+            viewModel.searchParametersMap.value = viewModel.searchParameter.getSearchParameterHashMap()
         }
     }
 
@@ -614,32 +634,35 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun processQuickFilter(quickFilterData: DataValue) {
-        if (viewModel.dynamicFilterModel == null) initFilterControllerForQuickFilter(quickFilterData.filter)
-        val sortFilterItems = arrayListOf<SortFilterItem>()
-        viewModel.quickFilterOptionList = arrayListOf()
-        for (filter in quickFilterData.filter) {
+        if (viewModel.dynamicFilterModel.value == null)
+            initFilterControllerForQuickFilter(quickFilterData.filter)
+
+        val sortFilterItems = mutableListOf<SortFilterItem>()
+        viewModel.quickFilterOptionList.clear()
+
+        quickFilterData.filter.forEach { filter ->
             val options = filter.options
-            (viewModel.quickFilterOptionList as java.util.ArrayList<Option>).addAll(options)
-            convertToSortFilterItem(filter.title, options)?.let {
-                sortFilterItems.addAll(it)
-                viewModel.sortFilterItems.value = sortFilterItems
-            }
+            viewModel.quickFilterOptionList.addAll(options)
+            sortFilterItems.addAll(convertToSortFilterItem(filter.title, options))
+        }
+
+        if (sortFilterItems.isNotEmpty()) {
+            setQuickFilter(sortFilterItems)
         }
     }
 
     private fun initFilterControllerForQuickFilter(quickFilterList : List<Filter>) {
-        filterController?.initFilterController(searchParameter.getSearchParameterHashMap(), quickFilterList)
+        viewModel.filterController?.initFilterController(viewModel.searchParameter.getSearchParameterHashMap(), quickFilterList)
     }
 
     private fun setSortFilterIndicatorCounter() {
-        viewModel.selectedSortIndicatorCount.value = CatalogUtil.getSortFilterCount(searchParameter.getSearchParameterMap())
+        viewModel.selectedSortIndicatorCount.value = getSortFilterCount(viewModel.searchParameter.getSearchParameterMap())
     }
 
     private fun addDefaultSelectedSort() {
-        if (searchParameter.get(CatalogSearchApiConst.OB).isEmpty()) {
-            searchParameter.set(CatalogSearchApiConst.OB, CatalogSearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
+        if (viewModel.searchParameter.get(CatalogSearchApiConst.OB).isEmpty()) {
+            viewModel.searchParameter.set(CatalogSearchApiConst.OB, CatalogSearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT)
         }
-        viewModel.searchParametersMap.value = searchParameter.getSearchParameterHashMap()
     }
 
     private fun setQuickFilter(items : List<SortFilterItem> ) {
@@ -665,29 +688,20 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun sortFilterItemShowNew(item: SortFilterItem, isNew: Boolean) {
-        item.refChipUnify?.showNewNotification = isNew
+        item.refChipUnify.showNewNotification = isNew
     }
 
-
-    private fun convertToSortFilterItem(title: String, options: List<Option>): List<SortFilterItem>? {
-        val list: MutableList<SortFilterItem> = java.util.ArrayList()
-        for (option in options) {
-            list.add(createSortFilterItem(title, option))
-        }
-        return list
-    }
+    private fun convertToSortFilterItem(title: String, options: List<Option>) =
+            options.map { option ->
+                createSortFilterItem(title, option)
+            }
 
     private fun createSortFilterItem(title: String, option: Option): SortFilterItem {
-        val item = SortFilterItem(title) {}
-        setSortFilterItemListener(item, option)
-        setSortFilterItemState(item, option)
-        return item
-    }
-
-    private fun setSortFilterItemListener(item: SortFilterItem, option: Option) {
-        item.listener = {
+        val item = SortFilterItem(title) {
             onQuickFilterSelected(option)
         }
+        setSortFilterItemState(item, option)
+        return item
     }
 
     private fun setSortFilterItemState(item: SortFilterItem, option: Option) {
@@ -702,9 +716,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private fun openBottomSheetFilterRevamp(){
         activity?.supportFragmentManager?.let{
             CatalogDetailAnalytics.sendEvent(
-            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-            CatalogDetailAnalytics.ActionKeys.CLICK_DYNAMIC_FILTER,
+                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                    CatalogDetailAnalytics.ActionKeys.CLICK_DYNAMIC_FILTER,
                     "$catalogId - ${CatalogUtil.getSortFilterAnalytics(viewModel.searchParametersMap.value)}",
                     userSession.userId)
             sortFilterBottomSheet?.show(
@@ -717,17 +731,23 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     }
 
     private fun setDynamicFilter(dynamicFilterModel: DynamicFilterModel){
-        filterController?.appendFilterList(searchParameter.getSearchParameterHashMap(), dynamicFilterModel.data.filter)
+        viewModel.filterController?.appendFilterList(viewModel.searchParameter.getSearchParameterHashMap()
+                , dynamicFilterModel.data.filter)
         sortFilterBottomSheet?.setDynamicFilterModel(dynamicFilterModel)
-        renderDynamicFilter(dynamicFilterModel.data)
     }
 
     override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
-        filterController?.refreshMapParameter(applySortFilterModel.mapParameter)
-        searchParameter.getSearchParameterHashMap().clear()
-        searchParameter.getSearchParameterHashMap().putAll(applySortFilterModel.mapParameter)
-        viewModel.searchParametersMap.value = searchParameter.getSearchParameterHashMap()
+        applySort(applySortFilterModel)
+        viewModel.filterController?.refreshMapParameter(applySortFilterModel.mapParameter)
+        viewModel.searchParameter.getSearchParameterHashMap().clear()
+        viewModel.searchParameter.getSearchParameterHashMap().putAll(applySortFilterModel.mapParameter)
+        viewModel.searchParametersMap.value = viewModel.searchParameter.getSearchParameterHashMap()
         reloadData()
+    }
+
+    private fun applySort(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+        if (applySortFilterModel.selectedSortName.isEmpty()
+                || applySortFilterModel.selectedSortMapParameter.isEmpty()) return
     }
 
     override fun getResultCount(mapParameter: Map<String, String>) {

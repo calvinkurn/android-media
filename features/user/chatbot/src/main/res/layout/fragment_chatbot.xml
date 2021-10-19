@@ -187,6 +187,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/chatbot_ticker"
         android:layout_above="@+id/footer"
+        android:layout_marginBottom="@dimen/unify_space_8"
         android:layout_gravity="center">
 
         <androidx.recyclerview.widget.RecyclerView
