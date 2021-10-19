@@ -70,16 +70,6 @@ class MenuSettingAdapter(private val context: Context?,
             DividerUiModel(DividerType.THIN_INDENTED)
     )
 
-    private fun getFeedbackTag(): String {
-        val expiredDateMillis = FEEDBACK_EXPIRED_DATE
-        val todayMillis = Date().time
-        return if (todayMillis < expiredDateMillis) {
-            context?.getString(R.string.setting_new_tag).orEmpty()
-        } else {
-            SellerHomeConst.EMPTY_STRING
-        }
-    }
-
     fun populateInitialMenus(isShopOwner: Boolean) {
         val menuList = mutableListOf<SettingUiModel>()
         if (isShopOwner) {
@@ -173,6 +163,16 @@ class MenuSettingAdapter(private val context: Context?,
             }
         } else {
             listener.onNoAccess()
+        }
+    }
+
+    private fun getFeedbackTag(): String {
+        val expiredDateMillis = FEEDBACK_EXPIRED_DATE
+        val todayMillis = Date().time
+        return if (todayMillis < expiredDateMillis) {
+            context?.getString(R.string.setting_new_tag).orEmpty()
+        } else {
+            SellerHomeConst.EMPTY_STRING
         }
     }
 
