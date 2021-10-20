@@ -70,7 +70,7 @@
                 app:layout_constraintTop_toTopOf="@+id/featured_shop_background"
                 app:layout_constraintVertical_chainStyle="spread"
                 app:typographyType="heading_3"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 tools:text="Gratis Ongkir"
                 tools:visibility="visible" />
 
@@ -91,7 +91,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/banner_title"
                 app:layout_constraintVertical_bias="0.0"
                 app:typographyType="body_3"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 tools:text="untuk pembelian pertama adjoandowand owado ndsn udwnd dnwacnnncuid!"
                 tools:visibility="visible" />
 

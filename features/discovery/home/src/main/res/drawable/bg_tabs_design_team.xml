@@ -11,7 +11,7 @@
             <stroke
                 android:width="@dimen/dp_1"
                 android:color="@color/Unify_NN300" />
-            <solid android:color="@color/tabsunify_background" />
+            <solid android:color="@color/Unify_NN0" />
         </shape>
     </item>
 
