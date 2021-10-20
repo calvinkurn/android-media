@@ -996,7 +996,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         unRegisterNewFeedReceiver()
         analytics.sendPendingAnalytics()
         feedAnalytics.sendPendingAnalytics()
-        resetImagePostWhenFragmentNotVisible()
     }
 
     private fun resetImagePostWhenFragmentNotVisible(){

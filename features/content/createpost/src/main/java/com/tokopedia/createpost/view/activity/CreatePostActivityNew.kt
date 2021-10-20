@@ -210,10 +210,10 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     override fun onBackPressed() {
         KeyboardHandler.hideSoftKeyboard(this)
 
-        if (intent.extras?.get(PARAM_TYPE) == TYPE_CONTENT_PREVIEW_PAGE && isEditState) {
+        if (intent.extras?.get(PARAM_TYPE) == TYPE_CONTENT_PREVIEW_PAGE && (intent.extras?.get(CreatePostViewModel.TAG) as CreatePostViewModel).isEditState) {
             createPostAnalytics.eventClickBackOnPreviewPage()
             finish()
-        }else if (intent.extras?.get(PARAM_TYPE) == TYPE_CONTENT_TAGGING_PAGE && isOpenedFromPreview){
+        } else if (intent.extras?.get(PARAM_TYPE) == TYPE_CONTENT_TAGGING_PAGE && isOpenedFromPreview) {
             createPostAnalytics.eventClickBackOnProductTaggingPage()
             clickContinueOnTaggingPage()
             isOpenedFromPreview = false
