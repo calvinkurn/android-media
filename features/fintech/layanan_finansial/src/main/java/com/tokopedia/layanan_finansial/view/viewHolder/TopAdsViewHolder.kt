@@ -26,15 +26,23 @@ class TopAdsViewHolder(val view: View) : AbstractViewHolder<Visitable<*>>(view) 
     }
     private val recommendedText: Typography by lazy { itemView.findViewById(R.id.recommendedText) }
 
+
+    /**
+     * For topAds seller sousce is 20
+     */
+
     companion object {
         val LAYOUT: Int = R.layout.layout_topads_view
+        const val adsSource = "20"
+        const val addCount = 3
+        const val dimenId = 3
     }
 
 
     override fun bind(element: Visitable<*>?) {
         var element = element as TopAdsImageModel
         if (element.imageUrl?.isEmpty() == true) {
-            topAdsImageView.getImageData(source = "17", adsCount = 3, dimenId = 3)
+            topAdsImageView.getImageData(source = adsSource, adsCount = addCount, dimenId = dimenId)
         }
 
         topAdsImageView.setApiResponseListener(object : TopAdsImageVieWApiResponseListener {
@@ -76,4 +84,6 @@ class TopAdsViewHolder(val view: View) : AbstractViewHolder<Visitable<*>>(view) 
             RouteManager.route(it, appLink)
         }
     }
+
+
 }
