@@ -89,8 +89,14 @@ class CategoryGqlPageRepository(private val departmentName: String,
                     categoryDetail = component.properties.categoryDetail))
             if(component.data.isNotEmpty()) {
                 val dataItems = arrayListOf<DataItem>()
+                if(component.type=="tabs-horizontal-scroll") dataItems.add(DataItem(name = "Semua"))
                 component.data.forEachIndexed { index, dataItem ->
-                    dataItems.add(DataItem(title = if(dataItem.text!=null) dataItem.text else dataItem.name, id = dataItem.id.toString(), applinks = dataItem.applinks, positionForParentItem = index))
+                    dataItems.add(DataItem(title = if(dataItem.text!=null) dataItem.text else dataItem.name,
+                        id = dataItem.id.toString(),
+                        applinks = dataItem.applinks,
+                        positionForParentItem = index,
+                        targetComponentId = dataItem.targetComponentId,
+                        name = dataItem.categoryName))
                 }
                 componentsItem.data = dataItems
             }
