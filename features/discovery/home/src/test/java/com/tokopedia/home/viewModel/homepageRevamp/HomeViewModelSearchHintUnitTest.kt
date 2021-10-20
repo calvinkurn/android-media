@@ -3,6 +3,7 @@ package com.tokopedia.home.viewModel.homepageRevamp
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.home.beranda.data.model.KeywordSearchData
 import com.tokopedia.home.beranda.domain.interactor.GetKeywordSearchUseCase
+import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -46,6 +47,6 @@ class HomeViewModelSearchHintUnitTest {
         homeViewModel.getSearchHint(true)
 
         // Check data observer
-        assert(homeViewModel.searchHint.value == null)
+        assert(homeViewModel.searchHint.value != null)
     }
 }

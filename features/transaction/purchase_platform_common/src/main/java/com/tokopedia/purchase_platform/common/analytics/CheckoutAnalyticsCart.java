@@ -1323,4 +1323,26 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendGeneralEvent(gtmData);
     }
 
+    // Bundling
+
+    // TrackerId: 21780
+    public void eventClickUbahInProductBundlingPackageProductCard(String bundlingId, String bundlingType) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_UBAH_IN_PRODUCT_BUNDLING_PACKAGE_PRODUCT_CARD,
+                "bundling_id:" + bundlingId + "\nbundling_type:" + bundlingType
+        );
+    }
+
+    // TrackerId: 21781
+    public void eventClickMoreLikeThisOnBundleProduct(String bundlingId, String bundlingType) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_LIHAT_BARANG_SERUPA_FOR_UNAVAILABLE_BUNDLE_PACKAGE,
+                "bundling_id:" + bundlingId + "\nbundling_type:" + bundlingType
+        );
+    }
+
 }
