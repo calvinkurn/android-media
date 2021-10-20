@@ -13,10 +13,10 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.otp.silentverification.domain.model.RequestSilentVerificationResult
 import com.tokopedia.otp.silentverification.domain.model.ValidateSilentVerificationResult
-import com.tokopedia.otp.silentverification.domain.usecase.RequestSilentVerificationUseCase
+import com.tokopedia.otp.silentverification.domain.usecase.RequestOtpUseCase
 import com.tokopedia.otp.silentverification.domain.usecase.ValidateSilentVerificationUseCase
+import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -31,7 +31,7 @@ import javax.inject.Inject
  */
 
 class SilentVerificationViewModel @Inject constructor(
-    val requestSilentVerificationUseCase: RequestSilentVerificationUseCase,
+    val requestOtpUseCase: RequestOtpUseCase,
     val validateSilentVerificationUseCase: ValidateSilentVerificationUseCase,
     val getUserInfoUseCase: GetUserInfoUseCase,
     dispatcher: CoroutineDispatchers
@@ -41,8 +41,8 @@ class SilentVerificationViewModel @Inject constructor(
     val validationResponse: LiveData<Result<ValidateSilentVerificationResult>>
         get() = _validationResponse
 
-    private val _requestSilentVerificationResponse = MutableLiveData<Result<RequestSilentVerificationResult>>()
-    val requestSilentVerificationResponse: LiveData<Result<RequestSilentVerificationResult>>
+    private val _requestSilentVerificationResponse = MutableLiveData<Result<OtpRequestData>>()
+    val requestSilentVerificationResponse: LiveData<Result<OtpRequestData>>
         get() = _requestSilentVerificationResponse
 
     private val _bokuVerificationResponse = MutableLiveData<Result<String>>()
@@ -51,7 +51,7 @@ class SilentVerificationViewModel @Inject constructor(
 
     fun requestSilentVerification(phoneNo: String) {
         launchCatchError(block = {
-            val result = requestSilentVerificationUseCase(phoneNo)
+            val result = requestOtpUseCase(mapOf())
             _requestSilentVerificationResponse.value = Success(result.data)
         }, onError = {
             _requestSilentVerificationResponse.value = Fail(it)
