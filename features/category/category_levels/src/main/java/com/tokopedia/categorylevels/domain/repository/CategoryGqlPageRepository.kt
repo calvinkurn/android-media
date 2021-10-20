@@ -16,6 +16,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
                                 private val categoryUrl: String?) : BaseRepository(), DiscoveryPageRepository {
     companion object {
         const val IDENTIFIER = "identifier"
+        const val IS_LATEST_VERSION = "isLatestVersion"
         const val SEARCH_APPLINK = "tokopedia://search-autocomplete"
         const val ENCODING_UTF_8 = "UTF-8"
         const val BANNED = 1
@@ -31,6 +32,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
         componentMap["product-list-infinite-scroll"] = ComponentNames.ProductCardRevamp.componentName
         componentMap["static-text"] = ComponentNames.LihatSemua.componentName
         componentMap["headline-ads"] = ComponentNames.TopadsHeadlineView.componentName
+        componentMap["tabs-horizontal-scroll"] = ComponentNames.Tabs.componentName
     }
 
     override suspend fun getDiscoveryPageData(pageIdentifier: String): DiscoveryResponse {
@@ -81,7 +83,10 @@ class CategoryGqlPageRepository(private val departmentName: String,
                     pagePath = data.basicInfo.url,
                     showFilterCount = false,
                     renderByDefault = true,
-                    properties = Properties(targetId = component.targetId.toString()))
+                    properties = Properties(targetId = component.targetId.toString(),
+                    background = component.properties.background,
+                    dynamic = component.properties.dynamic,
+                    categoryDetail = component.properties.categoryDetail))
             if(component.data.isNotEmpty()) {
                 val dataItems = arrayListOf<DataItem>()
                 component.data.forEachIndexed { index, dataItem ->
@@ -97,6 +102,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
     private fun createRequestParameterCategory(categoryId: String): Map<String, Any> {
         val request = RequestParams.create()
         request.putString(IDENTIFIER, categoryId)
+        request.putBoolean(IS_LATEST_VERSION, true)
         return request.parameters
     }
 
