@@ -3,6 +3,8 @@ package com.tokopedia.feedcomponent.util.util
 import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.animation.ValueAnimator
+import android.content.Context
 import android.transition.AutoTransition
 import android.transition.Transition
 import android.transition.TransitionManager
@@ -155,6 +157,34 @@ fun showViewWithSlideAnimation(view: ViewGroup) {
             view,
             autoTransition
     )
+}
 
+fun showViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
+    val anim = ValueAnimator.ofInt(
+        layoutLihatProdukParent.measuredWidth,
+        convertDpToPixel(120F, context)
+    )
+    anim.addUpdateListener { valueAnimator ->
+        val vv = valueAnimator.animatedValue as Int
+        val layoutParams: ViewGroup.LayoutParams =
+            layoutLihatProdukParent.layoutParams
+        layoutParams.width = vv
+        layoutLihatProdukParent.layoutParams = layoutParams
+    }
+    anim.duration = 500L
+    anim.start()
+}
+
+fun hideViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
+    val anim = ValueAnimator.ofInt(convertDpToPixel(120F, context), convertDpToPixel(24F, context))
+    anim.addUpdateListener { valueAnimator ->
+        val vv = valueAnimator.animatedValue as Int
+        val layoutParams: ViewGroup.LayoutParams =
+            layoutLihatProdukParent.layoutParams
+        layoutParams.width = vv
+        layoutLihatProdukParent.layoutParams = layoutParams
+    }
+    anim.duration = 350
+    anim.start()
 }
 
