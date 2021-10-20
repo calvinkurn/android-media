@@ -139,7 +139,11 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         }
     }
 
-
+    /*
+    * @param: bundleToProductMap: stores map of bundleId to OrderedItems with same bundle Id
+    * to be rendered in view
+    * @param: bundleMap: to enable O(1) access of bundleData while looping item_list from bundle_group_id
+    * */
     private fun createShopsSummery(thanksPageData: ThanksPageData) {
         if (thanksPageData.shopOrder.isNotEmpty())
             visitableList.add(PurchasedProductTag())
@@ -153,31 +157,30 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
             val orderedItemList = arrayListOf<OrderedItem>()
             var totalProductProtectionForShop = 0.0
 
+            // Map population
             bundleMap = shopOrder.bundleGroupList.associateBy({it.groupId}, {it}).toMutableMap()
 
+            // Map population
             shopOrder.purchaseItemList.forEach { purchasedItem ->
                 val bundleGroupId = purchasedItem.bundleGroupId
                 if (bundleGroupId.isNotEmpty()) {
                     if (bundleToProductMap.containsKey(bundleGroupId))
-                        bundleToProductMap[bundleGroupId]?.add(createOrderItem(purchasedItem))
-                     else bundleToProductMap[bundleGroupId] = arrayListOf(createOrderItem(purchasedItem))
+                        bundleToProductMap[bundleGroupId]?.add(createOrderItemFromPurchase(purchasedItem))
+                     else bundleToProductMap[bundleGroupId] = arrayListOf(createOrderItemFromPurchase(purchasedItem))
                 }
             }
 
             shopOrder.purchaseItemList.forEach { purchasedItem ->
                 val bundleGroupId = purchasedItem.bundleGroupId
+                // Normal Product
                 if (bundleGroupId.isEmpty())
-                    orderedItemList.add(createOrderItem(purchasedItem, OrderItemType.SINGLE_PRODUCT))
+                    orderedItemList.add(createOrderItemFromPurchase(purchasedItem, OrderItemType.SINGLE_PRODUCT))
                 else {
                     if (bundleToProductMap.containsKey(bundleGroupId)) {
                         // add bundle data name
-                        orderedItemList.add(OrderedItem(
-                            bundleMap[bundleGroupId]?.bundleTitle ?: "",
-                            null,
-                            bundleMap[bundleGroupId]?.totalPrice?.toString() ?: "",
-                            bundleMap[bundleGroupId]?.totalPriceStr ?: "",
-                            false, OrderItemType.BUNDLE)
-                        )
+                        // add product data having same bundle Id
+                        // prevent same products from re-calculation in the current loop
+                        orderedItemList.add(createOrderItemFromBundle(bundleMap[bundleGroupId]))
                         orderedItemList.addAll(bundleToProductMap[bundleGroupId]?: arrayListOf())
                         bundleToProductMap.remove(bundleGroupId)
                     }
@@ -225,8 +228,15 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         }
     }
 
-    private fun createOrderItem(purchasedItem: PurchaseItem, orderItemType: OrderItemType = OrderItemType.BUNDLE_PRODUCT) = OrderedItem(purchasedItem.productName, purchasedItem.quantity,
+    private fun createOrderItemFromPurchase(purchasedItem: PurchaseItem, orderItemType: OrderItemType = OrderItemType.BUNDLE_PRODUCT) = OrderedItem(purchasedItem.productName, purchasedItem.quantity,
         purchasedItem.priceStr, purchasedItem.totalPriceStr, purchasedItem.isBBIProduct, orderItemType)
+
+    private fun createOrderItemFromBundle(bundleGroupItem: BundleGroupItem?) = OrderedItem(
+        bundleGroupItem?.bundleTitle ?: "",
+        null,
+        bundleGroupItem?.totalPrice.toString(),
+        bundleGroupItem?.totalPriceStr ?: "",
+        false, OrderItemType.BUNDLE)
 
 }
 

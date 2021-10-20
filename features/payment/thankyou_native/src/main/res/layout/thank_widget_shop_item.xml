@@ -14,7 +14,6 @@
         app:layout_constraintTop_toTopOf="@+id/tvInvoiceShopItemName"
         app:layout_constraintBottom_toBottomOf="@+id/tvInvoiceShopItemName"
         android:visibility="gone"
-        tools:visibility="visible"
         android:layout_marginEnd="@dimen/unify_space_8"
         app:srcCompat="@drawable/thank_product_bundling_icon"/>
 

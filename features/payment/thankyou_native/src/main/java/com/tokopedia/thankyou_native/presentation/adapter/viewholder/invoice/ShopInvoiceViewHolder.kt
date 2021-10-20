@@ -144,11 +144,18 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
         val shopItemView = inflater.inflate(R.layout.thank_widget_shop_item, null, false)
         val titleView = shopItemView.findViewById<Typography>(R.id.tvInvoiceShopItemName)
         titleView.text = orderedItem.itemName
-
         shopItemView.findViewById<TextView>(R.id.tvInvoiceShopItemNameTotalPrice).text = getString(R.string.thankyou_rp_without_space, orderedItem.itemTotalPriceStr)
 
         when(orderedItem.orderItemType) {
-            OrderItemType.BUNDLE_PRODUCT -> titleView.weightType = Typography.REGULAR
+            OrderItemType.BUNDLE_PRODUCT -> {
+                titleView.setWeight(Typography.REGULAR)
+                shopItemView.findViewById<TextView>(R.id.tvInvoiceShopItemNameCountPrice)
+                    .text = itemView.context.getString(
+                    R.string.thank_invoice_item_count_price,
+                    orderedItem.itemCount,
+                    orderedItem.itemPrice
+                )
+            }
 
             OrderItemType.BUNDLE -> {
                 titleView.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
