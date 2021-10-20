@@ -29,7 +29,6 @@ object AmplificationDataSource {
 
     @JvmStatic
     fun invoke(application: Application) {
-        Log.d("AmplificationDataSource", "Start amp: $isRunning")
         if(isRunning)
             return
         isRunning = true
