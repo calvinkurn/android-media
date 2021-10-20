@@ -21,6 +21,8 @@ class CategoryGqlPageRepository(private val departmentName: String,
         const val ENCODING_UTF_8 = "UTF-8"
         const val BANNED = 1
         const val INDEX_ONE = "1"
+        const val TABS_HORIZONTAL_SCROLL="tabs-horizontal-scroll"
+        const val SEMUA="Semua"
     }
 
     val componentMap = mutableMapOf<String, String>()
@@ -86,10 +88,10 @@ class CategoryGqlPageRepository(private val departmentName: String,
                     properties = Properties(targetId = component.targetId.toString(),
                     background = component.properties.background,
                     dynamic = component.properties.dynamic,
-                    categoryDetail = component.properties.categoryDetail))
+                    categoryDetail = true)) //todo
             if(component.data.isNotEmpty()) {
                 val dataItems = arrayListOf<DataItem>()
-                if(component.type=="tabs-horizontal-scroll") dataItems.add(DataItem(name = "Semua"))
+                if(component.type== TABS_HORIZONTAL_SCROLL) dataItems.add(DataItem(name = SEMUA))
                 component.data.forEachIndexed { index, dataItem ->
                     dataItems.add(DataItem(title = if(dataItem.text!=null) dataItem.text else dataItem.name,
                         id = dataItem.id.toString(),
