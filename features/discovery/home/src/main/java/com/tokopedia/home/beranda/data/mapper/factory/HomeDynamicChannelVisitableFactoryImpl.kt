@@ -315,7 +315,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
     private fun createBusinessUnitWidget(channel: DynamicHomeChannel.Channels, position: Int) {
         if (!isCache) {
             visitableList.add(NewBusinessUnitWidgetDataModel(
-                channel = channel,
                 isCache = false,
                 channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, position))
             )

@@ -9,7 +9,6 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class NewBusinessUnitWidgetDataModel(
-    val channel : DynamicHomeChannel.Channels = DynamicHomeChannel.Channels(),
     private val isCache: Boolean = false,
     val backColor: String = "",
     val tabList: List<HomeWidget.TabItem>? = null,

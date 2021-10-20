@@ -26,6 +26,7 @@ import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.*
+import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ContainerUnify
@@ -91,7 +92,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
     }
 
     override fun bind(element: NewBusinessUnitWidgetDataModel?) {
-        setChannelDivider(element?.channel)
+        setChannelDivider(element)
         setHeaderComponent(element)
         adapterBusinessWidget.setPositionWidgetOnHome(adapterPosition)
         performanceMonitoring?.startTrace(performanceTraceName)
@@ -162,9 +163,9 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
         }
     }
 
-    private fun setChannelDivider(element: DynamicHomeChannel.Channels?) {
-        HomeChannelWidgetUtil.validateHomeComponentDivider(
-            channelModel = element,
+    private fun setChannelDivider(element: NewBusinessUnitWidgetDataModel?) {
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element?.channelModel,
             dividerTop = dividerTop,
             dividerBottom = dividerBottom
         )
