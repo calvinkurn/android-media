@@ -64,8 +64,7 @@ fun View.setGradientBackground(colorArray: ArrayList<String>) {
 
 //function check is gradient all white, if empty default color is white
 fun getGradientBackgroundViewAllWhite(colorArray: ArrayList<String>, context: Context) : Boolean {
-    val idColorWhite = 0 + R.color.Unify_N0
-    val colorWhite = context.resources.getString(idColorWhite)
+    val colorWhite = getHexColorFromIdColor(context, R.color.Unify_Static_White)
     if (colorArray.isNotEmpty()) {
         if (colorArray.size > 1) {
             val colorArrayNotWhite = colorArray.filter { it != colorWhite }
