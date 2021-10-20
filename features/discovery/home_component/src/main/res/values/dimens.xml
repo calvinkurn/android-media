@@ -11,7 +11,6 @@
     <dimen name="home_banner_mix_margin_start">4dp</dimen>
     <dimen name="home_component_margin_default">16dp</dimen>
     <dimen name="home_margin_12_dp_product_card">7.9dp</dimen>
-    <dimen name="home_margin_16_dp_product_card">9.6dp</dimen>
     <dimen name="home_padding_vertical_use_compat_padding_product_card">-5.0dp</dimen>
 
     <dimen name="component_featured_brand_image_size">80dp</dimen>
