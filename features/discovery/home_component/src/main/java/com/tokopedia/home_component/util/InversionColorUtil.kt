@@ -28,7 +28,12 @@ private fun getContrastColor(@ColorInt color: Int): Int {
  *
  */
 fun getHexColorFromIdColor(context: Context, idColor: Int) : String {
-    val formatHexColor = "#%06x"
-    val colorWhite = 0xffffff
-    return String.format(formatHexColor, ContextCompat.getColor(context, idColor) and colorWhite).uppercase()
+    return try {
+        val formatHexColor = "#%06x"
+        val colorWhite = 0xffffff
+        String.format(formatHexColor, ContextCompat.getColor(context, idColor) and colorWhite).uppercase()
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ""
+    }
 }
