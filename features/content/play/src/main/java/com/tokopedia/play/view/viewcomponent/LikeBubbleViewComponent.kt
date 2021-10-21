@@ -85,7 +85,8 @@ class LikeBubbleViewComponent(
             shotPerBatch = SHOT_PER_BATCH,
             delayInMs = SPAMMING_LIKE_DELAY,
             reduceOpacity = reduceOpacity,
-            bubbleList = loadBubblesFromConfig(config)
+            bubbleList = loadBubblesFromConfig(config),
+            forceShow = !reduceOpacity,
         )
     }
 
@@ -98,7 +99,8 @@ class LikeBubbleViewComponent(
             likeAmount = amount,
             shotPerBatch = SHOT_PER_BATCH,
             reduceOpacity = reduceOpacity,
-            bubbleList = loadBubblesFromConfig(config)
+            bubbleList = loadBubblesFromConfig(config),
+            forceShow = !reduceOpacity,
         )
     }
 

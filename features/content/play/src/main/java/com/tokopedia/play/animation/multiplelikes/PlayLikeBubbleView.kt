@@ -30,9 +30,10 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
 
     private val view: View = View.inflate(context, R.layout.layout_play_spam_like, this)
 
-    private val prepareImageFlow = MutableSharedFlow<Pair<List<PlayLikeBubbleUiModel>, Boolean>>(
-        extraBufferCapacity = 500
-    )
+    private val prepareImageFlow = MutableSharedFlow<Triple<
+        List<PlayLikeBubbleUiModel>,
+        Boolean,
+        Boolean>>(extraBufferCapacity = 500)
     private val imageViewHolderList = ConcurrentLinkedQueue<ImageViewHolder>()
     private val animationList = ConcurrentLinkedQueue<Animator>()
 
@@ -55,8 +56,11 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
         type.recycle()
 
         scope.launch(prepareJob) {
-            prepareImageFlow.collect { (bubbleList, reduceOpacity) ->
-                if (imageViewHolderList.filter { it.isOccupied }.size > MAX_BUBBLE) return@collect
+            prepareImageFlow.collect { (bubbleList, reduceOpacity, forceShow) ->
+                if (
+                    !forceShow &&
+                    imageViewHolderList.filter { it.isOccupied }.size > MAX_BUBBLE
+                ) return@collect
                 prepareImage(bubbleList, reduceOpacity)
             }
         }
@@ -76,13 +80,14 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
         delayInMs: Long = 0L,
         reduceOpacity: Boolean = false,
         bubbleList: List<PlayLikeBubbleUiModel> = emptyList(),
+        forceShow: Boolean = false,
     ) {
         scope.launch(Dispatchers.Default) {
             for(i in 1..likeAmount) {
                 if (delayInMs > 0) delay(delayInMs)
                 for(j in 1..shotPerBatch) {
                     delay(DEFAULT_DELAY)
-                    shotInternal(reduceOpacity, bubbleList)
+                    shotInternal(reduceOpacity, bubbleList, forceShow)
                 }
             }
         }
@@ -101,12 +106,13 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
      */
     private suspend fun shotInternal(
         reduceOpacity: Boolean,
-        bubbleList: List<PlayLikeBubbleUiModel>
+        bubbleList: List<PlayLikeBubbleUiModel>,
+        forceShow: Boolean,
     ) = withContext(Dispatchers.Default) {
         if(bubbleList.isEmpty() || parentView == null
         ) return@withContext
 
-        prepareImageFlow.tryEmit(bubbleList to reduceOpacity)
+        prepareImageFlow.tryEmit(Triple(bubbleList, reduceOpacity, forceShow))
     }
 
     private fun getImageCoordinate(): Pair<Float, Float> {
