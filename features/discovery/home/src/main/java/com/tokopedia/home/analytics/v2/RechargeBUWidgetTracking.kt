@@ -16,8 +16,17 @@ object RechargeBUWidgetTracking : BaseTracking() {
     private const val RECHARGE_BU_WIDGET_BANNER = "banner"
     private const val RECHARGE_BU_WIDGET_BANNER_CARD = "banner card"
     private const val RECHARGE_BU_WIDGET_PRODUCT_CARD = "product card"
-    private const val RECHARGE_BU_WIDGET_ITEM_LIST_KEY = "item_list"
-    private const val RECHARGE_BU_WIDGET_ITEMS_KEY = "items"
+    private const val KEY_PRODUCT_NAME = "name"
+    private const val KEY_PRODUCT_ID = "id"
+    private const val KEY_PRODUCT_PRICE = "price"
+    private const val KEY_PRODUCT_BRAND = "brand"
+    private const val KEY_PRODUCT_CATEGORY = "category"
+    private const val KEY_PRODUCT_VARIANT = "variant"
+    private const val KEY_PRODUCT_INDEX = "index"
+    private const val KEY_PRODUCTS = "products"
+    private const val KEY_PRODUCT_LIST = "list"
+    private const val KEY_CURRENCY_CODE = "currencyCode"
+    private const val IDR_CURRENCY = "IDR"
 
     fun homeRechargeBUWidgetImpressionTracker(
             trackingQueue: TrackingQueue,
@@ -39,17 +48,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
                 Label.KEY,eventLabel,
                 BusinessUnit.KEY,RECHARGE_BU_WIDGET_BUSINESS_UNIT,
                 CurrentSite.KEY, RECHARGE_BU_WIDGET_CURRENT_SITE,
-                RECHARGE_BU_WIDGET_ITEMS_KEY, DataLayer.listOf(
-                    DataLayer.mapOf(
-                        "index" ,  (position + 1).toString(),
-                        "item_brand" , item.trackingData.operatorId,
-                        "item_category" , item.trackingData.categoryId,
-                        "item_id" , item.id,
-                        "item_name" ,  "/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${getHeaderName(data.channel)}",
-                        "item_variant" , item.trackingData.itemType,
-                        "price" ,  item.label2
-                    )
-                ),
+                Ecommerce.KEY, getProductView(data, position),
                 UserId.KEY, userId
             )
             trackingQueue.putEETracking(tracker as java.util.HashMap<String, Any>?)
@@ -75,23 +74,44 @@ object RechargeBUWidgetTracking : BaseTracking() {
                 Label.KEY , eventLabel,
                 BusinessUnit.KEY , RECHARGE_BU_WIDGET_BUSINESS_UNIT,
                 CurrentSite.KEY , RECHARGE_BU_WIDGET_CURRENT_SITE,
-                RECHARGE_BU_WIDGET_ITEM_LIST_KEY , item.trackingData.itemType,
-                RECHARGE_BU_WIDGET_ITEMS_KEY , DataLayer.listOf(
-                    DataLayer.mapOf(
-                        "index", (position + 1).toString(),
-                        "item_brand",  item.trackingData.operatorId,
-                        "item_category", item.trackingData.categoryId,
-                        "item_id", item.id,
-                        "item_name", "/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${getHeaderName(data.channel)}",
-                        "item_variant", item.trackingData.itemType,
-                        "price", item.label2
-                    )
-                ),
+                Ecommerce.KEY , getProductClick(data, position),
                 UserId.KEY , userId
             )
             trackingQueue.putEETracking(bundle as java.util.HashMap<String, Any>?)
         }
     }
+
+    private fun getProductClick(data: RechargeBUWidgetDataModel, position: Int) : Map<String, Any> {
+        return mapOf(
+            Event.CLICK to mapOf(
+                KEY_PRODUCT_LIST to data.data.items[position].trackingData.itemType,
+                KEY_PRODUCTS to listOf(
+                    getProductData(data, position)
+                )
+            )
+        )
+    }
+
+    private fun getProductView(data: RechargeBUWidgetDataModel, position: Int) : Map<String, Any>{
+        return mapOf(
+            KEY_CURRENCY_CODE to IDR_CURRENCY,
+            Event.IMPRESSION to listOf(getProductData(data, position))
+        )
+    }
+
+    private fun getProductData(data: RechargeBUWidgetDataModel, position: Int): Map<String, Any>{
+        val persoType = data.channel.trackingAttributionModel.persoType.toIntOrZero()
+        return mapOf(
+            KEY_PRODUCT_INDEX to position.toString(),
+            KEY_PRODUCT_BRAND to data.data.items[position].trackingData.operatorId,
+            KEY_PRODUCT_CATEGORY to data.data.items[position].trackingData.categoryId,
+            KEY_PRODUCT_ID to "${data.channel.id}_0_0_$persoType",
+            KEY_PRODUCT_NAME to "/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${getHeaderName(data.channel)}",
+            KEY_PRODUCT_VARIANT to data.data.items[position].trackingData.itemType,
+            KEY_PRODUCT_PRICE to data.data.items[position].label2
+        )
+    }
+
 
     fun homeRechargeBUWidgetViewAllButtonClickTracker(
             data: RechargeBUWidgetDataModel,
