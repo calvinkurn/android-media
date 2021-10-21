@@ -2234,10 +2234,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun sendSrwQuestion(question: QuestionUiModel) {
+        val referredMsg = replyCompose?.referredMsg
         onSendAndReceiveMessage()
         addSrwBubbleToChat()
         onSendingMessage(false).invoke()
-        presenter.sendAttachmentsAndSrw(question)
+        replyBubbleOnBoarding.dismiss()
+        presenter.sendAttachmentsAndSrw(question, referredMsg)
     }
 
     private fun sendSrwQuestion(attachment: HeaderCtaButtonAttachment) {
