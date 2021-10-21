@@ -1,6 +1,5 @@
 package com.tokopedia.statistic.view.viewhelper
 
-import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 
 /**

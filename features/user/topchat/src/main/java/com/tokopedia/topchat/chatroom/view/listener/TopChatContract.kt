@@ -100,14 +100,6 @@ interface TopChatContract {
             onSuccessGetExistingMessage: (ChatroomViewModel, ChatReplies) -> Unit
         )
 
-        fun getMessageId(
-            toUserId: String,
-            toShopId: String,
-            source: String,
-            onError: (Throwable) -> Unit,
-            onSuccessGetMessageId: (String) -> Unit
-        )
-
         fun readMessage()
 
         fun startCompressImages(it: ImageUploadViewModel)

@@ -23,7 +23,7 @@ class AffiliateShareItemViewHolder(itemView: View, private val shareButtonInterf
     }
 
     override fun bind(element: AffiliateShareModel?) {
-        val iconCopyGreen = getIconUnifyDrawable(itemView.context, IconUnify.COPY, MethodChecker.getColor(itemView.context, R.color.Unify_GN500))
+        val iconCopyGreen = getIconUnifyDrawable(itemView.context, IconUnify.COPY, MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
         itemView.share_button.run {
             setDrawable(iconCopyGreen)
             isLoading = element?.buttonLoad == true
