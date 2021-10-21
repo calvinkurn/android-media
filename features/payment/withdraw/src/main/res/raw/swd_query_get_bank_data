@@ -22,6 +22,8 @@ query {
             have_rp_program
             have_special_offer
             default_bank_account
+            warning_message
+            warning_color
         }
     }
 }

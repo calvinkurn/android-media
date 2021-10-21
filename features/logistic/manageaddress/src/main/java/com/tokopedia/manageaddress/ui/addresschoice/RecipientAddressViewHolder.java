@@ -11,6 +11,7 @@ import com.tokopedia.manageaddress.R;
 import com.tokopedia.manageaddress.ui.addresschoice.recyclerview.ShipmentAddressListAdapter;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.unifycomponents.Label;
+import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifyprinciples.Typography;
 
 /**
@@ -29,9 +30,9 @@ public class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
     private Typography mTvRecipientPhone;
     private View mViewAddress;
 
-    private TextView mTvChangeAddress;
+    private Typography mTvChangeAddress;
     private RadioButton mRbCheckAddress;
-    private TextView mButtonAddAddress;
+    private UnifyButton mButtonAddAddress;
 
     private ShipmentAddressListAdapter.ActionListener mListener;
 

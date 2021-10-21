@@ -38,7 +38,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="@dimen/dp_15"
-        android:background="@color/clr_E5E7E9"
+        android:background="@color/Unify_N75"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
