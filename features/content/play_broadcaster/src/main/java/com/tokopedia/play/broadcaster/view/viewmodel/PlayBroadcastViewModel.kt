@@ -34,6 +34,7 @@ import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
 import com.tokopedia.play.broadcaster.ui.state.PlayChannelUiState
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherException
+import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.util.state.PlayLiveChannelStateListener
@@ -92,6 +93,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
     private val channelInteractiveMapper: PlayChannelInteractiveMapper,
     private val interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper,
     private val repo: PlayBroadcastRepository,
+    private val logger: PlayLogger
 ) : ViewModel() {
 
     val isFirstStreaming: Boolean
@@ -260,6 +262,12 @@ internal class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
+    private val livePusherStatusListener = object : PlayLivePusherMediatorListener {
+        override fun onLivePusherStateChanged(state: PlayLivePusherMediatorState) {
+            logger.logPusherStatus(state)
+        }
+    }
+
     private var isLiveStarted: Boolean = false
 
     private var socketJob: Job? = null
@@ -270,15 +278,13 @@ internal class PlayBroadcastViewModel @Inject constructor(
         livePusherMediator.addListener(liveChannelStateListener)
         livePusherMediator.addListener(liveCountDownTimerStateListener)
         if (GlobalConfig.DEBUG) livePusherMediator.addListener(livePusherStatsListener)
+        livePusherMediator.addListener(livePusherStatusListener)
     }
 
     override fun onCleared() {
         super.onCleared()
         viewModelScope.cancel()
-        livePusherMediator.removeListener(liveViewStateListener)
-        livePusherMediator.removeListener(liveChannelStateListener)
-        livePusherMediator.removeListener(liveCountDownTimerStateListener)
-        if (GlobalConfig.DEBUG) livePusherMediator.removeListener(livePusherStatsListener)
+        livePusherMediator.clearListener()
         livePusherMediator.destroy()
     }
 
@@ -376,6 +382,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
             val channelInfo = playBroadcastMapper.mapChannelInfo(channel)
             _observableChannelInfo.value = NetworkResult.Success(channelInfo)
+
+            logger.logChannelStatus(channelInfo.status)
 
             setChannelId(channelInfo.channelId)
             setChannelTitle(channelInfo.title)
@@ -493,6 +501,12 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
     fun setChannelId(channelId: String) {
         hydraConfigStore.setChannelId(channelId)
+    }
+
+    fun sendLogs() {
+        try {
+            logger.sendAll(channelId)
+        } catch (ignored: IllegalStateException) { }
     }
 
     private fun sendLivePusherState(state: PlayLiveViewState) {
@@ -708,13 +722,17 @@ internal class PlayBroadcastViewModel @Inject constructor(
             is NewMetricList -> queueNewMetrics(playBroadcastMapper.mapNewMetricList(result))
             is TotalView -> _observableTotalView.value = playBroadcastMapper.mapTotalView(result)
             is TotalLike -> _observableTotalLike.value = playBroadcastMapper.mapTotalLike(result)
-            is LiveDuration -> restartLiveDuration(result)
+            is LiveDuration -> {
+                if (result.remaining <= 0) logger.logSocketStatus(result)
+                restartLiveDuration(result)
+            }
             is ProductTagging -> setSelectedProduct(playBroadcastMapper.mapProductTag(result))
             is Chat -> retrieveNewChat(playBroadcastMapper.mapIncomingChat(result))
             is Freeze -> {
                 if (_observableLiveCountDownTimerState.value !is PlayLiveCountDownTimerState.Finish) {
                     val eventUiModel = playBroadcastMapper.mapFreezeEvent(result, _observableEvent.value)
                     if (eventUiModel.freeze) {
+                        logger.logSocketStatus(result)
                         stopLiveStream()
                         _observableEvent.value = eventUiModel
                     }
@@ -724,6 +742,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
                 if (_observableLiveCountDownTimerState.value !is PlayLiveCountDownTimerState.Finish) {
                     val eventUiModel = playBroadcastMapper.mapBannedEvent(result, _observableEvent.value)
                     if (eventUiModel.banned) {
+                        logger.logSocketStatus(result)
                         stopLiveStream()
                         _observableEvent.value = eventUiModel
                     }

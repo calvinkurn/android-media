@@ -193,6 +193,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         viewTimer.requestApplyInsetsWhenAttached()
     }
 
+    override fun onPause() {
+        super.onPause()
+        parentViewModel.sendLogs()
+    }
+
     override fun getViewContainer(): FragmentViewContainer = fragmentViewContainer
 
     private fun setupView() {
