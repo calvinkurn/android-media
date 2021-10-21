@@ -259,7 +259,6 @@ ext {
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
             profileCompletion               : ":features:user:profilecompletion",
-            profileCommon                   : ":features:user:profilecommon",
             seamlessLoginCommon             : ":features:user:seamless_login_common",
             sessioncommon                   : ":features:user:sessioncommon",
             settingbank                     : ":features:user:settingbank",
