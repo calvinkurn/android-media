@@ -65,6 +65,7 @@ class BuyerOrderExtensionFragment : BaseDaggerFragment() {
         setDataFromArguments()
 //        observeRespondInfo()
 //        loadRespondInfo()
+        binding?.loaderBuyerOrderExtension?.show()
         showSubmissionOrderExtension(OrderExtensionRespondInfoUiModel(messageCode = 1))
 //        showOrderHasBeenDialog()
     }
@@ -136,6 +137,7 @@ class BuyerOrderExtensionFragment : BaseDaggerFragment() {
         bottomSheet.setOnDismissListener {
             (activity as? BuyerOrderExtensionActivity)?.setResultFinish()
         }
+        binding?.loaderBuyerOrderExtension?.hide()
         bottomSheet.show(childFragmentManager)
     }
 
