@@ -18,18 +18,31 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/settingMenuTitle"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:gravity="center_vertical"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/settingMenuCounterIcon"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@id/iconEmptySpace"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
-        tools:text="Setting gan setting gan setting gan setting gan setting gan setting gan" />
+        tools:text="Setting gan setting gan" />
+
+    <com.tokopedia.unifycomponents.NotificationUnify
+        android:id="@+id/settingMenuTag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/settingMenuTitle"
+        app:layout_constraintEnd_toStartOf="@+id/settingMenuCounterIcon"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/settingMenuTitle"
+        app:layout_constraintTop_toTopOf="@+id/settingMenuTitle"
+        tools:text="baru" />
 
     <com.tokopedia.unifycomponents.NotificationUnify
         android:id="@+id/settingMenuCounterIcon"
