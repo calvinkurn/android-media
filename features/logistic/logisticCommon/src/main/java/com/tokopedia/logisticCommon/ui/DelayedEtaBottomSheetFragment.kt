@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.logisticCommon.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -35,7 +36,7 @@ class DelayedEtaBottomSheetFragment : BottomSheetUnify() {
             setChild(this)
             bindView(this)
         }
-        if (description.isNotEmpty()) tvDescription?.text = description
+        if (description.isNotEmpty()) tvDescription?.text = MethodChecker.fromHtml(description)
         setViewListener()
     }
 
