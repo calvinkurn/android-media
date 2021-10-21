@@ -3552,7 +3552,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun onSuccessToggleNotifyMe(data: NotifyMeUiData) {
         viewModel.clearCacheP2Data()
-        view?.showToasterSuccess(data.successMessage)
+        view?.showToasterSuccess(data.successMessage, ctaText = getString(R.string.oke), ctaListener = {
+
+        })
     }
 
     private fun onFailNotifyMe(t: Throwable) {
