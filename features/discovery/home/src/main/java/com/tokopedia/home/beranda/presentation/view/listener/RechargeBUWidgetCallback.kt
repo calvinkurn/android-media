@@ -11,9 +11,9 @@ import com.tokopedia.recharge_component.model.WidgetSource
 class RechargeBUWidgetCallback (val context: Context?,
                                 val homeCategoryListener: HomeCategoryListener): RechargeBUWidgetListener {
 
-    override fun onRechargeBUWidgetImpression(data: RechargeBUWidgetDataModel, position: Int) {
+    override fun onRechargeBUWidgetImpression(data: RechargeBUWidgetDataModel) {
         homeCategoryListener.getTrackingQueueObj()?.let { trackingQueue ->
-            RechargeBUWidgetTracking.homeRechargeBUWidgetImpressionTracker(trackingQueue, data, position - 1, homeCategoryListener.userId)
+            RechargeBUWidgetTracking.homeRechargeBUWidgetImpressionTracker(trackingQueue, data, homeCategoryListener.userId)
         }
     }
 

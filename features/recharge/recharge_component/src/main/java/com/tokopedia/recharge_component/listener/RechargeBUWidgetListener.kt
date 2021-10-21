@@ -4,7 +4,7 @@ import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.model.WidgetSource
 
 interface RechargeBUWidgetListener {
-    fun onRechargeBUWidgetImpression(data: RechargeBUWidgetDataModel,position: Int)
+    fun onRechargeBUWidgetImpression(data: RechargeBUWidgetDataModel)
     fun onRechargeBUWidgetBannerImpression(data: RechargeBUWidgetDataModel)
     fun onRechargeBUWidgetClickSeeAllButton(data: RechargeBUWidgetDataModel)
     fun onRechargeBUWidgetClickSeeAllCard(data: RechargeBUWidgetDataModel)

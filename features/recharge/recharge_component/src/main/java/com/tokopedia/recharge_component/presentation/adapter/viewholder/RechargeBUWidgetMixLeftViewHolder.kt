@@ -83,7 +83,7 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
 
             if (!isCacheData) {
                 itemView.addOnImpressionListener(element) {
-                    listener.onRechargeBUWidgetImpression(dataModel, adapterPosition)
+                    listener.onRechargeBUWidgetImpression(dataModel)
                 }
             }
         } else {

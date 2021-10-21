@@ -24,6 +24,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
     private const val KEY_PRODUCT_VARIANT = "variant"
     private const val KEY_PRODUCT_INDEX = "index"
     private const val KEY_PRODUCTS = "products"
+    private const val KEY_EVENT_IMPRESSIONS = "impressions"
     private const val KEY_PRODUCT_LIST = "list"
     private const val KEY_CURRENCY_CODE = "currencyCode"
     private const val IDR_CURRENCY = "IDR"
@@ -31,28 +32,22 @@ object RechargeBUWidgetTracking : BaseTracking() {
     fun homeRechargeBUWidgetImpressionTracker(
             trackingQueue: TrackingQueue,
             data: RechargeBUWidgetDataModel,
-            position: Int,
             userId: String
     ) {
-        if (position < data.data.items.size) {
-            val item = data.data.items[position]
-            //empty supposed to be userType next dev.
-            val eventLabel =
-                " - ${getHeaderName(data.channel)} - ${item.trackingData.itemType} - ${position + 1} - " +
-                        "${item.trackingData.categoryId} - ${item.trackingData.operatorId} - " +
-                        "${item.trackingData.productId} - ${convertRupiahToInt(item.label2)}"
+            val items = data.data.items.mapIndexed { index, _ ->
+                getProductData(data, index)
+            }
             val tracker = DataLayer.mapOf(
                 Event.KEY,Event.PRODUCT_VIEW,
                 Action.KEY,Action.IMPRESSION_ON.format("$RECHARGE_BU_WIDGET_PRODUCT_CARD $RECHARGE_BU_WIDGET_NAME"),
                 Category.KEY,"$RECHARGE_BU_WIDGET_EVENT_CATEGORY - $RECHARGE_BU_WIDGET_NEW_NAME",
-                Label.KEY,eventLabel,
+                Label.KEY,"",
                 BusinessUnit.KEY,RECHARGE_BU_WIDGET_BUSINESS_UNIT,
                 CurrentSite.KEY, RECHARGE_BU_WIDGET_CURRENT_SITE,
-                Ecommerce.KEY, getProductView(data, position),
+                Ecommerce.KEY, getProductView(items),
                 UserId.KEY, userId
             )
             trackingQueue.putEETracking(tracker as java.util.HashMap<String, Any>?)
-        }
     }
 
     fun homeRechargeBUWidgetProductCardClickTracker(
@@ -92,10 +87,10 @@ object RechargeBUWidgetTracking : BaseTracking() {
         )
     }
 
-    private fun getProductView(data: RechargeBUWidgetDataModel, position: Int) : Map<String, Any>{
+    private fun getProductView(data: List<Map<String,Any>>) : Map<String, Any>{
         return mapOf(
             KEY_CURRENCY_CODE to IDR_CURRENCY,
-            Event.IMPRESSION to listOf(getProductData(data, position))
+            KEY_EVENT_IMPRESSIONS to data
         )
     }
 
