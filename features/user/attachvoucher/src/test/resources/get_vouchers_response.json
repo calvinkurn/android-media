@@ -11,7 +11,7 @@
         "per_page": 15,
         "page": 1,
         "has_prev": false,
-        "has_next": true
+        "has_next": false
       },
       "vouchers": [
         {
