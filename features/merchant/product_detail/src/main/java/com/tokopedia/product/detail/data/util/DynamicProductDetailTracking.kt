@@ -1598,7 +1598,7 @@ object DynamicProductDetailTracking {
                             "product page",
                             "view product page",
                             label,
-                            ProductTrackingConstant.Tracking.BUSINESS_UNIT,
+                            ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
                             null,
                             productInfo?.isProductVariant().toString(),
                             productInfo?.data?.campaign?.campaignID,
