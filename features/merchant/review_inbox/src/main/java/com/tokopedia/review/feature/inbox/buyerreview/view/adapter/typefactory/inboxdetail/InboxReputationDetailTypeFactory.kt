@@ -11,5 +11,5 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.I
 interface InboxReputationDetailTypeFactory {
     fun type(model: InboxReputationDetailHeaderUiModel): Int
     fun type(model: InboxReputationDetailItemUiModel): Int
-    fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>?
+    fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 }

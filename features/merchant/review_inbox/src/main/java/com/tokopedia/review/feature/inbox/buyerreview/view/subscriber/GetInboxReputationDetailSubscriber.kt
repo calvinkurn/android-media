@@ -10,13 +10,12 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputati
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.ReputationDataUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.*
 import rx.Subscriber
-import java.util.*
 
 /**
  * @author by nisie on 8/19/17.
  */
 open class GetInboxReputationDetailSubscriber constructor(
-    protected val viewListener: InboxReputationDetail.View?
+    protected val viewListener: InboxReputationDetail.View
 ) :
     Subscriber<InboxReputationDetailDomain>() {
 
@@ -50,7 +49,7 @@ open class GetInboxReputationDetailSubscriber constructor(
     }
 
     protected fun mappingToListItemViewModel(reviewDomain: ReviewDomain): List<Visitable<*>> {
-        reviewDomain.data.map {
+        return reviewDomain.data.map {
             convertToInboxReputationDetailItemViewModel(
                 reviewDomain,
                 it

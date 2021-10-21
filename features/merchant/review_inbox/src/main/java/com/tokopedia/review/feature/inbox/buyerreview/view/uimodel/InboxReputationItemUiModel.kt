@@ -9,17 +9,18 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.R
  * @author by nisie on 8/15/17.
  */
 data class InboxReputationItemUiModel(
-    val reputationId: String,
-    val revieweeName: String,
-    val createTime: String,
-    val revieweePicture: String,
-    val reputationDaysLeft: String,
-    val invoice: String,
-    val reputationDataUiModel: ReputationDataUiModel,
-    val role: Int,
-    val revieweeBadgeCustomerUiModel: RevieweeBadgeCustomerUiModel,
-    val revieweeBadgeSellerUiModel: RevieweeBadgeSellerUiModel,
-    val shopId: Long, val userId: Long
+    val reputationId: String = "",
+    val revieweeName: String = "",
+    val createTime: String = "",
+    val revieweePicture: String = "",
+    val reputationDaysLeft: String = "",
+    val invoice: String = "",
+    val reputationDataUiModel: ReputationDataUiModel = ReputationDataUiModel(),
+    val role: Int = 0,
+    val revieweeBadgeCustomerUiModel: RevieweeBadgeCustomerUiModel = RevieweeBadgeCustomerUiModel(),
+    val revieweeBadgeSellerUiModel: RevieweeBadgeSellerUiModel = RevieweeBadgeSellerUiModel(),
+    val shopId: Long = 0L,
+    val userId: Long = 0L
 ) : Visitable<InboxReputationTypeFactory> {
 
     companion object {

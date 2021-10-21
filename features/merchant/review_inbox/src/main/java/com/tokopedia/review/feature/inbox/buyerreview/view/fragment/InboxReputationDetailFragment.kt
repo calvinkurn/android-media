@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.app.ProgressDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
@@ -40,7 +39,6 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.activity.InboxReputat
 import com.tokopedia.review.feature.inbox.buyerreview.view.activity.InboxReputationReportActivity
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.InboxReputationDetailAdapter
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.ReputationAdapter.ReputationListener
-import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactory
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.typefactory.inboxdetail.InboxReputationDetailTypeFactoryImpl
 import com.tokopedia.review.feature.inbox.buyerreview.view.customview.ShareReviewDialog
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationDetail
@@ -60,11 +58,13 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
 
     private var listProduct: RecyclerView? = null
     private var swipeToRefresh: SwipeToRefresh? = null
-    private var adapter: InboxReputationDetailAdapter? = null
     private var shareReviewDialog: ShareReviewDialog? = null
     private var callbackManager: CallbackManager? = null
     private var mainView: View? = null
     private var progressDialog: ProgressDialog? = null
+
+    private var adapter =
+        InboxReputationDetailAdapter(InboxReputationDetailTypeFactoryImpl(this, this))
 
     @Inject
     lateinit var presenter: InboxReputationDetailPresenter
@@ -105,7 +105,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         if (arguments?.getBoolean(
                 InboxReputationDetailActivity.ARGS_IS_FROM_APPLINK,
                 false
-            )
+            ) == true
         ) {
             reputationId = arguments?.getString(
                 InboxReputationDetailActivity.REPUTATION_ID,
@@ -126,9 +126,6 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
             }
         }
         callbackManager = create()
-        val typeFactory: InboxReputationDetailTypeFactory =
-            InboxReputationDetailTypeFactoryImpl(this)
-        adapter = InboxReputationDetailAdapter(typeFactory)
     }
 
     private fun setToolbar(title: String?, subtitle: String?) {
@@ -204,30 +201,27 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     }
 
     override fun showLoading() {
-        adapter?.showLoading()
-        adapter?.notifyDataSetChanged()
+        adapter.showLoading()
     }
 
-    override fun onErrorGetInboxDetail(throwable: Throwable?) {
-        if ((activity != null) && (mainView != null) && (getContext() != null)) NetworkErrorHelper.showEmptyState(
+    override fun onErrorGetInboxDetail(throwable: Throwable) {
+        NetworkErrorHelper.showEmptyState(
             activity,
             mainView,
-            getErrorMessage(
-                (getContext())?, (throwable)?
-        ),
-        NetworkErrorHelper.RetryClickedListener({
-            presenter.getInboxDetail(
-                reputationId,
-                arguments?.getInt(InboxReputationDetailActivity.ARGS_TAB, -1)
-            )
-        })
-        )
+            getErrorMessage(context, throwable)
+        ) {
+            arguments?.getInt(InboxReputationDetailActivity.ARGS_TAB, -1)?.let {
+                presenter.getInboxDetail(
+                    reputationId,
+                    it
+                )
+            }
+        }
     }
 
     override fun finishLoading() {
         if (progressDialog != null && activity != null) {
-            adapter?.removeLoading()
-            adapter?.notifyDataSetChanged()
+            adapter.removeLoading()
         }
     }
 
@@ -243,10 +237,12 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
             inboxReputationItemUiModel.invoice,
             inboxReputationItemUiModel.createTime
         )
-        adapter?.clearList()
-        adapter?.addHeader(createHeaderModel(inboxReputationItemUiModel))
-        adapter?.addList(list)
-        adapter?.notifyDataSetChanged()
+        adapter.apply {
+            clearList()
+            addHeader(createHeaderModel(inboxReputationItemUiModel))
+            addList(list)
+            notifyDataSetChanged()
+        }
         reputationTracking.onSeeSellerFeedbackPage(orderId)
     }
 
@@ -278,13 +274,13 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         inboxReputationViewModel: InboxReputationItemUiModel,
         list: List<Visitable<*>>
     ) {
-        if (list.isNotEmpty() && list.get(0) is InboxReputationDetailItemUiModel) {
-            orderId = (list.get(0) as InboxReputationDetailItemUiModel).orderId
+        if (list.isNotEmpty() && list[0] is InboxReputationDetailItemUiModel) {
+            orderId = (list[0] as InboxReputationDetailItemUiModel).orderId
         }
-        adapter?.clearList()
-        adapter?.addHeader(createHeaderModel(inboxReputationViewModel))
-        adapter?.addList(list)
-        adapter?.notifyDataSetChanged()
+        adapter.clearList()
+        adapter.addHeader(createHeaderModel(inboxReputationViewModel))
+        adapter.addList(list)
+        adapter.notifyDataSetChanged()
         activity?.setResult(Activity.RESULT_OK)
     }
 
@@ -314,12 +310,12 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         swipeToRefresh?.isRefreshing = false
     }
 
-    override fun goToPreviewImage(position: Int, list: ArrayList<ImageUpload?>?) {
-        val listLocation: ArrayList<String?> = ArrayList()
-        val listDesc: ArrayList<String?> = ArrayList()
-        for (image: ImageUpload? in list!!) {
-            listLocation.add(image.picSrcLarge)
-            listDesc.add(image.description)
+    override fun goToPreviewImage(position: Int, list: ArrayList<ImageUpload>) {
+        val listLocation: ArrayList<String> = ArrayList()
+        val listDesc: ArrayList<String> = ArrayList()
+        list.forEach {
+            listLocation.add(it.picSrcLarge)
+            listDesc.add(it.description)
         }
         startActivity(
             getCallingIntent(
@@ -333,7 +329,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
 
     override val tab: Int
         get() {
-            return arguments?.getInt(InboxReputationDetailActivity.ARGS_TAB)
+            return arguments?.getInt(InboxReputationDetailActivity.ARGS_TAB) ?: 0
         }
 
     override fun onGoToReportReview(shopId: Long, reviewId: String?) {
@@ -356,9 +352,9 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessFavoriteShop() {
-        adapter?.header?.revieweeBadgeSellerUiModel?.isFavorited =
-            if (adapter?.header?.revieweeBadgeSellerUiModel?.isFavorited == 1) 0 else 1
-        adapter?.notifyItemChanged(0)
+        adapter.header?.revieweeBadgeSellerUiModel?.isFavorited =
+            if (adapter.header?.revieweeBadgeSellerUiModel?.isFavorited == 1) 0 else 1
+        adapter.notifyItemChanged(0)
     }
 
     override fun onDeleteReviewResponse(element: InboxReputationDetailItemUiModel) {
@@ -380,7 +376,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
 
     override fun onSendReplyReview(
         element: InboxReputationDetailItemUiModel,
-        replyReview: String?
+        replyReview: String
     ) {
         presenter.sendReplyReview(
             element.reputationId, element.productId,
@@ -398,30 +394,32 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onShareReview(
-        element: InboxReputationDetailItemUiModel,
+        inboxReputationDetailItemUiModel: InboxReputationDetailItemUiModel,
         adapterPosition: Int
     ) {
         KeyboardHandler.DropKeyboard(activity, view)
         if (shareReviewDialog == null && callbackManager != null) {
-            shareReviewDialog = ShareReviewDialog(
-                activity, callbackManager!!,
-                this
-            )
+            shareReviewDialog = activity?.let {
+                ShareReviewDialog(
+                    it, callbackManager!!,
+                    this
+                )
+            }
         }
         if (shareReviewDialog != null) {
             shareReviewDialog?.setModel(
                 ShareModel(
-                    element.productName,
-                    element.review,
-                    element.productUrl,
-                    element.productAvatar
+                    inboxReputationDetailItemUiModel.productName,
+                    inboxReputationDetailItemUiModel.review,
+                    inboxReputationDetailItemUiModel.productUrl,
+                    inboxReputationDetailItemUiModel.productAvatar
                 )
             )
             shareReviewDialog?.show()
         }
         reputationTracking.onClickShareMenuReviewTracker(
-            element.orderId,
-            element.productId,
+            inboxReputationDetailItemUiModel.orderId,
+            inboxReputationDetailItemUiModel.productId,
             adapterPosition
         )
     }
@@ -442,9 +440,8 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onSmoothScrollToReplyView(adapterPosition: Int) {
-        if ((adapterPosition > -1) && (adapterPosition < adapter?.getList().size
-                    ) && adapter?.getList()
-                .get(adapterPosition) is InboxReputationDetailItemUiModel
+        if ((adapterPosition > -1) && (adapterPosition < adapter.getList().size
+                    ) && adapter.getList()[adapterPosition] is InboxReputationDetailItemUiModel
         ) {
             listProduct?.smoothScrollToPosition(adapterPosition)
         }
@@ -466,24 +463,18 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         startActivity(intent)
     }
 
-    override fun onReputationSmileyClicked(name: String?, score: String?) {
-        if (!TextUtils.isEmpty(score)) {
+    override fun onReputationSmileyClicked(name: String, value: String) {
+        if (!TextUtils.isEmpty(value)) {
             val builder: AlertDialog.Builder = AlertDialog.Builder(
                 (getContext())!!
             )
             builder.setMessage(getReputationSmileyMessage(name))
-            builder.setPositiveButton(getString(R.string.submit_review),
-                object : DialogInterface.OnClickListener {
-                    override fun onClick(dialog: DialogInterface, which: Int) {
-                        presenter!!.sendSmiley(reputationId, score, role)
-                    }
-                })
-            builder.setNegativeButton(getString(R.string.title_cancel),
-                object : DialogInterface.OnClickListener {
-                    override fun onClick(dialog: DialogInterface, param: Int) {
-                        dialog.dismiss()
-                    }
-                })
+            builder.setPositiveButton(
+                getString(R.string.submit_review)
+            ) { _, _ -> presenter.sendSmiley(reputationId, value, role) }
+            builder.setNegativeButton(
+                getString(R.string.title_cancel)
+            ) { dialog, _ -> dialog.dismiss() }
             val dialog: Dialog = builder.create()
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.show()
@@ -492,12 +483,12 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onClickToggleReply(
-        element: InboxReputationDetailItemUiModel,
+        inboxReputationDetailItemUiModel: InboxReputationDetailItemUiModel,
         adapterPosition: Int
     ) {
         reputationTracking.onClickToggleReplyReviewTracker(
-            element.orderId,
-            element.productId,
+            inboxReputationDetailItemUiModel.orderId,
+            inboxReputationDetailItemUiModel.productId,
             adapterPosition
         )
     }

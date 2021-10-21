@@ -18,10 +18,10 @@ interface InboxReputationReport {
 
     interface Presenter : CustomerPresenter<View?> {
         fun reportReview(
-            reviewId: String?,
-            shopId: String?,
+            reviewId: String,
+            shopId: String,
             checkedRadioButtonId: Int,
-            otherReason: String?
+            otherReason: String
         )
     }
 }

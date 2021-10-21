@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.customview
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.net.Uri
@@ -28,9 +29,9 @@ import com.tokopedia.review.inbox.R
  * Created by stevenfredian on 2/20/17.
  */
 class ShareReviewDialog constructor(
-    private val context: Context?,
+    private val context: Context,
     private val callbackManager: CallbackManager,
-    fragment: Fragment
+    private val fragment: Fragment
 ) {
     companion object {
         const val FACEBOOK_ICON_URL: String =
@@ -39,47 +40,24 @@ class ShareReviewDialog constructor(
             "https://images.tokopedia.net/img/android/review/review_ic_copy_share.png"
     }
 
-    private val fragment: Fragment
-    private val dialog: BottomSheetDialog
+    @SuppressLint("UnifyComponentUsage")
+    private val dialog: BottomSheetDialog = BottomSheetDialog(context)
     private val appGrid: GridView?
     private val cancelButton: View?
-    private var adapterRead: ArrayAdapter<CharSequence>? = null
-    private var adapter: ShareAdapter? = null
+    private var adapterRead = ArrayAdapter.createFromResource(
+        context,
+        R.array.talk_read,
+        R.layout.reputation_dialog_item
+    )
+    private val adapter = ShareAdapter(context)
     private var model: ShareModel? = null
 
     init {
-        dialog = BottomSheetDialog((context)!!)
-        this.fragment = fragment
         dialog.setContentView(R.layout.reputation_share_review_dialog)
         appGrid = dialog.findViewById<View>(R.id.grid) as GridView?
         cancelButton = dialog.findViewById(R.id.cancel_but)
-        initAdapter()
-        setAdapter()
+        initAdapters()
         setListener()
-    }
-
-    fun initAdapter() {
-        adapterRead = ArrayAdapter.createFromResource(
-            (context)!!,
-            R.array.talk_read,
-            R.layout.reputation_dialog_item
-        )
-        adapterRead!!.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-    }
-
-    fun setAdapter() {
-        adapter = ShareAdapter(context)
-        adapter!!.addItem(ShareItem(FACEBOOK_ICON_URL, "Facebook", shareFb()))
-        adapter!!.addItem(ShareItem(LINK_ICON_URL, "Copy Link", shareCopyLink()))
-        appGrid!!.adapter = adapter
-    }
-
-    fun setListener() {
-        cancelButton!!.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(view: View) {
-                dismissDialog()
-            }
-        })
     }
 
     fun show() {
@@ -88,6 +66,21 @@ class ShareReviewDialog constructor(
 
     fun dismissDialog() {
         dialog.dismiss()
+    }
+
+    fun setModel(model: ShareModel) {
+        this.model = model
+    }
+
+    private fun initAdapters() {
+        adapterRead.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        adapter.addItem(ShareItem(FACEBOOK_ICON_URL, "Facebook", shareFb()))
+        adapter.addItem(ShareItem(LINK_ICON_URL, "Copy Link", shareCopyLink()))
+        appGrid?.adapter = adapter
+    }
+
+    private fun setListener() {
+        cancelButton?.setOnClickListener { dismissDialog() }
     }
 
     private fun shareCopyLink(): View.OnClickListener {
@@ -109,7 +102,7 @@ class ShareReviewDialog constructor(
                         override fun onSuccess(result: Sharer.Result?) {
                             SnackbarManager.make(
                                 fragment.activity,
-                                context!!.getString(R.string.success_share_review),
+                                context.getString(R.string.success_share_review),
                                 Snackbar.LENGTH_LONG
                             ).show()
                             dismissDialog()
@@ -123,7 +116,7 @@ class ShareReviewDialog constructor(
                             Log.i("facebook", "onError: " + error)
                             SnackbarManager.make(
                                 fragment.activity,
-                                context!!.getString(R.string.error_share_review),
+                                context.getString(R.string.error_share_review),
                                 Snackbar.LENGTH_LONG
                             ).show()
                             dismissDialog()
@@ -148,9 +141,5 @@ class ShareReviewDialog constructor(
                 }
             }
         }
-    }
-
-    fun setModel(model: ShareModel?) {
-        this.model = model
     }
 }

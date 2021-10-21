@@ -12,8 +12,10 @@ import javax.inject.Inject
  */
 class InboxReputationReportPresenter @Inject constructor(private val reportReviewUseCase: ReportReviewUseCase) :
     BaseDaggerPresenter<InboxReputationReport.View?>(), InboxReputationReport.Presenter {
+
     private var viewListener: InboxReputationReport.View? = null
-    override fun attachView(view: InboxReputationReport.View) {
+
+    override fun attachView(view: InboxReputationReport.View?) {
         viewListener = view
     }
 
@@ -22,12 +24,12 @@ class InboxReputationReportPresenter @Inject constructor(private val reportRevie
     }
 
     override fun reportReview(
-        reviewId: String?,
-        shopId: String?,
+        reviewId: String,
+        shopId: String,
         checkedRadioButtonId: Int,
-        otherReason: String?
+        otherReason: String
     ) {
-        viewListener!!.showLoadingProgress()
+        viewListener?.showLoadingProgress()
         reportReviewUseCase.execute(
             ReportReviewUseCase.getParam(
                 reviewId,
@@ -35,17 +37,21 @@ class InboxReputationReportPresenter @Inject constructor(private val reportRevie
                 getCheckedRadio(checkedRadioButtonId),
                 otherReason
             ),
-            ReportReviewSubscriber(viewListener)
+            viewListener?.let { ReportReviewSubscriber(it) }
         )
     }
 
     private fun getCheckedRadio(checkedRadioButtonId: Int): Int {
-        if (checkedRadioButtonId == R.id.report_spam) {
-            return ReportReviewUseCase.REPORT_SPAM
-        } else if (checkedRadioButtonId == R.id.report_sara) {
-            return ReportReviewUseCase.REPORT_SARA
-        } else {
-            return ReportReviewUseCase.REPORT_OTHER
+        return when (checkedRadioButtonId) {
+            R.id.report_spam -> {
+                ReportReviewUseCase.REPORT_SPAM
+            }
+            R.id.report_sara -> {
+                ReportReviewUseCase.REPORT_SARA
+            }
+            else -> {
+                ReportReviewUseCase.REPORT_OTHER
+            }
         }
     }
 }

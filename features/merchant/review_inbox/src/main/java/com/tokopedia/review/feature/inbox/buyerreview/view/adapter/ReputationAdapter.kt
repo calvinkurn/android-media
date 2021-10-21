@@ -35,7 +35,7 @@ class ReputationAdapter private constructor(
     var list: ArrayList<SmileyModel> = ArrayList()
 
     interface ReputationListener {
-        fun onReputationSmileyClicked(name: String?, value: String?)
+        fun onReputationSmileyClicked(name: String, value: String)
         fun onGoToShopDetail(shopId: Long)
         fun onGoToPeopleProfile(userId: Long)
     }

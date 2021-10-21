@@ -23,7 +23,7 @@ class InboxReputationDetailPresenter @Inject internal constructor(
 
     private var viewListener: InboxReputationDetail.View? = null
 
-    override fun attachView(view: InboxReputationDetail.View) {
+    override fun attachView(view: InboxReputationDetail.View?) {
         super.attachView(view)
         viewListener = view
     }
@@ -36,71 +36,71 @@ class InboxReputationDetailPresenter @Inject internal constructor(
         sendReplyReviewUseCase.unsubscribe()
     }
 
-    override fun getInboxDetail(reputationId: String?, tab: Int) {
+    override fun getInboxDetail(id: String, anInt: Int) {
         viewListener?.showLoading()
         getInboxReputationDetailUseCase.execute(
             GetInboxReputationDetailUseCase.getParam(
-                reputationId,
+                id,
                 userSession.userId,
-                tab
+                anInt
             ),
-            GetInboxReputationDetailSubscriber(viewListener)
+            viewListener?.let { GetInboxReputationDetailSubscriber(it) }
         )
     }
 
-    override fun sendSmiley(reputationId: String?, score: String?, role: Int) {
-        viewListener.showLoadingDialog()
+    override fun sendSmiley(reputationId: String, score: String, role: Int) {
+        viewListener?.showLoadingDialog()
         sendSmileyReputationUseCase.execute(
             SendSmileyReputationUseCase.getParam(
                 reputationId,
                 score,
                 role
             ),
-            SendSmileySubscriber(viewListener, score)
+            viewListener?.let { SendSmileySubscriber(it, score) }
         )
     }
 
     override fun deleteReviewResponse(
-        reviewId: String?,
-        productId: String?,
-        shopId: String?,
-        reputationId: String?
+        reviewId: String,
+        productId: String,
+        shopId: String,
+        reputationId: String
     ) {
-        viewListener.showLoadingDialog()
+        viewListener?.showLoadingDialog()
         deleteReviewResponseUseCase.execute(
             DeleteReviewResponseUseCase.getParam(
                 reviewId,
                 productId,
                 shopId,
                 reputationId
-            ), DeleteReviewResponseSubscriber(viewListener)
+            ), viewListener?.let { DeleteReviewResponseSubscriber(it) }
         )
     }
 
     override fun sendReplyReview(
-        reputationId: Long, productId: String?, shopId: Long,
-        reviewId: String?, replyReview: String?
+        reputationId: Long, productId: String, shopId: Long,
+        reviewId: String, replyReview: String
     ) {
-        viewListener.showLoadingDialog()
+        viewListener?.showLoadingDialog()
         sendReplyReviewUseCase.execute(
             SendReplyReviewUseCase.getParam(
                 reputationId.toString(),
                 productId, shopId.toString(),
                 reviewId,
                 replyReview
-            ), ReplyReviewSubscriber(viewListener)
+            ), viewListener?.let { ReplyReviewSubscriber(it) }
         )
     }
 
     fun refreshPage(reputationId: String?, tab: Int) {
-        viewListener.showRefresh()
+        viewListener?.showRefresh()
         getInboxReputationDetailUseCase.execute(
             GetInboxReputationDetailUseCase.getParam(
                 reputationId,
                 userSession.userId,
                 tab
             ),
-            RefreshInboxReputationDetailSubscriber(viewListener)
+            viewListener?.let { RefreshInboxReputationDetailSubscriber(it) }
         )
     }
 }

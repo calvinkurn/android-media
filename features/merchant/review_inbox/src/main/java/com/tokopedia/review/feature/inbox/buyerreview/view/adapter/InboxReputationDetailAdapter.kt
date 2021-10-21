@@ -17,11 +17,13 @@ import java.util.*
  * @author by nisie on 8/19/17.
  */
 class InboxReputationDetailAdapter constructor(typeFactory: InboxReputationDetailTypeFactory) :
-    RecyclerView.Adapter<AbstractViewHolder<*>?>() {
+    RecyclerView.Adapter<AbstractViewHolder<*>>() {
+
     private val list: MutableList<Visitable<*>>
     private val emptyModel: EmptyModel
     private val loadingModel: LoadingModel
     private val typeFactory: InboxReputationDetailTypeFactory
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -31,12 +33,12 @@ class InboxReputationDetailAdapter constructor(typeFactory: InboxReputationDetai
         return typeFactory.createViewHolder(view, viewType)
     }
 
-    override fun onBindViewHolder(holder: AbstractViewHolder<*>?, position: Int) {
-        holder!!.bind(list.get(position))
+    override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
+        holder.bind(list.get(position))
     }
 
     override fun getItemViewType(position: Int): Int {
-        return list.get(position).type(typeFactory)
+        return list[position].type(typeFactory)
     }
 
     override fun getItemCount(): Int {
@@ -57,10 +59,12 @@ class InboxReputationDetailAdapter constructor(typeFactory: InboxReputationDetai
 
     fun showLoading() {
         list.add(loadingModel)
+        notifyDataSetChanged()
     }
 
     fun removeLoading() {
         list.remove(loadingModel)
+        notifyDataSetChanged()
     }
 
     val isLoading: Boolean

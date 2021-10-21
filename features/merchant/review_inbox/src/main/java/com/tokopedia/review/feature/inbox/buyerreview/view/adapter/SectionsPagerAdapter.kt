@@ -10,14 +10,14 @@ import com.google.android.material.tabs.TabLayout
  * @author by Nisie on 20/01/16.
  */
 class SectionsPagerAdapter constructor(
-    fm: FragmentManager?,
+    fm: FragmentManager,
     private val fragmentList: List<Fragment>,
     private val indicator: TabLayout?
 ) : FragmentPagerAdapter(
-    (fm)!!, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
+    fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
 ) {
     override fun getItem(position: Int): Fragment {
-        return fragmentList.get(position)
+        return fragmentList[position]
     }
 
     override fun getCount(): Int {

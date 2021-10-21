@@ -11,13 +11,13 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.ReputationDat
 interface InboxReputation {
     interface View : CustomerView {
         fun showLoadingFull()
-        fun onErrorGetFirstTimeInboxReputation(throwable: Throwable?)
+        fun onErrorGetFirstTimeInboxReputation(throwable: Throwable)
         fun onSuccessGetFirstTimeInboxReputation(inboxReputationUiModel: InboxReputationUiModel)
         fun finishLoadingFull()
-        fun onErrorGetNextPage(throwable: Throwable?)
-        fun onSuccessGetNextPage(inboxReputationUiModel: InboxReputationUiModel?)
-        fun onErrorRefresh(throwable: Throwable?)
-        fun onSuccessRefresh(inboxReputationUiModel: InboxReputationUiModel?)
+        fun onErrorGetNextPage(throwable: Throwable)
+        fun onSuccessGetNextPage(inboxReputationUiModel: InboxReputationUiModel)
+        fun onErrorRefresh(throwable: Throwable)
+        fun onSuccessRefresh(inboxReputationUiModel: InboxReputationUiModel)
         fun showLoadingNext()
         fun finishLoading()
         fun onGoToDetail(
@@ -28,8 +28,8 @@ interface InboxReputation {
         )
 
         fun showRefreshing()
-        fun onSuccessGetFilteredInboxReputation(inboxReputationUiModel: InboxReputationUiModel?)
-        fun onErrorGetFilteredInboxReputation(throwable: Throwable?)
+        fun onSuccessGetFilteredInboxReputation(inboxReputationUiModel: InboxReputationUiModel)
+        fun onErrorGetFilteredInboxReputation(throwable: Throwable)
         fun finishRefresh()
         fun onShowEmpty()
         fun onShowEmptyFilteredInboxReputation()
@@ -37,15 +37,16 @@ interface InboxReputation {
 
     interface Presenter : CustomerPresenter<View?> {
         fun getFirstTimeInboxReputation(tab: Int)
+
         fun getNextPage(
-            lastItemPosition: Int, visibleItem: Int, query: String?,
-            timeFilter: String?, statusFilter: String?, tab: Int
+            lastItemPosition: Int, visibleItem: Int, query: String,
+            timeFilter: String, statusFilter: String, tab: Int
         )
 
         fun getFilteredInboxReputation(
-            query: String?,
-            timeFilter: String?,
-            statusFilter: String?,
+            query: String,
+            timeFilter: String,
+            statusFilter: String,
             tab: Int
         )
     }

@@ -78,78 +78,67 @@ class InboxReputationReportFragment : BaseDaggerFragment(),
         saraRadioButton = parentView.findViewById(R.id.report_sara)
         prepareView()
         presenter.attachView(this)
-        if (arguments != null) {
-            feedbackId =
-                arguments!!.getString(InboxReputationReportActivity.ARGS_REVIEW_ID)
-        }
+        feedbackId = arguments?.getString(InboxReputationReportActivity.ARGS_REVIEW_ID) ?: ""
         return parentView
     }
 
     private fun prepareView() {
-        reportRadioGroup!!.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener({ group: RadioGroup?, checkedId: Int -> setSendButton() }))
-        otherReason!!.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(
-                s: CharSequence,
-                start: Int,
-                count: Int,
-                after: Int
-            ) {
+        reportRadioGroup?.setOnCheckedChangeListener { _: RadioGroup?, _: Int -> setSendButton() }
+        otherReason?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
             }
 
-            override fun onTextChanged(
-                s: CharSequence,
-                start: Int,
-                before: Int,
-                count: Int
-            ) {
-                otherRadioButton!!.isChecked = true
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                otherRadioButton?.isChecked = true
                 setSendButton()
             }
 
             override fun afterTextChanged(s: Editable) {}
         })
-        otherReason!!.setOnClickListener {
-            otherRadioButton!!.isChecked = true
+        otherReason?.setOnClickListener {
+            otherRadioButton?.isChecked = true
         }
-        sendButton!!.setOnClickListener { v: View? ->
-            tracking!!.onSubmitReportAbuse(feedbackId)
-            if (arguments != null) {
-                presenter!!.reportReview(
-                    arguments!!.getString(
-                        InboxReputationReportActivity.ARGS_REVIEW_ID,
-                        ""
-                    ),
-                    arguments!!.getString(InboxReputationReportActivity.ARGS_SHOP_ID),
-                    reportRadioGroup!!.checkedRadioButtonId,
-                    otherReason!!.text.toString()
-                )
-            }
+        sendButton?.setOnClickListener { v: View? ->
+            tracking.onSubmitReportAbuse(feedbackId)
+            presenter.reportReview(
+                arguments?.getString(
+                    InboxReputationReportActivity.ARGS_REVIEW_ID,
+                    ""
+                ) ?: "",
+                arguments?.getString(InboxReputationReportActivity.ARGS_SHOP_ID) ?: "",
+                reportRadioGroup?.checkedRadioButtonId ?: 0,
+                otherReason?.text.toString()
+            )
         }
         initProgressDialog()
     }
 
     private fun setSendButton() {
-        if (reportRadioGroup!!.checkedRadioButtonId == R.id.report_spam) {
-            tracking!!.onClickRadioButtonReportAbuse(spamRadioButton!!.text.toString())
-        } else if (reportRadioGroup!!.checkedRadioButtonId == R.id.report_sara) {
-            tracking!!.onClickRadioButtonReportAbuse(saraRadioButton!!.text.toString())
-        } else if (reportRadioGroup!!.checkedRadioButtonId == R.id.report_other) {
-            tracking!!.onClickRadioButtonReportAbuse(otherRadioButton!!.text.toString())
+        when (reportRadioGroup?.checkedRadioButtonId) {
+            R.id.report_spam -> {
+                tracking.onClickRadioButtonReportAbuse(spamRadioButton?.text.toString())
+            }
+            R.id.report_sara -> {
+                tracking.onClickRadioButtonReportAbuse(saraRadioButton?.text.toString())
+            }
+            R.id.report_other -> {
+                tracking.onClickRadioButtonReportAbuse(otherRadioButton?.text.toString())
+            }
         }
-        if ((reportRadioGroup!!.checkedRadioButtonId == R.id.report_spam
-                    ) || (reportRadioGroup!!.checkedRadioButtonId == R.id.report_sara
-                    ) || ((reportRadioGroup!!.checkedRadioButtonId == R.id.report_other
-                    && !TextUtils.isEmpty(otherReason!!.text.toString().trim({ it <= ' ' }))))
+        if ((reportRadioGroup?.checkedRadioButtonId == R.id.report_spam
+                    ) || (reportRadioGroup?.checkedRadioButtonId == R.id.report_sara
+                    ) || ((reportRadioGroup?.checkedRadioButtonId == R.id.report_other
+                    && !TextUtils.isEmpty(otherReason?.text.toString().trim { it <= ' ' })))
         ) {
-            sendButton!!.isEnabled = true
-            sendButton!!.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            sendButton?.isEnabled = true
+            sendButton?.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
             MethodChecker.setBackground(
                 sendButton,
                 resources.getDrawable(com.tokopedia.design.R.drawable.green_button_rounded)
             )
         } else {
-            sendButton!!.isEnabled = false
-            sendButton!!.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N500))
+            sendButton?.isEnabled = false
+            sendButton?.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N500))
             MethodChecker.setBackground(
                 sendButton,
                 resources.getDrawable(com.tokopedia.design.R.drawable.bg_button_disabled)
@@ -160,9 +149,9 @@ class InboxReputationReportFragment : BaseDaggerFragment(),
     private fun initProgressDialog() {
         if (getContext() != null) {
             progressDialog = ProgressDialog(getContext())
-            progressDialog!!.setTitle("")
-            progressDialog!!.setMessage(getContext()!!.getString(R.string.progress_dialog_loading))
-            progressDialog!!.setCancelable(false)
+            progressDialog?.setTitle("")
+            progressDialog?.setMessage(getContext()?.getString(R.string.progress_dialog_loading))
+            progressDialog?.setCancelable(false)
         }
     }
 
@@ -172,7 +161,12 @@ class InboxReputationReportFragment : BaseDaggerFragment(),
     }
 
     override fun showLoadingProgress() {
-        if (!progressDialog!!.isShowing && (getContext() != null) && (progressDialog != null)) progressDialog!!.show()
+        progressDialog?.let {
+            if (it.isShowing) {
+                return
+            }
+            it.show()
+        }
     }
 
     override fun onErrorReportReview(errorMessage: String?) {
@@ -187,7 +181,9 @@ class InboxReputationReportFragment : BaseDaggerFragment(),
     }
 
     override fun removeLoadingProgress() {
-        if (progressDialog!!.isShowing && (getContext() != null) && (progressDialog != null)) progressDialog!!.dismiss()
+        progressDialog?.let {
+            if (it.isShowing) it.dismiss()
+        }
     }
 
     companion object {

@@ -15,8 +15,9 @@ import java.util.*
  * Created by stevenfredian on 2/21/17.
  */
 class ShareAdapter constructor(context: Context?) : BaseAdapter() {
-    val inflater: LayoutInflater
-    var shareItems: ArrayList<ShareItem>
+    val inflater: LayoutInflater = LayoutInflater.from(context)
+    var shareItems: ArrayList<ShareItem> = ArrayList()
+
     fun addItem(item: ShareItem) {
         shareItems.add(item)
     }
@@ -35,37 +36,17 @@ class ShareAdapter constructor(context: Context?) : BaseAdapter() {
 
     override fun getView(position: Int, convertView: View, parent: ViewGroup): View {
         var convertView: View = convertView
-        val holder: ViewHolder
-        if (convertView == null) {
-            convertView = inflater.inflate(R.layout.reputation_sheet_grid_item, parent, false)
-            holder = ViewHolder(convertView)
-            convertView.tag = holder
-        } else {
-            holder = convertView.tag as ViewHolder
-        }
-        val info: ShareItem = shareItems.get(position)
-        if (info.getIcon() != null) {
-            imageView.loadImage(info.getIcon())
-        } else {
-//                loadIcon();
-        }
-        holder.label.setText(info.getName())
-        convertView.setOnClickListener(shareItems.get(position).getOnClickListener())
+        val holder: ViewHolder = convertView.tag as ViewHolder
+        val info: ShareItem = shareItems[position]
+        imageView.loadImage(info.getIcon())
+        holder.label.text = info.name
+        convertView.setOnClickListener(shareItems[position].onClickListener)
         return convertView
     }
 
     internal inner class ViewHolder constructor(root: View) {
-        val icon: ImageView
-        val label: Typography
-
-        init {
-            icon = root.findViewById<View>(R.id.icon) as ImageView
-            label = root.findViewById<View>(R.id.label) as Typography
-        }
+        val icon: ImageView = root.findViewById<View>(R.id.icon) as ImageView
+        val label: Typography = root.findViewById<View>(R.id.label) as Typography
     }
 
-    init {
-        inflater = LayoutInflater.from(context)
-        shareItems = ArrayList()
-    }
 }

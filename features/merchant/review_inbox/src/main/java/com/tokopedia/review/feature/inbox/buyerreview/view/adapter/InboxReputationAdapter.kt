@@ -69,10 +69,10 @@ class InboxReputationAdapter constructor(typeFactory: InboxReputationTypeFactory
         notifyDataSetChanged()
     }
 
-    fun showEmpty(title: String?, buttonText: String?, onClickListener: View.OnClickListener?) {
-        emptySearchModel.setTitle(title)
-        emptySearchModel.setButtonText(buttonText)
-        emptySearchModel.setButtonListener(onClickListener)
+    fun showEmpty(title: String, buttonText: String, onClickListener: View.OnClickListener) {
+        emptySearchModel.title = title
+        emptySearchModel.buttonText = buttonText
+        emptySearchModel.buttonListener = onClickListener
         list.add(emptySearchModel)
     }
 

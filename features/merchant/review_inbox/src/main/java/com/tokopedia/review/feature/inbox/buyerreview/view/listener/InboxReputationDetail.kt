@@ -16,7 +16,7 @@ import java.util.*
 interface InboxReputationDetail {
     interface View : CustomerView {
         fun showLoading()
-        fun onErrorGetInboxDetail(throwable: Throwable?)
+        fun onErrorGetInboxDetail(throwable: Throwable)
         fun onSuccessGetInboxDetail(
             inboxReputationItemUiModel: InboxReputationItemUiModel,
             visitables: List<Visitable<*>>
@@ -29,12 +29,12 @@ interface InboxReputationDetail {
         fun showRefresh()
         fun onErrorRefreshInboxDetail(throwable: Throwable?)
         fun onSuccessRefreshGetInboxDetail(
-            inboxReputationViewModel: InboxReputationItemUiModel?,
-            visitables: List<Visitable<*>?>?
+            inboxReputationViewModel: InboxReputationItemUiModel,
+            visitables: List<Visitable<*>>?
         )
 
         fun finishRefresh()
-        fun goToPreviewImage(position: Int, list: ArrayList<ImageUpload?>?)
+        fun goToPreviewImage(position: Int, list: ArrayList<ImageUpload>)
         val tab: Int
         val context: Context
         fun onGoToReportReview(shopId: Long, reviewId: String?)
@@ -44,7 +44,7 @@ interface InboxReputationDetail {
         fun onDeleteReviewResponse(element: InboxReputationDetailItemUiModel)
         fun onErrorDeleteReviewResponse(errorMessage: String?)
         fun onSuccessDeleteReviewResponse()
-        fun onSendReplyReview(element: InboxReputationDetailItemUiModel, replyReview: String?)
+        fun onSendReplyReview(element: InboxReputationDetailItemUiModel, replyReview: String)
         fun onErrorReplyReview(errorMessage: String?)
         fun onSuccessReplyReview()
         fun onShareReview(
@@ -69,18 +69,18 @@ interface InboxReputationDetail {
     }
 
     interface Presenter : CustomerPresenter<View?> {
-        fun getInboxDetail(id: String?, anInt: Int)
-        fun sendSmiley(reputationId: String?, score: String?, role: Int)
+        fun getInboxDetail(id: String, anInt: Int)
+        fun sendSmiley(reputationId: String, score: String, role: Int)
         fun deleteReviewResponse(
-            reviewId: String?,
-            productId: String?,
-            shopId: String?,
-            reputationId: String?
+            reviewId: String,
+            productId: String,
+            shopId: String,
+            reputationId: String
         )
 
         fun sendReplyReview(
-            reputationId: Long, productId: String?, shopId: Long,
-            reviewId: String?, replyReview: String?
+            reputationId: Long, productId: String, shopId: Long,
+            reviewId: String, replyReview: String
         )
     }
 }

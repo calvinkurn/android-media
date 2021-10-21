@@ -11,7 +11,6 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.BitmapImageViewTarget
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ImageUpload
 import com.tokopedia.review.inbox.R
 import java.io.File
@@ -26,38 +25,33 @@ class ImageUploadAdapter constructor(var context: Context) :
     private var isReviewImage: Boolean = false
 
     class ViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var image: ImageView
-
-        init {
-            image = itemView.findViewById<View>(R.id.image_upload) as ImageView
-        }
+        val image: ImageView = itemView.findViewById<View>(R.id.image_upload) as ImageView
     }
 
-    open interface ProductImageListener {
+    interface ProductImageListener {
         fun onUploadClicked(position: Int): View.OnClickListener
         fun onImageClicked(position: Int, imageUpload: ImageUpload?): View.OnClickListener
     }
 
     private var listener: ProductImageListener? = null
-    val list: ArrayList<ImageUpload>
-    private val deletedImage: ArrayList<ImageUpload>
+    val list: ArrayList<ImageUpload> = ArrayList()
+    private val deletedImage: ArrayList<ImageUpload> = ArrayList()
+
     fun setReviewImage(isReviewImage: Boolean) {
         this.isReviewImage = isReviewImage
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-        val viewHolder: ViewHolder
-        when (viewType) {
-            VIEW_REVIEW_IMAGE -> viewHolder = ViewHolder(
+        return when (viewType) {
+            VIEW_REVIEW_IMAGE -> ViewHolder(
                 LayoutInflater.from(viewGroup.context)
                     .inflate(R.layout.review_listview_image_review_item, viewGroup, false)
             )
-            else -> viewHolder = ViewHolder(
+            else -> ViewHolder(
                 LayoutInflater.from(viewGroup.context)
                     .inflate(R.layout.review_listview_image_upload_review, viewGroup, false)
             )
         }
-        return viewHolder
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -69,29 +63,20 @@ class ImageUploadAdapter constructor(var context: Context) :
 
     private fun bindImage(holder: ViewHolder, position: Int) {
         try {
-            if (list.get(position).getFileLoc() == null) {
-                ImageHandler.loadImageRounded2(
-                    holder.image.context,
-                    holder.image,
-                    list.get(position).getPicSrc(),
-                    convertDpToPx(holder.image.context, RADIUS_CORNER.toFloat())
-                )
-            } else {
-                Glide.with(holder.image.context)
-                    .asBitmap()
-                    .load(File(list.get(position).getFileLoc()))
-                    .centerCrop()
-                    .into(
-                        getRoundedImageViewTarget(
-                            holder.image,
-                            convertDpToPx(holder.image.context, RADIUS_CORNER.toFloat())
-                        )
+            Glide.with(holder.image.context)
+                .asBitmap()
+                .load(File(list[position].fileLoc))
+                .centerCrop()
+                .into(
+                    getRoundedImageViewTarget(
+                        holder.image,
+                        convertDpToPx(holder.image.context, RADIUS_CORNER.toFloat())
                     )
-            }
+                )
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        holder.image.setOnClickListener(listener!!.onImageClicked(position, list.get(position)))
+        holder.image.setOnClickListener(listener?.onImageClicked(position, list[position]))
         setBorder(holder, position)
     }
 
@@ -100,7 +85,7 @@ class ImageUploadAdapter constructor(var context: Context) :
     }
 
     private fun setBorder(holder: ViewHolder, position: Int) {
-        if (list.get(position).isSelected()) {
+        if (list[position].isSelected) {
             holder.image.setBackgroundColor(
                 context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)
             )
@@ -112,14 +97,14 @@ class ImageUploadAdapter constructor(var context: Context) :
     }
 
     private fun bindUploadButton(holder: ViewHolder, position: Int) {
-        holder.image.setOnClickListener(listener!!.onUploadClicked(position))
+        holder.image.setOnClickListener(listener?.onUploadClicked(position))
     }
 
     override fun getItemCount(): Int {
-        if (list.size < 5) {
-            return list.size + canUpload
+        return if (list.size < 5) {
+            list.size + canUpload
         } else {
-            return list.size
+            list.size
         }
     }
 
@@ -147,12 +132,12 @@ class ImageUploadAdapter constructor(var context: Context) :
     fun removeImage(currentPosition: Int) {
         list.removeAt(currentPosition)
         for (i in currentPosition until list.size) {
-            list.get(i).setPosition(i)
+            list[i].position = i
         }
         notifyDataSetChanged()
     }
 
-    fun setListener(listener: ProductImageListener?) {
+    fun setListener(listener: ProductImageListener) {
         this.listener = listener
     }
 
@@ -170,10 +155,10 @@ class ImageUploadAdapter constructor(var context: Context) :
         }
 
     companion object {
-        private val VIEW_UPLOAD_BUTTON: Int = 100
-        private val VIEW_REVIEW_IMAGE: Int = 97
-        private val MAX_IMAGE: Int = 5
-        val RADIUS_CORNER: Int = 4
+        private const val VIEW_UPLOAD_BUTTON: Int = 100
+        private const val VIEW_REVIEW_IMAGE: Int = 97
+        private const val MAX_IMAGE: Int = 5
+        const val RADIUS_CORNER: Int = 4
         fun createAdapter(context: Context): ImageUploadAdapter {
             return ImageUploadAdapter(context)
         }
@@ -196,8 +181,4 @@ class ImageUploadAdapter constructor(var context: Context) :
         }
     }
 
-    init {
-        list = ArrayList()
-        deletedImage = ArrayList()
-    }
 }

@@ -109,7 +109,10 @@ class InboxReputationFilterFragment : BaseDaggerFragment(),
                 activity,
                 LinearLayoutManager.VERTICAL, false
             )
-            adapter = InboxReputationFilterAdapter.createInstance(this, listOption)
+            adapter = InboxReputationFilterAdapter.createInstance(
+                this@InboxReputationFilterFragment,
+                listOption
+            )
         }
         saveButton?.setOnClickListener {
             val data = Intent()
@@ -160,9 +163,8 @@ class InboxReputationFilterFragment : BaseDaggerFragment(),
                 list.size
             )
         )
-        if ((arguments != null
-                    && arguments!!.getInt(InboxReputationFragment.PARAM_TAB) ==
-                    ReviewInboxConstants.TAB_BUYER_REVIEW)
+        if (arguments?.getInt(InboxReputationFragment.PARAM_TAB) ==
+            ReviewInboxConstants.TAB_BUYER_REVIEW
         ) {
             list.add(HeaderOptionUiModel(getString(R.string.filter_status)))
             list.add(

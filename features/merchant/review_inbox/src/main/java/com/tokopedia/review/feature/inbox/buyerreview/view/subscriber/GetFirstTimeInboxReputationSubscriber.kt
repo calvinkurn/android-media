@@ -9,7 +9,6 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.R
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.RevieweeBadgeCustomerUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.RevieweeBadgeSellerUiModel
 import rx.Subscriber
-import java.util.*
 
 /**
  * @author by nisie on 8/14/17.
@@ -69,52 +68,52 @@ open class GetFirstTimeInboxReputationSubscriber constructor(protected val viewL
         }
     }
 
-    private fun convertToSellerReputationViewModel(revieweeBadgeSeller: RevieweeBadgeSellerDomain?): RevieweeBadgeSellerUiModel {
+    private fun convertToSellerReputationViewModel(revieweeBadgeSeller: RevieweeBadgeSellerDomain): RevieweeBadgeSellerUiModel {
         return RevieweeBadgeSellerUiModel(
-            revieweeBadgeSeller.Tooltip,
-            revieweeBadgeSeller.ReputationScore,
-            revieweeBadgeSeller.Score,
-            revieweeBadgeSeller.MinBadgeScore,
-            revieweeBadgeSeller.ReputationBadgeUrl,
-            convertToReputationBadgeViewModel(revieweeBadgeSeller.ReputationBadge),
-            revieweeBadgeSeller.IsFavorited
+            revieweeBadgeSeller.tooltip,
+            revieweeBadgeSeller.reputationScore,
+            revieweeBadgeSeller.score,
+            revieweeBadgeSeller.minBadgeScore,
+            revieweeBadgeSeller.reputationBadgeUrl,
+            convertToReputationBadgeViewModel(revieweeBadgeSeller.reputationBadge),
+            revieweeBadgeSeller.isFavorited
         )
     }
 
-    private fun convertToReputationBadgeViewModel(reputationBadge: ReputationBadgeDomain?): ReputationBadgeUiModel {
+    private fun convertToReputationBadgeViewModel(reputationBadge: ReputationBadgeDomain): ReputationBadgeUiModel {
         return ReputationBadgeUiModel(
-            reputationBadge.Level,
-            reputationBadge.Set
+            reputationBadge.level,
+            reputationBadge.set
         )
     }
 
     private fun convertToBuyerReputationViewModel(
-        revieweeBadgeCustomer: RevieweeBadgeCustomerDomain?
+        revieweeBadgeCustomer: RevieweeBadgeCustomerDomain
     ): RevieweeBadgeCustomerUiModel {
         return RevieweeBadgeCustomerUiModel(
-            revieweeBadgeCustomer.Positive,
-            revieweeBadgeCustomer.Neutral, revieweeBadgeCustomer.Negative,
-            revieweeBadgeCustomer.PositivePercentage,
-            revieweeBadgeCustomer.NoReputation
+            revieweeBadgeCustomer.positive,
+            revieweeBadgeCustomer.neutral, revieweeBadgeCustomer.negative,
+            revieweeBadgeCustomer.positivePercentage,
+            revieweeBadgeCustomer.noReputation
         )
     }
 
-    private fun convertToReputationViewModel(reputationData: ReputationDataDomain?): ReputationDataUiModel {
+    private fun convertToReputationViewModel(reputationData: ReputationDataDomain): ReputationDataUiModel {
         return ReputationDataUiModel(
-            reputationData.RevieweeScore,
-            reputationData.RevieweeScoreStatus,
-            reputationData!!.isShowRevieweeScore,
-            reputationData.ReviewerScore,
-            reputationData.ReviewerScoreStatus,
-            reputationData!!.isEditable,
-            reputationData!!.isInserted,
-            reputationData!!.isLocked,
-            reputationData!!.isAutoScored,
-            reputationData!!.isCompleted,
-            reputationData!!.isShowLockingDeadline,
-            reputationData.LockingDeadlineDays,
-            reputationData!!.isShowBookmark,
-            reputationData.ActionMessage
+            reputationData.revieweeScore,
+            reputationData.revieweeScoreStatus,
+            reputationData.isShowRevieweeScore,
+            reputationData.reviewerScore,
+            reputationData.reviewerScoreStatus,
+            reputationData.isEditable,
+            reputationData.isInserted,
+            reputationData.isLocked,
+            reputationData.isAutoScored,
+            reputationData.isCompleted,
+            reputationData.isShowLockingDeadline,
+            reputationData.lockingDeadlineDays,
+            reputationData.isShowBookmark,
+            reputationData.actionMessage
         )
     }
 }

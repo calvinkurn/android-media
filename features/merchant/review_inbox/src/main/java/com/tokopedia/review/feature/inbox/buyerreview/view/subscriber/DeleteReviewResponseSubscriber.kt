@@ -9,18 +9,18 @@ import rx.Subscriber
 /**
  * @author by nisie on 9/27/17.
  */
-class DeleteReviewResponseSubscriber constructor(private val viewListener: InboxReputationDetail.View?) :
+class DeleteReviewResponseSubscriber constructor(private val viewListener: InboxReputationDetail.View) :
     Subscriber<DeleteReviewResponseDomain>() {
 
     override fun onCompleted() {}
 
     override fun onError(e: Throwable) {
-        viewListener!!.finishLoadingDialog()
+        viewListener.finishLoadingDialog()
         viewListener.onErrorDeleteReviewResponse(getErrorMessage(viewListener.context, e))
     }
 
     override fun onNext(deleteReviewResponseDomain: DeleteReviewResponseDomain) {
-        viewListener!!.finishLoadingDialog()
+        viewListener.finishLoadingDialog()
         if (deleteReviewResponseDomain.isSuccess) viewListener.onSuccessDeleteReviewResponse() else viewListener.onErrorDeleteReviewResponse(
             viewListener.context.applicationContext
                 .getString(R.string.default_request_error_unknown)

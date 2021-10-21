@@ -17,54 +17,56 @@ import javax.inject.Inject
 class InboxReputationPresenter @Inject internal constructor(
     private val getFirstTimeInboxReputationUseCase: GetFirstTimeInboxReputationUseCase,
     private val getInboxReputationUseCase: GetInboxReputationUseCase
-) : BaseDaggerPresenter<InboxReputation.View?>(), InboxReputation.Presenter {
+) : BaseDaggerPresenter<InboxReputation.View>(), InboxReputation.Presenter {
+
     private var viewListener: InboxReputation.View? = null
-    private val pagingHandler: PagingHandler
-    override fun attachView(view: InboxReputation.View) {
+    private val pagingHandler: PagingHandler = PagingHandler()
+
+    override fun attachView(view: InboxReputation.View?) {
         super.attachView(view)
         viewListener = view
     }
 
     override fun getFirstTimeInboxReputation(tab: Int) {
-        viewListener!!.showLoadingFull()
+        viewListener?.showLoadingFull()
         getFirstTimeInboxReputationUseCase.execute(
             GetFirstTimeInboxReputationUseCase.getFirstTimeParam(tab),
-            GetFirstTimeInboxReputationSubscriber(viewListener)
+            viewListener?.let { GetFirstTimeInboxReputationSubscriber(it) }
         )
     }
 
     override fun getNextPage(
         lastItemPosition: Int, visibleItem: Int,
-        query: String?, timeFilter: String?,
-        scoreFilter: String?, tab: Int
+        query: String, timeFilter: String,
+        statusFilter: String, tab: Int
     ) {
         if (hasNextPage() && isOnLastPosition(
                 lastItemPosition,
                 visibleItem
             )
         ) {
-            viewListener!!.showLoadingNext()
+            viewListener?.showLoadingNext()
             pagingHandler.nextPage()
             getInboxReputationUseCase.execute(
                 GetInboxReputationUseCase.getParam(
                     pagingHandler.page,
                     query,
                     timeFilter,
-                    scoreFilter,
+                    statusFilter,
                     tab
                 ),
-                GetNextPageInboxReputationSubscriber(viewListener)
+                viewListener?.let { GetNextPageInboxReputationSubscriber(it) }
             )
         }
     }
 
     override fun getFilteredInboxReputation(
-        query: String?,
-        timeFilter: String?,
-        statusFilter: String?,
+        query: String,
+        timeFilter: String,
+        statusFilter: String,
         tab: Int
     ) {
-        viewListener!!.showRefreshing()
+        viewListener?.showRefreshing()
         pagingHandler.resetPage()
         getInboxReputationUseCase.execute(
             GetInboxReputationUseCase.getParam(
@@ -74,7 +76,7 @@ class InboxReputationPresenter @Inject internal constructor(
                 statusFilter,
                 tab
             ),
-            GetFilteredInboxReputationSubscriber(viewListener)
+            viewListener?.let { GetFilteredInboxReputationSubscriber(it) }
         )
     }
 
@@ -86,24 +88,27 @@ class InboxReputationPresenter @Inject internal constructor(
         return itemPosition == visibleItem
     }
 
-    fun refreshPage(query: String, timeFilter: String?, scoreFilter: String?, tab: Int) {
+    fun refreshPage(query: String, timeFilter: String, scoreFilter: String, tab: Int) {
         pagingHandler.resetPage()
         getInboxReputationUseCase.execute(
             GetInboxReputationUseCase.getParam(
                 pagingHandler.page, query, timeFilter,
                 scoreFilter, tab
             ),
-            RefreshInboxReputationSubscriber(
-                viewListener, isUsingFilter(
-                    query,
-                    timeFilter, scoreFilter
+            viewListener?.let {
+                RefreshInboxReputationSubscriber(
+                    it, isUsingFilter(
+                        query,
+                        timeFilter, scoreFilter
+                    )
                 )
-            )
+            }
+
         )
     }
 
-    private fun isUsingFilter(query: String, timeFilter: String?, scoreFilter: String?): Boolean {
-        return !query.isEmpty() || !timeFilter!!.isEmpty() || !scoreFilter!!.isEmpty()
+    private fun isUsingFilter(query: String, timeFilter: String, scoreFilter: String): Boolean {
+        return query.isNotEmpty() || timeFilter.isNotEmpty() || scoreFilter.isNotEmpty()
     }
 
     fun setHasNextPage(hasNextPage: Boolean) {
@@ -116,7 +121,4 @@ class InboxReputationPresenter @Inject internal constructor(
         getInboxReputationUseCase.unsubscribe()
     }
 
-    init {
-        pagingHandler = PagingHandler()
-    }
 }
