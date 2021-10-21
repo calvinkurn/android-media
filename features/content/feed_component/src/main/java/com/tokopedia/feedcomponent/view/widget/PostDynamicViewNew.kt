@@ -902,10 +902,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                             }
                                         }
                                         if (tagProducts.isNotEmpty()) {
-                                            if (layoutLihatProdukParent.width.toDp() == 24  ) {
+                                            if (layoutLihatProdukParent.width.toDp() == 24 && !productTagBubbleShowing  ) {
                                                 showViewWithAnimation(layoutLihatProdukParent, context)
                                             } else if (!productTagBubbleShowing && layoutLihatProdukParent.width.toDp() == 100) {
                                                 hideViewWithoutAnimation(layoutLihatProdukParent, context)
+                                            } else if (productTagBubbleShowing){
+                                                showViewWithAnimation(layoutLihatProdukParent, context)
                                             }
                                         }
                                         return true
@@ -1423,19 +1425,20 @@ class PostDynamicViewNew @JvmOverloads constructor(
             if (handlerAnim == null) {
                 handlerAnim = handlerFeed
             }
-            if (tagProducts.isNotEmpty()) {
                 handlerAnim?.postDelayed({
-                    showViewWithAnimation(layoutLihatProdukParent, context)
-                }, TIME_SECOND)
-            }
+                    if (tagProducts.isNotEmpty()) {
+                        showViewWithAnimation(layoutLihatProdukParent, context)
+                }},TIME_SECOND)
+
             if (handlerHide == null) {
                 handlerHide = handlerFeed
             }
+            handlerHide?.postDelayed({
                 if (!shouldContinueToShowLihatProduct(layout) && tagProducts.isNotEmpty()) {
-                    handlerHide?.postDelayed({
+
                     hideViewWithoutAnimation(layoutLihatProdukParent, context)
-                }, TIME_FOUR_SEC)
                 }
+                },TIME_FOUR_SEC)
         }
     }
 
