@@ -1,5 +1,6 @@
 package com.tokopedia.logisticCommon.data.response.customproductlogistic
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class OngkirGetCPLQGLResponse (
@@ -20,12 +21,13 @@ data class GetCPLData (
 )
 
 data class CPLProduct(
+    @SuppressLint("Invalid Data Type")
     @SerializedName("product_id")
     var productId: Long = 0,
     @SerializedName("cpl_status")
     var cplStatus: Int = 0,
     @SerializedName("shipper_services")
-    var shipperServices: List<Int> = listOf()
+    var shipperServices: List<Long> = listOf()
 )
 
 data class ShipperList(
@@ -38,8 +40,9 @@ data class ShipperList(
 )
 
 data class Shipper(
+    @SuppressLint("Invalid Data Type")
     @SerializedName("shipper_id")
-    var shipperId: Int = 0,
+    var shipperId: Long = 0,
     @SerializedName("shipper_name")
     var shipperName: String = "",
     @SerializedName("logo")
@@ -49,8 +52,9 @@ data class Shipper(
 )
 
 data class ShipperProduct(
+    @SuppressLint("Invalid Data Type")
     @SerializedName("shipper_product_id")
-    var shipperProductId: Int = 0,
+    var shipperProductId: Long = 0,
     @SerializedName("shipper_product_name")
     var shipperProductName: String = "",
     @SerializedName("ui_hidden")
