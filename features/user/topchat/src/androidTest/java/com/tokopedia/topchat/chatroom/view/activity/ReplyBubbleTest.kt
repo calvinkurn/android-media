@@ -30,7 +30,6 @@ class ReplyBubbleTest : TopchatRoomTest() {
 
         // When
         ReplyBubbleRobot.longClickBubbleAt(1)
-        waitForIt(5000)
 
         // Then
         assertLongClickMenu(isDisplayed())
