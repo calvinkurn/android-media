@@ -79,6 +79,13 @@ class PlayChatListView : ConstraintLayout {
         setupView(view)
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        try {
+            chatAdapter.registerAdapterDataObserver(adapterObserver)
+        } catch (ignored: java.lang.IllegalStateException) {}
+    }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         try {
@@ -132,7 +139,6 @@ class PlayChatListView : ConstraintLayout {
             addOnScrollListener(scrollListener)
             addItemDecoration(ChatListItemDecoration(context))
         }
-        chatAdapter.registerAdapterDataObserver(adapterObserver)
 
         csDownView.setOnClickListener {
             if (rvChatList.canScrollDown) scrollToLatest()
