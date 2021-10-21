@@ -6,16 +6,15 @@ import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -26,7 +25,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.*
@@ -41,8 +39,9 @@ import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
 import com.tokopedia.sellerhome.common.*
 import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
-import com.tokopedia.sellerhome.common.exception.SellerHomeException
+import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
+import com.tokopedia.sellerhome.databinding.ActivitySahSellerHomeBinding
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
@@ -56,12 +55,12 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
-import kotlinx.android.synthetic.main.activity_sah_seller_home.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomClickListener, SomListLoadTimeMonitoringActivity {
+class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomClickListener,
+    SomListLoadTimeMonitoringActivity {
 
     companion object {
         @JvmStatic
@@ -72,13 +71,19 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         private const val BOTTOM_NAV_EXIT_ANIM_DURATION = 1f
 
         private const val LAST_FRAGMENT_TYPE_KEY = "last_fragment"
-        private const val ACTION_GET_ALL_APP_WIDGET_DATA = "com.tokopedia.sellerappwidget.GET_ALL_APP_WIDGET_DATA"
+        private const val ACTION_GET_ALL_APP_WIDGET_DATA =
+            "com.tokopedia.sellerappwidget.GET_ALL_APP_WIDGET_DATA"
         private const val NAVIGATION_OTHER_MENU_POSITION = 4
     }
 
-    @Inject lateinit var userSession: UserSessionInterface
-    @Inject lateinit var viewModelFactory: ViewModelFactory
-    @Inject lateinit var remoteConfig: SellerHomeRemoteConfig
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var remoteConfig: SellerHomeRemoteConfig
 
     private val sellerReviewHelper by lazy { createReviewHelper(applicationContext) }
 
@@ -112,12 +117,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     override var loadTimeMonitoringListener: LoadTimeMonitoringListener? = null
     override var performanceMonitoringSomListPlt: SomListLoadTimeMonitoring? = null
 
+    private var binding: ActivitySahSellerHomeBinding? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setActivityOrientation()
         initInjector()
         initSellerHomePlt()
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sah_seller_home)
+        setContentView()
 
         setupBackground()
         setupToolbar()
@@ -129,7 +136,9 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         setupDefaultPage(savedInstanceState)
 
         // if redirected from any seller migration entry point, no need to show the update dialog
-        val isRedirectedFromSellerMigrationEntryPoint = !intent.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME).isNullOrBlank()
+        val isRedirectedFromSellerMigrationEntryPoint =
+            !intent.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME)
+                .isNullOrBlank()
 
         UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigrationEntryPoint)
         observeNotificationsLiveData()
@@ -260,21 +269,31 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         statusBarCallback = callback
     }
 
+    private fun setContentView() {
+        binding = ActivitySahSellerHomeBinding.inflate(layoutInflater).apply {
+            setContentView(root)
+        }
+    }
+
     private fun setupBackground() {
-        window.decorView.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        window.decorView.setBackgroundColor(
+            getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        )
     }
 
     private fun setupToolbar() {
-        setSupportActionBar(sahToolbar)
+        binding?.run {
+            setSupportActionBar(sahToolbar)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val statusBarHeight = StatusbarHelper.getStatusBarHeight(this)
-            val layoutParams = statusBarBackground?.layoutParams
-            layoutParams?.let {
-                if (it is LinearLayout.LayoutParams) {
-                    it.height = statusBarHeight
-                    statusBarBackground?.layoutParams = it
-                    statusBarBackground?.requestLayout()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val statusBarHeight = StatusbarHelper.getStatusBarHeight(this@SellerHomeActivity)
+                val layoutParams = statusBarBackground?.layoutParams
+                layoutParams?.let {
+                    if (it is LinearLayout.LayoutParams) {
+                        it.height = statusBarHeight
+                        statusBarBackground?.layoutParams = it
+                        statusBarBackground?.requestLayout()
+                    }
                 }
             }
         }
@@ -282,7 +301,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     private fun setupDefaultPage(savedInstanceState: Bundle?) {
         if (intent?.data == null || savedInstanceState != null) {
-            val initialPageType = savedInstanceState?.getInt(LAST_FRAGMENT_TYPE_KEY) ?: FragmentType.HOME
+            val initialPageType =
+                savedInstanceState?.getInt(LAST_FRAGMENT_TYPE_KEY) ?: FragmentType.HOME
             showToolbar(initialPageType)
             showInitialPage(initialPageType)
             checkForSellerAppReview(initialPageType)
@@ -293,7 +313,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     private fun showInitialPage(pageType: Int) {
         setCurrentFragmentType(pageType)
-        sahBottomNav.setSelected(pageType)
+        binding?.sahBottomNav?.setSelected(pageType)
 
         if (pageType == FragmentType.OTHER) {
             hideToolbarAndStatusBar()
@@ -315,7 +335,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
             showToolbar(pageType)
             setCurrentFragmentType(pageType)
-            sahBottomNav.setSelected(pageType)
+            binding?.sahBottomNav?.setSelected(pageType)
             navigator?.navigateFromAppLink(page)
             checkForSellerAppReview(pageType)
         }
@@ -327,7 +347,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         } else {
             canExitApp = true
             Toast.makeText(this, R.string.sah_exit_message, Toast.LENGTH_SHORT).show()
-            Handler().postDelayed({
+            Handler(Looper.getMainLooper()).postDelayed({
                 canExitApp = false
             }, DOUBLE_TAB_EXIT_DELAY)
         }
@@ -335,9 +355,9 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     private fun initInjector() {
         DaggerSellerHomeComponent.builder()
-                .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
     }
 
     private fun setupNavigator() {
@@ -347,7 +367,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     private fun setNavigationOtherMenuView() {
-        val navigationOtherMenuView = sahBottomNav.getMenuViewByIndex(NAVIGATION_OTHER_MENU_POSITION)
+        val navigationOtherMenuView =
+            binding?.sahBottomNav?.getMenuViewByIndex(NAVIGATION_OTHER_MENU_POSITION)
         navigator?.getHomeFragment()?.setNavigationOtherMenuView(navigationOtherMenuView)
     }
 
@@ -355,13 +376,13 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (isDarkMode()) {
                 ContextCompat.getDrawable(this, R.drawable.sah_shadow_dark).let {
-                    statusBarShadow?.background = it
-                    navBarShadow?.background = it
+                    binding?.statusBarShadow?.background = it
+                    binding?.navBarShadow?.background = it
                 }
             } else {
                 ContextCompat.getDrawable(this, R.drawable.sah_shadow).let {
-                    statusBarShadow?.background = it
-                    navBarShadow?.background = it
+                    binding?.statusBarShadow?.background = it
+                    binding?.navBarShadow?.background = it
                 }
             }
         }
@@ -388,15 +409,15 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         if (pageType != FragmentType.OTHER && pageType != FragmentType.ORDER) {
             val pageTitle = navigator?.getPageTitle(pageType)
             supportActionBar?.title = pageTitle
-            sahToolbar?.show()
-            statusBarShadow?.hide()
+            binding?.sahToolbar?.show()
+            binding?.statusBarShadow?.hide()
         } else {
             if (!DeviceScreenInfo.isTablet(this)) {
-                statusBarShadow?.hide()
+                binding?.statusBarShadow?.hide()
             } else {
-                statusBarShadow?.show()
+                binding?.statusBarShadow?.show()
             }
-            sahToolbar?.hide()
+            binding?.sahToolbar?.hide()
         }
     }
 
@@ -426,7 +447,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     private fun observeNotificationsLiveData() {
-        homeViewModel.notifications.observe(this, Observer {
+        homeViewModel.notifications.observe(this, {
             if (it is Success) {
                 showNotificationBadge(it.data.notifCenterUnread)
                 showChatNotificationCounter(it.data.chat)
@@ -436,7 +457,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     private fun observeShopInfoLiveData() {
-        homeViewModel.shopInfo.observe(this, Observer {
+        homeViewModel.shopInfo.observe(this, {
             when (it) {
                 is Success -> {
                     navigator?.run {
@@ -455,8 +476,11 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
                     }
                 }
                 is Fail -> {
-                    val message = "Seller Home Error shop info"
-                    logToCrashlytics(it.throwable, message)
+                    SellerHomeErrorHandler.logException(
+                        it.throwable,
+                        SellerHomeErrorHandler.SHOP_INFO,
+                        SellerHomeErrorHandler.SHOP_INFO
+                    )
                 }
             }
         })
@@ -464,7 +488,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     private fun observeIsRoleEligible() {
-        homeViewModel.isRoleEligible.observe(this, Observer { result ->
+        homeViewModel.isRoleEligible.observe(this, { result ->
             if (result is Success) {
                 result.data.let { isRoleEligible ->
                     if (!isRoleEligible) {
@@ -483,13 +507,13 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     private fun showChatNotificationCounter(unreadsSeller: Int) {
         val badgeVisibility = if (unreadsSeller <= 0) View.INVISIBLE else View.VISIBLE
-        sahBottomNav.setBadge(unreadsSeller, FragmentType.CHAT, badgeVisibility)
+        binding?.sahBottomNav?.setBadge(unreadsSeller, FragmentType.CHAT, badgeVisibility)
     }
 
     private fun showOrderNotificationCounter(orderStatus: NotificationSellerOrderStatusUiModel) {
         val notificationCount = orderStatus.newOrder.plus(orderStatus.readyToShip)
         val badgeVisibility = if (notificationCount <= 0) View.INVISIBLE else View.VISIBLE
-        sahBottomNav.setBadge(notificationCount, FragmentType.ORDER, badgeVisibility)
+        binding?.sahBottomNav?.setBadge(notificationCount, FragmentType.ORDER, badgeVisibility)
     }
 
     private fun setupStatusBar() {
@@ -499,29 +523,94 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
             } else {
                 requestStatusBarDark()
             }
-            statusBarBackground?.show()
+            binding?.statusBarBackground?.show()
         }
     }
 
     private fun hideToolbarAndStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            statusBarBackground?.hide()
+            binding?.statusBarBackground?.hide()
             statusBarCallback?.setStatusBar()
         }
-        sahToolbar?.hide()
+        binding?.sahToolbar?.hide()
     }
 
     private fun setupBottomNav() {
-        sahBottomNav.setBackgroundColor(this.getResColor(android.R.color.transparent))
+        binding?.sahBottomNav?.setBackgroundColor(getResColor(android.R.color.transparent))
 
-        menu.add(BottomMenu(R.id.menu_home, resources.getString(R.string.sah_home), R.raw.anim_bottom_nav_home, R.raw.anim_bottom_nav_home_to_enabled, R.drawable.ic_sah_bottom_nav_home_active, R.drawable.ic_sah_bottom_nav_home_inactive, com.tokopedia.unifyprinciples.R.color.Unify_G600, false, BOTTOM_NAV_EXIT_ANIM_DURATION, BOTTOM_NAV_ENTER_ANIM_DURATION))
-        menu.add(BottomMenu(R.id.menu_product, resources.getString(R.string.sah_product), R.raw.anim_bottom_nav_product, R.raw.anim_bottom_nav_product_to_enabled, R.drawable.ic_sah_bottom_nav_product_active, R.drawable.ic_sah_bottom_nav_product_inactive, com.tokopedia.unifyprinciples.R.color.Unify_G600, false, BOTTOM_NAV_EXIT_ANIM_DURATION, BOTTOM_NAV_ENTER_ANIM_DURATION))
-        menu.add(BottomMenu(R.id.menu_chat, resources.getString(R.string.sah_chat), R.raw.anim_bottom_nav_chat, R.raw.anim_bottom_nav_chat_to_enabled, R.drawable.ic_sah_bottom_nav_chat_active, R.drawable.ic_sah_bottom_nav_chat_inactive, com.tokopedia.unifyprinciples.R.color.Unify_G600, true, BOTTOM_NAV_EXIT_ANIM_DURATION, BOTTOM_NAV_ENTER_ANIM_DURATION))
-        menu.add(BottomMenu(R.id.menu_order, resources.getString(R.string.sah_sale), R.raw.anim_bottom_nav_order, R.raw.anim_bottom_nav_order_to_enabled, R.drawable.ic_sah_bottom_nav_order_active, R.drawable.ic_sah_bottom_nav_order_inactive, com.tokopedia.unifyprinciples.R.color.Unify_G600, true, BOTTOM_NAV_EXIT_ANIM_DURATION, BOTTOM_NAV_ENTER_ANIM_DURATION))
-        menu.add(BottomMenu(R.id.menu_other, resources.getString(R.string.sah_others), R.raw.anim_bottom_nav_other, R.raw.anim_bottom_nav_other_to_enabled, R.drawable.ic_sah_bottom_nav_other_active, R.drawable.ic_sah_bottom_nav_other_inactive, com.tokopedia.unifyprinciples.R.color.Unify_G600, false, BOTTOM_NAV_EXIT_ANIM_DURATION, BOTTOM_NAV_ENTER_ANIM_DURATION))
-        sahBottomNav.setMenu(menu)
+        menu.add(
+            BottomMenu(
+                R.id.menu_home,
+                resources.getString(R.string.sah_home),
+                R.raw.anim_bottom_nav_home,
+                R.raw.anim_bottom_nav_home_to_enabled,
+                R.drawable.ic_sah_bottom_nav_home_active,
+                R.drawable.ic_sah_bottom_nav_home_inactive,
+                com.tokopedia.unifyprinciples.R.color.Unify_G600,
+                false,
+                BOTTOM_NAV_EXIT_ANIM_DURATION,
+                BOTTOM_NAV_ENTER_ANIM_DURATION
+            )
+        )
+        menu.add(
+            BottomMenu(
+                R.id.menu_product,
+                resources.getString(R.string.sah_product),
+                R.raw.anim_bottom_nav_product,
+                R.raw.anim_bottom_nav_product_to_enabled,
+                R.drawable.ic_sah_bottom_nav_product_active,
+                R.drawable.ic_sah_bottom_nav_product_inactive,
+                com.tokopedia.unifyprinciples.R.color.Unify_G600,
+                false,
+                BOTTOM_NAV_EXIT_ANIM_DURATION,
+                BOTTOM_NAV_ENTER_ANIM_DURATION
+            )
+        )
+        menu.add(
+            BottomMenu(
+                R.id.menu_chat,
+                resources.getString(R.string.sah_chat),
+                R.raw.anim_bottom_nav_chat,
+                R.raw.anim_bottom_nav_chat_to_enabled,
+                R.drawable.ic_sah_bottom_nav_chat_active,
+                R.drawable.ic_sah_bottom_nav_chat_inactive,
+                com.tokopedia.unifyprinciples.R.color.Unify_G600,
+                true,
+                BOTTOM_NAV_EXIT_ANIM_DURATION,
+                BOTTOM_NAV_ENTER_ANIM_DURATION
+            )
+        )
+        menu.add(
+            BottomMenu(
+                R.id.menu_order,
+                resources.getString(R.string.sah_sale),
+                R.raw.anim_bottom_nav_order,
+                R.raw.anim_bottom_nav_order_to_enabled,
+                R.drawable.ic_sah_bottom_nav_order_active,
+                R.drawable.ic_sah_bottom_nav_order_inactive,
+                com.tokopedia.unifyprinciples.R.color.Unify_G600,
+                true,
+                BOTTOM_NAV_EXIT_ANIM_DURATION,
+                BOTTOM_NAV_ENTER_ANIM_DURATION
+            )
+        )
+        menu.add(
+            BottomMenu(
+                R.id.menu_other,
+                resources.getString(R.string.sah_others),
+                R.raw.anim_bottom_nav_other,
+                R.raw.anim_bottom_nav_other_to_enabled,
+                R.drawable.ic_sah_bottom_nav_other_active,
+                R.drawable.ic_sah_bottom_nav_other_inactive,
+                com.tokopedia.unifyprinciples.R.color.Unify_G600,
+                false,
+                BOTTOM_NAV_EXIT_ANIM_DURATION,
+                BOTTOM_NAV_ENTER_ANIM_DURATION
+            )
+        )
+        binding?.sahBottomNav?.setMenu(menu)
 
-        sahBottomNav.setMenuClickListener(this)
+        binding?.sahBottomNav?.setMenuClickListener(this)
     }
 
     private fun initSellerHomePlt() {
@@ -546,41 +635,38 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     private fun checkForSellerAppReview(pageType: Int) {
         if (pageType == FragmentType.HOME) {
             lifecycleScope.launch(Dispatchers.IO) {
-                sellerReviewHelper?.checkForSellerReview(this@SellerHomeActivity, supportFragmentManager)
+                sellerReviewHelper?.checkForSellerReview(
+                    this@SellerHomeActivity,
+                    supportFragmentManager
+                )
             }
-        }
-    }
-
-    private fun logToCrashlytics(throwable: Throwable, message: String) {
-        if (!GlobalConfig.isAllowDebuggingTools()) {
-            val exceptionMessage = "$message -> ${throwable.localizedMessage}"
-            FirebaseCrashlytics.getInstance().recordException(SellerHomeException(
-                    message = exceptionMessage,
-                    cause = throwable
-            ))
-        } else {
-            throwable.printStackTrace()
         }
     }
 
     private fun setActivityOrientation() {
         if (DeviceScreenInfo.isTablet(this)) {
-            val isAccelerometerRotationEnabled = Settings.System.getInt(contentResolver, Settings.System.ACCELEROMETER_ROTATION, 0) == 1
-            requestedOrientation = if (isAccelerometerRotationEnabled) ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            val isAccelerometerRotationEnabled = Settings.System.getInt(
+                contentResolver,
+                Settings.System.ACCELEROMETER_ROTATION,
+                0
+            ) == 1
+            requestedOrientation =
+                if (isAccelerometerRotationEnabled) ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
     }
 
     private fun onAccelerometerOrientationSettingChange(isEnabled: Boolean) {
         if (DeviceScreenInfo.isTablet(this)) {
-            requestedOrientation = if (isEnabled) ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            requestedOrientation =
+                if (isEnabled) ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
     }
 
     private fun setupSellerHomeInsetListener() {
-        sahRootLayout?.setOnApplyWindowInsetsListener(createSellerHomeInsetsListener())
-    }
-
-    private fun createSellerHomeInsetsListener(): View.OnApplyWindowInsetsListener {
-        return SellerHomeOnApplyInsetsListener(sahContainer, sahBottomNav)
+        binding?.run {
+            sahRootLayout.setOnApplyWindowInsetsListener(
+                SellerHomeOnApplyInsetsListener(sahContainer, sahBottomNav)
+            )
+        }
     }
 }

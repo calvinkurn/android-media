@@ -74,6 +74,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolde
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.*
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder.*
+import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRecentPurchaseBinding
 import com.tokopedia.tokopedianow.datefilter.presentation.activity.TokoNowDateFilterActivity.Companion.EXTRA_SELECTED_DATE_FILTER
 import com.tokopedia.tokopedianow.datefilter.presentation.activity.TokoNowDateFilterActivity.Companion.REQUEST_CODE_DATE_FILTER_BOTTOMSHEET
 import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
@@ -84,6 +85,7 @@ import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFi
 import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.SORT_VALUE
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 import javax.inject.Inject
 
@@ -123,6 +125,8 @@ class TokoNowRecentPurchaseFragment:
     private var miniCartWidget: MiniCartWidget? = null
     private val carouselScrollPosition = SparseIntArray()
 
+    private var binding by autoClearedNullable<FragmentTokopedianowRecentPurchaseBinding>()
+
     private val adapter by lazy {
         RecentPurchaseAdapter(
             RecentPurchaseAdapterTypeFactory(
@@ -148,7 +152,8 @@ class TokoNowRecentPurchaseFragment:
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_tokopedianow_recent_purchase, container, false)
+        binding = FragmentTokopedianowRecentPurchaseBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -298,7 +303,7 @@ class TokoNowRecentPurchaseFragment:
     }
 
     override fun onSeeMoreClick(data: RecommendationCarouselData, applink: String) {
-        // TO-DO: Implement see more click tracking
+        RouteManager.route(context, applink)
     }
 
     override fun onClickSortFilter() {
@@ -344,11 +349,11 @@ class TokoNowRecentPurchaseFragment:
     }
 
     private fun initView() {
-        swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
-        rvRecentPurchase = view?.findViewById(R.id.rv_recent_purchase)
-        navToolbar = view?.findViewById(R.id.nav_toolbar)
-        statusBarBg = view?.findViewById(R.id.status_bar_bg)
-        miniCartWidget = view?.findViewById(R.id.mini_cart_widget)
+        swipeRefreshLayout = binding?.swipeRefreshLayout
+        rvRecentPurchase = binding?.rvRecentPurchase
+        navToolbar = binding?.navToolbar
+        statusBarBg = binding?.statusBarBg
+        miniCartWidget = binding?.miniCartWidget
     }
 
     private fun setupStatusBar() {
@@ -636,8 +641,9 @@ class TokoNowRecentPurchaseFragment:
     }
 
     private fun onDateFilterActivityResult(data: Intent?) {
-        val selectedFilter = data?.getParcelableExtra<SelectedDateFilter>(EXTRA_SELECTED_DATE_FILTER)
-        viewModel.applyDateFilter(selectedFilter)
+        data?.getParcelableExtra<SelectedDateFilter>(EXTRA_SELECTED_DATE_FILTER)?.let {
+            viewModel.applyDateFilter(it)
+        }
     }
 
     private fun onSuccessGetLayout(data: RepurchaseLayoutUiModel) {

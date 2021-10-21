@@ -4,24 +4,38 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.play.data.Voucher
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
+import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.fake.FakePlayWebSocket
 import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.andThen
+import com.tokopedia.play.robot.andWhen
+import com.tokopedia.play.robot.play.andWhenExpectEvent
+import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.withState
 import com.tokopedia.play.robot.thenVerify
-import com.tokopedia.play.util.isEqualTo
-import com.tokopedia.play.util.isEqualToIgnoringFields
+import com.tokopedia.play.util.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.action.InteractiveOngoingFinishedAction
+import com.tokopedia.play.view.uimodel.action.InteractiveTapTapAction
+import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
+import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
+import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.websocket.response.*
+import com.tokopedia.play_common.model.dto.interactive.InteractiveType
+import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
+import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -38,11 +52,19 @@ class PlayViewModelWebSocketTest {
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
 
+    private val videoInfoBuilder = PlayVideoModelBuilder()
+    private val videoModelBuilder = PlayVideoModelBuilder()
     private val channelDataModelBuilder = PlayChannelDataModelBuilder()
-    private val channelData = channelDataModelBuilder.buildChannelData()
+    private val channelData = channelDataModelBuilder.buildChannelData(
+        videoMetaInfo = videoInfoBuilder.buildVideoMeta(
+            videoPlayer = videoModelBuilder.buildCompleteGeneralVideoPlayer()
+        )
+    )
     private val mapperBuilder = PlayMapperBuilder()
     private lateinit var playChannelWebSocket: PlayChannelWebSocket
     private lateinit var fakePlayWebSocket: FakePlayWebSocket
+    private val repo: PlayViewerRepository = mockk(relaxed = true)
+    private val mockRemoteConfig: RemoteConfig = mockk(relaxed = true)
 
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
     private val testDispatcher = CoroutineTestDispatchers
@@ -53,6 +75,8 @@ class PlayViewModelWebSocketTest {
 
         fakePlayWebSocket = FakePlayWebSocket(testDispatcher)
         playChannelWebSocket = PlayChannelWebSocket(fakePlayWebSocket, mockk(relaxed = true))
+
+        every { mockRemoteConfig.getBoolean(any(), any()) } returns true
     }
 
     @After
@@ -360,5 +384,241 @@ class PlayViewModelWebSocketTest {
                 }
             }
         }
+    }
+
+    @Test
+    fun `when get user winner status from socket, then it should show leaderboard data`() {
+        coEvery { repo.getCurrentInteractive(any()) } returns PlayCurrentInteractiveModel(
+            id = 1,
+            timeStatus = PlayInteractiveTimeStatus.Live(10000),
+            title = "Giveaway",
+            type = InteractiveType.QuickTap
+        )
+
+        coEvery { repo.postInteractiveTap(any(), any()) } returns true
+        coEvery { repo.getActiveInteractiveId() } returns "1"
+        coEvery { repo.hasJoined(any()) } returns true
+
+        val robot = createPlayViewModelRobot(
+            playChannelWebSocket = playChannelWebSocket,
+            repo = repo,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            remoteConfig = mockRemoteConfig,
+            playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
+        )
+
+        robot.apply {
+            setUserId("1")
+            createPage(channelData)
+            focusPage(channelData)
+        }
+
+        val state = robot.recordState {
+            fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+            viewModel.submitAction(InteractiveTapTapAction)
+            viewModel.submitAction(InteractiveOngoingFinishedAction)
+            fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
+        }
+
+        state.winnerBadge.shouldShow.assertTrue()
+    }
+
+    @Test
+    fun `when get user winner status from socket, and the current user is win, then it should emit winner popup`() {
+        coEvery { repo.getCurrentInteractive(any()) } returns PlayCurrentInteractiveModel(
+            id = 1,
+            timeStatus = PlayInteractiveTimeStatus.Live(10000),
+            title = "Giveaway",
+            type = InteractiveType.QuickTap
+        )
+
+        coEvery { repo.postInteractiveTap(any(), any()) } returns true
+        coEvery { repo.getActiveInteractiveId() } returns "1"
+        coEvery { repo.hasJoined(any()) } returns true
+
+        val robot = createPlayViewModelRobot(
+            playChannelWebSocket = playChannelWebSocket,
+            repo = repo,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            remoteConfig = mockRemoteConfig,
+            playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
+        )
+
+        robot.apply {
+            setUserId("1")
+            createPage(channelData)
+            focusPage(channelData)
+        }
+
+        val event = robot.recordEvent {
+            fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+            viewModel.submitAction(InteractiveTapTapAction)
+            viewModel.submitAction(InteractiveOngoingFinishedAction)
+            fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
+        }
+
+        event.last().isEqualTo(
+            ShowWinningDialogEvent(PlayUserWinnerStatusSocketResponse.imageUrl,
+                PlayUserWinnerStatusSocketResponse.winnerTitle,
+                PlayUserWinnerStatusSocketResponse.winnerText
+            )
+        )
+    }
+
+    @Test
+    fun `when get user winner status from socket, and the current user is lose, then it should emit loser popup`() {
+        coEvery { repo.getCurrentInteractive(any()) } returns PlayCurrentInteractiveModel(
+            id = 1,
+            timeStatus = PlayInteractiveTimeStatus.Live(10000),
+            title = "Giveaway",
+            type = InteractiveType.QuickTap
+        )
+
+        coEvery { repo.postInteractiveTap(any(), any()) } returns true
+        coEvery { repo.getActiveInteractiveId() } returns "1"
+        coEvery { repo.hasJoined(any()) } returns true
+
+        val robot = createPlayViewModelRobot(
+            playChannelWebSocket = playChannelWebSocket,
+            repo = repo,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            remoteConfig = mockRemoteConfig,
+            playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
+        )
+
+        robot.apply {
+            setUserId("2")
+            createPage(channelData)
+            focusPage(channelData)
+        }
+
+        val event = robot.recordEvent {
+            fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+            viewModel.submitAction(InteractiveTapTapAction)
+            viewModel.submitAction(InteractiveOngoingFinishedAction)
+            fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
+        }
+
+        event.last().isEqualTo(
+            ShowCoachMarkWinnerEvent(
+                PlayUserWinnerStatusSocketResponse.loserTitle,
+                PlayUserWinnerStatusSocketResponse.loserText
+            )
+        )
+    }
+
+    @Test
+    fun `when the user winner status coming when interactive is not done yet, then it does nothing`() {
+        coEvery { repo.getCurrentInteractive(any()) } returns PlayCurrentInteractiveModel(
+            id = 1,
+            timeStatus = PlayInteractiveTimeStatus.Live(10000),
+            title = "Giveaway",
+            type = InteractiveType.QuickTap
+        )
+
+        coEvery { repo.postInteractiveTap(any(), any()) } returns true
+        coEvery { repo.getActiveInteractiveId() } returns "1"
+        coEvery { repo.hasJoined(any()) } returns true
+
+        val robot = createPlayViewModelRobot(
+            playChannelWebSocket = playChannelWebSocket,
+            repo = repo,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            remoteConfig = mockRemoteConfig,
+            playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
+        )
+
+        robot.apply {
+            setUserId("1")
+            createPage(channelData)
+            focusPage(channelData)
+        }
+
+        val event = robot.recordEvent {
+            fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+            viewModel.submitAction(InteractiveTapTapAction)
+            fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
+        }
+
+        event.isEqualTo(emptyList())
+    }
+
+    @Test
+    fun `when get user winner status from socket, and the current user is not join the session, then it does nothing`() {
+        coEvery { repo.getCurrentInteractive(any()) } returns PlayCurrentInteractiveModel(
+            id = 1,
+            timeStatus = PlayInteractiveTimeStatus.Live(10000),
+            title = "Giveaway",
+            type = InteractiveType.QuickTap
+        )
+
+        coEvery { repo.postInteractiveTap(any(), any()) } returns true
+        coEvery { repo.getActiveInteractiveId() } returns "1"
+        coEvery { repo.hasJoined(any()) } returns false
+
+        val robot = createPlayViewModelRobot(
+            playChannelWebSocket = playChannelWebSocket,
+            repo = repo,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            remoteConfig = mockRemoteConfig,
+            playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
+        )
+
+        robot.apply {
+            setUserId("1")
+            createPage(channelData)
+            focusPage(channelData)
+        }
+
+        val event = robot.recordEvent {
+            fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+            viewModel.submitAction(InteractiveTapTapAction)
+            viewModel.submitAction(InteractiveOngoingFinishedAction)
+            fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
+        }
+
+        event.isEqualTo(emptyList())
+    }
+
+    @Test
+    fun `when interactive has ended and still not getting any user winner status from websocket, then it should show leaderboard anyway`() {
+        coEvery { repo.getCurrentInteractive(any()) } returns PlayCurrentInteractiveModel(
+            id = 1,
+            timeStatus = PlayInteractiveTimeStatus.Live(10000),
+            title = "Giveaway",
+            type = InteractiveType.QuickTap
+        )
+
+        coEvery { repo.postInteractiveTap(any(), any()) } returns true
+        coEvery { repo.getActiveInteractiveId() } returns "1"
+        coEvery { repo.hasJoined(any()) } returns false
+
+        val robot = createPlayViewModelRobot(
+            playChannelWebSocket = playChannelWebSocket,
+            repo = repo,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            remoteConfig = mockRemoteConfig,
+            playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
+        )
+
+        robot.apply {
+            setUserId("1")
+            createPage(channelData)
+            focusPage(channelData)
+        }
+
+        val state = robot.recordState {
+            fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+            viewModel.submitAction(InteractiveTapTapAction)
+            viewModel.submitAction(InteractiveOngoingFinishedAction)
+        }
+
+        state.winnerBadge.shouldShow.assertTrue()
     }
 }

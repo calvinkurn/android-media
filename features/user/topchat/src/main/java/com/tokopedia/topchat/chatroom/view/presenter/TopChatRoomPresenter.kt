@@ -104,7 +104,6 @@ open class TopChatRoomPresenter @Inject constructor(
     private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
     private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
     private var replyChatUseCase: ReplyChatUseCase,
-    private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
     private var getShopFollowingUseCase: GetShopFollowingUseCase,
     private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
     private var addToCartUseCase: AddToCartUseCase,
@@ -333,18 +332,6 @@ open class TopChatRoomPresenter @Inject constructor(
 
     private fun updateRoomMetaData(roomMetaData: RoomMetaData) {
         this.roomMetaData = roomMetaData
-    }
-
-    override fun getMessageId(
-        toUserId: String,
-        toShopId: String,
-        source: String,
-        onError: (Throwable) -> Unit,
-        onSuccessGetMessageId: (String) -> Unit
-    ) {
-        getExistingMessageIdUseCase.getMessageId(
-            toShopId, toUserId, source, onSuccessGetMessageId, onError
-        )
     }
 
     override fun loadTopChat(

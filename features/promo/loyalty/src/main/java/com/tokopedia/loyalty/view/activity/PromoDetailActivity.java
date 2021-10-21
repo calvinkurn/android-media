@@ -2,16 +2,15 @@ package com.tokopedia.loyalty.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
 import androidx.fragment.app.Fragment;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.share.DefaultShare;
@@ -20,6 +19,7 @@ import com.tokopedia.loyalty.di.component.DaggerPromoDetailComponent;
 import com.tokopedia.loyalty.di.component.PromoDetailComponent;
 import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.fragment.PromoDetailFragment;
+import com.tokopedia.track.TrackApp;
 
 /**
  * @author Aghny A. Putra on 23/03/18
@@ -43,22 +43,17 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
         return intent;
     }
 
-    public static Intent getCallingIntent(Context context, String slug) {
-        Intent intent = new Intent(context, PromoDetailActivity.class);
-        intent.putExtra(EXTRA_PROMO_SLUG, slug);
-        return intent;
-    }
-
-    @DeepLink(ApplinkConst.PROMO_DETAIL)
-    public static Intent getAppLinkIntent(Context context, Bundle extras) {
-        String slug = extras.getString(EXTRA_PROMO_SLUG);
-        return PromoDetailActivity.getCallingIntent(context, slug);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateTitle(getString(R.string.title_promo_detail));
+
+        trackCampaign(getIntent().getData());
+    }
+
+    private void trackCampaign(Uri uri){
+        //track campaign in case there is utm/gclid in url
+        TrackApp.getInstance().getGTM().sendCampaign(this, uri.toString(), getScreenName(), false);
     }
 
     @Override
@@ -69,7 +64,11 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
     @Override
     protected Fragment getNewFragment() {
         PromoData promoData = getIntent().getParcelableExtra(EXTRA_PROMO_DATA);
-        String slug = getIntent().getStringExtra(EXTRA_PROMO_SLUG);
+        Uri uri = getIntent().getData();
+        String slug = "";
+        if (uri != null) {
+            slug = uri.getQueryParameter(EXTRA_PROMO_SLUG);
+        }
         if (!TextUtils.isEmpty(slug)) {
             return PromoDetailFragment.newInstance(slug);
         } else if (promoData != null) {
