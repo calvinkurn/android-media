@@ -103,11 +103,9 @@ ext {
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.10'
     unifyPrinciplesVersion = '1.3.8'
-    /*
-        please not to upgrade unify component version to 1.1.75 and 1.1.76,
-        you can jump over to 1.1.77. There is a bug related to html converter [HtmlLinkHelper class],
-        discussed here : https://tokopedia.slack.com/archives/GJ120D6P3/p1634627640000500 (private channel)
-     */
+    // please not to upgrade unify component version to 1.1.75 and 1.1.76,
+    // you can jump over to 1.1.77. There was a bug related to html converter [HtmlLinkHelper class],
+    // discussed here : https://tokopedia.slack.com/archives/GJ120D6P3/p1634627640000500 (private channel)
     unifyComponentsVersion = '1.1.74.1'
     unifyCoachMarkVersion = '1.2.14'
     unifyCalendarVersion = '1.1.4'
