@@ -35,11 +35,10 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
     )
 
     private fun mapOrderExtensionDescription(text: String?, newDeadline: String?): CharSequence {
-        return SpannableStringBuilder().apply {
-            append(text.orEmpty())
-            append(" ")
-            append(createBoldText(newDeadline.orEmpty()).setColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950))
-        }
+        return SpannableStringBuilder().append(text.orEmpty())
+            .append(" ")
+            .append(createBoldText(newDeadline.orEmpty()).setColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+            .append(".")
     }
 
     private fun createDefaultCommentErrorChecker(): List<OrderExtensionRequestInfoUiModel.CommentUiModel.ErrorChecker> {
