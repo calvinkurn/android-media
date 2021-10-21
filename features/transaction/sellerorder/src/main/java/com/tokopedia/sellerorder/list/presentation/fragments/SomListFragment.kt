@@ -1135,7 +1135,9 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     }
                 }
                 is Fail -> {
-                    val message = it.throwable.message.toString()
+                    val message = context?.run {
+                        SomErrorHandler.getErrorMessage(it.throwable, this)
+                    }.orEmpty()
                     if (message.isNotEmpty()) {
                         showToasterError(
                             view,
@@ -2454,12 +2456,11 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     private fun getOrdersProducts(orders: List<SomListOrderUiModel>): List<SomListBulkProcessOrderProductUiModel> {
         val products = orders.map { it.orderProduct }.flatten().groupBy { it.productId }
-
         return products.filter { it.value.isNotEmpty() }.map {
             SomListBulkProcessOrderProductUiModel(
                 productName = it.value.first().productName,
                 picture = it.value.first().picture,
-                amount = it.value.size
+                amount = it.value.sumOf { prod -> prod.quantity }
             )
         }
     }

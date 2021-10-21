@@ -10,7 +10,10 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.view.NoAddressEmptyStateView
 import com.tokopedia.tokopedianow.common.view.TokoNowView
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowEmptyStateOocBinding
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategoryEmptyProductBinding
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
+import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowEmptyStateOocViewHolder(
         itemView: View,
@@ -23,26 +26,24 @@ class TokoNowEmptyStateOocViewHolder(
         const val SHIPPING_CHOOSE_ADDRESS_TAG = "SHIPPING_CHOOSE_ADDRESS_TAG"
     }
 
-    private var emptyStateAddressOoc: NoAddressEmptyStateView? = null
-    private var layout: RelativeLayout? = null
-
-    init {
-        emptyStateAddressOoc = itemView.findViewById(R.id.empty_state_occ)
-        layout = itemView.findViewById(R.id.layout)
-    }
+    private var binding: ItemTokopedianowEmptyStateOocBinding? by viewBinding()
 
     override fun bind(element: TokoNowEmptyStateOocUiModel?) {
-        showEmptyStateNoAddress()
+        showEmptyStateNoAddress(element?.eventCategory.orEmpty())
     }
 
-    private fun showEmptyStateNoAddress() {
-        emptyStateAddressOoc?.actionListener = object : NoAddressEmptyStateView.ActionListener {
+    private fun showEmptyStateNoAddress(eventCategory: String) {
+        binding?.emptyStateOcc?.actionListener = object : NoAddressEmptyStateView.ActionListener {
             override fun onChangeAddressClicked() {
                 showBottomSheetChooseAddress()
             }
 
             override fun onReturnClick() {
                 (itemView.context as? Activity)?.finish()
+            }
+
+            override fun onGetNoAddressEmptyStateEventCategoryTracker(): String {
+                return eventCategory
             }
         }
     }

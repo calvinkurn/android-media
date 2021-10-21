@@ -120,7 +120,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     private var productListMeta: RepurchaseProductListMeta? = null
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
     private var selectedCategoryFilter: SelectedSortFilter? = null
-    private var selectedDateFilter: SelectedDateFilter? = SelectedDateFilter()
+    private var selectedDateFilter: SelectedDateFilter = SelectedDateFilter()
     private var selectedSortFilter: Int = FREQUENTLY_BOUGHT
     private var layoutList: MutableList<Visitable<*>> = mutableListOf()
 
@@ -273,7 +273,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         }
     }
 
-    fun applyDateFilter(selectedFilter: SelectedDateFilter?) {
+    fun applyDateFilter(selectedFilter: SelectedDateFilter) {
         launchCatchError(block = {
             setDateFilter(selectedFilter)
             val productList = getProductList()
@@ -359,7 +359,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         _getLayout.postValue(Success(layout))
     }
 
-    private fun setDateFilter(selectedFilter: SelectedDateFilter?) {
+    private fun setDateFilter(selectedFilter: SelectedDateFilter) {
         layoutList.setDateFilter(selectedFilter)
         layoutList.removeEmptyStateNoHistory()
         layoutList.removeAllProduct()
@@ -405,7 +405,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
             val productList = getProductList()
             layoutList.removeLoading()
 
-            if (productList.isNullOrEmpty()) {
+            if (productList.isEmpty()) {
                 addEmptyState(id = EMPTY_STATE_NO_RESULT)
             } else {
                 layoutList.addSortFilter()
@@ -426,7 +426,7 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
                 )
             )
 
-            if (!recommendationWidgets.first().recommendationItemList.isNullOrEmpty()) {
+            if (recommendationWidgets.first().recommendationItemList.isNotEmpty()) {
                 layoutList.addProductRecom(pageName, recommendationWidgets.first())
 
                 val layout = RepurchaseLayoutUiModel(
@@ -534,13 +534,13 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
         })
     }
 
-    private fun createProductListRequestParam(page: Int = INITIAL_PAGE): GetRepurchaseProductListParam {
+    private fun createProductListRequestParam(page: Int): GetRepurchaseProductListParam {
         val warehouseID = localCacheModel?.warehouse_id.orEmpty()
         val totalScan = productListMeta?.totalScan.orZero()
         val categoryIds = selectedCategoryFilter?.id
         val sort = selectedSortFilter
-        val dateStart = selectedDateFilter?.startDate
-        val dateEnd = selectedDateFilter?.endDate
+        val dateStart = selectedDateFilter.startDate
+        val dateEnd = selectedDateFilter.endDate
 
         return GetRepurchaseProductListParam(
             warehouseID = warehouseID,
@@ -563,15 +563,15 @@ class TokoNowRecentPurchaseViewModel @Inject constructor(
     private suspend fun addEmptyState(@RepurchaseStaticLayoutId id: String) {
         when(id) {
             EMPTY_STATE_NO_HISTORY_SEARCH -> {
-                val description = R.string
-                    .tokopedianow_repurchase_empty_state_no_history_desc_search
-                layoutList.addEmptyStateNoHistory(description)
+                val title = R.string.tokopedianow_repurchase_empty_state_no_history_title_search
+                val description = R.string.tokopedianow_repurchase_empty_state_no_history_desc_search
+                layoutList.addEmptyStateNoHistory(title, description)
                 layoutList.removeAllProduct()
             }
             EMPTY_STATE_NO_HISTORY_FILTER -> {
-                val description = R.string
-                    .tokopedianow_repurchase_empty_state_no_history_desc_filter
-                layoutList.addEmptyStateNoHistory(description)
+                val title = R.string.tokopedianow_repurchase_empty_state_no_history_title_filter
+                val description = R.string.tokopedianow_repurchase_empty_state_no_history_desc_filter
+                layoutList.addEmptyStateNoHistory(title, description)
                 layoutList.removeAllProduct()
             }
             EMPTY_STATE_OOC -> {

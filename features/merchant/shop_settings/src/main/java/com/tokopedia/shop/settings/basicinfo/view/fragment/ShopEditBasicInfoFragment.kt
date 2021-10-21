@@ -30,6 +30,7 @@ import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.analytics.ShopSettingsTracking
 import com.tokopedia.shop.settings.basicinfo.data.AllowShopNameDomainChangesData
+import com.tokopedia.shop.settings.basicinfo.view.activity.ShopSettingsInfoActivity
 import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragment.Companion.EXTRA_MESSAGE
 import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragment.Companion.EXTRA_SHOP_BASIC_DATA_MODEL
 import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragment.Companion.REQUEST_EDIT_BASIC_INFO
@@ -39,6 +40,7 @@ import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.ShopSettingsErrorHandler
 import com.tokopedia.shop.settings.common.util.ShopTypeDef
 import com.tokopedia.shop.settings.common.util.setNavigationResult
+import com.tokopedia.shop.settings.databinding.FragmentShopEditBasicInfoBinding
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -48,6 +50,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
@@ -59,6 +62,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     companion object {
         private const val SAVED_IMAGE_PATH = "saved_img_path"
         private const val REQUEST_CODE_IMAGE = 846
+        const val UPLOADER_SOURCE_ID = "GAnVPX"
         const val INPUT_DELAY = 500L
     }
 
@@ -67,6 +71,8 @@ class ShopEditBasicInfoFragment: Fragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    private var binding by autoClearedNullable<FragmentShopEditBasicInfoBinding>()
 
     private var loader: LoaderUnify? = null
     private var container: View? = null
@@ -98,13 +104,14 @@ class ShopEditBasicInfoFragment: Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_shop_edit_basic_info, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = FragmentShopEditBasicInfoBinding.inflate(inflater, container, false)
+        return binding?.root as View
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(view)
+        initView()
 
         setupTextField()
         setupDomainSuggestion()
@@ -117,17 +124,17 @@ class ShopEditBasicInfoFragment: Fragment() {
         showShopInformation(shopBasicDataModel)
     }
 
-    private fun initView(view: View) {
-        loader = view.findViewById(R.id.loader)
-        container = view.findViewById(R.id.container)
-        shopTagLineTextField = view.findViewById(R.id.shopTagLineTextField)
-        shopDescriptionTextField = view.findViewById(R.id.shopDescriptionTextField)
-        shopDomainSuggestions = view.findViewById(R.id.shopDomainSuggestions)
-        shopDomainTextField = view.findViewById(R.id.shopDomainTextField)
-        shopNameTextField = view.findViewById(R.id.shopNameTextField)
-        shopEditTicker = view.findViewById(R.id.shopEditTicker)
-        imageAvatar = view.findViewById(R.id.imageAvatar)
-        textChangeAvatar = view.findViewById(R.id.textChangeAvatar)
+    private fun initView() {
+        loader = binding?.loader
+        container = binding?.container
+        shopTagLineTextField = binding?.shopTagLineTextField
+        shopDescriptionTextField = binding?.shopDescriptionTextField
+        shopDomainSuggestions = binding?.shopDomainSuggestions
+        shopDomainTextField = binding?.shopDomainTextField
+        shopNameTextField = binding?.shopNameTextField
+        shopEditTicker = binding?.shopEditTicker
+        imageAvatar = binding?.imageAvatar
+        textChangeAvatar = binding?.textChangeAvatar
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -169,7 +176,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     }
 
     private fun setupToolbar() {
-        header = activity?.findViewById<HeaderUnify>(R.id.header)?.apply {
+        header = (activity as? ShopSettingsInfoActivity)?.binding?.header?.apply {
             actionTextView?.show()
             actionTextView?.setOnClickListener {
                 val isDialogShown = !isNameStillSame() || !isDomainStillSame()
@@ -401,6 +408,14 @@ class ShopEditBasicInfoFragment: Fragment() {
                 is Fail -> {
                     hideLoading()
                     onErrorUpdateShopBasicData(it.throwable)
+
+                    ErrorHandler.getErrorMessage(
+                        context = context,
+                        e = it.throwable,
+                        builder = ErrorHandler.Builder()
+                            .className(this::class.java.simpleName)
+                            .build()
+                    )
                 }
                 else -> {/* no op */}
             }

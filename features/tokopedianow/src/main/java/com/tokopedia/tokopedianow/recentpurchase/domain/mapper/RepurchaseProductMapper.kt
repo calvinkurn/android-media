@@ -29,7 +29,8 @@ object RepurchaseProductMapper {
                 hasSimilarProductButton = product.isStockEmpty(),
                 labelGroupList = mapLabelGroup(product),
                 labelGroupVariantList = mapLabelGroupVariant(product),
-                variant = Variant()
+                variant = Variant(),
+                isOutOfStock = product.isStockEmpty()
             )
         } else {
             ProductCardModel(
@@ -44,7 +45,8 @@ object RepurchaseProductMapper {
                 nonVariant = NonVariant(
                     minQuantity = product.minOrder,
                     maxQuantity = product.maxOrder
-                )
+                ),
+                isOutOfStock = product.isStockEmpty()
             )
         }.run {
             if(product.isStockEmpty()) {

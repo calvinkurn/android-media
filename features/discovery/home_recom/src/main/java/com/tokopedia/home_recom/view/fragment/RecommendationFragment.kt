@@ -390,6 +390,10 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         this.activity?.finish()
     }
 
+    override fun onShowSnackbarError(throwable: Throwable) {
+        showToastError(throwable)
+    }
+
     /**
      * This void from Callback [RecommendationListener]
      * It handling wishlist click from item

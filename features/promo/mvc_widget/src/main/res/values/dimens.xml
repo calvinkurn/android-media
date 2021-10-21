@@ -7,4 +7,5 @@
     <dimen name="mvc_container_height">64dp</dimen>
     <dimen name="mvc_shadow_elevation">6dp</dimen>
     <dimen name="mvc_shadow_outline_height">43dp</dimen>
+    <dimen name="mvc_muiltishop_height">144dp</dimen>
 </resources>

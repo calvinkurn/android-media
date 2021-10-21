@@ -246,7 +246,9 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_CONFIRM_SHIPPING)
                     SomAnalytics.eventClickKonfirmasi(false)
-                    Utils.showToasterError(it.throwable.localizedMessage, view)
+                    context?.run {
+                        Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
+                    }
                 }
             }
         })
@@ -303,7 +305,9 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_CHANGE_COURIER)
-                    Utils.showToasterError(it.throwable.localizedMessage, view)
+                    context?.run {
+                        Utils.showToasterError(SomErrorHandler.getErrorMessage(it.throwable, this), view)
+                    }
                 }
             }
         })

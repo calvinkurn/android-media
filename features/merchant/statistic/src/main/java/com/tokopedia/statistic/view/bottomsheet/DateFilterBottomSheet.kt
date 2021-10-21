@@ -5,16 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.statistic.R
+import com.tokopedia.statistic.databinding.BottomsheetStcSelectDateRangeBinding
 import com.tokopedia.statistic.view.adapter.DateFilterAdapter
 import com.tokopedia.statistic.view.adapter.listener.DateFilterListener
 import com.tokopedia.statistic.view.model.DateFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottomsheet_stc_select_date_range.view.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -22,7 +22,8 @@ import kotlin.collections.ArrayList
  * Created By @ilhamsuaib on 15/06/20
  */
 
-class DateFilterBottomSheet : BottomSheetUnify(), DateFilterListener {
+class DateFilterBottomSheet : BaseBottomSheet<BottomsheetStcSelectDateRangeBinding>(),
+    DateFilterListener {
 
     companion object {
         const val TAG = "DateFilterBottomSheet"
@@ -38,30 +39,40 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterListener {
         }
     }
 
-    private var fm: FragmentManager? = null
+    private var fm by autoClearedNullable<FragmentManager>()
     private var applyChangesCallback: ((DateFilterItem) -> Unit)? = null
     private val mAdapter: DateFilterAdapter? by lazy {
-        DateFilterAdapter(this, fm
-                ?: return@lazy null)
+        DateFilterAdapter(this, fm ?: return@lazy null)
     }
     private val items: List<DateFilterItem> by lazy {
         arguments?.getParcelableArrayList<DateFilterItem>(KEY_DATE_FILTERS).orEmpty()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NO_FRAME, com.tokopedia.unifycomponents.R.style.UnifyBottomSheetNotOverlapStyle)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setChild(inflater, container)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = BottomsheetStcSelectDateRangeBinding.inflate(inflater).apply {
+            setChild(root)
+            setTitle(root.context.getString(R.string.stc_change_date_range))
+        }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupView()
         dismissBottomSheet(view)
+    }
+
+    override fun setupView() = binding?.run {
+        rvStcDateRage.run {
+            layoutManager = LinearLayoutManager(context)
+            adapter = mAdapter
+        }
+
+        mAdapter?.clearAllElements()
+        mAdapter?.addElement(items)
     }
 
     override fun onItemDateRangeClick(model: DateFilterItem) {
@@ -109,22 +120,6 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterListener {
         fm?.let {
             show(it, TAG)
         }
-    }
-
-    private fun setupView() = view?.run {
-        rvStcDateRage.run {
-            layoutManager = LinearLayoutManager(context)
-            adapter = mAdapter
-        }
-
-        mAdapter?.clearAllElements()
-        mAdapter?.addElement(items)
-    }
-
-    private fun setChild(inflater: LayoutInflater, container: ViewGroup?) {
-        val child: View = inflater.inflate(R.layout.bottomsheet_stc_select_date_range, container, false)
-        setTitle(child.context.getString(R.string.stc_change_date_range))
-        setChild(child)
     }
 
     private fun dismissBottomSheet(view: View) {

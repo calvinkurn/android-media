@@ -62,14 +62,16 @@ class UpgradePmProWidget(
                         tvPmUpgradePmProDesc.hide()
                         tvPmUpgradeBenefitDescription.text =
                             MethodChecker.fromHtml(
-                                getString(R.string.pm_desc_new_seller_eligible_benefit_package))
+                                getString(R.string.pm_desc_new_seller_eligible_benefit_package)
+                            )
                     } else {
                         tvPmUpgradePmProTitle.text =
                             getString(R.string.pm_title_new_seller_not_eligible_after_30_days)
                         tvPmUpgradePmProDesc.hide()
                         tvPmUpgradeBenefitDescription.text =
                             MethodChecker.fromHtml(
-                                getString(R.string.pm_desc_new_seller_not_eligible_benefit_package))
+                                getString(R.string.pm_desc_new_seller_not_eligible_benefit_package)
+                            )
                         hidePmProUpgradeSection()
                     }
                 } else {
@@ -78,7 +80,7 @@ class UpgradePmProWidget(
                     tvPmUpgradePmProDesc.show()
                     tvPmUpgradePmProDesc.text = getString(
                         R.string.pm_desc_new_seller_before_30_days,
-                        getDaysDate(shopInfo.shopAge)
+                        getDaysDate(shopInfo.shopCreatedDate)
                     )
                     hidePmProUpgradeSection()
                 }
@@ -88,13 +90,9 @@ class UpgradePmProWidget(
         }
     }
 
-    private fun getDaysDate(shopAge: Long): String {
+    private fun getDaysDate(shopCreatedDate: String): String {
         return try {
-            val date = Calendar.getInstance(GoldMerchantUtil.getLocale())
-            val diffDays = (THIRTY_DAYS - shopAge)
-            val targetDays = GoldMerchantUtil.getNNextDaysBasedOnFirstMonday(diffDays.toInt())
-            date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) + targetDays)
-            GoldMerchantUtil.format(date.timeInMillis, PATTERN_DATE_TEXT)
+            return GoldMerchantUtil.getNNextDaysBasedOnShopScoreCalculation(shopCreatedDate)
         } catch (e: ParseException) {
             e.printStackTrace()
             ""

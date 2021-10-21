@@ -99,6 +99,8 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation rootProject.ext.testDependencies.testCore
+    implementation rootProject.ext.miscDependencies.apacheLang
+    implementation projectOrAar(rootProject.ext.libraries.logger)
 }
 
 project.ext {

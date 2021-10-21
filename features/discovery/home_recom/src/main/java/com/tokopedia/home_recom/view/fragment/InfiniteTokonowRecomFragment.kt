@@ -139,6 +139,7 @@ class InfiniteTokonowRecomFragment :
             enableLoadMore()
             resetLoadMore()
         }
+        getMiniCartData()
         viewModel.getRecommendationFirstPage(pageName, productId, queryParam, forceRefresh)
     }
 
@@ -191,9 +192,15 @@ class InfiniteTokonowRecomFragment :
     }
 
     override fun onRefreshRecommendation() {
+        loadInitData(false)
     }
 
     override fun onCloseRecommendation() {
+        activity?.finish()
+    }
+
+    override fun onShowSnackbarError(throwable: Throwable) {
+        showErrorSnackbar(throwable)
     }
 
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
@@ -352,7 +359,7 @@ class InfiniteTokonowRecomFragment :
             getMiniCartData()
         })
         viewModel.minicartError.observe(viewLifecycleOwner, Observer {
-            showErrorSnackbar(it)
+            RecomServerLogger.logWarning(RecomServerLogger.TYPE_ERROR_GET_MINICART, it)
         })
     }
 
@@ -362,8 +369,10 @@ class InfiniteTokonowRecomFragment :
 
     private fun getMiniCartData() {
         context?.let {
-            val localAddress = ChooseAddressUtils.getLocalizingAddressData(it)
-            viewModel.getMiniCart(localAddress?.shop_id ?: "")
+            if (getUserSession().isLoggedIn) {
+                val localAddress = ChooseAddressUtils.getLocalizingAddressData(it)
+                viewModel.getMiniCart(localAddress?.shop_id ?: "")
+            }
         }
     }
 }
