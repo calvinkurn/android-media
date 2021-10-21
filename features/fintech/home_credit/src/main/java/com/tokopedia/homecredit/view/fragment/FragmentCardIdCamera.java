@@ -23,17 +23,23 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FragmentCardIdCamera extends HomeCreditKTPFragment{
-    private ActionCreator actionCreator;
-    private ActionDataProvider actionDataProvider;
+public class FragmentCardIdCamera extends HomeCreditKTPFragment {
     public static String ACTION_CREATOR_ARG = "action_creator_arg";
     public static String ACTION_KEYS_PROVIDER_ARG = "action_keys_provider_arg";
+    private ActionCreator actionCreator;
+    private ActionDataProvider actionDataProvider;
+
+    @SuppressLint("MissingPermission")
+    @RequiresPermission(Manifest.permission.CAMERA)
+    public static BaseDaggerFragment newInstance() {
+        return new FragmentCardIdCamera();
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_kyc_cardid_camera, container, false);
-        ((ImageView)view.findViewById(R.id.iv_capture_image)).setImageResource(R.drawable.ic_button_capture);
+        ((ImageView) view.findViewById(R.id.iv_capture_image)).setImageResource(R.drawable.ic_button_capture);
         return view;
     }
 
@@ -44,7 +50,7 @@ public class FragmentCardIdCamera extends HomeCreditKTPFragment{
         hideLoading();
         cameraView.close();//always call this method if you do not want awkward issues
         getActivity().getSupportFragmentManager().popBackStack();
-        if(actionCreator != null) {
+        if (actionCreator != null) {
             if (!TextUtils.isEmpty(imagePath)) {
                 if (cameraView.getFacing().ordinal() == Facing.FRONT.ordinal()) {
                     toBeFlipped = true;
@@ -59,12 +65,6 @@ public class FragmentCardIdCamera extends HomeCreditKTPFragment{
                 actionCreator.actionError(1, 101);
             }
         }
-    }
-
-    @SuppressLint("MissingPermission")
-    @RequiresPermission(Manifest.permission.CAMERA)
-    public static BaseDaggerFragment newInstance() {
-        return new FragmentCardIdCamera();
     }
 
     @Override
