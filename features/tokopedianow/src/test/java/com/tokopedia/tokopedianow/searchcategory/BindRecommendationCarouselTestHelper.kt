@@ -9,16 +9,20 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_FAILED
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_READY
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
+import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel.Companion.NO_VARIANT_PARENT_PRODUCT_ID
+import com.tokopedia.tokopedianow.searchcategory.utils.NO_VARIANT_PARENT_PRODUCT_ID
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.slot
+import org.hamcrest.CoreMatchers.hasItem
+import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.CoreMatchers.not
 import org.junit.Assert.assertThat
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
@@ -57,18 +61,20 @@ class BindRecommendationCarouselTestHelper(
         `Then assert updated visitable list`(recomWidgetPosition)
     }
 
-    private fun `Given get recommendation will be successful`() {
+    private fun `Given get recommendation will be successful`(
+        recommendationWidgetList: List<RecommendationWidget> = this.recommendationWidgetList
+    ) {
         coEvery {
             getRecommendationUseCase.getData(capture(getRecommendationParamsSlot))
         } returns recommendationWidgetList
     }
 
-    private fun List<Visitable<*>>.findRecomWidget(): RecommendationCarouselDataView =
-            find { it is RecommendationCarouselDataView } as? RecommendationCarouselDataView
+    private fun List<Visitable<*>>.findRecomWidget(): TokoNowRecommendationCarouselUiModel =
+            find { it is TokoNowRecommendationCarouselUiModel } as? TokoNowRecommendationCarouselUiModel
                     ?: throw Throwable("Cannot find recom widget")
 
     private fun `When bind recommendation carousel`(
-            recomWidget: RecommendationCarouselDataView,
+            recomWidget: TokoNowRecommendationCarouselUiModel,
             recomWidgetPosition: Int,
     ) {
         baseViewModel.onBindRecommendationCarousel(recomWidget, recomWidgetPosition)
@@ -76,7 +82,7 @@ class BindRecommendationCarouselTestHelper(
 
     private fun `Then assert mandatory get recommendation request`(
             getRecommendationRequestParam: GetRecommendationRequestParam,
-            recommendationCarouselDataView: RecommendationCarouselDataView,
+            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel,
     ) {
         assertTokonowRecommendationCarouselRequestParams(
                 getRecommendationRequestParam,
@@ -85,7 +91,7 @@ class BindRecommendationCarouselTestHelper(
     }
 
     private fun `Then assert recommendation data view is updated to ready with recom widget`(
-            recomWidget: RecommendationCarouselDataView
+            recomWidget: TokoNowRecommendationCarouselUiModel
     ) {
         val recommendationWidget = recommendationWidgetList.first()
 
@@ -120,7 +126,7 @@ class BindRecommendationCarouselTestHelper(
     }
 
     private fun `Then assert remmendation widget data view state is updated to fail`(
-            recomWidget: RecommendationCarouselDataView
+            recomWidget: TokoNowRecommendationCarouselUiModel
     ) {
         assertThat(recomWidget.carouselData.state, shouldBe(STATE_FAILED))
     }
@@ -141,7 +147,7 @@ class BindRecommendationCarouselTestHelper(
     }
 
     private fun `Given recommendation carousel already success`(
-            recomWidget: RecommendationCarouselDataView,
+            recomWidget: TokoNowRecommendationCarouselUiModel,
             recomWidgetPosition: Int,
     ) {
         baseViewModel.onBindRecommendationCarousel(recomWidget, recomWidgetPosition)
@@ -151,6 +157,34 @@ class BindRecommendationCarouselTestHelper(
         coVerify(exactly = 1) {
             getRecommendationUseCase.getData(any())
         }
+    }
+
+    fun `bind recommendation success with empty product list should remove recom widget`() {
+        val recommendationEntity = "recom/recom-carousel-empty-products.json"
+            .jsonToObject<RecommendationEntity>()
+        val recommendationWidgetList = recommendationEntity.mapToRecommendationWidgetList()
+
+        callback.`Given view will show recommendation carousel`()
+        `Given get recommendation will be successful`(recommendationWidgetList)
+
+        val visitableList = baseViewModel.visitableListLiveData.value!!
+        val recomWidget = visitableList.findRecomWidget()
+        val recomWidgetPosition = visitableList.lastIndex
+
+        `When bind recommendation carousel`(recomWidget, recomWidgetPosition)
+
+        `Then assert visitable list does not contains recommendation widget`()
+    }
+
+    private fun `Then assert visitable list does not contains recommendation widget`() {
+        val visitableList = baseViewModel.visitableListLiveData.value!!
+
+        val notContainsRecommendationCarousel =
+            not(hasItem(instanceOf<TokoNowRecommendationCarouselUiModel>(
+                TokoNowRecommendationCarouselUiModel::class.java
+            )))
+
+        assertThat(visitableList, notContainsRecommendationCarousel)
     }
 
     fun `bind recommendation with quantity from mini cart`() {

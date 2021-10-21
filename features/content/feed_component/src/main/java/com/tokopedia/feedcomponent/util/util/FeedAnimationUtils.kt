@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.transition.AutoTransition
+import android.transition.Transition
 import android.transition.TransitionManager
 import android.view.View
 import android.view.ViewGroup
@@ -123,15 +124,6 @@ fun hideBubbleViewWithAnimation(view: View, position: Int, pointerView: View) {
     objectAnimator.start()
 }
 
-fun showViewWithSlideAnimation(view: ViewGroup) {
-    TransitionManager.beginDelayedTransition(
-        view,
-        AutoTransition()
-    )
-}
-
-
-
 fun View.visibleWithAnimation() {
     showViewWithAnimation(this)
 
@@ -139,5 +131,30 @@ fun View.visibleWithAnimation() {
 
 fun View.goneWithAnimation() {
     hideViewWithAnimation(this)
+}
+
+fun showViewWithSlideAnimation(view: ViewGroup) {
+    view.setHasTransientState(true)
+    val autoTransition = AutoTransition()
+    autoTransition.addListener(object : Transition.TransitionListener{
+        override fun onTransitionStart(p0: Transition?) {
+            view.setHasTransientState(true)
+        }
+        override fun onTransitionEnd(p0: Transition?) {
+            view.setHasTransientState(false)
+        }
+        override fun onTransitionCancel(p0: Transition?) {
+        }
+        override fun onTransitionPause(p0: Transition?) {
+        }
+        override fun onTransitionResume(p0: Transition?) {
+        }
+    })
+
+    TransitionManager.beginDelayedTransition(
+            view,
+            autoTransition
+    )
+
 }
 

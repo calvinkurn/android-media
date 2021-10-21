@@ -22,7 +22,7 @@ class LsPrintFinishOrderUseCase @Inject constructor(private val gqlRepository: G
     suspend fun executeSuspend(verticalId: String): Result<LsPrintData.Data> {
         return try {
             val request = GraphqlRequest(QUERY, LsPrintData.Data::class.java, generateParam(verticalId))
-            val response = gqlRepository.getReseponse(listOf(request)).getSuccessData<LsPrintData.Data>()
+            val response = gqlRepository.response(listOf(request)).getSuccessData<LsPrintData.Data>()
             Success(response)
         } catch (e: Exception) {
             Fail(e)

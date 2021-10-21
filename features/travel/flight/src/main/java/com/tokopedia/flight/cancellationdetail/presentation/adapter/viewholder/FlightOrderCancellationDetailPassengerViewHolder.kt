@@ -7,25 +7,25 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellationdetail.presentation.adapter.FlightOrderCancellationDetailPassengerDetailAdapter
 import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationDetailPassengerModel
+import com.tokopedia.flight.databinding.ItemFlightReviewPassengerBinding
 import com.tokopedia.flight.detail.view.model.SimpleModel
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailAmenityEnum
-import kotlinx.android.synthetic.main.item_flight_review_passenger.view.*
 
 /**
  * @author by furqan on 08/01/2021
  */
-class FlightOrderCancellationDetailPassengerViewHolder(view: View)
-    : AbstractViewHolder<FlightOrderCancellationDetailPassengerModel>(view) {
+class FlightOrderCancellationDetailPassengerViewHolder(val binding: ItemFlightReviewPassengerBinding)
+    : AbstractViewHolder<FlightOrderCancellationDetailPassengerModel>(binding.root) {
 
     override fun bind(element: FlightOrderCancellationDetailPassengerModel) {
-        with(itemView) {
-            passenger_number.text = String.format("%d.", adapterPosition + 1)
-            passenger_name.text = String.format("%s %s", element.firstName, element.lastName)
-            passenger_category.text = String.format("(%s)", element.typeString)
+        with(binding) {
+            passengerNumber.text = String.format("%d.", adapterPosition + 1)
+            passengerName.text = String.format("%s %s", element.firstName, element.lastName)
+            passengerCategory.text = String.format("(%s)", element.typeString)
 
-            recycler_view_passenger_detail.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            recyclerViewPassengerDetail.layoutManager = LinearLayoutManager(itemView.context, RecyclerView.VERTICAL, false)
             if (element.amenities.isNotEmpty()) {
-                recycler_view_passenger_detail.visibility = View.VISIBLE
+                recyclerViewPassengerDetail.visibility = View.VISIBLE
                 val simpleModel: ArrayList<SimpleModel> = arrayListOf()
                 for (item in element.amenities) {
                     if (item.departureId == element.departureAirportId &&
@@ -40,7 +40,7 @@ class FlightOrderCancellationDetailPassengerViewHolder(view: View)
                 }
                 FlightOrderCancellationDetailPassengerDetailAdapter(simpleModel)
             } else {
-                recycler_view_passenger_detail.visibility = View.GONE
+                recyclerViewPassengerDetail.visibility = View.GONE
             }
         }
     }

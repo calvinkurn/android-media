@@ -114,7 +114,6 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
         shopViewModel?.let{
             removeObservers(it.shopInfo)
             removeObservers(it.shopNotesResp)
-            removeObservers(it.shopStatisticsResp)
             it.flush()
         }
         super.onDestroy()

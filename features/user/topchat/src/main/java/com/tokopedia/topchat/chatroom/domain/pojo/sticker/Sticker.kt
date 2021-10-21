@@ -26,13 +26,15 @@ data class Sticker(
             messageId: String,
             opponentId: String,
             startTime: String,
-            attachments: List<SendablePreview>
+            attachments: List<SendablePreview>,
+            localId: String,
     ): WebsocketAttachmentContract {
         val payload = WebSocketStickerPayload(
                 groupUUID, stickerUUID, imageUrl, intention
         )
         val data = WebsocketAttachmentData(
                 message_id = messageId.toLongOrZero(),
+                local_id = localId,
                 message = intention,
                 source = "inbox",
                 attachment_type = TYPE_STICKER,

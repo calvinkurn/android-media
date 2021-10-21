@@ -251,4 +251,53 @@ object CommonTopupBillsGqlQuery {
           }
         }
     """.trimIndent()
+
+
+    val ADD_BILL_QUERY by lazy {
+        """
+    mutation rechargeSBMAddBill(${'$'}addRequest: RechargeSBMAddBillRequest!) {
+        rechargeSBMAddBill(addRequest: ${'$'}addRequest) {
+            ErrorMessage
+            Message
+            bill: Bill {
+            flag: Flag
+            index: Index
+            UUID
+            productID: ProductID
+            productName: ProductName
+            categoryID: CategoryID
+            categoryName: CategoryName
+            operatorID:OperatorID
+            operatorName: OperatorName
+            clientNumber: ClientNumber
+            amount: Amount
+            amountText: AmountText
+            iconURL: IconURL
+            newBillLabel: NewBillLabel{
+            isNewBill: IsNewBill
+            text: Text
+        }
+            date: Date
+            dateText: DateText
+            disabled: Disabled
+            disabledText: DisabledText
+            checkoutFields: CheckoutFields {
+            name: Name
+            value: Value
+        }
+            billName: BillName
+            isChecked: IsChecked
+            DueDate
+            DueMessage{
+                Type
+                Text
+            }
+            DueDateLabel{
+                Type
+                Text
+            }
+        }
+        }
+    }""".trimIndent()
+    }
 }

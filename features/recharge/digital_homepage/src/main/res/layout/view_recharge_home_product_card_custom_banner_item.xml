@@ -13,26 +13,29 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingEnd="@dimen/spacing_lvl3"
-            >
+            android:paddingEnd="@dimen/spacing_lvl3">
 
             <View
                 android:id="@+id/view_header_card"
                 android:layout_width="@dimen/recharge_custom_product_card_header_card_width"
                 android:layout_height="@dimen/layout_lvl2"
                 android:layout_marginTop="@dimen/unify_space_12"
-                android:background="@drawable/bg_red_custom_banner_header"
+                android:background="@drawable/bg_green_custom_banner_header"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_recharge_product_title"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/unify_space_12"
-                android:textColor="@color/Unify_R400"
+                android:layout_marginStart="@dimen/unify_space_12"
+                android:layout_marginEnd="@dimen/unify_space_4"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/Unify_TN500"
                 app:layout_constraintBottom_toBottomOf="@id/view_header_card"
                 app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/iv_recharge_product_image"
                 app:layout_constraintTop_toTopOf="@id/view_header_card"
                 app:typographyType="small"
                 app:typographyWeight="bold"
@@ -44,12 +47,11 @@
                 android:id="@+id/iv_recharge_product_image"
                 android:layout_width="@dimen/layout_lvl3"
                 android:layout_height="@dimen/layout_lvl3"
+                android:background="@drawable/bg_custom_banner_iv_rounded"
+                android:scaleType="fitCenter"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_recharge_product_title"
                 app:layout_constraintRight_toRightOf="parent"
-                android:scaleType="fitCenter"
-                app:layout_constraintTop_toTopOf="@+id/tv_recharge_product_title"
-                android:background="@drawable/bg_custom_banner_iv_rounded"
-                />
+                app:layout_constraintTop_toTopOf="@+id/tv_recharge_product_title" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_recharge_product_content"
@@ -64,8 +66,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_recharge_product_title"
                 app:typographyType="body_3"
-                tools:text="0821993837 \n XL Combo 10GB Internet + 5GB Xtra Kuota Malam"
-                 />
+                tools:text="0821993837 \n XL Combo 10GB Internet + 5GB Xtra Kuota Malam" />
 
             <LinearLayout
                 android:id="@+id/layout_recharge_product_discount_price"

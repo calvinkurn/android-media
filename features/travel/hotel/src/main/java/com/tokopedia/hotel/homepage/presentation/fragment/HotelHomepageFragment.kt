@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -49,10 +50,9 @@ import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomS
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search_map.data.model.HotelSearchModel
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -369,6 +369,9 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private fun initView() {
         binding?.let {
+            it.ivHotelHomepageLocation.run {
+                setImageDrawable(getIconUnifyDrawable(context, IconUnify.LOCATION_FILLED, ContextCompat.getColor(context, R.color.hotel_dms_icon_color)))
+            }
             it.ivHotelHomepageBackground.loadImage(HOMEPAGE_BG_IMAGE_URL)
             checkCheckInAndCheckOutDate()
 

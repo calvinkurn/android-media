@@ -31,6 +31,7 @@ import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.manager.ProductCardOptionsResult
@@ -760,6 +761,7 @@ class ProductListFragment: BaseDaggerFragment(),
             getUserId(),
             irisSessionId,
             item.topadsTag,
+            item.dimension115,
         )
     }
 
@@ -832,6 +834,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 getUserId(),
                 item.dimension90,
                 item.topadsTag,
+                item.dimension115,
         )
     }
 
@@ -945,30 +948,28 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun applyParamsFromTicker(tickerParams: HashMap<String?, String?>) {
-        val params = HashMap(filterController.getParameter())
+        val params = HashMap(filterController.getParameter().addFilterOrigin())
         params.putAll(tickerParams)
 
         refreshSearchParameter(params)
-        refreshFilterController(params)
 
         reloadData()
     }
 
-    private fun refreshSearchParameter(queryParams: Map<String, String>) {
-        searchParameter?.apply {
-            getSearchParameterHashMap().clear()
-            getSearchParameterHashMap().putAll(queryParams)
-            getSearchParameterHashMap()[SearchApiConst.ORIGIN_FILTER] =
-                    SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
+    private fun Map<String, String>.addFilterOrigin(): Map<String, String> =
+        toMutableMap().also {
+            it[SearchApiConst.ORIGIN_FILTER] = DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
         }
+
+    private fun refreshSearchParameter(queryParams: Map<String, String>) {
+        searchParameter?.resetParams(queryParams)
+        searchNavigationListener?.updateSearchParameter(searchParameter)
+        filterController.refreshMapParameter(queryParams)
     }
 
-    private fun refreshFilterController(queryParams: HashMap<String, String>) {
-        val params = HashMap(queryParams)
-        params[SearchApiConst.ORIGIN_FILTER] =
-                SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
-
-        filterController.refreshMapParameter(params)
+    private fun SearchParameter.resetParams(queryParams: Map<String, String>) {
+        getSearchParameterHashMap().clear()
+        getSearchParameterHashMap().putAll(queryParams)
     }
 
     override fun onTickerDismissed() {
@@ -1012,9 +1013,8 @@ class ProductListFragment: BaseDaggerFragment(),
         val isQuickFilterSelectedReversed = !isQuickFilterSelected(option)
         setFilterToQuickFilterController(option, isQuickFilterSelectedReversed)
 
-        val queryParams = filterController.getParameter()
+        val queryParams = filterController.getParameter().addFilterOrigin()
         refreshSearchParameter(queryParams)
-        refreshFilterController(HashMap(queryParams))
 
         reloadData()
 
@@ -1040,8 +1040,7 @@ class ProductListFragment: BaseDaggerFragment(),
         val option = generateOptionFromUniqueId(uniqueId)
 
         removeFilterFromFilterController(option)
-        refreshSearchParameter(filterController.getParameter())
-        refreshFilterController(HashMap(filterController.getParameter()))
+        refreshSearchParameter(filterController.getParameter().addFilterOrigin())
 
         reloadData()
     }
@@ -1507,18 +1506,6 @@ class ProductListFragment: BaseDaggerFragment(),
         )
     }
 
-    override fun showPowerMerchantProPopUp() {
-        context?.let {
-            val dialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
-            dialog.setTitle(getString(R.string.search_power_merchant_pro_title))
-            dialog.setDescription(getString(R.string.search_power_merchant_pro_desc))
-            dialog.setPrimaryCTAText(getString(R.string.search_power_merchant_pro_button_text))
-            dialog.setPrimaryCTAClickListener { dialog.dismiss() }
-            dialog.setImageUrl(SearchConstant.ImageUrl.POWER_MERCHANT_PRO_ILLUSTRATION_URL)
-            dialog.show()
-        }
-    }
-
     override val abTestRemoteConfig: RemoteConfig?
         get() = RemoteConfigInstance.getInstance().abTestPlatform
 
@@ -1795,14 +1782,14 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun onApplySortFilter(applySortFilterModel: ApplySortFilterModel) {
+        presenter?.onApplySortFilter(applySortFilterModel.mapParameter)
+
         sortFilterBottomSheet = null
 
         applySort(applySortFilterModel)
         applyFilter(applySortFilterModel)
 
-        filterController.refreshMapParameter(applySortFilterModel.mapParameter)
-        searchParameter?.getSearchParameterHashMap()?.clear()
-        searchParameter?.getSearchParameterHashMap()?.putAll(applySortFilterModel.mapParameter)
+        refreshSearchParameter(applySortFilterModel.mapParameter)
 
         reloadData()
     }
@@ -1907,15 +1894,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun getFragment() = this
 
-    override val isChooseAddressWidgetEnabled: Boolean
-        get() = context?.let {
-            try {
-                ChooseAddressUtils.isRollOutUser(it)
-            } catch (e: Throwable) {
-                false
-            }
-        } ?: false
-
+    override val isChooseAddressWidgetEnabled: Boolean = true
 
     override val chooseAddressData: LocalCacheModel
         get() = context?.let {

@@ -3,8 +3,8 @@ package com.tokopedia.play.broadcaster.view.activity
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
-import android.view.SurfaceHolder
-import android.view.SurfaceView
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
@@ -13,7 +13,6 @@ import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.alivc.live.pusher.SurfaceStatus
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -21,6 +20,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
@@ -31,14 +31,16 @@ import com.tokopedia.play.broadcaster.di.broadcast.PlayBroadcastModule
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.ui.model.ChannelType
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
-import com.tokopedia.play.broadcaster.util.deviceinfo.DeviceInfoUtil
+import com.tokopedia.play.broadcaster.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.util.extension.channelNotFound
 import com.tokopedia.play.broadcaster.util.extension.getDialog
-import com.tokopedia.play.broadcaster.util.extension.showToaster
+import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
 import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
 import com.tokopedia.play.broadcaster.view.contract.PlayBaseCoordinator
+import com.tokopedia.play.broadcaster.view.custom.PlayTermsAndConditionView
+import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
 import com.tokopedia.play.broadcaster.view.fragment.PlayBeforeLiveFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPrepareFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
@@ -48,7 +50,9 @@ import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragmen
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.extension.awaitResume
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.TestOnly
 import javax.inject.Inject
@@ -74,9 +78,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
 
     private lateinit var containerSetup: FrameLayout
     private lateinit var globalErrorView: GlobalError
-    private lateinit var surfaceView: SurfaceView
-
-    private var surfaceStatus = SurfaceStatus.UNINITED
+    private lateinit var surfaceView: SurfaceAspectRatioView
 
     private lateinit var playBroadcastComponent: PlayBroadcastComponent
 
@@ -98,6 +100,9 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
 
     private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
 
+    private lateinit var loadingFragment: LoadingDialogFragment
+    private lateinit var pauseLiveDialog: DialogUnify
+
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         initViewModel()
@@ -107,19 +112,16 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         setContentView(R.layout.activity_play_broadcast)
         isRecreated = (savedInstanceState != null)
 
+        initStreamer()
+        initView()
+
         if (savedInstanceState != null) {
             populateSavedState(savedInstanceState)
             requestPermission()
         }
 
-        if (!DeviceInfoUtil.isDeviceSupported()) {
-            showDialogWhenUnSupportedDevices()
-            return
-        }
-
-        setupContent()
-        initView()
         setupView()
+        setupObserve()
 
         getConfiguration()
         observeConfiguration()
@@ -129,13 +131,11 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         super.onResume()
         setLayoutFullScreen()
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        viewModel.checkShouldContinueLiveStream()
     }
 
     override fun onPause() {
         super.onPause()
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        viewModel.pauseLiveStream()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -159,7 +159,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     override fun onPostResume() {
         super.onPostResume()
         if (isResultAfterAskPermission) {
-            if (permissionHelper.isAllPermissionsGranted(permissions)) configureChannelType(channelType)
+            if (isRequiredPermissionGranted()) configureChannelType(channelType)
             else showPermissionPage()
         }
         isResultAfterAskPermission = false
@@ -203,34 +203,39 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         supportFragmentManager.fragmentFactory = fragmentFactory
     }
 
-    private fun setupContent() {
+    private fun initStreamer() {
+        try {
+            viewModel.createStreamer(this, Handler(Looper.getMainLooper()))
+        } catch (exception: IllegalAccessException) {
+            showDialogWhenUnSupportedDevices()
+            return
+        }
     }
 
     private fun initView() {
         containerSetup = findViewById(R.id.fl_container)
         globalErrorView = findViewById(R.id.global_error)
-        surfaceView = findViewById(R.id.surface_view)
+        surfaceView = findViewById(R.id.surface_aspect_ratio_view)
     }
 
     private fun setupView() {
-        surfaceView.holder.addCallback(object: SurfaceHolder.Callback{
-            override fun surfaceChanged(surfaceHolder: SurfaceHolder, p1: Int, p2: Int, p3: Int) {
-                surfaceStatus = SurfaceStatus.CHANGED
-            }
-
-            override fun surfaceDestroyed(surfaceHolder: SurfaceHolder) {
-                surfaceStatus = SurfaceStatus.DESTROYED
-            }
-
-            override fun surfaceCreated(surfaceHolder: SurfaceHolder) {
-                if (surfaceStatus == SurfaceStatus.UNINITED) {
-                    surfaceStatus = SurfaceStatus.CREATED
-                } else if (surfaceStatus == SurfaceStatus.DESTROYED) {
-                    surfaceStatus = SurfaceStatus.RECREATED
-                }
+        surfaceView.setCallback(object : SurfaceAspectRatioView.Callback{
+            override fun onSurfaceCreated() {
                 startPreview()
             }
+
+            override fun onSurfaceDestroyed() {
+                stopPreview()
+            }
         })
+    }
+
+    private fun setupObserve() {
+        lifecycleScope.launchWhenResumed {
+            viewModel.uiState.collectLatest { state ->
+                showTermsAndConditionBottomSheet(state.channel.canStream, state.channel.tnc)
+            }
+        }
     }
 
     private fun getConfiguration() {
@@ -285,7 +290,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
                     invalidatePerformanceData()
                     showLoading(false)
                     showToaster(
-                            message = result.error.localizedMessage,
+                            err = result.error,
                             actionLabel = getString(R.string.play_broadcast_try_again),
                             actionListener = View.OnClickListener { result.onRetry() }
                     )
@@ -302,7 +307,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
                 showDialogWhenActiveOnOtherDevices()
                 analytic.viewDialogViolation(config.channelId)
             } else {
-                if (permissionHelper.isAllPermissionsGranted(permissions)) configureChannelType(channelType)
+                if (isRequiredPermissionGranted()) configureChannelType(channelType)
                 else requestPermission()
             }
         } else {
@@ -314,7 +319,10 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     private fun configureChannelType(channelType: ChannelType) {
         if (isRecreated) return
         when (channelType) {
-            ChannelType.Pause -> openBroadcastActivePage()
+            ChannelType.Pause -> {
+                openBroadcastActivePage()
+                showDialogContinueLiveStreaming()
+            }
             ChannelType.CompleteDraft -> openBroadcastFinalSetupPage()
             else -> openBroadcastSetupPage()
         }
@@ -340,19 +348,18 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         )
     }
 
+    private fun isRequiredPermissionGranted() = permissionHelper.isAllPermissionsGranted(permissions)
+
     fun startPreview() {
-        if (surfaceStatus != SurfaceStatus.UNINITED &&
-                surfaceStatus != SurfaceStatus.DESTROYED) {
-            viewModel.startCameraPreview(surfaceView)
-        }
+        if (permissionHelper.isPermissionGranted(Manifest.permission.CAMERA)) viewModel.startPreview(surfaceView)
     }
 
     fun stopPreview() {
-        viewModel.stopCameraPreview()
+        viewModel.stopPreview()
     }
 
     fun checkAllPermission() {
-        if (permissionHelper.isAllPermissionsGranted(permissions)) configureChannelType(channelType)
+        if (isRequiredPermissionGranted()) configureChannelType(channelType)
         else showPermissionPage()
     }
 
@@ -400,20 +407,18 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     }
 
     private fun showToaster(
-            message: String,
-            type: Int = Toaster.TYPE_ERROR,
-            duration: Int = Toaster.LENGTH_INDEFINITE,
-            actionLabel: String = "",
-            actionListener: View.OnClickListener = View.OnClickListener { }
+        err: Throwable,
+        duration: Int = Toaster.LENGTH_INDEFINITE,
+        actionLabel: String = "",
+        actionListener: View.OnClickListener = View.OnClickListener { }
     ) {
         if (toasterBottomMargin == 0) {
             toasterBottomMargin = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5)
         }
 
-        findViewById<View>(android.R.id.content)?.showToaster(
-                message = message,
+        findViewById<View>(android.R.id.content)?.showErrorToaster(
+                err = err,
                 duration = duration,
-                type = type,
                 actionLabel = actionLabel,
                 actionListener = actionListener,
                 bottomMargin = toasterBottomMargin
@@ -443,6 +448,76 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
             getLoadingFragment().show(supportFragmentManager)
         } else if (isLoadingDialogVisible()) {
             getLoadingFragment().dismiss()
+        }
+    }
+
+    fun showDialogContinueLiveStreaming() {
+        if (!::pauseLiveDialog.isInitialized) {
+            pauseLiveDialog = getDialog(
+                actionType = DialogUnify.HORIZONTAL_ACTION,
+                title = getString(R.string.play_dialog_continue_live_title),
+                desc = getString(R.string.play_dialog_continue_live_desc),
+                primaryCta = getString(R.string.play_next),
+                primaryListener = { dialog ->
+                    dialog.dismiss()
+                    viewModel.continueLiveStream()
+                    analytic.clickDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.channelTitle)
+                },
+                secondaryCta = getString(R.string.play_broadcast_end),
+                secondaryListener = { dialog ->
+                    dialog.dismiss()
+                    viewModel.stopLiveStream(shouldNavigate = true)
+                }
+            )
+        }
+        if (!pauseLiveDialog.isShowing) {
+            pauseLiveDialog.show()
+            analytic.viewDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.channelTitle)
+        }
+    }
+
+    private fun showTermsAndConditionBottomSheet(
+        canStream: Boolean,
+        tncList: List<TermsAndConditionUiModel>
+    ) {
+        val existingFragment = supportFragmentManager.findFragmentByTag(TERMS_AND_CONDITION_TAG)
+
+        if (canStream) {
+            if (existingFragment is BottomSheetUnify && existingFragment.isVisible) {
+                existingFragment.setOnDismissListener {  }
+                existingFragment.dismiss()
+            }
+            return
+        }
+
+        val (bottomSheet, view) = if (existingFragment is BottomSheetUnify) {
+            existingFragment to existingFragment.requireView().findViewWithTag<PlayTermsAndConditionView>(
+                TERMS_AND_CONDITION_TAG
+            )
+        } else {
+            val bottomSheet = BottomSheetUnify().apply {
+                clearContentPadding = true
+                setTitle(this@PlayBroadcastActivity.getString(R.string.play_bro_tnc_title))
+            }
+
+            val view = PlayTermsAndConditionView(this@PlayBroadcastActivity)
+                .apply {
+                    tag = TERMS_AND_CONDITION_TAG
+                    setListener(object : PlayTermsAndConditionView.Listener {
+                        override fun onOkButtonClicked(view: PlayTermsAndConditionView) {
+                            bottomSheet.dismiss()
+                        }
+                    })
+                }
+
+            bottomSheet.setChild(view)
+
+            bottomSheet to view
+        }
+        if (!bottomSheet.isVisible) {
+            view.setTermsAndConditions(tncList)
+            bottomSheet.setOnDismissListener { finish() }
+            bottomSheet.show(supportFragmentManager, TERMS_AND_CONDITION_TAG)
         }
     }
 
@@ -508,5 +583,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         private const val CHANNEL_TYPE = "channel_type"
         private const val REQUEST_PERMISSION_CODE = 3298
         const val RESULT_PERMISSION_CODE = 3297
+
+        private const val TERMS_AND_CONDITION_TAG = "TNC_BOTTOM_SHEET"
     }
 }

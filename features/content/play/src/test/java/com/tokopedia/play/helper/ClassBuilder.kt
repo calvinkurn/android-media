@@ -30,11 +30,13 @@ class ClassBuilder {
     )
 
     fun getPlayChannelDetailsRecomMapper(
-            htmlTextTransformer: HtmlTextTransformer = TestHtmlTextTransformer(),
-            realTimeNotificationMapper: PlayRealTimeNotificationMapper = getPlayRealTimeNotificationMapper()
+        htmlTextTransformer: HtmlTextTransformer = TestHtmlTextTransformer(),
+        realTimeNotificationMapper: PlayRealTimeNotificationMapper = getPlayRealTimeNotificationMapper(),
+        multipleLikesMapper: PlayMultipleLikesMapper = getPlayMultipleLikesMapper(),
     ) = PlayChannelDetailsWithRecomMapper(
-            htmlTextTransformer = htmlTextTransformer,
-            realTimeNotificationMapper = realTimeNotificationMapper,
+        htmlTextTransformer = htmlTextTransformer,
+        realTimeNotificationMapper = realTimeNotificationMapper,
+        multipleLikesMapper = multipleLikesMapper,
     )
 
     fun getPlayRealTimeNotificationMapper(
@@ -44,6 +46,8 @@ class ClassBuilder {
             userSession = userSession,
             htmlTextTransformer = htmlTextTransformer,
     )
+
+    fun getPlayMultipleLikesMapper() = PlayMultipleLikesMapper()
 
     fun getMapperExtraParams(
             channelId: String? = null,

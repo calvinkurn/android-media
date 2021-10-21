@@ -24,8 +24,8 @@ import kotlin.collections.set
  */
 
 const val TOP_ADS_DASHBOARD_GROUP_PRODUCTS_QUERY: String = """
-               query topadsDashboardGroupProductsV2(${'$'}queryInput: topadsDashboardGroupProductsInputTypeV2!) {
-  topadsDashboardGroupProductsV2(queryInput: ${'$'}queryInput) {
+               query topadsDashboardGroupProductsV3(${'$'}queryInput: topadsDashboardGroupProductsInputTypeV2!) {
+  topadsDashboardGroupProductsV3(queryInput: ${'$'}queryInput) {
     separate_statistic
        meta {
               page {

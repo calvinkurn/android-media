@@ -1,5 +1,6 @@
 package com.tokopedia.mvcwidget.views
 
+import android.app.Application
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
@@ -7,6 +8,10 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.mvcwidget.*
+import com.tokopedia.mvcwidget.trackers.DefaultMvcTrackerImpl
+import com.tokopedia.mvcwidget.trackers.MvcSource
+import com.tokopedia.mvcwidget.trackers.MvcTracker
+import com.tokopedia.mvcwidget.trackers.MvcTrackerImpl
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.user.session.UserSession
 import java.lang.ref.WeakReference
@@ -28,9 +33,11 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
 
     var mvcAnimationHandler: MvcAnimationHandler
     private var startActivityForResultFunction: (() -> Unit)? = null
+    private val mvcActivityCallbacks = MVCActivityCallbacks()
 
     var shopId: String = ""
     var isTokomember = false
+    val mvcTracker = MvcTracker()
 
     @MvcSource
     var source: Int = MvcSource.SHOP
@@ -53,24 +60,41 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
 
     private fun setClicks() {
         mvcContainer.setOnClickListener {
+            (context.applicationContext as Application).let {
+                it.unregisterActivityLifecycleCallbacks(mvcActivityCallbacks)
+                it.registerActivityLifecycleCallbacks(mvcActivityCallbacks)
+            }
             if (startActivityForResultFunction != null) {
                 startActivityForResultFunction?.invoke()
             } else {
                 if (context is AppCompatActivity) {
-                    (context as AppCompatActivity).startActivityForResult(TransParentActivity.getIntent(context, shopId, this.source), REQUEST_CODE)
+                    (context as AppCompatActivity).startActivityForResult(TransParentActivity.getIntent(context, shopId, this.source,hashCode = mvcActivityCallbacks.hashCodeForMVC), REQUEST_CODE)
                 } else {
-                    (context).startActivity(TransParentActivity.getIntent(context, shopId, this.source))
+                    (context).startActivity(TransParentActivity.getIntent(context, shopId, this.source,hashCode = mvcActivityCallbacks.hashCodeForMVC))
                 }
             }
 
-            Tracker.userClickEntryPoints(shopId, UserSession(context).userId, this.source, isTokomember)
+            mvcTracker.userClickEntryPoints(shopId, UserSession(context).userId, this.source, isTokomember)
         }
     }
 
-    fun setData(mvcData: MvcData, shopId: String, @MvcSource source: Int, startActivityForResultFunction: (() -> Unit)? = null) {
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        (context.applicationContext as Application).unregisterActivityLifecycleCallbacks(mvcActivityCallbacks)
+    }
+
+    fun setData(mvcData: MvcData,
+                shopId: String,
+                @MvcSource source: Int,
+                startActivityForResultFunction: (() -> Unit)? = null,
+                mvcTrackerImpl: MvcTrackerImpl = DefaultMvcTrackerImpl()
+    ) {
         this.source = source
         this.shopId = shopId
         this.startActivityForResultFunction = startActivityForResultFunction
+        this.mvcTracker.trackerImpl = mvcTrackerImpl
+        mvcActivityCallbacks.mvcTrackerImpl = mvcTrackerImpl
+        mvcActivityCallbacks.hashCodeForMVC = mvcData.hashCode()
         setMVCData(mvcData.animatedInfoList)
     }
 
@@ -98,7 +122,7 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     fun sendImpressionTrackerForPdp(){
         if(this.shopId.isNotEmpty()){
             if(isTokomember){
-                Tracker.tokomemberImpressionOnPdp(this.shopId,UserSession(context).userId)
+                mvcTracker.tokomemberImpressionOnPdp(this.shopId,UserSession(context).userId)
             }
         }
     }

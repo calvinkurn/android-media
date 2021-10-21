@@ -17,7 +17,7 @@ class RechargeSetFailUseCase @Inject constructor(private val gqlRepository: Grap
     suspend fun executeSuspend(orderId: Int): Result<RechargeSetFailData.Data> {
         return try {
             val request = GraphqlRequest(QUERY, RechargeSetFailData.Data::class.java, generateParam(orderId))
-            val response = gqlRepository.getReseponse(listOf(request)).getSuccessData<RechargeSetFailData.Data>()
+            val response = gqlRepository.response(listOf(request)).getSuccessData<RechargeSetFailData.Data>()
             Success(response)
         } catch (e: Exception) {
             Fail(e)

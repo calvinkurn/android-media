@@ -146,7 +146,7 @@ class SharedTelcoPrepaidViewModelTest {
         val result = HashMap<Type, Any>()
         result[TelcoCatalogProductInputMultiTab::class.java] = multiTab
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
         sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1", ArrayList(), autoSelectProductId, clientNumber)
 
         // when
@@ -169,7 +169,7 @@ class SharedTelcoPrepaidViewModelTest {
         val result = HashMap<Type, Any>()
         result[TelcoCatalogProductInputMultiTab::class.java] = multiTab
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1", ArrayList(), autoSelectProductId, clientNumber)
@@ -194,7 +194,7 @@ class SharedTelcoPrepaidViewModelTest {
         val errors = HashMap<Type, List<GraphqlError>>()
         errors[TelcoCatalogProductInputMultiTab::class.java] = listOf(errorGql)
         val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         sharedTelcoPrepaidViewModel.getCatalogProductList("", 2, "1", ArrayList(),clientNumber = clientNumber)

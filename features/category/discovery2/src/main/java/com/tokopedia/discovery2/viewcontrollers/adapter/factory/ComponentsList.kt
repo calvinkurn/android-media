@@ -81,6 +81,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     DiscoPlayWidgetView(PlayWidgetViewHolder.layout, ComponentNames.DiscoPlayWidgetView.componentName),
 
     DiscoTDNBanner(R.layout.discovery_tdn_banner_view,ComponentNames.DiscoTDNBanner.componentName),
+    MerchantVoucher(R.layout.discovery_mv_view,ComponentNames.MerchantVoucher.componentName),
 
     CarouselErrorLoad(R.layout.discovery_carousel_error_load, ComponentNames.CarouselErrorLoad.componentName),
     ProductListErrorLoad(R.layout.discovery_product_list_error_load, ComponentNames.ProductListErrorLoad.componentName),

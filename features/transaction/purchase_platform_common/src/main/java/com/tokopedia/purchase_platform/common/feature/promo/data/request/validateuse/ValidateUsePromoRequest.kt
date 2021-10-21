@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.common.feature.promo.data.request.valida
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import javax.annotation.Generated
 
 @Generated("com.robohorse.robopojogenerator")

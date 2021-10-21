@@ -3,6 +3,8 @@ package com.tokopedia.mediauploader
 import com.tokopedia.mediauploader.data.consts.*
 import com.tokopedia.mediauploader.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.data.mapper.ImagePolicyMapper
+import com.tokopedia.mediauploader.data.params.MediaUploaderParam
+import com.tokopedia.mediauploader.data.state.ProgressCallback
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.DataPolicyUseCase
 import com.tokopedia.mediauploader.domain.MediaUploaderUseCase
@@ -15,14 +17,13 @@ class UploaderManager constructor(
 ) {
 
     suspend fun requestPolicy(sourceId: String): SourcePolicy {
-        val dataPolicyParams = dataPolicyUseCase.createParams(sourceId)
-        val policyData = dataPolicyUseCase(dataPolicyParams)
+        val policyData = dataPolicyUseCase(sourceId)
         return ImagePolicyMapper.mapToSourcePolicy(policyData.dataPolicy)
     }
 
     suspend fun post(fileToUpload: File, sourceId: String, policy: SourcePolicy): UploadResult {
         // media uploader
-        val uploaderParams = mediaUploaderUseCase.createParams(
+        val uploaderParams = MediaUploaderParam(
             uploadUrl = UrlBuilder.generate(policy.host, sourceId),
             filePath = fileToUpload.path,
             timeOut = policy.timeOut.toString()
@@ -100,21 +101,29 @@ class UploaderManager constructor(
     * common error tracker and expose to user
     * */
     fun setError(message: List<String>, sourceId: String, fileToUpload: File): UploadResult {
-        val errorMessage = mutableListOf<String>()
+        val errorMessages = mutableListOf<String>()
 
         // this validation to preventing overload logging on scalyr if error message is empty
         if (message.isNotEmpty()) {
-            errorMessage.addAll(message)
+            errorMessages.addAll(message)
 
-            trackToTimber(fileToUpload, sourceId, message.map { it.addPrefix() })
+            // add the `Kode Error:` as prefix
+            val messages = errorMessages.map { it.addPrefix() }
+
+            trackToTimber(fileToUpload, sourceId, messages)
         } else {
             // if error message "really" empty, adding a network error message as general message
-            errorMessage.add(NETWORK_ERROR)
+            errorMessages.add(NETWORK_ERROR)
         }
 
-        return UploadResult.Error(
-            errorMessage.first().addPrefix()
-        )
+        // get the first (as readable) error message and add the prefix
+        val errorMessage = errorMessages.first().addPrefix()
+
+        return UploadResult.Error(errorMessage)
+    }
+
+    fun setProgressUploader(progress: ProgressCallback?) {
+        mediaUploaderUseCase.progressCallback = progress
     }
 
 }

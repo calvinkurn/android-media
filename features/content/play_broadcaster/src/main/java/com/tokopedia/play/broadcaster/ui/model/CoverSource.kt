@@ -19,7 +19,7 @@ sealed class CoverSource {
         override val sourceString: String
             get() = GALLERY
     }
-    data class Product(val id: Long) : CoverSource() {
+    data class Product(val id: String) : CoverSource() {
         override val sourceString: String
             get() = PRODUCT
     }
@@ -31,7 +31,7 @@ sealed class CoverSource {
         private const val GALLERY = "gallery"
         private const val PRODUCT = "product"
 
-        fun getFromSourceString(sourceString: String, productId: Long? = null): CoverSource {
+        fun getFromSourceString(sourceString: String, productId: String? = null): CoverSource {
             return when (sourceString) {
                 NONE -> None
                 CAMERA -> Camera

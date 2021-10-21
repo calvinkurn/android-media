@@ -5,15 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.viewbinding.ViewBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 /**
  * Created By @ilhamsuaib on 25/02/21
  */
 
-abstract class BaseBottomSheet : BottomSheetUnify() {
+abstract class BaseBottomSheet<T: ViewBinding> : BottomSheetUnify() {
 
-    protected var childView: View? = null
+    protected var binding: T? = null
+
+    abstract fun bind(view: View): T
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,9 +32,14 @@ abstract class BaseBottomSheet : BottomSheetUnify() {
 
     private fun setChildView(inflater: LayoutInflater, container: ViewGroup?) {
         val view = inflater.inflate(getChildResLayout(), container, false)
-        childView = view
+        binding = bind(view)
         setChild(view)
         setupView()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
     }
 
     protected abstract fun getChildResLayout(): Int

@@ -1,7 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 data class OrderPayment(
     val isEnable: Boolean = false,
@@ -78,7 +78,11 @@ data class OrderPaymentCreditCard(
         val tncInfo: String = "",
         val selectedTerm: OrderPaymentInstallmentTerm? = null,
         val additionalData: OrderPaymentCreditCardAdditionalData = OrderPaymentCreditCardAdditionalData(),
-        val isDebit: Boolean = false
+        val isDebit: Boolean = false,
+        val isAfpb: Boolean = false,
+        val unixTimestamp: String = "",
+        val tokenId: String = "",
+        val tenorSignature: String = ""
 ) {
     companion object {
         internal const val DEBIT_GATEWAY_CODE = "DEBITONLINE"
@@ -101,7 +105,8 @@ data class OrderPaymentCreditCardAdditionalData(
         val profileCode: String = "",
         val signature: String = "",
         val changeCcLink: String = "",
-        val callbackUrl: String = ""
+        val callbackUrl: String = "",
+        val totalProductPrice: String = ""
 ) : Parcelable
 
 data class OrderPaymentInstallmentTerm(
@@ -113,7 +118,8 @@ data class OrderPaymentInstallmentTerm(
         var isEnable: Boolean = false,
         var isError: Boolean = false,
         var fee: Double = 0.0,
-        var monthlyAmount: Double = 0.0
+        var monthlyAmount: Double = 0.0,
+        var description: String = "",
 )
 
 data class OrderPaymentOvoAdditionalData(

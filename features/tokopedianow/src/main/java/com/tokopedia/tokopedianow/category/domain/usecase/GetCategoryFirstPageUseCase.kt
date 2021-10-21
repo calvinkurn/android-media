@@ -11,10 +11,12 @@ import com.tokopedia.tokopedianow.searchcategory.data.createAceSearchProductRequ
 import com.tokopedia.tokopedianow.searchcategory.data.createCategoryFilterRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createDynamicChannelRequest
 import com.tokopedia.tokopedianow.searchcategory.data.createQuickFilterRequest
+import com.tokopedia.tokopedianow.searchcategory.data.createRecentPurchaseRequest
 import com.tokopedia.tokopedianow.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokopedianow.searchcategory.data.mapper.getBanner
 import com.tokopedia.tokopedianow.searchcategory.data.mapper.getCategoryFilter
 import com.tokopedia.tokopedianow.searchcategory.data.mapper.getQuickFilter
+import com.tokopedia.tokopedianow.searchcategory.data.mapper.getRepurchaseWidget
 import com.tokopedia.tokopedianow.searchcategory.data.mapper.getSearchProduct
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_TOKONOW_DIRECTORY
@@ -39,6 +41,7 @@ class GetCategoryFirstPageUseCase(
         graphqlUseCase.addRequest(createCategoryFilterRequest(categoryFilterParams))
         graphqlUseCase.addRequest(createQuickFilterRequest(quickFilterParams))
         graphqlUseCase.addRequest(createDynamicChannelRequest(TOKONOW_CATEGORY))
+        graphqlUseCase.addRequest(createRecentPurchaseRequest(useCaseRequestParams.parameters))
 
         val graphqlResponse = graphqlUseCase.executeOnBackground()
 
@@ -48,6 +51,7 @@ class GetCategoryFirstPageUseCase(
                 categoryFilter = getCategoryFilter(graphqlResponse),
                 quickFilter = getQuickFilter(graphqlResponse),
                 bannerChannel = getBanner(graphqlResponse),
+                tokonowRepurchaseWidget = getRepurchaseWidget(graphqlResponse),
         )
     }
 

@@ -17,6 +17,7 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_ATC_SRP_PRODUCT_TOKONOW
@@ -66,6 +67,9 @@ class TokoNowSearchFragment:
     private lateinit var tokoNowSearchViewModel: TokoNowSearchViewModel
 
     override val toolbarPageName = "TokoNow Search"
+
+    override val oocPageName: String
+        get() = "tokonow - search page"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -138,7 +142,7 @@ class TokoNowSearchFragment:
             quickFilterListener = this,
             categoryFilterListener = this,
             productItemListener = this,
-            emptyProductListener = this,
+            tokoNowEmptyStateNoResultListener = this,
             suggestionListener = this,
             outOfCoverageListener = this,
             categoryJumperListener = this,
@@ -407,4 +411,14 @@ class TokoNowSearchFragment:
         if (broadMatchDataView.applink.startsWith(ApplinkConst.TokopediaNow.SEARCH))
             modifyApplinkToSearchResult(broadMatchDataView.applink)
         else broadMatchDataView.applink
+
+    override fun onSeeMoreClick(data: RecommendationCarouselData, applink: String) {
+        SearchTracking.sendRecommendationSeeAllClickEvent(getViewModel().query)
+
+        RouteManager.route(context, applink)
+    }
+
+    override fun sendOOCOpenScreenTracking(isTracked: Boolean) {
+        SearchTracking.sendOOCOpenScreenTracking()
+    }
 }

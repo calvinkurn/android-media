@@ -63,7 +63,7 @@ class EventHomeViewModelTest{
         result[objectType] = dataResponse
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         //when
         eventHomeViewModel.getHomeData(false)
@@ -85,7 +85,7 @@ class EventHomeViewModelTest{
         errors[EventHomeDataResponse.Data::class.java] = listOf(errorGql)
 
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } coAnswers {
             GraphqlResponse(HashMap<Type, Any?>(), errors, false)
         }

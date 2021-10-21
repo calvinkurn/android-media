@@ -36,6 +36,7 @@ data class RecommendationItem(
         val header: String = "",
         val pageName: String = "",
         val minOrder: Int = 0,
+        val maxOrder: Int = 0,
         val location: String = "",
         val badgesUrl: List<String> = listOf(),
         val type: String = "",
@@ -43,7 +44,7 @@ data class RecommendationItem(
         val freeOngkirImageUrl: String = "",
         val labelGroupList: List<RecommendationLabel> = listOf(),
         val isGold: Boolean = false,
-        val isOfficial:Boolean = false,
+        val isOfficial: Boolean = false,
         // for tracker field
         val dimension61: String = "",
         val specs: List<RecommendationSpecificationLabels> = listOf(),

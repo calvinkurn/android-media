@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.report.R
 import com.tokopedia.report.data.util.MerchantReportTracking
-import kotlinx.android.synthetic.main.item_filled_photo.view.*
+import com.tokopedia.report.databinding.ItemFilledPhotoBinding
 
 class UploadPhotoAdapter (var type: String,
                           private val addPhotoListener: ((String, Int) -> Unit),
@@ -62,15 +62,16 @@ class UploadPhotoAdapter (var type: String,
     }
 
     inner class PhotoItemViewHolder(view: View): RecyclerView.ViewHolder(view){
+        private val binding = ItemFilledPhotoBinding.bind(view)
 
         init {
-            itemView.iv_delete.setOnClickListener {
+            binding.ivDelete.setOnClickListener {
                 removePhotoAt(adapterPosition)
             }
         }
 
         fun bind(photoUri: String){
-            ImageHandler.LoadImage(itemView.attached_image, photoUri)
+            ImageHandler.LoadImage(binding.attachedImage, photoUri)
         }
     }
 

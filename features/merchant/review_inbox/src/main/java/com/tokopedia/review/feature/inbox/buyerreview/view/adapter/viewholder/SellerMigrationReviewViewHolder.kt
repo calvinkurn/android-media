@@ -5,6 +5,7 @@ import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.SellerMigrationReviewModel
+import com.tokopedia.review.inbox.databinding.ItemSellerMigrationReviewBinding
 import com.tokopedia.review.inbox.R
 
 class SellerMigrationReviewViewHolder(
@@ -19,9 +20,11 @@ class SellerMigrationReviewViewHolder(
 
     private var imageView: ImageView = itemView.findViewById(R.id.iv_seller_migration_review)
 
+    private val binding = ItemSellerMigrationReviewBinding.bind(view)
+
     override fun bind(element: SellerMigrationReviewModel?) {
-        imageView.loadImage(SELLER_MIGRATION_IMAGE_URL)
-        itemView.setOnClickListener {
+        binding.ivSellerMigrationReview.loadImage(SELLER_MIGRATION_IMAGE_URL)
+        binding.root.setOnClickListener {
             listener.onSellerMigrationReviewClicked()
         }
     }

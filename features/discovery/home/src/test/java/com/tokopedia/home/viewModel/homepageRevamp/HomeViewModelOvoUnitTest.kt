@@ -121,21 +121,10 @@ class HomeViewModelOvoUnitTest{
 
         homeViewModel.refresh(true)
 
-        verifyOrder {
-            // check on home data initial first channel is header data model
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.filterIsInstance<HomeHeaderOvoDataModel>().isNotEmpty()
-            })
-            // update tokocash
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.filterIsInstance<HomeHeaderOvoDataModel>().isNotEmpty()
-            })
-            // update tokopoint
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.filterIsInstance<HomeHeaderOvoDataModel>().firstOrNull()?.headerDataModel?.tokopointsDrawerHomeData == null
-            })
-        }
-        confirmVerified(observerHome)
+        assert(
+            homeViewModel.homeDataModel.list.isNotEmpty() &&
+                    homeViewModel.homeDataModel.list.filterIsInstance<HomeHeaderOvoDataModel>().firstOrNull()?.headerDataModel?.tokopointsDrawerHomeData == null
+        )
     }
 
     @Test
@@ -204,7 +193,7 @@ class HomeViewModelOvoUnitTest{
     @Test
     fun `Test Tokocash Only Get success data Tokocash`(){
         val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
-        every { userSessionInterface.isLoggedIn } returns false
+        every { userSessionInterface.isLoggedIn } returns true
         coEvery{ getCoroutineWalletBalanceUseCase.executeOnBackground() } returns WalletBalanceModel()
 
         getHomeUseCase.givenGetHomeDataReturn(
@@ -221,21 +210,10 @@ class HomeViewModelOvoUnitTest{
         homeViewModel.homeLiveData.observeForever(observerHome)
         homeViewModel.refresh(true)
 
-        verifyOrder {
-            // check on home data initial first channel is header data model
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.filterIsInstance<HomeHeaderOvoDataModel>().isNotEmpty()
-            })
-            // update tokocash
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.filterIsInstance<HomeHeaderOvoDataModel>().isNotEmpty()
-            })
-            // update tokopoint
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.filterIsInstance<HomeHeaderOvoDataModel>().firstOrNull()?.headerDataModel?.homeHeaderWalletActionData != null
-            })
-        }
-        confirmVerified(observerHome)
+        assert(
+            homeViewModel.homeDataModel.list.isNotEmpty() &&
+                    homeViewModel.homeDataModel.list.filterIsInstance<HomeHeaderOvoDataModel>().firstOrNull()?.headerDataModel?.homeHeaderWalletActionData != null
+        )
     }
 
     @Test
@@ -257,21 +235,10 @@ class HomeViewModelOvoUnitTest{
         homeViewModel.homeLiveData.observeForever(observerHome)
 
         homeViewModel.refresh(true)
-        verifyOrder {
-            // check on home data initial first channel is header data model
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.filterIsInstance<HomeHeaderOvoDataModel>().isNotEmpty()
-            })
-            // update tokocash
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.filterIsInstance<HomeHeaderOvoDataModel>().isNotEmpty()
-            })
-            // update tokopoint
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.filterIsInstance<HomeHeaderOvoDataModel>().firstOrNull()?.headerDataModel?.homeHeaderWalletActionData == null
-            })
-        }
-        confirmVerified(observerHome)
+        assert(
+            homeViewModel.homeDataModel.list.isNotEmpty() &&
+                    homeViewModel.homeDataModel.list.filterIsInstance<HomeHeaderOvoDataModel>().firstOrNull()?.headerDataModel?.homeHeaderWalletActionData == null
+        )
     }
 
     @Test

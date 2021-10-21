@@ -12,6 +12,8 @@ class WidgetExpandableUiModel(
         val grade: PMCurrentGradeUiModel?,
         val nextMonthlyRefreshDate: String,
         val nextQuarterlyCalibrationRefreshDate: String,
+        val nextShopLevel: String,
+        val nextGradeName: String,
         val pmStatus: String,
         val pmTierType: Int,
         val isAutoExtendEnabled: Boolean,

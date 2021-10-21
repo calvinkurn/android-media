@@ -34,7 +34,7 @@ class RecentViewUseCase (
                 RecentViewResult::class.java,
                 params.parameters
         )
-        val response = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+        val response = graphqlRepository.response(listOf(request), cacheStrategy)
         response.getError(RecentViewResult::class.java)?.let {
             if (it.isNotEmpty()) {
                 if (!TextUtils.isEmpty(it[0].message)) {

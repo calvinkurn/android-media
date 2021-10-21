@@ -66,6 +66,17 @@ object TrackingConstant {
     const val CLICK_WIDGET_ADVANCE_TABLE = "click widget advance table"
     const val CLICK_WIDGET_BAR_CHART = "click widget bar chart"
     const val CLICK_WIDGET_PIE_CHART = "click widget pie chart"
+    const val IMPRESSION_WIDGET_MILESTONE = "impression widget milestone - higher level"
+    const val IMPRESSION_WIDGET_MILESTONE_CARD = "impression widget milestone - card level"
+    const val CLICK_WIDGET_MILESTONE_CARD = "click widget milestone - card level"
+    const val CLICK_WIDGET_MILESTONE_CARD_FINISHED =
+        "click widget milestone - card level - finished state"
+    const val CLICK_WIDGET_MILESTONE_SEE_MORE = "click widget milestone - higher level - see more"
+    const val CLICK_WIDGET_MILESTONE_MINIMIZE =
+        "click widget milestone - higher level - minimize view"
+    const val CLICK_WIDGET_MILESTONE_SHARE = "click widget milestone - share"
+    const val IMPRESSION_TICKER = "impression ticker"
+    const val CLICK_TICKER_HYPERLINK = "click ticker - hyperlink"
 
     //search
     const val CLICK_SEARCH = "clickSearch"
@@ -81,6 +92,13 @@ object TrackingConstant {
     const val EMPTY = "empty"
     const val NOT_EMPTY = "not empty"
     const val EMPTY_STATE = "emptystate"
+    const val SEPARATOR = " - "
+    const val SPACE = " "
+    const val ACTIVE = "active"
+    const val FINISHED = "finished"
+    const val LOCKED = "locked"
+    const val EMPTY_STRING = ""
+    const val TOTAL_FINISHED_MISSION = "%d out of %d missions finished"
 
     //performance
     const val CLICK_SHOP_SCORE = "clickShopScore"
@@ -98,4 +116,11 @@ object TrackingConstant {
     const val SHOP_TYPE_PM = "PM"
     const val SHOP_TYPE_OS = "OS"
     const val VIEW_SHOP_SCORE_IRIS = "viewShopScoreIris"
+
+    //ticker
+    const val TICKER_ANNOUNCEMENT = "announcement"
+    const val TICKER_WARNING = "warning"
+    const val TICKER_INFO = "info"
+    const val TICKER_DANGER = "danger"
+
 }

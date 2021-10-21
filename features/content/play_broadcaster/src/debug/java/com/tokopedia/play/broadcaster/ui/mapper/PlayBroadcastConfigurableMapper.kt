@@ -4,9 +4,11 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConfig
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
+import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -26,12 +28,19 @@ class PlayBroadcastConfigurableMapper(
         else mockMapper.mapEtalaseList(etalaseList)
     }
 
-    override fun mapProductList(productsResponse: GetProductsByEtalaseResponse.GetProductListData, isSelectedHandler: (Long) -> Boolean, isSelectableHandler: (Boolean) -> SelectableState): List<ProductContentUiModel> {
+    override fun mapProductList(
+        productsResponse: GetProductsByEtalaseResponse.GetProductListData,
+        isSelectedHandler: (String) -> Boolean,
+        isSelectableHandler: (Boolean) -> SelectableState
+    ): List<ProductContentUiModel> {
         return if (!isMock) uiMapper.mapProductList(productsResponse, isSelectedHandler, isSelectableHandler)
         else mockMapper.mapProductList(productsResponse, isSelectedHandler, isSelectableHandler)
     }
 
-    override fun mapSearchSuggestionList(keyword: String, productsResponse: GetProductsByEtalaseResponse.GetProductListData): List<SearchSuggestionUiModel> {
+    override fun mapSearchSuggestionList(
+        keyword: String,
+        productsResponse: GetProductsByEtalaseResponse.GetProductListData
+    ): List<SearchSuggestionUiModel> {
         return if (!isMock) uiMapper.mapSearchSuggestionList(keyword, productsResponse)
         else mockMapper.mapSearchSuggestionList(keyword, productsResponse)
     }
@@ -131,5 +140,13 @@ class PlayBroadcastConfigurableMapper(
                                        durationInMs: Long): InteractiveSessionUiModel {
         return if (!isMock) uiMapper.mapInteractiveSession(response, title, durationInMs)
         else mockMapper.mapInteractiveSession(response, title, durationInMs)
+    }
+
+    override fun mapLiveInfo(
+        activeIngestUrl: String,
+        config: PlayLivePusherConfig
+    ): PlayLiveInfoUiModel {
+        return if (!isMock) uiMapper.mapLiveInfo(activeIngestUrl, config)
+        else mockMapper.mapLiveInfo(activeIngestUrl, config)
     }
 }

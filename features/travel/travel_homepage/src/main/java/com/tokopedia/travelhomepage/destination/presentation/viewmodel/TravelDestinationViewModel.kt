@@ -97,7 +97,7 @@ class TravelDestinationViewModel  @Inject constructor(
             val data = withContext(dispatcherProvider.main) {
                 val param = mapOf(PARAM_WEBURLS to webUrl)
                 val graphqlRequest = GraphqlRequest(query, TravelDestinationCityModel.Response::class.java, param)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<TravelDestinationCityModel.Response>().response
 
             travelDestinationCityModelMutable.postValue(Success(data))
@@ -112,7 +112,7 @@ class TravelDestinationViewModel  @Inject constructor(
                 val data = withContext(dispatcherProvider.main) {
                     val param = mapOf(PARAM_CITY_ID to cityId)
                     val graphqlRequest = GraphqlRequest(query, TravelDestinationSummaryModel.Response::class.java, param)
-                    graphqlRepository.getReseponse(listOf(graphqlRequest))
+                    graphqlRepository.response(listOf(graphqlRequest))
                 }.getSuccessData<TravelDestinationSummaryModel.Response>().response
                 data
             }
@@ -129,7 +129,7 @@ class TravelDestinationViewModel  @Inject constructor(
                 val data = withContext(dispatcherProvider.main) {
                     val param = mapOf(PARAM_PRODUCT to product, PARAM_CITY_ID to cityId.toInt())
                     val graphqlRequest = GraphqlRequest(query, TravelHomepageRecommendationModel.Response::class.java, param)
-                    graphqlRepository.getReseponse(listOf(graphqlRequest))
+                    graphqlRepository.response(listOf(graphqlRequest))
                 }.getSuccessData<TravelHomepageRecommendationModel.Response>()
                 data
             }
@@ -146,7 +146,7 @@ class TravelDestinationViewModel  @Inject constructor(
                 val data = withContext(dispatcherProvider.main) {
                     val param = mapOf(PARAM_PAGE to 1, PARAM_PER_PAGE to 10, PARAM_FILTER_STATUS to "success", PARAM_CITY_ID to cityId.toInt())
                     val graphqlRequest = GraphqlRequest(query, TravelHomepageOrderListModel.Response::class.java, param)
-                    graphqlRepository.getReseponse(listOf(graphqlRequest))
+                    graphqlRepository.response(listOf(graphqlRequest))
                 }.getSuccessData<TravelHomepageOrderListModel.Response>()
                 data
             }
@@ -163,7 +163,7 @@ class TravelDestinationViewModel  @Inject constructor(
                 val data = withContext(dispatcherProvider.main) {
                     val param = mapOf(PARAM_CITY_ID to cityId.toInt())
                     val graphqlRequest = GraphqlRequest(query, TravelArticleModel.Response::class.java, param)
-                    graphqlRepository.getReseponse(listOf(graphqlRequest))
+                    graphqlRepository.response(listOf(graphqlRequest))
                 }.getSuccessData<TravelArticleModel.Response>()
                 data
             }

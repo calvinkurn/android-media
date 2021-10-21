@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_N0"
+    android:paddingStart="@dimen/unify_space_16"
+    android:paddingEnd="@dimen/unify_space_16">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title_cpl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Layanan Pengiriman"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_description_cpl"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:text="Atur layanan pengioriman sesuai jenis produkmu."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tv_title_cpl"
+        app:layout_constraintTop_toBottomOf="@id/tv_title_cpl"
+        app:typographyType="body_3" />
+
+    <RadioGroup
+        android:id="@+id/radios_cpl"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_description_cpl">
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:id="@+id/radio_standard_shipment"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:text="Standar" />
+
+        <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+            android:id="@+id/radio_custom_shipment"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layoutDirection="rtl"
+            android:text="Custom" />
+
+    </RadioGroup>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_custom_ondemand"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/radios_cpl">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_dijemput_kurir"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:text="Dijemput Kurir"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/btn_info_on_demand"
+            android:layout_width="@dimen/unify_space_16"
+            android:layout_height="@dimen/unify_space_16"
+            android:layout_marginStart="@dimen/dp_4"
+            app:icon_name="INFORMATION"
+            app:layout_constraintBottom_toBottomOf="@id/tv_dijemput_kurir"
+            app:layout_constraintStart_toEndOf="@id/tv_dijemput_kurir"
+            app:layout_constraintTop_toTopOf="@id/tv_dijemput_kurir"
+            tools:ignore="ContentDescription" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/btn_change_on_demand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ubah"
+            android:textColor="@color/Unify_G500"
+            android:textSize="@dimen/sp_14"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/tv_dijemput_kurir"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_dijemput_kurir"
+            tools:ignore="ContentDescription" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_on_demand"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_16"
+            app:layout_constraintTop_toBottomOf="@id/tv_dijemput_kurir"
+            tools:listitem="@layout/item_add_edit_shipment" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_custom_conventional"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_custom_ondemand">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_agen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:text="Antar ke Kantor Agen"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/btn_info_conventional"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_4"
+            app:icon_name="INFORMATION"
+            app:layout_constraintBottom_toBottomOf="@id/tv_agen"
+            app:layout_constraintStart_toEndOf="@id/tv_agen"
+            app:layout_constraintTop_toTopOf="@id/tv_agen"
+            tools:ignore="ContentDescription" />
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/btn_change_conventional"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ubah"
+            android:textColor="@color/Unify_G500"
+            android:textSize="@dimen/sp_14"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@id/tv_agen"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_agen"
+            tools:ignore="ContentDescription" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_conventional"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_16"
+            app:layout_constraintTop_toBottomOf="@id/tv_agen"
+            tools:listitem="@layout/item_add_edit_shipment" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -39,7 +39,7 @@ class RegisterCheckUseCase @Inject constructor(
                     parameter.toMap()
             )
 
-            return@withContext graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+            return@withContext graphqlRepository.response(listOf(request), cacheStrategy)
         }
 
         response.getError(RegisterCheckPojo::class.java)?.let {

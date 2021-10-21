@@ -4,13 +4,13 @@ import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
+import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackPromo
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
 import com.tokopedia.topupbills.common.analytics.DigitalTopupEventTracking.Additional.Companion.REGULAR_PRODUCT
 import com.tokopedia.topupbills.common.analytics.DigitalTopupEventTracking.Additional.Companion.SPECIAL_PROMO
 import com.tokopedia.topupbills.telco.data.TelcoProduct
-import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
-import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.prepaid.model.DigitalTrackProductTelco
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils

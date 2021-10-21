@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.uimodel.mapper
 
 import com.tokopedia.play.data.Product
+import com.tokopedia.play.di.PlayScope
 import com.tokopedia.play.view.type.DiscountedPrice
 import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.type.OutOfStock
@@ -11,6 +12,7 @@ import javax.inject.Inject
 /**
  * Created by jegul on 01/02/21
  */
+@PlayScope
 class PlayProductTagUiMapper @Inject constructor() {
 
     fun mapProductTag(input: Product): PlayProductUiModel {

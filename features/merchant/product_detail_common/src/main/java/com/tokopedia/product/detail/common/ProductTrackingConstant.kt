@@ -10,6 +10,7 @@ object ProductTrackingConstant {
         const val TOP_NAV_SHARE_PDP = "top nav - product detail page"
         const val PRODUCT_DETAIL_PAGE_SELLER = "product detail page - seller side"
         const val PRODUCT_DETAIL_PAGE_SHIPPING = "pdp courier section"
+        const val GLOBAL_VARIANT_BOTTOM_SHEET = "%s - global variant bottomsheet" //page source
     }
 
     object Tracking {
@@ -86,6 +87,7 @@ object ProductTrackingConstant {
         const val KEY_DISCUSSION_USER_ID = "userId"
         const val SWIPE_IMAGE_BUSINESS_UNIT = "Physical Goods - PDP"
         const val SELECT_CONTENT = "select_content"
+        const val BUILDER_SHOP_ID = "shop_id:%s"
 
         //Tradein
         const val TRADEIN_TRUE_DIAGNOSTIC = "true diagnostic"
@@ -165,6 +167,9 @@ object ProductTrackingConstant {
         const val CLICK_PP_INSURANCE_BOTTOMSHEET = "click - pp - insurance section"
         const val ACTION_PP_INSURANCE = "eligible - pp - insurance section"
 
+        const val ACTION_CLICK_VARIANT = "click - pilih varian"
+        const val ACTION_CLICK_TOKOCABANG = "click - tokocabang hyperlink"
+
         const val ACTION_VIEW_ERROR_WHEN_ADD_TO_CART = "view error when add to cart"
 
         const val CLICK_DISCUSSION_SEE_ALL = "click - lihat semua diskusi on diskusi terakhir"
@@ -209,6 +214,10 @@ object ProductTrackingConstant {
         const val CLICK_SEE_ALL_CATEGORY_CAROUSEL = "click - lihat semua on category carousel"
         const val CLICK_CATEGORY_IMAGE = "click - category card on category carousel"
         const val EVENT_ACTION_CLICK_SEE_ALL_RECOM = "%s - %s - %s" //recoom title, page name, widget type
+
+        const val CLICK_PRODUCT_BUNDLING = "click - product bundling"
+        const val CLICK_CHECK_PRODUCT_BUNDLING = "click - lihat paket on bundling component"
+        const val IMPRESSION_PRODUCT_BUNDLING = "impression - bundling component"
     }
 
 
@@ -232,6 +241,10 @@ object ProductTrackingConstant {
         const val EVENT_CREATIVE_CLICK_BEST_SELLER = "layout:%s;comp:%s;temp:%s;"
         const val EVENT_LAYOUT_CLICK_BEST_SELLER = "layout:%s;catName:%s;catId:%s;"
         const val EVENT_LABEL_CLICK_IMAGE_CATEGORY_CAROUSEL = "category_id:%s ;\ncategory_name:%s"
+        const val EVENT_LABEL_CLICK_PRODUCT_BUNDLING_MULTIPLE = "product_id:%s; bundling_id:%s; bundling_type:multiple;"
+        const val EVENT_LABEL_CLICK_CHECK_PRODUCT_BUNDLING = "bundling_id:%s; bundling_type:%s;"
+        const val VIEW_LABEL_PRODUCT_BUNDLING = "bundling_id:%s; bundling_type:%s;"
+        const val EVENT_LABEL_FLOW_CHOOSE_VARIANT = "flow:%s;parent_id:%s;child_id:%s"
     }
 
     object Report {

@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.databinding.FilterCheckboxItemBinding
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
-import kotlinx.android.synthetic.main.filter_checkbox_item.view.cb_filter
-import kotlinx.android.synthetic.main.filter_checkbox_item.view.label_checkbox
+import com.tokopedia.utils.view.binding.viewBinding
 
 class SomSubFilterCheckboxAdapter(private val somSubFilterListener: SomSubCheckboxFilterListener):
         RecyclerView.Adapter<SomSubFilterCheckboxAdapter.CheckboxViewHolder>(){
@@ -62,29 +62,32 @@ class SomSubFilterCheckboxAdapter(private val somSubFilterListener: SomSubCheckb
     }
 
     inner class CheckboxViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        private val binding by viewBinding<FilterCheckboxItemBinding>()
+
         fun bind(item: SomFilterChipsUiModel) {
-            with(itemView) {
-                label_checkbox.text = item.name
-                cb_filter.apply {
+            binding?.run {
+                labelCheckbox.text = item.name
+                cbFilter.apply {
                     setOnCheckedChangeListener(null)
                     isChecked = item.isSelected
                     skipAnimation()
                 }
 
-                setOnClickListener {
-                    cb_filter.isChecked = !cb_filter.isChecked
+                root.setOnClickListener {
+                    cbFilter.isChecked = !cbFilter.isChecked
                 }
-                cb_filter.setOnCheckedChangeListener { _, isChecked ->
+                cbFilter.setOnCheckedChangeListener { _, isChecked ->
                     checkBoxClicked(isChecked)
                 }
             }
         }
 
         private fun checkBoxClicked(isChecked: Boolean) {
-            with(itemView) {
+            binding?.run {
                 val id = listSubFilter[adapterPosition].id
                 updateCheckboxFilter(isChecked, adapterPosition)
-                somSubFilterListener.onCheckboxItemClicked(id, adapterPosition, cb_filter.isChecked)
+                somSubFilterListener.onCheckboxItemClicked(id, adapterPosition, cbFilter.isChecked)
             }
         }
     }

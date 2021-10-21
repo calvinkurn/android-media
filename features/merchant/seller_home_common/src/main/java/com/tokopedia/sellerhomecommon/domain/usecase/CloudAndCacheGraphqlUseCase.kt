@@ -26,7 +26,7 @@ abstract class CloudAndCacheGraphqlUseCase<R : Any, U : Any> constructor(
 
     private suspend fun getCachedResponse(request: GraphqlRequest): U? {
         try {
-            val response = graphqlRepository.getReseponse(
+            val response = graphqlRepository.response(
                 listOf(request), getCacheOnlyCacheStrategy()
             )
 
@@ -43,7 +43,7 @@ abstract class CloudAndCacheGraphqlUseCase<R : Any, U : Any> constructor(
     }
 
     private suspend fun getCloudResponse(request: GraphqlRequest): U {
-        val response = graphqlRepository.getReseponse(
+        val response = graphqlRepository.response(
             listOf(request),
             getAlwaysCloudCacheStrategy()
         )

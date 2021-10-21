@@ -24,6 +24,7 @@ import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
 import com.tokopedia.flight.R
 import com.tokopedia.flight.common.util.FlightPassengerInfoValidator
 import com.tokopedia.flight.common.view.enum.FlightPassengerTitle
+import com.tokopedia.flight.databinding.FragmentFlightBookingPassengerBinding
 import com.tokopedia.flight.detail.view.adapter.FlightSimpleAdapter
 import com.tokopedia.flight.detail.view.model.SimpleModel
 import com.tokopedia.flight.passenger.constant.FlightBookingPassenger
@@ -61,7 +62,7 @@ import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.date.toString
-import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -91,6 +92,9 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
     lateinit var travelContactArrayAdapter: TravelContactArrayAdapter
 
+    private var binding by autoClearedNullable<FragmentFlightBookingPassengerBinding>()
+
+
     override fun initInjector() {
         getComponent(FlightPassengerComponent::class.java).inject(this)
     }
@@ -117,13 +121,14 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(com.tokopedia.flight.R.layout.fragment_flight_booking_passenger, container, false)
+        binding = FragmentFlightBookingPassengerBinding.inflate(inflater, container, false)
+        return binding?.root as View
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (autofillName.isNotEmpty()) loading_screen.show() else loading_screen.hide()
+        if (autofillName.isNotEmpty()) binding?.loadingScreen?.root?.show() else binding?.loadingScreen?.root?.hide()
         passengerViewModel.getContactList(TravelPassengerGqlQuery.CONTACT_LIST,
                 getPassengerTypeString(passengerModel.type))
         initView()
@@ -142,7 +147,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                             break
                         }
                     }
-                    loading_screen.hide()
+                    binding?.loadingScreen?.root?.hide()
                 }
             }
         })
@@ -164,50 +169,50 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             renderPassport()
             initFirstNameAutoCompleteTv(it)
 
-            button_submit.setOnClickListener {
+            binding?.buttonSubmit?.setOnClickListener {
                 clearAllKeyboardFocus()
                 onSubmitData()
             }
 
-            til_birth_date.textFieldInput.isFocusable = false
-            til_birth_date.textFieldInput.isClickable = true
-            til_birth_date.textFieldInput.setCompoundDrawablesWithIntrinsicBounds(null, null,
+            binding?.tilBirthDate?.textFieldInput?.isFocusable = false
+            binding?.tilBirthDate?.textFieldInput?.isClickable = true
+            binding?.tilBirthDate?.textFieldInput?.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     MethodChecker.getDrawable(requireContext(), com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24), null)
-            til_birth_date.textFieldInput.setOnClickListener { onBirthdateClicked() }
+            binding?.tilBirthDate?.textFieldInput?.setOnClickListener { onBirthdateClicked() }
 
-            til_passport_expiration_date.textFieldInput.isFocusable = false
-            til_passport_expiration_date.textFieldInput.isClickable = true
-            til_passport_expiration_date.textFieldInput.setCompoundDrawablesWithIntrinsicBounds(null, null,
+            binding?.tilPassportExpirationDate?.textFieldInput?.isFocusable = false
+            binding?.tilPassportExpirationDate?.textFieldInput?.isClickable = true
+            binding?.tilPassportExpirationDate?.textFieldInput?.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     MethodChecker.getDrawable(requireContext(), com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24), null)
-            til_passport_expiration_date.textFieldInput.setOnClickListener { onPassportExpiredClicked() }
+            binding?.tilPassportExpirationDate?.textFieldInput?.setOnClickListener { onPassportExpiredClicked() }
 
-            til_nationality.textFieldInput.isFocusable = false
-            til_nationality.textFieldInput.isClickable = true
-            til_nationality.textFieldInput.setCompoundDrawablesWithIntrinsicBounds(null, null,
+            binding?.tilNationality?.textFieldInput?.isFocusable = false
+            binding?.tilNationality?.textFieldInput?.isClickable = true
+            binding?.tilNationality?.textFieldInput?.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     MethodChecker.getDrawable(requireContext(), com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24), null)
-            til_nationality.textFieldInput.setOnClickListener {
+            binding?.tilNationality?.textFieldInput?.setOnClickListener {
                 startActivityForResult(PhoneCodePickerActivity.getCallingIntent(requireContext(),
                         getString(com.tokopedia.flight.R.string.flight_nationality_search_hint)), REQUEST_CODE_PICK_NATIONALITY)
             }
 
-            til_passport_issuer_country.textFieldInput.isFocusable = false
-            til_passport_issuer_country.textFieldInput.isClickable = true
-            til_passport_issuer_country.textFieldInput.setCompoundDrawablesWithIntrinsicBounds(null, null,
+            binding?.tilPassportIssuerCountry?.textFieldInput?.isFocusable = false
+            binding?.tilPassportIssuerCountry?.textFieldInput?.isClickable = true
+            binding?.tilPassportIssuerCountry?.textFieldInput?.setCompoundDrawablesWithIntrinsicBounds(null, null,
                     MethodChecker.getDrawable(requireContext(), com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24), null)
-            til_passport_issuer_country.textFieldInput.setOnClickListener {
+            binding?.tilPassportIssuerCountry?.textFieldInput?.setOnClickListener {
                 startActivityForResult(PhoneCodePickerActivity.getCallingIntent(requireContext(),
                         getString(com.tokopedia.flight.R.string.flight_passport_search_hint)), REQUEST_CODE_PICK_ISSUER_COUNTRY)
             }
 
-            til_first_name.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
+            binding?.tilFirstName?.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
 
-            fragment_layout.setOnTouchListener { _, _ ->
+            binding?.fragmentLayout?.setOnTouchListener { _, _ ->
                 clearAllKeyboardFocus()
                 true
             }
 
-            rv_passenger_title.selectOnlyOneChip(true)
-            rv_passenger_title.canDiselectAfterSelect(false)
+            binding?.rvPassengerTitle?.selectOnlyOneChip(true)
+            binding?.rvPassengerTitle?.canDiselectAfterSelect(false)
         }
     }
 
@@ -216,11 +221,11 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                 com.tokopedia.travel.passenger.R.layout.layout_travel_passenger_autocompletetv, arrayListOf(),
                 object : TravelContactArrayAdapter.ContactArrayListener {
                     override fun getFilterText(): String {
-                        return et_first_name.text.toString()
+                        return binding?.etFirstName?.text.toString()
                     }
                 })
-        (et_first_name as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
-        (et_first_name as AutoCompleteTextView).onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ -> autofillPassengerContact(travelContactArrayAdapter.getItem(position)) }
+        (binding?.etFirstName as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
+        (binding?.etFirstName as AutoCompleteTextView).onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ -> autofillPassengerContact(travelContactArrayAdapter.getItem(position)) }
     }
 
     private fun onSubmitData() {
@@ -269,29 +274,29 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun getFirstName(): String = et_first_name.text.toString()
+    private fun getFirstName(): String = binding?.etFirstName?.text.toString()
 
-    private fun getLastName(): String = til_last_name.textFieldInput.text.toString()
+    private fun getLastName(): String = binding?.tilLastName?.textFieldInput?.text.toString()
 
-    private fun getPassengerTitle(): String = rv_passenger_title.getFirstSelectedItem()
+    private fun getPassengerTitle(): String = binding?.rvPassengerTitle?.getFirstSelectedItem() ?: ""
 
-    private fun getPassengerBirthDate(): String = til_birth_date.textFieldInput.text.toString().trim()
+    private fun getPassengerBirthDate(): String = binding?.tilBirthDate?.textFieldInput?.text.toString().trim()
 
-    private fun getPassportExpiryDate(): String = til_passport_expiration_date.textFieldInput.text.toString().trim()
+    private fun getPassportExpiryDate(): String = binding?.tilPassportExpirationDate?.textFieldInput?.text.toString().trim()
 
-    private fun getPassportNumber(): String = til_passport_no.textFieldInput.text.toString().trim()
+    private fun getPassportNumber(): String = binding?.tilPassportNo?.textFieldInput?.text.toString().trim()
 
     private fun renderPassengerData() {
         if (passengerModel.passengerFirstName.isNotEmpty()) {
-            et_first_name.setText(passengerModel.passengerFirstName)
-            til_last_name.textFieldInput.setText(passengerModel.passengerLastName)
+            binding?.etFirstName?.setText(passengerModel.passengerFirstName)
+            binding?.tilLastName?.textFieldInput?.setText(passengerModel.passengerLastName)
         }
 
         if (passengerModel.passengerBirthdate.isNotEmpty())
-            til_birth_date.textFieldInput.setText(DateUtil.formatDate(DateUtil.YYYY_MM_DD,
+            binding?.tilBirthDate?.textFieldInput?.setText(DateUtil.formatDate(DateUtil.YYYY_MM_DD,
                     DateUtil.DEFAULT_VIEW_FORMAT, passengerModel.passengerBirthdate))
 
-        rv_passenger_title.listener = object : FilterChipAdapter.OnClickListener {
+        binding?.rvPassengerTitle?.listener = object : FilterChipAdapter.OnClickListener {
             override fun onChipClickListener(string: String, isSelected: Boolean) {
                 if (isSelected) {
                     passengerModel.passengerTitle = string
@@ -302,21 +307,21 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
         if (isAdultPassenger()) {
             val entries = resources.getStringArray(R.array.flight_adult_titles)
-            rv_passenger_title.setItem(ArrayList(Arrays.asList(*entries)),
+            binding?.rvPassengerTitle?.setItem(ArrayList(Arrays.asList(*entries)),
                     initialSelectedItemPos = if (passengerModel.passengerTitle != null) getPassengerTitleId(passengerModel.passengerTitle) - 1 else null)
         } else {
             val entries = resources.getStringArray(R.array.flight_child_infant_titles)
-            rv_passenger_title.setItem(ArrayList(Arrays.asList(*entries)),
+            binding?.rvPassengerTitle?.setItem(ArrayList(Arrays.asList(*entries)),
                     initialSelectedItemPos = if (passengerModel.passengerTitle != null) getPassengerTitleId(passengerModel.passengerTitle) - 1 else null)
         }
     }
 
     private fun renderPassengerTitle(passengerTitle: String) {
         when {
-            passengerTitle.equals(FlightPassengerTitle.TUAN.salutation, true) -> rv_passenger_title.selectChipByPosition(0)
-            passengerTitle.equals(FlightPassengerTitle.NYONYA.salutation, true) -> rv_passenger_title.selectChipByPosition(1)
-            passengerTitle.equals(FlightPassengerTitle.NONA.salutation, true) -> rv_passenger_title.selectChipByPosition(2)
-            else -> rv_passenger_title.onResetChip()
+            passengerTitle.equals(FlightPassengerTitle.TUAN.salutation, true) -> binding?.rvPassengerTitle?.selectChipByPosition(0)
+            passengerTitle.equals(FlightPassengerTitle.NYONYA.salutation, true) -> binding?.rvPassengerTitle?.selectChipByPosition(1)
+            passengerTitle.equals(FlightPassengerTitle.NONA.salutation, true) -> binding?.rvPassengerTitle?.selectChipByPosition(2)
+            else -> binding?.rvPassengerTitle?.onResetChip()
         }
     }
 
@@ -344,7 +349,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             val passportExpiryDateStr = passportExpiryDate.toString(DateUtil.DEFAULT_VIEW_FORMAT)
             passengerModel.passportExpiredDate = DateUtil.formatDate(DateUtil.DEFAULT_VIEW_FORMAT,
                     DateUtil.YYYY_MM_DD, passportExpiryDateStr)
-            til_passport_expiration_date.textFieldInput.setText(passportExpiryDateStr)
+            binding?.tilPassportExpirationDate?.textFieldInput?.setText(passportExpiryDateStr)
             validatePassportExpiredDate(true)
         })
     }
@@ -355,7 +360,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
     private fun renderPassengerMeals(flightBookingMealRouteModels: List<FlightBookingAmenityMetaModel>,
                                      selecteds: List<FlightBookingAmenityMetaModel>) {
-        meals_container.visibility = View.VISIBLE
+        binding?.mealsContainer?.visibility = View.VISIBLE
 
         var models = arrayListOf<SimpleModel>()
         if (flightBookingMealRouteModels != null) {
@@ -406,10 +411,10 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             }
         })
 
-        rv_meals.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
-        rv_meals.setHasFixedSize(true)
-        rv_meals.isNestedScrollingEnabled = false
-        rv_meals.adapter = mealAdapter
+        binding?.rvMeals?.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+        binding?.rvMeals?.setHasFixedSize(true)
+        binding?.rvMeals?.isNestedScrollingEnabled = false
+        binding?.rvMeals?.adapter = mealAdapter
         mealAdapter.setDescriptionTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
         mealAdapter.setViewModels(models)
         mealAdapter.notifyDataSetChanged()
@@ -429,7 +434,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
     private fun renderPassengerLuggages(flightBookingLuggageRouteModels: List<FlightBookingAmenityMetaModel>,
                                         selecteds: List<FlightBookingAmenityMetaModel>) {
-        luggage_container.visibility = View.VISIBLE
+        binding?.luggageContainer?.visibility = View.VISIBLE
 
         val models = arrayListOf<SimpleModel>()
         for (luggage in flightBookingLuggageRouteModels) {
@@ -473,10 +478,10 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             }
         })
 
-        rv_luggages.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
-        rv_luggages.setHasFixedSize(true)
-        rv_luggages.isNestedScrollingEnabled = false
-        rv_luggages.adapter = luggageAdapter
+        binding?.rvLuggages?.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+        binding?.rvLuggages?.setHasFixedSize(true)
+        binding?.rvLuggages?.isNestedScrollingEnabled = false
+        binding?.rvLuggages?.adapter = luggageAdapter
         luggageAdapter.setDescriptionTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
         luggageAdapter.setViewModels(models)
         luggageAdapter.notifyDataSetChanged()
@@ -485,24 +490,24 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
     private fun renderPassport() {
         if (!isDomestic) {
-            container_passport_data.visibility = View.VISIBLE
+            binding?.containerPassportData?.visibility = View.VISIBLE
             passengerModel.passportNumber?.let {
-                til_passport_no.textFieldInput.setText(it)
+                binding?.tilPassportNo?.textFieldInput?.setText(it)
             }
             passengerModel.passportExpiredDate?.let {
-                til_passport_expiration_date.textFieldInput.setText(DateUtil
+                binding?.tilPassportExpirationDate?.textFieldInput?.setText(DateUtil
                         .formatDate(DateUtil.YYYY_MM_DD,
                                 DateUtil.DEFAULT_VIEW_FORMAT,
                                 it))
             }
             passengerModel.passportNationality?.let {
-                til_nationality.textFieldInput.setText(it.countryName)
+                binding?.tilNationality?.textFieldInput?.setText(it.countryName)
             }
             passengerModel.passportIssuerCountry?.let {
-                til_passport_issuer_country.textFieldInput.setText(it.countryName)
+                binding?.tilPassportIssuerCountry?.textFieldInput?.setText(it.countryName)
             }
         } else {
-            container_passport_data.visibility = View.GONE
+            binding?.containerPassportData?.visibility = View.GONE
         }
     }
 
@@ -510,21 +515,21 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         if (isAdultPassenger()) {
             (activity as FlightBookingPassengerActivity).updateTitle(getString(R.string.flight_booking_passenger_adult_title))
             if (isMandatoryDoB() || !isDomestic) {
-                til_birth_date.visibility = View.VISIBLE
+                binding?.tilBirthDate?.visibility = View.VISIBLE
             } else {
-                til_birth_date.visibility = View.GONE
+                binding?.tilBirthDate?.visibility = View.GONE
             }
 
-            til_birth_date.setMessage(getString(R.string.flight_booking_passenger_birthdate_adult_helper_text))
+            binding?.tilBirthDate?.setMessage(getString(R.string.flight_booking_passenger_birthdate_adult_helper_text))
         } else {
             if (isChildPassenger()) {
                 (activity as FlightBookingPassengerActivity).updateTitle(getString(R.string.flight_booking_passenger_child_title))
-                til_birth_date.setMessage(getString(R.string.flight_booking_passenger_birthdate_child_helper_text))
+                binding?.tilBirthDate?.setMessage(getString(R.string.flight_booking_passenger_birthdate_child_helper_text))
             } else {
                 (activity as FlightBookingPassengerActivity).updateTitle(getString(R.string.flight_booking_passenger_infant_title))
-                til_birth_date.setMessage(getString(R.string.flight_booking_passenger_birthdate_infant_helper_text))
+                binding?.tilBirthDate?.setMessage(getString(R.string.flight_booking_passenger_birthdate_infant_helper_text))
             }
-            til_birth_date.visibility = View.VISIBLE
+            binding?.tilBirthDate?.visibility = View.VISIBLE
         }
 
         if (isAdultPassenger() || isChildPassenger()) {
@@ -562,7 +567,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             }
         }
 
-        if (til_birth_date.textFieldInput.text.toString().isNotEmpty()) selectedDate = til_birth_date.textFieldInput.text.toString().toDate(DateUtil.DEFAULT_VIEW_FORMAT)
+        if (binding?.tilBirthDate?.textFieldInput?.text.toString().isNotEmpty()) selectedDate = binding?.tilBirthDate?.textFieldInput?.text.toString().toDate(DateUtil.DEFAULT_VIEW_FORMAT)
 
         val currentTime = DateUtil.getCurrentCalendar()
         currentTime.time = maxDate
@@ -581,7 +586,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             if (validateBirthDate(birthDateStr)) {
                 passengerModel.passengerBirthdate = DateUtil.formatDate(DateUtil.DEFAULT_VIEW_FORMAT,
                         DateUtil.YYYY_MM_DD, birthDateStr)
-                til_birth_date.textFieldInput.setText(birthDateStr)
+                binding?.tilBirthDate?.textFieldInput?.setText(birthDateStr)
             }
         }
 
@@ -601,14 +606,14 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     }
 
     private fun clearAllFields() {
-        et_first_name.setText("")
-        til_last_name.textFieldInput.setText("")
+        binding?.etFirstName?.setText("")
+        binding?.tilLastName?.textFieldInput?.setText("")
         renderPassengerTitle("")
-        til_birth_date.textFieldInput.setText("")
-        til_passport_no.textFieldInput.setText("")
-        til_passport_issuer_country.textFieldInput.setText("")
-        til_passport_expiration_date.textFieldInput.setText("")
-        til_nationality.textFieldInput.setText("")
+        binding?.tilBirthDate?.textFieldInput?.setText("")
+        binding?.tilPassportNo?.textFieldInput?.setText("")
+        binding?.tilPassportIssuerCountry?.textFieldInput?.setText("")
+        binding?.tilPassportExpirationDate?.textFieldInput?.setText("")
+        binding?.tilNationality?.textFieldInput?.setText("")
     }
 
     private fun autofillPassengerContact(contact: TravelContactListModel.Contact?) {
@@ -616,11 +621,11 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         if (contact != null) {
             if (contact.firstName.isNotBlank()) {
                 passengerModel.passengerFirstName = contact.firstName
-                et_first_name.setText(contact.firstName)
+                binding?.etFirstName?.setText(contact.firstName)
             }
             if (contact.lastName.isNotBlank()) {
                 passengerModel.passengerLastName = contact.lastName
-                til_last_name.textFieldInput.setText(contact.lastName)
+                binding?.tilLastName?.textFieldInput?.setText(contact.lastName)
             }
             if (contact.title.isNotBlank()) {
                 passengerModel.passengerTitleId = getPassengerTitleId(contact.title.toLowerCase())
@@ -629,7 +634,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             }
             if (contact.birthDate.isNotBlank() && (!isDomestic || isMandatoryDoB())) {
                 passengerModel.passengerBirthdate = contact.birthDate
-                til_birth_date.textFieldInput.setText(DateUtil.formatDate(DateUtil.YYYY_MM_DD,
+                binding?.tilBirthDate?.textFieldInput?.setText(DateUtil.formatDate(DateUtil.YYYY_MM_DD,
                         DateUtil.DEFAULT_VIEW_FORMAT, contact.birthDate))
             }
 
@@ -638,8 +643,8 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                     if (isPassportId(id)) {
                         passengerModel.passportNumber = id.number
                         passengerModel.passportExpiredDate = id.expiry
-                        til_passport_no.textFieldInput.setText(id.number)
-                        til_passport_expiration_date.textFieldInput.setText(DateUtil.formatDate(DateUtil.YYYY_MM_DD,
+                        binding?.tilPassportNo?.textFieldInput?.setText(id.number)
+                        binding?.tilPassportExpirationDate?.textFieldInput?.setText(DateUtil.formatDate(DateUtil.YYYY_MM_DD,
                                 DateUtil.DEFAULT_VIEW_FORMAT, id.expiry))
                         passengerViewModel.getNationalityById(TravelCountryCodeGqlQuery.ALL_COUNTRY, contact.nationality)
                         passengerViewModel.getPassportIssuerCountryById(TravelCountryCodeGqlQuery.ALL_COUNTRY, id.country)
@@ -695,12 +700,12 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
     private fun onNationalityChanged(flightPassportNationalityViewModel: TravelCountryPhoneCode) {
         passengerModel.passportNationality = flightPassportNationalityViewModel
-        til_nationality.textFieldInput.setText(flightPassportNationalityViewModel.countryName)
+        binding?.tilNationality?.textFieldInput?.setText(flightPassportNationalityViewModel.countryName)
     }
 
     private fun onIssuerCountryChanged(flightPassportIssuerCountry: TravelCountryPhoneCode) {
         passengerModel.passportIssuerCountry = flightPassportIssuerCountry
-        til_passport_issuer_country.textFieldInput.setText(flightPassportIssuerCountry.countryName)
+        binding?.tilPassportIssuerCountry?.textFieldInput?.setText(flightPassportIssuerCountry.countryName)
     }
 
     private fun validateAllFields(): Boolean {
@@ -725,15 +730,15 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     private fun validateFirstName(): Boolean =
             when {
                 flightPassengerInfoValidator.validateNameIsEmpty(getFirstName()) -> {
-                    til_first_name.error = getString(R.string.flight_booking_passenger_first_name_empty_error)
+                    binding?.etFirstName?.error = getString(R.string.flight_booking_passenger_first_name_empty_error)
                     false
                 }
                 flightPassengerInfoValidator.validateNameIsNotAlphabetAndSpaceOnly(getFirstName()) -> {
-                    til_first_name.error = getString(R.string.flight_booking_passenger_first_name_alpha_space_error)
+                    binding?.etFirstName?.error = getString(R.string.flight_booking_passenger_first_name_alpha_space_error)
                     false
                 }
                 flightPassengerInfoValidator.validateFirstNameIsMoreThanMaxLength(getFirstName()) -> {
-                    til_first_name.error = getString(R.string.flight_booking_passenger_first_name_max_error)
+                    binding?.etFirstName?.error = getString(R.string.flight_booking_passenger_first_name_max_error)
                     false
                 }
                 else -> true
@@ -742,28 +747,28 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     private fun validateLastName(): Boolean =
             when {
                 flightPassengerInfoValidator.validateLastNameIsMoreThanMaxLength(getLastName()) -> {
-                    til_last_name.setMessage(getString(R.string.flight_booking_passenger_last_name_max_error))
-                    til_last_name.setError(true)
+                    binding?.tilLastName?.setMessage(getString(R.string.flight_booking_passenger_last_name_max_error))
+                    binding?.tilLastName?.setError(true)
                     false
                 }
                 flightPassengerInfoValidator.validateNameIsEmpty(getLastName()) -> {
-                    til_last_name.setMessage(getString(R.string.flight_booking_passenger_last_name_should_same_error))
-                    til_last_name.setError(true)
+                    binding?.tilLastName?.setMessage(getString(R.string.flight_booking_passenger_last_name_should_same_error))
+                    binding?.tilLastName?.setError(true)
                     false
                 }
                 flightPassengerInfoValidator.validateLastNameIsLessThanMinLength(getLastName()) -> {
-                    til_last_name.setMessage(getString(R.string.flight_booking_passenger_last_name_empty_error))
-                    til_last_name.setError(true)
+                    binding?.tilLastName?.setMessage(getString(R.string.flight_booking_passenger_last_name_empty_error))
+                    binding?.tilLastName?.setError(true)
                     false
                 }
                 flightPassengerInfoValidator.validateLastNameIsNotSingleWord(getLastName()) -> {
-                    til_last_name.setMessage(getString(R.string.flight_booking_passenger_last_name_single_word_error))
-                    til_last_name.setError(true)
+                    binding?.tilLastName?.setMessage(getString(R.string.flight_booking_passenger_last_name_single_word_error))
+                    binding?.tilLastName?.setError(true)
                     false
                 }
                 flightPassengerInfoValidator.validateNameIsNotAlphabetAndSpaceOnly(getLastName()) -> {
-                    til_last_name.setMessage(getString(R.string.flight_booking_passenger_last_name_alpha_space_error))
-                    til_last_name.setError(true)
+                    binding?.tilLastName?.setMessage(getString(R.string.flight_booking_passenger_last_name_alpha_space_error))
+                    binding?.tilLastName?.setError(true)
                     false
                 }
                 else -> true
@@ -786,38 +791,38 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
         return if ((isChildPassenger() || isInfantPassenger()) && !flightPassengerInfoValidator.validateBirthdateNotEmpty(passengerBirthDate)) {
 
-            til_birth_date.setMessage(getString(R.string.flight_booking_passenger_birthdate_empty_error))
-            til_birth_date.setError(true)
+            binding?.tilBirthDate?.setMessage(getString(R.string.flight_booking_passenger_birthdate_empty_error))
+            binding?.tilBirthDate?.setError(true)
 
             false
         } else if (isAdultPassenger() && !flightPassengerInfoValidator.validateBirthdateNotEmpty(
                         passengerBirthDate) && (isMandatoryDoB() || !isDomestic)) {
-            til_birth_date.setMessage(getString(R.string.flight_booking_passenger_birthdate_empty_error))
-            til_birth_date.setError(true)
+            binding?.tilBirthDate?.setMessage(getString(R.string.flight_booking_passenger_birthdate_empty_error))
+            binding?.tilBirthDate?.setError(true)
             false
         } else if (isAdultPassenger() && flightPassengerInfoValidator.validateBirthdateNotEmpty(
                         passengerBirthDate) && (isMandatoryDoB() || !isDomestic) &&
                 flightPassengerInfoValidator.validateDateMoreThan(passengerBirthDate, twelveYearsAgo)) {
 
-            til_birth_date.setMessage(getString(R.string.flight_booking_passenger_birthdate_adult_shoud_more_than_twelve_years))
-            til_birth_date.setError(true)
+            binding?.tilBirthDate?.setMessage(getString(R.string.flight_booking_passenger_birthdate_adult_shoud_more_than_twelve_years))
+            binding?.tilBirthDate?.setError(true)
             false
 
         } else if (isChildPassenger() && flightPassengerInfoValidator.validateDateMoreThan(
                         passengerBirthDate, twoYearsAgo)) {
-            til_birth_date.setMessage(getString(R.string.flight_booking_passenger_birthdate_child_shoud_more_than_two_years))
-            til_birth_date.setError(true)
+            binding?.tilBirthDate?.setMessage(getString(R.string.flight_booking_passenger_birthdate_child_shoud_more_than_two_years))
+            binding?.tilBirthDate?.setError(true)
             false
         } else if (isChildPassenger() && flightPassengerInfoValidator.validateDateNotLessThan(
                         twelveYearsAgo,
                         passengerBirthDate)) {
-            til_birth_date.setMessage(getString(R.string.flight_booking_passenger_birthdate_child_sholud_lessthan_than_equal_12years))
-            til_birth_date.setError(true)
+            binding?.tilBirthDate?.setMessage(getString(R.string.flight_booking_passenger_birthdate_child_sholud_lessthan_than_equal_12years))
+            binding?.tilBirthDate?.setError(true)
             false
         } else if (isInfantPassenger() && flightPassengerInfoValidator.validateDateLessThan(
                         passengerBirthDate, twoYearsAgo)) {
-            til_birth_date.setMessage(getString(R.string.flight_booking_passenger_birthdate_infant_should_no_more_than_two_years))
-            til_birth_date.setError(true)
+            binding?.tilBirthDate?.setMessage(getString(R.string.flight_booking_passenger_birthdate_infant_should_no_more_than_two_years))
+            binding?.tilBirthDate?.setError(true)
             false
         } else {
             true
@@ -826,24 +831,24 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
     private fun validatePassportNumber(isNeedPassport: Boolean): Boolean =
             if (isNeedPassport && !flightPassengerInfoValidator.validatePassportNumberNotEmpty(getPassportNumber())) {
-                til_passport_no.setMessage(getString(R.string.flight_booking_passport_number_empty_error))
-                til_passport_no.setError(true)
+                binding?.tilPassportNo?.setMessage(getString(R.string.flight_booking_passport_number_empty_error))
+                binding?.tilPassportNo?.setError(true)
                 false
             } else if (isNeedPassport && !flightPassengerInfoValidator.validatePassportNumberAlphaNumeric(getPassportNumber())) {
-                til_passport_no.setMessage(getString(R.string.flight_booking_passport_number_alphanumeric_error))
-                til_passport_no.setError(true)
+                binding?.tilPassportNo?.setMessage(getString(R.string.flight_booking_passport_number_alphanumeric_error))
+                binding?.tilPassportNo?.setError(true)
                 false
             } else if (isNeedPassport && !flightPassengerInfoValidator.validatePassportNumberAlphaAndNumeric(getPassportNumber())) {
-                til_passport_no.setMessage(getString(R.string.flight_booking_passport_number_not_valid))
-                til_passport_no.setError(true)
+                binding?.tilPassportNo?.setMessage(getString(R.string.flight_booking_passport_number_not_valid))
+                binding?.tilPassportNo?.setError(true)
                 false
             } else if (isNeedPassport && getPassportNumber().length > 10) {
-                til_passport_no.setMessage(getString(R.string.flight_booking_passport_number_not_valid))
-                til_passport_no.setError(true)
+                binding?.tilPassportNo?.setMessage(getString(R.string.flight_booking_passport_number_not_valid))
+                binding?.tilPassportNo?.setError(true)
                 false
             } else if (isNeedPassport && getPassportNumber().length < 6) {
-                til_passport_no.setMessage(getString(R.string.flight_booking_passport_number_min_length))
-                til_passport_no.setError(true)
+                binding?.tilPassportNo?.setMessage(getString(R.string.flight_booking_passport_number_min_length))
+                binding?.tilPassportNo?.setError(true)
                 false
             } else {
                 true
@@ -856,31 +861,31 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                 .addTimeToSpesificDate(Calendar.YEAR, PLUS_TWENTY)
 
         return if (isNeedPassport && passengerModel.passportExpiredDate == null) {
-            til_passport_expiration_date.setMessage(getString(R.string.flight_booking_passport_expired_date_empty_error))
-            til_passport_expiration_date.setError(true)
+            binding?.tilPassportExpirationDate?.setMessage(getString(R.string.flight_booking_passport_expired_date_empty_error))
+            binding?.tilPassportExpirationDate?.setError(true)
             false
         } else if (isNeedPassport && !flightPassengerInfoValidator.validateExpiredDateOfPassportAtLeast6Month(
                         getPassportExpiryDate(), sixMonthFromDeparture)) {
-            til_passport_expiration_date.setMessage(getString(R.string.flight_passenger_passport_expired_date_less_than_6_month_error))
-            til_passport_expiration_date.setError(true)
+            binding?.tilPassportExpirationDate?.setMessage(getString(R.string.flight_passenger_passport_expired_date_less_than_6_month_error))
+            binding?.tilPassportExpirationDate?.setError(true)
             false
         } else if (isNeedPassport && !flightPassengerInfoValidator.validateExpiredDateOfPassportMax20Years(
                         getPassportExpiryDate(), twentyYearsFromToday)) {
-            til_passport_expiration_date.setMessage(getString(
+            binding?.tilPassportExpirationDate?.setMessage(getString(
                     R.string.flight_passenger_passport_expired_date_more_than_20_year_error,
                     twentyYearsFromToday.toString(DateUtil.DEFAULT_VIEW_FORMAT)))
-            til_passport_expiration_date.setError(true)
+            binding?.tilPassportExpirationDate?.setError(true)
             false
         } else {
-            til_passport_expiration_date.setError(false)
+            binding?.tilPassportExpirationDate?.setError(false)
             true
         }
     }
 
     private fun validatePassportNationality(isNeedPassport: Boolean): Boolean =
             if (isNeedPassport && passengerModel.passportNationality == null) {
-                til_nationality.setMessage(getString(R.string.flight_booking_passport_nationality_empty_error))
-                til_nationality.setError(true)
+                binding?.tilNationality?.setMessage(getString(R.string.flight_booking_passport_nationality_empty_error))
+                binding?.tilNationality?.setError(true)
                 false
             } else {
                 true
@@ -888,48 +893,48 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
     private fun validatePassportIssuerCountry(isNeedPassport: Boolean): Boolean =
             if (isNeedPassport && passengerModel.passportIssuerCountry == null) {
-                til_passport_issuer_country.setMessage(getString(R.string.flight_booking_passport_issuer_country_empty_error))
-                til_passport_issuer_country.setError(true)
+                binding?.tilPassportIssuerCountry?.setMessage(getString(R.string.flight_booking_passport_issuer_country_empty_error))
+                binding?.tilPassportIssuerCountry?.setError(true)
                 false
             } else {
                 true
             }
 
     private fun resetEditTextErrorText() {
-        til_first_name.error = ""
+        binding?.etFirstName?.error = ""
 
-        til_last_name.setMessage("")
-        til_last_name.setError(false)
+        binding?.tilLastName?.setMessage("")
+        binding?.tilLastName?.setError(false)
 
-        til_birth_date.setMessage("")
-        til_birth_date.setError(false)
+        binding?.tilBirthDate?.setMessage("")
+        binding?.tilBirthDate?.setError(false)
 
-        til_passport_no.setMessage("")
-        til_passport_no.setError(false)
+        binding?.tilPassportNo?.setMessage("")
+        binding?.tilPassportNo?.setError(false)
 
-        til_passport_expiration_date.setMessage("")
-        til_passport_expiration_date.setError(false)
+        binding?.tilPassportExpirationDate?.setMessage("")
+        binding?.tilPassportExpirationDate?.setError(false)
 
-        til_nationality.setMessage("")
-        til_nationality.setError(false)
+        binding?.tilNationality?.setMessage("")
+        binding?.tilNationality?.setError(false)
 
-        til_passport_issuer_country.setMessage("")
-        til_passport_issuer_country.setError(false)
+        binding?.tilPassportIssuerCountry?.setMessage("")
+        binding?.tilPassportIssuerCountry?.setError(false)
 
         when {
             isAdultPassenger() -> {
-                if (isMandatoryDoB() || !isDomestic) til_birth_date.setMessage(getString(R.string.flight_booking_passenger_birthdate_adult_helper_text))
+                if (isMandatoryDoB() || !isDomestic) binding?.tilBirthDate?.setMessage(getString(R.string.flight_booking_passenger_birthdate_adult_helper_text))
             }
             isChildPassenger() -> {
-                til_birth_date.setMessage(getString(R.string.flight_booking_passenger_birthdate_child_helper_text))
+                binding?.tilBirthDate?.setMessage(getString(R.string.flight_booking_passenger_birthdate_child_helper_text))
             }
             else -> {
-                til_birth_date.setMessage(getString(R.string.flight_booking_passenger_birthdate_infant_helper_text))
+                binding?.tilBirthDate?.setMessage(getString(R.string.flight_booking_passenger_birthdate_infant_helper_text))
             }
         }
 
-        til_passport_expiration_date.setMessage(getString(R.string.flight_booking_passenger_passport_expiry_helper_text))
-        til_passport_expiration_date.setError(false)
+        binding?.tilPassportExpirationDate?.setMessage(getString(R.string.flight_booking_passenger_passport_expiry_helper_text))
+        binding?.tilPassportExpirationDate?.setError(false)
     }
 
     private fun showMessageErrorInSnackBar(resId: Int) {

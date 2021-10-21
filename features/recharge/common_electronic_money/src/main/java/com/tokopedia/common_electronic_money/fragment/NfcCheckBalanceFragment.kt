@@ -114,7 +114,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
         eTollUpdateBalanceResultView.setListener(object : ETollUpdateBalanceResultView.OnTopupETollClickListener {
             override fun onClick(operatorId: String, issuerId: Int) {
-                emoneyAnalytics.clickTopupEmoney(userSession.userId, irisSessionId)
+                emoneyAnalytics.clickTopupEmoney(userSession.userId, irisSessionId, getOperatorName(issuerId))
                 onProcessTopupNow(getPassData(operatorId, issuerId))
             }
 
@@ -125,7 +125,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
         tapETollCardView.setListener(object : TapETollCardView.OnTapEtoll {
             override fun tryAgainTopup(issuerId: Int) {
-                emoneyAnalytics.clickTryAgainTapEmoney(ETOLL_CATEGORY_ID, userSession.userId, irisSessionId)
+                emoneyAnalytics.clickTryAgainTapEmoney(ETOLL_CATEGORY_ID, userSession.userId, irisSessionId, operatorName)
             }
 
             override fun goToHome() {
@@ -181,6 +181,8 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
     protected fun getOperatorName(issuerId: Int): String {
         if (issuerId == ISSUER_ID_BRIZZI) {
             return OPERATOR_NAME_BRIZZI
+        } else if(issuerId == ISSUER_ID_TAP_CASH){
+            return OPERATOR_NAME_TAPCASH
         }
         return OPERATOR_NAME_EMONEY
     }
@@ -201,7 +203,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
                             tapCashWriteFailed: Boolean = false
     ) {
         statusCloseBtn = FAILED_CLOSE_BTN
-        emoneyAnalytics.onShowErrorTracking(userSession.userId, irisSessionId)
+        emoneyAnalytics.onShowErrorTracking(userSession.userId, irisSessionId, operatorName)
 
         if (eTollUpdateBalanceResultView.visibility == View.VISIBLE) {
             eTollUpdateBalanceResultView.hide()
@@ -239,7 +241,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         eTollUpdateBalanceResultView.showCardInfoFromApi(emoneyInquiry)
 
         statusCloseBtn = SUCCESS_CLOSE_BTN
-        emoneyAnalytics.onShowLastBalance(emoneyInquiry.attributesEmoneyInquiry?.cardNumber,
+        emoneyAnalytics.onShowLastBalance(operatorName, emoneyInquiry.attributesEmoneyInquiry?.cardNumber,
                 emoneyInquiry.attributesEmoneyInquiry?.lastBalance,
                 userSession.userId, irisSessionId)
         emoneyAnalytics.openScreenSuccessReadCardNFC(operatorName, userSession.userId, irisSessionId)
@@ -262,14 +264,15 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         startActivity(intent)
     }
 
-    protected fun showLoading() {
+    protected fun showLoading(operatorNameFromIssuer: String) {
+        operatorName = operatorNameFromIssuer
         emoneyAnalytics.openScreenReadingCardNFC(operatorName, userSession.userId, irisSessionId)
         if (eTollUpdateBalanceResultView.visibility == View.VISIBLE) {
             eTollUpdateBalanceResultView.showLoading()
         } else {
             tapETollCardView.visibility = View.VISIBLE
             tapETollCardView.showLoading()
-            emoneyAnalytics.onTapEmoneyCardShowLoading(userSession.userId, irisSessionId)
+            emoneyAnalytics.onTapEmoneyCardShowLoading(userSession.userId, irisSessionId, operatorName)
         }
     }
 
@@ -334,8 +337,8 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
     protected fun goToNewTapcash(): Boolean {
         return try {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                    RollenceKey.KEY_VARIANT_TAPCASH, RollenceKey.VARIANT_OLD_TAPCASH
-            ) == RollenceKey.VARIANT_NEW_TAPCASH
+                    RollenceKey.KEY_VARIANT_TAPCASH_GRADUAL, ""
+            ) == RollenceKey.KEY_VARIANT_TAPCASH_GRADUAL
         } catch (e: Exception) {
             false
         }
@@ -346,9 +349,11 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
         const val ISSUER_ID_EMONEY = 1
         const val ISSUER_ID_BRIZZI = 2
+        const val ISSUER_ID_TAP_CASH = 3
 
         const val OPERATOR_NAME_EMONEY = "emoney"
         const val OPERATOR_NAME_BRIZZI = "brizzi"
+        const val OPERATOR_NAME_TAPCASH = "tapcash"
 
         const val ETOLL_CATEGORY_ID = "34"
 

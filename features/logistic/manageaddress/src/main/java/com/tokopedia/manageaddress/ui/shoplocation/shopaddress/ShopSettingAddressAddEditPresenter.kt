@@ -1,10 +1,10 @@
-package com.tokopedia.shop.settings.address.presenter
+package com.tokopedia.manageaddress.ui.shoplocation.shopaddress
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationOldUiModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shoplocation.AddShopLocationUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shoplocation.UpdateShopLocationUseCase
-import com.tokopedia.shop.settings.address.view.listener.ShopSettingAddressAddEditView
+import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.listener.ShopSettingAddressAddEditView
 import com.tokopedia.usecase.UseCase
 import rx.Subscriber
 import javax.inject.Inject

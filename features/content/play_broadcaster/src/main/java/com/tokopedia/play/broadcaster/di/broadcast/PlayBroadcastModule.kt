@@ -9,7 +9,9 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
-import com.tokopedia.play.broadcaster.pusher.ApsaraLivePusherWrapper
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusher
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherImpl
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediator
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
@@ -47,8 +49,12 @@ class PlayBroadcastModule(private val mContext: Context) {
 
     @PlayBroadcastScope
     @Provides
-    fun provideApsaraLivePusherWrapperBuilder(@ApplicationContext context: Context, dispatcher: CoroutineDispatchers) : ApsaraLivePusherWrapper.Builder {
-        return ApsaraLivePusherWrapper.Builder(context, dispatcher)
+    fun providePlayLivePusher(): PlayLivePusher = PlayLivePusherImpl()
+
+    @PlayBroadcastScope
+    @Provides
+    fun providePlayLivePusherMediator(livePusher: PlayLivePusher, localCacheHandler: LocalCacheHandler): PlayLivePusherMediator {
+        return PlayLivePusherMediator(livePusher, localCacheHandler)
     }
 
     @PlayBroadcastScope
