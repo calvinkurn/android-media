@@ -37,10 +37,6 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
     private var calendarCardUnify: CardUnify = itemView.findViewById(R.id.calendar_card_unify)
     private var mNotifyCampaignId = 0
 
-    companion object {
-        const val BLACK = "#000000"
-    }
-
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         calendarWidgetItemViewModel = discoveryBaseViewModel as CalendarWidgetItemViewModel
         getSubComponent().inject(calendarWidgetItemViewModel)
@@ -88,7 +84,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
             Calendar.CAROUSEL -> {
                 layoutParams.width = (width / 2.5).roundToInt()
                 layoutParams.height =
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_240)
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.dp_250)
             }
             Calendar.DOUBLE, Calendar.GRID -> {
                 layoutParams.width = (width / 2)
@@ -136,25 +132,21 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 calendarButton.text =
                     itemView.context.getString(R.string.discovery_button_event_expired)
                 calendarButton.buttonType = UnifyButton.Type.ALTERNATE
-                if (!boxColor.isNullOrEmpty() && boxColor != BLACK) {
-                    calendarDateAlpha.show()
-                    calendarParent.setBackgroundColor(Color.parseColor(boxColor))
+                if (!boxColor.isNullOrEmpty()) {
+                    setColouredBackground(boxColor)
                 }
             } else {
                 calendarButton.show()
                 calendarExpiredAlpha.hide()
                 calendarButton.isEnabled = true
-                if (!boxColor.isNullOrEmpty() && boxColor != BLACK) {
-                    calendarDateAlpha.show()
-                    calendarParent.setBackgroundColor(Color.parseColor(boxColor))
+                if (!boxColor.isNullOrEmpty()) {
+                    setColouredBackground(boxColor)
                 } else {
+                    calendarParent.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.Unify_N0))
+                    calendarTitle.setTextColor(MethodChecker.getColor(itemView.context, R.color.Unify_N700))
+                    calendarDesc.setTextColor(MethodChecker.getColor(itemView.context, R.color.Unify_N700))
                     calendarDateAlpha.gone()
-                    calendarDate.setBackgroundColor(
-                        MethodChecker.getColor(
-                            itemView.context,
-                            R.color.discovery2_dms_clr_2F89FC
-                        )
-                    )
+                    calendarDate.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.discovery2_dms_clr_2F89FC))
                 }
                 if (Utils.isFutureSaleOngoing(startDate ?: "", endDate ?: "")) {
                     calendarButton.text =
@@ -173,6 +165,17 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
             calendarDate.text = textDate
             calendarDesc.text = description
         }
+    }
+
+    private fun setColouredBackground(boxColor: String) {
+        itemView.findViewById<View>(R.id.calendar_date_alpha).show()
+        itemView.findViewById<ConstraintLayout>(R.id.calendar_parent).setBackgroundColor(Color.parseColor(boxColor))
+        itemView.findViewById<Typography>(R.id.calendar_title).setTextColor(MethodChecker.getColor(
+            itemView.context,
+            R.color.Unify_N0))
+        itemView.findViewById<Typography>(R.id.calendar_desc).setTextColor(MethodChecker.getColor(
+            itemView.context,
+            R.color.Unify_N0))
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
