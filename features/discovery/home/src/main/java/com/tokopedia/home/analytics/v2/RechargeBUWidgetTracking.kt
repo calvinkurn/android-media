@@ -38,9 +38,9 @@ object RechargeBUWidgetTracking : BaseTracking() {
             val item = data.data.items[position]
             //empty supposed to be userType next dev.
             val eventLabel =
-                " - ${getHeaderName(data.channel)} - ${item.trackingData.itemType} - $position - " +
+                " - ${getHeaderName(data.channel)} - ${item.trackingData.itemType} - ${position + 1} - " +
                         "${item.trackingData.categoryId} - ${item.trackingData.operatorId} - " +
-                        "${item.trackingData.productId} - ${item.label2}"
+                        "${item.trackingData.productId} - ${convertRupiahToInt(item.label2)}"
             val tracker = DataLayer.mapOf(
                 Event.KEY,Event.PRODUCT_VIEW,
                 Action.KEY,Action.IMPRESSION_ON.format("$RECHARGE_BU_WIDGET_PRODUCT_CARD $RECHARGE_BU_WIDGET_NAME"),
@@ -64,9 +64,9 @@ object RechargeBUWidgetTracking : BaseTracking() {
         if (position < data.data.items.size) {
             val item = data.data.items[position]
             //empty supposed to be userType next dev.
-            val eventLabel = " - ${getHeaderName(data.channel)} - ${item.trackingData.itemType} - $position - " +
+            val eventLabel = " - ${getHeaderName(data.channel)} - ${item.trackingData.itemType} - ${position + 1} - " +
                     "${item.trackingData.categoryId} - ${item.trackingData.operatorId} - " +
-                    "${item.trackingData.productId} - ${item.label2}"
+                    "${item.trackingData.productId} - ${convertRupiahToInt(item.label2)}"
             val bundle = DataLayer.mapOf(
                 Event.KEY ,  Event.PRODUCT_CLICK,
                 Action.KEY , Action.CLICK_ON.format("$RECHARGE_BU_WIDGET_PRODUCT_CARD $RECHARGE_BU_WIDGET_NAME"),
@@ -102,13 +102,13 @@ object RechargeBUWidgetTracking : BaseTracking() {
     private fun getProductData(data: RechargeBUWidgetDataModel, position: Int): Map<String, Any>{
         val persoType = data.channel.trackingAttributionModel.persoType.toIntOrZero()
         return mapOf(
-            KEY_PRODUCT_INDEX to position.toString(),
+            KEY_PRODUCT_INDEX to (position + 1).toString(),
             KEY_PRODUCT_BRAND to data.data.items[position].trackingData.operatorId,
             KEY_PRODUCT_CATEGORY to data.data.items[position].trackingData.categoryId,
             KEY_PRODUCT_ID to "${data.channel.id}_0_0_$persoType",
             KEY_PRODUCT_NAME to "/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${getHeaderName(data.channel)}",
             KEY_PRODUCT_VARIANT to data.data.items[position].trackingData.itemType,
-            KEY_PRODUCT_PRICE to data.data.items[position].label2
+            KEY_PRODUCT_PRICE to convertRupiahToInt(data.data.items[position].label2)
         )
     }
 
