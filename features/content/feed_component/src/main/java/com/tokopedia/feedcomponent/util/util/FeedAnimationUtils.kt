@@ -162,10 +162,10 @@ fun showViewWithSlideAnimation(view: ViewGroup) {
 }
 
 fun showViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
-    val expandedWidth = 100F
+    val expandedWidthInDp = 100F
     val anim = ValueAnimator.ofInt(
         layoutLihatProdukParent.measuredWidth,
-        convertDpToPixel(expandedWidth, context)
+        convertDpToPixel(expandedWidthInDp, context)
     )
     anim.addUpdateListener { valueAnimator ->
         val animatedFinalValue = valueAnimator.animatedValue as Int
@@ -179,9 +179,9 @@ fun showViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
 }
 
 fun hideViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
-    val expandedWidth = 100F
-    val shrinkedWidth = 24F
-    val anim = ValueAnimator.ofInt(convertDpToPixel(expandedWidth, context), convertDpToPixel(shrinkedWidth, context))
+    val expandedWidthDp = 100F
+    val shrinkedWidthDp = 24F
+    val anim = ValueAnimator.ofInt(convertDpToPixel(expandedWidthDp, context), convertDpToPixel(shrinkedWidthDp, context))
     anim.cancel()
     anim.addUpdateListener { valueAnimator ->
         val animatedFinalValue = valueAnimator.animatedValue as Int
@@ -195,10 +195,10 @@ fun hideViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
 }
 
 fun hideViewWithoutAnimation(layoutLihatProdukParent: View, context: Context) {
-    val expandedWidth = 100F
-    val shrinkedWidth = 24F
+    val expandedWidthDp = 100F
+    val shrinkedWidthDp = 24F
     if (layoutLihatProdukParent.width.toDp() == LIHAT_PRODUK_EXPANDED_WIDTH) {
-        val anim = ValueAnimator.ofInt(convertDpToPixel(expandedWidth, context), convertDpToPixel(shrinkedWidth, context))
+        val anim = ValueAnimator.ofInt(convertDpToPixel(expandedWidthDp, context), convertDpToPixel(shrinkedWidthDp, context))
         anim.cancel()
         anim.addUpdateListener { valueAnimator ->
             val animatedFinalValue = valueAnimator.animatedValue as Int

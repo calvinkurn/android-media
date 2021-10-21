@@ -100,12 +100,18 @@ private const val DOT_SPACE = 2
 private const val SHOW_MORE = "Lihat Lainnya"
 private const val MAX_CHAR = 120
 private const val CAPTION_END = 120
-private const val LIHAT_PRODUK_EXPANDED_WIDTH = 100
-private const val LIHAT_PRODUK_CONTRACTED_WIDTH = 24
 private const val FOLLOW_COUNT_THRESHOLD = 100
 private const val TYPE_DISCOUNT = "discount"
 private const val TYPE_CASHBACK = "cashback"
 private val handlerFeed = Handler(Looper.getMainLooper())
+
+/**
+ * LIHAT_PRODUK_EXPANDED_WIDTH, LIHAT_PRODUK_CONTRACTED_WIDTH Value is fixed width  for Lihat Produk (item_post_image_new ,id = tv_lihat_product)
+ *Lihat Produk Value is static so we have fixed it width to Keep our animation intact
+ *Do not manipulate this value unless Lihat Produk text change
+ **/
+private const val LIHAT_PRODUK_EXPANDED_WIDTH_INDP = 100
+private const val LIHAT_PRODUK_CONTRACTED_WIDTH_INDP = 24
 
 class PostDynamicViewNew @JvmOverloads constructor(
     context: Context,
@@ -904,9 +910,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                             }
                                         }
                                         if (tagProducts.isNotEmpty()) {
-                                            if (layoutLihatProdukParent.width.toDp() == LIHAT_PRODUK_CONTRACTED_WIDTH && !productTagBubbleShowing  ) {
+                                            if (layoutLihatProdukParent.width.toDp() == LIHAT_PRODUK_CONTRACTED_WIDTH_INDP && !productTagBubbleShowing  ) {
                                                 showViewWithAnimation(layoutLihatProdukParent, context)
-                                            } else if (!productTagBubbleShowing && layoutLihatProdukParent.width.toDp() == LIHAT_PRODUK_EXPANDED_WIDTH) {
+                                            } else if (!productTagBubbleShowing && layoutLihatProdukParent.width.toDp() == LIHAT_PRODUK_EXPANDED_WIDTH_INDP) {
                                                 hideViewWithoutAnimation(layoutLihatProdukParent, context)
                                             } else if (productTagBubbleShowing){
                                                 showViewWithAnimation(layoutLihatProdukParent, context)
