@@ -33,24 +33,24 @@ object RechargeBUWidgetTracking : BaseTracking() {
                         "${item.trackingData.categoryId} - ${item.trackingData.operatorId} - " +
                         "${item.trackingData.productId} - ${item.label2}"
             val tracker = DataLayer.mapOf(
-                Event.KEY to Event.PRODUCT_VIEW,
-                Action.KEY to Action.IMPRESSION_ON.format("$RECHARGE_BU_WIDGET_PRODUCT_CARD $RECHARGE_BU_WIDGET_NAME"),
-                Category.KEY to "$RECHARGE_BU_WIDGET_EVENT_CATEGORY - $RECHARGE_BU_WIDGET_NEW_NAME",
-                Label.KEY to eventLabel,
-                BusinessUnit.KEY to RECHARGE_BU_WIDGET_BUSINESS_UNIT,
-                CurrentSite.KEY to RECHARGE_BU_WIDGET_CURRENT_SITE,
-                RECHARGE_BU_WIDGET_ITEMS_KEY to arrayListOf(
-                    hashMapOf<String, Any>(
-                        "index" to  (position + 1).toString(),
-                        "item_brand" to item.trackingData.operatorId,
-                        "item_category" to item.trackingData.categoryId,
-                        "item_id" to item.id,
-                        "item_name" to  "/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${getHeaderName(data.channel)}",
-                        "item_variant" to item.trackingData.itemType,
-                        "price" to  item.label2
+                Event.KEY,Event.PRODUCT_VIEW,
+                Action.KEY,Action.IMPRESSION_ON.format("$RECHARGE_BU_WIDGET_PRODUCT_CARD $RECHARGE_BU_WIDGET_NAME"),
+                Category.KEY,"$RECHARGE_BU_WIDGET_EVENT_CATEGORY - $RECHARGE_BU_WIDGET_NEW_NAME",
+                Label.KEY,eventLabel,
+                BusinessUnit.KEY,RECHARGE_BU_WIDGET_BUSINESS_UNIT,
+                CurrentSite.KEY, RECHARGE_BU_WIDGET_CURRENT_SITE,
+                RECHARGE_BU_WIDGET_ITEMS_KEY, DataLayer.listOf(
+                    DataLayer.mapOf(
+                        "index" ,  (position + 1).toString(),
+                        "item_brand" , item.trackingData.operatorId,
+                        "item_category" , item.trackingData.categoryId,
+                        "item_id" , item.id,
+                        "item_name" ,  "/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${getHeaderName(data.channel)}",
+                        "item_variant" , item.trackingData.itemType,
+                        "price" ,  item.label2
                     )
                 ),
-                UserId.KEY to userId
+                UserId.KEY, userId
             )
             trackingQueue.putEETracking(tracker as java.util.HashMap<String, Any>?)
         }
@@ -69,25 +69,25 @@ object RechargeBUWidgetTracking : BaseTracking() {
                     "${item.trackingData.categoryId} - ${item.trackingData.operatorId} - " +
                     "${item.trackingData.productId} - ${item.label2}"
             val bundle = DataLayer.mapOf(
-                Event.KEY to  Event.PRODUCT_CLICK,
-                Action.KEY to Action.CLICK_ON.format("$RECHARGE_BU_WIDGET_PRODUCT_CARD $RECHARGE_BU_WIDGET_NAME"),
-                Category.KEY to "$RECHARGE_BU_WIDGET_EVENT_CATEGORY - $RECHARGE_BU_WIDGET_NEW_NAME",
-                Label.KEY to eventLabel,
-                BusinessUnit.KEY to RECHARGE_BU_WIDGET_BUSINESS_UNIT,
-                CurrentSite.KEY to RECHARGE_BU_WIDGET_CURRENT_SITE,
-                RECHARGE_BU_WIDGET_ITEM_LIST_KEY to item.trackingData.itemType,
-                RECHARGE_BU_WIDGET_ITEMS_KEY to arrayListOf(
-                    hashMapOf<String, Any>(
-                        "index" to (position + 1).toString(),
-                        "item_brand" to  item.trackingData.operatorId,
-                        "item_category" to item.trackingData.categoryId,
-                        "item_id" to item.id,
-                        "item_name" to "/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${getHeaderName(data.channel)}",
-                        "item_variant" to item.trackingData.itemType,
-                        "price" to item.label2
+                Event.KEY ,  Event.PRODUCT_CLICK,
+                Action.KEY , Action.CLICK_ON.format("$RECHARGE_BU_WIDGET_PRODUCT_CARD $RECHARGE_BU_WIDGET_NAME"),
+                Category.KEY , "$RECHARGE_BU_WIDGET_EVENT_CATEGORY - $RECHARGE_BU_WIDGET_NEW_NAME",
+                Label.KEY , eventLabel,
+                BusinessUnit.KEY , RECHARGE_BU_WIDGET_BUSINESS_UNIT,
+                CurrentSite.KEY , RECHARGE_BU_WIDGET_CURRENT_SITE,
+                RECHARGE_BU_WIDGET_ITEM_LIST_KEY , item.trackingData.itemType,
+                RECHARGE_BU_WIDGET_ITEMS_KEY , DataLayer.listOf(
+                    DataLayer.mapOf(
+                        "index", (position + 1).toString(),
+                        "item_brand",  item.trackingData.operatorId,
+                        "item_category", item.trackingData.categoryId,
+                        "item_id", item.id,
+                        "item_name", "/ - p${data.channel.verticalPosition} - $RECHARGE_BU_WIDGET_NAME - $RECHARGE_BU_WIDGET_BANNER_CARD - ${getHeaderName(data.channel)}",
+                        "item_variant", item.trackingData.itemType,
+                        "price", item.label2
                     )
                 ),
-                UserId.KEY to userId
+                UserId.KEY , userId
             )
             trackingQueue.putEETracking(bundle as java.util.HashMap<String, Any>?)
         }
