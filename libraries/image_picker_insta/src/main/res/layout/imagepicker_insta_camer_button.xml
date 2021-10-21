@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/dp_80"
+    android:layout_height="@dimen/dp_80"
+    tools:background="#f5751d">
+
+    <ProgressBar
+        android:id="@+id/progress_bar_timer"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="@dimen/dp_64"
+        android:layout_height="@dimen/dp_64"
+        android:layout_gravity="center"
+        android:background="@drawable/imagepicker_insta_timer"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="0"
+        android:progressDrawable="@drawable/imagepicker_insta_timer_1" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/image_capture"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/imagepicker_insta_circle_filled" />
+
+</FrameLayout>

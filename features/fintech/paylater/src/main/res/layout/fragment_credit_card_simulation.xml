@@ -55,13 +55,13 @@
             android:id="@+id/offerLabel"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="@dimen/unify_space_0"
+            android:contentDescription="Offer Label"
             android:scaleType="fitXY"
-            app:srcCompat="@drawable/bg_credit_card_installment_interest"
             app:layout_constraintBottom_toBottomOf="@id/tvAllInstallments"
             app:layout_constraintEnd_toEndOf="@id/tvAllInstallments"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tvAllInstallments"
-            android:contentDescription="Offer Label" />
+            app:srcCompat="@drawable/bg_credit_card_installment_interest" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvAllInstallments"

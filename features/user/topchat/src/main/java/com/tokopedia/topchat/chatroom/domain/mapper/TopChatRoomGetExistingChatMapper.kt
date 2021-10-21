@@ -17,6 +17,8 @@ import com.tokopedia.chat_common.domain.pojo.ChatRepliesItem
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
+import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
+import com.tokopedia.chat_common.domain.pojo.roommetadata.User
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
@@ -96,7 +98,9 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     override fun convertToMessageViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        return MessageViewModel(chatItemPojoByDateByTime)
+        return MessageViewModel.Builder()
+            .withResponseFromGQL(chatItemPojoByDateByTime)
+            .build()
     }
 
     private fun createBroadCastUiModel(
@@ -206,7 +210,10 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         val attachment = gson.fromJson(
             reply.attachment.attributes, HeaderCtaButtonAttachment::class.java
         )
-        return MessageViewModel(reply, attachment)
+        return MessageViewModel.Builder()
+            .withResponseFromGQL(reply)
+            .withAttachment(attachment)
+            .build()
     }
 
     override fun convertToImageAnnouncement(item: Reply): Visitable<*> {
@@ -243,24 +250,11 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             merchantVoucherStatus = MerchantVoucherStatus()
         )
 
-        return TopChatVoucherUiModel(
-            item.msgId.toString(),
-            item.senderId.toString(),
-            item.senderName,
-            item.role,
-            item.attachment?.id ?: "",
-            item.attachment?.type.toString(),
-            item.replyTime,
-            item.msg,
-            item.isRead,
-            false,
-            !item.isOpposite,
-            voucherModel,
-            item.replyId.toString(),
-            item.blastId.toString(),
-            item.source,
-            voucher.isPublic
-        )
+        return TopChatVoucherUiModel.Builder()
+            .withResponseFromGQL(item)
+            .withVoucherModel(voucherModel)
+            .withIsPublic(voucher.isPublic)
+            .build()
     }
 
     private fun convertToDualAnnouncement(item: Reply): Visitable<*> {
@@ -281,7 +275,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             redirectUrlTop = pojoAttribute.url,
             imageUrlBottom = pojoAttribute.imageUrl2,
             redirectUrlBottom = pojoAttribute.url2,
-            blastId = item.blastId,
+            broadcastBlastId = item.blastId,
             source = item.source
         )
     }
@@ -292,20 +286,10 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                 message.attachment?.attributes,
                 QuotationAttributes::class.java
             )
-        return QuotationUiModel(
-            quotationPojo = quotationAttributes.quotation,
-            messageId = message.msgId.toString(),
-            fromUid = message.senderId.toString(),
-            from = message.senderName,
-            fromRole = message.role,
-            attachmentId = message.attachment?.id ?: "",
-            attachmentType = message.attachment?.type.toString(),
-            replyTime = message.replyTime,
-            isSender = !message.isOpposite,
-            message = message.msg,
-            isRead = message.isRead,
-            source = message.source
-        )
+        return QuotationUiModel.Builder()
+            .withResponseFromGQL(message)
+            .withQuotationPojo(quotationAttributes.quotation)
+            .build()
     }
 
     private fun convertToSticker(message: Reply): Visitable<*> {
@@ -313,21 +297,10 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             message.attachment?.attributes,
             StickerAttributesResponse::class.java
         )
-        return StickerUiModel(
-            messageId = message.msgId.toString(),
-            fromUid = message.senderId.toString(),
-            from = message.senderName,
-            fromRole = message.role,
-            attachmentId = message.attachment.id,
-            attachmentType = message.attachment.type.toString(),
-            replyTime = message.replyTime,
-            message = message.msg,
-            isRead = message.isRead,
-            isDummy = false,
-            isSender = !message.isOpposite,
-            sticker = stickerAttributes.stickerProfile,
-            source = message.source
-        )
+        return StickerUiModel.Builder()
+            .withResponseFromGQL(message)
+            .withStickerProfile(stickerAttributes.stickerProfile)
+            .build()
     }
 
     private fun convertToReviewReminder(message: Reply): Visitable<*> {
@@ -335,6 +308,33 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             message.attachment.attributes,
             ReviewReminderAttribute::class.java
         )
-        return ReviewUiModel(message, review.reviewCard)
+        return ReviewUiModel.Builder()
+            .withResponseFromGQL(message)
+            .withReply(message)
+            .withReviewCard(review.reviewCard)
+            .build()
+    }
+
+    fun generateRoomMetaData(
+        messageId: String,
+        chat: GetExistingChatPojo
+    ): RoomMetaData {
+        val interlocutor = chat.chatReplies.getInterlocutorContact()
+        val sender = chat.chatReplies.getSenderContact()
+        val interlocutorMetaData = User(
+            name = interlocutor.name,
+            uid = interlocutor.userId.toString(),
+            uname = interlocutor.name,
+            role = interlocutor.role,
+            thumbnail = interlocutor.thumbnail
+        )
+        val senderMetaData = User(
+            name = sender.name,
+            uid = sender.userId.toString(),
+            uname = sender.name,
+            role = sender.role,
+            thumbnail = sender.thumbnail
+        )
+        return RoomMetaData(messageId, interlocutorMetaData, senderMetaData)
     }
 }

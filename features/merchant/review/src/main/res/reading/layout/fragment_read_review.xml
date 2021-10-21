@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:minHeight="50dp"
             android:paddingBottom="@dimen/layout_lvl1"
-            app:layout_scrollFlags="scroll|enterAlways|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
 
             <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
                 android:id="@+id/read_review_header"

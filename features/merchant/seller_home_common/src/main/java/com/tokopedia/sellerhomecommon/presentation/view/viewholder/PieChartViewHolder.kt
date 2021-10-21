@@ -2,7 +2,6 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
@@ -12,24 +11,20 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
+import com.tokopedia.sellerhomecommon.databinding.*
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
-import kotlinx.android.synthetic.main.shc_partial_common_widget_state_loading.view.*
-import kotlinx.android.synthetic.main.shc_pie_chart_widget.view.*
+import com.tokopedia.unifycomponents.NotificationUnify
 
 /**
  * Created By @ilhamsuaib on 06/07/20
  */
 
 class PieChartViewHolder(
-        itemView: View?,
-        private val listener: Listener
+    itemView: View,
+    private val listener: Listener
 ) : AbstractViewHolder<PieChartWidgetUiModel>(itemView) {
 
     companion object {
@@ -37,18 +32,20 @@ class PieChartViewHolder(
         val RES_LAYOUT = R.layout.shc_pie_chart_widget
     }
 
-    private val emptyState: Group? = itemView?.findViewById(R.id.group_shc_pie_chart_empty)
-    private val emptyStateImage: ImageUnify? = itemView?.findViewById(R.id.iv_shc_pie_chart_empty)
-    private val emptyStateTitle: Typography? = itemView?.findViewById(R.id.tv_shc_pie_chart_empty_title)
-    private val emptyStateDesc: Typography? = itemView?.findViewById(R.id.tv_shc_pie_chart_empty_desc)
-    private val emptyStateButton: UnifyButton? = itemView?.findViewById(R.id.btn_shc_pie_chart_empty)
+    private val binding by lazy { ShcPieChartWidgetBinding.bind(itemView) }
+    private val errorStateBinding by lazy { binding.shcPieChartErrorState }
+    private val loadingStateBinding by lazy { binding.shcPieChartLoadingState }
+    private val emptyStateBinding by lazy {
+        ShcPartialPieChartWidgetEmptyBinding.bind(binding.root)
+    }
 
     override fun bind(element: PieChartWidgetUiModel) {
-        with(itemView) {
+        with(binding) {
             if (!listener.getIsShouldRemoveWidget()) {
-                toggleWidgetHeight(true)
+                root.toggleWidgetHeight(true)
             }
             tvPieChartTitle.text = element.title
+            setTagNotification(element.tag)
             setupTooltip(element)
 
             observeState(element)
@@ -69,23 +66,37 @@ class PieChartViewHolder(
     }
 
     private fun setOnLoading() {
-        with(itemView) {
-            shimmerWidgetCommon.visible()
-            commonWidgetErrorState.gone()
+        with(binding) {
+            loadingStateBinding.shimmerWidgetCommon.visible()
+            errorStateBinding.commonWidgetErrorState.gone()
             pieChartShc.gone()
             tvPieChartValue.gone()
             tvPieChartSubValue.gone()
-            emptyState?.gone()
+            emptyStateBinding.groupShcPieChartEmpty.gone()
         }
     }
 
-    private fun setOnSuccess(element: PieChartWidgetUiModel) = with(itemView) {
-        shimmerWidgetCommon.gone()
-        commonWidgetErrorState.gone()
+    private fun setTagNotification(tag: String) {
+        val isTagVisible = tag.isNotBlank()
+        with(binding) {
+            notifTagPieChart.showWithCondition(isTagVisible)
+            if (isTagVisible) {
+                notifTagPieChart.setNotification(
+                    tag,
+                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COLOR_TEXT_TYPE
+                )
+            }
+        }
+    }
+
+    private fun setOnSuccess(element: PieChartWidgetUiModel) = with(binding) {
+        loadingStateBinding.shimmerWidgetCommon.gone()
+        errorStateBinding.commonWidgetErrorState.gone()
         pieChartShc.visible()
         tvPieChartValue.visible()
         tvPieChartSubValue.visible()
-        emptyState?.gone()
+        emptyStateBinding.groupShcPieChartEmpty.gone()
 
         if (element.isEmpty()) {
             if (element.isShowEmpty) {
@@ -99,34 +110,38 @@ class PieChartViewHolder(
                     listener.removeWidget(adapterPosition, element)
                 } else {
                     listener.onRemoveWidget(adapterPosition)
-                    itemView.toggleWidgetHeight(false)
+                    root.toggleWidgetHeight(false)
                 }
             }
         } else {
             setupPieChart(element)
         }
 
-        addOnImpressionListener(element.impressHolder) {
+        root.addOnImpressionListener(element.impressHolder) {
             listener.sendPieChartImpressionEvent(element)
         }
     }
 
     private fun setOnError() {
-        with(itemView) {
-            commonWidgetErrorState.visible()
+        with(binding) {
+            errorStateBinding.commonWidgetErrorState.visible()
             pieChartShc.gone()
-            shimmerWidgetCommon.gone()
+            loadingStateBinding.shimmerWidgetCommon.gone()
             tvPieChartValue.gone()
             tvPieChartSubValue.gone()
-            emptyState?.gone()
+            emptyStateBinding.groupShcPieChartEmpty.gone()
 
-            ImageHandler.loadImageWithId(imgWidgetOnError, com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
+            ImageHandler.loadImageWithId(
+                errorStateBinding.imgWidgetOnError,
+                com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
+            )
         }
     }
 
-    private fun setupTooltip(element: PieChartWidgetUiModel) = with(itemView) {
+    private fun setupTooltip(element: PieChartWidgetUiModel) = with(binding) {
         val tooltip = element.tooltip
-        val shouldShowTooltip = (tooltip?.shouldShow == true) && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
+        val shouldShowTooltip = (tooltip?.shouldShow == true) && (tooltip.content.isNotBlank()
+                || tooltip.list.isNotEmpty())
         if (shouldShowTooltip) {
             tvPieChartTitle.setUnifyDrawableEnd(IconUnify.INFORMATION)
             tvPieChartTitle.setOnClickListener {
@@ -140,16 +155,16 @@ class PieChartViewHolder(
     private fun getPieChartData(element: PieChartWidgetUiModel): List<PieChartEntry> {
         return element.data?.data?.item?.map {
             PieChartEntry(
-                    value = it.value,
-                    valueFmt = it.valueFmt,
-                    hexColor = it.color,
-                    legend = it.legend
+                value = it.value,
+                valueFmt = it.valueFmt,
+                hexColor = it.color,
+                legend = it.legend
             )
         }.orEmpty()
     }
 
     private fun setupPieChart(element: PieChartWidgetUiModel) {
-        with(itemView) {
+        with(binding) {
             val data = element.data?.data
             tvPieChartValue.text = data?.summary?.valueFmt.orEmpty()
             tvPieChartSubValue.text = data?.summary?.diffPercentageFmt.orEmpty().parseAsHtml()
@@ -163,7 +178,7 @@ class PieChartViewHolder(
     }
 
     private fun setupSeeMoreCta(element: PieChartWidgetUiModel) {
-        with(itemView) {
+        with(binding) {
             val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank()
             val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
             btnShcPieChartSeeMore.visibility = ctaVisibility
@@ -191,22 +206,23 @@ class PieChartViewHolder(
     }
 
     private fun showEmptyState(element: PieChartWidgetUiModel) {
-        with(itemView) {
-            pieChartShc?.gone()
-            shimmerWidgetCommon?.gone()
-            tvPieChartValue?.gone()
-            tvPieChartSubValue?.gone()
+        with(binding) {
+            pieChartShc.gone()
+            loadingStateBinding.shimmerWidgetCommon.gone()
+            tvPieChartValue.gone()
+            tvPieChartSubValue.gone()
         }
-        emptyState?.show()
-        emptyStateTitle?.run {
-            text = element.emptyState.title.takeIf { it.isNotBlank() } ?: getString(R.string.shc_empty_state_title)
+        emptyStateBinding.groupShcPieChartEmpty.show()
+        emptyStateBinding.tvShcPieChartEmptyTitle.run {
+            text = element.emptyState.title.takeIf { it.isNotBlank() }
+                ?: getString(R.string.shc_empty_state_title)
             visible()
         }
-        emptyStateDesc?.run {
+        emptyStateBinding.tvShcPieChartEmptyDesc.run {
             text = element.emptyState.description
             showWithCondition(element.emptyState.description.isNotBlank())
         }
-        emptyStateButton?.run {
+        emptyStateBinding.btnShcPieChartEmpty.run {
             text = element.emptyState.ctaText
             showWithCondition(element.emptyState.ctaText.isNotBlank())
             setOnClickListener {
@@ -215,7 +231,9 @@ class PieChartViewHolder(
                 }
             }
         }
-        ImageHandler.loadImageWithoutPlaceholderAndError(emptyStateImage, element.emptyState.imageUrl.takeIf { it.isNotBlank() } ?: SellerHomeUrl.IMG_EMPTY_STATE)
+        ImageHandler.loadImageWithoutPlaceholderAndError(
+            emptyStateBinding.imgShcPieChartEmpty,
+            element.emptyState.imageUrl.takeIf { it.isNotBlank() } ?: SellerHomeUrl.IMG_EMPTY_STATE)
     }
 
     interface Listener : BaseViewHolderListener {

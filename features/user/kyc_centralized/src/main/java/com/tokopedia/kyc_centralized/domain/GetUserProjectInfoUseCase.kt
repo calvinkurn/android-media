@@ -21,7 +21,7 @@ class GetUserProjectInfoUseCase @Inject constructor(
         val rawQuery = rawQueries[KYCConstant.QUERY_GET_KYC_PROJECT_INFO]
         val gqlRequest = GraphqlRequest(rawQuery,
                 KycUserProjectInfoPojo::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val errors = gqlResponse.getError(KycUserProjectInfoPojo::class.java)
         if (!errors.isNullOrEmpty()) {

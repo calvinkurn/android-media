@@ -48,6 +48,7 @@ internal class GetRecommendationUseCaseRequest {
                         slashedPriceInt
                         isWishlist
                         minOrder
+                        maxOrder
                         shop {
                           id
                           name

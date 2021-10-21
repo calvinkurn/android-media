@@ -8,19 +8,24 @@ import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.pdpsimulation.TkpdIdlingResource
 import com.tokopedia.pdpsimulation.TkpdIdlingResourceProvider
 import com.tokopedia.pdpsimulation.analytics.actionTest
+import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_URL
-import com.tokopedia.pdpsimulation.common.constants.PRODUCT_PRICE
 import com.tokopedia.pdpsimulation.common.presentation.activity.PdpSimulationActivity
 import com.tokopedia.pdpsimulation.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
+
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
@@ -28,6 +33,10 @@ class PdpSimulationFragmentTest {
 
     @get:Rule
     val activityRule = ActivityTestRule(PdpSimulationActivity::class.java, false, false)
+
+
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
@@ -40,9 +49,12 @@ class PdpSimulationFragmentTest {
         launchActivity()
         setupIdlingResource()
         setupGraphqlMockResponse {
-            addMockResponse(PAYLATER_KEY, InstrumentationMockHelper.getRawString(context, R.raw.paylaterproduct), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(APPLICATION_KEY, InstrumentationMockHelper.getRawString(context, R.raw.applicationstatusdata), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(SIMULATION_KEY, InstrumentationMockHelper.getRawString(context, R.raw.simulationtabledata), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(
+                SIMULATION_V2_KEY,
+                InstrumentationMockHelper.getRawString(context, R.raw.simulationv2response),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
+
         }
     }
 
@@ -52,29 +64,22 @@ class PdpSimulationFragmentTest {
         IdlingRegistry.getInstance().unregister(idlingResource?.countingIdlingResource)
     }
 
+
     @Test
-    fun check_pay_later_click_impressions() {
+    fun check_pay_later_partner_button_click() {
         actionTest {
-            testClickTabs(1)
-            testClickTabs(0)
-            testClickRegisterWidget()
-            testClickPayLaterItem(0)
+            swipeUpCoordinateLayout()
+            clickPartnerButton()
+            clickPartnerButtonBottomSheet()
+            closeBottomSheet()
+            clickPartnerFaq()
+            clickPartnerFaqBottomSheet()
         } assertTest {
-            validate(gtmLogDBSource, context, PAY_LATER_ANALYTICS)
+            hasPassedAnalytics(cassavaTestRule, PAY_LATER_PARTNER_BUTTON_CLICK)
             clearData()
         }
     }
 
-    @Test
-    fun check_product_info_impression() {
-        actionTest {
-            testClickTabs(1)
-            testPayLaterProductActionImpressions()
-        } assertTest {
-            validate(gtmLogDBSource, context, PAY_LATER_IMPRESSION_ANALYTICS)
-            clearData()
-        }
-    }
 
     private fun clearData() {
         gtmLogDBSource.deleteAll().toBlocking()
@@ -82,8 +87,9 @@ class PdpSimulationFragmentTest {
 
     private fun launchActivity() {
         val bundle = Bundle()
-        bundle.putInt(PRODUCT_PRICE, 1000000)
+        bundle.putString("price", "1000000")
         bundle.putString(PARAM_PRODUCT_URL, "https://dummyurl.com")
+        bundle.putString(PARAM_PRODUCT_ID, "2147828387")
         val intent = Intent(context, PdpSimulationActivity::class.java)
         intent.putExtras(bundle)
         activityRule.launchActivity(intent)
@@ -102,10 +108,11 @@ class PdpSimulationFragmentTest {
     }
 
     companion object {
-        const val PAYLATER_KEY = "paylater_getActiveProduct"
-        const val APPLICATION_KEY = "getUserApplicationStatus"
-        const val SIMULATION_KEY = "paylater_getSimulation"
-        const val PAY_LATER_ANALYTICS = "tracker/fintech/pdpsimulation/paylater_tracking.json"
-        const val PAY_LATER_IMPRESSION_ANALYTICS = "tracker/fintech/pdpsimulation/product_info_tracking.json"
+        const val SIMULATION_V2_KEY = "paylater_getSimulationV2"
+
+        const val PAY_LATER_PARTNER_BUTTON_CLICK =
+            "tracker/fintech/pdpsimulation/partner_button_click.json"
+
+
     }
 }

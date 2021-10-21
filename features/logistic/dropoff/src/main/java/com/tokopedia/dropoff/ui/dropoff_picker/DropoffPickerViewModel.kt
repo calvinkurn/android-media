@@ -36,7 +36,7 @@ class DropoffPickerViewModel
         val gqlRequest = GraphqlRequest(LocationQuery.keroAddressStoreLocation,
                 GetStoreResponse::class.java, generateQuery(latLng))
         launch {
-            val response = gql.getReseponse(listOf(gqlRequest))
+            val response = gql.response(listOf(gqlRequest))
                     .getData<GetStoreResponse>(GetStoreResponse::class.java)
                     ?: throw Exception("Can't extract object from Graphql Response")
 

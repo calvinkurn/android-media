@@ -44,11 +44,7 @@ import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
-import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
-import com.tokopedia.play.view.viewcomponent.FragmentBottomSheetViewComponent
-import com.tokopedia.play.view.viewcomponent.FragmentUserInteractionViewComponent
-import com.tokopedia.play.view.viewcomponent.FragmentVideoViewComponent
-import com.tokopedia.play.view.viewcomponent.FragmentYouTubeViewComponent
+import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.util.KeyboardWatcher
@@ -72,7 +68,7 @@ class PlayFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
         private val pageMonitoring: PlayPltPerformanceCallback,
         private val dispatchers: CoroutineDispatchers,
-        private val analytic: PlayAnalytic,
+        private val analytic: PlayAnalytic
 ) :
         TkpdBaseV4Fragment(),
         PlayFragmentContract,
@@ -92,6 +88,9 @@ class PlayFragment @Inject constructor(
     }
     private val fragmentYouTubeView by viewComponent {
         FragmentYouTubeViewComponent(channelId, it, R.id.fl_youtube, childFragmentManager, this)
+    }
+    private val fragmentUpcomingView by viewComponent {
+        FragmentUpcomingViewComponent(it, R.id.fl_upcoming, childFragmentManager)
     }
 
     private lateinit var playParentViewModel: PlayParentViewModel
@@ -155,16 +154,16 @@ class PlayFragment @Inject constructor(
 
     override fun onPause() {
         unregisterKeyboardListener(requireView())
+        onPageDefocused()
         playParentViewModel.setLatestChannelStorageData(
                 channelId,
                 playViewModel.latestCompleteChannelData
         )
-        onPageDefocused()
         super.onPause()
     }
 
     override fun onDestroyView() {
-        getVideoScalingManager().onDestroy()
+        if (view != null) getVideoScalingManager().onDestroy()
         videoScalingManager = null
 
         destroyInsets(requireView())
@@ -234,7 +233,16 @@ class PlayFragment @Inject constructor(
     fun onFirstTopBoundsCalculated() {
         isFirstTopBoundsCalculated = true
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            if (playViewModel.videoPlayer.isYouTube) {
+            if(playViewModel.upcomingInfo?.isUpcoming == true) {
+                fragmentVideoView.safeRelease()
+                fragmentVideoView.hide()
+                fragmentYouTubeView.safeRelease()
+                fragmentYouTubeView.hide()
+                fragmentUserInteractionView.safeRelease()
+                fragmentUserInteractionView.hide()
+
+                fragmentUpcomingView.safeInit()
+            } else if (playViewModel.videoPlayer.isYouTube) {
                 fragmentYouTubeView.safeInit()
                 fragmentYouTubeView.show()
             } else {
@@ -245,11 +253,12 @@ class PlayFragment @Inject constructor(
     }
 
     fun onBottomInsetsViewShown(bottomMostBounds: Int) {
-        if (orientation.isLandscape) return
+        if (orientation.isLandscape || view == null) return
         getVideoScalingManager().onBottomInsetsShown(bottomMostBounds, playViewModel.videoPlayer, playViewModel.videoOrientation)
     }
 
     fun onBottomInsetsViewHidden() {
+        if (view == null) return
         getVideoScalingManager().onBottomInsetsHidden(playViewModel.videoPlayer)
     }
 
@@ -258,6 +267,9 @@ class PlayFragment @Inject constructor(
             val totalView = playViewModel.totalView
             if (!totalView.isNullOrEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
             if (!channelId.isNullOrEmpty()) putExtra(EXTRA_CHANNEL_ID, channelId)
+            playViewModel.upcomingInfo?.let {
+                putExtra(EXTRA_IS_REMINDER, it.isReminderSet)
+            }
         })
     }
 
@@ -465,7 +477,11 @@ class PlayFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             playViewModel.uiState.withCache().collectLatest { cachedState ->
                 val state = cachedState.value
-                if (cachedState.isValueChanged(PlayViewerNewUiState::showWinnerBadge) && state.showWinnerBadge) fragmentBottomSheetView.safeInit()
+                val prevState = cachedState.prevValue
+                if (
+                    prevState?.winnerBadge?.shouldShow != state.winnerBadge.shouldShow &&
+                    state.winnerBadge.shouldShow
+                ) fragmentBottomSheetView.safeInit()
             }
         }
     }
@@ -625,6 +641,7 @@ class PlayFragment @Inject constructor(
     companion object {
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
+        private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
 
         private const val KEYBOARD_REGISTER_DELAY = 200L
         private const val FIRST_FRAGMENT_ACTIVE_DELAY = 500L

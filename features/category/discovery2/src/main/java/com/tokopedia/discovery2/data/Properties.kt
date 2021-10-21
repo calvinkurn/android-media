@@ -58,6 +58,9 @@ data class Properties(
         @SerializedName("sort")
         val sort:Boolean = true,
 
+        @SerializedName("tokonow_add_to_cart_active")
+        val tokonowATCActive : Boolean = false,
+
         @SerializedName("calendar_layout")
         val calendarLayout: String = "",
 

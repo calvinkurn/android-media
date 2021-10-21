@@ -8,6 +8,7 @@ import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntit
 import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.officialstore.category.data.model.Category
@@ -494,7 +495,7 @@ class OfficialStoreHomeViewModelTest {
         verifyGetOfficialStoreBannersUseCaseCalled()
 
         viewModel.officialStoreBannersResult
-                .assertSuccess(expectedOSBanners)
+                .assertPairSuccess(expectedOSBanners)
     }
 
     private fun verifyOfficialStoreBenefitsEquals(
@@ -553,7 +554,7 @@ class OfficialStoreHomeViewModelTest {
         coVerify { getOfficialStoreBannersUseCase.executeOnBackground(any()) }
 
         viewModel.officialStoreBannersResult
-                .assertError(expectedError)
+                .assertPairError(expectedError)
     }
 
     private fun verifyOfficialStoreBenefitsError(expectedError: Fail) {
@@ -588,7 +589,7 @@ class OfficialStoreHomeViewModelTest {
 
 
     private fun createRecommendation(productId: String, isTopAds: Boolean): RecommendationItem {
-        return RecommendationItem(productId = productId.toLong(), isTopAds = isTopAds)
+        return RecommendationItem(productId = productId.toLongOrZero(), isTopAds = isTopAds)
     }
 
     private fun <T> mockObservable(data: T): Observable<T> {
@@ -606,12 +607,23 @@ class OfficialStoreHomeViewModelTest {
         assertEquals(expectedValue, actualValue)
     }
 
+    private fun <T> LiveData<T>.assertPairSuccess(expectedValue: Success<*>) {
+        val actualValue = (value as? Pair<Any, Any>)?.second
+        assertEquals(expectedValue, actualValue)
+    }
+
     private fun ((Boolean, Throwable?) -> Unit).assertSuccess() {
         coVerify { this@assertSuccess.invoke(true, null) }
     }
 
     private fun <T> LiveData<T>.assertError(error: Fail) {
         val actualError = value.toString()
+        val expectedError = error.toString()
+        assertEquals(expectedError, actualError)
+    }
+
+    private fun <T> LiveData<T>.assertPairError(error: Fail) {
+        val actualError = (value as? Pair<Any, Any>)?.second.toString()
         val expectedError = error.toString()
         assertEquals(expectedError, actualError)
     }

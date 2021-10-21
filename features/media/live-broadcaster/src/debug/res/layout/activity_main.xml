@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <SurfaceView
+        android:id="@+id/surface_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <com.tokopedia.broadcaster.DebugView
+        android:id="@+id/debug_view"
+        android:layout_marginTop="60dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <EditText
+        android:id="@+id/edt_rtmp_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="RTMP Url"
+        android:layout_margin="@dimen/dp_16"/>
+
+    <Button
+        android:id="@+id/btn_stream"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="START"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

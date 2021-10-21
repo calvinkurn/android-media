@@ -8,7 +8,7 @@ public class ReviewImageAttachment {
 
     @SerializedName("attachment_id")
     @Expose
-    private int attachmentId;
+    private Long attachmentId;
     @SerializedName("description")
     @Expose
     private String description;
@@ -19,11 +19,11 @@ public class ReviewImageAttachment {
     @Expose
     private String uriLarge;
 
-    public int getAttachmentId() {
+    public Long getAttachmentId() {
         return attachmentId;
     }
 
-    public void setAttachmentId(int attachmentId) {
+    public void setAttachmentId(Long attachmentId) {
         this.attachmentId = attachmentId;
     }
 

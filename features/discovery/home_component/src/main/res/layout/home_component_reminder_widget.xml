@@ -120,7 +120,7 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/reminder_recommendation_text_sub"
                 app:unifyButtonSize="small"
-                app:unifyButtonType="transaction" />
+                app:unifyButtonType="main" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

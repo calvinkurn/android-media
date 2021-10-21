@@ -17,7 +17,7 @@ class GetBroadCastMetaDataUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): ChatBlastSellerMetadata {
         val graphqlRequest = GraphqlRequest(query, GetBroadCastMetaDataResponse::class.java, params.parameters)
-        val graphqlResponse = graphqlRepository.getReseponse(listOf(graphqlRequest))
+        val graphqlResponse = graphqlRepository.response(listOf(graphqlRequest))
         val errors = graphqlResponse.getError(GetBroadCastMetaDataResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = graphqlResponse.getData<GetBroadCastMetaDataResponse>(GetBroadCastMetaDataResponse::class.java)

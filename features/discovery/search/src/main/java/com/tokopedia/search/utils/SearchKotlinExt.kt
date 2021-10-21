@@ -3,6 +3,7 @@ package com.tokopedia.search.utils
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 
 fun Map<String, Any>?.convertValuesToString(): Map<String, String> {
@@ -60,3 +61,6 @@ internal fun LocalCacheModel.toSearchParams(): Map<String, String> {
         if (warehouse_id.isNotEmpty()) map[SearchApiConst.USER_WAREHOUSE_ID] = warehouse_id
     }
 }
+
+fun List<LabelGroupDataView>?.getFormattedPositionName(): String =
+    this?.joinToString(transform = LabelGroupDataView::getPositionTitle) ?: ""

@@ -3,10 +3,10 @@ package com.tokopedia.core.analytics.appsflyer;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.appsflyer.AFInAppEventParameterName;
-import com.appsflyer.AFInAppEventType;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.track.AFInAppEventParameterName;
+import com.tokopedia.track.AFInAppEventType;
 
 import org.json.JSONArray;
 import org.json.JSONException;

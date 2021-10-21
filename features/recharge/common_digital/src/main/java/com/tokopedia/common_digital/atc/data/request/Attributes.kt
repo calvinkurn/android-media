@@ -1,5 +1,6 @@
 package com.tokopedia.common_digital.atc.data.request
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
@@ -7,18 +8,22 @@ import java.util.*
 
 data class Attributes(
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("user_id")
         @Expose
-        var userId: Int = 0,
+        var userId: Long = 0L,
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("product_id")
         @Expose
-        var productId: Int = 0,
+        var productId: Long = 0L,
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("order_id")
         @Expose
-        var orderId: Long = 0,
+        var orderId: Long = 0L,
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("device_id")
         @Expose
         var deviceId: Int = 0,

@@ -26,7 +26,7 @@ class FeaturedBrandViewHolder (itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.global_component_featured_brand
-        const val GRID_COUNT = 2
+        private const val FEATURED_BRAND_SPACING = 10
     }
     private lateinit var recyclerView: RecyclerView
     private lateinit var layoutManager: GridLayoutManager
@@ -56,7 +56,7 @@ class FeaturedBrandViewHolder (itemView: View,
 
     private fun initRV() {
         recyclerView = itemView.findViewById(R.id.recycleList)
-        layoutManager = GridLayoutManager(itemView.context, GRID_COUNT)
+        layoutManager = GridLayoutManager(itemView.context, itemView.context.resources.getInteger(R.integer.featured_brand_span_count))
         parentRecyclerViewPool?.let { recyclerView.setRecycledViewPool(parentRecyclerViewPool) }
         recyclerView.layoutManager = layoutManager
     }
@@ -67,13 +67,15 @@ class FeaturedBrandViewHolder (itemView: View,
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                GridSpacingItemDecoration(2, 10, false))
+                GridSpacingItemDecoration(
+                    itemView.context.resources.getInteger(R.integer.featured_brand_span_count),
+                    FEATURED_BRAND_SPACING, false))
     }
 
     private fun setHeaderComponent(element: FeaturedBrandDataModel) {
         itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
-                featuredBrandListener?.onSeeAllClicked(element.channelModel, adapterPosition)
+                featuredBrandListener?.onSeeAllClicked(element.channelModel, adapterPosition, link)
             }
 
             override fun onChannelExpired(channelModel: ChannelModel) {

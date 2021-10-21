@@ -47,7 +47,7 @@ class DigitalAddToCartViewModel @Inject constructor(private val digitalAddToCart
                     digitalAddToCartUseCase.setRequestParams(
                             DigitalAddToCartUseCase.getRequestBodyAtcDigital(
                                     digitalCheckoutPassData,
-                                    userSession.userId.toInt(),
+                                    userSession.userId,
                                     digitalIdentifierParam,
                                     digitalSubscriptionParams
                             ), digitalCheckoutPassData.idemPotencyKey)

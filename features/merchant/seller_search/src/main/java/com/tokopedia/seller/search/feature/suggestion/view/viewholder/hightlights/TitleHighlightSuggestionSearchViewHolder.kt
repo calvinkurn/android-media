@@ -3,9 +3,9 @@ package com.tokopedia.seller.search.feature.suggestion.view.viewholder.hightligh
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.seller.search.R
-import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.ItemTitleHighlightInitialSearchUiModel
+import com.tokopedia.seller.search.databinding.ItemTitleHeaderHighlightSearchBinding
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.hightlights.ItemTitleHighlightSuggestionSearchUiModel
-import kotlinx.android.synthetic.main.item_title_header_highlight_search.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class TitleHighlightSuggestionSearchViewHolder(view: View): AbstractViewHolder<ItemTitleHighlightSuggestionSearchUiModel>(view) {
 
@@ -13,9 +13,11 @@ class TitleHighlightSuggestionSearchViewHolder(view: View): AbstractViewHolder<I
         val LAYOUT = R.layout.item_title_header_highlight_search
     }
 
+    private val binding: ItemTitleHeaderHighlightSearchBinding? by viewBinding()
+
     override fun bind(element: ItemTitleHighlightSuggestionSearchUiModel?) {
-        with(itemView) {
-            tvHighlightSearch?.text = element?.title.orEmpty()
+        binding?.run {
+            tvHighlightSearch.text = element?.title.orEmpty()
         }
     }
 }

@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.flight.cancellationdetail.presentation.adapter.viewholder.FlightOrderCancellationDetailJourneyViewHolder
+import com.tokopedia.flight.databinding.ItemFlightDetailOrderBinding
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailJourneyModel
 
 /**
@@ -19,7 +20,10 @@ class FlightOrderCancellationDetailJourneyAdapterJourneyTypeFactory(private val 
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> =
             when (type) {
-                FlightOrderCancellationDetailJourneyViewHolder.LAYOUT -> FlightOrderCancellationDetailJourneyViewHolder(listener, titleFontSize, parent)
+                FlightOrderCancellationDetailJourneyViewHolder.LAYOUT -> {
+                    val binding = ItemFlightDetailOrderBinding.bind(parent)
+                    FlightOrderCancellationDetailJourneyViewHolder(listener, titleFontSize, binding)
+                }
                 else -> super.createViewHolder(parent, type)
             }
 }

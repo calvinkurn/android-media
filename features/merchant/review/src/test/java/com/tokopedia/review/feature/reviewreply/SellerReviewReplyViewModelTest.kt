@@ -40,7 +40,7 @@ class SellerReviewReplyViewModelTest : SellerReviewReplyViewModelTestFixture() {
             viewModel.insertReviewReply(anyString(), anyString(), anyString(), anyString())
 
             verifySuccessInsertReviewReplyUseCalled()
-            val expectedValue = Success(InsertReplyResponseUiModel(anyInt()))
+            val expectedValue = Success(InsertReplyResponseUiModel(anyLong()))
             assertTrue(viewModel.insertReviewReply.value is Success)
             viewModel.insertReviewReply.verifyValueEquals(expectedValue)
         }

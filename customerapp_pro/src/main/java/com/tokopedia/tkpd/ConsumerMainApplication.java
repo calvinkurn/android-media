@@ -27,12 +27,6 @@ import kotlin.Pair;
 
 public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMainApplication {
 
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    private native byte[] bytesFromJNI();
-
     protected void setVersionName() {
         Pair<String, String> versions = AuthHelper.getVersionName(BuildConfig.VERSION_NAME);
         String version = versions.getFirst();
@@ -58,11 +52,6 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     @Override
     public int versionCode() {
         return BuildConfig.VERSION_CODE;
-    }
-
-    @Override
-    protected byte[] getJniBytes() {
-        return bytesFromJNI();
     }
 
     @Override
@@ -115,16 +104,10 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         });
     }
 
-    @Override
-    protected void loadSignatureLibrary() {
-        System.loadLibrary("native-lib");
-    }
-
     protected void setVersionCode() {
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
             GlobalConfig.VERSION_CODE = pInfo.versionCode;
-            com.tokopedia.config.GlobalConfig.VERSION_CODE = pInfo.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;

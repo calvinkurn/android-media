@@ -30,11 +30,11 @@
       "businessUnit": "recharge",
       "eventCategory": "digital - homepage",
       "currentSite": "tokopediadigitalRecharge",
-      "event": "digitalGeneralEvent",
+      "event": "clickDigitalEvent",
       "userId": ".+",
       "eventAction": "click update saldo",
       "sessionIris": ".+",
-      "eventLabel": ""
+      "eventLabel": ".*"
     },
     {
       "businessUnit": "recharge",
@@ -44,7 +44,7 @@
       "userId": ".+",
       "eventAction": "click lihat detail",
       "sessionIris": ".+",
-      "eventLabel": ".+"
+      "eventLabel": ".+ - .+"
     },
     {
       "businessUnit": "recharge",
@@ -54,17 +54,17 @@
       "userId": ".+",
       "eventAction": "click x button card number",
       "sessionIris": ".+",
-      "eventLabel": ""
+      "eventLabel": ".*"
     },
     {
       "businessUnit": "recharge",
       "eventCategory": "digital - native",
       "currentSite": "tokopediadigitalRecharge",
-      "event": "clickDigitalNative",
+      "event": "clickEmoney",
       "userId": ".+",
       "eventAction": "click camera icon",
       "sessionIris": ".+",
-      "eventLabel": ""
+      "eventLabel": ".*"
     },
     {
       "businessUnit": "recharge",
@@ -74,7 +74,7 @@
       "userId": ".+",
       "eventAction": "input card number",
       "sessionIris": ".+",
-      "eventLabel": ".+"
+      "eventLabel": ".+ - .+"
     },
     {
       "businessUnit": "recharge",
@@ -84,7 +84,7 @@
       "userId": ".+",
       "eventAction": "click order list section",
       "sessionIris": ".+",
-      "eventLabel": ""
+      "eventLabel": ".*"
     },
     {
       "businessUnit": "recharge",
@@ -94,7 +94,7 @@
       "userId": ".+",
       "eventAction": "click promo section",
       "sessionIris": ".+",
-      "eventLabel": ""
+      "eventLabel": ".*"
     }
   ]
 }

@@ -179,7 +179,7 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
         }
 
         try {
-            val gqlResponse = gqlRepository.getReseponse(requests)
+            val gqlResponse = gqlRepository.response(requests)
 
             if (gqlResponse.getError(ShopScoreWrapperResponse::class.java).isNullOrEmpty()) {
                 val shopScoreLevelData = gqlResponse
@@ -220,13 +220,10 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
                     .goldGetPMOSStatus.data
                 shopScoreWrapperResponse.goldGetPMOStatusResponse = powerMerchantResponse
             }
-
-        } catch (e: Throwable) {
-            if (e is SocketTimeoutException || e is UnknownHostException) {
-                throw IOException(e.message)
-            } else {
-                throw Exception(e.message)
-            }
+        } catch (e: IOException) {
+            throw IOException(e.message)
+        } catch (e: Exception) {
+            throw Exception(e.message)
         }
 
         return shopScoreWrapperResponse

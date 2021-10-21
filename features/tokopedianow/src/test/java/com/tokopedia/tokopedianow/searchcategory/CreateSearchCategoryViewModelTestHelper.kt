@@ -1,8 +1,10 @@
 package com.tokopedia.tokopedianow.searchcategory
 
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV2
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OLD
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP2
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import io.mockk.every
@@ -16,6 +18,7 @@ class CreateSearchCategoryViewModelTestHelper(
 
     fun `test has global menu for variant navigation revamp`() {
         `Given AB Test Navigation Exp Variant`(NAVIGATION_VARIANT_REVAMP)
+        `Given AB Test Navigation Exp Variant`(NAVIGATION_VARIANT_REVAMP2)
 
         callback.`When create view model`()
 
@@ -25,8 +28,11 @@ class CreateSearchCategoryViewModelTestHelper(
     private fun `Given AB Test Navigation Exp Variant`(variant: String) {
         every {
             abTestPlatformWrapper.getABTestRemoteConfig()?.getString(
-                    NAVIGATION_EXP_TOP_NAV,
+                NAVIGATION_EXP_TOP_NAV,
+                abTestPlatformWrapper.getABTestRemoteConfig()?.getString(
+                    NAVIGATION_EXP_TOP_NAV2,
                     NAVIGATION_VARIANT_OLD
+                )
             )
         } returns (variant)
     }

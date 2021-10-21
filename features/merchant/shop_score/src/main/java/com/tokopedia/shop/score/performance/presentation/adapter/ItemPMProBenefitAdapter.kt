@@ -7,9 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.databinding.ItemPmProBenefitBinding
 import com.tokopedia.shop.score.performance.presentation.model.ItemParentBenefitUiModel
-import com.tokopedia.shop.score.performance.presentation.model.SectionRMPotentialPMProUiModel
-import kotlinx.android.synthetic.main.item_pm_pro_benefit.view.*
+import com.tokopedia.utils.view.binding.viewBinding
+
 
 class ItemPMProBenefitAdapter :
     RecyclerView.Adapter<ItemPMProBenefitAdapter.ItemPMProBenefitViewHolder>() {
@@ -36,11 +37,12 @@ class ItemPMProBenefitAdapter :
     override fun getItemCount(): Int = itemBenefitList.size
 
     class ItemPMProBenefitViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val binding: ItemPmProBenefitBinding? by viewBinding()
         fun bind(data: ItemParentBenefitUiModel) {
-            with(itemView) {
-                iv_potential_pm_pro_benefit?.loadImage(data.iconUrl)
-                tv_potential_pm_pro_benefit?.text =
-                    MethodChecker.fromHtml(data.titleResources?.let { context.getString(it) })
+            binding?.run {
+                ivPotentialPmProBenefit.loadImage(data.iconUrl)
+                tvPotentialPmProBenefit.text =
+                    MethodChecker.fromHtml(data.titleResources?.let { root.context.getString(it) })
             }
         }
     }

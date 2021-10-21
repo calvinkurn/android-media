@@ -50,7 +50,7 @@ class UmrahTravelGalleryViewModelTest{
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
         coEvery {
-            mGraphqlRepository.getReseponse(any(),any())
+            mGraphqlRepository.response(any(),any())
         } returns gqlResponseSuccess
 
         //when
@@ -74,7 +74,7 @@ class UmrahTravelGalleryViewModelTest{
         val gqlResponseFail = GraphqlResponse(result, errors, false)
 
         coEvery {
-            mGraphqlRepository.getReseponse(any(),any())
+            mGraphqlRepository.response(any(),any())
         } returns gqlResponseFail
 
         //when

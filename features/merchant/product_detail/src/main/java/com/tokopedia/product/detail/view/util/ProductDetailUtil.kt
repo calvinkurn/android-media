@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.util
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Typeface
 import android.text.*
 import android.text.style.ClickableSpan
@@ -16,6 +17,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -45,6 +47,10 @@ object ProductDetailUtil {
             Pair(formattedText, !ALLOW_CLICK)
         }
     }
+}
+
+fun getIntentImagePreviewWithoutDownloadButton(context: Context, imageUrl: ArrayList<String>): Intent {
+    return ImagePreviewActivity.getCallingIntent(context = context, imageUris = imageUrl, disableDownloadButton = true)
 }
 
 fun String.boldOrLinkText(isLink: Boolean, context: Context,

@@ -54,11 +54,15 @@ object Constant {
         const val RPC_USER_LAT = "rpc_UserLat"
         const val RPC_USER_LONG = "rpc_UserLong"
         const val RPC_USER_POST_CODE = "rpc_UserPostCode"
+        const val RPC_USER_WAREHOUSE_ID = "rpc_UserWarehouseId"
     }
 
     object ChooseAddressGTMSSource{
         const val HOST_SOURCE = "discovery"
         const val HOST_TRACKING_SOURCE = "discovery page"
+
+        const val CATEGORY_HOST_SOURCE = "category"
+        const val CATEGORY_HOST_TRACKING_SOURCE = "category page"
     }
 
     object Calendar{

@@ -20,7 +20,7 @@ class GetShopModerationStatusUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): ModerationShopStatusUiModel {
         val gqlRequest = GraphqlRequest(QUERY, GetShopInfoByIdResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val gqlErrors = gqlResponse.getError(GetShopInfoByIdResponse::class.java)
         if (gqlErrors.isNullOrEmpty()) {

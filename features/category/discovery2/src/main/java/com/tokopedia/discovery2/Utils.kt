@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Build
+import android.text.Html
 import android.util.DisplayMetrics
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -315,6 +316,22 @@ class Utils {
         }
         fun getUserId(context: Context?): String {
             return context?.let { UserSession(it).userId } ?: ""
+        }
+
+        fun extractFromHtml(couponName: String?):String? {
+             return try {
+               if(couponName?.isNotEmpty() == true) {
+                   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                       Html.fromHtml(couponName, Html.FROM_HTML_MODE_LEGACY).toString()
+                   } else {
+                       Html.fromHtml(couponName).toString()
+                   }
+               } else {
+                    couponName
+                }
+            }catch (e:Exception){
+             couponName
+            }
         }
 
     }

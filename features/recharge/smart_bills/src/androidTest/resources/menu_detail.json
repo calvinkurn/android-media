@@ -1,0 +1,42 @@
+[
+  {
+    "data": {
+      "rechargeCatalogMenuDetail": {
+        "tickers": [
+          {
+            "Name": "Pengumuman",
+            "Content": "Toppers, saat ini Transaksi PBB antusiasmenya sedang tinggi. Jika kesulitan dalam bertransaksi, mohon coba secara berkala ya",
+            "Type": "warning",
+            "Environment": "all",
+            "ActionText": "",
+            "ActionLink": ""
+          },
+          {
+            "Name": "Info",
+            "Content": "Ingin tagihan atau invoice kamu bisa dibayar di Tokopedia? Yuk, cari tahu <a href=\"https://www.tokopedia.com/partner/bms\">disini</a> ",
+            "Type": "info",
+            "Environment": "all",
+            "ActionText": "",
+            "ActionLink": ""
+          },
+          {
+            "Name": "Katalog Tontonan Seru!",
+            "Content": "Hi Toppers, bingung mau nonton apa lagi? Yuk lihat-lihat katalog tontonan yang seru ala Tokopedia!",
+            "Type": "info",
+            "Environment": "all",
+            "ActionText": "Cek sekarang!",
+            "ActionLink": "https://www.tokopedia.com/discovery/digital-streaming"
+          },
+          {
+            "Name": "Cek Saldo OVO",
+            "Content": "Cek saldo mu di OVO dashboard.  Klik <a href=https://tokopedia.link/ovo> di sini</a>.",
+            "Type": "info",
+            "Environment": "all",
+            "ActionText": "",
+            "ActionLink": ""
+          }
+        ]
+      }
+    }
+  }
+]

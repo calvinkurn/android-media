@@ -3,6 +3,7 @@ package com.tokopedia.applink.digital
 import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.CATEGORY_ID_ELECTRONIC_MONEY
@@ -29,6 +30,7 @@ object DeeplinkMapperDigital {
     const val PLATFORM_ID_PARAM = "platform_id"
     const val IS_FROM_WIDGET_PARAM = "is_from_widget"
     const val REMOTE_CONFIG_MAINAPP_ENABLE_ELECTRONICMONEY_PDP = "android_customer_enable_digital_emoney_pdp"
+    const val IS_ADD_SBM = "is_add_sbm"
 
     const val SCALYR_OLD_APPLINK_TAGS = "DG_OLD_APPLINK"
 
@@ -49,7 +51,8 @@ object DeeplinkMapperDigital {
         val uri = Uri.parse(deeplink)
         return when {
             deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true) -> {
-                if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty() &&
+                if(!uri.getQueryParameter(IS_ADD_SBM).isNullOrEmpty() && uri.getQueryParameter(IS_ADD_SBM) == "true" && !uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty()) getAddBillsTelco(deeplink)
+                else if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty() &&
                         !uri.getQueryParameter(MENU_ID_PARAM).isNullOrEmpty())
                             getDigitalTemplateNavigation(context, deeplink)
                 else if (!uri.getQueryParameter(IS_FROM_WIDGET_PARAM).isNullOrEmpty()) ApplinkConsInternalDigital.CHECKOUT_DIGITAL
@@ -113,6 +116,25 @@ object DeeplinkMapperDigital {
                 TEMPLATE_ID_ELECTRONIC_MONEY -> {
                     handleEmoneyPdpApplink(context, deeplink)
                 }
+                else -> deeplink
+            }
+        } ?: deeplink
+    }
+
+    private fun getAddBillsTelco(deeplink: String): String {
+        val uri = Uri.parse(deeplink)
+        return uri.getQueryParameter(TEMPLATE_PARAM)?.let {
+            when(it){
+                TEMPLATE_PREPAID_TELCO -> {
+                    UriUtil.buildUri(ApplinkConsInternalDigital.ADD_TELCO, TEMPLATE_PREPAID_TELCO)
+                }
+                TEMPLATE_POSTPAID_TELCO -> {
+                    UriUtil.buildUri(ApplinkConsInternalDigital.ADD_TELCO, TEMPLATE_POSTPAID_TELCO)
+                }
+                TEMPLATE_ID_GENERAL -> {
+                    ApplinkConsInternalDigital.GENERAL_TEMPLATE
+                }
+
                 else -> deeplink
             }
         } ?: deeplink

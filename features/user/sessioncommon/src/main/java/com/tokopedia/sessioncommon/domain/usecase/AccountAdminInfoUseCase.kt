@@ -54,7 +54,7 @@ class AccountAdminInfoUseCase @Inject constructor(private val refreshShopBasicDa
     override suspend fun executeOnBackground(): Pair<AdminDataResponse?, ShopData?> {
         try {
             val request = GraphqlRequest(QUERY, AdminTypeResponse::class.java, requestParams.parameters)
-            graphqlRepository.getReseponse(listOf(request)).let { response ->
+            graphqlRepository.response(listOf(request)).let { response ->
                 response.getError(AdminTypeResponse::class.java).let { errors ->
                     if (errors.isNullOrEmpty()) {
                         response.getData<AdminTypeResponse>(AdminTypeResponse::class.java).response.let { adminResponse ->

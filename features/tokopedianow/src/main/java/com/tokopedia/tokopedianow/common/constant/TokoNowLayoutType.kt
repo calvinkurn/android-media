@@ -24,5 +24,7 @@ annotation class TokoNowLayoutType {
         const val LEGO_6_IMAGE = "6_image"
         const val PRODUCT_RECOM = "top_carousel_tokonow"
         const val RECENT_PURCHASE = "recent_purchase_tokonow"
+        const val EDUCATIONAL_INFORMATION = "tokonow_usp"
+        const val SHARING_EDUCATION = "tokonow_share"
     }
 }

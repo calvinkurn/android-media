@@ -32,7 +32,7 @@ class BasicShopInfoUseCase @Inject constructor(private val gqlRepository: Graphq
 
     override suspend fun executeOnBackground(): ShopInfo {
         val request = GraphqlRequest(QUERY, BasicShopInfoResponse::class.java, params.parameters)
-        val response = gqlRepository.getReseponse(listOf(request))
+        val response = gqlRepository.response(listOf(request))
 
         val error = response.getError(BasicShopInfoResponse::class.java)
         if (error.isNullOrEmpty()) {

@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.home_account.di.*
-import com.tokopedia.home_account.view.HomeAccountUserFragment
+import com.tokopedia.home_account.view.fragment.HomeAccountUserFragment
 import com.tokopedia.home_account.test.R
 import com.tokopedia.sessioncommon.di.SessionModule
 

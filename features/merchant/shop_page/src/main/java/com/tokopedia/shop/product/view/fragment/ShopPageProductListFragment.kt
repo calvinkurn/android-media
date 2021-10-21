@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import androidx.annotation.DimenRes
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -71,7 +70,6 @@ import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
-import com.tokopedia.shop.common.util.ShopPageProductChangeGridRemoteConfig
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.getIndicatorCount
@@ -340,7 +338,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     (parentFragment as? NewShopPageFragment)?.expandHeader()
                 }
                 if (firstCompletelyVisibleItemPosition != latestCompletelyVisibleItemIndex)
-                    (parentFragment as? NewShopPageFragment)?.hideScrollToTopButton()
+                    hideScrollToTopButton()
                 latestCompletelyVisibleItemIndex = firstCompletelyVisibleItemPosition
             }
 
@@ -349,7 +347,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 if(state == RecyclerView.SCROLL_STATE_IDLE){
                     val firstCompletelyVisibleItemPosition = (layoutManager as? StaggeredGridLayoutManager)?.findFirstCompletelyVisibleItemPositions(null)?.getOrNull(0).orZero()
                     if (firstCompletelyVisibleItemPosition > 0) {
-                        (parentFragment as? NewShopPageFragment)?.showScrollToTopButton()
+                        showScrollToTopButton()
                     }
                 }
             }
@@ -605,7 +603,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                             "",
                             shopRef
                     )
-                    intent.putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData)
+                    intent.putExtra(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData)
                     startActivity(intent)
                 }
             }
@@ -808,6 +806,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 shopProductEmptySearchListener = null,
                 shopProductChangeGridSectionListener = this,
                 shopShowcaseEmptySearchListener = null,
+                shopProductSearchSuggestionListener = null,
                 isGridSquareLayout = true,
                 deviceWidth = deviceWidth,
                 shopTrackType = ShopTrackProductTypeDef.PRODUCT,
@@ -1073,6 +1072,15 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     override fun onResume() {
         loadInitialDataAfterOnViewCreated()
         super.onResume()
+        checkShowScrollToTopButton()
+    }
+
+    private fun checkShowScrollToTopButton() {
+        if (isShowScrollToTopButton()) {
+            showScrollToTopButton()
+        } else {
+            hideScrollToTopButton()
+        }
     }
 
     private fun loadInitialDataAfterOnViewCreated() {
@@ -1185,9 +1193,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             when (it) {
                 is Success -> {
                     val totalProduct = it.data.totalProductData
-                    if (shopProductAdapter.shopProductUiModelList.isEmpty() && totalProduct != 0) {
-                        updateEtalaseTitleSection()
-                    }
                     if(!isOwner)
                         updateProductChangeGridSection(totalProduct)
                     onSuccessGetProductListData(it.data.hasNextPage, it.data.listShopProductUiModel)
@@ -1269,18 +1274,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun updateProductChangeGridSection(totalProduct: Int) {
-        if (ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
-            shopProductAdapter.updateShopPageProductChangeGridSectionIcon(totalProduct, gridType)
-        }
-    }
-
-    private fun updateEtalaseTitleSection() {
-        if (!ShopPageProductChangeGridRemoteConfig.isFeatureEnabled(remoteConfig)) {
-            shopProductAdapter.setShopProductEtalaseTitleData(ShopProductEtalaseTitleUiModel(
-                    getSelectedEtalaseChip(),
-                    ""
-            ))
-        }
+        shopProductAdapter.updateShopPageProductChangeGridSectionIcon(totalProduct, gridType)
     }
 
     private fun onSuccessGetShopProductFilterCount(count: Int) {
@@ -1381,9 +1375,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 )
         )
         shopProductAdapter.setSortFilterData(shopProductSortFilterUiModel)
-        if (initialProductListData?.data?.isNotEmpty() == true) {
-            updateEtalaseTitleSection()
-        }
         if (!viewModel.isMyShop(shopId)) {
             viewModel.getBuyerViewContentData(
                     shopId,
@@ -1592,4 +1583,13 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     override fun isShowScrollToTopButton(): Boolean {
         return latestCompletelyVisibleItemIndex > 0
     }
+
+    private fun hideScrollToTopButton(){
+        (parentFragment as? NewShopPageFragment)?.hideScrollToTopButton()
+    }
+
+    private fun showScrollToTopButton(){
+        (parentFragment as? NewShopPageFragment)?.showScrollToTopButton()
+    }
+
 }

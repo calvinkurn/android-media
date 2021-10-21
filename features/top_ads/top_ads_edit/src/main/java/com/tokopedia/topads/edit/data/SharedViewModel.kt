@@ -17,6 +17,7 @@ class SharedViewModel : ViewModel() {
     private var bidForGroup: MutableLiveData<Int> = MutableLiveData()
     private var dailyBudget: MutableLiveData<Int> = MutableLiveData()
     private var rekomendedBudget: MutableLiveData<Int> = MutableLiveData()
+    private var maxBudget: MutableLiveData<Int> = MutableLiveData()
     private var autoBidStatus: MutableLiveData<String> = MutableLiveData()
     private var isWhiteListedUser: Boolean = false
     private var bidSettings: MutableLiveData<List<TopAdsBidSettingsModel>> = MutableLiveData()
@@ -39,12 +40,27 @@ class SharedViewModel : ViewModel() {
 
     fun setDailyBudget(budget:Int){
         dailyBudget.value = budget*40
+        setMaxBudgetValue()
 
+    }
+
+    private fun setMaxBudgetValue() {
+        val dailyBudget = dailyBudget.value
+        val rekomendedBudget = rekomendedBudget.value
+        if (dailyBudget != null && rekomendedBudget != null) {
+            if (dailyBudget > rekomendedBudget) {
+                maxBudget.value = dailyBudget
+            } else maxBudget.value = rekomendedBudget
+        }
     }
 
     fun setRekomendedBudget(budget:Int){
         rekomendedBudget.value = budget*40
+        setMaxBudgetValue()
+    }
 
+    fun getMaxBudget() :MutableLiveData<Int>{
+        return maxBudget
     }
 
     fun getProuductIds(): MutableLiveData<MutableList<String>> {

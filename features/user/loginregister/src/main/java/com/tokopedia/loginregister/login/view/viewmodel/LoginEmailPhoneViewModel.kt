@@ -11,19 +11,18 @@ import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.common.data.ResponseConverter
-import com.tokopedia.loginregister.common.data.ResponseConverter.resultUsecaseCoroutineToSubscriber
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
+import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckFingerprintUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprint
-import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
@@ -38,7 +37,6 @@ import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenFacebookSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.*
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -70,8 +68,8 @@ class LoginEmailPhoneViewModel @Inject constructor(
     val registerCheckResponse: LiveData<Result<RegisterCheckData>>
         get() = mutableRegisterCheckResponse
 
-    private val mutableDiscoverResponse = MutableLiveData<Result<DiscoverDataModel>>()
-    val discoverResponse: LiveData<Result<DiscoverDataModel>>
+    private val mutableDiscoverResponse = MutableLiveData<Result<DiscoverData>>()
+    val discoverResponse: LiveData<Result<DiscoverData>>
         get() = mutableDiscoverResponse
 
     private val mutableActivateResponse = MutableLiveData<Result<ActivateUserData>>()
@@ -177,12 +175,13 @@ class LoginEmailPhoneViewModel @Inject constructor(
     }
 
     fun discoverLogin() {
-        launchCatchError(coroutineContext, {
-            discoverUseCase.execute(RequestParams.EMPTY, resultUsecaseCoroutineToSubscriber(
-                    onSuccessResult = { mutableDiscoverResponse.value = Success(it) },
-                    onErrorResult = { mutableDiscoverResponse.value = Fail(it) }
-            ))
-        }, {
+        launchCatchError(block = {
+            val result = discoverUseCase(PARAM_DISCOVER_LOGIN)
+
+            withContext(dispatchers.main) {
+                mutableDiscoverResponse.value = Success(result.data)
+            }
+        }, onError = {
             mutableDiscoverResponse.value = Fail(it)
         })
     }
@@ -438,7 +437,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
 
     fun clearBackgroundTask() {
         tickerInfoUseCase.unsubscribe()
-        discoverUseCase.unsubscribe()
         loginTokenUseCase.unsubscribe()
         getProfileUseCase.unsubscribe()
     }
@@ -446,5 +444,9 @@ class LoginEmailPhoneViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         clearBackgroundTask()
+    }
+
+    companion object {
+        private const val PARAM_DISCOVER_LOGIN = "login"
     }
 }

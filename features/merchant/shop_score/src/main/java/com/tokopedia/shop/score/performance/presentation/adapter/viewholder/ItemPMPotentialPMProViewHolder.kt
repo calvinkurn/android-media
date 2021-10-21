@@ -4,33 +4,35 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.databinding.ItemPotentialPmToPmProBinding
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemPMPotentialPMProListener
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemPMProBenefitAdapter
 import com.tokopedia.shop.score.performance.presentation.model.SectionPMPotentialPMProUiModel
-import kotlinx.android.synthetic.main.item_potential_pm_to_pm_pro.view.*
-import kotlinx.android.synthetic.main.item_potential_pm_to_pm_pro.view.tv_pm_reputation_value
-import kotlinx.android.synthetic.main.item_status_power_merchant.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ItemPMPotentialPMProViewHolder(
     view: View,
     private val itemStatusPMProListener: ItemPMPotentialPMProListener
-) :
-    AbstractViewHolder<SectionPMPotentialPMProUiModel>(view) {
+) : AbstractViewHolder<SectionPMPotentialPMProUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_potential_pm_to_pm_pro
     }
 
+    private val binding: ItemPotentialPmToPmProBinding? by viewBinding()
     private var itemPMProBenefitAdapter: ItemPMProBenefitAdapter? = null
 
     override fun bind(element: SectionPMPotentialPMProUiModel?) {
         itemPMProBenefitAdapter = ItemPMProBenefitAdapter()
-        with(itemView) {
-            tv_pm_reputation_value?.text = getString(R.string.title_pm_value)
-            tv_see_all_benefit_pm_to_pm_pro?.setOnClickListener {
+        binding?.run {
+            tvPmReputationValue.text = getString(R.string.title_pm_value)
+            potentialPowerMerchantWidget.setOnClickListener {
+                itemStatusPMProListener.onPMToPMProPage()
+            }
+            tvSeeAllBenefitPmToPmPro.setOnClickListener {
                 itemStatusPMProListener.onGotoBenefitPMPro()
             }
-            ic_chevron_right_benefit_pm_to_pm_pro?.setOnClickListener {
+            icChevronRightBenefitPmToPmPro.setOnClickListener {
                 itemStatusPMProListener.onGotoBenefitPMPro()
             }
         }
@@ -38,8 +40,8 @@ class ItemPMPotentialPMProViewHolder(
     }
 
     private fun setPotentialPMProBenefitAdapter(element: SectionPMPotentialPMProUiModel?) {
-        with(itemView) {
-            rv_pm_to_pm_pro_potential_benefit?.apply {
+        binding?.run {
+            rvPmToPmProPotentialBenefit.run {
                 layoutManager = LinearLayoutManager(context)
                 adapter = itemPMProBenefitAdapter
             }

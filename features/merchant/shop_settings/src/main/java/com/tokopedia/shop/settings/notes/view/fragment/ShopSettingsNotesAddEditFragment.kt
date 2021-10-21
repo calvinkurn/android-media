@@ -13,14 +13,18 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
+import com.tokopedia.shop.settings.databinding.FragmentShopNotesAddEditBinding
 import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
 import com.tokopedia.shop.settings.notes.view.listener.ShopSettingsNotesAddEditView
 import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingsNoteAddEditPresenter
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesAddEditView {
+
+    private var binding by autoClearedNullable<FragmentShopNotesAddEditBinding>()
 
     private var tfTitle: TextFieldUnify? = null
     private var tfDesc: TextFieldUnify? = null
@@ -55,7 +59,8 @@ class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesA
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_shop_notes_add_edit, container, false)
+        binding = FragmentShopNotesAddEditBinding.inflate(inflater, container, false)
+        return binding?.root as View
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -163,8 +168,8 @@ class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesA
 
     private fun initializeViews() {
         view?.apply {
-            tfTitle = findViewById(R.id.text_input_title)
-            tfDesc = findViewById(R.id.text_input_desc)
+            tfTitle = binding?.textInputTitle
+            tfDesc = binding?.textInputDesc
             tfDesc?.textFieldInput?.isSingleLine = false
         }
     }

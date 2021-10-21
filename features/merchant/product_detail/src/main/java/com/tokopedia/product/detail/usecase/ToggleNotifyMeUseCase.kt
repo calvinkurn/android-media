@@ -29,7 +29,7 @@ class ToggleNotifyMeUseCase @Inject constructor(private val rawQueries: Map<Stri
         val request = GraphqlRequest(rawQueries[RawQueryKeyConstant.MUTATION_NOTIFY_ME],
                 TeaserNotifyMe::class.java, requestParams.parameters)
 
-        val gqlResponse = graphqlRepository.getReseponse(listOf(request))
+        val gqlResponse = graphqlRepository.response(listOf(request))
         val result = gqlResponse.getData<TeaserNotifyMe>(TeaserNotifyMe::class.java)
         val errorResult = gqlResponse.getError(TeaserNotifyMe::class.java)
 

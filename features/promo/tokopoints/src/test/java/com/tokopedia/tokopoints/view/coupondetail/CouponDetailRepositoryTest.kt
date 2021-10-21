@@ -18,7 +18,7 @@ class CouponDetailRepositoryTest {
     val map = mockk<Map<String,String>>()
     val data = mockk<GraphqlResponse>()
     val graphqlRepository = mockk<GraphqlRepository>{
-        coEvery{getReseponse(any(),any())} returns data
+        coEvery{response(any(),any())} returns data
     }
     @Before
     fun setUp() {

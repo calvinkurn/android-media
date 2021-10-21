@@ -129,6 +129,7 @@ class PlayEtalaseListFragment @Inject constructor(
 
     private fun startPostponedTransition() {
         requireView().doOnPreDraw {
+            if (parentFragment?.isDetached == true) return@doOnPreDraw
             etalaseSetupCoordinator.startPostponedEnterTransition()
         }
     }

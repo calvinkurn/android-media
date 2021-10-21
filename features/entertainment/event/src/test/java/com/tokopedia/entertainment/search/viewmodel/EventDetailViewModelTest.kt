@@ -86,7 +86,7 @@ class EventDetailViewModelTest {
         errors[EventDetailResponse.Data::class.java] = listOf(errorGql)
 
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } coAnswers {
             GraphqlResponse(HashMap<Type, Any?>(), errors, false)
         }
@@ -114,7 +114,7 @@ class EventDetailViewModelTest {
         val eventGrid = SearchMapper.mapSearchtoGrid(dataMock.data.eventSearch)
         categoryModel.listCategory = SearchMapper.mappingForbiddenID(dataMock.data.eventChildCategory.categories)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
+        coEvery { graphqlRepository.response(any(), any()) } returns GraphqlResponse(mapOf(
                 EventDetailResponse.Data::class.java to dataMock.data
         )as MutableMap<Type, Any>,  HashMap<Type, List<GraphqlError>>(), false)
 
@@ -141,7 +141,7 @@ class EventDetailViewModelTest {
         categoryModel.hashSet = hashSet
         categoryModel.position = 2
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
+        coEvery { graphqlRepository.response(any(), any()) } returns GraphqlResponse(mapOf(
                 EventDetailResponse.Data::class.java to dataMock.data
         )as MutableMap<Type, Any>,  HashMap<Type, List<GraphqlError>>(), false)
 
@@ -169,7 +169,7 @@ class EventDetailViewModelTest {
         categoryModel.hashSet = hashSet
         categoryModel.position = 2
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
+        coEvery { graphqlRepository.response(any(), any()) } returns GraphqlResponse(mapOf(
                 EventDetailResponse.Data::class.java to dataMock.data
         )as MutableMap<Type, Any>,  HashMap<Type, List<GraphqlError>>(), false)
 
@@ -195,7 +195,7 @@ class EventDetailViewModelTest {
         val eventGrid = SearchMapper.mapSearchtoGrid(dataMock.data.eventSearch)
         categoryModel.listCategory = SearchMapper.mappingForbiddenID(dataMock.data.eventChildCategory.categories)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(mapOf(
+        coEvery { graphqlRepository.response(any(), any()) } returns GraphqlResponse(mapOf(
                 EventDetailResponse.Data::class.java to dataMock.data
         )as MutableMap<Type, Any>,  HashMap<Type, List<GraphqlError>>(), false)
 

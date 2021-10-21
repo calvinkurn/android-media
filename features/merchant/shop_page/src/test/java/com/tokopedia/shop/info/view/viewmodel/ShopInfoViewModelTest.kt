@@ -4,7 +4,6 @@ import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
-import com.tokopedia.shop.info.data.model.ShopStatisticsResp
 import com.tokopedia.shop.note.view.model.ShopNoteUiModel
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -54,41 +53,6 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
     }
 
     @Test
-    fun when_get_shop_statistics_success__should_concat_shop_reputation_to_shop_statistics() {
-        runBlocking {
-            val shopBadge = ShopBadge()
-            val shopStatistics = ShopStatisticsResp()
-
-            onGetShopStatistics_thenReturn(shopStatistics)
-            onGetShopReputation_thenReturn(shopBadge)
-
-            viewModel.getShopStats("1")
-
-            val expectedShopStatistics = shopStatistics
-                    .concatWith(shopBadge)
-
-            verifyGetShopStatisticsCalled()
-            verifyGetShopReputationCalled()
-            verifyShopStatisticsEquals(expectedShopStatistics)
-        }
-    }
-
-    @Test
-    fun when_get_shop_statistics_fail__should_return_throwable() {
-        runBlocking {
-            val shopStatistics = ShopStatisticsResp()
-
-            onGetShopStatistics_thenReturn(shopStatistics)
-            onGetShopReputationFailed_thenReturn(Throwable())
-
-            viewModel.getShopStats("1")
-
-            verifyGetShopStatisticsCalled()
-            verifyGetShopReputationCalled()
-        }
-    }
-
-    @Test
     fun when_call_is_my_shop_should_return_true() {
         val shopId = "2913"
         onGetShopId_thenReturn(shopId)
@@ -101,6 +65,14 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
         onGetShopReputation_thenReturn(ShopBadge())
         viewModel.getShopReputationBadge(shopId)
         assert(viewModel.shopBadgeReputation.value is Success)
+    }
+
+    @Test
+    fun `check whether shopBadgeReputation value is error`() {
+        val shopId = "2913"
+        onGetShopReputation_thenThrowError()
+        viewModel.getShopReputationBadge(shopId)
+        assert(viewModel.shopBadgeReputation.value == null)
     }
 
     //region stub
@@ -116,12 +88,8 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
         coEvery { getShopReputationUseCase.executeOnBackground() } returns shopBadge
     }
 
-    private fun onGetShopReputationFailed_thenReturn(throwable: Throwable) {
-        coEvery { getShopReputationUseCase.executeOnBackground() } throws throwable
-    }
-
-    private fun onGetShopStatistics_thenReturn(shopStatistics: ShopStatisticsResp) {
-        coEvery { getShopStatisticsUseCase.executeOnBackground() } returns shopStatistics
+    private fun onGetShopReputation_thenThrowError() {
+        coEvery { getShopReputationUseCase.executeOnBackground() } throws Exception()
     }
 
     private fun onGetShopId_thenReturn(shopId: String) {
@@ -136,14 +104,6 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
 
     private fun verifyGetShopNotesUseCaseCalled() {
         coVerify { getShopNotesUseCase.executeOnBackground() }
-    }
-
-    private fun verifyGetShopReputationCalled() {
-        coVerify { getShopReputationUseCase.executeOnBackground() }
-    }
-
-    private fun verifyGetShopStatisticsCalled() {
-        coVerify { getShopStatisticsUseCase.executeOnBackground() }
     }
 
     private fun verifyShopInfoEquals(expectedShopInfo: ShopInfoData) {
@@ -168,11 +128,6 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
             assertEquals(expectedShopNote.url, actualShopNote.url)
             assertEquals(expectedShopNote.lastUpdate, actualShopNote.lastUpdate)
         }
-    }
-
-    private fun verifyShopStatisticsEquals(expectedShopStatistics: ShopStatisticsResp) {
-        val actualShopStatistics = viewModel.shopStatisticsResp.value
-        assertEquals(expectedShopStatistics, actualShopStatistics)
     }
 
     private fun verifyShopIdEquals(shopId: String) {
@@ -210,8 +165,5 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
         }
     }
 
-    private fun ShopStatisticsResp.concatWith(shopBadge: ShopBadge): ShopStatisticsResp {
-        return copy(shopReputation = shopBadge)
-    }
     // endregion
 }
