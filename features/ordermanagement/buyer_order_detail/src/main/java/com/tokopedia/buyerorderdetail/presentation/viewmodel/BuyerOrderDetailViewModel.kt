@@ -21,10 +21,15 @@ import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -36,6 +41,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
         private val getBuyerOrderDetailUseCase: dagger.Lazy<GetBuyerOrderDetailUseCase>,
         private val finishOrderUseCase: dagger.Lazy<FinishOrderUseCase>,
         private val atcUseCase: dagger.Lazy<AddToCartMultiUseCase>,
+        private val getRecommendationUse: dagger.Lazy<GetRecommendationUseCase>,
+        private val bestSellerMapper: dagger.Lazy<BestSellerMapper>,
         private val resourceProvider: dagger.Lazy<ResourceProvider>
 ) : BaseViewModel(coroutineDispatchers.io) {
     private val _buyerOrderDetailResult: MutableLiveData<Result<BuyerOrderDetailUiModel>> = MutableLiveData()
@@ -53,6 +60,10 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private val _multiAtcResult: MutableLiveData<Result<AtcMultiData>> = MutableLiveData()
     val multiAtcResult: LiveData<Result<AtcMultiData>>
         get() = _multiAtcResult
+
+    private val _recommendationWidgetResult: MutableLiveData<Result<BestSellerDataModel>> = MutableLiveData()
+    val recommendationWidgetResult: LiveData<Result<BestSellerDataModel>>
+        get() = _recommendationWidgetResult
 
     private fun getFinishOrderActionStatus(): String {
         val statusId = getOrderStatusId()
@@ -74,10 +85,33 @@ class BuyerOrderDetailViewModel @Inject constructor(
     fun getBuyerOrderDetail(orderId: String, paymentId: String, cart: String) {
         launchCatchError(block = {
             val param = GetBuyerOrderDetailParams(cart, orderId, paymentId)
-            _buyerOrderDetailResult.postValue(Success(getBuyerOrderDetailUseCase.get().execute(param)))
+            val buyerDetailData = getBuyerOrderDetailUseCase.get().execute(param)
+            _buyerOrderDetailResult.postValue(Success(buyerDetailData))
+            getRecommendationData(buyerDetailData)
         }, onError = {
             _buyerOrderDetailResult.postValue(Fail(it))
         })
+    }
+
+    private suspend fun getRecommendationData(buyerDetailData: BuyerOrderDetailUiModel) {
+        try {
+            val recommendationData = getRecommendationUse.get().getData(
+                    GetRecommendationRequestParam(
+                            pageName = buyerDetailData.pgRecommendationWidgetUiFields.pageName,
+                            productIds = buyerDetailData.pgRecommendationWidgetUiFields.productIdList
+                    )
+            )
+            if (recommendationData.isEmpty()) {
+                _recommendationWidgetResult.postValue(Fail(Throwable("")))
+            } else {
+                val recommendationWidgetData = bestSellerMapper.get().mappingRecommendationWidget(recommendationData.first())
+                _recommendationWidgetResult.postValue(Success(recommendationWidgetData))
+            }
+
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+            _recommendationWidgetResult.postValue(Fail(exception))
+        }
     }
 
     fun finishOrder() {

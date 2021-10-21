@@ -6,21 +6,28 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.diffutil.BuyerOrderDetailDiffUtilCallback
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.model.*
+import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationTypeFactory
 
 @Suppress("UNCHECKED_CAST")
 class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFactory) :
         BaseAdapter<BuyerOrderDetailTypeFactory>(typeFactory) {
 
     private fun setupNewItems(
-            newData: BuyerOrderDetailUiModel
+            newData: BuyerOrderDetailUiModel,
+            pgRecommendationWidgetUiModel: PGRecommendationWidgetUiModel
     ): List<Visitable<BuyerOrderDetailTypeFactory>> {
         return mutableListOf<Visitable<BuyerOrderDetailTypeFactory>>().apply {
             setupOrderStatusSection(newData.orderStatusUiModel)
             setupProductListSection(newData.productListUiModel)
             setupShipmentInfoSection(newData.shipmentInfoUiModel)
             setupPaymentInfoSection(newData.paymentInfoUiModel)
+            setUpPhysicalRecommendationSection(pgRecommendationWidgetUiModel)
             setupDigitalRecommendationSection()
         }
+    }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setUpPhysicalRecommendationSection(pgRecommendationWidgetUiModel: PGRecommendationWidgetUiModel) {
+        add(pgRecommendationWidgetUiModel)
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupOrderStatusSection(
@@ -68,10 +75,10 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
         addThinDividerSection()
         addPaymentGrandTotalSection(paymentInfoUiModel.paymentGrandTotal)
         addTickerSection(paymentInfoUiModel.ticker)
+        addThickDividerSection()
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupDigitalRecommendationSection() {
-        addThickDividerSection()
         add(DigitalRecommendationUiModel())
     }
 
@@ -195,8 +202,8 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
         if (paymentGrandTotal.shouldShow()) add(paymentGrandTotal)
     }
 
-    fun updateItems(newData: BuyerOrderDetailUiModel) {
-        val newItems = setupNewItems(newData)
+    fun updateItems(newData: BuyerOrderDetailUiModel, pgRecommendationWidgetUiModel: PGRecommendationWidgetUiModel) {
+        val newItems = setupNewItems(newData, pgRecommendationWidgetUiModel)
         val diffCallback = BuyerOrderDetailDiffUtilCallback(
                 visitables as List<Visitable<BuyerOrderDetailTypeFactory>>,
                 newItems,
@@ -211,6 +218,17 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
     fun updateItem(
             oldItem: Visitable<BuyerOrderDetailTypeFactory>,
             newItem: Visitable<BuyerOrderDetailTypeFactory>
+    ) {
+        val index = visitables.indexOf(oldItem)
+        if (index != -1) {
+            visitables[index] = newItem
+            notifyItemChanged(index, oldItem to newItem)
+        }
+    }
+
+    fun updateRecommendationWidget(
+            oldItem: Visitable<BuyerOrderDetailTypeFactory>,
+            newItem: Visitable<RecommendationTypeFactory>
     ) {
         val index = visitables.indexOf(oldItem)
         if (index != -1) {

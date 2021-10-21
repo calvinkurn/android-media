@@ -8,14 +8,19 @@ import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.*
 import com.tokopedia.buyerorderdetail.presentation.model.*
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
+import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder
+import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationTypeFactory
+import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 
 class BuyerOrderDetailTypeFactory(
         private val productViewListener: ProductViewHolder.ProductViewListener,
         private val productBundlingViewListener: ProductBundlingViewHolder.Listener,
         private val navigator: BuyerOrderDetailNavigator,
         private val tickerViewHolderListener: TickerViewHolder.TickerViewHolderListener,
-        private val digitalRecommendationData: DigitalRecommendationData
-) : BaseAdapterTypeFactory() {
+        private val digitalRecommendationData: DigitalRecommendationData,
+        private val recommendationWidgetListener: RecommendationWidgetListener
+) : BaseAdapterTypeFactory(), RecommendationTypeFactory {
 
     fun type(awbInfoUiModel: ShipmentInfoUiModel.AwbInfoUiModel): Int {
         return AwbInfoViewHolder.LAYOUT
@@ -84,6 +89,13 @@ class BuyerOrderDetailTypeFactory(
     fun type(digitalRecommendationUiModel: DigitalRecommendationUiModel): Int =
             DigitalRecommendationViewHolder.LAYOUT
 
+    fun type(pgRecommendationWidgetUiModel: PGRecommendationWidgetUiModel): Int =
+            EmptyViewHolder.LAYOUT
+
+    override fun type(bestSellerDataModel: BestSellerDataModel): Int =
+            BestSellerViewHolder.LAYOUT
+
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             AwbInfoViewHolder.LAYOUT -> AwbInfoViewHolder(parent)
@@ -103,6 +115,8 @@ class BuyerOrderDetailTypeFactory(
             ThinDividerViewHolder.LAYOUT -> ThinDividerViewHolder(parent)
             TickerViewHolder.LAYOUT -> TickerViewHolder(parent, navigator, tickerViewHolderListener)
             DigitalRecommendationViewHolder.LAYOUT -> DigitalRecommendationViewHolder(parent, digitalRecommendationData)
+            BestSellerViewHolder.LAYOUT -> BestSellerViewHolder(parent, recommendationWidgetListener)
+            EmptyViewHolder.LAYOUT -> EmptyViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

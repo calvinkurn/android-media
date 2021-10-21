@@ -10,6 +10,8 @@ import com.tokopedia.buyerorderdetail.domain.usecases.GetBuyerOrderDetailUseCase
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -40,6 +42,12 @@ abstract class BuyerOrderDetailViewModelTestFixture {
     lateinit var atcUseCase: AddToCartMultiUseCase
 
     lateinit var viewModel: BuyerOrderDetailViewModel
+
+    @RelaxedMockK
+    lateinit var getRecommendationUse:GetRecommendationUseCase
+
+    @RelaxedMockK
+    lateinit var bestSellerMapper: BestSellerMapper
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
@@ -102,6 +110,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                 getBuyerOrderDetailUseCase = { getBuyerOrderDetailUseCase },
                 finishOrderUseCase = { finishOrderUseCase },
                 atcUseCase = { atcUseCase },
+                getRecommendationUse = { getRecommendationUse },
+                bestSellerMapper= { bestSellerMapper },
                 resourceProvider = { resourceProvider }
         )
 
