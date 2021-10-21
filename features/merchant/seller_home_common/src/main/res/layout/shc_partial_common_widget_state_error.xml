@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/commonWidgetErrorState"
@@ -13,6 +13,9 @@
         android:layout_width="@dimen/shc_dimen_110dp"
         android:layout_height="@dimen/shc_dimen_80dp"
         android:contentDescription="@string/shc_content_desc_image_error"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/unify_globalerrors_connection" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -28,5 +31,8 @@
         android:textAlignment="center"
         android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/fontSize_lvl3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgWidgetOnError"
         app:typographyWeight="bold" />
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

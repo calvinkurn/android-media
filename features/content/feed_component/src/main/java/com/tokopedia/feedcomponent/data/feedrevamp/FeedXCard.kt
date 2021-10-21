@@ -3,6 +3,8 @@ package com.tokopedia.feedcomponent.data.feedrevamp
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.Product
 
 data class FeedXCard(
     @SerializedName("__typename")
@@ -71,7 +73,15 @@ data class FeedXCard(
     var hashtagAppLinkFmt: String = "",
     @SerializedName("hashtagWebLinkFmt")
     var hashtagWebLinkFmt: String = "",
-    val impressHolder: ImpressHolder = ImpressHolder()
+    val impressHolder: ImpressHolder = ImpressHolder(),
+    //Topads
+    val isTopAds: Boolean = false,
+    val shopId: String = "",
+    val adId: String = "",
+    val adClickUrl:String="",
+    val adViewUrl:String="",
+    val cpmData: CpmData = CpmData(),
+    val listProduct: List<Product> = listOf()
 
 ) : ImpressHolder() {
     fun copyPostData(): FeedXCard {
@@ -99,7 +109,12 @@ data class FeedXCard(
             followers = followers,
             publishedAt = publishedAt,
             mods = mods,
-            impressHolder = impressHolder
+            impressHolder = impressHolder,
+            isTopAds = isTopAds,
+            adViewUrl = adViewUrl,
+            adClickUrl = adClickUrl,
+            cpmData = cpmData,
+            listProduct = listProduct
         )
     }
 }

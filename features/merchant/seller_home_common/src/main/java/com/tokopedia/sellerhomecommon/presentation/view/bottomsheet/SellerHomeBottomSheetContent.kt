@@ -4,27 +4,25 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.databinding.ShcBottomSheetContentBinding
 import com.tokopedia.sellerhomecommon.presentation.adapter.BottomSheetAdapterTypeFactory
 import com.tokopedia.sellerhomecommon.presentation.model.BaseBottomSheetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BottomSheetContentUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BottomSheetListItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
-import kotlinx.android.synthetic.main.shc_bottom_sheet_content.view.*
 
 /**
  * Created By @ilhamsuaib on 27/05/20
  */
 
 class SellerHomeBottomSheetContent : LinearLayout {
-
-    private var adapter: BaseListAdapter<BaseBottomSheetUiModel, BottomSheetAdapterTypeFactory>? = null
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -34,17 +32,27 @@ class SellerHomeBottomSheetContent : LinearLayout {
         initView(context)
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         initView(context)
     }
 
+    private var binding: ShcBottomSheetContentBinding? = null
+    private var adapter: BaseListAdapter<BaseBottomSheetUiModel, BottomSheetAdapterTypeFactory>? =
+        null
+
     private fun initView(context: Context) {
-        View.inflate(context, R.layout.shc_bottom_sheet_content, this)
+        binding = ShcBottomSheetContentBinding.inflate(
+            LayoutInflater.from(context), this, true
+        )
 
         if (null == adapter)
             adapter = BaseListAdapter(BottomSheetAdapterTypeFactory())
 
-        rvBottomSheetContent.apply {
+        binding?.rvBottomSheetContent?.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = this@SellerHomeBottomSheetContent.adapter
             val divider = context.getResDrawable(R.drawable.shc_tooltip_item_divider)
@@ -62,16 +70,22 @@ class SellerHomeBottomSheetContent : LinearLayout {
             }
 
             if (!list.isNullOrEmpty()) {
-                adapter?.data?.addAll(list.map { item -> BottomSheetListItemUiModel(item.title, item.description) })
+                adapter?.data?.addAll(list.map { item ->
+                    BottomSheetListItemUiModel(
+                        item.title,
+                        item.description
+                    )
+                })
             }
         }
 
-        rvBottomSheetContent.post {
+        binding?.rvBottomSheetContent?.post {
             adapter?.notifyDataSetChanged()
         }
     }
 
-    class SellerHomeTooltipItemDivider(private val mDivider: Drawable) : RecyclerView.ItemDecoration() {
+    class SellerHomeTooltipItemDivider(private val mDivider: Drawable) :
+        RecyclerView.ItemDecoration() {
 
         override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
             val dividerLeft = parent.paddingLeft

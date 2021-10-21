@@ -177,7 +177,7 @@ class ShopPenaltyViewModel @Inject constructor(
     fun updateSortFilterSelected(titleFilter: String, chipType: String) {
         launch {
             val updateChipsSelected = chipType == ChipsUnify.TYPE_SELECTED
-            penaltyFilterUiModel.find { it.title == TITLE_TYPE_PENALTY }?.chipsFilerList?.mapIndexed { index, chipsFilterPenaltyUiModel ->
+            penaltyFilterUiModel.find { it.title == TITLE_TYPE_PENALTY }?.chipsFilterList?.mapIndexed { index, chipsFilterPenaltyUiModel ->
                 if (chipsFilterPenaltyUiModel.title == titleFilter) {
                     chipsFilterPenaltyUiModel.isSelected = !updateChipsSelected
                     itemSortFilterWrapperList.getOrNull(index)?.isSelected = !updateChipsSelected
@@ -193,16 +193,17 @@ class ShopPenaltyViewModel @Inject constructor(
     fun updateFilterSelected(titleFilter: String, chipType: String, position: Int) {
         launch {
             val updateChipsSelected = chipType == ChipsUnify.TYPE_SELECTED
-            penaltyFilterUiModel.find { it.title == titleFilter }?.chipsFilerList?.mapIndexed { index, chipsFilterPenaltyUiModel ->
+            penaltyFilterUiModel.find { it.title == titleFilter }?.chipsFilterList?.mapIndexed { index, chipsFilterPenaltyUiModel ->
                 if (index == position) {
                     chipsFilterPenaltyUiModel.isSelected = !updateChipsSelected
+                    itemSortFilterWrapperList.getOrNull(index)?.isSelected = !updateChipsSelected
                 } else {
                     chipsFilterPenaltyUiModel.isSelected = false
+                    itemSortFilterWrapperList.getOrNull(index)?.isSelected = false
                 }
             }
             val chipsUiModelList =
-                penaltyFilterUiModel.find { it.title == titleFilter }?.chipsFilerList
-                    ?: listOf()
+                penaltyFilterUiModel.find { it.title == titleFilter }?.chipsFilterList ?: listOf()
             _updateFilterSelected.value = Success(Pair(chipsUiModelList, titleFilter))
         }
     }
@@ -211,10 +212,10 @@ class ShopPenaltyViewModel @Inject constructor(
         launch {
             penaltyFilterUiModel.map { penaltyFilterUiModel ->
                 if (penaltyFilterUiModel.title == ShopScoreConstant.TITLE_SORT) {
-                    penaltyFilterUiModel.chipsFilerList.find { it.title == SORT_LATEST }?.isSelected = true
-                    penaltyFilterUiModel.chipsFilerList.find { it.title == SORT_OLDEST }?.isSelected = false
+                    penaltyFilterUiModel.chipsFilterList.find { it.title == SORT_LATEST }?.isSelected = true
+                    penaltyFilterUiModel.chipsFilterList.find { it.title == SORT_OLDEST }?.isSelected = false
                 } else {
-                    penaltyFilterUiModel.chipsFilerList.map {
+                    penaltyFilterUiModel.chipsFilterList.map {
                         it.isSelected = false
                     }
                 }

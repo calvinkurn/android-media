@@ -3,6 +3,7 @@ package com.tokopedia.homecredit.view.fragment;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -44,9 +45,10 @@ public class HomeCreditKTPFragment extends HomeCreditBaseCameraFragment {
     }
 
     private void setCameraOverlayImage(ImageView cameraOverlayImg){
-        String cameraType = getActivity().getIntent().getStringExtra(Constants.CAMERA_TYPE);
-        String cutOutImgUrl = getActivity().getIntent().getStringExtra(Constants.CUST_OVERLAY_URL);
-        String customHeaderText = getActivity().getIntent().getStringExtra(Constants.CUST_HEADER);
+        Intent intent = getActivity().getIntent();
+        String cameraType = intent.getStringExtra(Constants.CAMERA_TYPE);
+        String cutOutImgUrl = intent.getStringExtra(Constants.CUST_OVERLAY_URL);
+        String customHeaderText = intent.getStringExtra(Constants.CUST_HEADER);
 
         if(!TextUtils.isEmpty(customHeaderText)) {
             headerText.setText(customHeaderText);
@@ -70,7 +72,7 @@ public class HomeCreditKTPFragment extends HomeCreditBaseCameraFragment {
         continueUpload = view.findViewById(R.id.continue_upload);
         captureImage = view.findViewById(R.id.iv_capture_image);
         reverseCamera = view.findViewById(R.id.iv_reverse_camera);
-        if(!Utils.isFrontCameraAvailable()){
+        if (!Utils.isFrontCameraAvailable()) {
             reverseCamera.setVisibility(View.GONE);
         }
         cameraLayout = view.findViewById(R.id.hc_camera_layout);

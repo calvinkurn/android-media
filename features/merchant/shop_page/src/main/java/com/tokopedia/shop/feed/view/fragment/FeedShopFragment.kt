@@ -82,6 +82,8 @@ import com.tokopedia.shop.feed.view.model.EmptyFeedShopUiModel
 import com.tokopedia.shop.feed.view.model.WhitelistUiModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
+import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
 import com.tokopedia.user.session.UserSessionInterface
@@ -324,6 +326,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             loadInitialData()
         }
         registerBroadcastReceiver()
+        reshowFloatingActionButton()
     }
 
     override fun loadData(page: Int) {
@@ -668,7 +671,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         type: String,
         isFollowed: Boolean,
         shopId: String,
-        video: Boolean
+        video: Boolean,
+        isTopads: Boolean
     ) {
         activity?.let {
             ShareBottomSheets.newInstance(object : ShareBottomSheets.OnShareItemClickListener {
@@ -702,6 +706,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         positionInFeed: Int,
         redirectUrl: String,
         postTagItem: FeedXProduct,
+        adClickUrl: String
     ) {
         TODO("Not yet implemented")
     }
@@ -771,7 +776,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         postType: String,
         isFollowed: Boolean,
         shopId: String,
-        postPosition: Int
+        postPosition: Int,
+        cpmData: CpmData,
+        products: List<Product>
     ) {
     }
 
@@ -1177,5 +1184,12 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         } else {
             hideFloatingActionButton()
         }
+    }
+
+    override fun onFollowClickAds(positionInFeed: Int, shopId: String, adId: String) {
+
+    }
+
+    override fun onClickSekSekarang(postId: String, shopId: String, type: String, isFollowed: Boolean, positionInFeed: Int) {
     }
 }
