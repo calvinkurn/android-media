@@ -5,8 +5,9 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.databinding.ItemProductManageMenuBinding
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel
-import kotlinx.android.synthetic.main.item_product_manage_menu.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductMenuViewHolder(
     itemView: View,
@@ -18,15 +19,19 @@ class ProductMenuViewHolder(
         val LAYOUT = R.layout.item_product_manage_menu
     }
 
+    private val binding by viewBinding<ItemProductManageMenuBinding>()
+
     override fun bind(menu: ProductMenuUiModel) {
-        with(itemView) {
-            textMenu.text = context.getString(menu.title)
+        binding?.run {
+            textMenu.text = itemView.context?.getString(menu.title).orEmpty()
             if (getString(menu.title) == getString(R.string.product_manage_create_broadcast_chat)) {
-                icuPmlMoreMenu.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_bc_chat))
+                itemView.context?.let {
+                    icuPmlMoreMenu.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_bc_chat))
+                }
             } else {
                 icuPmlMoreMenu.setImage(menu.icon)
             }
-            setOnClickListener { listener.onClickOptionMenu(menu) }
+            itemView.setOnClickListener { listener.onClickOptionMenu(menu) }
         }
     }
 

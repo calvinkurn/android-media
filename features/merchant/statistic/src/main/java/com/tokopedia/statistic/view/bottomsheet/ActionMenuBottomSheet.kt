@@ -1,20 +1,22 @@
 package com.tokopedia.statistic.view.bottomsheet
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.statistic.R
+import com.tokopedia.statistic.databinding.BottomsheetStcActionMenuBinding
 import com.tokopedia.statistic.view.adapter.ActionMenuAdapter
 import com.tokopedia.statistic.view.model.ActionMenuUiModel
-import kotlinx.android.synthetic.main.bottomsheet_stc_action_menu.view.*
 
 /**
  * Created By @ilhamsuaib on 14/02/21
  */
 
-class ActionMenuBottomSheet : BaseBottomSheet() {
+class ActionMenuBottomSheet : BaseBottomSheet<BottomsheetStcActionMenuBinding>() {
 
     companion object {
         private const val TAG = "StatisticActionMenuBottomSheet"
@@ -22,7 +24,11 @@ class ActionMenuBottomSheet : BaseBottomSheet() {
         private const val PAGE = "tab_page"
         private const val USER_ID = "user_id"
 
-        fun createInstance(pageName: String, userId: String, menuItems: List<ActionMenuUiModel>): ActionMenuBottomSheet {
+        fun createInstance(
+            pageName: String,
+            userId: String,
+            menuItems: List<ActionMenuUiModel>
+        ): ActionMenuBottomSheet {
             return ActionMenuBottomSheet().apply {
                 clearContentPadding = true
                 showHeader = false
@@ -35,29 +41,39 @@ class ActionMenuBottomSheet : BaseBottomSheet() {
         }
     }
 
-    override fun getResLayout(): Int = R.layout.bottomsheet_stc_action_menu
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = BottomsheetStcActionMenuBinding.inflate(inflater).apply {
+            setChild(root)
+        }
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
-    override fun setupView() = childView?.run {
-        setupAdapter(this)
+    override fun setupView() = binding?.run {
+        setupAdapter()
 
         iconStcCloseActionMenu.setOnClickListener {
             dismiss()
         }
-        tvStcActionMenuTitle.text = context.getString(R.string.stc_other_menu)
+        tvStcActionMenuTitle.text = root.context.getString(R.string.stc_other_menu)
     }
 
     fun show(fm: FragmentManager) {
         show(fm, TAG)
     }
 
-    private fun setupAdapter(view: View) = with(view) {
+    private fun setupAdapter() = binding?.run {
         val userId = arguments?.getString(USER_ID).orEmpty()
         val pageName = arguments?.getString(PAGE).orEmpty()
         val adapter = ActionMenuAdapter(pageName, userId, ::setOnMenuItemClick)
         rvStcActionMenu.layoutManager = LinearLayoutManager(context)
         rvStcActionMenu.adapter = adapter
 
-        val actionMenus: ArrayList<ActionMenuUiModel>? = arguments?.getParcelableArrayList(MENU_ITEMS)
+        val actionMenus: ArrayList<ActionMenuUiModel>? =
+            arguments?.getParcelableArrayList(MENU_ITEMS)
         actionMenus?.let {
             adapter.clearAllElements()
             adapter.addElement(it)

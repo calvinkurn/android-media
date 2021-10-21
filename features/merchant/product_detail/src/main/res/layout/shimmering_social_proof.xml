@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/pdp_shimmering_social_proof"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:visibility="gone">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/loader_txt_1"

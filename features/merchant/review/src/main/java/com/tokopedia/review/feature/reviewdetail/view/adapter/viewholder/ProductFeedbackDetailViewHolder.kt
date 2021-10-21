@@ -15,12 +15,11 @@ import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.common.util.toRelativeDate
 import com.tokopedia.review.common.util.toReviewDescriptionFormatted
+import com.tokopedia.review.databinding.ItemProductFeedbackDetailBinding
 import com.tokopedia.review.feature.reviewdetail.util.mapper.SellerReviewProductDetailMapper
 import com.tokopedia.review.feature.reviewdetail.view.adapter.ProductFeedbackDetailListener
 import com.tokopedia.review.feature.reviewdetail.view.adapter.ReviewDetailFeedbackImageAdapter
 import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
-import kotlinx.android.synthetic.main.item_product_feedback_detail.view.*
-import kotlinx.android.synthetic.main.partial_feedback_variant_detail.view.*
 
 class ProductFeedbackDetailViewHolder(private val view: View,
                                       private val productFeedbackDetailListener: ProductFeedbackDetailListener) : AbstractViewHolder<FeedbackUiModel>(view) {
@@ -37,15 +36,17 @@ class ProductFeedbackDetailViewHolder(private val view: View,
     private var reviewDetailFeedbackImageAdapter: ReviewDetailFeedbackImageAdapter? = null
     private val badRatingReason: ReviewBadRatingReasonWidget = view.findViewById(R.id.badRatingReasonReview)
 
+    private val binding = ItemProductFeedbackDetailBinding.bind(view)
+
     override fun bind(element: FeedbackUiModel) {
         reviewDetailFeedbackImageAdapter = ReviewDetailFeedbackImageAdapter(productFeedbackDetailListener)
-        with(itemView) {
-            ivRatingFeedback?.setImageResource(getReviewStar(element.rating.orZero()))
-            ivOptionReviewFeedback?.setOnClickListener {
+        with(binding) {
+            ivRatingFeedback.setImageResource(getReviewStar(element.rating.orZero()))
+            ivOptionReviewFeedback.setOnClickListener {
                 setBottomSheetFeedbackOption(element)
             }
-            tvFeedbackUser?.text = MethodChecker.fromHtml(getString(R.string.label_name_reviewer_builder, element.reviewerName.orEmpty()))
-            tvFeedbackDate?.text = element.reviewTime.orEmpty() toRelativeDate (DATE_REVIEW_FORMAT)
+            tvFeedbackUser.text = MethodChecker.fromHtml(getString(R.string.label_name_reviewer_builder, element.reviewerName.orEmpty()))
+            tvFeedbackDate.text = element.reviewTime.orEmpty() toRelativeDate (DATE_REVIEW_FORMAT)
         }
 
         setFeedbackReply(element)
@@ -57,28 +58,28 @@ class ProductFeedbackDetailViewHolder(private val view: View,
     }
 
     private fun setupVariant(variantName: String) {
-        with(itemView) {
+        with(binding.partialFeedbackVariantReviewDetail) {
             if (variantName.isEmpty()) {
-                tvVariantFeedback?.hide()
-                tvVariantFeedbackValue?.hide()
+                tvVariantFeedback.hide()
+                tvVariantFeedbackValue.hide()
             } else {
-                tvVariantFeedback?.show()
-                tvVariantFeedbackValue?.show()
-                tvVariantFeedbackValue?.text = variantName
+                tvVariantFeedback.show()
+                tvVariantFeedbackValue.show()
+                tvVariantFeedbackValue.text = variantName
             }
         }
     }
 
     private fun setupFeedbackReview(feedbackText: String, feedbackId: String) {
-        with(itemView) {
-            replyFeedbackState?.background = ContextCompat.getDrawable(context, R.drawable.rectangle_8)
+        with(binding) {
+            replyFeedbackState.background = ContextCompat.getDrawable(root.context, R.drawable.rectangle_8)
             if (feedbackText.isEmpty()) {
-                tvFeedbackReview?.text = getString(R.string.review_not_found)
-                tvFeedbackReview?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+                tvFeedbackReview.text = getString(R.string.review_not_found)
+                tvFeedbackReview.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
             } else {
-                tvFeedbackReview?.apply {
+                tvFeedbackReview.apply {
                     setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-                    text = feedbackText.toReviewDescriptionFormatted(FEEDBACK_MAX_CHAR, itemView.context)
+                    text = feedbackText.toReviewDescriptionFormatted(FEEDBACK_MAX_CHAR, root.context)
                     setOnClickListener {
                         productFeedbackDetailListener.onFeedbackMoreReplyClicked(feedbackId)
                         maxLines = Integer.MAX_VALUE
@@ -90,18 +91,18 @@ class ProductFeedbackDetailViewHolder(private val view: View,
     }
 
     private fun setFeedbackReply(element: FeedbackUiModel) {
-        with(itemView) {
-            if (element.replyText?.isNotEmpty() == true) {
+        with(binding) {
+            if (!element.replyText.isNullOrEmpty()) {
                 if (element.autoReply == isAutoReply) {
-                    tvReplyUser?.text = getString(R.string.user_reply)
+                    tvReplyUser.text = getString(R.string.user_reply)
                 } else {
-                    tvReplyUser?.text = getString(R.string.otomatis_reply)
+                    tvReplyUser.text = getString(R.string.otomatis_reply)
                 }
-                tvReplyDate?.text = element.replyTime.orEmpty() toRelativeDate (DATE_REVIEW_FORMAT)
+                tvReplyDate.text = element.replyTime.orEmpty() toRelativeDate (DATE_REVIEW_FORMAT)
 
-                tvReplyComment?.text = element.replyText.orEmpty()
-                tvReplyComment?.let {
-                    it.text = element.replyText.orEmpty().toReviewDescriptionFormatted(REPLY_MAX_CHAR, itemView.context)
+                tvReplyComment.text = element.replyText.orEmpty()
+                tvReplyComment.let {
+                    it.text = element.replyText.orEmpty().toReviewDescriptionFormatted(REPLY_MAX_CHAR, root.context)
                     it.setOnClickListener { _ ->
                         it.maxLines = Integer.MAX_VALUE
                         it.text = MethodChecker.fromHtml(element.replyText)
@@ -109,7 +110,7 @@ class ProductFeedbackDetailViewHolder(private val view: View,
                 }
                 showReplySection()
             } else {
-                tvReplyComment?.text = ""
+                tvReplyComment.text = ""
                 hideReplySection()
             }
         }
@@ -117,8 +118,8 @@ class ProductFeedbackDetailViewHolder(private val view: View,
 
     private fun setImageAttachment(element: FeedbackUiModel) {
         val linearLayoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
-        with(itemView) {
-            rvItemAttachmentFeedback?.apply {
+        with(binding) {
+            rvItemAttachmentFeedback.apply {
                 layoutManager = linearLayoutManager
                 if (itemDecorationCount == 0) {
                     addItemDecoration(PaddingItemDecoratingReview())
@@ -126,12 +127,12 @@ class ProductFeedbackDetailViewHolder(private val view: View,
                 adapter = reviewDetailFeedbackImageAdapter
             }
             if (element.attachments.isEmpty()) {
-                rvItemAttachmentFeedback?.hide()
+                rvItemAttachmentFeedback.hide()
             } else {
                 reviewDetailFeedbackImageAdapter?.setAttachmentUiData(element.attachments)
                 reviewDetailFeedbackImageAdapter?.setFeedbackId(element.feedbackID)
                 reviewDetailFeedbackImageAdapter?.submitList(element.attachments)
-                rvItemAttachmentFeedback?.show()
+                rvItemAttachmentFeedback.show()
             }
         }
     }
@@ -147,25 +148,25 @@ class ProductFeedbackDetailViewHolder(private val view: View,
     }
 
     private fun hideReplySection() {
-        with(itemView) {
-            replyFeedbackState?.hide()
-            tvReplyUser?.hide()
-            tvReplyDate?.hide()
-            tvReplyComment?.hide()
+        with(binding) {
+            replyFeedbackState.hide()
+            tvReplyUser.hide()
+            tvReplyDate.hide()
+            tvReplyComment.hide()
         }
     }
 
     private fun showReplySection() {
-        with(itemView) {
-            replyFeedbackState?.show()
-            tvReplyUser?.show()
-            tvReplyDate?.show()
-            tvReplyComment?.show()
+        with(binding) {
+            replyFeedbackState.show()
+            tvReplyUser.show()
+            tvReplyDate.show()
+            tvReplyComment.show()
         }
     }
 
     private fun showLabelKejarUlasan(isKejarUlasan: Boolean) {
-        itemView.kejarUlasanLabel?.showWithCondition(isKejarUlasan)
+        binding.kejarUlasanLabel.showWithCondition(isKejarUlasan)
     }
 
     private fun setBadRatingReason(reason: String) {

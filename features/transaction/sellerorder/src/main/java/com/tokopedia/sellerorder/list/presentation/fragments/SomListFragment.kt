@@ -2456,12 +2456,11 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     private fun getOrdersProducts(orders: List<SomListOrderUiModel>): List<SomListBulkProcessOrderProductUiModel> {
         val products = orders.map { it.orderProduct }.flatten().groupBy { it.productId }
-
         return products.filter { it.value.isNotEmpty() }.map {
             SomListBulkProcessOrderProductUiModel(
                 productName = it.value.first().productName,
                 picture = it.value.first().picture,
-                amount = it.value.size
+                amount = it.value.sumOf { prod -> prod.quantity }
             )
         }
     }

@@ -3,7 +3,6 @@ package com.tokopedia.remoteconfig
 object RollenceKey {
 
     //    Shop Page
-    const val AB_TEST_ROLLOUT_NEW_SHOP_ETALASE = "etalase_revamp_new"
     const val NAVIGATION_EXP_TOP_NAV = "new_glmenu"
     const val NAVIGATION_EXP_TOP_NAV2 = "new_glmenu2"
     const val NAVIGATION_VARIANT_OLD = "Existing Navigation"
@@ -15,6 +14,8 @@ object RollenceKey {
     const val AB_TEST_SHOP_REVIEW = "review_shop"
     const val OLD_REVIEW_SHOP = "old_review_shop"
     const val NEW_REVIEW_SHOP = "new_review_shop"
+
+    const val AB_TEST_SHOP_NEW_HOME_TAB = "shop_layout_engine"
 
     //    Add Edit Product
     const val HAMPERS_AB_TEST_KEY = "hampers_android"
@@ -46,7 +47,6 @@ object RollenceKey {
     const val HOME_COMPONENT_LEGO2BANNER_VARIANT = "lego2_bleeding"
     // end of home component rollence section
 
-    const val POWER_MERCHANT_PRO_POP_UP = "pm_pro"
     const val NAVIGATION_VARIANT_REVAMP = "new_glmenu"
     const val NAVIGATION_VARIANT_REVAMP2 = "new_glmenu2"
 
@@ -74,4 +74,8 @@ object RollenceKey {
     const val SBM_ADD_BILLS_KEY = "sbm_addbills2"
     const val SBM_ADD_BILLS_FALSE = "sbm_addbills_False"
     const val SBM_ADD_BILLS_TRUE = "sbm_addbills_True"
+
+    const val EXPERIMENT_NAME_REVIEW_CREDIBILITY = "review_credibility"
+    const val VARIANT_REVIEW_CREDIBILITY_WITHOUT_BOTTOM_SHEET = "without_bottomsheet"
+    const val VARIANT_REVIEW_CREDIBILITY_WITH_BOTTOM_SHEET = "with_bottomsheet"
 }

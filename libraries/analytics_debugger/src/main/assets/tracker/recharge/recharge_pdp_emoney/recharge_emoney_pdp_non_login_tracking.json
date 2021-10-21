@@ -30,11 +30,11 @@
       "businessUnit": "recharge",
       "eventCategory": "digital - homepage",
       "currentSite": "tokopediadigitalRecharge",
-      "event": "digitalGeneralEvent",
+      "event": "clickDigitalEvent",
       "userId": ".+",
       "eventAction": "click update saldo",
       "sessionIris": ".+",
-      "eventLabel": ""
+      "eventLabel": ".*"
     },
     {
       "businessUnit": "recharge",
@@ -54,7 +54,7 @@
       "userId": ".+",
       "eventAction": "click x button card number",
       "sessionIris": ".+",
-      "eventLabel": ""
+      "eventLabel": ".*"
     },
     {
       "businessUnit": "recharge",
