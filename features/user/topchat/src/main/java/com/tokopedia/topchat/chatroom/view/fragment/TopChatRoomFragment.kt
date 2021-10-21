@@ -45,7 +45,7 @@ import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.*
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
-import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
@@ -801,10 +801,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun goToDetailOpponent() {
-        if (opponentRole.toLowerCase() == ChatRoomHeaderViewModel.Companion.ROLE_USER) {
+        if (opponentRole.toLowerCase() == ChatRoomHeaderUiModel.Companion.ROLE_USER) {
             goToProfile(opponentId)
         } else if (opponentRole.toLowerCase()
-                .contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP)
+                .contains(ChatRoomHeaderUiModel.Companion.ROLE_SHOP)
         ) {
             onGoToShop()
         }

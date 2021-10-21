@@ -23,7 +23,7 @@ import com.tokopedia.chat_common.util.ChatTimeConverter;
 
 import java.util.Date;
 
-import static com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel.Companion.ROLE_USER;
+import static com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel.Companion.ROLE_USER;
 
 /**
  * @author by nisie on 5/9/18.

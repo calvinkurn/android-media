@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class ChatRoomHeaderViewModel constructor(
+data class ChatRoomHeaderUiModel constructor(
         var name: String = "",
         var label: String = "",
         var senderId: String = "",

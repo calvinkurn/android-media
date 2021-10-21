@@ -14,7 +14,7 @@ import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncement
 import com.tokopedia.chat_common.domain.pojo.imageupload.ImageUploadAttributes
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceSentPojo
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
-import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel
 import javax.inject.Inject
 
 /**
@@ -48,7 +48,7 @@ open class GetExistingChatMapper @Inject constructor() {
                 pojo.chatReplies.block.blockedUntil)
     }
 
-    open fun mappingHeaderModel(pojo: GetExistingChatPojo): ChatRoomHeaderViewModel {
+    open fun mappingHeaderModel(pojo: GetExistingChatPojo): ChatRoomHeaderUiModel {
         var interlocutor = Contact()
 
         for (contact in pojo.chatReplies.contacts) {
@@ -58,12 +58,12 @@ open class GetExistingChatMapper @Inject constructor() {
             }
         }
 
-        return ChatRoomHeaderViewModel(
+        return ChatRoomHeaderUiModel(
                 interlocutor.name,
                 interlocutor.tag,
                 interlocutor.userId.toString(),
                 interlocutor.role,
-                ChatRoomHeaderViewModel.Companion.MODE_DEFAULT_GET_CHAT,
+                ChatRoomHeaderUiModel.Companion.MODE_DEFAULT_GET_CHAT,
                 "",
                 interlocutor.thumbnail,
                 interlocutor.status.timestampStr,
