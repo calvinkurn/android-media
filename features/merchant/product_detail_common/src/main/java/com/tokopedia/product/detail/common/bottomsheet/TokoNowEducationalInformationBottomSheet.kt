@@ -17,7 +17,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 
-class TokoMartEducationalInformationBottomSheet : BottomSheetUnify() {
+class TokoNowEducationalInformationBottomSheet : BottomSheetUnify() {
 
     companion object {
         const val BACKGROUND_URL =
