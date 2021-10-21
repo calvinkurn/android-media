@@ -42,7 +42,6 @@ import com.tokopedia.notifcenter.data.entity.orderlist.OrderWidgetUiModel
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
 import com.tokopedia.notifcenter.data.model.RecommendationDataModel
 import com.tokopedia.notifcenter.data.model.ScrollToBottomState
-import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.data.state.Status
 import com.tokopedia.notifcenter.data.uimodel.EmptyNotificationUiModel
 import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
@@ -297,20 +296,6 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
             }
         })
 
-        viewModel.bumpReminder.observe(viewLifecycleOwner, Observer {
-            updateReminderState(
-                resource = it,
-                isBumpReminder = true
-            )
-        })
-
-        viewModel.deleteReminder.observe(viewLifecycleOwner, Observer {
-            updateReminderState(
-                resource = it,
-                isBumpReminder = false
-            )
-        })
-
         viewModel.orderList.observe(viewLifecycleOwner, Observer {
             when (it.status) {
                 Status.LOADING -> {
@@ -332,36 +317,6 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
             val visibleItems = rvLm.findFirstVisibleItemPositions(null)
             if (visibleItems.isNotEmpty() && visibleItems.first() == 0) {
                 moveToTop()
-            }
-        }
-    }
-
-    private fun updateReminderState(
-        resource: Resource<Any>,
-        isBumpReminder: Boolean
-    ) {
-        val viewHolderState: ViewHolderState? = viewHolderLoading[resource.referer]
-        when (resource.status) {
-            Status.LOADING -> {
-                rvAdapter?.loadingStateReminder(viewHolderState)
-            }
-            Status.SUCCESS -> {
-                if (isBumpReminder) {
-                    showMessage(R.string.title_success_bump_reminder)
-                } else {
-                    showMessage(R.string.title_success_delete_reminder)
-                }
-                rvAdapter?.successUpdateReminderState(viewHolderState, isBumpReminder)
-                viewHolderLoading.remove(resource.referer)
-            }
-            Status.ERROR -> {
-                resource.throwable?.let { error ->
-                    showErrorMessage(error)
-                }
-                rvAdapter?.successUpdateReminderState(viewHolderState, isBumpReminder)
-                viewHolderLoading.remove(resource.referer)
-            }
-            else -> {
             }
         }
     }
@@ -622,22 +577,17 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         viewModel.markNotificationAsRead(containerListener?.role, element)
     }
 
-    override fun bumpReminder(
-        product: ProductData,
-        notification: NotificationUiModel,
-        adapterPosition: Int
-    ) {
-        createViewHolderState(notification, adapterPosition, product)
-        viewModel.bumpReminder(product, notification)
+    override fun addToWishlist(product: ProductData) {
+        viewModel.addWishListNormal(product.productId) { _, error ->
+            if (error != null) {
+                showErrorMessage(error)
+            } else {
+                showMessage(R.string.title_success_add_to_wishlist)
+            }
+        }
     }
 
-    override fun deleteReminder(
-        product: ProductData,
-        notification: NotificationUiModel,
-        adapterPosition: Int
-    ) {
-//        createViewHolderState(notification, adapterPosition, product)
-//        viewModel.deleteReminder(product, notification)
+    override fun goToWishlist() {
         val intent = RouteManager.getIntent(context, ApplinkConst.NEW_WISHLIST)
         startActivity(intent)
     }
@@ -656,14 +606,6 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         position: Int
     ) {
         analytic.trackProductClick(notification, product, position)
-    }
-
-    override fun trackBumpReminder() {
-        analytic.trackBumpReminder()
-    }
-
-    override fun trackDeleteReminder() {
-        analytic.trackDeleteReminder()
     }
 
     override fun markAsSeen(notifId: String) {
@@ -702,15 +644,6 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         return viewModel.hasFilter()
     }
 
-    private fun createViewHolderState(
-        notification: NotificationUiModel,
-        adapterPosition: Int,
-        product: ProductData
-    ) {
-        val loadingState = ViewHolderState(notification, adapterPosition, product)
-        viewHolderLoading[product.productId] = loadingState
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         recommendationLifeCycleAware?.onActivityResult(requestCode, resultCode, data)
@@ -722,7 +655,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     private fun onReturnFromCheckout(resultCode: Int, data: Intent?) {
         if (resultCode != Activity.RESULT_OK || data == null) return
         val message = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)
-                ?: return
+            ?: return
         view?.let {
             Toaster.build(
                 it,

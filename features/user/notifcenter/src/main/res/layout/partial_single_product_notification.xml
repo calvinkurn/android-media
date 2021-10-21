@@ -122,7 +122,7 @@
             app:layout_constraintTop_toBottomOf="@+id/iv_thumbnail">
 
             <com.tokopedia.unifycomponents.UnifyButton
-                android:id="@+id/tv_delete_reminder"
+                android:id="@+id/tv_check_wishlist"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/spacing_lvl2"
@@ -134,7 +134,7 @@
                 tools:visibility="visible" />
 
             <com.tokopedia.unifycomponents.UnifyButton
-                android:id="@+id/tv_reminder"
+                android:id="@+id/tv_add_to_wishlist"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl2"

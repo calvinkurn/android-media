@@ -11,6 +11,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.inbox.view.activity.base.notifcenter.InboxNotifcenterTest
@@ -75,30 +76,31 @@ class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
         startInboxActivity()
 
         //When
-        scrollToProductPosition(2)
+        scrollToProductPosition(1)
         onView(
             RecyclerViewMatcher(R.id.rv_carousel_product)
-                .atPositionOnView(2, R.id.tv_reminder)
+                .atPositionOnView(1, R.id.tv_add_to_wishlist)
         ).perform(ViewActions.click())
 
         // Then
-        onView(withText(context.getString(R.string.title_success_bump_reminder)))
+        onView(withText(context.getString(R.string.title_success_add_to_wishlist)))
             .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
     }
 
     @Test
-    fun should_show_error_toaster_when_user_click_ingatkan_saya_but_failed() {
+    fun should_show_error_toaster_when_user_click_ingatkan_saya_but_error() {
         // Given
         inboxNotifcenterDep.apply {
             notifcenterDetailUseCase.response = notifcenterDetailUseCase.productOnly
+            addWishlistUseCase.isError = true
         }
         startInboxActivity()
 
         //When
-        scrollToProductPosition(2)
+        scrollToProductPosition(1)
         onView(
             RecyclerViewMatcher(R.id.rv_carousel_product)
-                .atPositionOnView(2, R.id.tv_reminder)
+                .atPositionOnView(1, R.id.tv_add_to_wishlist)
         ).perform(ViewActions.click())
 
         // Then
@@ -120,11 +122,11 @@ class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
         scrollToProductPosition(2)
         onView(
             RecyclerViewMatcher(R.id.rv_carousel_product)
-                .atPositionOnView(2, R.id.tv_delete_reminder)
+                .atPositionOnView(2, R.id.tv_check_wishlist)
         ).perform(ViewActions.click())
 
         //Then
-//        intended(IntentMatchers.hasData(ApplinkConst.NEW_WISHLIST))
+        intended(IntentMatchers.hasData(ApplinkConst.NEW_WISHLIST))
     }
 
 

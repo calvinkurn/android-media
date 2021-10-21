@@ -184,7 +184,7 @@
             "price_idr": 22000,
             "is_buyable": true,
             "is_topads": false,
-            "is_wishlist": false,
+            "is_wishlist": true,
             "rating": 0,
             "count_review": 0,
             "labels": [],
@@ -223,8 +223,8 @@
               "free_shipping_icon": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_new_reguler.png"
             },
             "stock": 4,
-            "type_button": 0,
-            "is_show": false
+            "type_button": 1,
+            "is_show": true
           }
         ],
         "bottomsheet": {
