@@ -149,11 +149,11 @@ class TokoNowHomeFragment: Fragment(),
         const val SOURCE = "tokonow"
         const val SOURCE_TRACKING = "tokonow page"
         const val DEFAULT_QUANTITY = 0
-        const val SHARE_URL = "https://www.tokopedia.com/tokomart"
-        const val THUMBNAIL_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/tokomart/thumbnail_image_bottomsheet.png"
-        const val OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/tokomart/TokoMart_share.png"
+        const val SHARE_URL = "https://www.tokopedia.com/now"
+        const val THUMBNAIL_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/thumbnail_now_home.png"
+        const val OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/og_now_home.jpg"
+        const val PAGE_SHARE_NAME = "TokoNow"
         const val SHARE = "Share"
-        const val PAGE_SHARE_NAME = "TokoMart"
 
         fun newInstance() = TokoNowHomeFragment()
     }
@@ -1040,16 +1040,20 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun showHomeLayout(data: HomeLayoutListUiModel) {
-        val items = mutableListOf<Visitable<*>>()
-        val iterator = data.items.iterator()
+        try {
+            val items = mutableListOf<Visitable<*>>()
+            val iterator = data.items.iterator()
 
-        while(iterator.hasNext()) {
-            iterator.next()?.let {
-                items.add(it.layout)
+            while(iterator.hasNext()) {
+                iterator.next()?.let {
+                    items.add(it.layout)
+                }
             }
-        }
 
-        adapter.submitList(items)
+            adapter.submitList(items)
+        } catch (e: Exception) {
+
+        }
     }
 
     private fun addLoadMoreListener() {
