@@ -100,6 +100,8 @@ private const val DOT_SPACE = 2
 private const val SHOW_MORE = "Lihat Lainnya"
 private const val MAX_CHAR = 120
 private const val CAPTION_END = 120
+private const val LIHAT_PRODUK_EXPANDED_WIDTH = 100
+private const val LIHAT_PRODUK_CONTRACTED_WIDTH = 24
 private const val FOLLOW_COUNT_THRESHOLD = 100
 private const val TYPE_DISCOUNT = "discount"
 private const val TYPE_CASHBACK = "cashback"
@@ -902,9 +904,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                             }
                                         }
                                         if (tagProducts.isNotEmpty()) {
-                                            if (layoutLihatProdukParent.width.toDp() == 24 && !productTagBubbleShowing  ) {
+                                            if (layoutLihatProdukParent.width.toDp() == LIHAT_PRODUK_CONTRACTED_WIDTH && !productTagBubbleShowing  ) {
                                                 showViewWithAnimation(layoutLihatProdukParent, context)
-                                            } else if (!productTagBubbleShowing && layoutLihatProdukParent.width.toDp() == 100) {
+                                            } else if (!productTagBubbleShowing && layoutLihatProdukParent.width.toDp() == LIHAT_PRODUK_EXPANDED_WIDTH) {
                                                 hideViewWithoutAnimation(layoutLihatProdukParent, context)
                                             } else if (productTagBubbleShowing){
                                                 showViewWithAnimation(layoutLihatProdukParent, context)
@@ -1420,15 +1422,18 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
             if (tagProducts.isEmpty()) {
                 layoutLihatProdukParent.gone()
+            } else {
+                hideViewWithoutAnimation(layoutLihatProdukParent, context)
             }
 
             if (handlerAnim == null) {
                 handlerAnim = handlerFeed
             }
-                handlerAnim?.postDelayed({
-                    if (tagProducts.isNotEmpty()) {
-                        showViewWithAnimation(layoutLihatProdukParent, context)
-                }},TIME_SECOND)
+            handlerAnim?.postDelayed({
+                if (tagProducts.isNotEmpty()) {
+                    showViewWithAnimation(layoutLihatProdukParent, context)
+                }
+            }, TIME_SECOND)
 
             if (handlerHide == null) {
                 handlerHide = handlerFeed
@@ -1478,15 +1483,4 @@ class PostDynamicViewNew @JvmOverloads constructor(
         topAdsListener?.onTopAdsHeadlineAdsClick(positionInFeed, appLink, cpmData, isNewVariant)
     }
 
-    fun View.isVisible(): Boolean {
-        if (!isShown) {
-            return false
-        }
-        val actualPosition = Rect()
-        val isGlobalVisible = getGlobalVisibleRect(actualPosition)
-        val screenWidth = Resources.getSystem().displayMetrics.widthPixels
-        val screenHeight = Resources.getSystem().displayMetrics.heightPixels
-        val screen = Rect(0, 0, screenWidth, screenHeight)
-        return isGlobalVisible && Rect.intersects(actualPosition, screen)
-    }
 }
