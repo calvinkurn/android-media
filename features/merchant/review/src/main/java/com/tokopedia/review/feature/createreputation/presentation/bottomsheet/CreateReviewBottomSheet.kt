@@ -299,10 +299,13 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             createReviewViewModel.addBadRatingCategory(badRatingCategoryId.toString())
             if (badRatingCategoryId == BAD_RATING_OTHER_ID) {
                 textArea?.requestFocus()
+            } else {
+                textArea?.clearFocus()
             }
         } else {
             createReviewViewModel.removeBadRatingCategory(badRatingCategoryId.toString())
         }
+        updateButtonState(isGoodRating(), textArea?.isEmpty()?.not() ?: false)
     }
 
     private fun initInjector() {
@@ -896,7 +899,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         if (isGoodRating) {
             createReviewViewModel.updateButtonState(isGoodRating)
         } else {
-            createReviewViewModel.updateButtonState(isTextAreaNotEmpty)
+            createReviewViewModel.updateButtonState(isTextAreaNotEmpty || createReviewViewModel.isBadRatingSelected())
         }
     }
 
