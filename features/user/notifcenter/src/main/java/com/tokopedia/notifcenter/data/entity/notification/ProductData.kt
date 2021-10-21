@@ -84,6 +84,8 @@ data class ProductData(
         return shop.freeShippingIcon.isNotEmpty()
     }
 
+    fun hasVariant(): Boolean = variant.isNotEmpty()
+
     companion object {
         const val BUTTON_TYPE_BUY = 0
         const val BUTTON_TYPE_REMINDER = 1

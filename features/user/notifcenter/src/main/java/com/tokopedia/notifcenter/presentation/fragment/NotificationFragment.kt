@@ -64,6 +64,7 @@ import com.tokopedia.notifcenter.presentation.lifecycleaware.RecommendationLifeC
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
 import com.tokopedia.notifcenter.service.MarkAsSeenService
 import com.tokopedia.notifcenter.widget.NotificationFilterView
+import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -534,31 +535,39 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     }
 
     override fun buyProduct(notification: NotificationUiModel, product: ProductData) {
-        doBuyAndAtc(notification, product) {
-            analytic.trackSuccessDoBuyAndAtc(
-                notification, product, it, NotificationAnalytic.EventAction.CLICK_PRODUCT_BUY
-            )
-            RouteManager.route(context, ApplinkConst.CART)
+        if (product.hasVariant()) {
+            showAtcVariantHelper(product.productId, product.shop.id.toString())
+        } else {
+            doBuyAndAtc(notification, product) {
+                analytic.trackSuccessDoBuyAndAtc(
+                    notification, product, it, NotificationAnalytic.EventAction.CLICK_PRODUCT_BUY
+                )
+                RouteManager.route(context, ApplinkConst.CART)
+            }
         }
     }
 
     override fun addProductToCart(notification: NotificationUiModel, product: ProductData) {
-        doBuyAndAtc(notification, product) {
-            analytic.trackSuccessDoBuyAndAtc(
-                notification, product, it, NotificationAnalytic.EventAction.CLICK_PRODUCT_ATC
-            )
-            val msg = it.message.getOrNull(0) ?: ""
-            view?.let { view ->
-                Toaster.build(
-                    view,
-                    msg,
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    view.context.getString(R.string.title_notifcenter_see_cart),
-                    View.OnClickListener {
-                        RouteManager.route(context, ApplinkConst.CART)
-                    }
-                ).show()
+        if (product.hasVariant()) {
+            showAtcVariantHelper(product.productId, product.shop.id.toString())
+        } else {
+            doBuyAndAtc(notification, product) {
+                analytic.trackSuccessDoBuyAndAtc(
+                    notification, product, it, NotificationAnalytic.EventAction.CLICK_PRODUCT_ATC
+                )
+                val msg = it.message.getOrNull(0) ?: ""
+                view?.let { view ->
+                    Toaster.build(
+                        view,
+                        msg,
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_NORMAL,
+                        view.context.getString(R.string.title_notifcenter_see_cart),
+                        View.OnClickListener {
+                            RouteManager.route(context, ApplinkConst.CART)
+                        }
+                    ).show()
+                }
             }
         }
     }
@@ -591,6 +600,24 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         }
     }
 
+    private fun showAtcVariantHelper(
+        productId: String,
+        shopId: String
+    ) {
+        context?.let { ctx ->
+            AtcVariantHelper.goToAtcVariant(
+                context = ctx,
+                productId = productId,
+                pageSource = PAGE_SOURCE_NOTIF_CENTER,
+                isTokoNow = false,
+                shopId = shopId,
+                startActivitResult = { intent, requestCode ->
+                    startActivityForResult(intent, requestCode)
+                }
+            )
+        }
+    }
+
     override fun markNotificationAsRead(element: NotificationUiModel) {
         viewModel.markNotificationAsRead(containerListener?.role, element)
     }
@@ -609,8 +636,10 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         notification: NotificationUiModel,
         adapterPosition: Int
     ) {
-        createViewHolderState(notification, adapterPosition, product)
-        viewModel.deleteReminder(product, notification)
+//        createViewHolderState(notification, adapterPosition, product)
+//        viewModel.deleteReminder(product, notification)
+        val intent = RouteManager.getIntent(context, ApplinkConst.NEW_WISHLIST)
+        startActivity(intent)
     }
 
     override fun trackProductImpression(
@@ -714,6 +743,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
 
     companion object {
         private const val REQUEST_CHECKOUT = 0
+        private const val PAGE_SOURCE_NOTIF_CENTER = "notif-center"
     }
 
 }

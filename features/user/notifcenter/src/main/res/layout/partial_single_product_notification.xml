@@ -127,7 +127,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/spacing_lvl2"
                 android:layout_weight="1"
-                android:text="@string/notifcenter_btn_delete_reminder"
+                android:text="@string/notifcenter_btn_check_wishlist"
                 app:unifyButtonSize="small"
                 app:unifyButtonType="alternate"
                 app:unifyButtonVariant="ghost"
@@ -155,7 +155,7 @@
                 android:layout_weight="1"
                 android:text="@string/notifcenter_btn_atc"
                 app:unifyButtonSize="small"
-                app:unifyButtonType="transaction"
+                app:unifyButtonType="main"
                 app:unifyButtonVariant="ghost" />
 
             <com.tokopedia.unifycomponents.UnifyButton
@@ -166,7 +166,7 @@
                 android:layout_weight="1"
                 android:text="@string/notifcenter_btn_buy"
                 app:unifyButtonSize="small"
-                app:unifyButtonType="transaction" />
+                app:unifyButtonType="main" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_empty_stock"

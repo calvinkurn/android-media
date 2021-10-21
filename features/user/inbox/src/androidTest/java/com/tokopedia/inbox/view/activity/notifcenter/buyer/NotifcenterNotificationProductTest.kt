@@ -1,0 +1,136 @@
+package com.tokopedia.inbox.view.activity.notifcenter.buyer
+
+import android.app.Activity
+import android.app.Instrumentation
+import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.matcher.ViewMatchers.*
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.inbox.view.activity.base.notifcenter.InboxNotifcenterTest
+import com.tokopedia.notifcenter.R
+import com.tokopedia.test.application.matcher.RecyclerViewMatcher
+import org.junit.Test
+
+class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
+
+    @Test
+    fun should_open_bottomsheet_when_click_beli_in_attached_product_variants() {
+        //Given
+        inboxNotifcenterDep.apply {
+            notifcenterDetailUseCase.response = notifcenterDetailUseCase.productOnly
+        }
+        startInboxActivity()
+        intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
+        //When
+        onView(
+            RecyclerViewMatcher(R.id.rv_carousel_product)
+                .atPositionOnView(0, R.id.btn_checkout)
+        ).perform(ViewActions.click())
+
+        //Then
+        val intent = RouteManager.getIntent(context,
+            ApplinkConstInternalMarketplace.ATC_VARIANT,
+            "1988298491", "10973651", "notif-center", "false", "") //Product from JSON
+        intended(IntentMatchers.hasData(intent.data))
+    }
+
+    @Test
+    fun should_open_bottomsheet_when_click_keranjang_in_attached_product_variants() {
+        //Given
+        inboxNotifcenterDep.apply {
+            notifcenterDetailUseCase.response = notifcenterDetailUseCase.productOnly
+        }
+        startInboxActivity()
+        intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
+        //When
+        onView(
+            RecyclerViewMatcher(R.id.rv_carousel_product)
+                .atPositionOnView(0, R.id.btn_atc)
+        ).perform(ViewActions.click())
+
+        //Then
+        val intent = RouteManager.getIntent(context,
+            ApplinkConstInternalMarketplace.ATC_VARIANT,
+            "1988298491", "10973651", "notif-center", "false", "") //Product from JSON
+        intended(IntentMatchers.hasData(intent.data))
+    }
+
+    @Test
+    fun should_show_toaster_when_user_click_ingatkan_saya() {
+        // Given
+        inboxNotifcenterDep.apply {
+            notifcenterDetailUseCase.response = notifcenterDetailUseCase.productOnly
+        }
+        startInboxActivity()
+
+        //When
+        scrollToProductPosition(2)
+        onView(
+            RecyclerViewMatcher(R.id.rv_carousel_product)
+                .atPositionOnView(2, R.id.tv_reminder)
+        ).perform(ViewActions.click())
+
+        // Then
+        onView(withText(context.getString(R.string.title_success_bump_reminder)))
+            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+    }
+
+    @Test
+    fun should_show_error_toaster_when_user_click_ingatkan_saya_but_failed() {
+        // Given
+        inboxNotifcenterDep.apply {
+            notifcenterDetailUseCase.response = notifcenterDetailUseCase.productOnly
+        }
+        startInboxActivity()
+
+        //When
+        scrollToProductPosition(2)
+        onView(
+            RecyclerViewMatcher(R.id.rv_carousel_product)
+                .atPositionOnView(2, R.id.tv_reminder)
+        ).perform(ViewActions.click())
+
+        // Then
+        onView(withSubstring("Kode Error"))
+            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+    }
+
+    @Test
+    fun should_open_wishlist_when_user_click_cek_wishlist() {
+        //Given
+        inboxNotifcenterDep.apply {
+            notifcenterDetailUseCase.response = notifcenterDetailUseCase.productOnly
+        }
+        startInboxActivity()
+        intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
+        //When
+        scrollToProductPosition(2)
+        onView(
+            RecyclerViewMatcher(R.id.rv_carousel_product)
+                .atPositionOnView(2, R.id.tv_delete_reminder)
+        ).perform(ViewActions.click())
+
+        //Then
+//        intended(IntentMatchers.hasData(ApplinkConst.NEW_WISHLIST))
+    }
+
+
+    private fun scrollToProductPosition(position: Int) {
+        onView(withId(R.id.rv_carousel_product)).perform(
+            scrollToPosition<RecyclerView.ViewHolder>(position)
+        )
+    }
+}
