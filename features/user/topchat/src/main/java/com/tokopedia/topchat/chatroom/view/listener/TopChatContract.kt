@@ -156,7 +156,7 @@ interface TopChatContract {
         )
 
         fun sendAttachmentsAndSrw(
-            question: QuestionUiModel
+            question: QuestionUiModel, referredMsg: ParentReply?
         )
 
         fun initAttachmentPreview()

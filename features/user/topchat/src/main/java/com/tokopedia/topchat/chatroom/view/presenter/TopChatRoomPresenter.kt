@@ -580,14 +580,16 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun sendAttachmentsAndSrw(
-        question: QuestionUiModel
+        question: QuestionUiModel, referredMsg: ParentReply?
     ) {
         sendAttachments(question.content)
         topchatSendMessageWithWebsocket(
             sendMessage = question.content,
-            intention = question.intent
+            intention = question.intent,
+            referredMsg = referredMsg
         )
         view?.clearAttachmentPreviews()
+        view?.clearReferredMsg()
     }
 
     override fun sendSrwFrom(

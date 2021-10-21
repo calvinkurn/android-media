@@ -262,6 +262,6 @@ class ReplyBubbleTest : TopchatRoomTest() {
     // TODO: should_go_to_specific_bubble_when_msg_bubble_reply_time_nano_exist
     // TODO: should_send_reply_bubble_when_user_send_srw
     // TODO: should show onboarding reply bubble
-    // TODO: should send reply bubble preview when user click one of SRW question
+    // TODO: should send reply bubble preview when user click one of SRW preview question
 
 }
