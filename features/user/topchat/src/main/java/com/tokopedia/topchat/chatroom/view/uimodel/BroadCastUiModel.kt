@@ -9,7 +9,7 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 class BroadCastUiModel : BaseChatUiModel, Visitable<TopChatTypeFactory> {
 
     val items: Map<String, Visitable<*>>
-    val banner: ImageAnnouncementViewModel? get() = items[AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT] as? ImageAnnouncementViewModel
+    val banner: ImageAnnouncementUiModel? get() = items[AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT] as? ImageAnnouncementUiModel
     val voucherUiModel: TopChatVoucherUiModel? get() = items[AttachmentType.Companion.TYPE_VOUCHER] as? TopChatVoucherUiModel
     val productCarousel: ProductCarouselUiModel? get() = items[AttachmentType.Companion.TYPE_IMAGE_CAROUSEL] as? ProductCarouselUiModel
     val singleProduct: ProductAttachmentUiModel? get() = items[AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT] as? ProductAttachmentUiModel

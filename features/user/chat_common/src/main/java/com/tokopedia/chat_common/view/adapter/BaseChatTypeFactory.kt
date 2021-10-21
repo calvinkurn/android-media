@@ -14,7 +14,7 @@ interface BaseChatTypeFactory {
 
     fun type(typingViewModel: TypingChatModel): Int
 
-    fun type(imageAnnouncementViewModel: ImageAnnouncementViewModel): Int
+    fun type(imageAnnouncementUiModel: ImageAnnouncementUiModel): Int
 
     fun type(imageUploadUiModel: ImageUploadUiModel): Int
 

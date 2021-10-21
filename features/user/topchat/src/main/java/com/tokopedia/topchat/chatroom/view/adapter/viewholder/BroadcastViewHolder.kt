@@ -5,7 +5,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.data.DeferredAttachment
-import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
+import com.tokopedia.chat_common.data.ImageAnnouncementUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
@@ -146,7 +146,7 @@ class BroadcastViewHolder constructor(
         bindBroadcastLabel(banner)
     }
 
-    private fun bindSyncBanner(banner: ImageAnnouncementViewModel) {
+    private fun bindSyncBanner(banner: ImageAnnouncementUiModel) {
         if (!banner.isLoading) return
         val chatAttachments = deferredAttachment.getLoadedChatAttachments()
         val attachment = chatAttachments[banner.attachmentId] ?: return
@@ -157,7 +157,7 @@ class BroadcastViewHolder constructor(
         }
     }
 
-    private fun bindBroadcastLabel(banner: ImageAnnouncementViewModel) {
+    private fun bindBroadcastLabel(banner: ImageAnnouncementUiModel) {
         broadcastLabel?.renderState(banner)
         if (broadcastLabel?.isVisible == true && bannerView?.isVisible == false) {
             setPaddingTop(paddingWithBroadcastLabelOnly)

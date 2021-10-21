@@ -156,7 +156,7 @@ open class TopChatTypeFactoryImpl constructor(
         return TopchatLoadingModelViewHolder.LAYOUT
     }
 
-    override fun type(imageAnnouncementViewModel: ImageAnnouncementViewModel): Int {
+    override fun type(imageAnnouncementUiModel: ImageAnnouncementUiModel): Int {
         return TopchatImageAnnouncementViewHolder.LAYOUT
     }
 

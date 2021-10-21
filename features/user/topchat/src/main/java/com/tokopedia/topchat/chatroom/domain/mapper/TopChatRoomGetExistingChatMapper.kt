@@ -9,7 +9,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_REVIEW_REMINDER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
-import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
+import com.tokopedia.chat_common.data.ImageAnnouncementUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
@@ -221,7 +221,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         val pojoAttribute = gson.fromJson(
             item.attachment.attributes, ImageAnnouncementPojo::class.java
         )
-        return ImageAnnouncementViewModel(item, pojoAttribute)
+        return ImageAnnouncementUiModel(item, pojoAttribute)
     }
 
     private fun convertToVoucher(item: Reply): Visitable<*> {

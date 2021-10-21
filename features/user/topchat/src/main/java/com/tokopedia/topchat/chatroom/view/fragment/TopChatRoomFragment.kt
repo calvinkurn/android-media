@@ -860,9 +860,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return session
     }
 
-    override fun onImageAnnouncementClicked(viewModel: ImageAnnouncementViewModel) {
-        analytics.trackClickImageAnnouncement(viewModel.broadcastBlastId.toString(), viewModel.attachmentId)
-        super.onImageAnnouncementClicked(viewModel)
+    override fun onImageAnnouncementClicked(uiModel: ImageAnnouncementUiModel) {
+        analytics.trackClickImageAnnouncement(uiModel.broadcastBlastId.toString(), uiModel.attachmentId)
+        super.onImageAnnouncementClicked(uiModel)
     }
 
     override fun onRetrySendImage(element: ImageUploadUiModel) {

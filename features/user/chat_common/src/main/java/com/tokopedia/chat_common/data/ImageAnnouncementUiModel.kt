@@ -1,9 +1,9 @@
 package com.tokopedia.chat_common.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.ImageAnnouncementViewModel.CampaignStatus.ENDED
-import com.tokopedia.chat_common.data.ImageAnnouncementViewModel.CampaignStatus.ON_GOING
-import com.tokopedia.chat_common.data.ImageAnnouncementViewModel.CampaignStatus.STARTED
+import com.tokopedia.chat_common.data.ImageAnnouncementUiModel.CampaignStatus.ENDED
+import com.tokopedia.chat_common.data.ImageAnnouncementUiModel.CampaignStatus.ON_GOING
+import com.tokopedia.chat_common.data.ImageAnnouncementUiModel.CampaignStatus.STARTED
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
@@ -13,7 +13,7 @@ import com.tokopedia.utils.time.TimeHelper
 /**
  * @author by nisie on 5/15/18.
  */
-class ImageAnnouncementViewModel
+class ImageAnnouncementUiModel
 /**
  * Constructor for WebSocketResponse / API Response
  *

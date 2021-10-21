@@ -114,7 +114,7 @@ open class GetExistingChatMapper @Inject constructor() {
     protected open fun convertToImageAnnouncement(item: Reply): Visitable<*> {
         val pojoAttribute = gson.fromJson<ImageAnnouncementPojo>(item.attachment?.attributes,
                 ImageAnnouncementPojo::class.java)
-        val imageAnnouncement = ImageAnnouncementViewModel(
+        val imageAnnouncement = ImageAnnouncementUiModel(
                 messageId = item.msgId.toString(),
                 fromUid = item.senderId.toString(),
                 from = item.senderName,

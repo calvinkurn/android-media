@@ -112,9 +112,9 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         }
     }
 
-    override fun onImageAnnouncementClicked(viewModel: ImageAnnouncementViewModel) {
-        if (!TextUtils.isEmpty(viewModel.redirectUrl)) {
-            onGoToWebView(viewModel.redirectUrl, viewModel.attachmentId)
+    override fun onImageAnnouncementClicked(uiModel: ImageAnnouncementUiModel) {
+        if (!TextUtils.isEmpty(uiModel.redirectUrl)) {
+            onGoToWebView(uiModel.redirectUrl, uiModel.attachmentId)
         }
     }
 

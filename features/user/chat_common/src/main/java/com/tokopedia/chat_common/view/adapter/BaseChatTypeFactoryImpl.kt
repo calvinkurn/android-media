@@ -33,7 +33,7 @@ abstract class BaseChatTypeFactoryImpl(private val imageAnnouncementListener: Im
         return TypingChatViewHolder.LAYOUT
     }
 
-    override fun type(imageAnnouncementViewModel: ImageAnnouncementViewModel): Int {
+    override fun type(imageAnnouncementUiModel: ImageAnnouncementUiModel): Int {
         return ImageAnnouncementViewHolder.LAYOUT
     }
 
