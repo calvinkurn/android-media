@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
@@ -51,5 +52,8 @@ data class ProductDetail(
         @SerializedName("product_id")
         var productId: Long = 0,
         @SerializedName("quantity")
-        var quantity: Int = -1
+        var quantity: Int = -1,
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("bundle_id")
+        var bundleId: Long = 0
 ) : Parcelable
