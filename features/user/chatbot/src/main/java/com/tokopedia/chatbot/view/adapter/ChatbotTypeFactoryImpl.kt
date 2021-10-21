@@ -113,7 +113,7 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
         return CsatOptionListViewHolder.LAYOUT
     }
 
-    override fun type(attachInvoiceSentViewModel: AttachInvoiceSentViewModel): Int {
+    override fun type(attachInvoiceSentUiModel: AttachInvoiceSentUiModel): Int {
         return AttachedInvoiceSentViewHolder.LAYOUT
     }
 

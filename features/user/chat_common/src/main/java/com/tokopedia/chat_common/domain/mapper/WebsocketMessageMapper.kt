@@ -71,10 +71,10 @@ open class WebsocketMessageMapper @Inject constructor() {
     }
 
     private fun convertToInvoiceSent(pojo: ChatSocketPojo, jsonAttribute: JsonObject):
-            AttachInvoiceSentViewModel {
+            AttachInvoiceSentUiModel {
         val invoiceSentPojo = GsonBuilder().create().fromJson(jsonAttribute,
                 InvoiceSentPojo::class.java)
-        return AttachInvoiceSentViewModel.Builder()
+        return AttachInvoiceSentUiModel.Builder()
             .withResponseFromWs(pojo)
             .withInvoiceAttributesResponse(invoiceSentPojo.invoiceLink)
             .withNeedSync(false)

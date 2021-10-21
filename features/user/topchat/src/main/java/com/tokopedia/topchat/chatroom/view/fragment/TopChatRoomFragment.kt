@@ -1752,8 +1752,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         onGoToWebView(url, id)
     }
 
-    override fun trackClickInvoice(viewModel: AttachInvoiceSentViewModel) {
-        analytics.trackClickInvoice(viewModel)
+    override fun trackClickInvoice(uiModel: AttachInvoiceSentUiModel) {
+        analytics.trackClickInvoice(uiModel)
     }
 
     private fun getStringArgument(key: String, savedInstanceState: Bundle?): String {

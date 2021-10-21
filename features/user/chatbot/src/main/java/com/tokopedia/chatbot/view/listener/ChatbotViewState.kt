@@ -2,7 +2,7 @@ package com.tokopedia.chatbot.view.listener
 
 import android.app.Activity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
+import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
@@ -30,7 +30,7 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun onReceiveQuickReplyEventWithChatRating(visitable: ChatRatingViewModel)
 
-    fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentViewModel)
+    fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentUiModel)
 
     fun onSuccessSendRating(element: SendRatingPojo, rating: Int,
                             chatRatingViewModel : ChatRatingViewModel,

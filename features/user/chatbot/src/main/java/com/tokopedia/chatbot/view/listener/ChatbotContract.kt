@@ -1,7 +1,7 @@
 package com.tokopedia.chatbot.view.listener
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
+import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
@@ -63,7 +63,7 @@ interface ChatbotContract {
         fun sendQuickReply(messageId: String, quickReply: QuickReplyViewModel, startTime: String, opponentId: String)
 
         fun generateInvoice(invoiceLinkPojo: InvoiceLinkPojo, senderId: String)
-                : AttachInvoiceSentViewModel
+                : AttachInvoiceSentUiModel
 
         fun getExistingChat(messageId: String,
                             onError: (Throwable) -> Unit,

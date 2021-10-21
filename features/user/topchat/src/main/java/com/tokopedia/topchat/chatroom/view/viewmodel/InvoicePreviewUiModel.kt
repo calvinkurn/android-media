@@ -1,6 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.viewmodel
 
-import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
+import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
 import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.attachment.AttachmentId
@@ -52,7 +52,7 @@ class InvoicePreviewUiModel(
         roomMetaData: RoomMetaData,
         message: String
     ): SendableUiModel {
-        return AttachInvoiceSentViewModel.Builder()
+        return AttachInvoiceSentUiModel.Builder()
             .withRoomMetaData(roomMetaData)
             .withAttachmentId(AttachmentId.NOT_YET_GENERATED)
             .withAttachmentType(AttachmentType.Companion.TYPE_INVOICE_SEND)

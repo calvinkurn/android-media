@@ -535,7 +535,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun manageActionBubble(visitable: Visitable<*>) {
         when {
             visitable is MessageUiModel && visitable.isSender -> hideActionBubble()
-            visitable is AttachInvoiceSentViewModel && visitable.isSender -> hideActionBubble()
+            visitable is AttachInvoiceSentUiModel && visitable.isSender -> hideActionBubble()
         }
     }
 

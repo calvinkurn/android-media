@@ -411,8 +411,8 @@ class ChatbotPresenter @Inject constructor(
 
     override fun generateInvoice(
         invoiceLinkPojo: InvoiceLinkPojo, senderId: String
-    ) : AttachInvoiceSentViewModel {
-        return AttachInvoiceSentViewModel.Builder()
+    ) : AttachInvoiceSentUiModel {
+        return AttachInvoiceSentUiModel.Builder()
             .withInvoiceAttributesResponse(invoiceLinkPojo)
             .withFromUid(senderId)
             .withFrom(userSession.name)

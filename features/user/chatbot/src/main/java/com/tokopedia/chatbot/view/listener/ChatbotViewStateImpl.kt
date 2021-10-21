@@ -173,7 +173,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         showQuickReply(visitable.quickReplies)
     }
 
-    override fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentViewModel) {
+    override fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentUiModel) {
         removeInvoiceCarousel()
         super.onReceiveMessageEvent(generatedInvoice)
     }

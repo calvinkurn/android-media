@@ -177,10 +177,10 @@ open class GetExistingChatMapper @Inject constructor() {
             .build()
     }
 
-    private fun convertToInvoiceSent(pojo: Reply): AttachInvoiceSentViewModel {
+    private fun convertToInvoiceSent(pojo: Reply): AttachInvoiceSentUiModel {
         val invoiceAttributes = pojo.attachment?.attributes
         val invoiceSentPojo = gson.fromJson(invoiceAttributes, InvoiceSentPojo::class.java)
-        return AttachInvoiceSentViewModel.Builder()
+        return AttachInvoiceSentUiModel.Builder()
             .withResponseFromGQL(pojo)
             .withInvoiceAttributesResponse(invoiceSentPojo.invoiceLink)
             .build()

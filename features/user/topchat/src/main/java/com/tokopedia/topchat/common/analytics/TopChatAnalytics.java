@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.processor.ProductListImpressionBundler;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.atc_common.domain.model.response.DataModel;
-import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
+import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel;
 import com.tokopedia.chat_common.data.BannedProductAttachmentUiModel;
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel;
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress;
@@ -502,7 +502,7 @@ public class TopChatAnalytics {
     }
 
 
-    public void trackClickInvoice(@NotNull AttachInvoiceSentViewModel invoice) {
+    public void trackClickInvoice(@NotNull AttachInvoiceSentUiModel invoice) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 Name.CHAT_DETAIL,
                 Category.CHAT_DETAIL,
