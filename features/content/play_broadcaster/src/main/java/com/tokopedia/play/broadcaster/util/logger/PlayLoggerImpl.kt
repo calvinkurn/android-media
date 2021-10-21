@@ -15,7 +15,7 @@ class PlayLoggerImpl @Inject constructor() : PlayLogger {
 
     companion object {
         private const val LIMIT_LOG = 20
-        private const val PLAY_BROADCASTER = "ANDROID_PLAY_BRO"
+        private const val PLAY_BROADCASTER = "PLAY_BROADCASTER"
     }
 
     private val logs = mutableListOf<String>()
@@ -29,6 +29,7 @@ class PlayLoggerImpl @Inject constructor() : PlayLogger {
             buildString {
                 appendLine("time: ${System.currentTimeMillis()}")
                 appendLine("channel status: ${channelStatus.value}")
+                appendLine()
             }
         )
     }
@@ -58,6 +59,7 @@ class PlayLoggerImpl @Inject constructor() : PlayLogger {
             buildString {
                 appendLine("time: ${System.currentTimeMillis()}")
                 appendLine("socket status: ${socketType.type.value}")
+                appendLine()
             }
         )
     }
