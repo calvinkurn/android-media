@@ -259,7 +259,11 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
 
                         } else {
                             hideLoader()
-                            renderEmpty()
+                            if (wishlistV2.query.isNotEmpty()) {
+                                onWishlistSearchNotFound(wishlistV2.query)
+                            } else {
+                                renderEmpty()
+                            }
                         }
                     }
                 }
@@ -275,6 +279,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     private fun updateTotalLabel(totalData: Int) {
         binding?.run {
             wishlistCountLabel.text = getString(R.string.wishlist_count_label, totalData)
+        }
+    }
 
     private fun renderEmpty() {
         val emptyData = arrayListOf<WishlistV2TypeLayoutData>().apply {
