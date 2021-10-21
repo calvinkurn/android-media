@@ -1,6 +1,7 @@
 package com.tokopedia.attachvoucher.data
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.graphql.data.GqlParam
 
 data class GetVoucherParam (
     @SerializedName("voucher_status")
@@ -19,4 +20,4 @@ data class GetVoucherParam (
 data class FilterParam(
     @SerializedName("Filter")
     val Filter: GetVoucherParam = GetVoucherParam()
-)
+) : GqlParam
