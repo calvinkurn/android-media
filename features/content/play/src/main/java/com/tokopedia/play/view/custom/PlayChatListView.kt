@@ -54,9 +54,7 @@ class PlayChatListView : ConstraintLayout {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 csDownView.showIndicatorRed(rvChatList.canScrollDown)
                 if (!csDownView.isVisible || chatAdapter.getItem(chatAdapter.lastIndex).isSelfMessage) {
-                    rvChatList.post {
-                        rvChatList.scrollToPosition(chatAdapter.lastIndex)
-                    }
+                    scrollToLatest()
                 }
             }
         }
@@ -137,10 +135,12 @@ class PlayChatListView : ConstraintLayout {
         chatAdapter.registerAdapterDataObserver(adapterObserver)
 
         csDownView.setOnClickListener {
-            if (rvChatList.canScrollDown) {
-                rvChatList.scrollToPosition(chatAdapter.lastIndex)
-            }
+            if (rvChatList.canScrollDown) scrollToLatest()
         }
+    }
+
+    private fun scrollToLatest() {
+        rvChatList.scrollBy(0, Integer.MAX_VALUE)
     }
 
     private fun isChatPositionBeyondOffset(recyclerView: RecyclerView): Boolean {
