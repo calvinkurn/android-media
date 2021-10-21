@@ -291,7 +291,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     override fun onBackPressed(): Boolean {
         return when {
-            hasPinnedFormView() -> {
+            isPinnedFormVisible() -> {
                 parentViewModel.submitAction(PlayBroadcastAction.CancelEditPinnedMessage)
                 true
             }
@@ -693,6 +693,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 clInteraction.visibility = View.VISIBLE
             }
         }
+    }
+
+    private fun isPinnedFormVisible(): Boolean {
+        val formView = view?.findViewWithTag<View>(PINNED_MSG_FORM_TAG)
+        return formView != null && formView.visibility == View.VISIBLE
     }
 
     private fun hasPinnedFormView(): Boolean {

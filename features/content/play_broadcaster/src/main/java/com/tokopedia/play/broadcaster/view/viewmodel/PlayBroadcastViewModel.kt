@@ -831,7 +831,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
         viewModelScope.launchCatchError(dispatcher.io, block = {
             val pinnedMessageId = _pinnedMessage.value.id
             _pinnedMessage.value = repo.setPinnedMessage(
-                id = pinnedMessageId,
+                id = if (pinnedMessageId.isBlank()) null else pinnedMessageId,
                 channelId = channelId,
                 message = message
             )
