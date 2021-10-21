@@ -13,6 +13,11 @@ class LastFilterDataView(
 
     fun optionNames(): String = filterList.joinToString { it.name }
 
+    fun mapParameter() = filterList.associateBy(
+        keySelector = { it.key },
+        valueTransform = { it.value }
+    )
+
     override fun type(typeFactory: ProductListTypeFactory?) =
         typeFactory?.type(this) ?: 0
 }

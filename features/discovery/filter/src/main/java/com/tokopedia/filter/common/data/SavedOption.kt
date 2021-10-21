@@ -21,13 +21,6 @@ data class SavedOption(
     val name: String = "",
 ) {
 
-    fun asOption(): Option = Option(
-        key = key,
-        value = value,
-        name = name,
-        inputState = true.toString(),
-    )
-
     companion object {
         const val SORT_SAVED_OPTION_TITLE = "sort"
 

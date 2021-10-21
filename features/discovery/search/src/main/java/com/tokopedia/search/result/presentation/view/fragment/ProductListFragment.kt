@@ -29,7 +29,6 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
 import com.tokopedia.discovery.common.constants.SearchConstant
@@ -1981,11 +1980,11 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun applyLastFilter(lastFilterDataView: LastFilterDataView) {
-        val optionList = lastFilterDataView.filterList.map(SavedOption::asOption)
+        val currentSearchParam = searchParameter?.getSearchParameterHashMap() ?: mapOf()
+        val lastFilterParameter = lastFilterDataView.mapParameter()
+        val paramWithLastFilter = currentSearchParam + lastFilterParameter
 
-        filterController.setFilter(optionList)
-
-        refreshSearchParameter(filterController.getParameter())
+        refreshSearchParameter(paramWithLastFilter)
 
         reloadData()
     }
