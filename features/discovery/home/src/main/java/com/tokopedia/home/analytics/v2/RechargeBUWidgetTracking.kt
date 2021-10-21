@@ -1,5 +1,6 @@
 package com.tokopedia.home.analytics.v2
 
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
@@ -31,7 +32,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
                 " - ${getHeaderName(data.channel)} - ${item.trackingData.itemType} - $position - " +
                         "${item.trackingData.categoryId} - ${item.trackingData.operatorId} - " +
                         "${item.trackingData.productId} - ${item.label2}"
-            val tracker = hashMapOf<String, Any>(
+            val tracker = DataLayer.mapOf(
                 Event.KEY to Event.PRODUCT_VIEW,
                 Action.KEY to Action.IMPRESSION_ON.format("$RECHARGE_BU_WIDGET_PRODUCT_CARD $RECHARGE_BU_WIDGET_NAME"),
                 Category.KEY to "$RECHARGE_BU_WIDGET_EVENT_CATEGORY - $RECHARGE_BU_WIDGET_NEW_NAME",
@@ -51,7 +52,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
                 ),
                 UserId.KEY to userId
             )
-            trackingQueue.putEETracking(tracker)
+            trackingQueue.putEETracking(tracker as java.util.HashMap<String, Any>?)
         }
     }
 
@@ -67,7 +68,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
             val eventLabel = " - ${getHeaderName(data.channel)} - ${item.trackingData.itemType} - $position - " +
                     "${item.trackingData.categoryId} - ${item.trackingData.operatorId} - " +
                     "${item.trackingData.productId} - ${item.label2}"
-            val bundle = hashMapOf<String, Any>(
+            val bundle = DataLayer.mapOf(
                 Event.KEY to  Event.PRODUCT_CLICK,
                 Action.KEY to Action.CLICK_ON.format("$RECHARGE_BU_WIDGET_PRODUCT_CARD $RECHARGE_BU_WIDGET_NAME"),
                 Category.KEY to "$RECHARGE_BU_WIDGET_EVENT_CATEGORY - $RECHARGE_BU_WIDGET_NEW_NAME",
@@ -88,7 +89,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
                 ),
                 UserId.KEY to userId
             )
-            trackingQueue.putEETracking(bundle)
+            trackingQueue.putEETracking(bundle as java.util.HashMap<String, Any>?)
         }
     }
 
