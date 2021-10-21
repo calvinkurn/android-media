@@ -82,7 +82,7 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
 
         // When
         presenter.connectWebSocket(exMessageId)
-        presenter.sendAttachmentsAndSrw(srwQuestion)
+        presenter.sendAttachmentsAndSrw(srwQuestion, null)
 
         // Then
         verify(exactly = 1) { view.clearAttachmentPreviews() }
