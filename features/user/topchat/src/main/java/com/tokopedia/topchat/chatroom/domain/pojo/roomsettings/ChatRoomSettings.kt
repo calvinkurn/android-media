@@ -7,5 +7,5 @@ data class ChatRoomSettings(
     @SerializedName("banner")
         val bannerUiModel: RoomSettingBannerUiModel = RoomSettingBannerUiModel(),
     @SerializedName("fraudAlert")
-        val fraudAlert: RoomSettingFraudAlert = RoomSettingFraudAlert()
+        val fraudAlert: RoomSettingFraudAlertUiModel = RoomSettingFraudAlertUiModel()
 )

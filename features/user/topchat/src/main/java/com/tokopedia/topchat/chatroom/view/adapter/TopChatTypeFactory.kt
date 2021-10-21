@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBannerUiModel
-import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlert
+import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlertUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.SrwBubbleUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
@@ -29,7 +29,7 @@ interface TopChatTypeFactory {
             adapterListener: AdapterListener
     ): AbstractViewHolder<*>
 
-    fun type(roomSettingFraudAlert: RoomSettingFraudAlert): Int
+    fun type(roomSettingFraudAlertUiModel: RoomSettingFraudAlertUiModel): Int
 
     fun type(roomSettingBannerUiModel: RoomSettingBannerUiModel): Int
 
