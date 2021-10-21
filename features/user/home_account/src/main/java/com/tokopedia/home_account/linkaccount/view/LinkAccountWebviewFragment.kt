@@ -87,23 +87,27 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
             mUrl.contains(TokopediaUrl.Companion.getInstance().GOJEK_OTP, ignoreCase = true) -> {
                 // Check gojek accounts page, show toolbar
                 analytics.trackViewGojekOTP()
-                getLinkAccountActivity()?.hideSkipBtnToolbar()
-                getLinkAccountActivity()?.showToolbar()
-                getLinkAccountActivity()?.setToolbarTitle(getString(R.string.label_toolbar_verifikasi_akun))
+                getLinkAccountActivity()?.run {
+                    hideSkipBtnToolbar()
+                    showToolbar()
+                    setToolbarTitle(getString(R.string.label_toolbar_verifikasi_akun))
+                }
             }
             mUrl.contains(TokopediaUrl.Companion.getInstance().GOPAY_PIN, ignoreCase = true) -> {
                 analytics.trackViewGopayPin()
                 // Check gopay input pin page, and hide back btn
-                getLinkAccountActivity()?.showToolbar()
-                getLinkAccountActivity()?.hideToolbarBackBtn()
-                getLinkAccountActivity()?.showSkipBtnToolbar()
-                getLinkAccountActivity()?.setToolbarTitle(getString(R.string.label_toolbar_aktifasi_gopay))
+                getLinkAccountActivity()?.run {
+                    showToolbar()
+                    hideToolbarBackBtn()
+                    showSkipBtnToolbar()
+                    setToolbarTitle(getString(R.string.label_toolbar_aktifasi_gopay))
+                }
             }
             else -> { hideToolbar() }
         }
     }
 
-    fun getLinkAccountActivity(): LinkAccountWebViewActivity? {
+    private fun getLinkAccountActivity(): LinkAccountWebViewActivity? {
         return try {
             activity as LinkAccountWebViewActivity?
         } catch (e: Exception) {
