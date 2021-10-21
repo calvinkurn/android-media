@@ -1506,18 +1506,6 @@ class ProductListFragment: BaseDaggerFragment(),
         )
     }
 
-    override fun showPowerMerchantProPopUp() {
-        context?.let {
-            val dialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
-            dialog.setTitle(getString(R.string.search_power_merchant_pro_title))
-            dialog.setDescription(getString(R.string.search_power_merchant_pro_desc))
-            dialog.setPrimaryCTAText(getString(R.string.search_power_merchant_pro_button_text))
-            dialog.setPrimaryCTAClickListener { dialog.dismiss() }
-            dialog.setImageUrl(SearchConstant.ImageUrl.POWER_MERCHANT_PRO_ILLUSTRATION_URL)
-            dialog.show()
-        }
-    }
-
     override val abTestRemoteConfig: RemoteConfig?
         get() = RemoteConfigInstance.getInstance().abTestPlatform
 

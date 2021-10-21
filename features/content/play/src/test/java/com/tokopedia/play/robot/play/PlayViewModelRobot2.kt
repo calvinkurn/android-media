@@ -110,6 +110,10 @@ class PlayViewModelRobot2(
         every { userSession.isLoggedIn } returns isUserLoggedIn
     }
 
+    fun setUserId(userId: String) {
+        every { userSession.userId } returns userId
+    }
+
     fun recordState(fn: PlayViewModelRobot2.() -> Unit): PlayViewerNewUiState {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
         lateinit var uiState: PlayViewerNewUiState

@@ -22,6 +22,7 @@ import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.stub.chatroom.usecase.*
 import com.tokopedia.topchat.stub.chatroom.usecase.api.ChatRoomApiStub
+import com.tokopedia.topchat.stub.common.GraphqlRepositoryStub
 import com.tokopedia.topchat.stub.common.GraphqlUseCaseStub
 import dagger.Module
 import dagger.Provides
@@ -251,5 +252,22 @@ class ChatRoomFakeUseCaseModule {
             gqlUseCase: GraphqlUseCaseStub<ChatTokoNowWarehouseResponse>
     ): ChatTokoNowWarehouseUseCaseStub {
         return ChatTokoNowWarehouseUseCaseStub(gqlUseCase)
+    }
+
+    // -- separator -- view model usecase start here //
+
+    @Provides
+    @ChatScope
+    fun provideGetExistingMessageIdUseCase(
+        stub: GetExistingMessageIdUseCaseStub
+    ): GetExistingMessageIdUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideGetExistingMessageIdUseCaseStub(
+        repository: GraphqlRepositoryStub,
+        dispatchers: CoroutineDispatchers
+    ): GetExistingMessageIdUseCaseStub {
+        return GetExistingMessageIdUseCaseStub(repository, dispatchers)
     }
 }
