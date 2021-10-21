@@ -150,6 +150,10 @@ class ShopPenaltyViewModelTest: ShopPenaltyViewModelTestFixture() {
                 add(PenaltyFilterUiModel(title = ShopScoreConstant.TITLE_TYPE_PENALTY, chipsFilerList = mapToChipsTypePenaltyFilterDummy()))
             }
 
+            val sortFilterItemWrapperList = penaltyMapper.mapToSortFilterItemFromPenaltyList(penaltyFilterList)
+
+            penaltyViewModel.setItemSortFilterWrapperList(penaltyFilterList, sortFilterItemWrapperList)
+
             penaltyViewModel.resetFilterSelected()
             val actualResult = penaltyViewModel.resetFilterResult.observeAwaitValue()
             assertTrue(actualResult is Success)
@@ -174,6 +178,17 @@ class ShopPenaltyViewModelTest: ShopPenaltyViewModelTestFixture() {
             val titleFilter = "Bersalah di Pusat Resolusi"
             val chipType = ChipsUnify.TYPE_SELECTED
 
+            val sortBy = 1
+
+            val penaltyFilterList = mutableListOf<PenaltyFilterUiModel>().apply {
+                add(PenaltyFilterUiModel(title = ShopScoreConstant.TITLE_SORT, isDividerVisible = true, chipsFilerList = penaltyMapper.mapToChipsSortFilter(sortBy)))
+                add(PenaltyFilterUiModel(title = ShopScoreConstant.TITLE_TYPE_PENALTY, chipsFilerList = mapToChipsTypePenaltyFilterDummy()))
+            }
+
+            val sortFilterItemWrapperList = penaltyMapper.mapToSortFilterItemFromPenaltyList(penaltyFilterList)
+
+            penaltyViewModel.setItemSortFilterWrapperList(penaltyFilterList, sortFilterItemWrapperList)
+
             penaltyViewModel.updateSortFilterSelected(titleFilter, chipType)
             val actualResult = penaltyViewModel.updateSortSelectedPeriod.observeAwaitValue()
             assertTrue(actualResult is Success)
@@ -188,6 +203,16 @@ class ShopPenaltyViewModelTest: ShopPenaltyViewModelTestFixture() {
             val titleFilter = ShopScoreConstant.TITLE_SORT
             val chipType = ChipsUnify.TYPE_SELECTED
             val position = 1
+            val sortBy = 1
+
+            val penaltyFilterList = mutableListOf<PenaltyFilterUiModel>().apply {
+                add(PenaltyFilterUiModel(title = ShopScoreConstant.TITLE_SORT, isDividerVisible = true, chipsFilerList = penaltyMapper.mapToChipsSortFilter(sortBy)))
+                add(PenaltyFilterUiModel(title = ShopScoreConstant.TITLE_TYPE_PENALTY, chipsFilerList = mapToChipsTypePenaltyFilterDummy()))
+            }
+
+            val sortFilterItemWrapperList = penaltyMapper.mapToSortFilterItemFromPenaltyList(penaltyFilterList)
+
+            penaltyViewModel.setItemSortFilterWrapperList(penaltyFilterList, sortFilterItemWrapperList)
 
             penaltyViewModel.updateFilterSelected(titleFilter, chipType, position)
             val actualResult = penaltyViewModel.updateFilterSelected.observeAwaitValue()
