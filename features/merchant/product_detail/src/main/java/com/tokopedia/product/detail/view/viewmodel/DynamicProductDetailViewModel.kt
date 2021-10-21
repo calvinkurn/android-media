@@ -56,6 +56,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PRIC
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_3
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_K2K
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.util.ProductDetailLogger
@@ -756,7 +757,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                 ?: "")
                         val productIdsString = TextUtils.join(",", productIds) ?: ""
                         val recomFilterList = mutableListOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
-                        if (pageName == PDP_3) {
+                        if (pageName == PDP_3 || pageName == PDP_K2K) {
                             getRecommendationFilterChips.get().setParams(
                                     userId = if (userSessionInterface.userId.isEmpty()) 0 else userSessionInterface.userId.toInt(),
                                     pageName = pageName,
