@@ -29,6 +29,7 @@ import java.util.*
 
 object ShopPageHomeMapper {
     private const val PRODUCT_RATING_DIVIDER = 20
+    private const val ZERO_PRODUCT_DISCOUNT = "0"
 
     fun mapToShopPageHomeLayoutUiModel(
             response: ShopLayoutWidget,
@@ -350,7 +351,7 @@ object ShopPageHomeMapper {
                 it.timeCounter,
                 it.totalNotify,
                 it.totalNotifyWording,
-                mapCampaignListProduct(it.statusCampaign, it.listProduct),
+                mapCampaignFlashSaleListProduct(it.statusCampaign, it.listProduct),
             )
         }
     }
@@ -383,6 +384,37 @@ object ShopPageHomeMapper {
                     stockSoldPercentage =  it.stockSoldPercentage.toInt()
                 }
                 hideGimmick = it.hideGimmick
+                labelGroupList  = it.labelGroups.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
+            }
+        }
+    }
+
+    private fun mapCampaignFlashSaleListProduct(
+            statusCampaign: String ,
+            listProduct: List<ShopLayoutWidget.Widget.Data.Product>
+    ): List<ShopHomeProductUiModel> {
+        return listProduct.map {
+            ShopHomeProductUiModel().apply {
+                id = it.id
+                name = it.name
+                displayedPrice = it.discountedPrice
+                originalPrice = it.displayedPrice
+                discountPercentage = it.discountPercentage
+                imageUrl = it.imageUrl
+                imageUrl300 = ""
+                productUrl = it.urlApps
+                hideGimmick = it.hideGimmick
+                when (statusCampaign.lowercase(Locale.getDefault())) {
+                    StatusCampaign.ONGOING.statusCampaign -> {
+                        stockLabel = it.stockWording.title
+                        stockSoldPercentage =  it.stockSoldPercentage.toInt()
+                    }
+                    StatusCampaign.UPCOMING.statusCampaign -> {
+                        // hide discount percentage for upcoming flash sale product
+                        discountPercentage = ZERO_PRODUCT_DISCOUNT
+                        hideGimmick = true
+                    }
+                }
                 labelGroupList  = it.labelGroups.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
             }
         }
