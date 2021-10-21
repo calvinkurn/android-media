@@ -20,6 +20,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.detail.analytic.performance.SomDetailLoadTimeMonitoring
 import com.tokopedia.sellerorder.detail.di.DaggerSomDetailComponent
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
+import com.tokopedia.sellerorder.orderextension.di.SomOrderExtensionModule
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailFragment
 
 /**
@@ -67,10 +68,10 @@ class SomDetailActivity : BaseSomActivity(), HasComponent<SomDetailComponent> {
         finish()
     }
 
-    override fun getComponent(): SomDetailComponent =
-            DaggerSomDetailComponent.builder()
-                    .somComponent(SomComponentInstance.getSomComponent(application))
-                    .build()
+    override fun getComponent(): SomDetailComponent = DaggerSomDetailComponent.builder()
+        .somComponent(SomComponentInstance.getSomComponent(application))
+        .somOrderExtensionModule(SomOrderExtensionModule(this))
+        .build()
 
     private fun setWhiteStatusBarBackground() {
         if (GlobalConfig.isSellerApp() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

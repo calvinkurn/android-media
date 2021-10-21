@@ -4,28 +4,36 @@ import android.animation.Animator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
+import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.GestureDetectorCompat
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toPx
 
 abstract class SomBottomSheet <T: ViewBinding> (
-        childViewsLayoutResourceId: Int,
-        private val showOverlay: Boolean,
-        private val showCloseButton: Boolean,
-        private val showKnob: Boolean,
-        private val bottomSheetTitle: String,
-        protected val context: Context,
-        protected var dismissOnClickOverlay: Boolean
+    childViewsLayoutResourceId: Int,
+    private val showOverlay: Boolean,
+    private val showCloseButton: Boolean,
+    private val showKnob: Boolean,
+    private val clearPadding: Boolean,
+    private val draggable: Boolean,
+    private val bottomSheetTitle: String,
+    protected val context: Context,
+    protected var dismissOnClickOverlay: Boolean
 ) {
 
     companion object {
@@ -42,15 +50,19 @@ abstract class SomBottomSheet <T: ViewBinding> (
     private var oneTimeOnDismissed: (() -> Unit)? = {}
 
     protected var binding: T? = null
-
     protected var bottomSheetLayout: View? = null
+    protected var dismissing: Boolean = false
 
+    private val gestureListener = object: GestureDetector.SimpleOnGestureListener() {
+        override fun onSingleTapUp(e: MotionEvent?): Boolean {
+            binding?.root?.hideKeyboard()
+            return true
+        }
+    }
+    private val gestureDetector = GestureDetectorCompat(context, gestureListener)
     @SuppressLint("ClickableViewAccessibility")
     protected val hideKeyboardTouchListener = View.OnTouchListener { _, event ->
-        if (event.action == MotionEvent.ACTION_DOWN) {
-            binding?.root?.hideKeyboard()
-        }
-        false
+        gestureDetector.onTouchEvent(event)
     }
 
     init {
@@ -173,7 +185,10 @@ abstract class SomBottomSheet <T: ViewBinding> (
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
                     BottomSheetBehavior.STATE_HIDDEN -> onBottomSheetHidden()
-                    else -> overlayLayout?.animateFadeIn()
+                    else -> {
+                        dismissing = false
+                        overlayLayout?.animateFadeIn()
+                    }
                 }
             }
         }
@@ -190,6 +205,7 @@ abstract class SomBottomSheet <T: ViewBinding> (
                 addView(root)
             }
             val bottomSheetBehavior = bottomSheetBehavior ?: BottomSheetBehavior.from(this).apply {
+                isDraggable = draggable
                 state = BottomSheetBehavior.STATE_HIDDEN
             }
             val bottomSheetCallback = bottomSheetCallback ?: createBottomSheetCallback()
@@ -208,10 +224,11 @@ abstract class SomBottomSheet <T: ViewBinding> (
         binding?.root?.post { bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED }
     }
 
-    fun dismiss(): Boolean {
-        binding?.root?.hideKeyboard()
+    open fun dismiss(): Boolean {
         requireNotNull(bottomSheetBehavior).apply {
             return if (state != BottomSheetBehavior.STATE_HIDDEN) {
+                dismissing = true
+                binding?.root?.hideKeyboard()
                 state = BottomSheetBehavior.STATE_HIDDEN
                 true
             } else false
@@ -252,6 +269,20 @@ abstract class SomBottomSheet <T: ViewBinding> (
         if (!showKnob) {
             hideKnob()
         }
+        if (clearPadding) {
+            clearSidePadding()
+        }
+    }
+
+    private fun clearSidePadding() {
+        bottomSheetLayout?.findViewById<View>(com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper)
+            ?.setPadding(0, 16.toPx(), 0, 0)
+        (bottomSheetLayout?.findViewById<View>(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)?.layoutParams as? LinearLayout.LayoutParams)?.setMargins(
+            16.toPx(),
+            0,
+            16.toPx(),
+            16.toPx()
+        )
     }
 
     fun setOnDismiss(onDismissed: () -> Unit) {

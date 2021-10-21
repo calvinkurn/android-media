@@ -105,9 +105,11 @@ import com.tokopedia.sellerorder.detail.presentation.model.BaseProductUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
 import com.tokopedia.sellerorder.detail.presentation.model.NonProductBundleUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
+import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
+import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestResultUiModel
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
+import com.tokopedia.sellerorder.orderextension.presentation.bottomsheet.SomBottomSheetOrderExtensionRequest
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
@@ -165,6 +167,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private var bottomSheetBuyerNoResponse: SomBottomSheetBuyerNoResponse? = null
     private var bottomSheetBuyerOtherReason: SomBottomSheetBuyerOtherReason? = null
     private var bottomSheetChangeAwb: SomOrderEditAwbBottomSheet? = null
+    private var bottomSheetOrderExtensionRequest: SomBottomSheetOrderExtensionRequest? = null
 
     protected var bottomSheetSetDelivered: SomBottomSheetSetDelivered? = null
 
@@ -219,8 +222,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
         private const val ERROR_EDIT_AWB = "Error when edit AWB."
         private const val ERROR_REJECT_ORDER = "Error when rejecting order."
         private const val PAGE_NAME = "seller order detail page."
-
-        private const val TAG_BOTTOMSHEET = "bottomSheet"
 
         @JvmStatic
         fun newInstance(bundle: Bundle): SomDetailFragment {
@@ -290,11 +291,8 @@ open class SomDetailFragment : BaseDaggerFragment(),
         observingUserRoles()
         observeRejectCancelOrder()
         observeValidateOrder()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        dismissBottomSheets()
+        observeGetRequestExtensionInfo()
+        observeSendOrderExtensionRequestResult()
     }
 
     override fun onDestroy() {
@@ -947,11 +945,16 @@ open class SomDetailFragment : BaseDaggerFragment(),
                         key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
                         key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredBottomSheet()
                         key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orEmpty()), true)
+                        key.equals("KEY_REQUEST_EXTENSION") -> setActionRequestExtension()
                     }
                 }
             }
         }
         secondaryBottomSheet?.dismiss()
+    }
+
+    private fun setActionRequestExtension() {
+        somDetailViewModel.getSomRequestExtensionInfo(orderId)
     }
 
     private fun setActionChangeCourier() {
@@ -1503,6 +1506,61 @@ open class SomDetailFragment : BaseDaggerFragment(),
         })
     }
 
+    private fun observeGetRequestExtensionInfo() {
+        somDetailViewModel.requestExtensionInfo.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    if (result.data.success) {
+                        onSuccessGetRequestExtensionInfo(result.data)
+                    } else {
+                        onFailedGetRequestExtensionInfo(result.data.errorMessage)
+                    }
+                }
+                is Fail -> result.throwable.showErrorToaster()
+            }
+        }
+    }
+
+    private fun observeSendOrderExtensionRequestResult() {
+        somDetailViewModel.requestExtensionResult.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    if (result.data.success) {
+                        onSuccessSendOrderExtensionRequest(result.data)
+                    } else {
+                        onFailedSendOrderExtensionRequest(result.data.message)
+                    }
+                }
+                is Fail -> {
+                    SomAnalytics.eventFinishSendOrderExtensionRequest(userSession.shopId, orderId, true)
+                    result.throwable.showErrorToaster()
+                }
+            }
+        }
+    }
+
+    private fun onSuccessGetRequestExtensionInfo(data: OrderExtensionRequestInfoUiModel) {
+        view.let { view ->
+            if (view is ViewGroup) {
+                bottomSheetOrderExtensionRequest = reInitOrderExtensionRequestBottomSheet(data)
+                    ?: initOrderExtensionRequestBottomSheet(view.context, data)
+                bottomSheetOrderExtensionRequest?.init(view)
+                bottomSheetOrderExtensionRequest?.show()
+            }
+        }
+    }
+
+    private fun reInitOrderExtensionRequestBottomSheet(data: OrderExtensionRequestInfoUiModel): SomBottomSheetOrderExtensionRequest? {
+        return bottomSheetOrderExtensionRequest?.apply {
+            setOrderId(orderId)
+            setData(data)
+        }
+    }
+
+    private fun initOrderExtensionRequestBottomSheet(context: Context, data: OrderExtensionRequestInfoUiModel): SomBottomSheetOrderExtensionRequest? {
+        return SomBottomSheetOrderExtensionRequest(context, orderId, data, somDetailViewModel)
+    }
+
     private fun onFailedValidateOrder() {
         showToaster(getString(R.string.som_error_validate_order), view, TYPE_ERROR)
     }
@@ -1576,16 +1634,29 @@ open class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
+    protected open fun onFailedGetRequestExtensionInfo(message: String) {
+        loadDetail()
+        showErrorToaster(message)
+    }
+
+    protected open fun onFailedSendOrderExtensionRequest(errorMessage: String) {
+        SomAnalytics.eventFinishSendOrderExtensionRequest(userSession.shopId, orderId, false)
+        dismissBottomSheets()
+        loadDetail()
+        showErrorToaster(errorMessage)
+    }
+
+    protected open fun onSuccessSendOrderExtensionRequest(data: OrderExtensionRequestResultUiModel) {
+        SomAnalytics.eventFinishSendOrderExtensionRequest(userSession.shopId, orderId, true)
+        dismissBottomSheets()
+        loadDetail()
+        showCommonToaster(data.message)
+    }
+
     protected open fun showBackButton(): Boolean = true
 
     protected fun dismissBottomSheets(): Boolean {
         var bottomSheetDismissed = false
-        (fragmentManager?.findFragmentByTag(TAG_BOTTOMSHEET) as? BottomSheetUnify)?.let {
-            if (it.isVisible) {
-                it.dismiss()
-                bottomSheetDismissed = true
-            }
-        }
         bottomSheetDismissed = secondaryBottomSheet?.dismiss() == true || bottomSheetDismissed
         bottomSheetDismissed = orderRequestCancelBottomSheet?.dismiss() == true || bottomSheetDismissed
         bottomSheetDismissed = somRejectReasonBottomSheet?.dismiss() == true || bottomSheetDismissed
@@ -1596,6 +1667,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         bottomSheetDismissed = bottomSheetBuyerOtherReason?.dismiss() == true || bottomSheetDismissed
         bottomSheetDismissed = bottomSheetSetDelivered?.dismiss() == true || bottomSheetDismissed
         bottomSheetDismissed = bottomSheetChangeAwb?.dismiss() == true || bottomSheetDismissed
+        bottomSheetDismissed = bottomSheetOrderExtensionRequest?.dismiss() == true || bottomSheetDismissed
         return bottomSheetDismissed
     }
 

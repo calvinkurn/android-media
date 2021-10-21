@@ -1,0 +1,160 @@
+package com.tokopedia.sellerorder.orderextension.presentation.bottomsheet
+
+import android.annotation.SuppressLint
+import android.content.Context
+import android.view.View
+import android.widget.LinearLayout
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.presenter.SomBottomSheet
+import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
+import com.tokopedia.sellerorder.databinding.BottomsheetOrderExtensionRequestInfoBinding
+import com.tokopedia.sellerorder.orderextension.presentation.adapter.OrderExtensionRequestInfoAdapter
+import com.tokopedia.sellerorder.orderextension.presentation.adapter.itemdecoration.RequestExtensionInfoItemDecoration
+import com.tokopedia.sellerorder.orderextension.presentation.adapter.typefactory.OrderExtensionRequestInfoAdapterTypeFactory
+import com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder.OrderExtensionRequestInfoCommentViewHolder
+import com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder.OrderExtensionRequestInfoOptionViewHolder
+import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
+import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
+import com.tokopedia.unifycomponents.TextAreaUnify2
+import com.tokopedia.unifycomponents.toPx
+
+class SomBottomSheetOrderExtensionRequest(
+    context: Context,
+    private var orderId: String,
+    private var data: OrderExtensionRequestInfoUiModel,
+    private var viewModel: SomDetailViewModel
+) : SomBottomSheet<BottomsheetOrderExtensionRequestInfoBinding>(
+    LAYOUT,
+    true,
+    true,
+    false,
+    true,
+    false,
+    "",
+    context,
+    true
+), OrderExtensionRequestInfoOptionViewHolder.SomRequestExtensionOptionListener,
+    OrderExtensionRequestInfoCommentViewHolder.OrderExtensionRequestInfoCommentListener {
+
+    companion object {
+        private val LAYOUT = R.layout.bottomsheet_order_extension_request_info
+    }
+
+    private var adapter: OrderExtensionRequestInfoAdapter? = null
+    private val smoothScroller by lazy {
+        object : LinearSmoothScroller(context) {
+            override fun getVerticalSnapPreference(): Int {
+                return SNAP_TO_END
+            }
+        }
+    }
+    private val temporaryCommentHolderHelper by lazy {
+        object: OrderExtensionRequestInfoCommentViewHolder.TemporaryCommentHolderHelper() {
+            override fun getTextAreaHolder(): TextAreaUnify2? {
+                return binding?.dummyTextArea
+            }
+        }
+    }
+
+    override fun bind(view: View): BottomsheetOrderExtensionRequestInfoBinding {
+        return BottomsheetOrderExtensionRequestInfoBinding.bind(view)
+    }
+
+    override fun setupChildView() {
+        setupRequestExtensionInfo()
+        setupRequestExtensionButton()
+        setupDismissKeyboardHandler()
+    }
+
+    override fun onBottomSheetHidden() {
+        adapter?.updateItems(emptyList())
+        super.onBottomSheetHidden()
+    }
+
+    override fun show() {
+        (bottomSheetLayout?.findViewById<View>(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)?.layoutParams as? LinearLayout.LayoutParams)?.setMargins(
+            16.toPx(),
+            0,
+            16.toPx(),
+            0.toPx()
+        )
+        super.show()
+    }
+
+    override fun onCommentChange(element: OrderExtensionRequestInfoUiModel.CommentUiModel) {
+        if (!dismissing) {
+            viewModel.updateOrderRequestExtensionInfoOnCommentChanged(element)
+        }
+    }
+
+    override fun onOptionChecked(element: OrderExtensionRequestInfoUiModel.OptionUiModel?) {
+        if (!dismissing) {
+            viewModel.updateOrderRequestExtensionInfoOnSelectedOptionChanged(element)
+        }
+    }
+
+    private fun setupRequestExtensionInfo() {
+        binding?.run {
+            if (rvRequestExtensionInfo.adapter == null) {
+                adapter = adapter ?: OrderExtensionRequestInfoAdapter(
+                    OrderExtensionRequestInfoAdapterTypeFactory(
+                        this@SomBottomSheetOrderExtensionRequest,
+                        this@SomBottomSheetOrderExtensionRequest,
+                        temporaryCommentHolderHelper
+                    )
+                )
+                rvRequestExtensionInfo.adapter = adapter
+            }
+            if (rvRequestExtensionInfo.itemDecorationCount == Int.ZERO) {
+                rvRequestExtensionInfo.addItemDecoration(RequestExtensionInfoItemDecoration())
+            }
+            updateRequestExtensionInfoItemViews()
+        }
+    }
+
+    private fun setupRequestExtensionButton() {
+        binding?.btnSubmitRequestExtension?.run {
+            isLoading = data.processing
+            if (!data.processing) {
+                text = context.getString(R.string.bottomsheet_order_extension_request_button_text)
+            }
+            setOnClickListener {
+                it.hideKeyboard()
+                viewModel.sendOrderExtensionRequest(orderId)
+            }
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupDismissKeyboardHandler() {
+        binding?.rvRequestExtensionInfo?.setOnTouchListener(hideKeyboardTouchListener)
+    }
+
+    private fun updateRequestExtensionInfoItemViews() {
+        binding?.rvRequestExtensionInfo?.post {
+            adapter?.updateItems(data.items.filter { it.show })
+            scrollToRequestFocusItem()
+        }
+    }
+
+    private fun scrollToRequestFocusItem() {
+        binding?.rvRequestExtensionInfo?.post {
+            val requestFocusPosition = adapter?.getRequestFocusItemPosition() ?: RecyclerView.NO_POSITION
+            if (requestFocusPosition != RecyclerView.NO_POSITION) {
+                smoothScroller.targetPosition = requestFocusPosition
+                binding?.rvRequestExtensionInfo?.layoutManager?.startSmoothScroll(smoothScroller)
+            }
+        }
+    }
+
+    fun setOrderId(orderId: String) {
+        this.orderId = orderId
+    }
+
+    fun setData(data: OrderExtensionRequestInfoUiModel) {
+        this.data = data
+    }
+}

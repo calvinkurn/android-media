@@ -18,6 +18,8 @@ import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToRequestPickup
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.detail.data.model.SetDelivered
 import com.tokopedia.sellerorder.detail.di.DaggerSomDetailComponent
+import com.tokopedia.sellerorder.orderextension.di.SomOrderExtensionModule
+import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestResultUiModel
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.unifycomponents.Toaster
 
@@ -45,11 +47,12 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
     }
 
     override fun initInjector() {
-        activity?.application?.let {
+        activity?.let { activity ->
             DaggerSomDetailComponent.builder()
-                    .somComponent(SomComponentInstance.getSomComponent(it))
-                    .build()
-                    .inject(this)
+                .somComponent(SomComponentInstance.getSomComponent(activity.application))
+                .somOrderExtensionModule(SomOrderExtensionModule(activity))
+                .build()
+                .inject(this)
         }
     }
 
@@ -168,6 +171,21 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
         parentFragment?.let {
             goToRequestPickupPage(it, orderId)
         }
+    }
+
+    override fun onFailedGetRequestExtensionInfo(message: String) {
+        shouldRefreshOrderList = true
+        super.onFailedGetRequestExtensionInfo(message)
+    }
+
+    override fun onFailedSendOrderExtensionRequest(errorMessage: String) {
+        shouldRefreshOrderList = true
+        super.onFailedSendOrderExtensionRequest(errorMessage)
+    }
+
+    override fun onSuccessSendOrderExtensionRequest(data: OrderExtensionRequestResultUiModel) {
+        shouldRefreshOrderList = true
+        super.onSuccessSendOrderExtensionRequest(data)
     }
 
     override fun showBackButton(): Boolean = false

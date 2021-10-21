@@ -10,7 +10,7 @@ import com.tokopedia.sellerorder.databinding.BottomsheetSecondaryActionListBindi
 class SomDetailSecondaryActionBottomSheet(
         context: Context,
         private val listener: SomBottomSheetRejectOrderAdapter.ActionListener
-) : SomBottomSheet<BottomsheetSecondaryActionListBinding>(LAYOUT, true, true, false, context.getString(R.string.som_detail_other_bottomsheet_title), context, true) {
+) : SomBottomSheet<BottomsheetSecondaryActionListBinding>(LAYOUT, true, true, false, false, false, context.getString(R.string.som_detail_other_bottomsheet_title), context, true) {
 
     companion object {
         private val LAYOUT = R.layout.bottomsheet_secondary_action_list
