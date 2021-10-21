@@ -356,8 +356,8 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                     show()
                 }
             }
-            binding.badRatingReason.showBadRatingReason(badRatingReasonFmt)
-            binding.badRatingDisclaimerWidget.setDisclaimer(ratingDisclaimer)
+            binding?.reviewDetailBadRatingReason?.showBadRatingReason(badRatingReasonFmt)
+            binding?.reviewDetailBadRatingDisclaimerWidget?.setDisclaimer(ratingDisclaimer)
         }
     }
 

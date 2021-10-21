@@ -21,7 +21,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringListener
-import com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
 import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.toRelativeDate
 import com.tokopedia.review.databinding.FragmentSellerReviewReplyBinding
@@ -137,7 +136,6 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
         observeUpdateReviewReply()
         observeInsertTemplateReviewReply()
         observeLiveData()
-        badRatingReasonWidget = view.findViewById(R.id.review_reply_bad_rating_reason)
     }
 
     override fun getScreenName(): String {
@@ -415,7 +413,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
 
             feedbackUiModel?.let { feedback ->
                 binding?.feedbackItemReplyWidget?.setData(feedback, productReply)
-                binding?.badRatingReasonWidget?.showBadRatingReason(feedback.badRatingReason)
+                binding?.reviewReplyBadRatingReason?.showBadRatingReason(feedback.badRatingReason)
             }
         }
         binding?.reviewReplyTextBoxWidget?.setReplyAction()

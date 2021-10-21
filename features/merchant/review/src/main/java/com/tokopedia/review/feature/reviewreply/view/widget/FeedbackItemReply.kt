@@ -99,7 +99,7 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
     }
 
     private fun setBadRatingReason(reason: String) {
-        binding.badRatingReason.showBadRatingReason(reason)
+        binding.badRatingReasonReview.showBadRatingReason(reason)
     }
 
     override fun onImageItemClicked(imageUrls: List<String>, thumbnailsUrl: List<String>,

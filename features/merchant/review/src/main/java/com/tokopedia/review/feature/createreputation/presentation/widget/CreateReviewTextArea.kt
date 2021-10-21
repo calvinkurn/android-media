@@ -36,7 +36,7 @@ class CreateReviewTextArea : BaseCustomView {
     }
 
     override fun requestFocus(direction: Int, previouslyFocusedRect: Rect?): Boolean {
-        createReviewEditText.requestFocus()
+        binding.createReviewEditText.requestFocus()
         return super.requestFocus(direction, previouslyFocusedRect)
     }
 

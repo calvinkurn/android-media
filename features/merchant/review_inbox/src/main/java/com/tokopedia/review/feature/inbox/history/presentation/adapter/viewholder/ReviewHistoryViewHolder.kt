@@ -5,7 +5,6 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.common.data.ProductrevReviewAttachment
 import com.tokopedia.review.common.util.ReviewAttachedImagesClickListener
@@ -114,6 +113,6 @@ class ReviewHistoryViewHolder(view: View,
     }
 
     private fun showBadRatingReason(badRatingReason: String) {
-        binding.badRatingReason.showBadRatingReason(badRatingReason)
+        binding.reviewHistoryBadRatingReason.showBadRatingReason(badRatingReason)
     }
 }
