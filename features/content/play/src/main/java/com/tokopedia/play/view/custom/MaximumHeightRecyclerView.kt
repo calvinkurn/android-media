@@ -41,10 +41,6 @@ class MaximumHeightRecyclerView : RecyclerView {
         setHasFixedSize(mMaxHeight.toInt() == measuredHeight)
     }
 
-    override fun drawChild(canvas: Canvas?, child: View?, drawingTime: Long): Boolean {
-        return super.drawChild(canvas, child, drawingTime)
-    }
-
     fun setMaxHeight(maxHeight: Float) {
         if (mMaxHeight == maxHeight) return
         setHasFixedSize(false)
