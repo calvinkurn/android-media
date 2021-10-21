@@ -75,8 +75,10 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
     }
 
     fun hideToolbar() {
-        getLinkAccountActivity()?.hideSkipBtnToolbar()
-        getLinkAccountActivity()?.hideToolbar()
+        getLinkAccountActivity()?.run {
+            hideSkipBtnToolbar()
+            hideToolbar()
+        }
     }
 
     fun checkPageFinished() {
