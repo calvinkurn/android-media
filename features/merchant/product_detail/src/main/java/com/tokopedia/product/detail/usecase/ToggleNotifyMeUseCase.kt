@@ -19,7 +19,7 @@ class ToggleNotifyMeUseCase @Inject constructor(private val graphqlRepository: G
           mutation checkCampaignNotifyMe(${'$'}campaignId:Int!, ${'$'}product_id_64:Int64, ${'$'}action:Action!, ${'$'}source:String!){
               checkCampaignNotifyMe(params: {
                 campaign_id: ${'$'}campaignId,
-                product_id_64: ${'$'}productId,
+                product_id_64: ${'$'}product_id_64,
                 action: ${'$'}action,
                 source: ${'$'}source
               }) {
@@ -35,7 +35,7 @@ class ToggleNotifyMeUseCase @Inject constructor(private val graphqlRepository: G
         fun createParams(campaignId: Long, productId: Long, action: String, source: String) =
                 RequestParams().apply {
                     putLong(ProductDetailCommonConstant.PARAM_TEASER_CAMPAIGN_ID, campaignId)
-                    putLong(ProductDetailCommonConstant.PARAM_TEASER_PRODUCT_ID, productId)
+                    putLong(ProductDetailCommonConstant.PARAM_TEASER_PRODUCT_ID_64, productId)
                     putString(ProductDetailCommonConstant.PARAM_TEASER_ACTION, action)
                     putString(ProductDetailCommonConstant.PARAM_TEASER_SOURCE, source)
                 }
