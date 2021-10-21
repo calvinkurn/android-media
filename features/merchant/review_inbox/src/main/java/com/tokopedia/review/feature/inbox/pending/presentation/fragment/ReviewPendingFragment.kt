@@ -23,10 +23,10 @@ import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.ReviewInboxInstance
 import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.common.analytics.ReviewInboxTrackingConstants
@@ -59,7 +59,7 @@ import com.tokopedia.review.inbox.R
 import com.tokopedia.review.inbox.databinding.FragmentReviewPendingBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSucess
@@ -92,7 +92,7 @@ class ReviewPendingFragment :
     private var containerListener: InboxFragmentContainer? = null
     private var reviewPendingPreference: ReviewPendingPreference? = null
 
-    private var binding by autoCleared<FragmentReviewPendingBinding>()
+    private var binding by autoClearedNullable<FragmentReviewPendingBinding>()
 
     override fun getAdapterTypeFactory(): ReviewPendingAdapterTypeFactory {
         return ReviewPendingAdapterTypeFactory(this)
@@ -177,12 +177,12 @@ class ReviewPendingFragment :
 
     override fun startRenderPerformanceMonitoring() {
         reviewPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
-        binding.reviewPendingRecyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
+        binding?.reviewPendingRecyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 reviewPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
                 reviewPerformanceMonitoringListener?.stopPerformanceMonitoring()
-                binding.reviewPendingRecyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                binding?.reviewPendingRecyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
         })
     }
@@ -201,17 +201,17 @@ class ReviewPendingFragment :
             castContextToTalkPerformanceMonitoringListener(context)
     }
 
-    override fun getRecyclerView(view: View?): RecyclerView {
-        return binding.reviewPendingRecyclerView
+    override fun getRecyclerView(view: View?): RecyclerView? {
+        return binding?.reviewPendingRecyclerView
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         binding = FragmentReviewPendingBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -227,8 +227,8 @@ class ReviewPendingFragment :
         observeOvoIncentive()
     }
 
-    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout {
-        return binding.reviewPendingSwipeRefresh
+    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
+        return binding?.reviewPendingSwipeRefresh
     }
 
     override fun onDestroy() {
@@ -347,13 +347,13 @@ class ReviewPendingFragment :
     }
 
     private fun setupErrorPage() {
-        binding.reviewPendingConnectionError.reviewConnectionErrorRetryButton.setOnClickListener {
+        binding?.reviewPendingConnectionError?.reviewConnectionErrorRetryButton?.setOnClickListener {
             getPendingReviewData(ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE, true)
         }
     }
 
     private fun setupEmptyState() {
-        binding.reviewPendingEmpty.apply {
+        binding?.reviewPendingEmpty?.apply {
             reviewEmptyImage.loadImage(ReviewInboxConstants.REVIEW_INBOX_NO_PRODUCTS_BOUGHT_IMAGE)
             reviewEmptyTitle.text = getString(R.string.review_pending_no_product_empty_title)
             reviewEmptySubtitle.text = getString(R.string.review_pending_no_product_empty_content)
@@ -364,35 +364,35 @@ class ReviewPendingFragment :
     }
 
     private fun showError() {
-        binding.reviewPendingConnectionError.root.show()
+        binding?.reviewPendingConnectionError?.root?.show()
     }
 
     private fun hideError() {
-        binding.reviewPendingConnectionError.root.hide()
+        binding?.reviewPendingConnectionError?.root?.hide()
     }
 
     private fun showList() {
-        binding.reviewPendingSwipeRefresh.show()
+        binding?.reviewPendingSwipeRefresh?.show()
     }
 
     private fun hideList() {
-        binding.reviewPendingSwipeRefresh.hide()
+        binding?.reviewPendingSwipeRefresh?.hide()
     }
 
     private fun showEmptyState() {
-        binding.reviewPendingEmpty.root.show()
+        binding?.reviewPendingEmpty?.root?.show()
     }
 
     private fun hideEmptyState() {
-        binding.reviewPendingEmpty.root.hide()
+        binding?.reviewPendingEmpty?.root?.hide()
     }
 
     private fun showFullPageLoading() {
-        binding.reviewPendingLoading.root.show()
+        binding?.reviewPendingLoading?.root?.show()
     }
 
     private fun hideFullPageLoading() {
-        binding.reviewPendingLoading.root.hide()
+        binding?.reviewPendingLoading?.root?.hide()
     }
 
     private fun showErrorToaster(errorMessage: String, ctaText: String, action: () -> Unit = {}) {

@@ -53,7 +53,7 @@ import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 /**
@@ -93,7 +93,7 @@ class SellerReviewDetailFragment :
         )
     }
 
-    private var binding by autoCleared<FragmentSellerReviewDetailBinding>()
+    private var binding by autoClearedNullable<FragmentSellerReviewDetailBinding>()
 
     private val sellerReviewDetailTypeFactory by lazy {
         SellerReviewDetailAdapterTypeFactory(this, this, this, this)
@@ -170,9 +170,9 @@ class SellerReviewDetailFragment :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         binding = FragmentSellerReviewDetailBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -207,8 +207,8 @@ class SellerReviewDetailFragment :
     override fun loadInitialData() {
         isLoadingInitialData = true
         reviewSellerDetailAdapter.clearAllElements()
-        binding.rvRatingDetail.show()
-        binding.globalErrorReviewDetail.hide()
+        binding?.rvRatingDetail?.show()
+        binding?.globalErrorReviewDetail?.hide()
         showLoading()
         viewModelProductReviewDetail?.getProductRatingDetail(
             productID,
@@ -259,12 +259,12 @@ class SellerReviewDetailFragment :
 
     override fun startRenderPerformanceMonitoring() {
         reviewSellerPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
-        binding.rvRatingDetail.viewTreeObserver.addOnGlobalLayoutListener(object :
+        binding?.rvRatingDetail?.viewTreeObserver?.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 reviewSellerPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
                 reviewSellerPerformanceMonitoringListener?.stopPerformanceMonitoring()
-                binding.rvRatingDetail.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                binding?.rvRatingDetail?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
         })
     }
@@ -280,7 +280,7 @@ class SellerReviewDetailFragment :
     private fun initToolbar() {
         activity?.run {
             (this as? AppCompatActivity)?.run {
-                setSupportActionBar(binding.reviewDetailToolbar)
+                setSupportActionBar(binding?.reviewDetailToolbar)
                 supportActionBar?.setDisplayHomeAsUpEnabled(true)
                 supportActionBar?.setDisplayShowTitleEnabled(true)
                 setHasOptionsMenu(true)
@@ -360,8 +360,8 @@ class SellerReviewDetailFragment :
         )
     }
 
-    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout {
-        return binding.swipeToRefreshLayoutDetail
+    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
+        return binding?.swipeToRefreshLayoutDetail
     }
 
     override fun onSwipeRefresh() {
@@ -392,7 +392,7 @@ class SellerReviewDetailFragment :
                     )
 
                     toolbarTitle = it.data.second
-                    binding.reviewDetailToolbar.title = toolbarTitle
+                    binding?.reviewDetailToolbar?.title = toolbarTitle
 
                     renderList(it.data.first, it.data.third)
                     coachMarkShow()
@@ -434,7 +434,7 @@ class SellerReviewDetailFragment :
         swipeToRefresh?.isRefreshing = false
         val feedbackReviewCount = reviewSellerDetailAdapter.list.count { it is FeedbackUiModel }
         if (feedbackReviewCount == 0) {
-            binding.globalErrorReviewDetail.apply {
+            binding?.globalErrorReviewDetail?.apply {
                 setType(GlobalError.SERVER_ERROR)
                 setActionClickListener {
                     loadInitialData()
@@ -442,7 +442,7 @@ class SellerReviewDetailFragment :
                 show()
             }
             reviewSellerDetailAdapter.removeReviewNotFound()
-            binding.rvRatingDetail.hide()
+            binding?.rvRatingDetail?.hide()
         } else {
             onErrorLoadMoreToaster(
                 getString(R.string.error_message_load_more_review_product),

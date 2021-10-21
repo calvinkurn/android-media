@@ -59,7 +59,7 @@ import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTypeFactory>(),
@@ -84,7 +84,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     @Inject
     lateinit var inboxReviewPreference: InboxReviewPreference
 
-    private var binding by autoCleared<FragmentInboxReviewBinding>()
+    private var binding by autoClearedNullable<FragmentInboxReviewBinding>()
 
     private val inboxReviewViewModel: InboxReviewViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(InboxReviewViewModel::class.java)
@@ -129,9 +129,9 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+                              savedInstanceState: Bundle?): View? {
         binding = FragmentInboxReviewBinding.inflate(inflater, container, true)
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -173,7 +173,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     override fun onItemClicked(t: Visitable<*>?) {}
 
     override fun loadInitialData() {
-        binding.sortFilterInboxReview.hide()
+        binding?.sortFilterInboxReview?.hide()
         isLoadingInitialData = true
         statusFilter = UNANSWERED_VALUE
         endlessRecyclerViewScrollListener?.resetState()
@@ -206,8 +206,8 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         }
     }
 
-    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout {
-        return binding.inboxReviewSwipeToRefresh
+    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
+        return binding?.inboxReviewSwipeToRefresh
     }
 
     override fun onSwipeRefresh() {
@@ -216,8 +216,8 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         loadInitialData()
     }
 
-    override fun getRecyclerView(view: View?): RecyclerView {
-        return binding.rvInboxReview
+    override fun getRecyclerView(view: View?): RecyclerView? {
+        return binding?.rvInboxReview
     }
 
     override fun onItemReplyOrEditClicked(data: FeedbackInboxUiModel, isEmptyReply: Boolean, adapterPosition: Int) {
@@ -294,7 +294,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     }
 
     override fun onBackgroundMarginIsReplied(isNotReplied: Boolean) {
-        val paramsMargin = binding.sortFilterInboxReview.layoutParams as? LinearLayout.LayoutParams
+        val paramsMargin = binding?.sortFilterInboxReview?.layoutParams as? LinearLayout.LayoutParams
         if (isNotReplied) {
             paramsMargin?.bottomMargin = 8.toPx()
         } else {
@@ -337,14 +337,14 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     }
 
     private fun setupMarginSortFilter() {
-        if (!binding.tickerInboxReview.isVisible) {
-            val sortFilterMargin = binding.sortFilterInboxReview.layoutParams as? LinearLayout.LayoutParams
+        if (binding?.tickerInboxReview?.isVisible == false) {
+            val sortFilterMargin = binding?.sortFilterInboxReview?.layoutParams as? LinearLayout.LayoutParams
             sortFilterMargin?.topMargin = 16.toPx()
         }
     }
 
     private fun setupViewInteraction(){
-        binding.buttonReviewReminder.setOnClickListener {
+        binding?.buttonReviewReminder?.setOnClickListener {
             RouteManager.route(context, ApplinkConstInternalSellerapp.REVIEW_REMINDER)
         }
     }
@@ -381,7 +381,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     }
 
     private fun setButtonReviewReminder(counter: Int = 0) {
-        binding.buttonReviewReminder.text = if (counter > 0) {
+        binding?.buttonReviewReminder?.text = if (counter > 0) {
             getString(R.string.review_reminder_button_review_reminder_with_counter, counter)
         } else getString(R.string.review_reminder_button_review_reminder)
     }
@@ -427,7 +427,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     private fun initTickerInboxReview() {
         prefs?.let {
             if (!it.getBoolean(ReviewConstants.HAS_TICKER_INBOX_REVIEW, false)) {
-                binding.tickerInboxReview.apply {
+                binding?.tickerInboxReview?.apply {
                     setTextDescription(getString(R.string.ticker_inbox_review))
                     show()
                     setDescriptionClickEvent(object : TickerCallback {
@@ -440,7 +440,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                     })
                 }
             } else {
-                binding.tickerInboxReview.hide()
+                binding?.tickerInboxReview?.hide()
             }
         }
     }
@@ -449,7 +449,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         inboxReviewUiModel = data
         feedbackInboxList = data.feedbackInboxList.toMutableList()
         swipeToRefresh?.isRefreshing = false
-        binding.sortFilterInboxReview.show()
+        binding?.sortFilterInboxReview?.show()
 
         if (isUnAnsweredHasNextFalse(data)) {
             statusFilter = ANSWERED_VALUE
@@ -461,7 +461,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
              * case 3 : if adapter is empty && data is not empty in answered parameter, request lazy load using answered parameter
              **/
             if (data.feedbackInboxList.isEmpty()) {
-                binding.sortFilterInboxReview.hide()
+                binding?.sortFilterInboxReview?.hide()
                 isLoadingInitialData = true
                 inboxReviewAdapter.clearAllElements()
                 hideLoading()
@@ -473,10 +473,10 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             }
         } else {
             if (data.feedbackInboxList.isEmpty() && isFilter && data.page == 1) {
-                binding.sortFilterInboxReview.show()
+                binding?.sortFilterInboxReview?.show()
                 inboxReviewAdapter.addInboxFeedbackEmpty(true)
             } else if (data.feedbackInboxList.isEmpty() && !isFilter && data.page == 1) {
-                binding.sortFilterInboxReview.show()
+                binding?.sortFilterInboxReview?.show()
                 inboxReviewAdapter.clearAllElements()
                 inboxReviewAdapter.addInboxFeedbackEmpty(false)
             } else {
@@ -521,7 +521,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             )
         })
 
-        binding.sortFilterInboxReview.apply {
+        binding?.sortFilterInboxReview?.apply {
             addItem(itemSortFilterList)
             filterType = SortFilter.TYPE_QUICK
             dismissListener = {
@@ -549,7 +549,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     private fun resetAllFiltersUnselected() {
         val positionRatingFilter = 0
-        binding.sortFilterInboxReview.hide()
+        binding?.sortFilterInboxReview?.hide()
         isLoadingInitialData = true
         inboxReviewAdapter.clearAllElements()
         inboxReviewAdapter.showLoading()
@@ -575,7 +575,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
 
     private fun onRatingFilterSelected(filterRatingList: List<ListItemRatingWrapper>) {
         val countSelected = inboxReviewViewModel.getRatingFilterListUpdated().filter { it.isSelected }.count()
-        binding.sortFilterInboxReview.hide()
+        binding?.sortFilterInboxReview?.hide()
         endlessRecyclerViewScrollListener?.resetState()
         updatedFilterRatingInboxReview(filterRatingList)
         selectedRatingsFilter(countSelected)
@@ -615,7 +615,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             InboxReviewTracking.eventClickHasBeenRepliedFilter(quickFilter, isActive.toString(), inboxReviewViewModel.userSession.shopId.orEmpty())
         }
 
-        binding.sortFilterInboxReview.hide()
+        binding?.sortFilterInboxReview?.hide()
         inboxReviewAdapter.clearAllElements()
         inboxReviewAdapter.showLoading()
 

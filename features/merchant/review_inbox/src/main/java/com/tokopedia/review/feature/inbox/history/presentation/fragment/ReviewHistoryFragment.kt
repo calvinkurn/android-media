@@ -38,7 +38,7 @@ import com.tokopedia.review.feature.inbox.history.presentation.viewmodel.ReviewH
 import com.tokopedia.review.inbox.R
 import com.tokopedia.review.inbox.databinding.FragmentReviewHistoryBinding
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class ReviewHistoryFragment :
@@ -55,7 +55,7 @@ class ReviewHistoryFragment :
     @Inject
     lateinit var viewModel: ReviewHistoryViewModel
 
-    private var binding by autoCleared<FragmentReviewHistoryBinding>()
+    private var binding by autoClearedNullable<FragmentReviewHistoryBinding>()
 
     override fun getComponent(): ReviewHistoryComponent? {
         return activity?.run {
@@ -66,8 +66,8 @@ class ReviewHistoryFragment :
         }
     }
 
-    override fun getRecyclerView(view: View?): RecyclerView {
-        return binding.reviewHistoryRecyclerView.apply {
+    override fun getRecyclerView(view: View?): RecyclerView? {
+        return binding?.reviewHistoryRecyclerView?.apply {
             itemAnimator = null
         }
     }
@@ -76,9 +76,9 @@ class ReviewHistoryFragment :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         binding = FragmentReviewHistoryBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -133,8 +133,8 @@ class ReviewHistoryFragment :
         return ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE
     }
 
-    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout {
-        return binding.reviewHistorySwipeRefresh
+    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
+        return binding?.reviewHistorySwipeRefresh
     }
 
     override fun onAttachedImagesClicked(
@@ -164,7 +164,7 @@ class ReviewHistoryFragment :
     }
 
     private fun initSearchBar() {
-        binding.reviewHistorySearchBar.searchBarTextField.apply {
+        binding?.reviewHistorySearchBar?.searchBarTextField?.apply {
             addTextChangedListener(
                 SearchTextWatcher(
                     searchTextView = this,
@@ -255,29 +255,29 @@ class ReviewHistoryFragment :
     }
 
     private fun showError() {
-        binding.reviewHistoryConnectionError.root.show()
+        binding?.reviewHistoryConnectionError?.root?.show()
     }
 
     private fun hideError() {
-        binding.reviewHistoryConnectionError.root.hide()
+        binding?.reviewHistoryConnectionError?.root?.hide()
     }
 
     private fun showPageLoading() {
-        binding.reviewHistoryLoading.root.show()
+        binding?.reviewHistoryLoading?.root?.show()
     }
 
     private fun hidePageLoading() {
-        binding.reviewHistoryLoading.root.hide()
+        binding?.reviewHistoryLoading?.root?.hide()
     }
 
     private fun showList() {
-        binding.reviewHistorySearchBar.show()
-        binding.reviewHistorySwipeRefresh.show()
+        binding?.reviewHistorySearchBar?.show()
+        binding?.reviewHistorySwipeRefresh?.show()
     }
 
     private fun hideList() {
-        binding.reviewHistorySearchBar.hide()
-        binding.reviewHistorySwipeRefresh.hide()
+        binding?.reviewHistorySearchBar?.hide()
+        binding?.reviewHistorySwipeRefresh?.hide()
     }
 
     private fun renderReviewData(reviewData: List<ReviewHistoryUiModel>, hasNextPage: Boolean) {
@@ -286,8 +286,8 @@ class ReviewHistoryFragment :
     }
 
     private fun showEmptySearchResult() {
-        binding.reviewHistorySearchBar.show()
-        binding.reviewHistoryEmpty.apply {
+        binding?.reviewHistorySearchBar?.show()
+        binding?.reviewHistoryEmpty?.apply {
             reviewEmptyImage.loadImage(ReviewInboxConstants.REVIEW_INBOX_NO_PRODUCTS_SEARCH_IMAGE)
             reviewEmptyTitle.text =
                 getString(R.string.review_history_no_product_search_result_title)
@@ -295,27 +295,27 @@ class ReviewHistoryFragment :
             reviewEmptyButton.hide()
             root.show()
         }
-        binding.reviewHistorySwipeRefresh.hide()
+        binding?.reviewHistorySwipeRefresh?.hide()
     }
 
     private fun showNoProductEmpty() {
-        binding.reviewHistoryEmpty.apply {
+        binding?.reviewHistoryEmpty?.apply {
             reviewEmptyImage.loadImage(ReviewInboxConstants.REVIEW_INBOX_NO_PRODUCTS_BOUGHT_IMAGE)
             reviewEmptyTitle.text = getString(R.string.review_history_no_review_history_title)
             reviewEmptySubtitle.text = getString(R.string.review_history_no_review_history_content)
             reviewEmptyButton.hide()
             root.show()
         }
-        binding.reviewHistorySearchBar.hide()
-        binding.reviewHistorySwipeRefresh.hide()
+        binding?.reviewHistorySearchBar?.hide()
+        binding?.reviewHistorySwipeRefresh?.hide()
     }
 
     private fun hideEmptyState() {
-        binding.reviewHistoryEmpty.root.hide()
+        binding?.reviewHistoryEmpty?.root?.hide()
     }
 
     private fun setupErrorPage() {
-        binding.reviewHistoryConnectionError.reviewConnectionErrorRetryButton.setOnClickListener {
+        binding?.reviewHistoryConnectionError?.reviewConnectionErrorRetryButton?.setOnClickListener {
             loadInitialData()
         }
     }

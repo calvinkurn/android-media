@@ -18,6 +18,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
@@ -37,7 +38,7 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class ReviewDetailFragment : BaseDaggerFragment(),
@@ -68,7 +69,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
     private var reviewConnectionErrorRetryButton: UnifyButton? = null
 
-    private var binding by autoCleared<FragmentReviewDetailBinding>()
+    private var binding by autoClearedNullable<FragmentReviewDetailBinding>()
 
     override fun stopPreparePerfomancePageMonitoring() {
         reviewPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
@@ -84,12 +85,12 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     override fun startRenderPerformanceMonitoring() {
         reviewPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
-        binding.reviewDetailScrollView.viewTreeObserver.addOnGlobalLayoutListener(object :
+        binding?.reviewDetailScrollView?.viewTreeObserver?.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 reviewPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
                 reviewPerformanceMonitoringListener?.stopPerformanceMonitoring()
-                binding.reviewDetailScrollView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                binding?.reviewDetailScrollView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
         })
     }
@@ -130,10 +131,10 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         getDataFromArguments()
         binding = FragmentReviewDetailBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -268,7 +269,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                     )
                 }
                 is LoadingView -> {
-                    binding.reviewHistoryDetailReputation.showLoading()
+                    binding?.reviewHistoryDetailReputation?.showLoading()
                 }
             }
         })
@@ -276,7 +277,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     private fun setProduct(product: ProductrevGetReviewDetailProduct, feedbackId: String) {
         with(product) {
-            binding.reviewDetailProductCard.setOnClickListener {
+            binding?.reviewDetailProductCard?.setOnClickListener {
                 ReviewDetailTracking.eventClickProductCard(
                     productId,
                     feedbackId,
@@ -284,10 +285,10 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                 )
                 goToPdp(productId)
             }
-            binding.reviewDetailProductImage.loadImage(productImageUrl)
-            binding.reviewDetailProductName.text = productName
+            binding?.reviewDetailProductImage?.loadImage(productImageUrl)
+            binding?.reviewDetailProductName?.text = productName
             if (productVariantName.isNotBlank()) {
-                binding.reviewDetailProductVariant.apply {
+                binding?.reviewDetailProductVariant?.apply {
                     text = getString(R.string.review_pending_variant, productVariantName)
                     show()
                 }
@@ -297,11 +298,11 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     private fun setReview(review: ProductrevGetReviewDetailReview, productName: String) {
         with(review) {
-            binding.reviewDetailStars.apply {
+            binding?.reviewDetailStars?.apply {
                 setImageResource(getReviewStar(rating))
                 show()
             }
-            binding.reviewDetailName.apply {
+            binding?.reviewDetailName?.apply {
                 context?.let {
                     text = if (sentAsAnonymous) {
                         HtmlLinkHelper(
@@ -319,21 +320,21 @@ class ReviewDetailFragment : BaseDaggerFragment(),
             }
             addHeaderIcons(editable)
             if (attachments.isNotEmpty()) {
-                binding.reviewDetailAttachedImages.apply {
+                binding?.reviewDetailAttachedImages?.apply {
                     setImages(attachments, productName, this@ReviewDetailFragment)
                     show()
                 }
             } else {
-                binding.reviewDetailAttachedImages.hide()
+                binding?.reviewDetailAttachedImages?.hide()
             }
-            binding.reviewDetailDate.setTextAndCheckShow(
+            binding?.reviewDetailDate?.setTextAndCheckShow(
                 getString(
                     R.string.review_date,
                     reviewTimeFormatted
                 )
             )
             if (reviewText.isEmpty()) {
-                binding.reviewDetailContent.apply {
+                binding?.reviewDetailContent?.apply {
                     text = getString(R.string.no_reviews_yet)
                     setTextColor(
                         ContextCompat.getColor(
@@ -344,7 +345,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                     show()
                 }
             } else {
-                binding.reviewDetailContent.apply {
+                binding?.reviewDetailContent?.apply {
                     text = reviewText
                     setTextColor(
                         ContextCompat.getColor(
@@ -360,10 +361,10 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     private fun setResponse(response: ProductrevGetReviewDetailResponse) {
         if (response.responseText.isEmpty()) {
-            binding.reviewDetailResponse.hide()
+            binding?.reviewDetailResponse?.hide()
             return
         }
-        binding.reviewDetailResponse.apply {
+        binding?.reviewDetailResponse?.apply {
             setContent(response)
             show()
         }
@@ -371,7 +372,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     private fun setReputation(reputation: ProductrevGetReviewDetailReputation, shopName: String) {
         with(reputation) {
-            binding.reviewHistoryDetailReputation.apply {
+            binding?.reviewHistoryDetailReputation?.apply {
                 resetState()
                 setReviewScoreClickListener(this@ReviewDetailFragment)
                 when {
@@ -409,14 +410,14 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     private fun setTicker(isEditable: Boolean) {
         if (isEditable) {
-            binding.reviewDetailTicker.apply {
+            binding?.reviewDetailTicker?.apply {
                 tickerType = Ticker.TYPE_ANNOUNCEMENT
                 tickerTitle = getString(R.string.review_history_details_ticker_editable_title)
                 setTextDescription(getString(R.string.review_history_details_ticker_editable_subtitle))
             }
             return
         }
-        binding.reviewDetailTicker.apply {
+        binding?.reviewDetailTicker?.apply {
             tickerType = Ticker.TYPE_INFORMATION
             tickerTitle = ""
             setTextDescription(getString(R.string.review_history_details_ticker_uneditable_subtitle))
@@ -429,7 +430,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     }
 
     private fun initHeader() {
-        binding.reviewDetailHeader.apply {
+        binding?.reviewDetailHeader?.apply {
             title = getString(R.string.review_history_details_toolbar)
             setNavigationOnClickListener {
                 activity?.onBackPressed()
@@ -444,7 +445,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     }
 
     private fun addHeaderIcons(editable: Boolean) {
-        binding.reviewDetailHeader.apply {
+        binding?.reviewDetailHeader?.apply {
             clearIcons()
             addRightIcon(R.drawable.ic_history_details_share)
             rightIcons?.firstOrNull()?.setOnClickListener {
@@ -477,19 +478,19 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     }
 
     private fun showError() {
-        binding.reviewDetailConnectionError.root.show()
+        binding?.reviewDetailConnectionError?.root?.show()
     }
 
     private fun hideError() {
-        binding.reviewDetailConnectionError.root.hide()
+        binding?.reviewDetailConnectionError?.root?.hide()
     }
 
     private fun showLoading() {
-        binding.reviewDetailShimmer.root.show()
+        binding?.reviewDetailShimmer?.root?.show()
     }
 
     private fun hideLoading() {
-        binding.reviewDetailShimmer.root.hide()
+        binding?.reviewDetailShimmer?.root?.hide()
     }
 
     private fun goToEditForm() {
@@ -551,7 +552,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     }
 
     private fun clearIcons() {
-        binding.reviewDetailHeader.rightContentView.removeAllViews()
+        binding?.reviewDetailHeader?.rightContentView?.removeAllViews()
     }
 
     private fun onSuccessEditForm() {
