@@ -209,7 +209,8 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
                 NavToolbarTracking.clickNavToolbarComponent(
                         pageName = topNavComponentListener.getPageName(),
                         componentName = iconToolbar.name,
-                        userId = topNavComponentListener.getUserId()
+                        userId = topNavComponentListener.getUserId(),
+                        counter = iconToolbar.badgeCounter
                 )
             }
             iconToolbar.onIconClicked.invoke()

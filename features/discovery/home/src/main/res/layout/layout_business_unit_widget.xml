@@ -11,18 +11,30 @@
         android:visibility="gone"
         tools:visibility="visible"
         tools:background="@color/Unify_Static_Black"/>
+    <com.tokopedia.home_component.customview.DynamicChannelHeaderView
+        android:id="@+id/home_component_header_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
     <com.tokopedia.unifycomponents.ContainerUnify
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/container_unify"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_layout"
+        <View
+            android:id="@+id/divider"
             android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/Unify_NN300"
+            />
+        <com.tokopedia.unifycomponents.TabsUnify
+            android:id="@+id/tab_layout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
             app:tabBackground="@color/Unify_N0"
+            app:tabPaddingBottom="@dimen/dp_6"
             app:tabIndicatorColor="@color/Unify_G500"
             app:tabSelectedTextColor="@color/Unify_G500"
             app:tabTextColor="@color/Unify_N200"/>
