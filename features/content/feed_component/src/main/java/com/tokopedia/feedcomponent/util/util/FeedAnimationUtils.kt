@@ -162,7 +162,7 @@ fun showViewWithSlideAnimation(view: ViewGroup) {
 fun showViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
     val anim = ValueAnimator.ofInt(
         layoutLihatProdukParent.measuredWidth,
-        convertDpToPixel(120F, context)
+        convertDpToPixel(100F, context)
     )
     anim.addUpdateListener { valueAnimator ->
         val vv = valueAnimator.animatedValue as Int
@@ -176,7 +176,7 @@ fun showViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
 }
 
 fun hideViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
-    val anim = ValueAnimator.ofInt(convertDpToPixel(120F, context), convertDpToPixel(24F, context))
+    val anim = ValueAnimator.ofInt(convertDpToPixel(100F, context), convertDpToPixel(24F, context))
     anim.cancel()
     anim.addUpdateListener { valueAnimator ->
         val vv = valueAnimator.animatedValue as Int
@@ -185,12 +185,12 @@ fun hideViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
         layoutParams.width = vv
         layoutLihatProdukParent.layoutParams = layoutParams
     }
-    anim.duration = 0
+    anim.duration = 300
     anim.start()
 }
 
 fun hideViewWithoutAnimation(layoutLihatProdukParent: View, context: Context) {
-    val anim = ValueAnimator.ofInt(convertDpToPixel(120F, context), convertDpToPixel(24F, context))
+    val anim = ValueAnimator.ofInt(convertDpToPixel(100F, context), convertDpToPixel(24F, context))
     anim.cancel()
     anim.addUpdateListener { valueAnimator ->
         val vv = valueAnimator.animatedValue as Int

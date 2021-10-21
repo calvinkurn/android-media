@@ -901,10 +901,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                                 productTagBubbleShowing = item.showExpandedView()
                                             }
                                         }
-                                        if (layoutLihatProdukParent.width.toDp() == 24) {
-                                            showViewWithAnimation(layoutLihatProdukParent, context)
-                                        } else if (!productTagBubbleShowing && layoutLihatProdukParent.width.toDp() == 120) {
-                                            hideViewWithAnimation(layoutLihatProdukParent, context)
+                                        if (tagProducts.isNotEmpty()) {
+                                            if (layoutLihatProdukParent.width.toDp() == 24  ) {
+                                                showViewWithAnimation(layoutLihatProdukParent, context)
+                                            } else if (!productTagBubbleShowing && layoutLihatProdukParent.width.toDp() == 100) {
+                                                hideViewWithoutAnimation(layoutLihatProdukParent, context)
+                                            }
                                         }
                                         return true
                                     }
@@ -1414,16 +1416,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     item.resetView()
                 }
             }
-            layoutLihatProdukParent.clearAnimation()
-            layoutLihatProdukParent.animation = null
-            val la= layoutLihatProdukParent.layoutParams
-            la.width = context.resources.getDimensionPixelOffset(R.dimen.dp_24)
-            layoutLihatProdukParent.layoutParams = la
+            if (tagProducts.isEmpty()) {
+                layoutLihatProdukParent.gone()
+            }
+
             if (handlerAnim == null) {
                 handlerAnim = handlerFeed
             }
             if (tagProducts.isNotEmpty()) {
-                hideViewWithoutAnimation(layoutLihatProdukParent,context)
                 handlerAnim?.postDelayed({
                     showViewWithAnimation(layoutLihatProdukParent, context)
                 }, TIME_SECOND)
@@ -1431,9 +1431,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             if (handlerHide == null) {
                 handlerHide = handlerFeed
             }
-                if (!shouldContinueToShowLihatProduct(layout)) {
+                if (!shouldContinueToShowLihatProduct(layout) && tagProducts.isNotEmpty()) {
                     handlerHide?.postDelayed({
-                    hideViewWithAnimation(layoutLihatProdukParent, context)
+                    hideViewWithoutAnimation(layoutLihatProdukParent, context)
                 }, TIME_FOUR_SEC)
                 }
         }
