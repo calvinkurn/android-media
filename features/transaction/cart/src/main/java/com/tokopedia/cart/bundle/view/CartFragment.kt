@@ -1017,7 +1017,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun checkGoToShipment(message: String?) {
-        Log.i("qwertyuiop", "button clicked")
         if (message.isNullOrEmpty()) {
             val redStatePromo = ArrayList<String>()
             if (dPresenter.isLastApplyValid()) {
@@ -1656,7 +1655,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (isAdded) {
             binding?.vDisabledGoToCourierPageButton?.gone()
             binding?.goToCourierPageButton?.isEnabled = true
-            Log.i("qwertyuiop", "button enabled")
             binding?.goToCourierPageButton?.setOnClickListener { checkGoToShipment("") }
         }
     }

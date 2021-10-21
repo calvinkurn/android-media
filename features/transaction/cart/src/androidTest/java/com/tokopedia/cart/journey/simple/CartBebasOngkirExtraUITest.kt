@@ -2,9 +2,9 @@ package com.tokopedia.cart.journey.simple
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.cart.CartActivity
 import com.tokopedia.cart.robot.cartPage
 import com.tokopedia.cart.test.R
-import com.tokopedia.cart.old.OldCartActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
@@ -17,7 +17,7 @@ import org.junit.Test
 class CartBebasOngkirExtraUITest {
 
     @get:Rule
-    var activityRule = object : IntentsTestRule<OldCartActivity>(OldCartActivity::class.java, false, false) {
+    var activityRule = object : IntentsTestRule<CartActivity>(CartActivity::class.java, false, false) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             InstrumentationAuthHelper.loginInstrumentationTestUser1()

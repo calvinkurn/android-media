@@ -1,6 +1,5 @@
 package com.tokopedia.cart.journey.analytics
 
-import android.util.Log
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.intent.rule.IntentsTestRule
@@ -51,14 +50,7 @@ class CartAnalyticsTest {
         activityRule.launchActivity(null)
 
         cartPage {
-            Log.i("qwertyuiop", "waiting")
-            waitForData()
-            Log.i("qwertyuiop", "start click button")
             clickBuyButton()
-            Log.i("qwertyuiop", "done click button")
-            Log.i("qwertyuiop", "start click button 2")
-            clickBuyButton()
-            Log.i("qwertyuiop", "done click button 2")
             waitForData()
         } validateAnalytics  {
             hasPassedAnalytics(cassavaRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)

@@ -9,7 +9,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
@@ -172,11 +171,35 @@ class CartPageRobot {
     }
 
     fun clickPromoButton() {
-        onView(withId(R.id.promo_checkout_btn_cart)).perform(ViewActions.click())
+        onView(withId(R.id.promo_checkout_btn_cart)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(object : ViewAction {
+            override fun getConstraints(): Matcher<View> {
+                return ViewMatchers.isDisplayed()
+            }
+
+            override fun getDescription(): String {
+                return "click promo button"
+            }
+
+            override fun perform(uiController: UiController?, view: View?) {
+                view?.performClick()
+            }
+        })
     }
 
     fun clickBuyButton() {
-        onView(withId(R.id.go_to_courier_page_button)).perform(ViewActions.click())
+        onView(withId(R.id.go_to_courier_page_button)).perform(object : ViewAction {
+            override fun getConstraints(): Matcher<View> {
+                return ViewMatchers.isDisplayed()
+            }
+
+            override fun getDescription(): String {
+                return "click buy button"
+            }
+
+            override fun perform(uiController: UiController?, view: View?) {
+                view?.performClick()
+            }
+        })
     }
 
     infix fun validateAnalytics(func: ResultRobot.() -> Unit): ResultRobot {

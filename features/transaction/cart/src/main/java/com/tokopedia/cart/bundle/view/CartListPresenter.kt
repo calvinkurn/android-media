@@ -145,7 +145,6 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 return
             }
 
-            Log.i("qwertyuiop", "start increment")
             CartIdlingResource.increment()
             if (initialLoad) {
                 it.renderLoadGetCartData()
@@ -166,6 +165,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     }
 
     private fun onErrorGetCartList(throwable: Throwable, initialLoad: Boolean) {
+        throwable.printStackTrace()
         Timber.e(throwable)
         view?.let {
             if (!initialLoad) {
@@ -195,7 +195,6 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             it.renderLoadGetCartDataFinish()
             it.renderInitialGetCartListDataSuccess(cartData)
             it.stopCartPerformanceTrace()
-            Log.i("qwertyuiop", "start decrement")
             CartIdlingResource.decrement()
         }
     }
@@ -296,6 +295,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 }
 
                 it.showProgressLoading()
+                CartIdlingResource.increment()
             }
 
             val cartItemDataList: List<CartItemHolderData> = if (fireAndForget) {
@@ -314,7 +314,6 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                     updateCartUseCase.execute(onSuccess = {}, onError = {})
                     return@let
                 } else {
-                    Log.i("qwertyuiop", "start update")
                     updateCartUseCase.setParams(updateCartRequestList)
                     updateCartUseCase.execute(
                             onSuccess = {
@@ -359,7 +358,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 }
                 CartLogger.logOnErrorUpdateCartForCheckout(MessageErrorException(updateCartV2Data.data.error), cartItemDataList)
             }
-            Log.i("qwertyuiop", "done update")
+            CartIdlingResource.decrement()
         }
     }
 
