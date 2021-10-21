@@ -2406,16 +2406,6 @@ class ProductListPresenter @Inject constructor(
         searchParameter: Map<String, Any>,
         savedOptionList: List<SavedOption>,
     ) {
-        saveLastFilter(
-            searchParameter,
-            savedOptionList,
-        )
-    }
-
-    private fun saveLastFilter(
-        searchParameter: Map<String, Any>,
-        savedOptionList: List<SavedOption>,
-    ) {
         val saveLastFilterInput = SaveLastFilterInput(
             lastFilter = savedOptionList,
             mapParameter = createInitializeSearchParam(searchParameter).parameters,
@@ -2426,11 +2416,19 @@ class ProductListPresenter @Inject constructor(
         requestParams.putObject(INPUT_PARAMS, saveLastFilterInput)
 
         saveLastFilterUseCase.get().unsubscribe()
-        saveLastFilterUseCase.get().execute(requestParams, Subscribers.empty())
+        saveLastFilterUseCase.get().execute(requestParams, emptySubscriber())
+    }
+
+    private fun <T> emptySubscriber() = object : Subscriber<T>() {
+        override fun onCompleted() {}
+
+        override fun onError(e: Throwable?) {}
+
+        override fun onNext(t: T?) {}
     }
 
     override fun closeLastFilter(searchParameter: Map<String, Any>) {
-        saveLastFilter(searchParameter, listOf())
+        updateLastFilter(searchParameter, listOf())
     }
 
     override fun detachView() {

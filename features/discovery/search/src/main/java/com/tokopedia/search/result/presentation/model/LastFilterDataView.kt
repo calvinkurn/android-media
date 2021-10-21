@@ -3,12 +3,15 @@ package com.tokopedia.search.result.presentation.model
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.SavedOption
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 
 class LastFilterDataView(
     val filterList: List<SavedOption> = listOf(),
     val title: String = "",
 ): Visitable<ProductListTypeFactory> {
+
+    val impressHolder = ImpressHolder()
 
     fun shouldShow() = filterList.isNotEmpty()
 

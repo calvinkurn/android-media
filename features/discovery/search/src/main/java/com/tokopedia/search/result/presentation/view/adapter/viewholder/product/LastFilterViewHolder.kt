@@ -5,6 +5,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductLastFilterViewHolderBinding
 import com.tokopedia.search.result.presentation.model.LastFilterDataView
@@ -27,6 +28,9 @@ class LastFilterViewHolder(
     override fun bind(element: LastFilterDataView) {
         val binding = binding ?: return
 
+        binding.root.addOnImpressionListener(element.impressHolder) {
+            lastFilterListener.onImpressedLastFilter(element)
+        }
         binding.searchLastFilterHeaderView.safeSetBackground(getSearchLastFilterHeader())
         binding.searchLastFilterTitle.text = element.title
         binding.searchLastFilterName.text = element.optionNames()

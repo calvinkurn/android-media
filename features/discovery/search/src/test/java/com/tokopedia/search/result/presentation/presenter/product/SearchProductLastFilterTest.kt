@@ -11,6 +11,7 @@ import com.tokopedia.search.result.domain.model.LastFilterModel
 import com.tokopedia.search.result.domain.model.LastFilterModel.LastFilter
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.usecase.savelastfilter.SaveLastFilterInput
+import com.tokopedia.search.result.error
 import com.tokopedia.search.result.presentation.model.LastFilterDataView
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.usecase.RequestParams
@@ -97,6 +98,21 @@ internal class SearchProductLastFilterTest: ProductListPresenterTestFixtures() {
         val mapParameter = UrlParamUtils.getParamMap(saveLastFilterInput.param)
         searchParameter.forEach { (key, value) ->
             assertThat(mapParameter[key], `is`(value.toString()))
+        }
+    }
+
+    @Test
+    fun `update last filter exceptions will be caught and ignored`() {
+        `Given save last filter will throw exceptions`()
+
+        `When update last filter`(createSearchParameter(), createSavedOptionList())
+    }
+
+    private fun `Given save last filter will throw exceptions`() {
+        every {
+            saveLastFilterUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<Int>>().error(Exception("Ignored exception"))
         }
     }
 

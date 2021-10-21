@@ -2,7 +2,12 @@ package com.tokopedia.search.result.presentation.view.fragment
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.recommendation_widget_common.di.RecommendationModule
-import com.tokopedia.search.di.module.*
+import com.tokopedia.search.di.module.GraphqlRepositoryModule
+import com.tokopedia.search.di.module.IrisModule
+import com.tokopedia.search.di.module.RemoteConfigModule
+import com.tokopedia.search.di.module.SearchContextModule
+import com.tokopedia.search.di.module.SearchOnBoardingLocalCacheModule
+import com.tokopedia.search.di.module.UserSessionModule
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterGqlUseCaseModule
 import com.tokopedia.search.result.domain.usecase.getinspirationcarouselchips.GetInspirationCarouselChipsProductUseCaseModule
@@ -25,13 +30,13 @@ import dagger.Component
     GetProductCountUseCaseModule::class,
     GetDynamicFilterGqlUseCaseModule::class,
     GetLocalSearchRecommendationUseCaseModule::class,
-    ResourcesModule::class,
     GraphqlRepositoryModule::class,
     SearchOnBoardingLocalCacheModule::class,
     TopAdsUrlHitterModule::class,
     ProductionSchedulersProviderModule::class,
     GetInspirationCarouselChipsProductUseCaseModule::class,
     SaveLastFilterUseCaseModule::class,
+    IrisModule::class,
     ProductListPresenterModule::class
  ], dependencies = [BaseAppComponent::class])
 interface ProductListViewComponent {

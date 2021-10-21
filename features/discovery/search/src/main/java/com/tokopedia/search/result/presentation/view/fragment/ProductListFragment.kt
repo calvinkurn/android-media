@@ -40,6 +40,7 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
+import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
@@ -114,6 +115,7 @@ import com.tokopedia.filter.common.helper.getFilterParams
 import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.filter.common.helper.getSortFilterParamsString
 import com.tokopedia.filter.common.helper.isSortHasDefaultValue
+import com.tokopedia.iris.Iris
 import com.tokopedia.search.result.presentation.model.LastFilterDataView
 import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.utils.removeQuickFilterElevation
@@ -185,6 +187,9 @@ class ProductListFragment: BaseDaggerFragment(),
 
     var presenter: ProductListSectionContract.Presenter? = null
         @Inject set
+
+    @Inject
+    lateinit var iris: Iris
 
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private var refreshLayout: SwipeRefreshLayout? = null
@@ -1979,7 +1984,24 @@ class ProductListFragment: BaseDaggerFragment(),
         SearchTracking.trackEventClickDynamicProductCarouselSeeMore(type, queryKey, dynamicProductCarousel.keyword)
     }
 
+    override fun onImpressedLastFilter(lastFilterDataView: LastFilterDataView) {
+        SearchTracking.trackEventLastFilterImpression(
+            iris,
+            queryKey,
+            "",
+            getDimension90()
+        )
+    }
+
+    private fun getDimension90(): String {
+        val searchParameterMap = searchParameter?.getSearchParameterMap() ?: mapOf()
+
+        return Dimension90Utils.getDimension90(searchParameterMap)
+    }
+
     override fun applyLastFilter(lastFilterDataView: LastFilterDataView) {
+        SearchTracking.trackEventLastFilterClickApply(queryKey, "", getDimension90())
+
         filterController.setFilter(lastFilterDataView.filterOptions())
 
         val queryParams = filterController.getParameter() + lastFilterDataView.sortParameter()
@@ -1989,6 +2011,8 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun closeLastFilter(lastFilterDataView: LastFilterDataView) {
+        SearchTracking.trackEventLastFilterClickClose(queryKey, "", getDimension90())
+
         val searchParameterMap = searchParameter?.getSearchParameterMap() ?: mapOf()
 
         productListAdapter?.removeLastFilterWidget()
