@@ -3,7 +3,7 @@ package com.tokopedia.topchat.chatroom.view.adapter
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBanner
+import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBannerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlert
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.SrwBubbleUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
@@ -31,7 +31,7 @@ interface TopChatTypeFactory {
 
     fun type(roomSettingFraudAlert: RoomSettingFraudAlert): Int
 
-    fun type(roomSettingBanner: RoomSettingBanner): Int
+    fun type(roomSettingBannerUiModel: RoomSettingBannerUiModel): Int
 
     fun type(quotationViewModel: QuotationUiModel): Int
 

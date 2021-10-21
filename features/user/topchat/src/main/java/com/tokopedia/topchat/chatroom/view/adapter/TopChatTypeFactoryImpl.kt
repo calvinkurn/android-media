@@ -15,7 +15,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.ProductAttachmentViewHo
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
-import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBanner
+import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBannerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlert
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.SrwBubbleUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.*
@@ -100,7 +100,7 @@ open class TopChatTypeFactoryImpl constructor(
         return TopchatImageUploadViewHolder.LAYOUT
     }
 
-    override fun type(roomSettingBanner: RoomSettingBanner): Int {
+    override fun type(roomSettingBannerUiModel: RoomSettingBannerUiModel): Int {
         return RoomSettingBannerViewHolder.LAYOUT
     }
 
