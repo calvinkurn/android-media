@@ -202,7 +202,8 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             text,
             incentiveHelper,
             isUserEligible(),
-            getTemplatesForTextArea()
+            getTemplatesForTextArea(),
+            textArea?.getPlaceHolder() ?: ""
         )
         (textAreaBottomSheet as BottomSheetUnify).setTitle(textAreaTitle?.text.toString())
         fragmentManager?.let {
@@ -298,7 +299,10 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         if (isSelected) {
             createReviewViewModel.addBadRatingCategory(badRatingCategoryId.toString())
             if (badRatingCategoryId == BAD_RATING_OTHER_ID) {
-                textArea?.requestFocus()
+                textArea?.apply {
+                    requestFocus()
+                    setPlaceHolder(getString(R.string.review_form_bad_helper_must_fill))
+                }
             } else {
                 textArea?.clearFocus()
             }
@@ -333,7 +337,8 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         progressBar = view?.findViewById(R.id.review_form_progress_bar_widget)
         submitButton = view?.findViewById(R.id.review_form_submit_button)
         loadingView = view?.findViewById(R.id.shimmering_create_review_form)
-        badRatingCategoryRecyclerView = view?.findViewById(R.id.review_form_bad_rating_categories_rv)
+        badRatingCategoryRecyclerView =
+            view?.findViewById(R.id.review_form_bad_rating_categories_rv)
     }
 
     private fun setRatingClickListener() {
@@ -660,11 +665,10 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         when (position) {
             CreateReviewFragment.RATING_1 -> {
                 textAreaTitle?.text = resources.getString(R.string.review_create_worst_title)
-                textArea?.setPlaceHolder(resources.getString(R.string.review_form_worst_helper))
+                textArea?.setPlaceHolder(resources.getString(R.string.review_form_bad_helper))
             }
             CreateReviewFragment.RATING_2 -> {
                 textAreaTitle?.text = resources.getString(R.string.review_form_bad_title)
-
                 textArea?.setPlaceHolder(resources.getString(R.string.review_form_bad_helper))
             }
             CreateReviewFragment.RATING_3 -> {

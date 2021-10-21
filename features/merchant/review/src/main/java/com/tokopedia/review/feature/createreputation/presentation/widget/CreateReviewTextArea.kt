@@ -110,6 +110,10 @@ class CreateReviewTextArea : BaseCustomView {
         binding.createReviewEditText.hint = text
     }
 
+    fun getPlaceHolder(): String {
+        return binding.createReviewEditText.hint.toString()
+    }
+
     fun isEmpty(): Boolean {
         return binding.createReviewEditText.text.isEmpty()
     }

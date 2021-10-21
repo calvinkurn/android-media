@@ -128,7 +128,8 @@
     <string name="review_form_bad_title">Apa yang bikin kamu tidak puas?</string>
     <string name="review_form_good_helper">Yuk, ceritain kepuasanmu tentang kualitas barang &amp; pelayanan penjual.</string>
     <string name="review_form_neutral_helper">Kasih tahu apa yang kurang dan yang perlu ditingkatkan.</string>
-    <string name="review_form_bad_helper">Kasih tahu apa yang tidak memuaskan dan perlu ditingkatkan.</string>
+    <string name="review_form_bad_helper">Ceritain lebih lengkap apa yang bikin kamu tidak puas dan perlu ditingkatkan.</string>
+    <string name="review_form_bad_helper_must_fill">Harus ceritain lebih lengkap apa yang bikin kamu kurang puas dan perlu ditingkatkan, ya.</string>
     <string name="review_form_worst_helper">Kasih tahu apa yang mengecewakan dan perlu ditingkatkan.</string>
     <string name="review_form_incentives_exit_dialog_title">Yakin mau keluar? 😢</string>
     <string name="review_form_incentives_exit_dialog_body">Tinggal sedikit lagi buat dapat hadiah dari ulasan, lho. Ulasanmu nggak akan tersimpan kalau kamu keluar dari halaman ini.</string>
