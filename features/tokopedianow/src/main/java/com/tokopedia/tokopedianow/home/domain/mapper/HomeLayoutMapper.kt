@@ -356,6 +356,29 @@ object HomeLayoutMapper {
         getItemIndex(id)?.let { removeAt(it) }
     }
 
+    fun MutableList<HomeLayoutItemUiModel>.updateProductRecom(
+        productId: String,
+        quantity: Int
+    ): HomeProductRecomUiModel? {
+        return filter { it.layout is HomeProductRecomUiModel }.firstOrNull { uiModel ->
+            val productRecom = uiModel.layout as HomeProductRecomUiModel
+            val recomWidget = productRecom.recomWidget
+            val recommendationItemList = recomWidget.recommendationItemList
+            recommendationItemList.firstOrNull { it.productId.toString() == productId } != null
+        }?.let { uiModel ->
+            val productRecom = uiModel.layout as HomeProductRecomUiModel
+            val recomWidget = productRecom.recomWidget
+            val recomItemList = recomWidget.recommendationItemList.toMutableList()
+
+            val product = recomItemList.first { it.productId.toString() == productId }
+            val position = recomItemList.indexOf(product)
+            recomItemList[position] = product.copy(quantity = quantity)
+
+            val updatedRecomWidget = recomWidget.copy(recommendationItemList = recomItemList)
+            return productRecom.copy(recomWidget = updatedRecomWidget)
+        }
+    }
+
     private fun Visitable<*>.getVisitableId(): String? {
         return when (this) {
             is HomeLayoutUiModel -> visitableId
