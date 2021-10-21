@@ -21,7 +21,6 @@ public class StorageProvider implements InterfaceDataStore {
     private final InAppDataDao inAppDataDao;
     private final ElapsedTimeDao elapsedTimeDao;
     private StorageProviderListener storageProviderListener;
-    String TAG = "GratifTag";
 
     public StorageProvider(InAppDataDao inAppDataDao, ElapsedTimeDao elapsedTimeDao, StorageProviderListener storageProviderListener) {
         this.inAppDataDao = inAppDataDao;
@@ -150,11 +149,6 @@ public class StorageProvider implements InterfaceDataStore {
                 inAppDataDao.deleteRecord(id);
             }
         }).subscribeOn(Schedulers.io());
-    }
-
-    @Override
-    public CMInApp getInAppData(long id) {
-        return inAppDataDao.getInAppData(id);
     }
 
     @Override

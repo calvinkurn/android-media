@@ -13,7 +13,6 @@ public interface InterfaceDataStore {
     Completable putElapsedTimeToStore(ElapsedTime elapsedTime);
     ElapsedTime getElapsedTimeFromStore();
     Completable deleteRecord(long id);
-    CMInApp getInAppData(long id);
     Completable updateInAppDataFreq(long id);
     Completable viewDismissed(long id);
     Completable interactedWithView(long id);
