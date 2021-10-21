@@ -34,7 +34,9 @@ class LikeBubbleViewComponent(
 
     private val bubbleLikeView = findViewById<PlayLikeBubbleView>(R.id.bubble_like_view)
 
-    private val preferredIconSize = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5)
+    private val preferredIconSize = resources.getDimensionPixelSize(
+        R.dimen.play_like_bubble_original_size
+    )
 
     private val iconList: List<Drawable> = listOfNotNull(
         getResizedIconUnifyDrawable(IconUnify.STAR_FILLED),

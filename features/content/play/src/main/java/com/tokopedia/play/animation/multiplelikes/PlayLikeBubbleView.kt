@@ -1,21 +1,24 @@
 package com.tokopedia.play.animation.multiplelikes
 
+import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
-import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.play.R
+import com.tokopedia.play.util.animation.DefaultAnimatorListener
 import com.tokopedia.play.view.uimodel.PlayLikeBubbleUiModel
 import com.tokopedia.play_common.view.RoundedImageView
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collect
+import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.TimeUnit
+import kotlin.math.abs
 
 /**
  * Created By : Jonathan Darwin on August 02, 2021
@@ -24,37 +27,39 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
 
     private val job = SupervisorJob()
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.Main + job)
-    
+
     private val view: View = View.inflate(context, R.layout.layout_play_spam_like, this)
 
-    /**
-     * Custom
-     */
-    private val defaultSize = resources.getDimensionPixelSize(R.dimen.play_like_bubble_original_size)
-    private val sizeList = listOf(defaultSize to defaultSize)
-    private val sizeMultiplyList = listOf(0.3f)
-    private var shot = 0
+    private val prepareImageFlow = MutableSharedFlow<Pair<List<PlayLikeBubbleUiModel>, Boolean>>(
+        extraBufferCapacity = 500
+    )
+    private val imageViewHolderList = ConcurrentLinkedQueue<ImageViewHolder>()
+    private val animationList = ConcurrentLinkedQueue<Animator>()
+
+    private val prepareJob = SupervisorJob()
 
     /**
      * Config
      */
-    private var maxShot = 30
-    private var sizeType = PlayLikeBubbleSize.EXACT
     private val duration = ANIMATION_DURATION_IN_MS
     private var isBouncing: Boolean = false
     private var blurOpacity: Float = 0.5F
 
     private var parentView: ViewGroup? = null
 
-    private val imageList = mutableListOf<ImageView>()
-
     init {
         val type = context.obtainStyledAttributes(attributeSet, R.styleable.PlayLikeBubbleView)
 
         isBouncing = type.getBoolean(R.styleable.PlayLikeBubbleView_bouncing, false)
-        maxShot = type.getInteger(R.styleable.PlayLikeBubbleView_maxShot, 30)
 
         type.recycle()
+
+        scope.launch(prepareJob) {
+            prepareImageFlow.collect { (bubbleList, reduceOpacity) ->
+                if (imageViewHolderList.filter { it.isOccupied }.size > MAX_BUBBLE) return@collect
+                prepareImage(bubbleList, reduceOpacity)
+            }
+        }
     }
 
     /**
@@ -72,14 +77,12 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
         reduceOpacity: Boolean = false,
         bubbleList: List<PlayLikeBubbleUiModel> = emptyList(),
     ) {
-        scope.launch {
+        scope.launch(Dispatchers.Default) {
             for(i in 1..likeAmount) {
                 if (delayInMs > 0) delay(delayInMs)
                 for(j in 1..shotPerBatch) {
                     delay(DEFAULT_DELAY)
-                    withContext(Dispatchers.Main) {
-                        shotInternal(reduceOpacity, bubbleList)
-                    }
+                    shotInternal(reduceOpacity, bubbleList)
                 }
             }
         }
@@ -96,33 +99,14 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
      * 7. Set Coroutine for Popping Image from Queue
      * 8. Check Whether Additional Shot is Required Or Not
      */
-    private fun shotInternal(reduceOpacity: Boolean, bubbleList: List<PlayLikeBubbleUiModel>) {
-        if(bubbleList.isEmpty() || sizeMultiplyList.isEmpty() || sizeList.isEmpty() || parentView == null) return
+    private suspend fun shotInternal(
+        reduceOpacity: Boolean,
+        bubbleList: List<PlayLikeBubbleUiModel>
+    ) = withContext(Dispatchers.Default) {
+        if(bubbleList.isEmpty() || parentView == null
+        ) return@withContext
 
-        if(shot < maxShot) {
-            val chosenBubble = bubbleList.random()
-            val icon = chosenBubble.icon
-            val sizeMultiply = sizeMultiplyList.random()
-            val size = sizeList.random()
-
-            val dimension = when(sizeType) {
-                PlayLikeBubbleSize.EXACT -> size
-                PlayLikeBubbleSize.MULTIPLY -> getDimensionMultiply(icon, sizeMultiply)
-            }
-
-            val image = prepareImage(icon, chosenBubble.colorList, dimension, reduceOpacity)
-
-            parentView?.addView(image)
-            startAnimate(image)
-            imageList.add(image)
-
-            setShot(INCREASE_SHOT)
-
-            scope.launch {
-                delay(duration)
-                removeImageFromView(image)
-            }
-        }
+        prepareImageFlow.tryEmit(bubbleList to reduceOpacity)
     }
 
     private fun getImageCoordinate(): Pair<Float, Float> {
@@ -136,44 +120,46 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
     }
 
     private fun prepareImage(
-        drawable: Drawable,
-        possibleColors: List<Int>,
-        size: Pair<Int, Int>,
-        reduceOpacity: Boolean
-    ): ImageView {
-        val image = RoundedImageView(context).apply {
-            setCornerRadius(500f)
-        }
-        image.setImageBitmap(Bitmap.createScaledBitmap(
-            drawable.toBitmap(),
-            size.first,
-            size.second,
-            true)
-        )
+        bubbleList: List<PlayLikeBubbleUiModel>,
+        reduceOpacity: Boolean,
+    ) {
+        val chosenBubble = bubbleList.random()
+        val icon = chosenBubble.icon
+
+        val unoccupiedImageHolder = imageViewHolderList.firstOrNull { !it.isOccupied }
+        val imageHolder = if (unoccupiedImageHolder == null) {
+            val image = RoundedImageView(context).apply {
+                setCornerRadius(500f)
+            }
+            image.id = View.generateViewId()
+            val newHolder = ImageViewHolder(image, true, System.currentTimeMillis())
+            imageViewHolderList.add(newHolder)
+            newHolder
+        } else unoccupiedImageHolder
+        imageHolder.isOccupied = true
+
+        val image = imageHolder.imageView
 
         val coordinate = getImageCoordinate()
         image.x = coordinate.first
         image.y = coordinate.second
-        image.id = View.generateViewId()
 
-        if(reduceOpacity) image.alpha = blurOpacity
+        if (image.parent == null) parentView?.addView(image)
+        startAnimate(imageHolder)
 
-        image.setBackgroundColor(possibleColors.random())
+        image.setImageDrawable(icon)
 
-        val padding = size.first / 2
+        image.alpha = if(reduceOpacity) blurOpacity else 1f
+
+        image.setBackgroundColor(chosenBubble.colorList.random())
+
+        val padding = icon.intrinsicWidth / 2
         image.setPadding(padding, padding, padding, padding)
-
-        return image
     }
 
-    private suspend fun removeImageFromView(image: ImageView, isDecreaseShot: Boolean = true) {
-        withContext(Dispatchers.Main) {
-            synchronized(imageList) {
-                parentView?.removeView(image)
-                imageList.remove(image)
-                if(isDecreaseShot) setShot(DECREASE_SHOT)
-            }
-        }
+    private fun removeImageFromView(imageHolder: ImageViewHolder) {
+        imageHolder.imageView.alpha = 0f
+        imageHolder.isOccupied = false
     }
 
     /**
@@ -184,7 +170,12 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
      * 4. Setup Initial X Direction
      * 5. Animate
      */
-    private fun startAnimate(image: ImageView) {
+    private fun startAnimate(imageHolder: ImageViewHolder) {
+        val image = imageHolder.imageView
+        image.alpha = 1f
+        image.scaleX = 1f
+        image.scaleY = 1f
+
         /**
          * Setup Distance
          */
@@ -275,17 +266,17 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
         }
 
         move.interpolator = LinearInterpolator()
+        move.addListener(object : DefaultAnimatorListener() {
+            override fun onAnimationEnd(isCancelled: Boolean, animation: Animator) {
+                removeImageFromView(imageHolder)
+                move.removeAllUpdateListeners()
+                move.removeAllListeners()
+                animationList.remove(move)
+            }
+        })
         move.duration = duration
+        animationList.add(move)
         move.start()
-    }
-
-    private fun getDimensionMultiply(res: Drawable, sizeMultiply: Float): Pair<Int, Int> =
-        Pair((res.intrinsicWidth * sizeMultiply).toInt(), (res.intrinsicHeight * sizeMultiply).toInt())
-
-    private fun setShot(type: Int) {
-        synchronized(shot) {
-            shot += type
-        }
     }
 
     fun stop() {
@@ -299,16 +290,24 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
     }
 
     private fun cleanUp() {
-        imageList.forEach {
-            parentView?.removeView(it)
+        animationList.forEach { it.cancel() }
+        imageViewHolderList.forEach {
+            if (it.isOccupied ||
+                abs(it.time - System.currentTimeMillis()) < TimeUnit.SECONDS.toMillis(5)
+            ) return@forEach
+
+            parentView?.removeView(it.imageView)
+            imageViewHolderList.remove(it)
         }
-        imageList.clear()
     }
 
-    private companion object {
-        const val INCREASE_SHOT = 1
-        const val DECREASE_SHOT = -1
+    private data class ImageViewHolder(
+        val imageView: ImageView,
+        var isOccupied: Boolean,
+        val time: Long,
+    )
 
+    private companion object {
         const val DEFAULT_DELAY = 50L
         const val SHOT_DISTANCE = 750
         const val LOWER_LIMIT_BOUNCING_DISTANCE = 10
@@ -318,6 +317,8 @@ class PlayLikeBubbleView(context: Context, attributeSet: AttributeSet): Constrai
         const val UPPER_LIMIT_RANDOM_X_POSITION = 50
         const val FADE_OUT_MULTIPLIER = 0.05F
         const val SCALING_UP_MULTIPLIER = 0.05F
+
+        const val MAX_BUBBLE = 30
 
         private const val ANIMATION_DURATION_IN_MS = 2500L
     }
