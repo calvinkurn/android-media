@@ -208,10 +208,8 @@ open class RecomWidgetViewModel @Inject constructor(
                 shopId = recomItem.shopId,
                 quantity = quantity
             )
-            val result = withContext(dispatcher.io) {
-                addToCartUseCase.get().setParams(atcParam)
-                addToCartUseCase.get().executeOnBackground()
-            }
+            addToCartUseCase.get().setParams(atcParam)
+            val result = addToCartUseCase.get().executeOnBackground()
             if (result.isStatusError()) {
                 onFailedATCRecomTokonow(
                     MessageErrorException(

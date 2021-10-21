@@ -585,7 +585,6 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 }
             })
             viewModel?.minicartError?.observe(owner, Observer {
-//                RecomServerLogger.logWarning(RecomServerLogger.TYPE_ERROR_GET_MINICART, it)
             })
         }
     }
