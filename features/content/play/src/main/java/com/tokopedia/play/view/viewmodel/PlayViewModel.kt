@@ -147,7 +147,7 @@ class PlayViewModel @Inject constructor(
     private val isInteractiveAllowed: Boolean
         get() = channelType.isLive && videoOrientation.isVertical && videoPlayer.isGeneral() && isInteractiveRemoteConfigEnabled
 
-    private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 5)
+    private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 50)
 
     private val _channelDetail = MutableStateFlow(PlayChannelDetailUiModel())
     private val _partnerInfo = MutableStateFlow(PlayPartnerInfo())
