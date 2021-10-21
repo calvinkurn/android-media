@@ -44,8 +44,6 @@ class AttachVoucherViewModelTest {
     @RelaxedMockK
     lateinit var errorObserver: Observer<Throwable>
 
-    private val mapper = VoucherMapper()
-
     lateinit var viewModel: AttachVoucherViewModel
 
     private val dispatcherProvider = CoroutineTestDispatchersProvider
