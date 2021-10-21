@@ -20,7 +20,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FragmentSelfieIdCamera extends HomeCreditSelfieFragment {
+public class FragmentSelfieIdCamera extends HomeCreditBaseCameraFragment {
 
     public static String ACTION_CREATOR_ARG = "action_creator_arg";
     public static String ACTION_KEYS_PROVIDER_ARG = "action_keys_provider_arg";
@@ -33,6 +33,30 @@ public class FragmentSelfieIdCamera extends HomeCreditSelfieFragment {
         View view = inflater.inflate(R.layout.frgament_kyc_selfieid_camera, container, false);
         ((ImageView) view.findViewById(R.id.iv_capture_image)).setImageDrawable(MethodChecker.getDrawable(getActivity(), R.drawable.ic_button_capture));
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView(view);
+        initListeners();
+    }
+
+    private void initView(View view) {
+        cameraView = view.findViewById(R.id.camera);
+        buttonCancel = view.findViewById(R.id.button_cancel);
+        flashControl = view.findViewById(R.id.iv_flash_control);
+        imageCaptured = view.findViewById(R.id.iv_image_captured);
+        cameraActionsRL = view.findViewById(R.id.rl_camera_actions);
+        pictureActionLL = view.findViewById(R.id.ll_captured_image_action);
+        retakePhoto = view.findViewById(R.id.retake_photo);
+        continueUpload = view.findViewById(R.id.continue_upload);
+        captureImage = view.findViewById(R.id.iv_capture_image);
+        reverseCamera = view.findViewById(R.id.iv_reverse_camera);
+        cameraLayout = view.findViewById(R.id.hc_camera_layout);
+        headerText = view.findViewById(R.id.desc_1);
+        cameraView.setFacing(Facing.FRONT);
+        cameraView.setZoom(0f);
     }
 
     @Override

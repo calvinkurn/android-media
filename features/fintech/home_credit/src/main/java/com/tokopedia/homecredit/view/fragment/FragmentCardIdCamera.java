@@ -18,12 +18,13 @@ import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.homecredit.R;
+import com.tokopedia.homecredit.view.Utils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FragmentCardIdCamera extends HomeCreditKTPFragment {
+public class FragmentCardIdCamera extends HomeCreditBaseCameraFragment {
     public static String ACTION_CREATOR_ARG = "action_creator_arg";
     public static String ACTION_KEYS_PROVIDER_ARG = "action_keys_provider_arg";
     private ActionCreator actionCreator;
@@ -37,10 +38,37 @@ public class FragmentCardIdCamera extends HomeCreditKTPFragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_kyc_cardid_camera, container, false);
         ((ImageView) view.findViewById(R.id.iv_capture_image)).setImageResource(R.drawable.ic_button_capture);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView(view);
+        initListeners();
+
+    }
+
+    private void initView(View view) {
+        cameraView = view.findViewById(R.id.camera);
+        buttonCancel = view.findViewById(R.id.button_cancel);
+        flashControl = view.findViewById(R.id.iv_flash_control);
+        imageCaptured = view.findViewById(R.id.iv_image_captured);
+        cameraActionsRL = view.findViewById(R.id.rl_camera_actions);
+        pictureActionLL = view.findViewById(R.id.ll_captured_image_action);
+        retakePhoto = view.findViewById(R.id.retake_photo);
+        continueUpload = view.findViewById(R.id.continue_upload);
+        captureImage = view.findViewById(R.id.iv_capture_image);
+        reverseCamera = view.findViewById(R.id.iv_reverse_camera);
+        if (!Utils.isFrontCameraAvailable()) {
+            reverseCamera.setVisibility(View.GONE);
+        }
+        cameraLayout = view.findViewById(R.id.hc_camera_layout);
+        headerText = view.findViewById(R.id.desc_1);
+        cameraView.setFacing(Facing.BACK);
+        cameraView.setZoom(0f);
     }
 
     @Override
