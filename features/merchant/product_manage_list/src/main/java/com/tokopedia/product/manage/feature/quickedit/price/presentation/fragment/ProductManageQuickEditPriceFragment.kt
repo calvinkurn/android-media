@@ -50,15 +50,15 @@ class ProductManageQuickEditPriceFragment(private var onFinishedListener: OnFini
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val cacheManager =
-            if (savedInstanceState == null) {
-                context?.let { SaveInstanceCacheManager(it, KEY_CACHE_MANAGER_ID) }
-            } else {
-                val cacheManagerId = savedInstanceState.getString(KEY_CACHE_MANAGER_ID).orEmpty()
-                context?.let { SaveInstanceCacheManager(it, cacheManagerId) }
-            }
-        product =
-            cacheManager?.get<ProductUiModel>(KEY_PRODUCT, ProductUiModel::class.java, null)
+        val cacheManager: SaveInstanceCacheManager?
+        if (savedInstanceState == null) {
+            cacheManager = context?.let { SaveInstanceCacheManager(it, KEY_CACHE_MANAGER_ID) }
+        } else {
+            val cacheManagerId = savedInstanceState.getString(KEY_CACHE_MANAGER_ID).orEmpty()
+            cacheManager = context?.let { SaveInstanceCacheManager(it, cacheManagerId) }
+            product =
+                cacheManager?.get<ProductUiModel>(KEY_PRODUCT, ProductUiModel::class.java, null)
+        }
         isMultiLocation =
             cacheManager?.get(KEY_IS_MULTILOCATION, Boolean::class.java, false).orFalse()
 
