@@ -190,7 +190,7 @@ object ShopPageProductListMapper {
                 labelGroupList = shopProductUiModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
                 },
-                hasThreeDots = isShowThreeDots,
+                hasThreeDots = if (shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_FLASH_SALE) false else isShowThreeDots,
                 pdpViewCount = shopProductUiModel.pdpViewCount,
                 stockBarLabel = shopProductUiModel.stockLabel,
                 stockBarPercentage = shopProductUiModel.stockBarPercentage,
