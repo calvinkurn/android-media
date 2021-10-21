@@ -62,6 +62,7 @@ class ShopEditBasicInfoFragment: Fragment() {
     companion object {
         private const val SAVED_IMAGE_PATH = "saved_img_path"
         private const val REQUEST_CODE_IMAGE = 846
+        const val UPLOADER_SOURCE_ID = "GAnVPX"
         const val INPUT_DELAY = 500L
     }
 
@@ -407,6 +408,14 @@ class ShopEditBasicInfoFragment: Fragment() {
                 is Fail -> {
                     hideLoading()
                     onErrorUpdateShopBasicData(it.throwable)
+
+                    ErrorHandler.getErrorMessage(
+                        context = context,
+                        e = it.throwable,
+                        builder = ErrorHandler.Builder()
+                            .className(this::class.java.simpleName)
+                            .build()
+                    )
                 }
                 else -> {/* no op */}
             }

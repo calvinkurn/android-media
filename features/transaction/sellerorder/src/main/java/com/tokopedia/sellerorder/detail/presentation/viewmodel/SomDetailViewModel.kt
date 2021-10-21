@@ -60,8 +60,6 @@ class SomDetailViewModel @Inject constructor(
     fun loadDetailOrder(orderId: String) {
         loadDetailJob?.cancel()
         loadDetailJob = launchCatchError(block = {
-            val dynamicPriceParam = SomDynamicPriceRequest(order_id = orderId.toLongOrZero())
-            somGetOrderDetailUseCase.setParamDynamicPrice(dynamicPriceParam)
             val somGetOrderDetail = somGetOrderDetailUseCase.execute(orderId)
             _orderDetailResult.postValue(somGetOrderDetail)
         }, onError = {

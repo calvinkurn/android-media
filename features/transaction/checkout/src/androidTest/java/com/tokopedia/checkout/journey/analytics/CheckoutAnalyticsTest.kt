@@ -3,9 +3,9 @@ package com.tokopedia.checkout.journey.analytics
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.checkout.old.OldShipmentActivity
 import com.tokopedia.checkout.robot.checkoutPage
 import com.tokopedia.checkout.test.R
-import com.tokopedia.checkout.view.ShipmentActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
@@ -18,7 +18,7 @@ import org.junit.Test
 class CheckoutAnalyticsTest {
 
     @get:Rule
-    var activityRule = object : IntentsTestRule<ShipmentActivity>(ShipmentActivity::class.java, false, false) {
+    var activityRule = object : IntentsTestRule<OldShipmentActivity>(OldShipmentActivity::class.java, false, false) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()

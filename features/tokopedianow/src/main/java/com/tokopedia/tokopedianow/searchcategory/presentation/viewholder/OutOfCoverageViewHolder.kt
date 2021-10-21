@@ -13,7 +13,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 class OutOfCoverageViewHolder(
         itemView: View,
         private val outOfCoverageListener: OutOfCoverageListener
-) : AbstractViewHolder<OutOfCoverageDataView>(itemView) {
+) : AbstractViewHolder<OutOfCoverageDataView>(itemView),
+    NoAddressEmptyStateView.ActionListener {
 
     companion object {
         @LayoutRes
@@ -23,20 +24,17 @@ class OutOfCoverageViewHolder(
     private var binding: ItemTokopedianowSearchCategoryOutOfCoverageBinding? by viewBinding()
 
     override fun bind(element: OutOfCoverageDataView?) {
-        binding?.tokoNowSearchCategoryOutOfCoverageView?.actionListener = object: NoAddressEmptyStateView.ActionListener {
-            override fun onChangeAddressClicked() {
-                outOfCoverageListener.onChangeAddressClicked()
-            }
-
-            override fun onReturnClick() {
-                outOfCoverageListener.onReturnClick()
-            }
-
-            override fun onGetNoAddressEmptyStateEventCategoryTracker(): String {
-                return ""
-            }
-
-        }
+        binding?.tokoNowSearchCategoryOutOfCoverageView?.actionListener = this
     }
 
+    override fun onChangeAddressClicked() {
+        outOfCoverageListener.onChangeAddressClicked()
+    }
+
+    override fun onReturnClick() {
+        outOfCoverageListener.onReturnClick()
+    }
+
+    override fun onGetNoAddressEmptyStateEventCategoryTracker() =
+        outOfCoverageListener.oocPageName
 }
