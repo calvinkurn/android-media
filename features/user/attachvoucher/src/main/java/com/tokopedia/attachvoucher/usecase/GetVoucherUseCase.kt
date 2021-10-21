@@ -24,8 +24,45 @@ class GetVoucherUseCase @Inject constructor(
     private val paramFilter = "Filter"
     var hasNext = false
 
+    object MVFilter {
+        const val paramPage = "page"
 
-    private val privateVoucherQuery = """
+        object VoucherStatus {
+            const val param = "voucher_status"
+            const val paramOnGoing = "2"
+            const val paramDeleted = "-1"
+            const val paramProcessing = "0"
+            const val paramNotStarted = "1"
+            const val paramEnded = "3"
+            const val paramStopped = "4"
+        }
+
+        object VoucherType {
+            const val param = "voucher_type"
+            const val paramFreeOngkir = 1
+            const val paramDiscount = 2
+            const val paramCashback = 3
+            const val noFilter = -1
+        }
+
+        object IsPublic {
+            const val param = "is_public"
+        }
+
+        object PerPage {
+            const val param = "per_page"
+            const val default = 15
+        }
+    }
+
+    override suspend fun execute(params: FilterParam): List<VoucherUiModel> {
+        val data = repository.request<FilterParam, GetMerchantPromotionGetMVListResponse>(graphqlQuery(), params)
+        hasNext = data.merchantPromotionGetMVList.data.paging.hasNext
+        return mapper.map(data)
+    }
+
+    override fun graphqlQuery(): String {
+        return """
         query MerchantPromotionGetMVListQuery($$paramFilter: MVFilter!){
             MerchantPromotionGetMVList(Filter: $$paramFilter){
                 header{
@@ -86,45 +123,5 @@ class GetVoucherUseCase @Inject constructor(
             }
         }
     """.trimIndent()
-
-    object MVFilter {
-        const val paramPage = "page"
-
-        object VoucherStatus {
-            const val param = "voucher_status"
-            const val paramOnGoing = "2"
-            const val paramDeleted = "-1"
-            const val paramProcessing = "0"
-            const val paramNotStarted = "1"
-            const val paramEnded = "3"
-            const val paramStopped = "4"
-        }
-
-        object VoucherType {
-            const val param = "voucher_type"
-            const val paramFreeOngkir = 1
-            const val paramDiscount = 2
-            const val paramCashback = 3
-            const val noFilter = -1
-        }
-
-        object IsPublic {
-            const val param = "is_public"
-        }
-
-        object PerPage {
-            const val param = "per_page"
-            const val default = 15
-        }
-    }
-
-    override suspend fun execute(params: FilterParam): List<VoucherUiModel> {
-        val data = repository.request<FilterParam, GetMerchantPromotionGetMVListResponse>(graphqlQuery(), params)
-        hasNext = data.merchantPromotionGetMVList.data.paging.hasNext
-        return mapper.map(data)
-    }
-
-    override fun graphqlQuery(): String {
-        return privateVoucherQuery
     }
 }
