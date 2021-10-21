@@ -199,10 +199,6 @@ public interface SearchConstant {
         String TYPE_RELATED = "related";
     }
 
-    interface ImageUrl {
-        String POWER_MERCHANT_PRO_ILLUSTRATION_URL = "https://images.tokopedia.net/img/android/search/PM_Pro_Illustration.png";
-    }
-
     interface CustomDimension {
         String DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL = "none.none.global_search.none";
     }
