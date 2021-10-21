@@ -64,14 +64,16 @@ class PlayLivePusherStatistic {
         val streamer = mStreamer ?: return
         val connectionId = mConnectionId ?: return
 
+        val bytesSent = streamer.safeExecute { getBytesSent(connectionId) } ?: 0L
         val currentTime = System.currentTimeMillis()
-        val bytesSent = streamer.getBytesSent(connectionId)
         val timeDiff = currentTime - mPrevTime
         mBps = (if (timeDiff > 0) 8 * 1000 * (bytesSent - mPrevBytes) / timeDiff else 0)
         mPrevTime = currentTime
         mPrevBytes = bytesSent
         mPacketLossIncreased = false
-        mFps = streamer.fps
+
+        mFps = streamer.safeExecute { fps } ?: 0.0
+
         val audioPacketLost = streamer.safeExecute { getAudioPacketsLost(connectionId) }
         val videoPacketLost = streamer.safeExecute { getAudioPacketsLost(connectionId) }
         val udpPacketsLost = streamer.safeExecute { getAudioPacketsLost(connectionId) }

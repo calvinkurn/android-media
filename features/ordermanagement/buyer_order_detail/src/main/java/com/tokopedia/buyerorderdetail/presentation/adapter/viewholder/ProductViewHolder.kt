@@ -13,6 +13,7 @@ import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionBut
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
+import com.tokopedia.buyerorderdetail.common.utils.Utils.composeItalicNote
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -154,12 +155,6 @@ class ProductViewHolder(
         tvBuyerOrderDetailProductNote?.apply {
             text = composeItalicNote(productNote)
             showWithCondition(productNote.isNotBlank())
-        }
-    }
-
-    private fun composeItalicNote(productNote: String): SpannableString {
-        return SpannableString(productNote).apply {
-            setSpan(StyleSpan(android.graphics.Typeface.ITALIC), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
     }
 

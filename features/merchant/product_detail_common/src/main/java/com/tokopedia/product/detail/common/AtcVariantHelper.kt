@@ -45,7 +45,7 @@ object AtcVariantHelper {
     const val BUNDLING_PAGESOURCE = "bundling page"
 
     /**
-     * For PDP only
+     * For PDP and ProductBundle only
      */
     fun pdpToAtcVariant(context: Context,
                         pageSource: String,

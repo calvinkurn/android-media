@@ -26,7 +26,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockkStatic
 import io.mockk.spyk
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 
@@ -46,9 +45,6 @@ abstract class BasePdpViewModelTest {
 
     @RelaxedMockK
     lateinit var getProductInfoP2OtherUseCase: GetProductInfoP2OtherUseCase
-
-    @RelaxedMockK
-    lateinit var getProductInfoP3UseCase: GetProductInfoP3UseCase
 
     @RelaxedMockK
     lateinit var toggleFavoriteUseCase: ToggleFavoriteUseCase
@@ -119,18 +115,34 @@ abstract class BasePdpViewModelTest {
         spykViewModel = spyk(viewModel)
     }
 
-    @After
-    fun setupAfter() {
-        viewModel.productInfoP3.removeObserver { }
-    }
-
     val viewModel by lazy {
         createViewModel()
     }
 
     private fun createViewModel(): DynamicProductDetailViewModel {
-        return DynamicProductDetailViewModel(CoroutineTestDispatchersProvider, { getPdpLayoutUseCase }, { getProductInfoP2LoginUseCase }, { getProductInfoP2OtherUseCase }, { getP2DataAndMiniCartUseCase }, { getProductInfoP3UseCase }, { toggleFavoriteUseCase }, { removeWishlistUseCase }, { addWishListUseCase }, { getRecommendationUseCase },
-                { getRecommendationFilterChips }, { trackAffiliateUseCase }, { submitHelpTicketUseCase }, { updateCartCounterUseCase }, { addToCartUseCase }, { addToCartOcsUseCase }, { addToCartOccUseCase }, { toggleNotifyMeUseCase }, { discussionMostHelpfulUseCase }, { topAdsImageViewUseCase },
-                { miniCartListSimplifiedUseCase }, { updateCartUseCase }, { deleteCartUseCase }, { getTopadsIsAdsUseCase }, userSessionInterface)
+        return DynamicProductDetailViewModel(CoroutineTestDispatchersProvider,
+                { getPdpLayoutUseCase },
+                { getProductInfoP2LoginUseCase },
+                { getProductInfoP2OtherUseCase },
+                { getP2DataAndMiniCartUseCase },
+                { toggleFavoriteUseCase },
+                { removeWishlistUseCase },
+                { addWishListUseCase },
+                { getRecommendationUseCase },
+                { getRecommendationFilterChips },
+                { trackAffiliateUseCase },
+                { submitHelpTicketUseCase },
+                { updateCartCounterUseCase },
+                { addToCartUseCase },
+                { addToCartOcsUseCase },
+                { addToCartOccUseCase },
+                { toggleNotifyMeUseCase },
+                { discussionMostHelpfulUseCase },
+                { topAdsImageViewUseCase },
+                { miniCartListSimplifiedUseCase },
+                { updateCartUseCase },
+                { deleteCartUseCase },
+                { getTopadsIsAdsUseCase },
+                userSessionInterface)
     }
 }

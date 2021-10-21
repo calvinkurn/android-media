@@ -10,7 +10,7 @@ data class ProductEditPriceParam(
         var productId: String = "",
         @SerializedName("price")
         @Expose
-        var price: Float = 0f,
+        var price: Double = 0.0,
         @SerializedName("shop")
         @Expose
         var shop: ShopParam = ShopParam()

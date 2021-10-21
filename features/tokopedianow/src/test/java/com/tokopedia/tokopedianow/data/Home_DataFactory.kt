@@ -54,41 +54,6 @@ fun createHomeLayoutList(): List<HomeLayoutResponse> {
     )
 }
 
-fun createHomeLayoutItemUiModelList(): List<HomeLayoutItemUiModel> {
-    return listOf(
-            HomeLayoutItemUiModel(
-                    BannerDataModel(
-                            channelModel= ChannelModel(
-                                    id="2222",
-                                    groupId="",
-                                    style= ChannelStyle.ChannelHome,
-                                    channelHeader= ChannelHeader(name="Banner Tokonow"),
-                                    channelConfig= ChannelConfig(layout="banner_carousel_v2") ,
-                                    layout="banner_carousel_v2")
-                    ),
-                    HomeLayoutItemState.LOADED
-            ),
-            HomeLayoutItemUiModel(
-                    BannerDataModel(
-                            channelModel= ChannelModel(
-                                    id="2222",
-                                    groupId="",
-                                    style= ChannelStyle.ChannelHome,
-                                    channelHeader= ChannelHeader(name="Banner Tokonow"),
-                                    channelConfig= ChannelConfig(layout="banner_carousel_v2") ,
-                                    layout="banner_carousel_v2")
-                    ),
-                    HomeLayoutItemState.LOADING
-            ),
-            HomeLayoutItemUiModel(
-                    TokoNowChooseAddressWidgetUiModel(
-                            id = HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID,
-                    ),
-                    HomeLayoutItemState.NOT_LOADED
-            )
-    )
-}
-
 fun createHomeLayoutListForBannerOnly(): List<HomeLayoutResponse> {
     return listOf(
             HomeLayoutResponse(
@@ -97,7 +62,8 @@ fun createHomeLayoutListForBannerOnly(): List<HomeLayoutResponse> {
                     header = Header(
                             name = "Banner Tokonow",
                             serverTimeUnix = 0
-                    )
+                    ),
+                    token = "==aff1ed" // Dummy token
             )
     )
 }
@@ -109,7 +75,8 @@ fun createHomeLayoutData(): HomeLayoutResponse {
             header = Header(
                     name = "Banner Tokonow",
                     serverTimeUnix = 0
-            )
+            ),
+            token = "==aff1ed" // Dummy token
     )
 }
 
@@ -119,15 +86,14 @@ fun createLoadingState(): HomeLayoutListUiModel {
     mutableList.add(HomeLayoutItemUiModel(loadingStateUiModel, HomeLayoutItemState.LOADED))
     return HomeLayoutListUiModel(
             items = mutableList,
-            state = TokoNowLayoutState.LOADING,
-            isInitialLoad = true
+            state = TokoNowLayoutState.LOADING
     )
 }
 
 fun createEmptyState(id: String): HomeLayoutListUiModel {
     val mutableList = mutableListOf<HomeLayoutItemUiModel>()
     val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID)
-    val emptyStateUiModel = TokoNowEmptyStateOocUiModel(id = id)
+    val emptyStateUiModel = TokoNowEmptyStateOocUiModel(id = id, eventCategory = "tokonow - homepage")
     mutableList.add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
     mutableList.add(HomeLayoutItemUiModel(emptyStateUiModel, HomeLayoutItemState.LOADED))
     return HomeLayoutListUiModel(
@@ -266,7 +232,7 @@ fun createSliderBannerDataModel(
 fun createCategoryGridDataModel(
     id: String,
     title: String,
-    categoryList: List<TokoNowCategoryItemUiModel>,
+    categoryList: List<TokoNowCategoryItemUiModel>?,
     @TokoNowLayoutState state: Int
 ): TokoNowCategoryGridUiModel {
     return TokoNowCategoryGridUiModel(id = id, title =  title, categoryList = categoryList, state = state)

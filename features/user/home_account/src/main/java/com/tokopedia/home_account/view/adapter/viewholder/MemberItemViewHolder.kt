@@ -4,24 +4,30 @@ import android.view.View
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.data.model.MemberItemDataView
+import com.tokopedia.home_account.databinding.HomeAccountItemMemberBinding
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.utils.image.ImageUtils
-import kotlinx.android.synthetic.main.home_account_item_member.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by Yoris Prayogo on 19/10/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
-class MemberItemViewHolder(itemView: View, val listener: HomeAccountUserListener): BaseViewHolder(itemView) {
+class MemberItemViewHolder(itemView: View, val listener: HomeAccountUserListener) :
+    BaseViewHolder(itemView) {
+
+    private val binding: HomeAccountItemMemberBinding? by viewBinding()
 
     fun bind(member: MemberItemDataView) {
-        with(itemView) {
-            home_account_item_member_subtitle?.text = member.subtitle
-            home_account_item_member_title?.text = member.title
-            ImageUtils.loadImageWithoutPlaceholderAndError(home_account_item_member_icon, member.icon)
-            itemView.setOnClickListener {
-                listener.onMemberItemClicked(member.applink, member.type)
-            }
+        binding?.homeAccountItemMemberSubtitle?.text = member.subtitle
+        binding?.homeAccountItemMemberTitle?.text = member.title
+        binding?.homeAccountItemMemberIcon?.let {
+            ImageUtils.loadImageWithoutPlaceholderAndError(
+                it, member.icon
+            )
+        }
+        binding?.root?.setOnClickListener {
+            listener.onMemberItemClicked(member.applink, member.type)
         }
     }
 

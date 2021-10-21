@@ -14,7 +14,7 @@ data class ShopHomeShowcaseListSliderUiModel(
         override val type: String = "",
         override val header: Header = Header(),
         val showcaseListItem: List<ShopHomeShowcaseListItemUiModel> = listOf()
-) : BaseShopHomeWidgetUiModel {
+) : BaseShopHomeWidgetUiModel() {
 
     override fun type(typeFactory: ShopHomeAdapterTypeFactory): Int {
         return typeFactory.type(this)

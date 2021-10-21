@@ -19,8 +19,12 @@ import com.tokopedia.sessioncommon.di.SessionModule
  */
 open class HomeAccountUserActivity: BaseSimpleActivity(), HasComponent<HomeAccountUserComponents>, onAppBarCollapseListener {
 
+    private var homeAccountUserComponents: HomeAccountUserComponents? = null
+
+    override fun getTagFragment(): String = TAG
+
     override fun getNewFragment(): Fragment? {
-        return HomeAccountUserFragment.newInstance(intent?.extras)
+        return createHomeAccountUserFragment()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,15 +33,23 @@ open class HomeAccountUserActivity: BaseSimpleActivity(), HasComponent<HomeAccou
         updateTitle(getString(R.string.home_account_title))
     }
 
-    override fun getComponent(): HomeAccountUserComponents {
+    override fun getComponent(): HomeAccountUserComponents = homeAccountUserComponents ?: initializeHomeAccountUserComponents()
+
+    protected open fun createHomeAccountUserFragment(): Fragment =
+        HomeAccountUserFragment.newInstance(intent?.extras)
+
+    protected open fun initializeHomeAccountUserComponents(): HomeAccountUserComponents {
         return DaggerHomeAccountUserComponents.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .homeAccountUserModules(HomeAccountUserModules(this))
-                .homeAccountUserUsecaseModules(HomeAccountUserUsecaseModules())
-                .homeAccountUserQueryModules(HomeAccountUserQueryModules())
-                .sessionModule(SessionModule())
-                .build()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .homeAccountUserModules(HomeAccountUserModules(this))
+            .homeAccountUserUsecaseModules(HomeAccountUserUsecaseModules())
+            .homeAccountUserQueryModules(HomeAccountUserQueryModules())
+            .sessionModule(SessionModule())
+            .build().also {
+                homeAccountUserComponents = it
+            }
     }
+
 
     override fun showToolbarElevation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -49,5 +61,9 @@ open class HomeAccountUserActivity: BaseSimpleActivity(), HasComponent<HomeAccou
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.elevation = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
         }
+    }
+
+    companion object {
+        val TAG = HomeAccountUserActivity::class.java.name
     }
 }

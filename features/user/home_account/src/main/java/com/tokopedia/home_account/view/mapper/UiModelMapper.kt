@@ -21,17 +21,6 @@ object UiModelMapper {
         )
     }
 
-    fun getBalanceAndPointUiModel(assetConfig: AssetConfig): BalanceAndPointUiModel {
-        return BalanceAndPointUiModel(
-            id = assetConfig.id,
-            title = assetConfig.title,
-            subtitle = assetConfig.subtitle,
-            urlImage = assetConfig.icon,
-            applink = assetConfig.applink,
-            isActive = assetConfig.isActive
-        )
-    }
-
     fun getBalanceAndPointUiModel(
         shimmerUiModel: BalanceAndPointShimmerUiModel,
         isFailed: Boolean
@@ -97,6 +86,12 @@ object UiModelMapper {
                 AccountConstants.WALLET.TOKOPOINT -> {
                     "${walletappGetAccountBalance.title} ${walletappGetAccountBalance.subtitle}"
                 }
+                AccountConstants.WALLET.SALDO -> {
+                    walletappGetAccountBalance.title
+                }
+                AccountConstants.WALLET.CO_BRAND_CC -> {
+                    walletappGetAccountBalance.subtitle
+                }
                 else -> {
                     "${walletappGetAccountBalance.title} • ${walletappGetAccountBalance.subtitle}"
                 }
@@ -116,10 +111,12 @@ object UiModelMapper {
     }
 
     fun getWalletShimmeringUiModel(assetConfig: AssetConfig): WalletShimmeringUiModel {
+        val title = if (assetConfig.id == AccountConstants.WALLET.SALDO) assetConfig.subtitle else assetConfig.title
+        val subtitle = if (assetConfig.id == AccountConstants.WALLET.SALDO) assetConfig.title else assetConfig.subtitle
         return WalletShimmeringUiModel(
             id = assetConfig.id,
-            title = assetConfig.title,
-            subtitle = assetConfig.subtitle,
+            title = title,
+            subtitle = subtitle,
             urlImage = assetConfig.icon,
             applink = assetConfig.applink,
             isActive = assetConfig.isActive
@@ -138,14 +135,10 @@ object UiModelMapper {
     }
 
     fun getWalletUiModel(assetConfig: AssetConfig): WalletUiModel {
-        val title =
-            if (assetConfig.id == AccountConstants.WALLET.SALDO) assetConfig.subtitle else assetConfig.title
-        val subtitle =
-            if (assetConfig.id == AccountConstants.WALLET.SALDO) assetConfig.title else assetConfig.subtitle
         return WalletUiModel(
             id = assetConfig.id,
-            title = title,
-            subtitle = subtitle,
+            title = assetConfig.title,
+            subtitle = assetConfig.subtitle,
             urlImage = assetConfig.icon,
             applink = assetConfig.applink,
             isActive = assetConfig.isActive

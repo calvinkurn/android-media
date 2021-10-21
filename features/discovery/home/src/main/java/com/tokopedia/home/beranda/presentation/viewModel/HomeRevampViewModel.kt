@@ -61,6 +61,7 @@ import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
 import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
 import com.tokopedia.network.exception.MessageErrorException
@@ -281,13 +282,14 @@ open class HomeRevampViewModel @Inject constructor(
     /**
      * use this refresh mechanism only for conditional refresh (3 mins rule)
      */
-    fun refresh(forceRefresh: Boolean = false){
+    fun refresh(forceRefresh: Boolean = false, isFirstInstall: Boolean = false){
         if ((forceRefresh && getHomeDataJob?.isActive == false) || (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY))) {
             refreshHomeData()
             _isNeedRefresh.value = Event(true)
         } else {
             getHeaderData()
         }
+        getSearchHint(isFirstInstall)
     }
 
     private fun showBalanceWidgetLoading() {
@@ -558,10 +560,8 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getRecommendationFeedSectionPosition() = homeDataModel.list.size -1
 
-    fun refreshHomeData(isFirstInstall: Boolean = false) {
+    fun refreshHomeData() {
         getHeaderData()
-        getSearchHint(isFirstInstall)
-
         if (homeFlowDataCancelled) {
             initFlow()
             homeFlowDataCancelled = false
@@ -854,7 +854,9 @@ open class HomeRevampViewModel @Inject constructor(
             getKeywordSearchUseCase.get().params = getKeywordSearchUseCase.get().createParams(isFirstInstall, userSession.get().deviceId, userSession.get().userId)
             val data = getKeywordSearchUseCase.get().executeOnBackground()
             _searchHint.postValue(data.searchData)
-        }){}
+        }){
+            _searchHint.postValue(SearchPlaceholder())
+        }
     }
 
     fun getOneClickCheckoutHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int){
@@ -1002,12 +1004,12 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun isAddressDataEmpty(): Boolean {
-        return getAddressData().lat.isEmpty() &&
-                getAddressData().long.isEmpty() &&
-                getAddressData().districId.isEmpty() &&
-                getAddressData().cityId.isEmpty() &&
-                getAddressData().addressId.isEmpty() &&
-                getAddressData().postCode.isEmpty()
+        return getAddressData().localCacheModel.lat.isEmpty() &&
+                getAddressData().localCacheModel.long.isEmpty() &&
+                getAddressData().localCacheModel.district_id.isEmpty() &&
+                getAddressData().localCacheModel.city_id.isEmpty() &&
+                getAddressData().localCacheModel.address_id.isEmpty() &&
+                getAddressData().localCacheModel.postal_code.isEmpty()
 
     }
 
@@ -1099,29 +1101,8 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun getHomeLocationDataParam() : String {
         return if (!isAddressDataEmpty()) {
-            buildLocationParams(
-                    getAddressData().lat,
-                    getAddressData().long,
-                    getAddressData().addressId,
-                    getAddressData().cityId,
-                    getAddressData().districId,
-                    getAddressData().postCode)
+            getAddressData().localCacheModel.convertToLocationParams()
         } else ""
-    }
-
-    private fun buildLocationParams(
-            lat: String = "",
-            long: String = "",
-            addressId: String = "",
-            cityId: String = "",
-            districtId: String = "",
-            postCode: String = ""): String {
-        return "user_lat=" + lat +
-                "&user_long=" + long +
-                "&user_addressId=" + addressId +
-                "&user_cityId=" + cityId +
-                "&user_districtId=" + districtId +
-                "&user_postCode=" + postCode
     }
 
     private fun convertPopularKeywordDataList(popularKeywordList: HomeWidget.PopularKeywordList): MutableList<PopularKeywordDataModel> {
@@ -1281,15 +1262,22 @@ open class HomeRevampViewModel @Inject constructor(
                 if (!isGopayEligible) {
                     try {
                         isGopayEligible = getWalletEligibilityUseCase.get().executeOnBackground().isGoPointsEligible
-                        newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().apply {
-                            isGopayEligible = this@HomeRevampViewModel.isGopayEligible
-                            initBalanceModelByType()
-                        })
+                        val homeBalanceModel = HomeBalanceModel()
+                        homeBalanceModel.balanceDrawerItemModels = homeDataModel.homeBalanceModel.balanceDrawerItemModels
+                        homeBalanceModel.balanceType = homeDataModel.homeBalanceModel.balanceType
+                        homeBalanceModel.isGopayEligible = this@HomeRevampViewModel.isGopayEligible
+                        homeBalanceModel.initBalanceModelByType()
+                        newUpdateHeaderViewModel(homeBalanceModel)
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
                 } else {
-                    newUpdateHeaderViewModel(homeDataModel.homeBalanceModel.copy().apply { initBalanceModelByType() })
+                    val homeBalanceModel = HomeBalanceModel()
+                    homeBalanceModel.balanceDrawerItemModels = homeDataModel.homeBalanceModel.balanceDrawerItemModels
+                    homeBalanceModel.balanceType = homeDataModel.homeBalanceModel.balanceType
+                    homeBalanceModel.isGopayEligible = this@HomeRevampViewModel.isGopayEligible
+                    homeBalanceModel.initBalanceModelByType()
+                    newUpdateHeaderViewModel(homeBalanceModel)
                 }
 
                 walletAppAbTestCondition(
