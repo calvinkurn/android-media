@@ -2,6 +2,7 @@ package com.tokopedia.filter.common.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.discovery.common.constants.SearchApiConst
 
 data class SavedOption(
     @SerializedName("title")
@@ -20,6 +21,17 @@ data class SavedOption(
     @Expose
     val name: String = "",
 ) {
+
+    fun asOption(): Option = Option(
+        key = key,
+        value = value,
+        name = name,
+        inputState = true.toString(),
+    )
+
+    fun isSort(): Boolean = key == SearchApiConst.OB
+
+    fun isFilter(): Boolean = !isSort()
 
     companion object {
         const val SORT_SAVED_OPTION_TITLE = "sort"

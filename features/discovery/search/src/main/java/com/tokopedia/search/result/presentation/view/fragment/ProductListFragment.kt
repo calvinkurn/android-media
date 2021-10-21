@@ -1980,11 +1980,10 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun applyLastFilter(lastFilterDataView: LastFilterDataView) {
-        val currentSearchParam = searchParameter?.getSearchParameterHashMap() ?: mapOf()
-        val lastFilterParameter = lastFilterDataView.mapParameter()
-        val paramWithLastFilter = currentSearchParam + lastFilterParameter
+        filterController.setFilter(lastFilterDataView.filterOptions())
 
-        refreshSearchParameter(paramWithLastFilter)
+        val queryParams = filterController.getParameter() + lastFilterDataView.sortParameter()
+        refreshSearchParameter(queryParams)
 
         reloadData()
     }
