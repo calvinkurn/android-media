@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chatroom.view.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.BaseChatUiModel
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 
 class ProductCarouselUiModel constructor(
@@ -21,14 +21,14 @@ class ProductCarouselUiModel constructor(
     fun isBroadCast(): Boolean {
         if (products.isEmpty()) return false
         val product = products.first()
-        return product is ProductAttachmentViewModel && product.fromBroadcast()
+        return product is ProductAttachmentUiModel && product.fromBroadcast()
     }
 
     // If one of the product is loading. all state become loading
     fun isLoading(): Boolean {
         var isLoading = false
         for (product in products) {
-            if (product is ProductAttachmentViewModel) {
+            if (product is ProductAttachmentUiModel) {
                 if (product.isLoading) {
                     isLoading = true
                 }

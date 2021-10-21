@@ -11,7 +11,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
 import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
 import com.tokopedia.chat_common.data.MessageUiModel
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.ChatRepliesItem
 import com.tokopedia.chat_common.domain.pojo.Contact
@@ -189,7 +189,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         }
         if (isBroadCast) {
             products.sortBy {
-                return@sortBy (it as ProductAttachmentViewModel).hasEmptyStock()
+                return@sortBy (it as ProductAttachmentUiModel).hasEmptyStock()
             }
         }
         return products

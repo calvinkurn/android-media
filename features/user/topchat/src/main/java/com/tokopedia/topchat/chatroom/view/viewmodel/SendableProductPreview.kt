@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chatroom.view.viewmodel
 
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.AttachmentType
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.attachment.AttachmentId
 import com.tokopedia.attachcommon.preview.ProductPreview
@@ -72,7 +72,7 @@ class SendableProductPreview(
         roomMetaData: RoomMetaData,
         message: String
     ): SendableUiModel {
-        return ProductAttachmentViewModel.Builder()
+        return ProductAttachmentUiModel.Builder()
             .withRoomMetaData(roomMetaData)
             .withAttachmentId(AttachmentId.NOT_YET_GENERATED)
             .withAttachmentType(AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT)

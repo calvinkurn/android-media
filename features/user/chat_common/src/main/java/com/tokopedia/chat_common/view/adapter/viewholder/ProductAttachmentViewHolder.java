@@ -21,7 +21,7 @@ import androidx.core.content.ContextCompat;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.chat_common.R;
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel;
 import com.tokopedia.chat_common.data.SendableUiModel;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener;
 import com.tokopedia.config.GlobalConfig;
@@ -33,7 +33,7 @@ import static com.tokopedia.unifycomponents.HelperFunctionKt.toDp;
 /**
  * @author by nisie on 5/14/18.
  */
-public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttachmentViewModel> {
+public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttachmentUiModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.attached_product_chat_item;
@@ -88,7 +88,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     }
 
     @Override
-    public void bind(ProductAttachmentViewModel element) {
+    public void bind(ProductAttachmentUiModel element) {
         super.bind(element);
         prerequisiteUISetup(element);
         setupProductUI(element, chatBalloon);
@@ -109,7 +109,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         return R.id.tvDate;
     }
 
-    private void setupIfEmptyStock(ProductAttachmentViewModel element) {
+    private void setupIfEmptyStock(ProductAttachmentUiModel element) {
         if (element.hasEmptyStock()) {
             tvBuy.setEnabled(false);
             tvBuy.setText(R.string.action_empty_stock);
@@ -125,7 +125,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         }
     }
 
-    private void setupVariantLayout(ProductAttachmentViewModel element) {
+    private void setupVariantLayout(ProductAttachmentUiModel element) {
         if (element.doesNotHaveVariant()) {
             hideVariantLayout();
         } else {
@@ -183,7 +183,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
                 || hexColor.equals(context.getString(R.string.white_color_hex_simpler));
     }
 
-    private void setupChatBubbleAlignment(View productContainerView, ProductAttachmentViewModel element) {
+    private void setupChatBubbleAlignment(View productContainerView, ProductAttachmentUiModel element) {
         if (element.isSender()) {
             setChatRight(productContainerView, element);
         } else {
@@ -199,7 +199,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         chatStatus.setVisibility(View.GONE);
     }
 
-    private void setChatRight(View productContainerView, ProductAttachmentViewModel element) {
+    private void setChatRight(View productContainerView, ProductAttachmentUiModel element) {
         productContainerView.setBackground(
                 MethodChecker.getDrawable(productContainerView.getContext(), R.drawable.bg_shadow_attach_product)
         );
@@ -217,7 +217,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         }
     }
 
-    protected void prerequisiteUISetup(final ProductAttachmentViewModel element) {
+    protected void prerequisiteUISetup(final ProductAttachmentUiModel element) {
         progressBarSendImage.setVisibility(View.GONE);
         chatBalloon.setOnClickListener(view -> viewListener.onProductClicked(element));
     }
@@ -231,7 +231,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         view.setLayoutParams(params);
     }
 
-    private void setupProductUI(ProductAttachmentViewModel element, View productContainer) {
+    private void setupProductUI(ProductAttachmentUiModel element, View productContainer) {
         setUIValue(productContainer, R.id.attach_product_chat_image, element
                 .getProductImage());
         setUIValue(productContainer, R.id.attach_product_chat_name, element.getProductName());
@@ -240,7 +240,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         setFooter(productContainer, element);
     }
 
-    private void setupFreeShipping(ProductAttachmentViewModel product) {
+    private void setupFreeShipping(ProductAttachmentUiModel product) {
         if (product.hasFreeShipping()) {
             freeShipping.setVisibility(View.VISIBLE);
             ImageHandler.loadImageRounded2(itemView.getContext(), freeShipping, product.getFreeShippingImageUrl());
@@ -248,7 +248,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     }
 
 
-    private void setUIDiscount(View productContainer, ProductAttachmentViewModel element) {
+    private void setUIDiscount(View productContainer, ProductAttachmentUiModel element) {
         setUIVisibility(productContainer, R.id.discount, element.getPriceBefore());
         setUIValue(productContainer, R.id.attach_product_chat_price_old, element.getPriceBefore());
         setUIValue(productContainer, R.id.discount, element.getDropPercentage() + "%");
@@ -267,7 +267,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         }
     }
 
-    private void setFooter(View productContainer, ProductAttachmentViewModel element) {
+    private void setFooter(View productContainer, ProductAttachmentUiModel element) {
         if (element.getCanShowFooter() && !GlobalConfig.isSellerApp()) {
             footerLayout.setVisibility(View.VISIBLE);
             tvBuy.setVisibility(View.VISIBLE);
@@ -292,7 +292,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         }
     }
 
-    private void bindWishListView(ProductAttachmentViewModel element) {
+    private void bindWishListView(ProductAttachmentUiModel element) {
         Drawable loveDrawable = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_attachproduct_wishlist);
         if (loveDrawable == null) return;
         loveDrawable.mutate();
@@ -300,7 +300,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         updateWishListIconState(element);
     }
 
-    private void bindClickAddToWishList(ProductAttachmentViewModel element) {
+    private void bindClickAddToWishList(ProductAttachmentUiModel element) {
         ivWishList.setOnClickListener(v -> {
             if (element.isWishListed()) {
                 removeProductFromWishList(element);
@@ -310,14 +310,14 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         });
     }
 
-    private void removeProductFromWishList(ProductAttachmentViewModel element) {
+    private void removeProductFromWishList(ProductAttachmentUiModel element) {
         viewListener.onClickRemoveFromWishList(element.getStringProductId(), () -> {
             onSuccessRemoveFromWishList(element);
             return null;
         });
     }
 
-    private void addProductToWishList(ProductAttachmentViewModel element) {
+    private void addProductToWishList(ProductAttachmentUiModel element) {
         viewListener.onClickAddToWishList(element, () -> {
                     onSuccessAddToWishList(element);
                     return null;
@@ -325,17 +325,17 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         );
     }
 
-    private void onSuccessRemoveFromWishList(ProductAttachmentViewModel element) {
+    private void onSuccessRemoveFromWishList(ProductAttachmentUiModel element) {
         element.setWishList(false);
         updateWishListIconState(element);
     }
 
-    private void onSuccessAddToWishList(ProductAttachmentViewModel element) {
+    private void onSuccessAddToWishList(ProductAttachmentUiModel element) {
         element.setWishList(true);
         updateWishListIconState(element);
     }
 
-    private void updateWishListIconState(ProductAttachmentViewModel element) {
+    private void updateWishListIconState(ProductAttachmentUiModel element) {
         if (element.isWishListed()) {
             int color = ContextCompat.getColor(itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_R500);
             ivWishList.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);

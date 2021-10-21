@@ -15,7 +15,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.atc_common.domain.model.response.DataModel;
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
 import com.tokopedia.chat_common.data.BannedProductAttachmentUiModel;
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel;
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress;
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel;
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel;
@@ -318,7 +318,7 @@ public class TopChatAnalytics {
     // #AP6
     public void eventClickProductThumbnailEE(
             Context context,
-            @NotNull ProductAttachmentViewModel product,
+            @NotNull ProductAttachmentUiModel product,
             @NotNull UserSessionInterface user
     ) {
 
@@ -355,7 +355,7 @@ public class TopChatAnalytics {
     // #AP5
     public void eventSeenProductAttachment(
             Context context,
-            @NotNull ProductAttachmentViewModel product,
+            @NotNull ProductAttachmentUiModel product,
             @NotNull UserSessionInterface user,
             Boolean amISeller
     ) {
@@ -396,7 +396,7 @@ public class TopChatAnalytics {
         );
     }
 
-    private String getFrom(ProductAttachmentViewModel product) {
+    private String getFrom(ProductAttachmentUiModel product) {
         String blastId = product.getStringBlastId();
         if (!sourcePage.isEmpty() && sourcePage.equals(ApplinkConst.Chat.SOURCE_CHAT_SEARCH)) {
             return "/chat - search chat";
@@ -423,7 +423,7 @@ public class TopChatAnalytics {
 
     // #AP7
     public void eventClickAddToCartProductAttachment(
-            @NotNull ProductAttachmentViewModel product,
+            @NotNull ProductAttachmentUiModel product,
             @NotNull UserSessionInterface user
     ) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
@@ -437,7 +437,7 @@ public class TopChatAnalytics {
 
     // #AP9
     public void eventClickBuyProductAttachment(
-            @NotNull ProductAttachmentViewModel product
+            @NotNull ProductAttachmentUiModel product
     ) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
                 EVENT_NAME, Name.CHAT_DETAIL,
@@ -588,7 +588,7 @@ public class TopChatAnalytics {
     }
 
     // #AP11
-    public void eventClickProductThumbnail(@NotNull ProductAttachmentViewModel product) {
+    public void eventClickProductThumbnail(@NotNull ProductAttachmentUiModel product) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 Name.CHAT_DETAIL,
                 Category.CHAT_DETAIL,
@@ -710,7 +710,7 @@ public class TopChatAnalytics {
     }
 
 
-    public void trackClickUpdateStock(ProductAttachmentViewModel product) {
+    public void trackClickUpdateStock(ProductAttachmentUiModel product) {
         String eventLabel = "seller - " +
                 product.getProductId() + " - " + product.getProductSource() + " - " +
                 product.getRemainingStock() + " - " + product.getBlastId() + " - " +
@@ -729,7 +729,7 @@ public class TopChatAnalytics {
     }
 
     public void trackSuccessDoBuyAndAtc(
-            ProductAttachmentViewModel element,
+            ProductAttachmentUiModel element,
             DataModel data,
             String shopName,
             String eventAction

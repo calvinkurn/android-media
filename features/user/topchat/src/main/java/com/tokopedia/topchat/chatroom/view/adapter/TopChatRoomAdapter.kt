@@ -17,8 +17,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.data.*
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel.Companion.statusActive
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel.Companion.statusWarehouse
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel.Companion.statusActive
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel.Companion.statusWarehouse
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult

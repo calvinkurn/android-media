@@ -20,9 +20,6 @@ import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTes
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.imageUploadViewModel
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.readParam
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.replyChatViewModelApiSuccess
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.source
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.toShopId
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.toUserId
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.websocket.RxWebSocket
@@ -151,7 +148,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
         val wsChatPojo = mockkParseResponse(wsResponseProductAttachment)
-        val wsChatVisitable = mockkWsMapper(wsChatPojo) as ProductAttachmentViewModel
+        val wsChatVisitable = mockkWsMapper(wsChatPojo) as ProductAttachmentUiModel
 
         // When
         presenter.connectWebSocket(exMessageId)

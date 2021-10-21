@@ -301,7 +301,7 @@ open class TopChatRoomPresenter @Inject constructor(
             AttachmentType.Companion.TYPE_IMAGE_UPLOAD,
             AttachmentType.Companion.TYPE_VOUCHER -> view?.removeSrwBubble()
             AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT -> {
-                if (uiModel is ProductAttachmentViewModel) {
+                if (uiModel is ProductAttachmentUiModel) {
                     view?.removeSrwBubble(uiModel.productId)
                 }
             }
@@ -998,7 +998,7 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override fun addOngoingUpdateProductStock(
         productId: String,
-        product: ProductAttachmentViewModel, adapterPosition: Int,
+        product: ProductAttachmentUiModel, adapterPosition: Int,
         parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
     ) {
         val result = UpdateProductStockResult(product, adapterPosition, parentMetaData)

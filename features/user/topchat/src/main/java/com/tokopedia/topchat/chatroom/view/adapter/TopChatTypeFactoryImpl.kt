@@ -144,7 +144,7 @@ open class TopChatTypeFactoryImpl constructor(
         return SrwBubbleViewHolder.LAYOUT
     }
 
-    override fun type(productAttachmentViewModel: ProductAttachmentViewModel): Int {
+    override fun type(productAttachmentUiModel: ProductAttachmentUiModel): Int {
         return TopchatProductAttachmentViewHolder.LAYOUT
     }
 

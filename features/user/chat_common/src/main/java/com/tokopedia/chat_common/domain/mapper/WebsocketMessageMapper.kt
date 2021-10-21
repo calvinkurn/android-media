@@ -57,12 +57,12 @@ open class WebsocketMessageMapper @Inject constructor() {
     }
 
     private fun convertToProductAttachment(@NonNull pojo: ChatSocketPojo, jsonAttribute:
-    JsonObject): ProductAttachmentViewModel {
+    JsonObject): ProductAttachmentUiModel {
         val canShowFooter = canShowFooterProductAttachment(pojo.isOpposite, pojo.fromRole)
         val pojoAttribute = GsonBuilder().create().fromJson(
             jsonAttribute, ProductAttachmentAttributes::class.java
         )
-        return ProductAttachmentViewModel.Builder()
+        return ProductAttachmentUiModel.Builder()
             .withResponseFromWs(pojo)
             .withProductAttributesResponse(pojoAttribute)
             .withCanShowFooter(canShowFooter)

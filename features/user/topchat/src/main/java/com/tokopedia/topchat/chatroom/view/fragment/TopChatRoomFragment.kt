@@ -618,12 +618,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun updateProductStock(
-        product: ProductAttachmentViewModel,
+        product: ProductAttachmentUiModel,
         adapterPosition: Int,
         parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
     ) {
         var id = product.parentId
-        if (id == ProductAttachmentViewModel.NO_PRODUCT_ID) {
+        if (id == ProductAttachmentUiModel.NO_PRODUCT_ID) {
             id = product.productId
         }
         val intent = RouteManager.getIntent(
@@ -635,7 +635,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         startActivityForResult(intent, REQUEST_UPDATE_STOCK)
     }
 
-    override fun trackClickUpdateStock(product: ProductAttachmentViewModel) {
+    override fun trackClickUpdateStock(product: ProductAttachmentUiModel) {
         analytics.trackClickUpdateStock(product)
     }
 
@@ -886,7 +886,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         presenter.startUploadImages(element)
     }
 
-    override fun onProductClicked(element: ProductAttachmentViewModel) {
+    override fun onProductClicked(element: ProductAttachmentUiModel) {
         super.onProductClicked(element)
         context?.let {
             analytics.eventClickProductThumbnailEE(it, element, session)
@@ -1473,7 +1473,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
+    override fun onClickBuyFromProductAttachment(element: ProductAttachmentUiModel) {
         analytics.eventClickBuyProductAttachment(element)
         doBuyAndAtc(element) {
             analytics.trackSuccessDoBuyAndAtc(
@@ -1485,7 +1485,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
+    override fun onClickATCFromProductAttachment(element: ProductAttachmentUiModel) {
         analytics.eventClickAddToCartProductAttachment(element, session)
         doBuyAndAtc(element) {
             analytics.trackSuccessDoBuyAndAtc(
@@ -1511,7 +1511,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun doBuyAndAtc(
-        element: ProductAttachmentViewModel,
+        element: ProductAttachmentUiModel,
         onSuccess: (response: DataModel) -> Unit = {}
     ) {
         val buyParam = getAtcBuyParam(element)
@@ -1522,7 +1522,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         })
     }
 
-    private fun getAtcBuyParam(element: ProductAttachmentViewModel): RequestParams {
+    private fun getAtcBuyParam(element: ProductAttachmentUiModel): RequestParams {
         val addToCartRequestParams = AddToCartRequestParams(
             productId = element.productId.toLongOrZero(),
             shopId = element.shopId.toInt(),
@@ -1736,7 +1736,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         unregisterUploadImageReceiver()
     }
 
-    override fun trackSeenProduct(element: ProductAttachmentViewModel) {
+    override fun trackSeenProduct(element: ProductAttachmentUiModel) {
         if (seenAttachedProduct.add(element.productId)) {
             analytics.eventSeenProductAttachment(requireContext(), element, session, amISeller)
         }
@@ -1848,7 +1848,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return childFragmentManager
     }
 
-    override fun onClickAddToWishList(product: ProductAttachmentViewModel, success: () -> Unit) {
+    override fun onClickAddToWishList(product: ProductAttachmentUiModel, success: () -> Unit) {
         val productId = product.productId.toString()
         analytics.eventClickAddToWishList(productId)
         if (product.isWishListed()) {
@@ -1931,7 +1931,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         analytics.eventClickQuotation(msg)
     }
 
-    override fun trackClickProductThumbnail(product: ProductAttachmentViewModel) {
+    override fun trackClickProductThumbnail(product: ProductAttachmentUiModel) {
         analytics.eventClickProductThumbnail(product)
     }
 

@@ -228,7 +228,7 @@ interface TopChatContract {
 
         fun addOngoingUpdateProductStock(
             productId: String,
-            product: ProductAttachmentViewModel, adapterPosition: Int,
+            product: ProductAttachmentUiModel, adapterPosition: Int,
             parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
         )
 

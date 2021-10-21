@@ -21,7 +21,7 @@ abstract class BaseChatTypeFactoryImpl(private val imageAnnouncementListener: Im
         BaseAdapterTypeFactory(),
         BaseChatTypeFactory {
 
-    override fun type(productAttachmentViewModel: ProductAttachmentViewModel): Int {
+    override fun type(productAttachmentUiModel: ProductAttachmentUiModel): Int {
         return ProductAttachmentViewHolder.LAYOUT
     }
 

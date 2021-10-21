@@ -170,7 +170,7 @@ open class GetExistingChatMapper @Inject constructor() {
                 .withCanShowFooter(canShowFooter)
                 .build()
         }
-        return ProductAttachmentViewModel.Builder()
+        return ProductAttachmentUiModel.Builder()
             .withResponseFromGQL(chatItemPojoByDateByTime)
             .withProductAttributesResponse(pojoAttribute)
             .withCanShowFooter(canShowFooter)
