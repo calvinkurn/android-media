@@ -69,7 +69,7 @@ class CourierInfoViewHolder(itemView: View?, private val listener: CourierInfoVi
         tvBuyerOrderDetailArrivalEstimationValue?.setPadding(0, getArrivalEstimationTopMargin(freeShipping), 0, 0)
         tvBuyerOrderDetailArrivalEstimationValue?.showWithCondition(arrivalEstimation.isNotBlank())
         if (etaChanged) {
-            tvBuyerOrderDetailArrivalEstimationValue?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.eta_info, 0)
+            tvBuyerOrderDetailArrivalEstimationValue?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, com.tokopedia.logisticCommon.R.drawable.eta_info, 0)
             tvBuyerOrderDetailArrivalEstimationValue?.setOnClickListener {
                 listener.onEtaChangedClicked(etaChangedDescription)
             }

@@ -219,7 +219,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     private fun setEtaDetail(model: EtaModel) {
         binding?.eta?.text = model.userInfo
         if (model.isChanged) {
-            binding?.eta?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.eta_info, 0)
+            binding?.eta?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, com.tokopedia.logisticCommon.R.drawable.eta_info, 0)
             binding?.eta?.setOnClickListener {
                 showEtaBottomSheet(model.userUpdatedInfo)
             }
