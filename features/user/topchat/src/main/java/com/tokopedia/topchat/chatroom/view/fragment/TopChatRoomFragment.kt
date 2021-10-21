@@ -706,7 +706,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 dummy.visitable?.let {
                     addDummyMessage(it)
                     if (dummy.isFail) {
-                        topchatViewState?.showRetryUploadImages(it as ImageUploadViewModel, true)
+                        topchatViewState?.showRetryUploadImages(it as ImageUploadUiModel, true)
                     }
                 }
             }
@@ -865,7 +865,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         super.onImageAnnouncementClicked(viewModel)
     }
 
-    override fun onRetrySendImage(element: ImageUploadViewModel) {
+    override fun onRetrySendImage(element: ImageUploadUiModel) {
         context?.let {
             val bs = TopchatBottomSheetBuilder.getErrorUploadImageBs(it,
                 onRetryClicked = {
@@ -880,7 +880,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    private fun resendImage(element: ImageUploadViewModel) {
+    private fun resendImage(element: ImageUploadUiModel) {
         //change the retry value
         element.isRetry = false
         presenter.startUploadImages(element)
@@ -1047,7 +1047,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         topchatViewState?.removeDummy(visitable)
     }
 
-    override fun onErrorUploadImage(errorMessage: String, it: ImageUploadViewModel) {
+    override fun onErrorUploadImage(errorMessage: String, it: ImageUploadUiModel) {
         showSnackbarError(errorMessage)
         topchatViewState?.showRetryUploadImages(it, true)
     }
@@ -1438,7 +1438,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    private fun processImagePathToUpload(data: Intent): ImageUploadViewModel? {
+    private fun processImagePathToUpload(data: Intent): ImageUploadUiModel? {
         val imagePathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
         if (imagePathList.size <= 0) {
             return null
@@ -1453,8 +1453,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return null
     }
 
-    private fun generateChatViewModelWithImage(imageUrl: String): ImageUploadViewModel {
-        return ImageUploadViewModel.Builder()
+    private fun generateChatViewModelWithImage(imageUrl: String): ImageUploadUiModel {
+        return ImageUploadUiModel.Builder()
             .withRoomMetaData(presenter.roomMetaData)
             .withAttachmentType(AttachmentType.Companion.TYPE_IMAGE_UPLOAD)
             .withReplyTime(SENDING_TEXT)
@@ -2183,7 +2183,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             val position = intent.getIntExtra(UploadImageChatService.RETRY_POSITION, -1)
             if (position > -1 && position < UploadImageChatService.dummyMap.size) {
                 val dummyTarget = UploadImageChatService.dummyMap[position]
-                onErrorUploadImage(errorMessage, dummyTarget.visitable as ImageUploadViewModel)
+                onErrorUploadImage(errorMessage, dummyTarget.visitable as ImageUploadUiModel)
             }
         }
     }

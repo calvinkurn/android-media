@@ -7,7 +7,7 @@ import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
  * Created by stevenfredian on 11/28/17.
  */
 
-class ImageUploadViewModel(
+class ImageUploadUiModel(
     builder: Builder
 ) : SendableUiModel(builder), Visitable<BaseChatTypeFactory> {
 
@@ -25,7 +25,7 @@ class ImageUploadViewModel(
         return typeFactory.type(this)
     }
 
-    class Builder: SendableUiModel.Builder<Builder, ImageUploadViewModel>() {
+    class Builder: SendableUiModel.Builder<Builder, ImageUploadUiModel>() {
 
         internal var imageUrl: String? = null
         internal var imageUrlThumbnail: String? = null
@@ -46,8 +46,8 @@ class ImageUploadViewModel(
             return self()
         }
 
-        override fun build(): ImageUploadViewModel {
-            return ImageUploadViewModel(this)
+        override fun build(): ImageUploadUiModel {
+            return ImageUploadUiModel(this)
         }
     }
 }

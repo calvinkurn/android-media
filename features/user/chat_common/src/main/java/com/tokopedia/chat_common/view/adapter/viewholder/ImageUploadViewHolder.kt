@@ -12,7 +12,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.common.utils.image.DynamicSizeImageRequestListener
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.R
-import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 
 
@@ -21,7 +21,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadLis
  */
 
 open class ImageUploadViewHolder(itemView: View?, private val listener: ImageUploadListener)
-    : BaseChatViewHolder<ImageUploadViewModel>(itemView) {
+    : BaseChatViewHolder<ImageUploadUiModel>(itemView) {
 
     protected val chatStatus: ImageView? = itemView?.findViewById(getReadStatusId())
     protected val chatBalloon: View? = itemView?.findViewById(getChatBalloonId())
@@ -41,7 +41,7 @@ open class ImageUploadViewHolder(itemView: View?, private val listener: ImageUpl
     protected open fun getReadStatusId() = R.id.chat_status
     protected open fun getChatBalloonId() = R.id.card_group_chat_message
 
-    override fun bind(element: ImageUploadViewModel?) {
+    override fun bind(element: ImageUploadUiModel?) {
         if (element == null) return
         super.bind(element)
         prerequisiteUISetup(element)
@@ -52,13 +52,13 @@ open class ImageUploadViewHolder(itemView: View?, private val listener: ImageUpl
         setVisibility(attachment, View.VISIBLE)
     }
 
-    private fun bindRetry(element: ImageUploadViewModel) {
+    private fun bindRetry(element: ImageUploadUiModel) {
         if (element.isRetry) {
             setRetryView(element)
         }
     }
 
-    private fun bindClickListener(element: ImageUploadViewModel) {
+    private fun bindClickListener(element: ImageUploadUiModel) {
         view.setOnClickListener { view ->
             if (element.imageUrl != null && element.replyTime != null) {
                 listener.onImageUploadClicked(element.imageUrl!!, element.replyTime!!)
@@ -66,7 +66,7 @@ open class ImageUploadViewHolder(itemView: View?, private val listener: ImageUpl
         }
     }
 
-    protected open fun bindImageAttachment(element: ImageUploadViewModel) {
+    protected open fun bindImageAttachment(element: ImageUploadUiModel) {
         if (element.isDummy) {
             setVisibility(progressBarSendImage, View.VISIBLE)
             ImageHandler.loadImageBlurredWithListener(
@@ -86,7 +86,7 @@ open class ImageUploadViewHolder(itemView: View?, private val listener: ImageUpl
         }
     }
 
-    private fun setupChatBubbleAlignment(chatBalloon: View?, element: ImageUploadViewModel) {
+    private fun setupChatBubbleAlignment(chatBalloon: View?, element: ImageUploadUiModel) {
         if (element.isSender) {
             setChatRight(chatBalloon)
             bindChatReadStatus(element)
@@ -123,7 +123,7 @@ open class ImageUploadViewHolder(itemView: View?, private val listener: ImageUpl
         view.layoutParams = params
     }
 
-    private fun setRetryView(element: ImageUploadViewModel) {
+    private fun setRetryView(element: ImageUploadUiModel) {
         setVisibility(action, View.VISIBLE)
         setVisibility(hour, View.GONE)
         setVisibility(chatStatus, View.GONE)
@@ -134,7 +134,7 @@ open class ImageUploadViewHolder(itemView: View?, private val listener: ImageUpl
     }
 
     @SuppressLint("DefaultLocale")
-    protected fun prerequisiteUISetup(element: ImageUploadViewModel) {
+    protected fun prerequisiteUISetup(element: ImageUploadUiModel) {
         action?.visibility = View.GONE
         progressBarSendImage?.visibility = View.GONE
         if (!TextUtils.isEmpty(element.fromRole)

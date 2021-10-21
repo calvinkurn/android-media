@@ -217,7 +217,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         }
     }
 
-    override fun onImageUpload(it: ImageUploadViewModel) {
+    override fun onImageUpload(it: ImageUploadUiModel) {
         getAdapter().addElement(it)
         scrollDownWhenInBottom()
     }
@@ -322,7 +322,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         }
     }
 
-    override fun showRetryUploadImages(image: ImageUploadViewModel, retry: Boolean){
+    override fun showRetryUploadImages(image: ImageUploadUiModel, retry: Boolean){
         getAdapter().showRetryFor(image, retry)
     }
 

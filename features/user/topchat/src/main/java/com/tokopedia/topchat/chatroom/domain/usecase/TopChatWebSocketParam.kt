@@ -7,7 +7,7 @@ import com.google.gson.JsonObject
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
-import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.WebsocketEvent
 import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chat_common.data.parentreply.ParentReply
@@ -205,7 +205,7 @@ object TopChatWebSocketParam {
     fun generateParamSendImage(
         thisMessageId: String,
         path: String,
-        image: ImageUploadViewModel
+        image: ImageUploadUiModel
     ): String {
         val referredMsgRequest = generateParentReplyRequestPayload(image.parentReply)
         val json = JsonObject()

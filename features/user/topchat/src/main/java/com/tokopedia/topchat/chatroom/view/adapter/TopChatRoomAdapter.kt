@@ -179,11 +179,11 @@ class TopChatRoomAdapter constructor(
         notifyItemChanged(position)
     }
 
-    fun showRetryFor(model: ImageUploadViewModel, b: Boolean) {
+    fun showRetryFor(model: ImageUploadUiModel, b: Boolean) {
         val position = visitables.indexOf(model)
         if (position < 0) return
-        if (visitables[position] is ImageUploadViewModel) {
-            (visitables[position] as ImageUploadViewModel).isRetry = true
+        if (visitables[position] is ImageUploadUiModel) {
+            (visitables[position] as ImageUploadUiModel).isRetry = true
             notifyItemChanged(position)
         }
     }

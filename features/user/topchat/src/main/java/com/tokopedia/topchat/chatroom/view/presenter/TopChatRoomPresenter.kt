@@ -390,7 +390,7 @@ open class TopChatRoomPresenter @Inject constructor(
         sendMessageWebSocket(TopChatWebSocketParam.generateParamRead(thisMessageId))
     }
 
-    override fun startCompressImages(it: ImageUploadViewModel) {
+    override fun startCompressImages(it: ImageUploadUiModel) {
         val isValidImage = ImageUtil.validateImageAttachment(it.imageUrl)
         if (isValidImage.first) {
             it.imageUrl?.let { it1 ->
@@ -419,7 +419,7 @@ open class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-    override fun startUploadImages(image: ImageUploadViewModel) {
+    override fun startUploadImages(image: ImageUploadUiModel) {
         view?.removeSrwBubble()
         if (isEnableUploadImageService()) {
             addDummyToService(image)
@@ -434,7 +434,7 @@ open class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-    protected open fun addDummyToService(image: ImageUploadViewModel) {
+    protected open fun addDummyToService(image: ImageUploadUiModel) {
         val dummyPosition = UploadImageChatService.findDummy(image)
         if (dummyPosition == null) {
             val uploadImageDummy = UploadImageDummy(messageId = thisMessageId, visitable = image)
@@ -444,7 +444,7 @@ open class TopChatRoomPresenter @Inject constructor(
 
     }
 
-    protected open fun startUploadImageWithService(image: ImageUploadViewModel) {
+    protected open fun startUploadImageWithService(image: ImageUploadUiModel) {
         UploadImageChatService.enqueueWork(
             view.context,
             ImageUploadMapper.mapToImageUploadServer(image),
@@ -452,25 +452,25 @@ open class TopChatRoomPresenter @Inject constructor(
         )
     }
 
-    private fun onSuccessUploadImage(uploadId: String, image: ImageUploadViewModel) {
+    private fun onSuccessUploadImage(uploadId: String, image: ImageUploadUiModel) {
         when (networkMode) {
             MODE_WEBSOCKET -> sendImageByWebSocket(uploadId, image)
             MODE_API -> sendImageByApi(uploadId, image)
         }
     }
 
-    private fun onErrorUploadImage(throwable: Throwable, image: ImageUploadViewModel) {
+    private fun onErrorUploadImage(throwable: Throwable, image: ImageUploadUiModel) {
         view?.onErrorUploadImage(ErrorHandler.getErrorMessage(view?.context, throwable), image)
     }
 
-    private fun sendImageByWebSocket(uploadId: String, image: ImageUploadViewModel) {
+    private fun sendImageByWebSocket(uploadId: String, image: ImageUploadUiModel) {
         val requestParams = TopChatWebSocketParam.generateParamSendImage(
             thisMessageId, uploadId, image
         )
         sendMessageWebSocket(requestParams)
     }
 
-    private fun sendImageByApi(uploadId: String, image: ImageUploadViewModel) {
+    private fun sendImageByApi(uploadId: String, image: ImageUploadUiModel) {
         val requestParams = ReplyChatUseCase.generateParamAttachImage(thisMessageId, uploadId)
         sendByApi(requestParams, image)
     }

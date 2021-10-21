@@ -219,7 +219,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     @Test
     fun `check upload image using service`() {
         //Given
-        val image = ImageUploadViewModel.Builder()
+        val image = ImageUploadUiModel.Builder()
             .withMsgId(exMessageId)
             .withFromUid("123123")
             .withAttachmentId("123987")
@@ -254,7 +254,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     @Test
     fun `check upload image problematic device`() {
         //Given
-        val image = mockk<ImageUploadViewModel>(relaxed = true)
+        val image = mockk<ImageUploadUiModel>(relaxed = true)
         every {
             remoteConfig.getBoolean(any(), any())
         } returns true
@@ -285,7 +285,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     @Test
     fun `check upload image failed to get remote config`() {
         //Given
-        val image = mockk<ImageUploadViewModel>()
+        val image = mockk<ImageUploadUiModel>()
         val exception = mockk<Exception>("Oops!")
         every {
             remoteConfig.getBoolean(any(), any())
@@ -419,7 +419,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
                 any()
             )
         } answers {
-            val onSuccess = lambda<(String, ImageUploadViewModel) -> Unit>()
+            val onSuccess = lambda<(String, ImageUploadUiModel) -> Unit>()
             onSuccess.invoke(exImageUploadId, imageUploadViewModel)
         }
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
@@ -461,7 +461,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
                 any()
             )
         } answers {
-            val onSuccess = lambda<(String, ImageUploadViewModel) -> Unit>()
+            val onSuccess = lambda<(String, ImageUploadUiModel) -> Unit>()
             onSuccess.invoke(
                 exImageUploadId,
                 imageUploadViewModel
@@ -505,7 +505,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
             uploadImageUseCase.upload(
                 imageUploadViewModel, captureLambda(), any())
         } answers {
-            val onSuccess = lambda<(String, ImageUploadViewModel) -> Unit>()
+            val onSuccess = lambda<(String, ImageUploadUiModel) -> Unit>()
             onSuccess.invoke(exImageUploadId, imageUploadViewModel)
         }
         coEvery {
@@ -550,7 +550,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
                 imageUploadViewModel,
                 any(), captureLambda())
         } answers {
-            val onError = lambda<(Throwable, ImageUploadViewModel) -> Unit>()
+            val onError = lambda<(Throwable, ImageUploadUiModel) -> Unit>()
             onError.invoke(errorUploadImage, imageUploadViewModel)
         }
 
@@ -570,7 +570,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     @Test
     fun `should have dummy image when upload image by service`() {
         // Given
-        val imageViewModel = ImageUploadViewModel.Builder()
+        val imageViewModel = ImageUploadUiModel.Builder()
             .withMsgId(exMessageId)
             .withFromUid("123123")
             .withAttachmentId("123987")

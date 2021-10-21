@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.BaseChatUiModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
 import com.tokopedia.topchat.stub.chatroom.view.customview.FakeTopChatViewStateImpl
@@ -14,7 +14,7 @@ open class TopChatRoomFragmentStub : TopChatRoomFragment() {
     /**
      * show bottomsheet immediately
      */
-    override fun onRetrySendImage(element: ImageUploadViewModel) {
+    override fun onRetrySendImage(element: ImageUploadUiModel) {
         super.onRetrySendImage(element)
         childFragmentManager.executePendingTransactions()
     }

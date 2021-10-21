@@ -197,7 +197,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         }
     }
 
-    override fun onRetrySendImage(element: ImageUploadViewModel) {
+    override fun onRetrySendImage(element: ImageUploadUiModel) {
 
     }
 

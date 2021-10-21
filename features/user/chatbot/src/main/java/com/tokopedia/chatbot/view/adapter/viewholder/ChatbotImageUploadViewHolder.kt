@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.BaseChatUiModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chatbot.R
@@ -55,7 +55,7 @@ class ChatbotImageUploadViewHolder(itemView: View?,
     private val imageRadius = itemView?.context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
             ?: 0f
 
-    override fun bind(element: ImageUploadViewModel?) {
+    override fun bind(element: ImageUploadUiModel?) {
         if (element == null) return
         super.bind(element)
         chatStatus?.let { bindChatReadStatus(element, it) }
@@ -68,7 +68,7 @@ class ChatbotImageUploadViewHolder(itemView: View?,
         chatBalloon?.background = bgSender
     }
 
-    override fun bindImageAttachment(element: ImageUploadViewModel) {
+    override fun bindImageAttachment(element: ImageUploadUiModel) {
         changeHourColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         attachment?.scaleType = ImageView.ScaleType.CENTER_CROP
         if (element.isDummy) {
@@ -103,7 +103,7 @@ class ChatbotImageUploadViewHolder(itemView: View?,
         }
     }
 
-    private fun bindChatReadStatus(element: ImageUploadViewModel, checkMark: ImageView) {
+    private fun bindChatReadStatus(element: ImageUploadUiModel, checkMark: ImageView) {
         if (element.isShowTime && element.isSender) {
             checkMark.show()
             val imageResource = when {

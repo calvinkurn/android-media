@@ -37,7 +37,7 @@ abstract class BaseChatTypeFactoryImpl(private val imageAnnouncementListener: Im
         return ImageAnnouncementViewHolder.LAYOUT
     }
 
-    override fun type(imageUploadViewModel: ImageUploadViewModel): Int {
+    override fun type(imageUploadUiModel: ImageUploadUiModel): Int {
         return ImageUploadViewHolder.LAYOUT
     }
 

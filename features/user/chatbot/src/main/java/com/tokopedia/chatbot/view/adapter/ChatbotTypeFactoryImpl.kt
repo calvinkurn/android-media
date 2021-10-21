@@ -89,7 +89,7 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
         }
     }
 
-    override fun type(imageUploadViewModel: ImageUploadViewModel): Int {
+    override fun type(imageUploadUiModel: ImageUploadUiModel): Int {
         return ChatbotImageUploadViewHolder.LAYOUT
     }
 

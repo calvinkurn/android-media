@@ -602,7 +602,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-    override fun onImageUploadCancelClicked(image: ImageUploadViewModel) {
+    override fun onImageUploadCancelClicked(image: ImageUploadUiModel) {
         presenter.cancelImageUpload()
         getViewState()?.showRetryUploadImages(image, true)
     }
@@ -695,7 +695,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-    private fun onErrorImageUpload(): (Throwable, ImageUploadViewModel) -> Unit {
+    private fun onErrorImageUpload(): (Throwable, ImageUploadUiModel) -> Unit {
         return { throwable, image ->
             if (view != null) {
                 Toaster.make(view!!, ErrorHandler.getErrorMessage(view!!.context, throwable), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
@@ -704,7 +704,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-    private fun processImagePathToUpload(data: Intent): ImageUploadViewModel? {
+    private fun processImagePathToUpload(data: Intent): ImageUploadUiModel? {
 
         val imagePathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
         if (imagePathList.size <= 0) {
@@ -719,8 +719,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return null
     }
 
-    fun generateChatViewModelWithImage(imageUrl: String): ImageUploadViewModel {
-        return ImageUploadViewModel.Builder()
+    fun generateChatViewModelWithImage(imageUrl: String): ImageUploadUiModel {
+        return ImageUploadUiModel.Builder()
             .withMsgId(messageId)
             .withFromUid(opponentId)
             .withAttachmentId((System.currentTimeMillis() / ONE_SECOND_IN_MILLISECONDS).toString())
@@ -940,7 +940,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }, REQUEST_SUBMIT_CSAT)
     }
 
-    override fun onRetrySendImage(element: ImageUploadViewModel) {
+    override fun onRetrySendImage(element: ImageUploadUiModel) {
         val bottomSheetPage = BottomSheetUnify()
         val viewBottomSheetPage = View.inflate(context, R.layout.retry_upload_image_bottom_sheet_layout, null).apply {
             val rvPages = findViewById<RecyclerView>(R.id.rv_image_upload_option)
@@ -965,7 +965,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     }
 
-    fun onBottomSheetItemClicked(element: ImageUploadViewModel, bottomSheetPage: BottomSheetUnify): (Int) -> Unit {
+    fun onBottomSheetItemClicked(element: ImageUploadUiModel, bottomSheetPage: BottomSheetUnify): (Int) -> Unit {
         return {
             when (it) {
                 RESEND -> {

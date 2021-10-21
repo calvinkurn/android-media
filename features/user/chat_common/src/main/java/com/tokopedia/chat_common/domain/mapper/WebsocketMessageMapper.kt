@@ -45,11 +45,11 @@ open class WebsocketMessageMapper @Inject constructor() {
     }
 
     private fun convertToImageUpload(@NonNull pojo: ChatSocketPojo, jsonAttribute: JsonObject):
-            ImageUploadViewModel {
+            ImageUploadUiModel {
         val pojoAttribute = GsonBuilder().create().fromJson(
             jsonAttribute, ImageUploadAttributes::class.java
         )
-        return ImageUploadViewModel.Builder()
+        return ImageUploadUiModel.Builder()
             .withResponseFromWs(pojo)
             .withImageUrl(pojoAttribute.imageUrl)
             .withImageUrlThumbnail(pojoAttribute.thumbnail)

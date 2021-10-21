@@ -96,7 +96,7 @@ open class TopChatTypeFactoryImpl constructor(
         return AttachedInvoiceViewHolder.LAYOUT
     }
 
-    override fun type(imageUploadViewModel: ImageUploadViewModel): Int {
+    override fun type(imageUploadUiModel: ImageUploadUiModel): Int {
         return TopchatImageUploadViewHolder.LAYOUT
     }
 

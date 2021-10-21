@@ -44,7 +44,7 @@ interface TopChatContract {
 
         fun onErrorGetTemplate()
 
-        fun onErrorUploadImage(errorMessage: String, it: ImageUploadViewModel)
+        fun onErrorUploadImage(errorMessage: String, it: ImageUploadUiModel)
 
         fun focusOnReply()
 
@@ -102,9 +102,9 @@ interface TopChatContract {
 
         fun readMessage()
 
-        fun startCompressImages(it: ImageUploadViewModel)
+        fun startCompressImages(it: ImageUploadUiModel)
 
-        fun startUploadImages(image: ImageUploadViewModel)
+        fun startUploadImages(image: ImageUploadUiModel)
 
         fun loadTopChat(
             messageId: String,

@@ -708,7 +708,7 @@ open class TopChatViewStateImpl constructor(
         analytics.eventClickTemplate()
     }
 
-    override fun showRetryUploadImages(it: ImageUploadViewModel, retry: Boolean) {
+    override fun showRetryUploadImages(it: ImageUploadUiModel, retry: Boolean) {
         getAdapter().showRetryFor(it, retry)
     }
 

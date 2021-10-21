@@ -148,7 +148,7 @@ open class GetExistingChatMapper @Inject constructor() {
             chatItemPojoByDateByTime.attachment?.attributes,
             ImageUploadAttributes::class.java
         )
-        return ImageUploadViewModel.Builder()
+        return ImageUploadUiModel.Builder()
             .withResponseFromGQL(chatItemPojoByDateByTime)
             .withImageUrl(pojoAttribute.imageUrl)
             .withImageUrlThumbnail(pojoAttribute.thumbnail)
