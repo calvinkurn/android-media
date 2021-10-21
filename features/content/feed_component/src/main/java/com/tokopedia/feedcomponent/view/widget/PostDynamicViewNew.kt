@@ -76,6 +76,7 @@ import com.tokopedia.feedcomponent.util.util.*
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import java.lang.Exception
 import android.graphics.Rect
+import com.tokopedia.unifycomponents.toDp
 
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
 private const val SPAN_SIZE_FULL = 6
@@ -91,7 +92,7 @@ private const val TIME_THREE_SEC = 3000L
 private const val TIME_FOUR_SEC = 4000L
 private const val TIMER_TO_BE_SHOWN = 3000L
 private const val PRODUCT_DOT_TIMER = 4000L
-private const val TIME_SECOND = 2000L
+private const val TIME_SECOND = 1000L
 private const val FOLLOW_SIZE = 7
 private const val MINUTE_IN_HOUR = 60
 private const val SPACE = 3
@@ -765,9 +766,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             postImage.setImageUrl(feedMedia.mediaUrl)
                             val layout = findViewById<ConstraintLayout>(R.id.post_image_layout)
                             val layoutLihatProdukParent = findViewById<TextView>(R.id.tv_lihat_product)
-                            if (tagProducts.isNotEmpty()){
-                                showViewWithAnimation(layoutLihatProdukParent, context)
-                            }
 
                             like_anim.setImageDrawable(
                                 MethodChecker.getDrawable(
@@ -903,11 +901,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                                 productTagBubbleShowing = item.showExpandedView()
                                             }
                                         }
-                                        if (!layoutLihatProdukParent.isVisible()) {
+                                        if (layoutLihatProdukParent.width.toDp() == 24) {
                                             showViewWithAnimation(layoutLihatProdukParent, context)
-                                        } else if (!productTagBubbleShowing) {
-                                            hideViewWithAnimation(layoutLihatProdukParent, context)
-                                        } else if (layoutLihatProdukParent.isVisible()){
+                                        } else if (!productTagBubbleShowing && layoutLihatProdukParent.width.toDp() == 120) {
                                             hideViewWithAnimation(layoutLihatProdukParent, context)
                                         }
                                         return true
@@ -1418,10 +1414,16 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     item.resetView()
                 }
             }
+            layoutLihatProdukParent.clearAnimation()
+            layoutLihatProdukParent.animation = null
+            val la= layoutLihatProdukParent.layoutParams
+            la.width = context.resources.getDimensionPixelOffset(R.dimen.dp_24)
+            layoutLihatProdukParent.layoutParams = la
             if (handlerAnim == null) {
                 handlerAnim = handlerFeed
             }
             if (tagProducts.isNotEmpty()) {
+                hideViewWithoutAnimation(layoutLihatProdukParent,context)
                 handlerAnim?.postDelayed({
                     showViewWithAnimation(layoutLihatProdukParent, context)
                 }, TIME_SECOND)
@@ -1429,11 +1431,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
             if (handlerHide == null) {
                 handlerHide = handlerFeed
             }
-            handlerHide?.postDelayed({
                 if (!shouldContinueToShowLihatProduct(layout)) {
+                    handlerHide?.postDelayed({
                     hideViewWithAnimation(layoutLihatProdukParent, context)
+                }, TIME_FOUR_SEC)
                 }
-            }, TIME_FOUR_SEC)
         }
     }
 

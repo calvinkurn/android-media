@@ -171,12 +171,13 @@ fun showViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
         layoutParams.width = vv
         layoutLihatProdukParent.layoutParams = layoutParams
     }
-    anim.duration = 500L
+    anim.duration = 300L
     anim.start()
 }
 
 fun hideViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
     val anim = ValueAnimator.ofInt(convertDpToPixel(120F, context), convertDpToPixel(24F, context))
+    anim.cancel()
     anim.addUpdateListener { valueAnimator ->
         val vv = valueAnimator.animatedValue as Int
         val layoutParams: ViewGroup.LayoutParams =
@@ -184,7 +185,21 @@ fun hideViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
         layoutParams.width = vv
         layoutLihatProdukParent.layoutParams = layoutParams
     }
-    anim.duration = 350
+    anim.duration = 0
+    anim.start()
+}
+
+fun hideViewWithoutAnimation(layoutLihatProdukParent: View, context: Context) {
+    val anim = ValueAnimator.ofInt(convertDpToPixel(120F, context), convertDpToPixel(24F, context))
+    anim.cancel()
+    anim.addUpdateListener { valueAnimator ->
+        val vv = valueAnimator.animatedValue as Int
+        val layoutParams: ViewGroup.LayoutParams =
+            layoutLihatProdukParent.layoutParams
+        layoutParams.width = vv
+        layoutLihatProdukParent.layoutParams = layoutParams
+    }
+    anim.duration = 0
     anim.start()
 }
 
