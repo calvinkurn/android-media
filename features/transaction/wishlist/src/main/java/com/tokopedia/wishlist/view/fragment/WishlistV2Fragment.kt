@@ -1,5 +1,6 @@
 package com.tokopedia.wishlist.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -29,6 +30,8 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -45,6 +48,8 @@ import com.tokopedia.wishlist.di.WishlistV2Module
 import com.tokopedia.wishlist.util.WishlistUtils
 import com.tokopedia.wishlist.util.WishlistV2LayoutPreference
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
+import com.tokopedia.wishlist.view.adapter.WishlistV2FilterBottomSheetAdapter
+import com.tokopedia.wishlist.view.bottomsheet.WishlistV2FilterBottomSheet
 import com.tokopedia.wishlist.view.viewmodel.WishlistV2ViewModel
 import javax.inject.Inject
 
@@ -239,9 +244,15 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 is Success -> {
                     refreshHandler?.finishRefresh()
                     result.data.let { wishlistV2 ->
+                        hideLoader()
+                        updateTotalLabel(wishlistV2.totalData)
+                        if (currPage == 1 && wishlistV2.sortFilters.isNotEmpty()) {
+                            renderChipsFilter(wishlistV2.sortFilters)
+                        }
                         if (wishlistV2.items.isNotEmpty()) {
-                            hideLoader()
+                            currPage += 1
                             renderWishlist(wishlistV2.items)
+
                         } else {
                             // renderEmpty()
                         }
@@ -253,6 +264,13 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 }
             }
         })
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun updateTotalLabel(totalData: Int) {
+        binding?.run {
+            wishlistCountLabel.text = getString(R.string.wishlist_count_label, totalData)
+        }
     }
 
     private fun showLoader() {
@@ -268,6 +286,56 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             rlWishlistSort.visibility = View.VISIBLE
             rlWishlistSortLoader.visibility = View.GONE
         }
+    }
+
+    private fun renderChipsFilter(sortFilters: List<WishlistV2Response.Data.WishlistV2.SortFiltersItem>) {
+        val chips = arrayListOf<SortFilterItem>()
+
+        sortFilters.forEach { filterItem ->
+            val typeFilter = if (filterItem.isActive) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+            val chipFilter = SortFilterItem(filterItem.text, typeFilter, ChipsUnify.SIZE_SMALL)
+            chipFilter.listener = {
+                showBottomSheetFilterOption(filterItem)
+            }
+            chips.add(chipFilter)
+        }
+
+        binding?.run {
+            wishlistSortFilter.run {
+                addItem(chips)
+                sortFilterPrefix.setOnClickListener {
+                    resetAllFilters()
+                    paramWishlistV2 = WishlistV2Params()
+                    refreshHandler?.startRefresh()
+                }
+                chipItems?.forEach { sortFilterItem ->
+                    sortFilterItem.refChipUnify.setChevronClickListener {
+                        // show bottomsheet
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showBottomSheetFilterOption(filterItem: WishlistV2Response.Data.WishlistV2.SortFiltersItem) {
+        val filterBottomSheet = WishlistV2FilterBottomSheet.newInstance(filterItem.text)
+        if (filterBottomSheet.isAdded || childFragmentManager.isStateSaved) return
+
+        val filterBottomSheetAdapter = WishlistV2FilterBottomSheetAdapter()
+        filterBottomSheetAdapter.filterItem = filterItem
+
+        filterBottomSheet.setAdapter(filterBottomSheetAdapter)
+        filterBottomSheet.setListener(object : WishlistV2FilterBottomSheet.BottomSheetListener{
+            override fun onRadioButtonSelected() {
+                TODO("Not yet implemented")
+            }
+
+            override fun onSaveCheckboxSelection() {
+                TODO("Not yet implemented")
+            }
+
+        })
+        // besok lanjut filterBottomSheet.setListener(object : Wishlist
     }
 
     private fun renderWishlist(items: List<WishlistV2Response.Data.WishlistV2.ItemsItem>) {
