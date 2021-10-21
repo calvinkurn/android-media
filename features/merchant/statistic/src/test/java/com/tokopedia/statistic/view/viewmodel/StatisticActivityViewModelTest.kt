@@ -58,6 +58,7 @@ class StatisticActivityViewModelTest {
     fun `should success when checking user white list status`() = runBlocking {
         val whiteListName = "statistic-operational"
         val params = getMockParams(whiteListName)
+        val result = true
 
         coEvery {
             checkWhitelistedStatusUseCase.createParam(whiteListName)
@@ -65,7 +66,7 @@ class StatisticActivityViewModelTest {
 
         coEvery {
             checkWhitelistedStatusUseCase.execute(params)
-        } returns true
+        } returns result
 
         viewModel.checkWhiteListStatus()
 
@@ -80,7 +81,7 @@ class StatisticActivityViewModelTest {
         }
 
         Assert.assertEquals(params.parameters.toString(), expectedParams.parameters.toString())
-        assert(viewModel.whitelistedStatus.value == Success(true))
+        Assert.assertEquals(Success(result), viewModel.whitelistedStatus.value)
     }
 
     @Test
