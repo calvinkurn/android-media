@@ -16,6 +16,7 @@ import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.attachvoucher.R
 import com.tokopedia.attachvoucher.analytic.AttachVoucherAnalytic
 import com.tokopedia.attachvoucher.data.VoucherUiModel
+import com.tokopedia.attachvoucher.databinding.FragmentAttachvoucherAttachVoucherBinding
 import com.tokopedia.attachvoucher.di.AttachVoucherComponent
 import com.tokopedia.attachvoucher.usecase.GetVoucherUseCase.MVFilter.VoucherType
 import com.tokopedia.attachvoucher.view.adapter.AttachVoucherAdapter
@@ -27,7 +28,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.ChipsUnify
-import kotlinx.android.synthetic.main.fragment_attachvoucher_attach_voucher.*
 import javax.inject.Inject
 
 class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFactory>() {
@@ -36,6 +36,10 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private var _binding: FragmentAttachvoucherAttachVoucherBinding? = null
+
+    private val binding get() = _binding!!
 
     @Inject
     lateinit var analytic: AttachVoucherAnalytic
@@ -52,7 +56,8 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_attachvoucher_attach_voucher, container, false)
+        _binding = FragmentAttachvoucherAttachVoucherBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,7 +72,7 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     }
 
     private fun setupRecyclerView() {
-        recycler_view?.setHasFixedSize(true)
+        binding.recyclerView.setHasFixedSize(true)
     }
 
     private fun setupObserver() {
@@ -84,8 +89,8 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
             loadInitialData()
             analytic.trackOnChangeFilter(type)
             when (type) {
-                VoucherType.paramCashback -> setActiveFilter(filterCashBack, filterFreeOngkir)
-                VoucherType.paramFreeOngkir -> setActiveFilter(filterFreeOngkir, filterCashBack)
+                VoucherType.paramCashback -> setActiveFilter(binding.filterCashBack, binding.filterFreeOngkir)
+                VoucherType.paramFreeOngkir -> setActiveFilter(binding.filterFreeOngkir, binding.filterCashBack)
                 AttachVoucherViewModel.NO_FILTER -> clearFilter()
             }
         })
@@ -103,7 +108,7 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
             if (viewModel.hasNoFilter()) {
                 changeActionState(View.GONE)
             } else {
-                flAttach?.hide()
+                binding.flAttach.hide()
             }
         } else {
             changeActionState(View.VISIBLE)
@@ -115,8 +120,8 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     }
 
     private fun changeActionState(visibility: Int) {
-        flAttach?.visibility = visibility
-        filterContainer?.visibility = visibility
+        binding.flAttach.visibility = visibility
+        binding.filterContainer.visibility = visibility
     }
 
     private fun observeVoucherState() {
@@ -132,9 +137,9 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     private fun observeError() {
         viewModel.error.observe(viewLifecycleOwner, Observer { throwable ->
             if (isFirstPage()) {
-                flAttach?.hide()
+                binding.flAttach.hide()
             } else {
-                flAttach?.show()
+                binding.flAttach.show()
             }
             showGetListError(throwable)
             disableAttachButton()
@@ -142,8 +147,8 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     }
 
     private fun enableAttachButton(voucher: VoucherUiModel) {
-        btnAttach?.isEnabled = true
-        btnAttach.setOnClickListener {
+        binding.btnAttach.isEnabled = true
+        binding.btnAttach.setOnClickListener {
             analytic.trackOnAttachVoucher(voucher)
             activity?.setResult(Activity.RESULT_OK, getVoucherPreviewIntent(voucher))
             activity?.finish()
@@ -174,14 +179,14 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     }
 
     private fun disableAttachButton() {
-        btnAttach?.isEnabled = false
+        binding.btnAttach.isEnabled = false
     }
 
     private fun setupFilter() {
-        filterCashBack?.setOnClickListener {
+        binding.filterCashBack.setOnClickListener {
             viewModel.toggleFilter(VoucherType.paramCashback)
         }
-        filterFreeOngkir?.setOnClickListener {
+        binding.filterFreeOngkir.setOnClickListener {
             viewModel.toggleFilter(VoucherType.paramFreeOngkir)
         }
     }
@@ -192,8 +197,8 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     }
 
     private fun clearFilter() {
-        filterCashBack?.chipType = ChipsUnify.TYPE_ALTERNATE
-        filterFreeOngkir?.chipType = ChipsUnify.TYPE_ALTERNATE
+        binding.filterCashBack.chipType = ChipsUnify.TYPE_ALTERNATE
+        binding.filterFreeOngkir.chipType = ChipsUnify.TYPE_ALTERNATE
     }
 
     override fun onItemClicked(t: Visitable<*>?) {}
