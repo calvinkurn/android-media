@@ -57,7 +57,6 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
     @Test
     fun `on success send sticker through websocket`() {
         // Given
-        val mockOnSendingMessage: () -> Unit = mockk(relaxed = true)
         val stickerReq = slot<String>()
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
@@ -66,12 +65,11 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         // When
         presenter.connectWebSocket(exMessageId)
         presenter.sendAttachmentsAndSticker(
-            exMessageId, exSticker, exStartTime, exOpponentId, mockOnSendingMessage
+            exSticker, null
         )
 
         // Then
         verify { RxWebSocket.send(stickerReq.captured, listInterceptor) }
-        verify(exactly = 1) { mockOnSendingMessage.invoke() }
         verify(exactly = 1) { view.clearAttachmentPreviews() }
     }
 
@@ -79,18 +77,14 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
     fun `on success send SRW preview through websocket`() {
         // Given
         val srwQuestion = QuestionUiModel()
-        val mockOnSendingMessage: () -> Unit = mockk(relaxed = true)
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
 
         // When
         presenter.connectWebSocket(exMessageId)
-        presenter.sendAttachmentsAndSrw(
-            exMessageId, srwQuestion, exStartTime, exOpponentId, mockOnSendingMessage
-        )
+        presenter.sendAttachmentsAndSrw(srwQuestion, null)
 
         // Then
-        verify(exactly = 1) { mockOnSendingMessage.invoke() }
         verify(exactly = 1) { view.clearAttachmentPreviews() }
     }
 
@@ -111,9 +105,7 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
 
         // When
         presenter.connectWebSocket(exMessageId)
-        presenter.sendSrwBubble(
-            exMessageId, srwQuestion, products, exOpponentId, mockOnSendingMessage
-        )
+        presenter.sendSrwBubble(srwQuestion, products)
 
         // Then
         verify(exactly = 1) { RxWebSocket.send(paramSendMessage, listInterceptor) }
@@ -241,14 +233,12 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         // Given
         val msgObj = JsonObject()
         every {
-            sendAbleProductPreview.generateMsgObj(any(), any(), any(), any(), any(), any())
+            sendAbleProductPreview.generateMsgObj(any(), any(), any(), any())
         } returns msgObj
 
         // When
         presenter.addAttachmentPreview(sendAbleProductPreview)
-        presenter.sendAttachmentsAndMessage(
-            exMessageId, exSendMessage, exStartTime, exOpponentId
-        ) {}
+        presenter.sendAttachmentsAndMessage(exSendMessage, null)
 
         // Then
         verify(exactly = 1) { RxWebSocket.send(msgObj, listInterceptor) }
@@ -259,14 +249,12 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         // Given
         val msgAttachment = CommonUtil.toJson("WebsocketVoucherPayload")
         every {
-            sendAbleProductPreview.generateMsgObj(any(), any(), any(), any(), any(), any())
+            sendAbleProductPreview.generateMsgObj(any(), any(), any(), any())
         } returns msgAttachment
 
         // When
         presenter.addAttachmentPreview(sendAbleProductPreview)
-        presenter.sendAttachmentsAndMessage(
-            exMessageId, exSendMessage, exStartTime, exOpponentId
-        ) {}
+        presenter.sendAttachmentsAndMessage(exSendMessage, null)
 
         // Then
         verify(exactly = 1) { RxWebSocket.send(msgAttachment, listInterceptor) }

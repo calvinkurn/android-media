@@ -1,9 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.fragment
 
 import android.app.Activity.RESULT_OK
-import android.content.BroadcastReceiver
-import android.content.Intent
-import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -95,6 +92,7 @@ import com.tokopedia.topchat.chatroom.view.activity.TopchatReportWebViewActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
+import com.tokopedia.topchat.chatroom.view.adapter.util.CenterSmoothScroller
 import com.tokopedia.topchat.chatroom.view.adapter.util.LoadMoreTopBottomScrollListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
@@ -105,7 +103,10 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.TopchatPr
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwBubbleViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder
+import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_COPY_TO_CLIPBOARD
+import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_REPLY
 import com.tokopedia.topchat.chatroom.view.custom.*
+import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
@@ -139,6 +140,16 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 import kotlin.math.abs
+import android.app.Activity.CLIPBOARD_SERVICE
+import android.content.*
+
+import android.content.ClipData
+import android.widget.LinearLayout
+import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.topchat.chatroom.view.adapter.layoutmanager.TopchatLinearLayoutManager
+import com.tokopedia.topchat.chatroom.view.custom.message.TopchatMessageRecyclerView
+import com.tokopedia.topchat.chatroom.view.onboarding.ReplyBubbleOnBoarding
+
 
 /**
  * @author : Steven 29/11/18
@@ -154,7 +165,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     RoomSettingFraudAlertViewHolder.Listener, ReviewViewHolder.Listener,
     TopchatProductAttachmentListener, UploadImageBroadcastListener,
     SrwQuestionViewHolder.Listener, ReplyBoxTextListener, SrwBubbleViewHolder.Listener,
-    FlexBoxChatLayout.Listener {
+    FlexBoxChatLayout.Listener, ReplyBubbleAreaMessage.Listener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -176,6 +187,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     @Inject
     lateinit var viewModel: TopChatViewModel
+
+    @Inject
+    lateinit var replyBubbleOnBoarding: ReplyBubbleOnBoarding
 
     private lateinit var fpm: PerformanceMonitoring
     private lateinit var customMessage: String
@@ -199,12 +213,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var composeArea: EditText? = null
     private var orderProgress: TransactionOrderProgressLayout? = null
     private var chatMenu: ChatMenuView? = null
-    private var rvLayoutManager: LinearLayoutManager? = null
+    private var rvLayoutManager: TopchatLinearLayoutManager? = null
     private var rvScrollListener: LoadMoreTopBottomScrollListener? = null
     private var fbNewUnreadMessage: FloatingButtonUnify? = null
     private var tvTotalUnreadMessage: Typography? = null
-    private var rv: RecyclerView? = null
+    private var rv: TopchatMessageRecyclerView? = null
     private var rvSrw: SrwFrameLayout? = null
+    private var replyCompose: ReplyBubbleAreaMessage? = null
     private var rvContainer: CoordinatorLayout? = null
     private var chatBackground: ImageView? = null
     private var sendButton: IconUnify? = null
@@ -212,12 +227,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var sendButtontextWatcher: SendButtonTextWatcher? = null
     protected var topchatViewState: TopChatViewStateImpl? = null
     private var uploadImageBroadcastReceiver: BroadcastReceiver? = null
+    private var smoothScroller: CenterSmoothScroller? = null
+    private var commentArea: LinearLayout? = null
 
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var chatBoxPadding: View? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view_chatroom
     override fun getAnalytic(): TopChatAnalytics = analytics
+
     override fun isLoadMoreEnabledByDefault(): Boolean = false
 
     /**
@@ -230,6 +248,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         presenter.attachView(this)
         initFireBase()
         registerUploadImageReceiver()
+        initSmoothScroller()
+    }
+
+    private fun initSmoothScroller() {
+        smoothScroller = CenterSmoothScroller(context)
     }
 
     override fun onCreateView(
@@ -353,6 +376,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         topchatViewState?.scrollToBottom()
     }
 
+    override fun clearReferredMsg() {
+        replyCompose?.clearReferredComposedMsg()
+    }
+
     override fun removeSrwBubble() {
         adapter.removeSrwBubble()
     }
@@ -411,12 +438,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         orderProgress = view?.findViewById(R.id.ll_transaction_progress)
         chatMenu = view?.findViewById(R.id.fl_chat_menu)
         rv = view?.findViewById(recyclerViewResourceId)
+        replyCompose = view?.findViewById(R.id.trb_container)
         rvSrw = view?.findViewById(R.id.rv_srw)
         rvContainer = view?.findViewById(R.id.rv_container)
         fbNewUnreadMessage = view?.findViewById(R.id.fb_new_unread_message)
         chatBackground = view?.findViewById(R.id.iv_bg_chat)
         sendButton = view?.findViewById(R.id.send_but)
         chatBoxPadding = view?.findViewById(R.id.view_chat_box_padding)
+        commentArea = view?.findViewById(R.id.add_comment_area)
     }
 
     private fun initStickerView() {
@@ -453,6 +482,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun setupBackground() {
         presenter.getBackground()
+    }
+
+    private fun setupBeforeReplyTime(replyTimeMillis: String) {
+        createTime = replyTimeMillis
+        setupBeforeReplyTime()
     }
 
     private fun setupBeforeReplyTime() {
@@ -561,7 +595,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
-        return LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, true).also {
+        return TopchatLinearLayoutManager(
+            activity, LinearLayoutManager.VERTICAL, true
+        ).also {
             rvLayoutManager = it
         }
     }
@@ -687,6 +723,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         topchatViewState?.onSetCustomMessage(customMessage)
         presenter.getTemplate(chatRoom.isSeller())
         presenter.getStickerGroupList(chatRoom)
+        replyCompose?.setReplyListener(this)
         when {
             !isSeller() -> presenter.getSmartReplyWidget(messageId)
             isSeller() -> presenter.adjustInterlocutorWarehouseId(messageId)
@@ -700,6 +737,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         updateHasNextAfterState(chat)
         loadChatRoomSettings(chatRoom)
         presenter.loadAttachmentData(messageId.toLongOrZero(), chatRoom)
+    }
+
+    private fun checkReplyBubbleOnBoardingFirstRender() {
+        val hasShowOnBoarding = replyBubbleOnBoarding.hasBeenShown()
+        if (!hasShowOnBoarding && !presenter.isInTheMiddleOfThePage()) {
+            replyBubbleOnBoarding.showReplyBubbleOnBoarding(
+                rv, adapter, commentArea, context
+            )
+        }
     }
 
     private fun updateHasNextAfterState(chat: ChatReplies) {
@@ -903,7 +949,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             this, this, this, this,
             this, this, this, this,
             this, this, this, this,
-            this, this, this, this
+            this, this, this, this,
+            this
         )
     }
 
@@ -1053,12 +1100,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun sendMessage(message: String? = null) {
         textWatcher?.cancelJob()
         val sendMessage: String = getComposedMessage(message)
-        val startTime = SendableViewModel.generateStartTime()
+        val referredMsg = replyCompose?.referredMsg
         if (rvSrw?.isShowing() == true) {
             addSrwBubbleToChat()
         }
+        onSendingMessage().invoke()
+        replyBubbleOnBoarding.dismiss()
         presenter.sendAttachmentsAndMessage(
-            messageId, sendMessage, startTime, opponentId, onSendingMessage()
+            sendMessage, referredMsg
         )
     }
 
@@ -1102,16 +1151,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun sendSticker(sticker: Sticker?) {
         if (sticker == null) return
         onSendAndReceiveMessage()
-        val startTime = SendableViewModel.generateStartTime()
+        val referredMsg = replyCompose?.referredMsg
         if (rvSrw?.isShowing() == true) {
             addSrwBubbleToChat()
         }
+        onSendingMessage().invoke()
         presenter.sendAttachmentsAndSticker(
-            messageId,
-            sticker,
-            startTime,
-            opponentId,
-            onSendingMessage()
+            sticker, referredMsg
         )
     }
 
@@ -1168,6 +1214,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             hideSeparatedChatTemplate()
         } else {
             topchatViewState?.setTemplate(list, isLastMessageBroadcast, amIBuyer)
+            checkReplyBubbleOnBoardingFirstRender()
         }
     }
 
@@ -1392,7 +1439,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun processImagePathToUpload(data: Intent): ImageUploadViewModel? {
-
         val imagePathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
         if (imagePathList.size <= 0) {
             return null
@@ -1400,7 +1446,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val imagePath = imagePathList[0]
 
         if (!TextUtils.isEmpty(imagePath)) {
-            return generateChatViewModelWithImage(imagePath)
+            val preview = generateChatViewModelWithImage(imagePath)
+            replyCompose?.clearReferredComposedMsg()
+            return preview
         }
         return null
     }
@@ -1413,6 +1461,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             .withStartTime(SendableViewModel.generateStartTime())
             .withIsDummy(true)
             .withImageUrl(imageUrl)
+            .withParentReply(replyCompose?.referredMsg)
             .build()
     }
 
@@ -1675,6 +1724,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onDestroyView() {
         super.onDestroyView()
+        replyBubbleOnBoarding.flush()
         lifecycleScope.launch(Dispatchers.IO) {
             sellerReviewHelper.saveMessageId(messageId)
         }
@@ -2189,21 +2239,17 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun sendSrwQuestion(question: QuestionUiModel) {
+        val referredMsg = replyCompose?.referredMsg
         onSendAndReceiveMessage()
-        val startTime = SendableViewModel.generateStartTime()
         addSrwBubbleToChat()
-        presenter.sendAttachmentsAndSrw(
-            messageId,
-            question,
-            startTime,
-            opponentId,
-            onSendingMessage(false)
-        )
+        onSendingMessage(false).invoke()
+        replyBubbleOnBoarding.dismiss()
+        presenter.sendAttachmentsAndSrw(question, referredMsg)
     }
 
     private fun sendSrwQuestion(attachment: HeaderCtaButtonAttachment) {
         onSendAndReceiveMessage()
-        presenter.sendSrwFrom(attachment, opponentId)
+        presenter.sendSrwFrom(attachment)
         onSendingMessage(false).invoke()
     }
 
@@ -2224,11 +2270,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     ) {
         onSendAndReceiveMessage()
         presenter.sendSrwBubble(
-            messageId,
-            question,
-            products,
-            opponentId,
-            onSendingMessage()
+            question, products
         )
     }
 
@@ -2362,11 +2404,52 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
+    override fun showMsgMenu(msg: BaseChatViewModel, text: CharSequence) {
+        replyBubbleOnBoarding.dismiss()
+        val bs = TopchatBottomSheetBuilder.getLongClickBubbleMenuBs(
+            context, msg
+        ) { id, msg ->
+            when (id) {
+                MENU_ID_REPLY -> replyCompose?.composeReplyData(msg, true)
+                MENU_ID_COPY_TO_CLIPBOARD -> copyToClipboard(text)
+            }
+        }
+        bs.show(childFragmentManager, BS_CHAT_BUBBLE_MENU)
+    }
+
+    private fun copyToClipboard(text: CharSequence) {
+        val clipboard = context?.getSystemService(
+            CLIPBOARD_SERVICE
+        ) as? ClipboardManager
+        val clip = ClipData.newPlainText(CLIPBOARD_CHAT, text)
+        clipboard?.setPrimaryClip(clip)
+    }
+
+    override fun getUserName(senderId: String): String {
+        return presenter.roomMetaData.userIdMap[senderId]?.name ?: ""
+    }
+
+    override fun goToBubble(parentReply: ParentReply) {
+        val bubblePosition = adapter.getBubblePosition(
+            parentReply.localId, parentReply.replyTime
+        )
+        if (bubblePosition != RecyclerView.NO_POSITION) {
+            smoothScroller?.targetPosition = bubblePosition
+            rvLayoutManager?.startSmoothScroll(smoothScroller)
+        } else {
+            resetItemList()
+            setupBeforeReplyTime(parentReply.replyTimeMillisOffset)
+            loadInitialData()
+        }
+    }
+
     companion object {
         const val PARAM_RATING = "rating"
         const val PARAM_UTM_SOURCE = "utmSource"
         const val REVIEW_SOURCE_TOPCHAT = "android_topchat"
+        const val BS_CHAT_BUBBLE_MENU = "CHAT_BUBBLE_MENU"
         private const val EXTRA_SOURCE_STOCK = "chat"
+        private const val CLIPBOARD_CHAT = "chat message"
         private const val MAX_SIZE_IMAGE_PICKER = 20360
 
         private const val REQUEST_GO_TO_SHOP = 111

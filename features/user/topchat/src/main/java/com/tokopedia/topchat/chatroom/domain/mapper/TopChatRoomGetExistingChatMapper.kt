@@ -14,6 +14,7 @@ import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.ChatRepliesItem
+import com.tokopedia.chat_common.domain.pojo.Contact
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
@@ -335,6 +336,27 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
             role = sender.role,
             thumbnail = sender.thumbnail
         )
-        return RoomMetaData(messageId, interlocutorMetaData, senderMetaData)
+        val userIdMap = mapUserId(chat.chatReplies.contacts)
+        return RoomMetaData(
+            _msgId = messageId,
+            sender = senderMetaData,
+            receiver = interlocutorMetaData,
+            userIdMap = userIdMap
+        )
+    }
+
+    private fun mapUserId(contacts: List<Contact>): Map<String, User> {
+        return contacts.associateBy(
+            { it.userId.toString() },
+            {
+                User(
+                    name = it.name,
+                    uid = it.userId.toString(),
+                    uname = it.name,
+                    role = it.role,
+                    thumbnail = it.thumbnail
+                )
+            }
+        )
     }
 }

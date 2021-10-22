@@ -9,10 +9,8 @@ import okhttp3.Interceptor
 interface SendablePreview {
     fun type(attachmentPreviewFactory: AttachmentPreviewFactory): Int
     fun generateMsgObj(
-        messageId: String,
-        opponentId: String,
+        roomMetaData: RoomMetaData,
         message: String,
-        listInterceptor: List<Interceptor>,
         userLocationInfo: LocalCacheModel,
         localId: String
     ): Any

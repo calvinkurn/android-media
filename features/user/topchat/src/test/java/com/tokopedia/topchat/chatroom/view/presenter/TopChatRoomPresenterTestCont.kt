@@ -434,7 +434,8 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
         val wsChatPojo = mockkParseResponse(wsResponseImageAttachment, false)
         val wsChatVisitable = mockkWsMapper(wsChatPojo)
         val websocketParam = TopChatWebSocketParam.generateParamSendImage(
-            exMessageId, exImageUploadId, imageUploadViewModel.startTime)
+            exMessageId, exImageUploadId, imageUploadViewModel
+        )
 
         // When
         presenter.connectWebSocket(exMessageId)
@@ -664,8 +665,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
         } returns paramSendMessage
         every {
             sendAbleProductPreview.generateMsgObj(
-                any(), any(), any(),
-                any(), any(), any()
+                any(), any(), any(), any()
             )
         } returns paramSendAttachment
 
@@ -674,10 +674,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
         presenter.connectWebSocket(exMessageId)
         presenter.addAttachmentPreview(sendAbleProductPreview)
         presenter.sendAttachmentsAndMessage(
-            exMessageId,
-            exSendMessage,
-            exStartTime,
-            exOpponentId, mockOnSendingMessage
+            exSendMessage, null
         )
 
         // Then
@@ -686,57 +683,6 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
         verify(exactly = 1) { RxWebSocket.send(paramSendAttachment, listInterceptor) }
         verify(exactly = 1) { RxWebSocket.send(paramStopTyping, listInterceptor) }
         verify(exactly = 1) { view.clearAttachmentPreviews() }
-    }
-
-    @Test
-    fun `on success send message through API`() {
-        // Given
-        val slot = slot<Subscriber<ReplyChatViewModel>>()
-        val mockOnSendingMessage: () -> Unit = mockk(relaxed = true)
-        val dummyMessage = MessageViewModel.Builder()
-            .withMsgId(exMessageId)
-            .withFromUid(userSession.userId)
-            .withFrom(userSession.name)
-            .withReplyTime(BaseChatViewModel.SENDING_TEXT)
-            .withStartTime(exStartTime)
-            .withMsg(exSendMessage)
-            .withLocalId(IdentifierUtil.generateLocalId())
-            .withIsDummy(true)
-            .withIsSender(true)
-            .withIsRead(false)
-            .build()
-        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
-        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
-        every {
-            topChatRoomWebSocketMessageMapper.mapToDummyMessage(
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } returns dummyMessage
-        every { replyChatUseCase.execute(any(), capture(slot)) } answers {
-            val subs = slot.captured
-            subs.onNext(replyChatViewModelApiSuccess)
-        }
-
-        // When
-        presenter.connectWebSocket(exMessageId)
-        websocketServer.onNext(wsOpen)
-        websocketServer.onCompleted()
-        presenter.sendAttachmentsAndMessage(
-            exMessageId,
-            exSendMessage,
-            exStartTime,
-            exOpponentId,
-            mockOnSendingMessage
-        )
-
-        // Then
-        verify(exactly = 1) { view.addDummyMessage(dummyMessage) }
-        verify(exactly = 1) { view.onReceiveMessageEvent(replyChatViewModelApiSuccess.chat) }
-        verify(exactly = 1) { view.removeDummy(dummyMessage) }
     }
 
     @Test
@@ -816,7 +762,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
 
         // When
         presenter.connectWebSocket(exMessageId)
-        presenter.sendSrwFrom(attachment, exOpponentId)
+        presenter.sendSrwFrom(attachment)
 
         // Then
         verify { RxWebSocket.send(stopTypingParam, listInterceptor) }

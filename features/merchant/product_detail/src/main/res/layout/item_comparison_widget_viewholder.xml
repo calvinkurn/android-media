@@ -6,7 +6,7 @@
     <View
         android:id="@+id/comparison_widget_separator"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
+        android:layout_height="8dp"
         android:background="@color/Unify_N50" />
     <com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetView
         android:id="@+id/comparison_widget"

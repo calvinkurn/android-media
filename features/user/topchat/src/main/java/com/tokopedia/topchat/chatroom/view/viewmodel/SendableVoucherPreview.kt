@@ -38,14 +38,14 @@ class SendableVoucherPreview(
     }
 
     override fun generateMsgObj(
-        messageId: String,
-        opponentId: String,
+        roomMetaData: RoomMetaData,
         message: String,
-        listInterceptor: List<Interceptor>,
         userLocationInfo: LocalCacheModel,
         localId: String
     ): Any {
-        val voucherPayload = generatePayload(messageId, opponentId, localId)
+        val msgId = roomMetaData.msgId
+        val toUid = roomMetaData.receiver.uid
+        val voucherPayload = generatePayload(msgId, toUid, localId)
         return CommonUtil.toJson(voucherPayload)
     }
 
