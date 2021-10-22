@@ -10,7 +10,7 @@ import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryChoos
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecentPurchaseViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerComponentListener
@@ -60,8 +60,8 @@ class CategoryTypeFactoryImpl(
                 CategoryAisleViewHolder(view, categoryAisleListener)
             TokoNowCategoryGridViewHolder.LAYOUT ->
                 TokoNowCategoryGridViewHolder(view, tokoNowCategoryGridListener)
-            TokoNowRecentPurchaseViewHolder.LAYOUT ->
-                TokoNowRecentPurchaseViewHolder(view, tokoNowProductCardListener)
+            TokoNowRepurchaseViewHolder.LAYOUT ->
+                TokoNowRepurchaseViewHolder(view, tokoNowProductCardListener)
             else -> super.createViewHolder(view, type)
         }
     }

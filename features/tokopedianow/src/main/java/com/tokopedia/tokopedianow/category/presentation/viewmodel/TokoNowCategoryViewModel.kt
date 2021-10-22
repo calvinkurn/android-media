@@ -148,7 +148,7 @@ class TokoNowCategoryViewModel @Inject constructor (
 
         val contentDataView = ContentDataView(
                 aceSearchProductData = searchProduct.data,
-                recentPurchaseWidget = categoryModel.tokonowRepurchaseWidget,
+                repurchaseWidget = categoryModel.tokonowRepurchaseWidget,
         )
 
         onGetFirstPageSuccess(headerDataView, contentDataView, searchProduct)
