@@ -31,7 +31,7 @@ class CartHappyFlowTest {
     @Before
     fun setup() {
         setupGraphqlMockResponse {
-            addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.cart_happy_flow_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.cart_bundle_happy_flow_response), MockModelConfig.FIND_BY_CONTAINS)
         }
     }
 
@@ -48,7 +48,7 @@ class CartHappyFlowTest {
             assertMainContent()
 
             scrollRecyclerViewToPosition(recyclerView = cartRecyclerView, position = 0)
-            assertCartSelectAllViewHolder(0)
+            assertCartSelectAllViewHolder()
 
             scrollRecyclerViewToPosition(recyclerView = cartRecyclerView, position = 1)
             assertTickerAnnouncementViewHolder(position = 1)
@@ -56,7 +56,7 @@ class CartHappyFlowTest {
             scrollRecyclerViewToPosition(recyclerView = cartRecyclerView, position = 2)
             assertFirstCartShopViewHolder(
                     view = activityRule.activity.findViewById(R.id.parent_view),
-                    position = 2,
+                    position = 3,
                     shopIndex = 0
             )
 

@@ -29,7 +29,7 @@ class CartBebasOngkirExtraUITest {
     @Before
     fun setup() {
         setupGraphqlMockResponse {
-            addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.cart_bebas_ongkir_extra_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.cart_bundle_bebas_ongkir_extra_response), MockModelConfig.FIND_BY_CONTAINS)
         }
     }
 
@@ -42,15 +42,15 @@ class CartBebasOngkirExtraUITest {
 
             assertMainContent()
 
-            assertCartShopViewHolderOnPosition(2) {
+            assertCartShopViewHolderOnPosition(3) {
                 assertShowTokoCabangInfo()
                 assertShowFreeShippingImage()
             }
-            assertCartShopViewHolderOnPosition(3) {
+            assertCartShopViewHolderOnPosition(4) {
                 assertNotShowTokoCabangInfo()
                 assertShowFreeShippingImage()
             }
-            assertCartShopViewHolderOnPosition(4) {
+            assertCartShopViewHolderOnPosition(5) {
                 assertNotShowTokoCabangInfo()
                 assertNotShowFreeShippingImage()
             }
