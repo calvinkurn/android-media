@@ -79,7 +79,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
                 Ecommerce.KEY , getProductClick(data, position),
                 UserId.KEY , userId
             )
-            trackingQueue.putEETracking(bundle as? java.util.HashMap<String, Any>)
+            trackingQueue.putEETracking(bundle as? HashMap<String, Any>)
         }
     }
 
