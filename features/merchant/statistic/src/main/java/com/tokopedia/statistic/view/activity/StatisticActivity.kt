@@ -5,7 +5,9 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -27,6 +29,8 @@ import com.tokopedia.statistic.common.Const
 import com.tokopedia.statistic.common.StatisticPageHelper
 import com.tokopedia.statistic.common.utils.StatisticAppLinkHandler
 import com.tokopedia.statistic.common.utils.StatisticRemoteConfig
+import com.tokopedia.statistic.common.utils.logger.StatisticLogger
+import com.tokopedia.statistic.databinding.ActivityStcStatisticBinding
 import com.tokopedia.statistic.di.DaggerStatisticComponent
 import com.tokopedia.statistic.di.StatisticComponent
 import com.tokopedia.statistic.view.fragment.StatisticFragment
@@ -35,9 +39,9 @@ import com.tokopedia.statistic.view.viewhelper.FragmentListener
 import com.tokopedia.statistic.view.viewhelper.StatisticViewPagerAdapter
 import com.tokopedia.statistic.view.viewhelper.setOnTabSelectedListener
 import com.tokopedia.statistic.view.viewmodel.StatisticActivityViewModel
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.activity_stc_statistic.*
 import javax.inject.Inject
 
 /**
@@ -52,6 +56,9 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     companion object {
         private const val FIRST_TAB_INDEX = 0
         private const val TAB_LIMIT = 3
+        private const val TOAST_DURATION = 1000L
+        private const val TOAST_COUNT_DOWN_INTERVAL = 500L
+        private const val MANAGE_SHOP_STATS_ROLE = "MANAGE_SHOPSTATS"
     }
 
     @Inject
@@ -65,7 +72,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     }
     private var pages: List<StatisticPageUiModel> = emptyList()
     private var viewPagerAdapter: StatisticViewPagerAdapter? = null
-    val performanceMonitoring: StatisticPerformanceMonitoringInterface by lazy {
+    private val performanceMonitoring: StatisticPerformanceMonitoringInterface by lazy {
         StatisticPerformanceMonitoring()
     }
     var pltListener: StatisticIdlingResourceListener? = null
@@ -74,6 +81,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
     private var selectedPageSource = ""
     private var selectedWidget = ""
+    private var binding: ActivityStcStatisticBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initPerformanceMonitoring()
@@ -81,7 +89,9 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         initInjector()
 
         checkWhiteListStatus()
-        setContentView(R.layout.activity_stc_statistic)
+        binding = ActivityStcStatisticBinding.inflate(layoutInflater).apply {
+            setContentView(root)
+        }
 
         setupView()
         initVar()
@@ -89,6 +99,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         setWhiteStatusBar()
 
         observeWhiteListStatus()
+        observeUserRole()
     }
 
     override fun getComponent(): StatisticComponent {
@@ -116,7 +127,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     }
 
     override fun setHeaderSubTitle(subTitle: String) {
-        headerStcStatistic.headerSubTitle = subTitle
+        binding?.headerStcStatistic?.headerSubTitle = subTitle
     }
 
     private fun initInjector() {
@@ -154,7 +165,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         )
     }
 
-    private fun setupView() {
+    private fun setupView() = binding?.run {
         setSupportActionBar(headerStcStatistic)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = getString(R.string.stc_statistic)
@@ -169,6 +180,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     }
 
     private fun setupViewPager(isWhiteListed: Boolean) {
+        viewPagerAdapter?.clear()
         pages = getStatisticPages(isWhiteListed)
         pages.forEachIndexed { index, page ->
             val shouldLoadDataOnCreate = if (selectedPageSource.isNotBlank()) {
@@ -185,19 +197,22 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         }
 
         viewPagerAdapter?.let {
+            it.notifyDataSetChanged()
             setupTabs()
-            viewPagerStatistic.adapter = it
-            tabStatistic.setupWithViewPager(viewPagerStatistic)
-            viewPagerStatistic.offscreenPageLimit = it.titles.size
+            binding?.run {
+                viewPagerStatistic.adapter = it
+                tabStatistic.setupWithViewPager(viewPagerStatistic)
+                viewPagerStatistic.offscreenPageLimit = it.titles.size
+            }
         }
 
         selectTabByPageSource()
     }
 
     private fun observeWhiteListStatus() {
-        progressBarStcActivity.visible()
+        binding?.progressBarStcActivity?.visible()
         viewModel.whitelistedStatus.observe(this) {
-            progressBarStcActivity.gone()
+            binding?.progressBarStcActivity?.gone()
             when (it) {
                 is Success -> setupViewPager(it.data)
                 else -> setupViewPager(false)
@@ -205,7 +220,20 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         }
     }
 
-    private fun setupTabs() {
+    private fun observeUserRole() {
+        viewModel.userRole.observe(this, {
+            when (it) {
+                is Success -> checkUserRole(it.data)
+                is Fail -> StatisticLogger.logToCrashlytics(
+                    it.throwable,
+                    StatisticLogger.ERROR_SELLER_ROLE
+                )
+            }
+        })
+        viewModel.getUserRole()
+    }
+
+    private fun setupTabs() = binding?.run {
         val coachMarkItems = mutableListOf<CoachMark2Item>()
 
         viewPagerAdapter?.let { adapter ->
@@ -234,9 +262,9 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
     private fun setTabMode(numberOfTabs: Int) {
         if (numberOfTabs <= TAB_LIMIT) {
-            tabStatistic.customTabMode = TabLayout.MODE_FIXED
+            binding?.tabStatistic?.customTabMode = TabLayout.MODE_FIXED
         } else {
-            tabStatistic.customTabMode = TabLayout.MODE_SCROLLABLE
+            binding?.tabStatistic?.customTabMode = TabLayout.MODE_SCROLLABLE
         }
     }
 
@@ -266,7 +294,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         }
     }
 
-    private fun selectTabByPageSource() {
+    private fun selectTabByPageSource() = binding?.run {
         val tabIndex = pages.indexOfFirst { it.pageSource == selectedPageSource }
         val tab = tabStatistic.tabLayout.getTabAt(tabIndex)
         tab?.let {
@@ -353,5 +381,28 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
     private fun setCoachMarkHasShown(tag: String) {
         CoachMarkPreference.setShown(this, tag, true)
+    }
+
+    private fun checkUserRole(roles: List<String>) {
+        if (!roles.contains(MANAGE_SHOP_STATS_ROLE)) {
+            showToaster()
+        }
+    }
+
+    private fun showToaster() {
+        val toastCountDown = object : CountDownTimer(TOAST_DURATION, TOAST_COUNT_DOWN_INTERVAL) {
+            override fun onTick(p0: Long) {
+                Toast.makeText(
+                    this@StatisticActivity,
+                    getString(R.string.stc_you_havent_access_this_page),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+            override fun onFinish() {
+                finish()
+            }
+        }
+        toastCountDown.start()
     }
 }
