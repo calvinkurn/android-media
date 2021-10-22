@@ -1,4 +1,4 @@
-package com.tokopedia.buyerorder
+package com.tokopedia.unifyorderhistory
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -11,6 +11,9 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.unifyorderhistory.data.model.*
+import com.tokopedia.unifyorderhistory.domain.*
+import com.tokopedia.unifyorderhistory.view.viewmodel.UohListViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -148,7 +151,7 @@ class UohListViewModelTest {
 
         //then
         assert(uohListViewModel.orderHistoryListResult.value is Success)
-        assert((uohListViewModel.orderHistoryListResult.value as Success<UohListOrder.Data.UohOrders>).data.orders.size > 0)
+        assert((uohListViewModel.orderHistoryListResult.value as Success<UohListOrder.Data.UohOrders>).data.orders.isNotEmpty())
     }
 
     // recommendation
