@@ -5,6 +5,6 @@
 
     <!-- red tag-->
     <dimen name="digital_recommendation_red_tag_width">3dp</dimen>
-    <dimen name="digital_recommendation_red_tag_bottom">126</dimen>
-    <dimen name="digital_recommendation_red_tag_right">151</dimen>
+    <dimen name="digital_recommendation_red_tag_bottom">126dp</dimen>
+    <dimen name="digital_recommendation_red_tag_right">151dp</dimen>
 </resources>
