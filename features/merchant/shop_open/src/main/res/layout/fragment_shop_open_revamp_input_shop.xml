@@ -21,7 +21,7 @@
     <ScrollView
         android:id="@+id/main_view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_0"
+        android:layout_height="0dp"
         android:orientation="vertical"
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -41,7 +41,7 @@
                 android:id="@+id/text_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_20"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
                 android:lineSpacingExtra="6sp"
                 android:text="@string/masukkan_info_toko"
@@ -53,9 +53,9 @@
                 android:id="@+id/text_input_shop_open_revamp_shop_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_24"
-                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginRight="16dp"
                 app:text_field_input_type="text"
                 app:text_field_label="Apa Nama Tokomu" />
 
@@ -63,9 +63,9 @@
                 android:id="@+id/text_input_shop_open_revamp_domain_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginLeft="16dp"
                 android:layout_marginTop="@dimen/dp_34"
-                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginRight="16dp"
                 app:text_field_input_type="text"
                 app:text_field_label="@string/nama_domain"
                 app:text_field_prepend_text="@string/domain_short_create_shop_revamp" />
@@ -76,8 +76,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                android:paddingStart="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_14"
+                android:paddingStart="16dp"
+                android:layout_marginTop="14dp"
                 tools:ignore="RtlSymmetry" />
 
             <View
@@ -89,9 +89,9 @@
                 android:id="@+id/shop_registration_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp"
                 android:text="@string/button_label_continue" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -99,7 +99,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_marginBottom="16dp"
                 android:gravity="center"
                 android:text="@string/tnc_input_shop" />
         </LinearLayout>

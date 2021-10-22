@@ -15,7 +15,7 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_toStartOf="@+id/rb_option"
-            android:layout_marginBottom="@dimen/dp_20"
+            android:layout_marginBottom="20dp"
             android:visibility="gone"/>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -27,8 +27,8 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_toStartOf="@+id/rb_option"
-            android:layout_marginStart="@dimen/dp_20"
-            android:layout_marginBottom="@dimen/dp_20"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="20dp"
             android:visibility="gone"/>
 
         <RadioButton
@@ -43,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
             android:background="@color/Unify_N75"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="16dp"
             android:layout_below="@id/label_option"/>
 
         <View
@@ -51,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
             android:background="@color/Unify_N75"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="16dp"
             android:layout_below="@id/sublabel_option"/>
 
 </RelativeLayout>

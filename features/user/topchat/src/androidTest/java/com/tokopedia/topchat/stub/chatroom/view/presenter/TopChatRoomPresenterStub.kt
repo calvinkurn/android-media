@@ -83,18 +83,6 @@ class TopChatRoomPresenterStub @Inject constructor(
     remoteConfig
 ) {
 
-    override fun sendAttachmentsAndMessage(
-        messageId: String,
-        sendMessage: String,
-        startTime: String,
-        opponentId: String,
-        onSendingMessage: () -> Unit
-    ) {
-        super.sendAttachmentsAndMessage(
-            messageId, sendMessage, exStartTime, opponentId, onSendingMessage
-        )
-    }
-
     override fun sendMessageWebSocket(messageText: String) {
         webSocketUtil.send(messageText)
     }
