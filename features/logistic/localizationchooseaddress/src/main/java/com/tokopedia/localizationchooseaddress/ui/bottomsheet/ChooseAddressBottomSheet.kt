@@ -193,9 +193,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 val isFromANA = data?.getBooleanExtra(EXTRA_IS_FROM_ANA, false)
                 if (recipientAddress != null && isFromANA == false) {
                     val param = StateChooseAddressParam(
-                        recipientAddress.addressStatus, recipientAddress.id.toInt(), recipientAddress.recipientName,
+                        recipientAddress.addressStatus, recipientAddress.id.toLong(), recipientAddress.recipientName,
                         recipientAddress.addressName, recipientAddress.latitude, recipientAddress.longitude,
-                        recipientAddress.destinationDistrictId.toInt(), recipientAddress.postalCode,
+                        recipientAddress.destinationDistrictId.toLong(), recipientAddress.postalCode,
                         isSupportWarehouseLoc
                     )
                     viewModel.setStateChosenAddress(param)
@@ -528,8 +528,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     override fun onItemClicked(address: ChosenAddressList) {
         isCardAddressClicked = true
         val param = StateChooseAddressParam(
-            address.status, address.addressId.toInt(), address.receiverName, address.addressname,
-            address.latitude, address.longitude, address.districtId.toInt(), address.postalCode,
+            address.status, address.addressId.toLong(), address.receiverName, address.addressname,
+            address.latitude, address.longitude, address.districtId.toLong(), address.postalCode,
             isSupportWarehouseLoc
         )
         viewModel.setStateChosenAddress(param)

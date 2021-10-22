@@ -18,14 +18,13 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.model.*
-import com.tokopedia.tokopedianow.recentpurchase.domain.model.TokoNowRepurchasePageResponse.*
-import com.tokopedia.tokopedianow.recentpurchase.domain.param.GetRepurchaseProductListParam
-import com.tokopedia.tokopedianow.recentpurchase.domain.usecase.GetRepurchaseProductListUseCase
-import com.tokopedia.tokopedianow.recentpurchase.presentation.fragment.TokoNowRecentPurchaseFragment
-import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseEmptyStateNoHistoryUiModel
-import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseLayoutUiModel
-import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel
-import com.tokopedia.tokopedianow.recentpurchase.presentation.viewmodel.TokoNowRecentPurchaseViewModel
+import com.tokopedia.tokopedianow.repurchase.domain.model.TokoNowRepurchasePageResponse.*
+import com.tokopedia.tokopedianow.repurchase.domain.param.GetRepurchaseProductListParam
+import com.tokopedia.tokopedianow.repurchase.domain.usecase.GetRepurchaseProductListUseCase
+import com.tokopedia.tokopedianow.repurchase.presentation.fragment.TokoNowRepurchaseFragment
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseEmptyStateNoHistoryUiModel
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseLayoutUiModel
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 import com.tokopedia.tokopedianow.util.TestUtils.getPrivateMethod
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -68,14 +67,14 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    protected lateinit var viewModel : TokoNowRecentPurchaseViewModel
+    protected lateinit var viewModel : TokoNowRepurchaseViewModel
 
     protected lateinit var privateLocalCacheModel: Field
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = TokoNowRecentPurchaseViewModel(
+        viewModel = TokoNowRepurchaseViewModel(
                 getRepurchaseProductListUseCase,
                 getMiniCartUseCase,
                 getCategoryListUseCase,
@@ -200,7 +199,7 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
     }
 
     protected fun onGetCategoryList_thenReturn(categoryListResponse: CategoryListResponse) {
-        coEvery { getCategoryListUseCase.execute("1", TokoNowRecentPurchaseFragment.CATEGORY_LEVEL_DEPTH) } returns categoryListResponse
+        coEvery { getCategoryListUseCase.execute("1", TokoNowRepurchaseFragment.CATEGORY_LEVEL_DEPTH) } returns categoryListResponse
     }
 
     protected fun onGetRepurchaseProductList_thenReturn(response: GetRepurchaseProductListResponse) {
@@ -288,7 +287,7 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
     }
 
     protected fun verifyGetCategoryListUseCaseCalled(){
-        coVerify(exactly = 1) { getCategoryListUseCase.execute("1", TokoNowRecentPurchaseFragment.CATEGORY_LEVEL_DEPTH) }
+        coVerify(exactly = 1) { getCategoryListUseCase.execute("1", TokoNowRepurchaseFragment.CATEGORY_LEVEL_DEPTH) }
     }
 
     protected fun verifyGetProductRecommendatioUseCaseCalled(){

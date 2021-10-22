@@ -78,8 +78,8 @@ class ShopEditAddressViewModel @Inject constructor(private val repo: KeroReposit
         }
     }
 
-    fun saveEditShopLocation(shopId: Long, warehouseId: Int, warehouseName: String,
-                             districtId: Int, latLon: String, email: String,
+    fun saveEditShopLocation(shopId: Long, warehouseId: Long, warehouseName: String,
+                             districtId: Long, latLon: String, email: String,
                              addressDetail: String, postalCode: String, phone: String) {
         _saveEditShop.value = ShopEditAddressState.Loading
         viewModelScope.launch(onErrorSaveEditShopLocation) {
@@ -89,7 +89,7 @@ class ShopEditAddressViewModel @Inject constructor(private val repo: KeroReposit
     }
 
 
-    fun checkCouriersAvailability(shopId: Long, districtId: Int) {
+    fun checkCouriersAvailability(shopId: Long, districtId: Long) {
         _checkCouriers.value = ShopEditAddressState.Loading
         viewModelScope.launch(onErrorCheckCouriersAvailability){
             val getCheckCouriersData = shopRepo.shopCheckCouriersNewLoc(shopId, districtId)
