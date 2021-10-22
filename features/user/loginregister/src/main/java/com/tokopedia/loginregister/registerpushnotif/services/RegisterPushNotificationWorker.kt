@@ -20,7 +20,6 @@ import com.tokopedia.loginregister.registerpushnotif.di.RegisterPushNotification
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.user.session.UserSessionInterface
 import java.security.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -159,7 +158,6 @@ class RegisterPushNotificationWorker(
 
         private const val WORKER_NAME = "REGISTER_PUSH_NOTIFICATION_WORKER"
         private const val MAX_RUN_ATTEMPT = 3
-        private const val DELAY_WORKER = 5L
 
         private val ERROR_HEADER = "${RegisterPushNotificationWorker::class.java.name} error on "
         private const val TAG_SCALYR = "CRASH_REGISTER_PUSHNOTIF"
@@ -174,9 +172,7 @@ class RegisterPushNotificationWorker(
         fun scheduleWorker(context: Context, forceWorker: Boolean) {
             globalScopeLaunch({
                 try {
-                    if (forceWorker) {
-                        runWorker(context)
-                    }
+                    runWorker(context)
                 } catch (e: Exception) {
                     recordLog(LOG_TYPE_SCHEDULE_WORKER, "", e)
                 }
@@ -188,7 +184,6 @@ class RegisterPushNotificationWorker(
                 WORKER_NAME,
                 ExistingWorkPolicy.REPLACE,
                 OneTimeWorkRequestBuilder<RegisterPushNotificationWorker>()
-                    .setInitialDelay(DELAY_WORKER, TimeUnit.SECONDS)
                     .setConstraints(Constraints.Builder()
                         .setRequiredNetworkType(NetworkType.CONNECTED)
                         .build()
