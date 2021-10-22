@@ -79,7 +79,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
                 Ecommerce.KEY , getProductClick(data, position),
                 UserId.KEY , userId
             )
-            trackingQueue.putEETracking(bundle as java.util.HashMap<String, Any>?)
+            trackingQueue.putEETracking(bundle as? java.util.HashMap<String, Any>)
         }
     }
 
@@ -91,6 +91,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
 
         if (position < data.data.items.size) {
             val item = data.data.items[position]
+            //empty supposed to be userType next dev.
             val eventLabel = " - ${getHeaderName(data.channel)} - ${item.trackingData.itemType} - ${position + 1} - " +
                     "${item.trackingData.categoryId} - ${item.trackingData.operatorId} - " +
                     "${item.trackingData.productId} - ${convertRupiahToInt(item.label2)}"
@@ -105,7 +106,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
                 Ecommerce.KEY, getProductView(data, position),
                 UserId.KEY, userId
             )
-            trackingQueue.putEETracking(tracker as java.util.HashMap<String, Any>?)
+            trackingQueue.putEETracking(tracker as? java.util.HashMap<String, Any>)
         }
     }
 
