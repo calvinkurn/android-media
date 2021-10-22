@@ -17,7 +17,7 @@ import com.tokopedia.sellerorder.orderextension.presentation.adapter.typefactory
 import com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder.OrderExtensionRequestInfoCommentViewHolder
 import com.tokopedia.sellerorder.orderextension.presentation.adapter.viewholder.OrderExtensionRequestInfoOptionViewHolder
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
-import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
+import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
 import com.tokopedia.unifycomponents.TextAreaUnify2
 import com.tokopedia.unifycomponents.toPx
 
@@ -25,7 +25,7 @@ class SomBottomSheetOrderExtensionRequest(
     context: Context,
     private var orderId: String,
     private var data: OrderExtensionRequestInfoUiModel,
-    private var viewModel: SomDetailViewModel
+    private var viewModel: SomOrderExtensionViewModel
 ) : SomBottomSheet<BottomsheetOrderExtensionRequestInfoBinding>(
     LAYOUT,
     true,

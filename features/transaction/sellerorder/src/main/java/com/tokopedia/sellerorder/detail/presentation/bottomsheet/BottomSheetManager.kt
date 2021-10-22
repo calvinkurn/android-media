@@ -10,9 +10,9 @@ import com.tokopedia.sellerorder.common.presenter.model.PopUp
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
-import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.sellerorder.orderextension.presentation.bottomsheet.SomBottomSheetOrderExtensionRequest
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
+import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
 
 class BottomSheetManager(private val view: ViewGroup) {
     private var secondaryBottomSheet: SomDetailSecondaryActionBottomSheet? = null
@@ -197,7 +197,7 @@ class BottomSheetManager(private val view: ViewGroup) {
     private fun createSomBottomSheetOrderExtensionRequest(
         data: OrderExtensionRequestInfoUiModel,
         orderId: String,
-        viewModel: SomDetailViewModel
+        viewModel: SomOrderExtensionViewModel
     ): SomBottomSheetOrderExtensionRequest {
         return SomBottomSheetOrderExtensionRequest(
             view.context,
@@ -323,7 +323,7 @@ class BottomSheetManager(private val view: ViewGroup) {
     fun showSomBottomSheetOrderExtensionRequest(
         data: OrderExtensionRequestInfoUiModel,
         orderId: String,
-        viewModel: SomDetailViewModel
+        viewModel: SomOrderExtensionViewModel
     ) {
         bottomSheetOrderExtensionRequest = bottomSheetOrderExtensionRequest
             ?: createSomBottomSheetOrderExtensionRequest(data, orderId, viewModel)

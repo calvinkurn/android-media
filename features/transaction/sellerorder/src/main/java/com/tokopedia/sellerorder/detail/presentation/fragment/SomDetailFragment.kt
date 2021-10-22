@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -108,7 +107,7 @@ import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestResultUiModel
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
-import com.tokopedia.sellerorder.orderextension.presentation.bottomsheet.SomBottomSheetOrderExtensionRequest
+import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
@@ -162,12 +161,15 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private val chatIcon: IconUnify by lazy {
         createChatIcon(requireContext())
     }
+    private val orderExtensionViewModel: SomOrderExtensionViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(SomOrderExtensionViewModel::class.java)
+    }
 
     protected var orderId = ""
 
     protected var detailResponse: SomDetailOrder.Data.GetSomDetail? = SomDetailOrder.Data.GetSomDetail()
     protected val somDetailViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[SomDetailViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[SomDetailViewModel::class.java]
     }
     protected val bottomSheetManager by lazy {
         view?.let { if (it is ViewGroup) BottomSheetManager(it) else null }
@@ -910,7 +912,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setActionRequestExtension() {
-        somDetailViewModel.getSomRequestExtensionInfo(orderId)
+        orderExtensionViewModel.getSomRequestExtensionInfo(orderId)
     }
 
     private fun setActionChangeCourier() {
@@ -1282,7 +1284,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observeGetRequestExtensionInfo() {
-        somDetailViewModel.requestExtensionInfo.observe(viewLifecycleOwner) { result ->
+        orderExtensionViewModel.requestExtensionInfo.observe(viewLifecycleOwner) { result ->
             when(result) {
                 is Success -> {
                     if (result.data.success) {
@@ -1297,7 +1299,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observeSendOrderExtensionRequestResult() {
-        somDetailViewModel.requestExtensionResult.observe(viewLifecycleOwner) { result ->
+        orderExtensionViewModel.requestExtensionResult.observe(viewLifecycleOwner) { result ->
             when(result) {
                 is Success -> {
                     if (result.data.success) {
@@ -1318,7 +1320,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         bottomSheetManager?.showSomBottomSheetOrderExtensionRequest(
             data,
             orderId,
-            somDetailViewModel
+            orderExtensionViewModel
         )
     }
 
