@@ -5,17 +5,14 @@ import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.data.attachment.AttachmentId
-import com.tokopedia.chat_common.data.preview.ProductPreview
+import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.productattachment.FreeShipping
-import com.tokopedia.chat_common.domain.pojo.productattachment.PlayStoreData
-import com.tokopedia.chat_common.domain.pojo.productattachment.TopchatProductRating
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel.Companion.ROLE_USER
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.domain.usecase.TopChatWebSocketParam
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.AttachmentPreviewFactory
-import com.tokopedia.utils.time.TimeHelper
 import okhttp3.Interceptor
 
 class SendableProductPreview(
@@ -57,17 +54,17 @@ class SendableProductPreview(
     }
 
     override fun generateMsgObj(
-        messageId: String,
-        opponentId: String,
+        roomMetaData: RoomMetaData,
         message: String,
-        listInterceptor: List<Interceptor>,
         userLocationInfo: LocalCacheModel,
         localId: String
     ): Any {
         val startTime = SendableViewModel.generateStartTime()
+        val msgId = roomMetaData.msgId
+        val toUid = roomMetaData.receiver.uid
         return TopChatWebSocketParam.generateParamSendProductAttachment(
-            messageId, generateResultProduct(), startTime,
-            opponentId, productPreview, message, userLocationInfo,
+            msgId, generateResultProduct(), startTime,
+            toUid, productPreview, message, userLocationInfo,
             localId
         )
     }

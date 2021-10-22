@@ -74,20 +74,17 @@ class InvoicePreviewUiModel(
     }
 
     override fun generateMsgObj(
-        messageId: String,
-        opponentId: String,
+        roomMetaData: RoomMetaData,
         message: String,
-        listInterceptor: List<Interceptor>,
         userLocationInfo: LocalCacheModel,
         localId: String
     ): Any {
         val startTime = SendableViewModel.generateStartTime()
+        val msgId = roomMetaData.msgId
+        val toUid = roomMetaData.receiver.uid
         return SendWebsocketParam.generateParamSendInvoiceAttachment(
-            messageId,
-            this,
-            startTime,
-            opponentId,
-            localId
+            msgId, this, startTime,
+            toUid, localId
         )
     }
 

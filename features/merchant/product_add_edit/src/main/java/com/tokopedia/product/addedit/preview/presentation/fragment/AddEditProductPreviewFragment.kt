@@ -161,7 +161,7 @@ class AddEditProductPreviewFragment :
     private var latitude: String = ""
     private var longitude: String = ""
     private var postalCode: String = ""
-    private var districtId: Int = 0
+    private var districtId: Long = 0
     private var formattedAddress: String = ""
     private var productInputModel: ProductInputModel? = null
     private var isFragmentVisible = false
@@ -1563,7 +1563,7 @@ class AddEditProductPreviewFragment :
     private fun getSaveShopShippingLocationData(
             shopId: Int,
             postCode: String,
-            courierOrigin: Int,
+            courierOrigin: Long,
             addrStreet: String,
             lat: String,
             long: String
@@ -1599,7 +1599,7 @@ class AddEditProductPreviewFragment :
                 postalCode.isNotBlank() &&
                 latitude.isNotBlank() &&
                 longitude.isNotBlank() &&
-                districtId != 0 &&
+                districtId != 0L &&
                 formattedAddress.isNotBlank()) {
 
             val params = getSaveShopShippingLocationData(

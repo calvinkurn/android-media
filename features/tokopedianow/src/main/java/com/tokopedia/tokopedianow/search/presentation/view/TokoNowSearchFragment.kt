@@ -68,6 +68,9 @@ class TokoNowSearchFragment:
 
     override val toolbarPageName = "TokoNow Search"
 
+    override val oocPageName: String
+        get() = "tokonow - search page"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -413,5 +416,9 @@ class TokoNowSearchFragment:
         SearchTracking.sendRecommendationSeeAllClickEvent(getViewModel().query)
 
         RouteManager.route(context, applink)
+    }
+
+    override fun sendOOCOpenScreenTracking(isTracked: Boolean) {
+        SearchTracking.sendOOCOpenScreenTracking()
     }
 }

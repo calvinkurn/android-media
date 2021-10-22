@@ -21,9 +21,12 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterList
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder.generateLeftBg
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder.generateRightBg
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getOppositeMargin
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
-import com.tokopedia.topchat.common.util.ViewUtil
+import com.tokopedia.topchat.chatroom.view.custom.MessageBubbleLayout
+import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
 import com.tokopedia.unifyprinciples.Typography
 
 class ChatMessageUnifyViewHolder(
@@ -31,9 +34,11 @@ class ChatMessageUnifyViewHolder(
     protected val msgCliclLinkListener: ChatLinkHandlerListener,
     private val commonListener: CommonViewHolderListener,
     private val adapterListener: AdapterListener,
-    private val chatMsgListener: FlexBoxChatLayout.Listener
+    private val chatMsgListener: FlexBoxChatLayout.Listener,
+    private val replyBubbleListener: ReplyBubbleAreaMessage.Listener
 ) : BaseChatViewHolder<MessageViewModel>(itemView) {
 
+    private val messageBubble: MessageBubbleLayout? = itemView?.findViewById(R.id.mb_bubble_msg)
     private val llMsgContainer: LinearLayout? = itemView?.findViewById(R.id.ll_msg_container)
     private val fxChat: FlexBoxChatLayout? = itemView?.findViewById(R.id.fxChat)
     private val onTouchListener = MessageOnTouchListener(msgCliclLinkListener)
@@ -51,33 +56,8 @@ class ChatMessageUnifyViewHolder(
         com.tokopedia.unifyprinciples.R.dimen.unify_space_12
     ) ?: 0f
 
-    // Left Background bubble
-    private val bgLeft = ViewUtil.generateBackgroundWithShadow(
-        fxChat,
-        com.tokopedia.unifyprinciples.R.color.Unify_N0,
-        R.dimen.dp_topchat_0,
-        R.dimen.dp_topchat_20,
-        R.dimen.dp_topchat_20,
-        R.dimen.dp_topchat_20,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-        R.dimen.dp_topchat_2,
-        R.dimen.dp_topchat_1,
-        Gravity.CENTER
-    )
-
-    // Right Background bubble
-    private val bgRight = ViewUtil.generateBackgroundWithShadow(
-        fxChat,
-        com.tokopedia.unifyprinciples.R.color.Unify_G200,
-        R.dimen.dp_topchat_20,
-        R.dimen.dp_topchat_0,
-        R.dimen.dp_topchat_20,
-        R.dimen.dp_topchat_20,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-        R.dimen.dp_topchat_2,
-        R.dimen.dp_topchat_1,
-        Gravity.CENTER
-    )
+    private val bgLeft = generateLeftBg(fxChat)
+    private val bgRight = generateRightBg(fxChat)
 
     override fun bind(msg: MessageViewModel, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
@@ -92,14 +72,15 @@ class ChatMessageUnifyViewHolder(
         ChatMessageViewHolderBinder.bindChatMessage(msg, fxChat)
         ChatMessageViewHolderBinder.bindOnTouchMessageListener(fxChat, onTouchListener)
         ChatMessageViewHolderBinder.bindHour(msg, fxChat)
+        bindReplyBubbleListener()
+        bindReplyReference(msg)
         bindAttachment(msg)
         bindMargin(msg)
         bindClick()
+        bindLongClick(msg)
         if (msg.isSender) {
             // Right msg
-            bindLayoutGravity(Gravity.END)
-            bindGravity(Gravity.END)
-            bindLayoutMsgGravity(Gravity.END)
+            bindMsgGravity(Gravity.END)
             paddingRightMsg()
             bindBackground(bgRight)
             ChatMessageViewHolderBinder.bindChatReadStatus(msg, fxChat)
@@ -108,9 +89,7 @@ class ChatMessageUnifyViewHolder(
             hide(headerInfo)
         } else {
             // Left msg
-            bindLayoutGravity(Gravity.START)
-            bindGravity(Gravity.START)
-            bindLayoutMsgGravity(Gravity.START)
+            bindMsgGravity(Gravity.START)
             paddingLeftMsg()
             bindBackground(bgLeft)
             bindMessageInfo(msg)
@@ -118,6 +97,32 @@ class ChatMessageUnifyViewHolder(
             hide(fxChat?.checkMark)
             hide(header)
         }
+    }
+
+    private fun bindLongClick(msg: MessageViewModel) {
+        if (!msg.isBanned()) {
+            fxChat?.setOnLongClickListener {
+                commonListener.showMsgMenu(msg, fxChat.message?.text ?: "")
+                true
+            }
+        } else {
+            fxChat?.setOnClickListener(null)
+        }
+    }
+
+    private fun bindMsgGravity(gravity: Int) {
+        bindLayoutGravity(gravity)
+        bindGravity(gravity)
+        bindLayoutMsgGravity(gravity)
+        messageBubble?.setMsgGravity(gravity)
+    }
+
+    private fun bindReplyBubbleListener() {
+        messageBubble?.setReplyListener(replyBubbleListener)
+    }
+
+    private fun bindReplyReference(msg: MessageViewModel) {
+        messageBubble?.bindReplyData(msg)
     }
 
     private fun bindAttachment(msg: MessageViewModel) {
@@ -268,5 +273,6 @@ class ChatMessageUnifyViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_topchat_chat_bubble_unify
+        const val TYPE_BANNED = 2
     }
 }

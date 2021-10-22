@@ -15,6 +15,8 @@ object RollenceKey {
     const val OLD_REVIEW_SHOP = "old_review_shop"
     const val NEW_REVIEW_SHOP = "new_review_shop"
 
+    const val AB_TEST_SHOP_NEW_HOME_TAB = "shop_layout_engine"
+
     //    Add Edit Product
     const val PRODUCT_TITLE_AB_TEST_KEY = "product_title"
 
@@ -43,7 +45,6 @@ object RollenceKey {
     const val HOME_COMPONENT_LEGO2BANNER_VARIANT = "lego2_bleeding"
     // end of home component rollence section
 
-    const val POWER_MERCHANT_PRO_POP_UP = "pm_pro"
     const val NAVIGATION_VARIANT_REVAMP = "new_glmenu"
     const val NAVIGATION_VARIANT_REVAMP2 = "new_glmenu2"
 
@@ -71,4 +72,8 @@ object RollenceKey {
     const val SBM_ADD_BILLS_KEY = "sbm_addbills2"
     const val SBM_ADD_BILLS_FALSE = "sbm_addbills_False"
     const val SBM_ADD_BILLS_TRUE = "sbm_addbills_True"
+
+    const val EXPERIMENT_NAME_REVIEW_CREDIBILITY = "review_credibility"
+    const val VARIANT_REVIEW_CREDIBILITY_WITHOUT_BOTTOM_SHEET = "without_bottomsheet"
+    const val VARIANT_REVIEW_CREDIBILITY_WITH_BOTTOM_SHEET = "with_bottomsheet"
 }

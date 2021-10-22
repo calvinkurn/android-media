@@ -8,7 +8,9 @@ import androidx.fragment.app.FragmentPagerAdapter
  * Created By @ilhamsuaib on 10/02/21
  */
 
-class StatisticViewPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class StatisticViewPagerAdapter(
+    fm: FragmentManager
+) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     val fragments = mutableListOf<Fragment>()
     val titles = mutableListOf<String>()

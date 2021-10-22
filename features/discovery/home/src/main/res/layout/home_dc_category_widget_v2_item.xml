@@ -47,6 +47,7 @@
                 android:gravity="center"
                 app:typographyType="heading_6"
                 android:maxLines="2"
+                android:ellipsize="end"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"

@@ -44,7 +44,31 @@
 }, {
   "data": {
     "shopPageGetHomeType": {
-      "shopHomeType": "native"
+      "shopHomeType": "native",
+      "homeLayoutData": {
+        "layoutID": 46,
+        "masterLayoutID": 1,
+        "widgetIDList": [
+          {
+            "widgetID": 1,
+            "widgetMasterID": 1,
+            "widgetType": "display",
+            "widgetName": "display_single_column"
+          },
+          {
+            "widgetID": 2,
+            "widgetMasterID": 2,
+            "widgetType": "product",
+            "widgetName": "product"
+          },
+          {
+            "widgetID": 3,
+            "widgetMasterID": 3,
+            "widgetType": "campaign",
+            "widgetName": "promo_campaign"
+          }
+        ]
+      }
     }
   }
 }, {

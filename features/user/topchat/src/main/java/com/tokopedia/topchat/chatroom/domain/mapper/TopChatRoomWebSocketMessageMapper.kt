@@ -35,7 +35,9 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
     private val gson = GsonBuilder().create()
 
     override fun convertToMessageViewModel(pojo: ChatSocketPojo): Visitable<*> {
-        return MessageViewModel.Builder().withResponseFromWs(pojo).build()
+        return MessageViewModel.Builder()
+            .withResponseFromWs(pojo)
+            .build()
     }
 
     override fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {

@@ -20,7 +20,12 @@ class CategoryWidgetSpacingItemDecoration(private val spanCount: Int, private va
         } else {
             outRect.left = spacing/2
         }
-        outRect.top = spacing/2
+        if(position % 2 == 0) {
+            outRect.top = 0
+        } else {
+            outRect.top = spacing/2
+        }
+
         outRect.bottom = spacing/2
         outRect.right = spacing/2
     }

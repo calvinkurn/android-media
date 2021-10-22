@@ -70,6 +70,7 @@
     <string name="path_advanced_setting" translatable="false">/advanced-setting</string>
     <string name="path_payment_setting" translatable="false">/payment-setting</string>
     <string name="path_home_account_old" translatable="false">/account-home-old</string>
+    <string name="path_youtube_video" translatable="false">/youtube-video</string>
 
     <string name="path_push_notification_troubleshooter" translatable="false">/push-notification-troubleshooter</string>
     <string name="path_user_login" translatable="false">/login</string>
@@ -108,5 +109,7 @@
     <string name="path_ovo_add_name">/ovo-add-name</string>
     <string name="path_ovo_final_page">/ovo-final-page</string>
     <string name="path_ovo_regis_init">/ovo-reg-init</string>
+
+    <string name="path_image_picker_insta">/image-picker/v2/</string>
 
 </resources>
