@@ -71,6 +71,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlist.common.listener.WishListActionListener
 import javax.inject.Inject
 
 open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
@@ -578,13 +579,17 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     }
 
     override fun addToWishlist(product: ProductData) {
-        viewModel.addWishListNormal(product.productId) { _, error ->
-            if (error != null) {
-                showErrorMessage(error)
-            } else {
-                showMessage(R.string.title_success_add_to_wishlist)
-            }
-        }
+        viewModel.addWishListNormal(product.productId,
+            object : WishListActionListener {
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                    showErrorMessage(errorMessage?: "")
+                }
+                override fun onSuccessAddWishlist(productId: String?) {
+                    showMessage(R.string.title_success_add_to_wishlist)
+                }
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
+                override fun onSuccessRemoveWishlist(productId: String?) {}
+            })
     }
 
     override fun goToWishlist() {

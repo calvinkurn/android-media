@@ -246,7 +246,22 @@ class NotificationViewModel @Inject constructor(
         if (model.isTopAds) {
             addWishListTopAds(model, callback)
         } else {
-            addWishListNormal(model.productId.toString(), callback)
+            addWishListNormal(model.productId.toString(), object : WishListActionListener {
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                    callback.invoke(false, Throwable(errorMessage))
+                }
+
+                override fun onSuccessAddWishlist(productId: String?) {
+                    callback.invoke(true, null)
+                }
+
+                override fun onErrorRemoveWishlist(
+                    errorMessage: String?, productId: String?
+                ) {
+                }
+
+                override fun onSuccessRemoveWishlist(productId: String?) {}
+            })
         }
     }
 
@@ -306,28 +321,10 @@ class NotificationViewModel @Inject constructor(
     }
 
     fun addWishListNormal(
-        productId: String, callback: ((Boolean, Throwable?) -> Unit)
+        productId: String,
+        wishListActionListener: WishListActionListener
     ) {
-        addWishListUseCase.createObservable(
-            productId,
-            userSessionInterface.userId,
-            object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                    callback.invoke(false, Throwable(errorMessage))
-                }
-
-                override fun onSuccessAddWishlist(productId: String?) {
-                    callback.invoke(true, null)
-                }
-
-                override fun onErrorRemoveWishlist(
-                    errorMessage: String?, productId: String?
-                ) {
-                }
-
-                override fun onSuccessRemoveWishlist(productId: String?) {}
-            }
-        )
+        addWishListUseCase.createObservable(productId, userSessionInterface.userId, wishListActionListener)
     }
 
     private fun loadTopAdsBannerData() {
