@@ -8,8 +8,6 @@ import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
-import com.tokopedia.chat_common.util.IdentifierUtil
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.pojo.ChatDelete
 import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
@@ -18,15 +16,10 @@ import com.tokopedia.topchat.chatroom.domain.usecase.TopChatWebSocketParam
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exImageUploadId
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exMessageId
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exOpponentId
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exSendMessage
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exStartTime
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.imageUploadViewModel
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.readParam
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.replyChatViewModelApiSuccess
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.source
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.toShopId
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.toUserId
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.websocket.RxWebSocket
@@ -155,7 +148,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
         val wsChatPojo = mockkParseResponse(wsResponseProductAttachment)
-        val wsChatVisitable = mockkWsMapper(wsChatPojo) as ProductAttachmentViewModel
+        val wsChatVisitable = mockkWsMapper(wsChatPojo) as ProductAttachmentUiModel
 
         // When
         presenter.connectWebSocket(exMessageId)
@@ -226,12 +219,12 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     @Test
     fun `check upload image using service`() {
         //Given
-        val image = ImageUploadViewModel.Builder()
+        val image = ImageUploadUiModel.Builder()
             .withMsgId(exMessageId)
             .withFromUid("123123")
             .withAttachmentId("123987")
             .withAttachmentType(AttachmentType.Companion.TYPE_IMAGE_UPLOAD)
-            .withReplyTime(SendableViewModel.SENDING_TEXT)
+            .withReplyTime(SendableUiModel.SENDING_TEXT)
             .withStartTime("123")
             .withIsDummy(true)
             .withImageUrl("https://ecs.tokopedia.com/image.jpg")
@@ -261,7 +254,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     @Test
     fun `check upload image problematic device`() {
         //Given
-        val image = mockk<ImageUploadViewModel>(relaxed = true)
+        val image = mockk<ImageUploadUiModel>(relaxed = true)
         every {
             remoteConfig.getBoolean(any(), any())
         } returns true
@@ -292,7 +285,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     @Test
     fun `check upload image failed to get remote config`() {
         //Given
-        val image = mockk<ImageUploadViewModel>()
+        val image = mockk<ImageUploadUiModel>()
         val exception = mockk<Exception>("Oops!")
         every {
             remoteConfig.getBoolean(any(), any())
@@ -426,7 +419,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
                 any()
             )
         } answers {
-            val onSuccess = lambda<(String, ImageUploadViewModel) -> Unit>()
+            val onSuccess = lambda<(String, ImageUploadUiModel) -> Unit>()
             onSuccess.invoke(exImageUploadId, imageUploadViewModel)
         }
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
@@ -468,7 +461,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
                 any()
             )
         } answers {
-            val onSuccess = lambda<(String, ImageUploadViewModel) -> Unit>()
+            val onSuccess = lambda<(String, ImageUploadUiModel) -> Unit>()
             onSuccess.invoke(
                 exImageUploadId,
                 imageUploadViewModel
@@ -512,7 +505,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
             uploadImageUseCase.upload(
                 imageUploadViewModel, captureLambda(), any())
         } answers {
-            val onSuccess = lambda<(String, ImageUploadViewModel) -> Unit>()
+            val onSuccess = lambda<(String, ImageUploadUiModel) -> Unit>()
             onSuccess.invoke(exImageUploadId, imageUploadViewModel)
         }
         coEvery {
@@ -557,7 +550,7 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
                 imageUploadViewModel,
                 any(), captureLambda())
         } answers {
-            val onError = lambda<(Throwable, ImageUploadViewModel) -> Unit>()
+            val onError = lambda<(Throwable, ImageUploadUiModel) -> Unit>()
             onError.invoke(errorUploadImage, imageUploadViewModel)
         }
 
@@ -577,12 +570,12 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
     @Test
     fun `should have dummy image when upload image by service`() {
         // Given
-        val imageViewModel = ImageUploadViewModel.Builder()
+        val imageViewModel = ImageUploadUiModel.Builder()
             .withMsgId(exMessageId)
             .withFromUid("123123")
             .withAttachmentId("123987")
             .withAttachmentType(AttachmentType.Companion.TYPE_IMAGE_UPLOAD)
-            .withReplyTime(SendableViewModel.SENDING_TEXT)
+            .withReplyTime(SendableUiModel.SENDING_TEXT)
             .withStartTime("123")
             .withIsDummy(true)
             .withImageUrl("https://ecs.tokopedia.com/image.jpg")

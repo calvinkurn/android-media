@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 
-data class RoomSettingBanner(
+data class RoomSettingBannerUiModel(
         @SerializedName("enable")
         val enable: Boolean = false,
         @SerializedName("imageUrl")

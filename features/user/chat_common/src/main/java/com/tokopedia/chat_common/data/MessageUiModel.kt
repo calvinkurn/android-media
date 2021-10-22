@@ -1,16 +1,15 @@
 package com.tokopedia.chat_common.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.MessageViewModel.Builder
+import com.tokopedia.chat_common.data.MessageUiModel.Builder
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
-import kotlin.random.Random
 
 /**
  * Primary constructor, use [Builder] class to create this instance.
  */
-open class MessageViewModel protected constructor(
+open class MessageUiModel protected constructor(
     builder: Builder
-) : SendableViewModel(builder), Visitable<BaseChatTypeFactory> {
+) : SendableUiModel(builder), Visitable<BaseChatTypeFactory> {
 
     var attachment: Any? = builder.attachment
         private set
@@ -43,7 +42,7 @@ open class MessageViewModel protected constructor(
         return attachment != null
     }
 
-    open class Builder : SendableViewModel.Builder<Builder, MessageViewModel>() {
+    open class Builder : SendableUiModel.Builder<Builder, MessageUiModel>() {
 
         internal var attachment: Any? = null
 
@@ -52,8 +51,8 @@ open class MessageViewModel protected constructor(
             return self()
         }
 
-        override fun build(): MessageViewModel {
-            return MessageViewModel(this)
+        override fun build(): MessageUiModel {
+            return MessageUiModel(this)
         }
     }
 }

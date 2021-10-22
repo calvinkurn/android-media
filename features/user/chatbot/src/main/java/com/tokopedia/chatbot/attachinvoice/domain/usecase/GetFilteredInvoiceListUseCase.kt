@@ -1,6 +1,6 @@
 package com.tokopedia.chatbot.attachinvoice.domain.usecase
 
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.model.InvoiceConstants.DEFAULT_LIMIT
 import com.tokopedia.chatbot.attachinvoice.domain.model.InvoiceConstants.FILTERED_EVENT
 import com.tokopedia.chatbot.attachinvoice.domain.model.InvoiceConstants.IS_SHOW_ALL
@@ -62,7 +62,7 @@ class GetFilteredInvoiceListUseCase @Inject constructor(graphqlRepository: Graph
     fun setParams(filteredEvent: String, page: Int, messageId: String) {
         val queryMap = mutableMapOf(
                 MESSAGE_ID_KEY to messageId,
-                START_TIME to SendableViewModel.generateStartTime(),
+                START_TIME to SendableUiModel.generateStartTime(),
                 FILTERED_EVENT to filteredEvent,
                 PAGE_KEY to page,
                 LIMIT to DEFAULT_LIMIT,

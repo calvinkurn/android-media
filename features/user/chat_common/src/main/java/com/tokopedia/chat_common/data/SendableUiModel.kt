@@ -6,9 +6,9 @@ import com.tokopedia.chat_common.domain.pojo.Reply
 import java.text.SimpleDateFormat
 import java.util.*
 
-open class SendableViewModel constructor(
+open class SendableUiModel constructor(
     builder: Builder<*, *>
-) : BaseChatViewModel(builder) {
+) : BaseChatUiModel(builder) {
 
     var startTime: String = builder.startTime
     var isRead: Boolean = builder.isRead
@@ -44,7 +44,7 @@ open class SendableViewModel constructor(
 
         fun generateStartTime(): String {
             val date = SimpleDateFormat(
-                SendableViewModel.START_TIME_FORMAT, Locale.US
+                SendableUiModel.START_TIME_FORMAT, Locale.US
             )
             date.timeZone = TimeZone.getTimeZone("UTC")
             return date.format(Calendar.getInstance().time)
@@ -53,8 +53,8 @@ open class SendableViewModel constructor(
 
     abstract class Builder<
             out B : Builder<B, UI>,
-            out UI : SendableViewModel
-            > : BaseChatViewModel.Builder<B, UI>() {
+            out UI : SendableUiModel
+            > : BaseChatUiModel.Builder<B, UI>() {
 
         internal var startTime: String = ""
         internal var isRead: Boolean = false

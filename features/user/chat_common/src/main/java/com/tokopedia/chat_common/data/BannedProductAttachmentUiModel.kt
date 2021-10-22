@@ -2,9 +2,9 @@ package com.tokopedia.chat_common.data
 
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 
-class BannedProductAttachmentViewModel(
-    builder: ProductAttachmentViewModel.Builder
-) : ProductAttachmentViewModel(builder) {
+class BannedProductAttachmentUiModel(
+    builder: ProductAttachmentUiModel.Builder
+) : ProductAttachmentUiModel(builder) {
 
     val liteUrl get() = playStoreData.redirectUrl
 
@@ -16,9 +16,9 @@ class BannedProductAttachmentViewModel(
         return playStoreData.message
     }
 
-    class Builder : ProductAttachmentViewModel.Builder() {
-        override fun build(): ProductAttachmentViewModel {
-            return BannedProductAttachmentViewModel(this)
+    class Builder : ProductAttachmentUiModel.Builder() {
+        override fun build(): ProductAttachmentUiModel {
+            return BannedProductAttachmentUiModel(this)
         }
     }
 }

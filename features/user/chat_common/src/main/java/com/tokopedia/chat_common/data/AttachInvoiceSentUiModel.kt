@@ -9,9 +9,9 @@ import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
  * Created by Hendri on 27/03/18.
  */
 
-class AttachInvoiceSentViewModel private constructor(
+class AttachInvoiceSentUiModel private constructor(
     builder: Builder
-) : SendableViewModel(builder), Visitable<BaseChatTypeFactory>, DeferredAttachment {
+) : SendableUiModel(builder), Visitable<BaseChatTypeFactory>, DeferredAttachment {
 
     var imageUrl: String = builder.imageUrl
     var description: String = builder.description
@@ -61,7 +61,7 @@ class AttachInvoiceSentViewModel private constructor(
         this.isError = false
     }
 
-    class Builder : SendableViewModel.Builder<Builder, AttachInvoiceSentViewModel>() {
+    class Builder : SendableUiModel.Builder<Builder, AttachInvoiceSentUiModel>() {
 
         internal var imageUrl: String = ""
         internal var description: String = ""
@@ -131,8 +131,8 @@ class AttachInvoiceSentViewModel private constructor(
             return self()
         }
 
-        override fun build(): AttachInvoiceSentViewModel {
-            return AttachInvoiceSentViewModel(this)
+        override fun build(): AttachInvoiceSentUiModel {
+            return AttachInvoiceSentUiModel(this)
         }
     }
 }

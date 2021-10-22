@@ -8,7 +8,7 @@ import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.chat_common.util.IdentifierUtil
 import java.util.*
 
-open class BaseChatViewModel constructor(
+open class BaseChatUiModel constructor(
     val messageId: String,
     var fromUid: String?,
     val from: String,
@@ -83,7 +83,7 @@ open class BaseChatViewModel constructor(
      */
     abstract class Builder<
             out B : Builder<B, UI>,
-            out UI : BaseChatViewModel
+            out UI : BaseChatUiModel
             > {
 
         internal var messageId: String = ""
@@ -251,7 +251,7 @@ open class BaseChatViewModel constructor(
             return self()
         }
 
-        fun withReferredMsg(referredMsg: BaseChatViewModel?): B {
+        fun withReferredMsg(referredMsg: BaseChatUiModel?): B {
             if (referredMsg == null) return self()
             val parentReply = ParentReply(
                 attachmentId = referredMsg.attachmentId,

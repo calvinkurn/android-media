@@ -7,8 +7,8 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.chat_common.data.BaseChatViewModel
-import com.tokopedia.chat_common.data.MessageViewModel
+import com.tokopedia.chat_common.data.BaseChatUiModel
+import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -36,7 +36,7 @@ class ChatMessageUnifyViewHolder(
     private val adapterListener: AdapterListener,
     private val chatMsgListener: FlexBoxChatLayout.Listener,
     private val replyBubbleListener: ReplyBubbleAreaMessage.Listener
-) : BaseChatViewHolder<MessageViewModel>(itemView) {
+) : BaseChatViewHolder<MessageUiModel>(itemView) {
 
     private val messageBubble: MessageBubbleLayout? = itemView?.findViewById(R.id.mb_bubble_msg)
     private val llMsgContainer: LinearLayout? = itemView?.findViewById(R.id.ll_msg_container)
@@ -59,14 +59,14 @@ class ChatMessageUnifyViewHolder(
     private val bgLeft = generateLeftBg(fxChat)
     private val bgRight = generateRightBg(fxChat)
 
-    override fun bind(msg: MessageViewModel, payloads: MutableList<Any>) {
+    override fun bind(msg: MessageUiModel, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
         when (payloads.first()) {
             Payload.REBIND -> bind(msg)
         }
     }
 
-    override fun bind(msg: MessageViewModel) {
+    override fun bind(msg: MessageUiModel) {
         fxChat?.listener = chatMsgListener
         verifyReplyTime(msg)
         ChatMessageViewHolderBinder.bindChatMessage(msg, fxChat)
@@ -99,7 +99,7 @@ class ChatMessageUnifyViewHolder(
         }
     }
 
-    private fun bindLongClick(msg: MessageViewModel) {
+    private fun bindLongClick(msg: MessageUiModel) {
         if (!msg.isBanned()) {
             fxChat?.setOnLongClickListener {
                 commonListener.showMsgMenu(msg, fxChat.message?.text ?: "")
@@ -121,11 +121,11 @@ class ChatMessageUnifyViewHolder(
         messageBubble?.setReplyListener(replyBubbleListener)
     }
 
-    private fun bindReplyReference(msg: MessageViewModel) {
+    private fun bindReplyReference(msg: MessageUiModel) {
         messageBubble?.bindReplyData(msg)
     }
 
-    private fun bindAttachment(msg: MessageViewModel) {
+    private fun bindAttachment(msg: MessageUiModel) {
         if (msg.hasAttachment()) {
             val shouldHideDivider = commonListener.isSeller() && msg.isSender
             fxChat?.renderHeaderAttachment(
@@ -153,7 +153,7 @@ class ChatMessageUnifyViewHolder(
         }
     }
 
-    private fun bindMessageInfo(msg: MessageViewModel) {
+    private fun bindMessageInfo(msg: MessageUiModel) {
         if (msg.hasLabel()) {
             fxChat?.showInfo(msg.label)
         } else {
@@ -161,7 +161,7 @@ class ChatMessageUnifyViewHolder(
         }
     }
 
-    private fun verifyReplyTime(chat: MessageViewModel) {
+    private fun verifyReplyTime(chat: MessageUiModel) {
         try {
             if (chat.replyTime.toLongOrZero() / MILISECONDS < START_YEAR) {
                 chat.replyTime = (chat.replyTime.toLongOrZero() * MILISECONDS).toString()
@@ -171,7 +171,7 @@ class ChatMessageUnifyViewHolder(
         }
     }
 
-    private fun bindMargin(message: MessageViewModel) {
+    private fun bindMargin(message: MessageUiModel) {
         if (adapterListener.isOpposite(adapterPosition, message.isSender)) {
             llMsgContainer?.setMargin(0, topMarginOpposite.toInt(), 0, 0)
         } else {
@@ -214,9 +214,9 @@ class ChatMessageUnifyViewHolder(
         fxChat?.background = drawable
     }
 
-    private fun bindHeaderInfo(msg: MessageViewModel) {
+    private fun bindHeaderInfo(msg: MessageUiModel) {
         if (
-            msg.source == BaseChatViewModel.SOURCE_REPLIED_BLAST &&
+            msg.source == BaseChatUiModel.SOURCE_REPLIED_BLAST &&
             commonListener.isSeller()
         ) {
             headerInfo?.show()
@@ -225,27 +225,27 @@ class ChatMessageUnifyViewHolder(
         }
     }
 
-    private fun bindHeader(message: MessageViewModel) {
+    private fun bindHeader(message: MessageUiModel) {
         bindHeaderSmartReply(message)
         bindHeaderAutoReply(message)
         bindHeaderVisibility(message)
     }
 
-    private fun bindHeaderSmartReply(message: MessageViewModel) {
+    private fun bindHeaderSmartReply(message: MessageUiModel) {
         if (fromSmartReply(message)) {
             val headerText = itemView.context?.getString(R.string.tittle_header_smart_reply)
             headerRole?.text = headerText
         }
     }
 
-    private fun bindHeaderAutoReply(message: MessageViewModel) {
+    private fun bindHeaderAutoReply(message: MessageUiModel) {
         if (fromAutoReply(message)) {
             val headerText = itemView.context?.getString(R.string.tittle_header_auto_reply)
             headerRole?.text = headerText
         }
     }
 
-    private fun bindHeaderVisibility(message: MessageViewModel) {
+    private fun bindHeaderVisibility(message: MessageUiModel) {
         if (fromAutoReply(message) || fromSmartReply(message)) {
             bindBlueDot(message)
             header?.show()
@@ -255,15 +255,15 @@ class ChatMessageUnifyViewHolder(
         }
     }
 
-    private fun fromAutoReply(msg: MessageViewModel): Boolean {
+    private fun fromAutoReply(msg: MessageUiModel): Boolean {
         return msg.isSender && commonListener.isSeller() && msg.isFromAutoReply()
     }
 
-    private fun fromSmartReply(msg: MessageViewModel): Boolean {
+    private fun fromSmartReply(msg: MessageUiModel): Boolean {
         return msg.isSender && commonListener.isSeller() && msg.isFromSmartReply()
     }
 
-    private fun bindBlueDot(message: MessageViewModel) {
+    private fun bindBlueDot(message: MessageUiModel) {
         if (message.isFromSmartReply()) {
             smartReplyBlueDot?.show()
         } else {
