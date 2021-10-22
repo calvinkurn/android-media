@@ -15,7 +15,7 @@ import java.util.List;
 import rx.Completable;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
+
 
 public class StorageProvider implements InterfaceDataStore {
     private final InAppDataDao inAppDataDao;

@@ -22,6 +22,10 @@ class InAppLocalDatabaseController private constructor(private val application: 
             by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
                 DeleteExpireInAppUseCase(application, repositoryManager)
             }
+    private val saveInAppUseCase: SaveInAppUseCase
+            by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+                SaveInAppUseCase(application, repositoryManager)
+            }
 
     fun getInAppData(screenName: String, isActivity: Boolean,
                      inAppFetchListener: InAppFetchListener) {
@@ -38,6 +42,17 @@ class InAppLocalDatabaseController private constructor(private val application: 
     fun clearExpiredInApp() {
         launchCatchError(block = {
             deleteExpireInAppUseCase.deleteAllCompletedAndExpireInAPP()
+        }, onError = {
+            //todo Timber Logging by lalit
+        })
+    }
+
+    fun saveInApp(cmInApp: CMInApp, inAppSavedListener: InAppSavedListener) {
+        launchCatchError(block = {
+            val isSaved = saveInAppUseCase.saveInApp(cmInApp)
+            if (isSaved) {
+                inAppSavedListener.onInAppSaved(cmInApp.isAmplification)
+            }
         }, onError = {
             //todo Timber Logging by lalit
         })
@@ -60,4 +75,8 @@ class InAppLocalDatabaseController private constructor(private val application: 
 
 interface InAppFetchListener {
     fun onInAPPListFetchCompleted(inAppList: List<CMInApp>?)
+}
+
+interface InAppSavedListener {
+    fun onInAppSaved(isAmplification: Boolean)
 }

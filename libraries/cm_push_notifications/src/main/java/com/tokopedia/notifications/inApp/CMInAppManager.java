@@ -32,7 +32,7 @@ import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.A
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
 import com.tokopedia.notifications.inApp.usecase.InAppLocalDatabaseController;
 import com.tokopedia.notifications.inApp.viewEngine.CMActivityLifeCycle;
-import com.tokopedia.notifications.inApp.viewEngine.CMInAppController;
+import com.tokopedia.notifications.inApp.viewEngine.CMInAppProcessor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
 import com.tokopedia.notifications.inApp.viewEngine.ElementType;
@@ -60,8 +60,7 @@ public class CMInAppManager implements CmInAppListener,
         DataProvider,
         CmActivityLifecycleHandler.CmActivityApplicationCallback,
         ShowInAppCallback,
-        SendPushContract, CmDialogVisibilityContract,
-        CMInAppController.OnNewInAppDataStoreListener {
+        SendPushContract, CmDialogVisibilityContract {
 
     private static final CMInAppManager inAppManager;
 
@@ -262,7 +261,7 @@ public class CMInAppManager implements CmInAppListener,
             if (null != cmInApp) {
                 if (application != null) {
                     sendEventInAppDelivered(cmInApp);
-                    new CMInAppController(this).downloadImagesAndUpdateDB(application, cmInApp);
+                    new CMInAppProcessor(application).processAndSaveCMInApp(cmInApp, this::onInAppStored);
                 } else {
                     Map<String, String> messageMap = new HashMap<>();
                     messageMap.put("type", "validation");
@@ -273,22 +272,13 @@ public class CMInAppManager implements CmInAppListener,
             }
         } catch (Exception e) {
             Map<String, String> data = remoteMessage.getData();
-            if (data != null) {
-                Map<String, String> messageMap = new HashMap<>();
-                messageMap.put("type", "exception");
-                messageMap.put("err", Log.getStackTraceString
-                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
-                messageMap.put("data", data.toString()
-                        .substring(0, (Math.min(data.toString().length(), CMConstant.TimberTags.MAX_LIMIT))));
-                ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
-            } else {
-                Map<String, String> messageMap = new HashMap<>();
-                messageMap.put("type", "exception");
-                messageMap.put("err", Log.getStackTraceString
-                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
-                messageMap.put("data", "");
-                ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
-            }
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "exception");
+            messageMap.put("err", Log.getStackTraceString
+                    (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
+            messageMap.put("data", data.toString()
+                    .substring(0, (Math.min(data.toString().length(), CMConstant.TimberTags.MAX_LIMIT))));
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
         }
     }
 
@@ -300,7 +290,7 @@ public class CMInAppManager implements CmInAppListener,
             if (cmInApp != null) {
                 cmInApp.setAmplification(true);
                 IrisAnalyticsEvents.INSTANCE.sendAmplificationInAppEvent(application, IrisAnalyticsEvents.INAPP_DELIVERED, cmInApp);
-                new CMInAppController(this).downloadImagesAndUpdateDB(application, cmInApp);
+                new CMInAppProcessor(application).processAndSaveCMInApp(cmInApp, this::onInAppStored);
             }
         } catch (Exception e) {
             Map<String, String> messageMap = new HashMap<>();
@@ -309,6 +299,15 @@ public class CMInAppManager implements CmInAppListener,
                     (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
             messageMap.put("data", "");
             ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
+        }
+    }
+
+    private void onInAppStored(boolean isAmplification) {
+        if (isAmplification && isCmInAppManagerInitialized) {
+            Activity currentActivity = activityLifecycleHandler.getCurrentActivity();
+            if (currentActivity != null && !pushIntentHandler.isHandledByPush() && canShowDialog()) {
+                showInAppForScreen(currentActivity.getClass().getName(), currentActivity.hashCode(), true);
+            }
         }
     }
 
@@ -407,20 +406,6 @@ public class CMInAppManager implements CmInAppListener,
     @Override
     public boolean isDialogVisible(@NotNull Activity activity) {
         return dialogIsShownMap.containsKey(activity) && dialogIsShownMap.get(activity);
-    }
-
-    @Override
-    public void onNewInAppDataStored() {
-        if (isCmInAppManagerInitialized) {
-            Activity currentActivity = activityLifecycleHandler.getCurrentActivity();
-            if (currentActivity != null) {
-                if (!pushIntentHandler.isHandledByPush()) {
-                    if (canShowDialog()) {
-                        showInAppForScreen(currentActivity.getClass().getName(), currentActivity.hashCode(), true);
-                    }
-                }
-            }
-        }
     }
 
     private void getAmplificationPushData(Application application) {
