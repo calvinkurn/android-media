@@ -33,6 +33,8 @@ data class SavedOption(
 
     fun isFilter(): Boolean = !isSort()
 
+    fun keyValue() = "$key=$value"
+
     companion object {
         const val SORT_SAVED_OPTION_TITLE = "sort"
 

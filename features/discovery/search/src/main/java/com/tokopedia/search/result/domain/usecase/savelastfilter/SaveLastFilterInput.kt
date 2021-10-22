@@ -24,11 +24,6 @@ class SaveLastFilterInput(
     mapParameter: Map<String?, Any> = mapOf(),
 ) {
 
-    @SerializedName(ACTION)
-    @Expose
-    @Deprecated("should not have action anymore")
-    val action = "update"
-
     @SerializedName(PARAM)
     @Expose
     val param: String = UrlParamUtils.generateUrlParamString(mapParameter)

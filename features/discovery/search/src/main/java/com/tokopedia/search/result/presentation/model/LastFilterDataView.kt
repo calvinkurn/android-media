@@ -17,19 +17,29 @@ class LastFilterDataView(
 
     fun optionNames(): String = filterList.joinToString { it.name }
 
-    fun filterOptions(): List<Option> = filterList
-        .filter(SavedOption::isFilter)
-        .map(SavedOption::asOption)
+    fun filterOptions(): List<Option> =
+        filterList
+            .filter(SavedOption::isFilter)
+            .map(SavedOption::asOption)
 
-    fun sortOptions(): List<Option> = filterList
-        .filter(SavedOption::isSort)
-        .map(SavedOption::asOption)
+    fun sortOptions(): List<Option> =
+        filterList
+            .filter(SavedOption::isSort)
+            .map(SavedOption::asOption)
 
-    fun sortParameter(): Map<String, String> = sortOptions()
-        .associateBy(
-            keySelector = { it.key },
-            valueTransform = { it.value }
-        )
+    fun sortParameter(): Map<String, String> =
+        sortOptions()
+            .associateBy(
+                keySelector = { it.key },
+                valueTransform = { it.value }
+            )
+
+    fun sortFilterParamsString(): String =
+        filterList
+            .joinToString(
+                separator = "&",
+                transform = SavedOption::keyValue,
+            )
 
     override fun type(typeFactory: ProductListTypeFactory?) =
         typeFactory?.type(this) ?: 0

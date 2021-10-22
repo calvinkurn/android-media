@@ -1988,19 +1988,23 @@ class ProductListFragment: BaseDaggerFragment(),
         SearchTracking.trackEventLastFilterImpression(
             iris,
             queryKey,
-            "",
+            lastFilterDataView.sortFilterParamsString(),
             getDimension90()
         )
     }
 
-    private fun getDimension90(): String {
-        val searchParameterMap = searchParameter?.getSearchParameterMap() ?: mapOf()
+    private fun getDimension90(): String =
+        Dimension90Utils.getDimension90(getSearchParameterMap())
 
-        return Dimension90Utils.getDimension90(searchParameterMap)
-    }
+    private fun getSearchParameterMap(): Map<String, Any> =
+        searchParameter?.getSearchParameterMap() ?: mapOf()
 
     override fun applyLastFilter(lastFilterDataView: LastFilterDataView) {
-        SearchTracking.trackEventLastFilterClickApply(queryKey, "", getDimension90())
+        SearchTracking.trackEventLastFilterClickApply(
+            queryKey,
+            lastFilterDataView.sortFilterParamsString(),
+            getDimension90(),
+        )
 
         filterController.setFilter(lastFilterDataView.filterOptions())
 
@@ -2011,7 +2015,11 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun closeLastFilter(lastFilterDataView: LastFilterDataView) {
-        SearchTracking.trackEventLastFilterClickClose(queryKey, "", getDimension90())
+        SearchTracking.trackEventLastFilterClickClose(
+            queryKey,
+            lastFilterDataView.sortFilterParamsString(),
+            getDimension90(),
+        )
 
         val searchParameterMap = searchParameter?.getSearchParameterMap() ?: mapOf()
 
