@@ -1683,8 +1683,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         // analytics
         var jsonArray = JsonArray()
         if (order.metadata.listProducts.isNotEmpty()) {
-            val listOfStrings = gson.fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
-            jsonArray = gson.toJsonTree(listOfStrings).asJsonArray
+            jsonArray = JsonParser().parse(order.metadata.listProducts).asJsonArray
         }
         val arrayListProducts = arrayListOf<ECommerceClick.Products>()
         var i = 0
@@ -1913,8 +1912,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun atc(orderData: UohListOrder.Data.UohOrders.Order) {
         if (orderData.metadata.listProducts.isNotEmpty()) {
-            val listOfStrings = gson.fromJson(orderData.metadata.listProducts, mutableListOf<String>().javaClass)
-            val jsonArray: JsonArray = gson.toJsonTree(listOfStrings).asJsonArray
+            val jsonArray: JsonArray = JsonParser().parse(orderData.metadata.listProducts).asJsonArray
             val listParamAtcMulti = arrayListOf<AddToCartMultiParam>()
             for (x in 0 until jsonArray.size()) {
                 val objParam = jsonArray.get(x).asJsonObject
