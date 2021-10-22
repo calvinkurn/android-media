@@ -5,9 +5,7 @@ import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play.extensions.isLeaderboardSheetShown
-import com.tokopedia.play.fake.FakePlayWebSocket
 import com.tokopedia.play.model.*
-import com.tokopedia.play.robot.andThen
 import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.withState
@@ -22,18 +20,11 @@ import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveMod
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 

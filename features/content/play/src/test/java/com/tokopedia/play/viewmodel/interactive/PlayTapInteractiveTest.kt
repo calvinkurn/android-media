@@ -82,7 +82,7 @@ class PlayTapInteractiveTest {
             return null
         }
 
-        override fun getActiveInteractiveId(): String? {
+        override fun getActiveInteractiveId(): String {
             return interactiveId
         }
 

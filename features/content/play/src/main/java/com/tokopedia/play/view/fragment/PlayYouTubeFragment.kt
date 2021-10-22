@@ -173,9 +173,9 @@ class PlayYouTubeFragment @Inject constructor(
      * Observe
      */
     private fun observeVideoMeta() {
-        playViewModel.observableVideoMeta.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableVideoMeta.observe(viewLifecycleOwner) {
             youtubeViewOnStateChanged(videoPlayer = it.videoPlayer)
-        })
+        }
     }
 
     private fun observeBottomInsetsState() {
@@ -194,9 +194,9 @@ class PlayYouTubeFragment @Inject constructor(
     }
 
     private fun observePiPEvent() {
-        playViewModel.observableEventPiPState.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableEventPiPState.observe(viewLifecycleOwner) {
             if (it.peekContent() == PiPState.Stop) removePiP()
-        })
+        }
     }
 
     private fun removePiP() {

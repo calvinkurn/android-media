@@ -39,13 +39,12 @@ class PlayViewModelFieldTest {
                 videoMetaInfo = videoModelBuilder.buildVideoMeta(videoPlayer = videoPlayer)
         )
 
-        val expectedModel = videoPlayer
         givenPlayViewModelRobot(
         ) andWhen {
             createPage(channelData)
         } thenVerify {
             viewModel.videoPlayer
-                    .isEqualTo(expectedModel)
+                    .isEqualTo(videoPlayer)
         }
     }
 
@@ -58,14 +57,12 @@ class PlayViewModelFieldTest {
                 )
         )
 
-        val expectedModel = statusType
-
         givenPlayViewModelRobot(
         ) andWhen {
             createPage(channelData)
         } thenVerify {
             viewModel.statusType
-                    .isEqualTo(expectedModel)
+                    .isEqualTo(statusType)
         }
     }
 
@@ -80,14 +77,12 @@ class PlayViewModelFieldTest {
                 )
         )
 
-        val expectedModel = videoOrientation
-
         givenPlayViewModelRobot(
         ) andWhen {
             createPage(channelData)
         } thenVerify {
             viewModel.videoOrientation
-                    .isEqualTo(expectedModel)
+                    .isEqualTo(videoOrientation)
         }
     }
 
@@ -102,14 +97,12 @@ class PlayViewModelFieldTest {
                 )
         )
 
-        val expectedModel = channelType
-
         givenPlayViewModelRobot(
         ) andWhen {
             createPage(channelData)
         } thenVerify {
             viewModel.channelType
-                    .isEqualTo(expectedModel)
+                    .isEqualTo(channelType)
         }
     }
 

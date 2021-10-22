@@ -67,7 +67,6 @@ import javax.inject.Inject
 class PlayFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
         private val pageMonitoring: PlayPltPerformanceCallback,
-        private val dispatchers: CoroutineDispatchers,
         private val analytic: PlayAnalytic
 ) :
         TkpdBaseV4Fragment(),
@@ -428,10 +427,10 @@ class PlayFragment @Inject constructor(
     }
 
     private fun observeVideoMeta() {
-        playViewModel.observableVideoMeta.observe(viewLifecycleOwner, Observer { meta ->
+        playViewModel.observableVideoMeta.observe(viewLifecycleOwner) { meta ->
             fragmentVideoViewOnStateChanged(videoPlayer = meta.videoPlayer)
             fragmentYouTubeViewOnStateChanged(videoPlayer = meta.videoPlayer)
-        })
+        }
     }
 
     private fun observeChannelInfo() {

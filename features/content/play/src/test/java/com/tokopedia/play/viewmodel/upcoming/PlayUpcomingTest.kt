@@ -56,7 +56,7 @@ class PlayUpcomingTest {
 
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
     private val mockPlayNewAnalytic: PlayNewAnalytic = mockk(relaxed = true)
-    private val fakePlayChannelSSE = FakePlayChannelSSE(mockUserSession, testDispatcher)
+    private val fakePlayChannelSSE = FakePlayChannelSSE(testDispatcher)
 
     @Before
     fun setUp() {
@@ -127,9 +127,7 @@ class PlayUpcomingTest {
             verify { mockPlayNewAnalytic.clickRemindMe(mockChannelData.id) }
 
             val value = viewModel.observableUpcomingInfo.value
-            value?.let {
-                it.isEqualTo(mockUpcomingInfo.copy(isReminderSet = true))
-            } ?: fail(Exception("No Upcoming Info"))
+            value?.isEqualTo(mockUpcomingInfo.copy(isReminderSet = true)) ?: fail(Exception("No Upcoming Info"))
 
             event.isEqualToIgnoringFields(mockEvent, RemindMeEvent::message)
         }
@@ -168,9 +166,7 @@ class PlayUpcomingTest {
             verify { mockPlayNewAnalytic.clickRemindMe(mockChannelData.id) }
 
             val value = viewModel.observableUpcomingInfo.value
-            value?.let {
-                it.isEqualTo(mockUpcomingInfo)
-            } ?: fail(Exception("No Upcoming Info"))
+            value?.isEqualTo(mockUpcomingInfo) ?: fail(Exception("No Upcoming Info"))
 
             event.isEqualToIgnoringFields(mockEvent, RemindMeEvent::message)
         }

@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.*
  * Created By : Jonathan Darwin on September 14, 2021
  */
 class FakePlayChannelSSE(
-    private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
 ): PlayChannelSSE {
 

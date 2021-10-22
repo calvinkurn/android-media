@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.play.R
 import com.tokopedia.play.view.uimodel.PlayLikeBubbleUiModel
