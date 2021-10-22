@@ -10,7 +10,7 @@ import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.unifyprinciples.Typography
 
 const val TOPADS_HEADLINE_VALUE_SRC = "pdp"
 const val PRODUCT_ID = "product_id"
@@ -34,6 +34,8 @@ class TopAdsHeadlineViewHolder(view: View, val userId: String) :
             this::onSuccessResponse,
             this::hideHeadlineView
         )
+
+
     }
 
     private fun getHeadlineAdsParam(topadsHeadLinePage: Int): String {
@@ -57,6 +59,10 @@ class TopAdsHeadlineViewHolder(view: View, val userId: String) :
         topadsHeadlineUiModel?.run {
             this.cpmModel = cpmModel
             showHeadlineView(cpmModel)
+
+            cpmModel?.run {
+                topadsHeadlineView.findViewById<Typography>(R.id.title_headline).visibility = View.VISIBLE
+            }
         }
     }
 
