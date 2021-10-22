@@ -8,27 +8,27 @@ import kotlinx.android.synthetic.main.fragment_hotel_detail.*
 import org.junit.*
 
 /**
- * @author by jessica on 16/09/20
+ * @author: astidhiyaa on 16/09/21.
  */
-class HotelDetailActivityTest: BaseHotelPDPTest() {
+class HotelDetailNonNearbyActivityTest: BaseHotelPDPTest() {
 
     @get:Rule
     var activityRule: IntentsTestRule<HotelDetailActivity> = object : IntentsTestRule<HotelDetailActivity>(HotelDetailActivity::class.java) {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            HotelDetailMockResponseConfig.isPDPNearby = true
+            HotelDetailMockResponseConfig.isPDPNearby = false
             setupGraphqlMockResponse(HotelDetailMockResponseConfig())
         }
 
         override fun getActivityIntent(): Intent {
             return HotelDetailActivity.getCallingIntent(context, "2023-10-10",
-                    "2023-10-11", 11, 1, 1, "region",
-                    "Jakarta", true, "HOMEPAGE")
+                "2023-10-11", 11, 1, 1, "region",
+                "Malang", true, "HOMEPAGE")
         }
     }
 
-    override fun getTrackerFile(): String = "tracker/travel/hotel/hotel_pdp.json"
+    override fun getTrackerFile(): String = "tracker/travel/hotel/hotel_pdp_non_nearby.json"
 
     override fun scrollView() {
         activityRule.activity.hotelDetailNestedScrollView.scrollTo(0,100)

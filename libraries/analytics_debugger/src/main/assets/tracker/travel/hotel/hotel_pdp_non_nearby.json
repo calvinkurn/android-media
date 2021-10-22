@@ -1,5 +1,5 @@
 {
-  "readme": "Hotel PDP Tracking with Priority P0 & P1",
+  "readme": "Hotel PDP Tracking with Priority P0 & P1 [Non-Nearby]",
   "mode": "exact",
   "query": [
     {
@@ -42,19 +42,6 @@
           "item_category": "Hotel"
         }
       ]
-    },
-    {
-      "event": "promoView",
-      "eventCategory": "digital - native",
-      "eventAction": "view nearby landmark",
-      "eventLabel": "hotel - .+ - .+",
-      "screenName": "/hotel/pdp",
-      "currentSite": "tokopediadigitalhotel",
-      "clientId": ".+",
-      "sessionIris": ".+",
-      "userId": ".*",
-      "businessUnit": "travel & entertainment",
-      "category": "hotel"
     },
     {
       "event": "clickHotel",

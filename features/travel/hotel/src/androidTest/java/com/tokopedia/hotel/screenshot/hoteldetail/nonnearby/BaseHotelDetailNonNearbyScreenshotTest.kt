@@ -1,4 +1,4 @@
-package com.tokopedia.hotel.screenshot.hoteldetail
+package com.tokopedia.hotel.screenshot.hoteldetail.nonnearby
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -24,32 +24,36 @@ import org.junit.Rule
 import org.junit.Test
 
 /**
- * @author by astidhiyaa on 28/04/21
+ * @author: astidhiyaa on 16/09/21.
  */
-abstract class BaseHotelDetailActivityScreenshotTesting {
+abstract class BaseHotelDetailNonNearbyScreenshotTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     lateinit var appBar: AppBarLayout
     lateinit var hotelDetail: NestedScrollView
 
     @get:Rule
-    var activityRule: IntentsTestRule<HotelDetailActivity> = object : IntentsTestRule<HotelDetailActivity>(HotelDetailActivity::class.java) {
+    var activityRule: IntentsTestRule<HotelDetailActivity> = object : IntentsTestRule<HotelDetailActivity>(
+        HotelDetailActivity::class.java) {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupDarkModeTest(forceDarkMode())
+            HotelDetailMockResponseConfig.isPDPNearby = false
             setupGraphqlMockResponse(HotelDetailMockResponseConfig())
         }
 
         override fun getActivityIntent(): Intent {
             return HotelDetailActivity.getCallingIntent(context, "2023-10-10",
-                    "2023-10-11", 11, 1, 1, "region",
-                    "Jakarta", true, "HOMEPAGE")
+                "2023-10-11", 11, 1, 1, "region",
+                "Jakarta", true, "HOMEPAGE")
         }
     }
 
     @Before
     fun setUp() {
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(
+            Instrumentation.ActivityResult(
+                Activity.RESULT_OK, null))
         appBar = activityRule.activity.findViewById(R.id.app_bar_layout)
         hotelDetail = activityRule.activity.findViewById(R.id.hotelDetailNestedScrollView)
     }
@@ -94,7 +98,8 @@ abstract class BaseHotelDetailActivityScreenshotTesting {
         CommonActions.findViewAndScreenShot(R.id.container_facilities, filePrefix(), "facilities")
 
         //SS testing for facilities page
-        Espresso.onView(ViewMatchers.withId(R.id.tv_hotel_detail_all_facilities)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.tv_hotel_detail_all_facilities)).perform(
+            ViewActions.click())
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             CommonActions.takeScreenShotVisibleViewInScreen(activity.window.decorView, filePrefix(), "facilities-page")
         }
@@ -112,8 +117,13 @@ abstract class BaseHotelDetailActivityScreenshotTesting {
         activityRule.activity.finishAndRemoveTask()
     }
 
-    abstract fun filePrefix(): String
-
+    fun filePrefix(): String{
+        return if (forceDarkMode()){
+            "hotel-pdp-non-nearby-dark"
+        }else{
+            "hotel-pdp-non-nearby-light"
+        }
+    }
     abstract fun forceDarkMode(): Boolean
 
     private fun scrollToMiddle(){
