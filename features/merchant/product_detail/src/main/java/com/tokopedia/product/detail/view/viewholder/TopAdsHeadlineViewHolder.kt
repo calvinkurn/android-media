@@ -12,7 +12,7 @@ import com.tokopedia.topads.sdk.utils.*
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
 
-const val TOPADS_HEADLINE_VALUE_SRC = "inbox"
+const val TOPADS_HEADLINE_VALUE_SRC = "pdp"
 const val PRODUCT_ID = "product_id"
 
 
