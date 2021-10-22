@@ -719,8 +719,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             LinearLayoutManager.VERTICAL,
             false
         )
-        recyclerView.setItemViewCacheSize(20)
-        recyclerView.setHasFixedSize(true)
+
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
         swipeToRefresh.setOnRefreshListener(this)
