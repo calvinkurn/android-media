@@ -78,6 +78,7 @@
       "eventCategory": "top nav - initial state - /",
       "eventAction": "click - curated campaign - .*",
       "eventLabel": ".* - .*",
+      "campaignCode": ".*",
       "businessUnit": "search",
       "currentSite": "tokopediamarketplace",
       "userId": ".+",
