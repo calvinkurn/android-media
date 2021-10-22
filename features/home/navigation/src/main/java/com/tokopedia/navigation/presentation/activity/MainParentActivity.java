@@ -769,13 +769,11 @@ public class MainParentActivity extends BaseActivity implements
             }
             cartBundle.putString("CartFragment", MainParentActivity.class.getSimpleName());
 
-            // need to check
-            fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.CART_FRAGMENT, cartBundle));
             boolean isBundleToggleOn = Switch.INSTANCE.isBundleToggleOn(this);
             if (isBundleToggleOn) {
-                fragmentList.add(CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
+                fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.CART_FRAGMENT, cartBundle));
             } else {
-                fragmentList.add(com.tokopedia.cart.old.view.CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
+                fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.OLD_CART_FRAGMENT, cartBundle));
             }
             fragmentList.add(AccountHomeFragment.newInstance(getIntent().getExtras()));
         } else {

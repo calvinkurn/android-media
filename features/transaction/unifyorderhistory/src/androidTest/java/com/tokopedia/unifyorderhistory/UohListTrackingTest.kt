@@ -13,6 +13,9 @@ import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.unifyorderhistory.util.UohIdlingResource
 import com.tokopedia.unifyorderhistory.view.activity.UohListActivity
 import com.tokopedia.unifyorderhistory.test.R
+import com.tokopedia.trackingoptimizer.repository.TrackRepository
+import com.tokopedia.trackingoptimizer.sendTrack
+import kotlinx.coroutines.GlobalScope
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
