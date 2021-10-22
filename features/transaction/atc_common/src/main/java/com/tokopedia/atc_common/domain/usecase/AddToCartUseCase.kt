@@ -20,6 +20,7 @@ import javax.inject.Inject
  * Created by Irfan Khoirul on 2019-07-10.
  */
 
+@Deprecated("Use coroutine version", replaceWith = ReplaceWith("AddToCartUseCase", imports = ["com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase"]))
 class AddToCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
                                            private val addToCartDataMapper: AddToCartDataMapper,
                                            private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper) : UseCase<AddToCartDataModel>() {

@@ -140,7 +140,6 @@ object LastApplyMapper {
                     }
                 }
             }
-            lastApplyUiModel.listRedPromos = listRedStates
         }
         return lastApplyUiModel
     }

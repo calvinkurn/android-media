@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2
 import com.tokopedia.applink.RouteManager
@@ -75,7 +76,7 @@ import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RECENT_PURCHASE
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE
@@ -148,11 +149,11 @@ class TokoNowHomeFragment: Fragment(),
         const val SOURCE = "tokonow"
         const val SOURCE_TRACKING = "tokonow page"
         const val DEFAULT_QUANTITY = 0
-        const val SHARE_URL = "https://www.tokopedia.com/tokomart"
-        const val THUMBNAIL_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/tokomart/thumbnail_image_bottomsheet.png"
-        const val OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/tokomart/TokoMart_share.png"
+        const val SHARE_URL = "https://www.tokopedia.com/now"
+        const val THUMBNAIL_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/thumbnail_now_home.png"
+        const val OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/og_now_home.jpg"
+        const val PAGE_SHARE_NAME = "TokoNow"
         const val SHARE = "Share"
-        const val PAGE_SHARE_NAME = "TokoMart"
 
         fun newInstance() = TokoNowHomeFragment()
     }
@@ -447,13 +448,13 @@ class TokoNowHomeFragment: Fragment(),
 
     override fun onProductCardImpressed(position: Int, data: TokoNowProductCardUiModel) {
         when(data.type) {
-            RECENT_PURCHASE -> trackRecentPurchaseImpression(data)
+            REPURCHASE_PRODUCT -> trackRepurchaseImpression(data)
         }
     }
 
     override fun onProductCardClicked(position: Int, data: TokoNowProductCardUiModel) {
         when(data.type) {
-            RECENT_PURCHASE -> trackRecentPurchaseClick(position, data)
+            REPURCHASE_PRODUCT -> trackRepurchaseClick(position, data)
         }
     }
 
@@ -887,7 +888,7 @@ class TokoNowHomeFragment: Fragment(),
 
         observe(viewModelTokoNow.homeAddToCartTracker) {
             when(it.data) {
-                is TokoNowProductCardUiModel -> trackRecentPurchaseAddToCart(
+                is TokoNowProductCardUiModel -> trackRepurchaseAddToCart(
                     it.position,
                     it.quantity,
                     it.data
@@ -939,17 +940,17 @@ class TokoNowHomeFragment: Fragment(),
         )
     }
 
-    private fun trackRecentPurchaseImpression(data: TokoNowProductCardUiModel) {
-        val productList = viewModelTokoNow.getRecentPurchaseProducts()
-        analytics.onImpressRecentPurchase(userSession.userId, data, productList)
+    private fun trackRepurchaseImpression(data: TokoNowProductCardUiModel) {
+        val productList = viewModelTokoNow.getRepurchaseProducts()
+        analytics.onImpressRepurchase(userSession.userId, data, productList)
     }
 
-    private fun trackRecentPurchaseClick(position: Int, data: TokoNowProductCardUiModel) {
-        analytics.onClickRecentPurchase(position, userSession.userId, data)
+    private fun trackRepurchaseClick(position: Int, data: TokoNowProductCardUiModel) {
+        analytics.onClickRepurchase(position, userSession.userId, data)
     }
 
-    private fun trackRecentPurchaseAddToCart(position: Int, quantity: Int, data: TokoNowProductCardUiModel) {
-        analytics.onRecentPurchaseAddToCart(position, quantity, userSession.userId, data)
+    private fun trackRepurchaseAddToCart(position: Int, quantity: Int, data: TokoNowProductCardUiModel) {
+        analytics.onRepurchaseAddToCart(position, quantity, userSession.userId, data)
     }
 
     private fun showToaster(message: String, duration: Int = LENGTH_SHORT, type: Int) {
@@ -1039,8 +1040,20 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun showHomeLayout(data: HomeLayoutListUiModel) {
-        val items = data.items.toMutableList().map { it.layout }
-        adapter.submitList(items)
+        try {
+            val items = mutableListOf<Visitable<*>>()
+            val iterator = data.items.iterator()
+
+            while(iterator.hasNext()) {
+                iterator.next()?.let {
+                    items.add(it.layout)
+                }
+            }
+
+            adapter.submitList(items)
+        } catch (e: Exception) {
+
+        }
     }
 
     private fun addLoadMoreListener() {

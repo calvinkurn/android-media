@@ -9,7 +9,6 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.util.util.*
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
@@ -106,13 +105,13 @@ class PostTagView @JvmOverloads constructor(
             position = POSITION_BOTTOM
         }
         productTagDot.setMargin(
-            dotMarginStart,
-            dotMarginTop,
-            0,
-            0
+                dotMarginStart - DOT_HALF_DIMEN.toPx(),
+                dotMarginTop - DOT_HALF_DIMEN.toPx(),
+                0,
+                0
         )
         productTagExpandedView.setOnClickListener {
-            listener?.onPostTagBubbleClick(positionInFeed, product.appLink, product)
+            listener?.onPostTagBubbleClick(positionInFeed, product.appLink, product , product.adClickUrl)
         }
 
         productTagExpandedView.doOnLayout {
@@ -209,10 +208,10 @@ class PostTagView @JvmOverloads constructor(
         }
         if(!initialBubbleVisible){
             productTagDot.setMargin(
-                dotMarginStart,
-                dotMarginTop,
-                0,
-                0
+                    dotMarginStart - DOT_HALF_DIMEN.toPx(),
+                    dotMarginTop - DOT_HALF_DIMEN.toPx(),
+                    0,
+                    0
             )
         }
 
