@@ -9,7 +9,7 @@
         android:id="@+id/recom_divider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
         />
     <com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
         android:id="@+id/tab_layout_home_feeds"
@@ -19,7 +19,6 @@
         app:tabPaddingStart="0dp"
         app:tabPaddingEnd="0dp"
         app:tabMode="scrollable"
-        android:layout_marginBottom="@dimen/dp_8"
         android:visibility="gone"
         app:tabIndicatorHeight="0dp"
         />
