@@ -54,7 +54,10 @@ import com.tokopedia.developer_options.utils.SellerInAppReview;
 import com.tokopedia.devicefingerprint.appauth.AppAuthKt;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.RollenceKey;
 import com.tokopedia.unifycomponents.TextFieldUnify;
 import com.tokopedia.unifycomponents.UnifyButton;
@@ -340,7 +343,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         TextFieldUnify inputRollenceVariant = findViewById(R.id.input_rollence_variant);
         UnifyButton btnApplyRollence = findViewById(R.id.btn_apply_rollence);
 
-        findViewById(R.id.pdp_dev_btn).setOnClickListener(v->{
+        findViewById(R.id.pdp_dev_btn).setOnClickListener(v -> {
             Intent intent = new Intent(this, ProductDetailDevActivity.class);
             startActivity(intent);
         });
@@ -407,7 +410,7 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
-        btnApplyRollence.setOnClickListener(new View.OnClickListener(){
+        btnApplyRollence.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (inputRollenceKey.getTextFieldInput().getText().length() < 1) {
@@ -419,6 +422,18 @@ public class DeveloperOptionActivity extends BaseActivity {
                     Toast.makeText(DeveloperOptionActivity.this, "Rollence Key Applied", Toast.LENGTH_SHORT).show();
                 }
             }
+        });
+
+        findViewById(R.id.btn_always_old_cart_checkout).setOnClickListener(v -> {
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+            remoteConfig.setString(RemoteConfigKey.ENABLE_CART_CHECKOUT_BUNDLING, "false");
+            Toast.makeText(DeveloperOptionActivity.this, "Applied", Toast.LENGTH_SHORT).show();
+        });
+
+        findViewById(R.id.btn_always_new_cart_checkout).setOnClickListener(v -> {
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+            remoteConfig.setString(RemoteConfigKey.ENABLE_CART_CHECKOUT_BUNDLING, "true");
+            Toast.makeText(DeveloperOptionActivity.this, "Applied", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -720,7 +735,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     }
 
     public Object getOrNull(String[] list, int index) {
-        if (index >= 0 && index <= list.length - 1)  {
+        if (index >= 0 && index <= list.length - 1) {
             return list[index];
         } else {
             return null;

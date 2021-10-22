@@ -1228,6 +1228,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_RESUME_HOME)
             getHomeViewModel().isFirstLoad = false
         }
+        manageCoachmarkOnFragmentVisible(isVisibleToUser = false)
     }
 
     private fun startTokopointRotation(rotateNow: Boolean = false) {
@@ -2833,7 +2834,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         )
         if (feedViewHolder is HomeRecommendationFeedViewHolder) {
             feedViewHolder.showFeedTabShadow(show)
-            feedViewHolder.hidePmProCoachmark()
         }
     }
 

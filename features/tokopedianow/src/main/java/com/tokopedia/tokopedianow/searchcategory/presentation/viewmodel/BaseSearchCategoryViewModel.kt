@@ -51,9 +51,9 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowRecentPurchaseUiModel
-import com.tokopedia.tokopedianow.home.domain.mapper.RecentPurchaseMapper
-import com.tokopedia.tokopedianow.home.domain.model.GetRecentPurchaseResponse.RecentPurchaseData
+import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper
+import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOP_NAV
@@ -101,7 +101,6 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 abstract class BaseSearchCategoryViewModel(
@@ -572,7 +571,7 @@ abstract class BaseSearchCategoryViewModel(
 
         addProductList(contentVisitableList, productList)
 
-        val repurchaseWidget = contentDataView.recentPurchaseWidget
+        val repurchaseWidget = contentDataView.repurchaseWidget
         addRepurchaseWidget(contentVisitableList, repurchaseWidget, productList)
 
         return contentVisitableList
@@ -645,7 +644,7 @@ abstract class BaseSearchCategoryViewModel(
 
     protected open fun addRepurchaseWidget(
         contentVisitableList: MutableList<Visitable<*>>,
-        repurchaseWidget: RecentPurchaseData,
+        repurchaseWidget: RepurchaseData,
         productList: List<Product>,
     ) {
         val canShowRepurchaseWidget =
@@ -659,9 +658,9 @@ abstract class BaseSearchCategoryViewModel(
             )
     }
 
-    private fun createRepurchaseWidgetUIModel(repurchaseWidget: RecentPurchaseData) =
-        RecentPurchaseMapper.mapToRecentPurchaseUiModel(
-            TokoNowRecentPurchaseUiModel(
+    private fun createRepurchaseWidgetUIModel(repurchaseWidget: RepurchaseData) =
+        HomeRepurchaseMapper.mapToRepurchaseUiModel(
+            TokoNowRepurchaseUiModel(
                 id = "",
                 title = "",
                 productList = listOf(),
@@ -673,11 +672,11 @@ abstract class BaseSearchCategoryViewModel(
         }
 
     private fun updateRepurchaseWidgetQuantity(
-        recentPurchaseUiModel: TokoNowRecentPurchaseUiModel,
+        repurchaseUiModel: TokoNowRepurchaseUiModel,
         index: Int = -1,
         updatedProductIndices: MutableList<Int>? = null,
     ) {
-        recentPurchaseUiModel.productList.forEach { productUiModel ->
+        repurchaseUiModel.productList.forEach { productUiModel ->
             productUiModel.product = createUpdatedRepurchaseWidgetQuantity(productUiModel)
         }
 
@@ -998,7 +997,7 @@ abstract class BaseSearchCategoryViewModel(
         when (visitable) {
             is ProductItemDataView ->
                 updateProductItemQuantity(index, visitable, updatedProductIndices)
-            is TokoNowRecentPurchaseUiModel ->
+            is TokoNowRepurchaseUiModel ->
                 updateRepurchaseWidgetQuantity(visitable, index, updatedProductIndices)
         }
     }
@@ -1318,7 +1317,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun getRepurchaseWidgetIndex() =
-        visitableList.indexOfFirst { it is TokoNowRecentPurchaseUiModel }
+        visitableList.indexOfFirst { it is TokoNowRepurchaseUiModel }
 
     private fun getUniqueId() =
         if (userSession.isLoggedIn) AuthHelper.getMD5Hash(userSession.userId)
@@ -1367,6 +1366,6 @@ abstract class BaseSearchCategoryViewModel(
 
     protected data class ContentDataView(
             val aceSearchProductData: SearchProductData = SearchProductData(),
-            val recentPurchaseWidget: RecentPurchaseData = RecentPurchaseData()
+            val repurchaseWidget: RepurchaseData = RepurchaseData()
     )
 }

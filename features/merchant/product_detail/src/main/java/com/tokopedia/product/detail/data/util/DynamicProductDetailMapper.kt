@@ -124,6 +124,9 @@ object DynamicProductDetailMapper {
                                         categoryList = carouselData.categoryCarouselList))
                     }
                 }
+                ProductDetailConstant.PRODUCT_BUNDLING -> {
+                    listOfComponent.add(ProductBundlingDataModel(type = component.type, name = component.componentName))
+                }
             }
         }
         return listOfComponent

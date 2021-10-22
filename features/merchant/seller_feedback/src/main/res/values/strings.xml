@@ -13,8 +13,8 @@
     <string name="feedback_form_question_4">Ceritakan detailnya di sini, ya</string>
     <string name="feedback_form_question_5">Ada lampirannya, nggak?</string>
     <string name="feedback_form_page_hint">Pilih Halaman</string>
-    <string name="feedback_form_detail_hint">Ketik saran atau laporan error</string>
-    <string name="feedback_form_attachment_hint">Lampirkan bukti pendukung di sini supaya kami bisa paham masalahmu, ya.</string>
+    <string name="feedback_form_detail_hint">Ceritakan detailnya disini ya</string>
+    <string name="feedback_form_attachment_hint">Ada lampirannya, ngga?</string>
     <string name="feedback_form_button_send">Kirim</string>
     <string name="feedback_form_gallery_picker_title">Foto</string>
     <string name="feedback_form_page_not_found_title">Oops, halaman tidak ditemukan</string>
@@ -22,7 +22,6 @@
 
     <string name="feedback_form_detail_error_empty">Wajib diisi</string>
 
-    <string name="feedback_form_toast_success_submit">Feedback-mu berhasil dikirim. Terima kasih, ya!</string>
     <string name="feedback_form_toaster_fail_upload">Oops, gambar gagal di upload</string>
     <string name="feedback_form_toaster_fail_submit">Oops, feedback gagal di kirim</string>
     <string name="feedback_form_toaster_fail_network">Cek dan pastikan internetmu lancar, mohon cek berkala</string>
@@ -30,23 +29,26 @@
     <string name="feedback_form_ticker_description">Form ini hanya untuk memberi masukan. Jika butuh bantuan langsung, hubungi  &lt;a href="#"&gt;Tokopedia Care&lt;/a&gt;</string>
     <string name="screenshot_seller_feedback_toaster_text">Screenshot terambil. Sekarang kamu bisa beri feedback tentang halaman ini.</string>
     <string name="screenshot_seller_feedback_toaster_cta_text">Beri</string>
-
-    <string-array name="feedback_pages">
-        <item>Home</item>
-        <item>Chat</item>
-        <item>Diskusi</item>
-        <item>Tambah Produk</item>
-        <item>Ubah Produk</item>
-        <item>Produk Toko</item>
-        <item>Penjualan</item>
-        <item>Statistik</item>
-        <item>Iklan dan Promosi</item>
-        <item>Dekorasi Toko</item>
-        <item>Ulasan</item>
-        <item>Pesanan Dikomplain</item>
-        <item>Pengaturan Toko</item>
-        <item>Pengaturan Admin</item>
-        <item>Lainnya</item>
-    </string-array>
+    <string name="feedback_form_settings">Pengaturan</string>
+    <string name="feedback_form_settings_title">Pengaturan Feedback</string>
+    <string name="feedback_from_feedback_trigger">Feedback Trigger</string>
+    <string name="feedback_form_feedback_trigger_desc">Form feedback bisa muncul setelah screenshot</string>
+    <string name="feedback_form_screenshoot_tigger_enabled_success_message">Feedback-mu terkirim. Ambil screenshot untuk memunculkan form feedback lagi.</string>
+    <string name="feedback_form_screenshoot_tigger_disabled_success_message">Feedback-mu terkirim. Agar lebih mudah, aktifkan Feedback Trigger.</string>
+    <string name="feedback_from_home">Home</string>
+    <string name="feedback_from_chat">Chat</string>
+    <string name="feedback_from_discuss">Diskusi</string>
+    <string name="feedback_from_add_product">Tambah Produk</string>
+    <string name="feedback_from_edit_product">Ubah Produk</string>
+    <string name="feedback_from_product_manage">Produk Toko</string>
+    <string name="feedback_from_som">Penjualan</string>
+    <string name="feedback_from_statistic">Statistik</string>
+    <string name="feedback_from_centralized_promo">Iklan dan Promosi</string>
+    <string name="feedback_from_shop_page">Toko</string>
+    <string name="feedback_from_review">Ulasan</string>
+    <string name="feedback_from_order_complaint">Pesanan Dikomplain</string>
+    <string name="feedback_from_shop_setting">Pengaturan Toko</string>
+    <string name="feedback_from_others">Lainnya</string>
+    <string name="feedback_form_feature_reqeust">Request Fitur</string>
 
 </resources>

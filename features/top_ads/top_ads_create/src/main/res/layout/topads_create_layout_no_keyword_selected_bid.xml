@@ -15,7 +15,7 @@
         android:layout_marginRight="@dimen/dp_18"
         android:gravity="center_horizontal"
         android:text="@string/no_keyword_selected_for_bid"
-        android:textSize="@dimen/dp_14"
+        android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

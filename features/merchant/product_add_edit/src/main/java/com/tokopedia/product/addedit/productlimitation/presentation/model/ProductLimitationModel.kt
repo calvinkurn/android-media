@@ -17,6 +17,7 @@ data class ProductLimitationActionItemModel (
         var title: String = "",
         var description: String = "",
         var actionText: String = "",
-        var actionUrl: String = ""
+        var actionUrl: String = "",
+        var articleCategory: String = ""
 ) : Parcelable
 

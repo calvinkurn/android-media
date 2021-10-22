@@ -110,6 +110,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.USER_NOTIF
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.BRANDLIST_SEARCH
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_PRODUCT_DRAFT
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_SHOP_SCORE
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST
@@ -311,6 +312,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Merchant
             add(DFP({ it.startsWith(OPEN_SHOP) }, DF_BASE, R.string.title_open_shop))
+            add(DFP({ it.startsWith(MERCHANT_PRODUCT_BUNDLE) }, DF_BASE, R.string.title_bundling_selection_page ))
 
             add(DFP({ it.startsWith(FAVORITE) }, DF_MERCHANT_LOGIN, R.string.favorite_shop, { DFWebviewFallbackUrl.FAVORITE_SHOP }))
             add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DF_MERCHANT_LOGIN, R.string.applink_report_title, ::getDefaultFallbackUrl))
@@ -570,14 +572,6 @@ object DeeplinkDFMapper : CoroutineScope {
                     it.startsWith(ApplinkConstInternalTokopediaNow.CATEGORY) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.SEARCH) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.REPURCHASE)
-            }, DF_TOKOPEDIA_NOW, R.string.title_tokopedia_now))
-
-            // TokoMart
-            add(DFP({
-                it.startsWith(TokoMart.HOME) ||
-                    it.startsWith(TokoMart.CATEGORY) ||
-                    it.startsWith(TokoMart.SEARCH) ||
-                    it.startsWith(TokoMart.REPURCHASE)
             }, DF_TOKOPEDIA_NOW, R.string.title_tokopedia_now))
 
             // Review Reminder

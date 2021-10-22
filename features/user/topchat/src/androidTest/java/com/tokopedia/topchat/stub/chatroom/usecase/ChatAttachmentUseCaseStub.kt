@@ -2,7 +2,7 @@ package com.tokopedia.topchat.stub.chatroom.usecase
 
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.chat_common.data.ImageAnnouncementViewModel.CampaignStatus
+import com.tokopedia.chat_common.data.ImageAnnouncementUiModel.CampaignStatus
 import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper

@@ -40,9 +40,9 @@
         app:layout_constraintTop_toBottomOf="@id/uoh_navtoolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginStart="@dimen/dp_12"
-        android:paddingBottom="@dimen/dp_12"/>
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="12dp"
+        android:paddingBottom="12dp"/>
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
@@ -52,10 +52,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_12"
-        android:layout_marginRight="@dimen/dp_12">
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_order_list"

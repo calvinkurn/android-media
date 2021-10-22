@@ -8,14 +8,17 @@ import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
+import com.tokopedia.review.inbox.databinding.ItemIncentiveOvoBinding
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import kotlinx.android.synthetic.main.item_incentive_ovo.view.*
 
 class IncentiveOvoViewHolder(view: View, private val incentiveOvoListener: IncentiveOvoListener) : RecyclerView.ViewHolder(view) {
+
+    private val binding = ItemIncentiveOvoBinding.bind(view)
+
     fun bindHero(explanation: String) {
         itemView.apply {
-            tgIncentiveOvoNumber.text = "${adapterPosition+1}."
-            tgIncentiveOvoExplanation.apply {
+            binding.tgIncentiveOvoNumber.text = "${adapterPosition+1}."
+            binding.tgIncentiveOvoExplanation.apply {
                 text = HtmlLinkHelper(context, explanation).spannedString
                 movementMethod = object : LinkMovementMethod() {
                     override fun onTouchEvent(widget: TextView, buffer: Spannable, event: MotionEvent): Boolean {
@@ -40,7 +43,7 @@ class IncentiveOvoViewHolder(view: View, private val incentiveOvoListener: Incen
                                 return incentiveOvoListener.onUrlClicked(link.first().url.toString())
                             }
                         }
-                        return super.onTouchEvent(widget, buffer, event);
+                        return super.onTouchEvent(widget, buffer, event)
                     }
                 }
             }

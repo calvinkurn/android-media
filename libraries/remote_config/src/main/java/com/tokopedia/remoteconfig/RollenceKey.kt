@@ -19,8 +19,6 @@ object RollenceKey {
     const val AB_TEST_SHOP_NEW_HOME_TAB = "shop_layout_engine"
 
     //    Add Edit Product
-    const val HAMPERS_AB_TEST_KEY = "hampers_android"
-    const val PRODUCT_LIMITATION_AB_TEST_KEY = "product_limit"
     const val PRODUCT_TITLE_AB_TEST_KEY = "product_title"
 
     const val KEY_AB_INBOX_REVAMP = "ReviewTab_NewInbox"
@@ -48,8 +46,6 @@ object RollenceKey {
     const val HOME_COMPONENT_LEGO2BANNER_VARIANT = "lego2_bleeding"
     // end of home component rollence section
 
-    const val POWER_MERCHANT_PRO_POP_UP = "pm_pro"
-    const val NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT = "Exp_OSbotnav_Android"
 //    const val NAVIGATION_VARIANT_REVAMP = "new_glmenu"
 //    const val NAVIGATION_VARIANT_REVAMP2 = "new_glmenu2"
 

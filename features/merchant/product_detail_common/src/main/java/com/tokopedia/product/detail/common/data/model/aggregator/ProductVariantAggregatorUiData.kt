@@ -35,7 +35,9 @@ data class ProductVariantAggregatorUiData(
 
         var shopType: String = "",
 
-        var boData: BebasOngkir = BebasOngkir()
+        var boData: BebasOngkir = BebasOngkir(),
+
+        var isCod: Boolean = false
         //endregion
 ) {
     fun getP2RatesEstimateByProductId(productId: String): P2RatesEstimate? {

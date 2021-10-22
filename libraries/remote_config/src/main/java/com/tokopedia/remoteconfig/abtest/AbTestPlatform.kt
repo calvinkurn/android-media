@@ -110,7 +110,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         return mutableSetOf<String>().apply {
             for ((key, value) in sharedPreferences.all){
                 val valueClassType = value?.let { it::class.java }
-                if ((key.equals(keyName, true) || keyName.isEmpty()) && valueClassType == String::class.java)
+                if ((key.contains(keyName, true) || keyName.isEmpty()) && valueClassType == String::class.java)
                     add(key)
             }
         }
