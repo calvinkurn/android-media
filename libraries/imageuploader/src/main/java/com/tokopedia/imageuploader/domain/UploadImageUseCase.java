@@ -107,7 +107,7 @@ public class UploadImageUseCase<T> extends UseCase<ImageUploadDomainModel<T>> {
     }
 
     private String generateUploadUrl(String pathUpload, String urlUpload) {
-        return "https://chat-staging.tokopedia.com/tc/v1/upload_secure";
+        return HTTPS + urlUpload + pathUpload;
     }
 
     public RequestParams createRequestParam(String pathFile, String pathUpload, String attachmentTypeKeyValue, Map<String, RequestBody> paramsUploadImage) {
