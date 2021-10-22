@@ -10,13 +10,17 @@ import android.widget.LinearLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.onboarding.R
+import com.tokopedia.onboarding.databinding.LayoutDotIndicatorBinding
 
 class DotIndicatorView : LinearLayout {
 
     private var dots: MutableList<ImageView> = mutableListOf()
 
-    private lateinit var viewDot: LinearLayout
+    private var _binding: LayoutDotIndicatorBinding? = null
+
     private lateinit var viewPager: ViewPager2
+
+    private val binding = _binding!!
     private var dotSize: Int = 24
 
     constructor(context: Context) : super(context) {
@@ -35,10 +39,8 @@ class DotIndicatorView : LinearLayout {
     }
 
     private fun inflateLayout() {
-        val layout: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val view = layout.inflate(R.layout.layout_dot_indicator, this, true)
-
-        viewDot = view.findViewById(R.id.layoutDots)
+        val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        _binding = LayoutDotIndicatorBinding.inflate(inflater, this, true)
 
         if (getScreenHeight() <= 700) {
             this.dotSize = 24
@@ -53,7 +55,7 @@ class DotIndicatorView : LinearLayout {
 
     fun addDots(itemsSize: Int) {
         dots.clear()
-        viewDot.removeAllViews()
+        binding.layoutDots.removeAllViews()
         (0 until itemsSize).forEach { index ->
             dots.add(index, ImageView(context).apply {
                 layoutParams = LayoutParams(dotSize, dotSize)
@@ -64,7 +66,7 @@ class DotIndicatorView : LinearLayout {
                 }
             })
 
-            viewDot.addView(dots[index])
+            binding.layoutDots.addView(dots[index])
         }
     }
 
