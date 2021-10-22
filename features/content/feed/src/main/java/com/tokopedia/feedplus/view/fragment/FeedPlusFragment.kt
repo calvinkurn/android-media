@@ -722,7 +722,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         recyclerView.setItemViewCacheSize(20)
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = layoutManager
-        adapter.setHasStableIds(true)
         recyclerView.adapter = adapter
         swipeToRefresh.setOnRefreshListener(this)
         infoBottomSheet = TopAdsInfoBottomSheet.newInstance(activity)
