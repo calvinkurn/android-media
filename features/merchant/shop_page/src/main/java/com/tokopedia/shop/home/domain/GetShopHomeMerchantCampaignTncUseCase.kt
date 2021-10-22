@@ -15,7 +15,7 @@ class GetShopHomeMerchantCampaignTncUseCase @Inject constructor(
 
     companion object {
         private const val KEY_PARAM = "param"
-        private const val BUYER = 0
+        private const val BUYER = "BUYER"
 
         @JvmStatic
         fun createParams(
