@@ -121,6 +121,7 @@ import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
+import com.tokopedia.product.addedit.tracking.ProductLimitationTracking
 import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantActivity
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
@@ -1672,6 +1673,7 @@ class AddEditProductPreviewFragment :
         adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
             override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                 if (linkUrl == KEY_OPEN_BOTTOMSHEET) {
+                    ProductLimitationTracking.clickInfoTicker()
                     showProductLimitationBottomSheet()
                 } else {
                     RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$linkUrl")
