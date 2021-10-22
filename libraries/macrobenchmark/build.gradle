@@ -4,10 +4,10 @@ plugins {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 30
     defaultConfig {
         minSdkVersion 29
-        targetSdkVersion 31
+        targetSdkVersion 30
         multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
         vectorDrawables.useSupportLibrary = true
