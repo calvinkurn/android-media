@@ -76,7 +76,7 @@ import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RECENT_PURCHASE
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE
@@ -448,13 +448,13 @@ class TokoNowHomeFragment: Fragment(),
 
     override fun onProductCardImpressed(position: Int, data: TokoNowProductCardUiModel) {
         when(data.type) {
-            RECENT_PURCHASE -> trackRecentPurchaseImpression(data)
+            REPURCHASE_PRODUCT -> trackRepurchaseImpression(data)
         }
     }
 
     override fun onProductCardClicked(position: Int, data: TokoNowProductCardUiModel) {
         when(data.type) {
-            RECENT_PURCHASE -> trackRecentPurchaseClick(position, data)
+            REPURCHASE_PRODUCT -> trackRepurchaseClick(position, data)
         }
     }
 
@@ -888,7 +888,7 @@ class TokoNowHomeFragment: Fragment(),
 
         observe(viewModelTokoNow.homeAddToCartTracker) {
             when(it.data) {
-                is TokoNowProductCardUiModel -> trackRecentPurchaseAddToCart(
+                is TokoNowProductCardUiModel -> trackRepurchaseAddToCart(
                     it.position,
                     it.quantity,
                     it.data
@@ -940,17 +940,17 @@ class TokoNowHomeFragment: Fragment(),
         )
     }
 
-    private fun trackRecentPurchaseImpression(data: TokoNowProductCardUiModel) {
-        val productList = viewModelTokoNow.getRecentPurchaseProducts()
-        analytics.onImpressRecentPurchase(userSession.userId, data, productList)
+    private fun trackRepurchaseImpression(data: TokoNowProductCardUiModel) {
+        val productList = viewModelTokoNow.getRepurchaseProducts()
+        analytics.onImpressRepurchase(userSession.userId, data, productList)
     }
 
-    private fun trackRecentPurchaseClick(position: Int, data: TokoNowProductCardUiModel) {
-        analytics.onClickRecentPurchase(position, userSession.userId, data)
+    private fun trackRepurchaseClick(position: Int, data: TokoNowProductCardUiModel) {
+        analytics.onClickRepurchase(position, userSession.userId, data)
     }
 
-    private fun trackRecentPurchaseAddToCart(position: Int, quantity: Int, data: TokoNowProductCardUiModel) {
-        analytics.onRecentPurchaseAddToCart(position, quantity, userSession.userId, data)
+    private fun trackRepurchaseAddToCart(position: Int, quantity: Int, data: TokoNowProductCardUiModel) {
+        analytics.onRepurchaseAddToCart(position, quantity, userSession.userId, data)
     }
 
     private fun showToaster(message: String, duration: Int = LENGTH_SHORT, type: Int) {

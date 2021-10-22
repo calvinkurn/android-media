@@ -1,5 +1,6 @@
 package com.tokopedia.logisticCommon.data.response
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class AddressResponse(
@@ -30,8 +31,9 @@ data class Token(
 )
 
 data class DataAddress(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("addr_id")
-        var addrId: Int = 0,
+        var addrId: Long = 0,
         @SerializedName("addr_name")
         var addrName: String = "",
         @SerializedName("address_1")
@@ -60,8 +62,9 @@ data class DataAddress(
         var latitude: String = "",
         @SerializedName("longitude")
         var longitude: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("partner_id")
-        var partnerId: Int = 0,
+        var partnerId: Long = 0,
         @SerializedName("partner_name")
         var partnerName: String = "",
         @SerializedName("phone")
