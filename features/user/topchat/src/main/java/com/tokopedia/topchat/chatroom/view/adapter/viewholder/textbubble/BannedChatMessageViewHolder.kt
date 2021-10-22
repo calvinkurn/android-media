@@ -1,9 +1,9 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble
 
-import android.graphics.drawable.Drawable
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -17,9 +17,8 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterList
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ChatMessageViewHolderBinder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getOppositeMargin
-import com.tokopedia.topchat.common.util.ViewUtil
 
-class BannedRightChatMessageViewHolder(
+class BannedChatMessageViewHolder(
     private val itemView: View?,
     private val listener: ChatLinkHandlerListener,
     private val commonListener: CommonViewHolderListener,
@@ -30,23 +29,12 @@ class BannedRightChatMessageViewHolder(
     private var checkMark: ImageView? = itemView?.findViewById(R.id.ivCheckMark)
     private var hourTime: TextView? = itemView?.findViewById(R.id.tvTime)
     private var info: TextView? = itemView?.findViewById(R.id.txt_info)
-    private val msgContainer: ConstraintLayout? = itemView?.findViewById(
+    private val msgContainer: LinearLayout? = itemView?.findViewById(
         R.id.cl_msg_container
     )
 
-    val bg: Drawable?
-        get() = ViewUtil.generateBackgroundWithShadow(
-            container,
-            com.tokopedia.unifyprinciples.R.color.Unify_G200,
-            R.dimen.dp_topchat_20,
-            R.dimen.dp_topchat_0,
-            R.dimen.dp_topchat_20,
-            R.dimen.dp_topchat_20,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_topchat_2,
-            R.dimen.dp_topchat_1,
-            Gravity.CENTER
-        )
+    private val bgLeft = ChatMessageViewHolderBinder.generateLeftBg(container)
+    private val bgRight = ChatMessageViewHolderBinder.generateRightBg(container)
 
     override fun bind(message: MessageViewModel) {
         verifyReplyTime(message)
@@ -54,7 +42,16 @@ class BannedRightChatMessageViewHolder(
         bindClickInfo()
         bindBackground(message)
         bindCheckMark(message)
+        bindGravity(message)
         ChatMessageViewHolderBinder.bindHourTextView(message, hourTime)
+    }
+
+    private fun bindGravity(message: MessageViewModel) {
+        if (message.isSender) {
+            msgContainer?.gravity = Gravity.END
+        } else {
+            msgContainer?.gravity = Gravity.START
+        }
     }
 
     private fun bindClickInfo() {
@@ -70,7 +67,11 @@ class BannedRightChatMessageViewHolder(
     }
 
     private fun bindBackground(message: MessageViewModel) {
-        container?.background = bg
+        if (message.isSender) {
+            container?.background = bgRight
+        } else {
+            container?.background = bgLeft
+        }
     }
 
     private fun bindMargin(message: MessageViewModel) {
@@ -100,7 +101,7 @@ class BannedRightChatMessageViewHolder(
     }
 
     companion object {
-        val LAYOUT = R.layout.item_topchat_chat_right_banned
+        val LAYOUT = R.layout.item_topchat_chat_banned
         private const val tnc = "https://www.tokopedia.com/terms#konten"
     }
 }

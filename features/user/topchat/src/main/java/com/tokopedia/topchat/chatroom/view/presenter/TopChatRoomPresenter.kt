@@ -20,6 +20,7 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_M
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_API
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_WEBSOCKET
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
@@ -425,7 +426,11 @@ open class TopChatRoomPresenter @Inject constructor(
             startUploadImageWithService(image)
         } else {
             processDummyMessage(image)
-            uploadImageUseCase.upload(image, ::onSuccessUploadImage, ::onErrorUploadImage)
+            uploadImageUseCase.upload(
+                image = image,
+                onSuccess = ::onSuccessUploadImage,
+                onError = ::onErrorUploadImage
+            )
         }
     }
 
@@ -459,8 +464,9 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun sendImageByWebSocket(uploadId: String, image: ImageUploadViewModel) {
-        val requestParams =
-            TopChatWebSocketParam.generateParamSendImage(thisMessageId, uploadId, image.startTime)
+        val requestParams = TopChatWebSocketParam.generateParamSendImage(
+            thisMessageId, uploadId, image
+        )
         sendMessageWebSocket(requestParams)
     }
 
@@ -538,51 +544,44 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun sendAttachmentsAndMessage(
-        messageId: String,
-        sendMessage: String,
-        startTime: String,
-        opponentId: String,
-        onSendingMessage: () -> Unit
+        sendMessage: String, referredMsg: ParentReply?
     ) {
         if (isValidReply(sendMessage)) {
-            sendAttachments(messageId, opponentId, sendMessage)
-            sendMessage(messageId, sendMessage, startTime, opponentId, onSendingMessage)
+            sendAttachments(sendMessage)
+            topchatSendMessageWithWebsocket(
+                sendMessage = sendMessage,
+                referredMsg = referredMsg
+            )
             view?.clearAttachmentPreviews()
+            view?.clearReferredMsg()
         }
     }
 
     override fun sendAttachmentsAndSticker(
-        messageId: String,
-        sticker: Sticker,
-        startTime: String,
-        opponentId: String,
-        onSendingMessage: () -> Unit
+        sticker: Sticker, referredMsg: ParentReply?
     ) {
-        sendAttachments(messageId, opponentId, sticker.intention)
-        sendSticker(messageId, sticker, startTime, opponentId, onSendingMessage)
+        sendAttachments(sticker.intention)
+        sendSticker(sticker, referredMsg)
         view?.clearAttachmentPreviews()
+        view?.clearReferredMsg()
     }
 
     override fun sendAttachmentsAndSrw(
-        messageId: String,
-        question: QuestionUiModel,
-        startTime: String,
-        opponentId: String,
-        onSendingMessage: () -> Unit
+        question: QuestionUiModel, referredMsg: ParentReply?
     ) {
-        onSendingMessage.invoke()
-        sendAttachments(messageId, opponentId, question.content)
+        sendAttachments(question.content)
         topchatSendMessageWithWebsocket(
-            messageId, question.content, startTime, opponentId, question.intent, null
+            sendMessage = question.content,
+            intention = question.intent,
+            referredMsg = referredMsg
         )
         view?.clearAttachmentPreviews()
+        view?.clearReferredMsg()
     }
 
     override fun sendSrwFrom(
-        attachment: HeaderCtaButtonAttachment,
-        opponentId: String
+        attachment: HeaderCtaButtonAttachment
     ) {
-        val startTime = SendableViewModel.generateStartTime()
         val addressMasking = AddressUtil.getAddressMasking(userLocationInfo.label)
         val ctaButton = attachment.ctaButton
         val productName = ctaButton.productName
@@ -590,31 +589,19 @@ open class TopChatRoomPresenter @Inject constructor(
         val question = QuestionUiModel(srwMessage, ctaButton.extras.intent)
         val products = ctaButton.generateSendableProductPreview()
         topchatSendMessageWithWebsocket(
-            thisMessageId, question.content, startTime,
-            opponentId, question.intent, products
+            sendMessage = question.content,
+            intention = question.intent,
+            products = products
         )
     }
 
     override fun sendSrwBubble(
-        messageId: String, question: QuestionUiModel,
-        products: List<SendablePreview>, opponentId: String,
-        onSendingMessage: () -> Unit
-    ) {
-        if (networkMode == MODE_WEBSOCKET) {
-            val startTime = SendableViewModel.generateStartTime()
-            topchatSendMessageWithWebsocket(
-                messageId, question.content, startTime,
-                opponentId, question.intent, products
-            )
-        }
-    }
-
-    override fun sendMessageWithWebsocket(
-        messageId: String, sendMessage: String,
-        startTime: String, opponentId: String
+        question: QuestionUiModel, products: List<SendablePreview>,
     ) {
         topchatSendMessageWithWebsocket(
-            messageId, sendMessage, startTime, opponentId, null, null
+            sendMessage = question.content,
+            intention = question.intent,
+            products = products
         )
     }
 
@@ -622,19 +609,26 @@ open class TopChatRoomPresenter @Inject constructor(
      * send with websocket but with param [intention]
      */
     private fun topchatSendMessageWithWebsocket(
-        messageId: String, sendMessage: String,
-        startTime: String, opponentId: String,
-        intention: String?, products: List<SendablePreview>?
+        sendMessage: String,
+        intention: String? = null,
+        products: List<SendablePreview>? = null,
+        referredMsg: ParentReply? = null
     ) {
-        val previewMsg = generatePreviewMessage(thisMessageId, sendMessage, startTime)
+        val startTime = SendableViewModel.generateStartTime()
+        val previewMsg = generatePreviewMessage(
+            messageText = sendMessage,
+            startTime = startTime,
+            referredMsg = referredMsg
+        )
         val requestParams = TopChatWebSocketParam.generateParamSendMessage(
-            thisMessageId = messageId,
+            roomeMetaData = roomMetaData,
             messageText = sendMessage,
             startTime = startTime,
             attachments = products ?: attachmentsPreview,
             localId = previewMsg.localId,
             intention = intention,
-            userLocationInfo = userLocationInfo
+            userLocationInfo = userLocationInfo,
+            referredMsg = referredMsg
         )
         sendWs(requestParams, previewMsg)
     }
@@ -658,17 +652,20 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun generatePreviewMessage(
-        messageId: String, messageText: String, startTime: String
+        messageText: String,
+        startTime: String,
+        referredMsg: ParentReply?
     ): SendableViewModel {
         val localId = IdentifierUtil.generateLocalId()
         return MessageViewModel.Builder()
-            .withMsgId(messageId)
+            .withMsgId(roomMetaData.msgId)
             .withFromUid(userSession.userId)
             .withFrom(userSession.name)
             .withReplyTime(generateCurrentReplyTime())
             .withStartTime(startTime)
             .withMsg(messageText)
             .withLocalId(localId)
+            .withParentReply(referredMsg)
             .withIsDummy(true)
             .withIsSender(true)
             .withIsRead(false)
@@ -690,33 +687,27 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun sendSticker(
-        messageId: String,
         sticker: Sticker,
-        startTime: String,
-        opponentId: String,
-        onSendingMessage: () -> Unit
+        referredMsg: ParentReply?
     ) {
-        onSendingMessage()
-        sendStickerWithWebSocket(messageId, sticker, opponentId, startTime)
-    }
-
-    private fun sendStickerWithWebSocket(
-        messageId: String,
-        sticker: Sticker,
-        opponentId: String,
-        startTime: String
-    ) {
+        val startTime = SendableViewModel.generateStartTime()
         val previewSticker = StickerUiModel.generatePreviewMessage(
-            roomMetaData, sticker
+            roomMetaData = roomMetaData,
+            sticker = sticker,
+            referredMsg = referredMsg
         )
         val stickerContract = sticker.generateWebSocketPayload(
-            messageId, opponentId, startTime, attachmentsPreview, previewSticker.localId
+            messageId = roomMetaData.msgId,
+            startTime = startTime,
+            attachments = attachmentsPreview,
+            localId = previewSticker.localId,
+            referredMsg = referredMsg
         )
         val request = CommonUtil.toJson(stickerContract)
         sendWs(request, previewSticker)
     }
 
-    private fun sendAttachments(messageId: String, opponentId: String, message: String) {
+    private fun sendAttachments(message: String) {
         if (attachmentsPreview.isEmpty()) return
         attachmentsPreview.forEach { attachment ->
             handleSrwBubbleState(attachment)
@@ -724,8 +715,7 @@ open class TopChatRoomPresenter @Inject constructor(
                 roomMetaData, message
             )
             val wsMsgPayload = attachment.generateMsgObj(
-                messageId, opponentId, message, listInterceptor,
-                userLocationInfo, previewMsg.localId
+                roomMetaData, message, userLocationInfo, previewMsg.localId
             )
             processPreviewMessage(previewMsg)
             sendWebSocketAttachmentPayload(wsMsgPayload)
@@ -900,8 +890,6 @@ open class TopChatRoomPresenter @Inject constructor(
     ) {
         removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
     }
-
-    override fun clearText() {}
 
     override fun getOrderProgress(messageId: String) {
         orderProgressUseCase.getOrderProgress(
@@ -1081,6 +1069,13 @@ open class TopChatRoomPresenter @Inject constructor(
     private fun isProblematicDevice(): Boolean {
         return PROBLEMATIC_DEVICE.contains(DeviceInfo.getModelName().toLowerCase())
     }
+
+    override fun clearText() {}
+
+    override fun sendMessageWithWebsocket(
+        messageId: String, sendMessage: String,
+        startTime: String, opponentId: String
+    ) { }
 
     companion object {
         const val ENABLE_UPLOAD_IMAGE_SERVICE = "android_enable_topchat_upload_image_service"
