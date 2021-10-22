@@ -33,7 +33,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.carousel.CarouselUnify
-import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -285,21 +284,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     private fun renderEmpty() {
         val emptyData = arrayListOf<WishlistV2TypeLayoutData>().apply {
             add(WishlistV2TypeLayoutData("",  TYPE_EMPTY_STATE))
-        }
-        binding?.run {
-            wishlistNavtoolbar.visibility = View.GONE
-            rvWishlist.visibility = View.GONE
-            clWishlistHeader.visibility = View.GONE
-            rlEmptyState.visibility = View.VISIBLE
-        }
-
-        binding?.carouselEmptyState?.apply {
-            indicatorPosition = CarouselUnify.INDICATOR_BC
-            freeMode = false
-            centerMode = true
-            slideToScroll = 1
-            infinite = false
-            addItems(R.layout.wishlist_empty_state_layout, items, itemParam)
         }
         wishlistV2Adapter.addList(emptyData)
     }
