@@ -2211,29 +2211,32 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun goToAtcVariant(customCartRedirection: Map<String, CartTypeData>? = null) {
         SingleClick.doSomethingBeforeTime {
-            context?.let {
-                if (viewModel.getDynamicProductInfoP1 != null) {
+            context?.let { ctx ->
+                viewModel.getDynamicProductInfoP1?.let {  p1 ->
                     DynamicProductDetailTracking.Click.onSingleVariantClicked(
-                            viewModel.getDynamicProductInfoP1,
-                            pdpUiUpdater?.productSingleVariant,
-                            viewModel.variantData,
-                            getComponentPositionBeforeUpdate(pdpUiUpdater?.productSingleVariant))
+                            productInfo = p1,
+                            variantUiData = pdpUiUpdater?.productSingleVariant,
+                            variantCommonData = viewModel.variantData,
+                            variantPosition = getComponentPositionBeforeUpdate(
+                                    pdpUiUpdater?.productSingleVariant)
+                    )
 
                     val p2Data = viewModel.p2Data.value
-                    val cartTypeData = if (customCartRedirection != null) customCartRedirection else
+                    val cartTypeData = if (customCartRedirection != null)
+                        customCartRedirection
+                    else
                         p2Data?.cartRedirection
 
                     viewModel.clearCacheP2Data()
 
                     AtcVariantHelper.pdpToAtcVariant(
-                            context = it,
+                            context = ctx,
                             pageSource = AtcVariantHelper.PDP_PAGESOURCE,
-                            productId = viewModel.getDynamicProductInfoP1!!.basic.productID,
-                            productInfoP1 = viewModel.getDynamicProductInfoP1!!,
+                            productId = p1.basic.productID,
+                            productInfoP1 = p1,
                             warehouseId = warehouseId ?: "",
-                            pdpSession = viewModel.getDynamicProductInfoP1?.pdpSession ?: "",
-                            isTokoNow = viewModel.getDynamicProductInfoP1?.basic?.isTokoNow
-                                    ?: false,
+                            pdpSession = p1.pdpSession,
+                            isTokoNow = p1.basic.isTokoNow,
                             isShopOwner = viewModel.isShopOwner(),
                             productVariant = viewModel.variantData ?: ProductVariant(),
                             warehouseResponse = p2Data?.nearestWarehouseInfo ?: mapOf(),
