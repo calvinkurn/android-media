@@ -18,6 +18,7 @@ import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsViewHo
 
 class SmartBillsAdapterFactory(private val checkableListener: BaseCheckableViewHolder.CheckableInteractionListener,
                                private val detailListener: SmartBillsViewHolder.DetailListener,
+                               private val emptyStateListener: SmartBillsEmptyStateViewHolder.EmptyStateSBMListener,
                                private val onRefreshAccordionListener: SmartBillsAccordionViewHolder.SBMAccordionListener):
         BaseAdapterTypeFactory(),
         BaseListCheckableTypeFactory<RechargeBills>,
@@ -27,7 +28,7 @@ class SmartBillsAdapterFactory(private val checkableListener: BaseCheckableViewH
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             SmartBillsViewHolder.LAYOUT -> SmartBillsViewHolder(parent, checkableListener, detailListener)
-            SmartBillsEmptyStateViewHolder.LAYOUT -> SmartBillsEmptyStateViewHolder(parent)
+            SmartBillsEmptyStateViewHolder.LAYOUT -> SmartBillsEmptyStateViewHolder(parent, emptyStateListener)
             SmartBillsAccordionViewHolder.LAYOUT -> SmartBillsAccordionViewHolder(parent,
                     checkableListener, detailListener, onRefreshAccordionListener)
             else -> super.createViewHolder(parent, type)

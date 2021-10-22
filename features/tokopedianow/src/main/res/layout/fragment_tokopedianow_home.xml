@@ -58,7 +58,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.minicart.common.widget.MiniCartWidget
-        android:id="@+id/miniCartWidget"
+        android:id="@+id/mini_cart_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"

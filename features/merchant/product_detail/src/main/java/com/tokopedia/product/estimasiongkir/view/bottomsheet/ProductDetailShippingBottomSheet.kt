@@ -21,6 +21,8 @@ import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.bottomsheet.TokoMartEducationalInformationBottomSheet
+import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
 import com.tokopedia.product.detail.view.util.ProductSeparatorItemDecoration
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
@@ -33,7 +35,6 @@ import com.tokopedia.product.estimasiongkir.view.adapter.ProductDetailShippingAd
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductDetailShippingDIffutil
 import com.tokopedia.product.estimasiongkir.view.adapter.ProductShippingFactoryImpl
 import com.tokopedia.product.estimasiongkir.view.viewmodel.RatesEstimationBoeViewModel
-import com.tokopedia.product.info.util.ProductDetailBottomSheetBuilder
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -47,7 +48,6 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
 
     companion object {
         const val TAG_SHIPPING_BOTTOM_SHEET = "TAG_SHIPPING_BOTTOM_SHEET"
-        const val TAG_USP_BOTTOM_SHEET = "TAG_USP_BOTTOM_SHEET"
         const val SOURCE = "product detail page"
     }
 
@@ -173,11 +173,11 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
             ProductDetailShippingTracking.onPelajariTokoCabangClicked(ratesEstimateRequest?.userId
                     ?: "")
             val bottomSheet = if (ratesEstimateRequest?.isTokoNow == true) {
-                ProductDetailBottomSheetBuilder.getUspTokoNowBottomSheet(it)
+                TokoMartEducationalInformationBottomSheet()
             } else {
-                ProductDetailBottomSheetBuilder.getUspBottomSheet(it, freeOngkirUrl, uspTokoCabangImgUrl)
+                ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(it, freeOngkirUrl, uspTokoCabangImgUrl)
             }
-            bottomSheet.show(childFragmentManager, TAG_USP_BOTTOM_SHEET)
+            bottomSheet.show(childFragmentManager, ProductDetailCommonBottomSheetBuilder.TAG_USP_BOTTOM_SHEET)
         }
     }
 

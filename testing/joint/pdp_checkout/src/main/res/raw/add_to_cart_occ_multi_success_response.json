@@ -1,0 +1,40 @@
+[
+  {
+    "data": {
+      "add_to_cart_occ_multi": {
+        "error_message": [],
+        "status": "OK",
+        "data": {
+          "message": [
+            "Proses berhasil, silahkan cek belanjaan dan profil Anda"
+          ],
+          "success": 1,
+          "out_of_service": {
+            "id": 0,
+            "code": "",
+            "image": "",
+            "title": "",
+            "description": "",
+            "buttons": []
+          },
+          "toaster_action": {
+            "text": "",
+            "show_cta": false
+          },
+          "carts": [
+            {
+              "cart_id": 3245908158,
+              "customer_id": 117045551,
+              "is_trade_in": false,
+              "notes": "",
+              "product_id": 1422569176,
+              "quantity": 1,
+              "shop_id": 2538088,
+              "warehouse_id": 2051993
+            }
+          ]
+        }
+      }
+    }
+  }
+]

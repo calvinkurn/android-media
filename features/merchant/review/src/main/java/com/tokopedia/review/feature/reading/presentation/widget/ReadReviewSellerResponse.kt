@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.review.R
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 
 class ReadReviewSellerResponse : BaseCustomView {
@@ -39,7 +40,7 @@ class ReadReviewSellerResponse : BaseCustomView {
     fun setResponseData(shopName: String, timeStamp: String, response: String) {
         this.shopName?.text = shopName
         this.timeStamp?.text = timeStamp
-        this.response?.text = response
+        this.response?.text = HtmlLinkHelper(context, response).spannedString
     }
 
 }

@@ -9,12 +9,12 @@ import android.os.Parcelable;
 
 public class ImageAttachmentUiModel implements Parcelable {
 
-    private int attachmentId;
+    private Long attachmentId;
     private String description;
     private String uriThumbnail;
     private String uriLarge;
 
-    public ImageAttachmentUiModel(int attachmentId, String description,
+    public ImageAttachmentUiModel(Long attachmentId, String description,
                                   String uriThumbnail, String uriLarge) {
         this.attachmentId = attachmentId;
         this.description = description;
@@ -23,7 +23,7 @@ public class ImageAttachmentUiModel implements Parcelable {
     }
 
     protected ImageAttachmentUiModel(Parcel in) {
-        attachmentId = in.readInt();
+        attachmentId = in.readLong();
         description = in.readString();
         uriThumbnail = in.readString();
         uriLarge = in.readString();
@@ -41,7 +41,7 @@ public class ImageAttachmentUiModel implements Parcelable {
         }
     };
 
-    public int getAttachmentId() {
+    public Long getAttachmentId() {
         return attachmentId;
     }
 
@@ -64,7 +64,7 @@ public class ImageAttachmentUiModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(attachmentId);
+        dest.writeLong(attachmentId);
         dest.writeString(description);
         dest.writeString(uriThumbnail);
         dest.writeString(uriLarge);

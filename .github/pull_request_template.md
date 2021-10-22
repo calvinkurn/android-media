@@ -50,6 +50,7 @@ https://phab.tokopedia.com/XXXXX
 - **/create jira-ma** - auto generate or update jira for this PR with fix version of MA
 - **/create jira-sa** - auto generate or update jira for this PR with fix version of SA
 - **/stop all** - stop all running pr checker for this PR
+- **/check darkmode** - run dark mode checker
 
 ## Gatekeeper Spells
 - **approved for customer app-size** - send along with the approval to cast the magic
@@ -69,4 +70,5 @@ https://phab.tokopedia.com/XXXXX
 
 - **approved for dark mode** - send along with the approval to cast the magic
 *(more info: @tokopedia/android-gatekeeper-dark-mode)*
+
 

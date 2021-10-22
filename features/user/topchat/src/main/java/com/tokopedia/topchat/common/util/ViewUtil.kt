@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.common.util
 
 import android.content.Context
-import android.content.res.Resources
 import android.content.res.Resources.getSystem
 import android.graphics.Paint
 import android.graphics.Rect
@@ -11,11 +10,9 @@ import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.StateListDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.provider.Settings
-import android.util.TypedValue
 import android.util.StateSet
 import android.view.Gravity
 import android.view.View
-import android.view.Window
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.annotation.IdRes
@@ -24,7 +21,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.window.WindowLayoutInfo
 import com.tokopedia.kotlin.extensions.view.toPx
-import com.tokopedia.topchat.R
 
 object ViewUtil {
 
@@ -154,16 +150,14 @@ object ViewUtil {
     }
 
     fun alignViewToDeviceFeatureBoundaries(
-        resources: Resources,
-        theme: Resources.Theme,
-        window: Window,
         newLayoutInfo: WindowLayoutInfo,
         constraintLayoutParent: ConstraintLayout?,
         @IdRes firstContainerId: Int,
         @IdRes secondContainerId: Int,
         @IdRes toolbarId: Int,
         @IdRes deviceFeatureId: Int
-    ) {
+    ): Boolean {
+        var result = false
         val set = ConstraintSet()
         set.clone(constraintLayoutParent)
 
@@ -177,22 +171,12 @@ object ViewUtil {
                 firstContainerId, secondContainerId,
                 toolbarId, deviceFeatureId
             )
-        } else {
-            //Device feature is placed horizontally
-            val statusBarHeight = calculateStatusBarHeight(window)
-            val toolBarHeight = calculateToolbarHeight(resources, theme)
-            set.setMargin(
-                deviceFeatureId, ConstraintSet.TOP,
-                rect.top - statusBarHeight - toolBarHeight
-            )
-            setupHorizontalFlex(set,
-                firstContainerId, secondContainerId,
-                toolbarId, deviceFeatureId
-            )
+            result = true
         }
 
         set.setVisibility(deviceFeatureId, View.VISIBLE)
         set.applyTo(constraintLayoutParent)
+        return result
     }
 
     private fun setupDeviceFeatureLine(
@@ -207,32 +191,6 @@ object ViewUtil {
         set.connect(
             deviceFeatureId, ConstraintSet.TOP,
             toolbarId, ConstraintSet.BOTTOM, 0
-        )
-    }
-
-    private fun setupHorizontalFlex(
-        set: ConstraintSet,
-        @IdRes firstContainerId: Int,
-        @IdRes secondContainerId: Int,
-        @IdRes toolbarId: Int,
-        @IdRes deviceFeatureId: Int
-    ) {
-        set.connect(
-            firstContainerId, ConstraintSet.TOP,
-            deviceFeatureId, ConstraintSet.BOTTOM, 0
-        )
-        set.connect(
-            firstContainerId, ConstraintSet.BOTTOM,
-            ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0
-        )
-
-        set.connect(
-            secondContainerId, ConstraintSet.TOP,
-            toolbarId, ConstraintSet.BOTTOM, 0
-        )
-        set.connect(
-            secondContainerId, ConstraintSet.BOTTOM,
-            deviceFeatureId, ConstraintSet.TOP, 0
         )
     }
 
@@ -276,21 +234,6 @@ object ViewUtil {
             secondContainerId, ConstraintSet.END,
             ConstraintSet.PARENT_ID, ConstraintSet.END, 0
         )
-    }
-
-    private fun calculateToolbarHeight(resources: Resources, theme: Resources.Theme): Int {
-        val typedValue = TypedValue()
-        return if (theme.resolveAttribute(android.R.attr.actionBarSize, typedValue, true)) {
-            TypedValue.complexToDimensionPixelSize(typedValue.data, resources.displayMetrics)
-        } else {
-            0
-        }
-    }
-
-    private fun calculateStatusBarHeight(window: Window): Int {
-        val rect = Rect()
-        window.decorView.getWindowVisibleDisplayFrame(rect)
-        return rect.top
     }
 
     fun convertToPx(dp: Int): Int {

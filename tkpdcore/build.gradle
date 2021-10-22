@@ -65,7 +65,6 @@ dependencies {
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.playServicesDependencies.plus
     implementation rootProject.ext.playServicesDependencies.base
-    implementation rootProject.ext.firebase.appIndexing
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.playServicesDependencies.location
@@ -77,7 +76,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.logger)
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.analyticsDependencies.installRef
 
     implementation rootProject.ext.miscDependencies.lottie

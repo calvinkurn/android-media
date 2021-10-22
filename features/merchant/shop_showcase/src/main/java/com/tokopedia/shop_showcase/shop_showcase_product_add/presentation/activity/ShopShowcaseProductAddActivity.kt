@@ -1,5 +1,7 @@
 package com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.activity
 
+import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.shop_showcase.R
@@ -13,7 +15,10 @@ import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.fragme
 class ShopShowcaseProductAddActivity: BaseSimpleActivity() {
 
     companion object {
+        @LayoutRes
         val ACTIVITY_LAYOUT = R.layout.activity_shop_showcase_product_add
+
+        @IdRes
         val PARENT_VIEW_ACTIVITY = R.id.parent_view
     }
 

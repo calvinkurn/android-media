@@ -615,6 +615,12 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         }
     }
 
+    fun addSuggestionSearchTextSection(suggestionText: String, suggestionQuery: String) {
+        visitables.remove(ShopProductSearchResultSuggestionUiModel(suggestionText, suggestionQuery))
+        visitables.add(ShopProductSearchResultSuggestionUiModel(suggestionText, suggestionQuery))
+        notifyDataSetChanged()
+    }
+
     fun addEmptySearchResultState() {
         visitables.add(ShopProductEmptySearchUiModel())
     }

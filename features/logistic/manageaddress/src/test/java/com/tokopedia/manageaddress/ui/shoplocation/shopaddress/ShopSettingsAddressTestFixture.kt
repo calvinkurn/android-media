@@ -1,4 +1,4 @@
-package com.tokopedia.shop_settings.presenter.shopsettingsaddress
+package com.tokopedia.manageaddress.ui.shoplocation.shopaddress
 
 import android.text.TextUtils
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -6,8 +6,8 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shoplocation.AddShopLoca
 import com.tokopedia.shop.common.graphql.domain.usecase.shoplocation.DeleteShopLocationUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shoplocation.GetShopLocationUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shoplocation.UpdateShopLocationUseCase
-import com.tokopedia.shop.settings.address.presenter.ShopLocationOldPresenter
-import com.tokopedia.shop.settings.address.presenter.ShopSettingAddressAddEditPresenter
+import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.ShopLocationOldPresenter
+import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.ShopSettingAddressAddEditPresenter
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockkStatic

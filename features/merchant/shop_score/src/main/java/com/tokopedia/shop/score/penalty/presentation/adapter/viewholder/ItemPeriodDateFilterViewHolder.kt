@@ -3,10 +3,11 @@ package com.tokopedia.shop.score.penalty.presentation.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.databinding.ItemDetailPenaltyPeriodDateFilterBinding
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPeriodDateFilterListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapter.Companion.PAYLOAD_DATE_FILTER
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPeriodDetailPenaltyUiModel
-import kotlinx.android.synthetic.main.item_detail_penalty_period_date_filter.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ItemPeriodDateFilterViewHolder(
     view: View,
@@ -17,12 +18,14 @@ class ItemPeriodDateFilterViewHolder(
         val LAYOUT = R.layout.item_detail_penalty_period_date_filter
     }
 
+    private val binding: ItemDetailPenaltyPeriodDateFilterBinding? by viewBinding()
+
     override fun bind(element: ItemPeriodDetailPenaltyUiModel?) {
-        with(itemView) {
-            tvPeriodDetailPenalty?.text =
+        binding?.run {
+            tvPeriodDetailPenalty.text =
                 getString(R.string.period_date_detail_penalty, element?.periodDetail.orEmpty())
 
-            ic_detail_penalty_filter?.setOnClickListener {
+            icDetailPenaltyFilter.setOnClickListener {
                 itemPeriodDateFilterListener.onDateClick()
             }
         }
@@ -35,9 +38,9 @@ class ItemPeriodDateFilterViewHolder(
 
         when (payloads.getOrNull(0) as Int) {
             PAYLOAD_DATE_FILTER -> {
-                with(itemView) {
+                binding?.run {
                     if (element.periodDetail.isNotBlank()) {
-                        tvPeriodDetailPenalty?.text = element.periodDetail
+                        tvPeriodDetailPenalty.text = element.periodDetail
                     }
                 }
             }

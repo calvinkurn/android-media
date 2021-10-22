@@ -12,12 +12,14 @@ import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantDateFormatter
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
+import com.tokopedia.power_merchant.subscribe.databinding.BottomSheetPowerMerchantDeactivationBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.bottom_sheet_power_merchant_deactivation.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class PowerMerchantDeactivationBottomSheet : BottomSheetUnify() {
 
+    private var binding by autoClearedNullable<BottomSheetPowerMerchantDeactivationBinding>()
     private var listener: BottomSheetCancelListener? = null
     private val powerMerchantTracking: PowerMerchantTracking by lazy {
         PowerMerchantTracking(UserSession(context))
@@ -41,7 +43,7 @@ class PowerMerchantDeactivationBottomSheet : BottomSheetUnify() {
         super.onCreate(savedInstanceState)
         val itemView = View.inflate(context,
                 R.layout.bottom_sheet_power_merchant_deactivation, null)
-
+        binding = BottomSheetPowerMerchantDeactivationBinding.bind(itemView)
         setChild(itemView)
         setStyle(DialogFragment.STYLE_NORMAL, com.tokopedia.unifycomponents.R.style.UnifyBottomSheetNotOverlapStyle)
     }
@@ -59,28 +61,29 @@ class PowerMerchantDeactivationBottomSheet : BottomSheetUnify() {
 
     private fun initView(expiredDate: String) {
         showWarningTicker(expiredDate)
+        binding?.run {
+            btnCancel.setOnClickListener {
+                powerMerchantTracking.sendEventClickConfirmToStopPowerMerchant()
+                listener?.onClickCancelButton()
+            }
 
-        btnCancel.setOnClickListener {
-            powerMerchantTracking.sendEventClickConfirmToStopPowerMerchant()
-            listener?.onClickCancelButton()
-        }
+            btnBack.setOnClickListener {
+                listener?.onClickBackButton()
+                dismiss()
+            }
 
-        btnBack.setOnClickListener {
-            listener?.onClickBackButton()
-            dismiss()
-        }
-
-        val clickableText = "S&K"
-        val tncDescription = PowerMerchantSpannableUtil.createSpannableString(
+            val clickableText = "S&K"
+            val tncDescription = PowerMerchantSpannableUtil.createSpannableString(
                 text = getString(R.string.pm_pm_deactivation_be_rm_tnc).parseAsHtml(),
                 highlightText = clickableText,
                 colorId = requireContext().getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G500),
                 isBold = true
-        ) {
-            showPmTermAndCondition()
+            ) {
+                showPmTermAndCondition()
+            }
+            tvPmDeactivationTnC.movementMethod = LinkMovementMethod.getInstance()
+            tvPmDeactivationTnC.text = tncDescription
         }
-        tvPmDeactivationTnC.movementMethod = LinkMovementMethod.getInstance()
-        tvPmDeactivationTnC.text = tncDescription
     }
 
     private fun showPmTermAndCondition() {
@@ -93,10 +96,16 @@ class PowerMerchantDeactivationBottomSheet : BottomSheetUnify() {
     }
 
     private fun showWarningTicker(expiredDate: String) {
-        context?.let {
-            val descriptionText = PowerMerchantDateFormatter.formatCancellationDate(it, R.string.pm_bottom_sheet_expired_label, expiredDate)
-            tickerWarning.setTextDescription(descriptionText)
-            tickerWarning.show()
+        binding?.run {
+            context?.let {
+                val descriptionText = PowerMerchantDateFormatter.formatCancellationDate(
+                    it,
+                    R.string.pm_bottom_sheet_expired_label,
+                    expiredDate
+                )
+                tickerWarning.setTextDescription(descriptionText)
+                tickerWarning.show()
+            }
         }
     }
 

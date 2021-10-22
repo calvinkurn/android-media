@@ -129,7 +129,7 @@ class GridPostAdapter(private val contentPosition: Int,
             itemView.setOnClickListener {
                 listener.onGridItemClick(positionInFeed,
                     postId,
-                    item.id.toInt(),
+                    item.id,
                     item.redirectLink,
                     type,
                     isFollowed,
@@ -184,7 +184,7 @@ class GridPostAdapter(private val contentPosition: Int,
                 listener.onGridItemClick(
                     positionInFeed,
                     postId,
-                    0,
+                    "0",
                     if (!TextUtils.isEmpty(actionLink)) actionLink
                     else ApplinkConst.FEED_DETAILS.replace(EXTRA_DETAIL_ID, postId.toString()),
                     type,
@@ -210,7 +210,7 @@ class GridPostAdapter(private val contentPosition: Int,
 
     interface GridItemListener {
         fun onGridItemClick(
-            positionInFeed: Int, activityId: Int, productId: Int,
+            positionInFeed: Int, activityId: Int, productId: String,
             redirectLink: String, type: String, isFollowed: Boolean,
             shopId: String,
             feedXProduct: FeedXProduct

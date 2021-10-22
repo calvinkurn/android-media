@@ -14,7 +14,10 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.buyerorder.test.R
 import com.tokopedia.cassavatest.CassavaTestRule
@@ -28,6 +31,10 @@ import org.hamcrest.*
 class UohRobot {
     fun loading() {
         waitForData()
+    }
+
+    fun hideKeyboard() {
+        onView(ViewMatchers.isRoot()).perform(ViewActions.closeSoftKeyboard())
     }
 
     fun clickPrimaryButton() {
@@ -48,14 +55,14 @@ class UohRobot {
     }
 
     fun clickOrderCard() {
+        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         onView(withId(com.tokopedia.buyerorder.R.id.rv_order_list))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0,
                         clickOnViewChild(com.tokopedia.buyerorder.R.id.cl_data_product)))
-        pressBack()
     }
 
     fun doSearch(str: String) {
-        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield))
+        onView(withId(R.id.et_search))
                 .perform(ViewActions.typeText(str)).perform(ViewActions.pressImeActionButton())
         waitForData()
     }

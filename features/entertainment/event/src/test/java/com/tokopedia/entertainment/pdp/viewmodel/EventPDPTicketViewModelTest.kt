@@ -146,7 +146,7 @@ class EventPDPTicketViewModelTest {
         result[EventVerifyResponseV2::class.java] = verifyMock
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         eventPDPTicketViewModel.verify("", VerifyRequest())
 
@@ -159,7 +159,7 @@ class EventPDPTicketViewModelTest {
     fun `VerifyData_FailVerify_ShouldFailVerify`() {
         //given
         val error = Throwable("Error Verify")
-        coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw error }
+        coEvery { graphqlRepository.response(any(), any()) } coAnswers { throw error }
 
         //when
         eventPDPTicketViewModel.verify("", VerifyRequest())

@@ -6,10 +6,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller_migration_common.R
+import com.tokopedia.seller_migration_common.databinding.ItemSellerFeatureWithCardBinding
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.unifycomponents.setImage
-import kotlinx.android.synthetic.main.item_seller_feature_with_card.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class CardSellerFeatureViewHolder(
         itemView: View?,
@@ -19,12 +20,14 @@ class CardSellerFeatureViewHolder(
         val LAYOUT = R.layout.item_seller_feature_with_card
     }
 
+    private val binding by viewBinding<ItemSellerFeatureWithCardBinding>()
+
     override fun bind(element: SellerFeatureUiModel) {
-        with(itemView) {
+        binding?.run {
             ivSellerFeature.setImage(element.imageUrl, 0f)
             tvSellerFeatureTitle.text = getString(element.titleId)
             tvSellerFeatureDescription.text = getString(element.descriptionId)
-            setOnClickListener { listener?.onSellerFeatureClicked(element) }
+            root.setOnClickListener { listener?.onSellerFeatureClicked(element) }
         }
     }
 

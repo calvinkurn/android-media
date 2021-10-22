@@ -26,6 +26,7 @@ android {
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        consumerProguardFiles 'proguard-rules.pro'
     }
 
     buildTypes {
@@ -74,6 +75,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
+    implementation rootProject.ext.playServicesDependencies.core
+
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
@@ -110,7 +113,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.unifyDependencies.icons
 
-    implementation files('libs/libstream-release.aar')
+    implementation rootProject.ext.tkpdInternalLibDependencies.larixBroadcaster
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.assertJCore

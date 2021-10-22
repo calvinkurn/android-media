@@ -164,6 +164,13 @@ class PlayParentViewModel constructor(
             source = source
     )
 
+    fun refreshChannel() {
+        startingChannelId?.let {
+            mNextKey = getNextChannelIdKey(it, source)
+            loadNextPage()
+        }
+    }
+
     companion object {
 
         private const val KEY_START_MILLIS = "start_vod_millis"

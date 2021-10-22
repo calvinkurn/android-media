@@ -1,43 +1,37 @@
 package com.tokopedia.shop.score.performance.presentation.bottomsheet
 
 import android.os.Bundle
-import android.text.method.LinkMovementMethod
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.setClickableUrlHtml
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
 import com.tokopedia.shop.score.common.setTextMakeHyperlink
+import com.tokopedia.shop.score.databinding.BottomsheetShopPerformanceDetailBinding
 import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponent
 import com.tokopedia.shop.score.performance.presentation.model.ShopPerformanceDetailUiModel
 import com.tokopedia.shop.score.performance.presentation.viewmodel.ShopPerformanceViewModel
-import com.tokopedia.unifycomponents.DividerUnify
-import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
-class BottomSheetPerformanceDetail : BaseBottomSheetShopScore() {
+class BottomSheetPerformanceDetail :
+    BaseBottomSheetShopScore<BottomsheetShopPerformanceDetailBinding>() {
 
     @Inject
     lateinit var shopPerformanceViewModel: ShopPerformanceViewModel
 
     private var titlePerformanceDetail = ""
     private var identifierPerformanceDetail = ""
-    private var tvDescCalculationDetail: Typography? = null
-    private var tvDescTipsDetail: Typography? = null
-    private var tvMoreInfoPerformanceDetail: Typography? = null
-    private var tvTitleTipsDetail: Typography? = null
-    private var separatorTips: DividerUnify? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getDataFromArguments()
     }
+
+    override fun bind(view: View) = BottomsheetShopPerformanceDetailBinding.bind(view)
 
     override fun getLayoutResId(): Int = R.layout.bottomsheet_shop_performance_detail
 
@@ -57,7 +51,6 @@ class BottomSheetPerformanceDetail : BaseBottomSheetShopScore() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.setup()
         observeShopPerformanceDetail()
     }
 
@@ -67,14 +60,6 @@ class BottomSheetPerformanceDetail : BaseBottomSheetShopScore() {
             arguments?.getString(IDENTIFIER_PERFORMANCE_DETAIL_KEY).orEmpty()
     }
 
-    private fun View.setup() {
-        tvDescCalculationDetail = findViewById(R.id.tvDescCalculationDetail)
-        tvDescTipsDetail = findViewById(R.id.tvDescTipsDetail)
-        tvMoreInfoPerformanceDetail = findViewById(R.id.tvMoreInfoPerformanceDetail)
-        separatorTips = findViewById(R.id.separatorTips)
-        tvTitleTipsDetail = findViewById(R.id.tvTitleTipsDetail)
-    }
-
     private fun observeShopPerformanceDetail() {
         observe(shopPerformanceViewModel.shopPerformanceDetail) {
             setupData(it)
@@ -82,17 +67,17 @@ class BottomSheetPerformanceDetail : BaseBottomSheetShopScore() {
         shopPerformanceViewModel.getShopPerformanceDetail(identifierPerformanceDetail)
     }
 
-    private fun setupData(data: ShopPerformanceDetailUiModel) {
+    private fun setupData(data: ShopPerformanceDetailUiModel) = binding?.run {
         with(data) {
-            tvDescCalculationDetail?.text =
+            tvDescCalculationDetail.text =
                 MethodChecker.fromHtml(descCalculation?.let { getString(it) })
-            tvDescTipsDetail?.text = MethodChecker.fromHtml(descTips?.let { getString(it) })
-            tvMoreInfoPerformanceDetail?.showWithCondition(moreInformation != null)
-            separatorTips?.showWithCondition(moreInformation != null && descTips != null)
-            tvTitleTipsDetail?.showWithCondition(descTips != null)
-            tvDescTipsDetail?.showWithCondition(descTips != null)
+            tvDescTipsDetail.text = MethodChecker.fromHtml(descTips?.let { getString(it) })
+            tvMoreInfoPerformanceDetail.showWithCondition(moreInformation != null)
+            separatorTips.showWithCondition(moreInformation != null && descTips != null)
+            tvTitleTipsDetail.showWithCondition(descTips != null)
+            tvDescTipsDetail.showWithCondition(descTips != null)
             moreInformation?.let {
-                tvMoreInfoPerformanceDetail?.setTextMakeHyperlink(getString(it, urlLink)) {
+                tvMoreInfoPerformanceDetail.setTextMakeHyperlink(getString(it, urlLink)) {
                     if (urlLink.isNotBlank()) {
                         context?.let { context ->
                             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, urlLink)

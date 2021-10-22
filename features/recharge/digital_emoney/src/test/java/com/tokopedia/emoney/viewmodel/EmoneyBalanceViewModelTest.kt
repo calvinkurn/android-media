@@ -74,7 +74,7 @@ class EmoneyBalanceViewModelTest {
         result1[EmoneyInquiryResponse::class.java] = EmoneyInquiryResponse(emoneyInquiry)
         val gqlResponseWriteBalanceSuccess = GraphqlResponse(result1, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returnsMany listOf(gqlResponseGetInquirySuccess, gqlResponseWriteBalanceSuccess)
+        coEvery { graphqlRepository.response(any(), any()) } returnsMany listOf(gqlResponseGetInquirySuccess, gqlResponseWriteBalanceSuccess)
 
         //when
         emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0)
@@ -104,7 +104,7 @@ class EmoneyBalanceViewModelTest {
         errors[EmoneyInquiryResponse::class.java] = listOf(errorGql)
         val gqlResponseError = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returnsMany listOf(gqlResponseGetInquirySuccess, gqlResponseError)
+        coEvery { graphqlRepository.response(any(), any()) } returnsMany listOf(gqlResponseGetInquirySuccess, gqlResponseError)
 
         //when
         emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0)
@@ -128,7 +128,7 @@ class EmoneyBalanceViewModelTest {
         result[EmoneyInquiryResponse::class.java] = EmoneyInquiryResponse(emoneyInquiry)
         val gqlResponseWriteBalanceSuccess = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseWriteBalanceSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseWriteBalanceSuccess
 
         //when
         emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0)
@@ -153,7 +153,7 @@ class EmoneyBalanceViewModelTest {
         errors[EmoneyInquiryResponse::class.java] = listOf(errorGql)
         val gqlResponseError = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseError
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseError
 
         //when
         emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0)
@@ -177,7 +177,7 @@ class EmoneyBalanceViewModelTest {
                 EmoneyInquiry(id = "1", attributesEmoneyInquiry = AttributesEmoneyInquiry(status = 0, payload = "")))
         val gqlResponseGetInquirySuccess = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseGetInquirySuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseGetInquirySuccess
 
         //when
         emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0)
@@ -240,7 +240,7 @@ class EmoneyBalanceViewModelTest {
         result1[EmoneyInquiryResponse::class.java] = EmoneyInquiryResponse(emoneyInquiry)
         val gqlResponseWriteBalanceSuccess = GraphqlResponse(result1, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returnsMany listOf(gqlResponseGetInquirySuccess, gqlResponseWriteBalanceSuccess)
+        coEvery { graphqlRepository.response(any(), any()) } returnsMany listOf(gqlResponseGetInquirySuccess, gqlResponseWriteBalanceSuccess)
         every { isoDep.transceive(NFCUtils.hexStringToByteArray("1")) } answers { throw IOException() }
         //when
         emoneyBalanceViewModel.writeBalanceToCard("", "", 0, mapParam)
@@ -272,7 +272,7 @@ class EmoneyBalanceViewModelTest {
         result1[EmoneyInquiryResponse::class.java] = EmoneyInquiryResponse(emoneyInquiry)
         val gqlResponseWriteBalanceSuccess = GraphqlResponse(result1, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returnsMany listOf(gqlResponseGetInquirySuccess, gqlResponseWriteBalanceSuccess)
+        coEvery { graphqlRepository.response(any(), any()) } returnsMany listOf(gqlResponseGetInquirySuccess, gqlResponseWriteBalanceSuccess)
         every { isoDep.transceive(NFCUtils.hexStringToByteArray("1")) } answers { null }
         //when
         emoneyBalanceViewModel.writeBalanceToCard("", "", 0, mapParam)
@@ -304,7 +304,7 @@ class EmoneyBalanceViewModelTest {
         result1[EmoneyInquiryResponse::class.java] = EmoneyInquiryResponse(emoneyInquiry)
         val gqlResponseWriteBalanceSuccess = GraphqlResponse(result1, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returnsMany listOf(gqlResponseGetInquirySuccess, gqlResponseWriteBalanceSuccess)
+        coEvery { graphqlRepository.response(any(), any()) } returnsMany listOf(gqlResponseGetInquirySuccess, gqlResponseWriteBalanceSuccess)
         every { isoDep.transceive(NFCUtils.hexStringToByteArray("1")) } answers { null }
         //when
         emoneyBalanceViewModel.writeBalanceToCard("", "", 0, mapParam)

@@ -21,7 +21,7 @@ class GetTokopointStatusFiltered @Inject constructor(
 
     init {
         val query = """
-            {
+            query GetHomeNavTokopoints {
               tokopointsStatusFiltered(filterKeys: ["points"], pointsExternalCurrency: "IDR", source: "globalMenu"){
                 statusFilteredData {
                   points {

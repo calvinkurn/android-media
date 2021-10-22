@@ -7,6 +7,7 @@ import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
+import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -84,6 +85,7 @@ interface TopChatContract {
          */
         fun removeSrwBubble(productId: String)
         fun expandSrwBubble()
+        fun showPreviewMsg(previewMsg: SendableViewModel)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -97,14 +99,6 @@ interface TopChatContract {
             messageId: String,
             onError: (Throwable) -> Unit,
             onSuccessGetExistingMessage: (ChatroomViewModel, ChatReplies) -> Unit
-        )
-
-        fun getMessageId(
-            toUserId: String,
-            toShopId: String,
-            source: String,
-            onError: (Throwable) -> Unit,
-            onSuccessGetMessageId: (String) -> Unit
         )
 
         fun readMessage()

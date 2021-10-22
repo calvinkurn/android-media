@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_number_one"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/tokopedianow_ic_educational_information_one_bottomsheet"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_two_hours"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_number_one"
+        app:layout_constraintTop_toTopOf="@+id/iv_number_one"
+        app:typographyType="body_3" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_number_two"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/tokopedianow_ic_educational_information_two_bottomsheet"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tp_two_hours" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_stock_available"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:paddingTop="-5dp"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="body_3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_number_two"
+        app:layout_constraintTop_toTopOf="@+id/iv_number_two" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_number_three"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/tokopedianow_ic_educational_information_three_bottomsheet"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tp_stock_available" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_guaranteed_quality"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="body_3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_number_three"
+        app:layout_constraintTop_toTopOf="@+id/iv_number_three" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_twenty_four_hours"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="body_3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tp_guaranteed_quality" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_terms_and_conditions"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="body_3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tp_twenty_four_hours" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_background_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:adjustViewBounds="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tp_terms_and_conditions" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

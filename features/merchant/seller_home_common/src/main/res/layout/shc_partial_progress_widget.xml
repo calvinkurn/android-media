@@ -16,12 +16,20 @@
         android:lineSpacingExtra="@dimen/spacing_lvl2"
         android:maxLines="1"
         android:textColor="@color/Unify_N700_96"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
         tools:text="Progress Title" />
+
+    <com.tokopedia.unifycomponents.NotificationUnify
+        android:id="@+id/notifTagProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        app:layout_constraintTop_toTopOf="@id/tvProgressTitle"
+        app:layout_constraintBottom_toBottomOf="@id/tvProgressTitle"
+        app:layout_constraintStart_toEndOf="@id/tvProgressTitle"/>
 
     <com.tokopedia.sellerhomecommon.presentation.view.customview.ShopScorePMWidget
         android:id="@+id/shopScoreProgress"

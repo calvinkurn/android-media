@@ -16,7 +16,7 @@
         android:id="@+id/content_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dp_8">
+        android:paddingBottom="@dimen/dp_12">
 
         <View
             android:id="@+id/deals_background"
@@ -28,7 +28,7 @@
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <com.tokopedia.unifyprinciples.Typography
-            app:typographyType="heading_3"
+            app:typographyType="heading_4"
             android:layout_marginTop="@dimen/dp_8"
             android:id="@+id/deals_channel_title"
             android:layout_marginStart="@dimen/home_component_margin_default"

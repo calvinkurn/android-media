@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.util.extension.showToaster
@@ -32,6 +33,7 @@ import com.tokopedia.play.broadcaster.view.partial.BottomActionViewComponent
 import com.tokopedia.play.broadcaster.view.partial.SelectedProductPageViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
 import com.tokopedia.play_common.detachableview.detachableView
@@ -73,7 +75,7 @@ class PlayEtalasePickerFragment @Inject constructor(
 
     private val selectedProductPage by viewComponent {
         SelectedProductPageViewComponent(view as ViewGroup, object : SelectedProductPageViewComponent.Listener {
-            override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
+            override fun onProductSelectStateChanged(productId: String, isSelected: Boolean) {
                 viewModel.selectProduct(productId, isSelected)
                 onSelectedProductChanged()
             }
@@ -286,6 +288,34 @@ class PlayEtalasePickerFragment @Inject constructor(
         tvInfo.show()
         psbSearch.show()
         flEtalaseFlow.show()
+    }
+
+    override fun showErrorToaster(
+        err: Throwable,
+        customErrMessage: String?,
+        duration: Int,
+        actionLabel: String,
+        actionListener: View.OnClickListener
+    ) {
+        val errMessage = if (customErrMessage == null) {
+            ErrorHandler.getErrorMessage(
+                context, err, ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
+        } else {
+            val (_, errCode) = ErrorHandler.getErrorMessagePair(
+                context, err, ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
+            getString(
+                commonR.string.play_custom_error_handler_msg,
+                customErrMessage,
+                errCode
+            )
+        }
+        showToaster(errMessage, Toaster.TYPE_ERROR, duration, actionLabel, actionListener)
     }
 
     override fun showToaster(message: String, type: Int, duration: Int, actionLabel: String, actionListener: View.OnClickListener) {

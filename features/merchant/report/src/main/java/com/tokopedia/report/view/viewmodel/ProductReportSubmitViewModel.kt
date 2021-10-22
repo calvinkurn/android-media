@@ -21,7 +21,7 @@ class ProductReportSubmitViewModel @Inject constructor(private val useCase: Subm
         private const val KEY_UPLOAD_IDS = "upload_ids"
     }
 
-    fun submitReport(productId: Int, categoryId: Int, input: Map<String, Any>,
+    fun submitReport(productId: Long, categoryId: Int, input: Map<String, Any>,
                      onSuccess: (Boolean) -> Unit, onFail: (Throwable?) -> Unit){
         val uploadIdList: ArrayList<String> = ArrayList()
         launchCatchError(block = {

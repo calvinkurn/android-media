@@ -12,4 +12,7 @@
     <dimen name="tokopedianow_shimmering_divider_loader_height">1dp</dimen>
 
     <dimen name="tokopedianow_searchcategory_minicart_widget_height">78dp</dimen>
+
+    <dimen name="tokopedianow_repurchase_empty_state_no_history_image_width">280dp</dimen>
+    <dimen name="tokopedianow_repurchase_empty_state_no_history_image_height">210dp</dimen>
 </resources>

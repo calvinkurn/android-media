@@ -105,6 +105,7 @@ class RxWebSocketUtilStub constructor(
     ) {
         val requestStartTime = request.jsonObject?.get("start_time")?.asString ?: ""
         val requestMsg = request.jsonObject?.get("message")?.asString ?: ""
+        val localId = request.jsonObject?.get("local_id")?.asString ?: ""
         val requestAttachment = request.jsonObject?.get("product_profile")?.asJsonObject
         val requestProductProfile: ProductProfile = CommonUtil.fromJson(
             requestAttachment.toString(), ProductProfile::class.java
@@ -147,7 +148,8 @@ class RxWebSocketUtilStub constructor(
             isOpposite = false,
             blastId = 0,
             source = "inbox",
-            label = ""
+            label = "",
+            localId = localId
         )
         val chatElement = gson.toJsonTree(chat)
         val response = WebSocketResponse(
@@ -162,6 +164,7 @@ class RxWebSocketUtilStub constructor(
     ) {
         val requestStartTime = request.jsonObject?.get("start_time")?.asString ?: ""
         val requestMsg = request.jsonObject?.get("message")?.asString ?: ""
+        val localId = request.jsonObject?.get("local_id")?.asString ?: ""
         val uiModel = mapper.map(room)
         val timestamp = RfcDateTimeParser.parseDateString(
             requestStartTime, arrayOf(START_TIME_FORMAT)
@@ -189,7 +192,8 @@ class RxWebSocketUtilStub constructor(
             isOpposite = false,
             blastId = 0,
             source = "inbox",
-            label = ""
+            label = "",
+            localId = localId
         )
         val chatElement = gson.toJsonTree(chat)
         val response = WebSocketResponse(

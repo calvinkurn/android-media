@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.mvcwidget.views.MvcView
+        android:id="@+id/disco_single_mv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:visibility="gone"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/shimmer_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_60"
+        android:visibility="visible"
+        app:loader_type="rect" />
+</FrameLayout>

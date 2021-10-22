@@ -263,7 +263,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     private fun setObservers() {
-        sharedViewModel.getDailyBudget().observe(viewLifecycleOwner, {
+        sharedViewModel.getMaxBudget().observe(viewLifecycleOwner, {
             setCurrentDailyBudget(it.toString())
             currentBudget = it
         })

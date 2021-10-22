@@ -61,7 +61,7 @@ class DiscomBottomSheetFragment : BottomSheetUnify(),
     private var mIsInitialLoading: Boolean = false
     private val mCompositeSubs: CompositeSubscription = CompositeSubscription()
     private val handler = Handler()
-    private lateinit var actionListener: ActionListener
+    private var actionListener: ActionListener? = null
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
     private var districtAddressData: Address? = null
@@ -258,7 +258,7 @@ class DiscomBottomSheetFragment : BottomSheetUnify(),
     override fun onDistrictItemClicked(districtModel: Address) {
         context?.let {
             districtModel.run {
-                actionListener.onGetDistrict(districtModel)
+                actionListener?.onGetDistrict(districtModel)
                 AddNewAddressAnalytics.eventClickSuggestionKotaKecamatanChangeAddressNegative(isFullFlow, isLogisticLabel)
                 dismiss()
             }
