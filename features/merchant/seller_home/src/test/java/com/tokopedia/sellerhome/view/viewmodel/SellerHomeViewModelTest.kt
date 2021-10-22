@@ -34,8 +34,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.Assertions
-import org.mockito.ArgumentMatchers.anyLong
-import org.mockito.ArgumentMatchers.anyString
+import org.mockito.ArgumentMatchers.*
 
 /**
  * Created By @ilhamsuaib on 19/03/20
@@ -999,7 +998,103 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `get post widget data then returns success result`() = runBlocking {
+    fun `should get post widget data from cache and new caching enabled then returns success result`() = runBlocking {
+        val dataKeys = listOf(
+            TableAndPostDataKey("x", "x", 6, 3),
+            TableAndPostDataKey("y", "y", 6, 3)
+        )
+
+        val isNewCachingEnabled = true
+        val isFirstLoad = true
+        val isCachingEnabled = true
+
+        every {
+            getPostDataUseCase.isFirstLoad
+        } returns isFirstLoad
+
+        every {
+            remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+        } returns isNewCachingEnabled
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns isCachingEnabled
+
+        viewModel.getPostWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getPostDataUseCase.executeOnBackground(any(), isFirstLoad && isCachingEnabled)
+        }
+    }
+
+    @Test
+    fun `should get post widget data from remote when first load and new caching enabled then returns success result`() = runBlocking {
+        val dataKeys = listOf(
+            TableAndPostDataKey("x", "x", 6, 3),
+            TableAndPostDataKey("y", "y", 6, 3)
+        )
+
+        val isNewCachingEnabled = true
+        val isFirstLoad = true
+        val isCachingEnabled = false
+
+        every {
+            getPostDataUseCase.isFirstLoad
+        } returns isFirstLoad
+
+        every {
+            remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+        } returns isNewCachingEnabled
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns isCachingEnabled
+
+        viewModel.getPostWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getPostDataUseCase.executeOnBackground(any(), isFirstLoad && isCachingEnabled)
+        }
+    }
+
+    @Test
+    fun `should get post widget data from remote when not first load and new caching enabled then returns success result`() = runBlocking {
+        val dataKeys = listOf(
+            TableAndPostDataKey("x", "x", 6, 3),
+            TableAndPostDataKey("y", "y", 6, 3)
+        )
+
+        val isNewCachingEnabled = true
+        val isFirstLoad = false
+        val isCachingEnabled = false
+
+        every {
+            getPostDataUseCase.isFirstLoad
+        } returns isFirstLoad
+
+        every {
+            remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+        } returns isNewCachingEnabled
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns isCachingEnabled
+
+        viewModel.getPostWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getPostDataUseCase.executeOnBackground(any(), isFirstLoad && isCachingEnabled)
+        }
+    }
+
+    @Test
+    fun `get post widget data and new caching disabled then returns success result`() = runBlocking {
         val dataKeys = listOf(
             TableAndPostDataKey("x", "x", 6, 3),
             TableAndPostDataKey("y", "y", 6, 3)
@@ -1011,6 +1106,10 @@ class SellerHomeViewModelTest {
         coEvery {
             getPostDataUseCase.executeOnBackground()
         } returns postList
+
+        every {
+            remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+        } returns false
 
         viewModel.getPostWidgetData(dataKeys)
 
@@ -1111,7 +1210,40 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `should success when get table widget data`() = runBlocking {
+    fun `should success when get table widget data on caching enabled`() = runBlocking {
+        val dataKeys = listOf(
+            TableAndPostDataKey("x", "x", 6, 3),
+            TableAndPostDataKey("y", "y", 6, 3)
+        )
+
+        val isNewCachingEnabled = true
+        val isCachingEnabled = true
+        val isFirstLoad = anyBoolean()
+
+        every {
+            remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+        } returns isNewCachingEnabled
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns isCachingEnabled
+
+        every {
+            getTableDataUseCase.isFirstLoad
+        } returns isFirstLoad
+
+        viewModel.getTableWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        val includeCache = isCachingEnabled && isFirstLoad
+        coVerify {
+            getTableDataUseCase.executeOnBackground(any(), anyBoolean())
+        }
+    }
+
+    @Test
+    fun `should success when get table widget data on caching disabled`() = runBlocking {
         val dataKeys = listOf(
             TableAndPostDataKey("x", "x", 6, 3),
             TableAndPostDataKey("y", "y", 6, 3)
@@ -1120,6 +1252,10 @@ class SellerHomeViewModelTest {
 
         getTableDataUseCase.params =
             GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        every {
+            remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+        } returns false
 
         coEvery {
             getTableDataUseCase.executeOnBackground()

@@ -229,13 +229,12 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val params = GetTickerUseCase.createParams(TICKER_PAGE_NAME)
             if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
-                getTickerUseCase.get().run {
-                    startCollectingResult(_homeTicker)
-                    executeOnBackground(
-                        params,
-                        isFirstLoad && remoteConfig.isSellerHomeDashboardCachingEnabled()
-                    )
-                }
+                val useCase = getTickerUseCase.get()
+                useCase.startCollectingResult(_homeTicker)
+                useCase.executeOnBackground(
+                    params,
+                    useCase.isFirstLoad && remoteConfig.isSellerHomeDashboardCachingEnabled()
+                )
             } else {
                 getTickerUseCase.get().params = params
                 getDataFromUseCase(getTickerUseCase.get(), _homeTicker)
@@ -348,14 +347,14 @@ class SellerHomeViewModel @Inject constructor(
     fun getPostWidgetData(dataKeys: List<TableAndPostDataKey>) {
         launchCatchError(block = {
             val params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
-                getPostDataUseCase.get().run {
-                    startCollectingResult(_postListWidgetData)
-                    executeOnBackground(
-                        params,
-                        isFirstLoad && remoteConfig.isSellerHomeDashboardCachingEnabled()
-                    )
-                }
+            val isCachingEnabled = remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+            if (isCachingEnabled) {
+                val useCase = getPostDataUseCase.get()
+                useCase.startCollectingResult(_postListWidgetData)
+                useCase.executeOnBackground(
+                    params,
+                    useCase.isFirstLoad && remoteConfig.isSellerHomeDashboardCachingEnabled()
+                )
             } else {
                 getPostDataUseCase.get().params = params
                 getDataFromUseCase(getPostDataUseCase.get(), _postListWidgetData)
@@ -389,13 +388,11 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
             if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
-                getTableDataUseCase.get().run {
-                    startCollectingResult(_tableWidgetData)
-                    executeOnBackground(
-                        params,
-                        isFirstLoad && remoteConfig.isSellerHomeDashboardCachingEnabled()
-                    )
-                }
+                val useCase = getTableDataUseCase.get()
+                val includeCache =
+                    useCase.isFirstLoad && remoteConfig.isSellerHomeDashboardCachingEnabled()
+                useCase.startCollectingResult(_tableWidgetData)
+                useCase.executeOnBackground(params, includeCache)
             } else {
                 getTableDataUseCase.get().params = params
                 getDataFromUseCase(getTableDataUseCase.get(), _tableWidgetData)
