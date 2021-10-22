@@ -59,7 +59,7 @@ abstract class SomBottomSheet <T: ViewBinding> (
     private fun createHideKeyboardHandler(): SingleTapListener {
         return SingleTapListener(context) {
             binding?.root?.hideKeyboard()
-            true
+            false
         }
     }
 
