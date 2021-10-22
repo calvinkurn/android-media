@@ -21,6 +21,9 @@ class TopAdsHeadlineViewHolder(view: View, val userId: String) :
 
     private val topadsHeadlineView: TopAdsHeadlineView =
         view.findViewById(R.id.topads_headline_view)
+
+    private val titleView = view.findViewById<Typography>(R.id.title_headline)
+
     private var topadsHeadlineUiModel: TopadsHeadlineUiModel? = null
 
     companion object {
@@ -50,7 +53,6 @@ class TopAdsHeadlineViewHolder(view: View, val userId: String) :
                 PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
                 PARAM_USER_ID to userId,
                 PRODUCT_ID to topadsHeadlineUiModel?.productId
-
             )
         )
     }
@@ -59,10 +61,6 @@ class TopAdsHeadlineViewHolder(view: View, val userId: String) :
         topadsHeadlineUiModel?.run {
             this.cpmModel = cpmModel
             showHeadlineView(cpmModel)
-
-            cpmModel?.run {
-                topadsHeadlineView.findViewById<Typography>(R.id.title_headline).visibility = View.VISIBLE
-            }
         }
     }
 
@@ -87,5 +85,6 @@ class TopAdsHeadlineViewHolder(view: View, val userId: String) :
         topadsHeadlineView.hideShimmerView()
         topadsHeadlineView.show()
         topadsHeadlineView.displayAds(cpmModel)
+        titleView.show()
     }
 }
