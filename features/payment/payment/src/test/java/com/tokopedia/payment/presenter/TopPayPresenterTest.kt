@@ -426,7 +426,7 @@ class TopPayPresenterTest {
     }
 
     @Test
-    fun `When payment fingerprint error without view Then should show failed`() {
+    fun `When payment fingerprint error without view Then should not show failed`() {
         // Given
         every { paymentFingerprintUseCase.execute(any(), any()) } answers {
             presenter.detachView()
@@ -595,7 +595,7 @@ class TopPayPresenterTest {
     }
 
     @Test
-    fun `When get otp without view`() {
+    fun `When get otp without view Then should not execute`() {
         // Given
         every { getPostDataOtpUseCase.execute(any(), any()) } answers {
             (secondArg() as Subscriber<HashMap<String, String>?>).onError(Throwable())
