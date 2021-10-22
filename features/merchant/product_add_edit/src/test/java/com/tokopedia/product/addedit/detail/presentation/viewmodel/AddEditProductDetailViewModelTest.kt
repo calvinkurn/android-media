@@ -1189,7 +1189,7 @@ class AddEditProductDetailViewModelTest {
         every { userSession.isShopOwner } returns true
         every { userSession.isMultiLocationShop } returns true
         every { provider.getAddProductPriceMultiLocationMessage() } returns addMessage
-        every { provider.getEditProductStockMultiLocationMessage() } returns addMessage
+        every { provider.getAddProductStockMultiLocationMessage() } returns addMessage
 
         viewModel.isEditing = false
         viewModel.isAdding = true
