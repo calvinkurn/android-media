@@ -1465,7 +1465,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private fun registerPushNotif() {
         if (isHitRegisterPushNotif && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             context?.let {
-                RegisterPushNotificationWorker.scheduleWorker(it, true)
+                RegisterPushNotificationWorker.scheduleWorker(it)
             }
         }
     }

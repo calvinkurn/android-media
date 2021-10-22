@@ -169,7 +169,7 @@ class RegisterPushNotificationWorker(
         private const val LOG_TYPE_REGISTER_PUSH_NOTIF = "registerPushNotification()"
 
         @JvmStatic
-        fun scheduleWorker(context: Context, forceWorker: Boolean) {
+        fun scheduleWorker(context: Context) {
             globalScopeLaunch({
                 try {
                     runWorker(context)
