@@ -10,9 +10,9 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_24"
-        android:layout_marginRight="@dimen/dp_24"
-        android:layout_marginTop="@dimen/dp_16">
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginTop="16dp">
 
         <RelativeLayout
             android:id="@+id/email_phone_layout"
@@ -33,7 +33,7 @@
                     android:id="@+id/input_email_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/dp_5"
+                    android:paddingLeft="5dp"
                     android:imeOptions="actionDone"
                     android:singleLine="true"/>
 
@@ -45,11 +45,11 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/dp_5"
+                android:layout_marginRight="5dp"
                 android:gravity="center"
                 android:background="@color/white"
-                android:layout_marginTop="@dimen/dp_20"
-                android:padding="@dimen/dp_8"
+                android:layout_marginTop="20dp"
+                android:padding="8dp"
                 android:text="@string/change_2"
                 android:textColor="@color/medium_green"
                 android:textSize="12sp"
@@ -121,11 +121,11 @@
             android:layout_alignParentRight="true"
             android:layout_below="@id/wrapper_password"
             android:layout_gravity="end"
-            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginTop="5dp"
             android:fontFamily="sans-serif"
             android:gravity="end"
             android:lineSpacingExtra="9sp"
-            android:padding="@dimen/dp_10"
+            android:padding="10dp"
             android:layout_marginRight="-10dp"
             android:text="@string/title_forgot_password"
             android:textColor="@color/medium_green"
@@ -140,7 +140,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/forgot_pass"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="16dp"
             android:text="@string/register"
             android:textAllCaps="false"
             app:buttonCompatType="disable"/>

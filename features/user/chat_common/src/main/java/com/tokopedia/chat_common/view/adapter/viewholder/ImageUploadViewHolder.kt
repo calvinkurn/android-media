@@ -95,7 +95,7 @@ open class ImageUploadViewHolder(itemView: View?, private val listener: ImageUpl
         }
     }
 
-    private fun setChatLeft(chatBalloon: View?) {
+    protected open fun setChatLeft(chatBalloon: View?) {
         setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, chatBalloon)
         alignHour(RelativeLayout.ALIGN_PARENT_LEFT, hour)
         setVisibility(chatStatus, View.GONE)
@@ -104,7 +104,7 @@ open class ImageUploadViewHolder(itemView: View?, private val listener: ImageUpl
         setVisibility(dot, View.GONE)
     }
 
-    private fun setChatRight(chatBalloon: View?) {
+    protected open fun setChatRight(chatBalloon: View?) {
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, chatBalloon)
         alignHour(RelativeLayout.ALIGN_PARENT_RIGHT, hour)
         setVisibility(chatStatus, View.VISIBLE)

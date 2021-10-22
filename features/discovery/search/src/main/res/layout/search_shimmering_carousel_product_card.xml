@@ -7,29 +7,29 @@
     <include
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="4dp"
         layout="@layout/search_shimmering_product_card" />
 
     <include
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
         layout="@layout/search_shimmering_product_card" />
 
     <include
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
         layout="@layout/search_shimmering_product_card" />
 
     <include
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="16dp"
         layout="@layout/search_shimmering_product_card" />
 
 </LinearLayout>

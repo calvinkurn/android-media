@@ -121,6 +121,18 @@ class TopChatRoomAdapter constructor(
         }
     }
 
+    fun getBubblePosition(localId: String, replyTime: String): Int {
+        return if (replyMap.contains(localId)) {
+            visitables.indexOfFirst {
+                it is BaseChatViewModel && it.localId == localId
+            }
+        } else {
+            visitables.indexOfFirst {
+                it is BaseChatViewModel && it.replyTime == replyTime
+            }
+        }
+    }
+
     override fun isOpposite(adapterPosition: Int, isSender: Boolean): Boolean {
         val nextItem = visitables.getOrNull(adapterPosition + 1)
         val nextItemIsSender: Boolean = when (nextItem) {
@@ -312,11 +324,7 @@ class TopChatRoomAdapter constructor(
     private fun mapListChat(listChat: List<Visitable<*>>) {
         listChat.filterIsInstance(BaseChatViewModel::class.java)
             .forEach {
-                val id = if (it.replyId.isNotEmpty()) {
-                    it.replyId
-                } else {
-                    it.localId
-                }
+                val id = it.localId
                 if (id.isEmpty()) return@forEach
                 replyMap[id] = it
             }
@@ -324,6 +332,7 @@ class TopChatRoomAdapter constructor(
 
     fun reset() {
         visitables.clear()
+        offsetUiModelMap.clear()
         bottomMostHeaderDate = null
         topMostHeaderDate = null
         topMostHeaderDateIndex = null

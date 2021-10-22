@@ -1,31 +1,36 @@
 package com.tokopedia.topchat
 
+import androidx.collection.ArrayMap
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import java.lang.reflect.Type
 
-class TopchatCacheManagerStub(
-        var cache: Any?
+class FakeTopchatCacheManager(
+        var cache: Any? = null
 ) : TopchatCacheManager {
 
+    val cacheMap: ArrayMap<Any, Any> = ArrayMap()
     var throwError: Boolean = false
     var isPreviousLoadSuccess: Boolean = true
 
     override fun saveCache(key: String, obj: Any) {
-
+        cacheMap[key] = obj
     }
 
     override fun <T> loadCache(key: String, type: Type): T {
         if (throwError) {
             throw Exception()
         }
-        return cache as T
+        if (cache != null) {
+            return cache as T
+        }
+        return cacheMap[key] as T
     }
 
-    override fun saveState(stateCacheKey: String, isSuccess: Boolean) {
-
+    override fun saveState(stateCacheKey: String, value: Boolean) {
+        cacheMap[stateCacheKey] = value
     }
 
     override fun getPreviousState(stateCacheKey: String): Boolean {
-        return isPreviousLoadSuccess
+        return cacheMap[stateCacheKey] as? Boolean ?: isPreviousLoadSuccess
     }
 }

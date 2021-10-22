@@ -3,6 +3,7 @@ package com.tokopedia.chat_common.data
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.MessageViewModel.Builder
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
+import kotlin.random.Random
 
 /**
  * Primary constructor, use [Builder] class to create this instance.
