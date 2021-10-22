@@ -7,4 +7,15 @@
     <string name="wishlist_manage_label">Atur</string>
     <string name="wishlist_count_label">%d barang</string>
     <string name="wishlist_save_label">Simpan</string>
+    <string name="button_empty_state_wishlist">Cari Barang</string>
+    <string name="empty_state_desc_1">Mau simpan barang untuk beli nanti? Bandingkan harga dan spesifikasinya? Di sini tempatnya!</string>
+    <string name="empty_state_desc_2">Lagi lihat-lihat, ada barang yang kamu suka? Klik ikon hati buat simpan di Wishlist.</string>
+    <string name="empty_state_desc_3">Akses Wishlist-mu kapan saja, masuk dari menu navigasi dan halaman Keranjang.</string>
+    <string name="empty_state_img_1">https://images.tokopedia.net/img/android/wishlist_v2/wishlist_v2_empty_state_1.png</string>
+    <string name="empty_state_img_2">https://images.tokopedia.net/img/android/wishlist_v2/wishlist_v2_empty_state_2.png</string>
+    <string name="empty_state_img_3">https://images.tokopedia.net/img/android/wishlist_v2/wishlist_v2_empty_state_3.png</string>
+    <string name="empty_state_img_not_found">https://images.tokopedia.net/img/android/wishlist_v2/wishlist_v2_empty_state_not_found.png</string>
+    <string name="empty_state_not_found_button">Cari di Tokopedia</string>
+    <string name="empty_state_not_found_title">Oops, barang itu nggak ada di Wishlist-mu</string>
+    <string name="empty_state_not_found_description">Mau coba cari %1$s di Tokopedia?</string>
 </resources>

@@ -127,9 +127,9 @@
                 android:id="@+id/sort_loader_wishlist_3"
                 android:layout_width="@dimen/dp_86"
                 android:layout_height="@dimen/dp_31"
-                app:loader_type="rect"
+                android:layout_marginStart="@dimen/dp_4"
                 android:layout_toEndOf="@id/sort_loader_wishlist_2"
-                android:layout_marginStart="@dimen/dp_4"/>
+                app:loader_type="rect" />
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/sort_loader_wishlist_4"
