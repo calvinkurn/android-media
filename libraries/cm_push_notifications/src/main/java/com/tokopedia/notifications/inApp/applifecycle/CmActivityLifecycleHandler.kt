@@ -1,4 +1,4 @@
-package com.tokopedia.notifications.inApp
+package com.tokopedia.notifications.inApp.applifecycle
 
 import android.app.Activity
 import android.app.Application
@@ -8,13 +8,14 @@ import android.util.Log
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.common.CMConstant
-import timber.log.Timber
+import com.tokopedia.notifications.inApp.CMInAppManager
+import com.tokopedia.notifications.inApp.external.PushIntentHandler
 import java.lang.ref.WeakReference
 
 class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationCallback,
                                  val pushIntentHandler: PushIntentHandler,
                                  val callback: ShowInAppCallback,
-                                 val dialogVisibilityContract: CmDialogVisibilityContract) {
+                                 val cmInAppManager: CMInAppManager) {
 
     var currentWeakActivity: WeakReference<Activity>? = null
         private set
@@ -70,7 +71,7 @@ class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationC
     }
 
     fun onActivityDestroyedInternal(activity: Activity) {
-        dialogVisibilityContract.onDialogDismiss(activity)
+        cmInAppManager.onDialogDismiss(activity)
     }
 
     private fun clearCurrentActivity(activity: Activity) {

@@ -10,7 +10,7 @@ import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.notifications.common.CMConstant;
-import com.tokopedia.notifications.inApp.CmActivityLifecycleHandler;
+import com.tokopedia.notifications.inApp.applifecycle.CmActivityLifecycleHandler;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.utils.NotificationCancelManager;
 
