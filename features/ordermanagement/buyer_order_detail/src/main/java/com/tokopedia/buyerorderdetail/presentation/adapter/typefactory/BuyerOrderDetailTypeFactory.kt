@@ -11,9 +11,11 @@ import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationD
 
 class BuyerOrderDetailTypeFactory(
         private val productViewListener: ProductViewHolder.ProductViewListener,
+        private val productBundlingViewListener: ProductBundlingViewHolder.Listener,
         private val navigator: BuyerOrderDetailNavigator,
         private val tickerViewHolderListener: TickerViewHolder.TickerViewHolderListener,
-        private val digitalRecommendationData: DigitalRecommendationData
+        private val digitalRecommendationData: DigitalRecommendationData,
+        private val digitalRecommendationListener: DigitalRecommendationViewHolder.ActionListener
 ) : BaseAdapterTypeFactory() {
 
     fun type(awbInfoUiModel: ShipmentInfoUiModel.AwbInfoUiModel): Int {
@@ -56,6 +58,10 @@ class BuyerOrderDetailTypeFactory(
         return ProductViewHolder.LAYOUT
     }
 
+    fun type(productBundlingUiModel: ProductListUiModel.ProductBundlingUiModel): Int {
+        return ProductBundlingViewHolder.LAYOUT
+    }
+
     fun type(thickDividerUiModel: ThickDividerUiModel): Int {
         return ThickDividerViewHolder.LAYOUT
     }
@@ -92,11 +98,12 @@ class BuyerOrderDetailTypeFactory(
             PlainHeaderViewHolder.LAYOUT -> PlainHeaderViewHolder(parent)
             ProductListHeaderViewHolder.LAYOUT -> ProductListHeaderViewHolder(parent, navigator)
             ProductViewHolder.LAYOUT -> ProductViewHolder(parent, productViewListener, navigator)
+            ProductBundlingViewHolder.LAYOUT -> ProductBundlingViewHolder(parent, productBundlingViewListener, navigator)
             ThickDividerViewHolder.LAYOUT -> ThickDividerViewHolder(parent)
             ThinDashedDividerViewHolder.LAYOUT -> ThinDashedDividerViewHolder(parent)
             ThinDividerViewHolder.LAYOUT -> ThinDividerViewHolder(parent)
             TickerViewHolder.LAYOUT -> TickerViewHolder(parent, navigator, tickerViewHolderListener)
-            DigitalRecommendationViewHolder.LAYOUT -> DigitalRecommendationViewHolder(parent, digitalRecommendationData)
+            DigitalRecommendationViewHolder.LAYOUT -> DigitalRecommendationViewHolder(parent, digitalRecommendationData, digitalRecommendationListener)
             else -> super.createViewHolder(parent, type)
         }
     }

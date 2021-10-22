@@ -173,7 +173,7 @@ class DiscoveryDataMapper {
             if (it.options.isNullOrEmpty())
                 filter.remove(it)
         }
-        return DynamicFilterModel(data = DataValue(filter = filter as List<Filter>, sort = dataItem.sort as List<Sort>))
+        return DynamicFilterModel(data = DataValue(filter = filter as List<Filter>, sort = dataItem.sort as List<Sort>),defaultSortValue = "")
     }
 
     fun mapDataItemToProductCardModel(dataItem: DataItem, componentName: String?): ProductCardModel {

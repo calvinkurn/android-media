@@ -135,7 +135,9 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -729,9 +731,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                                 }
                             }
                         }
-                        userSession.isLoggedIn.let { isLoggedIn ->
-                            userSession.userId?.let { userId ->
-                                UohAnalytics.viewOrderListPage(trackingQueue, isLoggedIn, userId) } }
+                        UohAnalytics.viewOrderListPage()
                     } else {
                         if (currPage == 1) {
                             uohListViewModel.loadTdnBanner()
@@ -1787,8 +1787,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     override fun trackViewOrderCard(order: UohListOrder.Data.UohOrders.Order, index: Int) {
         var jsonArray = JsonArray()
         if (order.metadata.listProducts.isNotEmpty()) {
-            val listOfStrings = gson.fromJson(order.metadata.listProducts, mutableListOf<String>().javaClass)
-            jsonArray = gson.toJsonTree(listOfStrings).asJsonArray
+            jsonArray = JsonParser().parse(order.metadata.listProducts).asJsonArray
         }
         userSession.userId?.let { userId ->
             UohAnalytics.viewOrderCard(trackingQueue, order, userId, jsonArray, index.toString())

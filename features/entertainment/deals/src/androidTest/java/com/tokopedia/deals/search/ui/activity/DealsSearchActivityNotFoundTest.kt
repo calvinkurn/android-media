@@ -42,7 +42,7 @@ class DealsSearchActivityNotFoundTest {
     @Test
     fun testSearchFlow() {
         Thread.sleep(3000)
-        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click()).perform(typeText(DUMMY_USER_TYPE_STRING), ViewActions.closeSoftKeyboard())
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(typeText(DUMMY_USER_TYPE_STRING), ViewActions.closeSoftKeyboard())
         Thread.sleep(2000)
         Assert.assertThat(getAnalyticsWithQuery(gtmLogDbSource, context, ANALYTIC_VALIDATOR_QUERY_DEALS_SEARHPAGE),
                 hasAllSuccess())

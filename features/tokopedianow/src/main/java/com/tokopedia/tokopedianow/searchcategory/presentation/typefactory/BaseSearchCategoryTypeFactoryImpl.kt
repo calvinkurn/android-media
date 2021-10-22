@@ -71,7 +71,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
 
     override fun type(uiModel: TokoNowCategoryGridUiModel) = TokoNowCategoryGridViewHolder.LAYOUT
 
-    override fun type(uiModel: TokoNowRecentPurchaseUiModel) = TokoNowRecentPurchaseViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowRepurchaseUiModel) = TokoNowRepurchaseViewHolder.LAYOUT
 
     override fun type(uiModel: TokoNowChooseAddressWidgetUiModel): Int = TokoNowChooseAddressWidgetViewHolder.LAYOUT
 

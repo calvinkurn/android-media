@@ -34,12 +34,9 @@ class UohListTrackingTest {
     var cassavaTestRule = CassavaTestRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Before
     fun setup() {
-        gtmLogDBSource.deleteAll().subscribe()
-
         setupGraphqlMockResponse {
             addMockResponse(KEY_UOH_ORDERS, InstrumentationMockHelper.getRawString(context,
                     R.raw.response_mock_uoh_orders_succeed_manual), MockModelConfig.FIND_BY_CONTAINS)
@@ -80,6 +77,12 @@ class UohListTrackingTest {
             clickFilterDate()
             selectFilterDate()
             doApplyFilter()
+            // Force TrackingQueue to send trackers
+            sendTrack(GlobalScope, TrackRepository(context)) {
+                /* no-op */
+            }
+            // Wait for TrackingQueue to finish
+            Thread.sleep(5_000)
         } submit {
             hasPassedAnalytics(cassavaTestRule, query)
         }
