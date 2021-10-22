@@ -1,0 +1,78 @@
+package com.tokopedia.mvcwidget.quest_widget
+
+object GQLQueryQuestWidget {
+
+    const val QUERY_QUEST_WIDGET = """
+    
+    query questWidgetList(${'$'}channel: Int!, ${'$'}channelSlug: String!, ${'$'}page: String!})
+    {
+    questWidgetList {
+      id
+      title
+      description
+      isDisabledIcon
+      progressInfoText
+      expiredDate
+      cardBannerBackgroundURL
+      detailBannerBackgroundURL
+      label {
+        title
+        description
+        backgroundColor
+        imageURL
+        type
+        textColor
+      }
+      config
+      questUser {
+        id
+        status
+      }
+      task {
+        id
+        title
+        progress {
+          current
+          target
+        }
+      }
+      actionButton {
+        text
+        shortText
+        backgroundColor
+        isDisable
+        cta {
+          url
+          applink
+        }
+      }
+      prize {
+        iconUrl
+        shortText
+        text
+        textColor
+      }
+      category {
+        id
+        title
+      }
+    }
+    resultStatus {
+      code
+      reason
+    }
+    isEligible
+    pageDetail {
+      title
+      text
+      isHiddenCta
+      cta {
+        url
+        applink
+      }
+    }
+}
+  
+  """
+
+}

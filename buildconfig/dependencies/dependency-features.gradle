@@ -201,6 +201,7 @@ ext {
             promoGamificationCommon         : ":features:promo:promo_gamification_common",
             promoUiCommon                   : ":features:promo:promo_ui_common",
             promoMvcWidget                  : ":features:promo:mvc_widget",
+            questWidget                     : ":features:promo:quest_widget",
 
             topAdsDashboard                 : ":features:top_ads:top_ads_dashboard",
             topAdsFreeClaim                 : ":features:top_ads:top_ads_free_claim",

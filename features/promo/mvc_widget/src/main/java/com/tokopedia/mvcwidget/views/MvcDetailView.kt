@@ -18,10 +18,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.mvcwidget.*
 import com.tokopedia.mvcwidget.di.components.DaggerMvcComponent
+import com.tokopedia.mvcwidget.quest_widget.QuestWidgetAdapter
+import com.tokopedia.mvcwidget.quest_widget.QuestWidgetListItem
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.trackers.MvcTracker
 import com.tokopedia.promoui.common.dpToPx
@@ -34,6 +35,7 @@ class MvcDetailView @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr), MvcDetailViewContract {
 
     var rv: RecyclerView
+    var rv_quest_widget: RecyclerView
     var viewFlipper: ViewFlipper
     var globalError: GlobalError
     var addBottomMarginOnToast = false
@@ -47,6 +49,8 @@ class MvcDetailView @JvmOverloads constructor(
     }
 
     val adapter by lazy { MvcDetailAdapter(arrayListOf(), this) }
+    val questWidgetDataList = arrayListOf<QuestWidgetListItem>()
+    val questWidgetAdapter by lazy { QuestWidgetAdapter(questWidgetDataList, false) }
 
     private val CONTAINER_CONTENT = 0
     private val CONTAINER_SHIMMER = 1
@@ -79,10 +83,15 @@ class MvcDetailView @JvmOverloads constructor(
         userSession = UserSession(context)
         View.inflate(context, R.layout.mvc_detail_view, this)
         rv = findViewById(R.id.rv)
+        rv_quest_widget = findViewById(R.id.rv_quest_widget)
         viewFlipper = findViewById(R.id.viewFlipper)
         globalError = findViewById(R.id.mvcDetailGlobalError)
         rv.layoutManager = LinearLayoutManager(context)
+        rv_quest_widget.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         rv.adapter = adapter
+
+        rv_quest_widget.adapter = questWidgetAdapter
+        questWidgetAdapter.notifyDataSetChanged()
 
          DaggerMvcComponent.builder()
             .build().inject(this)
@@ -249,7 +258,7 @@ class MvcDetailView @JvmOverloads constructor(
                 }
                 val spannableString2 = SpannableString(sb.toString())
 
-                spannableString2.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600)), sb.toString().length - quotaTextLength, sb.toString().length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannableString2.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, R.color.Unify_R600)), sb.toString().length - quotaTextLength, sb.toString().length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 val mvcListItem = MvcCouponListItem(it.tagImageURLs, it.title ?: "", it.minimumUsageLabel
                         ?: "", spannableString2)
                 tempCouponList.add(mvcListItem)
