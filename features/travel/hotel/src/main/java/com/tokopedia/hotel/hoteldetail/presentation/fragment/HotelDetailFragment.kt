@@ -32,6 +32,7 @@ import com.tokopedia.hotel.databinding.FragmentHotelDetailBinding
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelGlobalSearchActivity
 import com.tokopedia.hotel.globalsearch.presentation.widget.HotelGlobalSearchWidget
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
+import com.tokopedia.hotel.hoteldetail.data.entity.HotelNearbyLandmark
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyImageItem
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertySafetyBadge
@@ -42,6 +43,7 @@ import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailAllFacil
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelReviewActivity
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailMainFacilityAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailReviewAdapter
+import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelNearbyPlacesSectionAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.model.HotelDetailAllFacilityModel
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelDetailViewModel
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReview
@@ -49,13 +51,11 @@ import com.tokopedia.hotel.hoteldetail.util.HotelShare
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
-import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
-import com.tokopedia.kotlin.extensions.view.getDimens
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.mapviewer.activity.MapViewerActivity
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -113,6 +113,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
     private lateinit var detailReviewAdapter: HotelDetailReviewAdapter
     private lateinit var mainFacilityAdapter: HotelDetailMainFacilityAdapter
+    private lateinit var nearbyLandmarks: HotelNearbyPlacesSectionAdapter
 
     private var loadingProgressDialog: ProgressDialog? = null
     private var isTickerValid = false
@@ -174,12 +175,14 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     HotelGqlQuery.PROPERTY_DETAIL,
                     HotelGqlQuery.PROPERTY_ROOM_LIST,
                     HotelGqlQuery.PROPERTY_REVIEW,
+                    HotelGqlQuery.HOTEL_NEARBY_LANDMARKS,
                     hotelHomepageModel.locId,
                     hotelHomepageModel, source)
         } else {
             detailViewModel.getHotelDetailDataWithoutRoom(
                     HotelGqlQuery.PROPERTY_DETAIL,
                     HotelGqlQuery.PROPERTY_REVIEW,
+                    HotelGqlQuery.HOTEL_NEARBY_LANDMARKS,
                     hotelHomepageModel.locId, source)
         }
 
@@ -250,6 +253,22 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 }
             }
         })
+
+        observeABTestNearbyLandmarks()
+    }
+    fun observeABTestNearbyLandmarks(){
+        if(!isABTestNearbyLandmarks()) {
+            detailViewModel.hotelNearbyLandmarks.observe(viewLifecycleOwner, {
+                when (it) {
+                    is Success -> {
+                        setupLayoutNearbyLandmarks(it.data)
+                    }
+                    is Fail -> {
+                        hideNearbyLandmarks()
+                    }
+                }
+            })
+        }
     }
 
     private fun hideTickerView() {
@@ -710,6 +729,26 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         setupGlobalSearchWidget()
     }
 
+    private fun setupLayoutNearbyLandmarks(dataList: HotelNearbyLandmark){
+        if (dataList.result.isNotEmpty()){
+            if (!::nearbyLandmarks.isInitialized) {
+                nearbyLandmarks = HotelNearbyPlacesSectionAdapter(dataList.result)
+            }
+            val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            binding?.rvNearbyLandmarks?.layoutManager = layoutManager
+            binding?.rvNearbyLandmarks?.isNestedScrollingEnabled = false
+            binding?.rvNearbyLandmarks?.adapter = nearbyLandmarks
+
+            binding?.tvHotelNearbyLandmarkInfo?.text = dataList.information
+
+            context?.let {
+                trackingHotelUtil.hotelDetailViewNearbyLandmarks(it, PDP_SCREEN_NAME, hotelId, roomPriceAmount)
+            }
+        }else{
+            hideNearbyLandmarks()
+        }
+    }
+
     private fun setupGlobalSearchWidget() {
         // setup hotel global search widget
         // add condition if checkin date & checkout date isNotEmpty, to prevent crash access hotel detail from applink
@@ -739,12 +778,14 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     HotelGqlQuery.PROPERTY_DETAIL,
                     HotelGqlQuery.PROPERTY_ROOM_LIST,
                     HotelGqlQuery.PROPERTY_REVIEW,
+                    HotelGqlQuery.HOTEL_NEARBY_LANDMARKS,
                     hotelHomepageModel.locId,
                     hotelHomepageModel, source)
         } else {
             detailViewModel.getHotelDetailDataWithoutRoom(
                     HotelGqlQuery.PROPERTY_DETAIL,
                     HotelGqlQuery.PROPERTY_REVIEW,
+                    HotelGqlQuery.HOTEL_NEARBY_LANDMARKS,
                     hotelHomepageModel.locId, source)
         }
     }
@@ -785,6 +826,20 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         }
     }
 
+    private fun showNearbyLandmarks(){
+        binding?.let {
+            it.rvNearbyLandmarks.visible()
+            it.tvHotelNearbyLandmarkInfo.visible()
+        }
+    }
+
+    private fun hideNearbyLandmarks(){
+       binding?.let {
+           it.rvNearbyLandmarks.gone()
+           it.tvHotelNearbyLandmarkInfo.gone()
+       }
+    }
+
     private fun stopTrace() {
         if (!isTraceStop) {
             if (isHotelInfoLoaded && isHotelReviewLoaded && isRoomListLoaded) {
@@ -793,6 +848,10 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             }
         }
     }
+
+    fun isABTestNearbyLandmarks(): Boolean = (RemoteConfigInstance.getInstance().abTestPlatform
+        .getString(AB_TEST_KEY_NEARBY_LANDMARK, AB_TEST_SHOW_LANDMARK)
+            == AB_TEST_HIDE_LANDMARK)
     companion object {
 
         const val REQUEST_CODE_GLOBAL_SEARCH = 103
@@ -811,6 +870,10 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         const val IMAGE_COUNTER_FIRST = 1
         const val IMAGE_COUNTER_SECOND = 2
         const val IMAGE_COUNTER_THIRD = 3
+
+        const val AB_TEST_KEY_NEARBY_LANDMARK = "hotel_nearlandmark"
+        const val AB_TEST_HIDE_LANDMARK = "hide_nearby"
+        const val AB_TEST_SHOW_LANDMARK = "Show_nearby"
 
         fun getInstance(checkInDate: String, checkOutDate: String, propertyId: Long, roomCount: Int,
                         adultCount: Int, destinationType: String, destinationName: String,

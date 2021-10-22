@@ -97,7 +97,7 @@ class DealsHomeMapper @Inject constructor(@ApplicationContext private val contex
 
         val popularPlaces = nearestLocations.map { location ->
             VoucherPlaceCardDataView(
-                    id = location.id.toString(),
+                    id = location.id,
                     imageUrl = location.imageApp,
                     name = location.name,
                     location = location
