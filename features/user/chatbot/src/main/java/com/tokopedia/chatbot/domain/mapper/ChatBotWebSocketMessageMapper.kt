@@ -10,15 +10,15 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_RATING
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICES_SELECTION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_SEND
-import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_SECURE_IMAGE_UPLOAD
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
-import com.tokopedia.chat_common.domain.pojo.imageupload.ImageUploadAttributes
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
+import com.tokopedia.chatbot.data.imageupload.ChatbotImageUploadAttributes
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
@@ -26,7 +26,6 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonPojo
 import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonViewModel
-import com.tokopedia.chatbot.data.uploadsecure.SecureImageUploadAttributes
 import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionBalloonSelectionAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
 import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
@@ -66,8 +65,8 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
 
     private fun convertToImageUpload(@NonNull pojo: ChatSocketPojo, jsonAttribute: JsonObject):
             ImageUploadViewModel {
-        val pojoAttribute = GsonBuilder().create().fromJson<ImageUploadAttributes>(jsonAttribute,
-            ImageUploadAttributes::class.java)
+        val pojoAttribute = GsonBuilder().create().fromJson<ChatbotImageUploadAttributes>(jsonAttribute,
+                ChatbotImageUploadAttributes::class.java)
 
         return ImageUploadViewModel(
             messageId = pojo.msgId.toString(),

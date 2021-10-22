@@ -14,8 +14,4 @@ class ImageUploadAttributes {
     @SerializedName("image_url_thumbnail")
     @Expose
     val thumbnail: String = ""
-
-    @SerializedName("image_url_secure")
-    @Expose
-    val imageUrlSecure: String = ""
 }

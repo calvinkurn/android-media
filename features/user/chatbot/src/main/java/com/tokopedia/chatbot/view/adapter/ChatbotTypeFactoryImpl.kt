@@ -26,6 +26,7 @@ import com.tokopedia.chatbot.view.adapter.viewholder.chatbubble.CustomChatbotMes
 import com.tokopedia.chatbot.view.adapter.viewholder.chatbubble.LeftChatMessageViewHolder
 import com.tokopedia.chatbot.view.adapter.viewholder.chatbubble.RightChatMessageViewHolder
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.*
+import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * @author by nisie on 27/11/18.
@@ -42,7 +43,7 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
                                   private val chatOptionListListener: ChatOptionListListener,
                                   private val csatOptionListListener: CsatOptionListListener,
                                   private val actionButtonClickListener: StickyActionButtonClickListener,
-                                  private val uploadSecureImageLoadListener: UploadSecureImageLoadListener) :
+                                  private val userSession: UserSessionInterface) :
         BaseChatTypeFactoryImpl(imageAnnouncementListener, chatLinkHandlerListener,
                 imageUploadListener, productAttachmentListener),
         ChatbotTypeFactory {
@@ -151,7 +152,7 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
             AttachedInvoiceSelectionViewHolder.LAYOUT -> AttachedInvoiceSelectionViewHolder(parent, attachedInvoiceSelectionListener)
             ChatRatingViewHolder.LAYOUT -> ChatRatingViewHolder(parent, chatLinkHandlerListener, chatRatingListener)
             ChatActionListBubbleViewHolder.LAYOUT -> ChatActionListBubbleViewHolder(parent, chatActionListBubbleListener, chatLinkHandlerListener)
-            ChatbotImageUploadViewHolder.LAYOUT -> ChatbotImageUploadViewHolder(parent, imageUploadListener, uploadSecureImageLoadListener)
+            ChatbotImageUploadViewHolder.LAYOUT -> ChatbotImageUploadViewHolder(parent, imageUploadListener, userSession)
             else -> super.createViewHolder(parent, type)
         }
     }

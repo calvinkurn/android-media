@@ -138,7 +138,5 @@ interface ChatbotContract {
             context: Context?
         )
 
-        fun downloadSecureImage(url: String)
-
     }
 }

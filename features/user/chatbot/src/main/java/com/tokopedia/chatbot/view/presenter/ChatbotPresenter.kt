@@ -108,8 +108,7 @@ class ChatbotPresenter @Inject constructor(
         private val getResolutionLinkUseCase: GetResolutionLinkUseCase,
         private val getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase,
         private val checkUploadSecureUseCase: CheckUploadSecureUseCase,
-        private val uploadSecureImageUploadUseCase:UploadSecureImageUploadUseCase,
-        private val uploadPaymentProofUseCase2:UploadPaymentProofUseCase2
+        private val chatBotSecureImageUploadUseCase:ChatBotSecureImageUploadUseCase
 ) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter, CoroutineScope {
 
 
@@ -481,77 +480,36 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun uploadImageSecureUpload(
-        imageUploadViewModel: ImageUploadViewModel,
-        messageId: String,
-        opponentId: String,
-        onErrorImageUpload: (Throwable, ImageUploadViewModel) -> Unit,
-        path: String?,
-        context: Context?
+            imageUploadViewModel: ImageUploadViewModel,
+            messageId: String,
+            opponentId: String,
+            onErrorImageUpload: (Throwable, ImageUploadViewModel) -> Unit,
+            path: String?,
+            context: Context?
     ) {
-//        launchCatchError(
-//            block = {
-//                path?.let {
-//                    val s = uploadSecureImageUploadUseCase.getSecureImageUploadUrl(
-//                        getMultiPartObject(it, messageId), imageUploadViewModel, view.context
-//                    )
-//                    Log.d("uploadImageS", s.toString())
-//                }
-//            },
-//            onError = {
-//
-//            }
-//
-//        )
-        uploadPaymentProofUseCase2.setRequestParams(messageId, path?:"", context)
-        uploadPaymentProofUseCase2.execute(object : Subscriber<Map<Type?, RestResponse?>?>() {
+        chatBotSecureImageUploadUseCase.setRequestParams(messageId, path ?: "")
+        chatBotSecureImageUploadUseCase.execute(object : Subscriber<Map<Type?, RestResponse?>?>() {
             override fun onCompleted() {}
             override fun onError(e: Throwable) {
-
+                onErrorImageUpload(e, imageUploadViewModel)
             }
 
-//            override fun onNext(typeRestResponseMap: Map<Type?, RestResponse?>) {
-
-//            }
-
             override fun onNext(t: Map<Type?, RestResponse?>?) {
-                                val token = object : TypeToken<UploadSecureResponse?>() {}.type
+                val token = object : TypeToken<UploadSecureResponse?>() {}.type
                 val restResponse = t?.get(token)
-                val paymentProofResponse: UploadSecureResponse = restResponse!!.getData()
-                Log.d("wdewfrf", "onNext: $paymentProofResponse ")
+                val uploadSecureResponse: UploadSecureResponse? = restResponse?.getData()
                 sendUploadedImageToWebsocket(
-                    ChatbotSendWebsocketParam
-                        .generateParamUploadSecureSendImage(
-                            messageId,
-                            paymentProofResponse.uploadSecureData.urlImage,
-                            imageUploadViewModel.startTime,
-                            opponentId,
-                            userSession.name)
+                        ChatbotSendWebsocketParam
+                                .generateParamUploadSecureSendImage(
+                                        messageId,
+                                        uploadSecureResponse?.uploadSecureData?.urlImage ?: "",
+                                        imageUploadViewModel.startTime,
+                                        opponentId,
+                                        userSession.name)
                 )
-
             }
 
         })
-
-    }
-
-    override fun downloadSecureImage(url: String) {
-        launchCatchError(
-            block = { uploadSecureImageUploadUseCase.downloadImage(url)},
-            onError = {}
-        )
-
-    }
-
-    private fun getMultiPartObject(pathFile: String, messageId: String): Map<String, RequestBody> {
-
-        val file = File(pathFile)
-        val reqFile = RequestBody.create(MediaType.parse("image/*"), file)
-        val id: RequestBody = RequestBody.create(
-            MediaType.parse("text/plain"),
-            messageId
-        )
-       return mapOf("file" to reqFile, "msg_id" to id)
-//        return MultipartBody.Part.createFormData("file_upload", file.name, reqFile)
     }
 
     override fun cancelImageUpload() {

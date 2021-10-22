@@ -130,8 +130,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
         ChatActionListBubbleListener, ChatRatingListener,
         TypingListener, ChatOptionListListener, CsatOptionListListener,
-        View.OnClickListener, TransactionInvoiceBottomSheetListener, StickyActionButtonClickListener,
-         UploadSecureImageLoadListener{
+        View.OnClickListener, TransactionInvoiceBottomSheetListener, StickyActionButtonClickListener{
 
     override fun clearChatText() {
         replyEditText.setText("")
@@ -295,7 +294,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 this,
                 this,
                 this,
-                this
+                getUserSession()
         )
     }
 
@@ -698,11 +697,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun uploadUsingSecureUpload(data: Intent) {
-        //hit new api
-        val path = ImagePickerResultExtractor.extract(data).imageUrlOrPathList[0]
+        val path = ImagePickerResultExtractor.extract(data).imageUrlOrPathList.getOrNull(0)
         processImagePathToUpload(data)?.let {
             getViewState()?.onImageUpload(it)
-            presenter.uploadImageSecureUpload(it, messageId, opponentId, onErrorImageUpload(),path, context)
+            presenter.uploadImageSecureUpload(it, messageId, opponentId, onErrorImageUpload(), path, context)
         }
     }
 
@@ -711,10 +709,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             getViewState()?.onImageUpload(it)
             presenter.uploadImages(it, messageId, opponentId, onErrorImageUpload())
         }
-    }
-
-    override fun loadImageUsingUrl(url: String) {
-        presenter.downloadSecureImage(url)
     }
 
     private fun onErrorImageUpload(): (Throwable, ImageUploadViewModel) -> Unit {
