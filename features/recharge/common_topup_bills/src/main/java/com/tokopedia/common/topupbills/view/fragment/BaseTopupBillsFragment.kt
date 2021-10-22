@@ -424,12 +424,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun showErrorMessage(error: Throwable) {
-        view?.let { v ->
-            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error)
-                    ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
-        }
-    }
+    abstract fun showErrorMessage(error: Throwable)
 
     private fun processExpressCheckout(checkOtp: Boolean = false) {
         // Check if promo code is valid
