@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.logisticCommon.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -13,8 +14,7 @@ import com.tokopedia.unifyprinciples.Typography
 class DelayedEtaBottomSheetFragment : BottomSheetUnify() {
 
     private var description: String = ""
-    private var tvDescription: Typography? = null
-    private var btnDismiss: UnifyButton? = null
+    private var emptyState: EmptyStateUnify? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,19 +36,18 @@ class DelayedEtaBottomSheetFragment : BottomSheetUnify() {
             setChild(this)
             bindView(this)
         }
-        if (description.isNotEmpty()) tvDescription?.text = MethodChecker.fromHtml(description)
+        if (description.isNotEmpty()) emptyState?.emptyStateDescriptionID?.text = MethodChecker.fromHtml(description)
         setViewListener()
     }
 
     private fun bindView(view: View) {
         with(view) {
-            tvDescription = findViewById(R.id.description)
-            btnDismiss = findViewById(R.id.btn)
+            emptyState = findViewById(R.id.eta_empty_state)
         }
     }
 
     private fun setViewListener() {
-        btnDismiss?.setOnClickListener {
+        emptyState?.setPrimaryCTAClickListener {
             dismiss()
         }
     }
