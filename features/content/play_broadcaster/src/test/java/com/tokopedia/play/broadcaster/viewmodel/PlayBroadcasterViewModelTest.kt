@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
+import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.util.assertEqualTo
@@ -42,7 +42,7 @@ class PlayBroadcasterViewModelTest {
         val countDown = 5
         val configMock = uiModelBuilder.buildConfigurationUiModel(countDown = countDown.toLong())
 
-        val mockRepo: PlayBroadcastChannelRepository = mockk(relaxed = true)
+        val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
         coEvery { mockRepo.getChannelConfiguration() } returns configMock
 
         val robot = PlayBroadcastViewModelRobot(
