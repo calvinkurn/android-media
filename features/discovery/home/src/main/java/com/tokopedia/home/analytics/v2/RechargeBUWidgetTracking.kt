@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetProductCardViewHolder.Companion.IMAGE_TYPE_FULL
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import java.util.*
 
 object RechargeBUWidgetTracking : BaseTracking() {
     private const val RECHARGE_BU_WIDGET_CLICK_EVENT = "clickHomepage"
@@ -106,7 +107,6 @@ object RechargeBUWidgetTracking : BaseTracking() {
                 Ecommerce.KEY, getProductView(data, position),
                 UserId.KEY, userId
             )
-            trackingQueue.putEETracking(tracker as? HashMap<String, Any>)
         }
     }
 
