@@ -865,6 +865,12 @@ class AddEditProductPreviewFragment :
                 productInputModel = viewModel.productInputModel.value
             }
         }
+        // update product limitation ticker
+        productLimitationTicker?.post {
+            val productLimitationModel = SharedPreferencesUtil
+                .getProductLimitationModel(requireActivity()) ?: ProductLimitationModel()
+            setupBottomSheetProductLimitation(productLimitationModel)
+        }
     }
 
     private fun displayAddModeDetail(productInputModel: ProductInputModel) {
@@ -1174,7 +1180,6 @@ class AddEditProductPreviewFragment :
     }
 
     private fun observeProductLimitationData() {
-        if (!RollenceUtil.getProductLimitationRollence()) return
         if (isAdding() || viewModel.isDuplicate) {
             if (isFragmentFirstTimeLoaded && !isDrafting()) viewModel.getProductLimitation()
             viewModel.productLimitationData.observe(viewLifecycleOwner) {
@@ -1644,9 +1649,13 @@ class AddEditProductPreviewFragment :
         adminRevampErrorLayout?.show()
     }
 
-    private fun setupProductLimitationViews() {
-        if (!RollenceUtil.getProductLimitationRollence()) return
+    private fun showProductLimitationBottomSheet() {
+        productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button))
+        productLimitationBottomSheet?.setIsSavingToDraft(false)
+        productLimitationBottomSheet?.show(childFragmentManager)
+    }
 
+    private fun setupProductLimitationViews() {
         val productLimitStartDate = getString(R.string.label_product_limitation_start_date)
         val tickers = listOf(
             TickerData(
@@ -1663,16 +1672,17 @@ class AddEditProductPreviewFragment :
         adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
             override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                 if (linkUrl == KEY_OPEN_BOTTOMSHEET) {
-                    productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button))
-                    productLimitationBottomSheet?.setIsSavingToDraft(false)
-                    productLimitationBottomSheet?.show(childFragmentManager)
+                    showProductLimitationBottomSheet()
                 } else {
                     RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$linkUrl")
                 }
             }
         })
         productLimitationTicker?.addPagerView(adapter, tickers)
-        productLimitationTicker?.showWithCondition((isAdding() && !isDrafting()) || viewModel.isDuplicate)
+        productLimitationTicker?.post {
+            productLimitationTicker?.showWithCondition(
+                (isAdding() && !isDrafting()) || viewModel.isDuplicate)
+        }
     }
 
     private fun setupBottomSheetProductLimitation(productLimitationModel: ProductLimitationModel) {
@@ -1709,7 +1719,7 @@ class AddEditProductPreviewFragment :
 
         // launch bottomsheet automatically when fragment loaded
         if (!isProductLimitEligible && isFragmentFirstTimeLoaded) {
-            productLimitationTicker?.performClick()
+            showProductLimitationBottomSheet()
         }
     }
 }
