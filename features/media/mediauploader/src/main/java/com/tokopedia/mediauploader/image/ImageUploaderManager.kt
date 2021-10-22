@@ -5,7 +5,7 @@ import com.tokopedia.mediauploader.common.data.consts.*
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.common.state.ProgressCallback
 import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.mediauploader.common.util.getFileExtension
+import com.tokopedia.mediauploader.common.util.fileExtension
 import com.tokopedia.mediauploader.common.util.isMaxBitmapResolution
 import com.tokopedia.mediauploader.common.util.isMaxFileSize
 import com.tokopedia.mediauploader.common.util.isMinBitmapResolution
@@ -20,63 +20,7 @@ class ImageUploaderManager constructor(
     private val imageUploaderUseCase: GetImageUploaderUseCase
 ) : UploaderManager {
 
-    override suspend operator fun invoke(
-        file: File,
-        sourceId: String,
-        progress: ProgressCallback?
-    ): UploadResult {
-        return validate(file, sourceId) { policy ->
-            // track progress bar
-            setProgressUploader(progress)
-
-            // upload file
-            upload(file, sourceId, policy)
-        }.also { result ->
-            if (result is UploadResult.Error) {
-                setError(listOf(result.message), sourceId, file)
-            }
-        }
-    }
-
-    override suspend fun upload(
-        file: File,
-        sourceId: String,
-        policy: SourcePolicy
-    ): UploadResult {
-        // media uploader
-        val uploaderParams = ImageUploadParam(
-            hostUrl = policy.host,
-            sourceId = sourceId,
-            file = file,
-            timeOut = policy.timeOut.toString(),
-        )
-
-        // upload file
-        val upload = imageUploaderUseCase(uploaderParams)
-
-        // getting error from gql response
-        val error = if (upload.header.messages.isNotEmpty()) {
-            upload.header.messages
-        } else {
-            // error handling, when server returned empty error message
-            listOf(UNKNOWN_ERROR)
-        }
-
-        return upload.data?.let {
-            UploadResult.Success(it.uploadId)
-        }?: setError(error, sourceId, file)
-    }
-
-    /*
-    * pre-validation (local), for:
-    * - file not sound
-    * - source not sound
-    * */
-    override suspend fun validate(
-        file: File,
-        sourceId: String,
-        onUpload: suspend (sourcePolicy: SourcePolicy) -> UploadResult
-    ): UploadResult {
+    suspend operator fun invoke(file: File, sourceId: String): UploadResult {
         // sourceId empty validation
         if (sourceId.isEmpty()) return UploadResult.Error(SOURCE_NOT_FOUND)
 
@@ -104,7 +48,7 @@ class ImageUploaderManager constructor(
             setError(listOf(
                 when {
                     !file.exists() -> FILE_NOT_FOUND
-                    !extensions.contains(filePath.getFileExtension()) ->
+                    !extensions.contains(filePath.fileExtension()) ->
                         formatNotAllowedMessage(sourcePolicy.imagePolicy.extension)
                     file.isMaxFileSize(maxFileSize) ->
                         maxFileSizeMessage(maxFileSize)
@@ -122,8 +66,35 @@ class ImageUploaderManager constructor(
         return if (onError.message.isNotEmpty()) {
             onError
         } else {
-            onUpload(sourcePolicy)
+            upload(file, sourceId, sourcePolicy)
         }
+    }
+
+    private suspend fun upload(file: File, sourceId: String, policy: SourcePolicy): UploadResult {
+        // media uploader
+        val uploaderParams = ImageUploadParam(
+            hostUrl = policy.host,
+            sourceId = sourceId,
+            file = file,
+            timeOut = policy.timeOut.toString(),
+        )
+
+        // upload file
+        val upload = imageUploaderUseCase(uploaderParams)
+
+        // getting error from gql response
+        val error = if (upload.header.messages.isNotEmpty()) {
+            upload.header.messages
+        } else {
+            // error handling, when server returned empty error message
+            listOf(UNKNOWN_ERROR)
+        }
+
+        return upload.data?.let {
+            UploadResult.Success(
+                uploadId = it.uploadId
+            )
+        }?: setError(error, sourceId, file)
     }
 
     fun setProgressUploader(progress: ProgressCallback?) {

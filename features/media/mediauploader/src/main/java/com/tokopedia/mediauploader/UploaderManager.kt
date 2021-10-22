@@ -1,36 +1,13 @@
 package com.tokopedia.mediauploader
 
 import com.tokopedia.mediauploader.common.data.consts.NETWORK_ERROR
-import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.common.logger.trackToTimber
-import com.tokopedia.mediauploader.common.state.ProgressCallback
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.addPrefix
 import java.io.File
 
 interface UploaderManager {
 
-    suspend fun invoke(
-        file: File,
-        sourceId: String,
-        progress: ProgressCallback?
-    ): UploadResult
-
-    suspend fun upload(
-        file: File,
-        sourceId: String,
-        policy: SourcePolicy
-    ): UploadResult
-
-    suspend fun validate(
-        file: File,
-        sourceId: String,
-        onUpload: suspend (sourcePolicy: SourcePolicy) -> UploadResult
-    ): UploadResult
-
-    /*
-    * common error tracker and expose to user
-    * */
     fun setError(message: List<String>, sourceId: String, file: File): UploadResult {
         val errorMessages = mutableListOf<String>()
 
@@ -54,4 +31,5 @@ interface UploaderManager {
 
         return UploadResult.Error(errorMessage)
     }
+
 }

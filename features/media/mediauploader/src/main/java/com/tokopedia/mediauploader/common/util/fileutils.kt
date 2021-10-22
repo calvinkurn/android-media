@@ -3,9 +3,16 @@ package com.tokopedia.mediauploader.common.util
 import android.graphics.BitmapFactory
 import java.io.File
 
-fun String.getFileExtension(): String {
+fun String.fileExtension(): String {
     val lastIndexOf = this.lastIndexOf(".")
     return if (lastIndexOf == -1) "" else this.substring(lastIndexOf)
+}
+
+fun String.isImage(): Boolean {
+    val imageExtension = ".jpg,.jpeg"
+    return imageExtension
+        .split(",")
+        .contains(fileExtension())
 }
 
 fun File.isMaxFileSize(maxFileSize: Int): Boolean {

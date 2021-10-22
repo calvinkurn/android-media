@@ -5,10 +5,7 @@ import com.tokopedia.mediauploader.common.data.consts.*
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.common.state.ProgressCallback
 import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.mediauploader.common.util.getFileExtension
-import com.tokopedia.mediauploader.common.util.isMaxBitmapResolution
-import com.tokopedia.mediauploader.common.util.isMaxFileSize
-import com.tokopedia.mediauploader.common.util.isMinBitmapResolution
+import com.tokopedia.mediauploader.common.util.*
 import com.tokopedia.mediauploader.image.data.mapper.ImagePolicyMapper
 import com.tokopedia.mediauploader.video.data.params.ChunkCheckerParam
 import com.tokopedia.mediauploader.video.data.params.ChunkUploadParam
@@ -47,7 +44,7 @@ class VideoUploaderManager constructor(
         }
 
         return if (!uploader.videoUrl.isNullOrBlank()) {
-            UploadResult.Success(uploader.videoUrl)
+            UploadResult.Success(videoUrl = uploader.videoUrl)
         } else {
             setError(error, sourceId, file)
         }
@@ -97,7 +94,7 @@ class VideoUploaderManager constructor(
         return UploadResult.Success("")
     }
 
-    override suspend operator fun invoke(
+    suspend operator fun invoke(
         file: File,
         sourceId: String,
         progress: ProgressCallback?
@@ -111,7 +108,7 @@ class VideoUploaderManager constructor(
         }
     }
 
-    override suspend fun upload(
+    suspend fun upload(
         file: File,
         sourceId: String,
         policy: SourcePolicy
@@ -119,6 +116,8 @@ class VideoUploaderManager constructor(
         return if (file.isMaxFileSize(THRESHOLD_SIMPLE_UPLOAD)) {
             // large upload
             // slice file here
+            val fileToUpload = file.slice()
+
             largeUpload(file, sourceId)
         } else {
             // simple upload
@@ -126,7 +125,7 @@ class VideoUploaderManager constructor(
         }
     }
 
-    override suspend fun validate(
+    suspend fun validate(
         file: File,
         sourceId: String,
         onUpload: suspend (sourcePolicy: SourcePolicy) -> UploadResult
@@ -151,7 +150,7 @@ class VideoUploaderManager constructor(
             setError(listOf(
                 when {
                     !file.exists() -> FILE_NOT_FOUND
-                    !extensions.contains(filePath.getFileExtension()) ->
+                    !extensions.contains(filePath.fileExtension()) ->
                         formatNotAllowedMessage(sourcePolicy.videoPolicy.extension)
                     else -> ""
                 }
