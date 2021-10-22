@@ -9,5 +9,5 @@ data class GetMerchantCampaignTNCRequest (
         var campaignId: Int = 1,
         @SerializedName("action_from")
         @Expose
-        var actionFrom: Int = 0
+        var actionFrom: String = ""
 )
