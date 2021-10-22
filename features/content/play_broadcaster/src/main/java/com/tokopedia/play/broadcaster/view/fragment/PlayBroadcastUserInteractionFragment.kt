@@ -657,13 +657,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     ) {
         if (prevState == state) return
 
-        if (state.editStatus != PinnedMessageEditStatus.Editing) hideKeyboard()
+        if (!state.editStatus.isEditing) hideKeyboard()
 
         /**
          * Pinned Message success uploading
          */
-        if (prevState?.editStatus == PinnedMessageEditStatus.Uploading &&
-            state.editStatus == PinnedMessageEditStatus.Nothing) {
+        if (prevState?.editStatus?.isUploading == true && state.editStatus.isNothing) {
 
             analytic.clickSavePinChatMessage(
                 channelId = parentViewModel.channelId,
