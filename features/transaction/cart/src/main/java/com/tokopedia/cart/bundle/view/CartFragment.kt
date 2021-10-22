@@ -1583,7 +1583,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         } else {
             cartPageAnalytics.eventClickMoreLikeThis()
         }
-        routeToApplink("tokopedia://kyc?projectId=19")
+        routeToApplink(data.selectedUnavailableActionLink)
     }
 
     override fun onFollowShopClicked(shopId: String, errorType: String) {
