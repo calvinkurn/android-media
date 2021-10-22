@@ -309,33 +309,42 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     refreshHandler?.startRefresh()
                 }
                 chipItems?.forEach { sortFilterItem ->
-                    sortFilterItem.refChipUnify.setChevronClickListener {
-                        // show bottomsheet
-                    }
+                    sortFilterItem.refChipUnify.setChevronClickListener {}
                 }
             }
         }
     }
 
     private fun showBottomSheetFilterOption(filterItem: WishlistV2Response.Data.WishlistV2.SortFiltersItem) {
-        val filterBottomSheet = WishlistV2FilterBottomSheet.newInstance(filterItem.text)
+        val filterBottomSheet = WishlistV2FilterBottomSheet.newInstance(filterItem.text, filterItem.selectionType)
         if (filterBottomSheet.isAdded || childFragmentManager.isStateSaved) return
 
         val filterBottomSheetAdapter = WishlistV2FilterBottomSheetAdapter()
         filterBottomSheetAdapter.filterItem = filterItem
 
+        val listFilterOffers = arrayListOf<WishlistV2Params.WishlistSortFilterParam>()
+
         filterBottomSheet.setAdapter(filterBottomSheetAdapter)
         filterBottomSheet.setListener(object : WishlistV2FilterBottomSheet.BottomSheetListener{
-            override fun onRadioButtonSelected() {
-                TODO("Not yet implemented")
+            override fun onRadioButtonSelected(filterItem: WishlistV2Params.WishlistSortFilterParam) {
+                filterBottomSheet.dismiss()
+                val listSortFilter = arrayListOf<WishlistV2Params.WishlistSortFilterParam>()
+                listSortFilter.add(filterItem)
+                paramWishlistV2.sortFilters = listSortFilter
+                refreshHandler?.startRefresh()
+            }
+
+            override fun onCheckboxSelected(filterItem: WishlistV2Params.WishlistSortFilterParam) {
+                listFilterOffers.add(filterItem)
             }
 
             override fun onSaveCheckboxSelection() {
-                TODO("Not yet implemented")
+                filterBottomSheet.dismiss()
+                paramWishlistV2.sortFilters = listFilterOffers
+                refreshHandler?.startRefresh()
             }
-
         })
-        // besok lanjut filterBottomSheet.setListener(object : Wishlist
+        filterBottomSheet.show(childFragmentManager)
     }
 
     private fun renderWishlist(items: List<WishlistV2Response.Data.WishlistV2.ItemsItem>) {

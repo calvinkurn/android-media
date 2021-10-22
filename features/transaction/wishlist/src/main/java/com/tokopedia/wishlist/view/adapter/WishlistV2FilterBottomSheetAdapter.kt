@@ -3,11 +3,13 @@ package com.tokopedia.wishlist.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.wishlist.data.model.WishlistV2Params
 import com.tokopedia.wishlist.data.model.WishlistV2Response
+import com.tokopedia.wishlist.databinding.BottomsheetWishlistFilterCheckboxItemBinding
 import com.tokopedia.wishlist.databinding.BottomsheetWishlistFilterRadioButtonItemBinding
-import com.tokopedia.wishlist.databinding.WishlistV2LoaderListItemBinding
+import com.tokopedia.wishlist.util.WishlistV2Consts
+import com.tokopedia.wishlist.view.adapter.viewholder.WishlistV2FilterCheckboxViewHolder
 import com.tokopedia.wishlist.view.adapter.viewholder.WishlistV2FilterRadioButtonViewHolder
-import com.tokopedia.wishlist.view.adapter.viewholder.WishlistV2ListLoaderViewHolder
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2FilterBottomSheet
 
 /**
@@ -16,6 +18,7 @@ import com.tokopedia.wishlist.view.bottomsheet.WishlistV2FilterBottomSheet
 class WishlistV2FilterBottomSheetAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var actionListener: WishlistV2FilterBottomSheet.BottomSheetListener? = null
     var filterItem = WishlistV2Response.Data.WishlistV2.SortFiltersItem()
+    private val listFilterOffer = arrayListOf<WishlistV2Params.WishlistSortFilterParam>()
 
     companion object {
         const val LAYOUT_RADIO_BUTTON = 0
@@ -26,12 +29,11 @@ class WishlistV2FilterBottomSheetAdapter : RecyclerView.Adapter<RecyclerView.Vie
         return when (viewType) {
             LAYOUT_RADIO_BUTTON -> {
                 val binding = BottomsheetWishlistFilterRadioButtonItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
-                WishlistV2FilterRadioButtonViewHolder(binding)
+                WishlistV2FilterRadioButtonViewHolder(binding, actionListener)
             }
             LAYOUT_CHECKBOX -> {
-                // TODO : create loader grid
-                val binding = WishlistV2LoaderListItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
-                WishlistV2ListLoaderViewHolder(binding)
+                val binding = BottomsheetWishlistFilterCheckboxItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                WishlistV2FilterCheckboxViewHolder(binding, actionListener)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }
@@ -40,10 +42,24 @@ class WishlistV2FilterBottomSheetAdapter : RecyclerView.Adapter<RecyclerView.Vie
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is WishlistV2FilterRadioButtonViewHolder -> {
-                holder.bind(holder.adapterPosition,
+                holder.bind(filterItem.name,
                         filterItem.options[holder.adapterPosition].text,
                         filterItem.options[holder.adapterPosition].optionId)
             }
+            is WishlistV2FilterCheckboxViewHolder -> {
+                holder.bind(filterItem.name,
+                        filterItem.options[holder.adapterPosition].text,
+                        filterItem.options[holder.adapterPosition].description,
+                        filterItem.options[holder.adapterPosition].optionId)
+            }
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return when (filterItem.selectionType) {
+            1 -> LAYOUT_RADIO_BUTTON
+            2 -> LAYOUT_CHECKBOX
+            else -> throw IllegalArgumentException("Invalid view type")
         }
     }
 
@@ -53,5 +69,9 @@ class WishlistV2FilterBottomSheetAdapter : RecyclerView.Adapter<RecyclerView.Vie
 
     fun setActionListener(listener: WishlistV2FilterBottomSheet.BottomSheetListener) {
         this.actionListener = listener
+    }
+
+    private fun addFilterOffers(offerFilter: WishlistV2Params.WishlistSortFilterParam) {
+        listFilterOffer.add(offerFilter)
     }
 }

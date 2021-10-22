@@ -19,7 +19,7 @@ data class WishlistV2Params(
         var query: String = "",
 
         @SerializedName("sort_filters")
-        var sortFilters: List<WishlistSortFilterParam> = listOf(),
+        var sortFilters: ArrayList<WishlistSortFilterParam> = arrayListOf(),
 
         @SerializedName("source")
         var source: String = "wishlist"
@@ -29,6 +29,6 @@ data class WishlistV2Params(
                 var name: String = "",
 
                 @SerializedName("selected")
-                var selected: List<String> = listOf()
+                var selected: String = ""
         )
 }

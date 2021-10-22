@@ -2,10 +2,12 @@ package com.tokopedia.wishlist.view.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.wishlist.data.model.WishlistV2Params
 import com.tokopedia.wishlist.databinding.BottomsheetWishlistFilterBinding
 import com.tokopedia.wishlist.view.adapter.WishlistV2FilterBottomSheetAdapter
 
@@ -20,11 +22,13 @@ class WishlistV2FilterBottomSheet : BottomSheetUnify() {
     companion object {
         private const val TAG: String = "WishlistV2FilterBottomSheet"
         private const val TITLE_BOTTOMSHEET = "title_bottomsheet"
+        private const val SELECTION_TYPE = "selection_type"
 
         @JvmStatic
-        fun newInstance(title: String): WishlistV2FilterBottomSheet { return WishlistV2FilterBottomSheet().apply {
+        fun newInstance(title: String, selectionType: Int): WishlistV2FilterBottomSheet { return WishlistV2FilterBottomSheet().apply {
                 val bundle = Bundle()
                 bundle.putString(TITLE_BOTTOMSHEET, title)
+                bundle.putInt(SELECTION_TYPE, selectionType)
                 arguments = bundle
             }
         }
@@ -38,6 +42,14 @@ class WishlistV2FilterBottomSheet : BottomSheetUnify() {
             rvFilterOption.apply {
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 adapter = adapterOptionBottomSheet
+            }
+
+            val selectionType = arguments?.getInt(SELECTION_TYPE)
+            if (selectionType == 2) {
+                btnSave.visibility = View.VISIBLE
+                btnSave.setOnClickListener { listener?.onSaveCheckboxSelection() }
+            } else if (selectionType == 1) {
+                btnSave.visibility = View.GONE
             }
         }
         showCloseIcon = true
@@ -60,7 +72,8 @@ class WishlistV2FilterBottomSheet : BottomSheetUnify() {
     }
 
     interface BottomSheetListener {
-        fun onRadioButtonSelected()
+        fun onRadioButtonSelected(filterItem: WishlistV2Params.WishlistSortFilterParam)
+        fun onCheckboxSelected(filterItem: WishlistV2Params.WishlistSortFilterParam)
         fun onSaveCheckboxSelection()
     }
 }

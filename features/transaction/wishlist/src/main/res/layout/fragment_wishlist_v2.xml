@@ -82,6 +82,8 @@
                 android:layout_width="@dimen/dp_1"
                 android:layout_height="@dimen/dp_24"
                 android:layout_toStartOf="@id/wishlist_manage_label"
+                android:layout_alignTop="@id/wishlist_manage_label"
+                android:layout_alignBottom="@id/wishlist_manage_label"
                 android:background="@color/unify_N75"
                 android:layout_marginEnd="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"/>
