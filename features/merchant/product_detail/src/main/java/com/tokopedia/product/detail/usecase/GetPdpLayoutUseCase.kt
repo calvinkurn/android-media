@@ -9,6 +9,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.pdplayout.Component
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
@@ -316,14 +317,14 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
         """.trimIndent()
 
         fun createParams(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String, userLocationRequest: UserLocationRequest): RequestParams =
-                RequestParams.create().apply {
-                    putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
-                    putString(ProductDetailCommonConstant.PARAM_SHOP_DOMAIN, shopDomain)
-                    putString(ProductDetailCommonConstant.PARAM_PRODUCT_KEY, productKey)
-                    putString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, whId)
-                    putString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, layoutId)
-                    putObject(ProductDetailCommonConstant.PARAM_USER_LOCATION, userLocationRequest)
-                }
+            RequestParams.create().apply {
+                putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
+                putString(ProductDetailCommonConstant.PARAM_SHOP_DOMAIN, shopDomain)
+                putString(ProductDetailCommonConstant.PARAM_PRODUCT_KEY, productKey)
+                putString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, whId)
+                putString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, layoutId)
+                putObject(ProductDetailCommonConstant.PARAM_USER_LOCATION, userLocationRequest)
+            }
     }
 
     var requestParams = RequestParams.EMPTY
@@ -343,7 +344,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error: List<GraphqlError>? = gqlResponse.getError(ProductDetailLayout::class.java)
         val data: PdpGetLayout = gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java).data
-                ?: PdpGetLayout()
+            ?: PdpGetLayout()
 
         if (gqlResponse.isCached) {
             ServerLogger.log(Priority.P2, "PDP_CACHE", mapOf("type" to "true", "productId" to productId))
@@ -362,10 +363,9 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
     }
 
     private fun mapIntoModel(data: PdpGetLayout): ProductDetailDataModel {
-        val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(data.components)
+        val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(data = data.components, data?.basicInfo?.productID)
         val getDynamicProductInfoP1 = DynamicProductDetailMapper.mapToDynamicProductDetailP1(data)
         val p1VariantData = DynamicProductDetailMapper.mapVariantIntoOldDataClass(data)
         return ProductDetailDataModel(getDynamicProductInfoP1, initialLayoutData, p1VariantData)
     }
-
 }
