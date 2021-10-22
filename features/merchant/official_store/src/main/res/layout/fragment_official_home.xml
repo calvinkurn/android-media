@@ -37,14 +37,6 @@
             app:toolbarBackButton="none"
             app:toolbarInitialTheme="light"
             app:toolbarAlwaysShowShadow="false" />
-        <com.tokopedia.searchbar.MainToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:minHeight="?actionBarSize"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"/>
     </FrameLayout>
 
     <com.tokopedia.officialstore.category.presentation.viewutil.OSChooseAddressWidgetView

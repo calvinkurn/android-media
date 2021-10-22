@@ -749,7 +749,12 @@ public class MainParentActivity extends BaseActivity implements
         fragmentList.add(HomeInternalRouter.getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
         fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, getIntent().getExtras()));
         if(!isOsExperiment) {
-            fragmentList.add(OfficialHomeContainerFragment.newInstance(getIntent().getExtras()));
+            Bundle bundleOS = new Bundle();
+            bundleOS.putString(OfficialHomeContainerFragment.PARAM_ACTIVITY_OFFICIAL_STORE, OfficialHomeContainerFragment.PARAM_HOME);
+            if(getIntent().getExtras() != null) {
+                bundleOS.putAll(getIntent().getExtras());
+            }
+            fragmentList.add(OfficialHomeContainerFragment.newInstance(bundleOS));
         }
         Bundle bundleWishlist = new Bundle();
         bundleWishlist.putString(WishlistFragment.PARAM_LAUNCH_WISHLIST, WishlistFragment.PARAM_HOME);

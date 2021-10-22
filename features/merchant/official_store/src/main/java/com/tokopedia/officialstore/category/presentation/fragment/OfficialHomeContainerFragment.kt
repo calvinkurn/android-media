@@ -45,7 +45,6 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.searchbar.MainToolbar
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -68,8 +67,8 @@ class OfficialHomeContainerFragment
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeContainerFragment().apply { arguments = bundle }
         const val KEY_CATEGORY = "key_category"
-        private const val PARAM_HOME = "home"
-
+        const val PARAM_ACTIVITY_OFFICIAL_STORE = "param_activity_official_store"
+        const val PARAM_HOME = "home"
     }
     private val queryHashingKey = "android_do_query_hashing"
     private val tabAdapter: OfficialHomeContainerAdapter by lazy {
@@ -78,7 +77,6 @@ class OfficialHomeContainerFragment
 
     private var statusBar: View? = null
     private var mainToolbar: NavToolbar? = null
-    private var toolbar: MainToolbar? = null
     private var tabLayout: OfficialCategoriesTab? = null
     private var loadingCategoryLayout: View? = null
     private var viewPager: ViewPager? = null
@@ -91,6 +89,7 @@ class OfficialHomeContainerFragment
     private var chooseAddressData = OSChooseAddressData()
     private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
     private var selectedCategory: Category? = null
+    private var activityOfficialStore = ""
 
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private lateinit var tracking: OfficialStoreTracking
@@ -186,10 +185,6 @@ class OfficialHomeContainerFragment
             }
             setBadgeCounter(getInboxIcon(), inboxCount)
             setBadgeCounter(IconList.ID_CART, cartCount)
-        }
-        toolbar?.run {
-            setNotificationNumber(notificationCount)
-            setInboxNumber(inboxCount)
         }
         badgeNumberNotification = notificationCount
         badgeNumberInbox = inboxCount
@@ -363,6 +358,7 @@ class OfficialHomeContainerFragment
     }
 
     private fun init(view: View) {
+        activityOfficialStore = arguments?.getString(PARAM_ACTIVITY_OFFICIAL_STORE, "")?: ""
         configStatusBar(view)
         configMainToolbar(view)
         tabLayout = view.findViewById(R.id.tablayout)
@@ -420,14 +416,13 @@ class OfficialHomeContainerFragment
             )
             show()
         }
-        toolbar?.hide()
         onNotificationChanged(badgeNumberNotification, badgeNumberInbox, badgeNumberCart) // notify badge after toolbar created
     }
 
     private fun getToolbarIcons(): IconBuilder {
         val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
                         .addIcon(getInboxIcon()) {}
-        if(activity?.javaClass?.simpleName == OfficialStoreActivity::class.simpleName)
+        if(activityOfficialStore != PARAM_HOME)
         {
             maintoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
             statusbar.visibility = View.GONE
@@ -441,13 +436,6 @@ class OfficialHomeContainerFragment
         }
 
         return icons
-    }
-
-    private fun getAbTestPlatform(): AbTestPlatform {
-        if (!::remoteConfigInstance.isInitialized) {
-            remoteConfigInstance = RemoteConfigInstance(activity?.application)
-        }
-        return remoteConfigInstance.abTestPlatform
     }
 
     private fun castContextToOfficialStorePerformanceMonitoring(context: Context): OfficialStorePerformanceMonitoringListener? {
