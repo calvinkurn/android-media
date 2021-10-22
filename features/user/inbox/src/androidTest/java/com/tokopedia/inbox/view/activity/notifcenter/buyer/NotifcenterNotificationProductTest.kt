@@ -14,9 +14,11 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.inbox.common.viewmatcher.withRecyclerView
 import com.tokopedia.inbox.view.activity.base.notifcenter.InboxNotifcenterTest
 import com.tokopedia.notifcenter.R
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
+import org.hamcrest.Matchers.not
 import org.junit.Test
 
 class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
@@ -104,7 +106,7 @@ class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
         ).perform(ViewActions.click())
 
         // Then
-        onView(withSubstring("Kode Error"))
+        onView(withSubstring("Oops!"))
             .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
     }
 
@@ -129,6 +131,43 @@ class NotifcenterNotificationProductTest : InboxNotifcenterTest() {
         intended(IntentMatchers.hasData(ApplinkConst.NEW_WISHLIST))
     }
 
+    @Test
+    fun should_show_variant_labels_if_product_variants() {
+        //Given
+        inboxNotifcenterDep.apply {
+            notifcenterDetailUseCase.response = notifcenterDetailUseCase.productOnly
+        }
+        startInboxActivity()
+        intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
+        //Then
+        onView(withRecyclerView(R.id.rv_carousel_product)
+            .atPositionOnView(0, R.id.pvl_variant))
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun should_not_show_variant_labels_if_product_variants() {
+        //Given
+        inboxNotifcenterDep.apply {
+            val dataResponse = notifcenterDetailUseCase.productOnly.apply {
+                this.notifcenterDetail.newList[0].product?.variant = listOf()
+            }
+            notifcenterDetailUseCase.response = dataResponse
+        }
+        startInboxActivity()
+        intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
+        //When
+        scrollToProductPosition(1)
+
+        //Then
+        onView(withRecyclerView(R.id.rv_carousel_product)
+            .atPositionOnView(1, R.id.pvl_variant))
+            .check(matches(not(isDisplayed())))
+    }
 
     private fun scrollToProductPosition(position: Int) {
         onView(withId(R.id.rv_carousel_product)).perform(

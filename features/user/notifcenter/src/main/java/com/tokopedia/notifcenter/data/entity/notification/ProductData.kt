@@ -52,7 +52,7 @@ data class ProductData(
         @SerializedName("url")
         val url: String = "",
         @SerializedName("variant")
-        val variant: List<Variant> = listOf(),
+        var variant: List<Variant> = listOf(),
         @SerializedName("has_reminder")
         var hasReminder: Boolean = false
 ) {

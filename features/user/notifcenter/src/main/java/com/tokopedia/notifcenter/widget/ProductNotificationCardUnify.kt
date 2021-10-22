@@ -197,7 +197,12 @@ class ProductNotificationCardUnify(
     }
 
     private fun bindProductVariant(product: ProductData) {
-        productVariant?.setupVariant(product.variant)
+        val showVariant = productVariant?.setupVariant(product.variant)?: false
+        if (showVariant) {
+            productVariant?.show()
+        } else {
+            productVariant?.hide()
+        }
     }
 
     private fun bindProductPrice(product: ProductData) {
