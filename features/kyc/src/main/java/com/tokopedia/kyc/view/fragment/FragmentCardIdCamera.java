@@ -1,4 +1,4 @@
-package com.tokopedia.homecredit.view.fragment;
+package com.tokopedia.kyc.view.fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -17,8 +17,9 @@ import com.otaliastudios.cameraview.controls.Facing;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.homecredit.R;
-import com.tokopedia.homecredit.view.Utils;
+import com.tokopedia.kyc.R;
+import com.tokopedia.kyc.util.Utils;
+
 
 import java.io.File;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.tokopedia.homecredit.view.fragment;
+package com.tokopedia.kyc.view.fragment;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -14,7 +14,7 @@ import com.otaliastudios.cameraview.controls.Facing;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.homecredit.R;
+import com.tokopedia.kyc.R;
 
 import java.io.File;
 import java.util.ArrayList;

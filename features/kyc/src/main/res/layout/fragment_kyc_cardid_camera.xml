@@ -11,8 +11,8 @@
 
         <com.otaliastudios.cameraview.CameraView
             android:id="@+id/camera"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/dp_340"
+            android:layout_height="@dimen/dp_220"
             android:layout_gravity="center"
             android:keepScreenOn="true"
             app:cameraGestureLongTap="none"
@@ -31,24 +31,25 @@
 
     <ImageView
         android:id="@+id/iv_image_captured"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="340dp"
+        android:layout_height="220dp"
         android:layout_gravity="center"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
         android:visibility="gone" />
 
-    <ImageView
+    <com.tokopedia.kyc.view.widget.RectangleOverlayView
         android:id="@+id/cicleOverlay"
-        android:src="@drawable/img_guide_01"
         android:layout_width="match_parent"
-        android:scaleType="centerCrop"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:fg_color="@color/kyc_hc_dms_black_99"
+        app:inset_distance="20dp"
+        app:outline_img="@drawable/img_frame_id_kyc"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/hc_inset_distance">
+        android:layout_margin="20dp">
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/button_cancel"
@@ -56,7 +57,6 @@
             android:layout_height="@dimen/unify_space_24"
             android:layout_alignParentStart="true"
             android:visibility="gone"
-            android:clickable="false"
             android:layout_marginStart="@dimen/unify_space_16"
             app:icon_color_light_disabled="@color/Unify_Static_White"
             app:icon_color_light_enable="@color/Unify_Static_White"
@@ -64,25 +64,41 @@
             app:icon_color_night_enable="@color/Unify_Static_White"
             app:icon_name="CLOSE" />
 
+
         <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="wrap_content"
+            app:typographyType="body_3"
+            android:id="@+id/desc_1"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:shadowColor="@color/hc_dms_text_shadow"
+            android:shadowColor="@color/kyc_hc_dms_text_shadow"
             android:shadowDy="2"
             android:shadowRadius="4"
-            android:id="@+id/desc_1"
-            app:typographyType="body_1"
+            android:layout_marginTop="@dimen/unify_space_48"
             android:textColor="@color/Unify_Static_White"
             android:gravity="center_horizontal"
-            android:text="@string/pstkn_wjh" />
+            android:text="@string/kyc_foto_ktp_wni"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="body_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:shadowColor="@color/kyc_hc_dms_text_shadow"
+            android:shadowDy="2"
+            android:shadowRadius="4"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:textColor="@color/Unify_Static_White"
+            android:layout_below="@+id/desc_1"
+            android:gravity="center_horizontal"
+            android:text="@string/kyc_pstkn_info"
+            />
 
         <include
-            layout="@layout/camera_action_layout"
+            layout="@layout/kyc_camera_action_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true" />
 
     </RelativeLayout>
-
 
 </FrameLayout>
