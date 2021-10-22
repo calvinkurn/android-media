@@ -3,7 +3,7 @@ package com.tokopedia.sellerorder.orderextension.domain.usecases
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.sellerorder.orderextension.domain.models.GetOrderExtensionRequestInfoRequestParam
+import com.tokopedia.sellerorder.orderextension.domain.models.GetOrderExtensionRequestInfoParam
 import com.tokopedia.sellerorder.orderextension.domain.models.GetOrderExtensionRequestInfoResponse
 import kotlinx.coroutines.delay
 import javax.inject.Inject
@@ -32,7 +32,7 @@ class GetOrderExtensionRequestInfoUseCase @Inject constructor(
     }
 
     private fun generateRequestParams(orderId: String, shopId: String): Map<String, Any> {
-        return mapOf("input" to GetOrderExtensionRequestInfoRequestParam(orderId, shopId))
+        return mapOf("input" to GetOrderExtensionRequestInfoParam(orderId, shopId))
     }
 
     companion object {
