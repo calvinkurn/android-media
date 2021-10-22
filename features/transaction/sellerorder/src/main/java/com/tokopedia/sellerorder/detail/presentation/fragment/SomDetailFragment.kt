@@ -1134,136 +1134,161 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private fun setProductEmpty(rejectReason: SomReasonRejectData.Data.SomRejectReason) {
         view.let { view ->
             if (view is ViewGroup) {
-                somProductEmptyBottomSheet = reInitProductEmptyBottomSheet(rejectReason)
-                        ?: initProductEmptyBottomSheet(rejectReason)
-                somProductEmptyBottomSheet?.init(view)
+                somProductEmptyBottomSheet = reInitProductEmptyBottomSheet(view, rejectReason)
+                        ?: initProductEmptyBottomSheet(view, rejectReason)
                 somProductEmptyBottomSheet?.show()
             }
         }
     }
 
-    private fun reInitProductEmptyBottomSheet(rejectReason: SomReasonRejectData.Data.SomRejectReason): SomBottomSheetProductEmpty? {
+    private fun reInitProductEmptyBottomSheet(
+        view: ViewGroup, rejectReason: SomReasonRejectData.Data.SomRejectReason
+    ): SomBottomSheetProductEmpty? {
         return somProductEmptyBottomSheet?.apply {
             setProducts(detailResponse?.listProduct.orEmpty())
             setOrderId(orderId)
             setRejectReason(rejectReason)
+            init(view)
         }
     }
 
-    private fun initProductEmptyBottomSheet(rejectReason: SomReasonRejectData.Data.SomRejectReason): SomBottomSheetProductEmpty? {
-        return context?.let { context ->
-            SomBottomSheetProductEmpty(context, rejectReason, orderId, this).apply {
-                setProducts(detailResponse?.listProduct.orEmpty())
-            }
+    private fun initProductEmptyBottomSheet(
+        view: ViewGroup,
+        rejectReason: SomReasonRejectData.Data.SomRejectReason
+    ): SomBottomSheetProductEmpty {
+        return SomBottomSheetProductEmpty(view.context, rejectReason, orderId, this).apply {
+            setProducts(detailResponse?.listProduct.orEmpty())
+            init(view)
         }
     }
 
     private fun setShopClosed(rejectReason: SomReasonRejectData.Data.SomRejectReason) {
-        somShopClosedBottomSheet = reInitShopClosedBottomSheet(rejectReason)
-                ?: initShopClosedBottomSheet(rejectReason)
-
         view?.let {
             if (it is ViewGroup) {
-                somShopClosedBottomSheet?.apply {
-                    init(it)
-                    show()
-                }
+                somShopClosedBottomSheet = reInitShopClosedBottomSheet(it, rejectReason)
+                    ?: initShopClosedBottomSheet(it, rejectReason)
+                somShopClosedBottomSheet?.show()
             }
         }
     }
 
-    private fun reInitShopClosedBottomSheet(rejectReason: SomReasonRejectData.Data.SomRejectReason): SomBottomSheetShopClosed? {
+    private fun reInitShopClosedBottomSheet(
+        view: ViewGroup,
+        rejectReason: SomReasonRejectData.Data.SomRejectReason
+    ): SomBottomSheetShopClosed? {
         return somShopClosedBottomSheet?.apply {
             setOrderId(orderId)
             setRejectReason(rejectReason)
+            init(view)
         }
     }
 
-    private fun initShopClosedBottomSheet(rejectReason: SomReasonRejectData.Data.SomRejectReason): SomBottomSheetShopClosed? {
-        return context?.let { context ->
-            SomBottomSheetShopClosed(context, childFragmentManager, rejectReason, orderId, this)
+    private fun initShopClosedBottomSheet(
+        view: ViewGroup,
+        rejectReason: SomReasonRejectData.Data.SomRejectReason
+    ): SomBottomSheetShopClosed {
+        return SomBottomSheetShopClosed(
+            view.context,
+            childFragmentManager,
+            rejectReason,
+            orderId,
+            this
+        ).apply {
+            init(view)
         }
     }
 
     private fun setCourierProblems(rejectReason: SomReasonRejectData.Data.SomRejectReason) {
-        bottomSheetCourierProblems = reInitCourierProblemBottomSheet(rejectReason)
-                ?: initCourierProblemBottomSheet(rejectReason)
-
         view?.let {
             if (it is ViewGroup) {
-                bottomSheetCourierProblems?.apply {
-                    init(it)
-                    show()
-                }
+                bottomSheetCourierProblems = reInitCourierProblemBottomSheet(it, rejectReason)
+                    ?: initCourierProblemBottomSheet(it, rejectReason)
+                bottomSheetCourierProblems?.show()
             }
         }
     }
 
-    private fun reInitCourierProblemBottomSheet(rejectReason: SomReasonRejectData.Data.SomRejectReason): SomBottomSheetCourierProblem? {
+    private fun reInitCourierProblemBottomSheet(
+        view: ViewGroup,
+        rejectReason: SomReasonRejectData.Data.SomRejectReason
+    ): SomBottomSheetCourierProblem? {
         return bottomSheetCourierProblems?.apply {
             setOrderId(orderId)
             setRejectReason(rejectReason)
+            init(view)
         }
     }
 
-    private fun initCourierProblemBottomSheet(rejectReason: SomReasonRejectData.Data.SomRejectReason): SomBottomSheetCourierProblem? {
-        return context?.let { context ->
-            SomBottomSheetCourierProblem(context, rejectReason, orderId, this)
+    private fun initCourierProblemBottomSheet(
+        view: ViewGroup,
+        rejectReason: SomReasonRejectData.Data.SomRejectReason
+    ): SomBottomSheetCourierProblem {
+        return SomBottomSheetCourierProblem(view.context, rejectReason, orderId, this).apply {
+            init(view)
         }
     }
 
     private fun setBuyerNoResponse(rejectReason: SomReasonRejectData.Data.SomRejectReason) {
-        bottomSheetBuyerNoResponse = reInitBuyerNoResponseBottomSheet(rejectReason)
-                ?: initBuyerNoResponseBottomSheet(rejectReason)
-
         view?.let {
             if (it is ViewGroup) {
-                bottomSheetBuyerNoResponse?.apply {
-                    init(it)
-                    show()
-                }
+                bottomSheetBuyerNoResponse = reInitBuyerNoResponseBottomSheet(it, rejectReason)
+                    ?: initBuyerNoResponseBottomSheet(it, rejectReason)
+                bottomSheetBuyerNoResponse?.show()
             }
         }
     }
 
-    private fun reInitBuyerNoResponseBottomSheet(rejectReason: SomReasonRejectData.Data.SomRejectReason): SomBottomSheetBuyerNoResponse? {
+    private fun reInitBuyerNoResponseBottomSheet(
+        view: ViewGroup,
+        rejectReason: SomReasonRejectData.Data.SomRejectReason
+    ): SomBottomSheetBuyerNoResponse? {
         return bottomSheetBuyerNoResponse?.apply {
             setOrderId(orderId)
             setRejectReason(rejectReason)
+            init(view)
         }
     }
 
-    private fun initBuyerNoResponseBottomSheet(rejectReason: SomReasonRejectData.Data.SomRejectReason): SomBottomSheetBuyerNoResponse? {
-        return context?.let { context ->
-            SomBottomSheetBuyerNoResponse(context, rejectReason, orderId, this)
+    private fun initBuyerNoResponseBottomSheet(
+        view: ViewGroup,
+        rejectReason: SomReasonRejectData.Data.SomRejectReason
+    ): SomBottomSheetBuyerNoResponse {
+        return SomBottomSheetBuyerNoResponse(view.context, rejectReason, orderId, this).apply {
+            init(view)
         }
     }
 
     private fun setOtherReason(rejectReason: SomReasonRejectData.Data.SomRejectReason) {
-        bottomSheetBuyerOtherReason = reInitBuyerOtherResponseBottomSheet(rejectReason)
-                ?: initBuyerOtherResponseBottomSheet(rejectReason)
-
         view?.let {
             if (it is ViewGroup) {
-                bottomSheetBuyerOtherReason?.apply {
-                    init(it)
-                    show()
-                }
+                bottomSheetBuyerOtherReason = reInitBuyerOtherResponseBottomSheet(it, rejectReason)
+                    ?: initBuyerOtherResponseBottomSheet(it, rejectReason)
+                bottomSheetBuyerOtherReason?.show()
             }
         }
     }
 
-    private fun reInitBuyerOtherResponseBottomSheet(rejectReason: SomReasonRejectData.Data.SomRejectReason): SomBottomSheetBuyerOtherReason? {
+    private fun reInitBuyerOtherResponseBottomSheet(
+        view: ViewGroup,
+        rejectReason: SomReasonRejectData.Data.SomRejectReason
+    ): SomBottomSheetBuyerOtherReason? {
         return bottomSheetBuyerOtherReason?.apply {
             setOrderId(orderId)
             setRejectReason(rejectReason)
+            init(view)
         }
     }
 
-    private fun initBuyerOtherResponseBottomSheet(rejectReason: SomReasonRejectData.Data.SomRejectReason): SomBottomSheetBuyerOtherReason? {
-        return context?.let { context ->
-            SomBottomSheetBuyerOtherReason(context, rejectReason, orderId, this)
-        }
+    private fun initBuyerOtherResponseBottomSheet(
+        view: ViewGroup,
+        rejectReason: SomReasonRejectData.Data.SomRejectReason
+    ): SomBottomSheetBuyerOtherReason {
+        return SomBottomSheetBuyerOtherReason(
+            view.context,
+            rejectReason,
+            orderId,
+            this
+        ).apply { init(view) }
     }
 
     private fun doRejectOrder(orderRejectRequestParam: SomRejectRequestParam) {
@@ -1542,23 +1567,28 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private fun onSuccessGetRequestExtensionInfo(data: OrderExtensionRequestInfoUiModel) {
         view.let { view ->
             if (view is ViewGroup) {
-                bottomSheetOrderExtensionRequest = reInitOrderExtensionRequestBottomSheet(data)
-                    ?: initOrderExtensionRequestBottomSheet(view.context, data)
-                bottomSheetOrderExtensionRequest?.init(view)
+                bottomSheetOrderExtensionRequest = reInitOrderExtensionRequestBottomSheet(view, data)
+                        ?: initOrderExtensionRequestBottomSheet(view, data)
                 bottomSheetOrderExtensionRequest?.show()
             }
         }
     }
 
-    private fun reInitOrderExtensionRequestBottomSheet(data: OrderExtensionRequestInfoUiModel): SomBottomSheetOrderExtensionRequest? {
+    private fun reInitOrderExtensionRequestBottomSheet(
+        view: ViewGroup,
+        data: OrderExtensionRequestInfoUiModel
+    ): SomBottomSheetOrderExtensionRequest? {
         return bottomSheetOrderExtensionRequest?.apply {
             setOrderId(orderId)
             setData(data)
+            init(view)
         }
     }
 
-    private fun initOrderExtensionRequestBottomSheet(context: Context, data: OrderExtensionRequestInfoUiModel): SomBottomSheetOrderExtensionRequest? {
-        return SomBottomSheetOrderExtensionRequest(context, orderId, data, somDetailViewModel)
+    private fun initOrderExtensionRequestBottomSheet(view: ViewGroup, data: OrderExtensionRequestInfoUiModel): SomBottomSheetOrderExtensionRequest? {
+        return SomBottomSheetOrderExtensionRequest(view.context, orderId, data, somDetailViewModel).apply {
+            init(view)
+        }
     }
 
     private fun onFailedValidateOrder() {
