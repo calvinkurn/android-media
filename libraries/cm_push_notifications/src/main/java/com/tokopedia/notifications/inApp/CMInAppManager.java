@@ -8,8 +8,12 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.iris.Iris;
+import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.notifications.FragmentObserver;
@@ -17,12 +21,14 @@ import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.CMNotificationUtils;
 import com.tokopedia.notifications.common.CMRemoteConfigUtils;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
+import com.tokopedia.notifications.data.AmplificationDataSource;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataConsumer;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
 import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager;
 import com.tokopedia.notifications.inApp.ruleEngine.rulesinterpreter.RuleInterpreterImpl;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.DataConsumerImpl;
+import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.AmplificationCMInApp;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
 import com.tokopedia.notifications.inApp.usecase.InAppLocalDatabaseController;
 import com.tokopedia.notifications.inApp.viewEngine.CMActivityLifeCycle;
@@ -30,6 +36,7 @@ import com.tokopedia.notifications.inApp.viewEngine.CMInAppController;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
 import com.tokopedia.notifications.inApp.viewEngine.ElementType;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,9 +60,14 @@ public class CMInAppManager implements CmInAppListener,
         DataProvider,
         CmActivityLifecycleHandler.CmActivityApplicationCallback,
         ShowInAppCallback,
-        SendPushContract, CmDialogVisibilityContract {
+        SendPushContract, CmDialogVisibilityContract,
+        CMInAppController.OnNewInAppDataStoreListener {
 
     private static final CMInAppManager inAppManager;
+
+    public static final String IRIS_ANALYTICS_APP_SITE_OPEN = "appSiteOpen";
+    private static final String IRIS_ANALYTICS_EVENT_KEY = "event";
+
     private Application application;
     private CmInAppListener cmInAppListener;
     private final Object lock = new Object();
@@ -71,6 +83,7 @@ public class CMInAppManager implements CmInAppListener,
     private CmDialogHandler cmDialogHandler;
     public CmDataConsumer cmDataConsumer;
     public DataConsumer dataConsumer;
+    private Boolean isCmInAppManagerInitialized = false;
 
     static {
         inAppManager = new CMInAppManager();
@@ -101,6 +114,7 @@ public class CMInAppManager implements CmInAppListener,
                 this,
                 this);
         initInAppManager();
+        isCmInAppManagerInitialized = true;
     }
 
     public static CmInAppListener getCmInAppListener() {
@@ -248,7 +262,7 @@ public class CMInAppManager implements CmInAppListener,
             if (null != cmInApp) {
                 if (application != null) {
                     sendEventInAppDelivered(cmInApp);
-                    new CMInAppController().downloadImagesAndUpdateDB(application, cmInApp);
+                    new CMInAppController(this).downloadImagesAndUpdateDB(application, cmInApp);
                 } else {
                     Map<String, String> messageMap = new HashMap<>();
                     messageMap.put("type", "validation");
@@ -275,6 +289,26 @@ public class CMInAppManager implements CmInAppListener,
                 messageMap.put("data", "");
                 ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
             }
+        }
+    }
+
+    public void handleAmplificationInAppData(String dataString) {
+        try {
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+            AmplificationCMInApp amplificationCMInApp = gson.fromJson(dataString, AmplificationCMInApp.class);
+            CMInApp cmInApp = CmInAppBundleConvertor.getCmInApp(amplificationCMInApp);
+            if (cmInApp != null) {
+                cmInApp.setAmplification(true);
+                IrisAnalyticsEvents.INSTANCE.sendAmplificationInAppEvent(application, IrisAnalyticsEvents.INAPP_DELIVERED, cmInApp);
+                new CMInAppController(this).downloadImagesAndUpdateDB(application, cmInApp);
+            }
+        } catch (Exception e) {
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "exception");
+            messageMap.put("err", Log.getStackTraceString
+                    (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
+            messageMap.put("data", "");
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
         }
     }
 
@@ -374,4 +408,60 @@ public class CMInAppManager implements CmInAppListener,
     public boolean isDialogVisible(@NotNull Activity activity) {
         return dialogIsShownMap.containsKey(activity) && dialogIsShownMap.get(activity);
     }
+
+    @Override
+    public void onNewInAppDataStored() {
+        if (isCmInAppManagerInitialized) {
+            Activity currentActivity = activityLifecycleHandler.getCurrentActivity();
+            if (currentActivity != null) {
+                if (!pushIntentHandler.isHandledByPush()) {
+                    if (canShowDialog()) {
+                        showInAppForScreen(currentActivity.getClass().getName(), currentActivity.hashCode(), true);
+                    }
+                }
+            }
+        }
+    }
+
+    private void getAmplificationPushData(Application application) {
+        if (getAmplificationRemoteConfig()) {
+            try {
+                AmplificationDataSource.invoke(application);
+            } catch (Exception e) {
+            }
+        }
+    }
+
+    private Boolean getAmplificationRemoteConfig() {
+        if(cmRemoteConfigUtils == null)
+            return false;
+        return cmRemoteConfigUtils.getBooleanRemoteConfig(RemoteConfigKey.ENABLE_AMPLIFICATION,
+                false);
+    }
+
+    @Override
+    public void onFirstScreenOpen(WeakReference<Activity> activity) {
+        try {
+            if(activity.get() != null) {
+                trackIrisEventForAppOpen(activity.get());
+                if (RulesManager.getInstance() != null)
+                    RulesManager.getInstance().updateVisibleStateForAlreadyShown();
+                getAmplificationPushData(activity.get().getApplication());
+            }
+        }catch (Exception e){}
+    }
+
+    private void trackIrisEventForAppOpen(Activity activity) {
+        Iris instance = IrisAnalytics.Companion.getInstance(activity);
+        Map<String, Object> map = new HashMap<>();
+        map.put(IRIS_ANALYTICS_EVENT_KEY, IRIS_ANALYTICS_APP_SITE_OPEN);
+        instance.saveEvent(map);
+    }
 }
+
+
+
+
+
+
+

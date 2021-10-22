@@ -11,10 +11,11 @@ import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
-class CMInAppController : CoroutineScope {
+class CMInAppController(private val listenerOnNewInApp: OnNewInAppDataStoreListener) : CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO
@@ -27,7 +28,11 @@ class CMInAppController : CoroutineScope {
                         IrisAnalyticsEvents.sendInAppEvent(context, IrisAnalyticsEvents.INAPP_CANCELLED, updatedCMInApp)
                         return@launchCatchError
                     }
-                    putDataToStore(updatedCMInApp)
+                    val isStored = putDataToStore(updatedCMInApp)
+                    launch(Dispatchers.Main) {
+                        if (isStored && cmInApp.isAmplification)
+                            listenerOnNewInApp.onNewInAppDataStored()
+                    }
                 }, onError = {
             val messageMap: MutableMap<String, String> = HashMap()
             messageMap["type"] = "exception"
@@ -38,8 +43,12 @@ class CMInAppController : CoroutineScope {
 
     }
 
-    private fun putDataToStore(inAppData: CMInApp) {
-        RepositoryManager.getInstance().storageProvider.putDataToStore(inAppData).subscribe()
+    private fun putDataToStore(inAppData: CMInApp): Boolean {
+        return RepositoryManager.getInstance().storageProvider.putDataToStore(inAppData)
+    }
+
+    interface OnNewInAppDataStoreListener {
+        fun onNewInAppDataStored()
     }
 
 }

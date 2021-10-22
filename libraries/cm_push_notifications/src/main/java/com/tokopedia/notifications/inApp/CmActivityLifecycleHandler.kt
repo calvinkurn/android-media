@@ -110,8 +110,13 @@ class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationC
         return null
     }
 
+    fun onFirstScreenOpen(activity: WeakReference<Activity>){
+        applicationCallback.onFirstScreenOpen(activity)
+    }
+
     interface CmActivityApplicationCallback {
         fun getApplication(): Application?
         fun setApplication(application: Application)
+        fun onFirstScreenOpen(activity: WeakReference<Activity>)
     }
 }
