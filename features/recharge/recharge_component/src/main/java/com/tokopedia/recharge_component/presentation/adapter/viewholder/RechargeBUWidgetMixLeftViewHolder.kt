@@ -98,6 +98,10 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
     }
 
     override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
+        if(!isCacheData){
+            // Decrement position to account for empty product card
+            listener.onRechargeBUWidgetProductCardImpression(dataModel, position - 1)
+        }
     }
 
     override fun onProductCardClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {

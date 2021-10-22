@@ -11,4 +11,5 @@ interface RechargeBUWidgetListener {
     fun onRechargeBUWidgetClickBanner(data: RechargeBUWidgetDataModel)
     fun onRechargeBUWidgetItemClick(data: RechargeBUWidgetDataModel, position: Int)
     fun getRechargeBUWidget(source: WidgetSource)
+    fun onRechargeBUWidgetProductCardImpression(data: RechargeBUWidgetDataModel, position: Int)
 }
