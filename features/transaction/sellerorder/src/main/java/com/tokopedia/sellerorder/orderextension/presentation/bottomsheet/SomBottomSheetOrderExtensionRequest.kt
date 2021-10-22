@@ -130,7 +130,7 @@ class SomBottomSheetOrderExtensionRequest(
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupDismissKeyboardHandler() {
-        binding?.rvRequestExtensionInfo?.setOnTouchListener(hideKeyboardTouchListener)
+        binding?.rvRequestExtensionInfo?.run { hideKeyboardHandler.attachListener(this) }
     }
 
     private fun updateRequestExtensionInfoItemViews() {

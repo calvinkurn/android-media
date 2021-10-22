@@ -61,7 +61,7 @@ class SomBottomSheetProductEmpty(
                 orderRejectRequest.reason = tfExtraNotes.textFieldInput.text.toString()
                 listener.onDoRejectOrder(orderRejectRequest)
             }
-            btnPrimary.setOnTouchListener(hideKeyboardTouchListener)
+            hideKeyboardHandler.attachListener(btnPrimary)
         }
     }
 

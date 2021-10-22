@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.listener.SingleTapListener
 import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toPx
@@ -53,21 +54,18 @@ abstract class SomBottomSheet <T: ViewBinding> (
     protected var bottomSheetLayout: View? = null
     protected var dismissing: Boolean = false
 
-    private val gestureListener = object: GestureDetector.SimpleOnGestureListener() {
-        override fun onSingleTapUp(e: MotionEvent?): Boolean {
+    protected val hideKeyboardHandler = createHideKeyboardHandler()
+
+    private fun createHideKeyboardHandler(): SingleTapListener {
+        return SingleTapListener(context) {
             binding?.root?.hideKeyboard()
-            return true
+            true
         }
-    }
-    private val gestureDetector = GestureDetectorCompat(context, gestureListener)
-    @SuppressLint("ClickableViewAccessibility")
-    protected val hideKeyboardTouchListener = View.OnTouchListener { _, event ->
-        gestureDetector.onTouchEvent(event)
     }
 
     init {
         inflateChildView(childViewsLayoutResourceId)
-        binding?.root?.setOnTouchListener(hideKeyboardTouchListener)
+        binding?.root?.run { hideKeyboardHandler.attachListener(this) }
     }
 
     abstract fun bind(view: View): T

@@ -78,7 +78,7 @@ class SomBottomSheetShopClosed(
                     showToasterError(context.getString(R.string.cancel_order_notes_empty_warning))
                 }
             }
-            btnRejectShopClosed.setOnTouchListener(hideKeyboardTouchListener)
+            hideKeyboardHandler.attachListener(btnRejectShopClosed)
         }
     }
 

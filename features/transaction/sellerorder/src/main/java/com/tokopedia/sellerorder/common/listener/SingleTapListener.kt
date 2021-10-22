@@ -9,18 +9,11 @@ import androidx.core.view.GestureDetectorCompat
 import com.tokopedia.kotlin.extensions.orFalse
 
 @SuppressLint("ClickableViewAccessibility")
-class SingleTapListener(view: View, action: (event: MotionEvent?) -> Boolean) {
+class SingleTapListener(context: Context, action: (event: MotionEvent?) -> Boolean) {
 
-    init {
-        attachListener(view, action)
-    }
-
-    private fun attachListener(view: View, action: (event: MotionEvent?) -> Boolean) {
-        val gestureListener = createGestureListener(action)
-        val gestureDetector = createGestureDetector(view.context, gestureListener)
-        val touchListener = createTouchListener(gestureDetector)
-        view.setOnTouchListener(touchListener)
-    }
+    private val gestureListener by lazy { createGestureListener(action) }
+    private val gestureDetector by lazy { createGestureDetector(context, gestureListener) }
+    private val touchListener by lazy { createTouchListener(gestureDetector) }
 
     private fun createGestureListener(
         action: (event: MotionEvent?) -> Boolean
@@ -41,5 +34,9 @@ class SingleTapListener(view: View, action: (event: MotionEvent?) -> Boolean) {
         gestureDetector: GestureDetectorCompat
     ) = View.OnTouchListener { _, event ->
         gestureDetector.onTouchEvent(event).orFalse()
+    }
+
+    fun attachListener(view: View) {
+        view.setOnTouchListener(touchListener)
     }
 }
