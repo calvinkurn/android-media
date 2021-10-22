@@ -265,8 +265,8 @@ class PlayFragment @Inject constructor(
     fun setResultBeforeFinish() {
         activity?.setResult(Activity.RESULT_OK, Intent().apply {
             val totalView = playViewModel.totalView
-            if (!totalView.isNullOrEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
-            if (!channelId.isNullOrEmpty()) putExtra(EXTRA_CHANNEL_ID, channelId)
+            if (totalView.isNotEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
+            if (channelId.isNotEmpty()) putExtra(EXTRA_CHANNEL_ID, channelId)
             playViewModel.upcomingInfo?.let {
                 putExtra(EXTRA_IS_REMINDER, it.isReminderSet)
             }
