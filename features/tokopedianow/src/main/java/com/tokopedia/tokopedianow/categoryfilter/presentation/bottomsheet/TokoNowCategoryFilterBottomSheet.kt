@@ -22,7 +22,7 @@ import com.tokopedia.tokopedianow.categoryfilter.presentation.uimodel.CategoryFi
 import com.tokopedia.tokopedianow.categoryfilter.presentation.view.CategoryFilterChipView
 import com.tokopedia.tokopedianow.categoryfilter.presentation.viewmodel.TokoNowCategoryFilterViewModel
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowCategoryFilterBinding
-import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Success

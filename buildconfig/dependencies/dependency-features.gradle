@@ -93,6 +93,7 @@ ext {
             filter                          : ":features:discovery:filter",
             similarSearch                   : ":features:discovery:similarsearch",
             autocomplete                    : ":features:discovery:autocomplete",
+            autocompleteComponent           : ":features:discovery:autocomplete_component",
             recommendationWidgetCommon      : ":features:discovery:recommendation_widget_common",
             globalNavWidget                 : ":features:discovery:global_nav_widget",
             globalNavWidgetSamples          : ":features:discovery:global_nav_widget_samples",

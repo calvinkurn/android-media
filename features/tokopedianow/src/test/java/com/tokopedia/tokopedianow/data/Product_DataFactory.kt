@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.data
 
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseProductUiModel
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 
 fun createRepurchaseProductUiModel(
     id: String = "",
