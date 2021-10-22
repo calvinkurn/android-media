@@ -257,7 +257,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                             renderWishlist(wishlistV2.items)
 
                         } else {
-                            hideLoader()
                             if (wishlistV2.query.isNotEmpty()) {
                                 onWishlistSearchNotFound(wishlistV2.query)
                             } else {
