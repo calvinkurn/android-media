@@ -3,6 +3,8 @@ package com.tokopedia.search.result.presentation.model
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.SavedOption
+import com.tokopedia.filter.common.helper.getSortFilterParamsString
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 
@@ -34,12 +36,11 @@ class LastFilterDataView(
                 valueTransform = { it.value }
             )
 
-    fun sortFilterParamsString(): String =
-        filterList
-            .joinToString(
-                separator = "&",
-                transform = SavedOption::keyValue,
-            )
+    fun sortFilterParamsString(): String {
+        val optionList = filterList.map(SavedOption::asOption)
+        val optionMap = OptionHelper.toMap(optionList) as Map<String?, String>
+        return getSortFilterParamsString(optionMap)
+    }
 
     override fun type(typeFactory: ProductListTypeFactory?) =
         typeFactory?.type(this) ?: 0
