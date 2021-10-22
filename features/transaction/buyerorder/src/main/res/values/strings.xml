@@ -130,4 +130,8 @@
 
     <string name="zero_rupiah">Rp0</string>
     <string name="free_rupiah">Gratis</string>
+    <string name="icon_placeholder">Icon</string>
+    <string name="buyer_finish_order_desc">Dengan klik "Selesai", dana akan diteruskan ke penjual dan kamu tidak dapat mengajukan komplain.</string>
+    <string name="buyer_finish_order_1">Pastikan kamu sudah menerima barang yang sesuai dengan pesananmu.</string>
+    <string name="buyer_finish_order_2">Jika memenuhi syarat &amp; Ketentuan, cashback dari transaksi yang pakai promo akan dikirim maks. 24 jam ke depan.</string>
 </resources>
