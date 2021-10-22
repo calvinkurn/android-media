@@ -18,6 +18,7 @@ object ChatbotConstant {
 
     object ImageUpload {
         const val MAX_FILE_SIZE = 5120
+        const val MAX_FILE_SIZE_UPLOAD_SECURE = 9216
         const val MINIMUM_HEIGHT = 100
         const val MINIMUM_WIDTH = 300
         const val DEFAULT_ONE_MEGABYTE: Long = 1024

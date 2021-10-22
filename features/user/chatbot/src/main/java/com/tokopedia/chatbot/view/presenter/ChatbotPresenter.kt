@@ -25,6 +25,7 @@ import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.DEFAULT_ONE_MEGABYTE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE
+import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE_UPLOAD_SECURE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_HEIGHT
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_WIDTH
 import com.tokopedia.chatbot.R
@@ -436,7 +437,7 @@ class ChatbotPresenter @Inject constructor(
                               messageId: String,
                               opponentId: String,
                               onError: (Throwable, ImageUploadViewModel) -> Unit) {
-        if (validateImageAttachment(it.imageUrl)) {
+        if (validateImageAttachment(it.imageUrl, MAX_FILE_SIZE)) {
             isUploading = true
             uploadImageUseCase.unsubscribe()
 
@@ -487,29 +488,32 @@ class ChatbotPresenter @Inject constructor(
             path: String?,
             context: Context?
     ) {
-        chatBotSecureImageUploadUseCase.setRequestParams(messageId, path ?: "")
-        chatBotSecureImageUploadUseCase.execute(object : Subscriber<Map<Type?, RestResponse?>?>() {
-            override fun onCompleted() {}
-            override fun onError(e: Throwable) {
-                onErrorImageUpload(e, imageUploadViewModel)
-            }
+        if (validateImageAttachment(imageUploadViewModel.imageUrl, MAX_FILE_SIZE_UPLOAD_SECURE)) {
+            chatBotSecureImageUploadUseCase.setRequestParams(messageId, path ?: "")
+            chatBotSecureImageUploadUseCase.execute(object : Subscriber<Map<Type?, RestResponse?>?>() {
+                override fun onCompleted() {}
+                override fun onError(e: Throwable) {
+                    onErrorImageUpload(e, imageUploadViewModel)
+                }
 
-            override fun onNext(t: Map<Type?, RestResponse?>?) {
-                val token = object : TypeToken<UploadSecureResponse?>() {}.type
-                val restResponse = t?.get(token)
-                val uploadSecureResponse: UploadSecureResponse? = restResponse?.getData()
-                sendUploadedImageToWebsocket(
-                        ChatbotSendWebsocketParam
-                                .generateParamUploadSecureSendImage(
-                                        messageId,
-                                        uploadSecureResponse?.uploadSecureData?.urlImage ?: "",
-                                        imageUploadViewModel.startTime,
-                                        opponentId,
-                                        userSession.name)
-                )
-            }
+                override fun onNext(t: Map<Type?, RestResponse?>?) {
+                    val token = object : TypeToken<UploadSecureResponse?>() {}.type
+                    val restResponse = t?.get(token)
+                    val uploadSecureResponse: UploadSecureResponse? = restResponse?.getData()
+                    sendUploadedImageToWebsocket(
+                            ChatbotSendWebsocketParam
+                                    .generateParamUploadSecureSendImage(
+                                            messageId,
+                                            uploadSecureResponse?.uploadSecureData?.urlImage ?: "",
+                                            imageUploadViewModel.startTime,
+                                            opponentId,
+                                            userSession.name)
+                    )
+                }
 
-        })
+            })
+        }
+
     }
 
     override fun cancelImageUpload() {
@@ -528,7 +532,7 @@ class ChatbotPresenter @Inject constructor(
         return RequestBody.create(MediaType.parse("text/plain"), content)
     }
 
-    private fun validateImageAttachment(uri: String?): Boolean {
+    private fun validateImageAttachment(uri: String?, maxFileSize:Int): Boolean {
 
         if (uri == null) return false
         val file = File(uri)
@@ -543,7 +547,7 @@ class ChatbotPresenter @Inject constructor(
         return if (imageHeight < MINIMUM_HEIGHT || imageWidth < MINIMUM_WIDTH) {
             view.onUploadUndersizedImage()
             false
-        } else if (fileSize >= MAX_FILE_SIZE) {
+        } else if (fileSize >= maxFileSize) {
             view.onUploadOversizedImage()
             false
         } else {
