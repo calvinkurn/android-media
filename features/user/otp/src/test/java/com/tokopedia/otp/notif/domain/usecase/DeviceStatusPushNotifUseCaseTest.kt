@@ -44,7 +44,7 @@ class DeviceStatusPushNotifUseCaseTest {
         result[DeviceStatusPushNotifPojo::class.java] = successResponse
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         runBlocking(dispatcherProviderTest.io) {
             val data = useCase.getData(mapOf())
@@ -59,7 +59,7 @@ class DeviceStatusPushNotifUseCaseTest {
         result[DeviceStatusPushNotifPojo::class.java] = successResponse
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         runBlocking(dispatcherProviderTest.io) {
             val data = useCase.getData(mapOf())
@@ -75,7 +75,7 @@ class DeviceStatusPushNotifUseCaseTest {
         result[DeviceStatusPushNotifPojo::class.java] = failedResponse
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         runBlocking(dispatcherProviderTest.io) {
             val data = useCase.getData(mapOf())
@@ -87,7 +87,7 @@ class DeviceStatusPushNotifUseCaseTest {
 
     @Test
     fun `on failed get device status push notif`() {
-        coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable() }
+        coEvery { graphqlRepository.response(any(), any()) } coAnswers { throw Throwable() }
 
         runBlocking(dispatcherProviderTest.io) {
             assertFails { useCase.getData(mapOf()) }
@@ -96,7 +96,7 @@ class DeviceStatusPushNotifUseCaseTest {
 
     @Test
     fun `on failed runtime exception get device status push notif`() {
-        coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw RuntimeException() }
+        coEvery { graphqlRepository.response(any(), any()) } coAnswers { throw RuntimeException() }
 
         runBlocking(dispatcherProviderTest.io) {
             assertFailsWith<RuntimeException> { useCase.getData(mapOf()) }
@@ -105,7 +105,7 @@ class DeviceStatusPushNotifUseCaseTest {
 
     @Test
     fun `on failed null pointer exception get device status push notif`() {
-        coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw NullPointerException() }
+        coEvery { graphqlRepository.response(any(), any()) } coAnswers { throw NullPointerException() }
 
         runBlocking(dispatcherProviderTest.io) {
             assertFailsWith<NullPointerException> { useCase.getData(mapOf()) }

@@ -191,7 +191,7 @@ class HotelHomepageViewModelTest {
                 HotelPropertyDefaultHome.PropertyDefaultHomeMetaAndData(
                         data = defaultHomeData
                 ))
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns
+        coEvery { graphqlRepository.response(any(), any()) } returns
                 GraphqlResponse(mapOf<Type, Any>(HotelPropertyDefaultHome.Response::class.java to data),
                         mapOf<Type, List<GraphqlError>>(), false)
 
@@ -207,7 +207,7 @@ class HotelHomepageViewModelTest {
     @Test
     fun getDefaultHomeParameter_shouldReturnEmptyAndNull() {
         //given
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns
+        coEvery { graphqlRepository.response(any(), any()) } returns
                 GraphqlResponse(mapOf<Type, Any>(),
                         mapOf<Type, List<GraphqlError>>(), false)
 
@@ -257,7 +257,7 @@ class HotelHomepageViewModelTest {
     @Test
     fun deleteRecentSearch_shouldReturnSuccess() {
         //given
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns
+        coEvery { graphqlRepository.response(any(), any()) } returns
                 GraphqlResponse(mapOf<Type, Any>(HotelDeleteRecentSearchEntity.Response::class.java to HotelDeleteRecentSearchEntity.Response(HotelDeleteRecentSearchEntity(true))),
                         mapOf<Type, List<GraphqlError>>(), false)
 
@@ -273,7 +273,7 @@ class HotelHomepageViewModelTest {
     @Test
     fun deleteRecentSearch_shouldReturnFail() {
         //given
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns
+        coEvery { graphqlRepository.response(any(), any()) } returns
                 GraphqlResponse(mapOf<Type, Any>(),
                         mapOf<Type, List<GraphqlError>>(GraphqlError::class.java to listOf(GraphqlError())), false)
 

@@ -93,7 +93,7 @@ class CartShopViewHolder(private val binding: ItemShopBundleBinding,
     }
 
     private fun renderCartItems(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.isCollapsed) {
+        if (!cartShopHolderData.isError && cartShopHolderData.isCollapsed) {
             renderCollapsedCartItems(cartShopHolderData)
         } else {
             renderExpandedCartItems(cartShopHolderData)
@@ -181,7 +181,7 @@ class CartShopViewHolder(private val binding: ItemShopBundleBinding,
     }
 
     private fun renderAccordion(cartShopHolderData: CartShopHolderData) {
-        if (cartShopHolderData.isCollapsible) {
+        if (!cartShopHolderData.isError && cartShopHolderData.isCollapsible) {
             val showMoreWording: String
             val showLessWording = itemView.context.getString(R.string.label_tokonow_show_less)
             val itemCount = cartShopHolderData.productUiModelList.size

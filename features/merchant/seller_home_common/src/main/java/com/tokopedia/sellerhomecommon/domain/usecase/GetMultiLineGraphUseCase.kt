@@ -31,7 +31,7 @@ class GetMultiLineGraphUseCase (
 
     override suspend fun executeOnBackground(): List<MultiLineGraphDataUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, GetMultiLineGraphResponse::class.java, params.parameters)
-        val gqlResponse: GraphqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse: GraphqlResponse = graphqlRepository.response(listOf(gqlRequest))
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetMultiLineGraphResponse::class.java)
         if (errors.isNullOrEmpty()) {

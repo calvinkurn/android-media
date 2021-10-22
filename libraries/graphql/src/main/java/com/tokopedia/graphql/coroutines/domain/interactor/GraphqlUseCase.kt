@@ -87,7 +87,7 @@ open class GraphqlUseCase<T: Any> constructor(private val graphqlRepository: Gra
         val type = tClass ?: throw RuntimeException("Please set valid class type before call execute()")
         val request = GraphqlRequest(doQueryHash, graphqlQuery, type, requestParams)
         val listOfRequest = listOf(request)
-        val response = graphqlRepository.getReseponse(listOfRequest, cacheStrategy)
+        val response = graphqlRepository.response(listOfRequest, cacheStrategy)
 
         val error = response.getError(tClass)
 

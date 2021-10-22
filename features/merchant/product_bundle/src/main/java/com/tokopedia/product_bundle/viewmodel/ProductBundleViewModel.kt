@@ -9,12 +9,15 @@ import com.tokopedia.atc_common.data.model.request.ProductDetail
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
+import com.tokopedia.product_bundle.common.data.model.request.InventoryDetail
 import com.tokopedia.product_bundle.common.data.model.request.ProductData
 import com.tokopedia.product_bundle.common.data.model.request.RequestData
+import com.tokopedia.product_bundle.common.data.model.request.UserLocation
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
 import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfoResponse
@@ -40,6 +43,7 @@ class ProductBundleViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getBundleInfoUseCase: GetBundleInfoUseCase,
     private val addToCartBundleUseCase: AddToCartBundleUseCase,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main) {
 
@@ -155,6 +159,7 @@ class ProductBundleViewModel @Inject constructor(
     }
 
     fun getBundleInfo(productId: Long) {
+        val chosenAddress = chosenAddressRequestHelper.getChosenAddress()
         mPageState.value = ProductBundleState.LOADING
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
@@ -165,9 +170,20 @@ class ProductBundleViewModel @Inject constructor(
                         variantDetail = true,
                         CheckCampaign = true,
                         BundleGroup = true,
-                        Preorder = true
+                        Preorder = true,
+                        inventoryDetail = InventoryDetail(
+                            required = true,
+                            userLocation = UserLocation(
+                                addressId = chosenAddress?.addressId.orEmpty(),
+                                districtID = chosenAddress?.districtId.orEmpty(),
+                                postalCode = chosenAddress?.postalCode.orEmpty(),
+                                latlon = chosenAddress?.geolocation.orEmpty()
+                            )
+                        )
                     ),
-                    productData = ProductData(productID = productId.toString())
+                    productData = ProductData(
+                        productID = productId.toString()
+                    )
                 )
                 getBundleInfoUseCase.executeOnBackground()
             }
@@ -214,7 +230,7 @@ class ProductBundleViewModel @Inject constructor(
     }
 
     fun isProductBundleAvailable(bundleInfo: BundleInfo): Boolean {
-        return bundleInfo.status == PRODUCT_BUNDLE_STATUS_ACTIVE && bundleInfo.quota.isMoreThanZero()
+        return bundleInfo.status == PRODUCT_BUNDLE_STATUS_ACTIVE
     }
 
     fun mapBundleInfoToBundleMaster(bundleInfo: BundleInfo): ProductBundleMaster {
@@ -229,7 +245,7 @@ class ProductBundleViewModel @Inject constructor(
         )
     }
 
-    fun mapBundleItemsToBundleDetails(bundleItems: List<BundleItem>): List<ProductBundleDetail> {
+    fun mapBundleItemsToBundleDetails(warehouseId:String, bundleItems: List<BundleItem>): List<ProductBundleDetail> {
         return bundleItems.map { bundleItem ->
             val productVariant = AtcVariantMapper.mapToProductVariant(bundleItem)
             ProductBundleDetail(
@@ -237,11 +253,12 @@ class ProductBundleViewModel @Inject constructor(
                 productName = bundleItem.name,
                 productImageUrl = bundleItem.picURL,
                 productQuantity = bundleItem.quantity,
-                originalPrice = bundleItem.originalPrice,
-                bundlePrice = bundleItem.bundlePrice,
+                originalPrice = bundleItem.getPreviewOriginalPrice(),
+                bundlePrice = bundleItem.getPreviewBundlePrice(),
+                warehouseId = warehouseId,
                 discountAmount = calculateDiscountPercentage(
-                    originalPrice = bundleItem.originalPrice,
-                    bundlePrice = bundleItem.bundlePrice
+                    originalPrice = bundleItem.getPreviewOriginalPrice(),
+                    bundlePrice = bundleItem.getPreviewBundlePrice()
                 ),
                 productVariant = if (productVariant.hasVariant) productVariant else null
             )
@@ -255,7 +272,8 @@ class ProductBundleViewModel @Inject constructor(
                 quantity = ATC_BUNDLE_QUANTITY,
                 shopId = shopId.toString(),
                 isProductParent = parentProductID == productBundleDetail.productId,
-                customerId = userId
+                customerId = userId,
+                warehouseId = productBundleDetail.warehouseId
             )
         }
     }
@@ -279,6 +297,10 @@ class ProductBundleViewModel @Inject constructor(
             }
         }
         return target
+    }
+
+    fun resetBundleMap() {
+        productBundleMap = HashMap()
     }
 
     private fun getSelectedVariantText(selectedProductVariant: ProductVariant?, selectedVariantId: String): String {
@@ -332,7 +354,9 @@ class ProductBundleViewModel @Inject constructor(
         if (!isProductVariantSelectionComplete(productBundleDetails)) {
             isAddToCartInputValid = false
             errorMessageLiveData.value = rscProvider.getProductVariantNotSelected()
-        } else if (selectedProductBundleMaster.bundleId == selectedBundleId &&
+        } else if (
+            pageSource == PAGE_SOURCE_CART &&
+            selectedProductBundleMaster.bundleId == selectedBundleId &&
             variantProductNotChanged(productBundleDetails)) {
                 isAddToCartInputValid = false
                 addToCartResultLiveData.value = AddToCartDataResult(

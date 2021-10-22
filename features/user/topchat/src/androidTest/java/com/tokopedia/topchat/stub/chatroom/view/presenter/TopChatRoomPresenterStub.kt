@@ -32,7 +32,6 @@ class TopChatRoomPresenterStub @Inject constructor(
     topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
     getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
     replyChatUseCase: ReplyChatUseCase,
-    getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
     getShopFollowingUseCase: GetShopFollowingUseCase,
     toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
     addToCartUseCase: AddToCartUseCase,
@@ -62,7 +61,6 @@ class TopChatRoomPresenterStub @Inject constructor(
     topChatRoomWebSocketMessageMapper,
     getTemplateChatRoomUseCase,
     replyChatUseCase,
-    getExistingMessageIdUseCase,
     getShopFollowingUseCase,
     toggleFavouriteShopUseCase,
     addToCartUseCase,
@@ -84,18 +82,6 @@ class TopChatRoomPresenterStub @Inject constructor(
     dispatchers,
     remoteConfig
 ) {
-
-    override fun sendAttachmentsAndMessage(
-        messageId: String,
-        sendMessage: String,
-        startTime: String,
-        opponentId: String,
-        onSendingMessage: () -> Unit
-    ) {
-        super.sendAttachmentsAndMessage(
-            messageId, sendMessage, exStartTime, opponentId, onSendingMessage
-        )
-    }
 
     override fun sendMessageWebSocket(messageText: String) {
         webSocketUtil.send(messageText)

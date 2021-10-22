@@ -6,7 +6,7 @@ import com.tokopedia.play.broadcaster.type.ProductStock
  * Created by jegul on 24/06/20
  */
 data class ProductData(
-        val id: Long,
+        val id: String,
         val name: String,
         val imageUrl: String,
         val originalImageUrl: String,

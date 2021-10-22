@@ -43,7 +43,7 @@ class UpdateUserProfileCompletionUseCase @Inject constructor(
                     parameter.toMap()
             )
 
-            return@withContext graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+            return@withContext graphqlRepository.response(listOf(request), cacheStrategy)
         }
 
         response.getError(UserProfileCompletionUpdatePojo::class.java)?.let {

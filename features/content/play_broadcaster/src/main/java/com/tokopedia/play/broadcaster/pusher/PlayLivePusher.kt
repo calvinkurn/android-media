@@ -39,4 +39,6 @@ interface PlayLivePusher {
     fun reconnect()
 
     fun stop()
+
+    fun release()
 }

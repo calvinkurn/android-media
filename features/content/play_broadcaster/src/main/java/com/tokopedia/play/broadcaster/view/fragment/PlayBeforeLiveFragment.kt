@@ -16,6 +16,7 @@ import com.tokopedia.cachemanager.gson.GsonSingleton
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
@@ -40,6 +41,7 @@ import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.BroadcastScheduleViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -281,12 +283,9 @@ class PlayBeforeLiveFragment @Inject constructor(
                 NetworkResult.Loading -> btnStartLive.setLoading(true)
                 is NetworkResult.Success -> parentViewModel.startLiveStream(withTimer = false)
                 is NetworkResult.Fail -> {
-                    showToaster(
-                            message = it.error.localizedMessage,
-                            type = Toaster.TYPE_ERROR
-                    )
+                    showErrorToaster(it.error)
                     btnStartLive.setLoading(false)
-                    analytic.viewErrorOnFinalSetupPage(it.error.localizedMessage)
+                    analytic.viewErrorOnFinalSetupPage(getProperErrorMessage(it.error))
                 }
             }
         })
@@ -310,9 +309,7 @@ class PlayBeforeLiveFragment @Inject constructor(
                 }
                 is NetworkResult.Fail -> {
                     getDeleteScheduleDialog().dismiss()
-                    it.error.localizedMessage?.let { err ->
-                        showToaster(message = err, type = Toaster.TYPE_ERROR)
-                    }
+                    showErrorToaster(it.error)
                 }
                 is NetworkResult.Success -> {
                     scope.launch {
@@ -333,9 +330,7 @@ class PlayBeforeLiveFragment @Inject constructor(
                         .dismiss()
 
                 if (it is NetworkResult.Fail) {
-                    it.error.localizedMessage?.let { err ->
-                        showToaster(message = err, type = Toaster.TYPE_ERROR)
-                    }
+                    showErrorToaster(it.error)
                 } else if (it is NetworkResult.Success) {
                     showToaster(
                             message = getString(R.string.play_broadcast_schedule_deleted)
@@ -372,15 +367,15 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private fun handleLivePushError(state: PlayLiveViewState.Error) {
         when(state.error.type) {
-            PlayLivePusherErrorType.ConnectFailed -> showToaster(
-                message = getString(R.string.play_live_broadcast_connect_fail),
-                type = Toaster.TYPE_ERROR,
+            PlayLivePusherErrorType.ConnectFailed -> showErrorToaster(
+                err = state.error,
+                customErrMessage = getString(R.string.play_live_broadcast_connect_fail),
                 actionLabel = getString(R.string.play_broadcast_try_again),
                 actionListener = { parentViewModel.reconnectLiveStream() }
             )
-            PlayLivePusherErrorType.SystemError -> showToaster(
-                message = getString(R.string.play_dialog_unsupported_device_desc),
-                type = Toaster.TYPE_ERROR,
+            PlayLivePusherErrorType.SystemError -> showErrorToaster(
+                err = state.error,
+                customErrMessage = getString(R.string.play_dialog_unsupported_device_desc),
                 actionLabel = getString(R.string.play_ok),
                 actionListener = { parentViewModel.stopLiveStream(shouldNavigate = true) }
             )
@@ -509,6 +504,37 @@ class PlayBeforeLiveFragment @Inject constructor(
     private fun deleteBroadcastSchedule() {
         scheduleViewModel.deleteBroadcastSchedule()
         analytic.clickDeleteScheduleOnConfirmDeleteDialog()
+    }
+
+    private fun getProperErrorMessage(err: Throwable): String {
+        return ErrorHandler.getErrorMessage(context, err)
+    }
+
+    private fun showErrorToaster(
+        err: Throwable,
+        customErrMessage: String? = null,
+        actionLabel: String = "",
+        actionListener: View.OnClickListener = View.OnClickListener {  }
+    ) {
+        val errMessage = if (customErrMessage == null) {
+            ErrorHandler.getErrorMessage(
+                context, err, ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
+        } else {
+            val (_, errCode) = ErrorHandler.getErrorMessagePair(
+                context, err, ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
+            getString(
+                commonR.string.play_custom_error_handler_msg,
+                customErrMessage,
+                errCode
+            )
+        }
+        showToaster(errMessage, Toaster.TYPE_ERROR, actionLabel, actionListener)
     }
 
     private fun showToaster(

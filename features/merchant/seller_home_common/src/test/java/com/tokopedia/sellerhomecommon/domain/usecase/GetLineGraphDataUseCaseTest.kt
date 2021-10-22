@@ -58,13 +58,13 @@ class GetLineGraphDataUseCaseTest {
         val successResponse = TestHelper.createSuccessResponse<GetLineGraphDataResponse>(SUCCESS_RESPONSE)
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         val lineGraphData = getLineGraphDataUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertTrue(!lineGraphData.isNullOrEmpty())
@@ -76,14 +76,14 @@ class GetLineGraphDataUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<GetLineGraphDataResponse>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
         val lineGraphData = getLineGraphDataUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertTrue(lineGraphData.isNullOrEmpty())

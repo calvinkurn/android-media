@@ -1,9 +1,7 @@
 package com.tokopedia.cart.bundle.domain.model.cartlist
 
-import android.os.Parcelable
 import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.ShopTypeInfo
 import com.tokopedia.cart.bundle.view.uimodel.CartItemHolderData
-import kotlinx.android.parcel.Parcelize
 
 data class ShopGroupWithErrorData(
         var cartItemHolderDataList: List<CartItemHolderData> = emptyList(),

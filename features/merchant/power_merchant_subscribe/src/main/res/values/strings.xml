@@ -23,14 +23,7 @@
     <string name="power_merchant_max_score">/100</string>
     <string name="power_merchant_status_label">Status Power Merchant:</string>
 
-    <string name="power_merchant_shop_score_member_hint">Pertahankan skor performa toko **minimum 65 poin** untuk tetap menjadi Power Merchant.</string>
-    <string name="power_merchant_active">Aktif</string>
-    <string name="power_merchant_inactive">Tidak Aktif</string>
-    <string name="power_merchant_shop_score_description_good">“Bagus!”</string>
-    <string name="power_merchant_shop_score_description_not_eligible">“Kurang, tingkatkan lagi!”</string>
-    <string name="power_merchant_upgrade_text">Upgrade Power Merchant</string>
     <string name="power_merchant_ok_label">Oke</string>
-    <string name="power_merchant_free_shipping">Bebas Ongkir</string>
 
     <string name="pm_power_merchant">Power Merchant</string>
     <string name="pm_power_merchant_pro">Power Merchant PRO</string>
@@ -69,7 +62,6 @@
     <string name="pm_label_have_not_one_active_product_yet"><![CDATA[Tambah minimal 1 produk aktif. Tambah Produk]]></string>
     <string name="pm_label_have_not_one_active_product_yet_new_seller"><![CDATA[Min. 1 produk aktif. Tambah Produk]]></string>
     <string name="pm_term_shop_score"><![CDATA[Skor Toko: <font color=\"%1$s\">%2$s</font>]]></string>
-    <string name="pm_shop_score_not_eligible_new_seller">Skor Toko: -</string>
     <string name="pm_shop_score_eligible_description">Batas min. skor %1$d</string>
     <string name="pm_shop_score_not_eligible_description"><![CDATA[Tingkatkan skor hingga min. %1$d, ya! <br>Pelajari Performa Toko]]></string>
     <string name="pm_add_product">Tambah Produk</string>
@@ -85,14 +77,11 @@
     <string name="pm_title_min_product_sold_term_new_seller_before_30_days">Min. Rp350.000 dalam 30 hari terakhir</string>
     <string name="pm_desc_min_product_sold_term_new_seller_before_30_days">Pendapatan bersihmu Rp%s</string>
 
-    <string name="pm_set_membership_status">Atur status keanggotaanmu &lt;a href="#"&gt;di sini&lt;/a&gt;</string>
-
     <string name="pm_kyc_verify_ktp">Verifikasi data diri dengan KTP</string>
     <string name="pm_kyc_verified">Data Diri Terverifikasi</string>
     <string name="pm_kyc_not_verified">Data Diri Belum Terverifikasi</string>
     <string name="pm_kyc_verification_waiting">Menunggu Verifikasi Data Diri</string>
     <string name="pm_verification_failed">Verifikasi Gagal</string>
-    <string name="pm_description_kyc_verified">Data diri kamu sudah terverifikasi.</string>
     <string name="pm_description_kyc_verified_new_seller">Verifikasi data diri dengan KTP</string>
     <string name="pm_description_kyc_verified_before_30_first_monday">Data dirimu sudah terverifikasi</string>
     <string name="pm_description_kyc_not_verified_directly_pm">Daftar langsung untuk bisa segera diverifikasi. yuk! Jika berhasil, tokomu akan jadi Power Merchant.</string>
@@ -115,9 +104,6 @@
     <string name="pm_shop_grade_shop_score_threshold_description_pm_active"><![CDATA[Pertahankan skor <font color="%1$s"><b>min. %2$d poin</b></font> agar %3$s-mu tetap aktif, ya.]]></string>
     <string name="pm_shop_grade_shop_score_threshold_description_pm_active_new_seller"><![CDATA[<b>Sebagai Seller baru,</b> Tokomu akan dapat skor &amp; level sesuai dengan Performa setelah 90 hari (%1$s).]]></string>
     <string name="pm_shop_grade_shop_score_threshold_description_pm_idle"><![CDATA[Yuk, tingkatkan skor jadi <font color="%1$s"><b>min. %2$d poin</b></font> agar %3$s-mu kembali aktif!]]></string>
-    <string name="pm_next_pm_grade_info"><![CDATA[Capai <b>level %1$d</b> untuk mendapatkan paket keuntungan <b>%2$s</b> pada periode update berikutnya. Pelajari Selengkapnya]]></string>
-    <string name="pm_next_update_pm_pro_info"><![CDATA[Pengecekan status PM PRO akan dilakukan setiap 30 hari. Toko dengan skor <b>di bawah %1$d</b> berpotensi diturunkan menjadi PM.]]></string>
-    <string name="pm_label_next_three_months_pm_grade_update">Update selanjutnya: %1$s</string>
     <string name="pm_deactivate_power_merchant_bottom_cta">Atur status keanggotaanmu <font color="#03AC0E"><b>di sini</b></font></string>
     <string name="pm_deactivate_power_merchant_message_info"><![CDATA[Pengajuan penurunan status jadi Power Merchant berhasil. Layanan dan status PM otomatis berhenti pada <b>%1$s WIB.</b>]]></string>
 
@@ -142,13 +128,7 @@
     <string name="pm_learn_ad_and_promotion">Pelajari Iklan &amp; Promosi</string>
     <string name="pm_not_eligible_niv_term_title">Tingkatkan pendapatan \nTokomu dulu, yuk!</string>
     <string name="pm_not_eligible_niv_term_description"><![CDATA[Tokomu harus mendapatkan pendapatan <b>Rp%1$s</b> untuk daftar jadi Power Merchant Pro. Gunakan fitur-fitur promosi Tokopedia untuk dapat meningkatkan pendapatanmu, ya!]]></string>
-    <string name="pm_seller_current_grade_label">Berdasarkan levelmu,</string>
-    <string name="pm_seller_package_benefit_label">Kamu mendapatkan paket keuntungan</string>
     <string name="pm_benefits_that_you_can_get">Keuntungan yang bisa kamu dapatkan</string>
-    <string name="pm_update_info_pm_pro_description_text">Yay! Tidak ada penurunan paket keuntungan pada update berikutnya. Selengkapnya</string>
-    <string name="pm_update_info_pm_pro_transition_period_description_text">Karena masih transisi, tidak ada penurunan paket keuntungan hingga 29 Agustus. Selengkapnya</string>
-    <string name="pm_update_info_description_clickable_text">Lebih Lanjut</string>
-    <string name="pm_update_info_bottom_sheet_message">Update kenaikan paket keuntungan dilakukan setiap bulan dan penurunan setiap 3 bulan. Di update berikutnya <b>tidak akan ada penurunan paket keuntungan.</b></string>
     <string name="pm_get_exclusive_benefit_of_being_pm_pro_new_seller">Berbagai keuntungan eksklusif Power Merchant PRO:</string>
     <string name="pm_get_exclusive_benefit_of_being_pm_pro">Dapatkan berbagai keuntungan eksklusif dengan gabung Power Merchant PRO!</string>
     <string name="pm_get_exclusive_benefit_of_being_pm_pro_eligible">Kamu menjadi penjual terpilih untuk daftar jadi Power Merchant PRO!</string>
@@ -188,7 +168,6 @@
     <string name="pm_pm_pro_deactivation_description">Kamu bisa turunkan status tokomu jadi Power Merchant. Hanya dengan biaya layanan %1$s, kamu tetap bisa menikmati berbagai keuntungan.</string>
     <string name="pm_new_seller_upgrade_pm_pro_bottom_sheet_title">Oops, kamu belum bisa daftar Power Merchant PRO</string>
     <string name="pm_new_seller_upgrade_pm_pro_bottom_sheet_description"><![CDATA[Untuk daftar Power Merchant PRO, kamu perlu skor toko <b>min. %1$d.</b> Saat ini belum ada penilaian untuk tokomu karena penilaian toko baru akan muncul setelah 90 hari bergabung, ya.]]></string>
-    <string name="pm_new_seller_shop_score_description">Skor tokomu baru akan muncul setelah 90 hari bergabung, ya! Pelajari Performa Toko</string>
     <string name="pm_oke">OKE</string>
     <string name="pm_check_pm_pro_status_info">Pengecekan status PM PRO</string>
     <string name="pm_pro_checking_status_on">Pengecekan status PM PRO dilakukan:</string>
@@ -198,7 +177,8 @@
     <string name="pm_status_info_description"><![CDATA[Pertahankan skor toko <b>min. %1$s</b> supaya status PM PRO-mu tetap aktif, ya.]]></string>
     <string name="pm_pro_status_info_description"><![CDATA[Pertahankan skor <b>min. %1$s</b>, %2$s pesanan selesai, dan pendapatan min. Rp%3$s di 30 hari terakhir agar tokomu tidak turun dari PM PRO jadi Power Merchant.]]></string>
     <string name="pm_see_more">Selengkapnya</string>
-    <string name="pm_title_benefit_package_section">Untuk dapat paket keuntungan %s,</string>
+    <string name="pm_title_benefit_package_upgrade_section">Untuk dapat paket keuntungan %s,</string>
+    <string name="pm_title_benefit_package_downgrade_section">Untuk tetap dapat paket keuntungan %s,</string>
     <string name="pm_desc_level_2_benefit_package_section"><![CDATA[%1s <font color="%2$s"><b>Level 2</b></font> dengan pendapatan mulai dari <font color="%3$s"><b>Rp350 ribu</b></font> dan <font color="%4$s"><b>3 produk terjual</b></font>, dinilai dari 90 hari terakhir.]]></string>
     <string name="pm_desc_level_3_benefit_package_section"><![CDATA[%1s <font color="%2$s"><b>Level 3</b></font> dengan pendapatan mulai dari <font color="%3$s"><b>Rp10 juta</b></font> dan <font color="%4$s"><b>50 produk terjual</b></font>, dinilai dari 90 hari terakhir.]]></string>
     <string name="pm_desc_level_4_benefit_package_section"><![CDATA[%1s <font color="%2$s"><b>Level 4</b></font> dengan pendapatan mulai dari <font color="%3$s"><b>Rp300 juta</b></font> dan <font color="%4$s"><b>1500 produk terjual</b></font>, dinilai dari 90 hari terakhir.]]></string>
@@ -217,8 +197,6 @@
     <string name="pm_next_update_benefit_package_downgrade_status"><![CDATA[Update selanjutnya: %1s. Pertahankan <font color="%2$s"><b>Level %3$s</b></font> untuk dapat paket keuntungan %4$s.]]> &lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</string>
     <string name="pm_title_benefit_package_pm_pro_status">Paket keuntungan Power Merchant PRO</string>
     <string name="pm_desc_benefit_package_pm_pro_status">Power Merchant PRO memiliki tingkatan paket keuntungan yang bisa diraih berdasarkan level toko. &lt;a href="#"&gt;Selengkapnya&lt;/a&gt;</string>
-
-    <string name="pm_lear_more">Selengkapnya</string>
 
     <string name="desc_pm_pro_new_seller_header">Untuk jadi Seller terbaik, kamu bisa gabung Power Merchant dulu dan tetap perhatikan parameter di bawah ini, ya.</string>
     

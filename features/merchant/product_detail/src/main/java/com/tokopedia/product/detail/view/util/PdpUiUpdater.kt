@@ -16,10 +16,10 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCat
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
-import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
+import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
@@ -306,19 +306,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                      boeImageUrl: String,
                      isProductParent: Boolean) {
         p2Data.let {
-
-            updateData(ProductDetailConstant.TICKER_INFO) {
-                tickerInfoMap?.run {
-                    statusInfo = if (it.shopInfo.isShopInfoNotEmpty()) it.shopInfo.statusInfo.copy() else null
-                    closedInfo = if (it.shopInfo.isShopInfoNotEmpty()) it.shopInfo.closedInfo.copy() else null
-                    isUpcomingType = it.upcomingCampaigns[productId]?.isUpcomingNplType() ?: false
-                    this.isProductWarehouse = isProductWarehouse
-                    this.isProductInCampaign = isProductInCampaign
-                    this.isOutOfStock = isOutOfStock
-                    this.isProductParent = isProductParent
-                }
-            }
-
             updateData(ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY) {
                 shopCredibility?.run {
                     shopLastActive = if (context == null) "" else it.shopInfo.shopLastActive.getRelativeDate(context)
@@ -343,6 +330,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     shopName = shopInfo.shopCore.name
                     shopLocation = shopInfo.location
                     shopAva = shopInfo.shopAssets.avatar
+                    shopBadge = shopInfo.shopTierBadgeUrl
                 }
             }
 
@@ -415,9 +403,27 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     totalReviewCount = it.rating.totalReviewTextAndImage
                 }
             }
-
+            
             updateData(ProductDetailConstant.PRODUCT_BUNDLING) {
                 productBundlingData?.bundleInfo = it.bundleInfoMap[productId]
+            }
+
+            if (it.ticker.tickerInfo.isEmpty()) {
+                removeComponent(ProductDetailConstant.TICKER_INFO)
+            } else {
+                updateTicker(it.getTickerByProductId(productId))
+            }
+        }
+    }
+
+    fun updateTicker(data : List<TickerDataResponse>?) {
+        updateData(ProductDetailConstant.TICKER_INFO) {
+            tickerInfoMap?.run {
+                tickerDataResponse = if (data != null && data.isNotEmpty()) {
+                    data
+                } else {
+                    listOf()
+                }
             }
         }
     }
@@ -520,16 +526,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                             isShimmering = false
                         }
                     }
-                }
-            }
-        }
-    }
-
-    fun updateDataP3(it: ProductInfoP3) {
-        updateData(ProductDetailConstant.TICKER_INFO) {
-            tickerInfoMap?.run {
-                if (it.tickerInfo.isNotEmpty()) {
-                    generalTickerInfoDataModel = it.tickerInfo
                 }
             }
         }
@@ -663,18 +659,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     fun failUpdateShopFollow() {
         updateData(ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY) {
             shopCredibility?.enableButtonFavorite = true
-        }
-    }
-
-    fun updateTickerData(isProductWarehouse: Boolean, isProductInCampaign: Boolean, isOutOfStock: Boolean, isUpcomingType: Boolean, isProductParent: Boolean) {
-        updateData(ProductDetailConstant.TICKER_INFO) {
-            tickerInfoMap?.run {
-                this.isProductWarehouse = isProductWarehouse
-                this.isProductInCampaign = isProductInCampaign
-                this.isOutOfStock = isOutOfStock
-                this.isUpcomingType = isUpcomingType
-                this.isProductParent = isProductParent
-            }
         }
     }
 

@@ -4,9 +4,8 @@ import androidx.collection.ArrayMap
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.attachcommon.data.ResultProduct
-import com.tokopedia.chat_common.data.ChatroomViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel
+import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -84,6 +83,8 @@ interface TopChatContract {
          */
         fun removeSrwBubble(productId: String)
         fun expandSrwBubble()
+        fun showPreviewMsg(previewMsg: SendableViewModel)
+        fun clearReferredMsg()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -99,19 +100,11 @@ interface TopChatContract {
             onSuccessGetExistingMessage: (ChatroomViewModel, ChatReplies) -> Unit
         )
 
-        fun getMessageId(
-            toUserId: String,
-            toShopId: String,
-            source: String,
-            onError: (Throwable) -> Unit,
-            onSuccessGetMessageId: (String) -> Unit
-        )
-
         fun readMessage()
 
         fun startCompressImages(it: ImageUploadViewModel)
 
-        fun startUploadImages(it: ImageUploadViewModel)
+        fun startUploadImages(image: ImageUploadViewModel)
 
         fun loadTopChat(
             messageId: String,
@@ -147,21 +140,15 @@ interface TopChatContract {
         )
 
         fun sendAttachmentsAndMessage(
-            messageId: String, sendMessage: String,
-            startTime: String, opponentId: String,
-            onSendingMessage: () -> Unit
+            sendMessage: String, referredMsg: ParentReply? = null
         )
 
         fun sendAttachmentsAndSticker(
-            messageId: String, sticker: Sticker,
-            startTime: String, opponentId: String,
-            onSendingMessage: () -> Unit
+            sticker: Sticker, referredMsg: ParentReply?
         )
 
         fun sendAttachmentsAndSrw(
-            messageId: String, question: QuestionUiModel,
-            startTime: String, opponentId: String,
-            onSendingMessage: () -> Unit
+            question: QuestionUiModel, referredMsg: ParentReply?
         )
 
         fun initAttachmentPreview()
@@ -250,11 +237,9 @@ interface TopChatContract {
         fun getProductIdPreview(): List<String>
         fun getAttachmentsPreview(): List<SendablePreview>
         fun sendSrwBubble(
-            messageId: String, question: QuestionUiModel,
-            products: List<SendablePreview>, opponentId: String,
-            onSendingMessage: () -> Unit
+            question: QuestionUiModel, products: List<SendablePreview>
         )
         fun adjustInterlocutorWarehouseId(msgId: String)
-        fun sendSrwFrom(attachment: HeaderCtaButtonAttachment, opponentId: String)
+        fun sendSrwFrom(attachment: HeaderCtaButtonAttachment)
     }
 }

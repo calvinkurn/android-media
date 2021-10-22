@@ -24,7 +24,7 @@ class PostFollowPartnerUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): Boolean {
         val gqlRequest = GraphqlRequest(PostFollowPartnerUseCaseQuery.GQL_QUERY, FollowShop.Response::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
 
         val response = gqlResponse.getData<FollowShop.Response>(FollowShop.Response::class.java)

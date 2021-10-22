@@ -7,7 +7,7 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.cart.bundle.domain.model.cartlist.PromoSummaryData
+import com.tokopedia.cart.bundle.view.uimodel.PromoSummaryData
 import com.tokopedia.cart.bundle.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.bundle.view.adapter.cart.CartPromoSummaryAdapter
 import com.tokopedia.cart.databinding.LayoutBottomsheetSummaryTransactionBundleBinding

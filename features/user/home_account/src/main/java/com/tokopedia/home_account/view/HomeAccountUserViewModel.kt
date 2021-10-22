@@ -3,43 +3,53 @@ package com.tokopedia.home_account.view
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home_account.AccountConstants
+import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_INDEX
+import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
+import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
+import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
+import com.tokopedia.home_account.linkaccount.domain.GetUserProfile
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.sessioncommon.di.SessionModule
-import com.tokopedia.usecase.RequestParams
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
 
 class HomeAccountUserViewModel @Inject constructor(
-        @Named(SessionModule.SESSION_MODULE)
-        private val userSession: UserSessionInterface,
-        private val accountPref: AccountPreference,
-        private val getHomeAccountUserUseCase: HomeAccountUserUsecase,
-        private val getUserShortcutUseCase: HomeAccountShortcutUseCase,
-        private val getHomeAccountOvoBalanceUseCase: HomeAccountWalletBalanceUseCase,
-        private val setUserProfileSafeModeUseCase: SafeSettingProfileUseCase,
-        private val getRecommendationUseCase: GetRecommendationUseCase,
-        private val getUserPageAssetConfigUseCase: GetUserPageAssetConfigUseCase,
-        private val getHomeAccountSaldoBalanceUseCase: HomeAccountSaldoBalanceUseCase,
-        private val getHomeAccountTokopointsUseCase: HomeAccountTokopointsUseCase,
-        private val walletPref: WalletPref,
-        private val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+    @Named(SessionModule.SESSION_MODULE)
+    private val userSession: UserSessionInterface,
+    private val accountPref: AccountPreference,
+    private val getHomeAccountUserUseCase: HomeAccountUserUsecase,
+    private val getUserShortcutUseCase: HomeAccountShortcutUseCase,
+    private val setUserProfileSafeModeUseCase: SafeSettingProfileUseCase,
+    private val getRecommendationUseCase: GetRecommendationUseCase,
+    private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
+    private val getCentralizedUserAssetConfigUseCase: GetCentralizedUserAssetConfigUseCase,
+    private val getBalanceAndPointUseCase: GetBalanceAndPointUseCase,
+    private val getTokopointsBalanceAndPointUseCase: GetTokopointsBalanceAndPointUseCase,
+    private val getSaldoBalanceUseCase: GetSaldoBalanceUseCase,
+    private val getCoBrandCCBalanceAndPointUseCase: GetCoBrandCCBalanceAndPointUseCase,
+    private val getWalletEligibleUseCase: GetWalletEligibleUseCase,
+    private val getLinkStatusUseCase: GetLinkStatusUseCase,
+    private val getPhoneUseCase: GetUserProfile,
+    private val walletPref: WalletPref,
+    private val dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.main) {
 
     private val _buyerAccountData = MutableLiveData<Result<UserAccountDataModel>>()
     val buyerAccountDataData: LiveData<Result<UserAccountDataModel>>
@@ -61,31 +71,43 @@ class HomeAccountUserViewModel @Inject constructor(
     val getRecommendationData: LiveData<Result<List<RecommendationItem>>>
         get() = _recommendationData
 
-    private val _firstRecommendationData = MutableLiveData<Result<RecommendationWidget>>()
-    val firstRecommendationData: LiveData<Result<RecommendationWidget>>
+    private val _firstRecommendationData = MutableLiveData<Result<RecommendationWidgetWithTDN>>()
+    val firstRecommendationData: LiveData<Result<RecommendationWidgetWithTDN>>
         get() = _firstRecommendationData
-
-    private val _ovoBalance = MutableLiveData<Result<WalletModel>>()
-    val ovoBalance: LiveData<Result<WalletModel>>
-        get() = _ovoBalance
 
     private val _shortcutData = MutableLiveData<Result<ShortcutResponse>>()
     val shortcutData: LiveData<Result<ShortcutResponse>>
         get() = _shortcutData
 
-    private val _userPageAssetConfig = MutableLiveData<Result<UserPageAssetConfig>>()
-    val userPageAssetConfig: LiveData<Result<UserPageAssetConfig>>
-        get() = _userPageAssetConfig
+    private val _centralizedUserAssetConfig = MutableLiveData<Result<CentralizedUserAssetConfig>>()
+    val centralizedUserAssetConfig: LiveData<Result<CentralizedUserAssetConfig>>
+        get() = _centralizedUserAssetConfig
 
-    private val _saldoBalance = MutableLiveData<Result<Balance>>()
-    val saldoBalance: LiveData<Result<Balance>>
-        get() = _saldoBalance
+    private val _balanceAndPoint = MutableLiveData<ResultBalanceAndPoint<WalletappGetAccountBalance>>()
+    val balanceAndPoint: LiveData<ResultBalanceAndPoint<WalletappGetAccountBalance>>
+        get() = _balanceAndPoint
 
-    private val _tokopoints = MutableLiveData<Result<PointDataModel>>()
-    val tokopoints: LiveData<Result<PointDataModel>>
-        get() = _tokopoints
+    private val _phoneNo = MutableLiveData<String>()
+    val phoneNo: LiveData<String> get() = _phoneNo
+
+    private val _walletEligible = MutableLiveData<Result<WalletappWalletEligibility>>()
+    val walletEligible: LiveData<Result<WalletappWalletEligibility>>
+        get() = _walletEligible
 
     var internalBuyerData: UserAccountDataModel? = null
+
+    fun refreshPhoneNo() {
+        launchCatchError(block = {
+            val profile = getPhoneUseCase(Unit)
+            val phone = profile.profileInfo.phone
+            if (phone.isNotEmpty()) {
+                userSession.phoneNumber = phone
+                _phoneNo.value = phone
+            }
+        }, onError = {
+            _phoneNo.value = ""
+        })
+    }
 
     fun setSafeMode(isActive: Boolean) {
         setUserProfileSafeModeUseCase.executeQuerySetSafeMode(
@@ -109,20 +131,17 @@ class HomeAccountUserViewModel @Inject constructor(
         })
     }
 
-    fun getOvoBalance() {
-        launchCatchError(block = {
-            val wallet = getBuyerOvoBalance()
-            _ovoBalance.value = Success(wallet)
-            walletPref.saveWallet(wallet)
-        }, onError = {
-            _ovoBalance.postValue(Fail(it))
-        })
+    private suspend fun getLinkStatus(): LinkStatusResponse {
+        return getLinkStatusUseCase(GetLinkStatusUseCase.ACCOUNT_LINKING_TYPE)
     }
 
     fun getBuyerData() {
         launchCatchError(block = {
             val accountModel = getHomeAccountUserUseCase.executeOnBackground()
-            withContext(dispatcher) {
+            val linkStatus = getLinkStatus()
+            accountModel.linkStatus = linkStatus.response
+
+            withContext(dispatcher.main) {
                 internalBuyerData = accountModel
                 saveLocallyAttributes(accountModel)
                 _buyerAccountData.value = Success(accountModel)
@@ -132,19 +151,20 @@ class HomeAccountUserViewModel @Inject constructor(
         })
     }
 
-    fun getBuyerOvoBalance(): WalletModel {
-        return getHomeAccountOvoBalanceUseCase.createObservable(RequestParams.EMPTY).toBlocking().single()
-    }
-
     fun getFirstRecommendation() {
         getRecommendation(page = 1)
     }
 
     fun getRecommendation(page: Int) {
-        launchCatchError(Dispatchers.IO, block = {
+        launchCatchError(block = {
             val recommendationWidget = getRecommendationList(page)
+            var tdnBanner: TopAdsImageViewModel? = null
+            if (recommendationWidget.recommendationItemList.size >= TDN_INDEX && checkFirstPage(page)) {
+                tdnBanner = getTdnBannerData()
+            }
+            val data = RecommendationWidgetWithTDN(recommendationWidget, tdnBanner)
             if (checkFirstPage(page)) {
-                _firstRecommendationData.postValue(Success(recommendationWidget))
+                _firstRecommendationData.postValue(Success(data))
             } else {
                 _recommendationData.postValue(Success(recommendationWidget.recommendationItemList))
             }
@@ -158,6 +178,23 @@ class HomeAccountUserViewModel @Inject constructor(
 
     }
 
+    private suspend fun getTdnBannerData(): TopAdsImageViewModel? {
+        return try {
+            val queryParams =
+                topAdsImageViewUseCase.getQueryMap(
+                    AccountConstants.TDNBanner.EMPTY,
+                    AccountConstants.TDNBanner.SOURCE,
+                    AccountConstants.TDNBanner.EMPTY,
+                    AccountConstants.TDNBanner.ADS_COUNT,
+                    AccountConstants.TDNBanner.DIMEN_ID,
+                    AccountConstants.TDNBanner.EMPTY
+                )
+            topAdsImageViewUseCase.getImageData(queryParams).firstOrNull()
+        } catch (t: Throwable) {
+            null
+        }
+    }
+
     private suspend fun getRecommendationList(page: Int): RecommendationWidget {
         val recommendationParams = GetRecommendationRequestParam(
             pageNumber = page,
@@ -169,46 +206,73 @@ class HomeAccountUserViewModel @Inject constructor(
         return getRecommendationUseCase.getData(recommendationParams).first()
     }
 
-    fun getUserPageAssetConfig() {
+    fun getCentralizedUserAssetConfig(entryPoint: String) {
         launchCatchError(block = {
-            val response = getUserPageAssetConfigUseCase.executeOnBackground()
-            withContext(dispatcher) {
-                _userPageAssetConfig.value = Success(response.data)
-            }
+            val result = getCentralizedUserAssetConfigUseCase(entryPoint)
+            _centralizedUserAssetConfig.value = Success(result.data)
         }, onError = {
-            _userPageAssetConfig.postValue(Fail(it))
+            _centralizedUserAssetConfig.value = Fail(it)
         })
     }
 
-    fun getTokopoints() {
+    fun getBalanceAndPoint(walletId: String) {
         launchCatchError(block = {
-            val response = getHomeAccountTokopointsUseCase(Unit)
-
-            withContext(dispatcher) {
-                if (isSuccessGetTokoPoint(response)) {
-                    _tokopoints.value = Success(response.tokopointsStatusFilteredDataModel.statusFilteredDataModel.pointDataModel)
-                } else {
-                    _tokopoints.postValue(Fail(Throwable(response.tokopointsStatusFilteredDataModel.resultStatus.message[0])))
+            when (walletId) {
+                AccountConstants.WALLET.TOKOPOINT -> {
+                    val result = getTokopointsBalanceAndPointUseCase(Unit)
+                    setBalanceAndPointValue(result.data, walletId)
+                }
+                AccountConstants.WALLET.SALDO -> {
+                    val result = getSaldoBalanceUseCase(Unit)
+                    setBalanceAndPointValue(result.data, walletId)
+                }
+                AccountConstants.WALLET.CO_BRAND_CC -> {
+                    val result = getCoBrandCCBalanceAndPointUseCase(Unit)
+                    setBalanceAndPointValue(result.data, walletId)
+                }
+                else -> {
+                    getOtherBalanceAndPoint(walletId)
                 }
             }
         }, onError = {
-            _tokopoints.postValue(Fail(it))
+            _balanceAndPoint.value = ResultBalanceAndPoint.Fail(it, walletId)
         })
     }
 
-    private fun isSuccessGetTokoPoint(tokopointsDataModel: TokopointsDataModel): Boolean {
-        return tokopointsDataModel.tokopointsStatusFilteredDataModel.resultStatus.code == SUCCESS_CODE &&
-            tokopointsDataModel.tokopointsStatusFilteredDataModel.resultStatus.status == SUCCESS_STAT
+    private suspend fun getOtherBalanceAndPoint(walletId: String) {
+        val result = when (walletId) {
+            AccountConstants.WALLET.GOPAY -> {
+                getBalanceAndPointUseCase(GOPAY_PARTNER_CODE)
+            }
+            AccountConstants.WALLET.GOPAYLATER -> {
+                getBalanceAndPointUseCase(GOPAYLATER_PARTNER_CODE)
+            }
+            AccountConstants.WALLET.OVO -> {
+                getBalanceAndPointUseCase(OVO_PARTNER_CODE)
+            }
+            else -> {
+                BalanceAndPointDataModel()
+            }
+        }
+        setBalanceAndPointValue(result.data, walletId)
     }
 
-    fun getSaldoBalance() {
+    private fun setBalanceAndPointValue(data: WalletappGetAccountBalance, walletId: String) {
+        if (data.id.isNotEmpty()) {
+            _balanceAndPoint.value = ResultBalanceAndPoint.Success(data, walletId)
+        } else {
+            _balanceAndPoint.value = ResultBalanceAndPoint.Fail(IllegalArgumentException(), walletId)
+        }
+    }
+
+    fun getGopayWalletEligible() {
         launchCatchError(block = {
-            val response = getHomeAccountSaldoBalanceUseCase.executeOnBackground()
-            withContext(dispatcher) {
-                _saldoBalance.value = Success(response.data)
-            }
+            val params = getWalletEligibleUseCase.getParams(GOPAY_PARTNER_CODE, GOPAY_WALLET_CODE)
+            val result = getWalletEligibleUseCase(params)
+
+            _walletEligible.value = Success(result.data)
         }, onError = {
-            _saldoBalance.postValue(Fail(it))
+            _walletEligible.value = Fail(it)
         })
     }
 
@@ -221,13 +285,13 @@ class HomeAccountUserViewModel @Inject constructor(
     }
 
     private fun saveDebitInstantData(accountDataModel: UserAccountDataModel) {
-        accountDataModel?.debitInstant?.data?.let {
+        accountDataModel.debitInstant.data?.let {
             walletPref.saveDebitInstantUrl(it.redirectUrl)
         }
     }
 
     private fun savePhoneVerified(accountDataModel: UserAccountDataModel) {
-        accountDataModel?.profile?.let {
+        accountDataModel.profile.let {
             userSession.setIsMSISDNVerified(it.isPhoneVerified)
         }
     }
@@ -239,11 +303,13 @@ class HomeAccountUserViewModel @Inject constructor(
     companion object {
         private const val AKUN_PAGE = "account"
 
-        private const val SUCCESS_CODE = "200"
-        private const val SUCCESS_STAT = "OK"
-
         private const val DEFAULT_VALUE_X_SOURCE = "recom_widget"
         private const val DEFAULT_VALUE_X_DEVICE = "android"
+
+        private const val GOPAY_PARTNER_CODE = "PEMUDA"
+        private const val GOPAYLATER_PARTNER_CODE = "PEMUDAPAYLATER"
+        private const val OVO_PARTNER_CODE = "OVO"
+        private const val GOPAY_WALLET_CODE = "PEMUDAPOINTS"
     }
 
 }

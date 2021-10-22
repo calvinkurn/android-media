@@ -39,7 +39,7 @@ class GetUserProfileCompletionUseCase @Inject constructor(
                     GetUserProfileCompletionPojo::class.java
             )
 
-            return@withContext graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+            return@withContext graphqlRepository.response(listOf(request), cacheStrategy)
         }
 
         response.getError(GetUserProfileCompletionPojo::class.java)?.let {

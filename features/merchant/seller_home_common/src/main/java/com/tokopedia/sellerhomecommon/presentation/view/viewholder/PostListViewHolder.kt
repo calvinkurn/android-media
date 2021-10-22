@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
+import com.tokopedia.sellerhomecommon.databinding.ShcPostListCardWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListPagerUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
@@ -22,10 +23,7 @@ import com.tokopedia.sellerhomecommon.presentation.view.adapter.PostListPagerAda
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
-import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
-import kotlinx.android.synthetic.main.shc_partial_post_list_widget.view.*
-import kotlinx.android.synthetic.main.shc_partial_post_list_widget_error.view.*
-import kotlinx.android.synthetic.main.shc_partial_shimmering_post_list_widget.view.*
+import com.tokopedia.unifycomponents.NotificationUnify
 import timber.log.Timber
 
 /**
@@ -42,13 +40,24 @@ class PostListViewHolder(
         val RES_LAYOUT = R.layout.shc_post_list_card_widget
     }
 
+    private val binding by lazy { ShcPostListCardWidgetBinding.bind(itemView) }
+    private val errorStateBinding by lazy {
+        binding.shcPostListErrorView
+    }
+    private val commonErrorStateBinding by lazy {
+        errorStateBinding.shcPostListCommonErrorView
+    }
+    private val loadingStateBinding by lazy {
+        binding.shcPostListLoadingView
+    }
+
     private var pagerAdapter: PostListPagerAdapter? = null
 
     override fun bind(element: PostListWidgetUiModel) {
         if (!listener.getIsShouldRemoveWidget()) {
             itemView.toggleWidgetHeight(true)
         }
-        itemView.rvPostList.isNestedScrollingEnabled = false
+        binding.shcPostListSuccessView.rvPostList.isNestedScrollingEnabled = false
         observeState(element)
     }
 
@@ -71,9 +80,11 @@ class PostListViewHolder(
     private fun onError(cardTitle: String) {
         hideListLayout()
         hideShimmeringLayout()
-        with(itemView) {
+        with(errorStateBinding) {
             tvPostListTitleOnError.text = cardTitle
-            imgWidgetOnError.loadImage(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
+            commonErrorStateBinding.imgWidgetOnError.loadImage(
+                com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
+            )
             showErrorLayout()
         }
     }
@@ -94,7 +105,7 @@ class PostListViewHolder(
     }
 
     private fun showEmptyState(element: PostListWidgetUiModel) {
-        with(itemView) {
+        with(binding.shcPostListSuccessView) {
             rvPostList.gone()
             tvPostListSeeDetails.gone()
             icPostListSeeDetails.gone()
@@ -127,7 +138,7 @@ class PostListViewHolder(
     }
 
     private fun showSuccessState(element: PostListWidgetUiModel) {
-        with(itemView) {
+        with(binding.shcPostListSuccessView) {
             tvShcPostEmptyTitle.gone()
             tvShcPostEmptyDescription.gone()
             btnShcPostEmpty.gone()
@@ -140,7 +151,8 @@ class PostListViewHolder(
             hideErrorLayout()
             hideShimmeringLayout()
             setupTooltip(element.tooltip)
-            itemView.tvPostListTitle.text = element.title
+            binding.shcPostListSuccessView.tvPostListTitle.text = element.title
+            setTagNotification(element.tag)
             setupPostFilter(element)
             showCtaButtonIfNeeded(element)
             showListLayout()
@@ -162,8 +174,22 @@ class PostListViewHolder(
         }
     }
 
+    private fun setTagNotification(tag: String) {
+        val isTagVisible = tag.isNotBlank()
+        with(binding.shcPostListSuccessView) {
+            notifTagPostList.showWithCondition(isTagVisible)
+            if (isTagVisible) {
+                notifTagPostList.setNotification(
+                    tag,
+                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COLOR_TEXT_TYPE
+                )
+            }
+        }
+    }
+
     private fun setupPostFilter(element: PostListWidgetUiModel) {
-        with(itemView) {
+        with(binding.shcPostListSuccessView) {
             val isFilterAvailable = element.postFilter.isNotEmpty()
             if (isFilterAvailable) {
                 val selectedFilter = element.postFilter.find { it.isSelected }
@@ -187,30 +213,30 @@ class PostListViewHolder(
     }
 
     private fun showShimmeringLayout() {
-        itemView.sahPostListOnLoadingLayout.visible()
+        loadingStateBinding.sahPostListOnLoadingLayout.visible()
     }
 
     private fun hideShimmeringLayout() {
-        itemView.sahPostListOnLoadingLayout.gone()
+        loadingStateBinding.sahPostListOnLoadingLayout.gone()
     }
 
     private fun showListLayout() {
-        itemView.sahPostListOnSuccessLayout.visible()
+        binding.shcPostListSuccessView.sahPostListOnSuccessLayout.visible()
     }
 
     private fun hideListLayout() {
-        itemView.sahPostListOnSuccessLayout.gone()
+        binding.shcPostListSuccessView.sahPostListOnSuccessLayout.gone()
     }
 
     private fun hideErrorLayout() {
-        itemView.sahPostListOnErrorLayout.gone()
+        errorStateBinding.sahPostListOnErrorLayout.gone()
     }
 
     private fun showErrorLayout() {
-        itemView.sahPostListOnErrorLayout.visible()
+        errorStateBinding.sahPostListOnErrorLayout.visible()
     }
 
-    private fun setupTooltip(tooltip: TooltipUiModel?) = with(itemView) {
+    private fun setupTooltip(tooltip: TooltipUiModel?) = with(binding.shcPostListSuccessView) {
         tooltip?.run {
             val shouldShowTooltip = shouldShow && (content.isNotBlank() || list.isNotEmpty())
             if (shouldShowTooltip) {
@@ -236,11 +262,16 @@ class PostListViewHolder(
         } else {
             Pair(element.ctaText, element.appLink)
         }
-        itemView.tvPostListSeeDetails.text = ctaText
-        itemView.tvPostListSeeDetails.setOnClickListener { goToDetails(element, appLink) }
+        binding.shcPostListSuccessView.tvPostListSeeDetails.text = ctaText
+        binding.shcPostListSuccessView.tvPostListSeeDetails.setOnClickListener {
+            goToDetails(
+                element,
+                appLink
+            )
+        }
     }
 
-    private fun toggleCtaButtonVisibility(isShow: Boolean) = with(itemView) {
+    private fun toggleCtaButtonVisibility(isShow: Boolean) = with(binding.shcPostListSuccessView) {
         when {
             isShow -> {
                 tvPostListSeeDetails.visible()
@@ -270,7 +301,7 @@ class PostListViewHolder(
     }
 
     private fun setupPostPager(pagers: List<PostListPagerUiModel>) {
-        with(itemView) {
+        with(binding.shcPostListSuccessView) {
             pageControlShcPostPager.setIndicator(pagers.size)
             pageControlShcPostPager.isVisible = pagers.size > 1
 
@@ -294,7 +325,9 @@ class PostListViewHolder(
                         super.onScrolled(recyclerView, dx, dy)
                         val position = mLayoutManager.findFirstCompletelyVisibleItemPosition()
                         if (position != RecyclerView.NO_POSITION) {
-                            itemView.pageControlShcPostPager.setCurrentIndicator(position)
+                            binding.shcPostListSuccessView.pageControlShcPostPager.setCurrentIndicator(
+                                position
+                            )
                         }
                     }
                 })

@@ -18,7 +18,7 @@ class UohListUseCase @Inject constructor(private val gqlRepository: GraphqlRepos
     suspend fun executeSuspend(param: UohListParam): Result<UohListOrder.Data.UohOrders> {
         return try {
             val request = GraphqlRequest(QUERY, UohListOrder.Data::class.java, generateParam(param))
-            val response = gqlRepository.getReseponse(listOf(request)).getSuccessData<UohListOrder.Data>()
+            val response = gqlRepository.response(listOf(request)).getSuccessData<UohListOrder.Data>()
             Success(response.uohOrders)
         } catch (e: Exception) {
             Fail(e)

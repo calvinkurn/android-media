@@ -27,5 +27,8 @@ data class ProductRevIncentiveOvoResponse(
         val amount: Int = 0,
         @SerializedName("bottom_sheet")
         @Expose
-        val bottomSheetText: String = ""
+        val bottomSheetText: String = "",
+        @SerializedName("image_url")
+        @Expose
+        val thankYouImage: String = ""
 )

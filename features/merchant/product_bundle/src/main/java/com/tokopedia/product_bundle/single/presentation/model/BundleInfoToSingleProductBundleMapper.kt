@@ -14,7 +14,6 @@ import com.tokopedia.product_bundle.common.util.DiscountUtil
 object BundleInfoToSingleProductBundleMapper {
 
     private const val BUNDLE_INFO_ACTIVE: String = "1"
-    private const val BUNDLE_INFO_UPCOMING: String = "2"
     private const val BUNDLE_ITEM_SHOW: String = "1"
     private const val BUNDLE_ITEM_ACTIVE: String = "ACTIVE"
     private const val PREORDER_STATUS_ACTIVE: String = "ACTIVE"
@@ -30,7 +29,7 @@ object BundleInfoToSingleProductBundleMapper {
         val filteredBundleInfo = bundleInfo.filter {
             val bundleItem = it.bundleItems.firstOrNull()
             return@filter bundleItem != null &&
-                    (it.status == BUNDLE_INFO_ACTIVE || it.status == BUNDLE_INFO_UPCOMING) &&
+                    it.status == BUNDLE_INFO_ACTIVE &&
                     bundleItem.status == BUNDLE_ITEM_SHOW &&
                     bundleItem.productStatus == BUNDLE_ITEM_ACTIVE &&
                     it.isStockAvailable() &&
@@ -62,7 +61,9 @@ object BundleInfoToSingleProductBundleMapper {
         val bundleItem = it.bundleItems.firstOrNull() ?: BundleItem()
         val productVariant = AtcVariantMapper.mapToProductVariant(bundleItem)
         if (productVariant.hasVariant) {
-            val child = productVariant.children.firstOrNull()
+            val child = productVariant.children.minByOrNull { child ->
+                child.finalPrice
+            }
             SingleProductBundleItem(
                 quantity = child?.stock?.minimumOrder.toIntOrZero(),
                 productName = bundleItem.name,
@@ -96,13 +97,16 @@ object BundleInfoToSingleProductBundleMapper {
         val bundleItem = bundleInfo.bundleItems.firstOrNull() ?: BundleItem()
         SingleProductBundleSelectedItem(
             productId = when {
-                bundleItem.children.any { it.productID == selectedProductId } -> {
+                isBundleVariantSelected(selectedBundleId, selectedProductId, bundleInfo) -> {
+                    // when bundle variant selected
                     selectedProductId.toString()
                 }
                 bundleItem.selections.isNotEmpty() -> {
+                    // when bundle variant not selected
                     ""
                 }
                 else -> {
+                    // when bundle non-variant (both selected and not selected)
                     bundleItem.productID.toString()
                 }
             },
@@ -110,6 +114,7 @@ object BundleInfoToSingleProductBundleMapper {
             shopId = bundleInfo.shopID.toString(),
             quantity = bundleItem.minOrder,
             isSelected = bundleInfo.bundleID.toString() == selectedBundleId,
+            warehouseId = bundleInfo.warehouseID.toString()
         ).apply {
             if (isSelected) isVariantEmpty = emptyVariantProductIds.isNotEmpty()
         }
@@ -118,6 +123,16 @@ object BundleInfoToSingleProductBundleMapper {
         if (!this.any { it.isSelected }) {
             firstOrNull()?.isSelected = true
         }
+    }
+
+    private fun isBundleVariantSelected(
+        selectedBundleId: String,
+        selectedProductId: Long,
+        bundleInfo: BundleInfo
+    ): Boolean {
+        val bundleItem = bundleInfo.bundleItems.firstOrNull() ?: BundleItem()
+        return selectedBundleId == bundleInfo.bundleID.toString()
+                && bundleItem.children.any { it.productID == selectedProductId }
     }
 
     private fun BundleInfo.isStockAvailable() = bundleItems.any {

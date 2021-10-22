@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
@@ -28,12 +27,14 @@ import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopScheduleViewMode
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
 import com.tokopedia.shop.settings.common.view.customview.ImageLabelView
+import com.tokopedia.shop.settings.databinding.ActivityShopEditScheduleBinding
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.StringUtils.isEmptyNumber
+import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 import javax.inject.Inject
 
@@ -56,7 +57,8 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
     @Inject
     lateinit var viewModel: ShopScheduleViewModel
 
-    private var header: HeaderUnify? = null
+    private var binding : ActivityShopEditScheduleBinding? by viewBinding()
+
     private var loader: LoaderUnify? = null
     private var layout: LinearLayout? = null
     private var shopBasicDataModel: ShopBasicDataModel? = null
@@ -67,7 +69,6 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
     private var labelStartClose: ImageLabelView? = null
     private var labelEndClose: ImageLabelView? = null
     private var tfShopCloseNote: TextFieldUnify? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -172,19 +173,17 @@ class ShopEditScheduleActivity : BaseSimpleActivity() {
 
     private fun setupUI() {
         window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        loader = findViewById(R.id.loader)
-        layout = findViewById(R.id.layout)
-        header = findViewById<HeaderUnify>(R.id.header)?.apply {
+        loader = binding?.loader
+        layout = binding?.layout
+        labelStartClose = binding?.labelStartClose
+        labelEndClose =  binding?.labelEndClose
+        tfShopCloseNote =  binding?.tfShopCloseNote
+        binding?.header?.apply {
             setSupportActionBar(this)
             title = getString(R.string.shop_settings_shop_status)
-        }
-        labelStartClose = findViewById(R.id.labelStartClose)
-        labelEndClose =  findViewById(R.id.labelEndClose)
-        tfShopCloseNote =  findViewById(R.id.tfShopCloseNote)
-
-
-        header?.actionTextView?.apply {
-            setOnClickListener { onSaveButtonClicked() }
+            actionTextView?.let {
+                setOnClickListener { onSaveButtonClicked() }
+            }
         }
     }
 

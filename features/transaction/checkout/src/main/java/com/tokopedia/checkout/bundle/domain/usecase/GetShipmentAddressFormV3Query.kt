@@ -147,6 +147,7 @@ fun getQueryShipmentAddressFormV3(): String {
                     telp_no
                   }
                   cart_details {
+                    errors
                     bundle_detail {
                       bundle_description
                       bundle_group_id

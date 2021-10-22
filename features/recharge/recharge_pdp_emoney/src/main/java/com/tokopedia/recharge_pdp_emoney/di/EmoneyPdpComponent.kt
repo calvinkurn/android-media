@@ -5,6 +5,7 @@ import com.tokopedia.recharge_pdp_emoney.presentation.activity.EmoneyPdpActivity
 import com.tokopedia.recharge_pdp_emoney.presentation.fragment.EmoneyPdpFragment
 import com.tokopedia.recharge_pdp_emoney.presentation.fragment.EmoneyPdpPromoListFragment
 import com.tokopedia.recharge_pdp_emoney.presentation.fragment.EmoneyPdpRecentTransactionFragment
+import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpScope
 import dagger.Component
 
 /**

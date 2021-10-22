@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.Payload
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWidthSenderDimenRes
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.Label
@@ -74,6 +75,7 @@ class AttachedInvoiceViewHolder(
     override fun bind(invoice: AttachInvoiceSentViewModel, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
         when (payloads[0]) {
+            Payload.REBIND -> bind(invoice)
             DeferredAttachment.PAYLOAD_DEFERRED -> bindDeferredAttachment(invoice)
         }
     }

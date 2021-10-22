@@ -590,7 +590,20 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     }
 
     private fun addCartTopAdsHeadlineData(index: Int) {
-        val cartTopAdsHeadlineData = CartTopAdsHeadlineData()
+        val cartProductIds = mutableListOf<String>()
+        loop@ for (item in cartDataList) {
+            when (item) {
+                is CartShopHolderData -> {
+                    item.productUiModelList.forEach { cartItem ->
+                        cartProductIds.add(cartItem.productId)
+                    }
+                }
+                is CartRecentViewHolderData, is CartWishlistHolderData, is CartRecommendationItemHolderData -> {
+                    break@loop
+                }
+            }
+        }
+        val cartTopAdsHeadlineData = CartTopAdsHeadlineData(cartProductIds = cartProductIds)
         this.cartTopAdsHeadlineData = cartTopAdsHeadlineData
         cartDataList.add(index, cartTopAdsHeadlineData)
     }
@@ -608,7 +621,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     }
 
     fun setItemSelected(position: Int, cartItemHolderData: CartItemHolderData) {
-        val cartShopHolderData = getCartShopHolderDataByCartString(cartItemHolderData.cartString)
+        val cartShopHolderData = getCartShopHolderDataByCartItemHolderData(cartItemHolderData)
         cartShopHolderData?.let {
             cartShopHolderData.productUiModelList.forEachIndexed { index, cartItemHolderData ->
                 if (index == position) {
@@ -637,7 +650,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     }
 
     fun resetQuantity(position: Int, cartItemHolderData: CartItemHolderData) {
-        val cartShopHolderData = getCartShopHolderDataByCartString(cartItemHolderData.cartString)
+        val cartShopHolderData = getCartShopHolderDataByCartItemHolderData(cartItemHolderData)
         cartShopHolderData?.productUiModelList?.let {
             if (position < it.size) {
                 it[position].quantity = 0
@@ -804,9 +817,9 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         } else null
     }
 
-    fun getCartShopHolderDataByCartString(cartString: String): CartShopHolderData? {
+    fun getCartShopHolderDataByCartItemHolderData(cartItemHolderData: CartItemHolderData): CartShopHolderData? {
         loop@ for (data in cartDataList) {
-            if (data is CartShopHolderData && data.cartString == cartString) {
+            if (data is CartShopHolderData && data.cartString == cartItemHolderData.cartString && data.isError == cartItemHolderData.isError) {
                 return data
             }
         }

@@ -16,6 +16,7 @@ import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveMod
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -40,7 +41,9 @@ class PlayLiveInitialInteractiveTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val testDispatcher = CoroutineTestDispatchers
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
+    private val testDispatcher = coroutineTestRule.dispatchers
 
     private val socketResponseBuilder = PlaySocketResponseBuilder()
     private val channelDataBuilder = PlayChannelDataModelBuilder()
@@ -64,16 +67,6 @@ class PlayLiveInitialInteractiveTest {
         every { mockRemoteConfig.getBoolean(any(), any()) } returns true
     }
 
-    @Before
-    fun setUp() {
-        Dispatchers.setMain(testDispatcher.coroutineDispatcher)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
-
     @Test
     fun `given no active interactive, when retrieved, there should be no interactive`() {
         val socketFlow = MutableStateFlow<WebSocketAction>(
@@ -91,7 +84,7 @@ class PlayLiveInitialInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.isEqualTo(
+                interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.NoInteractive
                 )
             }
@@ -126,7 +119,7 @@ class PlayLiveInitialInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.isEqualTo(
+                interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.PreStart(timeBeforeStartTap, title)
                 )
             }
@@ -160,7 +153,7 @@ class PlayLiveInitialInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.isEqualTo(
+                interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.Ongoing(durationTap)
                 )
             }
@@ -195,10 +188,10 @@ class PlayLiveInitialInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.isEqualTo(
+                interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.NoInteractive
                 )
-                showWinnerBadge.isFalse()
+                winnerBadge.shouldShow.isFalse()
             }
         }
     }

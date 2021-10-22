@@ -11,7 +11,6 @@
         android:isScrollContainer="false"
         android:background="@color/Unify_N0"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/bottom_layout_address"
         app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
@@ -88,36 +87,20 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_save_address_new"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_8"
+                app:unifyButtonVariant="filled"
+                app:unifyButtonType="main"
+                android:textStyle="bold"
+                android:text="@string/btn_simpan"
+                android:textAlignment="center"/>
+
         </LinearLayout>
 
     </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/bottom_layout_address"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:orientation="vertical"
-        android:background="@color/Unify_N0">
-
-
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_save_address_new"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_8"
-            app:unifyButtonVariant="filled"
-            app:unifyButtonType="main"
-            android:textStyle="bold"
-            android:text="@string/btn_simpan"
-            android:textAlignment="center"/>
-
-    </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

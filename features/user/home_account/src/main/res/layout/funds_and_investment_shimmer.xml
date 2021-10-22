@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/shimmer_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/loaderTextView"
+        android:layout_width="@dimen/home_account_dp_160"
+        android:layout_height="@dimen/unify_space_12"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:corners="8" />
+
+    <include layout="@layout/funds_and_investment_item_shimmer" />
+
+    <include layout="@layout/funds_and_investment_item_shimmer" />
+
+    <include layout="@layout/funds_and_investment_item_shimmer" />
+
+    <include layout="@layout/funds_and_investment_item_shimmer" />
+
+    <include layout="@layout/funds_and_investment_item_shimmer" />
+
+</LinearLayout>

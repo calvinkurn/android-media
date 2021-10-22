@@ -22,7 +22,7 @@ class GetPMGradeBenefitInfoUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): PMGradeBenefitInfoUiModel {
         val gqlRequest = GraphqlRequest(QUERY, PMGradeBenefitInfoResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val errors: List<GraphqlError>? = gqlResponse.getError(PMGradeBenefitInfoResponse::class.java)
         if (errors.isNullOrEmpty()) {

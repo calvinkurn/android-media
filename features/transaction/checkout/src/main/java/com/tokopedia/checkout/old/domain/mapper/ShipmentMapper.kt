@@ -25,7 +25,6 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import com.tokopedia.purchase_platform.common.utils.Utils.isNotNullOrEmptyOrZero
 import com.tokopedia.purchase_platform.common.utils.convertToString
-import com.tokopedia.purchase_platform.common.utils.isNullOrEmpty
 import java.util.*
 import javax.inject.Inject
 
@@ -52,7 +51,7 @@ class ShipmentMapper @Inject constructor() {
             isHidingCourier = shipmentAddressFormDataResponse.hideCourier
             isBlackbox = shipmentAddressFormDataResponse.isBlackbox == 1
             errorCode = shipmentAddressFormDataResponse.errorCode
-            isError = !isNullOrEmpty(shipmentAddressFormDataResponse.errors)
+            isError = shipmentAddressFormDataResponse.errors.isNotEmpty()
             errorMessage = convertToString(shipmentAddressFormDataResponse.errors)
             isShowOnboarding = shipmentAddressFormDataResponse.isShowOnboarding
             isIneligiblePromoDialogEnabled = shipmentAddressFormDataResponse.isIneligiblePromoDialogEnabled
@@ -728,10 +727,10 @@ class ShipmentMapper @Inject constructor() {
                 var defaultErrorMessage = ""
                 var allProductsHaveSameError = true
                 for ((isError, errorMessage) in groupShop.products) {
-                    if (isError || !isNullOrEmpty(errorMessage)) {
+                    if (isError || errorMessage.isNotEmpty()) {
                         hasError = true
                         totalProductError++
-                        if (isNullOrEmpty(defaultErrorMessage)) {
+                        if (defaultErrorMessage.isEmpty()) {
                             defaultErrorMessage = errorMessage
                         } else if (allProductsHaveSameError && defaultErrorMessage != errorMessage) {
                             allProductsHaveSameError = false

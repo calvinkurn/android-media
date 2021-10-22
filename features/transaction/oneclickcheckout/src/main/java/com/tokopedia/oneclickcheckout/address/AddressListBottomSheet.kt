@@ -12,10 +12,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
@@ -263,28 +260,26 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
         onChangeData(OccState.Loading)
         OccIdlingResource.increment()
         compositeSubscription.add(
-                fragment?.context?.let { ChooseAddressUtils.isRollOutUser(it) }?.let {
-                    useCase.execute(query, addressState, getLocalCacheAddressId().toIntOrZero(), it)
-                            .subscribe(object : rx.Observer<AddressListModel> {
-                                override fun onError(e: Throwable?) {
-                                    onChangeData(OccState.Failed(Failure(e)))
-                                    OccIdlingResource.decrement()
-                                    isLoadingMore = false
-                                }
+            useCase.execute(query, addressState, getLocalCacheAddressId().toLongOrZero(), true)
+                    .subscribe(object : rx.Observer<AddressListModel> {
+                        override fun onError(e: Throwable?) {
+                            onChangeData(OccState.Failed(Failure(e)))
+                            OccIdlingResource.decrement()
+                            isLoadingMore = false
+                        }
 
-                                override fun onNext(t: AddressListModel) {
-                                    token = t.token
-                                    logicSelection(t)
-                                    savedQuery = query
-                                    page = 1
-                                    isLoadingMore = false
-                                }
+                        override fun onNext(t: AddressListModel) {
+                            token = t.token
+                            logicSelection(t)
+                            savedQuery = query
+                            page = 1
+                            isLoadingMore = false
+                        }
 
-                                override fun onCompleted() {
-                                    OccIdlingResource.decrement()
-                                }
-                            })
-                }
+                        override fun onCompleted() {
+                            OccIdlingResource.decrement()
+                        }
+                    })
         )
     }
 
@@ -293,25 +288,23 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
             isLoadingMore = true
             OccIdlingResource.increment()
             compositeSubscription.add(
-                    fragment?.context?.let { ChooseAddressUtils.isRollOutUser(it) }?.let {
-                        useCase.loadMore(savedQuery, ++this.page, addressState, getLocalCacheAddressId().toIntOrZero(), it)
-                                .subscribe(object : rx.Observer<AddressListModel> {
-                                    override fun onError(e: Throwable?) {
-                                        onChangeData(OccState.Failed(Failure(e)))
-                                        OccIdlingResource.decrement()
-                                        isLoadingMore = false
-                                    }
+                useCase.loadMore(savedQuery, ++this.page, addressState, getLocalCacheAddressId().toLongOrZero(), true)
+                        .subscribe(object : rx.Observer<AddressListModel> {
+                            override fun onError(e: Throwable?) {
+                                onChangeData(OccState.Failed(Failure(e)))
+                                OccIdlingResource.decrement()
+                                isLoadingMore = false
+                            }
 
-                                    override fun onNext(t: AddressListModel) {
-                                        logicSelection(t, isLoadMore = true)
-                                    }
+                            override fun onNext(t: AddressListModel) {
+                                logicSelection(t, isLoadMore = true)
+                            }
 
-                                    override fun onCompleted() {
-                                        OccIdlingResource.decrement()
-                                        isLoadingMore = false
-                                    }
-                                })
-                    }
+                            override fun onCompleted() {
+                                OccIdlingResource.decrement()
+                                isLoadingMore = false
+                            }
+                        })
             )
         }
     }

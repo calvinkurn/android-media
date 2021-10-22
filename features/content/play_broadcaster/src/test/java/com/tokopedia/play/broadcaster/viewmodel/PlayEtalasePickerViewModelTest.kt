@@ -262,9 +262,7 @@ class PlayEtalasePickerViewModelTest {
                 data.productMap.assertCount(1)
                 data.productMap.values.flatten().map(ProductContentUiModel::id)
                         .isEqualTo(
-                                mockIdNameProductList.map { (id, _) ->
-                                    id.toLong()
-                                }
+                                mockIdNameProductList.map { (id, _) -> id }
                         )
             }
         }.andThen {
@@ -277,9 +275,7 @@ class PlayEtalasePickerViewModelTest {
             it.assertWhenSuccess { _, data ->
                 data.productMap.assertCount(2)
                 data.productMap.values.flatten().map(ProductContentUiModel::id).isEqualTo(
-                        (mockIdNameProductList + otherMockIdNameProductList).map { (id, _) ->
-                            id.toLong()
-                        }
+                        (mockIdNameProductList + otherMockIdNameProductList).map { (id, _) -> id }
                 )
             }
         }

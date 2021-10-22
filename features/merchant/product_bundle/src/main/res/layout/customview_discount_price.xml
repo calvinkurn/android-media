@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_N700"
         app:typographyWeight="bold"
+        app:typographyType="body_2"
         tool:text="Rp36.000" />
 
     <com.tokopedia.unifycomponents.Label

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/dp_8"
+    android:paddingBottom="8dp"
     tools:layout_height="wrap_content">
 
     <View
@@ -83,7 +83,7 @@
         android:id="@+id/product_bundling_total_slash"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="8dp"
         android:textColor="@color/Unify_NN400"
         app:layout_constraintLeft_toLeftOf="@id/product_bundling_icon_main"
         app:layout_constraintTop_toBottomOf="@id/product_bundling_line"
@@ -127,11 +127,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@id/product_bundling_total_price"
         app:layout_constraintTop_toBottomOf="@id/product_bundling_total_price"
         app:typographyType="body_3"
-        tools:text="(Total 3 barang)" />
+        tools:text="(Total 3 barang)"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/product_bundling_button_check"

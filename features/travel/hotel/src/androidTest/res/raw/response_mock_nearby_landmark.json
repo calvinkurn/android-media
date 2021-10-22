@@ -1,0 +1,79 @@
+[
+  {
+    "data": {
+      "propertySearchPlace": {
+        "result": [
+          {
+            "type": "",
+            "header": "TERDEKAT DARI SINI",
+            "icon": "",
+            "places": [
+              {
+                "name": "Stasiun MRT Sudirman",
+                "icon": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png",
+                "geoLocation": {
+                  "latitude": 0,
+                  "longitude": 0
+                },
+                "distance": "100 m"
+              },
+              {
+                "name": "Lobo Italian Resto",
+                "icon": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png",
+                "geoLocation": {
+                  "latitude": 0,
+                  "longitude": 0
+                },
+                "distance": "201 m"
+              },
+              {
+                "name": "ATM Bank Mandiri KCP",
+                "icon": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png",
+                "geoLocation": {
+                  "latitude": 0,
+                  "longitude": 0
+                },
+                "distance": "1,3 km"
+              }
+            ]
+          },
+          {
+            "type": "",
+            "header": "POPULAR DI AREA INI",
+            "icon": "",
+            "places": [
+              {
+                "name": "Museum MACAN",
+                "icon": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png",
+                "geoLocation": {
+                  "latitude": 0,
+                  "longitude": 0
+                },
+                "distance": "85 m"
+              },
+              {
+                "name": "Taman Impian Jaya Ancol",
+                "icon": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png",
+                "geoLocation": {
+                  "latitude": 0,
+                  "longitude": 0
+                },
+                "distance": "210 m"
+              },
+              {
+                "name": "National Monument (MONAS)",
+                "icon": "https://ecs7.tokopedia.net/img/hotel/hotel-miscellaneous.png",
+                "geoLocation": {
+                  "latitude": 0,
+                  "longitude": 0
+                },
+                "distance": "1,4 km"
+              }
+            ]
+          }
+        ],
+        "information": "Jarak ini dihitung berdasarkan garis lurus. Jarak sebenarnya bisa bervariasi tergantung rute yang dipilih."
+      }
+    }
+  }
+]

@@ -16,7 +16,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
@@ -32,6 +32,7 @@ import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.RechargeGen
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.MatcherAssert
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
 import org.junit.After
@@ -50,6 +51,9 @@ class RechargeGeneralLoginInstrumentTest {
 
     @get:Rule
     var mActivityRule = ActivityTestRule(RechargeGeneralActivity::class.java, false, false)
+
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
 
     @Before
     fun stubAllExternalIntents() {
@@ -88,12 +92,14 @@ class RechargeGeneralLoginInstrumentTest {
         stubSearchNumber()
 
         Thread.sleep(3000)
-        validate_favorite_number()
         validate_recent_transaction()
+        validate_favorite_number()
         validate_promo()
 
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_LOGIN),
-                hasAllSuccess())
+        MatcherAssert.assertThat(
+                cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_LOGIN),
+                hasAllSuccess()
+        )
     }
 
     private fun validate_recent_transaction() {
@@ -116,6 +122,7 @@ class RechargeGeneralLoginInstrumentTest {
     }
 
     private fun validate_favorite_number() {
+        Thread.sleep(2000)
         onView(withId(R.id.rv_digital_product)).check(matches(isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RechargeGeneralInputViewHolder>(
                         1, click()
@@ -126,6 +133,7 @@ class RechargeGeneralLoginInstrumentTest {
     }
 
     private fun validate_promo() {
+        Thread.sleep(3000)
         onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Promo"))).perform(click())
         Thread.sleep(1000)
         onView(withId(R.id.promo_list_widget)).check(matches(isDisplayed()))

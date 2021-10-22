@@ -17,7 +17,7 @@ class FlightResendEmailUseCase @Inject constructor(private val gqlRepository: Gr
     suspend fun executeSuspend(invoiceId: String, email: String): Result<FlightResendEmail.Data> {
         return try {
             val request = GraphqlRequest(QUERY, FlightResendEmail.Data::class.java, generateParam(invoiceId, email))
-            val response = gqlRepository.getReseponse(listOf(request)).getSuccessData<FlightResendEmail.Data>()
+            val response = gqlRepository.response(listOf(request)).getSuccessData<FlightResendEmail.Data>()
             Success(response)
         } catch (e: Exception) {
             Fail(e)

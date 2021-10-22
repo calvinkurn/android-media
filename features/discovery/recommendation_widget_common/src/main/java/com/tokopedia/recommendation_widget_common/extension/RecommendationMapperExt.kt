@@ -84,7 +84,8 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
             prevPage = pagination.prevPage,
             hasNext = pagination.hasNext,
             pageName = pageName,
-            recommendationBanner = campaign.mapToBannerData()
+            recommendationBanner = campaign.mapToBannerData(),
+            isTokonow = isRecomCardShouldShowVariantOrCart()
     )
 }
 
@@ -140,11 +141,12 @@ fun RecommendationItem.toProductCardModel(
 
 var LABEL_FULFILLMENT: String = "fulfillment"
 val LAYOUTTYPE_HORIZONTAL_ATC: String = "horizontal-atc"
+val LAYOUTTYPE_INFINITE_ATC: String = "infinite-atc"
 val DEFAULT_QTY_0: Int = 0
 val DEFAULT_QTY_1: Int = 1
 
 private fun RecommendationEntity.RecommendationData.isRecomCardShouldShowVariantOrCart() : Boolean {
-    return layoutType == LAYOUTTYPE_HORIZONTAL_ATC
+    return layoutType == LAYOUTTYPE_HORIZONTAL_ATC || layoutType == LAYOUTTYPE_INFINITE_ATC
 }
 
 private fun RecommendationEntity.RecommendationData.getItemQuantityBasedOnLayoutType(): Int {

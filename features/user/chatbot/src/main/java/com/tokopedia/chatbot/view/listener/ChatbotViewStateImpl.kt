@@ -194,16 +194,11 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun onSuccessSendRating(element: SendRatingPojo, rating: Int,
                                      chatRatingViewModel: ChatRatingViewModel,
-                                     activity: Activity,
-                                     onClickReasonRating: (String) -> Unit) {
+                                     activity: Activity) {
         val indexToUpdate = adapter.data.indexOf(chatRatingViewModel)
         if (adapter.data[indexToUpdate] is ChatRatingViewModel) {
             (adapter.data[indexToUpdate] as ChatRatingViewModel).ratingStatus = rating
             adapter.notifyItemChanged(indexToUpdate)
-        }
-
-        if (rating == ChatRatingViewModel.RATING_BAD) {
-            showReasonBottomSheet(element, activity, onClickReasonRating)
         }
     }
 

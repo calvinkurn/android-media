@@ -112,6 +112,7 @@ import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashb
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementActionListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
+import com.tokopedia.purchase_platform.common.utils.Switch
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounce
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -136,6 +137,7 @@ import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -143,7 +145,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @Keep
-class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, CartItemAdapter.ActionListener,
+open class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, CartItemAdapter.ActionListener,
         RefreshHandler.OnRefreshHandlerListener, CartToolbarListener,
         TickerAnnouncementActionListener, SellerCashbackListener {
 
@@ -581,6 +583,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun routeToCheckoutPage() {
         activity?.let {
             val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.CHECKOUT)
+            intent.putExtra(CheckoutConstant.EXTRA_CHECKOUT_PAGE_SOURCE, CheckoutConstant.CHECKOUT_PAGE_SOURCE_CART)
             startActivityForResult(intent, NAVIGATION_SHIPMENT)
         }
     }
@@ -825,12 +828,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun initToolbar(view: View) {
         if (isNavToolbar) {
             initNavigationToolbar(view)
-            binding?.toolbar?.gone()
+            binding?.toolbarCart?.gone()
             binding?.navToolbar?.show()
         } else {
             initBasicToolbar(view)
             binding?.navToolbar?.gone()
-            binding?.toolbar?.show()
+            binding?.toolbarCart?.show()
         }
         setToolbarShadowVisibility(false)
     }
@@ -904,7 +907,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 isToolbarWithBackButton = false
             }
 
-            val appbar = binding?.toolbar
+            val appbar = binding?.toolbarCart
             val statusBarBackground = binding?.statusBarBg
             statusBarBackground?.layoutParams?.height = DisplayMetricUtils.getStatusBarHeight(it)
 
@@ -1960,11 +1963,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 onNeedToRemoveViewItem(chooseAddressWidgetPosition)
             } else {
                 validateLocalCacheAddress(it, localizationChooseAddressData)
-
-                if (ChooseAddressUtils.isRollOutUser(it)) {
-                    val cartChooseAddressHolderData = CartChooseAddressHolderData()
-                    cartAdapter.addItem(cartChooseAddressHolderData)
-                }
+                val cartChooseAddressHolderData = CartChooseAddressHolderData()
+                cartAdapter.addItem(cartChooseAddressHolderData)
             }
         }
     }
@@ -2095,7 +2095,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             promoCheckoutBtnCart.setOnClickListener {
                 dPresenter.doUpdateCartForPromo()
                 // analytics
-                PromoRevampAnalytics.eventCartClickPromoSection(listPromoApplied, false)
+                PromoRevampAnalytics.eventCartClickPromoSection(listPromoApplied, false, userSession.userId)
             }
         }
     }
@@ -2152,7 +2152,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             } else {
                 dPresenter.doUpdateCartForPromo()
                 // analytics
-                PromoRevampAnalytics.eventCartClickPromoSection(getAllPromosApplied(lastApplyData), isApplied)
+                PromoRevampAnalytics.eventCartClickPromoSection(getAllPromosApplied(lastApplyData), isApplied, userSession.userId)
             }
         }
         if (isApplied) {
@@ -3733,6 +3733,23 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
 
         return null
+    }
+
+    override fun isBundleToggleChanged(): Boolean {
+        activity?.let {
+            if (Switch.isBundleToggleOn(it)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    override fun recreateActivity() {
+        try {
+            activity?.recreate()
+        } catch (t: Throwable) {
+            Timber.d(t)
+        }
     }
 
 }

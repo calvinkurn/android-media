@@ -44,15 +44,14 @@ import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.cart.CartActivity
+import com.tokopedia.cart.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.R
 import com.tokopedia.cart.bundle.data.model.response.promo.LastApplyPromo
 import com.tokopedia.cart.bundle.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.LocalizationChooseAddress
-import com.tokopedia.cart.databinding.FragmentCartBundleBinding
 import com.tokopedia.cart.bundle.domain.model.cartlist.*
-import com.tokopedia.cart.CartActivity.Companion.INVALID_PRODUCT_ID
 import com.tokopedia.cart.bundle.view.ICartListPresenter.Companion.GET_CART_STATE_AFTER_CHOOSE_ADDRESS
 import com.tokopedia.cart.bundle.view.ICartListPresenter.Companion.GET_CART_STATE_DEFAULT
 import com.tokopedia.cart.bundle.view.adapter.cart.CartAdapter
@@ -68,6 +67,7 @@ import com.tokopedia.cart.bundle.view.di.DaggerCartComponent
 import com.tokopedia.cart.bundle.view.mapper.*
 import com.tokopedia.cart.bundle.view.uimodel.*
 import com.tokopedia.cart.bundle.view.viewholder.CartRecommendationViewHolder
+import com.tokopedia.cart.databinding.FragmentCartBundleBinding
 import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_HOMEPAGE
 import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_RETRY
 import com.tokopedia.cartcommon.data.response.common.Button.Companion.ID_START_SHOPPING
@@ -106,6 +106,7 @@ import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashb
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementActionListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
+import com.tokopedia.purchase_platform.common.utils.Switch
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounce
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -130,6 +131,7 @@ import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -598,6 +600,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun routeToCheckoutPage() {
         activity?.let {
             val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.CHECKOUT)
+            intent.putExtra(CheckoutConstant.EXTRA_CHECKOUT_PAGE_SOURCE, CheckoutConstant.CHECKOUT_PAGE_SOURCE_CART)
             startActivityForResult(intent, NAVIGATION_SHIPMENT)
         }
     }
@@ -842,12 +845,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun initToolbar(view: View) {
         if (isNavToolbar) {
             initNavigationToolbar(view)
-            binding?.toolbar?.gone()
+            binding?.toolbarCart?.gone()
             binding?.navToolbar?.show()
         } else {
             initBasicToolbar(view)
             binding?.navToolbar?.gone()
-            binding?.toolbar?.show()
+            binding?.toolbarCart?.show()
         }
         setToolbarShadowVisibility(false)
     }
@@ -921,7 +924,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 isToolbarWithBackButton = false
             }
 
-            val appbar = binding?.toolbar
+            val appbar = binding?.toolbarCart
             val statusBarBackground = binding?.statusBarBg
             statusBarBackground?.layoutParams?.height = DisplayMetricUtils.getStatusBarHeight(it)
 
@@ -1115,7 +1118,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val allCartItemDataList = cartAdapter.allCartItemData
         val toBeDeletedProducts = mutableListOf<CartItemHolderData>()
         if (cartItemHolderData.isBundlingItem) {
-            val cartShopHolderData = cartAdapter.getCartShopHolderDataByCartString(cartItemHolderData.cartString)
+            val cartShopHolderData = cartAdapter.getCartShopHolderDataByCartItemHolderData(cartItemHolderData)
             cartShopHolderData?.let {
                 it.productUiModelList.forEach { product ->
                     if (product.isBundlingItem && product.bundleId == cartItemHolderData.bundleId && product.bundleGroupId == cartItemHolderData.bundleGroupId) {
@@ -1697,7 +1700,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onBundleItemCheckChanged(cartItemHolderData: CartItemHolderData) {
-        val cartShopHolderData = cartAdapter.getCartShopHolderDataByCartString(cartItemHolderData.cartString)
+        val cartShopHolderData = cartAdapter.getCartShopHolderDataByCartItemHolderData(cartItemHolderData)
         cartShopHolderData?.let {
             it.productUiModelList.forEachIndexed { index, data ->
                 if (data.isBundlingItem && data.bundleId == cartItemHolderData.bundleId && data.bundleGroupId == cartItemHolderData.bundleGroupId) {
@@ -1972,11 +1975,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 onNeedToRemoveViewItem(chooseAddressWidgetPosition)
             } else {
                 validateLocalCacheAddress(it, cartData.localizationChooseAddress)
-
-                if (ChooseAddressUtils.isRollOutUser(it)) {
-                    val cartChooseAddressHolderData = CartUiModelMapper.mapChooseAddressUiModel()
-                    cartAdapter.addItem(cartChooseAddressHolderData)
-                }
+                val cartChooseAddressHolderData = CartUiModelMapper.mapChooseAddressUiModel()
+                cartAdapter.addItem(cartChooseAddressHolderData)
             }
         }
     }
@@ -2101,7 +2101,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             promoCheckoutBtnCart.setOnClickListener {
                 dPresenter.doUpdateCartForPromo()
                 // analytics
-                PromoRevampAnalytics.eventCartClickPromoSection(listPromoApplied, false)
+                PromoRevampAnalytics.eventCartClickPromoSection(listPromoApplied, false, userSession.userId)
             }
         }
     }
@@ -2158,7 +2158,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             } else {
                 dPresenter.doUpdateCartForPromo()
                 // analytics
-                PromoRevampAnalytics.eventCartClickPromoSection(getAllPromosApplied(lastApplyData), isApplied)
+                PromoRevampAnalytics.eventCartClickPromoSection(getAllPromosApplied(lastApplyData), isApplied, userSession.userId)
             }
         }
         if (isApplied) {
@@ -3188,7 +3188,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onCartItemQuantityChanged(cartItemHolderData: CartItemHolderData, newQuantity: Int) {
         if (cartItemHolderData.isBundlingItem) {
-            val cartShopHolderData = cartAdapter.getCartShopHolderDataByCartString(cartItemHolderData.cartString)
+            val cartShopHolderData = cartAdapter.getCartShopHolderDataByCartItemHolderData(cartItemHolderData)
             cartShopHolderData?.let {
                 it.productUiModelList.forEach {
                     if (it.isBundlingItem && it.bundleId == cartItemHolderData.bundleId && it.bundleGroupId == cartItemHolderData.bundleGroupId) {
@@ -3390,6 +3390,23 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             cartPageAnalytics.eventClickUbahInProductBundlingPackageProductCard(cartItemHolderData.bundleId, cartItemHolderData.bundleType)
             val intent = RouteManager.getIntent(it, cartItemHolderData.editBundleApplink)
             startActivityForResult(intent, NAVIGATION_EDIT_BUNDLE)
+        }
+    }
+
+    override fun isBundleToggleChanged(): Boolean {
+        activity?.let {
+            if (!Switch.isBundleToggleOn(it)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    override fun recreateActivity() {
+        try {
+            activity?.recreate()
+        } catch (t: Throwable) {
+            Timber.d(t)
         }
     }
 

@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.recharge_pdp_emoney.R
-import kotlinx.android.synthetic.main.item_emoney_recent_transaction.view.*
+import com.tokopedia.recharge_pdp_emoney.databinding.ItemEmoneyRecentTransactionBinding
 
 /**
  * @author by jessica on 05/04/21
@@ -16,12 +16,13 @@ class RecentTransactionViewHolder(itemView: View,
     : RecyclerView.ViewHolder(itemView) {
 
     fun bind(item: TopupBillsRecommendation) {
-        with(itemView) {
+        val bind = ItemEmoneyRecentTransactionBinding.bind(itemView)
+        with(bind) {
             emoneyRecentNumberImage.loadImage(item.iconUrl)
             emoneyRecentNumberTitle.text = item.clientNumber
             emoneyRecentNumberDescription.text = item.title
 
-            setOnClickListener {
+            root.setOnClickListener {
                 listener.onClickItem(item)
             }
         }

@@ -25,7 +25,7 @@ class PlayCoverProductViewHolder(
     }
 
     interface Listener {
-        fun onProductCoverClicked(productId: Long, imageUrl: String)
+        fun onProductCoverClicked(productId: String, imageUrl: String)
     }
 
     companion object {

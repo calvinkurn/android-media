@@ -162,6 +162,10 @@ public interface ShipmentContract {
         void logOnErrorLoadCourier(Throwable throwable, int itemPosition);
 
         void logOnErrorCheckout(Throwable throwable, String request);
+
+        boolean isBundleToggleChanged();
+
+        void recreateActivity();
     }
 
     interface AnalyticsActionListener {
@@ -321,7 +325,8 @@ public interface ShipmentContract {
                                                            String eventCategory,
                                                            String eventAction,
                                                            String eventLabel,
-                                                           String leasingId);
+                                                           String leasingId,
+                                                           String pageSource);
 
         List<DataCheckoutRequest> updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(String cartString, String shippingDuration, String shippingPrice, String courierName);
 

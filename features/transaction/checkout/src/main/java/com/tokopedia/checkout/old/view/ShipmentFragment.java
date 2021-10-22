@@ -129,6 +129,7 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotE
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
+import com.tokopedia.purchase_platform.common.utils.Switch;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.unifycomponents.TimerUnify;
@@ -155,6 +156,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 import static com.tokopedia.checkout.old.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_INDOMARET;
 import static com.tokopedia.checkout.old.analytics.CheckoutTradeInAnalytics.EVENT_ACTION_PILIH_PEMBAYARAN_NORMAL;
@@ -199,6 +201,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     public static final String ARG_IS_ONE_CLICK_SHIPMENT = "ARG_IS_ONE_CLICK_SHIPMENT";
     public static final String ARG_CHECKOUT_LEASING_ID = "ARG_CHECKOUT_LEASING_ID";
+    public static final String ARG_CHECKOUT_PAGE_SOURCE = "ARG_CHECKOUT_PAGE_SOURCE";
     private static final String DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION = "LAST_CHOOSE_COURIER_ITEM_POSITION";
     private static final String DATA_STATE_LAST_CHOOSEN_SERVICE_ID = "DATA_STATE_LAST_CHOOSEN_SERVICE_ID";
 
@@ -258,6 +261,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     public static ShipmentFragment newInstance(boolean isOneClickShipment,
                                                String leasingId,
+                                               String pageSource,
                                                Bundle bundle) {
         if (bundle == null) {
             bundle = new Bundle();
@@ -268,6 +272,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else {
             bundle.putBoolean(ARG_IS_ONE_CLICK_SHIPMENT, isOneClickShipment);
         }
+        bundle.putString(ARG_CHECKOUT_PAGE_SOURCE, pageSource);
         ShipmentFragment shipmentFragment = new ShipmentFragment();
         shipmentFragment.setArguments(bundle);
 
@@ -464,6 +469,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 getArguments().getString(ShipmentFormRequest.EXTRA_DEVICE_ID, "").length() > 0;
     }
 
+    private String getCheckoutPageSource() {
+        String pageSource = CheckoutConstant.CHECKOUT_PAGE_SOURCE_PDP;
+        if (getArguments() != null && getArguments().getString(ARG_CHECKOUT_PAGE_SOURCE) != null) {
+            pageSource = getArguments().getString(ARG_CHECKOUT_PAGE_SOURCE);
+        }
+        return pageSource;
+    }
+
     private void initRecyclerViewData(ShipmentTickerErrorModel shipmentTickerErrorModel,
                                       TickerAnnouncementHolderData tickerAnnouncementHolderData,
                                       RecipientAddressModel recipientAddressModel,
@@ -616,7 +629,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                 ConstantTransactionAnalytics.EventAction.VIEW_CHECKOUT_PAGE,
                 ConstantTransactionAnalytics.EventLabel.SUCCESS,
-                getCheckoutLeasingId());
+                getCheckoutLeasingId(),
+                getCheckoutPageSource());
     }
 
     private void sendErrorAnalytics() {
@@ -1587,7 +1601,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     ConstantTransactionAnalytics.EventCategory.COURIER_SELECTION,
                     ConstantTransactionAnalytics.EventAction.CLICK_ALL_COURIER_SELECTED,
                     "",
-                    getCheckoutLeasingId());
+                    getCheckoutLeasingId(),
+                    getCheckoutPageSource());
         }
     }
 
@@ -2574,7 +2589,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 eventCategory,
                 eventAction,
                 eventLabel,
-                getCheckoutLeasingId());
+                getCheckoutLeasingId(),
+                getCheckoutPageSource());
     }
 
     @Override
@@ -2861,7 +2877,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void setChosenAddressForTradeInDropOff(Intent intent) {
         Activity activity = getActivity();
         RecipientAddressModel recipientAddressModel = shipmentPresenter.getRecipientAddressModel();
-        if (activity != null && isTradeInByDropOff() && ChooseAddressUtils.INSTANCE.isRollOutUser(activity) && recipientAddressModel != null) {
+        if (activity != null && isTradeInByDropOff() && recipientAddressModel != null) {
             LocationDataModel locationDataModel = recipientAddressModel.getLocationDataModel();
             ChosenAddress chosenAddress;
             if (locationDataModel != null) {
@@ -3208,4 +3224,26 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void logOnErrorCheckout(Throwable throwable, String request) {
         CheckoutLogger.INSTANCE.logOnErrorCheckout(throwable, request, isOneClickShipment(), isTradeIn(), isTradeInByDropOff());
     }
+
+    @Override
+    public boolean isBundleToggleChanged() {
+        Activity activity = getActivity();
+        if (activity != null) {
+            return Switch.INSTANCE.isBundleToggleOn(activity);
+        }
+        return false;
+    }
+
+    @Override
+    public void recreateActivity() {
+        try {
+            Activity activity = getActivity();
+            if (activity != null) {
+                activity.recreate();
+            }
+        } catch (Throwable t) {
+            Timber.d(t);
+        }
+    }
+
 }

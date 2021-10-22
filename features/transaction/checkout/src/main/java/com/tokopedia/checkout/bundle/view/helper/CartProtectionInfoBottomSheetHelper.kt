@@ -23,7 +23,11 @@ object CartProtectionInfoBottomSheetHelper {
         val view = View.inflate(context, R.layout.checkout_protection_more_bundle, null)
         webView = view.findViewById(R.id.proteksi_webview)
         val viewflipper = view.findViewById<ViewFlipper>(R.id.container_webview)
-        webView?.settings?.javaScriptEnabled = true
+        val webSettings = webView?.settings
+        webSettings?.apply {
+            javaScriptEnabled = true
+            domStorageEnabled = true
+        }
         webView?.loadUrl(url)
         webView?.webViewClient = object : WebViewClient() {
             override fun onPageFinished(view: WebView, url: String) {

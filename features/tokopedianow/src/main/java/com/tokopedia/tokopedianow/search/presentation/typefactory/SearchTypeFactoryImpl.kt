@@ -3,6 +3,8 @@ package com.tokopedia.tokopedianow.search.presentation.typefactory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
 import com.tokopedia.tokopedianow.search.presentation.listener.BroadMatchListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CTATokoNowHomeListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CategoryJumperListener
@@ -19,12 +21,10 @@ import com.tokopedia.tokopedianow.search.presentation.viewholder.SuggestionViewH
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.EmptyProductListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.OutOfCoverageListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SearchCategoryRecommendationCarouselListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactoryImpl
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BaseChooseAddressViewHolder
 
@@ -35,12 +35,12 @@ class SearchTypeFactoryImpl(
         quickFilterListener: QuickFilterListener,
         categoryFilterListener: CategoryFilterListener,
         productItemListener: ProductItemListener,
-        emptyProductListener: EmptyProductListener,
+        tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
         private val suggestionListener: SuggestionListener,
         outOfCoverageListener: OutOfCoverageListener,
         private val categoryJumperListener: CategoryJumperListener,
         private val ctaTokoNowHomeListener: CTATokoNowHomeListener,
-        recommendationCarouselListener: SearchCategoryRecommendationCarouselListener,
+        recommendationCarouselListener: TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
         private val broadMatchListener: BroadMatchListener,
 ): BaseSearchCategoryTypeFactoryImpl(
         chooseAddressListener,
@@ -49,7 +49,7 @@ class SearchTypeFactoryImpl(
         quickFilterListener,
         categoryFilterListener,
         productItemListener,
-        emptyProductListener,
+        tokoNowEmptyStateNoResultListener,
         outOfCoverageListener,
         recommendationCarouselListener,
 ), SearchTypeFactory {

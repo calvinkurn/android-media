@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.bundle.domain.usecase
 
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.checkout.bundle.data.model.response.shipmentaddressform.ShipmentAddressFormGqlResponse
 import com.tokopedia.checkout.bundle.domain.mapper.ShipmentMapper
@@ -13,7 +12,6 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import timber.log.Timber
-import java.io.IOException
 import java.util.*
 import javax.inject.Inject
 
@@ -67,8 +65,7 @@ class GetShipmentAddressFormV3UseCase @Inject constructor(@ApplicationContext pr
         }
 
         val request = GraphqlRequest(getQueryShipmentAddressFormV3(), ShipmentAddressFormGqlResponse::class.java, params)
-        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<ShipmentAddressFormGqlResponse>()
-//        val response = Gson().fromJson(getJsonFromResource("saf_dummy.json"), ShipmentAddressFormGqlResponse::class.java)
+        val response = graphqlRepository.response(listOf(request)).getSuccessData<ShipmentAddressFormGqlResponse>()
 
         if (response.shipmentAddressFormResponse.status == "OK") {
             return shipmentMapper.convertToShipmentAddressFormData(response.shipmentAddressFormResponse.data)
@@ -89,21 +86,6 @@ class GetShipmentAddressFormV3UseCase @Inject constructor(@ApplicationContext pr
         const val PARAM_KEY_IS_TRADEIN = "is_trade_in"
         const val PARAM_KEY_DEVICE_ID = "dev_id"
         const val PARAM_KEY_VEHICLE_LEASING_ID = "vehicle_leasing_id"
-    }
-
-    fun getJsonFromResource(path: String): String {
-        var json = ""
-        try {
-            val inputStream = this.javaClass.classLoader!!.getResourceAsStream(path)
-            val size = inputStream.available()
-            val buffer = ByteArray(size)
-            inputStream.read(buffer)
-            inputStream.close()
-            json = String(buffer, Charsets.UTF_8)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return json
     }
 
 }

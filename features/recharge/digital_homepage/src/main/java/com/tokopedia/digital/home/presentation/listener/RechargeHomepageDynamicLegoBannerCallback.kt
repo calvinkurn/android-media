@@ -30,7 +30,7 @@ class RechargeHomepageDynamicLegoBannerCallback(val listener: RechargeHomepageIt
     }
 
     override fun onClickGridThreeImage(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-        // Do nothing
+        listener.onRechargeLegoBannerItemClicked(channelModel.id, channelGrid.id, position)
     }
 
     override fun onImpressionGridFourImage(channelModel: ChannelModel, parentPosition: Int) {

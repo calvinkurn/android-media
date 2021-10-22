@@ -1,5 +1,6 @@
 package com.tokopedia.product_bundle.common.util
 
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.product.detail.common.data.model.variant.*
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
 import com.tokopedia.product_bundle.common.data.model.response.Child
@@ -44,7 +45,7 @@ object AtcVariantMapper {
                 price = it.bundlePrice,
                 stock =  VariantStock(
                     stock = it.stock,
-                    isBuyable = true,
+                    isBuyable = it.isBuyable && it.stock.isMoreThanZero(),
                     minimumOrder = it.minOrder.toString()
                 ),
                 optionIds = it.optionIds.map { optionId -> optionId.toString() },

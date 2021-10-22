@@ -8,8 +8,8 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.bundle.data.model.request.AddCartToWishlistRequest
 import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.CartData
-import com.tokopedia.cart.bundle.domain.model.cartlist.PromoSummaryData
-import com.tokopedia.cart.bundle.domain.model.cartlist.PromoSummaryDetailData
+import com.tokopedia.cart.bundle.view.uimodel.PromoSummaryData
+import com.tokopedia.cart.bundle.view.uimodel.PromoSummaryDetailData
 import com.tokopedia.cart.bundle.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.bundle.domain.model.updatecart.UpdateAndValidateUseData
 import com.tokopedia.cart.bundle.domain.usecase.*
@@ -141,6 +141,11 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     override fun processInitialGetCartData(cartId: String, initialLoad: Boolean, isLoadingTypeRefresh: Boolean, getCartState: Int) {
         view?.let {
+            if (it.isBundleToggleChanged()) {
+                it.recreateActivity()
+                return
+            }
+
             if (initialLoad) {
                 it.renderLoadGetCartData()
             } else if (!isLoadingTypeRefresh) {
@@ -281,6 +286,11 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     override fun processUpdateCartData(fireAndForget: Boolean, onlyTokoNowProducts: Boolean) {
         view?.let {
             if (!fireAndForget) {
+                if (it.isBundleToggleChanged()) {
+                    it.recreateActivity()
+                    return
+                }
+
                 it.showProgressLoading()
             }
 
@@ -439,7 +449,11 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                     productId = cartItemHolderData.productId
                     cartId = cartItemHolderData.cartId
                     notes = cartItemHolderData.notes
-                    quantity = cartItemHolderData.quantity
+                    if (cartItemHolderData.isBundlingItem) {
+                        quantity = cartItemHolderData.quantity * cartItemHolderData.bundleQuantity
+                    } else {
+                        quantity = cartItemHolderData.quantity
+                    }
                     bundleInfo = BundleInfo().apply {
                         bundleId = cartItemHolderData.bundleId.toZeroStringIfNullOrBlank()
                         bundleGroupId = cartItemHolderData.bundleGroupId.toZeroStringIfNullOrBlank()
@@ -1208,7 +1222,8 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         var hasChanges = false
         view?.getAllCartDataList()?.let {
             for (cartItemHolderData in it) {
-                if (cartItemHolderData.quantity != cartItemHolderData.originalQty || cartItemHolderData.notes != cartItemHolderData.originalNotes) {
+                if (cartItemHolderData.quantity != cartItemHolderData.originalQty || cartItemHolderData.notes != cartItemHolderData.originalNotes ||
+                        (cartItemHolderData.isBundlingItem && cartItemHolderData.bundleQuantity != cartItemHolderData.originalBundleQuantity)) {
                     hasChanges = true
                     break
                 }

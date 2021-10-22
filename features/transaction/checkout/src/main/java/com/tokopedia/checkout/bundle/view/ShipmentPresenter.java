@@ -397,11 +397,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                               String eventCategory,
                                                               String eventAction,
                                                               String eventLabel,
-                                                              String leasingId) {
+                                                              String leasingId,
+                                                              String pageSource) {
         CheckoutRequest checkoutRequest = generateCheckoutRequest(
                 dataCheckoutRequests, shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
         );
-        Map<String, Object> eeDataLayer = generateCheckoutAnalyticsDataLayer(checkoutRequest, step);
+        Map<String, Object> eeDataLayer = generateCheckoutAnalyticsDataLayer(checkoutRequest, step, pageSource);
         if (eeDataLayer != null) {
             String transactionId = "";
             if (checkoutData != null) {
@@ -501,6 +502,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                @Nullable String cornerId,
                                                @Nullable String deviceId,
                                                @Nullable String leasingId) {
+        if (getView().isBundleToggleChanged()) {
+            getView().recreateActivity();
+            return;
+        }
+
         if (isReloadData) {
             getView().setHasRunningApiCall(true);
             getView().showLoading();
@@ -664,6 +670,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 String deviceId,
                                 String cornerId,
                                 String leasingId) {
+        if (getView().isBundleToggleChanged()) {
+            getView().recreateActivity();
+            return;
+        }
+
         removeErrorShopProduct();
         CheckoutRequest checkoutRequest = generateCheckoutRequest(null,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
@@ -1011,7 +1022,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         };
     }
 
-    public Map<String, Object> generateCheckoutAnalyticsDataLayer(CheckoutRequest checkoutRequest, String step) {
+    public Map<String, Object> generateCheckoutAnalyticsDataLayer(CheckoutRequest checkoutRequest, String step, String pageSource) {
         if (checkoutRequest != null) {
             Map<String, Object> checkoutMapData = new HashMap<>();
             EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
@@ -1072,6 +1083,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         enhancedECommerceProductCartMapData.setDimension83(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
                                     }
                                     enhancedECommerceProductCartMapData.setCampaignId(String.valueOf(productDataCheckoutRequest.getCampaignId()));
+                                    enhancedECommerceProductCartMapData.setPageSource(pageSource);
                                     enhancedECommerceProductCartMapData.setDimension117(productDataCheckoutRequest.getBundleType());
                                     enhancedECommerceProductCartMapData.setDimension118(productDataCheckoutRequest.getBundleId());
 

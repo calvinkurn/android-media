@@ -9,8 +9,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -19,6 +22,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.window.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -66,9 +70,19 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     private var constraintLayoutParent: ConstraintLayout? = null
     private var frameLayoutChatRoom: FrameLayout? = null
     private var frameLayoutChatList: FrameLayout? = null
+    private var chatRoomToolbarTitle: TextView? = null
+    private var chatRoomToolbarLabel: TextView? = null
+    private var chatRoomToolbarSubtitle: TextView? = null
+    private var chatRoomToolbarAvatar: ImageView? = null
 
     private var layoutUpdatesJob: Job? = null
     private var displayState: Int = 0
+
+    /**
+     * Flag for determine if the device is in flex mode
+     * True if in flex mode and only for fold (book) device
+     */
+    private var currentlyInFlexMode: Boolean = false
 
     //messageId for chatroom fragment intent, replaced to applink's parameter when intent doesn't have the extra
     private var messageId: String = "0"
@@ -82,8 +96,9 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
-        scanPathQuery(intent.data)
-
+        if (!currentActiveChat.isNullOrEmpty()) {
+            handleIntentChatRoomWithMessageId()
+        }
         if (intent != null && intent.extras != null) {
             bundle.putAll(intent.extras)
 
@@ -150,9 +165,6 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         data?.let {
             val pathSegments = it.pathSegments
             when {
-                (!currentActiveChat.isNullOrEmpty()) -> {
-                    handleIntentChatRoomWithMessageId()
-                }
                 pathSegments.contains(ApplinkConst.Chat.PATH_ASK_SELLER) -> {
                     val toShopId = intent?.data?.lastPathSegment.toZeroStringIfNull()
                     val shopName =
@@ -220,6 +232,40 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
 
     override fun getToolbarResourceID(): Int {
         return R.id.toolbar
+    }
+
+    override fun setupToolbar() {
+        scanPathQuery(intent.data)
+        clearToolbar()
+        bindToolbarViews()
+        setupDummyToolbar()
+    }
+
+    private fun clearToolbar() {
+        val mInflater = LayoutInflater.from(this)
+        val mCustomView = mInflater.inflate(getChatHeaderLayout(), null)
+        toolbar.removeAllViews()
+        toolbar.addView(mCustomView)
+        toolbar.contentInsetStartWithNavigation = 0
+        toolbar.contentInsetEndWithActions = 0
+    }
+
+    private fun bindToolbarViews() {
+        chatRoomToolbarTitle = findViewById(com.tokopedia.chat_common.R.id.title)
+        chatRoomToolbarLabel = findViewById(com.tokopedia.chat_common.R.id.label)
+        chatRoomToolbarSubtitle = findViewById(com.tokopedia.chat_common.R.id.subtitle)
+        chatRoomToolbarAvatar = findViewById(com.tokopedia.chat_common.R.id.user_avatar)
+    }
+
+    private fun setupDummyToolbar() {
+        intent.getParcelableExtra<ChatRoomHeaderViewModel>(ApplinkConst.Chat.PARAM_HEADER)?.let { header ->
+            chatRoomToolbarAvatar?.let { imageView ->
+                ImageHandler.loadImageCircle2(this, imageView, header.image)
+            }
+            chatRoomToolbarTitle?.text = header.name
+            chatRoomToolbarLabel?.hide()
+            chatRoomToolbarSubtitle?.hide()
+        }
     }
 
     override fun getLayoutRes(): Int {
@@ -301,11 +347,14 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     private fun changeLayout(windowLayoutInfo: WindowLayoutInfo) {
-        if(isAllowedFlexMode()) {
-            saveDisplayState(windowLayoutInfo.displayFeatures)
-            if (windowLayoutInfo.displayFeatures.isNotEmpty()) {
-                ViewUtil.alignViewToDeviceFeatureBoundaries(
-                    resources, theme, window, windowLayoutInfo,
+        if (isAllowedFlexMode()) {
+            val foldingFeature = getFoldingFeature(windowLayoutInfo.displayFeatures)
+            displayState = foldingFeature?.state ?: EMPTY_STATE
+            currentlyInFlexMode = if (windowLayoutInfo.displayFeatures.isNotEmpty()
+                && !isTableTop(foldingFeature)
+            ) {
+                val isSuccess = ViewUtil.alignViewToDeviceFeatureBoundaries(
+                    windowLayoutInfo,
                     constraintLayoutParent,
                     R.id.chatlist_fragment, R.id.chatroom_fragment,
                     R.id.toolbar, R.id.device_feature
@@ -313,8 +362,10 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
                 attachChatListFragment()
                 attachChatRoomFragment()
                 chatRoomFragment.toggleTemplateChatWhenFlex(true)
+                isSuccess
             } else {
                 handleNonFlexModeView()
+                false
             }
             setupToolbarWithFlex()
         }
@@ -327,12 +378,11 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         chatRoomFragment.toggleTemplateChatWhenFlex(false)
     }
 
-    private fun saveDisplayState(displayFeatures: List<DisplayFeature>) {
-        if (displayFeatures.isEmpty()) {
-            displayState = EMPTY_STATE
-        } else if (displayFeatures.first() is FoldingFeature) {
-            val foldingFeature = displayFeatures.first() as FoldingFeature
-            displayState = foldingFeature.state
+    private fun getFoldingFeature(displayFeatures: List<DisplayFeature>): FoldingFeature? {
+        return if(displayFeatures.isNotEmpty() && displayFeatures.first() is FoldingFeature) {
+            displayFeatures.first() as FoldingFeature
+        } else {
+            null
         }
     }
 
@@ -349,7 +399,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     override fun onSuccessGetMessageId(msgId: String) {
-        if(isFlexMode()) {
+        if (isFlexMode()) {
             messageId = msgId
             currentActiveChat = msgId
             checkPeriodicallyUntilListRendered(msgId)
@@ -381,8 +431,10 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     override fun isFlexMode(): Boolean {
-        return displayState == FLAT_STATE && isAllowedFlexMode() ||
-                displayState == HALF_OPEN_STATE && isAllowedFlexMode()
+        return (displayState == FLAT_STATE
+                || displayState == HALF_OPEN_STATE)
+                && isAllowedFlexMode() 
+                && currentlyInFlexMode
     }
 
     private fun hideKeyboard() {
@@ -398,7 +450,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     private fun setupToolbarWithFlex() {
-        if(isFlexMode()) {
+        if (isFlexMode()) {
             setupDoubleToolbar()
         } else {
             setupChatRoomOnlyToolbar()
@@ -414,19 +466,21 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
 
     private fun setupChatRoomOnlyToolbar() {
         toolbarChatList?.hide()
+        setSupportActionBar(toolbar)
+        setupTopChatSupportActionBar()
     }
 
     private fun setupToolbarFlexChatroom() {
-        val mInflater = LayoutInflater.from(this)
-        val mCustomView = mInflater.inflate(getChatHeaderLayout(), null)
-        toolbar.removeAllViews()
-        toolbar.addView(mCustomView)
         toolbar.contentInsetStartWithNavigation = ViewUtil.convertToPx(SIXTEEN_DP)
         toolbar.contentInsetEndWithActions = 0
     }
 
     private fun setupToolbarFlexChatlist() {
         setSupportActionBar(toolbarChatList)
+        setupTopChatSupportActionBar()
+    }
+
+    private fun setupTopChatSupportActionBar() {
         supportActionBar?.run {
             setBackgroundDrawable(
                 ColorDrawable(
@@ -454,7 +508,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        return if(isFlexMode()) {
+        return if (isFlexMode()) {
             menu?.clear()
             if (GlobalConfig.isSellerApp()) {
                 menuInflater.inflate(R.menu.chat_options_menu_sellerapp, menu)
@@ -501,6 +555,10 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
         }
         return remoteConfig?.getBoolean(Constant.TOPCHAT_ALLOWED_FLEX_MODE, true)?: true
     }
+
+    private fun isTableTop(foldFeature: FoldingFeature?) =
+        foldFeature?.state == FoldingFeature.STATE_HALF_OPENED &&
+                foldFeature.orientation == FoldingFeature.ORIENTATION_HORIZONTAL
 
     override fun onBackPressed() {
         if(::chatRoomFragment.isInitialized && chatRoomFragment.onBackPressed()) {

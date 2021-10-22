@@ -6,25 +6,22 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.ImageView;
 
 import androidx.core.app.TaskStackBuilder;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.customer_mid_app.R;
+import com.tokopedia.linker.FirebaseDLWrapper;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
@@ -52,6 +49,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     private static final String APPLINK_URL = "url";
     private Uri uriData;
     private boolean isOriginalUrlAmp;
+    private String IS_DEEP_LINK = "is_deep_link_flag";
 
     @Override
     public String getScreenName() {
@@ -72,6 +70,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         ImageView loadingView = findViewById(R.id.iv_loading);
         ImageHandler.loadGif(loadingView, R.drawable.ic_loading_indeterminate, -1);
         logDeeplink();
+        new FirebaseDLWrapper().getFirebaseDynamicLink(this,getIntent());
     }
 
     private void checkUrlMapToApplink() {
@@ -178,7 +177,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     public void initDeepLink() {
         if (uriData != null || getIntent().getBooleanExtra(EXTRA_STATE_APP_WEB_VIEW, false)) {
             Bundle bundle = getIntent().getExtras();
-            boolean deeplink = getIntent().getBooleanExtra(DeepLink.IS_DEEP_LINK, false);
+            boolean deeplink = getIntent().getBooleanExtra(IS_DEEP_LINK, false);
             String applinkUrl = null;
             if (bundle != null) {
                 applinkUrl = bundle.getString(APPLINK_URL);

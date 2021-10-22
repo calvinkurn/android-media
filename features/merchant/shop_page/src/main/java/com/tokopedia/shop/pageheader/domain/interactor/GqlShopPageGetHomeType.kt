@@ -27,6 +27,16 @@ class GqlShopPageGetHomeType @Inject constructor(
                 shopID: ${'$'}shopID
               ){
                 shopHomeType 
+                homeLayoutData {
+                  layoutID
+                  masterLayoutID
+                  widgetIDList{
+                    widgetID
+                    widgetMasterID
+                    widgetType
+                    widgetName
+                  }
+                }
               }
             }
         """
@@ -50,5 +60,9 @@ class GqlShopPageGetHomeType @Inject constructor(
         } else {
             throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
         }
+    }
+
+    fun clearCache(){
+        gqlUseCase.clearCache()
     }
 }

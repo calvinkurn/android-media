@@ -66,6 +66,9 @@ object ApplinkConstInternalMarketplace {
     // ReviewProductActivity, "x_prd_nm" = productName
     const val PRODUCT_REVIEW_OLD = "$INTERNAL_MARKETPLACE/product/{id}/review-old"
 
+    // ReviewCredibilityActivity
+    const val REVIEW_CREDIBILITY = "$INTERNAL_MARKETPLACE/review/credibility/{userId}/{source}/"
+
     // StockReminderActivity
     const val STOCK_REMINDER = "$INTERNAL_MARKETPLACE/stock-reminder/{productId}/{productName}/{stock}/"
 
@@ -183,13 +186,6 @@ object ApplinkConstInternalMarketplace {
 
     // ChatSearchActivity
     const val CHAT_SEARCH = "$INTERNAL_MARKETPLACE/chat-search"
-
-    // NotificationActivity
-    const val NOTIFICATION_CENTER = "$INTERNAL_MARKETPLACE/notification"
-
-    const val NOTIFICATION_BUYER_INFO = "$INTERNAL_MARKETPLACE/notif-center"
-
-    const val NOTIFICATION_BUYER_INFO_WITH_ID = "$INTERNAL_MARKETPLACE/notif-center/{id}/"
 
     // PowerMerchantSubscribeActivity
     const val POWER_MERCHANT_SUBSCRIBE = "$INTERNAL_MARKETPLACE/power-merchant-subscribe"

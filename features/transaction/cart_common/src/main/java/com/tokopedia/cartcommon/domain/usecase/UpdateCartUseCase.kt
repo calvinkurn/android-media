@@ -36,7 +36,7 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
         }
 
         val request = GraphqlRequest(QUERY, UpdateCartGqlResponse::class.java, params)
-        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<UpdateCartGqlResponse>()
+        val response = graphqlRepository.response(listOf(request)).getSuccessData<UpdateCartGqlResponse>()
 
         return if (response.updateCartData.status == "OK") {
             if (consumeErrorResponse) {

@@ -6,6 +6,7 @@ data class ShopInfoPeriodUiModel(
     var isEndTenureNewSeller: Boolean = false,
     var periodType: String = "",
     var shopAge: Long = 0,
+    var dateShopCreated: String = "",
     var periodStartDate: String = "",
     var periodEndDate: String = ""
 )

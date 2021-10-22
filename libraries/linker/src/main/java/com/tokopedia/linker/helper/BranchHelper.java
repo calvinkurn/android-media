@@ -109,7 +109,7 @@ public class BranchHelper {
                     .addCustomDataProperty(LinkerConstants.KEY_GOOGLE_BUSINESS_VERTICAL, LinkerConstants.LABEL_RETAIL);
             branchEvent.logEvent(context);
             saveBranchEvent(branchEvent);
-
+            sendFireBaseNewBuyerEvent(branchIOPayment);
             if (branchIOPayment.isNewBuyer()) {
                 sendMarketPlaceFirstTxnEvent(context, branchIOPayment, userData.getUserId(), revenuePrice, shippingPrice);
                 //Firebase first transaction event
@@ -270,7 +270,14 @@ public class BranchHelper {
         eventDataMap.put(LinkerConstants.KEY_USERID, userId);
         eventDataMap.put(LinkerConstants.KEY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()));
         eventDataMap.put(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()));
-        eventDataMap.put(LinkerConstants.KEY_EVENT, LinkerConstants.EVENT_FB_FIRST_TXN);
+        eventDataMap.put(LinkerConstants.KEY_EVENT, LinkerConstants.EVENT_FIREBASE_FIRST_TXN);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventDataMap);
+    }
+
+    public static void sendFireBaseNewBuyerEvent(PaymentData branchIOPayment){
+        Map<String, Object> eventDataMap = new HashMap<>();
+        eventDataMap.put(LinkerConstants.KEY_NEW_CUSTOMER, String.valueOf(branchIOPayment.isNewBuyer()));
+        eventDataMap.put(LinkerConstants.KEY_EVENT, LinkerConstants.EVENT_FIREBASE_NEW_CUSTOMER);
         TrackApp.getInstance().getGTM().sendGeneralEvent(eventDataMap);
     }
 

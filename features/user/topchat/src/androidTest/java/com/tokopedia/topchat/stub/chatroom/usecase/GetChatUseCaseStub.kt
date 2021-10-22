@@ -2,17 +2,17 @@ package com.tokopedia.topchat.stub.chatroom.usecase
 
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.chat_common.data.ImageAnnouncementViewModel.CampaignStatus
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
+import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.AndroidFileUtil
-import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageAttachment
 import com.tokopedia.topchat.chatroom.domain.usecase.GetChatUseCase
-import com.tokopedia.topchat.common.getNext3Seconds
-import com.tokopedia.topchat.common.getNext6Hours
+import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.stub.common.GraphqlUseCaseStub
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 class GetChatUseCaseStub @Inject constructor(
@@ -23,8 +23,14 @@ class GetChatUseCaseStub @Inject constructor(
 
     private val changeAddressResponsePath =
         "success_get_chat_replies_with_srw_change_address.json"
+    private val replyBubbleResponsePath =
+        "success_get_chat_replies_with_reply_bubble.json"
     private val broadcastCampaignLabelPath =
         "success_get_chat_with_broadcast_campaign.json"
+    private val chatWithSellerPath =
+        "success_get_chat_first_page_as_seller.json"
+    private val chatWithBuyerPath =
+        "success_get_chat_first_page_as_buyer.json"
 
     var response: GetExistingChatPojo = GetExistingChatPojo()
         set(value) {
@@ -32,25 +38,94 @@ class GetChatUseCaseStub @Inject constructor(
             field = value
         }
 
+    val defaultChatWithSellerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatWithSellerPath) { response ->
+            alterDateToToday(response)
+        }
+
+    val defaultChatWithBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(chatWithBuyerPath) { response ->
+            alterDateToToday(response)
+        }
+
+    fun getCurrentRoomMetaData(msgId: String): RoomMetaData {
+        return mapper.generateRoomMetaData(msgId, response)
+    }
+
     /**
-     * Broadcast response region below
-     * /====================/
+     * <!--- Start Reply bubble --->
+     */
+    val defaultReplyBubbleResponse: GetExistingChatPojo
+        get() = alterResponseOf(replyBubbleResponsePath) { }
+
+    val longReplyBubbleResponse: GetExistingChatPojo
+        get() = alterResponseOf(replyBubbleResponsePath) { response ->
+            alterDateToToday(response)
+            val replies = response.getAsJsonObject(chatReplies)
+                .getAsJsonArray(list).get(0).asJsonObject
+                .getAsJsonArray(chats).get(0).asJsonObject
+                .getAsJsonArray(replies)
+            for (i in 0..10) {
+                val newReply = replies.first().deepCopy().asJsonObject
+                val newMsg = newReply.get(msg).asString + " $i"
+                newReply.addProperty(msg, newMsg)
+                replies.add(newReply)
+            }
+        }
+
+    val inTheMiddleReplyBubbleResponse: GetExistingChatPojo
+        get() = alterResponseOf(replyBubbleResponsePath) { response ->
+            alterDateToToday(response)
+            val chatReplies = response.getAsJsonObject(chatReplies)
+            chatReplies.addProperty("hasNext", true)
+            chatReplies.addProperty("hasNextAfter", true)
+        }
+
+    val expiredReplyBubbleResponse: GetExistingChatPojo
+        get() = alterResponseOf(replyBubbleResponsePath) { response ->
+            alterDateToToday(response)
+            val chatReplies = response.getAsJsonObject(chatReplies)
+                .getAsJsonArray(list).get(0).asJsonObject
+                .getAsJsonArray(chats).get(0).asJsonObject
+                .getAsJsonArray(replies)
+            val lastReplyParentReply = chatReplies.last().asJsonObject
+                .getAsJsonObject(parentReply)
+            lastReplyParentReply.addProperty(isExpired, true)
+        }
+
+    /**
+     * <!--- End Reply bubble --->
+     */
+
+    var isError = false
+        set(value) {
+            gqlUseCase.isError = value
+            field = value
+        }
+
+    /**
+     * <!--- Start Broadcast responses --->
      */
     val defaultBroadcastCampaignLabel: GetExistingChatPojo
         get() = AndroidFileUtil.parse(
             broadcastCampaignLabelPath,
             GetExistingChatPojo::class.java
         )
+    /**
+     * <!--- End Broadcast responses --->
+     */
 
     fun getBannerAttachmentId(response: GetExistingChatPojo): String {
         return response.chatReplies.list[0].chats[0].replies[0].attachment.id
     }
 
+    /**
+     * <!--- Start SRW responses --->
+     */
     val defaultChangeAddressResponse: GetExistingChatPojo
-        get() = AndroidFileUtil.parse(
-            changeAddressResponsePath,
-            GetExistingChatPojo::class.java
-        )
+        get() = alterResponseOf(changeAddressResponsePath) { response ->
+            alterDateToToday(response)
+        }
 
     val srwChangeAddressCtaDisabled: GetExistingChatPojo
         get() = alterResponseOf(changeAddressResponsePath) { response ->
@@ -114,11 +189,19 @@ class GetChatUseCaseStub @Inject constructor(
                 .getAsJsonArray(replies).get(0).asJsonObject
                 .remove(attachment)
         }
+    /**
+     * <!--- End SRW responses --->
+     */
+
+    fun getLastIndexOf(response: GetExistingChatPojo): Int {
+        return response.chatReplies.list[0].chats[0].replies.lastIndex
+    }
 
     private val chatReplies = "chatReplies"
     private val list = "list"
     private val chats = "chats"
     private val replies = "replies"
+    private val msg = "msg"
     private val attachment = "attachment"
     private val attributes = "attributes"
     private val status = "status"
@@ -130,12 +213,24 @@ class GetChatUseCaseStub @Inject constructor(
     private val name = "name"
     private val isOpposite = "isOpposite"
     private val cta_button = "cta_button"
+    private val date = "date"
+    private val isExpired = "isExpired"
+    private val parentReply = "parentReply"
 
-    // broadcast campaign label
-    private val start_date = "start_date"
-    private val end_date = "end_date"
-    private val status_campaign = "status_campaign"
-    private val is_campaign = "is_campaign"
+    private fun alterDateToToday(response: JsonObject) {
+        val list = response.getAsJsonObject(chatReplies)
+            .getAsJsonArray(list)
+        list.forEach {
+            val chat = it.asJsonObject
+            chat.addProperty(date, getTodayDate())
+        }
+    }
+
+    private fun getTodayDate(): String {
+        val format = SimpleDateFormat(HeaderDateUiModel.DATE_FORMAT, Locale.ENGLISH)
+        val currentTime = Calendar.getInstance().time
+        return format.format(currentTime)
+    }
 
     private fun alterHeaderCtaButtonAttachment(
         listPosition: Int,

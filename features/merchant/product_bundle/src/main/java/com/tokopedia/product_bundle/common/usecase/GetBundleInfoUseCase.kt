@@ -87,6 +87,7 @@ class GetBundleInfoUseCase @Inject constructor(
                                 originalPrice
                                 stock
                                 optionID
+                                isBuyable
                             }
                         }
                     }

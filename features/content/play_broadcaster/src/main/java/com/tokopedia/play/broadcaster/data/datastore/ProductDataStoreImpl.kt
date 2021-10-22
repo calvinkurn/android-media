@@ -1,7 +1,5 @@
 package com.tokopedia.play.broadcaster.data.datastore
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.usecase.AddProductTagUseCase
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -19,7 +17,7 @@ class ProductDataStoreImpl @Inject constructor(
         private val addProductTagUseCase: AddProductTagUseCase
 ) : ProductDataStore {
 
-    private val mSelectedProductMap = mutableMapOf<Long, ProductData>()
+    private val mSelectedProductMap = mutableMapOf<String, ProductData>()
 
     private val _observableSelectedProducts = MutableStateFlow<List<ProductData>>(emptyList())
 
@@ -38,7 +36,7 @@ class ProductDataStoreImpl @Inject constructor(
         updateSelectedProducts()
     }
 
-    override fun isProductSelected(productId: Long): Boolean {
+    override fun isProductSelected(productId: String): Boolean {
         return mSelectedProductMap.contains(productId)
     }
 

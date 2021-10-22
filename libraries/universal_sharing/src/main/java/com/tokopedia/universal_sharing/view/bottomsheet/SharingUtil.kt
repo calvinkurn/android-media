@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.text.TextUtils
 import android.view.View
 import com.bumptech.glide.request.target.CustomTarget
@@ -110,8 +111,8 @@ class SharingUtil {
             var bitmap : Bitmap? = null
             if (view != null) {
                 bitmap = Bitmap.createBitmap(
-                    view.width,
-                    view.height, Bitmap.Config.ARGB_8888
+                        view.width,
+                        view.height, Bitmap.Config.ARGB_8888
                 )
                 val canvas = bitmap?.let { Canvas(it) }
                 view.draw(canvas)

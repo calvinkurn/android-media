@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">product_detail_common</string>
     <string name="product_status_active">Aktif</string>
     <string name="product_status_deleted">Dihapus</string>
@@ -38,15 +38,6 @@
 
     <string name="pdp_shipping_error_to_home">Ke Home</string>
 
-    <string name="pdp_usp_tokonow_static_title">Nikmati Tokopedia NOW!</string>
-    <string name="pdp_usp_tokonow_static_illustration_1_title">Hemat &amp; cepat</string>
-    <string name="pdp_usp_tokonow_static_illustration_1_subtitle">Terima belanjaan dalam 2 jam. Bisa nikmati gratis ongkir juga!</string>
-    <string name="pdp_usp_tokonow_static_illustration_2_title">Stok pasti tersedia</string>
-    <string name="pdp_usp_tokonow_static_illustration_2_subtitle">Ada ribuan pilihan produk. Tiap pesananmu siap dikirim sekaligus &amp; dilayani langsung oleh Tokopedia.</string>
-    <string name="pdp_usp_tokonow_static_illustration_3_title">24 jam</string>
-    <string name="pdp_usp_tokonow_static_illustration_3_subtitle">Pagi, siang atau pun tengah malam? Tenang aja, tim Tokopedia NOW! selalu siap melayani kamu.</string>
-
-
     <string name="pdp_usp_static_title">Keuntungan pakai TokoCabang"</string>
     <string name="pdp_usp_static_header">Dengan TokoCabang, kamu mendapatkan keuntungan berikut:</string>
     <string name="pdp_usp_static_1_1">Lebih Nyaman.</string>
@@ -58,5 +49,12 @@
     <string name="pdp_usp_static_3_3">batas</string>
 
     <string name="template_cashback">Cashback %1$s%%</string>
+
+    <string name="pdp_usp_tokomart_static_title">Untungnya pakai Tokopedia NOW!</string>
+    <string name="pdp_usp_tokomart_static_text_1"><![CDATA[<b><font color=\'%1$s\'>2 jam tiba.</font></b> Terima belanjaan dalam 2 jam setelah pembayaran berhasil & nikmati <b><font color=\'%1$s\'>gratis ongkir</font></b> juga!]]></string>
+    <string name="pdp_usp_tokomart_static_text_2"><![CDATA[<b><font color=\'%1$s\'>Stok pasti tersedia.</font></b> Ada ribuan pilihan produk. Tiap pesananmu siap dikirim sekaligus & dilayani langsung oleh Tokopedia.]]></string>
+    <string name="pdp_usp_tokomart_static_text_3"><![CDATA[<b><font color=\'%1$s\'>Kualitas terjamin.</font></b> Kondisi produk dijamin aman & segar, dengan garansi uang kembali.]]></string>
+    <string name="pdp_usp_tokomart_static_text_4" tools:ignore="TypographyDashes"><![CDATA[Nantikan layanan 24 jam yang akan tersedia setelah masa PPKM. <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/apa-itu-tokopedia-now?utm_campaign=Help-13808288-a-2981-100921&utm_source=salinlink&utm_medium=share">Pelajari</a></font>]]></string>
+    <string name="pdp_usp_tokomart_static_text_5"><![CDATA[Dengan belanja, kamu menyetujui <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/syarat-dan-ketentuan-now">syarat & ketentuan.</a></font>]]></string>
 
 </resources>

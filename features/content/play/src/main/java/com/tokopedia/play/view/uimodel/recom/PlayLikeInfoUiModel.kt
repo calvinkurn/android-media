@@ -11,11 +11,16 @@ enum class LikeSource {
 }
 
 data class PlayLikeInfoUiModel(
-        val contentId: String = "",
-        val contentType: Int = 0,
-        val likeType: Int = 0,
-        val status: PlayLikeStatus = PlayLikeStatus.Unknown,
-        val source: LikeSource = LikeSource.Storage
+    val contentId: String = "",
+    val contentType: Int = 0,
+    val likeType: Int = 0,
+    val status: PlayLikeStatus = PlayLikeStatus.Unknown,
+    val source: LikeSource = LikeSource.Storage,
+    val likeBubbleConfig: PlayLikeBubbleConfig = PlayLikeBubbleConfig(),
+)
+
+data class PlayLikeBubbleConfig(
+    val bubbleMap: Map<String, List<Int>> = emptyMap(),
 )
 
 enum class PlayLikeStatus {

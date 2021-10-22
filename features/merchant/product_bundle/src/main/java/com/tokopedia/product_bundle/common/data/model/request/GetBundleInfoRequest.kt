@@ -58,5 +58,7 @@ data class UserLocation(
 
 data class ProductData(
     @SerializedName("ProductID")
-    val productID: String = ""
+    val productID: String = "",
+    @SerializedName("WarehouseIDs")
+    val warehouseIDs: List<String> = emptyList()
 )

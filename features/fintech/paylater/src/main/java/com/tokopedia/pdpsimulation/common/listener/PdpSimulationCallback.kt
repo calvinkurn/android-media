@@ -8,7 +8,7 @@ interface PdpSimulationCallback {
     fun <T : Any> openBottomSheet(bundle: Bundle, modelClass: Class<T>)
     fun switchPaymentMode()
     fun showRegisterWidget()
-    fun onRegisterWidgetClicked()
     fun getSimulationProductInfo()
     fun sendAnalytics(pdpSimulationEvent: PdpSimulationEvent)
+    fun reloadProductDetail()
 }

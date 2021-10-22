@@ -10,6 +10,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product_bundle.R
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
 import com.tokopedia.product_bundle.common.data.mapper.InventoryError
 import com.tokopedia.product_bundle.common.data.mapper.InventoryErrorMapper
 import com.tokopedia.product_bundle.common.data.mapper.InventoryErrorType
@@ -34,15 +35,15 @@ class ProductBundleActivity : BaseSimpleActivity() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val viewModelProvider by lazy {
-        ViewModelProvider(this, viewModelFactory)
-    }
-
     private val viewModel by lazy {
-        viewModelProvider.get(ProductBundleViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory).get(ProductBundleViewModel::class.java)
     }
 
     private val entryPointFragment = EntrypointFragment()
+
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -146,26 +147,35 @@ class ProductBundleActivity : BaseSimpleActivity() {
         val title: String
         val message: String
         val buttonText: String
-        when (errorResult.type) {
-            InventoryErrorType.OTHER_BUNDLE_AND_VARIANT_AVAILABLE -> {
-                title = getString(R.string.dialog_error_title_empty)
-                message = getString(R.string.dialog_error_message_other_bundle_and_variant_available)
-                buttonText = getString(R.string.dialog_error_action_change_variant)
-                showUnifyDialog(title, message, buttonText)
+        if (viewModel.pageSource == PAGE_SOURCE_CART) {
+            when (errorResult.type) {
+                InventoryErrorType.OTHER_BUNDLE_AND_VARIANT_AVAILABLE -> {
+                    title = getString(R.string.dialog_error_title_empty)
+                    message = getString(R.string.dialog_error_message_other_bundle_and_variant_available)
+                    buttonText = getString(R.string.dialog_error_action_change_variant)
+                    showUnifyDialog(title, message, buttonText)
+                }
+                InventoryErrorType.OTHER_BUNDLE_AVAILABLE -> {
+                    title = getString(R.string.dialog_error_title_empty_bundle)
+                    message = getString(R.string.dialog_error_message_other_bundle_available)
+                    buttonText = getString(R.string.dialog_error_action_change_bundle)
+                    showUnifyDialog(title, message, buttonText)
+                }
+                InventoryErrorType.OTHER_VARIANT_AVAILABLE -> {
+                    title = getString(R.string.dialog_error_title_empty)
+                    message = getString(R.string.dialog_error_message_other_variant_available)
+                    buttonText = getString(R.string.dialog_error_action_change_variant)
+                    showUnifyDialog(title, message, buttonText)
+                }
+                else -> { /* no-op */ }
             }
-            InventoryErrorType.OTHER_BUNDLE_AVAILABLE -> {
-                title = getString(R.string.dialog_error_title_empty_bundle)
-                message = getString(R.string.dialog_error_message_other_bundle_available)
+        } else {
+            if (errorResult.type != InventoryErrorType.NO_ERROR) {
+                title = getString(R.string.dialog_error_title_empty_pdp)
+                message = getString(R.string.error_bundle_out_of_stock_dialog_description)
                 buttonText = getString(R.string.dialog_error_action_change_bundle)
                 showUnifyDialog(title, message, buttonText)
             }
-            InventoryErrorType.OTHER_VARIANT_AVAILABLE -> {
-                title = getString(R.string.dialog_error_title_empty)
-                message = getString(R.string.dialog_error_message_other_variant_available)
-                buttonText = getString(R.string.dialog_error_action_change_variant)
-                showUnifyDialog(title, message, buttonText)
-            }
-            else -> { /* no-op */ }
         }
     }
 
@@ -179,7 +189,11 @@ class ProductBundleActivity : BaseSimpleActivity() {
     }
 
     fun refreshPage() {
+        supportFragmentManager.beginTransaction()
+            .replace(parentViewResourceID, entryPointFragment, tagFragment)
+            .commit()
         val productId = viewModel.parentProductID
+        viewModel.resetBundleMap()
         viewModel.getBundleInfo(productId)
     }
 }

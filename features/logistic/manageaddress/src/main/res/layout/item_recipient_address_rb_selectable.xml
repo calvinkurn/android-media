@@ -73,7 +73,7 @@
                 android:layout_below="@+id/rl_address_container"
                 android:background="@color/Unify_N100" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/button_change_address"
                 android:contentDescription="@string/content_desc_button_change_address"
                 android:layout_width="match_parent"
@@ -84,14 +84,16 @@
                 android:padding="@dimen/dp_8"
                 android:text="@string/change_address"
                 android:textColor="@color/Unify_N700_32"
-                android:textSize="@dimen/sp_12" />
+                android:textSize="@dimen/sp_12"
+                app:typographyType="body_3" />
 
 
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
 
-    <Button
+    <com.tokopedia.unifycomponents.UnifyButton
+        app:unifyButtonVariant="ghost"
         android:id="@+id/button_add_new_address"
         android:contentDescription="@string/content_desc_tv_button_add_new_address"
         android:layout_width="match_parent"
@@ -104,6 +106,6 @@
         android:textAllCaps="false"
         android:visibility="gone"
         tools:visibility="visible"
-        android:textColor="@color/Unify_G400" />
+        android:textColor="@color/Unify_G400" />a
 
 </LinearLayout>

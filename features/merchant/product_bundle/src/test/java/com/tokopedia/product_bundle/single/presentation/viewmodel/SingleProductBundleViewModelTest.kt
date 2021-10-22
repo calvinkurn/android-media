@@ -76,7 +76,7 @@ class SingleProductBundleViewModelTest: SingleProductBundleViewModelTestFixture(
 
     @Test
     fun `validateAndAddToCart should return not selected toasterError`() = runBlocking {
-        viewModel.validateAndAddToCart("", "", "", listOf(
+        viewModel.validateAndAddToCart("", "", "", "", listOf(
             SingleProductBundleSelectedItem(
                 shopId = "123",
                 bundleId = "123",
@@ -92,7 +92,7 @@ class SingleProductBundleViewModelTest: SingleProductBundleViewModelTestFixture(
 
     @Test
     fun `validateAndAddToCart should return variant not selected toasterError`() = runBlocking {
-        viewModel.validateAndAddToCart("", "", "", listOf(
+        viewModel.validateAndAddToCart("", "", "", "", listOf(
             SingleProductBundleSelectedItem(
                 shopId = "123",
                 bundleId = "123",
@@ -120,11 +120,11 @@ class SingleProductBundleViewModelTest: SingleProductBundleViewModelTestFixture(
         )
 
         // if variant child changed
-        viewModel.validateAndAddToCart("", "123", "456", singleProductBundleSelectedItem)
+        viewModel.validateAndAddToCart("cart", "", "123", "456", singleProductBundleSelectedItem)
         coVerify { addToCartBundleUseCase.executeOnBackground() }
 
         // if variant child not changed
-        viewModel.validateAndAddToCart("", "123", "123", singleProductBundleSelectedItem)
+        viewModel.validateAndAddToCart("cart", "", "123", "123", singleProductBundleSelectedItem)
         val addToCartResult = viewModel.addToCartResult.getOrAwaitValue()
         assertEquals("123", addToCartResult.requestParams.bundleId)
     }
@@ -138,7 +138,7 @@ class SingleProductBundleViewModelTest: SingleProductBundleViewModelTestFixture(
         } throws MessageErrorException(exceptionMessage)
 
         // When
-        viewModel.validateAndAddToCart("", "", "",
+        viewModel.validateAndAddToCart("", "", "", "",
             generateSingleProductBundleSelectedItem())
 
         // Then
@@ -164,7 +164,7 @@ class SingleProductBundleViewModelTest: SingleProductBundleViewModelTestFixture(
         )
 
         // When
-        viewModel.validateAndAddToCart("", "", "",
+        viewModel.validateAndAddToCart("", "", "", "",
             generateSingleProductBundleSelectedItem())
 
         // Then
@@ -188,7 +188,7 @@ class SingleProductBundleViewModelTest: SingleProductBundleViewModelTestFixture(
         )
 
         // When
-        viewModel.validateAndAddToCart("", "", "",
+        viewModel.validateAndAddToCart("", "", "", "",
             generateSingleProductBundleSelectedItem())
 
         // Then

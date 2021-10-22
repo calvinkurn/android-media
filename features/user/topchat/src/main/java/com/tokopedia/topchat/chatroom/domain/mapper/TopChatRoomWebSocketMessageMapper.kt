@@ -8,9 +8,11 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CTA_HEADER_M
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
+import com.tokopedia.chat_common.data.BaseChatViewModel.Builder.Companion.generateCurrentReplyTime
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
+import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
@@ -33,7 +35,9 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
     private val gson = GsonBuilder().create()
 
     override fun convertToMessageViewModel(pojo: ChatSocketPojo): Visitable<*> {
-        return MessageViewModel(pojo)
+        return MessageViewModel.Builder()
+            .withResponseFromWs(pojo)
+            .build()
     }
 
     override fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
@@ -53,28 +57,20 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
         val attachment = gson.fromJson(
             jsonAttributes, HeaderCtaButtonAttachment::class.java
         )
-        return MessageViewModel(pojo, attachment)
+        return MessageViewModel.Builder()
+            .withResponseFromWs(pojo)
+            .withAttachment(attachment)
+            .build()
     }
 
     private fun convertToSticker(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
-        val stickerAttributes = GsonBuilder().create().fromJson<StickerAttributesResponse>(jsonAttributes,
-                StickerAttributesResponse::class.java)
-        return StickerUiModel(
-                messageId = pojo.msgId.toString(),
-                fromUid = pojo.fromUid,
-                from = pojo.from,
-                fromRole = pojo.fromRole,
-                attachmentId = pojo.attachment?.id.toString(),
-                attachmentType = pojo.attachment?.type.toString(),
-                replyTime = pojo.message.timeStampUnixNano,
-                startTime = pojo.startTime,
-                message = pojo.message.censoredReply,
-                isRead = false,
-                isDummy = false,
-                isSender = !pojo.isOpposite,
-                sticker = stickerAttributes.stickerProfile,
-                source = pojo.source
+        val stickerAttributes = GsonBuilder().create().fromJson(
+            jsonAttributes, StickerAttributesResponse::class.java
         )
+        return StickerUiModel.Builder()
+            .withResponseFromWs(pojo)
+            .withStickerProfile(stickerAttributes.stickerProfile)
+            .build()
     }
 
     private fun convertToVoucher(item: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
@@ -101,44 +97,23 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
                 merchantVoucherStatus = MerchantVoucherStatus()
         )
 
-        return TopChatVoucherUiModel(
-                item.msgId.toString(),
-                item.fromUid,
-                item.from,
-                item.fromRole,
-                item.attachment?.id.toString(),
-                item.attachment?.type.toString(),
-                item.message.timeStampUnixNano,
-                item.message.censoredReply,
-                false,
-                false,
-                !item.isOpposite,
-                voucherModel,
-                "",
-                item.blastId.toString(),
-                item.source,
-                voucher.isPublic
-        )
+        return TopChatVoucherUiModel.Builder()
+            .withResponseFromWs(item)
+            .withVoucherModel(voucherModel)
+            .withIsPublic(voucher.isPublic)
+            .build()
     }
 
-    private fun convertToQuotation(payload: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
+    private fun convertToQuotation(
+        payload: ChatSocketPojo, jsonAttributes: JsonObject
+    ): Visitable<*> {
         val quotationAttributes = GsonBuilder()
                 .create()
-                .fromJson<QuotationAttributes>(jsonAttributes, QuotationAttributes::class.java)
-        return QuotationUiModel(
-                quotationPojo = quotationAttributes.quotation,
-                messageId = payload.msgId.toString(),
-                fromUid = payload.fromUid,
-                from = payload.from,
-                fromRole = payload.fromRole,
-                attachmentId = payload.attachment?.id ?: "",
-                attachmentType = payload.attachment?.type.toString(),
-                replyTime = payload.message.timeStampUnixNano,
-                isSender = !payload.isOpposite,
-                message = payload.message.censoredReply,
-                startTime = payload.startTime,
-                source = payload.source
-        )
+                .fromJson(jsonAttributes, QuotationAttributes::class.java)
+        return QuotationUiModel.Builder()
+            .withResponseFromWs(payload)
+            .withQuotationPojo(quotationAttributes.quotation)
+            .build()
     }
 
     fun parseResponse(response: WebSocketResponse?): ChatSocketPojo {
@@ -152,8 +127,18 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor(
             startTime: String,
             messageText: String
     ): Visitable<*> {
-        return MessageViewModel(
-                messageId, userId, name, startTime, messageText
-        )
+        val localId = IdentifierUtil.generateLocalId()
+        return MessageViewModel.Builder()
+            .withMsgId(messageId)
+            .withFromUid(userId)
+            .withFrom(name)
+            .withReplyTime(generateCurrentReplyTime())
+            .withStartTime(startTime)
+            .withMsg(messageText)
+            .withLocalId(localId)
+            .withIsDummy(true)
+            .withIsSender(true)
+            .withIsRead(false)
+            .build()
     }
 }

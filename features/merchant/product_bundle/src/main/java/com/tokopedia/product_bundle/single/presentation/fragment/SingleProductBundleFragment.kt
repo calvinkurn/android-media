@@ -121,6 +121,7 @@ class SingleProductBundleFragment(
         }
         if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             viewModel.validateAndAddToCart(
+                pageSource,
                 parentProductID,
                 selectedBundleId,
                 selectedProductId.toString(),
@@ -203,10 +204,10 @@ class SingleProductBundleFragment(
                 intent.putExtra(ProductBundleConstants.EXTRA_IS_VARIANT_CHANGED,
                     it.responseResult.data.isNotEmpty()) // will empty if there is no GQL hit
                 activity?.setResult(Activity.RESULT_OK, intent)
+                activity?.finish()
             } else {
                 RouteManager.route(context, ApplinkConst.CART)
             }
-            activity?.finish()
         })
     }
 
@@ -292,6 +293,7 @@ class SingleProductBundleFragment(
     private fun setupTotalAmount(view: View) {
         totalAmount = view.findViewById(R.id.total_amount)
         totalAmount?.apply {
+            amountCtaView.width = resources.getDimension(R.dimen.atc_button_width).toInt()
             setLabelOrder(TotalAmount.Order.TITLE, TotalAmount.Order.AMOUNT, TotalAmount.Order.SUBTITLE)
             val defaultPrice = context.getString(R.string.single_bundle_default_price)
             updateTotalAmount(
@@ -316,7 +318,11 @@ class SingleProductBundleFragment(
             errorIllustration.loadImageWithoutPlaceholder(BUNDLE_EMPTY_IMAGE_URL)
             errorTitle.text = getString(R.string.single_bundle_error_bundle)
             errorDescription.text = getString(R.string.single_bundle_error_bundle_desc)
-            errorAction.text = getString(R.string.action_back_to_pdp)
+            errorAction.text = if (pageSource == PAGE_SOURCE_CART) {
+                getString(R.string.action_back_to_cart)
+            } else {
+                getString(R.string.action_back_to_pdp)
+            }
             errorAction.setOnClickListener {
                 activity?.finish()
             }
@@ -392,6 +398,7 @@ class SingleProductBundleFragment(
             startActivityForResult(intent, LOGIN_REQUEST_CODE)
         } else {
             viewModel.validateAndAddToCart(
+                pageSource,
                 parentProductID,
                 selectedBundleId,
                 selectedProductId.toString(),

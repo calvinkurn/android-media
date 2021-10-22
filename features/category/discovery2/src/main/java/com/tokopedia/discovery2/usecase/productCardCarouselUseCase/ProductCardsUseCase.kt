@@ -1,10 +1,12 @@
 package com.tokopedia.discovery2.usecase.productCardCarouselUseCase
 
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Constant.ChooseAddressQueryParams.RPC_USER_WAREHOUSE_ID
 import com.tokopedia.discovery2.Utils.Companion.addAddressQueryMap
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
+import com.tokopedia.discovery2.datamapper.getCartData
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
@@ -13,6 +15,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import javax.inject.Inject
 
 class ProductCardsUseCase @Inject constructor(private val productCardsRepository: ProductCardsRepository) {
@@ -50,6 +53,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
             it.noOfPagesLoaded = 1
             it.nextPageKey = nextPage
             if (productListData.isEmpty()) return true
+            if(it.properties?.tokonowATCActive == true)
+                updateProductAddedInCart(productListData, getCartData(pageEndPoint))
             it.pageLoadedCounter = 2
             it.verticalProductFailState = false
             return true
@@ -84,6 +89,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
             } else {
                 component1.pageLoadedCounter += 1
                 component1.showVerticalLoader = true
+                if(component1.properties?.tokonowATCActive == true)
+                    updateProductAddedInCart(productListData, getCartData(pageEndPoint))
                 (component1.getComponentsItem() as ArrayList<ComponentsItem>).addAll(productListData)
             }
             component1.verticalProductFailState = false
@@ -116,6 +123,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                     it.name)
             component.nextPageKey = nextPage
             if (productListData.isEmpty()) return false else it.pageLoadedCounter += 1
+            if(it.properties?.tokonowATCActive == true)
+                updateProductAddedInCart(productListData, getCartData(pageEndPoint))
             (it.getComponentsItem() as ArrayList<ComponentsItem>).addAll(productListData)
             return true
         }
@@ -179,6 +188,26 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         queryParameterMap[RPC_NEXT_PAGE] = nextPageKey ?: ""
 
         queryParameterMap.putAll(addAddressQueryMap(userAddressData))
+        if (userAddressData?.warehouse_id?.isNotEmpty() == true)
+            queryParameterMap[RPC_USER_WAREHOUSE_ID] = userAddressData.warehouse_id
         return queryParameterMap
+    }
+
+    private fun updateProductAddedInCart(products:List<ComponentsItem>,
+                                         map: Map<String, MiniCartItem>?) {
+        if (map == null) return
+        products.forEach { componentsItem ->
+            componentsItem.data?.firstOrNull()?.let { dataItem ->
+                if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(dataItem.parentProductId)) {
+                    map[dataItem.parentProductId]?.quantity?.let { quantity ->
+                        dataItem.quantity = quantity
+                    }
+                }else if (dataItem.hasATC && !dataItem.productId.isNullOrEmpty() && map.containsKey(dataItem.productId)) {
+                    map[dataItem.productId]?.quantity?.let { quantity ->
+                        dataItem.quantity = quantity
+                    }
+                }
+            }
+        }
     }
 }

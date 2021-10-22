@@ -1,0 +1,251 @@
+[
+    {
+        "data": {
+            "playGetWidgetV2": {
+                "data": [
+                    {
+                        "__typename": "PlayWidgetChannel",
+                        "ID": "11657",
+                        "title": "Test - Katalon Automation VOD",
+                        "widgetType": "WATCH_AGAIN",
+                        "appLink": "tokopedia://play/11657?source_id=2248809&source_type=HOME",
+                        "webLink": "https://www.tokopedia.com/play/channel/11657",
+                        "startTime": "2020-09-14T14:04:15+07:00",
+                        "widgetSortingMethod": "PINNED",
+                        "config": {
+                            "hasPromo": false,
+                            "isReminderSet": false,
+                            "promo_labels": []
+                        },
+                        "partner": {
+                            "ID": "2248809",
+                            "name": "Haha Accessories"
+                        },
+                        "video": {
+                            "ID": "9463",
+                            "type": "vod",
+                            "coverUrl": "https://ecs7.tokopedia.net/img/jJtrdn/2020/9/14/95c8e78e-33e8-4f1a-91a1-bf2a5596c1a5.jpg",
+                            "streamSource": "https://vod.tokopedia.com/view/adaptive.m3u8?id=8d9d740939f749bebe7b0a7e43b407e5",
+                            "isShowTotalView": true,
+                            "isLive": false
+                        },
+                        "stats": {
+                            "view": {
+                                "formatted": "295"
+                            }
+                        },
+                        "share": {
+                            "text": "\"Test - Katalon Automation VOD\"\nYuk, nonton siaran dari Haha Accessories di Tokopedia PLAY! Bakal seru banget lho!\n${url}",
+                            "redirect_url": "https://www.tokopedia.com/play/channel/11657?titlebar=false",
+                            "use_short_url": false,
+                            "meta_title": "Tokopedia PLAY seru!",
+                            "meta_description": "Nonton siaran seru di Tokopedia PLAY!",
+                            "is_show_button": true
+                        },
+                        "performanceSummaryPageLink": "",
+                        "__typename": "PlayWidgetChannel"
+                    },
+                    {
+                        "__typename": "PlayWidgetChannel",
+                        "ID": "11658",
+                        "title": "Test - Katalon Automation Live",
+                        "widgetType": "WATCH_AGAIN",
+                        "appLink": "tokopedia://play/11658?source_id=2248809&source_type=HOME",
+                        "webLink": "https://www.tokopedia.com/play/channel/11658",
+                        "startTime": "2020-09-14T14:09:06+07:00",
+                        "widgetSortingMethod": "PINNED",
+                        "config": {
+                            "hasPromo": false,
+                            "isReminderSet": false,
+                            "promo_labels": []
+                        },
+                        "partner": {
+                            "ID": "2248809",
+                            "name": "Haha Accessories"
+                        },
+                        "video": {
+                            "ID": "7511",
+                            "type": "live",
+                            "coverUrl": "https://ecs7.tokopedia.net/img/jJtrdn/2020/9/14/a8ca126f-7a93-4be4-bcd7-f7c5bdb29a8d.jpg",
+                            "streamSource": "https://chat.tokopedia.com/live/api/v1/livestream/adaptive.m3u8?id=53831953-f659-11ea-ba24-be21f8cc5a54",
+                            "isShowTotalView": true,
+                            "isLive": false
+                        },
+                        "stats": {
+                            "view": {
+                                "formatted": "170"
+                            }
+                        },
+                        "share": {
+                            "text": "\"Test - Katalon Automation Live\"\nYuk, nonton siaran dari Haha Accessories di Tokopedia PLAY! Bakal seru banget lho!\n${url}",
+                            "redirect_url": "https://www.tokopedia.com/play/channel/11658?titlebar=false",
+                            "use_short_url": false,
+                            "meta_title": "Tokopedia PLAY seru!",
+                            "meta_description": "Nonton siaran seru di Tokopedia PLAY!",
+                            "is_show_button": false
+                        },
+                        "performanceSummaryPageLink": "",
+                        "__typename": "PlayWidgetChannel"
+                    },
+                    {
+                        "__typename": "PlayWidgetChannel",
+                        "ID": "11659",
+                        "title": "Test - Katalon Automation Upcoming",
+                        "widgetType": "LIVE",
+                        "appLink": "tokopedia://play/11659?source_id=2&source_type=HOME",
+                        "webLink": "https://www.tokopedia.com/play/channel/11659",
+                        "startTime": "2021-09-15T14:11:21+07:00",
+                        "widgetSortingMethod": "PINNED",
+                        "config": {
+                            "hasPromo": false,
+                            "isReminderSet": false,
+                            "promo_labels": []
+                        },
+                        "partner": {
+                            "ID": "2",
+                            "name": "Tokopedia"
+                        },
+                        "video": {
+                            "ID": "7512",
+                            "type": "youtube",
+                            "coverUrl": "https://ecs7.tokopedia.net/img/jJtrdn/2020/9/14/eeb1d4c4-5ad3-41ad-80a2-5e34ef11b136.jpg",
+                            "streamSource": "6HVx4-vrb_k",
+                            "isShowTotalView": true,
+                            "isLive": false
+                        },
+                        "stats": {
+                            "view": {
+                                "formatted": "1"
+                            }
+                        },
+                        "share": {
+                            "text": "\"Test - Katalon Automation Upcoming\"\nYuk, nonton siaran dari Tokopedia di Tokopedia PLAY! Bakal seru banget lho!\n${url}",
+                            "redirect_url": "https://www.tokopedia.com/play/channel/11659?titlebar=false",
+                            "use_short_url": false,
+                            "meta_title": "Tokopedia PLAY seru!",
+                            "meta_description": "Nonton siaran seru di Tokopedia PLAY!",
+                            "is_show_button": true
+                        },
+                        "performanceSummaryPageLink": "",
+                        "__typename": "PlayWidgetChannel"
+                    },
+                    {
+                        "__typename": "PlayWidgetChannel",
+                        "ID": "12672",
+                        "title": "VOD Landscape + Product",
+                        "widgetType": "WATCH_AGAIN",
+                        "appLink": "tokopedia://play/12672?source_id=1961630&source_type=HOME",
+                        "webLink": "https://www.tokopedia.com/play/channel/12672",
+                        "startTime": "2021-05-06T13:16:32+07:00",
+                        "widgetSortingMethod": "PINNED",
+                        "config": {
+                            "hasPromo": true,
+                            "isReminderSet": false,
+                            "promo_labels": [
+                                {
+                                    "text": "Kupon Spesial",
+                                    "type": "DEFAULT"
+                                }
+                            ]
+                        },
+                        "partner": {
+                            "ID": "1961630",
+                            "name": "Kongsi Dagang Belanda"
+                        },
+                        "video": {
+                            "ID": "9210",
+                            "type": "vod",
+                            "coverUrl": "https://ecs7.tokopedia.net/img/jJtrdn/2020/10/6/168df1ac-d6a7-488c-ad79-81985cb5cfde.jpg?b=UrO%3A%40US4RQaet7W%3BofoM~pxGk9bat5niWVbH",
+                            "streamSource": "https://vod.tokopedia.net/d02ebc97329e4112ab24aa902e5c105e/4a0bedaaf6de46b08b4d9bd0ebf2bff8-f22f568be46d7e4467162e6de7b32def-ld.m3u8",
+                            "isShowTotalView": true,
+                            "isLive": false
+                        },
+                        "stats": {
+                            "view": {
+                                "formatted": "1.6 rb"
+                            }
+                        },
+                        "share": {
+                            "text": "\"VOD Landscape + Product\"\nYuk, nonton siaran dari Kongsi Dagang Belanda di Tokopedia PLAY! Bakal seru banget lho!\n${url}",
+                            "redirect_url": "https://www.tokopedia.com/play/channel/12672?titlebar=false",
+                            "use_short_url": false,
+                            "meta_title": "Tokopedia PLAY seru!",
+                            "meta_description": "Nonton siaran seru di Tokopedia PLAY!",
+                            "is_show_button": true
+                        },
+                        "performanceSummaryPageLink": "",
+                        "__typename": "PlayWidgetChannel"
+                    },
+                    {
+                        "__typename": "PlayWidgetChannel",
+                        "ID": "12669",
+                        "title": "Live Portrait + Product",
+                        "widgetType": "LIVE",
+                        "appLink": "tokopedia://play/12669?source_id=1961630&source_type=HOME",
+                        "webLink": "https://www.tokopedia.com/play/channel/12669",
+                        "startTime": "2020-10-06T18:32:40+07:00",
+                        "widgetSortingMethod": "PINNED",
+                        "config": {
+                            "hasPromo": true,
+                            "isReminderSet": false,
+                            "promo_labels": [
+                                {
+                                    "text": "Kupon Spesial",
+                                    "type": "DEFAULT"
+                                }
+                            ]
+                        },
+                        "partner": {
+                            "ID": "1961630",
+                            "name": "Kongsi Dagang Belanda"
+                        },
+                        "video": {
+                            "ID": "9207",
+                            "type": "live",
+                            "coverUrl": "https://ecs7.tokopedia.net/img/jJtrdn/2020/10/6/f748e654-2926-4561-a79f-f2ed2107957a.jpg?b=USKKQK%5Dw%3Fw17AKRiE3WB-%3AIvIUxW%25fRo-jj%5B",
+                            "streamSource": "https://chat.tokopedia.com/live/api/v1/livestream/adaptive.m3u8?id=b7a2be14-07c7-11eb-a69e-eac5e72d5a0c",
+                            "isShowTotalView": true,
+                            "isLive": true
+                        },
+                        "stats": {
+                            "view": {
+                                "formatted": "698"
+                            }
+                        },
+                        "share": {
+                            "text": "\"Live Portrait + Product\"\nYuk, nonton siaran dari Kongsi Dagang Belanda di Tokopedia PLAY! Bakal seru banget lho!\n${url}",
+                            "redirect_url": "https://www.tokopedia.com/play/channel/12669?titlebar=false",
+                            "use_short_url": false,
+                            "meta_title": "Tokopedia PLAY seru!",
+                            "meta_description": "Nonton siaran seru di Tokopedia PLAY!",
+                            "is_show_button": true
+                        },
+                        "performanceSummaryPageLink": "",
+                        "__typename": "PlayWidgetChannel"
+                    }
+                ],
+                "meta": {
+                    "isAutoRefresh": true,
+                    "autoRefreshTimer": 30,
+                    "widgetTitle": "Video menarik untukmu",
+                    "buttonText": "Lihat Semua",
+                    "widgetBackground": "",
+                    "autoplayAmount": 2,
+                    "autoplay": false,
+                    "buttonApplink": "tokopedia://webview?pull_to_refresh=true&titlebar=false&autoplay=true&url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F",
+                    "buttonWeblink": "https://www.tokopedia.com/play/channels",
+                    "overlayImage": "",
+                    "overlayImageAppLink": "",
+                    "overlayImageWebLink": "",
+                    "gradient": [],
+                    "serverTimeOffset": "1633516077",
+                    "maxAutoplayCell": 30,
+                    "maxAutoplayWifi": 300,
+                    "template": "MEDIUM",
+                    "isButtonVisible": true,
+                    "businessWidgetPosition": 0
+                }
+            }
+        }
+    }
+]

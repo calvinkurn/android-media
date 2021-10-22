@@ -1,14 +1,13 @@
 package com.tokopedia.digital.home.presentation.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.digital.home.R
+import com.tokopedia.digital.home.databinding.LayoutDigitalHomeCategoryItemSubmenuBinding
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.loadImage
-import kotlinx.android.synthetic.main.layout_digital_home_category_item_submenu.view.*
 
 class RechargeItemCategoryAdapter(val items: List<RechargeHomepageSections.Item>, val listener: RechargeHomepageItemListener)
     : RecyclerView.Adapter<RechargeItemCategoryAdapter.DigitalItemSubmenuCategoryViewHolder>() {
@@ -18,7 +17,7 @@ class RechargeItemCategoryAdapter(val items: List<RechargeHomepageSections.Item>
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): DigitalItemSubmenuCategoryViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_digital_home_category_item_submenu, parent, false)
+        val view = LayoutDigitalHomeCategoryItemSubmenuBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return DigitalItemSubmenuCategoryViewHolder(view)
     }
 
@@ -26,13 +25,16 @@ class RechargeItemCategoryAdapter(val items: List<RechargeHomepageSections.Item>
         return items.size
     }
 
-    class DigitalItemSubmenuCategoryViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
+    class DigitalItemSubmenuCategoryViewHolder(val binding: LayoutDigitalHomeCategoryItemSubmenuBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(element: RechargeHomepageSections.Item, onItemBindListener: RechargeHomepageItemListener) {
-            itemView.category_image.loadImage(element.mediaUrl)
-            itemView.category_name.text = element.title
-            itemView.setOnClickListener {
-                onItemBindListener.onRechargeSectionItemClicked(element)
+            with(binding){
+                binding.categoryImage.loadImage(element.mediaUrl)
+                binding.categoryName.text = element.title
+                root.setOnClickListener {
+                    onItemBindListener.onRechargeSectionItemClicked(element)
+                }
             }
+
         }
 
     }

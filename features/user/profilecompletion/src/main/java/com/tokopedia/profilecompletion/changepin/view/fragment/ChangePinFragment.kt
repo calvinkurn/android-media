@@ -210,8 +210,8 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
         changePinInput?.pinTextField?.let { view ->
             view.post {
                 if (view.requestFocus()) {
-                    val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_FORCED)
+                    val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+                    inputMethodManager?.showSoftInput(view, InputMethodManager.SHOW_FORCED)
                 }
             }
         }

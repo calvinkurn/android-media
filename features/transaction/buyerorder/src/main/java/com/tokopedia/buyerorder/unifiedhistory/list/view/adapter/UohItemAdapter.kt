@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TDN_BANNER
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_EMPTY
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_LOADER
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_ORDER_LIST
@@ -35,6 +36,7 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
         const val LAYOUT_EMPTY_STATE = 3
         const val LAYOUT_RECOMMENDATION_TITLE = 4
         const val LAYOUT_RECOMMENDATION_LIST = 5
+        const val LAYOUT_BANNER = 6
     }
 
     interface ActionListener {
@@ -76,6 +78,10 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.uoh_recommendation_item, parent, false)
                 UohRecommendationItemViewHolder(view, actionListener)
             }
+            LAYOUT_BANNER -> {
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.uoh_tdn_banner_layout, parent, false)
+                UohTdnBannerViewHolder(view)
+            }
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -92,6 +98,7 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
             TYPE_EMPTY -> LAYOUT_EMPTY_STATE
             TYPE_RECOMMENDATION_TITLE -> LAYOUT_RECOMMENDATION_TITLE
             TYPE_RECOMMENDATION_ITEM -> LAYOUT_RECOMMENDATION_LIST
+            TDN_BANNER -> LAYOUT_BANNER
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -116,6 +123,9 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
                 holder.bind(element, holder.adapterPosition)
             }
             is UohRecommendationItemViewHolder-> {
+                holder.bind(element, holder.adapterPosition)
+            }
+            is UohTdnBannerViewHolder -> {
                 holder.bind(element, holder.adapterPosition)
             }
         }

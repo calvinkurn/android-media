@@ -2,7 +2,10 @@ package com.tokopedia.topchat.chatroom.view.bottomsheet
 
 import android.content.Context
 import android.view.View
+import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatlist.widget.LongClickMenu
+import com.tokopedia.topchat.common.data.TopchatItemMenu
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -34,4 +37,44 @@ object TopchatBottomSheetBuilder {
         }
         return bottomSheetUnify
     }
+
+    fun getLongClickBubbleMenuBs(
+        ctx: Context?,
+        msg: BaseChatViewModel,
+        onClick: (Int, BaseChatViewModel) -> Unit
+    ): BottomSheetUnify {
+        val longClickMenu = LongClickMenu()
+        val title = ctx?.getString(R.string.title_topchat_bubble_long_click_menu) ?: ""
+        return longClickMenu.apply {
+            setTitle(title)
+            setItemMenuList(createBubbleLongClickMenu(ctx))
+            setOnItemMenuClickListener { itemMenus, _ ->
+                onClick(itemMenus.id, msg)
+                dismiss()
+            }
+        }
+    }
+
+    private fun createBubbleLongClickMenu(
+        ctx: Context?
+    ): MutableList<TopchatItemMenu> {
+        val menus = arrayListOf<TopchatItemMenu>()
+        val replyMenu = TopchatItemMenu(
+            _title = ctx?.getString(R.string.title_topchat_reply) ?: "",
+            _icon = R.drawable.ic_topchat_reply_reference,
+            _id = MENU_ID_REPLY
+        )
+        val copyMenu = TopchatItemMenu(
+            _title = ctx?.getString(R.string.title_topchat_copy) ?: "",
+            _icon = com.tokopedia.iconunify.R.drawable.iconunify_copy,
+            _id = MENU_ID_COPY_TO_CLIPBOARD
+        )
+        return menus.apply {
+            add(replyMenu)
+            add(copyMenu)
+        }
+    }
+
+    const val MENU_ID_REPLY = 1
+    const val MENU_ID_COPY_TO_CLIPBOARD = 2
 }

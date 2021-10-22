@@ -45,7 +45,7 @@ class HotelEVoucherViewModel @Inject constructor(private val graphqlRepository: 
         launchCatchError(block = {
             val response = withContext(dispatcher.main) {
                 val sharePdfRequest = GraphqlRequest(rawQuery, TYPE_SHARE_PDF, sharePdfParams)
-                graphqlRepository.getReseponse(listOf(sharePdfRequest))
+                graphqlRepository.response(listOf(sharePdfRequest))
             }.getSuccessData<SharePdfDataResponse>()
 
             sharePdfData.postValue(Success(response))

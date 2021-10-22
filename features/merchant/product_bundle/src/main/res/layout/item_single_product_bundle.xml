@@ -7,7 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/spacing_lvl4"
     android:paddingStart="@dimen/spacing_lvl4"
     android:paddingEnd="@dimen/spacing_lvl5"
     android:background="?attr/selectableItemBackground">
@@ -59,7 +58,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iv_item_image"
         app:layout_constraintTop_toBottomOf="@+id/label_item_bundle_name"
-        app:typographyType="body_1"
+        app:typographyType="body_2"
         tool:text="Women’s Breathable Low-cut Short Socks Cotton Blend" />
 
     <com.tokopedia.product_bundle.common.customview.SpinnerView
