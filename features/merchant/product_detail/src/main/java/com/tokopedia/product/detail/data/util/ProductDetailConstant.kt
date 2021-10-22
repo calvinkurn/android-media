@@ -67,7 +67,7 @@ object ProductDetailConstant {
     const val PDP_3 = "pdp_3"
     const val PDP_7 = "pdp_7"
     const val PDP_K2K = "k2k_pdp"
-    const val PRODUCT_VARIANT_INFO = "variant"
+or    const val PRODUCT_VARIANT_INFO = "variant"
     const val PRODUCT_WHOLESALE_INFO = "wholesale"
     const val PRODUCT_SHOP_CREDIBILITY = "shop_credibility"
     const val PRODUCT_CUSTOM_INFO = "custom_info"
