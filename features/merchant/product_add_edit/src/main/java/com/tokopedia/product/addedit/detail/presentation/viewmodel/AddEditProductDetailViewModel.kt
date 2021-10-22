@@ -596,8 +596,8 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     private fun getMultiLocationPriceAllocationMessage(): String =
         when {
-            isEditing -> provider.getEditProductPriceMultiLocationMessage().orEmpty()
-            isAdding -> provider.getAddProductPriceMultiLocationMessage().orEmpty()
+            isEditing -> provider.getEditProductPriceMultiLocationMessage()
+            isAdding -> provider.getAddProductPriceMultiLocationMessage()
             else -> ""
         }
 

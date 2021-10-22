@@ -1171,11 +1171,13 @@ class AddEditProductDetailViewModelTest {
         every { userSession.isShopAdmin } returns false
         every { userSession.isShopOwner } returns true
         every { userSession.isMultiLocationShop } returns true
-        every { provider.getEditProductMultiLocationMessage() } returns editMessage
+        every { provider.getEditProductPriceMultiLocationMessage() } returns editMessage
+        every { provider.getEditProductStockMultiLocationMessage() } returns editMessage
 
         viewModel.isEditing = true
         viewModel.setupMultiLocationShopValues()
 
+        assert(viewModel.productPriceMessage == editMessage)
         assert(stockAllocationDefaultMessage == editMessage)
         assert(viewModel.productStockMessage == editMessage)
     }
@@ -1186,12 +1188,14 @@ class AddEditProductDetailViewModelTest {
         every { userSession.isShopAdmin } returns false
         every { userSession.isShopOwner } returns true
         every { userSession.isMultiLocationShop } returns true
-        every { provider.getAddProductMultiLocationMessage() } returns addMessage
+        every { provider.getAddProductPriceMultiLocationMessage() } returns addMessage
+        every { provider.getEditProductStockMultiLocationMessage() } returns addMessage
 
         viewModel.isEditing = false
         viewModel.isAdding = true
         viewModel.setupMultiLocationShopValues()
 
+        assert(viewModel.productPriceMessage == addMessage)
         assert(stockAllocationDefaultMessage == addMessage)
         assert(viewModel.productStockMessage == addMessage)
     }
@@ -1426,12 +1430,12 @@ class AddEditProductDetailViewModelTest {
             viewModel.validatePreOrderDurationInput(AddEditProductDetailConstants.UNIT_WEEK, "${AddEditProductDetailConstants.MAX_PREORDER_WEEKS + 1}")
         }
 
-        runValidationAndProvideMessage(provider::getEditProductMultiLocationMessage, null) {
+        runValidationAndProvideMessage(provider::getEditProductStockMultiLocationMessage, null) {
             viewModel.isEditing = true
             viewModel.isAdding = false
             viewModel.callPrivateFunc("getMultiLocationStockAllocationMessage") as String
         }
-        runValidationAndProvideMessage(provider::getAddProductMultiLocationMessage, null) {
+        runValidationAndProvideMessage(provider::getAddProductStockMultiLocationMessage, null) {
             viewModel.isEditing = false
             viewModel.isAdding = true
             viewModel.callPrivateFunc("getMultiLocationStockAllocationMessage") as String
