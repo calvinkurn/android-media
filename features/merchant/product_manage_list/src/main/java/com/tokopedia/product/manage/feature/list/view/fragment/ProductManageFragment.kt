@@ -930,14 +930,16 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     private fun renderProductList(list: List<ProductUiModel>, hasNextPage: Boolean) {
-        if (isLoadingInitialData && list.isEmpty()) {
-            productManageListAdapter.updateEmptyState(emptyDataViewModel)
-        } else {
-            if (isLoadingInitialData) {
-                productManageListAdapter.updateProduct(list)
+        recycler_view?.post {
+            if (isLoadingInitialData && list.isEmpty()) {
+                productManageListAdapter.updateEmptyState(emptyDataViewModel)
             } else {
-                removeEmptyStateWhenLazyLoad()
-                productManageListAdapter.updateProduct(productManageListAdapter.data.plus(list))
+                if (isLoadingInitialData) {
+                    productManageListAdapter.updateProduct(list)
+                } else {
+                    removeEmptyStateWhenLazyLoad()
+                    productManageListAdapter.updateProduct(productManageListAdapter.data.plus(list))
+                }
             }
         }
         updateScrollListenerState(hasNextPage)
@@ -1091,14 +1093,18 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         Toaster.build(coordinatorLayout, getString(
                 R.string.product_manage_quick_edit_price_success, productName),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
-        productManageListAdapter.updatePrice(productId, price)
+        recycler_view?.post {
+            productManageListAdapter.updatePrice(productId, price)
+        }
     }
 
     private fun onSuccessEditStock(productId: String, productName: String, stock: Int?, status: ProductStatus?) {
         Toaster.build(coordinatorLayout, getString(
                 com.tokopedia.product.manage.common.R.string.product_manage_quick_edit_stock_success, productName),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
-        productManageListAdapter.updateStock(productId, stock, status)
+        recycler_view?.post {
+            productManageListAdapter.updateStock(productId, stock, status)
+        }
 
         filterTab?.getSelectedFilter()?.let {
             filterProductListByStatus(it)
@@ -1112,7 +1118,9 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         Toaster.build(coordinatorLayout, getString(
                 R.string.product_manage_set_cashback_success, setCashbackResult.productName),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
-        productManageListAdapter.updateCashBack(setCashbackResult.productId, setCashbackResult.cashback)
+        recycler_view?.post {
+            productManageListAdapter.updateCashBack(setCashbackResult.productId, setCashbackResult.cashback)
+        }
         val filterOptions = viewModel.selectedFilterAndSort.value?.filterOptions
         if (filterOptions == listOf(FilterByCondition.CashBackOnly)) {
             filterProductListByCashback()
@@ -1120,7 +1128,9 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     private fun filterProductListByCashback() {
-        productManageListAdapter.filterProductList { it.cashBack != 0 }
+        recycler_view?.post {
+            productManageListAdapter.filterProductList { it.cashBack != 0 }
+        }
     }
 
     private fun onSetCashbackLimitExceeded() {
@@ -1163,7 +1173,9 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         Toaster.build(coordinatorLayout, getString(
                 R.string.product_manage_delete_product_success, productName),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
-        productManageListAdapter.deleteProduct(productId)
+        recycler_view?.post {
+            productManageListAdapter.deleteProduct(productId)
+        }
         renderMultiSelectProduct()
         getFiltersTab(withDelay = true)
     }
@@ -1355,21 +1367,27 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     private fun updateProductListStatus(productIds: List<String>, status: ProductStatus) {
         productIds.forEach { productId ->
-            when (status) {
-                DELETED -> productManageListAdapter.deleteProduct(productId)
-                INACTIVE -> productManageListAdapter.setProductStatus(productId, status)
-                else -> {
-                }  // do nothing
+            recycler_view?.post {
+                when (status) {
+                    DELETED -> productManageListAdapter.deleteProduct(productId)
+                    INACTIVE -> productManageListAdapter.setProductStatus(productId, status)
+                    else -> {
+                    }  // do nothing
+                }
             }
         }
     }
 
     private fun filterProductListByStatus(productStatus: ProductStatus?) {
-        productManageListAdapter.filterProductList { it.status == productStatus }
+        recycler_view?.post {
+            productManageListAdapter.filterProductList { it.status == productStatus }
+        }
     }
 
     private fun filterProductListByFeatured() {
-        productManageListAdapter.filterProductList { it.isFeatured == true }
+        recycler_view?.post {
+            productManageListAdapter.filterProductList { it.isFeatured == true }
+        }
     }
 
     override fun onSwipeRefresh() {
@@ -1425,7 +1443,9 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
             successMessage = getString(R.string.product_manage_success_add_featured_product)
             isFeaturedProduct = true
         }
-        productManageListAdapter.updateFeaturedProduct(productId, isFeaturedProduct)
+        recycler_view?.post {
+            productManageListAdapter.updateFeaturedProduct(productId, isFeaturedProduct)
+        }
         val filterOptions = viewModel.selectedFilterAndSort.value?.filterOptions
         if (filterOptions == listOf(FilterByCondition.FeaturedOnly)) {
             filterProductListByFeatured()
@@ -1879,7 +1899,9 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                             val stock = it.getIntExtra(EXTRA_UPDATED_STOCK, 0)
                             val status = valueOf(it.getStringExtra(EXTRA_UPDATED_STATUS).orEmpty())
 
-                            productManageListAdapter.updateStock(productId, stock, status)
+                            recycler_view?.post {
+                                productManageListAdapter.updateStock(productId, stock, status)
+                            }
 
                             filterTab?.getSelectedFilter()?.let { productStatus ->
                                 filterProductListByStatus(productStatus)
@@ -2171,7 +2193,9 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     private fun showHideProductCheckBox(multiSelectEnabled: Boolean) {
-        productManageListAdapter.setMultiSelectEnabled(multiSelectEnabled)
+        recycler_view?.post {
+            productManageListAdapter.setMultiSelectEnabled(multiSelectEnabled)
+        }
     }
 
     private fun showMultiSelectView() {
@@ -2265,7 +2289,9 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         observe(viewModel.editVariantPriceResult) {
             when (it) {
                 is Success -> {
-                    productManageListAdapter.updatePrice(it.data)
+                    recycler_view?.post {
+                        productManageListAdapter.updatePrice(it.data)
+                    }
                     val message = context?.getString(
                             R.string.product_manage_quick_edit_price_success,
                             it.data.productName
@@ -2399,7 +2425,9 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         val stock = data.countVariantStock()
         val status = data.getVariantStatus()
 
-        productManageListAdapter.updateStock(data.productId, stock, status)
+        recycler_view?.post {
+            productManageListAdapter.updateStock(data.productId, stock, status)
+        }
 
         filterTab?.getSelectedFilter()?.let {
             filterProductListByStatus(it)
