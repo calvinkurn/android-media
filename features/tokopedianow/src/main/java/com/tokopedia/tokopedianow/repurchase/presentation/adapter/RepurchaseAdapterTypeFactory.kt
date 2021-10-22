@@ -28,8 +28,8 @@ class RepurchaseAdapterTypeFactory(
     private val tokoNowRecommendationCarouselListener: TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener? = null,
     private val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
     private val sortFilterListener: RepurchaseSortFilterViewHolder.SortFilterListener,
-    private val serverErrorListener: TokoNowServerErrorViewHolder.ServerErrorListener
-)   private val tokonowRecomBindPageNameListener: TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener? = null
+    private val serverErrorListener: TokoNowServerErrorViewHolder.ServerErrorListener,
+    private val tokonowRecomBindPageNameListener: TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener? = null
 ) : BaseAdapterTypeFactory(), RepurchaseTypeFactory, TokoNowTypeFactory {
 
     // region Common TokoNow Component
