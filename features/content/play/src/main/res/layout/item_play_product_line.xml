@@ -26,7 +26,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/fl_product_image"
         app:unifyButtonSize="small"
-        app:unifyButtonType="transaction"
+        app:unifyButtonType="main"
         />
 
     <androidx.appcompat.widget.AppCompatImageView
