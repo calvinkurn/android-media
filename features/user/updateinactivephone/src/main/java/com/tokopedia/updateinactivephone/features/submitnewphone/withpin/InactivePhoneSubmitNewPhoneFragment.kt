@@ -80,6 +80,15 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
 
         viewBinding?.textPhoneNumber?.label = ""
         viewBinding?.buttonNext?.text = context?.getString(R.string.button_text_save)
+
+        viewBinding?.textPhoneNumber?.apply {
+            setOnClickListener {
+                trackerRegular.clickOnTextViewInputNewPhoneNumber()
+            }
+            setAfterTextChangeListener {
+                viewBinding?.buttonNext?.isEnabled = isPhoneValid()
+            }
+        }
     }
 
     override fun onSubmit() {
@@ -93,6 +102,8 @@ open class InactivePhoneSubmitNewPhoneFragment : BaseInactivePhoneSubmitDataFrag
                 it.newPhoneNumber = viewBinding?.textPhoneNumber?.text.orEmpty()
                 viewModel.userValidation(it)
             }
+        } else {
+            viewBinding?.buttonNext?.isEnabled = false
         }
     }
 

@@ -49,8 +49,13 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
             }
         }
 
-        viewBinding?.textPhoneNumber?.setOnClickListener {
-            trackerRegular.clickOnTextViewInputNewPhoneNumber()
+        viewBinding?.textPhoneNumber?.apply {
+            setOnClickListener {
+                trackerRegular.clickOnTextViewInputNewPhoneNumber()
+            }
+            setAfterTextChangeListener {
+                viewBinding?.buttonNext?.isEnabled = isPhoneValid()
+            }
         }
     }
 
@@ -137,6 +142,8 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
                 it.newPhoneNumber = viewBinding?.textPhoneNumber?.text.orEmpty()
                 viewModel.userValidation(it)
             }
+        } else {
+            viewBinding?.buttonNext?.isEnabled = false
         }
     }
 

@@ -92,7 +92,6 @@ abstract class BaseInactivePhoneSubmitDataFragment : BaseDaggerFragment() {
                 return false
             }
         }
-
         return true
     }
 

@@ -97,4 +97,8 @@ class PhoneNumberView @JvmOverloads constructor(
             }
         }
     }
+
+    fun setAfterTextChangeListener(callback: () -> Unit) {
+        textField.afterTextChanged { callback.invoke() }
+    }
 }
