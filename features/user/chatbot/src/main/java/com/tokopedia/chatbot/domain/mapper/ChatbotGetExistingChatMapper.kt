@@ -260,21 +260,12 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             ImageUploadViewModel {
         val pojoAttribute = gson.fromJson<ChatbotImageUploadAttributes>(chatItemPojoByDateByTime.attachment?.attributes,
                 ChatbotImageUploadAttributes::class.java)
-        return ImageUploadViewModel(
-                messageId = chatItemPojoByDateByTime.msgId.toString(),
-                fromUid = chatItemPojoByDateByTime.senderId.toString(),
-                from = chatItemPojoByDateByTime.senderName,
-                fromRole = chatItemPojoByDateByTime.role,
-                attachmentId = chatItemPojoByDateByTime.attachment?.id ?: "",
-                attachmentType = chatItemPojoByDateByTime.attachment?.type.toString(),
-                replyTime = chatItemPojoByDateByTime.replyTime,
-                isSender = !chatItemPojoByDateByTime.isOpposite,
-                imageUrl = pojoAttribute.imageUrlSecure,
-                imageUrlThumbnail = pojoAttribute.thumbnail,
-                isRead = chatItemPojoByDateByTime.isRead,
-                message = chatItemPojoByDateByTime.msg,
-                source = chatItemPojoByDateByTime.source
-        )
+
+        return ImageUploadViewModel.Builder()
+                .withResponseFromGQL(chatItemPojoByDateByTime)
+                .withImageUrl(pojoAttribute.imageUrlSecure)
+                .withImageUrlThumbnail(pojoAttribute.thumbnail)
+                .build()
     }
 
 }

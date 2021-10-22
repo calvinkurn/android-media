@@ -68,21 +68,11 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
         val pojoAttribute = GsonBuilder().create().fromJson<ChatbotImageUploadAttributes>(jsonAttribute,
                 ChatbotImageUploadAttributes::class.java)
 
-        return ImageUploadViewModel(
-            messageId = pojo.msgId.toString(),
-            fromUid = pojo.fromUid,
-            from = pojo.from,
-            fromRole = pojo.fromRole,
-            attachmentId = pojo.attachment!!.id,
-            attachmentType = pojo.attachment!!.type,
-            replyTime = pojo.message.timeStampUnixNano,
-            isSender = !pojo.isOpposite,
-            imageUrl = pojoAttribute.imageUrlSecure,
-            imageUrlThumbnail = pojoAttribute.thumbnail,
-            startTime = pojo.startTime,
-            message = pojo.message.censoredReply,
-            source = pojo.source
-        )
+        return ImageUploadViewModel.Builder()
+                .withResponseFromWs(pojo)
+                .withImageUrl(pojoAttribute.imageUrlSecure)
+                .withImageUrlThumbnail(pojoAttribute.thumbnail)
+                .build()
     }
 
     private fun convertToStickedButtonActionsViewModel(pojo: ChatSocketPojo): Visitable<*> {
