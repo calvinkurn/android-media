@@ -8,8 +8,8 @@ import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.withState
 import com.tokopedia.play.robot.thenVerify
+import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.isEqualTo
-import com.tokopedia.play.util.isFalse
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
@@ -185,7 +185,7 @@ class PlayLiveInitialInteractiveTest {
                 interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.NoInteractive
                 )
-                winnerBadge.shouldShow.isFalse()
+                winnerBadge.shouldShow.assertFalse()
             }
         }
     }

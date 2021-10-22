@@ -95,7 +95,7 @@ class PlayWinnerBadgeInteractiveTest {
                 interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.NoInteractive
                 )
-                winnerBadge.shouldShow.isTrue()
+                winnerBadge.shouldShow.assertTrue()
             }
         }
     }
@@ -121,7 +121,7 @@ class PlayWinnerBadgeInteractiveTest {
                 interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.NoInteractive
                 )
-                winnerBadge.shouldShow.isFalse()
+                winnerBadge.shouldShow.assertFalse()
             }
         }
     }
@@ -157,7 +157,7 @@ class PlayWinnerBadgeInteractiveTest {
                 interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.NoInteractive
                 )
-                winnerBadge.shouldShow.isFalse()
+                winnerBadge.shouldShow.assertFalse()
             }
         }
     }
@@ -184,13 +184,13 @@ class PlayWinnerBadgeInteractiveTest {
             viewModel.submitAction(InteractiveWinnerBadgeClickedAction(10))
         }.thenVerify {
             withState {
-                bottomInsets.isLeaderboardSheetShown.isTrue()
+                bottomInsets.isLeaderboardSheetShown.assertTrue()
             }
         }.andWhen {
             viewModel.submitAction(ClickCloseLeaderboardSheetAction)
         }.thenVerify {
             withState {
-                bottomInsets.isLeaderboardSheetShown.isFalse()
+                bottomInsets.isLeaderboardSheetShown.assertFalse()
             }
         }
     }

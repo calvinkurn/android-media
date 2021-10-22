@@ -15,8 +15,8 @@ import com.tokopedia.play.repo.PlayViewerMockRepository
 import com.tokopedia.play.robot.andThen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.thenVerify
-import com.tokopedia.play.util.isFalse
-import com.tokopedia.play.util.isTrue
+import com.tokopedia.play.util.assertFalse
+import com.tokopedia.play.util.assertTrue
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.action.InteractiveTapTapAction
@@ -127,12 +127,12 @@ class PlayTapInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             mockInteractiveStorage.hasJoined(interactiveId)
-                    .isFalse()
+                    .assertFalse()
         }.andThen {
             viewModel.submitAction(InteractiveTapTapAction)
         }.thenVerify {
             mockInteractiveStorage.hasJoined(interactiveId)
-                    .isTrue()
+                    .assertTrue()
         }
     }
 
@@ -155,12 +155,12 @@ class PlayTapInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             mockInteractiveStorage.hasJoined(interactiveId)
-                    .isFalse()
+                    .assertFalse()
         }.andThen {
             viewModel.submitAction(InteractiveTapTapAction)
         }.thenVerify {
             mockInteractiveStorage.hasJoined(interactiveId)
-                    .isFalse()
+                    .assertFalse()
         }
     }
 }

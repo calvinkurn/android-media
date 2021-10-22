@@ -12,9 +12,9 @@ import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.andWhenExpectEvent
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.thenVerify
+import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.isEqualTo
 import com.tokopedia.play.util.isEqualToIgnoringFields
-import com.tokopedia.play.util.isFalse
 import com.tokopedia.play.view.uimodel.action.ClickRemindMeUpcomingChannel
 import com.tokopedia.play.view.uimodel.action.ClickWatchNowUpcomingChannel
 import com.tokopedia.play.view.uimodel.action.ImpressUpcomingChannel
@@ -195,7 +195,7 @@ class PlayUpcomingTest {
             verify { mockPlayNewAnalytic.clickRemindMe(mockChannelData.id) }
 
             val value = viewModel.observableUpcomingInfo.value
-            value?.isReminderSet?.isFalse() ?: fail(Exception("No Upcoming Info"))
+            value?.isReminderSet?.assertFalse() ?: fail(Exception("No Upcoming Info"))
 
             event.isEqualToIgnoringFields(mockEvent, OpenPageEvent::requestCode)
         }
@@ -221,7 +221,7 @@ class PlayUpcomingTest {
             submitAction(ClickWatchNowUpcomingChannel)
         } thenVerify {
             verify { mockPlayNewAnalytic.clickWatchNow(mockChannelData.id) }
-            fakePlayChannelSSE.isConnectionOpen().isFalse()
+            fakePlayChannelSSE.isConnectionOpen().assertFalse()
         }
     }
 
