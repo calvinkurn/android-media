@@ -232,21 +232,25 @@ class PlayFragment @Inject constructor(
     fun onFirstTopBoundsCalculated() {
         isFirstTopBoundsCalculated = true
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            if(playViewModel.upcomingInfo?.isUpcoming == true) {
-                fragmentVideoView.safeRelease()
-                fragmentVideoView.hide()
-                fragmentYouTubeView.safeRelease()
-                fragmentYouTubeView.hide()
-                fragmentUserInteractionView.safeRelease()
-                fragmentUserInteractionView.hide()
+            when {
+                playViewModel.upcomingInfo?.isUpcoming == true -> {
+                    fragmentVideoView.safeRelease()
+                    fragmentVideoView.hide()
+                    fragmentYouTubeView.safeRelease()
+                    fragmentYouTubeView.hide()
+                    fragmentUserInteractionView.safeRelease()
+                    fragmentUserInteractionView.hide()
 
-                fragmentUpcomingView.safeInit()
-            } else if (playViewModel.videoPlayer.isYouTube) {
-                fragmentYouTubeView.safeInit()
-                fragmentYouTubeView.show()
-            } else {
-                fragmentVideoView.safeInit()
-                fragmentVideoView.show()
+                    fragmentUpcomingView.safeInit()
+                }
+                playViewModel.videoPlayer.isYouTube -> {
+                    fragmentYouTubeView.safeInit()
+                    fragmentYouTubeView.show()
+                }
+                else -> {
+                    fragmentVideoView.safeInit()
+                    fragmentVideoView.show()
+                }
             }
         }
     }
