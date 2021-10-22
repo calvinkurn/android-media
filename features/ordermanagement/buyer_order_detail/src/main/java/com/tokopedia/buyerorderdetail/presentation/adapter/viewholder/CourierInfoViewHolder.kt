@@ -42,7 +42,8 @@ class CourierInfoViewHolder(itemView: View?, private val listener: CourierInfoVi
                     if (oldItem.isFreeShipping != newItem.isFreeShipping || oldItem.boBadgeUrl != newItem.boBadgeUrl) {
                         setupFreeShippingBadge(newItem.isFreeShipping, newItem.boBadgeUrl)
                     }
-                    if (oldItem.arrivalEstimation != newItem.arrivalEstimation || oldItem.isFreeShipping != newItem.isFreeShipping) {
+                    if (oldItem.arrivalEstimation != newItem.arrivalEstimation || oldItem.isFreeShipping != newItem.isFreeShipping
+                        || oldItem.etaChanged != newItem.etaChanged || oldItem.etaUserInfo != newItem.etaUserInfo) {
                         setupArrivalEstimation(newItem.arrivalEstimation, newItem.isFreeShipping, newItem.etaChanged, newItem.etaUserInfo)
                     }
                     container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
