@@ -46,6 +46,7 @@ object RollenceKey {
     const val HOME_COMPONENT_LEGO2BANNER_VARIANT = "lego2_bleeding"
     // end of home component rollence section
 
+    const val NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT = "Exp_OSbotnav_Android"
 //    const val NAVIGATION_VARIANT_REVAMP = "new_glmenu"
 //    const val NAVIGATION_VARIANT_REVAMP2 = "new_glmenu2"
 
