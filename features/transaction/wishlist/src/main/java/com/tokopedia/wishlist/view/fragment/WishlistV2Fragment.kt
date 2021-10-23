@@ -311,6 +311,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             chipFilter.listener = {
                 showBottomSheetFilterOption(filterItem)
             }
+            chipFilter.chevronListener = {
+                showBottomSheetFilterOption(filterItem)
+            }
             chips.add(chipFilter)
         }
 
@@ -321,9 +324,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     resetAllFilters()
                     paramWishlistV2 = WishlistV2Params()
                     refreshHandler?.startRefresh()
-                }
-                chipItems?.forEach { sortFilterItem ->
-                    sortFilterItem.refChipUnify.setChevronClickListener {}
                 }
             }
         }
