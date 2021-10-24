@@ -71,6 +71,7 @@ import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAn
 import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
 import com.tokopedia.loginregister.external_register.ovo.view.dialog.OvoAccountDialog
 import com.tokopedia.loginregister.login.const.LoginConstants
+import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
 import com.tokopedia.loginregister.login.const.LoginConstants.DiscoverLoginId.FACEBOOK
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
@@ -1370,8 +1371,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     private fun registerPushNotif() {
         if (isHitRegisterPushNotif && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            activity?.let {
-                RegisterPushNotifService.startService(it.applicationContext, REGISTER_PUSH_NOTIF_SERVICE_JOB_ID)
+            context?.let {
+                RegisterPushNotificationWorker.scheduleWorker(it)
             }
         }
     }
@@ -1452,7 +1453,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         private const val TERM_AND_COND_END_SIZE = 54
         private const val PRIVACY_POLICY_START_SIZE = 61
         private const val PRIVACY_POLICY_END_SIZE = 78
-        private const val REGISTER_PUSH_NOTIF_SERVICE_JOB_ID = 3047
 
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 
