@@ -1,4 +1,4 @@
-package com.tokopedia.shop_settings.presenter.shopsettingsetalase
+package com.tokopedia.shop_settings.viewmodel.shopsettingsetalase
 
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseUiModel
 import com.tokopedia.shop_settings.common.util.LiveDataUtil.observeAwaitValue

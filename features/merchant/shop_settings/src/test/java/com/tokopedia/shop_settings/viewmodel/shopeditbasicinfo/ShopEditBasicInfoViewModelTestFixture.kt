@@ -75,8 +75,12 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
         }
     }
 
-    protected fun onCheckAllowShopNameDomainChanges_thenReturn() {
+    protected fun onCheckAllowShopNameDomainChanges_thenReturnSuccess() {
         coEvery { getAllowShopNameDomainChangesUseCase.executeOnBackground() } returns AllowShopNameDomainChanges()
+    }
+
+    protected fun onCheckAllowShopNameDomainChanges_thenReturnFail() {
+        coEvery { getAllowShopNameDomainChangesUseCase.executeOnBackground() } throws Exception()
     }
 
     protected fun onValidateShopName_thenReturn() {
@@ -91,10 +95,16 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
         } returns ValidateShopDomainNameResult()
     }
 
-    protected fun onGetShopDomainNameSuggestion_thenReturn() {
+    protected fun onGetShopDomainNameSuggestion_thenReturnSuccess() {
         coEvery {
             getShopDomainNameSuggestionUseCase.executeOnBackground()
         } returns ShopDomainSuggestionData()
+    }
+
+    protected fun onGetShopDomainNameSuggestion_thenReturnFail() {
+        coEvery {
+            getShopDomainNameSuggestionUseCase.executeOnBackground()
+        } throws Exception()
     }
 
     protected fun _onUpdateShopBasicData_thenReturn() {
@@ -104,16 +114,41 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
         } returns ShopBasicDataMutation()
     }
 
-    protected fun _onGetShopBasicData_thenReturn() {
+    protected fun _onGetShopBasicData_thenReturnSuccess() {
         every {
             getShopBasicDataUseCase.getData(any())
         } returns ShopBasicDataModel()
     }
 
-    protected fun _onUploadShopImage_thenReturn() {
+    protected fun _onGetShopBasicData_thenReturnFail() {
+        every {
+            getShopBasicDataUseCase.getData(any())
+        } throws Exception()
+    }
+
+    protected fun _onUploadShopImage_thenReturnUploadResultSuccess() {
         coEvery {
             uploaderUseCase(any())
         } returns UploadResult.Success("1231")
+    }
+
+    protected fun _onUploadShopImage_thenReturnUploadResultError() {
+        coEvery {
+            uploaderUseCase(any())
+        } returns UploadResult.Error("error")
+    }
+
+    protected fun _onUploadShopImage_thenReturnNull() {
+        coEvery {
+            uploaderUseCase(any())
+        } returns mockk<UploadResult>()
+    }
+
+
+    protected fun _onUploadShopImage_thenReturnFail() {
+        coEvery {
+            uploaderUseCase(any())
+        } throws Exception()
     }
 
     protected fun verifySuccessGetAllowShopNameDomainChangesCalled() {

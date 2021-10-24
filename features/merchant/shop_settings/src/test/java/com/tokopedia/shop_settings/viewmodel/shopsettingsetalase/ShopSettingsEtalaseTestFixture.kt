@@ -1,4 +1,4 @@
-package com.tokopedia.shop_settings.presenter.shopsettingsetalase
+package com.tokopedia.shop_settings.viewmodel.shopsettingsetalase
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
