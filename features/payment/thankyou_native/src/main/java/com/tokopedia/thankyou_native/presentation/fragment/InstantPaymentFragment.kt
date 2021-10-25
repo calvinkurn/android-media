@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieComposition
@@ -51,6 +52,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
     override fun getFeatureListingContainer(): GyroView? = featureListingContainer
     override fun getTopAdsView(): TopAdsView? = topAdsView
+    override fun getTopAdsRecommendationContainer(): RelativeLayout? = topAdsRecomContainer
 
     override fun onThankYouPageDataReLoaded(data: ThanksPageData) {
         //not required

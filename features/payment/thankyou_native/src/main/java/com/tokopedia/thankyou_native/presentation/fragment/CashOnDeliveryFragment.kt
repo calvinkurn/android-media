@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.kotlin.extensions.view.gone
@@ -48,6 +49,7 @@ class CashOnDeliveryFragment : ThankYouBaseFragment() {
 
     override fun getFeatureListingContainer(): GyroView? = featureListingContainer
     override fun getTopAdsView(): TopAdsView? = topAdsView
+    override fun getTopAdsRecommendationContainer(): RelativeLayout? = topAdsRecomContainer
 
     override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {
         tv_payment_success.text = getString(R.string.thank_cod_payment_successful)

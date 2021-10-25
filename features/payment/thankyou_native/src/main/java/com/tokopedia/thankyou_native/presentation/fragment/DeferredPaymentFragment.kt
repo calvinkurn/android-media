@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -46,6 +47,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(),
     override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
     override fun getFeatureListingContainer(): GyroView? = featureListingContainer
     override fun getTopAdsView(): TopAdsView? = topAdsView
+    override fun getTopAdsRecommendationContainer(): RelativeLayout? = topAdsRecomContainer
 
     override fun getTopTickerView(): Ticker? = topTicker
 

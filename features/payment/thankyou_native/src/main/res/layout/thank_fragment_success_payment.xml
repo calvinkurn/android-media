@@ -225,6 +225,13 @@
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/featureListingContainer" />
 
+            <RelativeLayout
+                android:id="@+id/topAdsRecomContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/topAdsView" />
+
             <com.tokopedia.thankyou_native.presentation.views.ThankYouPageLinearLayout
                 android:id="@+id/recommendationContainer"
                 android:layout_width="match_parent"
@@ -232,7 +239,7 @@
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/spacing_lvl3"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/topAdsView" />
+                app:layout_constraintTop_toBottomOf="@id/topAdsRecomContainer" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

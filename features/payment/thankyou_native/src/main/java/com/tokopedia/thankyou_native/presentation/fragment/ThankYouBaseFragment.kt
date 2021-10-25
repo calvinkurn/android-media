@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.lifecycle.Observer
@@ -55,6 +56,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     abstract fun getRecommendationContainer(): LinearLayout?
     abstract fun getFeatureListingContainer(): GyroView?
     abstract fun getTopAdsView(): TopAdsView?
+    abstract fun getTopAdsRecommendationContainer() : RelativeLayout?
     abstract fun bindThanksPageDataToUI(thanksPageData: ThanksPageData)
     abstract fun getLoadingView(): View?
     abstract fun onThankYouPageDataReLoaded(data: ThanksPageData)
@@ -124,6 +126,16 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             addRecommendation()
             getTopTickerData()
             thanksPageDataViewModel.resetAddressToDefault()
+            loadTopAdsRecommendationView()
+        }
+    }
+
+    private fun loadTopAdsRecommendationView() {
+        getTopAdsRecommendationContainer()?.let {
+            /**
+             * todo() lavekush please call your code from here.
+             * this container don's have padding or margin
+             */
         }
     }
 
