@@ -21,6 +21,7 @@ class DotIndicatorView : LinearLayout {
     private lateinit var viewPager: ViewPager2
 
     private val binding = _binding!!
+
     private var dotSize: Int = 24
 
     constructor(context: Context) : super(context) {

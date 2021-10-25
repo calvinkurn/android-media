@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.onboarding.domain.model.ConfigDataModel
 import com.tokopedia.onboarding.domain.usecase.DynamicOnboardingUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -13,8 +14,8 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class DynamicOnboardingViewModel @Inject constructor(
-        dispatcher: CoroutineDispatchers,
-        private val dynamicOnboardingUseCase: DynamicOnboardingUseCase
+    dispatcher: CoroutineDispatchers,
+    private val dynamicOnboardingUseCase: DynamicOnboardingUseCase
 ) : BaseViewModel(dispatcher.main) {
 
     private val _dynamicOnboardingData = MutableLiveData<Result<ConfigDataModel>>()
@@ -23,12 +24,13 @@ class DynamicOnboardingViewModel @Inject constructor(
 
     fun getData() {
         var isFinished = false
-        dynamicOnboardingUseCase.getDynamicOnboardingData({
+        launchCatchError(block = {
+            val response = dynamicOnboardingUseCase(Unit)
             if (!isFinished) {
                 isFinished = true
-                _dynamicOnboardingData.postValue(Success(it))
+                _dynamicOnboardingData.postValue(Success(response))
             }
-        }, {
+        }, onError = {
             if (!isFinished) {
                 isFinished = true
                 _dynamicOnboardingData.postValue(Fail(it))
@@ -39,7 +41,7 @@ class DynamicOnboardingViewModel @Inject constructor(
             if (!isFinished) {
                 isFinished = true
                 _dynamicOnboardingData.postValue(Fail(Throwable(JOB_WAS_CANCELED)))
-                dynamicOnboardingUseCase.cancelJobs()
+                cancel()
             }
         }
     }
@@ -47,11 +49,6 @@ class DynamicOnboardingViewModel @Inject constructor(
     private fun startTimer(delayMillis: Long = 0, action: () -> Unit) = GlobalScope.launch {
         delay(delayMillis)
         action()
-    }
-
-    public override fun onCleared() {
-        super.onCleared()
-        dynamicOnboardingUseCase.cancelJobs()
     }
 
     companion object {
