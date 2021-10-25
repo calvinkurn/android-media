@@ -8,6 +8,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.listener.PdpSimulationCallback
+import com.tokopedia.pdpsimulation.paylater.domain.model.Cta
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toDp
 import kotlinx.android.synthetic.main.paylater_card_activation_purchase.*
@@ -15,6 +16,7 @@ import kotlinx.android.synthetic.main.paylater_card_activation_purchase.*
 class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
 
     private var pdpSimulationCallback: PdpSimulationCallback? = null
+    private lateinit var cta: Cta
 
 
     init {
@@ -37,14 +39,26 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        getArgumentData()
         setDefaultParams()
         initBottomSheet()
 
     }
 
+    private fun getArgumentData() {
+        arguments?.let {
+            cta = it.getParcelable<Cta>(GOPAY_BOTTOMSHEET_DETAIL) as Cta
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        renderUI()
         initListners()
         sendImpressionAnalytics()
+    }
+
+    private fun renderUI() {
+        
     }
 
     private fun sendImpressionAnalytics() {
@@ -54,6 +68,7 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
     private fun initListners() {
         btnRegister.setOnClickListener {
             sendClickAnalytics()
+
         }
     }
 
@@ -81,7 +96,6 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
 
         private const val TAG = "PayLaterTokopediaGopayBottomsheet"
         const val GOPAY_BOTTOMSHEET_DETAIL = "gopayBottomsheetDetail"
-        const val REDIRECTION_URL = "redirection_url"
 
         fun show(
             bundle: Bundle,

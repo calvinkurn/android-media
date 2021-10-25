@@ -111,7 +111,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
     private fun openGopayBottomSheet() {
         val bundle = Bundle()
-        bundle.putParcelable(PayLaterTokopediaGopayBottomsheet.REDIRECTION_URL, responseData?.cta)
+        bundle.putParcelable(PayLaterTokopediaGopayBottomsheet.GOPAY_BOTTOMSHEET_DETAIL, responseData?.cta)
 
     }
 
