@@ -41,20 +41,22 @@ import org.junit.Test
  */
 class OfficialStoreAnalyticsTest {
 
-    companion object{
+    companion object {
         private const val TAG = "OfficialStoreAnalyticsTest"
-        private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/official_store/official_store_page.json"
+        private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME =
+            "tracker/official_store/official_store_page.json"
     }
 
     @get:Rule
     var activityRule = ActivityTestRule(OfficialStoreActivity::class.java, false, false)
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
+
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
+
 
     @Before
     fun setup() {
-        gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse(OfficialStoreMockResponseConfig())
         activityRule.launchActivity(
             Intent(
@@ -66,7 +68,6 @@ class OfficialStoreAnalyticsTest {
 
     @After
     fun dispose() {
-        gtmLogDBSource.deleteAll().subscribe()
     }
 
     private fun initTest() {
@@ -102,13 +103,6 @@ class OfficialStoreAnalyticsTest {
         }
         activityRule.activity.moveTaskToBack(true)
         logTestMessage("Done UI Test")
-    }
-
-    private fun assertCassava() {
-        waitForData()
-        //worked
-        MatcherAssert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME),
-                hasAllSuccess())
     }
 
     private fun scrollRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {
@@ -161,10 +155,6 @@ class OfficialStoreAnalyticsTest {
             }
         }
     }
-
-    @get:Rule
-    var cassavaTestRule = CassavaTestRule()
-
     @Test
     fun checkOSAnalyticsWithCassava2() {
         OSCassavaTest {
