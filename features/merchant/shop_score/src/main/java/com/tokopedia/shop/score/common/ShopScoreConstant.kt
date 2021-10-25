@@ -72,7 +72,7 @@ object ShopScoreConstant {
         "https://images.tokopedia.net/img/android/shop_score/illustration_bottom_sheet_new_seller.png"
 
     const val IMG_REACTIVATED_SELLER_COMEBACK =
-        "https://images.tokopedia.net/img/android/shop_score/img_reactivated_seller_comeback.png"
+        "https://images.tokopedia.net/img/android/shop_score/img_reactivated_seller_comeback@2x.png"
 
     const val PENALTY_IDENTIFIER = "penalty"
     const val SELLER_TYPE_IDENTIFIER = "seller_type"
