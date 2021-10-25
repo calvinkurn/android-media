@@ -3,6 +3,7 @@ package com.tokopedia.linter
 import com.android.tools.lint.client.api.IssueRegistry
 import com.android.tools.lint.detector.api.CURRENT_API
 import com.tokopedia.linter.detectors.AnimatedVectorDetector
+import com.tokopedia.linter.detectors.UnsupportedColorDetector
 import com.tokopedia.linter.detectors.VectorDrawableDetector
 import com.tokopedia.linter.detectors.gradle.BannedDependencyDetector.DEPENDENCY_BANNED
 import com.tokopedia.linter.detectors.gradle.DeprecatedDependencyDetector.DEPENDENCY_DEPRECATED
@@ -24,6 +25,8 @@ class IssueRegistry : IssueRegistry() {
                 MethodCallDetector.METHOD_CALL_PROHIBITED_ISSUE,
                 AnimatedVectorDetector.JAVA_ISSUE,
                 AnimatedVectorDetector.XML_ISSUE,
+                UnsupportedColorDetector.XML_ISSUE,
+                UnsupportedColorDetector.JAVA_ISSUE,
                 HANSEL_REQUIRED
         )
 
