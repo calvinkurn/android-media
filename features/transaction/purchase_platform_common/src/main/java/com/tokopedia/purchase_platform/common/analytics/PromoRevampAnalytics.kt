@@ -89,7 +89,7 @@ object PromoRevampAnalytics {
         sendEventCategoryActionLabel(VIEW_ATC_IRIS, CATEGORY_CART, VIEW_PROMO_MESSAGE, promoMessage)
     }
 
-    fun eventCheckoutClickPromoSection(listPromoCodes: List<String>, isApplied: Boolean) {
+    fun eventCheckoutClickPromoSection(listPromoCodes: List<String>, isApplied: Boolean, userId: String) {
         var eventAction = CLICK_PROMO_SECTION_WITH_PROMO
         eventAction += if (isApplied) " $APPLIED"
         else " $NOT_APPLIED"
@@ -99,7 +99,11 @@ object PromoRevampAnalytics {
             if (promo.isNotEmpty()) promo += ", "
             promo += it
         }
-        sendEventCategoryActionLabel(CLICK_COURIER, CATEGORY_COURIER_SELECTION, eventAction, promo)
+        val gtmData = TrackAppUtils.gtmData(CLICK_COURIER, CATEGORY_COURIER_SELECTION, eventAction, promo)
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.USER_ID] = userId
+        sendEvent(gtmData)
     }
 
     fun eventCheckoutViewPromoChanged(msg: String) {
