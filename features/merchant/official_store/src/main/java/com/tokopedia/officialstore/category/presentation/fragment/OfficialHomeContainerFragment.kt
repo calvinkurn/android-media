@@ -492,7 +492,7 @@ class OfficialHomeContainerFragment
     }
 
     private fun isChooseAddressRollenceActive(): Boolean {
-        return ChooseAddressUtils.isRollOutUser(requireContext())
+        return true
     }
 
     private fun getChooseAddressWidget(): ChooseAddressWidget? {

@@ -6,7 +6,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ImageView
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="16dp"
         android:contentDescription="@string/content_desc_error_state_channel"
         android:scaleType="fitXY"
         android:layout_width="match_parent"

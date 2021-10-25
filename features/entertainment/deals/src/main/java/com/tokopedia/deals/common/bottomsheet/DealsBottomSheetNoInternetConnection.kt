@@ -21,15 +21,16 @@ class DealsBottomSheetNoInternetConnection {
         with(binding){
             geDealsNoConnection.setActionClickListener {
                 bottomSheet.dismiss()
-                listener.onClick()
             }
         }
-
+        bottomSheet.setOnDismissListener {
+            listener.onDismissBottomsheet()
+        }
         bottomSheet.setChild(binding.root)
         bottomSheet.show(fragmentManager, "")
     }
 
     interface DealsOnClickBottomSheetNoConnectionListener{
-        fun onClick()
+        fun onDismissBottomsheet()
     }
 }

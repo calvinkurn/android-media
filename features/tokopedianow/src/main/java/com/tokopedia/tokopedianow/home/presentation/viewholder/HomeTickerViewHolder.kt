@@ -2,17 +2,15 @@ package com.tokopedia.tokopedianow.home.presentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.appcompat.widget.AppCompatImageButton
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeTickerBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
+import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeTickerViewHolder(
         itemView: View,
@@ -25,27 +23,16 @@ class HomeTickerViewHolder(
         const val PREFIX_LINK = "tokopedia"
     }
 
-    private var closeBtn: AppCompatImageButton? = null
-    private var ticker: Ticker? = null
-
-    init {
-        closeBtn = itemView.findViewById(com.tokopedia.unifycomponents.R.id.ticker_close_icon)
-        ticker = itemView.findViewById(R.id.ticker_announcement)
-    }
+    private var binding: ItemTokopedianowHomeTickerBinding? by viewBinding()
 
     override fun bind(data: HomeTickerUiModel) {
-        if(data.tickers.isNotEmpty()) {
-            ticker?.post {
-                closeBtn?.setOnClickListener {
-                    listener?.onTickerDismissed(data.id)
-                }
-                val adapter = TickerPagerAdapter(itemView.context, data.tickers)
-                adapter.setPagerDescriptionClickEvent(this)
-                ticker?.addPagerView(adapter, data.tickers)
-                itemView.show()
+        binding?.tickerAnnouncement?.post {
+            val adapter = TickerPagerAdapter(itemView.context, data.tickers)
+            adapter.setPagerDescriptionClickEvent(this)
+            adapter.onDismissListener = {
+                listener?.onTickerDismissed(data.id)
             }
-        } else {
-            itemView.hide()
+            binding?.tickerAnnouncement?.addPagerView(adapter, data.tickers)
         }
     }
 

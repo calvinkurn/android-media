@@ -1,0 +1,46 @@
+{
+  "readme": "Play Viewer - Cast Analytics",
+  "mode": "exact",
+  "query": [
+    {
+      "eventAction": "click chromecast button",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod)",
+      "sessionIris": ".*",
+      "currentSite": ".*",
+      "userId": ".*",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "chromecast connecting state",
+      "event": "viewGroupChatIris",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod) - (success|failed)",
+      "sessionIris": ".*",
+      "currentSite": ".*",
+      "userId": ".*",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "chromecast disconnected",
+      "event": "viewGroupChatIris",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod) - \\d+",
+      "sessionIris": ".*",
+      "currentSite": ".*",
+      "userId": ".*",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "impression on chromecast button",
+      "event": "clickGroupChat",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod)",
+      "sessionIris": ".*",
+      "currentSite": ".*",
+      "userId": ".*",
+      "businessUnit": "play"
+    }
+  ]
+}
