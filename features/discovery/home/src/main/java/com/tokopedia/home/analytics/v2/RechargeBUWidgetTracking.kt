@@ -30,6 +30,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
     private const val KEY_PRODUCT_LIST = "list"
     private const val KEY_CURRENCY_CODE = "currencyCode"
     private const val IDR_CURRENCY = "IDR"
+    private const val DEFAULT_TRACKING_LABEL_VALUES = "-"
 
     fun homeRechargeBUWidgetImpressionTracker(
         trackingQueue: TrackingQueue,
@@ -67,9 +68,16 @@ object RechargeBUWidgetTracking : BaseTracking() {
         if (position < data.data.items.size) {
             val item = data.data.items[position]
             //empty supposed to be userType next dev.
-            val eventLabel = " - ${getHeaderName(data.channel)} - ${item.trackingData.itemType} - ${position + 1} - " +
-                    "${item.trackingData.categoryId} - ${item.trackingData.operatorId} - " +
-                    "${item.trackingData.productId} - ${convertRupiahToInt(item.label2)}"
+            val eventLabel = String.format("%s - %s - %s - %d - %s - %s - %s - %d",
+                "-",
+                if (getHeaderName(data.channel).isNullOrBlank()) DEFAULT_TRACKING_LABEL_VALUES else getHeaderName(data.channel),
+                if (item.trackingData.itemType.isNullOrBlank()) DEFAULT_TRACKING_LABEL_VALUES else item.trackingData.itemType,
+                position + 1,
+                if (item.trackingData.categoryId.isNullOrBlank()) DEFAULT_TRACKING_LABEL_VALUES else item.trackingData.categoryId,
+                if (item.trackingData.operatorId.isNullOrBlank()) DEFAULT_TRACKING_LABEL_VALUES else item.trackingData.operatorId,
+                if (item.trackingData.productId.isNullOrBlank()) DEFAULT_TRACKING_LABEL_VALUES else item.trackingData.productId,
+                convertRupiahToInt(item.label2)
+            )
             val bundle = DataLayer.mapOf(
                 Event.KEY ,  Event.PRODUCT_CLICK,
                 Action.KEY , Action.CLICK_ON.format("$RECHARGE_BU_WIDGET_PRODUCT_CARD $RECHARGE_BU_WIDGET_NAME"),
@@ -93,9 +101,16 @@ object RechargeBUWidgetTracking : BaseTracking() {
         if (position < data.data.items.size) {
             val item = data.data.items[position]
             //empty supposed to be userType next dev.
-            val eventLabel = " - ${getHeaderName(data.channel)} - ${item.trackingData.itemType} - ${position + 1} - " +
-                    "${item.trackingData.categoryId} - ${item.trackingData.operatorId} - " +
-                    "${item.trackingData.productId} - ${convertRupiahToInt(item.label2)}"
+            val eventLabel = String.format("%s - %s - %s - %d - %s - %s - %s - %d",
+                "-",
+                if (getHeaderName(data.channel).isNullOrBlank()) DEFAULT_TRACKING_LABEL_VALUES else getHeaderName(data.channel),
+                if (item.trackingData.itemType.isNullOrBlank()) DEFAULT_TRACKING_LABEL_VALUES else item.trackingData.itemType,
+                position + 1,
+                if (item.trackingData.categoryId.isNullOrBlank()) DEFAULT_TRACKING_LABEL_VALUES else item.trackingData.categoryId,
+                if (item.trackingData.operatorId.isNullOrBlank()) DEFAULT_TRACKING_LABEL_VALUES else item.trackingData.operatorId,
+                if (item.trackingData.productId.isNullOrBlank()) DEFAULT_TRACKING_LABEL_VALUES else item.trackingData.productId,
+                convertRupiahToInt(item.label2)
+            )
 
             val tracker = DataLayer.mapOf(
                 Event.KEY,Event.PRODUCT_VIEW,
