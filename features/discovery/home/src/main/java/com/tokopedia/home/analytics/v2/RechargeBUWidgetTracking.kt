@@ -69,7 +69,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
             val item = data.data.items[position]
             //empty supposed to be userType next dev.
             val eventLabel = String.format("%s - %s - %s - %d - %s - %s - %s - %d",
-                "-",
+                DEFAULT_TRACKING_LABEL_VALUES,
                 if (getHeaderName(data.channel).isNullOrBlank()) DEFAULT_TRACKING_LABEL_VALUES else getHeaderName(data.channel),
                 if (item.trackingData.itemType.isNullOrBlank()) DEFAULT_TRACKING_LABEL_VALUES else item.trackingData.itemType,
                 position + 1,
@@ -102,7 +102,7 @@ object RechargeBUWidgetTracking : BaseTracking() {
             val item = data.data.items[position]
             //empty supposed to be userType next dev.
             val eventLabel = String.format("%s - %s - %s - %d - %s - %s - %s - %d",
-                "-",
+                DEFAULT_TRACKING_LABEL_VALUES,
                 if (getHeaderName(data.channel).isNullOrBlank()) DEFAULT_TRACKING_LABEL_VALUES else getHeaderName(data.channel),
                 if (item.trackingData.itemType.isNullOrBlank()) DEFAULT_TRACKING_LABEL_VALUES else item.trackingData.itemType,
                 position + 1,
