@@ -190,8 +190,9 @@ class ShopEditBasicInfoViewModel @Inject constructor(
                     } else {
                         false
                     }
-                }
-                .collectLatest {
+                }.catch {
+                    _validateShopName.value = Fail(it)
+                }.collectLatest {
                     _validateShopName.value = Success(it)
                 }
     }
@@ -212,6 +213,8 @@ class ShopEditBasicInfoViewModel @Inject constructor(
                     } else {
                         false
                     }
+                }.catch {
+                    _validateShopDomain.value = Fail(it)
                 }.collectLatest {
                     if(!it.validateDomainShopName.isValid) {
                         currentShopName?.let { shopName ->

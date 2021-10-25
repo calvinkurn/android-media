@@ -6,6 +6,7 @@ import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.gql.ShopBasicDataMutation
 import com.tokopedia.shop.common.graphql.data.shopopen.ShopDomainSuggestionData
+import com.tokopedia.shop.common.graphql.data.shopopen.ValidateDomainShopName
 import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainNameResult
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopBasicDataUseCase
@@ -87,6 +88,12 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
         coEvery {
             validateDomainShopNameUseCase.executeOnBackground()
         } returns ValidateShopDomainNameResult()
+    }
+
+    protected fun onValidateShopDomainName_thenReturnSuccessIsValid() {
+        coEvery {
+            validateDomainShopNameUseCase.executeOnBackground()
+        } returns ValidateShopDomainNameResult(ValidateDomainShopName(isValid = true))
     }
 
     protected fun onValidateShopDomainName_thenReturnException() {

@@ -260,7 +260,7 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
     }
 
     @Test
-    fun `when validate shop name should return null`() {
+    fun `when validate shop name should return fail`() {
         coroutineTestRule.runBlockingTest {
             mockkObject(ValidateDomainShopNameUseCase)
 
@@ -274,12 +274,12 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
             verifySuccessValidateShopNameCalled()
 
-            Assert.assertNull(shopEditBasicInfoViewModel.validateShopName.value)
+            Assert.assertTrue(shopEditBasicInfoViewModel.validateShopName.value is Fail)
         }
     }
 
     @Test
-    fun `when validate shop domain should return null`() {
+    fun `when validate shop domain should return fail`() {
         coroutineTestRule.runBlockingTest {
             mockkObject(ValidateDomainShopNameUseCase)
 
@@ -293,7 +293,7 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
             verifySuccessValidateDomainNameCalled()
 
-            Assert.assertNull(shopEditBasicInfoViewModel.validateShopDomain.value)
+            Assert.assertTrue(shopEditBasicInfoViewModel.validateShopDomain.value is Fail)
         }
     }
 
@@ -303,6 +303,26 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
             mockkObject(ValidateDomainShopNameUseCase)
 
             onValidateShopDomainName_thenReturnSuccess()
+
+            val domainName: String = "domain"
+            shopEditBasicInfoViewModel.validateShopDomain(domainName)
+            advanceTimeBy(2000)
+
+            verifySuccessValidateDomainNameRequestParamsCalled(domainName)
+
+            verifySuccessValidateDomainNameCalled()
+
+            Assert.assertTrue(shopEditBasicInfoViewModel.validateShopDomain.value is Success)
+            Assert.assertNotNull(shopEditBasicInfoViewModel.validateShopDomain.value)
+        }
+    }
+
+    @Test
+    fun `when validate domain name should return success and it is valid`() {
+        coroutineTestRule.runBlockingTest {
+            mockkObject(ValidateDomainShopNameUseCase)
+
+            onValidateShopDomainName_thenReturnSuccessIsValid()
 
             val domainName: String = "domain"
             shopEditBasicInfoViewModel.validateShopDomain(domainName)
