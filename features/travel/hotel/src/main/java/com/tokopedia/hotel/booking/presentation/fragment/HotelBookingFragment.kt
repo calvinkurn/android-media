@@ -50,6 +50,7 @@ import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_CHECKOUT
 import com.tokopedia.hotel.databinding.FragmentHotelBookingBinding
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.data.PromoCheckoutCommonQueryConst
 import com.tokopedia.promocheckout.common.view.model.PromoData
@@ -350,7 +351,9 @@ class HotelBookingFragment : HotelBaseFragment() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             binding?.ivHotelInfoImage?.clipToOutline = true
         }
-        binding?.ivHotelInfoImage?.loadImage(property.image.urlMax300, com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
+        binding?.ivHotelInfoImage?.loadIcon(property.image.urlMax300){
+            setPlaceHolder(com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
+        }
     }
 
     private fun setupRoomDuration(property: HotelPropertyData, cart: HotelCartData) {
