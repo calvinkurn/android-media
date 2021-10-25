@@ -69,14 +69,6 @@ class OfficialStoreAnalyticsTest {
         gtmLogDBSource.deleteAll().subscribe()
     }
 
-//    @Test
-//    fun testOfficialStore() {
-//        initTest()
-//        doActivityTest()
-//        assertCassava()
-//        addDebugEnd()
-//    }
-
     private fun initTest() {
         InstrumentationAuthHelper.clearUserSession()
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
