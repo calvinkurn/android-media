@@ -10,7 +10,7 @@ import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import com.tokopedia.notifications.inApp.usecase.InAppLocalDatabaseController
-import com.tokopedia.notifications.inApp.usecase.InAppSavedListener
+import com.tokopedia.notifications.inApp.usecase.NewInAppSavedListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.util.*
@@ -23,7 +23,7 @@ class CMInAppProcessor(
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO
 
-    fun processAndSaveCMInApp(cmInApp: CMInApp, inAppSavedListener: InAppSavedListener) {
+    fun processAndSaveCMInApp(cmInApp: CMInApp, newInAppSavedListener: NewInAppSavedListener) {
         launchCatchError(
             block = {
                 val processedCMInApp =
@@ -36,7 +36,7 @@ class CMInAppProcessor(
                     )
                     return@launchCatchError
                 }
-                saveInApp(processedCMInApp, inAppSavedListener)
+                saveInApp(processedCMInApp, newInAppSavedListener)
             }, onError = {
                 val messageMap: MutableMap<String, String> = HashMap()
                 messageMap["type"] = "exception"
@@ -48,10 +48,10 @@ class CMInAppProcessor(
 
     }
 
-    private fun saveInApp(processedCMInApp: CMInApp, inAppSavedListener: InAppSavedListener) {
+    private fun saveInApp(processedCMInApp: CMInApp, newInAppSavedListener: NewInAppSavedListener) {
         InAppLocalDatabaseController.getInstance(
             application,
             RepositoryManager.getInstance()
-        ).saveInApp(processedCMInApp, inAppSavedListener)
+        ).saveNewInApp(processedCMInApp, newInAppSavedListener)
     }
 }

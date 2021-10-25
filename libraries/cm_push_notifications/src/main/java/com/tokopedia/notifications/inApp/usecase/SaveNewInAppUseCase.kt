@@ -7,7 +7,7 @@ import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.C
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class SaveInAppUseCase(
+class SaveNewInAppUseCase(
     private val application: Application,
     private val repositoryManager: RepositoryManager
 ) {

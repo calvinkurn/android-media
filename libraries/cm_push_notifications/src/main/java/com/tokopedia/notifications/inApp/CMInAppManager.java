@@ -261,7 +261,7 @@ public class CMInAppManager implements CmInAppListener,
             if (null != cmInApp) {
                 if (application != null) {
                     sendEventInAppDelivered(cmInApp);
-                    new CMInAppProcessor(application).processAndSaveCMInApp(cmInApp, this::onInAppStored);
+                    new CMInAppProcessor(application).processAndSaveCMInApp(cmInApp, this::onNewInAppStored);
                 } else {
                     Map<String, String> messageMap = new HashMap<>();
                     messageMap.put("type", "validation");
@@ -290,7 +290,7 @@ public class CMInAppManager implements CmInAppListener,
             if (cmInApp != null) {
                 cmInApp.setAmplification(true);
                 IrisAnalyticsEvents.INSTANCE.sendAmplificationInAppEvent(application, IrisAnalyticsEvents.INAPP_DELIVERED, cmInApp);
-                new CMInAppProcessor(application).processAndSaveCMInApp(cmInApp, this::onInAppStored);
+                new CMInAppProcessor(application).processAndSaveCMInApp(cmInApp, this::onNewInAppStored);
             }
         } catch (Exception e) {
             Map<String, String> messageMap = new HashMap<>();
@@ -302,7 +302,7 @@ public class CMInAppManager implements CmInAppListener,
         }
     }
 
-    private void onInAppStored() {
+    private void onNewInAppStored() {
         if (isCmInAppManagerInitialized) {
             Activity currentActivity = activityLifecycleHandler.getCurrentActivity();
             if (currentActivity != null && !pushIntentHandler.isHandledByPush() && canShowDialog()) {

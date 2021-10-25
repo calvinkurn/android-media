@@ -22,9 +22,9 @@ class InAppLocalDatabaseController private constructor(private val application: 
             by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
                 DeleteExpireInAppUseCase(application, repositoryManager)
             }
-    private val saveInAppUseCase: SaveInAppUseCase
+    private val saveNewInAppUseCase: SaveNewInAppUseCase
             by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
-                SaveInAppUseCase(application, repositoryManager)
+                SaveNewInAppUseCase(application, repositoryManager)
             }
 
     fun getInAppData(screenName: String, isActivity: Boolean,
@@ -47,11 +47,11 @@ class InAppLocalDatabaseController private constructor(private val application: 
         })
     }
 
-    fun saveInApp(cmInApp: CMInApp, inAppSavedListener: InAppSavedListener) {
+    fun saveNewInApp(cmInApp: CMInApp, newInAppSavedListener: NewInAppSavedListener) {
         launchCatchError(block = {
-            val isSaved = saveInAppUseCase.saveInApp(cmInApp)
+            val isSaved = saveNewInAppUseCase.saveInApp(cmInApp)
             if (isSaved) {
-                inAppSavedListener.onInAppSaved()
+                newInAppSavedListener.onNewInAppSaved()
             }
         }, onError = {
             //todo Timber Logging by lalit
@@ -77,6 +77,6 @@ interface InAppFetchListener {
     fun onInAPPListFetchCompleted(inAppList: List<CMInApp>?)
 }
 
-interface InAppSavedListener {
-    fun onInAppSaved()
+interface NewInAppSavedListener {
+    fun onNewInAppSaved()
 }
