@@ -314,12 +314,9 @@ class SingleProductAttachmentContainer : ConstraintLayout {
                 if (lastIndex > spanText.lastIndex) {
                     lastIndex = spanText.lastIndex
                 }
-                spanText.setSpan(
-                    BackgroundColorSpan(color),
-                    index,
-                    lastIndex,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
+                if (index < spanText.length && spanText.length >= lastIndex) {
+                    spanText.setSpan(BackgroundColorSpan(color), index, lastIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
             }
         }
         productName?.text = spanText
