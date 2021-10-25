@@ -83,16 +83,22 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
         coEvery { getAllowShopNameDomainChangesUseCase.executeOnBackground() } throws Exception()
     }
 
-    protected fun onValidateShopName_thenReturn() {
+    protected fun onValidateShopDomainName_thenReturnSuccess() {
         coEvery {
             validateDomainShopNameUseCase.executeOnBackground()
         } returns ValidateShopDomainNameResult()
     }
 
-    protected fun onValidateDomainName_thenReturn() {
+    protected fun onValidateShopDomainName_thenReturnException() {
         coEvery {
             validateDomainShopNameUseCase.executeOnBackground()
-        } returns ValidateShopDomainNameResult()
+        } throws Exception()
+    }
+
+    protected fun onValidateShopDomainName_thenReturnThrowable() {
+        coEvery {
+            validateDomainShopNameUseCase.executeOnBackground()
+        } throws Throwable()
     }
 
     protected fun onGetShopDomainNameSuggestion_thenReturnSuccess() {

@@ -184,7 +184,7 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
         coroutineTestRule.runBlockingTest {
             mockkObject(ValidateDomainShopNameUseCase)
 
-            onValidateShopName_thenReturn()
+            onValidateShopDomainName_thenReturnSuccess()
 
             val shopName: String = "shopname"
             shopEditBasicInfoViewModel.validateShopName(shopName = shopName)
@@ -200,11 +200,109 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
     }
 
     @Test
+    fun `when validate shop name should return fail and success`() {
+        coroutineTestRule.runBlockingTest {
+            mockkObject(ValidateDomainShopNameUseCase)
+
+            onValidateShopDomainName_thenReturnException()
+
+            val shopName: String = "shopname"
+            shopEditBasicInfoViewModel.validateShopName(shopName = shopName)
+            advanceTimeBy(1000)
+
+            verifySuccessValidateShopNameRequestParamsCalled(shopName)
+
+            verifySuccessValidateShopNameCalled()
+
+            Assert.assertTrue(shopEditBasicInfoViewModel.validateShopName.value is Fail)
+
+            onValidateShopDomainName_thenReturnSuccess()
+
+            shopEditBasicInfoViewModel.validateShopName(shopName = shopName)
+            advanceTimeBy(1000)
+
+            verifySuccessValidateShopNameRequestParamsCalled(shopName)
+
+            verifySuccessValidateShopNameCalled()
+
+            Assert.assertTrue(shopEditBasicInfoViewModel.validateShopName.value is Success)
+        }
+    }
+
+    @Test
+    fun `when validate shop domain should return fail and success`() {
+        coroutineTestRule.runBlockingTest {
+            mockkObject(ValidateDomainShopNameUseCase)
+
+            onValidateShopDomainName_thenReturnException()
+
+            val shopDomain: String = "domain"
+            shopEditBasicInfoViewModel.validateShopDomain(shopDomain = shopDomain)
+            advanceTimeBy(1000)
+
+            verifySuccessValidateDomainNameRequestParamsCalled(shopDomain)
+
+            verifySuccessValidateDomainNameCalled()
+
+            Assert.assertTrue(shopEditBasicInfoViewModel.validateShopDomain.value is Fail)
+
+            onValidateShopDomainName_thenReturnSuccess()
+
+            shopEditBasicInfoViewModel.validateShopDomain(shopDomain = shopDomain)
+            advanceTimeBy(1000)
+
+            verifySuccessValidateDomainNameRequestParamsCalled(shopDomain)
+
+            verifySuccessValidateDomainNameCalled()
+
+            Assert.assertTrue(shopEditBasicInfoViewModel.validateShopDomain.value is Success)
+        }
+    }
+
+    @Test
+    fun `when validate shop name should return null`() {
+        coroutineTestRule.runBlockingTest {
+            mockkObject(ValidateDomainShopNameUseCase)
+
+            onValidateShopDomainName_thenReturnThrowable()
+
+            val shopName: String = "shopname"
+            shopEditBasicInfoViewModel.validateShopName(shopName = shopName)
+            advanceTimeBy(1000)
+
+            verifySuccessValidateShopNameRequestParamsCalled(shopName)
+
+            verifySuccessValidateShopNameCalled()
+
+            Assert.assertNull(shopEditBasicInfoViewModel.validateShopName.value)
+        }
+    }
+
+    @Test
+    fun `when validate shop domain should return null`() {
+        coroutineTestRule.runBlockingTest {
+            mockkObject(ValidateDomainShopNameUseCase)
+
+            onValidateShopDomainName_thenReturnThrowable()
+
+            val shopDomain: String = "domain"
+            shopEditBasicInfoViewModel.validateShopDomain(shopDomain = shopDomain)
+            advanceTimeBy(1000)
+
+            verifySuccessValidateDomainNameRequestParamsCalled(shopDomain)
+
+            verifySuccessValidateDomainNameCalled()
+
+            Assert.assertNull(shopEditBasicInfoViewModel.validateShopDomain.value)
+        }
+    }
+
+    @Test
     fun `when validate domain name should return success`() {
         coroutineTestRule.runBlockingTest {
             mockkObject(ValidateDomainShopNameUseCase)
 
-            onValidateDomainName_thenReturn()
+            onValidateShopDomainName_thenReturnSuccess()
 
             val domainName: String = "domain"
             shopEditBasicInfoViewModel.validateShopDomain(domainName)
@@ -222,7 +320,7 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
     @Test
     fun `when validate domain name should return success and get domain suggestion should return success`() {
         coroutineTestRule.runBlockingTest {
-            onValidateDomainName_thenReturn()
+            onValidateShopDomainName_thenReturnSuccess()
             privateCurrentShopNameField.set(shopEditBasicInfoViewModel, "shop")
 
             onGetShopDomainNameSuggestion_thenReturnSuccess()
@@ -241,7 +339,7 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
     @Test
     fun `when validate domain name should return success and get domain suggestion should return fail`() {
         coroutineTestRule.runBlockingTest {
-            onValidateDomainName_thenReturn()
+            onValidateShopDomainName_thenReturnSuccess()
             privateCurrentShopNameField.set(shopEditBasicInfoViewModel, "shop")
 
             onGetShopDomainNameSuggestion_thenReturnFail()
