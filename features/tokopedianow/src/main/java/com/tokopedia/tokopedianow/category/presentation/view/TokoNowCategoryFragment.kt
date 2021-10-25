@@ -58,6 +58,9 @@ class TokoNowCategoryFragment:
 
     override val toolbarPageName = "TokoNow Category"
 
+    override val oocPageName: String
+        get() = "tokonow - category page"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -111,6 +114,12 @@ class TokoNowCategoryFragment:
     )
 
     override fun getViewModel() = tokoNowCategoryViewModel
+
+    override fun observeViewModel() {
+        super.observeViewModel()
+
+        getViewModel().openScreenTrackingUrlLiveData.observe(this::sendOpenScreenTracking)
+    }
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
         get() = MiniCartAnalytics.Page.CATEGORY_PAGE
@@ -340,5 +349,16 @@ class TokoNowCategoryFragment:
         } else {
             originalApplink
         }
+    }
+
+    private fun sendOpenScreenTracking(url: String) {
+        val uri = Uri.parse(url)
+        val categorySlug = uri.lastPathSegment ?: return
+
+        CategoryTracking.sendOpenScreenTracking(categorySlug)
+    }
+
+    override fun sendOOCOpenScreenTracking(isTracked: Boolean) {
+        CategoryTracking.sendOOCOpenScreenTracking()
     }
 }

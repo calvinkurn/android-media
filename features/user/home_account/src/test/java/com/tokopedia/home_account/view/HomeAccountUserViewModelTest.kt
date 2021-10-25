@@ -11,11 +11,15 @@ import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
 import com.tokopedia.home_account.linkaccount.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.linkaccount.domain.GetUserProfile
 import com.tokopedia.home_account.pref.AccountPreference
-import com.tokopedia.navigation_common.model.*
+import com.tokopedia.navigation_common.model.DebitInstantData
+import com.tokopedia.navigation_common.model.DebitInstantModel
+import com.tokopedia.navigation_common.model.ProfileModel
+import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.sessioncommon.data.profile.ProfileInfo
+import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -28,7 +32,6 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.lang.IllegalArgumentException
 import kotlin.test.assertEquals
 
 /**
@@ -76,6 +79,8 @@ class HomeAccountUserViewModelTest {
     private val shortcut = ShortcutResponse()
     private val responseResult = UserAccountDataModel()
     private val linkStatusResult = LinkStatusResponse()
+    private val profilePojo = ProfilePojo(profileInfo = ProfileInfo(phone = "089123456789"))
+    private val throwableMock = mockk<Throwable>(relaxed = true)
 
     @Before
     fun setUp() {
@@ -104,6 +109,38 @@ class HomeAccountUserViewModelTest {
     }
 
     @Test
+    fun `Execute refreshPhoneNo Success`() {
+        coEvery { getPhoneUseCase(Unit) } returns profilePojo
+
+        viewModel.refreshPhoneNo()
+
+        verify {
+            userSession.phoneNumber = profilePojo.profileInfo.phone
+        }
+        Assertions.assertThat(viewModel.phoneNo.value)
+            .isEqualTo(profilePojo.profileInfo.phone)
+    }
+
+    @Test
+    fun `Execute refreshPhoneNo Success but phone empty`() {
+        coEvery { getPhoneUseCase(Unit) } returns ProfilePojo()
+
+        viewModel.refreshPhoneNo()
+
+        Assertions.assertThat(viewModel.phoneNo.value)
+            .isEqualTo(null)
+    }
+
+    @Test
+    fun `Execute refreshPhoneNo Failed`() {
+        coEvery { getPhoneUseCase(Unit) } throws throwable.throwable
+
+        viewModel.refreshPhoneNo()
+
+        Assertions.assertThat(viewModel.phoneNo.value).isEqualTo("")
+    }
+
+    @Test
     fun `Execute getBuyerData Success`() {
         /* When */
         coEvery { homeAccountUserUsecase.executeOnBackground() } returns responseResult
@@ -111,6 +148,9 @@ class HomeAccountUserViewModelTest {
         coEvery { getLinkStatusUseCase.invoke(any()) } returns linkStatusResult
 
         viewModel.getBuyerData()
+
+        responseResult.linkStatus = linkStatusResult.response
+
         verify {
             viewModel.saveLocallyAttributes(responseResult)
         }
@@ -122,7 +162,8 @@ class HomeAccountUserViewModelTest {
     fun `Execute getBuyerData Failed`() {
         /* When */
         coEvery { homeAccountUserUsecase.executeOnBackground() } throws throwable.throwable
-        coEvery { homeAccountShortcutUseCase.executeOnBackground() } returns shortcut
+        coEvery { homeAccountShortcutUseCase.executeOnBackground() } throws throwable.throwable
+        coEvery { getLinkStatusUseCase.invoke(any()) } throws throwable.throwable
 
         viewModel.getBuyerData()
         Assertions.assertThat(viewModel.buyerAccountDataData.value).isEqualTo(throwable)
@@ -238,6 +279,75 @@ class HomeAccountUserViewModelTest {
         verify {
             accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, isActive)
             accountPref.saveSettingValue(AccountConstants.KEY.CLEAR_CACHE, isActive)
+        }
+    }
+
+    @Test
+    fun `Set safe mode Failed`() {
+        val isActive = true
+        /* When */
+        every {
+            homeAccountSafeSettingProfileUseCase.executeQuerySetSafeMode(
+                any(),
+                any(),
+                any()
+            )
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwableMock)
+        }
+
+        viewModel.setSafeMode(isActive)
+
+        justRun { throwableMock.printStackTrace() }
+        verify(atLeast = 1) {
+            throwableMock.printStackTrace()
+        }
+    }
+
+    @Test
+    fun `Set safe mode inactive success`() {
+        val data = SetUserProfileSetting(isSuccess = true, error = "")
+        val setUserProfileResponse = SetUserProfileSettingResponse(data)
+
+        val isActive = false
+        /* When */
+        every {
+            homeAccountSafeSettingProfileUseCase.executeQuerySetSafeMode(
+                any(),
+                any(),
+                any()
+            )
+        } answers {
+            firstArg<(SetUserProfileSettingResponse) -> Unit>().invoke(setUserProfileResponse)
+        }
+
+        viewModel.setSafeMode(isActive)
+
+        verify {
+            accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, isActive)
+            accountPref.saveSettingValue(AccountConstants.KEY.CLEAR_CACHE, isActive)
+        }
+    }
+
+    @Test
+    fun `Set safe mode inactive Failed`() {
+        val isActive = false
+        /* When */
+        every {
+            homeAccountSafeSettingProfileUseCase.executeQuerySetSafeMode(
+                any(),
+                any(),
+                any()
+            )
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwableMock)
+        }
+
+        viewModel.setSafeMode(isActive)
+
+        justRun { throwableMock.printStackTrace() }
+        verify(atLeast = 1) {
+            throwableMock.printStackTrace()
         }
     }
 

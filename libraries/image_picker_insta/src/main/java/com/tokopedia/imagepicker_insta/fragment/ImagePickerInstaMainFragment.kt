@@ -127,7 +127,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                     filteredResults.add(Pair(it,zoomImageAdapterDataMap[it]!!))
                 }
             }
-            viewModel.getUriOfSelectedMedia(selectedMediaView.width, filteredResults)
+            viewModel.getUriOfSelectedMedia(selectedMediaView.assetView.width, selectedMediaView.assetView.height, filteredResults)
         } else {
             showToast(getString(R.string.imagepicker_insta_samf), Toaster.TYPE_NORMAL)
         }

@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="dp_3">3dp</dimen>
-    <dimen name="dp_72">72dp</dimen>
-    <dimen name="dp_194">194dp</dimen>
-    <dimen name="dp_208">208dp</dimen>
     <dimen name="waiting_order_tips_icon_size">56dp</dimen>
-    <dimen name="waiting_order_product_height">67dp</dimen>
-    <dimen name="waiting_order_recycler_margin_top">10dp</dimen>
+    <dimen name="waiting_order_recycler_margin_top">6dp</dimen>
 
     <!--  new som list  -->
     <dimen name="som_list_sort_filter_horizontal_padding">14dp</dimen>

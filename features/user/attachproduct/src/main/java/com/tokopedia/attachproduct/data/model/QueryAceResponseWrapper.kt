@@ -9,5 +9,5 @@ data class QueryAceResponseWrapper(
 
 data class AceSearchProductResponse(
     @SerializedName("ace_search_product")
-    val aceSearchProductResponse: NewAceResponseWrapper = NewAceResponseWrapper()
+    val aceSearchProductResponse: AceResponseWrapper = AceResponseWrapper()
 )

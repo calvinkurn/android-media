@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/dp_16"
-    app:cardCornerRadius="@dimen/dp_8"
+    android:padding="16dp"
+    app:cardCornerRadius="8dp"
     app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -30,7 +30,7 @@
             android:layout_width="@dimen/dp_80"
             android:layout_height="10dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="4dp"
             app:corners="8"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/product_name"
@@ -41,7 +41,7 @@
             android:layout_width="@dimen/dp_80"
             android:layout_height="10dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="4dp"
             android:textColor="#FA591D"
             app:corners="8"
             app:layout_constraintStart_toStartOf="parent"

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.iconunify.IconUnify
+        app:icon_name="INFORMATION"
+        app:icon_color_light_enable="@color/Unify_R500"
+        android:layout_width="@dimen/unify_space_12"
+        android:layout_height="@dimen/unify_space_12"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_R500"
+        app:typographyType="small"
+        android:layout_marginStart="@dimen/spacing_lvl2"/>
+
+</LinearLayout>

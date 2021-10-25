@@ -4,8 +4,8 @@
     android:id="@+id/main_retry"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16">
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_view_empty_image"
@@ -22,8 +22,8 @@
         android:id="@+id/text_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_10"
-        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
         android:text="@string/text_shop_no_product"
         android:textColor="@color/Unify_N700_96"
         app:layout_constrainedWidth="true"
@@ -38,9 +38,9 @@
         android:id="@+id/text_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_10"
-        android:layout_marginLeft="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
         android:text="@string/text_shop_no_product_follow"
         android:textColor="@color/Unify_N700_68"
         app:layout_constrainedWidth="true"
@@ -55,7 +55,7 @@
         android:id="@+id/button_choose_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="10dp"
         android:text="@string/shop_empty_product_seller_other_etalase_choose_product"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

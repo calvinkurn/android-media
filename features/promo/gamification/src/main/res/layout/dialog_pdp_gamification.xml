@@ -11,9 +11,9 @@
     <View
         android:id="@+id/tray_close"
         android:layout_width="@dimen/dp_28"
-        android:layout_height="@dimen/dp_4"
+        android:layout_height="4dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         android:background="@drawable/close_button_bottom_sheet" />
 
     <ViewFlipper
@@ -24,7 +24,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="12dp"
             android:orientation="vertical">
 
             <com.tokopedia.unifyprinciples.Typography
@@ -32,16 +32,16 @@
                 android:text="@string/gami_pdp_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginStart="16dp"
                 android:textColor="@color/gf_clr_31353b"
                 app:typographyType="heading_2" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -51,9 +51,9 @@
             android:id="@+id/loadingView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="12dp"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/dp_20" />
+            android:paddingBottom="20dp" />
 
     </ViewFlipper>
 </merge>

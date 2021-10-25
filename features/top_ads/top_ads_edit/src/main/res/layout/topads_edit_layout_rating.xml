@@ -10,8 +10,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageViewRating1"
-        android:layout_width="@dimen/dp_12"
-        android:layout_height="@dimen/dp_12"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
         android:adjustViewBounds="true"
         android:gravity="center"
         android:scaleType="centerCrop"
@@ -19,32 +19,32 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageViewRating2"
-        android:layout_width="@dimen/dp_12"
-        android:layout_height="@dimen/dp_12"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
         android:adjustViewBounds="true"
         android:gravity="center"
         android:scaleType="centerCrop" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageViewRating3"
-        android:layout_width="@dimen/dp_12"
-        android:layout_height="@dimen/dp_12"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
         android:adjustViewBounds="true"
         android:gravity="center"
         android:scaleType="centerCrop" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageViewRating4"
-        android:layout_width="@dimen/dp_12"
-        android:layout_height="@dimen/dp_12"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
         android:adjustViewBounds="true"
         android:gravity="center"
         android:scaleType="centerCrop" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageViewRating5"
-        android:layout_width="@dimen/dp_12"
-        android:layout_height="@dimen/dp_12"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
         android:adjustViewBounds="true"
         android:gravity="center"
         android:scaleType="centerCrop" />
@@ -54,7 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:typographyType="body_3"
-        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginLeft="4dp"
         tools:text="(999)" />
 </LinearLayout>
 
