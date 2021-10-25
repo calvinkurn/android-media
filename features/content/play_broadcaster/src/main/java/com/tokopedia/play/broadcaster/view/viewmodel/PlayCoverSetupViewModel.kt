@@ -22,7 +22,6 @@ import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.map
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.event.Event
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield

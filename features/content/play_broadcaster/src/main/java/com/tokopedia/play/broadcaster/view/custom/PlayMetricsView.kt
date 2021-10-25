@@ -7,7 +7,6 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.transition.Fade
 import androidx.transition.Slide
@@ -94,7 +93,7 @@ class PlayMetricsView : LinearLayout {
 
     private fun getMetricBubbleInstance(): PlayMetricBubble {
         return PlayMetricBubble(context).apply {
-            layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            layoutParams = LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         }
     }
 

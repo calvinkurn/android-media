@@ -33,7 +33,6 @@ class BroadcastScheduleViewModelTest {
 
     val dispatcher = CoroutineTestDispatchers
 
-    private val responseBuilder = PlayBroadcasterResponseBuilder()
     private val testModelBuilder = TestDoubleModelBuilder()
 
     @Before
