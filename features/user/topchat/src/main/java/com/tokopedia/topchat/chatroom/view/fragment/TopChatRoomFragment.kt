@@ -1539,7 +1539,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             AtcVariantHelper.goToAtcVariant(
                 context = ctx,
                 productId = productId,
-                pageSource = ApplinkConst.Inbox.VALUE_PAGE_CHAT,
+                pageSource = AtcVariantHelper.TOPCHAT_PAGESOURCE,
                 isTokoNow = false,
                 shopId = shopId,
                 startActivitResult = { intent, requestCode ->

@@ -195,7 +195,8 @@ object ViewUtil {
         if (rect.top == 0) {
             //Device feature is placed vertically
             set.setMargin(deviceFeatureId, ConstraintSet.START, rect.left)
-            setupVerticalFlex(set,
+            setupVerticalFlex(
+                set,
                 firstContainerId, secondContainerId,
                 toolbarId, deviceFeatureId
             )
@@ -270,10 +271,12 @@ object ViewUtil {
 
     fun ellipsizeLongText(text: String, maxChar: Int): String {
         var resultText = text
-        if(text.length > maxChar) {
+        if (text.length > maxChar) {
             resultText = resultText.substring(0, maxChar)
-            if(resultText[maxChar-1].toString() == " ") { //Remove if last char is whitespace
-                resultText = resultText.substring(0, maxChar-1)
+            //Remove if last char is whitespace
+            val lastCharIndex = maxChar - 1
+            if (lastCharIndex > 0 && resultText[lastCharIndex].toString() == " ") {
+                resultText = resultText.substring(0, lastCharIndex)
             }
             resultText += ELLIPSIZE
         }
