@@ -301,13 +301,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      * ItemTimerNewSellerListener
      */
     override fun onBtnLearnNowToSellerEduClicked(sellerEduUrl: String) {
-        context?.let {
-            RouteManager.route(
-                it,
-                ApplinkConstInternalGlobal.WEBVIEW,
-                sellerEduUrl
-            )
-        }
+        goToSellerEdu(sellerEduUrl)
     }
 
     override fun onBtnLearnNowToFaqClicked() {
@@ -322,9 +316,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onWatchVideoClicked(videoId: String) {
-        context?.let {
-            it.startActivity(ShopPerformanceYoutubeActivity.createIntent(it, videoId))
-        }
+        goToYoutubePage(videoId)
         shopScorePenaltyTracking.clickWatchVideoNewSeller()
     }
 
@@ -334,6 +326,14 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     override fun onImpressWatchVideo() {
         shopScorePenaltyTracking.impressWatchVideoNewSeller(isNewSeller)
+    }
+
+    override fun onWatchVideoReactivatedClicked(videoId: String) {
+        goToYoutubePage(videoId)
+    }
+
+    override fun onBtnLearnNowReactivatedClicked(sellerEduUrl: String) {
+        goToSellerEdu(sellerEduUrl)
     }
 
     /**
@@ -409,6 +409,22 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             context
         } else {
             null
+        }
+    }
+
+    private fun goToSellerEdu(sellerEduUrl: String) {
+        context?.let {
+            RouteManager.route(
+                it,
+                ApplinkConstInternalGlobal.WEBVIEW,
+                sellerEduUrl
+            )
+        }
+    }
+
+    private fun goToYoutubePage(videoId: String) {
+        context?.let {
+            it.startActivity(ShopPerformanceYoutubeActivity.createIntent(it, videoId))
         }
     }
 
