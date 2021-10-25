@@ -232,6 +232,10 @@ object AccountConstants {
         const val TDN_INDEX = 4
     }
 
+    object DIMENSION {
+        const val LAYOUT_TITLE_LEFT_MARGIN = 20
+    }
+
     object LAYOUT {
         const val TYPE_ERROR = -1
     }
@@ -240,13 +244,11 @@ object AccountConstants {
         const val OVO = "ovo"
         const val GOPAY = "gopay"
         const val GOPAYLATER = "gopaylater"
-        const val GOPAYPOINTS = "gopaypoints"
         const val TOKOPOINT = "tokopoints"
         const val SALDO = "saldo"
         const val CO_BRAND_CC = "cobrandcc"
         const val REKSADANA = "reksadana"
         const val EMAS = "emas"
         const val PAYLATER = "paylater"
-        const val TOKOPEDIA_CARD = "tokopediacard"
     }
 }

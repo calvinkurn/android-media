@@ -9,7 +9,7 @@
     <View
         android:id="@+id/shop_credibility_separator"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
+        android:layout_height="8dp"
         android:background="@color/Unify_N50"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -17,9 +17,9 @@
         android:id="@+id/shop_credibility_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_12"
-        android:paddingEnd="@dimen/dp_16"
+        android:paddingStart="16dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="16dp"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -37,9 +37,9 @@
 
         <ImageView
             android:id="@+id/iv_badge"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_12"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="12dp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/shop_name"
             app:layout_constraintLeft_toRightOf="@+id/shop_ava"
@@ -53,8 +53,8 @@
             android:id="@+id/shop_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_5"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:maxLines="1"
             app:layout_constrainedWidth="true"
@@ -64,7 +64,7 @@
             app:layout_constraintStart_toEndOf="@+id/iv_badge"
             app:layout_constraintTop_toTopOf="@+id/shop_ava"
             app:layout_constraintBottom_toTopOf="@+id/shop_last_active"
-            app:layout_goneMarginStart="@dimen/dp_12"
+            app:layout_goneMarginStart="12dp"
             app:typographyType="heading_4"
             app:typographyWeight="bold"
             tools:text="SHOP NAME Shop name  12" />
@@ -73,13 +73,13 @@
             android:id="@+id/shop_feature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
             android:background="@drawable/bg_rounded_grey_250"
             android:maxLines="1"
-            android:paddingLeft="@dimen/dp_4"
+            android:paddingLeft="4dp"
             android:paddingTop="@dimen/dp_3"
-            android:paddingRight="@dimen/dp_4"
+            android:paddingRight="4dp"
             android:paddingBottom="@dimen/dp_3"
             android:textColor="@color/Unify_N700_68"
             android:visibility="gone"
@@ -98,20 +98,20 @@
             android:id="@+id/shop_last_active"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="12dp"
             android:textColor="@color/Unify_N700_68"
             app:layout_constraintStart_toEndOf="@+id/shop_ava"
             app:layout_constraintTop_toBottomOf="@+id/shop_name"
-            app:layout_goneMarginStart="@dimen/dp_0"
+            app:layout_goneMarginStart="0dp"
             app:typographyType="body_3"
             tools:text="Online 20 menit lalu" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/shop_location_online"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginStart="4dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/Unify_N700_68"
@@ -128,12 +128,12 @@
             android:id="@+id/shop_info_container_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginEnd="@dimen/dp_12"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
             android:gravity="center"
             android:orientation="horizontal"
             android:visibility="visible"
-            app:layout_goneMarginBottom="@dimen/dp_16"
+            app:layout_goneMarginBottom="16dp"
             app:layout_constraintBottom_toTopOf="@+id/shop_info_container_2"
             app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toStartOf="@+id/btn_follow"
@@ -144,8 +144,8 @@
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/shop_info_ic_1"
-                android:layout_width="@dimen/dp_20"
-                android:layout_height="@dimen/dp_20"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:gravity="center"
                 tools:icon_name="STAR"/>
 
@@ -153,7 +153,7 @@
                 android:id="@+id/shop_info_title_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginStart="8dp"
                 android:gravity="center"
                 android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_2"
@@ -163,7 +163,7 @@
                 android:id="@+id/shop_info_desc_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginStart="4dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:paddingTop="@dimen/dp_1"
@@ -177,9 +177,9 @@
             android:id="@+id/shop_info_container_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_5"
-            android:layout_marginEnd="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="16dp"
             android:gravity="center"
             android:orientation="horizontal"
             android:visibility="visible"
@@ -190,13 +190,13 @@
             app:layout_constraintStart_toEndOf="@+id/shop_info_container_1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/shop_info_container_1"
-            app:layout_goneMarginTop="@dimen/dp_16"
+            app:layout_goneMarginTop="16dp"
             tools:visibility="visible">
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/shop_info_ic_2"
-                android:layout_width="@dimen/dp_20"
-                android:layout_height="@dimen/dp_20"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:gravity="center"
                 tools:icon_name="CHAT"/>
 
@@ -204,7 +204,7 @@
                 android:id="@+id/shop_info_title_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginStart="8dp"
                 android:gravity="center"
                 android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_2"
@@ -214,7 +214,7 @@
                 android:id="@+id/shop_info_desc_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginStart="4dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:paddingTop="@dimen/dp_1"
@@ -240,7 +240,6 @@
 
     <include
         android:id="@+id/shop_credibility_shimmering"
-        layout="@layout/item_shimmer_shop_credibility"
-        android:visibility="visible" />
+        layout="@layout/item_shimmer_shop_credibility" />
 
 </LinearLayout>

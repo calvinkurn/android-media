@@ -7,6 +7,7 @@ import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.common.util.CentralizedPromoResourceProvider
 import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
+import com.tokopedia.centralizedpromo.domain.usecase.VoucherCashbackEligibleUseCase
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
@@ -20,15 +21,22 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class CentralizedPromoViewModel @Inject constructor(
-        private val resourceProvider: CentralizedPromoResourceProvider,
-        private val userSession: UserSessionInterface,
-        private val getOnGoingPromotionUseCase: GetOnGoingPromotionUseCase,
-        private val getChatBlastSellerMetadataUseCase: GetChatBlastSellerMetadataUseCase,
-        private val remoteConfig: FirebaseRemoteConfigImpl,
-        private val dispatcher: CoroutineDispatchers
+    private val resourceProvider: CentralizedPromoResourceProvider,
+    private val userSession: UserSessionInterface,
+    private val getOnGoingPromotionUseCase: GetOnGoingPromotionUseCase,
+    private val getChatBlastSellerMetadataUseCase: GetChatBlastSellerMetadataUseCase,
+    private val voucherCashbackEligibleUseCase: VoucherCashbackEligibleUseCase,
+    private val remoteConfig: FirebaseRemoteConfigImpl,
+    private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
-    val getLayoutResultLiveData: MutableLiveData<MutableMap<LayoutType, Result<BaseUiModel>>> = MutableLiveData()
+    companion object {
+        private const val UNAVAILABLE_PROMO_TYPE = 0
+        private const val BROADCAST_CHAT_PROMO_TYPE = 2
+    }
+
+    val getLayoutResultLiveData: MutableLiveData<MutableMap<LayoutType, Result<BaseUiModel>>> =
+        MutableLiveData()
 
     fun getLayoutData(vararg layoutTypes: LayoutType) {
         launch(coroutineContext) {
@@ -57,26 +65,52 @@ class CentralizedPromoViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getPromoCreation(): Result<BaseUiModel> = runBlocking {
-        try {
-            val isFreeShippingEnabled = !remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
-            val chatBlastSellerMetadataUiModel = getChatBlastSellerMetadataUseCase.executeOnBackground()
-            val broadcastChatExtra = if (chatBlastSellerMetadataUiModel.promo > 0 && chatBlastSellerMetadataUiModel.promoType == 2){
-                resourceProvider.composeBroadcastChatFreeQuotaLabel(chatBlastSellerMetadataUiModel.promo)
-            } else ""
-            Success(PromoCreationStaticData.provideStaticData(resourceProvider, broadcastChatExtra, chatBlastSellerMetadataUiModel.url, isFreeShippingEnabled))
+    private suspend fun getPromoCreation(): Result<BaseUiModel> {
+        return try {
+            val isFreeShippingEnabledDeferred = async {
+                !remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+            }
+            val broadcastChatPairDeferred = async {
+                val chatBlastSellerMetadataUiModel = getChatBlastSellerMetadataUseCase.executeOnBackground()
+                val broadcastChatExtra =
+                    if (chatBlastSellerMetadataUiModel.promo > UNAVAILABLE_PROMO_TYPE &&
+                        chatBlastSellerMetadataUiModel.promoType == BROADCAST_CHAT_PROMO_TYPE) {
+                        resourceProvider.composeBroadcastChatFreeQuotaLabel(
+                            chatBlastSellerMetadataUiModel.promo
+                        )
+                    } else ""
+                broadcastChatExtra to chatBlastSellerMetadataUiModel.url
+            }
+            val isVoucherCashbackEligibleDeferred = async {
+                voucherCashbackEligibleUseCase.execute(userSession.shopId)
+            }
+
+            val (broadcastChatExtra, chatBlastSellerUrl) = broadcastChatPairDeferred.await()
+            val isFreeShippingEnabled = isFreeShippingEnabledDeferred.await()
+            val isVoucherCashbackEligible = isVoucherCashbackEligibleDeferred.await()
+            Success(
+                PromoCreationStaticData.provideStaticData(
+                    resourceProvider,
+                    broadcastChatExtra,
+                    chatBlastSellerUrl,
+                    isFreeShippingEnabled,
+                    isVoucherCashbackEligible
+                )
+            )
         } catch (t: Throwable) {
             Fail(t)
         }
     }
 
     fun trackFreeShippingImpression() {
-        val isTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
+        val isTransitionPeriod =
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
         CentralizedPromoTracking.sendImpressionFreeShipping(userSession, isTransitionPeriod)
     }
 
     fun trackFreeShippingClick() {
-        val isTransitionPeriod = remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
+        val isTransitionPeriod =
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_TRANSITION_PERIOD, true)
         CentralizedPromoTracking.sendClickFreeShipping(userSession, isTransitionPeriod)
     }
 }

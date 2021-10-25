@@ -8,8 +8,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductListCardBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowProductCardViewHolder(
     itemView: View,
@@ -21,10 +22,10 @@ class TokoNowProductCardViewHolder(
         val LAYOUT = R.layout.item_tokopedianow_product_list_card
     }
 
-    private val productCard = itemView.findViewById<ProductCardListView?>(R.id.productCardView)
+    private var binding: ItemTokopedianowProductListCardBinding? by viewBinding()
 
     override fun bind(data: TokoNowProductCardUiModel) {
-        productCard?.apply {
+       binding?.productCardView?.apply {
             setProductModel(data.product)
             setOnClickListener {
                 goToProductDetail(data)

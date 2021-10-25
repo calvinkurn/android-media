@@ -1,0 +1,244 @@
+{
+  "status": "OK",
+  "chatReplies": {
+    "minReplyTime": "1593320444778",
+    "maxReplyTime": "1593320444778",
+    "block": {
+      "blockedUntil": "",
+      "isBlocked": false,
+      "isPromoBlocked": false
+    },
+    "hasNext": false,
+    "hasNextAfter": false,
+    "textareaReply": 1,
+    "replyIDsAttachment": "439369778,439369779,439369780",
+    "contacts": [
+      {
+        "role": "User",
+        "userId": 7977933,
+        "shopId": 5665147,
+        "interlocutor": false,
+        "name": "Buyer Testing",
+        "tag": "Penjual",
+        "thumbnail": "https://accounts.tokopedia.com/image/v1/u/7977933/user_thumbnail/desktop",
+        "domain": "",
+        "isOfficial": false,
+        "isGold": false,
+        "badge": "",
+        "status": {
+          "timestamp": 0,
+          "timestampStr": "",
+          "isOnline": false
+        }
+      },
+      {
+        "role": "Shop Owner",
+        "userId": 29240564,
+        "shopId": 5665147,
+        "interlocutor": true,
+        "name": "Seller Testing",
+        "tag": "Pengguna",
+        "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/5665147/shop_xs_thumbnail/desktop",
+        "domain": "lorealparis",
+        "isOfficial": true,
+        "isGold": true,
+        "badge": "https://ecs7.tokopedia.net/chat/tc_os_icon.png",
+        "status": {
+          "timestamp": 1607337686,
+          "timestampStr": "1607337686",
+          "isOnline": true
+        }
+      }
+    ],
+    "list": [
+      {
+        "date": "27 Jul 2021",
+        "chats": [
+          {
+            "time": "16:10",
+            "replies": [
+              {
+                "msgId": 1,
+                "replyId": "123",
+                "senderId": 7977933,
+                "senderName": "roro",
+                "role": "User",
+                "msg": "Test reply bubble",
+                "fraudStatus": 0,
+                "replyTime": "1627377033992402000",
+                "status": 1,
+                "attachmentID": 0,
+                "isOpposite": false,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "chat",
+                "label": "",
+                "attachment": {
+                  "attributes": "",
+                  "fallback": {
+                    "html": "",
+                    "message": ""
+                  },
+                  "id": 0,
+                  "type": 0
+                }
+              },
+              {
+                "msgId": 1,
+                "replyId": "123",
+                "senderId": 7977933,
+                "senderName": "roro",
+                "role": "User",
+                "msg": "Test reply bubble",
+                "fraudStatus": 0,
+                "replyTime": "1627377033992402000",
+                "status": 1,
+                "attachmentID": 0,
+                "isOpposite": false,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "chat",
+                "label": "",
+                "parentReply": {
+                  "attachmentID": 0,
+                  "attachmentType": 0,
+                  "name": "",
+                  "senderID": 7977933,
+                  "replyTimeUnixNano": "1627377033992402000",
+                  "fraudStatus": 0,
+                  "mainText": "Test reply bubble",
+                  "subText": "",
+                  "imageURL": "",
+                  "localID": "",
+                  "isExpired": false,
+                  "source": "chat"
+                },
+                "attachment": {
+                  "attributes": "{\"sticker_profile\":{\"group_id\":\"47d36030-9695-11ea-aa61-000000000003\",\"sticker_id\":\"c6a02920-9695-11ea-aa61-000000000003\",\"image_url\":\"https://ecs7.tokopedia.net/img/chat/sticker/buyer_1.png\",\"intention\":\"Ready?\"}}",
+                  "fallback": {
+                    "html": "<div>Ready?</div>",
+                    "message": "Ready?"
+                  },
+                  "id": 208195,
+                  "type": 21
+                }
+              },
+              {
+                "msgId": 1,
+                "replyId": "123",
+                "senderId": 7977933,
+                "senderName": "roro",
+                "role": "User",
+                "msg": "Test reply bubble",
+                "fraudStatus": 0,
+                "replyTime": "1627377033992402000",
+                "status": 1,
+                "attachmentID": 0,
+                "isOpposite": false,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "chat",
+                "label": "",
+                "parentReply": {
+                  "attachmentID": 0,
+                  "attachmentType": 0,
+                  "name": "",
+                  "senderID": 7977933,
+                  "replyTimeUnixNano": "1627377033992402000",
+                  "fraudStatus": 0,
+                  "mainText": "Test reply bubble",
+                  "subText": "",
+                  "imageURL": "",
+                  "localID": "",
+                  "isExpired": false,
+                  "source": "chat"
+                },
+                "attachment": {
+                  "attributes": "{\"image_url\":\"https://images.tokopedia.net/img/LUZQDL/2021/10/1/b7482a84-2505-4744-b5ef-03ffec47b6fb.jpg\",\"image_url_thumbnail\":\"https://images.tokopedia.net/img/cache/100-square/LUZQDL/2021/10/1/b7482a84-2505-4744-b5ef-03ffec47b6fb.jpg\"}",
+                  "fallback": {
+                    "html": "<div>Pengguna ini mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.19 untuk melihat gambar.</div>",
+                    "message": "Pengguna ini mengirimkan gambar. Mohon cek PlayStore secara berkala dan update aplikasi Tokopedia minimum versi 2.19 untuk melihat gambar."
+                  },
+                  "id": 1271058856,
+                  "type": 2
+                }
+              },
+              {
+                "msgId": 1,
+                "replyId": "123",
+                "senderId": 7977933,
+                "senderName": "roro",
+                "role": "User",
+                "msg": "Test reply bubble",
+                "fraudStatus": 0,
+                "replyTime": "1627377033992402000",
+                "status": 1,
+                "attachmentID": 0,
+                "isOpposite": false,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "chat",
+                "label": "",
+                "attachment": {
+                  "attributes": "",
+                  "fallback": {
+                    "html": "",
+                    "message": ""
+                  },
+                  "id": 0,
+                  "type": 0
+                }
+              },
+              {
+                "msgId": 1,
+                "replyId": "123",
+                "senderId": 7977933,
+                "senderName": "roro",
+                "role": "User",
+                "msg": "Test reply bubble",
+                "fraudStatus": 0,
+                "replyTime": "1627377033992402000",
+                "status": 1,
+                "attachmentID": 0,
+                "isOpposite": false,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "chat",
+                "label": "",
+                "parentReply": {
+                  "attachmentID": 0,
+                  "attachmentType": 0,
+                  "name": "",
+                  "senderID": 7977933,
+                  "replyTimeUnixNano": "1627377033992402123",
+                  "fraudStatus": 0,
+                  "mainText": "Test reply bubble",
+                  "subText": "",
+                  "imageURL": "",
+                  "localID": "",
+                  "isExpired": false,
+                  "source": "chat"
+                },
+                "attachment": {
+                  "attributes": "",
+                  "fallback": {
+                    "html": "",
+                    "message": ""
+                  },
+                  "id": 0,
+                  "type": 0
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+

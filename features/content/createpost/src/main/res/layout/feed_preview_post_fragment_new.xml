@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.carousel.CarouselUnify
+        android:id="@+id/feed_content_carousel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <com.tokopedia.unifycomponents.PageControl
+        android:id="@+id/page_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:indicator_type="CIRCLE"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/feed_content_carousel"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/image_position_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/page_indicator"
+        app:layout_constraintBottom_toTopOf="@id/product_tag_button_layout"
+        app:typographyType="body_2"
+        tools:text="Tag produk pada postingan ini (0/5)" />
+
+    <LinearLayout
+        android:id="@+id/product_tag_button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/image_position_text"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/product_tag_button"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_28"
+        app:icon_color_light_enable="@color/Unify_NN900"
+        app:icon_color_night_enable="@color/Unify_NN900"
+        android:layout_gravity="center_horizontal"
+        app:icon_name="PRODUCT"
+        app:unify_image_type="circle" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/content_tag_product_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="@dimen/dp_28"
+        android:text="@string/feed_content_tag_product_text"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="body_2"
+        tools:text="Tag produk" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+

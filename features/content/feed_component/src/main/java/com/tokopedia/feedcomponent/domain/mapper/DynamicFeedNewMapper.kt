@@ -9,6 +9,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 
 private const val TYPE_FEED_X_CARD_PLACEHOLDER: String = "FeedXCardPlaceholder"
@@ -16,6 +17,7 @@ private const val TYPE_FEED_X_CARD_BANNERS: String = "FeedXCardBanners"
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
 const val TYPE_FEED_X_CARD_POST: String = "FeedXCardPost"
 private const val TYPE_TOPADS_HEADLINE = "topads_headline"
+const val TYPE_TOPADS_HEADLINE_NEW = "topads_headline_new"
 private const val TYPE_CARD_PLAY_CAROUSEL = "play_carousel"
 
 const val TYPE_IMAGE = "image"
@@ -61,8 +63,11 @@ object DynamicFeedNewMapper {
     }
 
     private fun mapCardHeadline(posts: MutableList<Visitable<*>>) {
-        val topadsHeadlineUiModel = TopadsHeadlineUiModel(topadsHeadLinePage = TopAdsHeadlineActivityCounter.page++)
+        val headLinePge = TopAdsHeadlineActivityCounter.page++
+        val topadsHeadlineUiModel = TopadsHeadlineUiModel(topadsHeadLinePage = headLinePge)
+        val topadsHeadlineUiModelV2 = TopadsHeadLineV2Model(topadsHeadLinePage = headLinePge)
         posts.add(topadsHeadlineUiModel)
+        posts.add(topadsHeadlineUiModelV2)
     }
 
     private fun mapCardCarousel(posts: MutableList<Visitable<*>>) {
