@@ -4,6 +4,7 @@ import com.tokopedia.entertainment.home.adapter.HomeEventItem
 import com.tokopedia.entertainment.home.adapter.factory.HomeTypeFactory
 import com.tokopedia.entertainment.home.adapter.viewholder.EventGridEventViewHolder
 import com.tokopedia.entertainment.home.data.EventHomeDataResponse
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 /**
@@ -34,7 +35,7 @@ class EventGridModel(var layout: EventHomeDataResponse.Data.EventHome.Layout =
                         it.isLiked,
                         it.appUrl,
                         it.seoUrl,
-                        it.isFree == isFree
+                        (it.isFree == isFree && it.salesPrice.toIntOrZero().isZero())
                 ))
             }
         }

@@ -43,7 +43,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
-    implementation projectOrAar(rootProject.ext.features.profileCommon)
     implementation projectOrAar(rootProject.ext.features.seamlessLoginCommon)
     implementation projectOrAar(rootProject.ext.features.pushNotificationCommon)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
@@ -74,6 +73,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.multiDex
+    implementation rootProject.ext.miscDependencies.workManager
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }

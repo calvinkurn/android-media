@@ -15,8 +15,8 @@ import com.tokopedia.chat_common.view.adapter.viewholder.ProductAttachmentViewHo
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
-import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBanner
-import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlert
+import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBannerUiModel
+import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlertUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.SrwBubbleUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
@@ -69,19 +69,19 @@ open class TopChatTypeFactoryImpl constructor(
             return HideViewHolder.LAYOUT
         }
         val chat = visitables[position]
-        return if (chat is MessageViewModel && chat.isBanned()) {
+        return if (chat is MessageUiModel && chat.isBanned()) {
             ChatMessageUnifyViewHolder.TYPE_BANNED
         } else {
             default
         }
     }
 
-    override fun type(messageViewModel: MessageViewModel): Int {
+    override fun type(messageUiModel: MessageUiModel): Int {
         return ChatMessageUnifyViewHolder.LAYOUT
     }
 
-    override fun type(fallbackAttachmentViewModel: FallbackAttachmentViewModel): Int {
-        return type(fallbackAttachmentViewModel as MessageViewModel)
+    override fun type(fallbackAttachmentUiModel: FallbackAttachmentUiModel): Int {
+        return type(fallbackAttachmentUiModel as MessageUiModel)
     }
 
     override fun type(imageDualAnnouncementViewModel: ImageDualAnnouncementUiModel): Int {
@@ -92,19 +92,19 @@ open class TopChatTypeFactoryImpl constructor(
         return TopChatVoucherViewHolder.LAYOUT
     }
 
-    override fun type(attachInvoiceSentViewModel: AttachInvoiceSentViewModel): Int {
+    override fun type(attachInvoiceSentUiModel: AttachInvoiceSentUiModel): Int {
         return AttachedInvoiceViewHolder.LAYOUT
     }
 
-    override fun type(imageUploadViewModel: ImageUploadViewModel): Int {
+    override fun type(imageUploadUiModel: ImageUploadUiModel): Int {
         return TopchatImageUploadViewHolder.LAYOUT
     }
 
-    override fun type(roomSettingBanner: RoomSettingBanner): Int {
+    override fun type(roomSettingBannerUiModel: RoomSettingBannerUiModel): Int {
         return RoomSettingBannerViewHolder.LAYOUT
     }
 
-    override fun type(roomSettingFraudAlert: RoomSettingFraudAlert): Int {
+    override fun type(roomSettingFraudAlertUiModel: RoomSettingFraudAlertUiModel): Int {
         return RoomSettingFraudAlertViewHolder.LAYOUT
     }
 
@@ -144,7 +144,7 @@ open class TopChatTypeFactoryImpl constructor(
         return SrwBubbleViewHolder.LAYOUT
     }
 
-    override fun type(productAttachmentViewModel: ProductAttachmentViewModel): Int {
+    override fun type(productAttachmentUiModel: ProductAttachmentUiModel): Int {
         return TopchatProductAttachmentViewHolder.LAYOUT
     }
 
@@ -156,11 +156,11 @@ open class TopChatTypeFactoryImpl constructor(
         return TopchatLoadingModelViewHolder.LAYOUT
     }
 
-    override fun type(imageAnnouncementViewModel: ImageAnnouncementViewModel): Int {
+    override fun type(imageAnnouncementUiModel: ImageAnnouncementUiModel): Int {
         return TopchatImageAnnouncementViewHolder.LAYOUT
     }
 
-    override fun type(bannedAttachmentViewModel: BannedProductAttachmentViewModel): Int {
+    override fun type(bannedAttachmentUiModel: BannedProductAttachmentUiModel): Int {
         return TopchatBannedProductAttachmentViewHolder.LAYOUT
     }
 

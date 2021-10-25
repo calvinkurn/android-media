@@ -44,7 +44,7 @@ interface TopChatContract {
 
         fun onErrorGetTemplate()
 
-        fun onErrorUploadImage(errorMessage: String, it: ImageUploadViewModel)
+        fun onErrorUploadImage(errorMessage: String, it: ImageUploadUiModel)
 
         fun focusOnReply()
 
@@ -83,7 +83,7 @@ interface TopChatContract {
          */
         fun removeSrwBubble(productId: String)
         fun expandSrwBubble()
-        fun showPreviewMsg(previewMsg: SendableViewModel)
+        fun showPreviewMsg(previewMsg: SendableUiModel)
         fun clearReferredMsg()
     }
 
@@ -102,9 +102,9 @@ interface TopChatContract {
 
         fun readMessage()
 
-        fun startCompressImages(it: ImageUploadViewModel)
+        fun startCompressImages(it: ImageUploadUiModel)
 
-        fun startUploadImages(image: ImageUploadViewModel)
+        fun startUploadImages(image: ImageUploadUiModel)
 
         fun loadTopChat(
             messageId: String,
@@ -228,7 +228,7 @@ interface TopChatContract {
 
         fun addOngoingUpdateProductStock(
             productId: String,
-            product: ProductAttachmentViewModel, adapterPosition: Int,
+            product: ProductAttachmentUiModel, adapterPosition: Int,
             parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
         )
 

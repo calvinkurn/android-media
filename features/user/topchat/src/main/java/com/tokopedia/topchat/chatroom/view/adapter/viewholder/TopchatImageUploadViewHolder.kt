@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -74,7 +74,7 @@ class TopchatImageUploadViewHolder(
     private val imageRadius = itemView?.context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
             ?: 0f
 
-    override fun bind(element: ImageUploadViewModel?) {
+    override fun bind(element: ImageUploadUiModel?) {
         if (element == null) return
         super.bind(element)
         hideReadStatusIfRetry(element)
@@ -95,7 +95,7 @@ class TopchatImageUploadViewHolder(
         viewContainer?.gravity = Gravity.END
     }
 
-    private fun bindMsgOffsetLine(element: ImageUploadViewModel) {
+    private fun bindMsgOffsetLine(element: ImageUploadUiModel) {
         val msgOffsetLp = msgOffsetLine?.layoutParams as? ViewGroup.MarginLayoutParams
         val bottomMargin: Int = if (element.hasReplyBubble()) {
             itemView.context.resources.getDimension(R.dimen.dp_topchat_20).toInt()
@@ -110,17 +110,17 @@ class TopchatImageUploadViewHolder(
         replyBubbleArea?.setReplyListener(replyBubbleListener)
     }
 
-    private fun bindReplyReference(element: ImageUploadViewModel) {
+    private fun bindReplyReference(element: ImageUploadUiModel) {
         replyBubbleArea?.bindReplyData(element)
     }
 
-    private fun hideReadStatusIfRetry(element: ImageUploadViewModel) {
+    private fun hideReadStatusIfRetry(element: ImageUploadUiModel) {
         if(element.isRetry) {
             chatReadStatus.hide()
         }
     }
 
-    private fun bindLoadingAnimation(element: ImageUploadViewModel) {
+    private fun bindLoadingAnimation(element: ImageUploadUiModel) {
         if (ViewUtil.areSystemAnimationsEnabled(itemView.context) && element.isDummy) {
             progressBarSendImage?.show()
         } else {
@@ -128,7 +128,7 @@ class TopchatImageUploadViewHolder(
         }
     }
 
-    private fun bindBackground(element: ImageUploadViewModel) {
+    private fun bindBackground(element: ImageUploadUiModel) {
         if (element.isSender) {
             chatBalloon?.background = bgSender
         } else {
@@ -136,7 +136,7 @@ class TopchatImageUploadViewHolder(
         }
     }
 
-    override fun bindImageAttachment(element: ImageUploadViewModel) {
+    override fun bindImageAttachment(element: ImageUploadUiModel) {
         changeHourColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         attachment?.scaleType = ImageView.ScaleType.CENTER_CROP
         if (element.isDummy) {

@@ -2,18 +2,17 @@ package com.tokopedia.topchat.chatroom.view.viewmodel
 
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.AttachmentType
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.attachment.AttachmentId
 import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.productattachment.FreeShipping
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.chat_common.util.IdentifierUtil
-import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel.Companion.ROLE_USER
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel.Companion.ROLE_USER
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.domain.usecase.TopChatWebSocketParam
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.AttachmentPreviewFactory
-import okhttp3.Interceptor
 
 class SendableProductPreview(
     val productPreview: ProductPreview
@@ -59,7 +58,7 @@ class SendableProductPreview(
         userLocationInfo: LocalCacheModel,
         localId: String
     ): Any {
-        val startTime = SendableViewModel.generateStartTime()
+        val startTime = SendableUiModel.generateStartTime()
         val msgId = roomMetaData.msgId
         val toUid = roomMetaData.receiver.uid
         return TopChatWebSocketParam.generateParamSendProductAttachment(
@@ -72,8 +71,8 @@ class SendableProductPreview(
     override fun generatePreviewMessage(
         roomMetaData: RoomMetaData,
         message: String
-    ): SendableViewModel {
-        return ProductAttachmentViewModel.Builder()
+    ): SendableUiModel {
+        return ProductAttachmentUiModel.Builder()
             .withRoomMetaData(roomMetaData)
             .withAttachmentId(AttachmentId.NOT_YET_GENERATED)
             .withAttachmentType(AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT)

@@ -39,13 +39,13 @@ import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
-import com.tokopedia.chat_common.data.SendableViewModel.Companion.SENDING_TEXT
+import com.tokopedia.chat_common.data.SendableUiModel.Companion.SENDING_TEXT
 import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.*
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
-import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
@@ -370,7 +370,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun showPreviewMsg(previewMsg: SendableViewModel) {
+    override fun showPreviewMsg(previewMsg: SendableUiModel) {
         adapter.addHeaderDateIfDifferent(previewMsg)
         adapter.addNewMessage(previewMsg)
         topchatViewState?.scrollToBottom()
@@ -618,12 +618,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun updateProductStock(
-        product: ProductAttachmentViewModel,
+        product: ProductAttachmentUiModel,
         adapterPosition: Int,
         parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
     ) {
         var id = product.parentId
-        if (id == ProductAttachmentViewModel.NO_PRODUCT_ID) {
+        if (id == ProductAttachmentUiModel.NO_PRODUCT_ID) {
             id = product.productId
         }
         val intent = RouteManager.getIntent(
@@ -635,7 +635,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         startActivityForResult(intent, REQUEST_UPDATE_STOCK)
     }
 
-    override fun trackClickUpdateStock(product: ProductAttachmentViewModel) {
+    override fun trackClickUpdateStock(product: ProductAttachmentUiModel) {
         analytics.trackClickUpdateStock(product)
     }
 
@@ -706,7 +706,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 dummy.visitable?.let {
                     addDummyMessage(it)
                     if (dummy.isFail) {
-                        topchatViewState?.showRetryUploadImages(it as ImageUploadViewModel, true)
+                        topchatViewState?.showRetryUploadImages(it as ImageUploadUiModel, true)
                     }
                 }
             }
@@ -801,10 +801,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun goToDetailOpponent() {
-        if (opponentRole.toLowerCase() == ChatRoomHeaderViewModel.Companion.ROLE_USER) {
+        if (opponentRole.toLowerCase() == ChatRoomHeaderUiModel.Companion.ROLE_USER) {
             goToProfile(opponentId)
         } else if (opponentRole.toLowerCase()
-                .contains(ChatRoomHeaderViewModel.Companion.ROLE_SHOP)
+                .contains(ChatRoomHeaderUiModel.Companion.ROLE_SHOP)
         ) {
             onGoToShop()
         }
@@ -860,12 +860,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return session
     }
 
-    override fun onImageAnnouncementClicked(viewModel: ImageAnnouncementViewModel) {
-        analytics.trackClickImageAnnouncement(viewModel.broadcastBlastId.toString(), viewModel.attachmentId)
-        super.onImageAnnouncementClicked(viewModel)
+    override fun onImageAnnouncementClicked(uiModel: ImageAnnouncementUiModel) {
+        analytics.trackClickImageAnnouncement(uiModel.broadcastBlastId.toString(), uiModel.attachmentId)
+        super.onImageAnnouncementClicked(uiModel)
     }
 
-    override fun onRetrySendImage(element: ImageUploadViewModel) {
+    override fun onRetrySendImage(element: ImageUploadUiModel) {
         context?.let {
             val bs = TopchatBottomSheetBuilder.getErrorUploadImageBs(it,
                 onRetryClicked = {
@@ -880,13 +880,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    private fun resendImage(element: ImageUploadViewModel) {
+    private fun resendImage(element: ImageUploadUiModel) {
         //change the retry value
         element.isRetry = false
         presenter.startUploadImages(element)
     }
 
-    override fun onProductClicked(element: ProductAttachmentViewModel) {
+    override fun onProductClicked(element: ProductAttachmentUiModel) {
         super.onProductClicked(element)
         context?.let {
             analytics.eventClickProductThumbnailEE(it, element, session)
@@ -896,7 +896,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
-        val chatBubble = visitable as? BaseChatViewModel
+        val chatBubble = visitable as? BaseChatUiModel
         val hasPreviewOnList = adapter.hasPreviewOnList(chatBubble?.localId)
         if (chatBubble != null && hasPreviewOnList) {
             adapter.updatePreviewFromWs(visitable, chatBubble.localId)
@@ -1047,7 +1047,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         topchatViewState?.removeDummy(visitable)
     }
 
-    override fun onErrorUploadImage(errorMessage: String, it: ImageUploadViewModel) {
+    override fun onErrorUploadImage(errorMessage: String, it: ImageUploadUiModel) {
         showSnackbarError(errorMessage)
         topchatViewState?.showRetryUploadImages(it, true)
     }
@@ -1438,7 +1438,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    private fun processImagePathToUpload(data: Intent): ImageUploadViewModel? {
+    private fun processImagePathToUpload(data: Intent): ImageUploadUiModel? {
         val imagePathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
         if (imagePathList.size <= 0) {
             return null
@@ -1453,12 +1453,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return null
     }
 
-    private fun generateChatViewModelWithImage(imageUrl: String): ImageUploadViewModel {
-        return ImageUploadViewModel.Builder()
+    private fun generateChatViewModelWithImage(imageUrl: String): ImageUploadUiModel {
+        return ImageUploadUiModel.Builder()
             .withRoomMetaData(presenter.roomMetaData)
             .withAttachmentType(AttachmentType.Companion.TYPE_IMAGE_UPLOAD)
             .withReplyTime(SENDING_TEXT)
-            .withStartTime(SendableViewModel.generateStartTime())
+            .withStartTime(SendableUiModel.generateStartTime())
             .withIsDummy(true)
             .withImageUrl(imageUrl)
             .withParentReply(replyCompose?.referredMsg)
@@ -1473,7 +1473,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
+    override fun onClickBuyFromProductAttachment(element: ProductAttachmentUiModel) {
         analytics.eventClickBuyProductAttachment(element)
         doBuyAndAtc(element) {
             analytics.trackSuccessDoBuyAndAtc(
@@ -1485,7 +1485,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
+    override fun onClickATCFromProductAttachment(element: ProductAttachmentUiModel) {
         analytics.eventClickAddToCartProductAttachment(element, session)
         doBuyAndAtc(element) {
             analytics.trackSuccessDoBuyAndAtc(
@@ -1511,7 +1511,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun doBuyAndAtc(
-        element: ProductAttachmentViewModel,
+        element: ProductAttachmentUiModel,
         onSuccess: (response: DataModel) -> Unit = {}
     ) {
         val buyParam = getAtcBuyParam(element)
@@ -1522,7 +1522,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         })
     }
 
-    private fun getAtcBuyParam(element: ProductAttachmentViewModel): RequestParams {
+    private fun getAtcBuyParam(element: ProductAttachmentUiModel): RequestParams {
         val addToCartRequestParams = AddToCartRequestParams(
             productId = element.productId.toLongOrZero(),
             shopId = element.shopId.toInt(),
@@ -1736,15 +1736,15 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         unregisterUploadImageReceiver()
     }
 
-    override fun trackSeenProduct(element: ProductAttachmentViewModel) {
+    override fun trackSeenProduct(element: ProductAttachmentUiModel) {
         if (seenAttachedProduct.add(element.productId)) {
             analytics.eventSeenProductAttachment(requireContext(), element, session, amISeller)
         }
     }
 
-    override fun trackSeenBannedProduct(viewModel: BannedProductAttachmentViewModel) {
-        if (seenAttachedBannedProduct.add(viewModel.productId)) {
-            analytics.eventSeenBannedProductAttachment(viewModel)
+    override fun trackSeenBannedProduct(uiModel: BannedProductAttachmentUiModel) {
+        if (seenAttachedBannedProduct.add(uiModel.productId)) {
+            analytics.eventSeenBannedProductAttachment(uiModel)
         }
     }
 
@@ -1752,8 +1752,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         onGoToWebView(url, id)
     }
 
-    override fun trackClickInvoice(viewModel: AttachInvoiceSentViewModel) {
-        analytics.trackClickInvoice(viewModel)
+    override fun trackClickInvoice(uiModel: AttachInvoiceSentUiModel) {
+        analytics.trackClickInvoice(uiModel)
     }
 
     private fun getStringArgument(key: String, savedInstanceState: Bundle?): String {
@@ -1833,9 +1833,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         startActivityForResult(intent, REQUEST_ATTACH_INVOICE)
     }
 
-    override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) {
-        analytics.eventClickBannedProduct(viewModel)
-        presenter.onClickBannedProduct(viewModel.liteUrl)
+    override fun onClickBannedProduct(uiModel: BannedProductAttachmentUiModel) {
+        analytics.eventClickBannedProduct(uiModel)
+        presenter.onClickBannedProduct(uiModel.liteUrl)
     }
 
     override fun redirectToBrowser(url: String) {
@@ -1848,7 +1848,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         return childFragmentManager
     }
 
-    override fun onClickAddToWishList(product: ProductAttachmentViewModel, success: () -> Unit) {
+    override fun onClickAddToWishList(product: ProductAttachmentUiModel, success: () -> Unit) {
         val productId = product.productId.toString()
         analytics.eventClickAddToWishList(productId)
         if (product.isWishListed()) {
@@ -1931,7 +1931,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         analytics.eventClickQuotation(msg)
     }
 
-    override fun trackClickProductThumbnail(product: ProductAttachmentViewModel) {
+    override fun trackClickProductThumbnail(product: ProductAttachmentUiModel) {
         analytics.eventClickProductThumbnail(product)
     }
 
@@ -2183,7 +2183,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             val position = intent.getIntExtra(UploadImageChatService.RETRY_POSITION, -1)
             if (position > -1 && position < UploadImageChatService.dummyMap.size) {
                 val dummyTarget = UploadImageChatService.dummyMap[position]
-                onErrorUploadImage(errorMessage, dummyTarget.visitable as ImageUploadViewModel)
+                onErrorUploadImage(errorMessage, dummyTarget.visitable as ImageUploadUiModel)
             }
         }
     }
@@ -2404,7 +2404,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun showMsgMenu(msg: BaseChatViewModel, text: CharSequence) {
+    override fun showMsgMenu(msg: BaseChatUiModel, text: CharSequence) {
         replyBubbleOnBoarding.dismiss()
         val bs = TopchatBottomSheetBuilder.getLongClickBubbleMenuBs(
             context, msg
