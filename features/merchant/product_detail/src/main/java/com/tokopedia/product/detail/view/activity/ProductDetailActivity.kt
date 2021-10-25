@@ -265,11 +265,11 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
             affiliateString = uri.getQueryParameter(PARAM_AFFILIATE_STRING)
             affiliateUniqueId = uri.getQueryParameter(PARAM_AFFILIATE_UNIQUE_ID)
             isFromAffiliate = !uri.getQueryParameter(IS_FROM_EXPLORE_AFFILIATE).isNullOrEmpty()
+            extParam = uri.getQueryParameter(PARAM_EXT_PARAM)
         }
         bundle?.let {
             warehouseId = it.getString("warehouse_id")
             layoutId = it.getString(PARAM_LAYOUT_ID)
-            extParam = it.getString(PARAM_EXT_PARAM)
 
             if (productId.isNullOrBlank()) {
                 productId = it.getString(PARAM_PRODUCT_ID)
