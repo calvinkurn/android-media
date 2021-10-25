@@ -91,8 +91,8 @@ class PlayEtalasePickerViewModel @Inject constructor(
     fun loadEtalaseProducts(etalaseId: String, page: Int) {
         val currentValue = _observableSelectedEtalase.value?.currentValue
         val etalase = etalaseMap[etalaseId]
-        _observableSelectedEtalase.value = PageResult.Loading(
-                if (page == 1 || currentValue == null) EtalaseContentUiModel.Empty(name = etalase?.name.orEmpty())
+        _observableSelectedEtalase.value = PageResult.loading(
+                if (page == 1 || currentValue == null) EtalaseContentUiModel.empty(name = etalase?.name.orEmpty())
                 else currentValue
         )
 
@@ -214,7 +214,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
             }
         } else {
             PageResult(
-                    currentValue = EtalaseContentUiModel.Empty(),
+                    currentValue = EtalaseContentUiModel.empty(),
                     state = PageResultState.Fail(IllegalStateException("Etalase not found"))
             )
         }
