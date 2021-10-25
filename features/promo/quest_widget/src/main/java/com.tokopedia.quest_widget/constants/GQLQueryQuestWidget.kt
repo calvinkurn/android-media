@@ -4,8 +4,8 @@ object GQLQueryQuestWidget {
     const val IO = "IO"
     const val QUERY_QUEST_WIDGET = """
     
-    query questWidgetList(${'$'}channel: Int!, ${'$'}channelSlug: String!, ${'$'}page: String!})
-    {
+ query questWidgetList(${'$'}channel: Int, ${'$'}channelSlug: String, ${'$'}page: String) { 
+ questWidgetList: questWidgetList(input: {channel: ${'$'}channel, channelSlug: ${'$'}channelSlug, page: ${'$'}page}) {
     questWidgetList {
       id
       title
@@ -57,20 +57,7 @@ object GQLQueryQuestWidget {
         title
       }
     }
-    resultStatus {
-      code
-      reason
-    }
-    isEligible
-    pageDetail {
-      title
-      text
-      isHiddenCta
-      cta {
-        url
-        applink
-      }
-    }
+  }
 }
   
   """

@@ -9,6 +9,7 @@ import android.widget.TextView
 import com.example.quest_widget.R
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.quest_widget.data.Config
 import com.tokopedia.quest_widget.data.QuestWidgetListItem
 import com.tokopedia.unifycomponents.CardUnify
@@ -42,15 +43,7 @@ class QuestWidgetView @JvmOverloads constructor(
         tvLabel?.text = item.label?.title
         tvBannerTitle?.text = config.banner_title
         tvBannerDesc?.text = config.banner_description
-     /*   ivBannerIcon?.let {
-            Glide.with(context)
-                .load(config.banner_icon_url)
-                .dontAnimate()
-                .diskCacheStrategy(DiskCacheStrategy.DATA)
-                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                .centerCrop()
-                .into(it)
-        }*/
+        ivBannerIcon?.loadImage(config.banner_icon_url)
         viewSideBar?.setBackgroundColor(Color.parseColor(config.banner_background_color))
 
         when(item.questUser?.status){
