@@ -1,11 +1,13 @@
 package com.tokopedia.cart.journey.topads
 
 import android.Manifest
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.PerformException
-import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.rule.ActivityTestRule
@@ -17,6 +19,7 @@ import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
+import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -93,7 +96,15 @@ class CartTopAdsVerificationTest {
     private fun clickProductRecommendationItem(cartRecyclerView: RecyclerView, i: Int) {
         try {
             Espresso.onView(ViewMatchers.withId(cartRecyclerView.id))
-                    .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
+                    .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, object : ViewAction {
+                        override fun getConstraints(): Matcher<View> = ViewMatchers.isClickable()
+
+                        override fun getDescription(): String = "click product item card"
+
+                        override fun perform(uiController: UiController?, view: View?) {
+                            view?.performClick()
+                        }
+                    }))
         } catch (e: PerformException) {
             e.printStackTrace()
         }
