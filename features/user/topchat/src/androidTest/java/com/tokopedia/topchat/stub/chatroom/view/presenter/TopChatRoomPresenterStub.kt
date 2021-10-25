@@ -5,7 +5,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -95,7 +95,7 @@ class TopChatRoomPresenterStub @Inject constructor(
         return true
     }
 
-    override fun startUploadImageWithService(image: ImageUploadViewModel) {
+    override fun startUploadImageWithService(image: ImageUploadUiModel) {
         UploadImageChatServiceStub.enqueueWork(
             InstrumentationRegistry.getInstrumentation().context,
             ImageUploadMapper.mapToImageUploadServer(image),

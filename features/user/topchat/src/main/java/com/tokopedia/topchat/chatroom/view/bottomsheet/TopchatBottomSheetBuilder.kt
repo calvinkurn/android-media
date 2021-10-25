@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chatroom.view.bottomsheet
 
 import android.content.Context
 import android.view.View
-import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.widget.LongClickMenu
 import com.tokopedia.topchat.common.data.TopchatItemMenu
@@ -40,8 +40,8 @@ object TopchatBottomSheetBuilder {
 
     fun getLongClickBubbleMenuBs(
         ctx: Context?,
-        msg: BaseChatViewModel,
-        onClick: (Int, BaseChatViewModel) -> Unit
+        msg: BaseChatUiModel,
+        onClick: (Int, BaseChatUiModel) -> Unit
     ): BottomSheetUnify {
         val longClickMenu = LongClickMenu()
         val title = ctx?.getString(R.string.title_topchat_bubble_long_click_menu) ?: ""

@@ -7,8 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
-import androidx.core.content.ContextCompat
-import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
@@ -56,7 +55,7 @@ class MessageBubbleLayout : ViewGroup {
         initViewLayout()
     }
 
-    fun bindReplyData(uiModel: BaseChatViewModel) {
+    fun bindReplyData(uiModel: BaseChatUiModel) {
         replyBubbleContainer?.bindReplyData(uiModel)
     }
 
