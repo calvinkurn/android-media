@@ -396,10 +396,6 @@ public class CMInAppManager implements CmInAppListener,
         showInAppNotification(name, entityHashCode, isActivity);
     }
 
-    public CmActivityLifecycleHandler getActivityLifecycleHandler() {
-        return activityLifecycleHandler;
-    }
-
     @Override
     public void onDialogShown(@NotNull Activity activity) {
         dialogIsShownMap.put(activity, true);
