@@ -30,7 +30,7 @@ class CMInAppController(private val listenerOnNewInApp: OnNewInAppDataStoreListe
                     }
                     val isStored = putDataToStore(updatedCMInApp)
                     launch(Dispatchers.Main) {
-                        if (isStored && cmInApp.isAmplification)
+                        if (isStored)
                             listenerOnNewInApp.onNewInAppDataStored()
                     }
                 }, onError = {
