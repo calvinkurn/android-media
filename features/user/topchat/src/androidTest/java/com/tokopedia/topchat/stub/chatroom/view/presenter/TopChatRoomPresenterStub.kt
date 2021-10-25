@@ -6,7 +6,7 @@ import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
-import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -85,18 +85,6 @@ class TopChatRoomPresenterStub @Inject constructor(
     remoteConfig
 ) {
 
-    override fun sendAttachmentsAndMessage(
-        messageId: String,
-        sendMessage: String,
-        startTime: String,
-        opponentId: String,
-        onSendingMessage: () -> Unit
-    ) {
-        super.sendAttachmentsAndMessage(
-            messageId, sendMessage, exStartTime, opponentId, onSendingMessage
-        )
-    }
-
     override fun sendMessageWebSocket(messageText: String) {
         webSocketUtil.send(messageText)
     }
@@ -109,7 +97,7 @@ class TopChatRoomPresenterStub @Inject constructor(
         return true
     }
 
-    override fun startUploadImageWithService(image: ImageUploadViewModel) {
+    override fun startUploadImageWithService(image: ImageUploadUiModel) {
         UploadImageChatServiceStub.enqueueWork(
             InstrumentationRegistry.getInstrumentation().context,
             ImageUploadMapper.mapToImageUploadServer(image),

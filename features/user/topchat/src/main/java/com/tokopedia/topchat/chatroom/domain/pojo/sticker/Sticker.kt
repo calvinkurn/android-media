@@ -5,8 +5,10 @@ import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.WebsocketEvent
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.attr.StickerProfile
+import com.tokopedia.topchat.chatroom.domain.usecase.TopChatWebSocketParam
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.WebsocketAttachmentContract
 import com.tokopedia.topchat.chatroom.view.viewmodel.WebsocketAttachmentData
@@ -24,11 +26,13 @@ data class Sticker(
 
     fun generateWebSocketPayload(
             messageId: String,
-            opponentId: String,
             startTime: String,
             attachments: List<SendablePreview>,
             localId: String,
+            referredMsg: ParentReply?
     ): WebsocketAttachmentContract {
+        val referredMsgRequest = TopChatWebSocketParam
+            .generateParentReplyRequestPayload(referredMsg)
         val payload = WebSocketStickerPayload(
                 groupUUID, stickerUUID, imageUrl, intention
         )
@@ -39,7 +43,8 @@ data class Sticker(
                 source = "inbox",
                 attachment_type = TYPE_STICKER,
                 start_time = startTime,
-                payload = payload
+                payload = payload,
+                parent_reply = referredMsgRequest
         )
         if (attachments.isNotEmpty()) {
             data.addExtrasAttachments(attachments)

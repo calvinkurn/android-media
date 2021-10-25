@@ -6,7 +6,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import javax.inject.Inject
 
 //TODO: Migrate Wishlist UseCase to Coroutine
-class AddWishListUseCaseStub @Inject constructor(context: Context): AddWishListUseCase(context) {
+class AddWishListUseCaseStub @Inject constructor(context: Context) : AddWishListUseCase(context) {
 
     var isFail = false
 
@@ -15,10 +15,10 @@ class AddWishListUseCaseStub @Inject constructor(context: Context): AddWishListU
         userId: String?,
         wishlistActionListener: WishListActionListener?
     ) {
-        if(!isFail) {
-            wishlistActionListener?.onSuccessAddWishlist("123")
-        } else {
+        if (isFail) {
             wishlistActionListener?.onErrorAddWishList("Oops!", "123")
+        } else {
+            wishlistActionListener?.onSuccessAddWishlist("123")
         }
     }
 }

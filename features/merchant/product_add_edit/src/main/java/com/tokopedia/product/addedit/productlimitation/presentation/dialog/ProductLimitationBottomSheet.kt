@@ -17,6 +17,7 @@ import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
 import com.tokopedia.product.addedit.productlimitation.domain.constant.AddEditProductUrlConstants.Companion.URL_PRODUCT_LIMITATION_EDU
 import com.tokopedia.product.addedit.productlimitation.presentation.adapter.ProductLimitationItemAdapter
 import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationActionItemModel
+import com.tokopedia.product.addedit.tracking.ProductLimitationTracking
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -64,6 +65,7 @@ class ProductLimitationBottomSheet(
         btnSubmit.text = btnSubmitText
         btnSubmit.isVisible = !isEligible
         btnSubmit.setOnClickListener {
+            ProductLimitationTracking.clickSaveAsDraft()
             val result = if (savingToDraft) RESULT_SAVING_DRAFT else RESULT_FINISH_ACTIVITY
             onBottomSheetResult.invoke(result)
             dismiss()
@@ -82,8 +84,9 @@ class ProductLimitationBottomSheet(
         rvItems?.addItemDecoration(HorizontalItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)))
         rvItems?.adapter = ProductLimitationItemAdapter().apply {
             setData(actionItems)
-            setOnItemClick {
-                onBottomSheetResult.invoke(it)
+            setOnItemClick { category, title: String, url: String ->
+                ProductLimitationTracking.clickActionItem(category, title, url)
+                onBottomSheetResult.invoke(url)
             }
         }
 
@@ -102,6 +105,7 @@ class ProductLimitationBottomSheet(
             }
             setHtmlDescription(tickerDesc)
             setOnClickListener {
+                ProductLimitationTracking.clickEduTicker()
                 onBottomSheetResult.invoke(URL_PRODUCT_LIMITATION_EDU)
             }
         }

@@ -24,7 +24,7 @@ class DistrictBoundaryUseCase @Inject constructor(@ApplicationContext val contex
         val PARAM_KERO_UT = "#keroUt"
     }
 
-    fun setParams(districtId: Int, keroToken: String?, keroUt: Int) {
+    fun setParams(districtId: Long, keroToken: String?, keroUt: Int) {
         queryString = GraphqlHelper.loadRawString(context.resources, R.raw.district_boundary)
         queryString = queryString.replace(PARAM_DISTRICT_ID, districtId.toString(), false)
         queryString = queryString.replace(PARAM_KERO_TOKEN, keroToken.toString(), false)

@@ -2,10 +2,10 @@ package com.tokopedia.product.manage.feature.filter.presentation.widget
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.product.manage.databinding.ItemChipsProductManageBinding
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.diffutil.FilterDataDiffUtil
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterUiModel
@@ -40,9 +40,12 @@ class ChipsAdapter(private val listener: ChipClickListener, private val canSelec
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        val itemView = LayoutInflater.from(parent.context)
-                .inflate(com.tokopedia.product.manage.R.layout.item_chips_product_manage, parent, false)
-        return ItemViewHolder(itemView, listener)
+        val binding = ItemChipsProductManageBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return ItemViewHolder(binding, listener)
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
@@ -66,21 +69,22 @@ class ChipsAdapter(private val listener: ChipClickListener, private val canSelec
         return data.size
     }
 
-    inner class ItemViewHolder(itemView: View,
-                               private val chipClickListener: ChipClickListener) : RecyclerView.ViewHolder(itemView) {
-        private var chips: ChipsUnify =  itemView.findViewById(com.tokopedia.product.manage.R.id.chipsItem)
+    inner class ItemViewHolder(private val binding: ItemChipsProductManageBinding,
+                               private val chipClickListener: ChipClickListener) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(element: FilterDataUiModel) {
-            chips.centerText = true
-            chips.chipText = element.name
-            chips.chipSize = ChipsUnify.SIZE_MEDIUM
-            chips.chipType = if(element.select) {
-                ChipsUnify.TYPE_SELECTED
-            } else {
-                ChipsUnify.TYPE_NORMAL
-            }
-            chips.setOnClickListener {
-                chipClickListener.onChipClicked(element, canSelectMany, title)
+            binding.chipsItem.run {
+                centerText = true
+                chipText = element.name
+                chipSize = ChipsUnify.SIZE_MEDIUM
+                chipType = if(element.select) {
+                    ChipsUnify.TYPE_SELECTED
+                } else {
+                    ChipsUnify.TYPE_NORMAL
+                }
+                setOnClickListener {
+                    chipClickListener.onChipClicked(element, canSelectMany, title)
+                }
             }
         }
     }

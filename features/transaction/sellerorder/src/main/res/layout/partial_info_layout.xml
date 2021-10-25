@@ -10,7 +10,7 @@
         android:id="@+id/tv_confirm_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_8"
+        android:layout_margin="8dp"
         app:typographyType="body_2"
         tools:text="Konfirmasi otomatis dalam maks 3 jam. Konfirmasi otomatis bermasalah? input resi secara manual" />
 
@@ -18,7 +18,7 @@
         android:id="@+id/button_understand"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_8"
+        android:layout_margin="8dp"
         android:text="@string/understand" />
 
 </LinearLayout>

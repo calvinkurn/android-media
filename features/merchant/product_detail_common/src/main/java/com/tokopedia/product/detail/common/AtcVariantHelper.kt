@@ -34,8 +34,8 @@ object AtcVariantHelper {
     const val WISHLIST_PAGESOURCE = "wishlist"
     const val PDP_PAGESOURCE = "product detail page"
     const val PLAY_PAGESOURCE = "play"
-    const val TOPCHAT_PAGESOURCE = "topchat"
-    const val NOTIFCENTER_PAGESOURCE = "notifcenter"
+    const val TOPCHAT_PAGESOURCE = "chat"
+    const val NOTIFCENTER_PAGESOURCE = "notif-center"
     const val HOMEPAGE_PAGESOURCE = "homepage"
     const val DISCOVERY_PAGESOURCE = "discovery page"
     const val SHOP_PAGE_PAGESOURCE = "shop page - buyer"
@@ -89,6 +89,7 @@ object AtcVariantHelper {
                         ),
                         shopType = productInfoP1.shopTypeString,
                         boData = boData ?: BebasOngkir(),
+                        isCod = productInfoP1.data.isCod,
                         reData = updatedReData,
                         uspImageUrl = uspImageUrl,
                         cashBackPercentage = productInfoP1.data.isCashback.percentage
