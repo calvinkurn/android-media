@@ -242,7 +242,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
-    private val livePusherStatsListener = object : PlayLivePusherMediatorListener {
+    private val livePusherStatisticListener = object : PlayLivePusherMediatorListener {
         override fun onLivePusherStatsUpdated(statistic: PlayLivePusherStatistic) {
             sendLivePusherStats(statistic)
         }
@@ -262,7 +262,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
-    private val livePusherStatusListener = object : PlayLivePusherMediatorListener {
+    private val livePusherStateChangedListener = object : PlayLivePusherMediatorListener {
         override fun onLivePusherStateChanged(state: PlayLivePusherMediatorState) {
             logger.logPusherState(state)
             _observableLivePusherInfo.value = PlayLiveLogState.Changed(state)
@@ -278,8 +278,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
         livePusherMediator.addListener(liveViewStateListener)
         livePusherMediator.addListener(liveChannelStateListener)
         livePusherMediator.addListener(liveCountDownTimerStateListener)
-        if (GlobalConfig.DEBUG) livePusherMediator.addListener(livePusherStatsListener)
-        livePusherMediator.addListener(livePusherStatusListener)
+        if (GlobalConfig.DEBUG) livePusherMediator.addListener(livePusherStatisticListener)
+        livePusherMediator.addListener(livePusherStateChangedListener)
     }
 
     override fun onCleared() {
