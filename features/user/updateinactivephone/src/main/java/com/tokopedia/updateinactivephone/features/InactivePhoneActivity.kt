@@ -41,7 +41,6 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
     private val viewModel by lazy { viewModelProvider.get(InactivePhoneViewModel::class.java) }
 
     private var viewBinding: ActivityInactivePhoneBinding? = null
-    private var container: ConstraintLayout? = null
     private var remoteConfig: FirebaseRemoteConfigImpl? = null
     private var inactivePhoneUserDataModel: InactivePhoneUserDataModel? = null
 

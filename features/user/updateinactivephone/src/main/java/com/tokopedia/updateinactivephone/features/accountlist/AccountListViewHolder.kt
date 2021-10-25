@@ -1,29 +1,35 @@
 package com.tokopedia.updateinactivephone.features.accountlist
 
 import android.view.View
+import androidx.annotation.LayoutRes
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.updateinactivephone.R
+import com.tokopedia.updateinactivephone.databinding.FragmentInactivePhoneDataUploadBinding
+import com.tokopedia.updateinactivephone.databinding.ItemInactivePhoneAccountListBinding
 import com.tokopedia.updateinactivephone.domain.data.AccountListDataModel
 import com.tokopedia.utils.image.ImageUtils
+import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.view.binding.viewBinding
 
 class AccountListViewHolder(
         itemView: View,
         private val listener: Listener
 ): BaseViewHolder(itemView) {
 
-    private val imgAvatar = itemView.findViewById<ImageUnify>(R.id.imgAvatar)
-    private val txtName = itemView.findViewById<Typography>(R.id.txtName)
-    private val txtEmail = itemView.findViewById<Typography>(R.id.txtEmail)
+    private var itemViewBinding: ItemInactivePhoneAccountListBinding? by viewBinding()
 
     fun onBind(userDetailDataModel: AccountListDataModel.UserDetailDataModel) {
         itemView.context?.let {
-            ImageUtils.loadImageCircle2(it, imgAvatar, userDetailDataModel.image)
+            itemViewBinding?.imgAvatar?.let { avatar ->
+                ImageUtils.loadImageCircle2(it,
+                    avatar, userDetailDataModel.image)
+            }
         }
 
-        txtName.text = userDetailDataModel.fullname
-        txtEmail.text = userDetailDataModel.email
+        itemViewBinding?.txtName?.text = userDetailDataModel.fullname
+        itemViewBinding?.txtEmail?.text = userDetailDataModel.email
 
         itemView.setOnClickListener {
             listener.onItemClick(userDetailDataModel)
@@ -32,5 +38,10 @@ class AccountListViewHolder(
 
     interface Listener {
         fun onItemClick(userDetailDataModel: AccountListDataModel.UserDetailDataModel)
+    }
+
+    companion object {
+        @LayoutRes
+        val LAYOUT = R.layout.item_inactive_phone_account_list
     }
 }
