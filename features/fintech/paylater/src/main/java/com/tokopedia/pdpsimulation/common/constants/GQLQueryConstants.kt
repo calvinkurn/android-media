@@ -97,7 +97,7 @@ const val GQL_PAYLATER_SIMULATION_V2 = """query paylater_getSimulationV2(${'$'}r
           cta_type
           is_redirect_url
           button_color
-          bottom_sheet {
+           bottom_sheet {
             show
             image
             title

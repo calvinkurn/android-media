@@ -94,6 +94,9 @@ class PayLaterPaymentOptionsFragment : Fragment() {
                     RedirectionType.NonClickable -> {
                         btnHowToUse.isClickable = false
                     }
+                    RedirectionType.GopayBottomSheet ->{
+                       
+                    }
                 }
 
             }
@@ -278,7 +281,12 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         data.cta?.cta_type?.let {
             buttonStatus = when {
                 buttonRedirectionWeb.contains(it) -> RedirectionType.RedirectionWebView
-                buttonRedirectionBottomSheet.contains(it) -> RedirectionType.HowToDetail
+                buttonRedirectionBottomSheet.contains(it) ->
+                {   if(data.cta.bottomSheet?.isShow == true)
+                        RedirectionType.GopayBottomSheet
+                    else
+                        RedirectionType.HowToDetail
+                }
                 else -> RedirectionType.NonClickable
             }
         }
@@ -377,7 +385,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 }
 
 enum class RedirectionType {
-    HowToDetail, RedirectionWebView, NonClickable
+    HowToDetail, GopayBottomSheet,RedirectionWebView, NonClickable
 }
 
 enum class GatewayStatusType {
