@@ -169,6 +169,12 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                                 putExtra(ProductManageCommonConstant.EXTRA_PRODUCT_NAME, productName)
                                 putExtra(ProductManageCommonConstant.EXTRA_UPDATED_STOCK, stock)
                                 putExtra(ProductManageCommonConstant.EXTRA_UPDATED_STATUS, status.name)
+                                putExtra(
+                                    ProductManageCommonConstant.EXTRA_UPDATE_IS_STOCK_CHANGED,
+                                    isStockChanged)
+                                putExtra(
+                                    ProductManageCommonConstant.EXTRA_UPDATE_IS_STATUS_CHANGED,
+                                    isStatusChanged)
                                 putExtra(ProductManageCommonConstant.EXTRA_UPDATE_VARIANTS_MAP, variantsMap)
                             }
                             activity?.run {
