@@ -38,7 +38,7 @@
         android:animateLayoutChanges="true"
         android:minWidth="@dimen/layout_lvl3"
         app:cardBackgroundColor="@color/Unify_NN900"
-        app:cardCornerRadius="@dimen/dp_12"
+        app:cardCornerRadius="12dp"
         app:layout_constraintBottom_toBottomOf="@id/post_image"
         app:layout_constraintStart_toStartOf="@id/post_image">
 
@@ -51,10 +51,10 @@
 
             <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/product_tag_button"
-                android:layout_width="@dimen/dp_16"
-                android:layout_height="@dimen/dp_16"
-                android:layout_marginStart="@dimen/dp_4"
-                android:layout_marginEnd="@dimen/dp_4"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
                 app:icon_color_light_enable="@color/Unify_N0"
                 app:icon_color_night_enable="@color/Unify_N0"
                 app:icon_name="PRODUCT"
@@ -69,8 +69,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/dp_3"
-                android:paddingEnd="@dimen/dp_8"
-                android:paddingBottom="@dimen/dp_5"
+                android:paddingEnd="8dp"
+                android:paddingBottom="5dp"
                 android:text="@string/feed_post_tag_text"
                 android:textColor="@color/Unify_N0"
                 android:visibility="gone"
@@ -150,7 +150,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/product_card_label_discount_height"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            app:layout_goneMarginStart="@dimen/dp_8"
+            app:layout_goneMarginStart="8dp"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
@@ -158,7 +158,7 @@
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="@+id/top_ads_label_discount"
             app:layout_constraintStart_toEndOf="@id/top_ads_label_discount"
-            app:layout_goneMarginLeft="@dimen/dp_0"
+            app:layout_goneMarginLeft="0dp"
             app:typographyType="small"
             tools:text="Rp8.499.000"
             tools:visibility="visible" />
@@ -177,8 +177,8 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/chevron"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             app:icon_name="CHEVRON_RIGHT"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

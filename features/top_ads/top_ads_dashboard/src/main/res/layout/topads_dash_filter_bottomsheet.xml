@@ -8,8 +8,8 @@
         android:id="@+id/adPlacement_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
         android:text="@string/topads_dash_ad_placement"
         android:textColor="@color/topads_heading_color"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,9 +20,9 @@
         android:id="@+id/adPlacement"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -63,8 +63,8 @@
         android:id="@+id/status_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
         android:text="@string/topads_dash_status"
         android:textColor="@color/topads_heading_color"
         app:layout_constraintStart_toStartOf="parent"
@@ -75,9 +75,9 @@
         android:id="@+id/status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -118,15 +118,15 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_2"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_height="2dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintTop_toBottomOf="@id/status" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/filter_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginTop="24dp"
         android:text="@string/topads_dash_filter_title"
         android:textColor="@color/topads_heading_color"
         app:layout_constraintStart_toStartOf="@id/status_title"
@@ -137,9 +137,9 @@
         android:id="@+id/sortFilter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
         android:divider="@drawable/topads_create_h_divider"
         android:inputType="text"
         android:orientation="vertical"
@@ -155,7 +155,7 @@
             android:layout_height="@dimen/dp_56"
             android:gravity="start|center_vertical"
             android:layoutDirection="rtl"
-            android:padding="@dimen/dp_16"
+            android:padding="16dp"
             android:text="@string/topads_dash_tampil_terbanyak"
             android:textAlignment="textStart" />
 
@@ -165,7 +165,7 @@
             android:layout_height="@dimen/dp_56"
             android:gravity="start|center_vertical"
             android:layoutDirection="rtl"
-            android:padding="@dimen/dp_16"
+            android:padding="16dp"
             android:text="@string/topads_dash_klik_terbanyak"
             android:textAlignment="textStart" />
 
@@ -177,7 +177,7 @@
             android:layout_marginTop="1dp"
             android:gravity="start|center_vertical"
             android:layoutDirection="rtl"
-            android:padding="@dimen/dp_16"
+            android:padding="16dp"
             android:text="@string/topads_dash_terjual_terbanyak"
             android:textAlignment="textStart" />
 
@@ -188,7 +188,7 @@
             android:layout_marginTop="1dp"
             android:gravity="start|center_vertical"
             android:layoutDirection="rtl"
-            android:padding="@dimen/dp_16"
+            android:padding="16dp"
             android:text="@string/topads_dash_pendapatan_tertinggi"
             android:textAlignment="textStart" />
 
@@ -199,7 +199,7 @@
             android:layout_marginTop="1dp"
             android:gravity="start|center_vertical"
             android:layoutDirection="rtl"
-            android:padding="@dimen/dp_16"
+            android:padding="16dp"
             android:text="@string/topads_dash_pengeluaran_tertinggi"
             android:textAlignment="textStart" />
 
@@ -209,7 +209,7 @@
         android:id="@+id/submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16"
+        android:layout_margin="16dp"
         android:text="@string/topads_dash_terapkan"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sortFilter"
