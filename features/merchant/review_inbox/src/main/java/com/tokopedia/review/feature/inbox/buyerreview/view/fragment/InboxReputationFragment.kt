@@ -273,9 +273,9 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
     }
 
     override fun onGoToDetail(
-        reputationId: String?, invoice: String?, createTime: String?,
-        revieweeName: String?, revieweeImage: String?,
-        reputationDataUiModel: ReputationDataUiModel?, textDeadline: String,
+        reputationId: String, invoice: String, createTime: String,
+        revieweeName: String, revieweeImage: String,
+        reputationDataUiModel: ReputationDataUiModel, textDeadline: String,
         adapterPosition: Int, role: Int
     ) {
         savePassModelToDB(
@@ -310,18 +310,18 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
     }
 
     private fun getInboxReputationDetailPassModel(
-        reputationId: String?,
-        invoice: String?,
-        createTime: String?,
-        revieweeImage: String?,
-        revieweeName: String?,
+        reputationId: String,
+        invoice: String,
+        createTime: String,
+        revieweeImage: String,
+        revieweeName: String,
         textDeadline: String,
-        reputationDataUiModel: ReputationDataUiModel?,
+        reputationDataUiModel: ReputationDataUiModel,
         role: Int
     ): InboxReputationDetailPassModel {
         return InboxReputationDetailPassModel(
-            reputationId, revieweeName, revieweeImage,
-            textDeadline, invoice, createTime, reputationDataUiModel, role
+            reputationDataUiModel, reputationId, revieweeName, revieweeImage,
+            textDeadline, invoice, createTime, role
         )
     }
 

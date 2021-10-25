@@ -14,14 +14,14 @@ import javax.inject.Inject
 class ReputationFactory @Inject constructor(
     private val tomeService: TomeService,
     private val reputationService: ReputationService,
-    private val inboxReputationMapper: InboxReputationMapper?,
-    private val inboxReputationDetailMapper: InboxReputationDetailMapper?,
-    private val sendSmileyReputationMapper: SendSmileyReputationMapper?,
-    private val reportReviewMapper: ReportReviewMapper?,
-    private val shopFavoritedMapper: ShopFavoritedMapper?,
+    private val inboxReputationMapper: InboxReputationMapper,
+    private val inboxReputationDetailMapper: InboxReputationDetailMapper,
+    private val sendSmileyReputationMapper: SendSmileyReputationMapper,
+    private val reportReviewMapper: ReportReviewMapper,
+    private val shopFavoritedMapper: ShopFavoritedMapper,
     private val persistentCacheManager: PersistentCacheManager,
-    private val replyReviewMapper: ReplyReviewMapper?,
-    private val deleteReviewResponseMapper: DeleteReviewResponseMapper?,
+    private val replyReviewMapper: ReplyReviewMapper,
+    private val deleteReviewResponseMapper: DeleteReviewResponseMapper,
     private val userSession: UserSessionInterface
 ) {
 

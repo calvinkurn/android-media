@@ -78,10 +78,11 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     @Inject
     lateinit var reputationTracking: ReputationTracking
 
-    private var reputationId: String? = "0"
-    var orderId: String? = "0"
+    private var reputationId: String = ""
+    var orderId: String = ""
         private set
     private var role: Int = 0
+
     override fun getScreenName(): String {
         return AppScreen.SCREEN_INBOX_REPUTATION_DETAIL
     }
@@ -101,6 +102,10 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         initVar()
     }
 
+    override fun getShopId(): String {
+        return userSession.shopId
+    }
+
     private fun initVar() {
         if (arguments?.getBoolean(
                 InboxReputationDetailActivity.ARGS_IS_FROM_APPLINK,
@@ -109,8 +114,8 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         ) {
             reputationId = arguments?.getString(
                 InboxReputationDetailActivity.REPUTATION_ID,
-                "0"
-            )
+                ""
+            ) ?: ""
         } else {
             try {
                 val passModel: InboxReputationDetailPassModel? =
@@ -118,9 +123,11 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
                         InboxReputationDetailActivity.CACHE_PASS_DATA,
                         InboxReputationDetailPassModel::class.java
                     )
-                reputationId = passModel?.reputationId
-                role = passModel?.role
-                setToolbar(passModel?.invoice, passModel?.createTime)
+                passModel?.let {
+                    reputationId = it.reputationId
+                    role = it.role
+                    setToolbar(it.invoice, it.createTime)
+                }
             } catch (e: Exception) {
                 // Ignore cache expired exception
             }
@@ -128,16 +135,16 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         callbackManager = create()
     }
 
-    private fun setToolbar(title: String?, subtitle: String?) {
+    private fun setToolbar(title: String, subtitle: String) {
         if (activity != null) {
             if ((activity as AppCompatActivity?)?.supportActionBar != null) {
                 (activity as AppCompatActivity?)?.supportActionBar?.hide()
             }
-            val toolbar: HeaderUnify =
+            val toolbar: HeaderUnify? =
                 activity?.findViewById(R.id.headerInboxReputationDetail)
             (activity as AppCompatActivity?)?.setSupportActionBar(toolbar)
-            toolbar.setTitle(title)
-            toolbar.headerSubTitle = (subtitle)?
+            toolbar?.title = title
+            toolbar?.headerSubTitle = subtitle
         }
     }
 
@@ -145,7 +152,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         retainInstance = true
         val parentView: View = inflater.inflate(
             R.layout.fragment_inbox_reputation_detail, container,
@@ -180,8 +187,8 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     }
 
     private fun initProgressDialog() {
-        if (getContext() != null) {
-            progressDialog = ProgressDialog(getContext())
+        context?.let {
+            progressDialog = ProgressDialog(it)
             progressDialog?.setTitle("")
             progressDialog?.setMessage(getContext()?.getString(R.string.progress_dialog_loading))
             progressDialog?.setCancelable(false)
@@ -191,9 +198,9 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (!TextUtils.isEmpty(reputationId)) {
-            presenter?.getInboxDetail(
+            presenter.getInboxDetail(
                 reputationId,
-                arguments?.getInt(InboxReputationDetailActivity.ARGS_TAB, -1)
+                arguments?.getInt(InboxReputationDetailActivity.ARGS_TAB, -1) ?: -1
             )
         } else {
             activity?.finish()
@@ -208,7 +215,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         NetworkErrorHelper.showEmptyState(
             activity,
             mainView,
-            getErrorMessage(context, throwable)
+            context?.let { getErrorMessage(it, throwable) }
         ) {
             arguments?.getInt(InboxReputationDetailActivity.ARGS_TAB, -1)?.let {
                 presenter.getInboxDetail(
@@ -227,11 +234,11 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
 
     override fun onSuccessGetInboxDetail(
         inboxReputationItemUiModel: InboxReputationItemUiModel,
-        list: List<Visitable<*>>
+        visitables: List<Visitable<*>>
     ) {
         role = inboxReputationItemUiModel.role
-        if (list.isNotEmpty() && list[0] is InboxReputationDetailItemUiModel) {
-            orderId = (list[0] as InboxReputationDetailItemUiModel).orderId
+        if (visitables.isNotEmpty() && visitables[0] is InboxReputationDetailItemUiModel) {
+            orderId = (visitables[0] as InboxReputationDetailItemUiModel).orderId
         }
         setToolbar(
             inboxReputationItemUiModel.invoice,
@@ -240,7 +247,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         adapter.apply {
             clearList()
             addHeader(createHeaderModel(inboxReputationItemUiModel))
-            addList(list)
+            addList(visitables)
             notifyDataSetChanged()
         }
         reputationTracking.onSeeSellerFeedbackPage(orderId)
@@ -251,36 +258,38 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     }
 
     override fun showLoadingDialog() {
-        if (!progressDialog?.isShowing && activity != null) progressDialog?.show()
+        progressDialog?.let {
+            if (!it.isShowing) it.show()
+        }
     }
 
     override fun finishLoadingDialog() {
-        if (progressDialog?.isShowing == true && (progressDialog != null) && (getContext() != null)) progressDialog?.dismiss()
+        progressDialog?.let {
+            if (it.isShowing) it.dismiss()
+        }
     }
 
     override fun showRefresh() {
         swipeToRefresh?.isRefreshing = true
     }
 
-    override fun onErrorRefreshInboxDetail(throwable: Throwable?) {
-        NetworkErrorHelper.showSnackbar(
-            activity, getErrorMessage(
-                (getContext())!!, (throwable)!!
-            )
-        )
+    override fun onErrorRefreshInboxDetail(throwable: Throwable) {
+        NetworkErrorHelper.showSnackbar(activity, context?.let { getErrorMessage(it, throwable) })
     }
 
     override fun onSuccessRefreshGetInboxDetail(
         inboxReputationViewModel: InboxReputationItemUiModel,
-        list: List<Visitable<*>>
+        visitables: List<Visitable<*>>
     ) {
-        if (list.isNotEmpty() && list[0] is InboxReputationDetailItemUiModel) {
-            orderId = (list[0] as InboxReputationDetailItemUiModel).orderId
+        if (visitables.isNotEmpty() && visitables[0] is InboxReputationDetailItemUiModel) {
+            orderId = (visitables[0] as InboxReputationDetailItemUiModel).orderId
         }
-        adapter.clearList()
-        adapter.addHeader(createHeaderModel(inboxReputationViewModel))
-        adapter.addList(list)
-        adapter.notifyDataSetChanged()
+        adapter.apply {
+            clearList()
+            addHeader(createHeaderModel(inboxReputationViewModel))
+            addList(visitables)
+            notifyDataSetChanged()
+        }
         activity?.setResult(Activity.RESULT_OK)
     }
 
@@ -300,10 +309,10 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         )
     }
 
-    private fun getTextDeadline(element: InboxReputationItemUiModel?): String {
-        return (getContext()?.getString(R.string.deadline_prefix)
+    private fun getTextDeadline(element: InboxReputationItemUiModel): String {
+        return (context?.getString(R.string.deadline_prefix)
                 + " " + element.reputationDaysLeft + " " +
-                context.getString(R.string.deadline_suffix))
+                context?.getString(R.string.deadline_suffix))
     }
 
     override fun finishRefresh() {
@@ -318,12 +327,14 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
             listDesc.add(it.description)
         }
         startActivity(
-            getCallingIntent(
-                (getContext())!!,
-                listLocation,
-                listDesc,
-                position
-            )
+            context?.let {
+                getCallingIntent(
+                    it,
+                    listLocation,
+                    listDesc,
+                    position
+                )
+            }
         )
     }
 
@@ -331,6 +342,14 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         get() {
             return arguments?.getInt(InboxReputationDetailActivity.ARGS_TAB) ?: 0
         }
+
+    override fun getErrorMessage(throwable: Throwable): String {
+        val message = context?.let { getErrorMessage(it, throwable) }
+        if (message.isNullOrEmpty()) {
+            return context?.getString(R.string.default_request_error_unknown) ?: ""
+        }
+        return message
+    }
 
     override fun onGoToReportReview(shopId: Long, reviewId: String?) {
         startActivityForResult(
@@ -429,13 +448,13 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         productAvatar: String?,
         productName: String?
     ) {
-        if (getContext() != null) {
+        context?.let {
             val intent: Intent = RouteManager.getIntent(
-                getContext(),
+                it,
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                 productId
             )
-            getContext()?.startActivity(intent)
+            it.startActivity(intent)
         }
     }
 
@@ -465,20 +484,20 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
 
     override fun onReputationSmileyClicked(name: String, value: String) {
         if (!TextUtils.isEmpty(value)) {
-            val builder: AlertDialog.Builder = AlertDialog.Builder(
-                (getContext())!!
-            )
-            builder.setMessage(getReputationSmileyMessage(name))
-            builder.setPositiveButton(
-                getString(R.string.submit_review)
-            ) { _, _ -> presenter.sendSmiley(reputationId, value, role) }
-            builder.setNegativeButton(
-                getString(R.string.title_cancel)
-            ) { dialog, _ -> dialog.dismiss() }
-            val dialog: Dialog = builder.create()
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.show()
-            reputationTracking.onClickSmileyShopReviewTracker(name, orderId)
+            context?.let {
+                val builder = AlertDialog.Builder(it)
+                builder.setMessage(getReputationSmileyMessage(name))
+                builder.setPositiveButton(
+                    getString(R.string.submit_review)
+                ) { _, _ -> presenter.sendSmiley(reputationId, value, role) }
+                builder.setNegativeButton(
+                    getString(R.string.title_cancel)
+                ) { dialog, _ -> dialog.dismiss() }
+                val dialog: Dialog = builder.create()
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                dialog.show()
+                reputationTracking.onClickSmileyShopReviewTracker(name, orderId)
+            }
         }
     }
 
@@ -531,9 +550,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (callbackManager != null) {
-            callbackManager!!.onActivityResult(requestCode, resultCode, data)
-        }
+        callbackManager?.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_GIVE_REVIEW && resultCode == Activity.RESULT_OK) {
             refreshPage()
             activity?.setResult(Activity.RESULT_OK)

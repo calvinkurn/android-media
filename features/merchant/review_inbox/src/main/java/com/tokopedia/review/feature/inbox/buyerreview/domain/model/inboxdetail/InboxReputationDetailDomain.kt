@@ -5,7 +5,7 @@ import com.tokopedia.review.feature.inbox.buyerreview.domain.model.InboxReputati
 /**
  * @author by nisie on 9/26/17.
  */
-class InboxReputationDetailDomain {
-    var inboxReputationDomain: InboxReputationDomain? = null
-    var reviewDomain: ReviewDomain = null
-}
+data class InboxReputationDetailDomain(
+    var inboxReputationDomain: InboxReputationDomain = InboxReputationDomain(),
+    var reviewDomain: ReviewDomain = ReviewDomain()
+)

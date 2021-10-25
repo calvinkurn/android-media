@@ -29,7 +29,7 @@ class ReportReviewUseCase @Inject constructor(private val reputationRepository: 
         private const val PARAM_OTHER_REASON: String = "otherreason"
 
         fun getParam(
-            reviewId: String?,
+            reviewId: String,
             shopId: String?,
             reason: Int,
             otherReason: String?

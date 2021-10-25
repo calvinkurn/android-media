@@ -1,12 +1,13 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.filter.HeaderOptionUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.filter.OptionUiModel
 import com.tokopedia.review.inbox.R
@@ -18,12 +19,12 @@ import java.util.*
  */
 class InboxReputationFilterAdapter private constructor(
     private val listener: FilterListener,
-    private val listOption: ArrayList<OptionUiModel>?
+    private val listOption: ArrayList<OptionUiModel>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface FilterListener {
-        fun onFilterSelected(optionUiModel: OptionUiModel)
-        fun onFilterUnselected(optionUiModel: OptionUiModel)
+        fun onFilterSelected(optionUiModel: OptionUiModel?)
+        fun onFilterUnselected(optionUiModel: OptionUiModel?)
     }
 
     inner class HeaderViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -37,21 +38,19 @@ class InboxReputationFilterAdapter private constructor(
         private val mainView: View? = itemView.findViewById(R.id.main_view)
 
         init {
-            mainView?.setOnClickListener(View.OnClickListener {
-                for (viewModel: OptionUiModel in listOption!!) {
-                    if (viewModel === listOption.get(adapterPosition)) viewModel.setSelected(
-                        !viewModel.isSelected
-                    ) else if (viewModel.key === listOption.get(getAdapterPosition())
-                            .getKey()
-                    ) viewModel.setSelected(false)
+            mainView?.setOnClickListener {
+                listOption.forEach {
+                    if (it === listOption.getOrNull(adapterPosition)) it.isSelected = !it.isSelected
+                    else if (it.key === listOption.getOrNull(adapterPosition)?.key)
+                    it.isSelected = false
                 }
-                if (listOption.get(adapterPosition).isSelected()) {
-                    listener.onFilterSelected(listOption.get(adapterPosition))
+                if (listOption.getOrNull(adapterPosition)?.isSelected == true) {
+                    listener.onFilterSelected(listOption.getOrNull(adapterPosition))
                 } else {
-                    listener.onFilterUnselected(listOption.get(adapterPosition))
+                    listener.onFilterUnselected(listOption.getOrNull(adapterPosition))
                 }
                 notifyDataSetChanged()
-            })
+            }
         }
     }
 
@@ -77,36 +76,36 @@ class InboxReputationFilterAdapter private constructor(
     ) {
         if (getItemViewType(position) == VIEW_HEADER) {
             val holder: HeaderViewHolder = parent as HeaderViewHolder
-            holder.title.setText(listOption!!.get(position).getName())
+            holder.title?.text = listOption.getOrNull(position)?.name
         } else {
             val holder: ViewHolder = parent as ViewHolder
-            holder.filter.setText(listOption!!.get(position).getName())
-            if (listOption!!.get(position).isSelected()) {
-                holder.filter.setTextColor(
+            holder.filter?.text = listOption.getOrNull(position)?.name
+            if (listOption.getOrNull(position)?.isSelected == true) {
+                holder.filter?.setTextColor(
                     MethodChecker.getColor(
                         holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G400
                     )
                 )
-                holder.check.visibility = View.VISIBLE
+                holder.check?.show()
             } else {
-                holder.filter.setTextColor(
+                holder.filter?.setTextColor(
                     MethodChecker.getColor(
                         holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44
                     )
                 )
-                holder.check.visibility = View.GONE
+                holder.check?.hide()
             }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (listOption!!.get(position) is HeaderOptionUiModel) return VIEW_HEADER else return super.getItemViewType(
+        return if (listOption.getOrNull(position) is HeaderOptionUiModel) VIEW_HEADER else super.getItemViewType(
             position
         )
     }
 
     override fun getItemCount(): Int {
-        return listOption!!.size
+        return listOption.size
     }
 
     fun resetFilter() {
@@ -121,7 +120,7 @@ class InboxReputationFilterAdapter private constructor(
 
         fun createInstance(
             listener: FilterListener,
-            listOption: ArrayList<OptionUiModel>?
+            listOption: ArrayList<OptionUiModel>
         ): InboxReputationFilterAdapter {
             return InboxReputationFilterAdapter(listener, listOption)
         }

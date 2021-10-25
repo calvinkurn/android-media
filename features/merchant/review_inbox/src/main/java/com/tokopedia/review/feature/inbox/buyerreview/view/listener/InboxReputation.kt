@@ -21,9 +21,9 @@ interface InboxReputation {
         fun showLoadingNext()
         fun finishLoading()
         fun onGoToDetail(
-            reputationId: String?, invoice: String?, createTime: String?,
-            revieweeName: String?, revieweeImage: String?,
-            reputationDataUiModel: ReputationDataUiModel?, textDeadline: String,
+            reputationId: String, invoice: String, createTime: String,
+            revieweeName: String, revieweeImage: String,
+            reputationDataUiModel: ReputationDataUiModel, textDeadline: String,
             adapterPosition: Int, role: Int
         )
 

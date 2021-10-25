@@ -17,13 +17,12 @@ import java.util.*
 /**
  * @author by nisie on 8/11/17.
  */
-class InboxReputationAdapter constructor(typeFactory: InboxReputationTypeFactory) :
+class InboxReputationAdapter constructor(private val typeFactory: InboxReputationTypeFactory) :
     RecyclerView.Adapter<AbstractViewHolder<*>>() {
 
     private val list: MutableList<Visitable<*>?>
     private val emptySearchModel: EmptySearchModel
     private val loadingModel: LoadingModel
-    private val typeFactory: InboxReputationTypeFactory
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -35,37 +34,37 @@ class InboxReputationAdapter constructor(typeFactory: InboxReputationTypeFactory
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
-        holder.bind(list.get(position))
+        (holder as? AbstractViewHolder<Visitable<*>>)?.bind(list[position])
     }
 
     override fun getItemViewType(position: Int): Int {
-        return list.getOrNull(position)?.type(typeFactory) ?: 0
+        return (list[position] as? Visitable<InboxReputationTypeFactory>)?.type(typeFactory) ?: 0
     }
 
     override fun getItemCount(): Int {
         return list.size
     }
 
-    fun setList(list: List<InboxReputationItemUiModel?>?) {
+    fun setList(list: List<InboxReputationItemUiModel?>) {
         this.list.clear()
-        this.list.addAll((list)!!)
+        this.list.addAll(list)
         notifyDataSetChanged()
     }
 
     fun setList(
-        list: List<InboxReputationItemUiModel?>?,
+        list: List<InboxReputationItemUiModel>,
         sellerMigrationReviewModel: SellerMigrationReviewModel?
     ) {
         this.list.clear()
         if (sellerMigrationReviewModel != null) {
             this.list.add(sellerMigrationReviewModel)
         }
-        this.list.addAll((list)!!)
+        this.list.addAll(list)
         notifyDataSetChanged()
     }
 
-    fun addList(list: List<InboxReputationItemUiModel?>?) {
-        this.list.addAll((list)!!)
+    fun addList(list: List<InboxReputationItemUiModel>) {
+        this.list.addAll(list)
         notifyDataSetChanged()
     }
 
@@ -123,7 +122,6 @@ class InboxReputationAdapter constructor(typeFactory: InboxReputationTypeFactory
 
     init {
         list = ArrayList()
-        this.typeFactory = typeFactory
         loadingModel = LoadingModel()
         emptySearchModel = EmptySearchModel()
     }

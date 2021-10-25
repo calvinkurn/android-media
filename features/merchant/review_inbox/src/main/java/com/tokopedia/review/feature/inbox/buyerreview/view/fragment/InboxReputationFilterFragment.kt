@@ -56,7 +56,7 @@ class InboxReputationFilterFragment : BaseDaggerFragment(),
     private var list: RecyclerView? = null
     private var saveButton: Button? = null
     private var adapter: InboxReputationFilterAdapter? = null
-    private var listOption: ArrayList<OptionUiModel>? = null
+    private var listOption: ArrayList<OptionUiModel> = arrayListOf()
     private var timeFilter = ""
     private var timeFilterName = ""
     private var scoreFilter = ""
@@ -186,12 +186,12 @@ class InboxReputationFilterFragment : BaseDaggerFragment(),
         return list
     }
 
-    private fun setSelected(listOption: ArrayList<OptionUiModel>?) {
+    private fun setSelected(listOption: ArrayList<OptionUiModel>) {
         arguments?.let {
             if ((it.getString(SELECTED_TIME_FILTER, "") != ""
                         || it.getString(SELECTED_SCORE_FILTER, "") != "")
             ) {
-                for (optionUiModel: OptionUiModel in listOption!!) {
+                for (optionUiModel: OptionUiModel in listOption) {
                     if (((optionUiModel.key ==
                                 GetInboxReputationUseCase.PARAM_TIME_FILTER) && (optionUiModel.value ==
                                 it.getString(SELECTED_TIME_FILTER)))
@@ -210,27 +210,31 @@ class InboxReputationFilterFragment : BaseDaggerFragment(),
     }
 
     override fun resetFilter() {
-        adapter!!.resetFilter()
+        adapter?.resetFilter()
         timeFilter = ""
         timeFilterName = ""
         scoreFilter = ""
     }
 
-    override fun onFilterSelected(optionUiModel: OptionUiModel) {
-        if ((optionUiModel.key == GetInboxReputationUseCase.PARAM_TIME_FILTER)) {
-            timeFilter = optionUiModel.value
-            timeFilterName = optionUiModel.name
-        } else if ((optionUiModel.key == GetInboxReputationUseCase.PARAM_SCORE_FILTER)) {
-            scoreFilter = optionUiModel.value
+    override fun onFilterSelected(optionUiModel: OptionUiModel?) {
+        optionUiModel?.let {
+            if ((it.key == GetInboxReputationUseCase.PARAM_TIME_FILTER)) {
+                timeFilter = it.value
+                timeFilterName = it.name
+            } else if ((it.key == GetInboxReputationUseCase.PARAM_SCORE_FILTER)) {
+                scoreFilter = it.value
+            }
         }
     }
 
-    override fun onFilterUnselected(optionUiModel: OptionUiModel) {
-        if ((optionUiModel.key == GetInboxReputationUseCase.PARAM_TIME_FILTER)) {
-            timeFilter = ""
-            timeFilterName = ""
-        } else if ((optionUiModel.key == GetInboxReputationUseCase.PARAM_SCORE_FILTER)) {
-            scoreFilter = ""
+    override fun onFilterUnselected(optionUiModel: OptionUiModel?) {
+        optionUiModel?.let {
+            if ((it.key == GetInboxReputationUseCase.PARAM_TIME_FILTER)) {
+                timeFilter = ""
+                timeFilterName = ""
+            } else if ((it.key == GetInboxReputationUseCase.PARAM_SCORE_FILTER)) {
+                scoreFilter = ""
+            }
         }
     }
 

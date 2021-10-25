@@ -1,8 +1,6 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.subscriber
 
-import com.tokopedia.abstraction.R
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.review.common.util.ReviewErrorHandler.getErrorMessage
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.SendSmileyReputationDomain
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationDetail
 import rx.Subscriber
@@ -19,7 +17,7 @@ class SendSmileySubscriber constructor(
 
     override fun onError(e: Throwable) {
         viewListener.finishLoadingDialog()
-        viewListener.onErrorSendSmiley(getErrorMessage(viewListener.context, e))
+        viewListener.onErrorSendSmiley(viewListener.getErrorMessage())
     }
 
     override fun onNext(sendSmileyReputationDomain: SendSmileyReputationDomain) {
@@ -27,11 +25,7 @@ class SendSmileySubscriber constructor(
         if (sendSmileyReputationDomain.isSuccess) {
             viewListener.onSuccessSendSmiley(score.toIntOrZero())
         } else {
-            viewListener.onErrorSendSmiley(
-                viewListener.context.applicationContext.getString(
-                    R.string.default_request_error_unknown
-                )
-            )
+            viewListener.onErrorSendSmiley(viewListener.getErrorMessage())
         }
     }
 }

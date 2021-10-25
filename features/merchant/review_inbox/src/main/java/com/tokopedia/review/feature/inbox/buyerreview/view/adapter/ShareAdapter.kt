@@ -35,7 +35,6 @@ class ShareAdapter constructor(context: Context?) : BaseAdapter() {
     }
 
     override fun getView(position: Int, convertView: View, parent: ViewGroup): View {
-        var convertView: View = convertView
         val holder: ViewHolder = convertView.tag as ViewHolder
         val info: ShareItem = shareItems[position]
         imageView.loadImage(info.getIcon())

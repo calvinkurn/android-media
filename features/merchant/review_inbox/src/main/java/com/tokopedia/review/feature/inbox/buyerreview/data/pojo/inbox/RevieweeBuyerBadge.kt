@@ -18,7 +18,7 @@ data class RevieweeBuyerBadge(
 
     @SerializedName("positive_percentage")
     @Expose
-    val positivePercentage: String? = null,
+    val positivePercentage: String = "",
 
     @SerializedName("no_reputation")
     @Expose

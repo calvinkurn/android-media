@@ -34,19 +34,19 @@ class InboxReputationDetailAdapter constructor(typeFactory: InboxReputationDetai
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
-        holder.bind(list.get(position))
+        (holder as? AbstractViewHolder<Visitable<*>>)?.bind(list[position])
     }
 
     override fun getItemViewType(position: Int): Int {
-        return list[position].type(typeFactory)
+        return (list[position] as? Visitable<InboxReputationDetailTypeFactory>)?.type(typeFactory) ?: 0
     }
 
     override fun getItemCount(): Int {
         return list.size
     }
 
-    fun addList(list: List<Visitable<*>>?) {
-        this.list.addAll((list)!!)
+    fun addList(list: List<Visitable<*>>) {
+        this.list.addAll(list)
     }
 
     fun showEmpty() {
@@ -82,7 +82,7 @@ class InboxReputationDetailAdapter constructor(typeFactory: InboxReputationDetai
 
     val header: InboxReputationDetailHeaderUiModel?
         get() {
-            if (list.get(0) is InboxReputationDetailHeaderUiModel) return list.get(0) as InboxReputationDetailHeaderUiModel? else return null
+            return if (list.firstOrNull() is InboxReputationDetailHeaderUiModel) list.firstOrNull() as InboxReputationDetailHeaderUiModel? else null
         }
 
     fun getList(): List<Visitable<*>> {

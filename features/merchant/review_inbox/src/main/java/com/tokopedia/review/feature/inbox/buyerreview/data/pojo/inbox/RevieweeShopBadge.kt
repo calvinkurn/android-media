@@ -6,11 +6,11 @@ import com.google.gson.annotations.SerializedName
 data class RevieweeShopBadge(
     @SerializedName("tooltip")
     @Expose
-    var tooltip: String? = null,
+    var tooltip: String = "",
 
     @SerializedName("reputation_score")
     @Expose
-    var reputationScore: String? = null,
+    var reputationScore: String = "",
 
     @SerializedName("score")
     @Expose
@@ -22,7 +22,7 @@ data class RevieweeShopBadge(
 
     @SerializedName("reputation_badge_url")
     @Expose
-    var reputationBadgeUrl: String? = null,
+    var reputationBadgeUrl: String = "",
 
     @SerializedName("reputation_badge")
     @Expose

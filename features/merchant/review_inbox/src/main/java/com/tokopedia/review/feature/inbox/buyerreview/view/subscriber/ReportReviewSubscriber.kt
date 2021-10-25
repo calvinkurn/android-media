@@ -16,9 +16,7 @@ class ReportReviewSubscriber constructor(private val viewListener: InboxReputati
     override fun onError(e: Throwable) {
         viewListener.removeLoadingProgress()
         viewListener.onErrorReportReview(
-            getErrorMessage(
-                viewListener.context.applicationContext, e
-            )
+            getErrorMessage(viewListener.context.applicationContext, e)
         )
     }
 

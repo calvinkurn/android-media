@@ -7,7 +7,7 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.ReputationDat
 /**
  * @author by nisie on 8/19/17.
  */
-class InboxReputationDetailHeaderUiModel constructor(
+class InboxReputationDetailHeaderUiModel (
     var avatarImage: String,
     var name: String,
     var deadline: String,

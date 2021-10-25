@@ -4,7 +4,9 @@ import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
-import android.widget.*
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.RatingBar
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
@@ -15,6 +17,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.common.util.TimeConverter
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.ImageUploadAdapter
@@ -130,102 +135,101 @@ class InboxReputationDetailItemViewHolder(
     }
 
     override fun bind(element: InboxReputationDetailItemUiModel) {
-        if (element.isProductDeleted) {
-            productName.text = itemView.context.getString(R.string.product_is_deleted)
-            ImageHandler.loadImageRounded2(
-                productAvatar.context,
-                productAvatar,
-                R.drawable.ic_product_deleted,
-                5.0f
-            )
-        } else if (element.isProductBanned) {
-            productName.text = itemView.context.getString(R.string.product_is_banned)
-            ImageHandler.loadImageRounded2(
-                productAvatar.context,
-                productAvatar,
-                R.drawable.ic_product_deleted,
-                5.0f
-            )
-        } else {
-            productName.text = MethodChecker.fromHtml(element.productName)
-            productName.setOnClickListener {
-                viewListener.onGoToProductDetail(
-                    element.productId, element
-                        .productAvatar, element.productName
+        when {
+            element.isProductDeleted -> {
+                productName?.text = itemView.context.getString(R.string.product_is_deleted)
+                productAvatar?.loadImageRounded(
+                    R.drawable.ic_product_deleted,
+                    5.0f
                 )
             }
-            ImageHandler.loadImageRounded2(
-                productAvatar.context,
-                productAvatar,
-                element.productAvatar,
-                15.0f
-            )
-            productAvatar.setOnClickListener {
-                viewListener.onGoToProductDetail(
-                    element.productId,
-                    element.productAvatar, element.productName
+            element.isProductBanned -> {
+                productName?.text = itemView.context.getString(R.string.product_is_banned)
+                productAvatar?.loadImageRounded(
+                    R.drawable.ic_product_deleted,
+                    5.0f
                 )
+            }
+            else -> {
+                productName?.text = MethodChecker.fromHtml(element.productName)
+                productName?.setOnClickListener {
+                    viewListener.onGoToProductDetail(
+                        element.productId, element
+                            .productAvatar, element.productName
+                    )
+                }
+                productAvatar?.loadImageRounded(
+                    element.productAvatar,
+                    15.0f
+                )
+                productAvatar?.setOnClickListener {
+                    viewListener.onGoToProductDetail(
+                        element.productId,
+                        element.productAvatar, element.productName
+                    )
+                }
             }
         }
         if (!element.isReviewHasReviewed) {
-            viewReview.visibility = View.GONE
-            seeReplyLayout.visibility = View.GONE
-            emptyReviewText.visibility = View.VISIBLE
-            emptyReviewText.setText(R.string.not_reviewed)
+            viewReview?.hide()
+            seeReplyLayout?.hide()
+            emptyReviewText?.show()
+            emptyReviewText?.setText(R.string.not_reviewed)
         } else if (element.isReviewHasReviewed && element.isReviewSkipped) {
-            emptyReviewText.visibility = View.VISIBLE
-            viewReview.visibility = View.GONE
-            seeReplyLayout.visibility = View.GONE
-            emptyReviewText.visibility = View.VISIBLE
-            emptyReviewText.setText(R.string.review_is_skipped)
+            emptyReviewText?.show()
+            viewReview?.hide()
+            seeReplyLayout?.hide()
+            emptyReviewText?.show()
+            emptyReviewText?.setText(R.string.review_is_skipped)
         } else {
-            emptyReviewText.visibility = View.GONE
-            viewReview.visibility = View.VISIBLE
-            giveReview.visibility = View.GONE
-            reviewerName.text = MethodChecker.fromHtml(getReviewerNameText(element))
-            reviewerName.setOnClickListener { viewListener.onGoToProfile(element.reviewerId) }
-            val time: String
-            time = if (element.isReviewIsEdited) {
+            emptyReviewText?.hide()
+            viewReview?.show()
+            giveReview?.hide()
+            reviewerName?.text = MethodChecker.fromHtml(getReviewerNameText(element))
+            reviewerName?.setOnClickListener { viewListener.onGoToProfile(element.reviewerId) }
+            val time: String = if (element.isReviewIsEdited) {
                 getFormattedTime(element.reviewTime) +
                         itemView.context.getString(R.string.edited)
             } else {
                 getFormattedTime(element.reviewTime)
             }
-            reviewTime.text = time
-            reviewStar.rating = element.reviewStar.toFloat()
-            review.text = getReview(element.review)
-            review.setOnClickListener {
-                if (review.text.toString().endsWith(itemView.context.getString(R.string.more_to_complete))) {
+            reviewTime?.text = time
+            reviewStar?.rating = element.reviewStar.toFloat()
+            review?.text = getReview(element.review)
+            review?.setOnClickListener {
+                if (review.text.toString()
+                        .endsWith(itemView.context.getString(R.string.more_to_complete))
+                ) {
                     review.text = element.review
                 }
             }
             setChevronDownImage()
             if (canShowOverflow(element)) {
-                reviewOverflow.visibility = View.VISIBLE
-                reviewOverflow.setOnClickListener(onReviewOverflowClicked(element))
+                reviewOverflow?.show()
+                reviewOverflow?.setOnClickListener(onReviewOverflowClicked(element))
             } else {
-                reviewOverflow.visibility = View.GONE
+                reviewOverflow?.hide()
             }
             if (!TextUtils.isEmpty(element.reviewResponseUiModel.responseMessage)) {
                 setSellerReply(element)
             } else {
-                seeReplyText.visibility = View.GONE
-                replyArrow.visibility = View.GONE
-                sellerReplyLayout.visibility = View.GONE
+                seeReplyText?.hide()
+                replyArrow?.hide()
+                sellerReplyLayout?.hide()
                 if (element.tab == ReviewInboxConstants.TAB_BUYER_REVIEW) {
-                    sellerAddReplyLayout.visibility = View.VISIBLE
+                    sellerAddReplyLayout?.show()
                 } else {
-                    sellerAddReplyLayout.visibility = View.GONE
+                    sellerAddReplyLayout?.hide()
                 }
             }
         }
         showOrHideGiveReviewLayout(element)
         adapter.addList(convertToAdapterViewModel(element.reviewAttachment))
         adapter.notifyDataSetChanged()
-        sendReplyButton.setOnClickListener {
+        sendReplyButton?.setOnClickListener {
             viewListener.onSendReplyReview(
                 element,
-                sellerAddReplyEditText.text.toString()
+                sellerAddReplyEditText?.text.toString()
             )
         }
     }
@@ -235,38 +239,38 @@ class InboxReputationDetailItemViewHolder(
             || isOwnProduct(element)
             || element.isReviewHasReviewed
         ) {
-            giveReview.visibility = View.GONE
+            giveReview?.hide()
         } else {
-            giveReview.visibility = View.VISIBLE
+            giveReview?.show()
         }
     }
 
     private fun setSellerReply(element: InboxReputationDetailItemUiModel) {
-        sellerAddReplyLayout.visibility = View.GONE
-        sellerReplyLayout.visibility = View.VISIBLE
-        seeReplyLayout.visibility = View.VISIBLE
-        seeReplyText.visibility = View.VISIBLE
-        replyArrow.visibility = View.VISIBLE
-        seeReplyText.setOnClickListener {
+        sellerAddReplyLayout?.hide()
+        sellerReplyLayout?.show()
+        seeReplyLayout?.show()
+        seeReplyText?.show()
+        replyArrow?.show()
+        seeReplyText?.setOnClickListener {
             toggleReply()
             viewListener.onClickToggleReply(element, adapterPosition)
         }
-        replyArrow.setOnClickListener { toggleReply() }
+        replyArrow?.setOnClickListener { toggleReply() }
         val reviewResponseUiModel = element.reviewResponseUiModel
-        sellerName.text = MethodChecker.fromHtml(
+        sellerName?.text = MethodChecker.fromHtml(
             getFormattedReplyName(
                 reviewResponseUiModel
                     .responseBy
             )
         )
-        sellerName.setOnClickListener { viewListener.onGoToShopInfo(element.shopId) }
-        sellerReplyTime.text = getFormattedTime(reviewResponseUiModel.responseCreateTime)
-        sellerReply.text = MethodChecker.fromHtml(reviewResponseUiModel.responseMessage)
-        sellerAddReplyEditText.setText("")
+        sellerName?.setOnClickListener { viewListener.onGoToShopInfo(element.shopId) }
+        sellerReplyTime?.text = getFormattedTime(reviewResponseUiModel.responseCreateTime)
+        sellerReply?.text = MethodChecker.fromHtml(reviewResponseUiModel.responseMessage)
+        sellerAddReplyEditText?.setText("")
         if (element.tab == ReviewInboxConstants.TAB_BUYER_REVIEW) {
-            seeReplyLayout.visibility = View.VISIBLE
-            replyOverflow.visibility = View.VISIBLE
-            replyOverflow.setOnClickListener { v ->
+            seeReplyLayout?.show()
+            replyOverflow?.show()
+            replyOverflow?.setOnClickListener { v ->
                 val popup = PopupMenu(itemView.context, v)
                 popup.menu.add(
                     1, MENU_DELETE, 1,
@@ -283,20 +287,20 @@ class InboxReputationDetailItemViewHolder(
                 }
                 popup.show()
             }
-        } else replyOverflow.visibility = View.GONE
+        } else replyOverflow?.hide()
     }
 
     private fun toggleReply() {
         isReplyOpened = !isReplyOpened
         if (isReplyOpened) {
-            seeReplyText.text = itemView.context.getText(R.string.close_reply)
-            replyArrow.rotation = 180f
-            replyReviewLayout.visibility = View.VISIBLE
+            seeReplyText?.text = itemView.context.getText(R.string.close_reply)
+            replyArrow?.rotation = 180f
+            replyReviewLayout?.show()
             viewListener.onSmoothScrollToReplyView(adapterPosition)
         } else {
-            seeReplyText.text = itemView.context.getText(R.string.see_reply)
-            replyArrow.rotation = 0f
-            replyReviewLayout.visibility = View.GONE
+            seeReplyText?.text = itemView.context.getText(R.string.see_reply)
+            replyArrow?.rotation = 0f
+            replyReviewLayout?.hide()
         }
     }
 
@@ -304,8 +308,8 @@ class InboxReputationDetailItemViewHolder(
         return "$BY <b>$responseBy</b>"
     }
 
-    private fun getFormattedTime(reviewTime: String?): String {
-        return TimeConverter.generateTimeYearly(reviewTime!!.replace("WIB", ""))
+    private fun getFormattedTime(reviewTime: String): String {
+        return TimeConverter.generateTimeYearly(reviewTime.replace("WIB", ""))
     }
 
     private fun getReview(review: String?): CharSequence? {
@@ -324,19 +328,19 @@ class InboxReputationDetailItemViewHolder(
 
     private fun convertToAdapterViewModel(reviewAttachment: List<ImageAttachmentUiModel>): ArrayList<ImageUpload> {
         val list = ArrayList<ImageUpload>()
-        for (vm in reviewAttachment!!) {
+        reviewAttachment.forEach {
             list.add(
                 ImageUpload(
-                    vm.uriThumbnail,
-                    vm.uriLarge,
-                    vm.description, vm.attachmentId.toString()
+                    it.uriThumbnail,
+                    it.uriLarge,
+                    it.description, it.attachmentId.toString()
                 )
             )
         }
         return list
     }
 
-    private fun getReviewerNameText(element: InboxReputationDetailItemUiModel): String? {
+    private fun getReviewerNameText(element: InboxReputationDetailItemUiModel): String {
         return if (element.isReviewIsAnonymous
             && element.tab != ReviewInboxConstants.TAB_BUYER_REVIEW
         ) {
@@ -346,8 +350,8 @@ class InboxReputationDetailItemViewHolder(
         }
     }
 
-    private fun getAnonymousName(name: String?): String {
-        val first = name!!.substring(0, 1)
+    private fun getAnonymousName(name: String): String {
+        val first = name.substring(0, 1)
         val last = name.substring(name.length - 1)
         return "$first***$last"
     }
@@ -360,9 +364,7 @@ class InboxReputationDetailItemViewHolder(
     }
 
     private fun isOwnProduct(element: InboxReputationDetailItemUiModel): Boolean {
-        return (viewListener.userSession
-            .shopId
-                == element.shopId.toString())
+        return (viewListener.getShopId() == element.shopId.toString())
     }
 
     private fun onReviewOverflowClicked(element: InboxReputationDetailItemUiModel): View.OnClickListener {
@@ -378,17 +380,18 @@ class InboxReputationDetailItemViewHolder(
                     .getString(R.string.menu_share)
             )
             popup.setOnMenuItemClickListener { item ->
-                if (item.itemId == MENU_REPORT) {
-                    viewListener.onGoToReportReview(
-                        element.shopId,
-                        element.reviewId
-                    )
-                    true
-                } else if (item.itemId == MENU_SHARE) {
-                    viewListener.onShareReview(element, adapterPosition)
-                    true
-                } else {
-                    false
+                when (item.itemId) {
+                    MENU_REPORT -> {
+                        viewListener.onGoToReportReview(element.shopId, element.reviewId)
+                        true
+                    }
+                    MENU_SHARE -> {
+                        viewListener.onShareReview(element, adapterPosition)
+                        true
+                    }
+                    else -> {
+                        false
+                    }
                 }
             }
             popup.show()
@@ -396,11 +399,14 @@ class InboxReputationDetailItemViewHolder(
     }
 
     private fun setChevronDownImage() {
-        replyArrow.setImageDrawable(
+        replyArrow?.setImageDrawable(
             getIconUnifyDrawable(
                 itemView.context,
                 IconUnify.CHEVRON_DOWN,
-                ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+                ContextCompat.getColor(
+                    itemView.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N700
+                )
             )
         )
     }

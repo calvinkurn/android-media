@@ -118,9 +118,9 @@ class ImageUploadAdapter constructor(var context: Context) :
         }
     }
 
-    fun addList(data: ArrayList<ImageUpload>?) {
+    fun addList(data: ArrayList<ImageUpload>) {
         list.clear()
-        list.addAll((data)!!)
+        list.addAll(data)
         notifyDataSetChanged()
     }
 

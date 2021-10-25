@@ -118,10 +118,10 @@ open class GetInboxReputationDetailSubscriber constructor(
         }
     }
 
-    protected fun convertToReputationViewModel(inboxReputationDomain: InboxReputationDomain?): InboxReputationUiModel {
+    protected fun convertToReputationViewModel(inboxReputationDomain: InboxReputationDomain): InboxReputationUiModel {
         return InboxReputationUiModel(
-            convertToInboxReputationList(inboxReputationDomain?.inboxReputation ?: listOf()),
-            inboxReputationDomain?.paging?.isHasNext ?: false
+            convertToInboxReputationList(inboxReputationDomain.inboxReputation),
+            inboxReputationDomain.paging.isHasNext
         )
     }
 

@@ -6,7 +6,7 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.typefactory.i
 /**
  * @author by nisie on 8/19/17.
  */
-class InboxReputationDetailItemUiModel constructor(
+class InboxReputationDetailItemUiModel (
     val reputationId: Long,
     var productId: String,
     var productName: String,

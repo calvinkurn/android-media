@@ -1,7 +1,7 @@
 package com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inbox
 
 import com.tokopedia.review.feature.inbox.buyerreview.data.repository.ReputationRepository
-import com.tokopedia.review.feature.inbox.buyerreview.data.source.CloudInboxReputationDataSource.IS_SAVE_TO_CACHE
+import com.tokopedia.review.feature.inbox.buyerreview.data.source.CloudInboxReputationDataSource.Companion.IS_SAVE_TO_CACHE
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.InboxReputationDomain
 import com.tokopedia.usecase.RequestParams
 import rx.Observable

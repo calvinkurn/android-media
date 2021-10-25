@@ -137,7 +137,7 @@ class InboxReputationViewHolder constructor(
     }
 
     private fun getTextDeadline(element: InboxReputationItemUiModel): String {
-        return (itemView.context!!.getString(R.string.deadline_prefix)
+        return (itemView.context.getString(R.string.deadline_prefix)
                 + " " + element.reputationDaysLeft + " " +
                 itemView.context.getString(R.string.deadline_suffix))
     }

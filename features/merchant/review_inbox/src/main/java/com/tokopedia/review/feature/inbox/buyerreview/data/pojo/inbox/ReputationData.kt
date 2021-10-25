@@ -58,5 +58,5 @@ data class ReputationData(
 
     @SerializedName("action_message")
     @Expose
-    val actionMessage: String? = null
+    val actionMessage: String = ""
 )

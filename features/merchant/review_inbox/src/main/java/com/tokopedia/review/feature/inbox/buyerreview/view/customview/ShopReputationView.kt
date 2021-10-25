@@ -1,6 +1,5 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.customview
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.drawable.Drawable
@@ -36,16 +35,18 @@ class ShopReputationView : BaseCustomView {
     private var showTooltip: Boolean = false
     private var medalWidth: Int = 0
 
-    constructor(context: Context?) : super((context)!!) {
+    constructor(context: Context) : super(context) {
         init()
     }
 
-    constructor(context: Context?, attrs: AttributeSet?) : super((context)!!, attrs) {
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         init(attrs)
     }
 
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
-        (context)!!, attrs, defStyleAttr
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
     ) {
         init(attrs)
     }
@@ -89,7 +90,7 @@ class ShopReputationView : BaseCustomView {
     fun setValue(medalType: Int, level: Int, point: String) {
         var level: Int = level
         var point: String = point
-        reputationLayout!!.removeAllViews()
+        reputationLayout?.removeAllViews()
         val imageResource: Int = getIconResource(medalType)
         if (medalType == MEDAL_TYPE_0) {
             level = 1
@@ -115,41 +116,34 @@ class ShopReputationView : BaseCustomView {
                 params.rightMargin = medalMargin
                 medal.layoutParams = params
             }
-            reputationLayout!!.addView(medal)
+            reputationLayout?.addView(medal)
         }
     }
 
     private fun setToolTip(pointValue: String, medalType: Int, level: Int) {
-        reputationLayout!!.setOnClickListener(object : OnClickListener {
-            @SuppressLint("UnifyComponentUsage")
-            override fun onClick(v: View) {
-                val dialog = BottomSheetDialog(context)
-                dialog.apply {
-                    dialog.setContentView(com.tokopedia.design.R.layout.seller_reputation_bottom_sheet_dialog)
-                    val point: Typography? =
-                        dialog.findViewById(com.tokopedia.design.R.id.reputation_point)
-                    val pointText: String =
-                        if (TextUtils.isEmpty(pointValue) || (pointValue == "0")) context.getString(
-                            com.tokopedia.design.R.string.no_reputation_yet
-                        ) else pointValue.toString() + " " + context.getString(
-                            R.string.point
-                        )
-                    if (point != null) {
-                        point.text = pointText
-                    }
-                    val sellerReputation: LinearLayout? =
-                        dialog.findViewById(com.tokopedia.design.R.id.seller_reputation)
-                    updateMedalView(sellerReputation, getIconResource(medalType), level)
-                    val closeButton: Button? = dialog.findViewById(R.id.dialog_close_button)
-                    if (closeButton != null) closeButton.setOnClickListener(object : OnClickListener {
-                        override fun onClick(v: View) {
-                            dialog.dismiss()
-                        }
-                    })
-                    dialog.show()
+        reputationLayout?.setOnClickListener {
+            val dialog = BottomSheetDialog(context)
+            dialog.apply {
+                dialog.setContentView(com.tokopedia.design.R.layout.seller_reputation_bottom_sheet_dialog)
+                val point: Typography? =
+                    dialog.findViewById(com.tokopedia.design.R.id.reputation_point)
+                val pointText: String =
+                    if (TextUtils.isEmpty(pointValue) || (pointValue == "0")) context.getString(
+                        com.tokopedia.design.R.string.no_reputation_yet
+                    ) else "$pointValue " + context.getString(
+                        R.string.point
+                    )
+                if (point != null) {
+                    point.text = pointText
                 }
+                val sellerReputation: LinearLayout? =
+                    dialog.findViewById(com.tokopedia.design.R.id.seller_reputation)
+                updateMedalView(sellerReputation, getIconResource(medalType), level)
+                val closeButton: Button? = dialog.findViewById(R.id.dialog_close_button)
+                closeButton?.setOnClickListener({ dialog.dismiss() })
+                dialog.show()
             }
-        })
+        }
     }
 
     private fun getGeneratedMedalImage(@DrawableRes imageResource: Int): ImageView {

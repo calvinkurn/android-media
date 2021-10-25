@@ -12,9 +12,9 @@ import javax.inject.Inject
 /**
  * @author by nisie on 9/28/17.
  */
-class ReplyReviewMapper @Inject constructor() : Func1<Response<TokopediaWsV4Response?>, SendReplyReviewDomain> {
-    override fun call(response: Response<TokopediaWsV4Response?>): SendReplyReviewDomain {
-        return if (response.isSuccessful) {
+class ReplyReviewMapper @Inject constructor() : Func1<Response<TokopediaWsV4Response?>?, SendReplyReviewDomain> {
+    override fun call(response: Response<TokopediaWsV4Response?>?): SendReplyReviewDomain {
+        return if (response?.isSuccessful == true) {
             if ((!response.body()!!.isNullData
                         && response.body()!!.errorMessageJoined == "")
                 || !response.body()!!.isNullData && response.body()!!.errorMessages == null
@@ -34,7 +34,7 @@ class ReplyReviewMapper @Inject constructor() : Func1<Response<TokopediaWsV4Resp
             }
         } else {
             var messageError: String? = ""
-            if (response.body() != null) {
+            if (response?.body() != null) {
                 messageError = response.body()!!.errorMessageJoined
             }
             if (!TextUtils.isEmpty(messageError)) {
@@ -42,7 +42,7 @@ class ReplyReviewMapper @Inject constructor() : Func1<Response<TokopediaWsV4Resp
                     messageError
                 )
             } else {
-                throw RuntimeException(response.code().toString())
+                throw RuntimeException(response?.code().toString())
             }
         }
     }

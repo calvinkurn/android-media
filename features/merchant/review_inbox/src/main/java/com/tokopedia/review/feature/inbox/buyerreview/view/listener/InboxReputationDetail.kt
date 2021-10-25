@@ -1,13 +1,11 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.listener
 
-import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationItemUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ImageUpload
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailItemUiModel
-import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 
 /**
@@ -27,16 +25,16 @@ interface InboxReputationDetail {
         fun showLoadingDialog()
         fun finishLoadingDialog()
         fun showRefresh()
-        fun onErrorRefreshInboxDetail(throwable: Throwable?)
+        fun onErrorRefreshInboxDetail(throwable: Throwable)
         fun onSuccessRefreshGetInboxDetail(
             inboxReputationViewModel: InboxReputationItemUiModel,
-            visitables: List<Visitable<*>>?
+            visitables: List<Visitable<*>>
         )
 
         fun finishRefresh()
         fun goToPreviewImage(position: Int, list: ArrayList<ImageUpload>)
         val tab: Int
-        val context: Context
+        fun getErrorMessage(throwable: Throwable = Throwable()): String
         fun onGoToReportReview(shopId: Long, reviewId: String?)
         fun onSuccessSendSmiley(score: Int)
         fun onErrorFavoriteShop(errorMessage: String?)
@@ -56,7 +54,7 @@ interface InboxReputationDetail {
         fun onSmoothScrollToReplyView(adapterPosition: Int)
         fun onGoToProfile(reviewerId: Long)
         fun onGoToShopInfo(shopId: Long)
-        val userSession: UserSessionInterface?
+        fun getShopId(): String
         fun onClickReviewOverflowMenu(
             inboxReputationDetailItemUiModel: InboxReputationDetailItemUiModel,
             adapterPosition: Int
