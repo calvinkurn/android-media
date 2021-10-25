@@ -70,6 +70,7 @@
     <string name="path_advanced_setting" translatable="false">/advanced-setting</string>
     <string name="path_payment_setting" translatable="false">/payment-setting</string>
     <string name="path_home_account_old" translatable="false">/account-home-old</string>
+    <string name="path_youtube_video" translatable="false">/youtube-video</string>
 
     <string name="path_push_notification_troubleshooter" translatable="false">/push-notification-troubleshooter</string>
     <string name="path_user_login" translatable="false">/login</string>

@@ -496,6 +496,10 @@ public interface ConstantTransactionAnalytics {
         String CLICK_ON_PRODUCT_IMAGE_ON_COLLAPSE_VIEW = "click on product image on collapse view";
         String CLICK_LIHAT_SELENGKAPNYA_FOR_NOW_PRODUCT = "click lihat selengkapnya for now product";
         String CLICK_LIHAT_ON_PLUS_LAINNYA_ON_NOW_PRODUCT = "click lihat on + lainnya on now product";
+
+        // Cart Bundling
+        String CLICK_LIHAT_BARANG_SERUPA_FOR_UNAVAILABLE_BUNDLE_PACKAGE = "click lihat barang serupa for Unavailable Bundle Package";
+        String CLICK_UBAH_IN_PRODUCT_BUNDLING_PACKAGE_PRODUCT_CARD = "click ubah in product bundling package product card";
     }
 
     interface EventLabel {

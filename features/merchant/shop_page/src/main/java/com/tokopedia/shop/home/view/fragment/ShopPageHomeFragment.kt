@@ -461,6 +461,15 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         shopHomeAdapter.resumeSliderBannerAutoScroll()
+        checkShowScrollToTopButton()
+    }
+
+    private fun checkShowScrollToTopButton() {
+        if (isShowScrollToTopButton()) {
+            showScrollToTopButton()
+        } else {
+            hideScrollToTopButton()
+        }
     }
 
     private fun loadInitialDataAfterOnViewCreated() {
@@ -985,7 +994,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     (parentFragment as? NewShopPageFragment)?.expandHeader()
                 }
                 if (firstCompletelyVisibleItemPosition != latestCompletelyVisibleItemIndex)
-                    (parentFragment as? NewShopPageFragment)?.hideScrollToTopButton()
+                    hideScrollToTopButton()
                 latestCompletelyVisibleItemIndex = firstCompletelyVisibleItemPosition
                 val lastCompletelyVisibleItemPosition = layoutManager?.findLastCompletelyVisibleItemPositions(
                         null
@@ -1006,7 +1015,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 if(state ==  SCROLL_STATE_IDLE){
                     val firstCompletelyVisibleItemPosition = (layoutManager as? StaggeredGridLayoutManager)?.findFirstCompletelyVisibleItemPositions(null)?.getOrNull(0).orZero()
                     if (firstCompletelyVisibleItemPosition > 0) {
-                        (parentFragment as? NewShopPageFragment)?.showScrollToTopButton()
+                        showScrollToTopButton()
                     }
                 }
             }
@@ -1074,8 +1083,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun getWidgetContentData(listWidgetLayoutToLoad: MutableList<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>) {
-        val widgetUserAddressLocalData = ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
-        viewModel?.getWidgetContentData(listWidgetLayoutToLoad.toList(), shopId, widgetUserAddressLocalData)
+        if(listWidgetLayoutToLoad.isNotEmpty()) {
+            val widgetUserAddressLocalData = ShopUtil.getShopPageWidgetUserAddressLocalData(context)
+                    ?: LocalCacheModel()
+            viewModel?.getWidgetContentData(listWidgetLayoutToLoad.toList(), shopId, widgetUserAddressLocalData)
+        }
     }
 
     private fun isWidgetMvc(data: ShopPageHomeWidgetLayoutUiModel.WidgetLayout): Boolean {
@@ -1087,12 +1099,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun getListWidgetLayoutToLoad(lastCompletelyVisibleItemPosition: Int): MutableList<ShopPageHomeWidgetLayoutUiModel.WidgetLayout> {
-        return if (shopHomeAdapter.isLoadFirstWidgetContentData()) {
-            listWidgetLayout.subList(LIST_WIDGET_LAYOUT_START_INDEX, lastCompletelyVisibleItemPosition + 1)
+        return if (listWidgetLayout.isNotEmpty()) {
+            if (shopHomeAdapter.isLoadFirstWidgetContentData()) {
+                listWidgetLayout.subList(LIST_WIDGET_LAYOUT_START_INDEX, lastCompletelyVisibleItemPosition + 1)
+            } else {
+                val toIndex = LOAD_WIDGET_ITEM_PER_PAGE.takeIf { it <= listWidgetLayout.size }
+                        ?: listWidgetLayout.size
+                listWidgetLayout.subList(LIST_WIDGET_LAYOUT_START_INDEX, toIndex)
+            }
         } else {
-            val toIndex = LOAD_WIDGET_ITEM_PER_PAGE.takeIf { it <= listWidgetLayout.size }
-                    ?: listWidgetLayout.size
-            listWidgetLayout.subList(LIST_WIDGET_LAYOUT_START_INDEX, toIndex)
+            mutableListOf()
         }
     }
 
@@ -2353,6 +2369,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun isShowScrollToTopButton(): Boolean {
         return latestCompletelyVisibleItemIndex > 0
+    }
+
+    private fun hideScrollToTopButton(){
+        (parentFragment as? NewShopPageFragment)?.hideScrollToTopButton()
+    }
+
+    private fun showScrollToTopButton(){
+        (parentFragment as? NewShopPageFragment)?.showScrollToTopButton()
     }
 
     //region play widget

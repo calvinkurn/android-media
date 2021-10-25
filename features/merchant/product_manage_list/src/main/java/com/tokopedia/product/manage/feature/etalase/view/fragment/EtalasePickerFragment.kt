@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
+import com.tokopedia.product.manage.databinding.ProductManageEtalasePickerBinding
 import com.tokopedia.product.manage.feature.etalase.data.model.EtalaseViewModel
 import com.tokopedia.product.manage.feature.etalase.di.DaggerProductManageEtalaseComponent
 import com.tokopedia.product.manage.feature.etalase.di.ProductManageEtalaseComponent
@@ -26,7 +27,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.product_manage_etalase_picker.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class EtalasePickerFragment: Fragment(), EtalaseViewHolder.OnClickListener,
@@ -49,8 +50,11 @@ class EtalasePickerFragment: Fragment(), EtalaseViewHolder.OnClickListener,
 
     private val adapter by lazy { EtalaseAdapter(this) }
 
+    private var binding by autoClearedNullable<ProductManageEtalasePickerBinding>()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.product_manage_etalase_picker, container, false)
+        binding = ProductManageEtalasePickerBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -103,15 +107,15 @@ class EtalasePickerFragment: Fragment(), EtalaseViewHolder.OnClickListener,
     override fun onClickEtalase(isChecked: Boolean, etalase: EtalaseViewModel) {
         togglePreviousSelectedEtalase(etalase)
         setCurrentSelectedEtalase(isChecked, etalase)
-        btnSave.isEnabled = isChecked
+        binding?.btnSave?.isEnabled = isChecked
     }
 
     private fun setupSearchBar() {
-        searchBar.clearFocus()
+        binding?.searchBar?.clearFocus()
 
-        searchBar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
+        binding?.searchBar?.searchBarTextField?.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                val keyword = searchBar.searchBarTextField.text.toString()
+                val keyword = binding?.searchBar?.searchBarTextField?.text?.toString().orEmpty()
 
                 if(keyword.isNotEmpty()) {
                     clearSelection()
@@ -125,7 +129,7 @@ class EtalasePickerFragment: Fragment(), EtalaseViewHolder.OnClickListener,
             false
         }
 
-        searchBar.searchBarIcon.setOnClickListener {
+        binding?.searchBar?.searchBarIcon?.setOnClickListener {
             resetSearch()
         }
     }
@@ -143,14 +147,18 @@ class EtalasePickerFragment: Fragment(), EtalaseViewHolder.OnClickListener,
     }
 
     private fun setupEtalaseList() {
-        etalaseList.adapter = adapter
+        binding?.etalaseList?.adapter = adapter
     }
 
     private fun setupEmptyState() {
-        emptyState.errorTitle.text = getString(R.string.product_manage_etalase_picker_empty_title)
-        emptyState.errorDescription.text = getString(R.string.product_manage_etalase_picker_empty_description)
-        emptyState.errorAction.text = getString(R.string.product_manage_add_etalase)
-        emptyState.setActionClickListener { goToAddEtalasePage() }
+        binding?.emptyState?.run {
+            errorTitle.text = getString(R.string.product_manage_etalase_picker_empty_title)
+            errorDescription.text = getString(R.string.product_manage_etalase_picker_empty_description)
+            errorAction.text = getString(R.string.product_manage_add_etalase)
+            setActionClickListener {
+                goToAddEtalasePage()
+            }
+        }
     }
 
     private fun goToAddEtalasePage() {
@@ -164,7 +172,7 @@ class EtalasePickerFragment: Fragment(), EtalaseViewHolder.OnClickListener,
     }
 
     private fun setupSaveButton() {
-        btnSave.setOnClickListener {
+        binding?.btnSave?.setOnClickListener {
             finishPickEtalase()
         }
     }
@@ -191,18 +199,18 @@ class EtalasePickerFragment: Fragment(), EtalaseViewHolder.OnClickListener,
     }
 
     private fun clearSearchBar() {
-        searchBar.searchBarTextField.text.clear()
+        binding?.searchBar?.searchBarTextField?.text?.clear()
     }
 
     private fun clearSelection() {
         uncheckAllEtalase()
-        btnSave.isEnabled = false
+        binding?.btnSave?.isEnabled = false
         viewModel.selectedEtalase = null
     }
 
     private fun uncheckAllEtalase() {
         for (i in 0..adapter.itemCount) {
-            val viewHolder = etalaseList.findViewHolderForAdapterPosition(i)
+            val viewHolder = binding?.etalaseList?.findViewHolderForAdapterPosition(i)
             (viewHolder as? EtalaseViewHolder)?.uncheckEtalase()
         }
     }
@@ -210,7 +218,7 @@ class EtalasePickerFragment: Fragment(), EtalaseViewHolder.OnClickListener,
     private fun togglePreviousSelectedEtalase(etalase: EtalaseViewModel) {
         viewModel.selectedEtalase?.let {
             if(it != etalase) {
-                val viewHolder = etalaseList.findViewHolderForAdapterPosition(it.position)
+                val viewHolder = binding?.etalaseList?.findViewHolderForAdapterPosition(it.position)
                 (viewHolder  as? EtalaseViewHolder)?.toggleEtalase()
             }
         }
@@ -235,11 +243,11 @@ class EtalasePickerFragment: Fragment(), EtalaseViewHolder.OnClickListener,
 
     private fun onGetEtalaseSuccess(etalase: List<EtalaseViewModel>) {
         if(etalase.isNotEmpty()) {
-            btnSave.show()
+            binding?.btnSave?.show()
             showEtalaseList(etalase)
         } else {
-            btnSave.hide()
-            emptyState.show()
+            binding?.btnSave?.hide()
+            binding?.emptyState?.show()
         }
     }
 

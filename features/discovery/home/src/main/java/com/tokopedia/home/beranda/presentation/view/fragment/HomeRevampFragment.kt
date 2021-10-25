@@ -1282,6 +1282,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_RESUME_HOME)
             getHomeViewModel().isFirstLoad = false
         }
+        manageCoachmarkOnFragmentVisible(isVisibleToUser = false)
     }
 
     private fun startTokopointRotation(rotateNow: Boolean = false) {
@@ -1300,11 +1301,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             chooseAddressAbTestCondition(
                     ifChooseAddressActive = {
                         if (!validateChooseAddressWidget()) {
-                            getHomeViewModel().refresh(isFirstInstall())
+                            getHomeViewModel().refresh(isFirstInstall = isFirstInstall())
                         }
                     },
                     ifChooseAddressNotActive = {
-                        getHomeViewModel().refresh(isFirstInstall())
+                        getHomeViewModel().refresh(isFirstInstall = isFirstInstall())
                     }
             )
 
@@ -2162,11 +2163,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 ConstantKey.RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST
         )
         if (activity != null && remoteConfigEnable) {
-            activity?.startActivity(PromoListActivity.newInstance(
-                    activity,
-                    PromoListActivity.DEFAULT_AUTO_SELECTED_MENU_ID,
-                    PromoListActivity.DEFAULT_AUTO_SELECTED_CATEGORY_ID
-            ))
+            RouteManager.route(requireActivity(), ApplinkConstInternalPromo.PROMO_LIST)
         } else {
             if (activity != null) {
                 showBannerWebViewOnAllPromoClickFromHomeIntent(BerandaUrl.PROMO_URL + BerandaUrl.FLAG_APP, getString(R.string.title_activity_promo))
@@ -2275,6 +2272,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     .setLocalCacheModel(localCacheModel)
             )
             chooseAddressWidgetInitialized = false
+            getHomeViewModel().refresh(forceRefresh = true, isFirstInstall = isFirstInstall())
         }
     }
 
@@ -2309,7 +2307,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         removeNetworkError()
         homeRecyclerView?.isEnabled = false
         if (::viewModel.isInitialized) {
-            getHomeViewModel().refreshHomeData(isFirstInstall())
+            getHomeViewModel().refreshHomeData()
         }
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
@@ -2981,7 +2979,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         )
         if (feedViewHolder is HomeRecommendationFeedViewHolder) {
             feedViewHolder.showFeedTabShadow(show)
-            feedViewHolder.hidePmProCoachmark()
         }
     }
 
