@@ -51,7 +51,7 @@ class InAppLocalDatabaseController private constructor(private val application: 
         launchCatchError(block = {
             val isSaved = saveInAppUseCase.saveInApp(cmInApp)
             if (isSaved) {
-                inAppSavedListener.onInAppSaved(cmInApp.isAmplification)
+                inAppSavedListener.onInAppSaved()
             }
         }, onError = {
             //todo Timber Logging by lalit
@@ -78,5 +78,5 @@ interface InAppFetchListener {
 }
 
 interface InAppSavedListener {
-    fun onInAppSaved(isAmplification: Boolean)
+    fun onInAppSaved()
 }
