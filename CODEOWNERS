@@ -149,7 +149,7 @@
 
 /features/payment/payment/                      		@tokopedia/android-minionbob-dev
 /features/transaction/atc_common/               		@tokopedia/android-minionbob-dev
-/features/transaction/buyerorder/                       @tokopedia/android-minionbob-dev
+/features/transaction/unifyorderhistory/                @tokopedia/android-minionbob-dev
 /features/transaction/purchase_platform_common/ 		@tokopedia/android-minionbob-dev
 /features/transaction/cart/        		                @tokopedia/android-minionbob-dev
 /features/transaction/cart_common/        		        @tokopedia/android-minionbob-dev
@@ -356,6 +356,9 @@
 /testapp/                                               @tokopedia/android-core-dev
 
 /testing/joint/pdp_checkout/                            @tokopedia/android-minionbob-dev @tokopedia/android-minionstuart-dev
+
+/features/transaction/buyerorder/                      @tokopedia/android-minionstuart-dev @tokopedia/android-minionmark-dev
+
 
 /customerapp/src/main/java/com/tokopedia/tkpd/ConsumerMainApplication.java                      @tokopedia/android-gatekeeperloadtime-dev
 /customerapp/src/main/java/com/tokopedia/tkpd/ConsumerRouterApplication.java                    @tokopedia/android-gatekeeperloadtime-dev
