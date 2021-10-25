@@ -41,6 +41,35 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
         return false
     }
 
+    suspend fun getVoucherUseCase(componentId: String, pageEndPoint: String, productsLimit: Int = VOUCHER_PER_PAGE): Boolean {
+        val component = getComponent(componentId, pageEndPoint)
+        val parentComponent = component?.parentComponentId?.let { getComponent(it, pageEndPoint) }
+        parentComponent?.let { component1 ->
+            val isDynamic = component1.properties?.dynamic ?: false
+            val (voucherListData,nextPage) = repository.getMerchantVouchers(
+                if (isDynamic && !component1.dynamicOriginalId.isNullOrEmpty())
+                    component1.dynamicOriginalId!! else component1.id,
+                getQueryParameterMap(component1.pageLoadedCounter,
+                    productsLimit,
+                    component1.nextPageKey,
+                    component1.userAddressData),
+                pageEndPoint,
+                component1.name)
+            component1.nextPageKey = nextPage
+            if (voucherListData.isEmpty()) {
+                component1.showVerticalLoader = false
+            } else {
+                component1.pageLoadedCounter += 1
+                component1.showVerticalLoader = true
+                updatePaginatedData(voucherListData,component1)
+                (component1.getComponentsItem() as ArrayList<ComponentsItem>).addAll(voucherListData)
+            }
+            component1.verticalProductFailState = false
+            return true
+        }
+        return false
+    }
+
     suspend fun getPaginatedData(componentId: String, pageEndPoint: String, productsLimit: Int = VOUCHER_PER_PAGE): Boolean {
         val component = getComponent(componentId, pageEndPoint)
         val parentComponent = component?.parentComponentId?.let { getComponent(it, pageEndPoint) }

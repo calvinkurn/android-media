@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mer
 
 import android.app.Application
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.usecase.MerchantVoucherUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -27,7 +28,8 @@ class MerchantVoucherListViewModel(val application: Application, val components:
         launchCatchError(block = {
             this@MerchantVoucherListViewModel.syncData.value = merchantVoucherUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)
         }, onError = {
-//            Todo::Error Handling
+            getComponent(components.id, components.pageEndPoint)?.verticalProductFailState = true
+            this@MerchantVoucherListViewModel.syncData.value = true
         })
     }
 }

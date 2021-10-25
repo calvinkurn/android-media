@@ -37,16 +37,10 @@ class LoadMoreViewModel(val application: Application, private val components: Co
                 }
             }
         }, onError = {
-            when(components.parentComponentName) {
-                ComponentNames.MerchantVoucherList.componentName -> {
-// Todo:: Error Handling for Merchant Voucher List
-                }
-                else ->
-                    getComponent(
-                        components.parentComponentId,
-                        components.pageEndPoint
-                    )?.verticalProductFailState = true
-            }
+            getComponent(
+                components.parentComponentId,
+                components.pageEndPoint
+            )?.verticalProductFailState = true
             syncData.value = true
         })
     }
