@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.adapter.util
 
 import android.annotation.SuppressLint
-import android.text.Selection
 import android.text.Spannable
 import android.text.style.URLSpan
 import android.view.MotionEvent
@@ -16,41 +15,41 @@ class MessageOnTouchListener(
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
         if (v == null || event == null) return false
-        val widget = v as? TextView ?: return false
+        val textView = v as? TextView ?: return false
         val action = event.action
         if (action == MotionEvent.ACTION_UP ||
             action == MotionEvent.ACTION_DOWN
         ) {
             var x = event.x.toInt()
             var y = event.y.toInt()
-            x -= widget.totalPaddingLeft
-            y -= widget.totalPaddingTop
-            x += widget.scrollX
-            y += widget.scrollY
-            val layout = widget.layout
+            x -= textView.totalPaddingLeft
+            y -= textView.totalPaddingTop
+            x += textView.scrollX
+            y += textView.scrollY
+            val layout = textView.layout
             val line = layout.getLineForVertical(y)
-            val buffer = Spannable.Factory.getInstance().newSpannable(widget.text)
+            val buffer = Spannable.Factory.getInstance().newSpannable(textView.text)
             val off = layout.getOffsetForHorizontal(line, x.toFloat())
-            val link = buffer.getSpans(off, off, URLSpan::class.java)
-            if (link.isNotEmpty()) {
-                if (action == MotionEvent.ACTION_UP) {
-                    val clickedUrl = link[0].url
-                    when {
-                        viewListener.shouldHandleUrlManually(clickedUrl) -> {
-                            viewListener.onGoToWebView(clickedUrl, clickedUrl)
-                            return true
-                        }
-                        viewListener.isBranchIOLink(clickedUrl) -> {
-                            viewListener.handleBranchIOLinkClick(clickedUrl)
-                            return true
+            if (buffer.length >= off) {
+                val link = buffer.getSpans(off, off, URLSpan::class.java)
+                if (link.isNotEmpty()) {
+                    if (action == MotionEvent.ACTION_UP) {
+                        val clickedUrl = link[0].url
+                        when {
+                            viewListener.shouldHandleUrlManually(clickedUrl) -> {
+                                viewListener.onGoToWebView(clickedUrl, clickedUrl)
+                                return true
+                            }
+                            viewListener.isBranchIOLink(clickedUrl) -> {
+                                viewListener.handleBranchIOLinkClick(clickedUrl)
+                                return true
+                            }
+                            else -> {
+                                link[0].onClick(textView)
+                                return true
+                            }
                         }
                     }
-                } else {
-                    Selection.setSelection(
-                        buffer,
-                        buffer.getSpanStart(link[0]),
-                        buffer.getSpanEnd(link[0])
-                    )
                     return true
                 }
             }
