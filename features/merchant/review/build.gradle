@@ -143,8 +143,6 @@ dependencies {
     androidTestImplementation projectOrAar(rootProject.ext.features.loginregister)
     androidTestImplementation rootProject.ext.miscDependencies.exoPlayer
     androidTestImplementation rootProject.ext.miscDependencies.rxJava
-    implementation rootProject.ext.miscDependencies.exoPlayer
-    implementation rootProject.ext.miscDependencies.rxJava
 }
 
 project.ext {
