@@ -22,9 +22,10 @@ import com.tokopedia.tokopedianow.categoryfilter.presentation.uimodel.CategoryFi
 import com.tokopedia.tokopedianow.categoryfilter.presentation.view.CategoryFilterChipView
 import com.tokopedia.tokopedianow.categoryfilter.presentation.viewmodel.TokoNowCategoryFilterViewModel
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowCategoryFilterBinding
-import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -122,20 +123,22 @@ class TokoNowCategoryFilterBottomSheet : BottomSheetUnify() {
 
     private fun observeLiveData() {
         observe(viewModel.categoryList) {
-            filterChipViewList.clear()
-            it.data.forEach { category ->
-                val filterChipView = createFilterChipView(category)
+            if(it is Success) {
+                filterChipViewList.clear()
+                it.data.forEach { category ->
+                    val filterChipView = createFilterChipView(category)
 
-                val item = AccordionDataUnify(
-                    title = category.title,
-                    expandableView = filterChipView,
-                    isExpanded = true
-                ).apply {
-                    borderBottom = false
+                    val item = AccordionDataUnify(
+                        title = category.title,
+                        expandableView = filterChipView,
+                        isExpanded = true
+                    ).apply {
+                        borderBottom = false
+                    }
+
+                    accordionFilter?.addGroup(item)
+                    filterChipViewList.add(filterChipView)
                 }
-
-                accordionFilter?.addGroup(item)
-                filterChipViewList.add(filterChipView)
             }
         }
 

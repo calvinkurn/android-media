@@ -117,6 +117,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val productDetailInfoData: ProductDetailInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_DETAIL] as? ProductDetailInfoDataModel
 
+    val productBundlingData: ProductBundlingDataModel?
+        get() = mapOfData[ProductDetailConstant.PRODUCT_BUNDLING] as? ProductBundlingDataModel
+
     fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?, enableVideo: Boolean, loadInitialData: Boolean = false) {
         dataP1?.let {
 
@@ -399,6 +402,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     totalRatingCount = it.rating.totalRating
                     totalReviewCount = it.rating.totalReviewTextAndImage
                 }
+            }
+            
+            updateData(ProductDetailConstant.PRODUCT_BUNDLING) {
+                productBundlingData?.bundleInfo = it.bundleInfoMap[productId]
             }
 
             if (it.ticker.tickerInfo.isEmpty()) {
@@ -761,6 +768,13 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             shipmentData?.freeOngkirUrl = freeOngkirData.imageURL
             shipmentData?.tokoCabangIconUrl = freeOngkirData.tokoCabangImageURL
             shipmentData?.localDestination = if (userLocationLocalData.address_id == "" || userLocationLocalData.address_id == "0") "" else userLocationLocalData.label
+        }
+    }
+
+    fun updateProductBundlingData(p2Data: ProductInfoP2UiData?, productId: String?) {
+        if (p2Data == null || productId == null) return
+        updateData(ProductDetailConstant.PRODUCT_BUNDLING) {
+            productBundlingData?.bundleInfo = p2Data.bundleInfoMap[productId]
         }
     }
 

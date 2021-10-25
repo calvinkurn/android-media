@@ -2,9 +2,9 @@
 <androidx.cardview.widget.CardView android:id="@+id/order_product_card"
     android:layout_width="wrap_content"
     android:layout_height="66dp"
-    app:cardElevation="@dimen/dp_4"
-    app:cardCornerRadius="@dimen/dp_8"
-    android:layout_marginBottom="@dimen/dp_4"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="8dp"
+    android:layout_marginBottom="4dp"
     android:foreground="?attr/selectableItemBackground"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -18,8 +18,8 @@
         android:background="@color/Unify_Static_White_96">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginEnd="@dimen/dp_12"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
             android:layout_gravity="center_vertical"
             android:id="@+id/transaction_others_count"
             android:textStyle="bold"
@@ -30,11 +30,11 @@
             android:layout_height="wrap_content"/>
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/transaction_others_icon"
-            android:layout_marginEnd="@dimen/dp_12"
+            android:layout_marginEnd="12dp"
             app:icon_name="CHEVRON_RIGHT"
             android:layout_gravity="center_vertical"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"/>
+            android:layout_width="24dp"
+            android:layout_height="24dp"/>
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

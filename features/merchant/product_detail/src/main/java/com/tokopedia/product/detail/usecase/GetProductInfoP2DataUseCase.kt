@@ -430,7 +430,31 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 totalRating
                 totalReviewTextAndImage
             }
-             ticker {
+            bundleInfo {
+              productID
+              bundleID
+              groupID
+              name
+              type
+              status
+              titleComponent
+              finalPriceBundling
+              originalPriceBundling
+              savingPriceBundling
+              preorderString
+              bundleItems {
+                productID
+                name
+                picURL
+                status
+                quantity
+                originalPrice
+                bundlePrice
+                discountPercentage
+                stock
+              }
+  	        }
+            ticker {
               tickerInfo {
                 productIDs
                 tickerData {
@@ -520,6 +544,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.helpfulReviews = mostHelpFulReviewData.list
             p2UiData.imageReviews = DynamicProductDetailMapper.generateImageReviewUiData(reviewImage)
             p2UiData.alternateCopy = cartRedirection.alternateCopy
+            p2UiData.bundleInfoMap = bundleInfoList.associateBy { it.productId }
             p2UiData.rating = rating
             p2UiData.ticker = ticker
         }

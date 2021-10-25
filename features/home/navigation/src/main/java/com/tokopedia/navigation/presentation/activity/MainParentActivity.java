@@ -26,6 +26,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import androidx.annotation.Keep;
 import androidx.annotation.RestrictTo;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
@@ -57,8 +58,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment;
-import com.tokopedia.cart.view.CartFragment;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.devicefingerprint.appauth.AppAuthWorker;
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker;
@@ -91,6 +90,7 @@ import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitori
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
+import com.tokopedia.purchase_platform.common.utils.Switch;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -115,6 +115,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import dagger.Lazy;
+import timber.log.Timber;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE;
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
@@ -201,6 +202,8 @@ public class MainParentActivity extends BaseActivity implements
     public static final int RANK_DIGITAL_SHORTCUT = 2;
     public static final int RANK_WISHLIST_SHORTCUT = 1;
     public static final String UOH_SOURCE_FILTER_KEY = "source_filter";
+    public static final String PARAM_ACTIVITY_ORDER_HISTORY = "activity_order_history";
+    public static final String PARAM_HOME = "home";
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
@@ -758,17 +761,32 @@ public class MainParentActivity extends BaseActivity implements
         fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, getIntent().getExtras()));
         fragmentList.add(OfficialHomeContainerFragment.newInstance(getIntent().getExtras()));
         if (!isNewNavigation) {
-            fragmentList.add(CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
+            Bundle cartBundle = getIntent().getExtras();
+            if (cartBundle == null) {
+                cartBundle = new Bundle();
+            }
+            cartBundle.putString("CartFragment", MainParentActivity.class.getSimpleName());
+
+            boolean isBundleToggleOn = Switch.INSTANCE.isBundleToggleOn(this);
+            if (isBundleToggleOn) {
+                fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.CART_FRAGMENT, cartBundle));
+            } else {
+                fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.OLD_CART_FRAGMENT, cartBundle));
+            }
             fragmentList.add(AccountHomeFragment.newInstance(getIntent().getExtras()));
         } else {
             Bundle bundleWishlist = new Bundle();
             bundleWishlist.putString(WishlistFragment.PARAM_LAUNCH_WISHLIST, WishlistFragment.PARAM_HOME);
             fragmentList.add(WishlistFragment.Companion.newInstance(bundleWishlist));
 
-            Bundle bundle = new Bundle();
-            bundle.putString(UOH_SOURCE_FILTER_KEY, "");
-            bundle.putString(UohListFragment.PARAM_ACTIVITY_ORDER_HISTORY, UohListFragment.PARAM_HOME);
-            fragmentList.add(UohListFragment.newInstance(bundle));
+            Bundle bundleUoh = getIntent().getExtras();
+            if (bundleUoh == null) {
+                bundleUoh = new Bundle();
+            }
+            bundleUoh.putString(UOH_SOURCE_FILTER_KEY, "");
+            bundleUoh.putString(PARAM_ACTIVITY_ORDER_HISTORY, PARAM_HOME);
+            bundleUoh.putString("UohListFragment", MainParentActivity.class.getSimpleName());
+            fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.UOH_LIST_FRAGMENT, bundleUoh));
         }
 
         return fragmentList;
