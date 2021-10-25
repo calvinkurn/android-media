@@ -18,7 +18,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.paylater.domain.model.Benefit
-import com.tokopedia.pdpsimulation.paylater.domain.model.BottomSheetDetail
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.GatewayDetail
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterOfferDescriptionAdapter
@@ -96,8 +95,8 @@ class PayLaterPaymentOptionsFragment : Fragment() {
                     RedirectionType.NonClickable -> {
                         btnHowToUse.isClickable = false
                     }
-                    RedirectionType.GopayBottomSheet ->{
-                            openGopayBottomSheet();
+                    RedirectionType.GopayBottomSheet -> {
+                        openGopayBottomSheet()
                     }
                 }
 
@@ -112,7 +111,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
     private fun openGopayBottomSheet() {
         val bundle = Bundle()
-        bundle.putParcelable(PayLaterTokopediaGopayBottomsheet.REDIRECTION_URL,responseData?.cta)
+        bundle.putParcelable(PayLaterTokopediaGopayBottomsheet.REDIRECTION_URL, responseData?.cta)
 
     }
 
@@ -290,8 +289,8 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         data.cta?.cta_type?.let {
             buttonStatus = when {
                 buttonRedirectionWeb.contains(it) -> RedirectionType.RedirectionWebView
-                buttonRedirectionBottomSheet.contains(it) ->{
-                  if(data.cta.bottomSheet?.isShow == true)
+                buttonRedirectionBottomSheet.contains(it) -> {
+                    if (data.cta.bottomSheet?.isShow == true)
                         RedirectionType.GopayBottomSheet
                     else
                         RedirectionType.HowToDetail
@@ -394,7 +393,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 }
 
 enum class RedirectionType {
-    HowToDetail, GopayBottomSheet,RedirectionWebView, NonClickable
+    HowToDetail, GopayBottomSheet, RedirectionWebView, NonClickable
 }
 
 enum class GatewayStatusType {
