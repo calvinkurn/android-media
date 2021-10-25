@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingTop="@dimen/dp_20">
+    android:paddingTop="20dp">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
@@ -17,7 +17,7 @@
         android:id="@+id/leftFirst"
         android:layout_width="@dimen/gamification_shimmer_w"
         android:layout_height="@dimen/gamification_shimmer_w"
-        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginStart="10dp"
         app:layout_constraintEnd_toEndOf="@id/guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -26,7 +26,7 @@
         android:id="@+id/leftSecond"
         android:layout_width="@dimen/gamification_shimmer_w"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="@+id/leftFirst"
         app:layout_constraintStart_toStartOf="@+id/leftFirst"
         app:layout_constraintTop_toBottomOf="@id/leftFirst" />
@@ -35,7 +35,7 @@
         android:id="@+id/leftThird"
         android:layout_width="@dimen/gamification_shimmer_w"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="@+id/leftSecond"
         app:layout_constraintStart_toStartOf="@+id/leftSecond"
         app:layout_constraintTop_toBottomOf="@id/leftSecond" />
@@ -52,7 +52,7 @@
         android:id="@+id/rightSecond"
         android:layout_width="@dimen/gamification_shimmer_w"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="@+id/rightFirst"
         app:layout_constraintStart_toStartOf="@+id/rightFirst"
         app:layout_constraintTop_toBottomOf="@id/rightFirst" />
@@ -60,7 +60,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="@dimen/gamification_shimmer_w"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="@+id/rightSecond"
         app:layout_constraintStart_toStartOf="@+id/rightSecond"
         app:layout_constraintTop_toBottomOf="@id/rightSecond" />

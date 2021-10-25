@@ -1,11 +1,8 @@
 package com.tokopedia.graphql.coroutines.data.extensions
 
-import com.google.gson.JsonSyntaxException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.MockUtil
 import com.tokopedia.graphql.domain.example.FooModel
-import com.tokopedia.graphql.domain.example.NestedFooModel
-import com.tokopedia.graphql.util.toMapParam
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -66,7 +63,7 @@ class ExtKtTest {
         }
     }
 
-    @Test(expected = JsonSyntaxException::class)
+    @Test(expected = IllegalArgumentException::class)
     fun `given map of arbitrary type should throw exception`() {
         runBlockingTest {
             repository.request<String, FooModel>("", "foo")
