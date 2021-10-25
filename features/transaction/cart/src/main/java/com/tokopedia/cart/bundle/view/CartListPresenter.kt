@@ -1,5 +1,6 @@
 package com.tokopedia.cart.bundle.view
 
+import android.util.Log
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -8,8 +9,6 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.bundle.data.model.request.AddCartToWishlistRequest
 import com.tokopedia.cart.bundle.data.model.response.shopgroupsimplified.CartData
-import com.tokopedia.cart.bundle.view.uimodel.PromoSummaryData
-import com.tokopedia.cart.bundle.view.uimodel.PromoSummaryDetailData
 import com.tokopedia.cart.bundle.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.bundle.domain.model.updatecart.UpdateAndValidateUseData
 import com.tokopedia.cart.bundle.domain.usecase.*
@@ -146,6 +145,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 return
             }
 
+            CartIdlingResource.increment()
             if (initialLoad) {
                 it.renderLoadGetCartData()
             } else if (!isLoadingTypeRefresh) {
@@ -165,6 +165,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     }
 
     private fun onErrorGetCartList(throwable: Throwable, initialLoad: Boolean) {
+        throwable.printStackTrace()
         Timber.e(throwable)
         view?.let {
             if (!initialLoad) {
@@ -174,6 +175,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             it.renderErrorInitialGetCartListData(throwable)
             it.stopCartPerformanceTrace()
             CartLogger.logOnErrorLoadCartPage(throwable)
+            CartIdlingResource.decrement()
         }
     }
 
@@ -193,6 +195,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             it.renderLoadGetCartDataFinish()
             it.renderInitialGetCartListDataSuccess(cartData)
             it.stopCartPerformanceTrace()
+            CartIdlingResource.decrement()
         }
     }
 
@@ -292,6 +295,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 }
 
                 it.showProgressLoading()
+                CartIdlingResource.increment()
             }
 
             val cartItemDataList: List<CartItemHolderData> = if (fireAndForget) {
@@ -330,6 +334,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     }
 
     private fun onErrorUpdateCartForCheckout(throwable: Throwable, cartItemDataList: List<CartItemHolderData>) {
+        throwable.printStackTrace()
         view?.let { view ->
             view.hideProgressLoading()
             view.renderErrorToShipmentForm(throwable)
@@ -353,6 +358,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 }
                 CartLogger.logOnErrorUpdateCartForCheckout(MessageErrorException(updateCartV2Data.data.error), cartItemDataList)
             }
+            CartIdlingResource.decrement()
         }
     }
 
