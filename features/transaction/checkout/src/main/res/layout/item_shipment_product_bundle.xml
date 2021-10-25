@@ -11,9 +11,9 @@
         android:id="@+id/v_separator_multiple_product_same_store"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:background="@color/Unify_N100"
         android:visibility="visible" />
 
@@ -21,9 +21,9 @@
         android:id="@+id/checkout_ticker_product_error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         app:closeButtonVisibility="gone"
         app:tickerShapeType="loose"
         app:tickerType="error" />
@@ -32,14 +32,14 @@
         android:id="@+id/product_bundling_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16">
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/image_bundle"
-            android:layout_width="@dimen/dp_20"
-            android:layout_height="@dimen/dp_20"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:unify_image_corner_radius="0" />
@@ -48,7 +48,7 @@
             android:id="@+id/text_bundle_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginStart="6dp"
             app:layout_constraintBottom_toBottomOf="@+id/image_bundle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/image_bundle"
@@ -60,7 +60,7 @@
         <com.google.android.flexbox.FlexboxLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="4dp"
             app:flexWrap="wrap"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -70,7 +70,7 @@
                 android:id="@+id/text_bundle_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_4"
+                android:layout_marginEnd="4dp"
                 android:gravity="center_vertical"
                 android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_2"
@@ -81,7 +81,7 @@
                 android:id="@+id/text_bundle_slash_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_4"
+                android:layout_marginEnd="4dp"
                 android:gravity="center_vertical"
                 android:textColor="@color/Unify_NN600"
                 app:typographyType="body_3"
@@ -97,19 +97,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_8">
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/rl_product_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_8">
+            android:layout_marginBottom="8dp">
 
             <View
                 android:id="@+id/v_bundling_product_separator"
-                android:layout_width="@dimen/dp_4"
+                android:layout_width="4dp"
                 android:layout_height="0dp"
                 android:background="@color/Unify_NN50"
                 android:fillViewport="true"
@@ -133,7 +133,7 @@
                 android:id="@+id/tv_product_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginStart="10dp"
                 android:layout_toEndOf="@id/iv_product_image"
                 android:ellipsize="end"
                 android:maxLines="2"
@@ -150,7 +150,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_product_name"
-                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginTop="4dp"
                 android:layout_toEndOf="@id/iv_product_image"
                 android:textColor="@color/Unify_N700_68"
                 app:layout_constraintEnd_toEndOf="@+id/tv_product_name"
@@ -165,7 +165,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/text_variant"
-                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginTop="4dp"
                 android:layout_toEndOf="@id/iv_product_image"
                 android:textColor="@color/Unify_N700_68"
                 app:layout_constraintEnd_toEndOf="@+id/tv_product_name"
@@ -180,7 +180,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_item_count_and_weight"
-                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginTop="4dp"
                 android:layout_toEndOf="@+id/tv_product_original_price"
                 android:gravity="center_vertical"
                 android:textColor="@color/Unify_N700_96"
@@ -196,7 +196,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_item_count_and_weight"
-                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginStart="4dp"
                 android:layout_toEndOf="@id/iv_product_image"
                 android:gravity="center_vertical"
                 android:textColor="@color/Unify_NN600"
@@ -214,7 +214,7 @@
                 android:layout_below="@+id/tv_product_price"
                 android:layout_toEndOf="@+id/iv_product_image"
                 android:foregroundGravity="center_vertical"
-                android:paddingTop="@dimen/dp_4"
+                android:paddingTop="4dp"
                 app:flexWrap="wrap"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -229,7 +229,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/layout_product_info"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="16dp"
                 android:layout_toEndOf="@+id/v_bundling_product_separator"
                 android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -245,13 +245,13 @@
             android:id="@+id/product_ticker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginBottom="8dp"
             app:closeButtonVisibility="gone"
             app:tickerShapeType="loose"
             app:tickerType="warning" />
 
         <RelativeLayout
-            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginBottom="8dp"
             android:id="@+id/rlayout_purchase_protection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -260,7 +260,7 @@
                 android:id="@+id/checkbox_ppp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8" />
+                android:layout_marginTop="8dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -273,7 +273,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_8">
+                    android:layout_marginTop="8dp">
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/text_link_text"
@@ -306,7 +306,7 @@
                     android:id="@+id/text_protection_desc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dp_16"
+                    android:layout_marginEnd="16dp"
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:textColor="@color/Unify_N700_68"
@@ -321,7 +321,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="8dp"
                 android:orientation="vertical">
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -339,7 +339,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:layout_marginTop="@dimen/dp_2"
+                    android:layout_marginTop="2dp"
                     android:text="@string/checkout_label_per_insurance_price"
                     android:textColor="@color/Unify_N700_68"
                     app:typographyType="small" />

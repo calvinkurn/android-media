@@ -144,7 +144,7 @@ class InboxPresenterTest {
 
         verify {
             inboxView.hideLoadMoreLoading()
-            inboxView.onRenderRecomInbox(any())
+            inboxView.onRenderRecomInbox(any(),any())
         }
     }
 
@@ -190,7 +190,7 @@ class InboxPresenterTest {
 
         verify {
             inboxView.hideLoadMoreLoading()
-            inboxView.onRenderRecomInbox(any())
+            inboxView.onRenderRecomInbox(any(), any())
         }
     }
 

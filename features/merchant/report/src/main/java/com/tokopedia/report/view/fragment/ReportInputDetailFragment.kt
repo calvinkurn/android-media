@@ -12,19 +12,23 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.report.R
-import kotlinx.android.synthetic.main.fragment_input_report_detail.*
+import com.tokopedia.report.databinding.FragmentInputReportDetailBinding
+import com.tokopedia.utils.lifecycle.autoCleared
 
 class ReportInputDetailFragment : BaseDaggerFragment() {
     private var minChar = -1
     private var maxChar = -1
     private var value = ""
 
+    private var binding by autoCleared<FragmentInputReportDetailBinding>()
+
     override fun getScreenName(): String? = null
 
     override fun initInjector() {}
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_input_report_detail, container,false)
+        binding = FragmentInputReportDetailBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -34,21 +38,22 @@ class ReportInputDetailFragment : BaseDaggerFragment() {
             maxChar = it.getInt(ARG_MAX_CHAR)
             value = it.getString(ARG_VALUE, "")
         }
+        with(binding) {
+            input.hint = getString(R.string.product_hint_product_report, minChar.toString())
+            input.setText(value)
+            btnCont.isEnabled = true
+            if (maxChar != -1)
+                input.filters = arrayOf(InputFilter.LengthFilter(maxChar))
 
-        input.hint = getString(R.string.product_hint_product_report, minChar.toString())
-        input.setText(value)
-        btn_cont.isEnabled = true
-        if (maxChar != -1)
-            input.filters = arrayOf(InputFilter.LengthFilter(maxChar))
-
-        btn_cont.setOnClickListener {
-            sendInputResult()
-            activity?.finish()
+            btnCont.setOnClickListener {
+                sendInputResult()
+                activity?.finish()
+            }
         }
     }
 
     fun sendInputResult() {
-        val inputText = input.text.toString()
+        val inputText = binding.input.text.toString()
         val intent = Intent().putExtra(INPUT_VALUE, inputText)
                 .putExtra(VALID_VALUE, inputText.length in minChar..maxChar)
         activity?.run {

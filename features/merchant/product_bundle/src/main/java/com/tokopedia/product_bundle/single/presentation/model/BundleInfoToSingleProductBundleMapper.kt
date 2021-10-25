@@ -14,7 +14,6 @@ import com.tokopedia.product_bundle.common.util.DiscountUtil
 object BundleInfoToSingleProductBundleMapper {
 
     private const val BUNDLE_INFO_ACTIVE: String = "1"
-    private const val BUNDLE_INFO_UPCOMING: String = "2"
     private const val BUNDLE_ITEM_SHOW: String = "1"
     private const val BUNDLE_ITEM_ACTIVE: String = "ACTIVE"
     private const val PREORDER_STATUS_ACTIVE: String = "ACTIVE"
@@ -30,7 +29,7 @@ object BundleInfoToSingleProductBundleMapper {
         val filteredBundleInfo = bundleInfo.filter {
             val bundleItem = it.bundleItems.firstOrNull()
             return@filter bundleItem != null &&
-                    (it.status == BUNDLE_INFO_ACTIVE || it.status == BUNDLE_INFO_UPCOMING) &&
+                    it.status == BUNDLE_INFO_ACTIVE &&
                     bundleItem.status == BUNDLE_ITEM_SHOW &&
                     bundleItem.productStatus == BUNDLE_ITEM_ACTIVE &&
                     it.isStockAvailable() &&
@@ -115,6 +114,7 @@ object BundleInfoToSingleProductBundleMapper {
             shopId = bundleInfo.shopID.toString(),
             quantity = bundleItem.minOrder,
             isSelected = bundleInfo.bundleID.toString() == selectedBundleId,
+            warehouseId = bundleInfo.warehouseID.toString()
         ).apply {
             if (isSelected) isVariantEmpty = emptyVariantProductIds.isNotEmpty()
         }

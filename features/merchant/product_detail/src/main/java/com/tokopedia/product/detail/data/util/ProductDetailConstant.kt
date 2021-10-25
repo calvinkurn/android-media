@@ -18,7 +18,6 @@ object ProductDetailConstant {
     const val PDP_P2_OTHER_TRACE = "mp_pdp_p2_other"
     const val PDP_P2_LOGIN_TRACE = "mp_pdp_p2_login"
     const val PDP_P2_DATA_TRACE = "mp_pdp_p2_data"
-    const val PDP_P3_TRACE = "mp_pdp_p3"
 
     const val PDP_RESULT_PLT_PREPARE_METRICS = "pdp_result_plt_prepare_metrics"
     const val PDP_RESULT_PLT_NETWORK_METRICS = "pdp_result_plt_network_metrics"
@@ -67,6 +66,7 @@ object ProductDetailConstant {
     const val VARIANT = "variant"
     const val PDP_3 = "pdp_3"
     const val PDP_7 = "pdp_7"
+    const val PDP_K2K = "k2k_pdp"
     const val PRODUCT_VARIANT_INFO = "variant"
     const val PRODUCT_WHOLESALE_INFO = "wholesale"
     const val PRODUCT_SHOP_CREDIBILITY = "shop_credibility"
@@ -135,12 +135,6 @@ object ProductDetailConstant {
     const val SHOW_VALUE = 1F
     const val HIDE_VALUE = 0F
     const val FADE_IN_VIDEO_THUMBNAIL_DURATION = 200L
-
-
-    //General Ticker
-    const val LAYOUT_FLOATING = "floating"
-    const val PARAMS_PAGE = "page"
-    const val PARAMS_PAGE_PDP = "pdp"
 
     const val ELIGIBLE_TRADE_IN = 1
 

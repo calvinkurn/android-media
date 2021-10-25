@@ -58,8 +58,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment;
-import com.tokopedia.cart.bundle.view.CartFragment;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.devicefingerprint.appauth.AppAuthWorker;
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker;
@@ -204,6 +202,8 @@ public class MainParentActivity extends BaseActivity implements
     public static final int RANK_DIGITAL_SHORTCUT = 2;
     public static final int RANK_WISHLIST_SHORTCUT = 1;
     public static final String UOH_SOURCE_FILTER_KEY = "source_filter";
+    public static final String PARAM_ACTIVITY_ORDER_HISTORY = "activity_order_history";
+    public static final String PARAM_HOME = "home";
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
@@ -267,7 +267,9 @@ public class MainParentActivity extends BaseActivity implements
         //changes for triggering unittest checker
         startSelectedPagePerformanceMonitoring();
         startMainParentPerformanceMonitoring();
-        pageLoadTimePerformanceCallback.startCustomMetric(MAIN_PARENT_ON_CREATE_METRICS);
+        if (pageLoadTimePerformanceCallback != null) {
+            pageLoadTimePerformanceCallback.startCustomMetric(MAIN_PARENT_ON_CREATE_METRICS);
+        }
 
         super.onCreate(savedInstanceState);
         initInjector();
@@ -290,7 +292,9 @@ public class MainParentActivity extends BaseActivity implements
         installDFonBackground();
         runRiskWorker();
 
-        pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_CREATE_METRICS);
+        if (pageLoadTimePerformanceCallback != null && pageLoadTimePerformanceCallback.getCustomMetric().containsKey(MAIN_PARENT_ON_CREATE_METRICS)) {
+            pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_CREATE_METRICS);
+        }
     }
 
     private void runRiskWorker() {
@@ -342,12 +346,16 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        pageLoadTimePerformanceCallback.startCustomMetric(MAIN_PARENT_ON_START_METRICS);
+        if (pageLoadTimePerformanceCallback != null) {
+            pageLoadTimePerformanceCallback.startCustomMetric(MAIN_PARENT_ON_START_METRICS);
+        }
         if (isFirstTimeUser()) {
             setDefaultShakeEnable();
             routeOnboarding();
         }
-        pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_START_METRICS);
+        if (pageLoadTimePerformanceCallback != null && pageLoadTimePerformanceCallback.getCustomMetric().containsKey(MAIN_PARENT_ON_START_METRICS)) {
+            pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_START_METRICS);
+        }
     }
 
     private void routeOnboarding() {
@@ -422,10 +430,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void showSelectedPage() {
-        int tabPosition = HOME_MENU;
-        if (getIntent().getExtras() != null) {
-            tabPosition = getTabPositionFromIntent();
-        }
+        int tabPosition = getTabPositionFromIntent();
         if (tabPosition > fragmentList.size() - 1) {
             tabPosition = HOME_MENU;
         }
@@ -447,22 +452,38 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private int getTabPositionFromIntent() {
-        int position = getIntent().getExtras().getInt(ARGS_TAB_POSITION, -1);
-        if (position != -1) return position;
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            int position = getIntent().getExtras().getInt(ARGS_TAB_POSITION, -1);
+            if (position != -1) return position;
 
-        try {
-            String posString = getIntent().getExtras().getString(ARGS_TAB_POSITION);
-            return Integer.parseInt(posString);
-        } catch (Exception e) {
+            if (getIntent().getExtras().getString(ARGS_TAB_POSITION) != null) {
+                try {
+                    String posString = getIntent().getExtras().getString(ARGS_TAB_POSITION);
+                    return Integer.parseInt(posString);
+                } catch (Exception e) {
+                    return HOME_MENU;
+                }
+            } else {
+                return HOME_MENU;
+            }
+        } else if (
+                getIntent() != null &&
+                        getIntent().getData() != null &&
+                        getIntent().getData().getQueryParameter(ARGS_TAB_POSITION) != null) {
+            try {
+                String posString = getIntent().getData().getQueryParameter(ARGS_TAB_POSITION);
+                return Integer.parseInt(posString);
+            } catch (Exception e) {
+                return HOME_MENU;
+            }
+        } else {
             return HOME_MENU;
         }
     }
 
     private void startSelectedPagePerformanceMonitoring() {
         int tabPosition = HOME_MENU;
-        if (getIntent().getExtras() != null) {
-            tabPosition = getTabPositionFromIntent();
-        }
+        tabPosition = getTabPositionFromIntent();
         switch (tabPosition) {
             case HOME_MENU:
                 startHomePerformanceMonitoring();
@@ -476,29 +497,25 @@ public class MainParentActivity extends BaseActivity implements
 
         if (bottomNavigation == null) return;
 
-        if (getIntent().getExtras() != null) {
-            int tabPosition = getTabPositionFromIntent();
-            switch (tabPosition) {
-                case FEED_MENU:
-                    bottomNavigation.setSelected(FEED_MENU);
-                    break;
-                case OS_MENU:
-                    bottomNavigation.setSelected(OS_MENU);
-                    break;
-                case WISHLIST_MENU:
-                    bottomNavigation.setSelected(WISHLIST_MENU);
-                    break;
-                case ACCOUNT_MENU:
-                    bottomNavigation.setSelected(ACCOUNT_MENU);
-                    break;
-                case RECOMENDATION_LIST:
-                case HOME_MENU:
-                default:
-                    bottomNavigation.setSelected(HOME_MENU);
-                    break;
-            }
-        } else {
-            bottomNavigation.setSelected(HOME_MENU);
+        int tabPosition = getTabPositionFromIntent();
+        switch (tabPosition) {
+            case FEED_MENU:
+                bottomNavigation.setSelected(FEED_MENU);
+                break;
+            case OS_MENU:
+                bottomNavigation.setSelected(OS_MENU);
+                break;
+            case WISHLIST_MENU:
+                bottomNavigation.setSelected(WISHLIST_MENU);
+                break;
+            case ACCOUNT_MENU:
+                bottomNavigation.setSelected(ACCOUNT_MENU);
+                break;
+            case RECOMENDATION_LIST:
+            case HOME_MENU:
+            default:
+                bottomNavigation.setSelected(HOME_MENU);
+                break;
         }
     }
 
@@ -659,7 +676,7 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        if(!getIntent().getBooleanExtra(MAIN_PARENT_LOAD_ON_RESUME, false)) {
+        if (pageLoadTimePerformanceCallback != null && !getIntent().getBooleanExtra(MAIN_PARENT_LOAD_ON_RESUME, false)) {
             pageLoadTimePerformanceCallback.startCustomMetric(MAIN_PARENT_ON_RESUME_METRICS);
         }
         // if user is downloading the update (in app update feature),
@@ -688,7 +705,8 @@ public class MainParentActivity extends BaseActivity implements
             configureStatusBarBasedOnFragment(currentFragment);
             FragmentLifecycleObserver.INSTANCE.onFragmentSelected(currentFragment);
         }
-        if(!getIntent().getBooleanExtra(MAIN_PARENT_LOAD_ON_RESUME, false)) {
+
+        if (pageLoadTimePerformanceCallback != null && pageLoadTimePerformanceCallback.getCustomMetric().containsKey(MAIN_PARENT_ON_RESUME_METRICS) && !getIntent().getBooleanExtra(MAIN_PARENT_LOAD_ON_RESUME, false)) {
             pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_RESUME_METRICS);
             getIntent().putExtra(MAIN_PARENT_LOAD_ON_RESUME, true);
         }
@@ -743,11 +761,17 @@ public class MainParentActivity extends BaseActivity implements
         fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, getIntent().getExtras()));
         fragmentList.add(OfficialHomeContainerFragment.newInstance(getIntent().getExtras()));
         if (!isNewNavigation) {
+            Bundle cartBundle = getIntent().getExtras();
+            if (cartBundle == null) {
+                cartBundle = new Bundle();
+            }
+            cartBundle.putString("CartFragment", MainParentActivity.class.getSimpleName());
+
             boolean isBundleToggleOn = Switch.INSTANCE.isBundleToggleOn(this);
             if (isBundleToggleOn) {
-                fragmentList.add(CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
+                fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.CART_FRAGMENT, cartBundle));
             } else {
-                fragmentList.add(com.tokopedia.cart.old.view.CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
+                fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.OLD_CART_FRAGMENT, cartBundle));
             }
             fragmentList.add(AccountHomeFragment.newInstance(getIntent().getExtras()));
         } else {
@@ -755,10 +779,14 @@ public class MainParentActivity extends BaseActivity implements
             bundleWishlist.putString(WishlistFragment.PARAM_LAUNCH_WISHLIST, WishlistFragment.PARAM_HOME);
             fragmentList.add(WishlistFragment.Companion.newInstance(bundleWishlist));
 
-            Bundle bundle = new Bundle();
-            bundle.putString(UOH_SOURCE_FILTER_KEY, "");
-            bundle.putString(UohListFragment.PARAM_ACTIVITY_ORDER_HISTORY, UohListFragment.PARAM_HOME);
-            fragmentList.add(UohListFragment.newInstance(bundle));
+            Bundle bundleUoh = getIntent().getExtras();
+            if (bundleUoh == null) {
+                bundleUoh = new Bundle();
+            }
+            bundleUoh.putString(UOH_SOURCE_FILTER_KEY, "");
+            bundleUoh.putString(PARAM_ACTIVITY_ORDER_HISTORY, PARAM_HOME);
+            bundleUoh.putString("UohListFragment", MainParentActivity.class.getSimpleName());
+            fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.UOH_LIST_FRAGMENT, bundleUoh));
         }
 
         return fragmentList;

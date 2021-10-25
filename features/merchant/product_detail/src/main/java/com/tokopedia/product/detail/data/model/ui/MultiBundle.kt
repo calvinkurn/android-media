@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.Paint
 import android.view.View
 import android.view.ViewStub
-import androidx.constraintlayout.widget.Group
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
@@ -36,9 +36,8 @@ class MultiBundle(parent: View) {
     private val slash1: Typography = view.findViewById(R.id.product_bundling_slash_1)
     private val slash2: Typography = view.findViewById(R.id.product_bundling_slash_2)
     private val slash3: Typography = view.findViewById(R.id.product_bundling_slash_3)
-    private val group1: Group = view.findViewById(R.id.product_bundling_group_1)
-    private val group2: Group = view.findViewById(R.id.product_bundling_group_2)
-    private val group3: Group = view.findViewById(R.id.product_bundling_group_3)
+    private val iconAdd1: IconUnify = view.findViewById(R.id.product_bundling_icon_add_1)
+    private val iconAdd2: IconUnify = view.findViewById(R.id.product_bundling_icon_add_2)
 
     private val quantity: Typography = parent.findViewById(R.id.product_bundling_total_quantity)
 
@@ -46,7 +45,7 @@ class MultiBundle(parent: View) {
     private val prices = listOf(price1, price2, price3)
     private val discounts = listOf(discount1, discount2, discount3)
     private val slashes = listOf(slash1, slash2, slash3)
-    private val groups = listOf(group1, group2, group3)
+    private val iconAdds = listOf(iconAdd1, iconAdd2)
 
     fun process(
         bundle: BundleInfo,
@@ -55,18 +54,22 @@ class MultiBundle(parent: View) {
         view.show()
 
         val items = bundle.bundleItems
-        val unusedGroups = groups.toMutableList()
+        val unusedViews = (images + prices + discounts + slashes + iconAdds).toMutableList<View>()
 
         items.forEachIndexed { index, item ->
-            val viewImage = images[index]
-            val viewPrice = prices[index]
-            val viewDiscount = discounts[index]
-            val viewSlash = slashes[index]
+            val viewImage = images[index].apply { show() }
+            val viewPrice = prices[index].apply { show() }
+            val viewDiscount = discounts[index].apply { show() }
+            val viewSlash = slashes[index].apply { show() }
 
-            groups[index].apply {
-                unusedGroups -= this
-                show()
-            }
+            /**
+             * view1 {+ view2} {+ view3}
+             * iconAdd will join viewGroup with index start from 1 (not 0)
+             * that's why it use [index-1]
+             * when the loop:
+             * 0 -> null, 1 -> take index 0 (iconAdd1), 2 -> take index 1 (iconAdd2)
+             */
+            val viewIconAdd = iconAdds.getOrNull(index - 1)?.apply { show() }
 
             viewImage.urlSrc = item.picURL
 
@@ -87,16 +90,22 @@ class MultiBundle(parent: View) {
             }
 
             val itemProductId = item.productId
-            if (itemProductId != bundle.productId) {
-                setItemClickListener(listOf(viewImage, viewPrice, viewDiscount, viewSlash)) {
-                    setOnClickItem(itemProductId)
-                }
+            val clickableItem = listOf(viewImage, viewPrice, viewDiscount, viewSlash)
+            if (itemProductId == bundle.productId) removeItemClickListener(clickableItem)
+            else setItemClickListener(clickableItem) {
+                setOnClickItem(itemProductId)
+            }
+
+            unusedViews.apply {
+                remove(viewImage)
+                remove(viewPrice)
+                remove(viewDiscount)
+                remove(viewSlash)
+                viewIconAdd?.let { remove(it) }
             }
         }
 
-        unusedGroups.forEach { group ->
-            group.hide()
-        }
+        unusedViews.forEach { it.hide() }
 
         val quantityText = weakContext.get()?.getString(
             R.string.pdp_bundling_quantity,
@@ -113,5 +122,9 @@ class MultiBundle(parent: View) {
 
     private fun setItemClickListener(views: List<View>, onClick: () -> Unit) {
         views.forEach { it.setOnClickListener { onClick() } }
+    }
+
+    private fun removeItemClickListener(views: List<View>) {
+        views.forEach { it.setOnClickListener(null) }
     }
 }

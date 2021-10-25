@@ -449,7 +449,11 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                     productId = cartItemHolderData.productId
                     cartId = cartItemHolderData.cartId
                     notes = cartItemHolderData.notes
-                    quantity = cartItemHolderData.quantity
+                    if (cartItemHolderData.isBundlingItem) {
+                        quantity = cartItemHolderData.quantity * cartItemHolderData.bundleQuantity
+                    } else {
+                        quantity = cartItemHolderData.quantity
+                    }
                     bundleInfo = BundleInfo().apply {
                         bundleId = cartItemHolderData.bundleId.toZeroStringIfNullOrBlank()
                         bundleGroupId = cartItemHolderData.bundleGroupId.toZeroStringIfNullOrBlank()
@@ -1218,7 +1222,8 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         var hasChanges = false
         view?.getAllCartDataList()?.let {
             for (cartItemHolderData in it) {
-                if (cartItemHolderData.quantity != cartItemHolderData.originalQty || cartItemHolderData.notes != cartItemHolderData.originalNotes) {
+                if (cartItemHolderData.quantity != cartItemHolderData.originalQty || cartItemHolderData.notes != cartItemHolderData.originalNotes ||
+                        (cartItemHolderData.isBundlingItem && cartItemHolderData.bundleQuantity != cartItemHolderData.originalBundleQuantity)) {
                     hasChanges = true
                     break
                 }

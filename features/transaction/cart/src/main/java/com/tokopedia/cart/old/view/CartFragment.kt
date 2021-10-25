@@ -145,7 +145,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @Keep
-class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, CartItemAdapter.ActionListener,
+open class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, CartItemAdapter.ActionListener,
         RefreshHandler.OnRefreshHandlerListener, CartToolbarListener,
         TickerAnnouncementActionListener, SellerCashbackListener {
 
@@ -1963,11 +1963,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 onNeedToRemoveViewItem(chooseAddressWidgetPosition)
             } else {
                 validateLocalCacheAddress(it, localizationChooseAddressData)
-
-                if (ChooseAddressUtils.isRollOutUser(it)) {
-                    val cartChooseAddressHolderData = CartChooseAddressHolderData()
-                    cartAdapter.addItem(cartChooseAddressHolderData)
-                }
+                val cartChooseAddressHolderData = CartChooseAddressHolderData()
+                cartAdapter.addItem(cartChooseAddressHolderData)
             }
         }
     }

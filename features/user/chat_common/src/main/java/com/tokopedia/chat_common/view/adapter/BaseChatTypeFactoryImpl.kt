@@ -21,11 +21,11 @@ abstract class BaseChatTypeFactoryImpl(private val imageAnnouncementListener: Im
         BaseAdapterTypeFactory(),
         BaseChatTypeFactory {
 
-    override fun type(productAttachmentViewModel: ProductAttachmentViewModel): Int {
+    override fun type(productAttachmentUiModel: ProductAttachmentUiModel): Int {
         return ProductAttachmentViewHolder.LAYOUT
     }
 
-    override fun type(messageViewModel: MessageViewModel): Int {
+    override fun type(messageUiModel: MessageUiModel): Int {
         return MessageViewHolder.LAYOUT
     }
 
@@ -33,19 +33,19 @@ abstract class BaseChatTypeFactoryImpl(private val imageAnnouncementListener: Im
         return TypingChatViewHolder.LAYOUT
     }
 
-    override fun type(imageAnnouncementViewModel: ImageAnnouncementViewModel): Int {
+    override fun type(imageAnnouncementUiModel: ImageAnnouncementUiModel): Int {
         return ImageAnnouncementViewHolder.LAYOUT
     }
 
-    override fun type(imageUploadViewModel: ImageUploadViewModel): Int {
+    override fun type(imageUploadUiModel: ImageUploadUiModel): Int {
         return ImageUploadViewHolder.LAYOUT
     }
 
-    override fun type(fallbackAttachmentViewModel: FallbackAttachmentViewModel): Int {
+    override fun type(fallbackAttachmentUiModel: FallbackAttachmentUiModel): Int {
         return FallbackAttachmentViewHolder.LAYOUT
     }
 
-    override fun type(bannedAttachmentViewModel: BannedProductAttachmentViewModel): Int {
+    override fun type(bannedAttachmentUiModel: BannedProductAttachmentUiModel): Int {
         return BannedProductAttachmentViewHolder.LAYOUT
     }
 

@@ -12,6 +12,7 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.Variant
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
 import com.tokopedia.product_bundle.common.util.DiscountUtil
@@ -111,6 +112,7 @@ class SingleProductBundleViewModel @Inject constructor(
     }
 
     fun validateAndAddToCart(
+        pageSource: String,
         parentProductID: String,
         selectedBundleId: String,
         selectedProductId: String,
@@ -131,7 +133,9 @@ class SingleProductBundleViewModel @Inject constructor(
                 mToasterError.value = SingleProductBundleErrorEnum.ERROR_VARIANT_NOT_SELECTED
                 return
             }
-            selectedData.bundleId == selectedBundleId && selectedData.productId == selectedProductId -> {
+            pageSource == ProductBundleConstants.PAGE_SOURCE_CART &&
+                    selectedData.bundleId == selectedBundleId &&
+                    selectedData.productId == selectedProductId -> {
                 // selected bundleId is not changed
                 mAddToCartResult.value = AddToCartDataResult(
                     requestParams = AddToCartBundleRequestParams( bundleId = selectedBundleId ),
@@ -139,7 +143,7 @@ class SingleProductBundleViewModel @Inject constructor(
                 )
             }
             else -> addToCart(parentProductID, selectedData.bundleId, selectedData.productId,
-                selectedData.shopId, selectedData.quantity)
+                selectedData.shopId, selectedData.quantity, selectedData.warehouseId)
         }
     }
 
@@ -148,7 +152,8 @@ class SingleProductBundleViewModel @Inject constructor(
         bundleId: String,
         productId: String,
         shopId: String,
-        quantity: Int
+        quantity: Int,
+        warehouseId: String
     ) {
         val customerId = userSession.userId
         launchCatchError(block = {
@@ -163,7 +168,8 @@ class SingleProductBundleViewModel @Inject constructor(
                         isProductParent = productId == parentProductID,
                         productId = productId,
                         quantity = quantity,
-                        shopId = shopId
+                        shopId = shopId,
+                        warehouseId = warehouseId
                     )
                 )
             )

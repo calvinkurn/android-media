@@ -17,9 +17,9 @@
         android:id="@+id/checkout_custom_ticker_error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
         app:card_type="clear">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -42,7 +42,7 @@
                 android:id="@+id/checkout_custom_ticker_description"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="@dimen/spacing_lvl3"
                 android:layout_marginBottom="@dimen/spacing_lvl3"
                 android:textColor="@color/Unify_N700_96"
@@ -57,8 +57,8 @@
                 android:id="@+id/checkout_custom_ticker_action"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:paddingStart="@dimen/dp_16"
+                android:layout_marginEnd="16dp"
+                android:paddingStart="16dp"
                 android:text="@string/checkout_label_see_error_product"
                 android:textColor="@color/Unify_G500"
                 app:layout_constraintBottom_toBottomOf="parent"

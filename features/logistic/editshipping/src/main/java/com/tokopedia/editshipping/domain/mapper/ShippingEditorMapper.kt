@@ -116,7 +116,7 @@ class ShippingEditorMapper @Inject constructor() {
         }
     }
 
-    private fun mapWarehouseModelBasedOnWarehouseId(response: List<Int>, warehouses: List<Warehouses>): List<WarehousesModel> {
+    private fun mapWarehouseModelBasedOnWarehouseId(response: List<Long>, warehouses: List<Warehouses>): List<WarehousesModel> {
         return warehouses.filter {
             response.any { id ->
                 it.warehouseId == id

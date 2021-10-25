@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_48"
+        android:layout_height="48dp"
         android:background="@drawable/header_bottom_sheet_rounded_white"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_close_thin"
-            android:padding="@dimen/dp_16"/>
+            android:padding="16dp"/>
 
         <TextView
             android:id="@+id/title_closeable"
@@ -28,8 +28,8 @@
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
             android:fontFamily="sans-serif-medium"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingStart="@dimen/dp_8"
+            android:paddingLeft="8dp"
+            android:paddingStart="8dp"
             android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_18"
             android:textStyle="normal"

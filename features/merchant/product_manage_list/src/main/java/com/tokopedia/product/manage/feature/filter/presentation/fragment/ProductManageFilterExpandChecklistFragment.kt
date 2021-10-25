@@ -30,7 +30,8 @@ import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.Produc
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
-import kotlinx.android.synthetic.main.fragment_product_manage_filter_search.*
+import com.tokopedia.product.manage.databinding.FragmentProductManageFilterSearchBinding
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class ProductManageFilterExpandChecklistFragment :
@@ -59,6 +60,8 @@ class ProductManageFilterExpandChecklistFragment :
     private var flag: String = ""
     private var isChipsShown = false
 
+    private var binding by autoClearedNullable<FragmentProductManageFilterSearchBinding>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
@@ -77,16 +80,16 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_product_manage_filter_search, container, false)
+        binding = FragmentProductManageFilterSearchBinding.inflate(inflater, container, false)
         val adapterTypeFactory = SelectAdapterTypeFactory(this, this)
         adapter = SelectAdapter(adapterTypeFactory)
-        return view
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        filterCheckListRecyclerView.adapter = adapter
-        filterCheckListRecyclerView.layoutManager = LinearLayoutManager(this.context)
+        binding?.filterCheckListRecyclerView?.adapter = adapter
+        binding?.filterCheckListRecyclerView?.layoutManager = LinearLayoutManager(this.context)
         observeDataLength()
         observeChecklistData()
         initView()
@@ -129,49 +132,56 @@ class ProductManageFilterExpandChecklistFragment :
 
     private fun initView() {
         configToolbar()
-        filterCheckListRecyclerView.setOnTouchListener { _, _ ->
-            filterSearchBar.clearFocus()
+        binding?.filterCheckListRecyclerView?.setOnTouchListener { _, _ ->
+            binding?.filterSearchBar?.clearFocus()
             false
         }
         initButtons()
     }
 
     private fun configToolbar() {
-        filterSearchHeader.isShowShadow = false
-        filterSearchHeader.isShowBackButton = true
-        filterSearchHeader.setNavigationOnClickListener {
-            activity?.onBackPressed()
-        }
-        context?.let {
-            if(flag == CATEGORIES_CACHE_MANAGER_KEY) {
-                filterSearchHeader.title = it.resources.getString(R.string.product_manage_filter_all_categories_title)
-                initSearchView()
-            } else {
-                filterSearchHeader.title = it.resources.getString(R.string.product_manage_filter_other_filters_title)
+        binding?.filterSearchHeader?.run {
+            isShowShadow = false
+            isShowBackButton = true
+            setNavigationOnClickListener {
+                this@ProductManageFilterExpandChecklistFragment.activity?.onBackPressed()
             }
-            filterSearchHeader.actionText = it.resources.getString(R.string.filter_expand_reset)
+            context?.let {
+                if(flag == CATEGORIES_CACHE_MANAGER_KEY) {
+                    title = it.resources.getString(R.string.product_manage_filter_all_categories_title)
+                    initSearchView()
+                } else {
+                    title = it.resources.getString(R.string.product_manage_filter_other_filters_title)
+                }
+                actionText = it.resources.getString(R.string.filter_expand_reset)
+            }
         }
     }
 
     private fun initSearchView() {
-        filterSearchBar.clearFocus()
-        filterSearchBar.showIcon = false
-        context?.let {
-            filterSearchBar.searchBarPlaceholder = it.resources.getString(R.string.filter_search_bar)
-        }
-        val searchTextWatcher = SearchTextWatcher(filterSearchBar.searchBarTextField, DELAY_TEXT_CHANGE, this)
-        filterSearchBar.searchBarTextField.addTextChangedListener(searchTextWatcher)
-
-        filterSearchBar.searchBarTextField.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                processSearch(filterSearchBar.searchBarTextField.text.toString())
-                filterSearchBar.clearFocus()
-                return@setOnEditorActionListener true
+        binding?.filterSearchBar?.run {
+            clearFocus()
+            showIcon = false
+            context?.let {
+                searchBarPlaceholder = it.resources.getString(R.string.filter_search_bar)
             }
-            false
+            val searchTextWatcher =
+                SearchTextWatcher(
+                    searchBarTextField,
+                    DELAY_TEXT_CHANGE,
+                    this@ProductManageFilterExpandChecklistFragment
+                )
+            searchBarTextField.addTextChangedListener(searchTextWatcher)
+            searchBarTextField.setOnEditorActionListener { v, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    processSearch(searchBarTextField.text.toString())
+                    clearFocus()
+                    return@setOnEditorActionListener true
+                }
+                false
+            }
+            visibility = View.VISIBLE
         }
-
-        filterSearchBar.visibility = View.VISIBLE
     }
 
     private fun observeDataLength() {
@@ -191,17 +201,17 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     private fun showButtons() {
-        filterSubmitButton.isEnabled = true
-        filterSearchHeader.actionTextView?.visibility = View.VISIBLE
+        binding?.filterSubmitButton?.isEnabled = true
+        binding?.filterSearchHeader?.actionTextView?.visibility = View.VISIBLE
     }
 
     private fun hideButtons() {
-        filterSubmitButton.isEnabled = false
-        filterSearchHeader.actionTextView?.visibility = View.GONE
+        binding?.filterSubmitButton?.isEnabled = false
+        binding?.filterSearchHeader?.actionTextView?.visibility = View.GONE
     }
 
     private fun initButtons() {
-        filterSubmitButton.setOnClickListener {
+        binding?.filterSubmitButton?.setOnClickListener {
             val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, true) }
             val cacheManagerId = cacheManager?.id
             productManageFilterExpandChecklistViewModel.checklistData.value?.sortByDescending { it.isSelected }
@@ -228,7 +238,7 @@ class ProductManageFilterExpandChecklistFragment :
             this.activity?.finish()
             ProductManageTracking.eventMoreOthersFilterSave()
         }
-        filterSearchHeader.actionTextView?.setOnClickListener {
+        binding?.filterSearchHeader?.actionTextView?.setOnClickListener {
             adapter?.reset()
             productManageFilterExpandChecklistViewModel.clearAllChecklist()
         }
@@ -255,15 +265,15 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     private fun showError() {
-        filterCheckListRecyclerView.visibility = View.GONE
-        filterSearchErrorImage.visibility = View.VISIBLE
-        filterSearchErrorText.visibility = View.VISIBLE
+        binding?.filterCheckListRecyclerView?.visibility = View.GONE
+        binding?.filterSearchErrorImage?.visibility = View.VISIBLE
+        binding?.filterSearchErrorText?.visibility = View.VISIBLE
     }
 
     private fun hideError() {
-        filterCheckListRecyclerView.visibility = View.VISIBLE
-        filterSearchErrorImage?.visibility = View.GONE
-        filterSearchErrorText.visibility = View.GONE
+        binding?.filterCheckListRecyclerView?.visibility = View.VISIBLE
+        binding?.filterSearchErrorImage?.visibility = View.GONE
+        binding?.filterSearchErrorText?.visibility = View.GONE
     }
 
     private fun processSearch(searchText: String) {

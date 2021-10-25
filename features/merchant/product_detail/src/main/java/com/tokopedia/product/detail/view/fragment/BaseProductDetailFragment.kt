@@ -15,11 +15,12 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.util.CenterLayoutManager
+import com.tokopedia.product.detail.databinding.DynamicProductDetailFragmentBinding
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.ProductDetailAdapter
 import com.tokopedia.remoteconfig.RemoteConfig
-import kotlinx.android.synthetic.main.partial_layout_button_action.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
  * Created by Yehezkiel on 05/01/21
@@ -38,6 +39,8 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
     protected abstract fun observeData()
 
+    protected var binding by autoClearedNullable<DynamicProductDetailFragmentBinding>()
+
     open fun onSwipeRefresh() {
         swipeToRefresh?.isRefreshing = true
         loadData(true)
@@ -53,7 +56,8 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.dynamic_product_detail_fragment, container, false)
+        binding = DynamicProductDetailFragmentBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -93,7 +97,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
             swipeToRefresh?.let {
                 it.isEnabled = false
             }
-            base_btn_action?.gone()
+            binding?.partialLayoutButtonAction?.baseBtnAction?.gone()
         }
     }
 

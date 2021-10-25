@@ -38,7 +38,6 @@ import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
-import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
@@ -57,6 +56,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PRIC
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_3
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_K2K
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.util.ProductDetailLogger
@@ -103,7 +103,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val getProductInfoP2LoginUseCase: Lazy<GetProductInfoP2LoginUseCase>,
                                                              private val getProductInfoP2OtherUseCase: Lazy<GetProductInfoP2OtherUseCase>,
                                                              private val getP2DataAndMiniCartUseCase: Lazy<GetP2DataAndMiniCartUseCase>,
-                                                             private val getProductInfoP3UseCase: Lazy<GetProductInfoP3UseCase>,
                                                              private val toggleFavoriteUseCase: Lazy<ToggleFavoriteUseCase>,
                                                              private val removeWishlistUseCase: Lazy<RemoveWishListUseCase>,
                                                              private val addWishListUseCase: Lazy<AddWishListUseCase>,
@@ -155,10 +154,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private val _p2Other = MutableLiveData<ProductInfoP2Other>()
     val p2Other: LiveData<ProductInfoP2Other>
         get() = _p2Other
-
-    private val _productInfoP3 = MediatorLiveData<ProductInfoP3>()
-    val productInfoP3: LiveData<ProductInfoP3>
-        get() = _productInfoP3
 
     private val _loadTopAdsProduct = MutableLiveData<Result<RecommendationWidget>>()
     val loadTopAdsProduct: LiveData<Result<RecommendationWidget>>
@@ -272,18 +267,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
 
     init {
-        _productInfoP3.addSource(_p2Data) { p2Data ->
-            launchCatchError(context = dispatcher.io, block = {
-                getDynamicProductInfoP1?.let {
-                    getProductInfoP3().let { p3Data ->
-                        _productInfoP3.postValue(p3Data)
-                    }
-                }
-            }) {
-                Timber.d(it)
-            }
-        }
-
         iniQuantityFlow()
     }
 
@@ -366,7 +349,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         getPdpLayoutUseCase.get().cancelJobs()
         getProductInfoP2LoginUseCase.get().cancelJobs()
         getProductInfoP2OtherUseCase.get().cancelJobs()
-        getProductInfoP3UseCase.get().cancelJobs()
         toggleFavoriteUseCase.get().cancelJobs()
         trackAffiliateUseCase.get().cancelJobs()
         getRecommendationUseCase.get().unsubscribe()
@@ -775,7 +757,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                 ?: "")
                         val productIdsString = TextUtils.join(",", productIds) ?: ""
                         val recomFilterList = mutableListOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
-                        if (pageName == PDP_3) {
+                        if (pageName == PDP_3 || pageName == PDP_K2K) {
                             getRecommendationFilterChips.get().setParams(
                                     userId = if (userSessionInterface.userId.isEmpty()) 0 else userSessionInterface.userId.toInt(),
                                     pageName = pageName,
@@ -1159,12 +1141,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         } else {
             deviceId
         }
-    }
-
-    private suspend fun getProductInfoP3(): ProductInfoP3 {
-        return getProductInfoP3UseCase.get().executeOnBackground(
-                forceRefresh,
-                isUserSessionActive)
     }
 
     private suspend fun getPdpLayout(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String): ProductDetailDataModel {

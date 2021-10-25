@@ -454,8 +454,29 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 stock
               }
   	        }
+            ticker {
+              tickerInfo {
+                productIDs
+                tickerData {
+                  title
+                  message
+                  color
+                  link
+                  action
+                  actionLink
+                  tickerType
+                  actionBottomSheet {
+                    title
+                    message
+                    reason
+                    buttonText
+                    buttonLink
+                  }
+                }
+              }
+            }
           }
-        }""".trimIndent()
+    }""".trimIndent()
     }
 
     private var mCacheManager: GraphqlCacheManager? = null
@@ -525,6 +546,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.alternateCopy = cartRedirection.alternateCopy
             p2UiData.bundleInfoMap = bundleInfoList.associateBy { it.productId }
             p2UiData.rating = rating
+            p2UiData.ticker = ticker
         }
         return p2UiData
     }

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.data.util.thumbnailUrl
-import kotlinx.android.synthetic.main.item_youtube_thumbnail.view.*
+import com.tokopedia.product.detail.databinding.ItemYoutubeThumbnailBinding
 
 class YoutubeThumbnailAdapter(private val youtubeVideos: MutableList<YoutubeVideo>,
                               private val clickItemListener: ((YoutubeVideo, Int) -> Unit)? = null)
@@ -28,7 +28,8 @@ class YoutubeThumbnailAdapter(private val youtubeVideos: MutableList<YoutubeVide
             if (youtubeVideos.isEmpty()) {
                 recyclerView.visibility = View.GONE
             } else {
-                video_thumbnail.loadImage(youtubeVideos[position].thumbnailUrl)
+                val binding = ItemYoutubeThumbnailBinding.bind(this)
+                binding.videoThumbnail.loadImage(youtubeVideos[position].thumbnailUrl)
                 recyclerView.visibility = View.VISIBLE
             }
         }

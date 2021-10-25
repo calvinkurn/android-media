@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="@dimen/dp_18"
         android:text="@string/same_day"
         app:typographyWeight="bold"

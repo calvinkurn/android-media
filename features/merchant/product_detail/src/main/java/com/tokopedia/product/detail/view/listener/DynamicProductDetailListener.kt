@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -32,6 +33,7 @@ interface DynamicProductDetailListener {
     fun getProductVideoCoordinator(): ProductVideoCoordinator?
 
     fun onMerchantVoucherSummaryClicked(shopId: String, @MvcSource source: Int)
+
     /**
      * ProductSnapshotViewHolder
      */
@@ -139,8 +141,11 @@ interface DynamicProductDetailListener {
     /**
      * ProductTickerViewHolder
      */
-    fun onTickerGeneralClicked(tickerTitle: String, tickerType: Int, url: String, componentTrackDataModel: ComponentTrackDataModel?, tickerDescription: String)
-    fun onTickerShopClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?, tickerDescription: String)
+    fun onTickerShopClicked(tickerTitle: String, tickerType: Int,
+                            componentTrackDataModel: ComponentTrackDataModel?,
+                            tickerDescription: String, applink: String, actionType: String,
+                            tickerActionBs: TickerActionBs?)
+
     fun onTickerGoToRecomClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?, tickerDescription: String)
 
     /**
