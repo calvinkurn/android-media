@@ -187,6 +187,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
     private val _pinnedMessage = MutableStateFlow<PinnedMessageUiModel>(
         PinnedMessageUiModel.Empty()
     )
+    private val _isExiting = MutableStateFlow(false)
 
     private val _channelUiState = _configInfo
         .filterIsInstance<NetworkResult.Success<ConfigurationUiModel>>()
@@ -207,10 +208,12 @@ internal class PlayBroadcastViewModel @Inject constructor(
     val uiState = combine(
         _channelUiState.distinctUntilChanged(),
         _pinnedMessageUiState.distinctUntilChanged(),
-    ) { channelState, pinnedMessage ->
+        _isExiting
+    ) { channelState, pinnedMessage, isExiting ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
+            isExiting = isExiting,
         )
     }
 
@@ -238,7 +241,9 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
     private val liveChannelStateListener = object : PlayLiveChannelStateListener {
         override fun onChannelStateChanged(channelStatusType: PlayChannelStatusType) {
-            updateChannelStatus(channelStatusType)
+            viewModelScope.launchCatchError(block = {
+                updateChannelStatus(channelStatusType)
+            }) {}
         }
     }
 
@@ -405,22 +410,17 @@ internal class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
-    private fun updateChannelStatus(status: PlayChannelStatusType) {
-        viewModelScope.launchCatchError(block = {
-            withContext(dispatcher.io) {
-                updateChannelUseCase.apply {
-                    setQueryParams(
-                        UpdateChannelUseCase.createUpdateStatusRequest(
-                            channelId = channelId,
-                            authorId = userSession.shopId,
-                            status = status
-                        )
+    private suspend fun updateChannelStatus(status: PlayChannelStatusType) = withContext(dispatcher.io) {
+            updateChannelUseCase.apply {
+                setQueryParams(
+                    UpdateChannelUseCase.createUpdateStatusRequest(
+                        channelId = channelId,
+                        authorId = userSession.shopId,
+                        status = status
                     )
-                }.executeOnBackground()
-            }
-        }) {
+                )
+            }.executeOnBackground()
         }
-    }
 
     @Throws(IllegalAccessException::class)
     fun createStreamer(context: Context, handler: Handler) {
@@ -495,10 +495,17 @@ internal class PlayBroadcastViewModel @Inject constructor(
     }
 
     fun stopLiveStream(shouldNavigate: Boolean = false) {
-        closeWebSocket()
-        livePusherMediator.stopLiveStreaming()
-        updateChannelStatus(PlayChannelStatusType.Stop)
-        sendLivePusherState(PlayLiveViewState.Stopped(shouldNavigate))
+        viewModelScope.launchCatchError(block = {
+            _isExiting.value = true
+            updateChannelStatus(PlayChannelStatusType.Stop)
+            closeWebSocket()
+            livePusherMediator.stopLiveStreaming()
+            sendLivePusherState(PlayLiveViewState.Stopped(shouldNavigate))
+            _isExiting.value = false
+        }) {
+            _isExiting.value = false
+            _uiEvent.emit(PlayBroadcastEvent.ShowError(it))
+        }
     }
 
     fun setChannelId(channelId: String) {

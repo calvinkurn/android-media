@@ -356,7 +356,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                    primaryListener = { dialog -> dialog.dismiss() },
                    secondaryCta = getString(R.string.play_broadcast_exit),
                    secondaryListener = { dialog ->
-                       dialog.dismiss()
+                       parentViewModel.submitAction(PlayBroadcastAction.ExitLive)
                        parentViewModel.stopLiveStream(shouldNavigate = true)
                        analytic.clickDialogExitOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
                    }
@@ -475,7 +475,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             is PlayLiveViewState.Started -> showLoading(false)
             is PlayLiveViewState.Stopped -> {
                 showLoading(false)
-                 if (state.shouldNavigate) navigateToSummary()
+                val exitDialog = getExitDialog()
+                exitDialog.dialogSecondaryCTA.isLoading = false
+                exitDialog.dismiss()
+                if (state.shouldNavigate) navigateToSummary()
             }
             is PlayLiveViewState.Error -> {
                 showLoading(false)
@@ -639,6 +642,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 val state = cachedState.value
                 val prevState = cachedState.prevValue
                 renderPinnedMessageView(prevState?.pinnedMessage, state.pinnedMessage)
+
+                if (::exitDialog.isInitialized) {
+                    val exitDialog = getExitDialog()
+                    exitDialog.dialogSecondaryCTA.isLoading = state.isExiting
+                    exitDialog.dialogSecondaryCTA.isEnabled = !state.isExiting
+                    exitDialog.dialogPrimaryCTA.isEnabled = !state.isExiting
+                }
             }
         }
     }

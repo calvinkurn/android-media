@@ -8,4 +8,6 @@ sealed class PlayBroadcastAction {
     object EditPinnedMessage : PlayBroadcastAction()
     data class SetPinnedMessage(val message: String) : PlayBroadcastAction()
     object CancelEditPinnedMessage : PlayBroadcastAction()
+
+    object ExitLive : PlayBroadcastAction()
 }
