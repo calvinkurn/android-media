@@ -476,6 +476,52 @@ fun getQueryShipmentAddressFormV3(): String {
                   }
                 }
               }
+              cross_sell {
+                id
+                checkbox_disabled
+                is_checked
+                price
+                info {
+                  title
+                  sub_title
+                  tooltip_text
+                  icon_url
+                }
+                order_summary {
+                  title
+                  price_wording
+                }
+                bottom_sheet {
+                  title
+                  sub_title
+                }
+                additional_vertical_id
+                transaction_type
+              }
+              cross_sell_products {
+                icon_desktop
+                icon_mobile
+                image_desktop
+                lang
+                max_retail_price
+                meta_data
+                more_info_icon_desktop
+                more_info_icon_mobile
+                product_id
+                product_code
+                product_info_type_id
+                product_info_type_name
+                quantity
+                sales_price
+                saving
+                vertical_id
+                with_image
+                title
+                subtitle
+                ticker_text
+                tooltip_text
+                category_id
+              }
             }
           }
         }
