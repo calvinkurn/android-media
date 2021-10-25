@@ -41,6 +41,7 @@ import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryIm
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.topchat.common.data.TopchatItemMenu
+import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_CHAT_SETTING
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -377,7 +378,10 @@ open class TopChatViewStateImpl constructor(
             val promoStatusChanger = createPromoMenu()
             listMenu.add(followStatusMenu)
             listMenu.add(promoStatusChanger)
+        } else {
+            listMenu.add(createChatSettingMenu())
         }
+
         if(!isOfficialAccountTokopedia(userChatRoom)) {
             val blockChatMenu = createBlockChatMenu()
             listMenu.add(blockChatMenu)
@@ -385,6 +389,15 @@ open class TopChatViewStateImpl constructor(
         }
         listMenu.add(TopchatItemMenu(view.context.getString(R.string.delete_conversation), R.drawable.ic_trash_filled_grey))
         return listMenu
+    }
+
+    private fun createChatSettingMenu(): TopchatItemMenu {
+        // TODO: Update with unify icon
+        return TopchatItemMenu(
+            _title = view.context.getString(R.string.title_chat_setting),
+            _icon = R.drawable.ic_topchat_report_bold_grey,
+            _id = ID_CHAT_SETTING
+        )
     }
 
     private fun createBlockChatMenu(): TopchatItemMenu {
@@ -455,6 +468,9 @@ open class TopChatViewStateImpl constructor(
             }
             itemMenus.title == view.context.getString(R.string.chat_report_user) -> {
                 headerMenuListener.onGoToReportUser()
+            }
+            itemMenus.id == ID_CHAT_SETTING -> {
+                headerMenuListener.onGoToChatSetting()
             }
             else -> {
             }

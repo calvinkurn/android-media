@@ -22,4 +22,8 @@ class TopchatItemMenu constructor(
             iconEnd = R.drawable.ic_topchat_check_green
         }
     }
+
+    companion object {
+        const val ID_CHAT_SETTING = 1
+    }
 }

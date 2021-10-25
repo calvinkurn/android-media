@@ -1658,6 +1658,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         })
     }
 
+    override fun onGoToChatSetting() {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.CHAT_SETTING)
+    }
+
     private fun getChatReportUrl(): String {
         var url = "${TkpdBaseURL.CHAT_REPORT_URL}$messageId"
         if (isSeller()) {
