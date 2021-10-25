@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_24"
-    android:layout_marginBottom="@dimen/dp_2">
+    android:layout_marginTop="24dp"
+    android:layout_marginBottom="2dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_header"
@@ -26,8 +26,8 @@
         android:id="@+id/rv_popular_brand"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="parent"
