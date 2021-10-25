@@ -7,8 +7,8 @@
 
     <View
         android:id="@+id/viewDivider"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_8"
+        android:layout_width="0dp"
+        android:layout_height="8dp"
         android:background="@color/Unify_N50"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -17,11 +17,11 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
         android:text="@string/empty_search_shop_recommendation_title"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"

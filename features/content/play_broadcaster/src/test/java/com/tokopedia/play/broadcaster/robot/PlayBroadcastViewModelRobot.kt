@@ -4,16 +4,19 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocket
+import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastChannelRepository
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveConfigUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.PostInteractiveCreateSessionUseCase
+import com.tokopedia.play.broadcaster.logger.PlayLoggerTest
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediator
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
 import com.tokopedia.play.broadcaster.util.TestHtmlTextTransformer
+import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
@@ -52,7 +55,8 @@ internal class PlayBroadcastViewModelRobot(
     channelInteractiveMapper: PlayChannelInteractiveMapper = mockk(relaxed = true),
     interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper = mockk(relaxed = true),
     channelRepo: PlayBroadcastRepository = mockk(relaxed = true),
-) : Closeable {
+    logger: PlayLogger = mockk(relaxed = true),
+) {
 
     private val viewModel = PlayBroadcastViewModel(
         livePusherMediator,
@@ -74,7 +78,8 @@ internal class PlayBroadcastViewModelRobot(
         playBroadcastMapper,
         channelInteractiveMapper,
         interactiveLeaderboardMapper,
-        channelRepo
+        channelRepo,
+        logger,
     )
 
     fun recordState(fn: suspend PlayBroadcastViewModelRobot.() -> Unit): PlayBroadcastUiState {

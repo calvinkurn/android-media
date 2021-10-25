@@ -75,8 +75,6 @@ class AddEditProductDetailViewModel @Inject constructor(
     val hasVariants get() = productInputModel.variantInputModel.selections.isNotEmpty()
     val hasTransaction get() = productInputModel.itemSold > 0
 
-    var productPhotoPaths: MutableList<String> = mutableListOf()
-
     var productShowCases: MutableList<ShowcaseItemPicker> = mutableListOf()
 
     var isAddingWholeSale = false
@@ -85,9 +83,10 @@ class AddEditProductDetailViewModel @Inject constructor(
     private var isMultiLocationShop = false
 
     private var minimumStockCount = MIN_PRODUCT_STOCK_LIMIT
-
     private var stockAllocationDefaultMessage = ""
+    private var priceAllocationDefaultMessage = ""
 
+    var productPhotoPaths: MutableList<String> = mutableListOf()
     private val mIsProductPhotoError = MutableLiveData<Boolean>()
 
     private val mProductNameInputLiveData = MutableLiveData<String>()
@@ -319,7 +318,8 @@ class AddEditProductDetailViewModel @Inject constructor(
             mIsProductPriceInputError.value = true
             return
         }
-        productPriceMessage = ""
+
+        productPriceMessage = priceAllocationDefaultMessage
         mIsProductPriceInputError.value = false
     }
 
@@ -562,12 +562,22 @@ class AddEditProductDetailViewModel @Inject constructor(
     fun setupMultiLocationShopValues() {
         isMultiLocationShop = getIsMultiLocation()
         if (isMultiLocationShop) {
+            setupMultiLocationPriceAllocationMessage()
             setupMultiLocationStockAllocationMessage()
             setupMultiLocationDefaultMinimumStock()
         } else {
+            priceAllocationDefaultMessage = provider.getPriceTipsMessage()
+            productPriceMessage = provider.getPriceTipsMessage()
             stockAllocationDefaultMessage = ""
             productStockMessage = ""
             minimumStockCount = MIN_PRODUCT_STOCK_LIMIT
+        }
+    }
+
+    private fun setupMultiLocationPriceAllocationMessage() {
+        getMultiLocationPriceAllocationMessage().let {
+            priceAllocationDefaultMessage = it
+            productPriceMessage = it
         }
     }
 
@@ -584,10 +594,17 @@ class AddEditProductDetailViewModel @Inject constructor(
         }
     }
 
+    private fun getMultiLocationPriceAllocationMessage(): String =
+        when {
+            isEditing -> provider.getEditProductPriceMultiLocationMessage()
+            isAdding -> provider.getAddProductPriceMultiLocationMessage()
+            else -> ""
+        }
+
     private fun getMultiLocationStockAllocationMessage(): String =
             when {
-                isEditing -> provider.getEditProductMultiLocationMessage().orEmpty()
-                isAdding -> provider.getAddProductMultiLocationMessage().orEmpty()
+                isEditing -> provider.getEditProductStockMultiLocationMessage().orEmpty()
+                isAdding -> provider.getAddProductStockMultiLocationMessage().orEmpty()
                 else -> ""
             }
 

@@ -27,6 +27,7 @@ import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
+import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
 import com.tokopedia.play.broadcaster.util.extension.getDialog
@@ -260,7 +261,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun observeLiveInfo() {
         parentViewModel.observableLivePusherInfo.observe(viewLifecycleOwner, Observer {
-            debugView.setLiveInfo(it)
+            when (it) {
+                is PlayLiveLogState.Init -> debugView.setLiveInfo(it)
+                is PlayLiveLogState.Changed -> debugView.updateState(it.state)
+            }
         })
     }
 
@@ -489,7 +493,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 )
             }
         }
-        debugView.updateState(state)
     }
 
     private fun handleLivePushError(state: PlayLiveViewState.Error) {
