@@ -5,13 +5,13 @@
             <solid android:color="@color/Unify_N0" />
             <stroke android:color="@color/Unify_G500"
                 android:width="0.5dp"/>
-            <size android:height="@dimen/dp_6"
-                android:width="@dimen/dp_6"/>
+            <size android:height="6dp"
+                android:width="6dp"/>
         </shape>
     </item>
     <item
-        android:top="@dimen/dp_10"
-        android:bottom="@dimen/dp_10"
+        android:top="10dp"
+        android:bottom="10dp"
         android:left="@dimen/dp_7"
         android:right="@dimen/dp_7">
         <bitmap android:src="@drawable/ic_action_check"

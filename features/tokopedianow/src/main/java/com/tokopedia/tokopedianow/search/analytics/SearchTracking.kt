@@ -8,6 +8,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_ADD_QUANTITY
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_APPLY_CATEGORY_FILTER
@@ -34,6 +35,7 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKON
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_NO_SEARCH_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_SEARCH_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_BROAD_MATCH
+import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_OOC_SCREEN_NAME
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ORGANIC
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
@@ -115,6 +117,7 @@ object SearchTracking {
         const val RECOM_LIST_PAGE_EMPTY_SEARCH =
             "/${RECOM_LIST_PAGE} - tokonow - rekomendasi untuk anda - empty_search - %s"
         const val TOKONOW_BROAD_MATCH = "/tokonow - broad match"
+        const val TOKONOW_OOC_SCREEN_NAME = "search result tokonow"
     }
 
     fun sendGeneralEvent(dataLayer: Map<String, Any>) {
@@ -621,6 +624,16 @@ object SearchTracking {
                 EVENT_LABEL, keyword,
                 KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
                 KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+            )
+        )
+    }
+
+    fun sendOOCOpenScreenTracking() {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(
+            TOKONOW_OOC_SCREEN_NAME,
+            mapOf<String, String>(
+                KEY_BUSINESS_UNIT to BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE,
+                KEY_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
             )
         )
     }

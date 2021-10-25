@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -30,8 +29,8 @@ import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Compan
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.domain.pojo.ShopInfoByID
+import com.tokopedia.loginregister.shopcreation.domain.pojo.UserProfileCompletionData
 import com.tokopedia.loginregister.shopcreation.viewmodel.ShopCreationViewModel
-import com.tokopedia.profilecommon.domain.pojo.UserProfileCompletionData
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify

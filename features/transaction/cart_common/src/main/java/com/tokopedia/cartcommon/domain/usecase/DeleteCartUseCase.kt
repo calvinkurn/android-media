@@ -14,10 +14,10 @@ class DeleteCartUseCase @Inject constructor(@ApplicationContext private val grap
 
     private var params: Map<String, Any>? = null
 
-    fun setParams(cartIdList: List<String>) {
+    fun setParams(cartIdList: List<String>, addToWishlist: Boolean = false) {
         params = mapOf(
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
-                PARAM_KEY_ADD_TO_WISHLIST to 0,
+                PARAM_KEY_ADD_TO_WISHLIST to if (addToWishlist) 1 else 0,
                 PARAM_KEY_CART_IDS to cartIdList
         )
     }

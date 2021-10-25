@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.list.domain.mapper
 
+import com.tokopedia.kotlin.extensions.view.asCamelCase
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerorder.list.domain.model.SomListOrderListResponse
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
@@ -17,7 +18,21 @@ class OrderListMapper @Inject constructor() {
                     deadlineColor = it.deadlineColor,
                     deadlineText = it.deadlineText,
                     orderId = it.orderId,
-                    orderProduct = mapProductList(it.orderProduct),
+                    orderProduct = if (it.haveProductBundle) {
+                        val bundleDetail = it.bundleDetail
+                        val bundleProducts: List<SomListOrderUiModel.OrderProduct> = bundleDetail?.bundle?.map { bundle ->
+                            mapProductList(bundle.orderDetail)
+                        }?.flatten().orEmpty()
+                        val nonBundleProducts: List<SomListOrderUiModel.OrderProduct> = mapProductList(bundleDetail?.nonBundle.orEmpty())
+                        listOf(bundleProducts, nonBundleProducts).flatten()
+                    } else {
+                        mapProductList(it.orderProduct)
+                    },
+                    productCount = if (it.haveProductBundle) {
+                        it.bundleDetail?.totalProduct.orZero()
+                    } else {
+                        it.orderProduct.distinctBy { it.productId }.size
+                    },
                     orderResi = it.orderResi,
                     orderStatusId = it.orderStatusId.takeIf { it.isNotBlank() }?.toInt().orZero(),
                     status = it.status,
@@ -35,12 +50,15 @@ class OrderListMapper @Inject constructor() {
         }
     }
 
-    private fun mapProductList(orderProduct: List<SomListOrderListResponse.Data.OrderList.Order.OrderProduct>): List<SomListOrderUiModel.OrderProduct> {
+    private fun mapProductList(
+            orderProduct: List<SomListOrderListResponse.Data.OrderList.Order.Product>
+    ): List<SomListOrderUiModel.OrderProduct> {
         return orderProduct.map {
             SomListOrderUiModel.OrderProduct(
                     productId = it.productId,
-                    productName = it.productName.capitalize(),
-                    picture = it.picture
+                    productName = it.productName.asCamelCase(),
+                    picture = it.picture,
+                    quantity = it.productQty
             )
         }
     }

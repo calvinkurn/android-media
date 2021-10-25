@@ -10,6 +10,10 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataMo
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
+import com.tokopedia.home_component.model.ChannelConfig
+import com.tokopedia.home_component.model.ChannelHeader
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.ChannelStyle
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.channels.Channel
@@ -37,7 +41,16 @@ class HomeViewModelBusinessUnitTest{
     @Test
     fun `Get Tab Data success && bu data success`(){
         val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
-        val businessUnitDataModel = NewBusinessUnitWidgetDataModel()
+        val businessUnitDataModel = NewBusinessUnitWidgetDataModel(
+            channelModel = ChannelModel(
+                id = "2222",
+                groupId = "",
+                style = ChannelStyle.ChannelHome,
+                channelHeader = ChannelHeader(name = "Selalu bisa topup dan Liburan"),
+                channelConfig = ChannelConfig(layout = "bu_widget"),
+                layout = "bu_widget"
+            )
+        )
 
         // dynamic banner
         getHomeUseCase.givenGetHomeDataReturn(
@@ -84,7 +97,17 @@ class HomeViewModelBusinessUnitTest{
     fun `Update BU Data success`(){
         runBlocking {
             val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
-            val businessUnitDataModel = NewBusinessUnitWidgetDataModel()
+            val businessUnitDataModel = NewBusinessUnitWidgetDataModel(
+                channelModel = ChannelModel(
+                    id = "2222",
+                    groupId = "",
+                    style = ChannelStyle.ChannelHome,
+                    channelHeader = ChannelHeader(name = "Selalu bisa topup dan Liburan"),
+                    channelConfig = ChannelConfig(layout = "bu_widget"),
+                    layout = "bu_widget"
+                )
+            )
+
             val homeDataModel = HomeDataModel(
                     list = listOf(businessUnitDataModel)
             )
@@ -138,7 +161,17 @@ class HomeViewModelBusinessUnitTest{
 
     @Test
     fun `Get bu tab success && bu data first error`(){
-        val businessUnitDataModel = NewBusinessUnitWidgetDataModel()
+        val businessUnitDataModel = NewBusinessUnitWidgetDataModel(
+            channelModel = ChannelModel(
+                id = "2222",
+                groupId = "",
+                style = ChannelStyle.ChannelHome,
+                channelHeader = ChannelHeader(name = "Selalu bisa topup dan Liburan"),
+                channelConfig = ChannelConfig(layout = "bu_widget"),
+                layout = "bu_widget"
+            )
+        )
+
         val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
         // dynamic banner
         getHomeUseCase.givenGetHomeDataReturn(

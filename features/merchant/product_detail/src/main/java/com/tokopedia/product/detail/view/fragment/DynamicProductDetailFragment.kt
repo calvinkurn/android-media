@@ -287,7 +287,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private var shouldShowCartAnimation = false
     private var loadingProgressDialog: ProgressDialog? = null
     private var productVideoCoordinator: ProductVideoCoordinator? = null
-    private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this) }
+    private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this, viewModel.userId) }
     private val coachMarkBoePref by lazy { CoachMarkLocalCache(context) }
     private val adapter by lazy {
         val asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel> = AsyncDifferConfig.Builder(ProductDetailDiffUtil())
@@ -387,7 +387,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             context?.let {
                 (it as? ProductDetailActivity)?.startMonitoringPltNetworkRequest()
                 viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId),
-                        forceRefresh, isAffiliate, layoutId, isNavOld(), ChooseAddressUtils.getLocalizingAddressData(it)
+                    forceRefresh, isAffiliate, layoutId, isNavOld(), ChooseAddressUtils.getLocalizingAddressData(it)
                         ?: LocalCacheModel(), affiliateUniqueString = affiliateUniqueId, uuid, urlQuery)
             }
         }
@@ -1578,6 +1578,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 boeData,
                 viewModel.getUserLocationCache()
         )
+        pdpUiUpdater?.updateProductBundlingData(viewModel.p2Data.value, selectedChild?.productId)
 
         renderRestrictionBottomSheet(viewModel.p2Data.value?.restrictionInfo
                 ?: RestrictionInfoResponse())
@@ -1923,7 +1924,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 variantString = DynamicProductDetailTracking.generateVariantString(viewModel.variantData, viewModel.getDynamicProductInfoP1?.basic?.productID
                         ?: ""),
                 productInfo = viewModel.getDynamicProductInfoP1,
-                boType = boData.boType)
+                boType = boData.boType,
+                ratesEstimateData = viewModel.getP2RatesEstimateByProductId(),
+                buyerDistrictId = viewModel.getUserLocationCache().district_id,
+                sellerDistrictId = viewModel.getMultiOriginByProductId().districtId
+        )
     }
 
     private fun validateOvo(result: AddToCartDataModel) {
@@ -2098,6 +2103,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
         viewModel.getDynamicProductInfoP1?.run {
             DynamicProductDetailTracking.Branch.eventBranchItemView(this, viewModel.userId)
+        }
+
+        if (it.bundleInfoMap.isEmpty()) {
+            pdpUiUpdater?.removeComponent(ProductDetailConstant.PRODUCT_BUNDLING)
         }
 
         pdpUiUpdater?.updateFulfillmentData(context, viewModel.getMultiOriginByProductId().isFulfillment)
@@ -2525,13 +2534,21 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     view = view,
                     productImgList = ArrayList(imageUrls),
                     preBuildImg = {
-                        showProgressDialog {
-                            shareProductInstance?.cancelShare(true)
-                        }
+                        showLoadingUniversalShare()
                     },
                     postBuildImg = { hideProgressDialog() },
                     screenshotDetector
             )
+        }
+    }
+
+    private fun showLoadingUniversalShare() {
+        activity?.let {
+            if (!it.isFinishing) {
+                showProgressDialog {
+                    shareProductInstance?.cancelShare(true)
+                }
+            }
         }
     }
 
@@ -2676,7 +2693,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 deeplinkUrl = deeplinkUrl,
                 isStockAvailable = viewModel.getDynamicProductInfoP1?.getFinalStock() ?: "0",
                 boType = boType,
-                affiliateUniqueId = if (affiliateUniqueId.isNotBlank()) "$affiliateUniqueId - $uuid" else ""
+                affiliateUniqueId = affiliateUniqueId,
+                uuid = uuid,
+                ratesEstimateData = viewModel.getP2RatesEstimateByProductId(),
+                buyerDistrictId = viewModel.getUserLocationCache().district_id,
+                sellerDistrictId = viewModel.getMultiOriginByProductId().districtId
         )
     }
 
@@ -3746,6 +3767,48 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     override fun onClickBestSeller(componentTrackDataModel: ComponentTrackDataModel, appLink: String) {
         DynamicProductDetailTracking.Click.eventClickBestSeller(componentTrackDataModel, viewModel.getDynamicProductInfoP1, "", viewModel.userId)
         goToApplink(appLink)
+    }
+
+    override fun onImpressionProductBundling(
+        bundleId: String,
+        bundleType: String,
+        componentTrackDataModel: ComponentTrackDataModel
+    ) {
+        DynamicProductDetailTracking.ProductBundling.eventImpressionProductBundling(
+            viewModel.userId, bundleId, bundleType, viewModel.getDynamicProductInfoP1, componentTrackDataModel, trackingQueue
+        )
+    }
+
+    override fun onClickCheckBundling(
+        bundleId: String,
+        bundleType: String,
+        componentTrackDataModel: ComponentTrackDataModel
+    ) {
+        val productInfoP1 = viewModel.getDynamicProductInfoP1
+        DynamicProductDetailTracking.ProductBundling.eventClickCheckBundlePage(
+            bundleId, bundleType, productInfoP1, componentTrackDataModel
+        )
+        val productId = productInfoP1?.basic?.productID
+        val appLink = UriUtil.buildUri(ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE, productId)
+        val parameterizedAppLink = Uri.parse(appLink).buildUpon()
+            .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_BUNDLE_ID, bundleId)
+            .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_PAGE_SOURCE, ApplinkConstInternalMechant.SOURCE_PDP)
+            .build()
+            .toString()
+        val intent = RouteManager.getIntent(requireContext(), parameterizedAppLink)
+        startActivity(intent)
+    }
+
+    override fun onClickProductInBundling(
+        bundleId: String,
+        bundleProductId: String,
+        componentTrackDataModel: ComponentTrackDataModel
+    ) {
+        DynamicProductDetailTracking.ProductBundling.eventClickMultiBundleProduct(
+            bundleId, bundleProductId, viewModel.getDynamicProductInfoP1, componentTrackDataModel
+        )
+        val intent = ProductDetailActivity.createIntent(requireContext(), bundleProductId)
+        startActivity(intent)
     }
 
     private fun shouldGoToNewGallery(): Boolean {

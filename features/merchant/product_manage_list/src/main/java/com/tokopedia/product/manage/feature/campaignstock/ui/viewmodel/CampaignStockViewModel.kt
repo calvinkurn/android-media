@@ -442,9 +442,9 @@ class CampaignStockViewModel @Inject constructor(
                 }?.stock.toIntOrZero()
                 variant.copy(stock = stock)
             }
-            val getVariantResult = it.copy(variants = variants)
+            val variantResult = it.copy(variants = variants)
             val variantsEditResult =
-                ProductManageVariantMapper.mapVariantsToEditResult(productId, getVariantResult)
+                ProductManageVariantMapper.mapVariantsToEditResult(productId, variantResult)
             editVariantResult = variantsEditResult
             variantList = variants
         }

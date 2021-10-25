@@ -19,7 +19,7 @@ import com.tokopedia.entertainment.pdp.data.PackageItem
 import com.tokopedia.entertainment.pdp.data.PackageV3
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket.view.*
 import java.util.*
 
@@ -117,7 +117,8 @@ class PackageParentViewHolder(
             Html.fromHtml("<b>${getString(R.string.ent_free_price)} </b>")
         else {
             val salesPrice = sortedList.first().salesPrice
-            Html.fromHtml("${getString(R.string.ent_checkout_price_expand)} <b>Rp $salesPrice </b>")
+            val priceFormatted = CurrencyFormatHelper.convertToRupiah(salesPrice)
+            Html.fromHtml("${getString(R.string.ent_checkout_price_expand)} <b>Rp $priceFormatted</b>")
         }
 
     }
