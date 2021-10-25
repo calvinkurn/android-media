@@ -771,6 +771,27 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check official store appLink os experiment then should return tokopedia internal official store in customerapp`() {
+        every {
+            DeeplinkMapperHome.isOsExperiment()
+        } returns true
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://merchant/official-store"
+        assertEqualsDeepLinkMapper(ApplinkConst.OFFICIAL_STORE, expectedDeepLink)
+    }
+
+    @Test
+    fun `check official store category appLink os experiment then should return tokopedia internal official store category in customerapp`() {
+        every {
+            DeeplinkMapperHome.isOsExperiment()
+        } returns true
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://merchant/official-store"
+        val appLink = UriUtil.buildUri(ApplinkConst.OFFICIAL_STORE_CATEGORY, "21")
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
     fun `check resolution center buyer appLink then should return empty in customerapp`() {
         assertEqualsDeepLinkMapper(ApplinkConst.RESCENTER_SELLER, "")
     }
