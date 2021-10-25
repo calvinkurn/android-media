@@ -178,11 +178,6 @@ public class CMInAppManager implements CmInAppListener,
         }
     }
 
-    @Override
-    public void sendEventInAppDelivered(CMInApp cmInApp) {
-        sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_DELIVERED, null);
-    }
-
     private void showDialog(CMInApp data) {
         WeakReference<Activity> currentActivity = activityLifecycleHandler.getCurrentWeakActivity();
         String type = data.type;
@@ -271,23 +266,13 @@ public class CMInAppManager implements CmInAppListener,
             }
         } catch (Exception e) {
             Map<String, String> data = remoteMessage.getData();
-            if (data != null) {
-                Map<String, String> messageMap = new HashMap<>();
-                messageMap.put("type", "exception");
-                messageMap.put("err", Log.getStackTraceString
-                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
-                messageMap.put("data", data.toString()
-                        .substring(0, (Math.min(data.toString().length(), CMConstant.TimberTags.MAX_LIMIT))));
-                ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
-            }
-            else {
-                Map<String, String> messageMap = new HashMap<>();
-                messageMap.put("type", "exception");
-                messageMap.put("err", Log.getStackTraceString
-                        (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
-                messageMap.put("data", "");
-                ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
-            }
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "exception");
+            messageMap.put("err", Log.getStackTraceString
+                    (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
+            messageMap.put("data", data.toString()
+                    .substring(0, (Math.min(data.toString().length(), CMConstant.TimberTags.MAX_LIMIT))));
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
         }
     }
 
@@ -297,9 +282,17 @@ public class CMInAppManager implements CmInAppListener,
             AmplificationCMInApp amplificationCMInApp = gson.fromJson(dataString, AmplificationCMInApp.class);
             CMInApp cmInApp = CmInAppBundleConvertor.getCmInApp(amplificationCMInApp);
             if (cmInApp != null) {
-                cmInApp.setAmplification(true);
-                IrisAnalyticsEvents.INSTANCE.sendAmplificationInAppEvent(application, IrisAnalyticsEvents.INAPP_DELIVERED, cmInApp);
-                new CMInAppController(this).downloadImagesAndUpdateDB(application, cmInApp);
+                if (application != null) {
+                    cmInApp.setAmplification(true);
+                    sendEventInAppDelivered(cmInApp);
+                    new CMInAppController(this).downloadImagesAndUpdateDB(application, cmInApp);
+                } else {
+                    Map<String, String> messageMap = new HashMap<>();
+                    messageMap.put("type", "validation");
+                    messageMap.put("reason", "application_null");
+                    messageMap.put("data", "");
+                    ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
+                }
             }
         } catch (Exception e) {
             Map<String, String> messageMap = new HashMap<>();
@@ -309,6 +302,10 @@ public class CMInAppManager implements CmInAppListener,
             messageMap.put("data", "");
             ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
         }
+    }
+
+    private void sendEventInAppDelivered(CMInApp cmInApp) {
+        sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_DELIVERED, null);
     }
 
     @Override
