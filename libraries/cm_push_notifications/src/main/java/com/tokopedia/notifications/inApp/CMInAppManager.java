@@ -157,7 +157,7 @@ public class CMInAppManager implements CmInAppListener,
                 CMInApp cmInApp = inAppDataList.get(0);
                 sendEventInAppPrepared(cmInApp);
                 if (checkForOtherSources(cmInApp, entityHashCode, screenName)) return;
-                if (canShowDialog()) {
+                if(canShowDialog()) {
                     showDialog(cmInApp);
                 }
             }
@@ -185,11 +185,6 @@ public class CMInAppManager implements CmInAppListener,
                     cmInApp
             );
         }
-    }
-
-    @Override
-    public void sendEventInAppDelivered(CMInApp cmInApp) {
-        sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_DELIVERED, null);
     }
 
     private void showDialog(CMInApp data) {
@@ -266,7 +261,7 @@ public class CMInAppManager implements CmInAppListener,
                     Map<String, String> messageMap = new HashMap<>();
                     messageMap.put("type", "validation");
                     messageMap.put("reason", "application_null");
-                    messageMap.put("data", "");
+                    messageMap.put("data",  "");
                     ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
                 }
             }
@@ -288,9 +283,17 @@ public class CMInAppManager implements CmInAppListener,
             AmplificationCMInApp amplificationCMInApp = gson.fromJson(dataString, AmplificationCMInApp.class);
             CMInApp cmInApp = CmInAppBundleConvertor.getCmInApp(amplificationCMInApp);
             if (cmInApp != null) {
-                cmInApp.setAmplification(true);
-                IrisAnalyticsEvents.INSTANCE.sendAmplificationInAppEvent(application, IrisAnalyticsEvents.INAPP_DELIVERED, cmInApp);
-                new CMInAppProcessor(application).processAndSaveCMInApp(cmInApp, this::onNewInAppStored);
+                if (application != null) {
+                    cmInApp.setAmplification(true);
+                    sendEventInAppDelivered(cmInApp);
+                    new CMInAppProcessor(application).processAndSaveCMInApp(cmInApp, this::onNewInAppStored);
+                } else {
+                    Map<String, String> messageMap = new HashMap<>();
+                    messageMap.put("type", "validation");
+                    messageMap.put("reason", "application_null");
+                    messageMap.put("data", "");
+                    ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
+                }
             }
         } catch (Exception e) {
             Map<String, String> messageMap = new HashMap<>();
@@ -309,6 +312,10 @@ public class CMInAppManager implements CmInAppListener,
                 showInAppForScreen(currentActivity.getClass().getName(), currentActivity.hashCode(), true);
             }
         }
+    }
+
+    private void sendEventInAppDelivered(CMInApp cmInApp) {
+        sendPushEvent(cmInApp, IrisAnalyticsEvents.INAPP_DELIVERED, null);
     }
 
     @Override
