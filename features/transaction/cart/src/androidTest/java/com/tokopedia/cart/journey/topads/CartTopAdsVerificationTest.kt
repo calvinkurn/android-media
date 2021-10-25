@@ -1,6 +1,8 @@
 package com.tokopedia.cart.journey.topads
 
 import android.Manifest
+import android.app.Activity
+import android.app.Instrumentation
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -9,8 +11,10 @@ import androidx.test.espresso.PerformException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.cart.CartActivity
 import com.tokopedia.cart.R
@@ -31,7 +35,7 @@ class CartTopAdsVerificationTest {
     private var topAdsCount = 0
 
     @get:Rule
-    var activityRule = object : ActivityTestRule<CartActivity>(CartActivity::class.java) {
+    var activityRule = object : IntentsTestRule<CartActivity>(CartActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupTopAdsDetector()
@@ -72,6 +76,7 @@ class CartTopAdsVerificationTest {
         val cartRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_cart)
         val itemCount = cartRecyclerView.adapter?.itemCount ?: 0
 
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         for (i in 0 until itemCount) {
             scrollCartRecyclerViewToPosition(cartRecyclerView, i)
             checkItemType(cartRecyclerView, i)
@@ -102,7 +107,11 @@ class CartTopAdsVerificationTest {
                         override fun getDescription(): String = "click product item card"
 
                         override fun perform(uiController: UiController?, view: View?) {
-                            view?.performClick()
+                            try {
+                                view?.performClick()
+                            } catch (e: PerformException) {
+                                e.printStackTrace()
+                            }
                         }
                     }))
         } catch (e: PerformException) {
