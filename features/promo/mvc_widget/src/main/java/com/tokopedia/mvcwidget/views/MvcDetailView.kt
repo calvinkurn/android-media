@@ -23,6 +23,7 @@ import com.tokopedia.mvcwidget.*
 import com.tokopedia.mvcwidget.di.components.DaggerMvcComponent
 import com.tokopedia.mvcwidget.quest_widget.QuestWidgetAdapter
 import com.tokopedia.mvcwidget.quest_widget.QuestWidgetListItem
+import com.tokopedia.mvcwidget.quest_widget.QuestWidgetViewModel
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.trackers.MvcTracker
 import com.tokopedia.promoui.common.dpToPx
@@ -77,7 +78,7 @@ class MvcDetailView @JvmOverloads constructor(
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: MvcDetailViewModel
-
+    lateinit var questWidgetViewModel: QuestWidgetViewModel
 
     init {
         userSession = UserSession(context)
@@ -99,6 +100,7 @@ class MvcDetailView @JvmOverloads constructor(
         if (context is AppCompatActivity) {
             val viewModelProvider = ViewModelProviders.of(context, viewModelFactory)
             viewModel = viewModelProvider[MvcDetailViewModel::class.java]
+            questWidgetViewModel = viewModelProvider[QuestWidgetViewModel::class.java]
         }
 
         setupListeners()
@@ -226,6 +228,7 @@ class MvcDetailView @JvmOverloads constructor(
         this.shopId = shopId
         this.mvcSource = mvcSource
         viewModel.getListData(shopId)
+        questWidgetViewModel.getWidgetList(0, "", "")
     }
 
     fun setupData(response: TokopointsCatalogMVCListResponse) {

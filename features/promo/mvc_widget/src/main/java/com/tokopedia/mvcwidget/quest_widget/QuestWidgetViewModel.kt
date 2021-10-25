@@ -1,18 +1,24 @@
 package com.tokopedia.mvcwidget.quest_widget
 
+import android.util.Log
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.mvcwidget.IO
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineDispatcher
+import javax.inject.Inject
+import javax.inject.Named
 
 const val ERROR_MSG = "Oops, ada sedikit gangguan. Coba daftar lagi, ya."
 const val ERROR_NULL_RESPONSE = "Response is null"
 
-class QuestWidgetViewModel( workerDispatcher: CoroutineDispatcher, val questWidgetUseCase: QuestWidgetUseCase): BaseViewModel(workerDispatcher) {
+class QuestWidgetViewModel @Inject constructor(@Named(IO) workerDispatcher: CoroutineDispatcher,
+                           val questWidgetUseCase: QuestWidgetUseCase):
+    BaseViewModel(workerDispatcher) {
 
+    private val TAG = QuestWidgetViewModel::class.java.simpleName
     val questWidgetListLiveData = SingleLiveEvent<LiveDataResult<QuestWidgetList>>()
     val pageDetailLiveData = SingleLiveEvent<LiveDataResult<PageDetail>>()
-    val isEligibleLiveData = SingleLiveEvent<LiveDataResult<Boolean>>()
 
     fun getWidgetList(channel: Int, channelSlug: String, page: String){
         launchCatchError(block = {
@@ -20,6 +26,7 @@ class QuestWidgetViewModel( workerDispatcher: CoroutineDispatcher, val questWidg
             val response = questWidgetUseCase.getResponse(questWidgetUseCase.getQueryParams(channel, channelSlug, page))
             if (response != null) {
                 response.data?.questWidgetList?.let {
+                    Log.d(TAG, "getWidgetList: " + it.questWidgetList)
                     questWidgetListLiveData.postValue(LiveDataResult.success(it))
                 }
                 response.data?.pageDetail?.let {

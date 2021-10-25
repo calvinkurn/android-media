@@ -11,6 +11,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.Target
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvcwidget.R
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -43,15 +44,7 @@ class QuestWidgetView @JvmOverloads constructor(
         tvLabel?.text = item.label?.title
         tvBannerTitle?.text = config.banner_title
         tvBannerDesc?.text = config.banner_description
-        ivBannerIcon?.let {
-            Glide.with(context)
-                .load(config.banner_icon_url)
-                .dontAnimate()
-                .diskCacheStrategy(DiskCacheStrategy.DATA)
-                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                .centerCrop()
-                .into(it)
-        }
+        ivBannerIcon?.loadImage(config.banner_icon_url)
         viewSideBar?.setBackgroundColor(Color.parseColor(config.banner_background_color))
 
         when(item.questUser?.status){
