@@ -152,7 +152,7 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
     }
 
     private fun setupTicker(isMultiLocation: Boolean) {
-        ticker_product_manage_edit_price_variant_multiloc?.showWithCondition(isMultiLocation)
+        binding?.tickerProductManageEditPriceVariantMultiloc?.showWithCondition(isMultiLocation)
     }
 
     private fun getData(productId: String, isBundle: Boolean) {
