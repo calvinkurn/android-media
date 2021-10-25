@@ -146,7 +146,7 @@ class PlayViewModel @Inject constructor(
     private val isInteractiveAllowed: Boolean
         get() = channelType.isLive && videoOrientation.isVertical && videoPlayer.isGeneral() && isInteractiveRemoteConfigEnabled
 
-    private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 5)
+    private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 50)
 
     private val _channelDetail = MutableStateFlow(PlayChannelDetailUiModel())
     private val _partnerInfo = MutableStateFlow(PlayPartnerInfo())
@@ -175,11 +175,11 @@ class PlayViewModel @Inject constructor(
                 else -> ViewVisibility.Visible
             },
         )
-    }
+    }.flowOn(dispatchers.computation)
 
     private val _partnerUiState = _partnerInfo.map {
         PlayPartnerUiState(it.name, it.status)
-    }
+    }.flowOn(dispatchers.computation)
 
     private val _winnerBadgeUiState = combine(
         _leaderboardInfo, _bottomInsets, _status, _channelDetail, _leaderboardUserBadgeState
@@ -191,7 +191,7 @@ class PlayViewModel @Inject constructor(
                     leaderboardUserBadgeState.showLeaderboard &&
                     channelDetail.channelInfo.channelType.isLive,
         )
-    }
+    }.flowOn(dispatchers.computation)
 
     private val _likeUiState = combine(
         _likeInfo, _channelDetail, _bottomInsets, _status, _channelReport
@@ -207,11 +207,11 @@ class PlayViewModel @Inject constructor(
                     channelDetail.channelInfo.channelType.isLive &&
                     status.isActive,
         )
-    }
+    }.flowOn(dispatchers.computation)
 
     private val _totalViewUiState = _channelReport.map {
         PlayTotalViewUiState(it.totalViewFmt)
-    }
+    }.flowOn(dispatchers.computation)
 
     private val _shareUiState = combine(
         _channelDetail, _bottomInsets, _status, _upcomingInfo
@@ -220,7 +220,7 @@ class PlayViewModel @Inject constructor(
                 !bottomInsets.isAnyShown &&
                 (status.isActive || upcomingInfo?.isUpcoming == true)
         )
-    }
+    }.flowOn(dispatchers.computation)
 
     private val _cartUiState = combine(
         _cartInfo, _bottomInsets, _upcomingInfo
@@ -235,7 +235,7 @@ class PlayViewModel @Inject constructor(
                 PlayCartCount.Show(countText)
             } else PlayCartCount.Hide
         )
-    }
+    }.flowOn(dispatchers.computation)
 
     private val _rtnUiState = combine(
         _channelDetail, _bottomInsets, _status
@@ -248,7 +248,7 @@ class PlayViewModel @Inject constructor(
                     !videoPlayer.isYouTube,
             lifespanInMs = channelDetail.rtnConfigInfo.lifespan,
         )
-    }
+    }.flowOn(dispatchers.computation)
 
     /**
      * Until repeatOnLifecycle is available (by updating library version),
@@ -278,12 +278,14 @@ class PlayViewModel @Inject constructor(
             cart = cart,
             rtn = rtn,
         )
-    }
+    }.flowOn(dispatchers.computation)
+
     val uiEvent: Flow<PlayViewerNewUiEvent>
         get() = _uiEvent.filter {
             isActive.get() || it is AllowedWhenInactiveEvent ||
                     (upcomingInfo != null && upcomingInfo?.isUpcoming == true)
         }.map { if (it is AllowedWhenInactiveEvent) it.event else it }
+            .flowOn(dispatchers.computation)
 
     val videoOrientation: VideoOrientation
         get() {
@@ -1373,7 +1375,7 @@ class PlayViewModel @Inject constructor(
         }
 
         when (result) {
-            is TotalLike -> {
+            is TotalLike -> withContext(dispatchers.computation) {
                 val (totalLike, totalLikeFmt) = playSocketToModelMapper.mapTotalLike(result)
                 val prevLike = _channelReport.value.totalLike
 
@@ -1405,7 +1407,7 @@ class PlayViewModel @Inject constructor(
                     )
                 }
             }
-            is TotalView -> {
+            is TotalView -> withContext(dispatchers.computation) {
                 _channelReport.setValue {
                     copy(totalViewFmt = playSocketToModelMapper.mapTotalView(result))
                 }
@@ -1487,7 +1489,7 @@ class PlayViewModel @Inject constructor(
                 val interactive = playSocketToModelMapper.mapInteractive(result)
                 handleInteractiveFromNetwork(interactive)
             }
-            is RealTimeNotification -> {
+            is RealTimeNotification -> withContext(dispatchers.computation) {
                 val notif = playSocketToModelMapper.mapRealTimeNotification(result)
                 _uiEvent.emit(ShowRealTimeNotificationEvent(notif))
             }

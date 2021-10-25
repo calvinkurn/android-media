@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="64dp"
     android:layout_height="wrap_content"
-    android:layout_marginRight="@dimen/dp_2"
-    android:layout_marginBottom="@dimen/dp_4"
-    app:cardCornerRadius="@dimen/dp_4"
+    android:layout_marginRight="2dp"
+    android:layout_marginBottom="4dp"
+    app:cardCornerRadius="4dp"
     app:cardUseCompatPadding="true">
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -15,7 +15,7 @@
         android:layout_height="@dimen/dp_60"
         android:adjustViewBounds="true"
         android:background="@drawable/ic_squircle_new"
-        android:padding="@dimen/dp_12"
+        android:padding="12dp"
         android:scaleType="centerInside"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,10 +23,10 @@
 
     <View
         android:id="@+id/view_category_new"
-        android:layout_width="@dimen/dp_12"
-        android:layout_height="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginRight="@dimen/dp_14"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="14dp"
         android:background="@drawable/bg_category_new"
         app:layout_constraintRight_toRightOf="@+id/iv_bg"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,10 +38,10 @@
         android:ellipsize="end"
         android:gravity="center_horizontal"
         android:maxLines="2"
-        android:paddingStart="@dimen/dp_2"
-        android:paddingLeft="@dimen/dp_2"
-        android:paddingEnd="@dimen/dp_2"
-        android:paddingRight="@dimen/dp_2"
+        android:paddingStart="2dp"
+        android:paddingLeft="2dp"
+        android:paddingEnd="2dp"
+        android:paddingRight="2dp"
         android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/tp_text_size_xxsmall"
         app:layout_constraintTop_toBottomOf="@+id/iv_bg"

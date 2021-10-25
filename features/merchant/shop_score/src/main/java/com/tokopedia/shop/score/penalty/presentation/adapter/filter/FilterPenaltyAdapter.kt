@@ -1,5 +1,6 @@
 package com.tokopedia.shop.score.penalty.presentation.adapter.filter
 
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 
@@ -20,7 +21,7 @@ class FilterPenaltyAdapter(adapterFactory: FilterPenaltyAdapterFactory) :
         visitables.filterIsInstance<PenaltyFilterUiModel>().mapIndexed { index, item ->
             val chipsIndex = visitables.indexOf(item)
             item.chipsFilterList = dataList[index].chipsFilterList
-            if (chipsIndex != -1) {
+            if (chipsIndex != RecyclerView.NO_POSITION) {
                 notifyItemChanged(chipsIndex, PAYLOAD_CHIPS_FILTER)
             }
         }
@@ -35,7 +36,7 @@ class FilterPenaltyAdapter(adapterFactory: FilterPenaltyAdapterFactory) :
         val chipsIndex = visitables.indexOf(updateIndex)
         visitables.filterIsInstance<PenaltyFilterUiModel>()
             .find { it.title == title }?.chipsFilterList = chipFilterList
-        if (chipsIndex != -1) {
+        if (chipsIndex != RecyclerView.NO_POSITION) {
             notifyItemChanged(chipsIndex, PAYLOAD_CHIPS_FILTER)
         }
     }

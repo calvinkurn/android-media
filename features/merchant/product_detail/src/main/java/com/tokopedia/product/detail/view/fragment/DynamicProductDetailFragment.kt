@@ -387,7 +387,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             context?.let {
                 (it as? ProductDetailActivity)?.startMonitoringPltNetworkRequest()
                 viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId),
-                        forceRefresh, isAffiliate, layoutId, isNavOld(), ChooseAddressUtils.getLocalizingAddressData(it)
+                    forceRefresh, isAffiliate, layoutId, isNavOld(), ChooseAddressUtils.getLocalizingAddressData(it)
                         ?: LocalCacheModel(), affiliateUniqueString = affiliateUniqueId, uuid, urlQuery)
             }
         }
@@ -1924,7 +1924,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 variantString = DynamicProductDetailTracking.generateVariantString(viewModel.variantData, viewModel.getDynamicProductInfoP1?.basic?.productID
                         ?: ""),
                 productInfo = viewModel.getDynamicProductInfoP1,
-                boType = boData.boType)
+                boType = boData.boType,
+                ratesEstimateData = viewModel.getP2RatesEstimateByProductId(),
+                buyerDistrictId = viewModel.getUserLocationCache().district_id,
+                sellerDistrictId = viewModel.getMultiOriginByProductId().districtId
+        )
     }
 
     private fun validateOvo(result: AddToCartDataModel) {
@@ -2530,13 +2534,21 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     view = view,
                     productImgList = ArrayList(imageUrls),
                     preBuildImg = {
-                        showProgressDialog {
-                            shareProductInstance?.cancelShare(true)
-                        }
+                        showLoadingUniversalShare()
                     },
                     postBuildImg = { hideProgressDialog() },
                     screenshotDetector
             )
+        }
+    }
+
+    private fun showLoadingUniversalShare() {
+        activity?.let {
+            if (!it.isFinishing) {
+                showProgressDialog {
+                    shareProductInstance?.cancelShare(true)
+                }
+            }
         }
     }
 
@@ -2681,7 +2693,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 deeplinkUrl = deeplinkUrl,
                 isStockAvailable = viewModel.getDynamicProductInfoP1?.getFinalStock() ?: "0",
                 boType = boType,
-                affiliateUniqueId = if (affiliateUniqueId.isNotBlank()) "$affiliateUniqueId - $uuid" else ""
+                affiliateUniqueId = affiliateUniqueId,
+                uuid = uuid,
+                ratesEstimateData = viewModel.getP2RatesEstimateByProductId(),
+                buyerDistrictId = viewModel.getUserLocationCache().district_id,
+                sellerDistrictId = viewModel.getMultiOriginByProductId().districtId
         )
     }
 
