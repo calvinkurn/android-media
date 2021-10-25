@@ -75,6 +75,23 @@ abstract class ShopPageProductListViewModelTestFixture {
     private val testCoroutineDispatcherProvider by lazy {
         CoroutineTestDispatchersProvider
     }
+//    val viewModelSpyk: ShopPageProductListViewModel by lazy {
+//        spyk(ShopPageProductListViewModel(
+//                claimBenefitMembershipUseCase,
+//                mvcSummaryUseCase,
+//                getMembershipUseCase,
+//                userSessionInterface,
+//                getShopFeaturedProductUseCase,
+//                getShopEtalaseByShopUseCase,
+//                getShopProductUseCase,
+//                getShopHighlightProductUseCase,
+//                testCoroutineDispatcherProvider,
+//                getShopFilterBottomSheetDataUseCase,
+//                getShopFilterProductCountUseCase,
+//                gqlGetShopSortUseCase,
+//                shopProductSortMapper
+//        ))
+//    }
 
     @Before
     fun setUp() {
