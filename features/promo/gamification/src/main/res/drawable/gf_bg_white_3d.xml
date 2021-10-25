@@ -4,7 +4,7 @@
         android:bottom="@dimen/dp_3">
         <shape
             android:shape="rectangle">
-            <corners android:radius="@dimen/dp_8" />
+            <corners android:radius="8dp" />
             <solid android:color="@android:color/white" />
         </shape>
     </item>
@@ -12,7 +12,7 @@
         android:gravity="bottom">
         <shape
             android:shape="rectangle">
-            <corners android:radius="@dimen/dp_8" />
+            <corners android:radius="8dp" />
 
             <gradient
                 android:angle="90"
