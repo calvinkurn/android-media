@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.listener.StepperListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
@@ -176,9 +177,9 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
     protected fun addTextWithBullet(text: String): Typography? {
         return context?.let {
             Typography(it).apply {
-                val radius = dpToPx(DP_4)
-                val gapWidth = dpToPx(DP_12)
-                val margin = dpToPx(DP_8)
+                val radius = DP_4.dpToPx(resources.displayMetrics)
+                val gapWidth = DP_12.dpToPx(resources.displayMetrics)
+                val margin = DP_8.dpToPx(resources.displayMetrics)
                 val span = SpannableString(text)
                 val color = MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N100)
 
@@ -196,11 +197,6 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
                 this.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             }
         }
-    }
-
-    private fun dpToPx(dp: Int): Int {
-        val displayMetrics = resources.displayMetrics
-        return (dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
     }
 
     private fun setMargins(view: View, left: Int, top: Int, right: Int, bottom: Int) {
