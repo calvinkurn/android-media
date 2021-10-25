@@ -12,7 +12,7 @@
         android:layout_height="@dimen/dp_50"
         android:visibility="visible"
         android:layout_gravity="center"
-        app:loader_corner_radius="@dimen/dp_10"
+        app:loader_corner_radius="10dp"
         app:loader_type="circular"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"

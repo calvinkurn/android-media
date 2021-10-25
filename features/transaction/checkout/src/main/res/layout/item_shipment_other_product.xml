@@ -17,10 +17,10 @@
         android:id="@+id/v_separator_multiple_product_same_store"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:background="@color/Unify_N100" />
 
     <RelativeLayout
@@ -37,7 +37,7 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:gravity="center"
-            android:padding="@dimen/dp_16"
+            android:padding="16dp"
             android:textColor="@color/Unify_G500"
             app:typographyType="body_3"
             app:typographyWeight="bold"

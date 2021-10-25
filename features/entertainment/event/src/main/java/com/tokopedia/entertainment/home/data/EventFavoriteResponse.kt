@@ -9,7 +9,7 @@ data class EventFavoriteResponse(
 ) {
     data class Data(
         @SerializedName("category_id")
-        val categoryId: Int = 0,
+        val categoryId: String = "0",
         @SerializedName("city")
         val city: String = "",
         @SerializedName("display_name")
@@ -21,7 +21,7 @@ data class EventFavoriteResponse(
         @SerializedName("is_liked")
         var isLiked: Boolean = false,
         @SerializedName("product_id")
-        val productId: Int = 0,
+        val productId: String = "0",
         @SerializedName("sales_price")
         val salesPrice: Int = 0,
         @SerializedName("start_date")
