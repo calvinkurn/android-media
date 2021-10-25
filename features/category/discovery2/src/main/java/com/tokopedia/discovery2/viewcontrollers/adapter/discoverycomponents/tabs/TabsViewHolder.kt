@@ -12,6 +12,7 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
 import com.tokopedia.discovery2.datamapper.updateComponentsQueryParams
 import com.tokopedia.discovery2.di.getSubComponent
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -50,9 +51,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             it.forEachIndexed { index, tabItem ->
                 if (tabItem.data?.isNotEmpty() == true) {
                     tabItem.data?.firstOrNull()?.name?.let { tabTitle ->
-                        tabsHolder.addNewTab(tabTitle)
-                        if (tabItem.data?.firstOrNull()?.isSelected == true)
-                            tabsHolder.getUnifyTabLayout().getTabAt(index)?.select()
+                        tabsHolder.addNewTab(tabTitle, tabItem.data?.firstOrNull()?.isSelected ?: false)
                     }
                 }
             }
@@ -83,13 +82,24 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     private fun openCategoryBottomSheet() {
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackCategoryTreeDropDownClick(tabsViewModel.isUserLoggedIn())
         selectedTab?.position?.let { it ->
-            CategoryNavBottomSheet.getInstance(tabsViewModel
-                    .getTabItemData(it)?.filterValue ?: "",
+            if ((fragment.activity as DiscoveryActivity).isFromCategory()) {
+                CategoryNavBottomSheet.getInstance(
+                    tabsViewModel.components.pageEndPoint,
+                    this,
+                    this,
+                    true).show(fragment.childFragmentManager, "")
+
+            } else {
+                CategoryNavBottomSheet.getInstance(
+                    tabsViewModel
+                        .getTabItemData(it)?.filterValue ?: "",
                     this,
                     this,
                     SHOULD_HIDE_L1,
-                    source = SOURCE)
+                    source = SOURCE
+                )
                     .show(fragment.childFragmentManager, "")
+            }
         }
     }
 
@@ -111,6 +121,12 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     override fun onTabSelected(tab: TabLayout.Tab) {
         selectedTab = tab
         if (tabsViewModel.setSelectedState(tab.position, true)) {
+            if ((fragment.activity as DiscoveryActivity).isFromCategory()) {
+                tabsViewModel.components.getComponentsItem()?.get(tab.position).apply {
+                    (fragment.activity as DiscoveryActivity).getViewModel().pageIdentifier =
+                        this?.data?.firstOrNull()?.id ?: ""
+                }
+            }
             tabsViewModel.onTabClick()
             trackTabsGTMStatus(tab)
         }

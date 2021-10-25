@@ -104,7 +104,7 @@ data class CategoryGetDetailModularData(
                 @SerializedName("thumbnailImage")
                 var thumbnailImage: String? = null,
                 @SerializedName("isAdult")
-                var isAdult: Int,
+                var isAdult: Int = 0,
                 @SerializedName("applinks")
                 var applinks: String? = null,
                 @SerializedName("text")
@@ -120,7 +120,7 @@ data class CategoryGetDetailModularData(
                 val background: String? = null,
                 @SerializedName("dynamic")
                 var dynamic: Boolean = false,
-                @SerializedName("category_detail")
+                @SerializedName("categoryDetail")
                 val categoryDetail: Boolean = false,
             )
         }
