@@ -9,9 +9,9 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.*
 
 class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProductDetailListener,
-                                             private val variantListener: AtcVariantListener)
+                                             private val variantListener: AtcVariantListener,
+                                             private val userId: String)
     : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
-
     override fun type(data: ProductRecommendationDataModel): Int {
         return ProductRecommendationViewHolder.LAYOUT
     }
@@ -116,6 +116,10 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
         return ProductCategoryCarouselViewHolder.LAYOUT
     }
 
+    override fun type(topadsHeadlineUiModel: TopadsHeadlineUiModel): Int {
+        return TopAdsHeadlineViewHolder.LAYOUT;
+    }
+
     override fun type(data: ProductBundlingDataModel): Int {
         return ProductBundlingViewHolder.LAYOUT
     }
@@ -148,6 +152,7 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             OneLinersViewHolder.LAYOUT -> OneLinersViewHolder(view, listener)
             ProductRecomWidgetViewHolder.LAYOUT -> ProductRecomWidgetViewHolder(view, listener)
             ProductCategoryCarouselViewHolder.LAYOUT -> ProductCategoryCarouselViewHolder(view, listener)
+            TopAdsHeadlineViewHolder.LAYOUT -> TopAdsHeadlineViewHolder(view, userId)
             ProductBundlingViewHolder.LAYOUT -> ProductBundlingViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -13,17 +14,10 @@ import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.kotlin.extensions.view.getNumberFormatted
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.removeObservers
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.common.ProductManageCommonInstance
 import com.tokopedia.product.manage.common.R
+import com.tokopedia.product.manage.common.databinding.FragmentQuickEditStockBinding
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.list.ext.getId
@@ -44,10 +38,8 @@ import com.tokopedia.product.manage.common.feature.quickedit.stock.di.ProductMan
 import com.tokopedia.product.manage.common.feature.quickedit.stock.presentation.viewmodel.ProductManageQuickEditStockViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.fragment_quick_edit_stock.*
 import javax.inject.Inject
 
 class ProductManageQuickEditStockFragment(
@@ -86,15 +78,19 @@ class ProductManageQuickEditStockFragment(
     private var initialStatus: ProductStatus? = null
     private var product: ProductUiModel? = null
 
-    private var firstStateChecked = false
+    private var binding: FragmentQuickEditStockBinding? = null
 
-    private var ongoingCampaignTypeText: Typography? = null
+    private var firstStateChecked = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initData(savedInstanceState)
-        val view = View.inflate(context, R.layout.fragment_quick_edit_stock, null)
-        setChild(view)
+        binding = FragmentQuickEditStockBinding.inflate(
+            LayoutInflater.from(context),
+            null,
+            false
+        )
+        setChild(binding?.root)
         setTitle(getString(R.string.product_manage_quick_edit_stock_title))
         setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
         initInjector()
@@ -158,26 +154,26 @@ class ProductManageQuickEditStockFragment(
         val stock = product.getStock()
         val status = product.getStatus()
 
-        quickEditStockQuantityEditor.setValue(stock)
+        binding?.quickEditStockQuantityEditor?.setValue(stock)
         viewModel.updateStock(stock)
         viewModel.updateStatus(status)
     }
 
     private fun requestStockEditorFocus() {
-        quickEditStockQuantityEditor.editText.requestFocus()
+        binding?.quickEditStockQuantityEditor?.editText?.requestFocus()
     }
 
     private fun disableStockEditor(stock: Int) {
-        quickEditStockQuantityEditor.hide()
-        textStock.show()
-        textStock.text = stock.toString()
+        binding?.quickEditStockQuantityEditor?.hide()
+        binding?.textStock?.show()
+        binding?.textStock?.text = stock.toString()
     }
 
     private fun setupStatusSwitch() {
-        quickEditStockActivateSwitch.isChecked = product.isActive()
+        binding?.quickEditStockActivateSwitch?.isChecked = product.isActive()
 
         if (product.hasEditProductAccess()) {
-            quickEditStockActivateSwitch.setOnCheckedChangeListener { _, isChecked ->
+            binding?.quickEditStockActivateSwitch?.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
                     viewModel.updateStatus(ProductStatus.ACTIVE)
                 } else {
@@ -193,27 +189,27 @@ class ProductManageQuickEditStockFragment(
                 }
             }
         } else {
-            quickEditStockActivateSwitch.isEnabled = false
+            binding?.quickEditStockActivateSwitch?.isEnabled = false
         }
     }
 
     private fun setupSaveButton() {
         if(product.hasEditStockAccess() || product.hasEditProductAccess()) {
-            quickEditStockSaveButton.setOnClickListener {
+            binding?.quickEditStockSaveButton?.setOnClickListener {
                 onClickSaveBtn()
             }
-            quickEditStockSaveButton.show()
+            binding?.quickEditStockSaveButton?.show()
         } else {
-            quickEditStockSaveButton.hide()
+            binding?.quickEditStockSaveButton?.hide()
         }
     }
 
     private fun onClickSaveBtn() {
-        if (quickEditStockQuantityEditor.editText.text.isEmpty()) {
-            quickEditStockQuantityEditor.setValue(MINIMUM_STOCK)
+        if (binding?.quickEditStockQuantityEditor?.editText?.text.isNullOrEmpty()) {
+            binding?.quickEditStockQuantityEditor?.setValue(MINIMUM_STOCK)
         }
-        val isStatusChecked = quickEditStockActivateSwitch.isChecked
-        val inputStock = quickEditStockQuantityEditor.getValue()
+        val isStatusChecked = binding?.quickEditStockActivateSwitch?.isChecked == true
+        val inputStock = binding?.quickEditStockQuantityEditor?.getValue().orZero()
         val inputStatus = if (isStatusChecked) {
             ProductStatus.ACTIVE
         } else {
@@ -258,8 +254,7 @@ class ProductManageQuickEditStockFragment(
     }
 
     private fun setupCampaignInfo(view: View) {
-        ongoingCampaignTypeText = view.findViewById(R.id.tv_product_manage_single_stock_count_variant)
-        ongoingCampaignTypeText?.run {
+        binding?.tvProductManageSingleStockCountVariant?.run {
             product?.campaignTypeList?.let { campaignList ->
                 text = String.format(getString(R.string.product_manage_campaign_count), campaignList.count().orZero())
                 setOnClickListener {
@@ -280,38 +275,40 @@ class ProductManageQuickEditStockFragment(
     private fun observeStatus() {
         viewModel.status.observe(viewLifecycleOwner, Observer {
             val isActive = it == ProductStatus.ACTIVE
-            quickEditStockActivateSwitch.isChecked = isActive
+            binding?.quickEditStockActivateSwitch?.isChecked = isActive
             product = product?.copy(status = it)
         })
     }
 
     private fun observeStockTicker() {
         observe(viewModel.stockTicker) {
+            val ticker = binding?.tickerStockLayout?.root
             if(it.shouldShow()) {
-                val ticker = tickerStockLayout as? Ticker
                 val tickerList = ProductManageTickerMapper.mapToTickerData(context, listOf(it))
                 val adapter = TickerPagerAdapter(context, tickerList)
                 ticker?.addPagerView(adapter, tickerList)
-                tickerStockLayout.show()
+                ticker?.show()
             } else {
-                tickerStockLayout.hide()
+                ticker?.hide()
             }
         }
     }
 
     private fun setupQuantityEditor() {
-        quickEditStockQuantityEditor.apply {
+        binding?.quickEditStockQuantityEditor?.run {
             maxValue = MAXIMUM_STOCK
             minValue = MINIMUM_STOCK
             editText.filters = arrayOf(InputFilter.LengthFilter(MAXIMUM_STOCK_LENGTH))
             editText.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    if (quickEditStockQuantityEditor.editText.text.isEmpty()) {
-                        quickEditStockQuantityEditor.setValue(MINIMUM_STOCK)
+                    if (binding?.quickEditStockQuantityEditor?.editText?.text.isNullOrEmpty()) {
+                        binding?.quickEditStockQuantityEditor?.setValue(MINIMUM_STOCK)
                     }
-                    quickEditStockQuantityEditor.clearFocus()
+                    binding?.quickEditStockQuantityEditor?.clearFocus()
                     val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(quickEditStockQuantityEditor.editText.windowToken, 0)
+                    binding?.quickEditStockQuantityEditor?.editText?.windowToken?.let { windowToken ->
+                        imm.hideSoftInputFromWindow(windowToken, 0)
+                    }
                 }
                 true
             }
@@ -357,33 +354,23 @@ class ProductManageQuickEditStockFragment(
     }
     
     private fun setZeroStockBehavior() {
-        if(zeroStockInfo != null
-                && quickEditStockActivateSwitch != null
-                && quickEditStockQuantityEditor != null) {
-            zeroStockInfo.visibility = View.VISIBLE
-            quickEditStockQuantityEditor.subtractButton.isEnabled = false
-        }
+        binding?.zeroStockInfo?.visible()
+        binding?.quickEditStockQuantityEditor?.subtractButton?.isEnabled = false
     }
 
     private fun setNormalBehavior() {
-        if(zeroStockInfo != null
-                && quickEditStockActivateSwitch != null
-                && quickEditStockQuantityEditor != null) {
-            zeroStockInfo.visibility = View.GONE
-            quickEditStockQuantityEditor.addButton.isEnabled = true
-            quickEditStockQuantityEditor.subtractButton.isEnabled = true
-        }
+        binding?.zeroStockInfo?.gone()
+        binding?.quickEditStockQuantityEditor?.addButton?.isEnabled = true
+        binding?.quickEditStockQuantityEditor?.subtractButton?.isEnabled = true
     }
 
     private fun setMaxStockBehavior() {
-        if(quickEditStockQuantityEditor != null) {
-            quickEditStockActivateSwitch.isSelected = true
-            quickEditStockQuantityEditor.addButton.isEnabled = false
-        }
+        binding?.quickEditStockActivateSwitch?.isSelected = true
+        binding?.quickEditStockQuantityEditor?.addButton?.isEnabled = false
     }
 
     private fun setAddButtonClickListener() {
-        quickEditStockQuantityEditor.apply {
+        binding?.quickEditStockQuantityEditor?.run {
             addButton.setOnClickListener {
                 val input = editText.text.toString()
 
@@ -403,7 +390,7 @@ class ProductManageQuickEditStockFragment(
     }
 
     private fun setSubtractButtonClickListener() {
-        quickEditStockQuantityEditor.apply {
+        binding?.quickEditStockQuantityEditor?.run {
             subtractButton.setOnClickListener {
                 val input = editText.text.toString()
 

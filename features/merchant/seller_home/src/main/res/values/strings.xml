@@ -50,6 +50,8 @@
     <string name="setting_screen_recorder">Perekam Layar</string>
     <string name="setting_menu_share_app">Bagikan Aplikasi</string>
     <string name="setting_menu_review_app">Review Aplikasi</string>
+    <string name="setting_menu_give_feedback">Beri Feedback</string>
+    <string name="setting_new_tag">BARU</string>
     <string name="setting_menu_developer_options">Developer Options</string>
     <string name="setting_header_error_message">Error when get %s in other setting</string>
     <string name="setting_header_multiple_error_message">Beberapa data gagal ditampilkan</string>

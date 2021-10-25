@@ -13,11 +13,13 @@ import com.tokopedia.shop.score.detail_old.domain.usecase.GetShopScoreUseCase
 import com.tokopedia.shop.score.detail_old.view.mapper.ShopScoreDetailMapper
 import com.tokopedia.shop.score.detail_old.view.model.ShopScoreDetailData
 import com.tokopedia.shop.score.detail_old.view.model.ShopType
+import com.tokopedia.shop.score.util.observeAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -81,5 +83,22 @@ class ShopScoreDetailViewModelTest {
 
         assertEquals(expectedResult.data, actualResult.first)
         assertEquals(shopInfoPeriodUiModel.periodType, actualResult.second.periodType)
+    }
+
+    @Test
+    fun `when get shop score detail fail should set live data fail`() {
+        val shopId = "1"
+        val exception = ClassCastException()
+
+        every { getShopInfoPeriodUseCase.requestParams } returns GetShopInfoPeriodUseCase.createParams(shopId.toLongOrZero())
+        coEvery { getShopScoreUseCase.execute(shopId) } throws exception
+        coEvery { getShopInfoPeriodUseCase.executeOnBackground() } throws exception
+
+        viewModel.getShopScoreDetail()
+
+        val actualResult = (viewModel.shopScoreData.observeAwaitValue() as Fail).throwable::class
+        val expectedResult = exception::class
+        Assert.assertTrue(viewModel.shopScoreData.observeAwaitValue() is Fail)
+        assertEquals(expectedResult, actualResult)
     }
 }

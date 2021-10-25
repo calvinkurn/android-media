@@ -1179,14 +1179,16 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         tmpCollapsedUnavailableShop?.let { collapsedUnavailableItems ->
             if (collapsedUnavailableItems.isNotEmpty()) {
                 val firstIndex = cartDataList.indexOf(collapsedUnavailableItems.first())
-                cartDataList.removeAll(collapsedUnavailableItems)
-                collapsedUnavailableItems.clear()
+                if (firstIndex != -1) {
+                    cartDataList.removeAll(collapsedUnavailableItems)
+                    collapsedUnavailableItems.clear()
 
-                tmpAllUnavailableShop?.let { unavailableItems ->
-                    cartDataList.addAll(firstIndex, unavailableItems)
-                    unavailableItems.clear()
-                    notifyItemRemoved(firstIndex)
-                    notifyItemRangeInserted(firstIndex, unavailableItems.size)
+                    tmpAllUnavailableShop?.let { unavailableItems ->
+                        cartDataList.addAll(firstIndex, unavailableItems)
+                        unavailableItems.clear()
+                        notifyItemRemoved(firstIndex)
+                        notifyItemRangeInserted(firstIndex, unavailableItems.size)
+                    }
                 }
             }
         }

@@ -4,16 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.loginregister.FileUtil
-import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckPojo
-import com.tokopedia.loginregister.shopcreation.domain.pojo.ShopInfoByID
-import com.tokopedia.loginregister.shopcreation.domain.pojo.ShopInfoPojo
-import com.tokopedia.loginregister.shopcreation.domain.usecase.RegisterCheckUseCase
-import com.tokopedia.loginregister.shopcreation.domain.usecase.ShopInfoUseCase
-import com.tokopedia.profilecommon.domain.pojo.*
-import com.tokopedia.profilecommon.domain.usecase.GetUserProfileCompletionUseCase
-import com.tokopedia.profilecommon.domain.usecase.UpdateUserProfileUseCase
-import com.tokopedia.profilecommon.domain.usecase.ValidateUserProfileUseCase
+import com.tokopedia.loginregister.shopcreation.domain.pojo.*
+import com.tokopedia.loginregister.shopcreation.domain.usecase.*
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
@@ -120,7 +112,7 @@ class ShopCreationViewModelTest {
     @Test
     fun `Success add name`() {
         viewmodel.addNameResponse.observeForever(addNameObserver)
-        coEvery { updateUserProfileUseCase.getData(any()) } returns Success(successAddNameResponse.data)
+        coEvery { updateUserProfileUseCase(any()) } returns successAddNameResponse
 
         viewmodel.addName("")
 
@@ -134,7 +126,7 @@ class ShopCreationViewModelTest {
     @Test
     fun `Failed add name`() {
         viewmodel.addNameResponse.observeForever(addNameObserver)
-        coEvery { updateUserProfileUseCase.getData(any()) } coAnswers { throw throwable }
+        coEvery { updateUserProfileUseCase(any()) } coAnswers { throw throwable }
 
         viewmodel.addName("")
 
@@ -148,7 +140,7 @@ class ShopCreationViewModelTest {
     @Test
     fun `Success add phone`() {
         viewmodel.addPhoneResponse.observeForever(addPhoneObserver)
-        coEvery { updateUserProfileUseCase.getData(any()) } returns Success(successAddPhoneResponse.data)
+        coEvery { updateUserProfileUseCase(any()) } returns successAddPhoneResponse
 
         viewmodel.addPhone("")
 
@@ -162,7 +154,7 @@ class ShopCreationViewModelTest {
     @Test
     fun `Failed add phone`() {
         viewmodel.addPhoneResponse.observeForever(addPhoneObserver)
-        coEvery { updateUserProfileUseCase.getData(any()) } coAnswers { throw throwable }
+        coEvery { updateUserProfileUseCase(any()) } coAnswers { throw throwable }
 
         viewmodel.addPhone("")
 
@@ -176,7 +168,7 @@ class ShopCreationViewModelTest {
     @Test
     fun `Success register check`() {
         viewmodel.registerCheckResponse.observeForever(registerCheckObserver)
-        coEvery { registerCheckUseCase.getData(any()) } returns Success(successRegisterCheckResponse.data)
+        coEvery { registerCheckUseCase(any()) } returns successRegisterCheckResponse
 
         viewmodel.registerCheck("")
 
@@ -190,7 +182,7 @@ class ShopCreationViewModelTest {
     @Test
     fun `Failed register check`() {
         viewmodel.registerCheckResponse.observeForever(registerCheckObserver)
-        coEvery { registerCheckUseCase.getData(any()) } coAnswers { throw throwable }
+        coEvery { registerCheckUseCase(any()) } coAnswers { throw throwable }
 
         viewmodel.registerCheck("")
 
@@ -204,7 +196,7 @@ class ShopCreationViewModelTest {
     @Test
     fun `Success get shop info`() {
         viewmodel.getShopInfoResponse.observeForever(getShopInfoObserver)
-        coEvery { shopInfoUseCase.getData(any()) } returns Success(successGetShopInfoResponse.data)
+        coEvery { shopInfoUseCase(any()) } returns successGetShopInfoResponse
 
         viewmodel.getShopInfo(0)
 
@@ -218,7 +210,7 @@ class ShopCreationViewModelTest {
     @Test
     fun `Failed get shop info`() {
         viewmodel.getShopInfoResponse.observeForever(getShopInfoObserver)
-        coEvery { shopInfoUseCase.getData(any()) } coAnswers { throw throwable }
+        coEvery { shopInfoUseCase(any()) } coAnswers { throw throwable }
 
         viewmodel.getShopInfo(0)
 
@@ -263,7 +255,7 @@ class ShopCreationViewModelTest {
     @Test
     fun `Success get user profile`() {
         viewmodel.getUserProfileResponse.observeForever(getUserProfileObserver)
-        coEvery { getUserProfileCompletionUseCase.getData() } returns Success(successGetUserProfileResponse.data)
+        coEvery { getUserProfileCompletionUseCase(Unit) } returns successGetUserProfileResponse
 
         viewmodel.getUserProfile()
 
@@ -277,7 +269,7 @@ class ShopCreationViewModelTest {
     @Test
     fun `Failed get user profile`() {
         viewmodel.getUserProfileResponse.observeForever(getUserProfileObserver)
-        coEvery { getUserProfileCompletionUseCase.getData() } coAnswers { throw throwable }
+        coEvery { getUserProfileCompletionUseCase(Unit) } coAnswers { throw throwable }
 
         viewmodel.getUserProfile()
 
@@ -291,7 +283,7 @@ class ShopCreationViewModelTest {
     @Test
     fun `Success validate user profile`() {
         viewmodel.validateUserProfileResponse.observeForever(validateUserProfileObserver)
-        coEvery { validateUserProfileUseCase.getData(any()) } returns Success(successValidateUserProfileResponse.data)
+        coEvery { validateUserProfileUseCase(any()) } returns successValidateUserProfileResponse
 
         viewmodel.validateUserProfile("")
 
@@ -305,7 +297,7 @@ class ShopCreationViewModelTest {
     @Test
     fun `Failed validate user profile`() {
         viewmodel.validateUserProfileResponse.observeForever(validateUserProfileObserver)
-        coEvery { validateUserProfileUseCase.getData(any()) } coAnswers { throw throwable }
+        coEvery { validateUserProfileUseCase(any()) } coAnswers { throw throwable }
 
         viewmodel.validateUserProfile("")
 

@@ -1,0 +1,52 @@
+{
+  "code": 103,
+  "data": {
+    "msg_id": 1463450790,
+    "from": "yunitatujuh",
+    "from_uid": 143252780,
+    "from_role": "User",
+    "thumbnail": "https://accounts.tokopedia.com/image/v1/u/143252780/user_thumbnail/desktop",
+    "is_opposite": false,
+    "to_uid": 143252780,
+    "message": {
+      "censored_reply": "Uploaded Image",
+      "original_reply": "Uploaded Image",
+      "timestamp": "2021-10-11T10:41:02.531200187+07:00",
+      "timestamp_fmt": "11 October 2021, 10:41 WIB",
+      "timestamp_unix": 1633923662531,
+      "timestamp_unix_nano": 1633923662531200000
+    },
+    "parent_reply": {
+      "attachment_id": 0,
+      "attachment_type": 0,
+      "name": "",
+      "sender_id": 7977933,
+      "reply_time": "1627377033992402000",
+      "fraud_status": 0,
+      "main_text": "Test reply bubble",
+      "sub_text": "",
+      "image_url": "",
+      "local_id": "",
+      "is_expired": false,
+      "source": "inbox"
+    },
+    "start_time": "2021-10-11 10:41:02.531200187 +0700 WIB m=+37377.479952118",
+    "attachment_id": 1,
+    "attachment": {
+      "attributes": {
+        "image_url": "https://images.tokopedia.net/img/LUZQDL/2021/10/11/1eea3068-2ad9-447d-89fb-e4a888f37f19.jpg",
+        "image_url_thumbnail": "https://images.tokopedia.net/img/cache/300-square/LUZQDL/2021/10/11/1eea3068-2ad9-447d-89fb-e4a888f37f19.jpg"
+      },
+      "fallback_attachment": {
+        "html": "<div>Pengguna ini mengirimkan gambar menggunakan Chat. Mohon tunggu update terbaru untuk melihat gambar ini.</div>",
+        "message": "Pengguna ini mengirimkan gambar menggunakan Chat. Mohon tunggu update terbaru untuk melihat gambar ini."
+      },
+      "id": 1,
+      "type": 2
+    },
+    "show_rating": false,
+    "rating_status": 0,
+    "client_connect_time": "0001-01-01T00:00:00Z",
+    "source": ""
+  }
+}

@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_minus16"
-            app:unify_total_amount_cta_text="@string/action_buy"
+            app:unify_total_amount_cta_text="@string/action_buy_bundle"
             app:unify_total_amount_enable_shadow="true"
             app:unify_total_amount_enable_title_chevron="false"
             app:unify_total_amount_subtitle_text="Hemat Rp0"

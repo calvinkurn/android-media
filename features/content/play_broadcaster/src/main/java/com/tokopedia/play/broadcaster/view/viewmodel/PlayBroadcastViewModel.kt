@@ -306,11 +306,12 @@ internal class PlayBroadcastViewModel @Inject constructor(
             _observableConfigInfo.value = NetworkResult.Loading
 
             val configUiModel = repo.getChannelConfiguration()
+
+            setChannelId(configUiModel.channelId)
+
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
 
             if (!configUiModel.streamAllowed) return@launchCatchError
-
-            setChannelId(configUiModel.channelId)
 
             // create channel when there are no channel exist
             if (configUiModel.channelType == ChannelType.Unknown) createChannel()
