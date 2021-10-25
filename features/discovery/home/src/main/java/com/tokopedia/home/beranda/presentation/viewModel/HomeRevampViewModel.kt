@@ -1200,35 +1200,19 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun getTokopoint(){
         if(getTokopointJob?.isActive == true || !userSession.get().isLoggedIn) return
-        getTokopointJob = if (navRollanceType.equals("new_glmenu")) {
-            launchCatchError(coroutineContext, block = {
-                val data = getTokopointListBasedOnElibility()
-                updateHeaderViewModel(
-                        tokopointsDrawer = data.tokopointsDrawerList.drawerList.getDrawerListByType("Rewards")
-                                ?: data.tokopointsDrawerList.drawerList.getDrawerListByType("Coupon"),
-                        tokopointsBBODrawer = data.tokopointsDrawerList.drawerList.getDrawerListByType("BBO"),
-                        isTokoPointDataError = false
-                )
-            }){
-                updateHeaderViewModel(
-                        tokopointsDrawer = null,
-                        isTokoPointDataError = true
-                )
-            }
-        } else {
-            launchCatchError(coroutineContext, block = {
-                getHomeTokopointsDataUseCase.get().setParams("2.0.0")
-                val data = getHomeTokopointsDataUseCase.get().executeOnBackground()
-                updateHeaderViewModel(
-                        tokopointsDrawer = data.tokopointsDrawer,
-                        isTokoPointDataError = false
-                )
-            }) {
-                updateHeaderViewModel(
-                        tokopointsDrawer = null,
-                        isTokoPointDataError = true
-                )
-            }
+        getTokopointJob = launchCatchError(coroutineContext, block = {
+            val data = getTokopointListBasedOnElibility()
+            updateHeaderViewModel(
+                    tokopointsDrawer = data.tokopointsDrawerList.drawerList.getDrawerListByType("Rewards")
+                            ?: data.tokopointsDrawerList.drawerList.getDrawerListByType("Coupon"),
+                    tokopointsBBODrawer = data.tokopointsDrawerList.drawerList.getDrawerListByType("BBO"),
+                    isTokoPointDataError = false
+            )
+        }){
+            updateHeaderViewModel(
+                    tokopointsDrawer = null,
+                    isTokoPointDataError = true
+            )
         }
     }
 
