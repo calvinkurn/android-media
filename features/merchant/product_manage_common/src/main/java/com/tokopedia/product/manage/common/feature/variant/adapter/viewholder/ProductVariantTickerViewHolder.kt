@@ -6,9 +6,11 @@ import androidx.cardview.widget.CardView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.product.manage.common.R
+import com.tokopedia.product.manage.common.databinding.LayoutProductManageTickerBinding
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariantTicker
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductVariantTickerViewHolder(itemView: View) : AbstractViewHolder<ProductVariantTicker>(itemView) {
 
@@ -16,6 +18,8 @@ class ProductVariantTickerViewHolder(itemView: View) : AbstractViewHolder<Produc
         @LayoutRes
         val LAYOUT = R.layout.layout_product_manage_ticker
     }
+
+    private val binding by viewBinding<LayoutProductManageTickerBinding>()
 
     override fun bind(data: ProductVariantTicker) {
         initView {
@@ -25,7 +29,7 @@ class ProductVariantTickerViewHolder(itemView: View) : AbstractViewHolder<Produc
     }
 
     private fun setupTicker(data: ProductVariantTicker) {
-        itemView.findViewById<Ticker>(R.id.ticker).apply {
+        binding?.ticker?.run {
             val tickerList = data.tickerList
             val adapter = TickerPagerAdapter(context, tickerList)
             addPagerView(adapter, tickerList)
@@ -50,7 +54,7 @@ class ProductVariantTickerViewHolder(itemView: View) : AbstractViewHolder<Produc
     }
 
     private fun initView(block: () -> Unit) {
-        itemView.findViewById<Ticker>(R.id.ticker).post {
+        binding?.ticker?.post {
             block.invoke()
         }
     }

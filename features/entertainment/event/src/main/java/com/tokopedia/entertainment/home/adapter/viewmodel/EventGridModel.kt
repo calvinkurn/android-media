@@ -4,6 +4,7 @@ import com.tokopedia.entertainment.home.adapter.HomeEventItem
 import com.tokopedia.entertainment.home.adapter.factory.HomeTypeFactory
 import com.tokopedia.entertainment.home.adapter.viewholder.EventGridEventViewHolder
 import com.tokopedia.entertainment.home.data.EventHomeDataResponse
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 /**
  * Author errysuprayogi on 27,January,2020
@@ -23,7 +24,7 @@ class EventGridModel(var layout: EventHomeDataResponse.Data.EventHome.Layout =
         layout.items.forEachIndexed { index, it ->
             if(index < 4) {
                 items.add(EventItemModel(
-                        it.id,
+                        it.id.toIntOrZero(),
                         it.rating,
                         it.imageApp,
                         it.title,

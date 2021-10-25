@@ -1,18 +1,13 @@
 package com.tokopedia.entertainment
 
-import android.app.Activity
-import android.app.Instrumentation
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
@@ -36,14 +31,14 @@ class SearchEventActivityTest {
     private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
-    var activityRule =  ActivityTestRule(EventSearchActivity::class.java, false, false)
+    var activityRule = ActivityTestRule(EventSearchActivity::class.java, false, false)
 
     @Before
-    fun setup(){
+    fun setup() {
         Intents.init()
         graphqlCacheManager.deleteAll()
         gtmLogDBSource.deleteAll().subscribe()
-        setupGraphqlMockResponse{
+        setupGraphqlMockResponse {
             addMockResponse(
                     KEY_EVENT_CHILD,
                     ResourcePathUtil.getJsonFromResource(PATH_RESPONSE_SEARCH),
@@ -56,30 +51,36 @@ class SearchEventActivityTest {
     }
 
     @Test
-    fun validateSearchTest(){
+    fun validateSearchCity() {
         Thread.sleep(5000)
         search_keyword()
         click_city()
-        click_event()
-
         ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ENTERTAINMENT_EVENT_SEARCH_VALIDATOR_QUERY), hasAllSuccess())
 
     }
 
-    fun search_keyword(){
+    @Test
+    fun validateSearchEvent() {
+        Thread.sleep(5000)
+        search_keyword()
+        click_event()
+        ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ENTERTAINMENT_EVENT_SEARCH_PRODUCT_VALIDATOR_QUERY), hasAllSuccess())
+    }
+
+    fun search_keyword() {
         Thread.sleep(3000)
         onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(click())
         onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(typeText("Hong Kong"))
     }
 
-    fun click_city(){
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+    fun click_city() {
         Thread.sleep(5000)
         onView(withId(R.id.recycler_view_location)).perform(RecyclerViewActions.actionOnItemAtPosition<SearchLocationListViewHolder>(0, click()))
         Thread.sleep(3000)
     }
 
-    fun click_event(){
+    fun click_event() {
+        Thread.sleep(5000)
         onView(withId(R.id.recycler_view_kegiatan)).perform(RecyclerViewActions.actionOnItemAtPosition<SearchEventListViewHolder>(0, click()))
         Thread.sleep(3000)
     }
@@ -91,6 +92,7 @@ class SearchEventActivityTest {
 
     companion object {
         private const val ENTERTAINMENT_EVENT_SEARCH_VALIDATOR_QUERY = "tracker/event/searchpageevent.json"
+        private const val ENTERTAINMENT_EVENT_SEARCH_PRODUCT_VALIDATOR_QUERY = "tracker/event/searchpageeventproduct.json"
 
         private const val KEY_EVENT_CHILD = "searchEventLocation"
 

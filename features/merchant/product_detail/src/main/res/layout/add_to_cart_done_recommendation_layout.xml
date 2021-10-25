@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
-    android:layout_marginBottom="@dimen/dp_16"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginBottom="16dp"
     android:visibility="gone"
     tools:ignore="RtlSymmetry"
     tools:visibility="visible">
@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:padding="@dimen/dp_16"
+            android:padding="16dp"
             android:visibility="gone"
             tools:visibility="visible" />
 
@@ -38,7 +38,7 @@
             android:id="@+id/product_recom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="8dp"
             android:descendantFocusability="blocksDescendants"
             android:scrollbars="none"
             app:useDefaultItemDecorator="false"/>
