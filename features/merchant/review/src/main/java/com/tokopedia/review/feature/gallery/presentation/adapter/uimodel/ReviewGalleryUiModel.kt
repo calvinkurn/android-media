@@ -21,7 +21,8 @@ data class ReviewGalleryUiModel(
     val userId: String = "",
     val userStats: List<UserReviewStats> = listOf(),
     val isAnonymous: Boolean = false,
-    val userImage: String = ""
+    val userImage: String = "",
+    val badRatingReason: String = ""
 ) : Visitable<ReviewGalleryAdapterTypeFactory> {
 
     override fun type(typeFactory: ReviewGalleryAdapterTypeFactory): Int {

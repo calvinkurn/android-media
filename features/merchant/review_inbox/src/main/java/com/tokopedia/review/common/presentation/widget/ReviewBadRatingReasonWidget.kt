@@ -3,6 +3,7 @@ package com.tokopedia.review.common.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.review.inbox.R
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -33,5 +34,9 @@ class ReviewBadRatingReasonWidget : BaseCustomView {
         badRatingReason?.shouldShowWithAction(reason.isNotBlank()) {
             badRatingReason?.text = reason
         }
+    }
+
+    fun setTextToWhite() {
+        badRatingReason?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White_96))
     }
 }

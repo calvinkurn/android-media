@@ -655,6 +655,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                         setTimeStamp(reviewTime)
                         setReviewMessage(review) { openExpandedReviewBottomSheet() }
                         setStats(userStats)
+                        setBadRatingReason(badRatingReason)
                         setReviewerImage(userImage)
                         setLikeCount(totalLiked.toString())
                         setLikeButtonClickListener {

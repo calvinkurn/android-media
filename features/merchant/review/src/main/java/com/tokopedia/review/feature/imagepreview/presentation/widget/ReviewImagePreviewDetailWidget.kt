@@ -57,6 +57,7 @@ class ReviewImagePreviewDetailWidget : BaseCustomView {
         reviewText = findViewById(R.id.review_gallery_review)
         likeCount = findViewById(R.id.review_gallery_like_count)
         likeButton = findViewById(R.id.review_gallery_like_icon)
+        badRatingReason = findViewById(R.id.review_image_preview_bad_rating_reason)
     }
 
     fun setPhotoCount(index: Int, total: Long) {
@@ -136,7 +137,10 @@ class ReviewImagePreviewDetailWidget : BaseCustomView {
     }
 
     fun setBadRatingReason(reason: String) {
-        badRatingReason?.showBadRatingReason(reason)
+        badRatingReason?.apply {
+            showBadRatingReason(reason)
+            setTextToWhite()
+        }
     }
 
 }
