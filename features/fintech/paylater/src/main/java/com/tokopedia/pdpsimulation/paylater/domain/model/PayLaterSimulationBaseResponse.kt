@@ -40,7 +40,17 @@ data class Cta(
     @SerializedName("android_url") val android_url: String?,
     @SerializedName("cta_type") val cta_type: Int?,
     @SerializedName("is_redirect_url") val is_redirect_url: Int?,
-    @SerializedName("button_color") val button_color: String?
+    @SerializedName("button_color") val button_color: String?,
+    @SerializedName("bottom_sheet") val bottomSheet: BottomSheetDetail?
+) : Parcelable
+
+@Parcelize
+data class BottomSheetDetail (
+    @SerializedName("show") val isShow : Boolean?,
+    @SerializedName("image") val name: String?,
+    @SerializedName("title") val web_url: String?,
+    @SerializedName("description") val android_url: String?,
+    @SerializedName("button_text") val cta_type: Int?,
 ) : Parcelable
 
 @Parcelize

@@ -160,10 +160,9 @@ class PdpSimulationFragment : BaseDaggerFragment(),
         data.productName.let {
             productDetail.productName.text = it
         }
-        data.price?.let {
+
             productDetail.productPrice.text =
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(it, false)
-        }
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(productPrice, false)
 
         showProductVariant(data)
 
