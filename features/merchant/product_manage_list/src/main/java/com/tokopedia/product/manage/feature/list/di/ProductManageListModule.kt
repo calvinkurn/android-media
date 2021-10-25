@@ -106,35 +106,6 @@ class ProductManageListModule(private val context: Context) {
 
     @ProductManageListScope
     @Provides
-    @Named(ShopCommonParamApiConstant.GQL_PRODUCT_LIST)
-    fun provideProductListQuery(): String {
-        return GraphqlHelper.loadRawString(
-            context.resources,
-            com.tokopedia.shop.common.R.raw.gql_get_product_list
-        )
-    }
-
-    @ProductManageListScope
-    @Provides
-    @Named(GQLQueryNamedConstant.SHOP_INFO)
-    fun provideGqlQueryShopInfo(): String {
-        return GraphqlHelper.loadRawString(
-            context.resources,
-            com.tokopedia.shop.common.R.raw.gql_get_shop_info)
-    }
-
-    @ProductManageListScope
-    @Provides
-    @Named(GQL_FEATURED_PRODUCT)
-    fun provideGqlMutationFeaturedProduct(): String {
-        return GraphqlHelper.loadRawString(
-            context.resources,
-            com.tokopedia.shop.common.R.raw.gql_mutation_gold_manage_featured_product_v2
-        )
-    }
-
-    @ProductManageListScope
-    @Provides
     fun provideMultiEditProductUseCase(graphqlRepository: GraphqlRepository): MultiEditProductUseCase {
         return MultiEditProductUseCase(graphqlRepository)
     }
