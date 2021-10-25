@@ -101,4 +101,10 @@ class PhoneNumberView @JvmOverloads constructor(
     fun setAfterTextChangeListener(callback: () -> Unit) {
         textField.afterTextChanged { callback.invoke() }
     }
+
+    fun clearErrorMessage() {
+        textMessage.text = ""
+        textMessage.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300))
+        line.setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300))
+    }
 }

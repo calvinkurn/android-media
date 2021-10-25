@@ -92,6 +92,8 @@ abstract class BaseInactivePhoneSubmitDataFragment : BaseDaggerFragment() {
                 return false
             }
         }
+
+        viewBinding?.textPhoneNumber?.clearErrorMessage()
         return true
     }
 
