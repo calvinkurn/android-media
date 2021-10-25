@@ -33,6 +33,7 @@ import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
+import com.tokopedia.otp.verification.domain.data.OtpConstant.OtpMode.SILENT_VERIFICATION
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
@@ -40,6 +41,7 @@ import com.tokopedia.otp.verification.view.adapter.VerificationMethodAdapter
 import com.tokopedia.otp.verification.view.viewbinding.VerificationMethodViewBinding
 import com.tokopedia.otp.verification.viewmodel.VerificationViewModel
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.sessioncommon.util.ConnectivityUtils
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -132,11 +134,23 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         adapter = VerificationMethodAdapter.createInstance(object : VerificationMethodAdapter.ClickListener {
             override fun onModeListClick(modeList: ModeListData, position: Int) {
                 viewmodel.done = true
-                if (modeList.modeText == OtpConstant.OtpMode.MISCALL) {
-                    (activity as VerificationActivity).goToOnboardingMiscallPage(modeList)
-                } else {
-                    (activity as VerificationActivity).goToVerificationPage(modeList, isMoreThanOneMethod)
-                }
+                try {
+                    when (modeList.modeText) {
+                        OtpConstant.OtpMode.MISCALL -> {
+                            (activity as VerificationActivity).goToOnboardingMiscallPage(modeList)
+                        }
+                        SILENT_VERIFICATION -> {
+                            // Goto silent verification page
+                            (activity as VerificationActivity).goToSilentVerificationpage(modeList)
+                        }
+                        else -> {
+                            (activity as VerificationActivity).goToVerificationPage(
+                                modeList,
+                                isMoreThanOneMethod
+                            )
+                        }
+                    }
+                } catch (e: Exception) { }
             }
         })
         viewBound.methodList?.adapter = adapter
@@ -200,6 +214,11 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     }
 
     private fun showListView(otpModeListData: OtpModeListData) {
+        if(context != null) {
+            if(!ConnectivityUtils.isSilentVerificationPossible(requireContext())) {
+                otpModeListData.modeList.removeAll { it.modeText == SILENT_VERIFICATION }
+            }
+        }
         adapter.setList(otpModeListData.modeList)
         loadTickerTrouble(otpModeListData)
         setFooter(otpModeListData.linkType)

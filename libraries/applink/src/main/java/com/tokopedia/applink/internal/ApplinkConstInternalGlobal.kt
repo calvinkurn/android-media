@@ -232,6 +232,10 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/cotp
     const val COTP = "$INTERNAL_GLOBAL/cotp"
 
+    // SilentVerificationActivity
+    // tokopedia-android-internal://global/silent-verification
+    const val SILENT_VERIFICAITON = "$INTERNAL_GLOBAL/silent-verification"
+
     // ReceiverNotifActivity
     // tokopedia-android-internal://global/otp-push-notif-receiver
     const val OTP_PUSH_NOTIF_RECEIVER = "$INTERNAL_GLOBAL/otp-push-notif-receiver"

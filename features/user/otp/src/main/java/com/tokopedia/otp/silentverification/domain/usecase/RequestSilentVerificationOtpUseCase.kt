@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.otp.verification.domain.data.OtpRequestPojo
+import com.tokopedia.otp.silentverification.domain.model.RequestSilentVerificationResponse
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
@@ -12,10 +12,10 @@ import javax.inject.Inject
  * Created by Yoris on 17/10/21.
  */
 
-class RequestOtpUseCase @Inject constructor(@ApplicationContext val repository: GraphqlRepository)
-    : CoroutineUseCase<Map<String, Any>, OtpRequestPojo>(Dispatchers.IO) {
+class RequestSilentVerificationOtpUseCase @Inject constructor(@ApplicationContext val repository: GraphqlRepository)
+    : CoroutineUseCase<Map<String, Any>, RequestSilentVerificationResponse>(Dispatchers.IO) {
 
-    override suspend fun execute(params: Map<String, Any>): OtpRequestPojo {
+    override suspend fun execute(params: Map<String, Any>): RequestSilentVerificationResponse {
         return repository.request(graphqlQuery(), params)
     }
 
@@ -51,10 +51,10 @@ class RequestOtpUseCase @Inject constructor(@ApplicationContext val repository: 
     """.trimIndent()
 
     companion object {
-        private const val PARAM_OTP_TYPE = "otpType"
-        private const val PARAM_MODE = "mode"
-        private const val PARAM_MSISDN = "msisdn"
-        private const val PARAM_EMAIL = "email"
-        private const val PARAM_OTP_DIGIT = "otpDigit"
+        const val PARAM_OTP_TYPE = "otpType"
+        const val PARAM_MODE = "mode"
+        const val PARAM_MSISDN = "msisdn"
+        const val PARAM_EMAIL = "email"
+        const val PARAM_OTP_DIGIT = "otpDigit"
     }
 }

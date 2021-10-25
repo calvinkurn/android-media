@@ -8,9 +8,9 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:layout_marginTop="@dimen/unify_space_16"
-        android:id="@+id/progress_circular"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:id="@+id/fragment_silent_verif_success_anim"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,26 +19,51 @@
         app:lottie_fileName=""
         app:lottie_loop="false" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/typography"
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:id="@+id/fragment_silent_verif_success_img"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_16"
-        android:text="Tunggu Sebentar, ya"
-        android:textAlignment="center"
+        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_2" />
+        app:srcCompat="@drawable/ic_baseline_check_circle"/>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/fragment_silent_verif_animation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:lottie_autoPlay="false"
+        app:lottie_fileName=""
+        app:lottie_loop="false" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_8"
-        android:text="Kami sedang memverifikasi nomor\nhandphone kamu secara automatis"
+        android:id="@+id/fragment_silent_verif_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fragment_silent_verif_title"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/typography"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_silent_verif_success_img"
+        app:typographyType="heading_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/fragment_silent_verif_subtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:text="@string/fragment_silent_verif_subtitle"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_silent_verif_title"
         app:typographyType="body_2" />
 </androidx.constraintlayout.widget.ConstraintLayout>

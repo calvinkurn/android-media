@@ -13,11 +13,10 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.otp.silentverification.domain.model.ValidateSilentVerificationResult
-import com.tokopedia.otp.silentverification.domain.usecase.RequestOtpUseCase
+import com.tokopedia.otp.silentverification.domain.model.RequestSilentVerificationResult
+import com.tokopedia.otp.silentverification.domain.usecase.RequestSilentVerificationOtpUseCase
 import com.tokopedia.otp.silentverification.domain.usecase.ValidateSilentVerificationUseCase
-import com.tokopedia.otp.verification.domain.data.OtpRequestData
-import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoUseCase
+import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -31,37 +30,55 @@ import javax.inject.Inject
  */
 
 class SilentVerificationViewModel @Inject constructor(
-    val requestOtpUseCase: RequestOtpUseCase,
+    val requestSilentVerificationOtpUseCase: RequestSilentVerificationOtpUseCase,
     val validateSilentVerificationUseCase: ValidateSilentVerificationUseCase,
-    val getUserInfoUseCase: GetUserInfoUseCase,
     dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
-    private val _validationResponse = MutableLiveData<Result<ValidateSilentVerificationResult>>()
-    val validationResponse: LiveData<Result<ValidateSilentVerificationResult>>
+    private val _validationResponse = MutableLiveData<Result<OtpValidateData>>()
+    val validationResponse: LiveData<Result<OtpValidateData>>
         get() = _validationResponse
 
-    private val _requestSilentVerificationResponse = MutableLiveData<Result<OtpRequestData>>()
-    val requestSilentVerificationResponse: LiveData<Result<OtpRequestData>>
+    private val _requestSilentVerificationResponse = MutableLiveData<Result<RequestSilentVerificationResult>>()
+    val requestSilentVerificationResponse: LiveData<Result<RequestSilentVerificationResult>>
         get() = _requestSilentVerificationResponse
 
     private val _bokuVerificationResponse = MutableLiveData<Result<String>>()
     val bokuVerificationResponse: LiveData<Result<String>>
         get() = _bokuVerificationResponse
 
-    fun requestSilentVerification(phoneNo: String) {
+    fun requestSilentVerification(
+        otpType: String,
+        mode: String,
+        msisdn: String,
+        otpDigit: Int
+    ) {
         launchCatchError(block = {
-            val result = requestOtpUseCase(mapOf())
+            val params = mapOf(
+                RequestSilentVerificationOtpUseCase.PARAM_OTP_TYPE to otpType,
+                RequestSilentVerificationOtpUseCase.PARAM_MODE to mode,
+                RequestSilentVerificationOtpUseCase.PARAM_MSISDN to msisdn
+//                RequestSilentVerificationOtpUseCase.PARAM_OTP_DIGIT to otpDigit
+            )
+            val result = requestSilentVerificationOtpUseCase(params)
             _requestSilentVerificationResponse.value = Success(result.data)
         }, onError = {
             _requestSilentVerificationResponse.value = Fail(it)
         })
     }
 
-    fun validate(phoneNo: String, correlationId: String) {
+    fun validate(
+        otpType: String,
+        msisdn: String,
+        mode: String,
+        userId: Int,
+        correlationId: String) {
         launchCatchError(block = {
             val params = mapOf(
-                ValidateSilentVerificationUseCase.PARAM_MSISDN to phoneNo,
+                ValidateSilentVerificationUseCase.PARAM_OTP_TYPE to otpType,
+                ValidateSilentVerificationUseCase.PARAM_MODE to mode,
+                ValidateSilentVerificationUseCase.PARAM_USERID to userId,
+                ValidateSilentVerificationUseCase.PARAM_MSISDN to msisdn,
                 ValidateSilentVerificationUseCase.PARAM_ASSOCIATION_ID to correlationId
             )
             val result = validateSilentVerificationUseCase(params)

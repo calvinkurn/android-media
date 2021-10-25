@@ -1,9 +1,12 @@
 package com.tokopedia.otp.verification.view.activity
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.otp.R
@@ -172,6 +175,14 @@ open class VerificationActivity : BaseOtpActivity() {
         doFragmentTransaction(fragment, TAG_OTP_MISCALL, false)
     }
 
+    open fun goToSilentVerificationpage(modeListData: ModeListData) {
+        val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.SILENT_VERIFICAITON)
+        val bundle = createBundle(modeListData)
+        bundle.putParcelable(OtpConstant.OTP_DATA_EXTRA, otpData)
+        intent.putExtras(bundle)
+        startActivityForResult(intent, REQUEST_SILENT_VERIF)
+    }
+
     open fun goToMethodPageResetPin(otpData: OtpData) {
         isResetPin2FA = true
         val bundle = Bundle().apply {
@@ -179,6 +190,18 @@ open class VerificationActivity : BaseOtpActivity() {
         }
         val fragment = VerificationMethodFragment.createInstance(bundle)
         doFragmentTransaction(fragment, TAG_OTP_VALIDATOR, false)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when(requestCode) {
+            REQUEST_SILENT_VERIF -> {
+                if(resultCode == Activity.RESULT_OK) {
+                    setResult(Activity.RESULT_OK, data)
+                    finish()
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     companion object {
@@ -190,5 +213,6 @@ open class VerificationActivity : BaseOtpActivity() {
         const val TAG_OTP_VALIDATOR = "otpValidator"
         const val TAG_OTP_MISCALL = "otpMiscall"
         const val TAG_OTP_WA_NOT_REGISTERED = "otpWaNotRegistered"
+        const val REQUEST_SILENT_VERIF = 1122
     }
 }
