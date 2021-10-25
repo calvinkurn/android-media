@@ -1,0 +1,103 @@
+query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String, $source: String){
+    shopInfoByID(input: {
+        shopIDs: $shopIds,
+        fields: $fields,
+        domain: $shopDomain,
+        source: $source
+    }){
+        result {
+            shopCore{
+                shopID
+                description
+                domain
+                name
+                tagLine
+                url
+            }
+            freeOngkir{
+                isActive
+                imgURL
+            }
+            closedInfo{
+                closedNote
+                reason
+                until
+                detail{
+                  openDate
+                }
+            }
+            createInfo{
+                openSince
+            }
+            shopAssets{
+                avatar
+                cover
+            }
+            shipmentInfo{
+                isAvailable
+                code
+                shipmentID
+                image
+                name
+                product{
+                    isAvailable
+                    productName
+                    shipProdID
+                    uiHidden
+                }
+                isPickup
+                maxAddFee
+                awbStatus
+            }
+            shopLastActive
+            location
+            isAllowManage
+            goldOS {
+                isGold
+                isGoldBadge
+                isOfficial
+            }
+            favoriteData{
+                totalFavorite
+                alreadyFavorited
+            }
+            statusInfo {
+                shopStatus
+                statusMessage
+                statusTitle
+                isIdle
+            }
+            bbInfo {
+                bbName
+                bbNameEN
+                bbDesc
+                bbDescEN
+            }
+            topContent{
+                topURL
+            }
+            address {
+                id
+                name
+                address
+                area
+                email
+                phone
+                fax
+            }
+            shopStats {
+                productSold
+                totalTx
+                totalShowcase
+            }
+            createInfo{
+                shopCreated
+                epochShopCreated
+                epochShopCreatedUTC
+                openSince
+            }
+            activeProduct
+            shopHomeType
+        }
+    }
+}
