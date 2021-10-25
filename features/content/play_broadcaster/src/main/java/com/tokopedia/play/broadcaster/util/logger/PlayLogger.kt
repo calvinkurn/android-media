@@ -14,17 +14,14 @@ interface PlayLogger {
         channelStatus: PlayChannelStatusType
     )
 
-    fun logPusherStatus(
+    fun logPusherState(
         pusherState: PlayLivePusherMediatorState
     )
 
-    fun logSocketStatus(
+    fun logSocketType(
         socketType: PlaySocketType
     )
 
-    /**
-     * Important! send log when onPause()
-     */
     fun sendAll(channelId: String)
 
 }

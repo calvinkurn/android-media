@@ -12,14 +12,13 @@ import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCr
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConfig
-import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConnection
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
-import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
+import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -267,8 +266,8 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
     override fun mapLiveInfo(
         activeIngestUrl: String,
         config: PlayLivePusherConfig
-    ): PlayLiveInfoUiModel {
-        return PlayLiveInfoUiModel(
+    ): PlayLiveLogState {
+        return PlayLiveLogState.Init(
             "rtmp://tkpd.com",
             config.videoWidth,
             config.videoHeight,

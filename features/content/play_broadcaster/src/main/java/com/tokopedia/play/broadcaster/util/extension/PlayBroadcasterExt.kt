@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.util.extension
 
 import android.content.Context
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediatorState
 import com.wmspanel.libstream.Streamer
 
 /**
@@ -40,4 +41,17 @@ internal fun DialogUnify.setLoading(isLoading: Boolean) {
 
 internal fun <T> Streamer.safeExecute(fn: Streamer.() -> T): T? {
     return try { fn() } catch(e: Throwable) { null }
+}
+
+internal fun PlayLivePusherMediatorState.getName(): String {
+   return when(this) {
+       PlayLivePusherMediatorState.Connecting -> "CONNECTING"
+        is PlayLivePusherMediatorState.Error -> "ERROR: reason:${this.error.reason}"
+       PlayLivePusherMediatorState.Paused -> "PAUSED"
+       PlayLivePusherMediatorState.Recovered -> "RECOVERED"
+        is PlayLivePusherMediatorState.Resume -> if (this.isResumed) "RESUMED" else "RESUME"
+       PlayLivePusherMediatorState.Started -> "STARTED"
+        is PlayLivePusherMediatorState.Stopped -> "STOPPED"
+       PlayLivePusherMediatorState.Idle -> "IDLE"
+   }
 }
