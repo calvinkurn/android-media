@@ -1,4 +1,4 @@
-package com.tokopedia.profilecommon.domain.query
+package com.tokopedia.loginregister.shopcreation.domain.query
 
 /**
  * Created by Ade Fulki on 2019-12-12.

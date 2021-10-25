@@ -4,21 +4,25 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.loginregister.shopcreation.domain.param.RegisterCheckParam
-import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckPojo
+import com.tokopedia.loginregister.shopcreation.domain.pojo.GetUserProfileCompletionPojo
 import com.tokopedia.loginregister.shopcreation.domain.query.MutationUserProfileValidate
 import javax.inject.Inject
 
-class RegisterCheckUseCase @Inject constructor(
+/**
+ * Created by Ade Fulki on 2019-12-12.
+ * ade.hadian@tokopedia.com
+ */
+
+class GetUserProfileCompletionUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<RegisterCheckParam, RegisterCheckPojo>(dispatcher.io) {
+) : CoroutineUseCase<Unit, GetUserProfileCompletionPojo>(dispatcher.io) {
 
     override fun graphqlQuery(): String {
         return MutationUserProfileValidate.getQuery()
     }
 
-    override suspend fun execute(params: RegisterCheckParam): RegisterCheckPojo {
-        return graphqlRepository.request(graphqlQuery(), params.toMap())
+    override suspend fun execute(params: Unit): GetUserProfileCompletionPojo {
+        return graphqlRepository.request(graphqlQuery(), params)
     }
 }
