@@ -73,6 +73,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     private var currRecommendationListPage = 0
     private var searchQuery = ""
     private var activityWishlistV2 = ""
+    private var isBulkDeleteShow = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -180,6 +181,17 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 }
             }
             wishlistNavtoolbar.setIcon(icons)
+
+            wishlistManageLabel.setOnClickListener {
+                if (!isBulkDeleteShow) {
+                    wishlistManageLabel.text = getString(R.string.wishlist_cancel_manage_label)
+                    wishlistV2Adapter.showCheckbox()
+                } else {
+                    wishlistManageLabel.text = getString(R.string.wishlist_manage_label)
+                    wishlistV2Adapter.hideCheckbox()
+                }
+                isBulkDeleteShow = !isBulkDeleteShow
+            }
         }
 
         wishlistV2Adapter = WishlistV2Adapter().apply {

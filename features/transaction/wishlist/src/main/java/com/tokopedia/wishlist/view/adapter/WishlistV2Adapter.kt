@@ -20,6 +20,7 @@ import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
 class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var actionListener: ActionListener? = null
     private var listTypeData = mutableListOf<WishlistV2TypeLayoutData>()
+    private var isShowCheckbox = false
 
     companion object {
         const val LAYOUT_LOADER_LIST = 0
@@ -72,7 +73,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val element = listTypeData[position]
         when (holder) {
             is WishlistV2ListItemViewHolder-> {
-                holder.bind(element, holder.adapterPosition)
+                holder.bind(element, holder.adapterPosition, isShowCheckbox)
             }
             is WishlistV2GridItemViewHolder -> {
                 holder.bind(element, holder.adapterPosition)
@@ -122,6 +123,16 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         for (x in 0 until 5) {
             listTypeData.add(WishlistV2TypeLayoutData("", TYPE_LOADER_LIST))
         }
+        notifyDataSetChanged()
+    }
+
+    fun showCheckbox() {
+        isShowCheckbox = true
+        notifyDataSetChanged()
+    }
+
+    fun hideCheckbox() {
+        isShowCheckbox = false
         notifyDataSetChanged()
     }
 }

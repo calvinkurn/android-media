@@ -5,6 +5,7 @@
     <string name="hint_cari_wishlist">Cari di Wishlist</string>
     <string name="error_message_minimum_search_keyword">Masukkan min. 1 karakter di kolom pencarian.</string>
     <string name="wishlist_manage_label">Atur</string>
+    <string name="wishlist_cancel_manage_label">Batal</string>
     <string name="wishlist_count_label">%d barang</string>
     <string name="wishlist_save_label">Simpan</string>
     <string name="button_empty_state_wishlist">Cari Barang</string>
