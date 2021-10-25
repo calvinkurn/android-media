@@ -14,13 +14,13 @@ import androidx.annotation.LayoutRes;
 import com.tokopedia.abstraction.common.utils.image.DynamicSizeImageRequestListener;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.chat_common.R;
-import com.tokopedia.chat_common.data.ImageAnnouncementViewModel;
+import com.tokopedia.chat_common.data.ImageAnnouncementUiModel;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener;
 
 /**
  * @author by nisie on 5/15/18.
  */
-public class ImageAnnouncementViewHolder extends BaseChatViewHolder<ImageAnnouncementViewModel> {
+public class ImageAnnouncementViewHolder extends BaseChatViewHolder<ImageAnnouncementUiModel> {
 
     private final ImageAnnouncementListener listener;
     @LayoutRes
@@ -39,7 +39,7 @@ public class ImageAnnouncementViewHolder extends BaseChatViewHolder<ImageAnnounc
     }
 
     @Override
-    public void bind(final ImageAnnouncementViewModel viewModel) {
+    public void bind(final ImageAnnouncementUiModel viewModel) {
         super.bind(viewModel);
         ImageHandler.loadImageWithListener(attachment, viewModel.getImageUrl(), new DynamicSizeImageRequestListener());
         container.setOnClickListener(view -> listener.onImageAnnouncementClicked(viewModel));

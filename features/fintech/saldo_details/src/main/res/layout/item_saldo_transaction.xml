@@ -77,8 +77,8 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iconNextButton"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginEnd="@dimen/unify_space_16"
         app:layout_constraintTop_toTopOf="@id/tvTransactionHeading"
         app:layout_constraintEnd_toEndOf="parent"

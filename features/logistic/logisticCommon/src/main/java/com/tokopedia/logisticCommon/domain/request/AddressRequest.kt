@@ -1,4 +1,5 @@
 package com.tokopedia.logisticCommon.domain.request
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 
@@ -20,6 +21,7 @@ data class AddressRequest(
     val whitelistChosenAddress: Boolean = true,
     @SerializedName("previous_state")
     val previousState: Int? = null,
+    @SuppressLint("Invalid Data Type")
     @SerializedName("local_state_chosen_address_id")
-    val localStateChosenAddressId: Int? = null
+    val localStateChosenAddressId: Long? = null
 )
