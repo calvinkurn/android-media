@@ -287,7 +287,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private var shouldShowCartAnimation = false
     private var loadingProgressDialog: ProgressDialog? = null
     private var productVideoCoordinator: ProductVideoCoordinator? = null
-    private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this) }
+    private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this, viewModel.userId) }
     private val coachMarkBoePref by lazy { CoachMarkLocalCache(context) }
     private val adapter by lazy {
         val asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel> = AsyncDifferConfig.Builder(ProductDetailDiffUtil())
@@ -2534,13 +2534,21 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     view = view,
                     productImgList = ArrayList(imageUrls),
                     preBuildImg = {
-                        showProgressDialog {
-                            shareProductInstance?.cancelShare(true)
-                        }
+                        showLoadingUniversalShare()
                     },
                     postBuildImg = { hideProgressDialog() },
                     screenshotDetector
             )
+        }
+    }
+
+    private fun showLoadingUniversalShare() {
+        activity?.let {
+            if (!it.isFinishing) {
+                showProgressDialog {
+                    shareProductInstance?.cancelShare(true)
+                }
+            }
         }
     }
 

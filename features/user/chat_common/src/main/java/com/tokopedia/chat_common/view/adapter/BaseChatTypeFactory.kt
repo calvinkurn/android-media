@@ -10,21 +10,21 @@ import com.tokopedia.chat_common.data.*
 
 interface BaseChatTypeFactory {
 
-    fun type(messageViewModel: MessageViewModel): Int
+    fun type(messageUiModel: MessageUiModel): Int
 
     fun type(typingViewModel: TypingChatModel): Int
 
-    fun type(imageAnnouncementViewModel: ImageAnnouncementViewModel): Int
+    fun type(imageAnnouncementUiModel: ImageAnnouncementUiModel): Int
 
-    fun type(imageUploadViewModel: ImageUploadViewModel): Int
+    fun type(imageUploadUiModel: ImageUploadUiModel): Int
 
-    fun type(fallbackAttachmentViewModel: FallbackAttachmentViewModel): Int
+    fun type(fallbackAttachmentUiModel: FallbackAttachmentUiModel): Int
 
-    fun type(productAttachmentViewModel: ProductAttachmentViewModel): Int
+    fun type(productAttachmentUiModel: ProductAttachmentUiModel): Int
 
-    fun type(attachInvoiceSentViewModel: AttachInvoiceSentViewModel): Int
+    fun type(attachInvoiceSentUiModel: AttachInvoiceSentUiModel): Int
 
-    fun type(bannedAttachmentViewModel: BannedProductAttachmentViewModel): Int
+    fun type(bannedAttachmentUiModel: BannedProductAttachmentUiModel): Int
 
     fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*>
 }

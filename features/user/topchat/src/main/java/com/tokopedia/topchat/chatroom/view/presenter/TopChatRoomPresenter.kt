@@ -13,7 +13,7 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.*
-import com.tokopedia.chat_common.data.BaseChatViewModel.Builder.Companion.generateCurrentReplyTime
+import com.tokopedia.chat_common.data.BaseChatUiModel.Builder.Companion.generateCurrentReplyTime
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
@@ -301,7 +301,7 @@ open class TopChatRoomPresenter @Inject constructor(
             AttachmentType.Companion.TYPE_IMAGE_UPLOAD,
             AttachmentType.Companion.TYPE_VOUCHER -> view?.removeSrwBubble()
             AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT -> {
-                if (uiModel is ProductAttachmentViewModel) {
+                if (uiModel is ProductAttachmentUiModel) {
                     view?.removeSrwBubble(uiModel.productId)
                 }
             }
@@ -390,7 +390,7 @@ open class TopChatRoomPresenter @Inject constructor(
         sendMessageWebSocket(TopChatWebSocketParam.generateParamRead(thisMessageId))
     }
 
-    override fun startCompressImages(it: ImageUploadViewModel) {
+    override fun startCompressImages(it: ImageUploadUiModel) {
         val isValidImage = ImageUtil.validateImageAttachment(it.imageUrl)
         if (isValidImage.first) {
             it.imageUrl?.let { it1 ->
@@ -419,7 +419,7 @@ open class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-    override fun startUploadImages(image: ImageUploadViewModel) {
+    override fun startUploadImages(image: ImageUploadUiModel) {
         view?.removeSrwBubble()
         if (isEnableUploadImageService()) {
             addDummyToService(image)
@@ -434,7 +434,7 @@ open class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-    protected open fun addDummyToService(image: ImageUploadViewModel) {
+    protected open fun addDummyToService(image: ImageUploadUiModel) {
         val dummyPosition = UploadImageChatService.findDummy(image)
         if (dummyPosition == null) {
             val uploadImageDummy = UploadImageDummy(messageId = thisMessageId, visitable = image)
@@ -444,7 +444,7 @@ open class TopChatRoomPresenter @Inject constructor(
 
     }
 
-    protected open fun startUploadImageWithService(image: ImageUploadViewModel) {
+    protected open fun startUploadImageWithService(image: ImageUploadUiModel) {
         UploadImageChatService.enqueueWork(
             view.context,
             ImageUploadMapper.mapToImageUploadServer(image),
@@ -452,25 +452,25 @@ open class TopChatRoomPresenter @Inject constructor(
         )
     }
 
-    private fun onSuccessUploadImage(uploadId: String, image: ImageUploadViewModel) {
+    private fun onSuccessUploadImage(uploadId: String, image: ImageUploadUiModel) {
         when (networkMode) {
             MODE_WEBSOCKET -> sendImageByWebSocket(uploadId, image)
             MODE_API -> sendImageByApi(uploadId, image)
         }
     }
 
-    private fun onErrorUploadImage(throwable: Throwable, image: ImageUploadViewModel) {
+    private fun onErrorUploadImage(throwable: Throwable, image: ImageUploadUiModel) {
         view?.onErrorUploadImage(ErrorHandler.getErrorMessage(view?.context, throwable), image)
     }
 
-    private fun sendImageByWebSocket(uploadId: String, image: ImageUploadViewModel) {
+    private fun sendImageByWebSocket(uploadId: String, image: ImageUploadUiModel) {
         val requestParams = TopChatWebSocketParam.generateParamSendImage(
             thisMessageId, uploadId, image
         )
         sendMessageWebSocket(requestParams)
     }
 
-    private fun sendImageByApi(uploadId: String, image: ImageUploadViewModel) {
+    private fun sendImageByApi(uploadId: String, image: ImageUploadUiModel) {
         val requestParams = ReplyChatUseCase.generateParamAttachImage(thisMessageId, uploadId)
         sendByApi(requestParams, image)
     }
@@ -487,9 +487,9 @@ open class TopChatRoomPresenter @Inject constructor(
     private fun getDummyOnList(visitable: Visitable<*>): Visitable<*>? {
         dummyList.isNotEmpty().let {
             for (i in 0 until dummyList.size) {
-                val temp = (dummyList[i] as SendableViewModel)
-                if (temp.startTime == (visitable as SendableViewModel).startTime
-                    && temp.messageId == (visitable as SendableViewModel).messageId
+                val temp = (dummyList[i] as SendableUiModel)
+                if (temp.startTime == (visitable as SendableUiModel).startTime
+                    && temp.messageId == (visitable as SendableUiModel).messageId
                 ) {
                     return dummyList[i]
                 }
@@ -614,7 +614,7 @@ open class TopChatRoomPresenter @Inject constructor(
         products: List<SendablePreview>? = null,
         referredMsg: ParentReply? = null
     ) {
-        val startTime = SendableViewModel.generateStartTime()
+        val startTime = SendableUiModel.generateStartTime()
         val previewMsg = generatePreviewMessage(
             messageText = sendMessage,
             startTime = startTime,
@@ -635,7 +635,7 @@ open class TopChatRoomPresenter @Inject constructor(
 
     private fun sendWs(
         request: String,
-        preview: SendableViewModel
+        preview: SendableUiModel
     ) {
         processPreviewMessage(preview)
         sendMessageWebSocket(request)
@@ -647,7 +647,7 @@ open class TopChatRoomPresenter @Inject constructor(
         sendMessageWebSocket(request)
     }
 
-    private fun processPreviewMessage(previewMsg: SendableViewModel) {
+    private fun processPreviewMessage(previewMsg: SendableUiModel) {
         view?.showPreviewMsg(previewMsg)
     }
 
@@ -655,9 +655,9 @@ open class TopChatRoomPresenter @Inject constructor(
         messageText: String,
         startTime: String,
         referredMsg: ParentReply?
-    ): SendableViewModel {
+    ): SendableUiModel {
         val localId = IdentifierUtil.generateLocalId()
-        return MessageViewModel.Builder()
+        return MessageUiModel.Builder()
             .withMsgId(roomMetaData.msgId)
             .withFromUid(userSession.userId)
             .withFrom(userSession.name)
@@ -690,7 +690,7 @@ open class TopChatRoomPresenter @Inject constructor(
         sticker: Sticker,
         referredMsg: ParentReply?
     ) {
-        val startTime = SendableViewModel.generateStartTime()
+        val startTime = SendableUiModel.generateStartTime()
         val previewSticker = StickerUiModel.generatePreviewMessage(
             roomMetaData = roomMetaData,
             sticker = sticker,
@@ -998,7 +998,7 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override fun addOngoingUpdateProductStock(
         productId: String,
-        product: ProductAttachmentViewModel, adapterPosition: Int,
+        product: ProductAttachmentUiModel, adapterPosition: Int,
         parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
     ) {
         val result = UpdateProductStockResult(product, adapterPosition, parentMetaData)

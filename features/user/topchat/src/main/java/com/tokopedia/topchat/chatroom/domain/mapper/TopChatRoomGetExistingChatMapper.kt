@@ -9,9 +9,9 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_REVIEW_REMINDER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
-import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
-import com.tokopedia.chat_common.data.MessageViewModel
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel
+import com.tokopedia.chat_common.data.ImageAnnouncementUiModel
+import com.tokopedia.chat_common.data.MessageUiModel
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.ChatRepliesItem
 import com.tokopedia.chat_common.domain.pojo.Contact
@@ -99,7 +99,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     override fun convertToMessageViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        return MessageViewModel.Builder()
+        return MessageUiModel.Builder()
             .withResponseFromGQL(chatItemPojoByDateByTime)
             .build()
     }
@@ -189,7 +189,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         }
         if (isBroadCast) {
             products.sortBy {
-                return@sortBy (it as ProductAttachmentViewModel).hasEmptyStock()
+                return@sortBy (it as ProductAttachmentUiModel).hasEmptyStock()
             }
         }
         return products
@@ -211,7 +211,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         val attachment = gson.fromJson(
             reply.attachment.attributes, HeaderCtaButtonAttachment::class.java
         )
-        return MessageViewModel.Builder()
+        return MessageUiModel.Builder()
             .withResponseFromGQL(reply)
             .withAttachment(attachment)
             .build()
@@ -221,7 +221,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
         val pojoAttribute = gson.fromJson(
             item.attachment.attributes, ImageAnnouncementPojo::class.java
         )
-        return ImageAnnouncementViewModel(item, pojoAttribute)
+        return ImageAnnouncementUiModel(item, pojoAttribute)
     }
 
     private fun convertToVoucher(item: Reply): Visitable<*> {

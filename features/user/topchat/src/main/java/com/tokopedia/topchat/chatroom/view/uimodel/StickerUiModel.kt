@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chatroom.view.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.attachment.AttachmentId
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
@@ -12,7 +12,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 
 class StickerUiModel private constructor(
     builder: Builder
-) : SendableViewModel(builder), Visitable<TopChatTypeFactory> {
+) : SendableUiModel(builder), Visitable<TopChatTypeFactory> {
 
     val sticker: StickerProfile = builder.stickerProfile
 
@@ -42,7 +42,7 @@ class StickerUiModel private constructor(
         }
     }
 
-    class Builder : SendableViewModel.Builder<Builder, StickerUiModel>() {
+    class Builder : SendableUiModel.Builder<Builder, StickerUiModel>() {
 
         internal var stickerProfile: StickerProfile = StickerProfile()
 
