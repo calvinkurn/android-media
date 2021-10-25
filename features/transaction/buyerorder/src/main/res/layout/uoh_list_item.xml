@@ -4,22 +4,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dp_4"
-    android:layout_marginRight="@dimen/dp_4"
-    android:layout_marginTop="@dimen/dp_8"
-    android:layout_marginBottom="@dimen/dp_8"
-    app:cardCornerRadius="@dimen/dp_8">
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_data_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_12">
+        android:layout_margin="12dp">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ic_uoh_vertical"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="@string/icon_placeholder"/>
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toEndOf="@id/ic_uoh_vertical"
             app:layout_constraintTop_toTopOf="@id/ic_uoh_vertical"
-            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginStart="8dp"
             app:typographyWeight="bold"
             app:typographyType="small"
             tools:text="Belanja"
@@ -58,8 +58,8 @@
             app:layout_constraintBottom_toBottomOf="@id/tv_uoh_date"
             app:srcCompat="@drawable/ic_kebab_buyer"
             android:contentDescription="@string/icon_placeholder"
-            android:paddingStart="@dimen/dp_12"
-            android:paddingEnd="@dimen/dp_8"/>
+            android:paddingStart="12dp"
+            android:paddingEnd="8dp"/>
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/label_uoh_order"
@@ -76,7 +76,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
             app:layout_constraintTop_toBottomOf="@id/tv_uoh_date"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="12dp"
             android:background="@color/Unify_N50"/>
 
         <com.tokopedia.unifycomponents.ticker.Ticker
@@ -91,7 +91,7 @@
             app:tickerShapeType="loose"
             app:tickerType="warning"
             app:closeButtonVisibility="gone"
-            android:layout_marginTop="@dimen/dp_8"/>
+            android:layout_marginTop="8dp"/>
 
         <RelativeLayout
             android:id="@+id/rl_uoh_product"
@@ -100,15 +100,15 @@
             app:layout_constraintTop_toBottomOf="@id/ticker_info_inside_card"
             app:layout_constraintLeft_toLeftOf="@id/cl_data_product"
             app:layout_constraintStart_toStartOf="@id/cl_data_product"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_marginBottom="@dimen/dp_12">
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="12dp">
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/iv_uoh_product"
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 tools:ignore="ContentDescription"
-                android:layout_marginEnd="@dimen/dp_10"/>
+                android:layout_marginEnd="10dp"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_uoh_product_name"
@@ -144,7 +144,7 @@
             app:typographyWeight="reguler"
             app:typographyType="body_3"
             tools:text="+2 produk lainnya"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="12dp"
             android:textColor="@color/Unify_N700_96"/>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -153,7 +153,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/label_other_info"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="12dp"
             app:typographyWeight="reguler"
             app:typographyType="small"
             android:textColor="@color/Unify_N700_96"
@@ -175,7 +175,7 @@
             android:id="@+id/uoh_btn_action"
             android:layout_width="wrap_content"
             android:minWidth="@dimen/dp_110"
-            android:layout_height="@dimen/dp_24"
+            android:layout_height="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="Revisi File"

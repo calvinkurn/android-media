@@ -7,8 +7,8 @@
     android:id="@+id/suggestionTopShopSeeMoreCard"
     android:foreground="?attr/selectableItemBackground"
     app:cardBackgroundColor="@color/discovery_common_dms_card_background"
-    app:cardCornerRadius="@dimen/dp_8"
-    app:cardElevation="@dimen/dp_4"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true">
 
@@ -35,7 +35,7 @@
             android:textColor="@color/Unify_G500"
             android:maxLines="2"
             android:gravity="center"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="38dp"
             android:layout_marginLeft="@dimen/dp_36"
             android:layout_marginStart="@dimen/dp_36"

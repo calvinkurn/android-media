@@ -4,7 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.DynamicSizeImageRequestListener
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
+import com.tokopedia.chat_common.data.ImageAnnouncementUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 
 object ImageAnnouncementViewHolderBinder {
@@ -12,19 +12,19 @@ object ImageAnnouncementViewHolderBinder {
     private val imageSizer = DynamicSizeImageRequestListener()
 
     fun bindBannerImage(
-            viewModel: ImageAnnouncementViewModel,
-            banner: ImageView?
+        uiModel: ImageAnnouncementUiModel,
+        banner: ImageView?
     ) {
-        ImageHandler.loadImageWithListener(banner, viewModel.imageUrl, imageSizer)
+        ImageHandler.loadImageWithListener(banner, uiModel.imageUrl, imageSizer)
     }
 
     fun bindBannerClick(
-            viewModel: ImageAnnouncementViewModel,
-            view: View?,
-            listener: ImageAnnouncementListener
+        uiModel: ImageAnnouncementUiModel,
+        view: View?,
+        listener: ImageAnnouncementListener
     ) {
         view?.setOnClickListener {
-            listener.onImageAnnouncementClicked(viewModel)
+            listener.onImageAnnouncementClicked(uiModel)
         }
     }
 

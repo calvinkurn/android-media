@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/dp_16"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginEnd="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginStart="16dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginRight="16dp"
     android:paddingBottom="@dimen/layout_lvl2">
 
     <com.tokopedia.unifycomponents.ticker.Ticker
@@ -50,7 +50,7 @@
         android:layout_marginBottom="@dimen/layout_lvl5"
         android:layout_toEndOf="@id/buyer_request_cancel_notes_left_icon"
         android:paddingStart="@dimen/layout_lvl0"
-        android:paddingEnd="@dimen/dp_10"
+        android:paddingEnd="10dp"
         android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_4" />
 

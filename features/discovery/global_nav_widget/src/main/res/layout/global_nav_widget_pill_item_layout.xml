@@ -12,16 +12,16 @@
         android:layout_height="wrap_content">
         
         <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/dp_72"
-            android:layout_height="@dimen/dp_72"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
             android:src="@drawable/global_nav_ic_squircle"
             android:scaleType="fitXY"/>
 
         <ImageView
             android:id="@+id/globalNavPillItemImage"
-            android:layout_width="@dimen/dp_72"
-            android:layout_height="@dimen/dp_72"
-            android:padding="@dimen/dp_16"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:padding="16dp"
             android:scaleType="centerInside"/>
         
     </RelativeLayout>
@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:lines="1"
         android:ellipsize="end"
-        android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginTop="2dp"
         android:textColor="@color/Unify_N700_96"
         app:typographyType="body_3"
         app:typographyWeight="bold"
