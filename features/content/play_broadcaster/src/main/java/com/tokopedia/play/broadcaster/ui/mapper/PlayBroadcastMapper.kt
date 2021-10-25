@@ -7,12 +7,11 @@ import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCr
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConfig
-import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConnection
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
-import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
+import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -83,7 +82,7 @@ interface PlayBroadcastMapper {
     fun mapLiveInfo(
         activeIngestUrl: String,
         config: PlayLivePusherConfig
-    ): PlayLiveInfoUiModel
+    ): PlayLiveLogState
 
     fun mapPinnedMessage(
         response: GetPinnedMessageResponse.Data

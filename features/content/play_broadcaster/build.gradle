@@ -63,6 +63,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.features.mediauploader)
     implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
 
     implementation projectOrAar(rootProject.ext.features.playCommon)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
@@ -101,10 +102,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.liveDataKtx
 
     implementation rootProject.ext.networkDependencies.glide
-
-    implementation (rootProject.ext.firebase.crashlytics) {
-        transitive = true
-    }
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.coach_mark
