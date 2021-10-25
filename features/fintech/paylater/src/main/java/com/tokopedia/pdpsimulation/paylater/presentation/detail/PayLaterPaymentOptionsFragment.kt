@@ -18,11 +18,13 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PdpSimulationEvent
 import com.tokopedia.pdpsimulation.paylater.domain.model.Benefit
+import com.tokopedia.pdpsimulation.paylater.domain.model.BottomSheetDetail
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.GatewayDetail
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.adapter.PayLaterOfferDescriptionAdapter
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterActionStepsBottomSheet
 import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterFaqBottomSheet
+import com.tokopedia.pdpsimulation.paylater.presentation.detail.bottomsheet.PayLaterTokopediaGopayBottomsheet
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -95,7 +97,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
                         btnHowToUse.isClickable = false
                     }
                     RedirectionType.GopayBottomSheet ->{
-                       
+                            openGopayBottomSheet();
                     }
                 }
 
@@ -107,6 +109,13 @@ class PayLaterPaymentOptionsFragment : Fragment() {
             openFaqBottomSheet()
         }
     }
+
+    private fun openGopayBottomSheet() {
+        val bundle = Bundle()
+        bundle.putParcelable(PayLaterTokopediaGopayBottomsheet.REDIRECTION_URL,responseData?.cta)
+
+    }
+
 
     private fun openActionBottomSheet() {
         val bundle = Bundle()
@@ -281,8 +290,8 @@ class PayLaterPaymentOptionsFragment : Fragment() {
         data.cta?.cta_type?.let {
             buttonStatus = when {
                 buttonRedirectionWeb.contains(it) -> RedirectionType.RedirectionWebView
-                buttonRedirectionBottomSheet.contains(it) ->
-                {   if(data.cta.bottomSheet?.isShow == true)
+                buttonRedirectionBottomSheet.contains(it) ->{
+                  if(data.cta.bottomSheet?.isShow == true)
                         RedirectionType.GopayBottomSheet
                     else
                         RedirectionType.HowToDetail

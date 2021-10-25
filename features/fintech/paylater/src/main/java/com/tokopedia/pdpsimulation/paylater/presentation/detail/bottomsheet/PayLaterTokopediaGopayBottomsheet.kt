@@ -80,6 +80,8 @@ class PayLaterTokopediaGopayBottomsheet : BottomSheetUnify() {
     companion object {
 
         private const val TAG = "PayLaterTokopediaGopayBottomsheet"
+        const val GOPAY_BOTTOMSHEET_DETAIL = "gopayBottomsheetDetail"
+        const val REDIRECTION_URL = "redirection_url"
 
         fun show(
             bundle: Bundle,
