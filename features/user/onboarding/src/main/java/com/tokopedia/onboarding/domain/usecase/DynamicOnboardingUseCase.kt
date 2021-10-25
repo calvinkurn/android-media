@@ -15,7 +15,7 @@ import javax.inject.Inject
 class DynamicOnboardingUseCase @Inject constructor(
         private val repository: GraphqlRepository,
         dispatcher: CoroutineDispatcher
-) : CoroutineUseCase<Unit, ConfigDataModel>(dispatcher) {
+) : CoroutineUseCase<Unit, DynamicOnboardingResponseDataModel>(dispatcher) {
 
 //    fun getDynamicOnboardingData(onSuccess: (ConfigDataModel) -> Unit, onError: (Throwable) -> Unit) {
 //        rawQueries[OnboardingConstant.Query.QUERY_DYNAMIC_ONBAORDING]?.let { query ->
@@ -47,7 +47,7 @@ class DynamicOnboardingUseCase @Inject constructor(
                 " }"
     }
 
-    override suspend fun execute(params: Unit): ConfigDataModel {
+    override suspend fun execute(params: Unit): DynamicOnboardingResponseDataModel {
         return repository.request(graphqlQuery(), params)
     }
 }

@@ -184,7 +184,6 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
                 View.GONE
             }
         }
-
         checkGlobalButtonState(0)
     }
 
