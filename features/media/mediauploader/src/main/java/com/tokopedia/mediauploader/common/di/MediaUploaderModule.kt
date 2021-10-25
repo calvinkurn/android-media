@@ -8,10 +8,10 @@ import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.image.data.ImageUploadServices
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
+import com.tokopedia.mediauploader.video.LargeUploaderManager
 import com.tokopedia.mediauploader.video.SimpleUploaderManager
 import com.tokopedia.mediauploader.video.data.VideoUploadServices
-import com.tokopedia.mediauploader.video.domain.GetSimpleUploaderUseCase
-import com.tokopedia.mediauploader.video.domain.GetVideoPolicyUseCase
+import com.tokopedia.mediauploader.video.domain.*
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -32,11 +32,15 @@ class MediaUploaderModule {
     @MediaUploaderQualifier
     fun provideUploaderUseCase(
         imageUploader: ImageUploaderManager,
-        simpleUploader: SimpleUploaderManager
+        simpleUploader: SimpleUploaderManager,
+        largeUploader: LargeUploaderManager,
+        userSession: UserSessionInterface
     ): UploaderUseCase {
         return UploaderUseCase(
             imageUploader,
-            simpleUploader
+            simpleUploader,
+            largeUploader,
+            userSession
         )
     }
 
@@ -98,6 +102,48 @@ class MediaUploaderModule {
             videoPolicyUseCase,
             simpleUploaderUseCase
         )
+    }
+
+    // --- large video ---
+
+    @Provides
+    @MediaUploaderQualifier
+    fun provideInitVideoUploaderUseCase(
+        services: VideoUploadServices
+    ): InitVideoUploaderUseCase {
+        return InitVideoUploaderUseCase(services)
+    }
+
+    @Provides
+    @MediaUploaderQualifier
+    fun provideGetChunkCheckerUseCase(
+        services: VideoUploadServices
+    ): GetChunkCheckerUseCase {
+        return GetChunkCheckerUseCase(services)
+    }
+
+    @Provides
+    @MediaUploaderQualifier
+    fun provideGetChunkUploaderUseCase(
+        services: VideoUploadServices
+    ): GetChunkUploaderUseCase {
+        return GetChunkUploaderUseCase(services)
+    }
+
+    @Provides
+    @MediaUploaderQualifier
+    fun provideSetCompleteUploaderUseCase(
+        services: VideoUploadServices
+    ): SetCompleteUploaderUseCase {
+        return SetCompleteUploaderUseCase(services)
+    }
+
+    @Provides
+    @MediaUploaderQualifier
+    fun provideSetAbortUploaderUseCase(
+        services: VideoUploadServices
+    ): SetAbortUploaderUseCase {
+        return SetAbortUploaderUseCase(services)
     }
 
 }

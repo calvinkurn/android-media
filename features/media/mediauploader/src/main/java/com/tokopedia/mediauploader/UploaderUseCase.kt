@@ -9,9 +9,12 @@ import com.tokopedia.mediauploader.common.state.ProgressCallback
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.fileExtension
 import com.tokopedia.mediauploader.common.util.isImage
+import com.tokopedia.mediauploader.common.util.slice
 import com.tokopedia.mediauploader.image.ImageUploaderManager
+import com.tokopedia.mediauploader.video.LargeUploaderManager
 import com.tokopedia.mediauploader.video.SimpleUploaderManager
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import okhttp3.internal.http2.ConnectionShutdownException
@@ -22,11 +25,14 @@ import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import kotlin.math.ceil
 import android.util.Log.getStackTraceString as getStackTraceMessage
 
 class UploaderUseCase @Inject constructor(
     private val imageUploaderManager: ImageUploaderManager,
-    private val videoSimpleUploaderManager: SimpleUploaderManager
+    private val videoSimpleUploaderManager: SimpleUploaderManager,
+    private val videoLargeUploaderManager: LargeUploaderManager,
+    private val userSession: UserSessionInterface
 ) : CoroutineUseCase<RequestParams, UploadResult>(Dispatchers.IO) {
 
     private var progressUploader: ProgressCallback? = null
@@ -41,7 +47,35 @@ class UploaderUseCase @Inject constructor(
         return if (file.name.isImage()) {
             imageUploader(file, sourceId)
         } else {
-            simpleUploader(file, sourceId)
+            if (file.length() >= THRESHOLD_LARGE_FILE_SIZE) {
+                largeUploader(file, sourceId)
+            } else {
+                simpleUploader(file, sourceId)
+            }
+        }
+    }
+
+
+    private suspend fun largeUploader(file: File, sourceId: String): UploadResult {
+        return try {
+            videoLargeUploaderManager(file, sourceId, userSession.accessToken)
+        } catch (e: SocketTimeoutException) {
+            videoLargeUploaderManager.setError(listOf(TIMEOUT_ERROR), sourceId, file)
+        } catch (e: StreamResetException) {
+            videoLargeUploaderManager.setError(listOf(TIMEOUT_ERROR), sourceId, file)
+        } catch (e: Exception) {
+            if (e !is UnknownHostException &&
+                e !is SocketException &&
+                e !is InterruptedIOException &&
+                e !is ConnectionShutdownException &&
+                e !is CancellationException
+            ) {
+                @Suppress("UselessCallOnNotNull")
+                if (getStackTraceMessage(e).orEmpty().isNotEmpty()) {
+                    trackToTimber(sourceId, getStackTraceMessage(e).take(ERROR_MAX_LENGTH).trim())
+                }
+            }
+            return videoLargeUploaderManager.setError(listOf(NETWORK_ERROR), sourceId, file)
         }
     }
 
@@ -113,5 +147,7 @@ class UploaderUseCase @Inject constructor(
     companion object {
         const val PARAM_SOURCE_ID = "source_id"
         const val PARAM_FILE_PATH = "file_path"
+
+        private const val THRESHOLD_LARGE_FILE_SIZE = 20971520
     }
 }

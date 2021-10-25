@@ -14,6 +14,7 @@ import com.tokopedia.mediauploader.video.data.params.SimpleUploadParam
 import com.tokopedia.mediauploader.video.domain.*
 import java.io.File
 
+@Deprecated("")
 class VideoUploaderManager constructor(
     private val policy: GetVideoPolicyUseCase,
     private val simple: GetSimpleUploaderUseCase,
