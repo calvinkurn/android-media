@@ -226,9 +226,9 @@ class BuyerOrderDetailNavigator(
             params
         )
         val intent = RouteManager.getIntent(fragment.context, appLink).apply {
-            putExtra(ApplinkConstInternalOrder.OrderExtensionKey.IS_FROM_ORDER, true)
+            putExtra(ApplinkConstInternalOrder.OrderExtensionKey.IS_FROM_UOH, false)
         }
-        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_REFRESH_ONLY)
+        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_ORDER_EXTENSION)
         applyTransition()
     }
 

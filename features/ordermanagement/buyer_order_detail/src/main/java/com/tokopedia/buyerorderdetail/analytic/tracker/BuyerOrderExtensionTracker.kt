@@ -27,7 +27,7 @@ object BuyerOrderExtensionTracker {
         tracker.sendGeneralEvent(event)
     }
 
-    fun eventAcceptOrderExtension(orderId: String) {
+    fun eventAcceptOrderExtension(orderId: String, pageName: String) {
         val event = mapOf(
             TrackAppUtils.EVENT to
                     BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PURCHASE_LIST,
@@ -36,7 +36,7 @@ object BuyerOrderExtensionTracker {
             TrackAppUtils.EVENT_ACTION to
                     BuyerOrderDetailTrackerConstant.EVENT_ACTION_REQUEST_ACTION_ORDER_EXTENSION,
             TrackAppUtils.EVENT_LABEL to
-                    "${BuyerOrderDetailTrackerConstant.EVENT_LABEL_ACCEPT_EXTENSION} $orderId",
+                    "${BuyerOrderDetailTrackerConstant.EVENT_LABEL_ACCEPT_EXTENSION} - $pageName - $orderId",
             BuyerOrderDetailTrackerConstant.EVENT_KEY_BUSINESS_UNIT to
                     BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS,
             BuyerOrderDetailTrackerConstant.EVENT_KEY_CURRENT_SITE to
@@ -45,7 +45,7 @@ object BuyerOrderExtensionTracker {
         tracker.sendGeneralEvent(event)
     }
 
-    fun eventRejectOrderExtension(orderId: String) {
+    fun eventRejectOrderExtension(orderId: String, pageName: String) {
         val event = mapOf(
             TrackAppUtils.EVENT to
                     BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PURCHASE_LIST,
@@ -54,7 +54,7 @@ object BuyerOrderExtensionTracker {
             TrackAppUtils.EVENT_ACTION to
                     BuyerOrderDetailTrackerConstant.EVENT_ACTION_REQUEST_ACTION_ORDER_EXTENSION,
             TrackAppUtils.EVENT_LABEL to
-                    "${BuyerOrderDetailTrackerConstant.EVENT_LABEL_REJECT_EXTENSION} $orderId",
+                    "${BuyerOrderDetailTrackerConstant.EVENT_LABEL_REJECT_EXTENSION} - $pageName - $orderId",
             BuyerOrderDetailTrackerConstant.EVENT_KEY_BUSINESS_UNIT to
                     BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS,
             BuyerOrderDetailTrackerConstant.EVENT_KEY_CURRENT_SITE to

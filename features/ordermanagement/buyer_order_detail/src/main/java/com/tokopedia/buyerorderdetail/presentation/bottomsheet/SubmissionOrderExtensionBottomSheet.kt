@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTrackerConstant
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderExtensionTracker
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailOrderExtensionConstant
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderExtensionConstant
@@ -19,6 +21,7 @@ import com.tokopedia.buyerorderdetail.presentation.partialview.OrderExtensionToa
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailExtensionViewModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -118,6 +121,14 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
     }
 
     private fun showRespondOrderExtension(orderExtensionRespondUiModel: OrderExtensionRespondUiModel) {
+        val isFromUOH = arguments?.getBoolean(
+            ApplinkConstInternalOrder.OrderExtensionKey.IS_FROM_UOH, false
+        ).orFalse()
+        val isUoH = if (isFromUOH) {
+            BuyerOrderDetailTrackerConstant.UOH_SOURCE
+        } else {
+            BuyerOrderDetailTrackerConstant.BOM_SOURCE
+        }
         when (orderExtensionRespondUiModel.messageCode) {
             BuyerOrderExtensionConstant.RespondMessageCode.SUCCESS,
             BuyerOrderExtensionConstant.RespondMessageCode.ERROR -> {
@@ -127,11 +138,13 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
                 ) { isOrderExtended ->
                     if (isOrderExtended) {
                         BuyerOrderExtensionTracker.eventAcceptOrderExtension(
-                            getOrderId()
+                            getOrderId(),
+                            isUoH
                         )
                     } else {
                         BuyerOrderExtensionTracker.eventRejectOrderExtension(
-                            getOrderId()
+                            getOrderId(),
+                            isUoH
                         )
                     }
                 }
@@ -215,10 +228,17 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
         private const val EXTENSION_ACTION = 1
         private const val CANCEL_ACTION = 0
 
-        fun newInstance(cacheManagerId: String): SubmissionOrderExtensionBottomSheet {
+        fun newInstance(
+            cacheManagerId: String,
+            isFromUoh: Boolean
+        ): SubmissionOrderExtensionBottomSheet {
             return SubmissionOrderExtensionBottomSheet().apply {
                 val bundle = Bundle()
                 bundle.putString(KEY_CACHE_MANAGER_ID, cacheManagerId)
+                bundle.putBoolean(
+                    ApplinkConstInternalOrder.OrderExtensionKey.IS_FROM_UOH,
+                    isFromUoh
+                )
                 arguments = bundle
             }
         }

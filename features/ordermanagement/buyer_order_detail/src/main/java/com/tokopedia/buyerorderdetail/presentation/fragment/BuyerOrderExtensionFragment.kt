@@ -39,7 +39,7 @@ class BuyerOrderExtensionFragment : BaseDaggerFragment() {
 
     private var binding by autoClearedNullable<FragmentBuyerOrderExtensionBinding>()
 
-    private var isFromOrder: Boolean = false
+    private var isFromUoh: Boolean = false
 
     override fun getScreenName(): String = BuyerOrderExtensionFragment::class.java.simpleName
 
@@ -76,9 +76,8 @@ class BuyerOrderExtensionFragment : BaseDaggerFragment() {
     }
 
     private fun setDataFromArguments() {
-        isFromOrder =
-            arguments?.getBoolean(ApplinkConstInternalOrder.OrderExtensionKey.IS_FROM_ORDER)
-                ?: false
+        isFromUoh = arguments?.getBoolean(ApplinkConstInternalOrder.OrderExtensionKey.IS_FROM_UOH)
+            ?: false
     }
 
     private fun loadRespondInfo() {
@@ -133,7 +132,7 @@ class BuyerOrderExtensionFragment : BaseDaggerFragment() {
             orderExtensionRespondInfoUiModel
         )
         val bottomSheet =
-            SubmissionOrderExtensionBottomSheet.newInstance(cacheManager?.id.orEmpty())
+            SubmissionOrderExtensionBottomSheet.newInstance(cacheManager?.id.orEmpty(), isFromUoh)
         bottomSheet.setOnDismissListener {
             (activity as? BuyerOrderExtensionActivity)?.setResultFinish()
         }

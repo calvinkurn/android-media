@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -170,6 +171,13 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             BuyerOrderDetailIntentCode.REQUEST_CODE_REQUEST_CANCEL_ORDER -> handleRequestCancelResult(resultCode, data)
             BuyerOrderDetailIntentCode.REQUEST_CODE_CREATE_RESOLUTION -> handleComplaintResult()
             BuyerOrderDetailIntentCode.REQUEST_CODE_REFRESH_ONLY -> handleResultRefreshOnly()
+            BuyerOrderDetailIntentCode.REQUEST_CODE_ORDER_EXTENSION -> {
+                when (resultCode) {
+                    Activity.RESULT_OK -> {
+                        handleResultRefreshOnly()
+                    }
+                }
+            }
         }
     }
 
