@@ -7,7 +7,7 @@ import javax.inject.Inject
 class QuestWidgetUseCase @Inject constructor(var gqlWrapper: QuestGqlWrapper) {
 
     suspend fun getResponse(map: HashMap<String, Any>): QuestWidgetResponse? {
-        return gqlWrapper.getResponse(getResponseClass(), GQLQueryQuestWidget.QUERY_QUEST_WIDGET, map)
+        return gqlWrapper.getResponse(getResponseClass(), getQuery(), map)
     }
 
     fun getQueryParams(channel: Int, channelSlug: String, page: String): HashMap<String, Any> {

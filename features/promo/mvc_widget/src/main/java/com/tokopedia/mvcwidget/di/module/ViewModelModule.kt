@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.mvcwidget.multishopmvc.verticallist.MerchantCouponViewModel
 import com.tokopedia.mvcwidget.MvcDetailViewModel
-import com.tokopedia.mvcwidget.quest_widget.QuestWidgetViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -27,10 +26,5 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MerchantCouponViewModel::class)
     abstract fun getMerchantCouponViewmodel(viewModel: MerchantCouponViewModel) : ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(QuestWidgetViewModel::class)
-    abstract fun getQuestWidgetViewmodel(viewModel: QuestWidgetViewModel) : ViewModel
 
 }
