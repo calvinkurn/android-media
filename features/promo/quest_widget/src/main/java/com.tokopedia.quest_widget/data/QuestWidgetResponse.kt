@@ -1,4 +1,4 @@
-package com.tokopedia.mvcwidget.quest_widget
+package com.tokopedia.quest_widget.data
 
 import com.google.gson.annotations.SerializedName
 

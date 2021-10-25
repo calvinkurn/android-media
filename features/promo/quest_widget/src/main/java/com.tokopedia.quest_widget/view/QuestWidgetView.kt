@@ -1,4 +1,4 @@
-package com.tokopedia.mvcwidget.quest_widget
+package com.tokopedia.quest_widget.view
 
 import android.content.Context
 import android.graphics.Color
@@ -6,12 +6,11 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.target.Target
+import com.example.quest_widget.R
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.mvcwidget.R
+import com.tokopedia.quest_widget.data.Config
+import com.tokopedia.quest_widget.data.QuestWidgetListItem
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -43,7 +42,7 @@ class QuestWidgetView @JvmOverloads constructor(
         tvLabel?.text = item.label?.title
         tvBannerTitle?.text = config.banner_title
         tvBannerDesc?.text = config.banner_description
-        ivBannerIcon?.let {
+     /*   ivBannerIcon?.let {
             Glide.with(context)
                 .load(config.banner_icon_url)
                 .dontAnimate()
@@ -51,7 +50,7 @@ class QuestWidgetView @JvmOverloads constructor(
                 .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                 .centerCrop()
                 .into(it)
-        }
+        }*/
         viewSideBar?.setBackgroundColor(Color.parseColor(config.banner_background_color))
 
         when(item.questUser?.status){
@@ -75,7 +74,7 @@ class QuestWidgetView @JvmOverloads constructor(
 
     }
 
-    private fun convertStringToConfig(configString: String?) : Config{
+    private fun convertStringToConfig(configString: String?) : Config {
         val dataClassType = object : TypeToken<Config>() {}.type
         return Gson().fromJson(configString, dataClassType)
     }

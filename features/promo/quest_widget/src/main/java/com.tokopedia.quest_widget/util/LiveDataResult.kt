@@ -1,4 +1,4 @@
-package com.tokopedia.mvcwidget.quest_widget
+package com.tokopedia.quest_widget.util
 
 class LiveDataResult<T>(val status: STATUS, val data: T? = null, val error: Throwable? = null) {
 

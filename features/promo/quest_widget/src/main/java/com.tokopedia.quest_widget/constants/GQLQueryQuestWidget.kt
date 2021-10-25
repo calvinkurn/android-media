@@ -1,7 +1,7 @@
-package com.tokopedia.mvcwidget.quest_widget
+package com.tokopedia.quest_widget.constants
 
 object GQLQueryQuestWidget {
-
+    const val IO = "IO"
     const val QUERY_QUEST_WIDGET = """
     
     query questWidgetList(${'$'}channel: Int!, ${'$'}channelSlug: String!, ${'$'}page: String!})
