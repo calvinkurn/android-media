@@ -2412,7 +2412,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             context, msg
         ) { id, msg ->
             when (id) {
-                MENU_ID_REPLY -> replyCompose?.composeReplyData(msg, true)
+                MENU_ID_REPLY -> replyCompose?.composeReplyData(msg, text, true)
                 MENU_ID_COPY_TO_CLIPBOARD -> copyToClipboard(text)
             }
         }
