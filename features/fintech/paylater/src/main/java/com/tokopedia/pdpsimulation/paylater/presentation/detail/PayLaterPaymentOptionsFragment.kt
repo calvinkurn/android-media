@@ -80,7 +80,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
     private fun initListener() {
         btnHowToUse.setOnClickListener {
-            Log.e("hii", buttonStatus.toString() )
+            Log.e("hii", buttonStatus.toString())
             buttonStatus?.let {
                 when (it) {
                     RedirectionType.HowToDetail ->
@@ -97,7 +97,7 @@ class PayLaterPaymentOptionsFragment : Fragment() {
                     RedirectionType.NonClickable -> {
                         btnHowToUse.isClickable = false
                     }
-                   RedirectionType.GopayBottomSheet -> {
+                    RedirectionType.GopayBottomSheet -> {
                         openGopayBottomSheet()
                     }
                 }
@@ -113,9 +113,12 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
     private fun openGopayBottomSheet() {
         val bundle = Bundle()
-        bundle.putParcelable(PayLaterTokopediaGopayBottomsheet.GOPAY_BOTTOMSHEET_DETAIL, responseData?.cta)
+        bundle.putParcelable(
+            PayLaterTokopediaGopayBottomsheet.GOPAY_BOTTOMSHEET_DETAIL,
+            responseData?.cta
+        )
         (parentFragment as PayLaterOffersFragment).pdpSimulationCallback?.let {
-            it.openBottomSheet(bundle,PayLaterTokopediaGopayBottomsheet::class.java)
+            it.openBottomSheet(bundle, PayLaterTokopediaGopayBottomsheet::class.java)
         }
 
     }
@@ -293,10 +296,10 @@ class PayLaterPaymentOptionsFragment : Fragment() {
 
         data.cta?.cta_type?.let {
             buttonStatus = when {
-                buttonRedirectionWeb.contains(it) && data.cta.bottomSheet?.isShow==true ->
+                buttonRedirectionWeb.contains(it) && data.cta.bottomSheet?.isShow == true ->
                     RedirectionType.GopayBottomSheet
 
-                buttonRedirectionWeb.contains(it) && data.cta.bottomSheet?.isShow==false ->
+                buttonRedirectionWeb.contains(it) && data.cta.bottomSheet?.isShow == false ->
                     RedirectionType.RedirectionWebView
 
                 buttonRedirectionBottomSheet.contains(it) ->
