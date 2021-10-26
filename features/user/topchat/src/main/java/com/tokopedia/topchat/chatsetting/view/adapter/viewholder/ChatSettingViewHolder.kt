@@ -7,6 +7,8 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatsetting.data.uimodel.ItemChatSettingUiModel
+import com.tokopedia.topchat.chatsetting.data.uimodel.ItemChatSettingUiModel.Companion.TYPE_GREEN
+import com.tokopedia.topchat.chatsetting.data.uimodel.ItemChatSettingUiModel.Companion.TYPE_RED
 import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.toPx
@@ -40,7 +42,12 @@ class ChatSettingViewHolder constructor(
         label?.shouldShowWithAction(
             element.label.isNotEmpty() && element.alias.isNotEmpty()
         ) {
-            label.text = element.label
+            val labelColor = when (element.typeLabel) {
+                TYPE_RED -> NotificationUnify.COLOR_PRIMARY
+                TYPE_GREEN -> NotificationUnify.COLOR_SECONDARY
+                else -> NotificationUnify.COLOR_PRIMARY
+            }
+            label.setNotification(element.label,labelColor, NotificationUnify.TEXT_TYPE)
         }
     }
 

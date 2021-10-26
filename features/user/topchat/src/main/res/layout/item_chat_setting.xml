@@ -60,6 +60,7 @@
         app:layout_constraintTop_toTopOf="@id/tvTitle"
         app:notificationColor="color_text_type"
         app:notificationTitle="@string/title_topchat_new"
-        app:notificationType="text_type" />
+        app:notificationType="text_type"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
