@@ -1759,14 +1759,14 @@ object DynamicProductDetailTracking {
                             DataLayer.mapOf(
                                 "id", "",
                                 "name", "product detail page - $productId",
-                                "creative", "layout:${productInfo?.layoutName};comp:${componentTrackDataModel.componentType};temp:${componentTrackDataModel.componentName};",
+                                "creative", "layout:${productInfo?.layoutName};comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};",
                                 "position", componentTrackDataModel.adapterPosition
                             )
                         ))))
             mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
                 ?: ""
             mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] = "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
-            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentType};temp:${componentTrackDataModel.componentName};elem:${"impression - modular component"};cpos:${componentTrackDataModel.adapterPosition};"
+            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};elem:${"impression - modular component"};cpos:${componentTrackDataModel.adapterPosition};"
 
             trackingQueue?.putEETracking(mapEvent as HashMap<String, Any>)
         }
