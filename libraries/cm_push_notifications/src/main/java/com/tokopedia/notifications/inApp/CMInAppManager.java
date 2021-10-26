@@ -32,6 +32,7 @@ import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.A
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
 import com.tokopedia.notifications.inApp.usecase.InAppLocalDatabaseController;
 import com.tokopedia.notifications.inApp.viewEngine.CMActivityLifeCycle;
+import com.tokopedia.notifications.inApp.viewEngine.CMInAppController;
 import com.tokopedia.notifications.inApp.viewEngine.CMInAppProcessor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener;
@@ -60,7 +61,8 @@ public class CMInAppManager implements CmInAppListener,
         DataProvider,
         CmActivityLifecycleHandler.CmActivityApplicationCallback,
         ShowInAppCallback,
-        SendPushContract, CmDialogVisibilityContract {
+        SendPushContract, CmDialogVisibilityContract,
+        CMInAppController.OnNewInAppDataStoreListener {
 
     private static final CMInAppManager inAppManager;
 
@@ -256,6 +258,8 @@ public class CMInAppManager implements CmInAppListener,
             if (null != cmInApp) {
                 if (application != null) {
                     sendEventInAppDelivered(cmInApp);
+//                    new CMInAppController(this).downloadImagesAndUpdateDB(application, cmInApp);
+                    //TODO new way to save new InApp to Local Database
                     new CMInAppProcessor(application).processAndSaveCMInApp(cmInApp, this::onNewInAppStored);
                 } else {
                     Map<String, String> messageMap = new HashMap<>();
@@ -286,6 +290,8 @@ public class CMInAppManager implements CmInAppListener,
                 if (application != null) {
                     cmInApp.setAmplification(true);
                     sendEventInAppDelivered(cmInApp);
+//                    new CMInAppController(this).downloadImagesAndUpdateDB(application, cmInApp);
+                    //TODO new way to save new InApp to Local Database
                     new CMInAppProcessor(application).processAndSaveCMInApp(cmInApp, this::onNewInAppStored);
                 } else {
                     Map<String, String> messageMap = new HashMap<>();
@@ -409,6 +415,20 @@ public class CMInAppManager implements CmInAppListener,
     @Override
     public boolean isDialogVisible(@NotNull Activity activity) {
         return dialogIsShownMap.containsKey(activity) && dialogIsShownMap.get(activity);
+    }
+
+    @Override
+    public void onNewInAppDataStored() {
+        if (isCmInAppManagerInitialized) {
+            Activity currentActivity = activityLifecycleHandler.getCurrentActivity();
+            if (currentActivity != null) {
+                if (!pushIntentHandler.isHandledByPush()) {
+                    if (canShowDialog()) {
+                        showInAppForScreen(currentActivity.getClass().getName(), currentActivity.hashCode(), true);
+                    }
+                }
+            }
+        }
     }
 
     private void getAmplificationPushData(Application application) {
