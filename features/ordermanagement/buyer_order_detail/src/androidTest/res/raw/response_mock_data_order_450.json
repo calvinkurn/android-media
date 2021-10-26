@@ -160,7 +160,20 @@
         "meta": {
           "is_bo": false,
           "bo_image_url": ""
-        }
+        },
+        "logistic_section_info": [
+          {
+            "index": 1,
+            "id": "drivertips",
+            "image_link": "https://image.tokopedia.com/update",
+            "title": "Yuk, beri tip ke driver",
+            "subtitle": "Kamu bisa berikan via link halaman Lacak.",
+            "action": {
+              "name": "Beri tip",
+              "link": "tokopedia://shipping/tracking/166842788"
+            }
+          }
+        ]
       }
     }
   }

@@ -264,6 +264,17 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   name
                   phone_number
                 }
+                logistic_section_info {
+                  index
+                  id
+                  image_link
+                  title
+                  subtitle
+                  action {
+                    name
+                    link
+                  }
+                }
               }
             }
         """.trimIndent()

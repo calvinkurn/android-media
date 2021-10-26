@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import javax.inject.Inject
 
 class ResourceProvider @Inject constructor(@ApplicationContext private val context: Context?) {
@@ -57,5 +58,23 @@ class ResourceProvider @Inject constructor(@ApplicationContext private val conte
 
     fun getCopyLabelAwb(): String {
         return getString(R.string.copy_label_awb_number).orEmpty()
+    }
+
+    fun composeDriverTippingInfoDescription(
+        driverTippingInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.LogisticSectionInfo?
+    ): String {
+        return if (
+            driverTippingInfo != null &&
+            driverTippingInfo.subtitle.isNotBlank() &&
+            driverTippingInfo.action.name.isNotBlank() &&
+            driverTippingInfo.action.link.isNotBlank()
+        ) {
+            getString(
+                R.string.driver_tipping_info_description,
+                driverTippingInfo.subtitle,
+                driverTippingInfo.action.link,
+                driverTippingInfo.action.name
+            ).orEmpty()
+        } else ""
     }
 }

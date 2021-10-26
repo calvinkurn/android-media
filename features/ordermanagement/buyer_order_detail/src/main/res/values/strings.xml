@@ -41,6 +41,7 @@
     <string name="buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice">Oops, halaman detail produk belum bisa di akses karena sedang menunggu invoice</string>
     <string name="copy_label_awb_number">bom_awb</string>
     <string name="copy_label_receiver_address">bom_receiver_address</string>
+    <string name="driver_tipping_info_description">%1$s &lt;a href=\"%2$s\"&gt;%3$s&lt;/a&gt;</string>
 
     <!--Product Bundling-->
     <string name="buyer_order_detail_bundling_price_total">Total Harga Paket</string>

@@ -22,7 +22,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 orderStatusUiModel = mapOrderStatusUiModel(buyerOrderDetail.orderStatus, buyerOrderDetail.tickerInfo, buyerOrderDetail.preOrder, buyerOrderDetail.invoice, buyerOrderDetail.invoiceUrl, buyerOrderDetail.deadline, buyerOrderDetail.paymentDate, buyerOrderDetail.orderId),
                 paymentInfoUiModel = mapPaymentInfoUiModel(buyerOrderDetail.payment, buyerOrderDetail.cashbackInfo),
                 productListUiModel = mapProductListUiModel(buyerOrderDetail.products, buyerOrderDetail.haveProductBundle, buyerOrderDetail.bundleDetail, buyerOrderDetail.shop, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id),
-                shipmentInfoUiModel = mapShipmentInfoUiModel(buyerOrderDetail.shipment, buyerOrderDetail.meta, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id, buyerOrderDetail.dropship)
+                shipmentInfoUiModel = mapShipmentInfoUiModel(buyerOrderDetail.shipment, buyerOrderDetail.meta, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id, buyerOrderDetail.dropship, buyerOrderDetail.getDriverTippingInfo())
         )
     }
 
@@ -78,11 +78,18 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         )
     }
 
-    private fun mapShipmentInfoUiModel(shipment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment, meta: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Meta, orderId: String, orderStatusId: String, dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship): ShipmentInfoUiModel {
+    private fun mapShipmentInfoUiModel(
+        shipment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment,
+        meta: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Meta,
+        orderId: String,
+        orderStatusId: String,
+        dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship,
+        driverTippingInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.LogisticSectionInfo?
+    ): ShipmentInfoUiModel {
         return ShipmentInfoUiModel(
                 awbInfoUiModel = mapAwbInfoUiModel(shipment.shippingRefNum, orderStatusId, orderId),
                 courierDriverInfoUiModel = mapCourierDriverInfoUiModel(shipment.driver),
-                driverTippingInfoUiModel = mapDriverTippingInfoUiModel(shipment.driver.name.isNotBlank()),
+                driverTippingInfoUiModel = mapDriverTippingInfoUiModel(driverTippingInfo),
                 courierInfoUiModel = mapCourierInfoUiModel(shipment, meta),
                 dropShipperInfoUiModel = mapDropShipperInfoUiModel(dropship),
                 headerUiModel = mapPlainHeader(resourceProvider.getShipmentInfoSectionHeader()),
@@ -315,20 +322,12 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         )
     }
 
-    private fun mapDriverTippingInfoUiModel(show: Boolean): ShipmentInfoUiModel.DriverTippingInfoUiModel {
-        return if (show) {
-            ShipmentInfoUiModel.DriverTippingInfoUiModel(
-                imageUrl = "https://cdn.idntimes.com/content-images/community/2021/09/fromandroid-df3d54cc2e2624ca203da0f60b89b4d6.jpg",
-                title = "Yuk, beri tip ke driver",
-                description = "Kamu bisa berikan via halaman Lacak. <a href=\"tokopedia://shipping/tracking/166842788\">Beri Tip</a>"
-            )
-        } else {
-            ShipmentInfoUiModel.DriverTippingInfoUiModel(
-                imageUrl = "",
-                title = "",
-                description = ""
-            )
-        }
+    private fun mapDriverTippingInfoUiModel(driverTippingInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.LogisticSectionInfo?): ShipmentInfoUiModel.DriverTippingInfoUiModel {
+        return ShipmentInfoUiModel.DriverTippingInfoUiModel(
+            imageUrl = driverTippingInfo?.imageUrl.orEmpty(),
+            title = driverTippingInfo?.title.orEmpty(),
+            description = resourceProvider.composeDriverTippingInfoDescription(driverTippingInfo)
+        )
     }
 
     private fun mapAwbInfoUiModel(shippingRefNum: String, orderStatusId: String, orderId: String): ShipmentInfoUiModel.AwbInfoUiModel {
