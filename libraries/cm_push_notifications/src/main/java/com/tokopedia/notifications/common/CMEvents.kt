@@ -82,11 +82,13 @@ object IrisAnalyticsEvents {
 
     }
 
-    fun sendFirstScreenEvent(context: Context){
-        val map: MutableMap<String, Any> = mutableMapOf(
-                IRIS_ANALYTICS_EVENT_KEY to IRIS_ANALYTICS_APP_SITE_OPEN
-        )
-        IrisAnalytics.Companion.getInstance(context.applicationContext).saveEvent(map)
+    fun sendFirstScreenEvent(context: Context?){
+        context?.let {
+            val map: MutableMap<String, Any> = mutableMapOf(
+                    IRIS_ANALYTICS_EVENT_KEY to IRIS_ANALYTICS_APP_SITE_OPEN
+            )
+            IrisAnalytics.Companion.getInstance(context.applicationContext).saveEvent(map)
+        }
     }
 
 
