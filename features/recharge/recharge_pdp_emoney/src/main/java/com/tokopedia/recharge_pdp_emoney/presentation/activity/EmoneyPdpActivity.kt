@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.TextUtils
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
@@ -28,7 +29,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
 
-class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>,
+open class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpComponent>,
         EmoneyMenuBottomSheets.MenuListener {
 
     @Inject

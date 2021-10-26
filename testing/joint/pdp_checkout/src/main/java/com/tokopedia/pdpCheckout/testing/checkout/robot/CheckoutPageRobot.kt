@@ -14,7 +14,6 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.bundle.view.viewholder.ShipmentButtonPaymentViewHolder
 import com.tokopedia.checkout.old.view.viewholder.PromoCheckoutViewHolder
@@ -37,7 +36,8 @@ class CheckoutPageRobot {
     }
 
     private fun scrollRecyclerViewToFirstOrder() {
-        onView(withId(R.id.rv_shipment)).perform(RecyclerViewActions.scrollToHolder(isA(ShipmentItemViewHolder::class.java)))
+        onView(withId(R.id.rv_shipment)).perform(RecyclerViewActions.scrollToHolder(isA(
+            ShipmentItemViewHolder::class.java)))
     }
 
     private fun <T : Activity> scrollRecyclerViewToPromoButton(activityRule: IntentsTestRule<T>): Int {
