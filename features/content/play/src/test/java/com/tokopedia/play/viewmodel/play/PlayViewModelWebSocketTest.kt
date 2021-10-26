@@ -408,20 +408,20 @@ class PlayViewModelWebSocketTest {
             playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         )
 
-        robot.apply {
-            setUserId("1")
-            createPage(channelData)
-            focusPage(channelData)
-        }
+        robot.use {
+            it.setUserId("1")
+            it.createPage(channelData)
+            it.focusPage(channelData)
 
-        val state = robot.recordState {
-            fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
-            viewModel.submitAction(InteractiveTapTapAction)
-            viewModel.submitAction(InteractiveOngoingFinishedAction)
-            fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
-        }
+            val state = robot.recordState {
+                fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+                viewModel.submitAction(InteractiveTapTapAction)
+                viewModel.submitAction(InteractiveOngoingFinishedAction)
+                fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
+            }
 
-        state.winnerBadge.shouldShow.assertTrue()
+            state.winnerBadge.shouldShow.assertTrue()
+        }
     }
 
     @Test
@@ -446,25 +446,25 @@ class PlayViewModelWebSocketTest {
             playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         )
 
-        robot.apply {
-            setUserId("1")
-            createPage(channelData)
-            focusPage(channelData)
-        }
+        robot.use {
+            it.setUserId("1")
+            it.createPage(channelData)
+            it.focusPage(channelData)
 
-        val event = robot.recordEvent {
-            fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
-            viewModel.submitAction(InteractiveTapTapAction)
-            viewModel.submitAction(InteractiveOngoingFinishedAction)
-            fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
-        }
+            val event = robot.recordEvent {
+                fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+                viewModel.submitAction(InteractiveTapTapAction)
+                viewModel.submitAction(InteractiveOngoingFinishedAction)
+                fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
+            }
 
-        event.last().isEqualTo(
-            ShowWinningDialogEvent(PlayUserWinnerStatusSocketResponse.imageUrl,
-                PlayUserWinnerStatusSocketResponse.winnerTitle,
-                PlayUserWinnerStatusSocketResponse.winnerText
+            event.last().isEqualTo(
+                ShowWinningDialogEvent(PlayUserWinnerStatusSocketResponse.imageUrl,
+                    PlayUserWinnerStatusSocketResponse.winnerTitle,
+                    PlayUserWinnerStatusSocketResponse.winnerText
+                )
             )
-        )
+        }
     }
 
     @Test
@@ -489,25 +489,25 @@ class PlayViewModelWebSocketTest {
             playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         )
 
-        robot.apply {
-            setUserId("2")
-            createPage(channelData)
-            focusPage(channelData)
-        }
+        robot.use {
+            it.setUserId("2")
+            it.createPage(channelData)
+            it.focusPage(channelData)
 
-        val event = robot.recordEvent {
-            fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
-            viewModel.submitAction(InteractiveTapTapAction)
-            viewModel.submitAction(InteractiveOngoingFinishedAction)
-            fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
-        }
+            val event = robot.recordEvent {
+                fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+                viewModel.submitAction(InteractiveTapTapAction)
+                viewModel.submitAction(InteractiveOngoingFinishedAction)
+                fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
+            }
 
-        event.last().isEqualTo(
-            ShowCoachMarkWinnerEvent(
-                PlayUserWinnerStatusSocketResponse.loserTitle,
-                PlayUserWinnerStatusSocketResponse.loserText
+            event.last().isEqualTo(
+                ShowCoachMarkWinnerEvent(
+                    PlayUserWinnerStatusSocketResponse.loserTitle,
+                    PlayUserWinnerStatusSocketResponse.loserText
+                )
             )
-        )
+        }
     }
 
     @Test
@@ -532,19 +532,19 @@ class PlayViewModelWebSocketTest {
             playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         )
 
-        robot.apply {
-            setUserId("1")
-            createPage(channelData)
-            focusPage(channelData)
-        }
+        robot.use {
+            it.setUserId("1")
+            it.createPage(channelData)
+            it.focusPage(channelData)
 
-        val event = robot.recordEvent {
-            fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
-            viewModel.submitAction(InteractiveTapTapAction)
-            fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
-        }
+            val event = robot.recordEvent {
+                fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+                viewModel.submitAction(InteractiveTapTapAction)
+                fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
+            }
 
-        event.isEqualTo(emptyList())
+            event.isEqualTo(emptyList())
+        }
     }
 
     @Test
@@ -569,20 +569,20 @@ class PlayViewModelWebSocketTest {
             playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         )
 
-        robot.apply {
-            setUserId("1")
-            createPage(channelData)
-            focusPage(channelData)
-        }
+        robot.use {
+            it.setUserId("1")
+            it.createPage(channelData)
+            it.focusPage(channelData)
 
-        val event = robot.recordEvent {
-            fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
-            viewModel.submitAction(InteractiveTapTapAction)
-            viewModel.submitAction(InteractiveOngoingFinishedAction)
-            fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
-        }
+            val event = robot.recordEvent {
+                fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+                viewModel.submitAction(InteractiveTapTapAction)
+                viewModel.submitAction(InteractiveOngoingFinishedAction)
+                fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
+            }
 
-        event.isEqualTo(emptyList())
+            event.isEqualTo(emptyList())
+        }
     }
 
     @Test
@@ -607,18 +607,18 @@ class PlayViewModelWebSocketTest {
             playSocketToModelMapper = mapperBuilder.buildSocketMapper(),
         )
 
-        robot.apply {
-            setUserId("1")
-            createPage(channelData)
-            focusPage(channelData)
-        }
+        robot.use {
+            it.setUserId("1")
+            it.createPage(channelData)
+            it.focusPage(channelData)
 
-        val state = robot.recordState {
-            fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
-            viewModel.submitAction(InteractiveTapTapAction)
-            viewModel.submitAction(InteractiveOngoingFinishedAction)
-        }
+            val state = robot.recordState {
+                fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
+                viewModel.submitAction(InteractiveTapTapAction)
+                viewModel.submitAction(InteractiveOngoingFinishedAction)
+            }
 
-        state.winnerBadge.shouldShow.assertTrue()
+            state.winnerBadge.shouldShow.assertTrue()
+        }
     }
 }
