@@ -79,7 +79,7 @@ class CMPushNotificationManager : CoroutineScope {
         this.applicationContext = application.applicationContext
         CMInAppManager.getInstance().init(application)
         GraphqlClient.init(applicationContext)
-        PushWorker.schedulePeriodicWorker()
+        PushWorker.schedulePeriodicWorker(applicationContext)
 
         PushNotificationApi.bindService(
                 applicationContext,
