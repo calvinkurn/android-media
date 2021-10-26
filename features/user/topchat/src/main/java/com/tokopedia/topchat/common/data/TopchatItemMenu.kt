@@ -8,7 +8,8 @@ class TopchatItemMenu constructor(
     val icon: Int = 0,
     val hasCheck: Boolean = false,
     val id: Int = -1,
-    val unifyIcon: Int? = null
+    val unifyIcon: Int? = null,
+    val showNewLabel: Boolean = false
 ) {
 
     @DrawableRes

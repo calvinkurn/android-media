@@ -396,7 +396,8 @@ open class TopChatViewStateImpl constructor(
         return TopchatItemMenu(
             title = view.context.getString(R.string.title_chat_setting),
             unifyIcon = IconUnify.SETTING,
-            id = ID_CHAT_SETTING
+            id = ID_CHAT_SETTING,
+            showNewLabel = true
         )
     }
 

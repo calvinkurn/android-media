@@ -222,6 +222,7 @@ yang ditemukan</string>
     <string name="title_topchat_delete">Hapus</string>
     <string name="title_topchat_reply">Balas</string>
     <string name="title_topchat_copy">Salin</string>
+    <string name="title_topchat_new">BARU</string>
 
     <string name="title_topchat_bubble_long_click_menu">Pengaturan pesan</string>
     <string name="title_topchat_reply_bubble_expired">Yah, chat ini sudah terlalu lama untuk kami tampilkan. Coba pilih chat lain, ya.</string>
