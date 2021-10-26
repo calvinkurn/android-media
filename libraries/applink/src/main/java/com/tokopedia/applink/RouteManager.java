@@ -132,10 +132,9 @@ public class RouteManager {
                 activityIntent.setData(uri);
 
                 // copy the query Parameter to bundle
-                UrlQuerySanitizer sanitizer = new UrlQuerySanitizer(deeplink);
-                List<UrlQuerySanitizer.ParameterValuePair> sanitizerParameterList = sanitizer.getParameterList();
-                for (UrlQuerySanitizer.ParameterValuePair valuePair : sanitizerParameterList) {
-                    activityIntent.putExtra(valuePair.mParameter, valuePair.mValue);
+                Set<String> queryParameterNames = uri.getQueryParameterNames();
+                for (String queryParameterName : queryParameterNames) {
+                    activityIntent.putExtra(queryParameterName, uri.getQueryParameter(queryParameterName));
                 }
                 ApplinkLogger.getInstance(context).appendTrace("Explicit intent result:\n" + activityIntent);
                 return activityIntent;

@@ -1530,16 +1530,30 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
             }
         } else {
-            LastApplyUiModel lastApplyUiModel = shipmentPresenter.getLastApplyData();
-            if (lastApplyUiModel != null) {
-                if (lastApplyUiModel.getCodes().size() > 0) {
+            ValidateUsePromoRequest lastValidateUseRequest = shipmentPresenter.getLastValidateUseRequest();
+            if (lastValidateUseRequest != null) {
+                if (lastValidateUseRequest.getCodes().size() > 0) {
                     stillHasPromo = true;
                 } else {
-                    if (lastApplyUiModel.getVoucherOrders().size() > 0) {
-                        for (LastApplyVoucherOrdersItemUiModel voucherOrder : lastApplyUiModel.getVoucherOrders()) {
-                            if (voucherOrder.getCode().length() > 0) {
-                                stillHasPromo = true;
-                                break;
+                    for (OrdersItem ordersItem : lastValidateUseRequest.getOrders()) {
+                        if (ordersItem.getCodes().size() > 0) {
+                            stillHasPromo = true;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                LastApplyUiModel lastApplyUiModel = shipmentPresenter.getLastApplyData();
+                if (lastApplyUiModel != null) {
+                    if (lastApplyUiModel.getCodes().size() > 0) {
+                        stillHasPromo = true;
+                    } else {
+                        if (lastApplyUiModel.getVoucherOrders().size() > 0) {
+                            for (LastApplyVoucherOrdersItemUiModel voucherOrder : lastApplyUiModel.getVoucherOrders()) {
+                                if (voucherOrder.getCode().length() > 0) {
+                                    stillHasPromo = true;
+                                    break;
+                                }
                             }
                         }
                     }

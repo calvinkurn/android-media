@@ -3,7 +3,6 @@ package com.tokopedia.tokopedianow.data
 import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.model.ChannelStyle
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
@@ -256,7 +255,7 @@ fun createHomeProductCardUiModel(
     quantity: Int = 0,
     parentId: String = "",
     product: ProductCardModel = ProductCardModel(),
-    @TokoNowLayoutType type: String = TokoNowLayoutType.RECENT_PURCHASE
+    @TokoNowLayoutType type: String = TokoNowLayoutType.REPURCHASE_PRODUCT
 ): TokoNowProductCardUiModel {
     return TokoNowProductCardUiModel(productId, shopId, quantity, parentId, product, type)
 }
