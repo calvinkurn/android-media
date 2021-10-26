@@ -912,7 +912,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             getPdpLayoutUseCase.requestParams
         } returns GetPdpLayoutUseCase.createParams(productParams.productId
                 ?: "", productParams.shopDomain ?: "", productParams.productName
-                ?: "", productParams.warehouseId ?: "", "", userLocation)
+                ?: "", productParams.warehouseId ?: "", "", userLocation, "")
 
         viewModel.getProductP1(productParams, true, false, "", userLocationLocal = getUserLocationCache())
 
@@ -935,7 +935,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             getPdpLayoutUseCase.requestParams
         } returns GetPdpLayoutUseCase.createParams(productParams.productId
                 ?: "", productParams.shopDomain ?: "", productParams.productName
-                ?: "", productParams.warehouseId ?: "", "", userLocation)
+                ?: "", productParams.warehouseId ?: "", "", userLocation, "")
 
         viewModel.getProductP1(productParams, true, false, " ", userLocationLocal = getUserLocationCache())
 
