@@ -75,6 +75,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
+import kotlin.math.max
 
 /**
  * Created by jegul on 29/11/19
@@ -836,7 +837,7 @@ class PlayViewModel @Inject constructor(
                     videoUrl = if(channelData.videoMetaInfo.videoPlayer.isGeneral())
                                     channelData.videoMetaInfo.videoPlayer.params.videoUrl
                                 else "",
-                    currentPosition = playVideoPlayer.getCurrentPosition()
+                    currentPosition = max(playVideoPlayer.getCurrentPosition(), 0)
                 )
             }
 
