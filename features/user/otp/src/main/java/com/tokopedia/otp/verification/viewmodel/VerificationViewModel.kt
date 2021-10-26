@@ -187,11 +187,20 @@ open class VerificationViewModel @Inject constructor(
             validateToken: String,
             userIdEnc: String,
             mode: String,
-            code: String
+            code: String,
+            msisdn: String = ""
     ) {
         launchCatchError(coroutineContext, {
             TkpdIdlingResource.increment()
-            val params = otpValidateUseCase2FA.getParams(otpType = otpType, validateToken = validateToken, userIdEnc = userIdEnc, mode = mode, code = code)
+            val params = otpValidateUseCase2FA.getParams(
+                otpType = otpType,
+                validateToken = validateToken,
+                userIdEnc = userIdEnc,
+                mode = mode,
+                code = code,
+                msisdn = msisdn
+            )
+
             val data = otpValidateUseCase2FA.getData(params).data
             when {
                 data.success -> {

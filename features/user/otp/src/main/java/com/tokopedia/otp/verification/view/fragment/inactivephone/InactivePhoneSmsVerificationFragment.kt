@@ -28,7 +28,8 @@ open class InactivePhoneSmsVerificationFragment : SmsVerificationFragment() {
             otpType = otpData.otpType.toString(),
             mode = modeListData.modeText,
             userIdEnc = otpData.userIdEnc,
-            validateToken = otpData.accessToken
+            validateToken = otpData.accessToken,
+            msisdn = otpData.msisdn
         )
     }
 
