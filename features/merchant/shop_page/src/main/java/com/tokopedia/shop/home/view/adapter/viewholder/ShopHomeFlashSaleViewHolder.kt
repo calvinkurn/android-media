@@ -175,8 +175,8 @@ class ShopHomeFlashSaleViewHolder(
 
     private fun setupProductCardCarousel(model: ShopHomeFlashSaleUiModel) {
         val productList = model.data?.firstOrNull()?.productList ?: listOf()
-        productCarouselAdapter.setProductList(productList)
         productCarouselView?.adapter = productCarouselAdapter
+        productCarouselAdapter.setProductList(productList)
     }
 
     private fun isStatusCampaignFinished(statusCampaign: String): Boolean {
