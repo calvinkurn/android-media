@@ -752,6 +752,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             ProductDetailConstant.PRODUCT_PROTECTION -> DynamicProductDetailTracking.Impression
                     .eventEcommerceDynamicComponent(trackingQueue, componentTrackDataModel,
                             viewModel.getDynamicProductInfoP1, getPPTitleName(), getPurchaseProtectionUrl(), viewModel.userId)
+            ProductDetailConstant.STOCK_ASSURANCE ->
+                DynamicProductDetailTracking.Impression.eventOneLinerImpression(
+                    trackingQueue, componentTrackDataModel, viewModel.getDynamicProductInfoP1,
+                    viewModel.userId
+                )
             else -> DynamicProductDetailTracking.Impression
                     .eventEcommerceDynamicComponent(trackingQueue, componentTrackDataModel,
                             viewModel.getDynamicProductInfoP1, "", "", viewModel.userId)
