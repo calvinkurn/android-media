@@ -32,8 +32,8 @@ class LongClickMenuViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
     }
 
     private fun bindStartIcon(menu: TopchatItemMenu) {
-        val drawable = if (menu.unifyIcon != null) {
-            getIconUnifyDrawable(itemView.context, menu.unifyIcon)
+        val drawable = if (menu.iconUnify != null) {
+            getIconUnifyDrawable(itemView.context, menu.iconUnify)
         } else {
             ContextCompat.getDrawable(itemView.context, menu.icon)
         } ?: return
