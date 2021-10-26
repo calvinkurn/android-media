@@ -25,7 +25,7 @@ class AffiliateAnnouncementUseCase @Inject constructor(
 
     private fun mockData(): AffiliateAnnouncementData {
         val mockData = AffiliateAnnouncementData.Data(
-            2, "cca", "Tunggu belum dapet wordingnya",
+            1, "cca", "Tunggu belum dapet wordingnya",
             "Tunggu belum dapet wordingnya", "Klik Disini",
             AffiliateAnnouncementData.Data.URL("", "", "", ""),
             AffiliateAnnouncementData.Data.Error(

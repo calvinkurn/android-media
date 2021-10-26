@@ -113,4 +113,12 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>() , IBottomC
     override fun selectItem(position: Int, id: Int) {
         affiliateBottomNavigation?.setSelected(position)
     }
+
+    override fun onBackPressed() {
+        val currentFragment=supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.simpleName)
+        if(currentFragment!=null && currentFragment.isVisible){
+            (currentFragment as? AffiliatePromoFragment)?.handleBack()
+        }
+        else super.onBackPressed()
+    }
 }

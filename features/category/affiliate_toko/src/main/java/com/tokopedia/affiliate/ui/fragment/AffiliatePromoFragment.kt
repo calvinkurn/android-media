@@ -36,6 +36,7 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -100,8 +101,16 @@ class AffiliatePromoFragment : BaseViewModelFragment<AffiliatePromoViewModel>(),
             )
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text = getString(R.string.affiliate_promo)
         }
+        promo_navToolbar.setOnBackButtonClickListener {
+            handleBack()
+        }
         setupViewPager()
         showDefaultState()
+    }
+
+     fun handleBack() {
+        if(recommended_layout.isVisible) activity?.finish()
+        else showDefaultState()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

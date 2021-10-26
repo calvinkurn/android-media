@@ -53,8 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
             tools:itemCount="4"
-            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/affiliate_vertical_product_card_item_layout"
+            tools:listitem="@layout/affiliate_staggered_product_card_item_layout"
             tools:orientation="vertical"
             />
 
