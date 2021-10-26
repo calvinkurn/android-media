@@ -112,9 +112,7 @@ class BuyerOrderExtensionFragment : BaseDaggerFragment() {
                 toasterComponent.setToasterNormal(
                     orderExtensionRespondInfoUiModel.messageCode,
                     orderExtensionRespondInfoUiModel.message
-                ) {
-
-                }
+                )
             }
             BuyerOrderExtensionConstant.RespondInfoMessageCode.STATUS_CHANGE -> {
                 showOrderHasBeenDialog()
