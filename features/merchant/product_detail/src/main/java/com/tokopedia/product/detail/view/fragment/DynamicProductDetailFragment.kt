@@ -208,6 +208,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         affiliateUniqueId: String? = null,
                         deeplinkUrl: String? = null,
                         layoutId: String? = null,
+                        extParam: String? = null,
                         query: String? = null) = DynamicProductDetailFragment().also {
             it.arguments = Bundle().apply {
                 productId?.let { pid -> putString(ProductDetailConstant.ARG_PRODUCT_ID, pid) }
@@ -220,6 +221,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 affiliateUniqueId?.let { affiliateUniqueId -> putString(ProductDetailConstant.ARG_AFFILIATE_UNIQUE_ID, affiliateUniqueId) }
                 deeplinkUrl?.let { deeplinkUrl -> putString(ProductDetailConstant.ARG_DEEPLINK_URL, deeplinkUrl) }
                 layoutId?.let { layoutId -> putString(ProductDetailConstant.ARG_LAYOUT_ID, layoutId) }
+                extParam?.let { extParam -> putString(ProductDetailConstant.ARG_EXT_PARAM, extParam) }
                 putBoolean(ProductDetailConstant.ARG_FROM_DEEPLINK, isFromDeeplink)
                 putBoolean(ProductDetailConstant.ARG_FROM_AFFILIATE, isAffiliate)
                 query?.let { qry -> putString(ProductDetailConstant.ARG_QUERY_PARAMS, qry) }
@@ -262,6 +264,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private var deeplinkUrl: String = ""
     private var isFromDeeplink: Boolean = false
     private var layoutId: String = ""
+    private var extParam: String = ""
     private var trackerAttributionPdp: String? = ""
     private var trackerListNamePdp: String? = ""
     private var warehouseId: String? = null
@@ -389,7 +392,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 (it as? ProductDetailActivity)?.startMonitoringPltNetworkRequest()
                 viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId),
                     forceRefresh, isAffiliate, layoutId, isNavOld(), ChooseAddressUtils.getLocalizingAddressData(it)
-                        ?: LocalCacheModel(), affiliateUniqueString = affiliateUniqueId, uuid, urlQuery)
+                        ?: LocalCacheModel(), affiliateUniqueString = affiliateUniqueId, uuid, urlQuery, extParam)
             }
         }
     }
@@ -411,6 +414,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             deeplinkUrl = it.getString(ProductDetailConstant.ARG_DEEPLINK_URL, "")
             isFromDeeplink = it.getBoolean(ProductDetailConstant.ARG_FROM_DEEPLINK, false)
             layoutId = it.getString(ProductDetailConstant.ARG_LAYOUT_ID, "")
+            extParam = it.getString(ProductDetailConstant.ARG_EXT_PARAM, "")
             urlQuery = it.getString(ProductDetailConstant.ARG_QUERY_PARAMS, "")
         }
         activity?.let {
