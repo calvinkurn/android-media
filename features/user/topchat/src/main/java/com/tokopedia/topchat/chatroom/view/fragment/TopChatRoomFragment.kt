@@ -1659,6 +1659,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onGoToChatSetting() {
+        analytics.eventClickChatSetting(shopId)
         RouteManager.route(context, ApplinkConstInternalMarketplace.CHAT_SETTING)
     }
 
