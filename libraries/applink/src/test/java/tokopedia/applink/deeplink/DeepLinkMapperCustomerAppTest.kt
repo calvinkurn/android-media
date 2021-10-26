@@ -740,7 +740,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check official stores appLink _CHANGE NAME_ then should return tokopedia internal official stores in customerapp`() {
+    fun `check official stores appLink then should return tokopedia internal official stores in customerapp`() {
         every {
             DeeplinkMapperHome.isOsExperiment()
         } returns false
@@ -750,7 +750,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check official store appLink _CHANGE NAME_ then should return tokopedia internal official store in customerapp`() {
+    fun `check official store appLink then should return tokopedia internal official store in customerapp`() {
         every {
             DeeplinkMapperHome.isOsExperiment()
         } returns false
@@ -760,7 +760,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check official store category appLink _CHANGE NAME_ then should return tokopedia internal official store category in customerapp`() {
+    fun `check official store category appLink then should return tokopedia internal official store category in customerapp`() {
         every {
             DeeplinkMapperHome.isOsExperiment()
         } returns false
