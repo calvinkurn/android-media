@@ -242,4 +242,12 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
             notifyItemRemoved(index)
         }
     }
+
+    fun getItemPosition(uiModel: BaseVisitableUiModel?): Int {
+        return visitables.indexOf(uiModel)
+    }
+
+    fun getBaseVisitableUiModels(): List<BaseVisitableUiModel> {
+        return visitables.filterIsInstance<BaseVisitableUiModel>()
+    }
 }

@@ -3,6 +3,7 @@ package com.tokopedia.buyerorderdetail.presentation.model
 import android.text.Spannable
 import android.text.SpannableString
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
+import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoachMarkItemManager
 import com.tokopedia.kotlin.extensions.view.orZero
 
 open class CopyableKeyValueUiModel(
@@ -17,5 +18,9 @@ open class CopyableKeyValueUiModel(
 
     override fun shouldShow(): Boolean {
         return copyableText.isNotBlank()
+    }
+
+    override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {
+        return null
     }
 }

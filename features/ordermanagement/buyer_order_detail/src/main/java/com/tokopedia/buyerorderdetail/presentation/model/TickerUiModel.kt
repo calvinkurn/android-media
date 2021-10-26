@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorderdetail.presentation.model
 
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
+import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoachMarkItemManager
 import com.tokopedia.kotlin.extensions.view.orZero
 
 data class TickerUiModel(
@@ -16,5 +17,9 @@ data class TickerUiModel(
 
     override fun shouldShow(): Boolean {
         return description.isNotBlank() || actionText.isNotBlank()
+    }
+
+    override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {
+        return null
     }
 }

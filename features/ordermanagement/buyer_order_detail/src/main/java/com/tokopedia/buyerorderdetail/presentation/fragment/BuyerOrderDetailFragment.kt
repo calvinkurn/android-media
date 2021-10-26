@@ -30,6 +30,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerView
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailContentAnimator
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailToolbarMenuAnimator
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
+import com.tokopedia.buyerorderdetail.presentation.coachmark.CoachMarkManager
 import com.tokopedia.buyerorderdetail.presentation.dialog.RequestCancelResultDialog
 import com.tokopedia.buyerorderdetail.presentation.helper.BuyerOrderDetailStickyActionButtonHandler
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
@@ -38,6 +39,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailMotionLayout
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailStickyActionButton
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailToolbarMenu
+import com.tokopedia.buyerorderdetail.presentation.scroller.BuyerOrderDetailRecyclerViewScroller
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
@@ -143,13 +145,8 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
     private val toolbarMenuIcons: BuyerOrderDetailToolbarMenu? by lazy {
         createToolbarMenuIcons(requireContext())
     }
-
-    private fun createToolbarMenuIcons(context: Context): BuyerOrderDetailToolbarMenu? {
-        return (View.inflate(context, R.layout.partial_buyer_order_detail_toolbar_menu, null) as? BuyerOrderDetailToolbarMenu)?.apply {
-            setViewModel(viewModel)
-            setNavigator(navigator)
-        }
-    }
+    private val smoothScroller by lazy { rvBuyerOrderDetail?.let { BuyerOrderDetailRecyclerViewScroller(it) } }
+    private val coachMarkManager by lazy { view?.let { CoachMarkManager(it, smoothScroller) } }
 
     private val buyerOrderDetailLoadMonitoring: BuyerOrderDetailLoadMonitoring?
         get() {
@@ -157,6 +154,13 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
                 if (it is BuyerOrderDetailActivity) it.buyerOrderDetailLoadMonitoring else null
             }
         }
+
+    private fun createToolbarMenuIcons(context: Context): BuyerOrderDetailToolbarMenu? {
+        return (View.inflate(context, R.layout.partial_buyer_order_detail_toolbar_menu, null) as? BuyerOrderDetailToolbarMenu)?.apply {
+            setViewModel(viewModel)
+            setNavigator(navigator)
+        }
+    }
 
     override fun getScreenName() = BuyerOrderDetailFragment::class.java.simpleName
 
@@ -202,6 +206,11 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
                 outState.putString(BuyerOrderDetailCommonIntentParamKey.CACHE_ID, cacheManager.id)
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        coachMarkManager?.dismissCoachMark()
     }
 
     override fun onBuyAgainButtonClicked(product: ProductListUiModel.ProductUiModel) {
@@ -302,6 +311,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private fun loadBuyerOrderDetail() {
+        coachMarkManager?.resetCoachMarkState()
         val orderId = arguments?.getString(BuyerOrderDetailCommonIntentParamKey.ORDER_ID, "").orEmpty()
         val paymentId = arguments?.getString(BuyerOrderDetailIntentParamKey.PARAM_PAYMENT_ID, "").orEmpty()
         val cart = arguments?.getString(BuyerOrderDetailIntentParamKey.PARAM_CART_STRING, "").orEmpty()
@@ -364,7 +374,9 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
         )
         setupToolbarMenu(!containsAskSellerButton(data.actionButtonsUiModel) && orderId.isNotBlank() && orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID)
         adapter.updateItems(data)
-        contentVisibilityAnimator.animateToShowContent(containsActionButtons(data.actionButtonsUiModel))
+        contentVisibilityAnimator.animateToShowContent(containsActionButtons(data.actionButtonsUiModel)) {
+            coachMarkManager?.notifyUpdatedAdapter()
+        }
         stopLoadTimeMonitoring()
     }
 

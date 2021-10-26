@@ -24,11 +24,11 @@ class BuyerOrderDetailContentAnimator(
         }
     }
 
-    fun animateToShowContent(containsActionButtons: Boolean) {
+    fun animateToShowContent(containsActionButtons: Boolean, onTransitionEnd: () -> Unit) {
         if (containsActionButtons) {
-            buyerOrderDetailMotionLayout?.transitionToShowContentWithStickyButton()
+            buyerOrderDetailMotionLayout?.transitionToShowContentWithStickyButton(onTransitionEnd)
         } else {
-            buyerOrderDetailMotionLayout?.transitionToShowContentWithoutStickyButton()
+            buyerOrderDetailMotionLayout?.transitionToShowContentWithoutStickyButton(onTransitionEnd)
         }
     }
 

@@ -2,6 +2,8 @@ package com.tokopedia.buyerorderdetail.presentation.model
 
 import android.text.Spannable
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
+import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoachMarkItemManager
+import com.tokopedia.buyerorderdetail.presentation.coachmark.DriverTippingCoachMarkManager
 import com.tokopedia.kotlin.extensions.view.orZero
 
 data class ShipmentInfoUiModel(
@@ -16,15 +18,19 @@ data class ShipmentInfoUiModel(
 ) {
 
     data class AwbInfoUiModel(
-            val orderId: String,
-            val orderStatusId: String,
-            override val copyMessage: String,
-            override val copyableText: Spannable,
-            override val label: String,
-            override val copyLabel: String
+        val orderId: String,
+        val orderStatusId: String,
+        override val copyMessage: String,
+        override val copyableText: Spannable,
+        override val label: String,
+        override val copyLabel: String
     ) : CopyableKeyValueUiModel() {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
+        }
+
+        override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {
+            return null
         }
     }
 
@@ -41,6 +47,10 @@ data class ShipmentInfoUiModel(
         override fun shouldShow(): Boolean {
             return courierNameAndProductName.isNotBlank()
         }
+
+        override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {
+            return null
+        }
     }
 
     data class CourierDriverInfoUiModel(
@@ -56,6 +66,10 @@ data class ShipmentInfoUiModel(
         override fun shouldShow(): Boolean {
             return name.isNotBlank()
         }
+
+        override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {
+            return null
+        }
     }
 
     data class DriverTippingInfoUiModel(
@@ -69,6 +83,10 @@ data class ShipmentInfoUiModel(
 
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
+        }
+
+        override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {
+            return DriverTippingCoachMarkManager(uiModel = this)
         }
     }
 }

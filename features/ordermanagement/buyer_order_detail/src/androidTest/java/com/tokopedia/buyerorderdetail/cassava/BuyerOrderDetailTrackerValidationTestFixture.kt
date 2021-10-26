@@ -5,9 +5,10 @@ import androidx.test.espresso.IdlingPolicies
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.buyerorderdetail.Utils
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailCoachMarkData
 import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActivity
 import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.config.GlobalConfig
 import org.junit.Before
 import org.junit.Rule
@@ -29,6 +30,7 @@ abstract class BuyerOrderDetailTrackerValidationTestFixture {
         IdlingPolicies.setMasterPolicyTimeout(5, TimeUnit.MINUTES)
         clearGtmLog()
         setVersionName()
+        preventCoachMarkFromShowing()
     }
 
     private fun clearGtmLog() {
@@ -37,5 +39,9 @@ abstract class BuyerOrderDetailTrackerValidationTestFixture {
 
     private fun setVersionName() {
         GlobalConfig.VERSION_NAME = "3.142-test"
+    }
+
+    private fun preventCoachMarkFromShowing() {
+        CoachMarkPreference.setShown(context, BuyerOrderDetailCoachMarkData.DRIVER_TIPPING_INFO_COACHMARK_KEY, true)
     }
 }
