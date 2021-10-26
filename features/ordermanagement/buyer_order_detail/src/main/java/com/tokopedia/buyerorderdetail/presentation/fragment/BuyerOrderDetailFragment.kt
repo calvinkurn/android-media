@@ -572,12 +572,12 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     override fun onBestSellerClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
-//        RecommendationWidgetTracker.sendClickTracker(recommendationItem, userSession.userId)
+        RecommendationWidgetTracker.sendClickTracker(recommendationItem, userSession.userId)
         RouteManager.route(context, recommendationItem.url)
     }
 
     override fun onBestSellerImpress(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
-//        context?.let { TrackingQueue(it).putEETracking(RecommendationWidgetTracker.getImpressionTracker(recommendationItem, userSession.userId) as HashMap<String, Any>) }
+        context?.let { TrackingQueue(it).putEETracking(RecommendationWidgetTracker.getImpressionTracker(recommendationItem, userSession.userId) as HashMap<String, Any>) }
     }
 
     override fun onBestSellerThreeDotsClick(bestSellerDataModel: BestSellerDataModel, recommendationItem: RecommendationItem, widgetPosition: Int) {
