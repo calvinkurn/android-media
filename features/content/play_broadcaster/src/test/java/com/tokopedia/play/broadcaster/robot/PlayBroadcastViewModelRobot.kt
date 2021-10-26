@@ -56,7 +56,7 @@ internal class PlayBroadcastViewModelRobot(
     interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper = mockk(relaxed = true),
     channelRepo: PlayBroadcastRepository = mockk(relaxed = true),
     logger: PlayLogger = mockk(relaxed = true),
-) {
+) : Closeable {
 
     private val viewModel = PlayBroadcastViewModel(
         livePusherMediator,
