@@ -760,7 +760,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check official store category appLink then should return tokopedia internal official store category in customerapp`() {
+    fun `check official store category appLink CHANGE NAME then should return tokopedia internal official store category in customerapp`() {
         every {
             DeeplinkMapperHome.isOsExperiment()
         } returns false
