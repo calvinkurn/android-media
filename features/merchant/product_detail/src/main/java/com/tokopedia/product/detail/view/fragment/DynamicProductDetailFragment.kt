@@ -27,6 +27,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
@@ -287,7 +288,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private var shouldShowCartAnimation = false
     private var loadingProgressDialog: ProgressDialog? = null
     private var productVideoCoordinator: ProductVideoCoordinator? = null
-    private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this) }
+    private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this, viewModel.userId) }
     private val coachMarkBoePref by lazy { CoachMarkLocalCache(context) }
     private val adapter by lazy {
         val asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataModel> = AsyncDifferConfig.Builder(ProductDetailDiffUtil())
@@ -2211,28 +2212,32 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun goToAtcVariant(customCartRedirection: Map<String, CartTypeData>? = null) {
         SingleClick.doSomethingBeforeTime {
-            context?.let {
-                if (viewModel.getDynamicProductInfoP1 != null) {
+            context?.let { ctx ->
+                viewModel.getDynamicProductInfoP1?.let {  p1 ->
                     DynamicProductDetailTracking.Click.onSingleVariantClicked(
-                            viewModel.getDynamicProductInfoP1,
-                            pdpUiUpdater?.productSingleVariant,
-                            viewModel.variantData,
-                            getComponentPositionBeforeUpdate(pdpUiUpdater?.productSingleVariant))
+                            productInfo = p1,
+                            variantUiData = pdpUiUpdater?.productSingleVariant,
+                            variantCommonData = viewModel.variantData,
+                            variantPosition = getComponentPositionBeforeUpdate(
+                                    pdpUiUpdater?.productSingleVariant)
+                    )
 
                     val p2Data = viewModel.p2Data.value
-                    val cartTypeData = if (customCartRedirection != null) customCartRedirection else
+                    val cartTypeData = if (customCartRedirection != null)
+                        customCartRedirection
+                    else
                         p2Data?.cartRedirection
 
                     viewModel.clearCacheP2Data()
 
                     AtcVariantHelper.pdpToAtcVariant(
-                            context = it,
+                            context = ctx,
                             pageSource = AtcVariantHelper.PDP_PAGESOURCE,
-                            productInfoP1 = viewModel.getDynamicProductInfoP1!!,
+                            productId = p1.basic.productID,
+                            productInfoP1 = p1,
                             warehouseId = warehouseId ?: "",
-                            pdpSession = viewModel.getDynamicProductInfoP1?.pdpSession ?: "",
-                            isTokoNow = viewModel.getDynamicProductInfoP1?.basic?.isTokoNow
-                                    ?: false,
+                            pdpSession = p1.pdpSession,
+                            isTokoNow = p1.basic.isTokoNow,
                             isShopOwner = viewModel.isShopOwner(),
                             productVariant = viewModel.variantData ?: ProductVariant(),
                             warehouseResponse = p2Data?.nearestWarehouseInfo ?: mapOf(),
@@ -2534,13 +2539,21 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     view = view,
                     productImgList = ArrayList(imageUrls),
                     preBuildImg = {
-                        showProgressDialog {
-                            shareProductInstance?.cancelShare(true)
-                        }
+                        showLoadingUniversalShare()
                     },
                     postBuildImg = { hideProgressDialog() },
                     screenshotDetector
             )
+        }
+    }
+
+    private fun showLoadingUniversalShare() {
+        activity?.let {
+            if (!it.isFinishing) {
+                showProgressDialog {
+                    shareProductInstance?.cancelShare(true)
+                }
+            }
         }
     }
 

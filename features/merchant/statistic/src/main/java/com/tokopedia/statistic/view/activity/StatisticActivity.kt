@@ -180,6 +180,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     }
 
     private fun setupViewPager(isWhiteListed: Boolean) {
+        viewPagerAdapter?.clear()
         pages = getStatisticPages(isWhiteListed)
         pages.forEachIndexed { index, page ->
             val shouldLoadDataOnCreate = if (selectedPageSource.isNotBlank()) {
@@ -196,6 +197,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         }
 
         viewPagerAdapter?.let {
+            it.notifyDataSetChanged()
             setupTabs()
             binding?.run {
                 viewPagerStatistic.adapter = it
