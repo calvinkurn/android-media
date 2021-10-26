@@ -265,46 +265,6 @@ object SearchTracking {
         ))
     }
 
-    private fun generateFilterEventLabel(selectedFilter: Map<String, String>?): String {
-        if (selectedFilter == null) {
-            return ""
-        }
-        val filterList: MutableList<String?> = ArrayList()
-        for ((key, value) in selectedFilter) {
-            filterList.add("$key=$value")
-        }
-        return TextUtils.join("&", filterList)
-    }
-
-    fun eventSearchNoResult(context: Context?,
-                            keyword: String?, screenName: String?,
-                            selectedFilter: Map<String, String>?) {
-        eventSearchNoResult(keyword, screenName, selectedFilter, "", "", "")
-    }
-
-    @JvmStatic
-    fun eventSearchNoResult(keyword: String?, screenName: String?,
-                            selectedFilter: Map<String, String>?,
-                            alternativeKeyword: String?,
-                            resultCode: String?,
-                            keywordProcess: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                SearchEventTracking.Event.EVENT_VIEW_SEARCH_RESULT,
-                SearchEventTracking.Category.EVENT_TOP_NAV,
-                String.format(
-                        SearchEventTracking.Action.NO_SEARCH_RESULT_WITH_TAB,
-                        screenName
-                ),
-                String.format("keyword: %s - type: %s - alternative: %s - param: %s - treatment: %s",
-                        keyword,
-                        if (!TextUtils.isEmpty(resultCode)) resultCode else "none/other",
-                        if (!TextUtils.isEmpty(alternativeKeyword)) alternativeKeyword else "none/other",
-                        generateFilterEventLabel(selectedFilter),
-                        if (!TextUtils.isEmpty(keywordProcess)) keywordProcess else "none / other"
-                )
-        )
-    }
-
     fun eventUserClickNewSearchOnEmptySearch(context: Context?, screenName: String?) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 EVENT_CLICK_SEARCH_RESULT,

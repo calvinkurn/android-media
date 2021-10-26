@@ -25,7 +25,6 @@ import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV2
 import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OLD
@@ -124,7 +123,6 @@ class ProductListPresenter @Inject constructor(
         ProductListSectionContract.Presenter {
 
     companion object {
-        private val searchNoResultCodeList = listOf(1, 2, 3, 4, 5, 6, 8)
         private val showBroadMatchResponseCodeList = listOf("0", "4", "5")
         private val generalSearchTrackingRelatedKeywordResponseCodeList = listOf("3", "4", "5", "6")
         private val showSuggestionResponseCodeList = listOf("3", "6", "7")
@@ -736,8 +734,6 @@ class ProductListPresenter @Inject constructor(
         autoCompleteApplink = productDataView.autocompleteApplink ?: ""
         totalData = productDataView.totalData
 
-        doInBackground<ProductDataView>(productDataView, this::sendTrackingNoSearchResult)
-
         view.setAutocompleteApplink(productDataView.autocompleteApplink)
         view.setDefaultLayoutType(productDataView.defaultView)
 
@@ -759,20 +755,6 @@ class ProductListPresenter @Inject constructor(
         if (isViewNotAttached) return
 
         enableGlobalNavWidget = !view.isLandingPage
-    }
-
-    private fun sendTrackingNoSearchResult(productDataView: ProductDataView) {
-        try {
-            val alternativeKeyword = productDataView.relatedDataView?.relatedKeyword ?: ""
-            val responseCode = productDataView.responseCode
-            val responseCodeInt = responseCode.toIntOrZero()
-            val keywordProcess = productDataView.keywordProcess
-
-            if (searchNoResultCodeList.contains(responseCodeInt))
-                view.sendTrackingForNoResult(responseCode, alternativeKeyword, keywordProcess)
-        } catch (e: NumberFormatException) {
-            e.printStackTrace()
-        }
     }
 
     private fun createFirstProductDataView(searchProductModel: SearchProductModel): ProductDataView {
@@ -1596,16 +1578,17 @@ class ProductListPresenter @Inject constructor(
         view.sendTrackingEventAppsFlyerViewListingSearch(afProdIds, query, prodIdArray, allProdIdArray)
         view.sendTrackingEventMoEngageSearchAttempt(query, productDataView.productList.isNotEmpty(), moengageTrackingCategory)
         view.sendTrackingGTMEventSearchAttempt(
-                GeneralSearchTrackingModel(
-                        createGeneralSearchTrackingEventCategory(),
-                        createGeneralSearchTrackingEventLabel(productDataView, query),
-                        userId,
-                        productDataView.productList.isNotEmpty().toString(),
-                        StringUtils.join(categoryIdMapping, ","),
-                        StringUtils.join(categoryNameMapping, ","),
-                        createGeneralSearchTrackingRelatedKeyword(productDataView),
-                        dimension90,
-                )
+            GeneralSearchTrackingModel(
+                createGeneralSearchTrackingEventCategory(),
+                createGeneralSearchTrackingEventLabel(productDataView, query),
+                userId,
+                productDataView.productList.isNotEmpty().toString(),
+                StringUtils.join(categoryIdMapping, ","),
+                StringUtils.join(categoryNameMapping, ","),
+                createGeneralSearchTrackingRelatedKeyword(productDataView),
+                dimension90,
+                view.filterParamString,
+            )
         )
     }
 
